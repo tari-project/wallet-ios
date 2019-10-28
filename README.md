@@ -4,7 +4,7 @@ Mobile-based UI client that connects to a full node in the Tari network.
 
 ### Swift Style Guide
 
-Code follows [Github's][https://github.com/github/swift-style-guide] style guide and the [SwiftLint][https://github.com/realm/SwiftLint] is run on each build using . Code is linted on each build.
+Code follows [Github's](https://github.com/github/swift-style-guide) style guide and the [SwiftLint](https://github.com/realm/SwiftLint) is run on each build using . Code is linted on each build.
 
 ### Dependencies
 
