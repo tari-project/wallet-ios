@@ -171,7 +171,6 @@
 				CB7DC916E97096D5FCB440E3 /* Pods-MobileWalletTests.debug.xcconfig */,
 				867662CACBB1C47B665EBA55 /* Pods-MobileWalletTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
