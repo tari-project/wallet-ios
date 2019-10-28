@@ -185,6 +185,7 @@
 				00E491922366E08B007B332D /* Sources */,
 				00E491932366E08B007B332D /* Frameworks */,
 				00E491942366E08B007B332D /* Resources */,
+				00E491E823670555007B332D /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -304,6 +305,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		00E491E823670555007B332D /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if which \"${PODS_ROOT}/SwiftLint/swiftlint\" >/dev/null; then\n  \"${PODS_ROOT}/SwiftLint/swiftlint\" autocorrect \"${PROJECT_DIR}/MobileWallet/\"\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 		36B3E0ADF9A7C4C9B3F1415A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
