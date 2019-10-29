@@ -9,14 +9,15 @@
 /* Begin PBXBuildFile section */
 		00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E491992366E08B007B332D /* AppDelegate.swift */; };
 		00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4919B2366E08B007B332D /* SceneDelegate.swift */; };
-		00E4919E2366E08B007B332D /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4919D2366E08B007B332D /* FirstViewController.swift */; };
-		00E491A02366E08B007B332D /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4919F2366E08B007B332D /* SecondViewController.swift */; };
 		00E491A32366E08B007B332D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A12366E08B007B332D /* Main.storyboard */; };
 		00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 00E491A42366E08B007B332D /* MobileWallet.xcdatamodeld */; };
 		00E491A82366E08F007B332D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A72366E08F007B332D /* Assets.xcassets */; };
 		00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E491B52366E08F007B332D /* MobileWalletTests.swift */; };
 		00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E491C02366E08F007B332D /* MobileWalletUITests.swift */; };
+		00E4922923683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
+		00E4922A23683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
+		00E4922B23683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
 		0D51301D65D02B0F8E36B211 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499F3C7BE7690D1E5C12A4A /* Pods_MobileWallet.framework */; };
 		60680CADF41EBF93F0229B5B /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2865054A8E0C3B6DD8681349 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
 		90E279654D1672D262434D0A /* Pods_MobileWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6443607B4998B38BA58D1AB /* Pods_MobileWalletTests.framework */; };
@@ -40,11 +41,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E491962366E08B007B332D /* MobileWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E491962366E08B007B332D /* Tari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tari.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E491992366E08B007B332D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		00E4919B2366E08B007B332D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		00E4919D2366E08B007B332D /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
-		00E4919F2366E08B007B332D /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
 		00E491A22366E08B007B332D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		00E491A52366E08B007B332D /* MobileWallet.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MobileWallet.xcdatamodel; sourceTree = "<group>"; };
 		00E491A72366E08F007B332D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -56,6 +55,7 @@
 		00E491BC2366E08F007B332D /* MobileWalletUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileWalletUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E491C02366E08F007B332D /* MobileWalletUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileWalletUITests.swift; sourceTree = "<group>"; };
 		00E491C22366E08F007B332D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00E4922823683E54007B332D /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		0499F3C7BE7690D1E5C12A4A /* Pods_MobileWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2865054A8E0C3B6DD8681349 /* Pods_MobileWallet_MobileWalletUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet_MobileWalletUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -110,7 +110,7 @@
 		00E491972366E08B007B332D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				00E491962366E08B007B332D /* MobileWallet.app */,
+				00E491962366E08B007B332D /* Tari.app */,
 				00E491B12366E08F007B332D /* MobileWalletTests.xctest */,
 				00E491BC2366E08F007B332D /* MobileWalletUITests.xctest */,
 			);
@@ -122,13 +122,12 @@
 			children = (
 				00E491992366E08B007B332D /* AppDelegate.swift */,
 				00E4919B2366E08B007B332D /* SceneDelegate.swift */,
-				00E4919D2366E08B007B332D /* FirstViewController.swift */,
-				00E4919F2366E08B007B332D /* SecondViewController.swift */,
 				00E491A12366E08B007B332D /* Main.storyboard */,
 				00E491A72366E08F007B332D /* Assets.xcassets */,
 				00E491A92366E08F007B332D /* LaunchScreen.storyboard */,
 				00E491AC2366E08F007B332D /* Info.plist */,
 				00E491A42366E08B007B332D /* MobileWallet.xcdatamodeld */,
+				00E4922823683E54007B332D /* HomeViewController.swift */,
 			);
 			path = MobileWallet;
 			sourceTree = "<group>";
@@ -193,7 +192,7 @@
 			);
 			name = MobileWallet;
 			productName = MobileWallet;
-			productReference = 00E491962366E08B007B332D /* MobileWallet.app */;
+			productReference = 00E491962366E08B007B332D /* Tari.app */;
 			productType = "com.apple.product-type.application";
 		};
 		00E491B02366E08F007B332D /* MobileWalletTests */ = {
@@ -396,10 +395,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
-				00E491A02366E08B007B332D /* SecondViewController.swift in Sources */,
-				00E4919E2366E08B007B332D /* FirstViewController.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
+				00E4922923683E54007B332D /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -408,6 +406,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
+				00E4922A23683E54007B332D /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +415,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */,
+				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -581,7 +581,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.tari.wallet-ios";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Tari;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -600,7 +600,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.tari.wallet-ios";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Tari;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
