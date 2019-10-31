@@ -44,12 +44,15 @@ import FloatingPanel
 class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
     var fpc: FloatingPanelController!
 
-    @IBOutlet weak var sendBtn: UIButton!
+    @IBOutlet weak var sendButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setupFloatingPanel()
+
+        sendButton.setTitle("Send Tari", for: .normal) //TODO translation setup
+        view.backgroundColor = UIColor(named: "HomeBackground")
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -79,7 +82,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
         fpc.addPanel(toParent: self)
         //Move send button to in front of panel
-        sendBtn.superview?.bringSubviewToFront(sendBtn)
+        sendButton.superview?.bringSubviewToFront(sendButton)
     }
 
     @IBAction func onProfileTap(_ sender: Any) {

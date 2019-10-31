@@ -15,42 +15,22 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tari" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XCW-az-brF">
-                                <rect key="frame" x="48" y="70" width="28" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NVo-Eh-RvB">
-                                <rect key="frame" x="311" y="65" width="44" height="30"/>
-                                <state key="normal" title="Profile"/>
-                                <connections>
-                                    <action selector="onProfileTap:" destination="EY7-bG-NLy" eventType="touchUpInside" id="D2D-W3-dvM"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nEn-jd-PvX">
-                                <rect key="frame" x="20" y="703" width="335" height="55"/>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nEn-jd-PvX" customClass="SendButton" customModule="Tari" customModuleProvider="target">
+                                <rect key="frame" x="20" y="721" width="335" height="53"/>
                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="55" id="xz1-IH-zQc"/>
-                                </constraints>
                                 <state key="normal" title="Button"/>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="XCW-az-brF" firstAttribute="leading" secondItem="14X-p9-0HZ" secondAttribute="leading" constant="48" id="Qwl-hO-1W7"/>
-                            <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="NVo-Eh-RvB" secondAttribute="trailing" constant="20" id="Vf6-Gj-bQl"/>
-                            <constraint firstItem="NVo-Eh-RvB" firstAttribute="top" secondItem="14X-p9-0HZ" secondAttribute="top" constant="21" id="dlN-b4-M5G"/>
                             <constraint firstAttribute="bottomMargin" secondItem="nEn-jd-PvX" secondAttribute="bottom" constant="20" id="fqL-lM-rAH"/>
                             <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="nEn-jd-PvX" secondAttribute="trailing" constant="20" id="kT4-xG-jde"/>
                             <constraint firstItem="nEn-jd-PvX" firstAttribute="leading" secondItem="14X-p9-0HZ" secondAttribute="leading" constant="20" id="kmH-MB-iEL"/>
-                            <constraint firstItem="XCW-az-brF" firstAttribute="top" secondItem="14X-p9-0HZ" secondAttribute="top" constant="26" id="xzG-vH-g7f"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="14X-p9-0HZ"/>
                     </view>
                     <connections>
-                        <outlet property="sendBtn" destination="nEn-jd-PvX" id="WN2-cy-Tk7"/>
+                        <outlet property="sendButton" destination="nEn-jd-PvX" id="WN2-cy-Tk7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MHZ-YR-DHc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
