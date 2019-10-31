@@ -39,16 +39,57 @@
 */
 
 import UIKit
+import FloatingPanel
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
+    var fpc: FloatingPanelController!
+
+    @IBOutlet weak var sendBtn: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        setupFloatingPanel()
     }
 
-    /*
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Remove the views managed by the `FloatingPanelController` object from self.view.
+        fpc.removePanelFromParent(animated: true)
+    }
+
+    func setupFloatingPanel() {
+        fpc = FloatingPanelController()
+
+        // Assign self as the delegate of the controller.
+        fpc.delegate = self // Optional
+
+        // Set a content view controller.
+        let contentVC = TransactionsTableViewController()
+        fpc.set(contentViewController: contentVC)
+
+        //TODO move custom styling setup into generic function
+        fpc.surfaceView.cornerRadius = 36
+        fpc.surfaceView.shadowColor = .black
+        fpc.surfaceView.shadowRadius = 22
+
+        // Track a scroll view(or the siblings) in the content view controller.
+        fpc.track(scrollView: contentVC.tableView)
+
+        fpc.addPanel(toParent: self)
+        //Move send button to in front of panel
+        sendBtn.superview?.bringSubviewToFront(sendBtn)
+    }
+
+    @IBAction func onProfileTap(_ sender: Any) {
+        print("Profile tapped")
+    }
+
+    @objc func onSendAction(sender: UIButton!) {
+        print("Send")
+    }
+
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -56,6 +97,18 @@ class HomeViewController: UIViewController {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
     }
-    */
 
+    // MARK: - Floating pabel setup delegate methods
+
+   func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
+        return HomeViewFloatingPanelLayout()
+    }
+
+    func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
+        if vc.position == .full {
+            //TODO Show search bar
+        } else {
+            //TODO Hide search bar
+        }
+    }
 }

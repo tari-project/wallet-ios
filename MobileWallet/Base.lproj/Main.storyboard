@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EY7-bG-NLy">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -10,29 +10,52 @@
         <!--Home View Controller-->
         <scene sceneID="u2A-JK-w5x">
             <objects>
-                <viewController id="EY7-bG-NLy" customClass="HomeViewController" customModule="MobileWallet" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="EY7-bG-NLy" customClass="HomeViewController" customModule="Tari" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hP5-V0-bt8">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tari" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XCW-az-brF">
-                                <rect key="frame" x="193" y="437.5" width="28" height="21"/>
+                                <rect key="frame" x="48" y="70" width="28" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NVo-Eh-RvB">
+                                <rect key="frame" x="311" y="65" width="44" height="30"/>
+                                <state key="normal" title="Profile"/>
+                                <connections>
+                                    <action selector="onProfileTap:" destination="EY7-bG-NLy" eventType="touchUpInside" id="D2D-W3-dvM"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nEn-jd-PvX">
+                                <rect key="frame" x="20" y="703" width="335" height="55"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="55" id="xz1-IH-zQc"/>
+                                </constraints>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="XCW-az-brF" firstAttribute="centerX" secondItem="hP5-V0-bt8" secondAttribute="centerX" id="Lvi-N0-2JP"/>
-                            <constraint firstItem="XCW-az-brF" firstAttribute="centerY" secondItem="hP5-V0-bt8" secondAttribute="centerY" id="RBR-fU-q1m"/>
+                            <constraint firstItem="XCW-az-brF" firstAttribute="leading" secondItem="14X-p9-0HZ" secondAttribute="leading" constant="48" id="Qwl-hO-1W7"/>
+                            <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="NVo-Eh-RvB" secondAttribute="trailing" constant="20" id="Vf6-Gj-bQl"/>
+                            <constraint firstItem="NVo-Eh-RvB" firstAttribute="top" secondItem="14X-p9-0HZ" secondAttribute="top" constant="21" id="dlN-b4-M5G"/>
+                            <constraint firstAttribute="bottomMargin" secondItem="nEn-jd-PvX" secondAttribute="bottom" constant="20" id="fqL-lM-rAH"/>
+                            <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="nEn-jd-PvX" secondAttribute="trailing" constant="20" id="kT4-xG-jde"/>
+                            <constraint firstItem="nEn-jd-PvX" firstAttribute="leading" secondItem="14X-p9-0HZ" secondAttribute="leading" constant="20" id="kmH-MB-iEL"/>
+                            <constraint firstItem="XCW-az-brF" firstAttribute="top" secondItem="14X-p9-0HZ" secondAttribute="top" constant="26" id="xzG-vH-g7f"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="14X-p9-0HZ"/>
                     </view>
+                    <connections>
+                        <outlet property="sendBtn" destination="nEn-jd-PvX" id="WN2-cy-Tk7"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MHZ-YR-DHc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="994" y="-491"/>
+            <point key="canvasLocation" x="992.75362318840587" y="-491.51785714285711"/>
         </scene>
     </scenes>
 </document>
