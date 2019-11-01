@@ -42,7 +42,8 @@ import UIKit
 import FloatingPanel
 
 class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
-    var fpc: FloatingPanelController!
+    private var fpc: FloatingPanelController!
+    private let hitBottomFeedback = UIImpactFeedbackGenerator(style: .medium)
 
     @IBOutlet weak var sendButton: UIButton!
 
@@ -53,6 +54,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
         sendButton.setTitle("Send Tari", for: .normal) //TODO translation setup
         view.backgroundColor = UIColor(named: "HomeBackground")
+
+        hitBottomFeedback.prepare()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -107,11 +110,19 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         return HomeViewFloatingPanelLayout()
     }
 
+    func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
+        hitBottomFeedback.prepare()
+    }
+
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
         if vc.position == .full {
             //TODO Show search bar
         } else {
             //TODO Hide search bar
+        }
+
+        if vc.position == .tip {
+            hitBottomFeedback.impactOccurred()
         }
     }
 }

@@ -44,6 +44,7 @@ class SendButton: UIButton {
     private let RADIUS_POINTS: CGFloat = 3.0
     private let HEIGHT: CGFloat = 53.0
     private var isCompiled = false
+    private let didPressFeedback = UIImpactFeedbackGenerator(style: .light)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -66,10 +67,12 @@ class SendButton: UIButton {
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
         pulseIn()
+        didPressFeedback.prepare()
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesEnded(touches, with: event)
+        didPressFeedback.impactOccurred()
         pulseOut()
     }
 
