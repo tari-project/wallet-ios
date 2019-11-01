@@ -1,16 +1,20 @@
 PODS:
+  - FloatingPanel (1.7.0)
   - SwiftLint (0.36.0)
 
 DEPENDENCIES:
+  - FloatingPanel
   - SwiftLint
 
 SPEC REPOS:
   trunk:
+    - FloatingPanel
     - SwiftLint
 
 SPEC CHECKSUMS:
+  FloatingPanel: f686602da8eff56375e577f19be37348a95f4e24
   SwiftLint: fc9859e4e1752340664851f667bb1898b9c90114
 
-PODFILE CHECKSUM: bcb0aa282cd1a4dc686e5b5b615933bb68803655
+PODFILE CHECKSUM: 3c8d233cd750700d6f5b19c37e6ca8c7f135b49f
 
 COCOAPODS: 1.8.3

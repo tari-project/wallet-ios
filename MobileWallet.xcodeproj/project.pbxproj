@@ -3,10 +3,25 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
+		00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
+		00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
+		00E2BCA9236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */; };
+		00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */; };
+		00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */; };
+		00E2BCAC236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */; };
+		00E2BCAD236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */; };
+		00E2BCAE236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */; };
+		00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB1236B455900C2A105 /* HomeViewFloatingPanelLayout.swift */; };
+		00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB1236B455900C2A105 /* HomeViewFloatingPanelLayout.swift */; };
+		00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB1236B455900C2A105 /* HomeViewFloatingPanelLayout.swift */; };
+		00E2BCBA236B5BE800C2A105 /* SendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB9236B5BE800C2A105 /* SendButton.swift */; };
+		00E2BCBB236B5BE800C2A105 /* SendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB9236B5BE800C2A105 /* SendButton.swift */; };
+		00E2BCBC236B5BE800C2A105 /* SendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB9236B5BE800C2A105 /* SendButton.swift */; };
 		00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E491992366E08B007B332D /* AppDelegate.swift */; };
 		00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4919B2366E08B007B332D /* SceneDelegate.swift */; };
 		00E491A32366E08B007B332D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A12366E08B007B332D /* Main.storyboard */; };
@@ -41,6 +56,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewController.swift; sourceTree = "<group>"; };
+		00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableTableViewCell.swift; sourceTree = "<group>"; };
+		00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableTableViewCell.xib; sourceTree = "<group>"; };
+		00E2BCB1236B455900C2A105 /* HomeViewFloatingPanelLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewFloatingPanelLayout.swift; sourceTree = "<group>"; };
+		00E2BCB9236B5BE800C2A105 /* SendButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendButton.swift; sourceTree = "<group>"; };
 		00E491962366E08B007B332D /* Tari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tari.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E491992366E08B007B332D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		00E4919B2366E08B007B332D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +115,58 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
+			isa = PBXGroup;
+			children = (
+				00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */,
+				00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */,
+				00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */,
+			);
+			path = TransactionHistory;
+			sourceTree = "<group>";
+		};
+		00E2BCAF236B44CE00C2A105 /* UIElements */ = {
+			isa = PBXGroup;
+			children = (
+				00E2BCB8236B5BC000C2A105 /* Buttons */,
+				00E2BCB0236B44DB00C2A105 /* FloatingPanel */,
+			);
+			path = UIElements;
+			sourceTree = "<group>";
+		};
+		00E2BCB0236B44DB00C2A105 /* FloatingPanel */ = {
+			isa = PBXGroup;
+			children = (
+				00E2BCB1236B455900C2A105 /* HomeViewFloatingPanelLayout.swift */,
+			);
+			path = FloatingPanel;
+			sourceTree = "<group>";
+		};
+		00E2BCB5236B469C00C2A105 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				00E2BCB6236B46A400C2A105 /* Home */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		00E2BCB6236B46A400C2A105 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				00E2BCA6236AB25500C2A105 /* TransactionHistory */,
+				00E4922823683E54007B332D /* HomeViewController.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		00E2BCB8236B5BC000C2A105 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				00E2BCB9236B5BE800C2A105 /* SendButton.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
 		00E4918D2366E08B007B332D = {
 			isa = PBXGroup;
 			children = (
@@ -127,7 +199,8 @@
 				00E491A92366E08F007B332D /* LaunchScreen.storyboard */,
 				00E491AC2366E08F007B332D /* Info.plist */,
 				00E491A42366E08B007B332D /* MobileWallet.xcdatamodeld */,
-				00E4922823683E54007B332D /* HomeViewController.swift */,
+				00E2BCAF236B44CE00C2A105 /* UIElements */,
+				00E2BCB5236B469C00C2A105 /* Screens */,
 			);
 			path = MobileWallet;
 			sourceTree = "<group>";
@@ -185,6 +258,7 @@
 				00E491932366E08B007B332D /* Frameworks */,
 				00E491942366E08B007B332D /* Resources */,
 				00E491E823670555007B332D /* ShellScript */,
+				592727B5D4B1A61E8E9269A9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -222,6 +296,7 @@
 				00E491B82366E08F007B332D /* Sources */,
 				00E491B92366E08F007B332D /* Frameworks */,
 				00E491BA2366E08F007B332D /* Resources */,
+				B2015F30F7CFEE576E45A5DA /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -282,6 +357,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */,
+				00E2BCAC236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */,
 				00E491A82366E08F007B332D /* Assets.xcassets in Resources */,
 				00E491A32366E08B007B332D /* Main.storyboard in Resources */,
 			);
@@ -291,6 +367,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00E2BCAD236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -298,6 +375,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00E2BCAE236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,6 +419,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		592727B5D4B1A61E8E9269A9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MobileWallet/Pods-MobileWallet-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MobileWallet/Pods-MobileWallet-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MobileWallet/Pods-MobileWallet-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8C27C48421F9037D76C87980 /* [CP] Check Pods Manifest.lock */ = {
@@ -387,6 +482,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B2015F30F7CFEE576E45A5DA /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -394,10 +506,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
+				00E2BCBA236B5BE800C2A105 /* SendButton.swift in Sources */,
+				00E2BCA9236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
 				00E4922923683E54007B332D /* HomeViewController.swift in Sources */,
+				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelLayout.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -406,7 +522,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
+				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelLayout.swift in Sources */,
 				00E4922A23683E54007B332D /* HomeViewController.swift in Sources */,
+				00E2BCBB236B5BE800C2A105 /* SendButton.swift in Sources */,
+				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
+				00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -415,7 +535,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */,
+				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelLayout.swift in Sources */,
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,
+				00E2BCBC236B5BE800C2A105 /* SendButton.swift in Sources */,
+				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
+				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

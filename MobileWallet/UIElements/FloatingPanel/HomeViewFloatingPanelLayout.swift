@@ -1,8 +1,8 @@
-//  HomeViewController.swift
+//  CustomFloatingPanelLayout.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/10/29
+	Created by Jason van den Berg on 2019/10/31
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,24 +38,22 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Foundation
+import FloatingPanel
 
-class HomeViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+class HomeViewFloatingPanelLayout: FloatingPanelLayout {
+    public var initialPosition: FloatingPanelPosition {
+        return .half
     }
 
-    /*
-    // MARK: - Navigation
+    public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
+        let lowesetHeight = UIScreen.main.bounds.height * 0.75
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+        switch position {
+            case .full: return 40.0 // A top inset from safe area
+            case .half: return lowesetHeight // A bottom inset from the safe area
+            case .tip: return lowesetHeight - 100 // A bottom inset from the safe area
+            default: return nil // Or `case .hidden: return nil`
+        }
     }
-    */
-
 }
