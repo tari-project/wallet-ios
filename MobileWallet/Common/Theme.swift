@@ -46,6 +46,15 @@ struct Colors {
     let sendButtonBackground = UIColor(named: "SendButtonBackground")
     let homeBackground = UIColor(named: "HomeBackground")
     let transactionTableBackground = UIColor(named: "TransactionTableBackground")
+    let splashBackground = UIColor(named: "SplashBackground")
+
+    //Transaction cell
+    let transactionCellUsername = UIColor(named: "TransactionCellUsername")
+    let transactionCellDescription = UIColor(named: "TransactionCellDescription")
+    let transactionCellValueNegativeBackground = UIColor(named: "TransactionCellValueNegativeBackground")
+    let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
+    let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
+    let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
 }
 
 class Theme {

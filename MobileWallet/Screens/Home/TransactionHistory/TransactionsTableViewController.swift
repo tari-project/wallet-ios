@@ -65,14 +65,11 @@ class TransactionsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath) as! TransactionTableTableViewCell
 
-        cell.userNameLabel.text = "Jason"
-        cell.descriptionLabel.text = "You know ;)"
-        cell.setValueLabel(value: -123)
+        cell.userNameLabel.text = "Steve \(indexPath.row)"
+        cell.descriptionLabel.text = "For that thing \(indexPath.row))"
 
-        // Configure the cell...
-
-//        cell.textLabel?.text = "Transaction \(indexPath.row)"
-//        cell.accessoryType = .checkmark
+        let value = -99100
+        cell.setValueLabel(value: value)
 
         return cell
     }
@@ -81,8 +78,12 @@ class TransactionsTableViewController: UITableViewController {
         tableView.deselectRow(at: indexPath, animated: true)
     }
 
+    override func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
+        tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+
     private func viewSetup() {
-        self.tableView.separatorStyle = .none
+        tableView.separatorStyle = .none
         view.backgroundColor = Theme.shared.colors.transactionTableBackground
         tableView.rowHeight = 60
     }

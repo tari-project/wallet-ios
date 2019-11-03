@@ -42,6 +42,7 @@ import UIKit
 
 class TransactionTableTableViewCell: UITableViewCell {
     private let BACKGROUND_COLOR = Theme.shared.colors.transactionTableBackground
+
     @IBOutlet weak var icon: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
@@ -58,7 +59,6 @@ class TransactionTableTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
-
         contentView.backgroundColor = BACKGROUND_COLOR
     }
 
@@ -67,16 +67,24 @@ class TransactionTableTableViewCell: UITableViewCell {
 
         valueLabel.layer.cornerRadius = 3
         valueLabel.layer.masksToBounds = true
-        valueLabel.padding = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+        valueLabel.padding = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
+
+        userNameLabel.textColor = Theme.shared.colors.transactionCellUsername
+        descriptionLabel.textColor = Theme.shared.colors.transactionCellDescription
+
+        selectionStyle = .none
     }
 
     func setValueLabel(value: Int) {
         if value > 0 {
-            valueLabel.backgroundColor = .green //layer.backgroundColor = UIColor.red.cgColor
+            valueLabel.backgroundColor = Theme.shared.colors.transactionCellValuePositiveBackground
+            valueLabel.textColor = Theme.shared.colors.transactionCellValuePositiveText
             valueLabel.text = "+ \(value)"
         } else {
-            valueLabel.backgroundColor = .red //layer.backgroundColor = UIColor.red.cgColor
+            valueLabel.backgroundColor = Theme.shared.colors.transactionCellValueNegativeBackground
+            valueLabel.textColor = Theme.shared.colors.transactionCellValueNegativeText
             valueLabel.text = "- \(value * -1)"
         }
     }
+
 }
