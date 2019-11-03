@@ -61,7 +61,7 @@ class SendButton: UIButton {
         bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: HEIGHT)
         layer.cornerRadius = RADIUS_POINTS
         heightAnchor.constraint(equalToConstant: HEIGHT).isActive = true
-        backgroundColor = UIColor(named: "SendButtonBackground")
+        backgroundColor = Theme.shared.colors.sendButtonBackground
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

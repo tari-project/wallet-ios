@@ -53,7 +53,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         setupFloatingPanel()
 
         sendButton.setTitle("Send Tari", for: .normal) //TODO translation setup
-        view.backgroundColor = UIColor(named: "HomeBackground")
+        view.backgroundColor = Theme.shared.colors.homeBackground
 
         hitBottomFeedback.prepare()
     }
@@ -86,10 +86,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         fpc.addPanel(toParent: self)
         //Move send button to in front of panel
         sendButton.superview?.bringSubviewToFront(sendButton)
-    }
-
-    @IBAction func onProfileTap(_ sender: Any) {
-        print("Profile tapped")
     }
 
     @objc func onSendAction(sender: UIButton!) {

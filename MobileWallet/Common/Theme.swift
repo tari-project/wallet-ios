@@ -1,8 +1,8 @@
-//  TransactionTableTableViewCell.swift
+//  Theme.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/10/31
+	Created by Jason van den Berg on 2019/11/03
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,43 +40,16 @@
 
 import UIKit
 
-class TransactionTableTableViewCell: UITableViewCell {
-    private let BACKGROUND_COLOR = Theme.shared.colors.transactionTableBackground
-    @IBOutlet weak var icon: UIImageView!
-    @IBOutlet weak var userNameLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var valueLabel: UILabel!
+//TODO create tests on this to ensure all assets are included in the bundle
 
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
+struct Colors {
+    let sendButtonBackground = UIColor(named: "SendButtonBackground")
+    let homeBackground = UIColor(named: "HomeBackground")
+    let transactionTableBackground = UIColor(named: "TransactionTableBackground")
+}
 
-        setup()
-    }
+class Theme {
+    static let shared = Theme()
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-
-        contentView.backgroundColor = BACKGROUND_COLOR
-    }
-
-    private func setup() {
-        backgroundColor = BACKGROUND_COLOR
-
-        valueLabel.layer.cornerRadius = 3
-        valueLabel.layer.masksToBounds = true
-        valueLabel.padding = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
-    }
-
-    func setValueLabel(value: Int) {
-        if value > 0 {
-            valueLabel.backgroundColor = .green //layer.backgroundColor = UIColor.red.cgColor
-            valueLabel.text = "+ \(value)"
-        } else {
-            valueLabel.backgroundColor = .red //layer.backgroundColor = UIColor.red.cgColor
-            valueLabel.text = "- \(value * -1)"
-        }
-    }
+    let colors = Colors()
 }
