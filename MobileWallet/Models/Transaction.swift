@@ -51,7 +51,18 @@ var dummyTransactions: [Transaction] {
     get {
         var txs: [Transaction] = []
 
-        for n in 1...50 {
+        let dummyIconNames = [
+            Theme.shared.transactionIcons.food,
+            Theme.shared.transactionIcons.game,
+            Theme.shared.transactionIcons.thanks,
+            Theme.shared.transactionIcons.transfer,
+            Theme.shared.transactionIcons.drinks,
+            Theme.shared.transactionIcons.services
+        ]
+
+        var dummyIconNameIndex = 0
+
+        for n in 1...25 {
             var value = 99 - (n * 11)
 
             if n % 2 == 0 {
@@ -62,7 +73,14 @@ var dummyTransactions: [Transaction] {
                 value = 120
             }
 
-            txs.append(Transaction(icon: UIImage(named: "AppIcon")!, userName: "Name here \(n * n * 10000)", description: "My tacos \(n)", value: value))
+            dummyIconNameIndex += 1
+            if dummyIconNameIndex >= dummyIconNames.count {
+                dummyIconNameIndex = 0
+            }
+
+            let icon = dummyIconNames[dummyIconNameIndex]
+
+            txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: value))
         }
 
         return txs

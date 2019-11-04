@@ -57,8 +57,18 @@ struct Colors {
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
 }
 
+struct TransactionIcons {
+    let food = UIImage(named: "food")!
+    let game = UIImage(named: "game")!
+    let thanks = UIImage(named: "thanks")!
+    let transfer = UIImage(named: "transfer")!
+    let drinks = UIImage(named: "drinks")!
+    let services = UIImage(named: "services")!
+}
+
 class Theme {
     static let shared = Theme()
 
     let colors = Colors()
+    let transactionIcons = TransactionIcons()
 }

@@ -54,7 +54,7 @@ class TransactionsTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
+        // TODO return number of date sections
         return 1
     }
 
@@ -68,6 +68,7 @@ class TransactionsTableViewController: UITableViewController {
 
         let transaction = transactions[indexPath.row]
 
+        cell.icon.image = transaction.icon
         cell.userNameLabel.text = transaction.userName
         cell.descriptionLabel.text = transaction.description
 
@@ -88,6 +89,6 @@ class TransactionsTableViewController: UITableViewController {
     private func viewSetup() {
         tableView.separatorStyle = .none
         view.backgroundColor = Theme.shared.colors.transactionTableBackground
-        tableView.rowHeight = 60
+        tableView.rowHeight = 74
     }
 }
