@@ -43,17 +43,50 @@ import FloatingPanel
 
 class HomeViewFloatingPanelLayout: FloatingPanelLayout {
     public var initialPosition: FloatingPanelPosition {
-        return .half
+        return .tip
     }
 
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
+        let topInset: CGFloat = 40.0
+        let halfHeigth = UIScreen.main.bounds.height - topInset
         let lowestHeight = UIScreen.main.bounds.height * 0.75
 
         switch position {
-            case .full: return 40.0 // A top inset from safe area
-            case .half: return lowestHeight // A bottom inset from the safe area
-            case .tip: return lowestHeight - 0.1 // A bottom inset from the safe area
+            case .full: return topInset // A top inset from safe area
+            case .half: return halfHeigth // A bottom inset from the safe area
+            case .tip: return lowestHeight // A bottom inset from the safe area
             default: return nil // Or `case .hidden: return nil`
+        }
+    }
+}
+
+class HomeViewFloatingPanelBehavior: FloatingPanelBehavior {
+    private var velocityThreshold: CGFloat {
+        return 15.0
+    }
+
+    func allowsRubberBanding(for edge: UIRectEdge) -> Bool {
+        return true
+    }
+
+    func shouldProjectMomentum(_ fpc: FloatingPanelController, for proposedTargetPosition: FloatingPanelPosition) -> Bool {
+        return true
+    }
+
+    func interactionAnimator(_ fpc: FloatingPanelController, to targetPosition: FloatingPanelPosition, with velocity: CGVector) -> UIViewPropertyAnimator {
+        let damping = self.damping(with: velocity)
+        let springTiming = UISpringTimingParameters(dampingRatio: damping, initialVelocity: velocity)
+        return UIViewPropertyAnimator(duration: 1.4, timingParameters: springTiming)
+    }
+
+    private func damping(with velocity: CGVector) -> CGFloat {
+        switch velocity.dy {
+        case ...(-velocityThreshold):
+            return 0.7
+        case velocityThreshold...:
+            return 0.7
+        default:
+            return 1.0
         }
     }
 }

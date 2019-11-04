@@ -43,7 +43,7 @@ import FloatingPanel
 
 class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
     private var fpc: FloatingPanelController!
-    private let hitBottomFeedback = UIImpactFeedbackGenerator(style: .medium)
+    //private let hitBottomFeedback = UIImpactFeedbackGenerator(style: .medium)
 
     @IBOutlet weak var sendButton: UIButton!
 
@@ -55,7 +55,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         sendButton.setTitle("Send Tari", for: .normal) //TODO translation setup
         view.backgroundColor = Theme.shared.colors.homeBackground
 
-        hitBottomFeedback.prepare()
+        //hitBottomFeedback.prepare()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -83,7 +83,17 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         // Track a scroll view(or the siblings) in the content view controller.
         fpc.track(scrollView: contentVC.tableView)
 
-        fpc.addPanel(toParent: self)
+        view.addSubview(fpc.view)
+        fpc.view.frame = view.bounds
+        addChild(fpc)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            //self.fpc.addPanel(toParent: self)
+            self.fpc.show(animated: true) {
+                // Only for the first time
+                self.didMove(toParent: self)
+            }
+        })
+
         //Move send button to in front of panel
         sendButton.superview?.bringSubviewToFront(sendButton)
     }
@@ -106,8 +116,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         return HomeViewFloatingPanelLayout()
     }
 
+    func floatingPanel(_ vc: FloatingPanelController, behaviorFor newCollection: UITraitCollection) -> FloatingPanelBehavior? {
+        return HomeViewFloatingPanelBehavior()
+    }
+
     func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
-        hitBottomFeedback.prepare()
+        //hitBottomFeedback.prepare()
     }
 
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
@@ -118,7 +132,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         }
 
         if vc.position == .tip {
-            hitBottomFeedback.impactOccurred()
+            //hitBottomFeedback.impactOccurred()
         }
     }
 }
