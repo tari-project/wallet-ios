@@ -42,7 +42,8 @@ import UIKit
 import FloatingPanel
 
 class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
-    var fpc: FloatingPanelController!
+    private var fpc: FloatingPanelController!
+    //private let hitBottomFeedback = UIImpactFeedbackGenerator(style: .medium)
 
     @IBOutlet weak var sendButton: UIButton!
 
@@ -52,7 +53,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         setupFloatingPanel()
 
         sendButton.setTitle("Send Tari", for: .normal) //TODO translation setup
-        view.backgroundColor = UIColor(named: "HomeBackground")
+        view.backgroundColor = Theme.shared.colors.homeBackground
+
+        //hitBottomFeedback.prepare()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -80,13 +83,19 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         // Track a scroll view(or the siblings) in the content view controller.
         fpc.track(scrollView: contentVC.tableView)
 
-        fpc.addPanel(toParent: self)
+        view.addSubview(fpc.view)
+        fpc.view.frame = view.bounds
+        addChild(fpc)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            //self.fpc.addPanel(toParent: self)
+            self.fpc.show(animated: true) {
+                // Only for the first time
+                self.didMove(toParent: self)
+            }
+        })
+
         //Move send button to in front of panel
         sendButton.superview?.bringSubviewToFront(sendButton)
-    }
-
-    @IBAction func onProfileTap(_ sender: Any) {
-        print("Profile tapped")
     }
 
     @objc func onSendAction(sender: UIButton!) {
@@ -107,11 +116,23 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         return HomeViewFloatingPanelLayout()
     }
 
+    func floatingPanel(_ vc: FloatingPanelController, behaviorFor newCollection: UITraitCollection) -> FloatingPanelBehavior? {
+        return HomeViewFloatingPanelBehavior()
+    }
+
+    func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
+        //hitBottomFeedback.prepare()
+    }
+
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
         if vc.position == .full {
             //TODO Show search bar
         } else {
             //TODO Hide search bar
+        }
+
+        if vc.position == .tip {
+            //hitBottomFeedback.impactOccurred()
         }
     }
 }

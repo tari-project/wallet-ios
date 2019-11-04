@@ -1,8 +1,8 @@
-//  CustomFloatingPanelLayout.swift
+//  Transaction.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/10/31
+	Created by Jason van den Berg on 2019/11/03
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,22 +38,51 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
-import FloatingPanel
+import UIKit
 
-class HomeViewFloatingPanelLayout: FloatingPanelLayout {
-    public var initialPosition: FloatingPanelPosition {
-        return .half
-    }
+struct Transaction {
+    let icon: UIImage
+    let userName: String
+    let description: String
+    let value: Int
+}
 
-    public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
-        let lowesetHeight = UIScreen.main.bounds.height * 0.75
+var dummyTransactions: [Transaction] {
+    get {
+        var txs: [Transaction] = []
 
-        switch position {
-            case .full: return 40.0 // A top inset from safe area
-            case .half: return lowesetHeight // A bottom inset from the safe area
-            case .tip: return lowesetHeight - 100 // A bottom inset from the safe area
-            default: return nil // Or `case .hidden: return nil`
+        let dummyIconNames = [
+            Theme.shared.transactionIcons.food,
+            Theme.shared.transactionIcons.game,
+            Theme.shared.transactionIcons.thanks,
+            Theme.shared.transactionIcons.transfer,
+            Theme.shared.transactionIcons.drinks,
+            Theme.shared.transactionIcons.services
+        ]
+
+        var dummyIconNameIndex = 0
+
+        for n in 1...25 {
+            var value = 99 - (n * 11)
+
+            if n % 2 == 0 {
+                value = value * -1
+            }
+
+            if value == 0 {
+                value = 120
+            }
+
+            dummyIconNameIndex += 1
+            if dummyIconNameIndex >= dummyIconNames.count {
+                dummyIconNameIndex = 0
+            }
+
+            let icon = dummyIconNames[dummyIconNameIndex]
+
+            txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: value))
         }
+
+        return txs
     }
 }
