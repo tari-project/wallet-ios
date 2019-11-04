@@ -50,9 +50,8 @@ class TransactionTableTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
 
-        setup()
+        viewSetup()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -62,12 +61,11 @@ class TransactionTableTableViewCell: UITableViewCell {
         contentView.backgroundColor = BACKGROUND_COLOR
     }
 
-    private func setup() {
+    private func viewSetup() {
         backgroundColor = BACKGROUND_COLOR
 
         valueLabel.layer.cornerRadius = 3
         valueLabel.layer.masksToBounds = true
-        valueLabel.padding = UIEdgeInsets(top: 0, left: 6, bottom: 0, right: 6)
 
         userNameLabel.textColor = Theme.shared.colors.transactionCellUsername
         descriptionLabel.textColor = Theme.shared.colors.transactionCellDescription
@@ -85,6 +83,7 @@ class TransactionTableTableViewCell: UITableViewCell {
             valueLabel.textColor = Theme.shared.colors.transactionCellValueNegativeText
             valueLabel.text = "- \(value * -1)"
         }
-    }
 
+        valueLabel.padding = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
+    }
 }

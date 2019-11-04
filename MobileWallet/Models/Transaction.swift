@@ -1,4 +1,4 @@
-//  UILabel.swift
+//  Transaction.swift
 
 /*
 	Package MobileWallet
@@ -40,50 +40,31 @@
 
 import UIKit
 
-extension UILabel {
-    private struct AssociatedKeys {
-        static var padding = UIEdgeInsets()
-    }
+struct Transaction {
+    let icon: UIImage
+    let userName: String
+    let description: String
+    let value: Int
+}
 
-    public var padding: UIEdgeInsets? {
-        get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.padding) as? UIEdgeInsets
-        }
-        set {
-            if let newValue = newValue {
-                objc_setAssociatedObject(self, &AssociatedKeys.padding, newValue as UIEdgeInsets?, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+var dummyTransactions: [Transaction] {
+    get {
+        var txs: [Transaction] = []
+
+        for n in 1...50 {
+            var value = 99 - (n * 11)
+
+            if n % 2 == 0 {
+                value = value * -1
             }
-        }
-    }
 
-    override open func draw(_ rect: CGRect) {
-        if let insets = padding {
-            self.drawText(in: rect.inset(by: insets))
-        } else {
-            self.drawText(in: rect)
-        }
-    }
+            if value == 0 {
+                value = 120
+            }
 
-    override open var intrinsicContentSize: CGSize {
-        guard let _ = self.text else { return super.intrinsicContentSize }
-
-        var contentSize = super.intrinsicContentSize
-        var textWidth: CGFloat = frame.size.width
-        var insetsHeight: CGFloat = 0.0
-        var insetsWidth: CGFloat = 0.0
-
-        if let insets = padding {
-            insetsWidth += insets.left + insets.right
-            insetsHeight += insets.top + insets.bottom
-            textWidth -= insetsWidth
-        } else {
-            //Don't resize if padding was never set
-            return super.intrinsicContentSize
+            txs.append(Transaction(icon: UIImage(named: "AppIcon")!, userName: "Name here \(n * n * 10000)", description: "My tacos \(n)", value: value))
         }
 
-        contentSize.height = ceil(super.intrinsicContentSize.height) + insetsHeight
-        contentSize.width = ceil(super.intrinsicContentSize.width) + insetsWidth
-
-        return contentSize
+        return txs
     }
 }

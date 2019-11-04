@@ -13,6 +13,9 @@
 		00262EB4236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
 		00262EB5236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
 		00262EB6236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
+		00262EB9236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
+		00262EBA236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
+		00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
 		00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
@@ -64,6 +67,7 @@
 /* Begin PBXFileReference section */
 		00262EAE236F015000A6C8A0 /* UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		00262EB8236F35CD00A6C8A0 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewController.swift; sourceTree = "<group>"; };
 		00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableTableViewCell.swift; sourceTree = "<group>"; };
 		00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableTableViewCell.xib; sourceTree = "<group>"; };
@@ -138,6 +142,14 @@
 				00262EB3236F024400A6C8A0 /* Theme.swift */,
 			);
 			path = Common;
+			sourceTree = "<group>";
+		};
+		00262EB7236F35B200A6C8A0 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				00262EB8236F35CD00A6C8A0 /* Transaction.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
@@ -227,6 +239,7 @@
 				00E2BCB5236B469C00C2A105 /* Screens */,
 				00E2BCAF236B44CE00C2A105 /* UIElements */,
 				00262EB2236F022000A6C8A0 /* Common */,
+				00262EB7236F35B200A6C8A0 /* Models */,
 			);
 			path = MobileWallet;
 			sourceTree = "<group>";
@@ -532,6 +545,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00262EB9236F35CD00A6C8A0 /* Transaction.swift in Sources */,
 				00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* SendButton.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
@@ -557,6 +571,7 @@
 				00E2BCBB236B5BE800C2A105 /* SendButton.swift in Sources */,
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
+				00262EBA236F35CD00A6C8A0 /* Transaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -572,6 +587,7 @@
 				00E2BCBC236B5BE800C2A105 /* SendButton.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
+				00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

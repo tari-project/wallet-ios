@@ -42,6 +42,7 @@ import UIKit
 
 class TransactionsTableViewController: UITableViewController {
     private let CELL_IDENTIFIER = "TransactionTableTableViewCell"
+    private let transactions = dummyTransactions
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,16 +60,18 @@ class TransactionsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return 30
+        return transactions.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath) as! TransactionTableTableViewCell
 
-        cell.userNameLabel.text = "Steve \(indexPath.row)"
-        cell.descriptionLabel.text = "For that thing \(indexPath.row))"
+        let transaction = transactions[indexPath.row]
 
-        let value = -99100
+        cell.userNameLabel.text = transaction.userName
+        cell.descriptionLabel.text = transaction.description
+
+        let value = transaction.value
         cell.setValueLabel(value: value)
 
         return cell
