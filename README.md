@@ -12,7 +12,9 @@ Third party frameworks and Library are managed using Cocoapods.
 
 ### Pods used 
 
-	- pod 'SwiftLint'
+    - pod 'SwiftLint'
+    - pod 'FloatingPanel'
+    - pod 'lottie-ios'
 
 ### Version Management
 

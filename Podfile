@@ -7,8 +7,8 @@ target 'MobileWallet' do
 
   # Pods for MobileWallet
   pod 'SwiftLint'
-  
   pod 'FloatingPanel'
+  pod 'lottie-ios'
   
   target 'MobileWalletTests' do
     inherit! :search_paths
