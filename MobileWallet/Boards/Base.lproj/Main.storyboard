@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="EY7-bG-NLy">
+    <device id="retina6_5" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Home View Controller-->
+        <scene sceneID="u2A-JK-w5x">
+            <objects>
+                <viewController id="EY7-bG-NLy" customClass="HomeViewController" customModule="Tari" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="hP5-V0-bt8">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nEn-jd-PvX" customClass="SendButton" customModule="Tari" customModuleProvider="target">
+                                <rect key="frame" x="20" y="721" width="335" height="53"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Button"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottomMargin" secondItem="nEn-jd-PvX" secondAttribute="bottom" constant="20" id="fqL-lM-rAH"/>
+                            <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="nEn-jd-PvX" secondAttribute="trailing" constant="20" id="kT4-xG-jde"/>
+                            <constraint firstItem="nEn-jd-PvX" firstAttribute="leading" secondItem="14X-p9-0HZ" secondAttribute="leading" constant="20" id="kmH-MB-iEL"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="14X-p9-0HZ"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="dtD-Op-kJg"/>
+                    <connections>
+                        <outlet property="sendButton" destination="nEn-jd-PvX" id="WN2-cy-Tk7"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="MHZ-YR-DHc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="992.75362318840587" y="-491.51785714285711"/>
+        </scene>
+    </scenes>
+</document>

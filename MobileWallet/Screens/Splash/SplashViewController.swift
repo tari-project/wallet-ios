@@ -50,6 +50,8 @@ class SplashViewController: UIViewController {
 
         setVersion()
         loadAnimation()
+
+        //Determine if app needs to navigate home or to onboarding
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -80,6 +82,6 @@ class SplashViewController: UIViewController {
     }
 
     private func navigateToHome() {
-        //performSegue(withIdentifier: "Unlocked", sender: nil)
+        performSegue(withIdentifier: "SplashToHome", sender: nil)
     }
 }

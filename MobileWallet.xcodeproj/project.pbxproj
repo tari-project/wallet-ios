@@ -13,6 +13,9 @@
 		0012563B2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
 		0012563C2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
 		0012563D2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
+		001256452371EC1900A9C067 /* Splash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Splash.storyboard */; };
+		001256462371EC1900A9C067 /* Splash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Splash.storyboard */; };
+		001256472371EC1900A9C067 /* Splash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Splash.storyboard */; };
 		00262EAF236F015000A6C8A0 /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EAE236F015000A6C8A0 /* UILabel.swift */; };
 		00262EB0236F015000A6C8A0 /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EAE236F015000A6C8A0 /* UILabel.swift */; };
 		00262EB1236F015000A6C8A0 /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EAE236F015000A6C8A0 /* UILabel.swift */; };
@@ -73,6 +76,7 @@
 /* Begin PBXFileReference section */
 		0012562E2371D81500A9C067 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		0012563A2371E89300A9C067 /* SplashAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SplashAnimation.json; sourceTree = "<group>"; };
+		001256442371EC1900A9C067 /* Splash.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Splash.storyboard; sourceTree = "<group>"; };
 		00262EAE236F015000A6C8A0 /* UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		00262EB8236F35CD00A6C8A0 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
@@ -142,6 +146,16 @@
 				0012562E2371D81500A9C067 /* SplashViewController.swift */,
 			);
 			path = Splash;
+			sourceTree = "<group>";
+		};
+		001256432371EBAA00A9C067 /* Boards */ = {
+			isa = PBXGroup;
+			children = (
+				00E491A12366E08B007B332D /* Main.storyboard */,
+				00E491A92366E08F007B332D /* LaunchScreen.storyboard */,
+				001256442371EC1900A9C067 /* Splash.storyboard */,
+			);
+			path = Boards;
 			sourceTree = "<group>";
 		};
 		00262EAD236F013500A6C8A0 /* Extensions */ = {
@@ -249,11 +263,10 @@
 			children = (
 				00E491992366E08B007B332D /* AppDelegate.swift */,
 				00E4919B2366E08B007B332D /* SceneDelegate.swift */,
-				00E491A12366E08B007B332D /* Main.storyboard */,
-				00E491A92366E08F007B332D /* LaunchScreen.storyboard */,
 				00E491AC2366E08F007B332D /* Info.plist */,
 				00E491A42366E08B007B332D /* MobileWallet.xcdatamodeld */,
 				00E491A72366E08F007B332D /* Assets.xcassets */,
+				001256432371EBAA00A9C067 /* Boards */,
 				00E2BCB5236B469C00C2A105 /* Screens */,
 				00E2BCAF236B44CE00C2A105 /* UIElements */,
 				00262EB2236F022000A6C8A0 /* Common */,
@@ -418,6 +431,7 @@
 				00E491A82366E08F007B332D /* Assets.xcassets in Resources */,
 				0012563B2371E89300A9C067 /* SplashAnimation.json in Resources */,
 				00E491A32366E08B007B332D /* Main.storyboard in Resources */,
+				001256452371EC1900A9C067 /* Splash.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,6 +441,7 @@
 			files = (
 				00E2BCAD236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */,
 				0012563C2371E89300A9C067 /* SplashAnimation.json in Resources */,
+				001256462371EC1900A9C067 /* Splash.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,6 +451,7 @@
 			files = (
 				00E2BCAE236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */,
 				0012563D2371E89300A9C067 /* SplashAnimation.json in Resources */,
+				001256472371EC1900A9C067 /* Splash.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
