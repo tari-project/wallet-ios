@@ -60,8 +60,9 @@ class SplashViewController: UIViewController {
     }
 
     private func setVersion() {
+        versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            versionLabel.text = "V\(version)"
+            versionLabel.text = "Testnet V\(version)".uppercased()
         }
     }
 
