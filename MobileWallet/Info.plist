@@ -2,6 +2,38 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>AvenirLTStd-Black.otf</string>
+		<string>AvenirLTStd-BlackOblique.otf</string>
+		<string>AvenirLTStd-Book.otf</string>
+		<string>AvenirLTStd-BookOblique.otf</string>
+		<string>AvenirLTStd-Heavy.otf</string>
+		<string>AvenirLTStd-HeavyOblique.otf</string>
+		<string>AvenirLTStd-Light.otf</string>
+		<string>AvenirLTStd-LightOblique.otf</string>
+		<string>AvenirLTStd-Medium.otf</string>
+		<string>AvenirLTStd-MediumOblique.otf</string>
+		<string>AvenirLTStd-Oblique.otf</string>
+		<string>AvenirLTStd-Roman.otf</string>
+		<string>AvenirNextLTPro-Bold.otf</string>
+		<string>AvenirNextLTPro-BoldCn.otf</string>
+		<string>AvenirNextLTPro-BoldCnIt.otf</string>
+		<string>AvenirNextLTPro-Cn.otf</string>
+		<string>AvenirNextLTPro-CnIt.otf</string>
+		<string>AvenirNextLTPro-Demi.otf</string>
+		<string>AvenirNextLTPro-DemiCn.otf</string>
+		<string>AvenirNextLTPro-DemiCnIt.otf</string>
+		<string>AvenirNextLTPro-DemiIt.otf</string>
+		<string>AvenirNextLTPro-HeavyCn.otf</string>
+		<string>AvenirNextLTPro-HeavyCnIt.otf</string>
+		<string>AvenirNextLTPro-It.otf</string>
+		<string>AvenirNextLTPro-MediumCn.otf</string>
+		<string>AvenirNextLTPro-MediumCnIt.otf</string>
+		<string>AvenirNextLTPro-Regular.otf</string>
+		<string>AvenirNextLTPro-UltLtCn.otf</string>
+		<string>AvenirNextLTPro-UltLtCnIt.otf</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

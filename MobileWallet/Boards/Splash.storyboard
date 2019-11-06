@@ -11,12 +11,12 @@
         <!--Splash View Controller-->
         <scene sceneID="WxZ-gy-cdz">
             <objects>
-                <viewController id="Dn2-Hl-tr9" customClass="SplashViewController" customModule="Tari" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="Dn2-Hl-tr9" customClass="SplashViewController" customModule="MobileWalletTests" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="W2N-Ra-naU">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Testnet V1.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrT-Tl-QNW">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Testnet V1.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrT-Tl-QNW">
                                 <rect key="frame" x="179.5" y="826" width="55" height="11"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="9"/>
                                 <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>

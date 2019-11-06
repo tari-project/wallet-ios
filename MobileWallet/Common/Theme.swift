@@ -57,6 +57,16 @@ struct Colors {
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
 }
 
+struct Fonts {
+    let splashTestnetFooterLabel = UIFont(name: "AvenirLTStd-Heavy", size: 9.0)!
+    let sendActionButton = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)!
+
+    //Transaction cell
+    let transactionCellUsernameLabel = UIFont(name: "AvenirLTStd-Heavy", size: 13.0)!
+    let transactionCellDescriptionLabel = UIFont(name: "AvenirLTStd-Roman", size: 12.0)!
+    let transactionCellValueLabel = UIFont(name: "AvenirLTStd-Black", size: 12.0)!
+}
+
 struct TransactionIcons {
     let food = UIImage(named: "food")!
     let game = UIImage(named: "game")!
@@ -71,4 +81,5 @@ class Theme {
 
     let colors = Colors()
     let transactionIcons = TransactionIcons()
+    let fonts = Fonts()
 }

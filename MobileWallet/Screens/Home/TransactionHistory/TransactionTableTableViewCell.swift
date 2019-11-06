@@ -64,10 +64,14 @@ class TransactionTableTableViewCell: UITableViewCell {
     private func viewSetup() {
         backgroundColor = BACKGROUND_COLOR
 
+        valueLabel.font = Theme.shared.fonts.transactionCellValueLabel
         valueLabel.layer.cornerRadius = 3
         valueLabel.layer.masksToBounds = true
 
+        userNameLabel.font = Theme.shared.fonts.transactionCellUsernameLabel
         userNameLabel.textColor = Theme.shared.colors.transactionCellUsername
+
+        descriptionLabel.font = Theme.shared.fonts.transactionCellDescriptionLabel
         descriptionLabel.textColor = Theme.shared.colors.transactionCellDescription
 
         selectionStyle = .none
@@ -84,6 +88,6 @@ class TransactionTableTableViewCell: UITableViewCell {
             valueLabel.text = "- \(value * -1)"
         }
 
-        valueLabel.padding = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
+        valueLabel.padding = UIEdgeInsets(top: 6, left: 6, bottom: 4, right: 6)
     }
 }
