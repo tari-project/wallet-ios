@@ -72,8 +72,7 @@ class TransactionsTableViewController: UITableViewController {
         cell.userNameLabel.text = transaction.userName
         cell.descriptionLabel.text = transaction.description
 
-        let value = transaction.value
-        cell.setValueLabel(value: value)
+        cell.setValueLabel(value: transaction.value, sign: transaction.sign)
 
         return cell
     }

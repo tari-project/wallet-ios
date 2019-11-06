@@ -1,8 +1,8 @@
-//  SplashViewController.swift
+//  TariValue.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/05
+	Created by Jason van den Berg on 2019/11/06
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,52 +38,40 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-import Lottie
+import Foundation
 
-class SplashViewController: UIViewController {
-    @IBOutlet weak var versionLabel: UILabel!
-    @IBOutlet weak var animationContainer: AnimationView!
+enum ValueSign {
+    case positive
+    case negative
+}
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+//TODO tests when finalized
 
-        setVersion()
-        loadAnimation()
+struct TariValue {
+    private let CONVERSION = 1000000
 
-        //Determine if app needs to navigate home or to onboarding
-    }
+    let microTari: UInt64
+    let sign: ValueSign
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        startAnimation()
-    }
-
-    private func setVersion() {
-        versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
-        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            let labelText = NSLocalizedString("Testnet", comment: "Bottom version label for splash screen")
-            versionLabel.text = "\(labelText) V\(version)".uppercased()
+    var floatValue: Float {
+        //TODO re-evaluate this
+        var signedFloatValue = Float(self.microTari) / Float(CONVERSION)
+        if sign == .negative {
+            signedFloatValue = signedFloatValue * -1
         }
+        return signedFloatValue
     }
 
-    private func loadAnimation() {
-        let animation = Animation.named("SplashAnimation")
-        animationContainer.animation = animation
-    }
+    var displayStringWithOperator: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        formatter.positivePrefix = "+ "
+        formatter.negativePrefix = "- "
 
-    private func startAnimation() {
-        animationContainer.play(
-            fromProgress: 0,
-            toProgress: 1,
-            loopMode: .playOnce,
-            completion: { (_) in
-                self.navigateToHome()
-            }
-        )
-    }
+        let number = NSNumber(value: self.floatValue)
 
-    private func navigateToHome() {
-        performSegue(withIdentifier: "SplashToHome", sender: nil)
+        return formatter.string(from: number)!
     }
 }

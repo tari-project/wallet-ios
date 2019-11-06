@@ -44,7 +44,8 @@ struct Transaction {
     let icon: UIImage
     let userName: String
     let description: String
-    let value: Int
+    let value: UInt64
+    let sign: ValueSign
 }
 
 var dummyTransactions: [Transaction] {
@@ -63,10 +64,11 @@ var dummyTransactions: [Transaction] {
         var dummyIconNameIndex = 0
 
         for n in 1...25 {
-            var value = 99 - (n * 11)
+            var value = n * 123456789
+            var sign: ValueSign = .positive
 
             if n % 2 == 0 {
-                value = value * -1
+                sign = .negative
             }
 
             if value == 0 {
@@ -80,7 +82,7 @@ var dummyTransactions: [Transaction] {
 
             let icon = dummyIconNames[dummyIconNameIndex]
 
-            txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: value))
+            txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: UInt64(value), sign: sign))
         }
 
         return txs
