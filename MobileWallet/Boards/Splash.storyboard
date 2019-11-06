@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Dn2-Hl-tr9">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15509"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Splash View Controller-->
+        <scene sceneID="WxZ-gy-cdz">
+            <objects>
+                <viewController id="Dn2-Hl-tr9" customClass="SplashViewController" customModule="Tari" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="W2N-Ra-naU">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Testnet V1.0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrT-Tl-QNW">
+                                <rect key="frame" x="179.5" y="826" width="55" height="11"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="9"/>
+                                <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Gem" translatesAutoresizingMaskIntoConstraints="NO" id="YyS-f0-YOr">
+                                <rect key="frame" x="195" y="786" width="24" height="24"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="24" id="ezg-vO-rok"/>
+                                    <constraint firstAttribute="width" constant="24" id="t66-Cn-l5E"/>
+                                </constraints>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K5K-jz-bn0" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="87" y="384" width="240" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="YnL-rr-8lZ"/>
+                                    <constraint firstAttribute="width" constant="240" id="eex-JT-ihY"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" name="SplashBackground"/>
+                        <constraints>
+                            <constraint firstItem="K5K-jz-bn0" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="55M-o5-pQl"/>
+                            <constraint firstItem="xrT-Tl-QNW" firstAttribute="top" secondItem="YyS-f0-YOr" secondAttribute="bottom" constant="16" id="JG0-aq-aIH"/>
+                            <constraint firstItem="xrT-Tl-QNW" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="clf-3V-Nen"/>
+                            <constraint firstItem="YyS-f0-YOr" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="pJr-V6-0rn"/>
+                            <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="bottom" secondItem="xrT-Tl-QNW" secondAttribute="bottom" constant="25" id="sLr-gN-4h4"/>
+                            <constraint firstItem="K5K-jz-bn0" firstAttribute="centerY" secondItem="W2N-Ra-naU" secondAttribute="centerY" id="wLb-C2-Vgj"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Qtm-HJ-rTJ"/>
+                    </view>
+                    <connections>
+                        <outlet property="animationContainer" destination="K5K-jz-bn0" id="Tpk-4q-2Ki"/>
+                        <outlet property="versionLabel" destination="xrT-Tl-QNW" id="YNK-wH-SbN"/>
+                        <segue destination="JVr-OT-SNV" kind="presentation" identifier="SplashToHome" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="xMA-mJ-gEX"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="t8o-sC-kZd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-224.80000000000001" y="-509.11330049261085"/>
+        </scene>
+        <!--Main-->
+        <scene sceneID="vbr-Jt-S6k">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Main" id="JVr-OT-SNV" sceneMemberID="viewController">
+                    <navigationItem key="navigationItem" id="tK1-fp-VUt"/>
+                </viewControllerPlaceholder>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0V1-XM-Rg9" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-217" y="79"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Gem" width="227" height="227"/>
+        <namedColor name="SplashBackground">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
