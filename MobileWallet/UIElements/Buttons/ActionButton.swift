@@ -1,4 +1,4 @@
-//  SendButton.swift
+//  ActionButton.swift
 
 /*
 	Package MobileWallet
@@ -40,7 +40,7 @@
 
 import UIKit
 
-class SendButton: UIButton {
+class ActionButton: UIButton {
     private let RADIUS_POINTS: CGFloat = 3.0
     private let HEIGHT: CGFloat = 53.0
     private var isCompiled = false

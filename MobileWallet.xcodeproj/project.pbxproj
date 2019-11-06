@@ -124,9 +124,9 @@
 		00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB1236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift */; };
 		00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB1236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift */; };
 		00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB1236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift */; };
-		00E2BCBA236B5BE800C2A105 /* SendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB9236B5BE800C2A105 /* SendButton.swift */; };
-		00E2BCBB236B5BE800C2A105 /* SendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB9236B5BE800C2A105 /* SendButton.swift */; };
-		00E2BCBC236B5BE800C2A105 /* SendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB9236B5BE800C2A105 /* SendButton.swift */; };
+		00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB9236B5BE800C2A105 /* ActionButton.swift */; };
+		00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB9236B5BE800C2A105 /* ActionButton.swift */; };
+		00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB9236B5BE800C2A105 /* ActionButton.swift */; };
 		00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E491992366E08B007B332D /* AppDelegate.swift */; };
 		00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4919B2366E08B007B332D /* SceneDelegate.swift */; };
 		00E491A32366E08B007B332D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A12366E08B007B332D /* Main.storyboard */; };
@@ -200,7 +200,7 @@
 		00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableTableViewCell.swift; sourceTree = "<group>"; };
 		00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableTableViewCell.xib; sourceTree = "<group>"; };
 		00E2BCB1236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewFloatingPanelDelegates.swift; sourceTree = "<group>"; };
-		00E2BCB9236B5BE800C2A105 /* SendButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendButton.swift; sourceTree = "<group>"; };
+		00E2BCB9236B5BE800C2A105 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		00E491962366E08B007B332D /* Tari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tari.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E491992366E08B007B332D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		00E4919B2366E08B007B332D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -383,7 +383,7 @@
 		00E2BCB8236B5BC000C2A105 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
-				00E2BCB9236B5BE800C2A105 /* SendButton.swift */,
+				00E2BCB9236B5BE800C2A105 /* ActionButton.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -824,7 +824,7 @@
 			files = (
 				00262EB9236F35CD00A6C8A0 /* Transaction.swift in Sources */,
 				00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
-				00E2BCBA236B5BE800C2A105 /* SendButton.swift in Sources */,
+				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
@@ -846,7 +846,7 @@
 				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00262EB0236F015000A6C8A0 /* UILabel.swift in Sources */,
 				00E4922A23683E54007B332D /* HomeViewController.swift in Sources */,
-				00E2BCBB236B5BE800C2A105 /* SendButton.swift in Sources */,
+				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				00262EBA236F35CD00A6C8A0 /* Transaction.swift in Sources */,
@@ -863,7 +863,7 @@
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILabel.swift in Sources */,
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,
-				00E2BCBC236B5BE800C2A105 /* SendButton.swift in Sources */,
+				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */,
