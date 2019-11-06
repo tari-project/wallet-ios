@@ -1,8 +1,8 @@
-//  Transaction.swift
+//  TariValue.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/03
+	Created by Jason van den Berg on 2019/11/06
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,53 +38,38 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Foundation
 
-struct Transaction {
-    let icon: UIImage
-    let userName: String
-    let description: String
-    let value: UInt64
-    let sign: ValueSign
+enum ValueSign {
+    case positive
+    case negative
 }
 
-var dummyTransactions: [Transaction] {
-    get {
-        var txs: [Transaction] = []
+struct TariValue {
+    private let CONVERSION = 1000000
 
-        let dummyIconNames = [
-            Theme.shared.transactionIcons.food,
-            Theme.shared.transactionIcons.game,
-            Theme.shared.transactionIcons.thanks,
-            Theme.shared.transactionIcons.transfer,
-            Theme.shared.transactionIcons.drinks,
-            Theme.shared.transactionIcons.services
-        ]
+    let microTari: UInt64
+    let sign: ValueSign
 
-        var dummyIconNameIndex = 0
-
-        for n in 1...25 {
-            var value = n * 123456789
-            var sign: ValueSign = .positive
-
-            if n % 2 == 0 {
-                sign = .negative
-            }
-
-            if value == 0 {
-                value = 120
-            }
-
-            dummyIconNameIndex += 1
-            if dummyIconNameIndex >= dummyIconNames.count {
-                dummyIconNameIndex = 0
-            }
-
-            let icon = dummyIconNames[dummyIconNameIndex]
-
-            txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: UInt64(value), sign: sign))
+    var floatValue: Float {
+        //TODO re-evaluate this
+        var signedFloatValue = Float(self.microTari) / Float(CONVERSION)
+        if sign == .negative {
+            signedFloatValue = signedFloatValue * -1
         }
+        return signedFloatValue
+    }
 
-        return txs
+    var displayStringWithOperator: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        formatter.positivePrefix = "+ "
+        formatter.negativePrefix = "- "
+
+        let number = NSNumber(value: self.floatValue)
+
+        return formatter.string(from: number)!
     }
 }

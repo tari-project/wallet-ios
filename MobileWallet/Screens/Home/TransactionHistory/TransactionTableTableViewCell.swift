@@ -77,15 +77,16 @@ class TransactionTableTableViewCell: UITableViewCell {
         selectionStyle = .none
     }
 
-    func setValueLabel(value: Int) {
-        if value > 0 {
+    func setValueLabel(value: UInt64, sign: ValueSign) {
+        let tariValue = TariValue(microTari: UInt64(value), sign: sign)
+        valueLabel.text = tariValue.displayStringWithOperator
+
+        if tariValue.sign == .positive {
             valueLabel.backgroundColor = Theme.shared.colors.transactionCellValuePositiveBackground
             valueLabel.textColor = Theme.shared.colors.transactionCellValuePositiveText
-            valueLabel.text = "+ \(value)"
         } else {
             valueLabel.backgroundColor = Theme.shared.colors.transactionCellValueNegativeBackground
             valueLabel.textColor = Theme.shared.colors.transactionCellValueNegativeText
-            valueLabel.text = "- \(value * -1)"
         }
 
         valueLabel.padding = UIEdgeInsets(top: 6, left: 6, bottom: 4, right: 6)
