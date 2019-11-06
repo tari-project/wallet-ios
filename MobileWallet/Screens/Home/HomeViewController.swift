@@ -52,7 +52,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
         setupFloatingPanel()
 
-        sendButton.setTitle("Send Tari", for: .normal) //TODO translation setup
+        sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
         view.backgroundColor = Theme.shared.colors.homeBackground
 
         //hitBottomFeedback.prepare()

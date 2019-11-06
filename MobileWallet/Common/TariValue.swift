@@ -45,6 +45,8 @@ enum ValueSign {
     case negative
 }
 
+//TODO tests when finalized
+
 struct TariValue {
     private let CONVERSION = 1000000
 
