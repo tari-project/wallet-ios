@@ -61,9 +61,7 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
 }
 
 class HomeViewFloatingPanelBehavior: FloatingPanelBehavior {
-    private var velocityThreshold: CGFloat {
-        return 15.0
-    }
+    private var velocityThreshold: CGFloat = 15.0
 
     func allowsRubberBanding(for edge: UIRectEdge) -> Bool {
         return true

@@ -41,7 +41,7 @@
 import UIKit
 
 struct Transaction {
-    let icon: UIImage
+    let icon: UIImage?
     let userName: String
     let description: String
     let value: UInt64
