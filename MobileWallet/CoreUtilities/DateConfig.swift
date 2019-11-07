@@ -54,8 +54,9 @@ final public class DateConfig {
             return "Yesterday"
         } else if dateFallsInCurrentWeek(date: date) {
             if Calendar.current.isDateInToday(date) {
-                dateFormatter.dateFormat = "h:mm a"
-                return dateFormatter.string(from: date)
+                //dateFormatter.dateFormat = "h:mm a"
+                //return dateFormatter.string(from: date)
+                return "Today"
             } else {
                 dateFormatter.dateFormat = "EEEE"
                 return dateFormatter.string(from: date)
