@@ -60,23 +60,26 @@ extension TransactionsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Today"
+        guard let txsDate = transactions[section].first?.date else {
+            return nil
+        }
+        return DateConfig.getTimeStamp(fromDate: txsDate)
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         // TODO return number of date sections
-        return 2
+        return transactions.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return transactions.count
+        return transactions[section].count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath) as! TransactionTableTableViewCell
 
-        let transaction = transactions[indexPath.row]
+        let transaction = transactions[indexPath.section][indexPath.row]
 
         cell.icon.image = transaction.icon
         cell.userNameLabel.text = transaction.userName

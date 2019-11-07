@@ -45,12 +45,14 @@ struct Transaction {
     let userName: String
     let description: String
     let value: UInt64
+    let date: Date
     let sign: ValueSign
 }
 
-var dummyTransactions: [Transaction] {
+var dummyTransactions: [[Transaction]] {
     get {
         var txs: [Transaction] = []
+        var sortedTxs: [[Transaction]] = []
 
         let dummyIconNames = [
             Theme.shared.transactionIcons.food,
@@ -66,6 +68,7 @@ var dummyTransactions: [Transaction] {
         for n in 1...25 {
             var value = n * 123456789
             var sign: ValueSign = .positive
+            var date = Date()
 
             if n % 2 == 0 {
                 sign = .negative
@@ -75,6 +78,10 @@ var dummyTransactions: [Transaction] {
                 value = 120
             }
 
+            if n == 4 || n == 7 || n == 3 || n == 8 {
+                date = DateConfig.mockPastDate(byDayValue: n)
+            }
+
             dummyIconNameIndex += 1
             if dummyIconNameIndex >= dummyIconNames.count {
                 dummyIconNameIndex = 0
@@ -82,9 +89,10 @@ var dummyTransactions: [Transaction] {
 
             let icon = dummyIconNames[dummyIconNameIndex]
 
-            txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: UInt64(value), sign: sign))
+            txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: UInt64(value), date: date, sign: sign))
+//                txs.sort(by: {$0.date < $1.date})
+            sortedTxs = txs.groupSort(ascending: false, byDate: { $0.date })
         }
-
-        return txs
+        return sortedTxs
     }
 }
