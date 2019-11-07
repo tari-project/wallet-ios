@@ -1034,10 +1034,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F4E5AB1EC7D42438C3CA62CF /* Pods-MobileWallet.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = GW2KRSPAWB;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1054,10 +1055,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E6C8060CF3B17C7AA315F558 /* Pods-MobileWallet.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = GW2KRSPAWB;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1074,7 +1076,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CB7DC916E97096D5FCB440E3 /* Pods-MobileWalletTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MobileWalletTests/Info.plist;
@@ -1096,7 +1098,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 867662CACBB1C47B665EBA55 /* Pods-MobileWalletTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MobileWalletTests/Info.plist;
@@ -1118,7 +1120,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1138,7 +1140,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F82E54DCA5096D029377C454 /* Pods-MobileWallet-MobileWalletUITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
