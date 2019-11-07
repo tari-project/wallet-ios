@@ -45,24 +45,15 @@ final public class DateConfig {
     /*
      Creates a timestamp string value from a given date
      */
-    class func getTimeStamp(fromDate date: Date) -> String? {
+    class func getRelativeDayValue(fromDate date: Date) -> String? {
         let dateFormatter = DateFormatter()
 
-        if Calendar.current.isDateInTomorrow(date) {
-            return "Tomorrow"
+        if Calendar.current.isDateInToday(date) {
+            return NSLocalizedString("Today", comment: "")
         } else if Calendar.current.isDateInYesterday(date) {
-            return "Yesterday"
-        } else if dateFallsInCurrentWeek(date: date) {
-            if Calendar.current.isDateInToday(date) {
-                //dateFormatter.dateFormat = "h:mm a"
-                //return dateFormatter.string(from: date)
-                return "Today"
-            } else {
-                dateFormatter.dateFormat = "EEEE"
-                return dateFormatter.string(from: date)
-            }
+            return NSLocalizedString("Yesterday", comment: "")
         } else {
-            dateFormatter.dateFormat = "MMM d"
+            dateFormatter.dateFormat = NSLocalizedString("MMM d, YYYY", comment: "")
             return dateFormatter.string(from: date)
         }
     }

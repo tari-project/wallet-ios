@@ -51,9 +51,7 @@ class TransactionsTableViewController: UITableViewController {
     }
 
     private func viewSetup() {
-        tableView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 56, right: 0)
         tableView.separatorStyle = .none
-        tableView.rowHeight = UITableView.automaticDimension
         tableView.rowHeight = 74
         view.backgroundColor = Theme.shared.colors.transactionTableBackground
     }

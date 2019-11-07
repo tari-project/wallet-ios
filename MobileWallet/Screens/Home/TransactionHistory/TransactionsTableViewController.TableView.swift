@@ -46,10 +46,10 @@ extension TransactionsTableViewController {
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let sectionHeaderView: UIView = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 56.0))
-        sectionHeaderView.backgroundColor = UIColor.white
+        sectionHeaderView.backgroundColor = Theme.shared.colors.transactionTableBackground
         let sectionHeaderLabel: UILabel = UILabel.init(frame: CGRect(x: 20.0, y: 54.0, width: tableView.frame.width - 40, height: 16))
-        sectionHeaderLabel.font = Theme.shared.fonts.transactionCellDescriptionLabel
-        sectionHeaderLabel.textColor = Theme.shared.colors.transactionCellDescription
+        sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
+        sectionHeaderLabel.textColor = Theme.shared.colors.transactionCellDateText
         sectionHeaderLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
         sectionHeaderView.addSubview(sectionHeaderLabel)
         return sectionHeaderView
@@ -63,7 +63,7 @@ extension TransactionsTableViewController {
         guard let txsDate = transactions[section].first?.date else {
             return nil
         }
-        return DateConfig.getTimeStamp(fromDate: txsDate)
+        return DateConfig.getRelativeDayValue(fromDate: txsDate)
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {

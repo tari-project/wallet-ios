@@ -145,15 +145,15 @@
 		00E4922923683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
 		00E4922A23683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
 		00E4922B23683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
-		0D51301D65D02B0F8E36B211 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0499F3C7BE7690D1E5C12A4A /* Pods_MobileWallet.framework */; };
-		60680CADF41EBF93F0229B5B /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2865054A8E0C3B6DD8681349 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
-		90E279654D1672D262434D0A /* Pods_MobileWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6443607B4998B38BA58D1AB /* Pods_MobileWalletTests.framework */; };
-		C661408623742BBA00F1E64F /* TransactionsTableViewController.TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408523742BBA00F1E64F /* TransactionsTableViewController.TableView.swift */; };
-		C661408C23743CB600F1E64F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408B23743CB600F1E64F /* Sequence.swift */; };
-		C661408E23743CDA00F1E64F /* DateConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408D23743CDA00F1E64F /* DateConfig.swift */; };
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
 		83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */; };
+		C661408623742BBA00F1E64F /* TransactionsTableViewController.TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408523742BBA00F1E64F /* TransactionsTableViewController.TableView.swift */; };
+		C661408C23743CB600F1E64F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408B23743CB600F1E64F /* Sequence.swift */; };
+		C661408E23743CDA00F1E64F /* DateConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408D23743CDA00F1E64F /* DateConfig.swift */; };
+		C6F905382374B6B200996954 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408B23743CB600F1E64F /* Sequence.swift */; };
+		C6F905392374B6B200996954 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408B23743CB600F1E64F /* Sequence.swift */; };
+		C6F9053E2374C21D00996954 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C6F905402374C21D00996954 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -237,10 +237,13 @@
 		2FF33C780E811D173D3284C3 /* Pods-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		867662CACBB1C47B665EBA55 /* Pods-MobileWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.release.xcconfig"; sourceTree = "<group>"; };
+		9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C661408523742BBA00F1E64F /* TransactionsTableViewController.TableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewController.TableView.swift; sourceTree = "<group>"; };
 		C661408B23743CB600F1E64F /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		C661408D23743CDA00F1E64F /* DateConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateConfig.swift; sourceTree = "<group>"; };
-		9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6F9053A2374C17000996954 /* fr-CA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fr-CA"; path = "fr-CA.lproj/Main.strings"; sourceTree = "<group>"; };
+		C6F9053B2374C17100996954 /* fr-CA */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "fr-CA"; path = "fr-CA.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
+		C6F9053F2374C21D00996954 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CB7DC916E97096D5FCB440E3 /* Pods-MobileWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E6C8060CF3B17C7AA315F558 /* Pods-MobileWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet.release.xcconfig"; path = "Target Support Files/Pods-MobileWallet/Pods-MobileWallet.release.xcconfig"; sourceTree = "<group>"; };
 		F28D9135828811CA84244432 /* Pods_MobileWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -334,6 +337,7 @@
 		00262EAD236F013500A6C8A0 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				C661408B23743CB600F1E64F /* Sequence.swift */,
 				00262EAE236F015000A6C8A0 /* UILabel.swift */,
 			);
 			path = Extensions;
@@ -345,6 +349,7 @@
 				00262EAD236F013500A6C8A0 /* Extensions */,
 				00262EB3236F024400A6C8A0 /* Theme.swift */,
 				00A677872372C8E6001A853E /* TariValue.swift */,
+				C661408D23743CDA00F1E64F /* DateConfig.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -441,13 +446,12 @@
 				00E491AC2366E08F007B332D /* Info.plist */,
 				00E491A42366E08B007B332D /* MobileWallet.xcdatamodeld */,
 				00E491A72366E08F007B332D /* Assets.xcassets */,
+				C6F905412374C22B00996954 /* LocalizableStrings */,
 				001256432371EBAA00A9C067 /* Boards */,
 				00E2BCB5236B469C00C2A105 /* Screens */,
 				00E2BCAF236B44CE00C2A105 /* UIElements */,
 				00262EB2236F022000A6C8A0 /* Common */,
 				00262EB7236F35B200A6C8A0 /* Models */,
-				C661408A23743C7C00F1E64F /* CoreExtensions */,
-				C66140872374329800F1E64F /* CoreUtilities */,
 				001256482372913F00A9C067 /* Fonts */,
 			);
 			path = MobileWallet;
@@ -498,20 +502,12 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		C66140872374329800F1E64F /* CoreUtilities */ = {
+		C6F905412374C22B00996954 /* LocalizableStrings */ = {
 			isa = PBXGroup;
 			children = (
-				C661408D23743CDA00F1E64F /* DateConfig.swift */,
+				C6F905402374C21D00996954 /* Localizable.strings */,
 			);
-			path = CoreUtilities;
-			sourceTree = "<group>";
-		};
-		C661408A23743C7C00F1E64F /* CoreExtensions */ = {
-			isa = PBXGroup;
-			children = (
-				C661408B23743CB600F1E64F /* Sequence.swift */,
-			);
-			path = CoreExtensions;
+			path = LocalizableStrings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -606,6 +602,7 @@
 			knownRegions = (
 				en,
 				Base,
+				"fr-CA",
 			);
 			mainGroup = 00E4918D2366E08B007B332D;
 			productRefGroup = 00E491972366E08B007B332D /* Products */;
@@ -637,6 +634,7 @@
 				00E491A82366E08F007B332D /* Assets.xcassets in Resources */,
 				001256692372918B00A9C067 /* AvenirLTStd-BookOblique.otf in Resources */,
 				001256722372918B00A9C067 /* AvenirNextLTPro-Demi.otf in Resources */,
+				C6F9053E2374C21D00996954 /* Localizable.strings in Resources */,
 				001256992372918B00A9C067 /* AvenirNextLTPro-DemiCn.otf in Resources */,
 				0012567E2372918B00A9C067 /* AvenirNextLTPro-MediumCnIt.otf in Resources */,
 				0012563B2371E89300A9C067 /* SplashAnimation.json in Resources */,
@@ -896,6 +894,7 @@
 			files = (
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
 				00262EB5236F024400A6C8A0 /* Theme.swift in Sources */,
+				C6F905392374B6B200996954 /* Sequence.swift in Sources */,
 				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00262EB0236F015000A6C8A0 /* UILabel.swift in Sources */,
 				00E4922A23683E54007B332D /* HomeViewController.swift in Sources */,
@@ -914,6 +913,7 @@
 			files = (
 				00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */,
 				00262EB6236F024400A6C8A0 /* Theme.swift in Sources */,
+				C6F905382374B6B200996954 /* Sequence.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILabel.swift in Sources */,
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,
@@ -946,6 +946,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				00E491A22366E08B007B332D /* Base */,
+				C6F9053A2374C17000996954 /* fr-CA */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -954,8 +955,17 @@
 			isa = PBXVariantGroup;
 			children = (
 				00E491AA2366E08F007B332D /* Base */,
+				C6F9053B2374C17100996954 /* fr-CA */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		C6F905402374C21D00996954 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C6F9053F2374C21D00996954 /* en */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

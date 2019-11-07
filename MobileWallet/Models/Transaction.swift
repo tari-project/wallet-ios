@@ -78,7 +78,7 @@ var dummyTransactions: [[Transaction]] {
                 value = 120
             }
 
-            if n == 4 || n == 7 || n == 3 || n == 8 {
+            if n == 4 || n == 1 || n == 3 || n == 8 {
                 date = DateConfig.mockPastDate(byDayValue: n)
             }
 

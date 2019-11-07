@@ -81,6 +81,7 @@ struct Colors: Loopable {
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
     let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
+    let transactionCellDateText = UIColor(named: "TransactionDateValue")
 }
 
 struct Fonts: Loopable {
@@ -91,6 +92,7 @@ struct Fonts: Loopable {
     let transactionCellUsernameLabel = UIFont(name: "AvenirLTStd-Heavy", size: 13.0)
     let transactionCellDescriptionLabel = UIFont(name: "AvenirLTStd-Roman", size: 12.0)
     let transactionCellValueLabel = UIFont(name: "AvenirLTStd-Black", size: 12.0)
+    let transactionDateValueLabel = UIFont(name: "AvenirLTStd-Medium", size: 12.0)
 }
 
 struct TransactionIcons: Loopable {
