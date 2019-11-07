@@ -73,6 +73,10 @@ class SplashViewController: UIViewController {
     }
 
     private func startAnimation() {
+        #if DEBUG
+            animationContainer.animationSpeed = 5
+        #endif
+
         animationContainer.play(
             fromProgress: 0,
             toProgress: 1,
