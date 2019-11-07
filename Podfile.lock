@@ -9,7 +9,7 @@ DEPENDENCIES:
   - SwiftLint
 
 SPEC REPOS:
-  https://cdn.cocoapods.org/:
+  trunk:
     - FloatingPanel
     - lottie-ios
     - SwiftLint
@@ -21,4 +21,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 8bb1f9ea11073f25660d875f8c2a9cc3264fbf4e
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.8.4
