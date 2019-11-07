@@ -40,9 +40,35 @@
 
 import UIKit
 
-//TODO create tests on this to ensure all assets are included in the bundle
+protocol Loopable {
+    func allProperties() throws -> [String: Any?]
+}
 
-struct Colors {
+extension Loopable {
+    func allProperties() throws -> [String: Any?] {
+
+        var result: [String: Any?] = [:]
+
+        let mirror = Mirror(reflecting: self)
+
+        // Optional check to make sure we're iterating over a struct or class
+        guard let style = mirror.displayStyle, style == .struct || style == .class else {
+            throw NSError()
+        }
+
+        for (property, value) in mirror.children {
+            guard let property = property else {
+                continue
+            }
+
+            result[property] = value
+        }
+
+        return result
+    }
+}
+
+struct Colors: Loopable {
     let sendButtonBackground = UIColor(named: "SendButtonBackground")
     let homeBackground = UIColor(named: "HomeBackground")
     let transactionTableBackground = UIColor(named: "TransactionTableBackground")
@@ -57,27 +83,29 @@ struct Colors {
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
 }
 
-struct Fonts {
-    let splashTestnetFooterLabel = UIFont(name: "AvenirLTStd-Heavy", size: 9.0)!
-    let sendActionButton = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)!
+struct Fonts: Loopable {
+    let splashTestnetFooterLabel = UIFont(name: "AvenirLTStd-Heavy", size: 9.0)
+    let sendActionButton = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)
 
     //Transaction cell
-    let transactionCellUsernameLabel = UIFont(name: "AvenirLTStd-Heavy", size: 13.0)!
-    let transactionCellDescriptionLabel = UIFont(name: "AvenirLTStd-Roman", size: 12.0)!
-    let transactionCellValueLabel = UIFont(name: "AvenirLTStd-Black", size: 12.0)!
+    let transactionCellUsernameLabel = UIFont(name: "AvenirLTStd-Heavy", size: 13.0)
+    let transactionCellDescriptionLabel = UIFont(name: "AvenirLTStd-Roman", size: 12.0)
+    let transactionCellValueLabel = UIFont(name: "AvenirLTStd-Black", size: 12.0)
 }
 
-struct TransactionIcons {
-    let food = UIImage(named: "food")!
-    let game = UIImage(named: "game")!
-    let thanks = UIImage(named: "thanks")!
-    let transfer = UIImage(named: "transfer")!
-    let drinks = UIImage(named: "drinks")!
-    let services = UIImage(named: "services")!
+struct TransactionIcons: Loopable {
+    let food = UIImage(named: "food")
+    let game = UIImage(named: "game")
+    let thanks = UIImage(named: "thanks")
+    let transfer = UIImage(named: "transfer")
+    let drinks = UIImage(named: "drinks")
+    let services = UIImage(named: "services")
 }
 
-class Theme {
+struct Theme {
     static let shared = Theme()
+
+    //NOTE: Any new theme properties must be added to tests to ensure all assets are included before deployment
 
     let colors = Colors()
     let transactionIcons = TransactionIcons()
