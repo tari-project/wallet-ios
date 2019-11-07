@@ -59,6 +59,9 @@ struct Colors {
 
 struct Fonts {
     let splashTestnetFooterLabel = UIFont(name: "AvenirLTStd-Heavy", size: 9.0)!
+//    let fontMetrics = UIFontMetrics(forTextStyle: .body)
+//    let splashTestnetFooterMetrics = fontMetrics.scaledFont(for: fontMetrics)
+
     let sendActionButton = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)!
 
     //Transaction cell

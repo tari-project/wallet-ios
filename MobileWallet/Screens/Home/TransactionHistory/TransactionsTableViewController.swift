@@ -41,53 +41,19 @@
 import UIKit
 
 class TransactionsTableViewController: UITableViewController {
-    private let CELL_IDENTIFIER = "TransactionTableTableViewCell"
-    private let transactions = dummyTransactions
+    let CELL_IDENTIFIER = "TransactionTableTableViewCell"
+    let transactions = dummyTransactions
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         viewSetup()
         tableView.register(UINib(nibName: CELL_IDENTIFIER, bundle: nil), forCellReuseIdentifier: CELL_IDENTIFIER)
     }
 
-    // MARK: - Table view data source
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        // TODO return number of date sections
-        return 1
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return transactions.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath) as! TransactionTableTableViewCell
-
-        let transaction = transactions[indexPath.row]
-
-        cell.icon.image = transaction.icon
-        cell.userNameLabel.text = transaction.userName
-        cell.descriptionLabel.text = transaction.description
-
-        cell.setValueLabel(value: transaction.value, sign: transaction.sign)
-
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
-
-    override func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
-        tableView.reloadRows(at: [indexPath], with: .automatic)
-    }
-
     private func viewSetup() {
         tableView.separatorStyle = .none
-        view.backgroundColor = Theme.shared.colors.transactionTableBackground
+        tableView.rowHeight = UITableView.automaticDimension
         tableView.rowHeight = 74
+        view.backgroundColor = Theme.shared.colors.transactionTableBackground
     }
 }

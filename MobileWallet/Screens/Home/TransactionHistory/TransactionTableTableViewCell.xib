@@ -45,6 +45,7 @@
                             <constraint firstAttribute="height" constant="30" id="F96-7I-7PG"/>
                             <constraint firstItem="zsS-K8-9z7" firstAttribute="leading" secondItem="I09-bz-lJS" secondAttribute="leading" id="U53-fP-rYx"/>
                             <constraint firstAttribute="trailing" secondItem="nrF-GT-caA" secondAttribute="trailing" id="V9e-8O-vnw"/>
+                            <constraint firstItem="zsS-K8-9z7" firstAttribute="top" secondItem="nrF-GT-caA" secondAttribute="bottom" constant="-1" id="qhF-sW-p8R"/>
                             <constraint firstAttribute="trailing" secondItem="zsS-K8-9z7" secondAttribute="trailing" id="smD-xv-2mt"/>
                             <constraint firstAttribute="bottom" secondItem="zsS-K8-9z7" secondAttribute="bottom" id="vcy-T4-vt0"/>
                         </constraints>
@@ -59,6 +60,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="cEU-65-a8f" firstAttribute="leading" secondItem="I09-bz-lJS" secondAttribute="trailing" constant="8" id="1kb-99-73r"/>
+                    <constraint firstItem="zsS-K8-9z7" firstAttribute="leading" secondItem="cR1-0O-3B9" secondAttribute="trailing" constant="20" id="8t0-bi-ZLu"/>
                     <constraint firstItem="I09-bz-lJS" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="B9Y-p7-Vmh"/>
                     <constraint firstItem="I09-bz-lJS" firstAttribute="leading" secondItem="cR1-0O-3B9" secondAttribute="trailing" constant="20" id="k8N-CP-Y62"/>
                     <constraint firstItem="cEU-65-a8f" firstAttribute="centerY" secondItem="H2p-sc-9uM" secondAttribute="centerY" id="kwA-Af-DLK"/>
@@ -74,7 +76,7 @@
                 <outlet property="userNameLabel" destination="nrF-GT-caA" id="ucK-8Q-IKA"/>
                 <outlet property="valueLabel" destination="cEU-65-a8f" id="d8X-bS-cx3"/>
             </connections>
-            <point key="canvasLocation" x="-38.405797101449281" y="112.5"/>
+            <point key="canvasLocation" x="-52.898550724637687" y="112.5"/>
         </tableViewCell>
     </objects>
     <resources>
