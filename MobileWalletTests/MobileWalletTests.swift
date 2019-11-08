@@ -93,13 +93,15 @@ class MobileWalletTests: XCTestCase {
     }
     
     func testDateFallsInWekk() {
-//        let date = dateFallsInCurrentWeek
-        let testDateString = "2019-11-08"
-//        let dateValue = Date
+        let testDateString = "2019-11-01"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let testDate = dateFormatter.date(from: testDateString)
         
-        let tari = TariValue(microTari: 234567, sign: .negative)
-        XCTAssert(tari.floatValue == -0.234567)
-        XCTAssert(tari.displayStringWithOperator == "- 0.23")
+        
+        if DateConfig.dateFallsInCurrentWeek(date: testDate) == true {
+            XCTFail("Date does not fall in current week. Test Date: \(testDate). Today's Date: \(Date())")
+        }
     }
 
     func testPerformanceExample() {

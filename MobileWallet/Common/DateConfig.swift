@@ -40,7 +40,7 @@
 
 import Foundation
 
-final public class DateConfig {
+public class DateConfig {
 
     /*
      Creates a timestamp string value from a given date
