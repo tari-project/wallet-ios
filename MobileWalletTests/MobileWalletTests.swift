@@ -105,7 +105,17 @@ class MobileWalletTests: XCTestCase {
             XCTFail("Date does not fall in current week. Test Date: \(testDate). Today's Date: \(Date())")
         }
     }
+    
+    
+    func testRelativeDayValue() {
+        let testDateString = Date()
+        let dateValue =  DateConfig.getRelativeDayValue(fromDate: testDateString)
+        if dateValue != NSLocalizedString("Today", comment: "") {
+            XCTFail()
+        }
+    }
 
+    
     func testPerformanceExample() {
         // This is an example of a performance test case.
         self.measure {
