@@ -54,7 +54,7 @@ public class DateConfig {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, YYYY", options: 0, locale: NSLocale.current)
             dateFormatter.timeZone = TimeZone.current
-            
+
             return dateFormatter.string(from: date)
         }
     }
