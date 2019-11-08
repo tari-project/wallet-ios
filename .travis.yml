@@ -1,6 +1,8 @@
+
 language: swift
+osx_image: xcode11.2
+xcode_workspace: MobileWallet.xcworkspace
+xcode_scheme: MobileWallet
+xcode_destination: platform=iOS Simulator,OS=13.2,name=iPhone X
 before_install:
-   - rvm use system
-   - sudo gem install cocoapods
-osx_image: xcode11
-script: xcodebuild clean build test -workspace MobileWallet.xcworkspace -scheme MobileWallet -sdk iphonesimulator -destination "platform=iOS Simulator,OS=13.2,name=iPhone 11"
+- pod install
