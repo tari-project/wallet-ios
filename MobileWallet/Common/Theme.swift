@@ -81,6 +81,9 @@ struct Colors: Loopable {
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
     let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
+
+    //Header
+    let navigationBarBackgroundColor = UIColor(named: "HomeBackground") //TODO rename "HomeBackground" to "ViewBackground"
 }
 
 struct Fonts: Loopable {
