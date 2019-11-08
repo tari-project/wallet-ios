@@ -49,7 +49,7 @@ extension TransactionsTableViewController {
         sectionHeaderView.backgroundColor = Theme.shared.colors.transactionTableBackground
         let sectionHeaderLabel: UILabel = UILabel.init(frame: CGRect(x: 20.0, y: 54.0, width: tableView.frame.width - 40, height: 16))
         sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
-        sectionHeaderLabel.textColor = Theme.shared.colors.transactionCellDateText
+        sectionHeaderLabel.textColor = Theme.shared.colors.transactionDateValueLabel
         sectionHeaderLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
         sectionHeaderView.addSubview(sectionHeaderLabel)
         return sectionHeaderView

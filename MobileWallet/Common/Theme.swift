@@ -82,6 +82,7 @@ struct Colors: Loopable {
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
     let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
+    let transactionDateValueLabel = UIColor(named: "TransactionDateValue")
 
 		//Header
     let navigationBarTintColor = UIColor(named: "NavigationBarTint")

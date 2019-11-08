@@ -154,6 +154,8 @@
 		C661408623742BBA00F1E64F /* TransactionsTableViewController.TableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408523742BBA00F1E64F /* TransactionsTableViewController.TableView.swift */; };
 		C661408C23743CB600F1E64F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408B23743CB600F1E64F /* Sequence.swift */; };
 		C661408E23743CDA00F1E64F /* DateConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408D23743CDA00F1E64F /* DateConfig.swift */; };
+		C6B61510237565BD008AA49D /* DateConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408D23743CDA00F1E64F /* DateConfig.swift */; };
+		C6B61511237565BD008AA49D /* DateConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408D23743CDA00F1E64F /* DateConfig.swift */; };
 		C6F905382374B6B200996954 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408B23743CB600F1E64F /* Sequence.swift */; };
 		C6F905392374B6B200996954 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = C661408B23743CB600F1E64F /* Sequence.swift */; };
 		C6F9053E2374C21D00996954 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = C6F905402374C21D00996954 /* Localizable.strings */; };
@@ -593,7 +595,7 @@
 			attributes = {
 				LastSwiftUpdateCheck = 1110;
 				LastUpgradeCheck = 1110;
-				ORGANIZATIONNAME = "Jason van den Berg";
+				ORGANIZATIONNAME = "Tari Project";
 				TargetAttributes = {
 					00E491952366E08B007B332D = {
 						CreatedOnToolsVersion = 11.1;
@@ -917,6 +919,7 @@
 				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
+				C6B61510237565BD008AA49D /* DateConfig.swift in Sources */,
 				00262EBA236F35CD00A6C8A0 /* Transaction.swift in Sources */,
 				001256302371D81500A9C067 /* SplashViewController.swift in Sources */,
 			);
@@ -937,6 +940,7 @@
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
+				C6B61511237565BD008AA49D /* DateConfig.swift in Sources */,
 				00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */,
 				001256312371D81500A9C067 /* SplashViewController.swift in Sources */,
 			);
@@ -1152,6 +1156,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1174,6 +1179,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1195,6 +1201,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1215,6 +1222,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

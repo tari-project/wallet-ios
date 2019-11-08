@@ -92,12 +92,14 @@ class MobileWalletTests: XCTestCase {
         }
     }
     
-    func testDateFallsInWekk() {
-        let testDateString = "2019-11-01"
+    func testDateFallsInWeek() {
+        let testDateString = "2019-10-01"
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        let testDate = dateFormatter.date(from: testDateString)
-        
+        dateFormatter.dateFormat = "yyyy-mm-dd"
+        guard let testDate = dateFormatter.date(from: testDateString) else {
+            XCTFail("Failed to get the date from the string value")
+            return
+        }
         
         if DateConfig.dateFallsInCurrentWeek(date: testDate) == true {
             XCTFail("Date does not fall in current week. Test Date: \(testDate). Today's Date: \(Date())")
