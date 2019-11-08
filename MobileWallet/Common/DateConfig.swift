@@ -53,7 +53,8 @@ public class DateConfig {
         } else if Calendar.current.isDateInYesterday(date) {
             return NSLocalizedString("Yesterday", comment: "")
         } else {
-            dateFormatter.dateFormat = NSLocalizedString("MMM d, YYYY", comment: "")
+            dateFormatter.dateFormat = "MMM d, YYYY"
+            dateFormatter.timeZone = TimeZone.current
             return dateFormatter.string(from: date)
         }
     }
