@@ -85,6 +85,9 @@ class MobileWalletTests: XCTestCase {
                 if txIcon.value as? UIImage == nil {
                     XCTFail("Failed to find transaction icon asset in theme for property: \"\(txIcon.key)\"")
                 }
+                
+                
+                
             }
 
         } catch {
