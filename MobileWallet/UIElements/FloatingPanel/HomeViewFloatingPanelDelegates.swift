@@ -61,30 +61,30 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
 }
 
 class HomeViewFloatingPanelBehavior: FloatingPanelBehavior {
-    private var velocityThreshold: CGFloat = 15.0
+//    private var velocityThreshold: CGFloat = 15.0
 
     func allowsRubberBanding(for edge: UIRectEdge) -> Bool {
-        return true
+        return false
     }
 
     func shouldProjectMomentum(_ fpc: FloatingPanelController, for proposedTargetPosition: FloatingPanelPosition) -> Bool {
-        return true
+        return false
     }
 
-    func interactionAnimator(_ fpc: FloatingPanelController, to targetPosition: FloatingPanelPosition, with velocity: CGVector) -> UIViewPropertyAnimator {
-        let damping = self.damping(with: velocity)
-        let springTiming = UISpringTimingParameters(dampingRatio: damping, initialVelocity: velocity)
-        return UIViewPropertyAnimator(duration: 1.4, timingParameters: springTiming)
-    }
+//    func interactionAnimator(_ fpc: FloatingPanelController, to targetPosition: FloatingPanelPosition, with velocity: CGVector) -> UIViewPropertyAnimator {
+//        let damping = self.damping(with: velocity)
+//        let springTiming = UISpringTimingParameters(dampingRatio: damping, initialVelocity: velocity)
+//        return UIViewPropertyAnimator(duration: 1.4, timingParameters: springTiming)
+//    }
 
-    private func damping(with velocity: CGVector) -> CGFloat {
-        switch velocity.dy {
-        case ...(-velocityThreshold):
-            return 0.7
-        case velocityThreshold...:
-            return 0.7
-        default:
-            return 1.0
-        }
-    }
+//    private func damping(with velocity: CGVector) -> CGFloat {
+//        switch velocity.dy {
+//        case ...(-velocityThreshold):
+//            return 0.7
+//        case velocityThreshold...:
+//            return 0.7
+//        default:
+//            return 1.0
+//        }
+//    }
 }
