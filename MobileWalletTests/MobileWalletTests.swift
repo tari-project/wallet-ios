@@ -116,7 +116,7 @@ class MobileWalletTests: XCTestCase {
         */
         let today = Date()
         let dateValue =  DateConfig.getRelativeDayValue(fromDate: today)
-        XCTAssertEqual(dateValue, NSLocalizedString("Today", comment: ""), "Test Failed. Value returned from Relative Day value should have been - Today")
+        XCTAssertEqual(dateValue, "Today", "Test Failed. Value returned from Relative Day value should have been - Today")
         
         /*
          Yesterday Date Test
@@ -127,14 +127,14 @@ class MobileWalletTests: XCTestCase {
         }
         
         let yesterdayDateValue =  DateConfig.getRelativeDayValue(fromDate: yesterday)
-        XCTAssertEqual(yesterdayDateValue, NSLocalizedString("Yesterday", comment: ""), "Test Failed. Value returned from Relative Day value should have been - Yesterday")
+        XCTAssertEqual(yesterdayDateValue, "Yesterday", "Test Failed. Value returned from Relative Day value should have been - Yesterday")
         
     }
 
     /*
      Past Date Test
     */
-    func testPastYearDateFormating() {
+    func testelativePastDayFormating() {
         
         let today = Date()
         guard let pastDate = Calendar.current.date(byAdding: Calendar.Component.day, value: -10, to: today) else {
@@ -163,7 +163,7 @@ class MobileWalletTests: XCTestCase {
         pastYearFormatter.dateFormat = "YYYY"
         let pastyearDateValue = pastYearFormatter.string(from: pastDate)
         
-        XCTAssertEqual(pastDateValue, NSLocalizedString("\(pastMonthDateValue) \(pastDayDateValue), \(pastyearDateValue)", comment: ""), "Test Failed. Value returned from Relative Day value should have been - Yesterday")
+        XCTAssertEqual(pastDateValue, "\(pastMonthDateValue) \(pastDayDateValue), \(pastyearDateValue)", "Test Failed. Value returned from Relative Day value should have been - Yesterday")
         
     }
     
