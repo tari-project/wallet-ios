@@ -91,6 +91,16 @@ class MobileWalletTests: XCTestCase {
             XCTFail("Failed to iterate through theme assets")
         }
     }
+    
+    func testDateFallsInWekk() {
+//        let date = dateFallsInCurrentWeek
+        let testDateString = "2019-11-08"
+//        let dateValue = Date
+        
+        let tari = TariValue(microTari: 234567, sign: .negative)
+        XCTAssert(tari.floatValue == -0.234567)
+        XCTAssert(tari.displayStringWithOperator == "- 0.23")
+    }
 
     func testPerformanceExample() {
         // This is an example of a performance test case.
