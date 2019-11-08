@@ -46,15 +46,15 @@ public class DateConfig {
      Creates a timestamp string value from a given date
      */
     class func getRelativeDayValue(fromDate date: Date) -> String? {
-        let dateFormatter = DateFormatter()
-
         if Calendar.current.isDateInToday(date) {
-            return NSLocalizedString("Today", comment: "")
+            return NSLocalizedString("Today", comment: "Transaction list section heading")
         } else if Calendar.current.isDateInYesterday(date) {
-            return NSLocalizedString("Yesterday", comment: "")
+            return NSLocalizedString("Yesterday", comment: "Transaction list section heading")
         } else {
-            dateFormatter.dateFormat = "MMM d, YYYY"
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, YYYY", options: 0, locale: NSLocale.current)
             dateFormatter.timeZone = TimeZone.current
+            
             return dateFormatter.string(from: date)
         }
     }
