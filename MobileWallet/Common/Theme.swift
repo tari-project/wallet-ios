@@ -84,7 +84,10 @@ struct Colors: Loopable {
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
 
     //Header
-    let navigationBarTintColor = UIColor(named: "NavigationBarTint")
+    let navigationBarTintColor = UIColor(named: "Heading")
+
+    //Transaction view table
+    let transactionViewValueLabelColor = UIColor(named: "Heading")
 }
 
 struct Fonts: Loopable {
@@ -95,15 +98,22 @@ struct Fonts: Loopable {
     let transactionCellUsernameLabel = UIFont(name: "AvenirLTStd-Heavy", size: 13.0)
     let transactionCellDescriptionLabel = UIFont(name: "AvenirLTStd-Roman", size: 12.0)
     let transactionCellValueLabel = UIFont(name: "AvenirLTStd-Black", size: 12.0)
+
+    //View transaction screen
+    let transactionScreenValueLabel = UIFont(name: "AvenirLTStd-Black", size: 90.0)
 }
 
-struct TransactionIcons: Loopable {
+struct Icons: Loopable {
+    //Transaction icons
     let food = UIImage(named: "food")
     let game = UIImage(named: "game")
     let thanks = UIImage(named: "thanks")
     let transfer = UIImage(named: "transfer")
     let drinks = UIImage(named: "drinks")
     let services = UIImage(named: "services")
+
+    //General icons
+    let currencySymbol = UIImage(named: "Gem")
 }
 
 struct Theme {
@@ -112,6 +122,8 @@ struct Theme {
     //NOTE: Any new theme properties must be added to tests to ensure all assets are included before deployment
 
     let colors = Colors()
-    let transactionIcons = TransactionIcons()
+    let icons = Icons()
     let fonts = Fonts()
+
+    let transactionIcons = Icons() //FIXME delete this and change all references to it
 }

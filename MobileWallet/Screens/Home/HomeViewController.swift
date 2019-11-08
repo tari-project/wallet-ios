@@ -49,12 +49,16 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         super.viewDidLoad()
 
         setup()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
+        })
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        showFLoatingPanel()
+        showFloatingPanel()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -78,10 +82,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
     private func setupFloatingPanel() {
         fpc = FloatingPanelController()
 
-        // Assign self as the delegate of the controller.
-        fpc.delegate = self // Optional
-
-        // Set a content view controller.
+        fpc.delegate = self
         let contentVC = TransactionsTableViewController()
         fpc.set(contentViewController: contentVC)
 
@@ -94,7 +95,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         fpc.track(scrollView: contentVC.tableView)
     }
 
-    private func showFLoatingPanel() {
+    private func showFloatingPanel() {
         view.addSubview(fpc.view)
         fpc.view.frame = view.bounds
         addChild(fpc)
@@ -127,6 +128,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         // Pass the selected object to the new view controller.
 
         //TODO pass tx detail
+        print("Prepare")
     }
 
     // MARK: - Floating panel setup delegate methods

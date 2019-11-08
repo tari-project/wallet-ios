@@ -41,6 +41,8 @@
 import UIKit
 
 class TransactionViewController: UIViewController {
+    @IBOutlet weak var valueLabel: UILabel!
+    @IBOutlet weak var currencySymbol: UIImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +53,11 @@ class TransactionViewController: UIViewController {
     private func setup() {
         view.backgroundColor = Theme.shared.colors.appBackground
 
+        setupHeader()
+        setupValueView()
+    }
+
+    private func setupHeader() {
         if let navBar = navigationController?.navigationBar {
             let backImage = UIImage(systemName: "arrow.left") //TODO use own asset when available
             navBar.backIndicatorImage = backImage
@@ -59,5 +66,20 @@ class TransactionViewController: UIViewController {
         }
 
         navigationItem.title = NSLocalizedString("Payment Received", comment: "Navigation bar heading on transaction view screen")
+    }
+
+    private func setupValueView() {
+        let labelColor = Theme.shared.colors.transactionViewValueLabelColor
+
+        valueLabel.minimumScaleFactor = 0.2
+        valueLabel.font = Theme.shared.fonts.transactionScreenValueLabel
+        valueLabel.textColor = labelColor
+
+        currencySymbol.image = Theme.shared.icons.currencySymbol?.withTintColor(labelColor!)
+
+         self.valueLabel.text = "50.99"
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+            self.valueLabel.text = "999 999 999.99"
+        })
     }
 }

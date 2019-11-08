@@ -66,7 +66,7 @@ class MobileWalletTests: XCTestCase {
     func testThemeAssets() {
         let colors = Theme.shared.colors
         let fonts = Theme.shared.fonts
-        let transactionIcons = Theme.shared.transactionIcons
+        let icons = Theme.shared.icons
         
         do {
             for color in try colors.allProperties() {
@@ -81,9 +81,9 @@ class MobileWalletTests: XCTestCase {
                 }
             }
             
-            for txIcon in try transactionIcons.allProperties() {
-                if txIcon.value as? UIImage == nil {
-                    XCTFail("Failed to find transaction icon asset in theme for property: \"\(txIcon.key)\"")
+            for icon in try icons.allProperties() {
+                if icon.value as? UIImage == nil {
+                    XCTFail("Failed to find icon asset in theme for property: \"\(icon.key)\"")
                 }
             }
 

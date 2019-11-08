@@ -83,6 +83,8 @@ class TransactionsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
         tableView.reloadRows(at: [indexPath], with: .automatic)
+
+        //TODO on select
     }
 
     private func viewSetup() {
