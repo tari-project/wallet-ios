@@ -67,6 +67,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
         view.backgroundColor = Theme.shared.colors.homeBackground
 
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
+
         if let navBar = navigationController?.navigationBar {
             navBar.setBackgroundImage(UIImage(), for: .default)
             navBar.shadowImage = UIImage()
@@ -115,7 +117,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
     @IBAction func onSendAction(_ sender: Any) {
         print("Send")
-        performSegue(withIdentifier: "HomeToTransactionDetails", sender: sender)
     }
 
     // MARK: - Navigation
@@ -130,7 +131,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
     // MARK: - Floating panel setup delegate methods
 
-   func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
+    func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
         return HomeViewFloatingPanelLayout()
     }
 

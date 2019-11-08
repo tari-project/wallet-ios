@@ -49,16 +49,15 @@ class TransactionViewController: UIViewController {
     }
 
     private func setup() {
-        view.backgroundColor = Theme.shared.colors.homeBackground
+        view.backgroundColor = Theme.shared.colors.appBackground
 
         if let navBar = navigationController?.navigationBar {
-            let backImage = UIImage(named: "food")
-//            yourBackImage?.size = CGSize(width: 10, height: 10)
-
+            let backImage = UIImage(systemName: "arrow.left") //TODO use own asset when available
             navBar.backIndicatorImage = backImage
             navBar.backIndicatorTransitionMaskImage = backImage
-            navBar.backItem?.title = "Custom"
-            navBar.tintColor = .red
+            navBar.tintColor = Theme.shared.colors.navigationBarTintColor
         }
+
+        navigationItem.title = NSLocalizedString("Payment Received", comment: "Navigation bar heading on transaction view screen")
     }
 }
