@@ -86,10 +86,21 @@ class MobileWalletTests: XCTestCase {
                     XCTFail("Failed to find transaction icon asset in theme for property: \"\(txIcon.key)\"")
                 }
             }
+            
+            
+            
+            
+            
 
         } catch {
             XCTFail("Failed to iterate through theme assets")
         }
+        
+        
+        
+        
+        
+        
     }
 
     func testPerformanceExample() {
