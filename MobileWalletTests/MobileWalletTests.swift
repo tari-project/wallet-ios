@@ -100,21 +100,72 @@ class MobileWalletTests: XCTestCase {
             XCTFail("Failed to get the date from the string value")
             return
         }
+        let todaysPastTest = DateConfig.dateFallsInCurrentWeek(date: testDate)
+        XCTAssertEqual(todaysPastTest, false, "Test Failed. Date does not  fall in current week")
         
-        if DateConfig.dateFallsInCurrentWeek(date: testDate) == true {
-            XCTFail("Date does not fall in current week. Test Date: \(testDate). Today's Date: \(Date())")
-        }
+        
+        let todaysEventDateTest = DateConfig.dateFallsInCurrentWeek(date: Date())
+        XCTAssertEqual(todaysEventDateTest, true, "Test Failed. Date does fall in current week")
     }
     
     
     func testRelativeDayValue() {
-        let testDateString = Date()
-        let dateValue =  DateConfig.getRelativeDayValue(fromDate: testDateString)
-        if dateValue != NSLocalizedString("Today", comment: "") {
-            XCTFail()
+        
+        /*
+         Today Date Test
+        */
+        let today = Date()
+        let dateValue =  DateConfig.getRelativeDayValue(fromDate: today)
+        XCTAssertEqual(dateValue, NSLocalizedString("Today", comment: ""), "Test Failed. Value returned from Relative Day value should have been - Today")
+        
+        /*
+         Yesterday Date Test
+         */
+        guard let yesterday = Calendar.current.date(byAdding: Calendar.Component.day, value: -1, to: today) else {
+            XCTFail("Failed to get yesterday from given date")
+            return
         }
+        
+        let yesterdayDateValue =  DateConfig.getRelativeDayValue(fromDate: yesterday)
+        XCTAssertEqual(yesterdayDateValue, NSLocalizedString("Yesterday", comment: ""), "Test Failed. Value returned from Relative Day value should have been - Yesterday")
+        
     }
 
+    /*
+     Past Date Test
+    */
+    func testPastYearDateFormating() {
+        
+        let today = Date()
+        guard let pastDate = Calendar.current.date(byAdding: Calendar.Component.day, value: -10, to: today) else {
+            XCTFail("Failed to get yesterday from given date")
+            return
+        }
+        
+        
+        let pastDateValue =  DateConfig.getRelativeDayValue(fromDate: pastDate)
+        let pastDateFormatter = DateFormatter()
+        pastDateFormatter.dateFormat = "MMM d, YYYY"
+        pastDateFormatter.string(from: pastDate)
+        
+        //  Past Month
+        let pastMonthFormatter = DateFormatter()
+        pastMonthFormatter.dateFormat = "MMM"
+        let pastMonthDateValue = pastMonthFormatter.string(from: pastDate)
+        
+        //  Past Day
+        let pastDayFormatter = DateFormatter()
+        pastDayFormatter.dateFormat = "d"
+        let pastDayDateValue = pastDayFormatter.string(from: pastDate)
+        
+        //  Past Year
+        let pastYearFormatter = DateFormatter()
+        pastYearFormatter.dateFormat = "YYYY"
+        let pastyearDateValue = pastYearFormatter.string(from: pastDate)
+        
+        XCTAssertEqual(pastDateValue, NSLocalizedString("\(pastMonthDateValue) \(pastDayDateValue), \(pastyearDateValue)", comment: ""), "Test Failed. Value returned from Relative Day value should have been - Yesterday")
+        
+    }
     
     func testPerformanceExample() {
         // This is an example of a performance test case.
