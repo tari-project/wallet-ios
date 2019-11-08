@@ -43,29 +43,39 @@ import FloatingPanel
 
 class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
     private var fpc: FloatingPanelController!
-    //private let hitBottomFeedback = UIImpactFeedbackGenerator(style: .medium)
-
     @IBOutlet weak var sendButton: UIButton!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        setup()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        showFLoatingPanel()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+    }
+
+    private func setup() {
         setupFloatingPanel()
 
         sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
         view.backgroundColor = Theme.shared.colors.homeBackground
 
-        //hitBottomFeedback.prepare()
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
+
+        if let navBar = navigationController?.navigationBar {
+            navBar.setBackgroundImage(UIImage(), for: .default)
+            navBar.shadowImage = UIImage()
+        }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        // Remove the views managed by the `FloatingPanelController` object from self.view.
-        fpc.removePanelFromParent(animated: true)
-    }
-
-    func setupFloatingPanel() {
+    private func setupFloatingPanel() {
         fpc = FloatingPanelController()
 
         // Assign self as the delegate of the controller.
@@ -82,23 +92,30 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
         // Track a scroll view(or the siblings) in the content view controller.
         fpc.track(scrollView: contentVC.tableView)
+    }
 
+    private func showFLoatingPanel() {
         view.addSubview(fpc.view)
         fpc.view.frame = view.bounds
         addChild(fpc)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+
+        //Move send button to in front of panel
+        sendButton.superview?.bringSubviewToFront(sendButton)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
             //self.fpc.addPanel(toParent: self)
             self.fpc.show(animated: true) {
                 // Only for the first time
                 self.didMove(toParent: self)
             }
         })
-
-        //Move send button to in front of panel
-        sendButton.superview?.bringSubviewToFront(sendButton)
     }
 
-    @objc func onSendAction(sender: UIButton!) {
+    private func hideFloatingPanel() {
+        fpc.removePanelFromParent(animated: true)
+    }
+
+    @IBAction func onSendAction(_ sender: Any) {
         print("Send")
     }
 
@@ -108,11 +125,13 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destination.
         // Pass the selected object to the new view controller.
+
+        //TODO pass tx detail
     }
 
-    // MARK: - Floating pabel setup delegate methods
+    // MARK: - Floating panel setup delegate methods
 
-   func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
+    func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
         return HomeViewFloatingPanelLayout()
     }
 
@@ -121,7 +140,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
     }
 
     func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
-        //hitBottomFeedback.prepare()
     }
 
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
@@ -129,10 +147,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
             //TODO Show search bar
         } else {
             //TODO Hide search bar
-        }
-
-        if vc.position == .tip {
-            //hitBottomFeedback.impactOccurred()
         }
     }
 }

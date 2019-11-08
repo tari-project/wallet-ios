@@ -73,6 +73,7 @@ struct Colors: Loopable {
     let homeBackground = UIColor(named: "HomeBackground")
     let transactionTableBackground = UIColor(named: "TransactionTableBackground")
     let splashBackground = UIColor(named: "SplashBackground")
+    let appBackground = UIColor(named: "AppBackground")
 
     //Transaction cell
     let transactionCellUsername = UIColor(named: "TransactionCellUsername")
@@ -81,7 +82,9 @@ struct Colors: Loopable {
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
     let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
-    let transactionCellDateText = UIColor(named: "TransactionDateValue")
+
+		//Header
+    let navigationBarTintColor = UIColor(named: "NavigationBarTint")
 }
 
 struct Fonts: Loopable {

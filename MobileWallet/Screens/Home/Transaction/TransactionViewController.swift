@@ -1,8 +1,8 @@
-//  SplashViewController.swift
+//  TransactionViewController.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/05
+	Created by Jason van den Berg on 2019/11/07
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -39,55 +39,25 @@
 */
 
 import UIKit
-import Lottie
 
-class SplashViewController: UIViewController {
-    @IBOutlet weak var versionLabel: UILabel!
-    @IBOutlet weak var animationContainer: AnimationView!
+class TransactionViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setVersion()
-        loadAnimation()
-
-        //Determine if app needs to navigate home or to onboarding
+        setup()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        startAnimation()
-    }
+    private func setup() {
+        view.backgroundColor = Theme.shared.colors.appBackground
 
-    private func setVersion() {
-        versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
-        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            let labelText = NSLocalizedString("Testnet", comment: "Bottom version label for splash screen")
-            versionLabel.text = "\(labelText) V\(version)".uppercased()
+        if let navBar = navigationController?.navigationBar {
+            let backImage = UIImage(systemName: "arrow.left") //TODO use own asset when available
+            navBar.backIndicatorImage = backImage
+            navBar.backIndicatorTransitionMaskImage = backImage
+            navBar.tintColor = Theme.shared.colors.navigationBarTintColor
         }
-    }
 
-    private func loadAnimation() {
-        let animation = Animation.named("SplashAnimation")
-        animationContainer.animation = animation
-    }
-
-    private func startAnimation() {
-        #if DEBUG
-            animationContainer.animationSpeed = 5
-        #endif
-
-        animationContainer.play(
-            fromProgress: 0,
-            toProgress: 1,
-            loopMode: .playOnce,
-            completion: { (_) in
-                self.navigateToHome()
-            }
-        )
-    }
-
-    private func navigateToHome() {
-        performSegue(withIdentifier: "SplashToHome", sender: nil)
+        navigationItem.title = NSLocalizedString("Payment Received", comment: "Navigation bar heading on transaction view screen")
     }
 }

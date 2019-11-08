@@ -119,6 +119,9 @@
 		00A677992373DA59001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A6779A2373DA61001A853E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A12366E08B007B332D /* Main.storyboard */; };
 		00A6779B2373DA61001A853E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A12366E08B007B332D /* Main.storyboard */; };
+		00A6779E23743696001A853E /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A6779D23743696001A853E /* TransactionViewController.swift */; };
+		00A6779F23743696001A853E /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A6779D23743696001A853E /* TransactionViewController.swift */; };
+		00A677A023743696001A853E /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A6779D23743696001A853E /* TransactionViewController.swift */; };
 		00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
@@ -210,6 +213,7 @@
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		00262EB8236F35CD00A6C8A0 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		00A677872372C8E6001A853E /* TariValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariValue.swift; sourceTree = "<group>"; };
+		00A6779D23743696001A853E /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewController.swift; sourceTree = "<group>"; };
 		00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableTableViewCell.swift; sourceTree = "<group>"; };
 		00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableTableViewCell.xib; sourceTree = "<group>"; };
@@ -362,6 +366,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		00A6779C23743674001A853E /* Transaction */ = {
+			isa = PBXGroup;
+			children = (
+				00A6779D23743696001A853E /* TransactionViewController.swift */,
+			);
+			path = Transaction;
+			sourceTree = "<group>";
+		};
 		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
 			isa = PBXGroup;
 			children = (
@@ -402,6 +414,7 @@
 		00E2BCB6236B46A400C2A105 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				00A6779C23743674001A853E /* Transaction */,
 				00E2BCA6236AB25500C2A105 /* TransactionHistory */,
 				00E4922823683E54007B332D /* HomeViewController.swift */,
 			);
@@ -870,6 +883,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00262EB9236F35CD00A6C8A0 /* Transaction.swift in Sources */,
+				00A6779E23743696001A853E /* TransactionViewController.swift in Sources */,
 				00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				C661408C23743CB600F1E64F /* Sequence.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
@@ -900,6 +914,7 @@
 				00E4922A23683E54007B332D /* HomeViewController.swift in Sources */,
 				00A677892372C8E6001A853E /* TariValue.swift in Sources */,
 				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
+				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				00262EBA236F35CD00A6C8A0 /* Transaction.swift in Sources */,
@@ -919,6 +934,7 @@
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,
 				00A6778A2372C8E6001A853E /* TariValue.swift in Sources */,
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
+				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */,
