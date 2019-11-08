@@ -1,5 +1,6 @@
 Tari iOS wallet
 ===========================
+
 Mobile-based UI client that connects to a full node in the Tari network.
 
 ### Swift Style Guide
