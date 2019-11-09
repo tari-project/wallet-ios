@@ -1,8 +1,8 @@
-//  TransactionsTableViewController.swift
+//  Sequence.swift
 
 /*
     Package MobileWallet
-    Created by Jason van den Berg on 2019/10/31
+    Created by Gugulethu on 2019/11/07
     Using Swift 5.0
     Running on macOS 10.15
 
@@ -38,21 +38,28 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Foundation
 
-class TransactionsTableViewController: UITableViewController {
-    let CELL_IDENTIFIER = "TransactionTableTableViewCell"
-    let transactions = dummyTransactions
+extension Sequence {
+    func groupSort(ascending: Bool = true, byDate dateKey: (Iterator.Element) -> Date) -> [[Iterator.Element]] {
+        var categories: [[Iterator.Element]] = []
+        for element in self {
+            let key = dateKey(element)
+            guard let dayIndex = categories.firstIndex(where: { $0.contains(where: { Calendar.current.isDate(dateKey($0), inSameDayAs: key) }) }) else {
+                guard let nextIndex = categories.firstIndex(where: { $0.contains(where: { dateKey($0).compare(key) == (ascending ? .orderedDescending : .orderedAscending) }) }) else {
+                    categories.append([element])
+                    continue
+                }
+                categories.insert([element], at: nextIndex)
+                continue
+            }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        viewSetup()
-        tableView.register(UINib(nibName: CELL_IDENTIFIER, bundle: nil), forCellReuseIdentifier: CELL_IDENTIFIER)
-    }
-
-    private func viewSetup() {
-        tableView.separatorStyle = .none
-        tableView.rowHeight = 74
-        view.backgroundColor = Theme.shared.colors.transactionTableBackground
+            guard let nextIndex = categories[dayIndex].firstIndex(where: { dateKey($0).compare(key) == (ascending ? .orderedDescending : .orderedAscending) }) else {
+                categories[dayIndex].append(element)
+                continue
+            }
+            categories[dayIndex].insert(element, at: nextIndex)
+        }
+        return categories
     }
 }
