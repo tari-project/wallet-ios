@@ -63,7 +63,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sun.min" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="1Mh-ug-PVJ" userLabel="CurrencySymbol">
-                                        <rect key="frame" x="76" y="80.666666666666657" width="21" height="19.333333333333329"/>
+                                        <rect key="frame" x="66" y="80.666666666666657" width="21" height="19.333333333333329"/>
                                         <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="21" id="5Mw-T3-cY6"/>
@@ -76,7 +76,7 @@
                                     <constraint firstAttribute="bottom" secondItem="4yS-Bd-0GE" secondAttribute="bottom" id="7ga-Ui-gIM"/>
                                     <constraint firstItem="1Mh-ug-PVJ" firstAttribute="centerY" secondItem="myP-O4-zKq" secondAttribute="centerY" id="GcO-Pb-fwz"/>
                                     <constraint firstAttribute="width" secondItem="myP-O4-zKq" secondAttribute="height" multiplier="23:10" id="NSE-Ml-al8"/>
-                                    <constraint firstItem="4yS-Bd-0GE" firstAttribute="leading" secondItem="1Mh-ug-PVJ" secondAttribute="trailing" constant="10" id="Q2U-gu-19p"/>
+                                    <constraint firstItem="4yS-Bd-0GE" firstAttribute="leading" secondItem="1Mh-ug-PVJ" secondAttribute="trailing" constant="20" id="Q2U-gu-19p"/>
                                     <constraint firstItem="4yS-Bd-0GE" firstAttribute="top" secondItem="myP-O4-zKq" secondAttribute="top" id="bsO-rp-4Si"/>
                                     <constraint firstItem="4yS-Bd-0GE" firstAttribute="centerX" secondItem="myP-O4-zKq" secondAttribute="centerX" id="buO-jh-Wgw"/>
                                     <constraint firstAttribute="bottom" secondItem="4yS-Bd-0GE" secondAttribute="bottom" id="f88-x7-st6"/>
@@ -126,6 +126,7 @@
                     <navigationItem key="navigationItem" id="3OO-2y-x0i"/>
                     <connections>
                         <outlet property="currencySymbol" destination="1Mh-ug-PVJ" id="T6r-6y-2RB"/>
+                        <outlet property="valueContainerView" destination="myP-O4-zKq" id="gzM-iv-2fr"/>
                         <outlet property="valueLabel" destination="4yS-Bd-0GE" id="RiR-FD-pxE"/>
                     </connections>
                 </viewController>

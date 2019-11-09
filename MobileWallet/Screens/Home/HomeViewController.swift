@@ -73,14 +73,28 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
         view.backgroundColor = Theme.shared.colors.homeBackground
 
+        setupNavigatorBar()
+        showFloatingPanel()
+    }
+
+    private func setupNavigatorBar() {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
 
         if let navBar = navigationController?.navigationBar {
             navBar.setBackgroundImage(UIImage(), for: .default)
             navBar.shadowImage = UIImage()
-        }
 
-        showFloatingPanel()
+            navBar.tintColor = Theme.shared.colors.navigationBarTint
+
+            navBar.titleTextAttributes = [
+                NSAttributedString.Key.foregroundColor: Theme.shared.colors.navigationBarTint!,
+                NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle!
+            ]
+
+            let backImage = UIImage(systemName: "arrow.left") //TODO use own asset when available
+            navBar.backIndicatorImage = backImage
+            navBar.backIndicatorTransitionMaskImage = backImage
+        }
     }
 
     private func setupFloatingPanel() {

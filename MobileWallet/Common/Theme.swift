@@ -46,9 +46,7 @@ protocol Loopable {
 
 extension Loopable {
     func allProperties() throws -> [String: Any?] {
-
         var result: [String: Any?] = [:]
-
         let mirror = Mirror(reflecting: self)
 
         // Optional check to make sure we're iterating over a struct or class
@@ -70,7 +68,7 @@ extension Loopable {
 
 struct Colors: Loopable {
     let sendButtonBackground = UIColor(named: "SendButtonBackground")
-    let homeBackground = UIColor(named: "HomeBackground")
+    let homeBackground = UIColor(named: "TransactionViewValueBackground") //TODO remove this color when the background image is added
     let transactionTableBackground = UIColor(named: "TransactionTableBackground")
     let splashBackground = UIColor(named: "SplashBackground")
     let appBackground = UIColor(named: "AppBackground")
@@ -84,11 +82,12 @@ struct Colors: Loopable {
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
     let transactionDateValueLabel = UIColor(named: "TransactionDateValue")
 
-    //Header
-    let navigationBarTintColor = UIColor(named: "Heading")
+    //Navigation bar
+    let navigationBarTint = UIColor(named: "Heading")
 
     //Transaction view table
-    let transactionViewValueLabelColor = UIColor(named: "Heading")
+    let transactionViewValueLabel = UIColor(named: "Heading")
+    let transactionViewValueContainer = UIColor(named: "TransactionViewValueBackground")
 }
 
 struct Fonts: Loopable {
@@ -103,6 +102,9 @@ struct Fonts: Loopable {
 
     //View transaction screen
     let transactionScreenValueLabel = UIFont(name: "AvenirLTStd-Black", size: 90.0)
+
+    //Navigation bar
+    let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
 }
 
 struct Icons: Loopable {

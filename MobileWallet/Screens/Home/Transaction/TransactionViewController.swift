@@ -41,6 +41,7 @@
 import UIKit
 
 class TransactionViewController: UIViewController {
+    @IBOutlet weak var valueContainerView: UIView!
     @IBOutlet weak var valueLabel: UILabel!
     @IBOutlet weak var currencySymbol: UIImageView!
 
@@ -50,33 +51,25 @@ class TransactionViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
-        setValues()
     }
 
     private func setup() {
         view.backgroundColor = Theme.shared.colors.appBackground
 
-        setupHeader()
         setupValueView()
-    }
-
-    private func setupHeader() {
-        if let navBar = navigationController?.navigationBar {
-            let backImage = UIImage(systemName: "arrow.left") //TODO use own asset when available
-            navBar.backIndicatorImage = backImage
-            navBar.backIndicatorTransitionMaskImage = backImage
-            navBar.tintColor = Theme.shared.colors.navigationBarTintColor
-        }
+        setValues()
     }
 
     private func setupValueView() {
-        let labelColor = Theme.shared.colors.transactionViewValueLabelColor
+        let labelColor = Theme.shared.colors.transactionViewValueLabel
 
         valueLabel.minimumScaleFactor = 0.2
         valueLabel.font = Theme.shared.fonts.transactionScreenValueLabel
         valueLabel.textColor = labelColor
 
         currencySymbol.image = Theme.shared.icons.currencySymbol?.withTintColor(labelColor!)
+
+        valueContainerView.backgroundColor = Theme.shared.colors.transactionViewValueContainer
     }
 
     private func setValues() {

@@ -66,7 +66,7 @@ var dummyTransactions: [[Transaction]] {
         var dummyIconNameIndex = 0
 
         for n in 1...25 {
-            var microTari = n * 123456789
+            var microTari = n * 1234567
             var sign: ValueSign = .positive
             var date = Date()
 
@@ -76,6 +76,10 @@ var dummyTransactions: [[Transaction]] {
 
             if microTari == 0 {
                 microTari = 120
+            }
+
+            if n == 25 {
+                microTari = microTari * 9999
             }
 
             if n == 4 || n == 1 || n == 3 || n == 8 {
@@ -92,9 +96,12 @@ var dummyTransactions: [[Transaction]] {
             let value = TariValue(microTari: UInt64(microTari), sign: sign)
 
             txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: value, date: date))
-//                txs.sort(by: {$0.date < $1.date})
-            sortedTxs = txs.groupSort(ascending: false, byDate: { $0.date })
+
         }
+
+        //txs.sort(by: {$0.date < $1.date})
+        sortedTxs = txs.groupSort(ascending: false, byDate: { $0.date })
+
         return sortedTxs
     }
 }

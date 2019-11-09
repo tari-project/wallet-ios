@@ -67,12 +67,10 @@ extension TransactionsTableViewController {
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // TODO return number of date sections
         return transactions.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return transactions[section].count
     }
 
