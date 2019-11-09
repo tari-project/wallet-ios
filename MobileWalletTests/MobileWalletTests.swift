@@ -91,6 +91,49 @@ class MobileWalletTests: XCTestCase {
             XCTFail("Failed to iterate through theme assets")
         }
     }
+    
+    func testDateFallsInCurrentWeek() {
+        /*
+         Test last week's date
+        */
+        let lastWeeksDate = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+        let todaysPastTest = DateConfig.dateFallsInCurrentWeek(date: lastWeeksDate)
+        XCTAssertEqual(todaysPastTest, false, "Test Failed. Date does not fall in current week")
+        
+        /*
+         Test last yesterday's date
+        */
+        let yeserdaysDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let todaysEventDateTest = DateConfig.dateFallsInCurrentWeek(date: yeserdaysDate)
+        XCTAssertEqual(todaysEventDateTest, true, "Test Failed. Date does fall in current week")
+    }
+    
+    
+    func testRelativeDayValue() {
+        /*
+         Today Date Test
+        */
+        let dateValue =  DateConfig.getRelativeDayValue(fromDate: Date())
+        XCTAssertEqual(dateValue, "Today", "Test Failed. Value returned from Relative Day value should have been - Today")
+        
+        /*
+         Yesterday Date Test
+         */
+        let yesterday = Calendar.current.date(byAdding: Calendar.Component.day, value: -1, to: Date())!
+        let yesterdayDateValue = DateConfig.getRelativeDayValue(fromDate: yesterday)
+        XCTAssertEqual(yesterdayDateValue, "Yesterday", "Test Failed. Value returned from Relative Day value should have been - Yesterday")
+        
+        /*
+         Explicit Date Test
+        */
+        let threeDaysAgo = Calendar.current.date(byAdding: Calendar.Component.day, value: -3, to: Date())!
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, YYYY", options: 0, locale: NSLocale.current)
+        dateFormatter.timeZone = TimeZone.current
+        let expectedResult = dateFormatter.string(from: threeDaysAgo)
+        let threeDaysAgoValue = DateConfig.getRelativeDayValue(fromDate: threeDaysAgo)
+        XCTAssertEqual(threeDaysAgoValue, expectedResult, "Test Failed. Value returned from Relative Day value should have been - \(expectedResult)")
+    }
 
     func testPerformanceExample() {
         // This is an example of a performance test case.
