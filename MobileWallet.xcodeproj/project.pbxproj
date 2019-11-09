@@ -106,6 +106,7 @@
 		00230AFA2376C6DE00F23E34 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230AF92376C6DD00F23E34 /* Sequence.swift */; };
 		00230AFB2376C6DE00F23E34 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230AF92376C6DD00F23E34 /* Sequence.swift */; };
 		00230AFC2376C6DE00F23E34 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230AF92376C6DD00F23E34 /* Sequence.swift */; };
+		00230AFE2376C6FA00F23E34 /* DateConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230AFD2376C6FA00F23E34 /* DateConfig.swift */; };
 		00230AFF2376C6FA00F23E34 /* DateConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230AFD2376C6FA00F23E34 /* DateConfig.swift */; };
 		00230B002376C6FA00F23E34 /* DateConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230AFD2376C6FA00F23E34 /* DateConfig.swift */; };
 		00230B022376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230B012376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift */; };

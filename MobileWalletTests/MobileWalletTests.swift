@@ -54,13 +54,16 @@ class MobileWalletTests: XCTestCase {
     func testPositiveMicroTariConversions() {
         let tari = TariValue(microTari: 123000, sign: .positive)
         XCTAssert(tari.floatValue == 0.123)
-        XCTAssert(tari.displayStringWithOperator == "+ 0.12")
+        print(tari.displayStringWithOperator)
+        //Check 2 most common local formats
+        XCTAssert(tari.displayStringWithOperator == "+ 0.12" || tari.displayStringWithOperator == "+ 0,12")
     }
     
     func testNegativeMicroTariConversions() {
         let tari = TariValue(microTari: 234567, sign: .negative)
         XCTAssert(tari.floatValue == -0.234567)
-        XCTAssert(tari.displayStringWithOperator == "- 0.23")
+        //Check 2 most common local formats
+        XCTAssert(tari.displayStringWithOperator == "- 0.23" || tari.displayStringWithOperator == "- 0,23")
     }
     
     func testThemeAssets() {
