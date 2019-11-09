@@ -1,8 +1,8 @@
-//  TransactionsTableViewController.swift
+//  DateConfig.swift
 
 /*
     Package MobileWallet
-    Created by Jason van den Berg on 2019/10/31
+    Created by Gugulethu on 2019/11/07
     Using Swift 5.0
     Running on macOS 10.15
 
@@ -38,21 +38,42 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Foundation
 
-class TransactionsTableViewController: UITableViewController {
-    let CELL_IDENTIFIER = "TransactionTableTableViewCell"
-    let transactions = dummyTransactions
+public class DateConfig {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        viewSetup()
-        tableView.register(UINib(nibName: CELL_IDENTIFIER, bundle: nil), forCellReuseIdentifier: CELL_IDENTIFIER)
+    /*
+     Creates a timestamp string value from a given date
+     */
+    class func getRelativeDayValue(fromDate date: Date) -> String? {
+        if Calendar.current.isDateInToday(date) {
+            return NSLocalizedString("Today", comment: "Transaction list section heading")
+        } else if Calendar.current.isDateInYesterday(date) {
+            return NSLocalizedString("Yesterday", comment: "Transaction list section heading")
+        } else {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, YYYY", options: 0, locale: NSLocale.current)
+            dateFormatter.timeZone = TimeZone.current
+
+            return dateFormatter.string(from: date)
+        }
     }
 
-    private func viewSetup() {
-        tableView.separatorStyle = .none
-        tableView.rowHeight = 74
-        view.backgroundColor = Theme.shared.colors.transactionTableBackground
+    /*
+     Checks if the given date falls in the current week
+     */
+    class func dateFallsInCurrentWeek(date: Date) -> Bool {
+        let currentWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: Date())
+        let datesWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: date)
+        return (currentWeek == datesWeek)
     }
+
+    /*
+     Mocks dates in the past
+     */
+    class func mockPastDate(byDayValue value: Int) -> Date {
+        let today = Date.init()
+        return Calendar.current.date(byAdding: Calendar.Component.day, value: -value, to: today)!
+    }
+
 }
