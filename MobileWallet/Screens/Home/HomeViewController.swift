@@ -50,9 +50,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
         setup()
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-            self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
-        })
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+//            self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
+//        })
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -63,6 +63,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+
+        hideFloatingPanel()
     }
 
     private func setup() {
@@ -118,6 +120,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
     @IBAction func onSendAction(_ sender: Any) {
         print("Send")
+        self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
     }
 
     // MARK: - Navigation
@@ -141,10 +144,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         return HomeViewFloatingPanelBehavior()
     }
 
-    func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
-    }
-
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
+        print(vc.position)
         if vc.position == .full {
             //TODO Show search bar
         } else {
