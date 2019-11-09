@@ -70,8 +70,16 @@ struct TariValue {
         formatter.positivePrefix = "+ "
         formatter.negativePrefix = "- "
 
-        let number = NSNumber(value: self.floatValue)
+        return formatter.string(from: NSNumber(value: self.floatValue))!
+    }
 
-        return formatter.string(from: number)!
+    var displayStringWithNegativeOperator: String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 2
+        formatter.maximumFractionDigits = 2
+        formatter.negativePrefix = "-"
+
+        return formatter.string(from: NSNumber(value: self.floatValue))!
     }
 }

@@ -44,9 +44,9 @@ struct Transaction {
     let icon: UIImage?
     let userName: String
     let description: String
-    let value: UInt64
+    let value: TariValue
     let date: Date
-    let sign: ValueSign
+    //let sign: ValueSign
 }
 
 var dummyTransactions: [[Transaction]] {
@@ -66,7 +66,7 @@ var dummyTransactions: [[Transaction]] {
         var dummyIconNameIndex = 0
 
         for n in 1...25 {
-            var value = n * 123456789
+            var microTari = n * 123456789
             var sign: ValueSign = .positive
             var date = Date()
 
@@ -74,8 +74,8 @@ var dummyTransactions: [[Transaction]] {
                 sign = .negative
             }
 
-            if value == 0 {
-                value = 120
+            if microTari == 0 {
+                microTari = 120
             }
 
             if n == 4 || n == 1 || n == 3 || n == 8 {
@@ -89,7 +89,9 @@ var dummyTransactions: [[Transaction]] {
 
             let icon = dummyIconNames[dummyIconNameIndex]
 
-            txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: UInt64(value), date: date, sign: sign))
+            let value = TariValue(microTari: UInt64(microTari), sign: sign)
+
+            txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: value, date: date))
 //                txs.sort(by: {$0.date < $1.date})
             sortedTxs = txs.groupSort(ascending: false, byDate: { $0.date })
         }

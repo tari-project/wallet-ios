@@ -379,9 +379,9 @@
 		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
 			isa = PBXGroup;
 			children = (
-				00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */,
 				00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */,
 				00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */,
+				00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */,
 				00230B012376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift */,
 			);
 			path = TransactionHistory;

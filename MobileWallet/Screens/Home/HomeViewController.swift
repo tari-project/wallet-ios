@@ -41,31 +41,31 @@
 import UIKit
 import FloatingPanel
 
-class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
+protocol TransactionSelectedDelegate {
+    func onTransactionSelect(_: Transaction)
+}
+
+class HomeViewController: UIViewController, FloatingPanelControllerDelegate, TransactionSelectedDelegate {
     private var fpc: FloatingPanelController!
     @IBOutlet weak var sendButton: UIButton!
+    var selectedTransaction: Transaction?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setup()
-
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-//            self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
-//        })
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        showFloatingPanel()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        hideFloatingPanel()
-    }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//
+//        hideFloatingPanel()
+//    }
 
     private func setup() {
         setupFloatingPanel()
@@ -79,14 +79,19 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
             navBar.setBackgroundImage(UIImage(), for: .default)
             navBar.shadowImage = UIImage()
         }
+
+        showFloatingPanel()
     }
 
     private func setupFloatingPanel() {
         fpc = FloatingPanelController()
 
         fpc.delegate = self
-        let contentVC = TransactionsTableViewController()
-        fpc.set(contentViewController: contentVC)
+        let transactionTableVC = TransactionsTableViewController()
+        transactionTableVC.actionDelegate = self
+
+        //contentVC.actionDelegate = self
+        fpc.set(contentViewController: transactionTableVC)
 
         //TODO move custom styling setup into generic function
         fpc.surfaceView.cornerRadius = 36
@@ -94,7 +99,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         fpc.surfaceView.shadowRadius = 22
 
         // Track a scroll view(or the siblings) in the content view controller.
-        fpc.track(scrollView: contentVC.tableView)
+        fpc.track(scrollView: transactionTableVC.tableView)
     }
 
     private func showFloatingPanel() {
@@ -120,18 +125,18 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
     @IBAction func onSendAction(_ sender: Any) {
         print("Send")
-        self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
     }
 
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func onTransactionSelect(_ transaction: Transaction) {
+        selectedTransaction = transaction
+        self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
+    }
 
-        //TODO pass tx detail
-        print("Prepare")
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let transactionVC = segue.destination as! TransactionViewController
+        transactionVC.transaction = selectedTransaction
     }
 
     // MARK: - Floating panel setup delegate methods
@@ -145,7 +150,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
     }
 
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
-        print(vc.position)
         if vc.position == .full {
             //TODO Show search bar
         } else {

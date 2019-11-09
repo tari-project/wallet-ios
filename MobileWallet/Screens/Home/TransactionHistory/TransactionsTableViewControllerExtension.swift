@@ -85,17 +85,15 @@ extension TransactionsTableViewController {
         cell.userNameLabel.text = transaction.userName
         cell.descriptionLabel.text = transaction.description
 
-        cell.setValueLabel(value: transaction.value, sign: transaction.sign)
+        cell.setValueLabel(tariValue: transaction.value)
 
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let transaction = transactions[indexPath.section][indexPath.row]
+        actionDelegate?.onTransactionSelect(transaction)
+
         tableView.deselectRow(at: indexPath, animated: true)
     }
-
-    override func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
-        tableView.reloadRows(at: [indexPath], with: .automatic)
-    }
-
 }

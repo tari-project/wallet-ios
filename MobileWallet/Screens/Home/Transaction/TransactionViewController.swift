@@ -44,10 +44,13 @@ class TransactionViewController: UIViewController {
     @IBOutlet weak var valueLabel: UILabel!
     @IBOutlet weak var currencySymbol: UIImageView!
 
+    var transaction: Transaction?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setup()
+        setValues()
     }
 
     private func setup() {
@@ -64,8 +67,6 @@ class TransactionViewController: UIViewController {
             navBar.backIndicatorTransitionMaskImage = backImage
             navBar.tintColor = Theme.shared.colors.navigationBarTintColor
         }
-
-        navigationItem.title = NSLocalizedString("Payment Received", comment: "Navigation bar heading on transaction view screen")
     }
 
     private func setupValueView() {
@@ -76,10 +77,21 @@ class TransactionViewController: UIViewController {
         valueLabel.textColor = labelColor
 
         currencySymbol.image = Theme.shared.icons.currencySymbol?.withTintColor(labelColor!)
+    }
 
-         self.valueLabel.text = "50.99"
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-            self.valueLabel.text = "999 999 999.99"
-        })
+    private func setValues() {
+        if let tx = transaction {
+            self.valueLabel.text = tx.value.displayStringWithNegativeOperator
+
+            var title: String?
+
+            if tx.value.sign == .positive {
+                title = NSLocalizedString("Payment Received", comment: "Navigation bar heading on transaction view screen")
+            } else {
+                title = NSLocalizedString("Payment Sent", comment: "Navigation bar heading on transaction view screen")
+            }
+
+            navigationItem.title = title
+        }
     }
 }
