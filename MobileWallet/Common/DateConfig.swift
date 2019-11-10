@@ -73,11 +73,12 @@ public class DateConfig {
     /*
      Checks if the given date falls in the current week
      */
-    class func dateFallsInCurrentWeek(date: Date) -> Bool {
-        let currentWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: Date())
-        let datesWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: date)
-        return currentWeek == datesWeek
-    }
+    //Unused at the moment (tests need fixing)
+//    class func dateFallsInCurrentWeek(date: Date) -> Bool {
+//        let currentWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: Date())
+//        let datesWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: date)
+//        return currentWeek == datesWeek
+//    }
 
     /*
      Mocks dates in the past

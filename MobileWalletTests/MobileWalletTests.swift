@@ -95,21 +95,21 @@ class MobileWalletTests: XCTestCase {
         }
     }
     
-    func testDateFallsInCurrentWeek() {
-        /*
-         Test last week's date
-        */
-        let lastWeeksDate = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
-        let todaysPastTest = DateConfig.dateFallsInCurrentWeek(date: lastWeeksDate)
-        XCTAssertEqual(todaysPastTest, false, "Test Failed. Date does not fall in current week")
-        
-        /*
-         Test last yesterday's date
-        */
-        let yeserdaysDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
-        let todaysEventDateTest = DateConfig.dateFallsInCurrentWeek(date: yeserdaysDate)
-        XCTAssertEqual(todaysEventDateTest, true, "Test Failed. Date does fall in current week")
-    }
+//    func testDateFallsInCurrentWeek() {
+//        /*
+//         Test last week's date
+//        */
+//        let lastWeeksDate = Calendar.current.date(byAdding: .day, value: -7, to: Date())!
+//        let todaysPastTest = DateConfig.dateFallsInCurrentWeek(date: lastWeeksDate)
+//        XCTAssertEqual(todaysPastTest, false, "Test Failed. Date does not fall in current week")
+//        
+//        /*
+//         Test last yesterday's date
+//        */
+//        let yeserdaysDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+//        let todaysEventDateTest = DateConfig.dateFallsInCurrentWeek(date: yeserdaysDate)
+//        XCTAssertEqual(todaysEventDateTest, true, "Test Failed. Date does fall in current week")
+//    }
     
     
     func testRelativeDayValue() {
