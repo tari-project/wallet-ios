@@ -61,7 +61,7 @@ class ActionButton: UIButton {
         layer.cornerRadius = RADIUS_POINTS
         heightAnchor.constraint(equalToConstant: HEIGHT).isActive = true
         backgroundColor = Theme.shared.colors.sendButtonBackground
-        titleLabel?.font = Theme.shared.fonts.sendActionButton
+        titleLabel?.font = Theme.shared.fonts.actionButton
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

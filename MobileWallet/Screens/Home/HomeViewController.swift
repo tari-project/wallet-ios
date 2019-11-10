@@ -46,36 +46,59 @@ protocol TransactionSelectedDelegate {
 }
 
 class HomeViewController: UIViewController, FloatingPanelControllerDelegate, TransactionSelectedDelegate {
-    private var fpc: FloatingPanelController!
     @IBOutlet weak var sendButton: UIButton!
-    var selectedTransaction: Transaction?
+
+    @IBOutlet weak var balanceLabel: UILabel!
+    @IBOutlet weak var balanceValueLabel: UILabel!
+
+    private var fpc: FloatingPanelController!
+    private var selectedTransaction: Transaction?
 
     override func viewDidLoad() {
-        super.viewDidLoad()
-
         setup()
+        super.viewDidLoad()
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        super.viewWillAppear(animated)
 
+        //updateBalance()
     }
 
-//    override func viewWillDisappear(_ animated: Bool) {
-//        super.viewWillDisappear(animated)
-//
-//        hideFloatingPanel()
-//    }
-
     private func setup() {
-        setupFloatingPanel()
-
-        sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
         view.backgroundColor = Theme.shared.colors.homeBackground
 
+        sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
+
+        balanceLabel.text = NSLocalizedString("Total Balance", comment: "Home screen balance label")
+        balanceLabel.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
+        balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
+        balanceValueLabel.font = Theme.shared.fonts.homeScreenTotalBalanceValueLabel
+        balanceValueLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceValueLabel
+        balanceValueLabel.minimumScaleFactor = 0.5
+        balanceValueLabel.adjustsFontSizeToFitWidth = true
+
+       // print(balanceValueLabel.layoutMarginsGuide)
+
+        print("'\(dummyBalance.displayStringWithNegativeOperator)'")
+        print("'30 818,50'")
+        balanceValueLabel.text = dummyBalance.displayStringWithNegativeOperator // "30 818,50" //"\(dummyBalance.displayStringWithNegativeOperator)" // "Fuck fuck fuck fuck fuck" //dummyBalance.displayStringWithNegativeOperator
+
+       // print(balanceValueLabel.layoutMarginsGuide)
+
+        setupFloatingPanel()
         setupNavigatorBar()
         showFloatingPanel()
     }
+
+//    private func updateBalance() {
+//
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+//            self.balanceValueLabel.text = dummyBalance.displayStringWithNegativeOperator
+//            self.balanceValueLabel.layoutIfNeeded()
+//        })
+//
+//    }
 
     private func setupNavigatorBar() {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
@@ -104,7 +127,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         let transactionTableVC = TransactionsTableViewController()
         transactionTableVC.actionDelegate = self
 
-        //contentVC.actionDelegate = self
         fpc.set(contentViewController: transactionTableVC)
 
         //TODO move custom styling setup into generic function
@@ -125,9 +147,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         sendButton.superview?.bringSubviewToFront(sendButton)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-            //self.fpc.addPanel(toParent: self)
             self.fpc.show(animated: true) {
-                // Only for the first time
                 self.didMove(toParent: self)
             }
         })
