@@ -41,12 +41,14 @@
 import UIKit
 
 struct Transaction {
+    let id: String
     let icon: UIImage?
     let userName: String
     let description: String
     let value: TariValue
     let date: Date
-    //let sign: ValueSign
+    let userId: String
+    let fee: TariValue
 }
 
 var dummyTransactions: [[Transaction]] {
@@ -94,14 +96,54 @@ var dummyTransactions: [[Transaction]] {
             let icon = dummyIconNames[dummyIconNameIndex]
 
             let value = TariValue(microTari: UInt64(microTari), sign: sign)
+            let fee = TariValue(microTari: UInt64(12345 + (999 * n)), sign: .positive)
 
-            txs.append(Transaction(icon: icon, userName: "Username_\(n * 999)", description: "Payment for \(n) tacos", value: value, date: date))
-
+            txs.append(
+                Transaction(
+                    id: dummyTxId,
+                    icon: icon,
+                    userName: "Username_\(n * 999)",
+                    description: "Payment for \(n) tacos",
+                    value: value,
+                    date: date,
+                    userId: dummyUserId,
+                    fee: fee
+                )
+            )
         }
 
         //txs.sort(by: {$0.date < $1.date})
         sortedTxs = txs.groupSort(ascending: false, byDate: { $0.date })
 
         return sortedTxs
+    }
+}
+
+//TODO remove when not needed
+extension Array {
+    mutating func shuffle() {
+        for i in 0..<(count - 1) {
+            let j = Int(arc4random_uniform(UInt32(count - i))) + i
+            guard i != j else { continue}
+            self.swapAt(i, j)
+        }
+    }
+}
+
+var dummyUserId: String {
+    get {
+        let emojis = "😉☝️🔥🤓🎃🤯🍺🏀🎂😍👍🔥🐰"
+        var emojiArray = Array(emojis)
+        emojiArray.shuffle()
+        return String(emojiArray)
+    }
+}
+
+var dummyTxId: String {
+    get {
+        let chars = "lkjbwd8y234fljbhwouehbdwoeiuy37dbwqldjhb38"
+        var charsArray = Array(chars)
+        charsArray.shuffle()
+        return String(charsArray)
     }
 }

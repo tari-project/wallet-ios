@@ -80,14 +80,17 @@ struct Colors: Loopable {
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
     let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
-    let transactionDateValueLabel = UIColor(named: "TransactionDateValue")
+    let transactionDateValueLabel = UIColor(named: "SmallSubheading")
 
     //Navigation bar
     let navigationBarTint = UIColor(named: "Heading")
 
-    //Transaction view table
+    //Transaction view
     let transactionViewValueLabel = UIColor(named: "Heading")
     let transactionViewValueContainer = UIColor(named: "TransactionViewValueBackground")
+    let transactionScreenDivider = UIColor(named: "DividerColor")
+    let transactionScreenSubheadingLabel = UIColor(named: "SmallSubheading")
+    let transactionScreenTextLabel = UIColor(named: "SmallText")
 }
 
 struct Fonts: Loopable {
@@ -101,7 +104,10 @@ struct Fonts: Loopable {
     let transactionDateValueLabel = UIFont(name: "AvenirLTStd-Medium", size: 12.0)
 
     //View transaction screen
-    let transactionScreenValueLabel = UIFont(name: "AvenirLTStd-Black", size: 90.0)
+    let transactionScreenCurrencyValueLabel = UIFont(name: "AvenirLTStd-Black", size: 90.0)
+    let transactionScreenSubheadingLabel = UIFont(name: "AvenirLTStd-Medium", size: 13.0)
+    let transactionScreenTextLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
+    let transactionScreenTxIDLabel = UIFont(name: "AvenirLTStd-Roman", size: 13.0)
 
     //Navigation bar
     let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
