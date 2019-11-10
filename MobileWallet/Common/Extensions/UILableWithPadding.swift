@@ -40,8 +40,8 @@
 
 import UIKit
 
-extension UILabel {
-    private struct AssociatedKeys {
+class UILableWithPadding: UILabel {
+     private struct AssociatedKeys {
         static var padding = UIEdgeInsets()
     }
 
@@ -65,21 +65,22 @@ extension UILabel {
     }
 
     override open var intrinsicContentSize: CGSize {
-        guard let _ = self.text else { return super.intrinsicContentSize }
+        guard let _ = self.text else {
+            return super.intrinsicContentSize
+        }
+
+        guard let insets = padding else {
+            return super.intrinsicContentSize
+        }
 
         var contentSize = super.intrinsicContentSize
         var textWidth: CGFloat = frame.size.width
         var insetsHeight: CGFloat = 0.0
         var insetsWidth: CGFloat = 0.0
 
-        if let insets = padding {
-            insetsWidth += insets.left + insets.right
-            insetsHeight += insets.top + insets.bottom
-            textWidth -= insetsWidth
-        } else {
-            //Don't resize if padding was never set
-            return super.intrinsicContentSize
-        }
+        insetsWidth += insets.left + insets.right
+        insetsHeight += insets.top + insets.bottom
+        textWidth -= insetsWidth
 
         contentSize.height = ceil(super.intrinsicContentSize.height) + insetsHeight
         contentSize.width = ceil(super.intrinsicContentSize.width) + insetsWidth

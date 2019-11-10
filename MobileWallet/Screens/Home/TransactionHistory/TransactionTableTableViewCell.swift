@@ -46,7 +46,7 @@ class TransactionTableTableViewCell: UITableViewCell {
     @IBOutlet weak var icon: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var valueLabel: UILabel!
+    @IBOutlet weak var valueLabel: UILableWithPadding!
 
     override func awakeFromNib() {
         super.awakeFromNib()
