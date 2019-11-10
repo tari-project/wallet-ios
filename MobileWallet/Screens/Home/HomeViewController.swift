@@ -61,8 +61,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        //updateBalance()
     }
 
     private func setup() {
@@ -78,27 +76,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         balanceValueLabel.minimumScaleFactor = 0.5
         balanceValueLabel.adjustsFontSizeToFitWidth = true
 
-       // print(balanceValueLabel.layoutMarginsGuide)
-
-        print("'\(dummyBalance.displayStringWithNegativeOperator)'")
-        print("'30 818,50'")
-        balanceValueLabel.text = dummyBalance.displayStringWithNegativeOperator // "30 818,50" //"\(dummyBalance.displayStringWithNegativeOperator)" // "Fuck fuck fuck fuck fuck" //dummyBalance.displayStringWithNegativeOperator
-
-       // print(balanceValueLabel.layoutMarginsGuide)
+        balanceValueLabel.text = dummyBalance.displayStringWithNegativeOperator
 
         setupFloatingPanel()
         setupNavigatorBar()
         showFloatingPanel()
     }
-
-//    private func updateBalance() {
-//
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-//            self.balanceValueLabel.text = dummyBalance.displayStringWithNegativeOperator
-//            self.balanceValueLabel.layoutIfNeeded()
-//        })
-//
-//    }
 
     private func setupNavigatorBar() {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
@@ -185,7 +168,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
         if vc.position == .full {
-
             //TODO Show search bar
         } else {
             //TODO Hide search bar
