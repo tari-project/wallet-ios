@@ -47,8 +47,8 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
     }
 
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
-        let topInset: CGFloat = 40.0
-        let halfHeight = UIScreen.main.bounds.height * 0.75
+        let topInset: CGFloat = -20.0 //Slightly over nav bar
+        let halfHeight = UIScreen.main.bounds.height * 0.7
         let lowestHeight = halfHeight - 20
 
         switch position {
@@ -58,11 +58,17 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
             default: return nil // Or `case .hidden: return nil`
         }
     }
+
+    func backdropAlphaFor(position: FloatingPanelPosition) -> CGFloat {
+        if position == .full {
+            return 0.9
+        }
+
+        return 0.0
+    }
 }
 
 class HomeViewFloatingPanelBehavior: FloatingPanelBehavior {
-//    private var velocityThreshold: CGFloat = 15.0
-
     func allowsRubberBanding(for edge: UIRectEdge) -> Bool {
         return false
     }
@@ -70,21 +76,4 @@ class HomeViewFloatingPanelBehavior: FloatingPanelBehavior {
     func shouldProjectMomentum(_ fpc: FloatingPanelController, for proposedTargetPosition: FloatingPanelPosition) -> Bool {
         return false
     }
-
-//    func interactionAnimator(_ fpc: FloatingPanelController, to targetPosition: FloatingPanelPosition, with velocity: CGVector) -> UIViewPropertyAnimator {
-//        let damping = self.damping(with: velocity)
-//        let springTiming = UISpringTimingParameters(dampingRatio: damping, initialVelocity: velocity)
-//        return UIViewPropertyAnimator(duration: 1.4, timingParameters: springTiming)
-//    }
-
-//    private func damping(with velocity: CGVector) -> CGFloat {
-//        switch velocity.dy {
-//        case ...(-velocityThreshold):
-//            return 0.7
-//        case velocityThreshold...:
-//            return 0.7
-//        default:
-//            return 1.0
-//        }
-//    }
 }

@@ -165,6 +165,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
         if vc.position == .full {
+
             //TODO Show search bar
         } else {
             //TODO Hide search bar
