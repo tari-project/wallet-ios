@@ -46,9 +46,7 @@ protocol Loopable {
 
 extension Loopable {
     func allProperties() throws -> [String: Any?] {
-
         var result: [String: Any?] = [:]
-
         let mirror = Mirror(reflecting: self)
 
         // Optional check to make sure we're iterating over a struct or class
@@ -70,7 +68,7 @@ extension Loopable {
 
 struct Colors: Loopable {
     let sendButtonBackground = UIColor(named: "SendButtonBackground")
-    let homeBackground = UIColor(named: "HomeBackground")
+    let homeBackground = UIColor(named: "TransactionViewValueBackground") //TODO remove this color when the background image is added
     let transactionTableBackground = UIColor(named: "TransactionTableBackground")
     let splashBackground = UIColor(named: "SplashBackground")
     let appBackground = UIColor(named: "AppBackground")
@@ -82,10 +80,17 @@ struct Colors: Loopable {
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
     let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
-    let transactionDateValueLabel = UIColor(named: "TransactionDateValue")
+    let transactionDateValueLabel = UIColor(named: "SmallSubheading")
 
-    //Header
-    let navigationBarTintColor = UIColor(named: "NavigationBarTint")
+    //Navigation bar
+    let navigationBarTint = UIColor(named: "Heading")
+
+    //Transaction view
+    let transactionViewValueLabel = UIColor(named: "Heading")
+    let transactionViewValueContainer = UIColor(named: "TransactionViewValueBackground")
+    let transactionScreenDivider = UIColor(named: "DividerColor")
+    let transactionScreenSubheadingLabel = UIColor(named: "SmallSubheading")
+    let transactionScreenTextLabel = UIColor(named: "SmallText")
 }
 
 struct Fonts: Loopable {
@@ -97,15 +102,28 @@ struct Fonts: Loopable {
     let transactionCellDescriptionLabel = UIFont(name: "AvenirLTStd-Roman", size: 12.0)
     let transactionCellValueLabel = UIFont(name: "AvenirLTStd-Black", size: 12.0)
     let transactionDateValueLabel = UIFont(name: "AvenirLTStd-Medium", size: 12.0)
+
+    //View transaction screen
+    let transactionScreenCurrencyValueLabel = UIFont(name: "AvenirLTStd-Black", size: 90.0)
+    let transactionScreenSubheadingLabel = UIFont(name: "AvenirLTStd-Medium", size: 13.0)
+    let transactionScreenTextLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
+    let transactionScreenTxIDLabel = UIFont(name: "AvenirLTStd-Roman", size: 13.0)
+
+    //Navigation bar
+    let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
 }
 
-struct TransactionIcons: Loopable {
+struct Icons: Loopable {
+    //Transaction icons
     let food = UIImage(named: "food")
     let game = UIImage(named: "game")
     let thanks = UIImage(named: "thanks")
     let transfer = UIImage(named: "transfer")
     let drinks = UIImage(named: "drinks")
     let services = UIImage(named: "services")
+
+    //General icons
+    let currencySymbol = UIImage(named: "Gem")
 }
 
 struct Theme {
@@ -114,6 +132,8 @@ struct Theme {
     //NOTE: Any new theme properties must be added to tests to ensure all assets are included before deployment
 
     let colors = Colors()
-    let transactionIcons = TransactionIcons()
+    let icons = Icons()
     let fonts = Fonts()
+
+    let transactionIcons = Icons() //FIXME delete this and change all references to it
 }

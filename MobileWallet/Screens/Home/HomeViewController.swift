@@ -41,9 +41,14 @@
 import UIKit
 import FloatingPanel
 
-class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
+protocol TransactionSelectedDelegate {
+    func onTransactionSelect(_: Transaction)
+}
+
+class HomeViewController: UIViewController, FloatingPanelControllerDelegate, TransactionSelectedDelegate {
     private var fpc: FloatingPanelController!
     @IBOutlet weak var sendButton: UIButton!
+    var selectedTransaction: Transaction?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -54,12 +59,13 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        showFLoatingPanel()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-    }
+//    override func viewWillDisappear(_ animated: Bool) {
+//        super.viewWillDisappear(animated)
+//
+//        hideFloatingPanel()
+//    }
 
     private func setup() {
         setupFloatingPanel()
@@ -67,23 +73,39 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
         view.backgroundColor = Theme.shared.colors.homeBackground
 
+        setupNavigatorBar()
+        showFloatingPanel()
+    }
+
+    private func setupNavigatorBar() {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
 
         if let navBar = navigationController?.navigationBar {
             navBar.setBackgroundImage(UIImage(), for: .default)
             navBar.shadowImage = UIImage()
+
+            navBar.tintColor = Theme.shared.colors.navigationBarTint
+
+            navBar.titleTextAttributes = [
+                NSAttributedString.Key.foregroundColor: Theme.shared.colors.navigationBarTint!,
+                NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle!
+            ]
+
+            let backImage = UIImage(systemName: "arrow.left") //TODO use own asset when available
+            navBar.backIndicatorImage = backImage
+            navBar.backIndicatorTransitionMaskImage = backImage
         }
     }
 
     private func setupFloatingPanel() {
         fpc = FloatingPanelController()
 
-        // Assign self as the delegate of the controller.
-        fpc.delegate = self // Optional
+        fpc.delegate = self
+        let transactionTableVC = TransactionsTableViewController()
+        transactionTableVC.actionDelegate = self
 
-        // Set a content view controller.
-        let contentVC = TransactionsTableViewController()
-        fpc.set(contentViewController: contentVC)
+        //contentVC.actionDelegate = self
+        fpc.set(contentViewController: transactionTableVC)
 
         //TODO move custom styling setup into generic function
         fpc.surfaceView.cornerRadius = 36
@@ -91,10 +113,10 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         fpc.surfaceView.shadowRadius = 22
 
         // Track a scroll view(or the siblings) in the content view controller.
-        fpc.track(scrollView: contentVC.tableView)
+        fpc.track(scrollView: transactionTableVC.tableView)
     }
 
-    private func showFLoatingPanel() {
+    private func showFloatingPanel() {
         view.addSubview(fpc.view)
         fpc.view.frame = view.bounds
         addChild(fpc)
@@ -121,12 +143,14 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func onTransactionSelect(_ transaction: Transaction) {
+        selectedTransaction = transaction
+        self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
+    }
 
-        //TODO pass tx detail
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let transactionVC = segue.destination as! TransactionViewController
+        transactionVC.transaction = selectedTransaction
     }
 
     // MARK: - Floating panel setup delegate methods
@@ -137,9 +161,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
     func floatingPanel(_ vc: FloatingPanelController, behaviorFor newCollection: UITraitCollection) -> FloatingPanelBehavior? {
         return HomeViewFloatingPanelBehavior()
-    }
-
-    func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
     }
 
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {

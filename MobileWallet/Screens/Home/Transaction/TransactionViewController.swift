@@ -41,6 +41,28 @@
 import UIKit
 
 class TransactionViewController: UIViewController {
+    @IBOutlet weak var valueContainerView: UIView!
+    @IBOutlet weak var valueLabel: UILabel!
+    @IBOutlet weak var currencySymbol: UIImageView!
+    @IBOutlet weak var detailsStackView: UIStackView!
+
+    @IBOutlet weak var fromLabel: UILabel!
+    @IBOutlet weak var fromUserNameLabel: UILabel!
+    @IBOutlet weak var fromUserIdLabel: UILabel!
+
+    @IBOutlet weak var noteLabel: UILabel!
+    @IBOutlet weak var noteValueLabel: UILabel!
+    @IBOutlet weak var transactionIcon: UIImageView!
+
+    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var dateValueLabel: UILabel!
+
+    @IBOutlet weak var transactionFeeLabel: UILabel!
+    @IBOutlet weak var transactionFeeValueLabel: UILabel!
+
+    @IBOutlet weak var transactionIdLabel: UILabel!
+
+    var transaction: Transaction?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,16 +70,90 @@ class TransactionViewController: UIViewController {
         setup()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        createBorders()
+    }
+
     private func setup() {
         view.backgroundColor = Theme.shared.colors.appBackground
 
-        if let navBar = navigationController?.navigationBar {
-            let backImage = UIImage(systemName: "arrow.left") //TODO use own asset when available
-            navBar.backIndicatorImage = backImage
-            navBar.backIndicatorTransitionMaskImage = backImage
-            navBar.tintColor = Theme.shared.colors.navigationBarTintColor
+        fromLabel.text = NSLocalizedString("From", comment: "Transaction detail screen")
+        fromLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
+        fromLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
+        fromUserNameLabel.font = Theme.shared.fonts.transactionScreenTextLabel
+        fromUserNameLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
+
+        noteLabel.text = NSLocalizedString("Note", comment: "Transaction detail screen")
+        noteLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
+        noteLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
+        noteValueLabel.font = Theme.shared.fonts.transactionScreenTextLabel
+        noteValueLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
+
+        dateLabel.text = NSLocalizedString("Date and Time", comment: "Transaction detail screen")
+        dateLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
+        dateLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
+        dateValueLabel.font = Theme.shared.fonts.transactionScreenTextLabel
+        dateValueLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
+
+        transactionFeeLabel.text = NSLocalizedString("Transaction Fee", comment: "Transaction detail screen")
+        transactionFeeLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
+        transactionFeeLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
+        transactionFeeValueLabel.font = Theme.shared.fonts.transactionScreenTextLabel
+        transactionFeeValueLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
+
+        transactionIdLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
+        transactionIdLabel.font = Theme.shared.fonts.transactionScreenTxIDLabel
+
+        for view in self.detailsStackView.subviews {
+            view.backgroundColor = Theme.shared.colors.appBackground
         }
 
-        navigationItem.title = NSLocalizedString("Payment Received", comment: "Navigation bar heading on transaction view screen")
+        setupValueView()
+        setValues()
+    }
+
+    private func createBorders() {
+        for view in self.detailsStackView.subviews {
+            view.layer.addBorder(edge: .bottom, color: Theme.shared.colors.transactionScreenDivider!, thickness: 1.0)
+        }
+    }
+
+    private func setupValueView() {
+        let labelColor = Theme.shared.colors.transactionViewValueLabel
+
+        valueLabel.minimumScaleFactor = 0.2
+        valueLabel.font = Theme.shared.fonts.transactionScreenCurrencyValueLabel
+        valueLabel.textColor = labelColor
+
+        currencySymbol.image = Theme.shared.icons.currencySymbol?.withTintColor(labelColor!)
+
+        valueContainerView.backgroundColor = Theme.shared.colors.transactionViewValueContainer
+    }
+
+    private func setValues() {
+        if let tx = transaction {
+            var title: String?
+
+            if tx.value.sign == .positive {
+                title = NSLocalizedString("Payment Received", comment: "Navigation bar heading on transaction view screen")
+            } else {
+                title = NSLocalizedString("Payment Sent", comment: "Navigation bar heading on transaction view screen")
+            }
+
+            navigationItem.title = title
+
+            valueLabel.text = tx.value.displayStringWithNegativeOperator
+            fromUserNameLabel.text = tx.userName
+            fromUserIdLabel.text = tx.userId
+            noteValueLabel.text = tx.description
+            transactionIcon.image = tx.icon
+            dateValueLabel.text = DateConfig.getDateTimeString(date: tx.date)
+            transactionFeeValueLabel.text = tx.fee.displayStringWithNegativeOperator
+
+            let txLabelText = NSLocalizedString("Transaction ID:", comment: "Transaction view screen")
+            transactionIdLabel.text = "\(txLabelText) \(tx.id)"
+        }
     }
 }

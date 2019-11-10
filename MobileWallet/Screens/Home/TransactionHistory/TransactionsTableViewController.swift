@@ -43,6 +43,7 @@ import UIKit
 class TransactionsTableViewController: UITableViewController {
     let CELL_IDENTIFIER = "TransactionTableTableViewCell"
     let transactions = dummyTransactions
+    var actionDelegate: TransactionSelectedDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -1,8 +1,8 @@
-//  TariValue.swift
+//  CALayer.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/06
+	Created by Jason van den Berg on 2019/11/09
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,48 +38,29 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+import UIKit
 
-enum ValueSign {
-    case positive
-    case negative
-}
+extension CALayer {
+    func addBorder(edge: UIRectEdge, color: UIColor, thickness: CGFloat) {
+        let border = CALayer()
+        switch edge {
+            case UIRectEdge.top:
+            border.frame = CGRect(x: 0, y: 0, width: frame.width, height: thickness)
 
-//TODO tests when finalized
+            case UIRectEdge.bottom:
+            border.frame = CGRect(x: 0, y: frame.height - thickness, width: frame.width, height: thickness)
 
-struct TariValue {
-    private let CONVERSION = 1000000
+            case UIRectEdge.left:
+            border.frame = CGRect(x: 0, y: 0, width: thickness, height: frame.height)
 
-    let microTari: UInt64
-    let sign: ValueSign
+            case UIRectEdge.right:
+            border.frame = CGRect(x: frame.width - thickness, y: 0, width: thickness, height: frame.height)
 
-    var floatValue: Float {
-        //TODO re-evaluate this
-        var signedFloatValue = Float(self.microTari) / Float(CONVERSION)
-        if sign == .negative {
-            signedFloatValue = signedFloatValue * -1
+            default: do {}
         }
-        return signedFloatValue
-    }
 
-    var displayStringWithOperator: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        formatter.positivePrefix = "+ "
-        formatter.negativePrefix = "- "
+        border.backgroundColor = color.cgColor
 
-        return formatter.string(from: NSNumber(value: self.floatValue))!
-    }
-
-    var displayStringWithNegativeOperator: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        formatter.negativePrefix = "-"
-
-        return formatter.string(from: NSNumber(value: self.floatValue))!
+        addSublayer(border)
     }
 }

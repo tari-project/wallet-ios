@@ -43,7 +43,7 @@ import Foundation
 public class DateConfig {
 
     /*
-     Creates a timestamp string value from a given date
+     Creates a readable string from a given date
      */
     class func getRelativeDayValue(fromDate date: Date) -> String? {
         if Calendar.current.isDateInToday(date) {
@@ -60,13 +60,25 @@ public class DateConfig {
     }
 
     /*
+     Creates a date and time string from a given date
+     */
+    class func getDateTimeString(date: Date) -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMM d YYYY h:mm a", options: 0, locale: NSLocale.current)
+        dateFormatter.timeZone = TimeZone.current
+
+        return dateFormatter.string(from: date)
+    }
+
+    /*
      Checks if the given date falls in the current week
      */
-    class func dateFallsInCurrentWeek(date: Date) -> Bool {
-        let currentWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: Date())
-        let datesWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: date)
-        return (currentWeek == datesWeek)
-    }
+    //Unused at the moment (tests need fixing)
+//    class func dateFallsInCurrentWeek(date: Date) -> Bool {
+//        let currentWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: Date())
+//        let datesWeek = Calendar.current.component(Calendar.Component.weekOfYear, from: date)
+//        return currentWeek == datesWeek
+//    }
 
     /*
      Mocks dates in the past

@@ -54,11 +54,14 @@ class TransactionTableTableViewCell: UITableViewCell {
         viewSetup()
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-        contentView.backgroundColor = BACKGROUND_COLOR
+    override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+        if highlighted {
+            self.contentView.alpha = 0.6
+        } else {
+            UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
+                self.contentView.alpha = 1
+            })
+        }
     }
 
     private func viewSetup() {
@@ -77,8 +80,7 @@ class TransactionTableTableViewCell: UITableViewCell {
         selectionStyle = .none
     }
 
-    func setValueLabel(value: UInt64, sign: ValueSign) {
-        let tariValue = TariValue(microTari: UInt64(value), sign: sign)
+    func setValueLabel(tariValue: TariValue) {
         valueLabel.text = tariValue.displayStringWithOperator
 
         if tariValue.sign == .positive {
