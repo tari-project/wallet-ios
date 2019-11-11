@@ -40,15 +40,19 @@
 
 import UIKit
 import Lottie
+import LocalAuthentication
 
 class SplashViewController: UIViewController {
     @IBOutlet weak var versionLabel: UILabel!
     @IBOutlet weak var animationContainer: AnimationView!
 
+    private let localAuthenticationContext = LAContext()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setVersion()
+        checkAuthEnabled()
         loadAnimation()
 
         //Determine if app needs to navigate home or to onboarding
@@ -56,7 +60,7 @@ class SplashViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        startAnimation()
+        //startAnimation()
     }
 
     private func setVersion() {
@@ -67,6 +71,62 @@ class SplashViewController: UIViewController {
         }
     }
 
+    private func checkAuthEnabled() {
+
+        //localAuthenticationContext.localizedCancelTitle = "Enter Username/Password"
+
+        let authPolicy: LAPolicy = .deviceOwnerAuthentication
+
+        var error: NSError?
+        if localAuthenticationContext.canEvaluatePolicy(authPolicy, error: &error) {
+                let reason = "Log in to your account"
+                self.localAuthenticationContext.evaluatePolicy(authPolicy, localizedReason: reason ) { success, error in
+                    if success {
+                        // Move to the main thread because a animation needs to start in the UI.
+
+                        DispatchQueue.main.async {
+                            self.startAnimation()
+                        }
+                    } else {
+                        print("Failed to auth")
+                        print(error?.localizedDescription ?? "Failed to authenticate")
+
+                        // Fall back to a asking for username and password.
+                        // ...
+                    }
+                }
+        } else {
+            print("No auth policy")
+            print(error)
+            biometricsNeedsEnabling()
+        }
+    }
+
+    /*
+     1.
+     - User doesn't accept using Face ID, they're always presented with their device pin/passcode until they go to settings and enable Face ID
+     
+     
+ 
+    */
+
+    private func biometricsNeedsEnabling() {
+        let alert = UIAlertController(title: "Auth failed", message: "Please enable Face ID for the Tari app", preferredStyle: .alert)
+        //alert.addAction(UIAlertAction(title: "Enable now", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            switch action.style {
+            case .default:
+                print("default")
+            case .cancel:
+                print("cancel")
+            @unknown default:
+                print("Unknown")
+            }
+        }))
+
+        self.present(alert, animated: true, completion: nil)
+    }
+
     private func loadAnimation() {
         let animation = Animation.named("SplashAnimation")
         animationContainer.animation = animation
@@ -74,7 +134,7 @@ class SplashViewController: UIViewController {
 
     private func startAnimation() {
         #if targetEnvironment(simulator)
-          animationContainer.animationSpeed = 5
+          //animationContainer.animationSpeed = 5
         #endif
 
         animationContainer.play(
