@@ -51,19 +51,17 @@ class SplashViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setVersion()
-        checkAuthEnabled()
+        setVersionLabel()
         loadAnimation()
-
-        //Determine if app needs to navigate home or to onboarding
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        //startAnimation()
+
+        checkExistingWallet()
     }
 
-    private func setVersion() {
+    private func setVersionLabel() {
         versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             let labelText = NSLocalizedString("Testnet", comment: "Bottom version label for splash screen")
@@ -71,10 +69,12 @@ class SplashViewController: UIViewController {
         }
     }
 
-    private func checkAuthEnabled() {
+    private func checkExistingWallet() {
+        //TODO If a user has an existing wallet, proceed to auth, if not continue to onboarding
+        authenticateUser()
+    }
 
-        //localAuthenticationContext.localizedCancelTitle = "Enter Username/Password"
-
+    private func authenticateUser() {
         let authPolicy: LAPolicy = .deviceOwnerAuthentication
 
         var error: NSError?
@@ -82,49 +82,43 @@ class SplashViewController: UIViewController {
                 let reason = "Log in to your account"
                 self.localAuthenticationContext.evaluatePolicy(authPolicy, localizedReason: reason ) { success, error in
                     if success {
-                        // Move to the main thread because a animation needs to start in the UI.
-
                         DispatchQueue.main.async {
                             self.startAnimation()
                         }
                     } else {
-                        print("Failed to auth")
-                        print(error?.localizedDescription ?? "Failed to authenticate")
-
-                        // Fall back to a asking for username and password.
-                        // ...
+                        let reason = error?.localizedDescription ?? NSLocalizedString("Failed to authenticate", comment: "Failed Face ID alert")
+                        print(reason)
+                        DispatchQueue.main.async {
+                            self.authenticationFailedAlertOptions(reason: reason)
+                        }
                     }
                 }
         } else {
-            print("No auth policy")
-            print(error)
-            biometricsNeedsEnabling()
+            let reason = error?.localizedDescription ?? NSLocalizedString("No available biometrics available", comment: "Failed Face ID alert")
+            print(reason)
+            DispatchQueue.main.async {
+                self.authenticationFailedAlertOptions(reason: reason)
+            }
         }
     }
 
-    /*
-     1.
-     - User doesn't accept using Face ID, they're always presented with their device pin/passcode until they go to settings and enable Face ID
-     
-     
- 
-    */
+    private func authenticationFailedAlertOptions(reason: String) {
+        let alert = UIAlertController(title: "Authentication failed", message: reason, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Try again", style: .default, handler: { _ in
+            self.authenticateUser()
+        }))
 
-    private func biometricsNeedsEnabling() {
-        let alert = UIAlertController(title: "Auth failed", message: "Please enable Face ID for the Tari app", preferredStyle: .alert)
-        //alert.addAction(UIAlertAction(title: "Enable now", style: .default, handler: nil))
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-            switch action.style {
-            case .default:
-                print("default")
-            case .cancel:
-                print("cancel")
-            @unknown default:
-                print("Unknown")
-            }
+        alert.addAction(UIAlertAction(title: "Open settings", style: .default, handler: { _ in
+            self.openAppSettings()
         }))
 
         self.present(alert, animated: true, completion: nil)
+    }
+
+    private func openAppSettings() {
+        if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(appSettings)
+        }
     }
 
     private func loadAnimation() {
@@ -134,7 +128,7 @@ class SplashViewController: UIViewController {
 
     private func startAnimation() {
         #if targetEnvironment(simulator)
-          //animationContainer.animationSpeed = 5
+          animationContainer.animationSpeed = 5
         #endif
 
         animationContainer.play(
