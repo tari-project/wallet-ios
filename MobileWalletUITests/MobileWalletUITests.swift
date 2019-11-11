@@ -23,13 +23,23 @@ class MobileWalletUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() {
+    func testSplash() {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
-
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
+         //Wait for splash loading animation to complete
+        expectation(for: NSPredicate(format: "exists == 1"), evaluatedWith: app.staticTexts["Total Balance"], handler: nil)
+        waitForExpectations(timeout: 10, handler: nil)
+        
+        app.swipeUp()
+        app.tables.staticTexts["Payment for 25 tacos"].tap()
+        //TODO make some view asserts
+        app.navigationBars["Payment Received"].buttons["Back"].tap()
+        
+        app.swipeDown()
+        app.tables.staticTexts["Payment for 24 tacos"].tap()
+        app.navigationBars["Payment Sent"].buttons["Back"].tap()
     }
 
     func testLaunchPerformance() {
