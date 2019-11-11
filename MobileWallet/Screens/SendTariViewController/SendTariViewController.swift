@@ -91,7 +91,7 @@ class SendTariViewController: UIViewController {
      Card animation manager to handle the change in the card states
      */
     private func animateCard(forCardState cardState: CardFillStates) {
-        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIView.AnimationOptions.curveEaseOut, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIView.AnimationOptions.curveEaseInOut, animations: {
             self.setupCardFrame(forCardState: cardState)
             self.view.layoutIfNeeded()
         }) { (_) in
