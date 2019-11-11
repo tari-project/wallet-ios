@@ -23,17 +23,37 @@
                                     <action selector="onSendAction:" destination="EY7-bG-NLy" eventType="touchUpInside" id="7ao-YU-6pp"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ENx-MR-mo9">
+                                <rect key="frame" x="25" y="98" width="364" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o0q-BV-Ysa">
+                                <rect key="frame" x="25" y="127" width="364" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="nEn-jd-PvX" secondAttribute="trailing" constant="25" id="ARf-vv-Yq1"/>
+                            <constraint firstItem="o0q-BV-Ysa" firstAttribute="top" secondItem="ENx-MR-mo9" secondAttribute="bottom" constant="8" id="JHA-7V-WMr"/>
                             <constraint firstAttribute="bottomMargin" secondItem="nEn-jd-PvX" secondAttribute="bottom" constant="16" id="JJw-Fc-2YR"/>
+                            <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="ENx-MR-mo9" secondAttribute="trailing" constant="25" id="KCB-kB-Lha"/>
+                            <constraint firstItem="ENx-MR-mo9" firstAttribute="top" secondItem="14X-p9-0HZ" secondAttribute="top" constant="10" id="Rn2-lq-8x8"/>
                             <constraint firstItem="nEn-jd-PvX" firstAttribute="leading" secondItem="14X-p9-0HZ" secondAttribute="leading" constant="25" id="TeR-4A-Moq"/>
+                            <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="o0q-BV-Ysa" secondAttribute="trailing" constant="25" id="Tju-L8-E4g"/>
+                            <constraint firstItem="o0q-BV-Ysa" firstAttribute="leading" secondItem="14X-p9-0HZ" secondAttribute="leading" constant="25" id="jwL-vH-XEI"/>
+                            <constraint firstItem="ENx-MR-mo9" firstAttribute="leading" secondItem="14X-p9-0HZ" secondAttribute="leading" constant="25" id="m4M-3q-W1p"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="14X-p9-0HZ"/>
                     </view>
                     <navigationItem key="navigationItem" id="dtD-Op-kJg"/>
                     <connections>
+                        <outlet property="balanceLabel" destination="ENx-MR-mo9" id="jRB-nB-A0e"/>
+                        <outlet property="balanceValueLabel" destination="o0q-BV-Ysa" id="R3f-hk-5pd"/>
                         <outlet property="sendButton" destination="nEn-jd-PvX" id="WN2-cy-Tk7"/>
                         <segue destination="x8A-jP-29y" kind="show" identifier="HomeToTransactionDetails" id="ggO-ro-O9g"/>
                     </connections>
@@ -71,7 +91,6 @@
                                         </constraints>
                                     </imageView>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="4yS-Bd-0GE" firstAttribute="centerX" secondItem="myP-O4-zKq" secondAttribute="centerX" id="A7u-rX-tG6"/>
                                     <constraint firstItem="4yS-Bd-0GE" firstAttribute="top" secondItem="myP-O4-zKq" secondAttribute="top" id="CNN-i4-bB8"/>
@@ -105,7 +124,6 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemIndigoColor" red="0.34509803919999998" green="0.33725490200000002" blue="0.83921568629999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="noP-Ck-DHO" secondAttribute="trailing" id="1LD-7Z-R5b"/>
                                             <constraint firstItem="wlB-j1-dzO" firstAttribute="leading" secondItem="opR-EC-JDu" secondAttribute="leading" id="FwB-wW-wjz"/>
@@ -128,7 +146,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4jD-cm-omZ">
-                                                <rect key="frame" x="0.0" y="61" width="42" height="20.5"/>
+                                                <rect key="frame" x="0.0" y="61" width="313" height="20.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
@@ -141,12 +159,13 @@
                                                 </constraints>
                                             </imageView>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemOrangeColor" red="1" green="0.58431372550000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" systemColor="systemGrayColor" red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstItem="4jD-cm-omZ" firstAttribute="leading" secondItem="ql4-1T-0jk" secondAttribute="leading" id="8T0-02-jnk"/>
                                             <constraint firstItem="4ZA-Fw-kDt" firstAttribute="leading" secondItem="ql4-1T-0jk" secondAttribute="leading" id="Ipg-Kp-kmc"/>
                                             <constraint firstAttribute="trailing" secondItem="4ZA-Fw-kDt" secondAttribute="trailing" id="MKi-7B-5ux"/>
                                             <constraint firstAttribute="bottom" secondItem="4ZA-Fw-kDt" secondAttribute="bottom" constant="20" id="N0T-Wv-5pS"/>
+                                            <constraint firstItem="PYh-oJ-cXT" firstAttribute="leading" secondItem="4jD-cm-omZ" secondAttribute="trailing" constant="25" id="N7h-gT-fQj"/>
                                             <constraint firstAttribute="trailing" secondItem="PYh-oJ-cXT" secondAttribute="trailing" id="VjV-j9-t4V"/>
                                             <constraint firstItem="4ZA-Fw-kDt" firstAttribute="top" secondItem="4jD-cm-omZ" secondAttribute="bottom" constant="8" id="WYr-5R-tdn"/>
                                             <constraint firstItem="4ZA-Fw-kDt" firstAttribute="top" secondItem="PYh-oJ-cXT" secondAttribute="bottom" id="hRH-D0-X27"/>
@@ -168,7 +187,6 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemPinkColor" red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="YNN-Qd-lJd" secondAttribute="trailing" constant="8" id="Lmy-BP-Auw"/>
                                             <constraint firstItem="SVZ-K4-OzG" firstAttribute="leading" secondItem="HuL-ij-KFW" secondAttribute="leading" id="bXY-fz-Ode"/>
@@ -194,7 +212,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
-                                        <color key="backgroundColor" systemColor="systemYellowColor" red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <color key="backgroundColor" systemColor="systemGrayColor" red="0.5568627451" green="0.5568627451" blue="0.57647058819999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="bNN-pR-9lx" secondAttribute="trailing" id="Eee-f4-XFO"/>
                                             <constraint firstItem="bNN-pR-9lx" firstAttribute="leading" secondItem="u3f-7t-eCV" secondAttribute="leading" id="WMX-qw-dOd"/>

@@ -51,6 +51,25 @@ struct Transaction {
     let fee: TariValue
 }
 
+var dummyBalance: TariValue {
+    var balance: Int = 0
+    for txGroup in dummyTransactions {
+        for tx in txGroup {
+            if tx.value.sign == .positive {
+                balance = balance + Int(tx.value.microTari)
+            } else {
+                balance = balance - Int(tx.value.microTari)
+            }
+        }
+    }
+
+    if balance < 0 {
+        balance = 0
+    }
+
+    return TariValue(microTari: UInt64(balance), sign: .positive)
+}
+
 var dummyTransactions: [[Transaction]] {
     get {
         var txs: [Transaction] = []
@@ -81,7 +100,7 @@ var dummyTransactions: [[Transaction]] {
             }
 
             if n == 25 {
-                microTari = microTari * 9999
+                microTari = microTari * 999
             }
 
             if n == 4 || n == 1 || n == 3 || n == 8 {

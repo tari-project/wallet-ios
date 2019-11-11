@@ -73,6 +73,10 @@ struct Colors: Loopable {
     let splashBackground = UIColor(named: "SplashBackground")
     let appBackground = UIColor(named: "AppBackground")
 
+    //Home screen
+    let homeScreenTotalBalanceLabel = UIColor(named: "SmallSubheading")
+    let homeScreenTotalBalanceValueLabel = UIColor(named: "Heading")
+
     //Transaction cell
     let transactionCellUsername = UIColor(named: "TransactionCellUsername")
     let transactionCellDescription = UIColor(named: "TransactionCellDescription")
@@ -95,7 +99,11 @@ struct Colors: Loopable {
 
 struct Fonts: Loopable {
     let splashTestnetFooterLabel = UIFont(name: "AvenirLTStd-Heavy", size: 9.0)
-    let sendActionButton = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)
+    let actionButton = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)
+
+    //Home screen
+    let homeScreenTotalBalanceLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
+    let homeScreenTotalBalanceValueLabel = UIFont(name: "AvenirLTStd-Black", size: 50.0)
 
     //Transaction cell
     let transactionCellUsernameLabel = UIFont(name: "AvenirLTStd-Heavy", size: 13.0)
