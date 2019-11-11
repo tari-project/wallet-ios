@@ -56,6 +56,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         setup()
     }
 
+    let startCardHeight: CGFloat = 194.0
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -139,6 +141,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     @IBAction func onSendAction(_ sender: Any) {
         print("Send")
+        let sendTariViewController = SendTariViewController()
+        sendTariViewController.modalPresentationStyle = .overCurrentContext
+        self.present(sendTariViewController, animated: false, completion: nil)
     }
 
     // MARK: - Navigation

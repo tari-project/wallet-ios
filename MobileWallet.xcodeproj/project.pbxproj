@@ -165,6 +165,9 @@
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
 		83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */; };
+		C6C7647D2379467300217EDA /* SendTariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C7647C2379467300217EDA /* SendTariViewController.swift */; };
+		C6C764852379588900217EDA /* SendTariCardView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C6C764842379588900217EDA /* SendTariCardView.xib */; };
+		C6C764872379599300217EDA /* SendTariCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C764862379599300217EDA /* SendTariCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -254,6 +257,9 @@
 		540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		867662CACBB1C47B665EBA55 /* Pods-MobileWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.release.xcconfig"; sourceTree = "<group>"; };
 		9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C6C7647C2379467300217EDA /* SendTariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTariViewController.swift; sourceTree = "<group>"; };
+		C6C764842379588900217EDA /* SendTariCardView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SendTariCardView.xib; sourceTree = "<group>"; };
+		C6C764862379599300217EDA /* SendTariCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendTariCardView.swift; sourceTree = "<group>"; };
 		CB7DC916E97096D5FCB440E3 /* Pods-MobileWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E6C8060CF3B17C7AA315F558 /* Pods-MobileWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet.release.xcconfig"; path = "Target Support Files/Pods-MobileWallet/Pods-MobileWallet.release.xcconfig"; sourceTree = "<group>"; };
 		F28D9135828811CA84244432 /* Pods_MobileWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -414,6 +420,7 @@
 			children = (
 				0012562D2371D21E00A9C067 /* Splash */,
 				00E2BCB6236B46A400C2A105 /* Home */,
+				C6C764792379463E00217EDA /* SendTariViewController */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -519,6 +526,16 @@
 				28164FB1973A4277E7C47F6D /* Pods-MobileWalletUITests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		C6C764792379463E00217EDA /* SendTariViewController */ = {
+			isa = PBXGroup;
+			children = (
+				C6C7647C2379467300217EDA /* SendTariViewController.swift */,
+				C6C764842379588900217EDA /* SendTariCardView.xib */,
+				C6C764862379599300217EDA /* SendTariCardView.swift */,
+			);
+			path = SendTariViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -635,6 +652,7 @@
 				00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */,
 				001256812372918B00A9C067 /* AvenirNextLTPro-HeavyCnIt.otf in Resources */,
 				00E2BCAC236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */,
+				C6C764852379588900217EDA /* SendTariCardView.xib in Resources */,
 				001256B72372918B00A9C067 /* AvenirNextLTPro-UltLtCn.otf in Resources */,
 				001256782372918B00A9C067 /* AvenirLTStd-MediumOblique.otf in Resources */,
 				001256AE2372918B00A9C067 /* AvenirNextLTPro-It.otf in Resources */,
@@ -880,6 +898,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C6C764872379599300217EDA /* SendTariCardView.swift in Sources */,
 				00262EB9236F35CD00A6C8A0 /* Transaction.swift in Sources */,
 				00A6779E23743696001A853E /* TransactionViewController.swift in Sources */,
 				00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
@@ -892,6 +911,7 @@
 				00262EAF236F015000A6C8A0 /* UILabel.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
+				C6C7647D2379467300217EDA /* SendTariViewController.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
 				00E4922923683E54007B332D /* HomeViewController.swift in Sources */,
 				00230B022376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
@@ -1102,10 +1122,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F4E5AB1EC7D42438C3CA62CF /* Pods-MobileWallet.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = GW2KRSPAWB;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1122,10 +1143,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E6C8060CF3B17C7AA315F558 /* Pods-MobileWallet.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = GW2KRSPAWB;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1142,9 +1164,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CB7DC916E97096D5FCB440E3 /* Pods-MobileWalletTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1164,9 +1187,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 867662CACBB1C47B665EBA55 /* Pods-MobileWalletTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1186,8 +1210,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1206,8 +1231,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F82E54DCA5096D029377C454 /* Pods-MobileWallet-MobileWalletUITests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = YVK784K26W;
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
