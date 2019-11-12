@@ -27,9 +27,9 @@ class MobileWalletUITests: XCTestCase {
     func testSplash() {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
+        Biometrics.enrolled()
         app.launch()
         
-        Biometrics.enrolled()
         acceptPermissionsPromptIfRequired()
         Biometrics.successfulAuthentication()
         
