@@ -1,5 +1,7 @@
 Tari iOS wallet
 ===========================
+[![Build Status](https://travis-ci.com/tari-project/wallet-ios.svg?branch=development)](https://travis-ci.com/tari-project/wallet-ios)
+
 Mobile-based UI client that connects to a full node in the Tari network.
 
 ### Swift Style Guide
