@@ -9,7 +9,8 @@
 import XCTest
 
 class MobileWalletUITests: XCTestCase {
-
+    private let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard") // Shows permissions alerts over our app
+    
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -26,7 +27,11 @@ class MobileWalletUITests: XCTestCase {
     func testSplash() {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
+        Biometrics.enrolled()
         app.launch()
+        
+        acceptPermissionsPromptIfRequired()
+        Biometrics.successfulAuthentication()
         
          //Wait for splash loading animation to complete
         expectation(for: NSPredicate(format: "exists == 1"), evaluatedWith: app.staticTexts["Total Balance"], handler: nil)
@@ -48,6 +53,14 @@ class MobileWalletUITests: XCTestCase {
             measure(metrics: [XCTOSSignpostMetric.applicationLaunch]) {
                 XCUIApplication().launch()
             }
+        }
+    }
+    
+    // Face ID asks the user for permission the first time you try to authenticate. Touch ID doesn't.
+    private func acceptPermissionsPromptIfRequired() {
+        let permissionsOkayButton = springboard.alerts.buttons["OK"].firstMatch
+        if permissionsOkayButton.exists {
+            permissionsOkayButton.tap()
         }
     }
 }

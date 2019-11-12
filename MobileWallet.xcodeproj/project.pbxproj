@@ -126,6 +126,8 @@
 		00262EB9236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
 		00262EBA236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
 		00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
+		0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0070A7BB2379847100C25E1C /* LocalAuthentication.framework */; };
+		009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8A8237AA13500C02E44 /* Biometrics.m */; };
 		00A677882372C8E6001A853E /* TariValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A677872372C8E6001A853E /* TariValue.swift */; };
 		00A677892372C8E6001A853E /* TariValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A677872372C8E6001A853E /* TariValue.swift */; };
 		00A6778A2372C8E6001A853E /* TariValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A677872372C8E6001A853E /* TariValue.swift */; };
@@ -231,6 +233,10 @@
 		00262EAE236F015000A6C8A0 /* UILableWithPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILableWithPadding.swift; sourceTree = "<group>"; };
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		00262EB8236F35CD00A6C8A0 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		0070A7BB2379847100C25E1C /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+		009BF8A6237AA13400C02E44 /* MobileWalletUITests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletUITests-Bridging-Header.h"; sourceTree = "<group>"; };
+		009BF8A8237AA13500C02E44 /* Biometrics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Biometrics.m; sourceTree = "<group>"; };
+		009BF8A9237AA13500C02E44 /* Biometrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Biometrics.h; sourceTree = "<group>"; };
 		00A677872372C8E6001A853E /* TariValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariValue.swift; sourceTree = "<group>"; };
 		00A6779D23743696001A853E /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewController.swift; sourceTree = "<group>"; };
@@ -278,6 +284,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */,
 				4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */,
 				4C2C95C323796184005058AB /* libzmq.a in Frameworks */,
 				4C2C95B023795919005058AB /* libwallet_ffi.a in Frameworks */,
@@ -509,7 +516,10 @@
 			isa = PBXGroup;
 			children = (
 				00E491C02366E08F007B332D /* MobileWalletUITests.swift */,
+				009BF8A9237AA13500C02E44 /* Biometrics.h */,
+				009BF8A8237AA13500C02E44 /* Biometrics.m */,
 				00E491C22366E08F007B332D /* Info.plist */,
+				009BF8A6237AA13400C02E44 /* MobileWalletUITests-Bridging-Header.h */,
 			);
 			path = MobileWalletUITests;
 			sourceTree = "<group>";
@@ -517,6 +527,7 @@
 		27F235021D9E2060A3CBB465 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0070A7BB2379847100C25E1C /* LocalAuthentication.framework */,
 				4C2C95C6237962CB005058AB /* libc++.tbd */,
 				F28D9135828811CA84244432 /* Pods_MobileWallet.framework */,
 				153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */,
@@ -634,6 +645,7 @@
 					};
 					00E491BB2366E08F007B332D = {
 						CreatedOnToolsVersion = 11.1;
+						LastSwiftMigration = 1120;
 						TestTargetID = 00E491952366E08B007B332D;
 					};
 				};
@@ -973,6 +985,7 @@
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				00230B002376C6FA00F23E34 /* DateConfig.swift in Sources */,
+				009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */,
 				00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */,
 				001256312371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00230B042376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
@@ -1241,6 +1254,7 @@
 			baseConfigurationReference = 540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1254,6 +1268,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.MobileWalletUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MobileWalletUITests/MobileWalletUITests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = MobileWallet;
@@ -1265,6 +1281,7 @@
 			baseConfigurationReference = F82E54DCA5096D029377C454 /* Pods-MobileWallet-MobileWalletUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1278,6 +1295,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.MobileWalletUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MobileWalletUITests/MobileWalletUITests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = MobileWallet;

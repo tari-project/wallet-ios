@@ -40,30 +40,84 @@
 
 import UIKit
 import Lottie
+import LocalAuthentication
 
 class SplashViewController: UIViewController {
     @IBOutlet weak var versionLabel: UILabel!
     @IBOutlet weak var animationContainer: AnimationView!
 
+    private let localAuthenticationContext = LAContext()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setVersion()
+        setVersionLabel()
         loadAnimation()
-
-        //Determine if app needs to navigate home or to onboarding
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        startAnimation()
+
+        checkExistingWallet()
     }
 
-    private func setVersion() {
+    private func setVersionLabel() {
         versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             let labelText = NSLocalizedString("Testnet", comment: "Bottom version label for splash screen")
             versionLabel.text = "\(labelText) V\(version)".uppercased()
+        }
+    }
+
+    private func checkExistingWallet() {
+        //TODO If a user has an existing wallet, proceed to auth, if not continue to onboarding
+        authenticateUser()
+    }
+
+    private func authenticateUser() {
+        let authPolicy: LAPolicy = .deviceOwnerAuthentication
+
+        var error: NSError?
+        if localAuthenticationContext.canEvaluatePolicy(authPolicy, error: &error) {
+                let reason = "Log in to your account"
+                self.localAuthenticationContext.evaluatePolicy(authPolicy, localizedReason: reason ) { success, error in
+                    if success {
+                        DispatchQueue.main.async {
+                            self.startAnimation()
+                        }
+                    } else {
+                        let reason = error?.localizedDescription ?? NSLocalizedString("Failed to authenticate", comment: "Failed Face ID alert")
+                        print(reason)
+                        DispatchQueue.main.async {
+                            self.authenticationFailedAlertOptions(reason: reason)
+                        }
+                    }
+                }
+        } else {
+            let reason = error?.localizedDescription ?? NSLocalizedString("No available biometrics available", comment: "Failed Face ID alert")
+            print(reason)
+            DispatchQueue.main.async {
+                self.authenticationFailedAlertOptions(reason: reason)
+            }
+        }
+    }
+
+    private func authenticationFailedAlertOptions(reason: String) {
+        let alert = UIAlertController(title: "Authentication failed", message: reason, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Try again", style: .default, handler: { _ in
+            self.authenticateUser()
+        }))
+
+        alert.addAction(UIAlertAction(title: "Open settings", style: .default, handler: { _ in
+            self.openAppSettings()
+        }))
+
+        self.present(alert, animated: true, completion: nil)
+    }
+
+    private func openAppSettings() {
+        if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(appSettings)
         }
     }
 
