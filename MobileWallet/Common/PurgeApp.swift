@@ -41,21 +41,32 @@
 import Foundation
 
 /*
-     Delete all app content and settings. Used only for UITesting.
+     Delete all app content and settings. Used only for UITesting on a simulator.
  */
-func purgeApp() {
+func simulatorPurgeIfRequired() {
     #if !targetEnvironment(simulator)
-        fatalError("Only available on the simulator")
+        return
     #endif
 
-    print("Purging app")
-
-    let documentsURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-    let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
-    do {
-        try FileManager.default.removeItem(at: URL(fileURLWithPath: databasePath))
-    } catch {
-        print(error)
-        fatalError("Failed to delete documents directory")
+    if !CommandLine.arguments.contains("-purge-app") {
+        return
     }
+
+    print("***** Purging app *****")
+
+    let fileManager = FileManager.default
+
+    let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+    let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
+
+    if fileManager.fileExists(atPath: databasePath, isDirectory: nil) {
+        do {
+            try fileManager.removeItem(at: URL(fileURLWithPath: databasePath))
+        } catch {
+            print(error)
+            fatalError("Failed to delete documents directory")
+        }
+    }
+
+    print("***** Purge complete *****")
 }

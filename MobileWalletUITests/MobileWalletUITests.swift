@@ -24,19 +24,37 @@ class MobileWalletUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
-    func testWalletCreation() {
-       let app = XCUIApplication()
-        purgeApp()
+    func testWalletCreationWithSuccessfulBiometrics() {
+        let app = XCUIApplication()
+        
+        purgeApp(app)
+        
         Biometrics.enrolled()
         app.launch()
+        
+        //Clean app so expect action button
+        expectation(for: NSPredicate(format: "exists == 1"), evaluatedWith: app.staticTexts["Create Wallet"], handler: nil)
+        waitForExpectations(timeout: 2, handler: nil)
+        
+        XCUIApplication().buttons["Create Wallet"].tap()
         
         acceptPermissionsPromptIfRequired()
         Biometrics.successfulAuthentication()
         
-        //TODO flesh out when TariLib is functional
-        //sleep(100)
+        //Expect the home screen
+        expectation(for: NSPredicate(format: "exists == 1"), evaluatedWith: app.staticTexts["Total Balance"], handler: nil)
+        waitForExpectations(timeout: 5, handler: nil)
     }
-
+    
+    func testWalletCreationWithUnuccessfulBiometrics() {
+        //Implement me
+    }
+    
+    func testWalletCreationWithUnenrolledBiometrics() {
+        //Implement me
+    }
+    
+    //Needs to be run after wallet creation
     func testSplashWithExistingWallet() {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
@@ -75,5 +93,13 @@ class MobileWalletUITests: XCTestCase {
         if permissionsOkayButton.exists {
             permissionsOkayButton.tap()
         }
+    }
+    
+    //AppDelegate accepts the argument and deletes everything
+    private func purgeApp(_ app: XCUIApplication) {
+        app.launchArguments = ["-purge-app"]
+        app.launch()
+        app.terminate()
+        app.launchArguments = []
     }
 }
