@@ -1,8 +1,8 @@
-//  TariLib.swift
+//  PurgeApp.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/12
+	Created by Jason van den Berg on 2019/11/13
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,52 +40,22 @@
 
 import Foundation
 
-class TariLib {
-    static let wallet = TariLib()
+/*
+     Delete all app content and settings. Used only for UITesting.
+ */
+func purgeApp() {
+    #if !targetEnvironment(simulator)
+        fatalError("Only available on the simulator")
+    #endif
 
-    private static let DATABASE_NAME = "tari_wallet"
+    print("Purging app")
 
-    private let fileManager = FileManager.default
-
-    var databasePath: String {
-        get {
-            let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-            return documentsURL.appendingPathComponent(TariLib.DATABASE_NAME).path
-        }
-    }
-
-    var walletExists: Bool {
-        get {
-            //TODO check for actual keys, not just the wallet directory
-            var isDir: ObjCBool = false
-            if fileManager.fileExists(atPath: databasePath, isDirectory: &isDir) {
-                return true
-            }
-
-            return false
-        }
-    }
-
-    init() {
-
-    }
-
-    /*
-     Called automatically, just before instance deallocation takes place
-     */
-    deinit {
-        //Destroy wallet
-    }
-
-    func createNewWallet() {
-        print("New Wallet")
-
-        do {
-            try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
-        } catch let error as NSError {
-            NSLog("Unable to create directory \(error.debugDescription)")
-        }
-
-        print(databasePath)
+    let documentsURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+    let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
+    do {
+        try FileManager.default.removeItem(at: URL(fileURLWithPath: databasePath))
+    } catch {
+        print(error)
+        fatalError("Failed to delete documents directory")
     }
 }

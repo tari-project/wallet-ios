@@ -13,9 +13,9 @@
 		0012563B2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
 		0012563C2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
 		0012563D2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
-		001256452371EC1900A9C067 /* Splash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Splash.storyboard */; };
-		001256462371EC1900A9C067 /* Splash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Splash.storyboard */; };
-		001256472371EC1900A9C067 /* Splash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Splash.storyboard */; };
+		001256452371EC1900A9C067 /* Entry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Entry.storyboard */; };
+		001256462371EC1900A9C067 /* Entry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Entry.storyboard */; };
+		001256472371EC1900A9C067 /* Entry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Entry.storyboard */; };
 		001256662372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */ = {isa = PBXBuildFile; fileRef = 001256492372918900A9C067 /* AvenirLTStd-Roman.otf */; };
 		001256672372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */ = {isa = PBXBuildFile; fileRef = 001256492372918900A9C067 /* AvenirLTStd-Roman.otf */; };
 		001256682372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */ = {isa = PBXBuildFile; fileRef = 001256492372918900A9C067 /* AvenirLTStd-Roman.otf */; };
@@ -141,6 +141,9 @@
 		00A6779E23743696001A853E /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A6779D23743696001A853E /* TransactionViewController.swift */; };
 		00A6779F23743696001A853E /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A6779D23743696001A853E /* TransactionViewController.swift */; };
 		00A677A023743696001A853E /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A6779D23743696001A853E /* TransactionViewController.swift */; };
+		00BBD801237C5B5200EBF5E6 /* PurgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* PurgeApp.swift */; };
+		00BBD802237C5B5200EBF5E6 /* PurgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* PurgeApp.swift */; };
+		00BBD803237C5B5200EBF5E6 /* PurgeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* PurgeApp.swift */; };
 		00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
@@ -199,7 +202,7 @@
 /* Begin PBXFileReference section */
 		0012562E2371D81500A9C067 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		0012563A2371E89300A9C067 /* SplashAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SplashAnimation.json; sourceTree = "<group>"; };
-		001256442371EC1900A9C067 /* Splash.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Splash.storyboard; sourceTree = "<group>"; };
+		001256442371EC1900A9C067 /* Entry.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Entry.storyboard; sourceTree = "<group>"; };
 		001256492372918900A9C067 /* AvenirLTStd-Roman.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Roman.otf"; sourceTree = "<group>"; };
 		0012564A2372918900A9C067 /* AvenirLTStd-BookOblique.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-BookOblique.otf"; sourceTree = "<group>"; };
 		0012564B2372918900A9C067 /* AvenirLTStd-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Heavy.otf"; sourceTree = "<group>"; };
@@ -245,6 +248,7 @@
 		00A6779D23743696001A853E /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		00BBD7EE237B014100EBF5E6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 		00BBD7F6237B05A900EBF5E6 /* MobileWalletTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		00BBD800237C5B5200EBF5E6 /* PurgeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurgeApp.swift; sourceTree = "<group>"; };
 		00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewController.swift; sourceTree = "<group>"; };
 		00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableTableViewCell.swift; sourceTree = "<group>"; };
 		00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableTableViewCell.xib; sourceTree = "<group>"; };
@@ -334,8 +338,8 @@
 			isa = PBXGroup;
 			children = (
 				00E491A92366E08F007B332D /* LaunchScreen.storyboard */,
+				001256442371EC1900A9C067 /* Entry.storyboard */,
 				00E491A12366E08B007B332D /* Main.storyboard */,
-				001256442371EC1900A9C067 /* Splash.storyboard */,
 			);
 			path = Boards;
 			sourceTree = "<group>";
@@ -393,6 +397,7 @@
 				00262EB3236F024400A6C8A0 /* Theme.swift */,
 				00A677872372C8E6001A853E /* TariValue.swift */,
 				00230AFD2376C6FA00F23E34 /* DateConfig.swift */,
+				00BBD800237C5B5200EBF5E6 /* PurgeApp.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -411,6 +416,14 @@
 				00A6779D23743696001A853E /* TransactionViewController.swift */,
 			);
 			path = Transaction;
+			sourceTree = "<group>";
+		};
+		00BBD7FA237C462400EBF5E6 /* AppEntry */ = {
+			isa = PBXGroup;
+			children = (
+				0012562D2371D21E00A9C067 /* Splash */,
+			);
+			path = AppEntry;
 			sourceTree = "<group>";
 		};
 		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
@@ -444,7 +457,7 @@
 		00E2BCB5236B469C00C2A105 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				0012562D2371D21E00A9C067 /* Splash */,
+				00BBD7FA237C462400EBF5E6 /* AppEntry */,
 				00E2BCB6236B46A400C2A105 /* Home */,
 			);
 			path = Screens;
@@ -718,7 +731,7 @@
 				001256A82372918B00A9C067 /* AvenirNextLTPro-MediumCn.otf in Resources */,
 				001256BA2372918B00A9C067 /* AvenirNextLTPro-Regular.otf in Resources */,
 				00E491A32366E08B007B332D /* Main.storyboard in Resources */,
-				001256452371EC1900A9C067 /* Splash.storyboard in Resources */,
+				001256452371EC1900A9C067 /* Entry.storyboard in Resources */,
 				001256A22372918B00A9C067 /* AvenirNextLTPro-Bold.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -758,7 +771,7 @@
 				0012568B2372918B00A9C067 /* AvenirLTStd-Oblique.otf in Resources */,
 				001256A92372918B00A9C067 /* AvenirNextLTPro-MediumCn.otf in Resources */,
 				001256672372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */,
-				001256462371EC1900A9C067 /* Splash.storyboard in Resources */,
+				001256462371EC1900A9C067 /* Entry.storyboard in Resources */,
 				001256B52372918B00A9C067 /* AvenirLTStd-Medium.otf in Resources */,
 				001256972372918B00A9C067 /* AvenirNextLTPro-HeavyCn.otf in Resources */,
 				001256792372918B00A9C067 /* AvenirLTStd-MediumOblique.otf in Resources */,
@@ -800,7 +813,7 @@
 				0012568C2372918B00A9C067 /* AvenirLTStd-Oblique.otf in Resources */,
 				001256AA2372918B00A9C067 /* AvenirNextLTPro-MediumCn.otf in Resources */,
 				001256682372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */,
-				001256472371EC1900A9C067 /* Splash.storyboard in Resources */,
+				001256472371EC1900A9C067 /* Entry.storyboard in Resources */,
 				001256B62372918B00A9C067 /* AvenirLTStd-Medium.otf in Resources */,
 				001256982372918B00A9C067 /* AvenirNextLTPro-HeavyCn.otf in Resources */,
 				0012567A2372918B00A9C067 /* AvenirLTStd-MediumOblique.otf in Resources */,
@@ -939,6 +952,7 @@
 				009BF8AC237ABB4700C02E44 /* TariLib.swift in Sources */,
 				00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
+				00BBD801237C5B5200EBF5E6 /* PurgeApp.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				00A677882372C8E6001A853E /* TariValue.swift in Sources */,
@@ -961,6 +975,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
+				00BBD802237C5B5200EBF5E6 /* PurgeApp.swift in Sources */,
 				00262EB5236F024400A6C8A0 /* Theme.swift in Sources */,
 				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00262EB0236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
@@ -992,6 +1007,7 @@
 				00A6778A2372C8E6001A853E /* TariValue.swift in Sources */,
 				00230AFC2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				009BF8AE237ABB4700C02E44 /* TariLib.swift in Sources */,
+				00BBD803237C5B5200EBF5E6 /* PurgeApp.swift in Sources */,
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,

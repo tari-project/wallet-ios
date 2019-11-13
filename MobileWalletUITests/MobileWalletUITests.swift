@@ -23,8 +23,21 @@ class MobileWalletUITests: XCTestCase {
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
+    
+    func testWalletCreation() {
+       let app = XCUIApplication()
+        purgeApp()
+        Biometrics.enrolled()
+        app.launch()
+        
+        acceptPermissionsPromptIfRequired()
+        Biometrics.successfulAuthentication()
+        
+        //TODO flesh out when TariLib is functional
+        //sleep(100)
+    }
 
-    func testSplash() {
+    func testSplashWithExistingWallet() {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         Biometrics.enrolled()
@@ -47,18 +60,6 @@ class MobileWalletUITests: XCTestCase {
         app.navigationBars["Payment Sent"].buttons["Back"].tap()
     }
     
-    func testWalletCreation() {
-       let app = XCUIApplication()
-        Biometrics.enrolled()
-        app.launch()
-        
-        acceptPermissionsPromptIfRequired()
-        Biometrics.successfulAuthentication()
-        
-        //TODO flesh out when TariLib is functional
-        //sleep(100)
-    }
-
     func testLaunchPerformance() {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
             // This measures how long it takes to launch your application.
