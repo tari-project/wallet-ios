@@ -27,7 +27,7 @@ class MobileWalletUITests: XCTestCase {
     func testWalletCreationWithSuccessfulBiometrics() {
         let app = XCUIApplication()
         
-        purgeApp(app)
+        wipwAppContents(app)
         
         Biometrics.enrolled()
         app.launch()
@@ -96,8 +96,8 @@ class MobileWalletUITests: XCTestCase {
     }
     
     //AppDelegate accepts the argument and deletes everything
-    private func purgeApp(_ app: XCUIApplication) {
-        app.launchArguments = ["-purge-app"]
+    private func wipwAppContents(_ app: XCUIApplication) {
+        app.launchArguments = ["-wipe-app"]
         app.launch()
         app.terminate()
         app.launchArguments = []

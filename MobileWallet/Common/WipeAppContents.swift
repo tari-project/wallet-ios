@@ -1,4 +1,4 @@
-//  PurgeApp.swift
+//  WipeAppContents.swift
 
 /*
 	Package MobileWallet
@@ -43,16 +43,16 @@ import Foundation
 /*
      Delete all app content and settings. Used only for UITesting on a simulator.
  */
-func simulatorPurgeIfRequired() {
+func wipeIfRequiredOnSimulator() {
     #if !targetEnvironment(simulator)
         return
     #endif
 
-    if !CommandLine.arguments.contains("-purge-app") {
+    if !CommandLine.arguments.contains("-wipe-app") {
         return
     }
 
-    print("***** Purging app *****")
+    print("***** Wiping app *****")
 
     let fileManager = FileManager.default
 
@@ -68,5 +68,5 @@ func simulatorPurgeIfRequired() {
         }
     }
 
-    print("***** Purge complete *****")
+    print("***** Wipe complete *****")
 }
