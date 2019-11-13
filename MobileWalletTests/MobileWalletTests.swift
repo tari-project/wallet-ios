@@ -39,6 +39,7 @@
 */
 
 import XCTest
+
 @testable import Pods_MobileWallet
 
 class MobileWalletTests: XCTestCase {

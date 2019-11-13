@@ -71,7 +71,14 @@ class SplashViewController: UIViewController {
 
     private func checkExistingWallet() {
         //TODO If a user has an existing wallet, proceed to auth, if not continue to onboarding
-        authenticateUser()
+        let wallet = TariLib.wallet
+
+        if wallet.walletExists {
+            authenticateUser()
+        } else {
+            //TODO Navigate to onboarding first
+            wallet.createNewWallet()
+        }
     }
 
     private func authenticateUser() {
