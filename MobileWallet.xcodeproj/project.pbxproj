@@ -144,6 +144,8 @@
 		00BBD801237C5B5200EBF5E6 /* WipeAppContents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* WipeAppContents.swift */; };
 		00BBD802237C5B5200EBF5E6 /* WipeAppContents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* WipeAppContents.swift */; };
 		00BBD803237C5B5200EBF5E6 /* WipeAppContents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* WipeAppContents.swift */; };
+		00BBD805237D746B00EBF5E6 /* OnboardingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD804237D746B00EBF5E6 /* OnboardingUITests.swift */; };
+		00BBD807237D755600EBF5E6 /* HelperFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD806237D755600EBF5E6 /* HelperFunctions.swift */; };
 		00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
@@ -249,6 +251,8 @@
 		00BBD7EE237B014100EBF5E6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 		00BBD7F6237B05A900EBF5E6 /* MobileWalletTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		00BBD800237C5B5200EBF5E6 /* WipeAppContents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WipeAppContents.swift; sourceTree = "<group>"; };
+		00BBD804237D746B00EBF5E6 /* OnboardingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingUITests.swift; sourceTree = "<group>"; };
+		00BBD806237D755600EBF5E6 /* HelperFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelperFunctions.swift; sourceTree = "<group>"; };
 		00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewController.swift; sourceTree = "<group>"; };
 		00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableTableViewCell.swift; sourceTree = "<group>"; };
 		00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableTableViewCell.xib; sourceTree = "<group>"; };
@@ -536,11 +540,13 @@
 		00E491BF2366E08F007B332D /* MobileWalletUITests */ = {
 			isa = PBXGroup;
 			children = (
-				009BF8A6237AA13400C02E44 /* MobileWalletUITests-Bridging-Header.h */,
+				00BBD804237D746B00EBF5E6 /* OnboardingUITests.swift */,
 				00E491C02366E08F007B332D /* MobileWalletUITests.swift */,
+				00BBD806237D755600EBF5E6 /* HelperFunctions.swift */,
 				009BF8A9237AA13500C02E44 /* Biometrics.h */,
 				009BF8A8237AA13500C02E44 /* Biometrics.m */,
 				00E491C22366E08F007B332D /* Info.plist */,
+				009BF8A6237AA13400C02E44 /* MobileWalletUITests-Bridging-Header.h */,
 			);
 			path = MobileWalletUITests;
 			sourceTree = "<group>";
@@ -1001,6 +1007,7 @@
 			files = (
 				00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */,
 				00262EB6236F024400A6C8A0 /* Theme.swift in Sources */,
+				00BBD805237D746B00EBF5E6 /* OnboardingUITests.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,
@@ -1016,6 +1023,7 @@
 				00230B002376C6FA00F23E34 /* DateConfig.swift in Sources */,
 				009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */,
 				00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */,
+				00BBD807237D755600EBF5E6 /* HelperFunctions.swift in Sources */,
 				001256312371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00230B042376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
 			);

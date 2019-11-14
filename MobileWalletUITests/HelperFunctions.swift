@@ -1,8 +1,8 @@
-//  WipeAppContents.swift
-
+//  AuthFunctions.swift
+	
 /*
-	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/13
+	Package MobileWalletUITests
+	Created by Jason van den Berg on 2019/11/14
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -39,39 +39,22 @@
 */
 
 import Foundation
+import XCTest
 
-/*
-     Delete all app content and settings. Used only for UITesting on a simulator.
- */
-func wipeIfRequiredOnSimulator() {
-    #if !targetEnvironment(simulator)
-        return
-    #endif
-
-    if !CommandLine.arguments.contains("-wipe-app") {
-        return
+// Face ID asks the user for permission the first time you try to authenticate. Touch ID doesn't.
+func acceptPermissionsPromptIfRequired() {
+    let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard") // Shows permissions alerts over our app
+    
+    let permissionsOkayButton = springboard.alerts.buttons["OK"].firstMatch
+    if permissionsOkayButton.exists {
+        permissionsOkayButton.tap()
     }
+}
 
-    print("***** Wiping app *****")
-
-    let fileManager = FileManager.default
-
-    let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-    let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
-
-    if fileManager.fileExists(atPath: databasePath, isDirectory: nil) {
-        do {
-            try fileManager.removeItem(at: URL(fileURLWithPath: databasePath))
-        } catch {
-            print(error)
-            fatalError("Failed to delete documents directory")
-        }
-    }
-
-    //Remove all user defaults
-    let domain = Bundle.main.bundleIdentifier!
-    UserDefaults.standard.removePersistentDomain(forName: domain)
-    UserDefaults.standard.synchronize()
-
-    print("***** Wipe complete *****")
+//AppDelegate accepts the argument and deletes everything
+func wipeAppContents(_ app: XCUIApplication) {
+    app.launchArguments = ["-wipe-app"]
+    app.launch()
+    app.terminate()
+    app.launchArguments = []
 }
