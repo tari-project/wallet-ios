@@ -104,7 +104,7 @@ var dummyTransactions: [[Transaction]] {
             }
 
             if n == 4 || n == 1 || n == 3 || n == 8 {
-                date = DateConfig.mockPastDate(byDayValue: n)
+                date = Date().shiftDateBy(days: -n)
             }
 
             dummyIconNameIndex += 1

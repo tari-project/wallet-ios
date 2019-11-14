@@ -149,7 +149,7 @@ class TransactionViewController: UIViewController {
             fromUserIdLabel.text = tx.userId
             noteValueLabel.text = tx.description
             transactionIcon.image = tx.icon
-            dateValueLabel.text = DateConfig.getDateTimeString(date: tx.date)
+            dateValueLabel.text = tx.date.locallyFormattedDisplay()
             transactionFeeValueLabel.text = tx.fee.displayStringWithNegativeOperator
 
             let txLabelText = NSLocalizedString("Transaction ID:", comment: "Transaction view screen")
