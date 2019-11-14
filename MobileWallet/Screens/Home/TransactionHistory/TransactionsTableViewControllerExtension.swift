@@ -63,7 +63,7 @@ extension TransactionsTableViewController {
         guard let txsDate = transactions[section].first?.date else {
             return nil
         }
-        return DateConfig.getRelativeDayValue(fromDate: txsDate)
+        return txsDate.relativeDayFromToday() // DateConfig.getRelativeDayValue(fromDate: txsDate)
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
