@@ -1,8 +1,8 @@
-//  TariLib.swift
-
+//  AuthFunctions.swift
+	
 /*
-	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/12
+	Package MobileWalletUITests
+	Created by Jason van den Berg on 2019/11/14
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -39,53 +39,22 @@
 */
 
 import Foundation
+import XCTest
 
-class TariLib {
-    static let wallet = TariLib()
-
-    private static let DATABASE_NAME = "tari_wallet"
-
-    private let fileManager = FileManager.default
-
-    var databasePath: String {
-        get {
-            let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-            return documentsURL.appendingPathComponent(TariLib.DATABASE_NAME).path
-        }
+// Face ID asks the user for permission the first time you try to authenticate. Touch ID doesn't.
+func acceptPermissionsPromptIfRequired() {
+    let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard") // Shows permissions alerts over our app
+    
+    let permissionsOkayButton = springboard.alerts.buttons["OK"].firstMatch
+    if permissionsOkayButton.exists {
+        permissionsOkayButton.tap()
     }
+}
 
-    var walletExists: Bool {
-        get {
-            //TODO check for actual keys, not just the wallet directory
-            var isDir: ObjCBool = false
-            if fileManager.fileExists(atPath: databasePath, isDirectory: &isDir) {
-                return true
-            }
-
-            return false
-        }
-    }
-
-    init() {
-
-    }
-
-    /*
-     Called automatically, just before instance deallocation takes place
-     */
-    deinit {
-        //Destroy wallet
-    }
-
-    func createNewWallet() {
-        print("New Wallet")
-
-        do {
-            try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
-        } catch let error as NSError {
-            NSLog("Unable to create directory \(error.debugDescription)")
-        }
-
-        print(databasePath)
-    }
+//AppDelegate accepts the argument and deletes everything
+func wipeAppContents(_ app: XCUIApplication) {
+    app.launchArguments = ["-wipe-app"]
+    app.launch()
+    app.terminate()
+    app.launchArguments = []
 }

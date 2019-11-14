@@ -1,8 +1,8 @@
-//  TariLib.swift
+//  WipeAppContents.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/12
+	Created by Jason van den Berg on 2019/11/13
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,52 +40,38 @@
 
 import Foundation
 
-class TariLib {
-    static let wallet = TariLib()
+/*
+     Delete all app content and settings. Used only for UITesting on a simulator.
+ */
+func wipeIfRequiredOnSimulator() {
+    #if !targetEnvironment(simulator)
+        return
+    #endif
 
-    private static let DATABASE_NAME = "tari_wallet"
-
-    private let fileManager = FileManager.default
-
-    var databasePath: String {
-        get {
-            let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-            return documentsURL.appendingPathComponent(TariLib.DATABASE_NAME).path
-        }
+    if !CommandLine.arguments.contains("-wipe-app") {
+        return
     }
 
-    var walletExists: Bool {
-        get {
-            //TODO check for actual keys, not just the wallet directory
-            var isDir: ObjCBool = false
-            if fileManager.fileExists(atPath: databasePath, isDirectory: &isDir) {
-                return true
-            }
+    print("***** Wiping app *****")
 
-            return false
-        }
-    }
+    let fileManager = FileManager.default
 
-    init() {
+    let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+    let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
 
-    }
-
-    /*
-     Called automatically, just before instance deallocation takes place
-     */
-    deinit {
-        //Destroy wallet
-    }
-
-    func createNewWallet() {
-        print("New Wallet")
-
+    if fileManager.fileExists(atPath: databasePath, isDirectory: nil) {
         do {
-            try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
-        } catch let error as NSError {
-            NSLog("Unable to create directory \(error.debugDescription)")
+            try fileManager.removeItem(at: URL(fileURLWithPath: databasePath))
+        } catch {
+            print(error)
+            fatalError("Failed to delete documents directory")
         }
-
-        print(databasePath)
     }
+
+    //Remove all user defaults
+    let domain = Bundle.main.bundleIdentifier!
+    UserDefaults.standard.removePersistentDomain(forName: domain)
+    UserDefaults.standard.synchronize()
+
+    print("***** Wipe complete *****")
 }

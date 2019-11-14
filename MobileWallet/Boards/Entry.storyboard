@@ -36,12 +36,23 @@
                                     <constraint firstAttribute="width" constant="240" id="eex-JT-ihY"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fLD-Gb-rum" customClass="ActionButton" customModule="MobileWalletTests" customModuleProvider="target">
+                                <rect key="frame" x="25" y="721" width="364" height="30"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Button"/>
+                                <connections>
+                                    <action selector="createWallet:" destination="Dn2-Hl-tr9" eventType="touchUpInside" id="hU3-eY-2vb"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" name="SplashBackground"/>
                         <constraints>
                             <constraint firstItem="K5K-jz-bn0" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="55M-o5-pQl"/>
                             <constraint firstItem="xrT-Tl-QNW" firstAttribute="top" secondItem="YyS-f0-YOr" secondAttribute="bottom" constant="16" id="JG0-aq-aIH"/>
+                            <constraint firstItem="fLD-Gb-rum" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" constant="25" id="OUn-eh-qZQ"/>
+                            <constraint firstItem="YyS-f0-YOr" firstAttribute="top" secondItem="fLD-Gb-rum" secondAttribute="bottom" constant="35" id="TKP-BA-27d"/>
                             <constraint firstItem="xrT-Tl-QNW" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="clf-3V-Nen"/>
+                            <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="fLD-Gb-rum" secondAttribute="trailing" constant="25" id="iUS-e7-WU0"/>
                             <constraint firstItem="YyS-f0-YOr" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="pJr-V6-0rn"/>
                             <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="bottom" secondItem="xrT-Tl-QNW" secondAttribute="bottom" constant="25" id="sLr-gN-4h4"/>
                             <constraint firstItem="K5K-jz-bn0" firstAttribute="centerY" secondItem="W2N-Ra-naU" secondAttribute="centerY" id="wLb-C2-Vgj"/>
@@ -50,13 +61,14 @@
                     </view>
                     <connections>
                         <outlet property="animationContainer" destination="K5K-jz-bn0" id="Tpk-4q-2Ki"/>
+                        <outlet property="createWalletButton" destination="fLD-Gb-rum" id="B4K-j2-kcb"/>
                         <outlet property="versionLabel" destination="xrT-Tl-QNW" id="YNK-wH-SbN"/>
                         <segue destination="JVr-OT-SNV" kind="presentation" identifier="SplashToHome" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="xMA-mJ-gEX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="t8o-sC-kZd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-224.80000000000001" y="-509.11330049261085"/>
+            <point key="canvasLocation" x="-226.08695652173915" y="-509.59821428571428"/>
         </scene>
         <!--Main-->
         <scene sceneID="vbr-Jt-S6k">

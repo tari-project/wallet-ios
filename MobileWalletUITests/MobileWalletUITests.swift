@@ -9,28 +9,27 @@
 import XCTest
 
 class MobileWalletUITests: XCTestCase {
-    private let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard") // Shows permissions alerts over our app
+    private let app = XCUIApplication()
     
     override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        
+        //Wipes app and creates new wallet
+        wipeAppContents(app)
+        Biometrics.enrolled()
+        app.launch()
+        XCUIApplication().buttons["Create Wallet"].tap()
+        acceptPermissionsPromptIfRequired()
+        Biometrics.successfulAuthentication()
+        app.terminate()
     }
 
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
-
-    func testSplash() {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
-        Biometrics.enrolled()
+   
+    //Needs to be run after wallet creation
+    func testHomeScreenTransactionView() {
         app.launch()
-        
-        acceptPermissionsPromptIfRequired()
         Biometrics.successfulAuthentication()
         
          //Wait for splash loading animation to complete
@@ -47,32 +46,25 @@ class MobileWalletUITests: XCTestCase {
         app.navigationBars["Payment Sent"].buttons["Back"].tap()
     }
     
-    func testWalletCreation() {
-       let app = XCUIApplication()
-        Biometrics.enrolled()
+    func testHomeScreenNotShownOnAuthFail() {
         app.launch()
-        
-        acceptPermissionsPromptIfRequired()
-        Biometrics.successfulAuthentication()
-        
-        //TODO flesh out when TariLib is functional
-        //sleep(100)
-    }
-
-    func testLaunchPerformance() {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTOSSignpostMetric.applicationLaunch]) {
-                XCUIApplication().launch()
-            }
+        Biometrics.unsuccessfulAuthentication()
+      
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard") // Shows permissions alerts over our app
+        let cancelButton = springboard.alerts.buttons["Cancel"].firstMatch
+        if cancelButton.exists {
+            cancelButton.tap()
+        } else {
+            XCTFail("Missing auth failed alert")
         }
     }
-    
-    // Face ID asks the user for permission the first time you try to authenticate. Touch ID doesn't.
-    private func acceptPermissionsPromptIfRequired() {
-        let permissionsOkayButton = springboard.alerts.buttons["OK"].firstMatch
-        if permissionsOkayButton.exists {
-            permissionsOkayButton.tap()
+        
+    func testLaunchPerformance() {
+        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
+            // TODO measure time it takes to refresh transactions
+//            measure(metrics: [XCTOSSignpostMetric.applicationLaunch]) {
+//                XCUIApplication().launch()
+//            }
         }
     }
 }

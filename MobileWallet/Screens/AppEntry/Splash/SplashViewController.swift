@@ -45,13 +45,17 @@ import LocalAuthentication
 class SplashViewController: UIViewController {
     @IBOutlet weak var versionLabel: UILabel!
     @IBOutlet weak var animationContainer: AnimationView!
+    @IBOutlet weak var createWalletButton: ActionButton!
+
+    private let wallet = TariLib.wallet
 
     private let localAuthenticationContext = LAContext()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setVersionLabel()
+        createWalletButton.isHidden = true
+        setupView()
         loadAnimation()
     }
 
@@ -61,7 +65,9 @@ class SplashViewController: UIViewController {
         checkExistingWallet()
     }
 
-    private func setVersionLabel() {
+    private func setupView() {
+        createWalletButton.setTitle(NSLocalizedString("Create Wallet", comment: "Main action button on the onboarding screen"), for: .normal)
+
         versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             let labelText = NSLocalizedString("Testnet", comment: "Bottom version label for splash screen")
@@ -70,15 +76,16 @@ class SplashViewController: UIViewController {
     }
 
     private func checkExistingWallet() {
-        //TODO If a user has an existing wallet, proceed to auth, if not continue to onboarding
-        let wallet = TariLib.wallet
-
         if wallet.walletExists {
             authenticateUser()
         } else {
-            //TODO Navigate to onboarding first
-            wallet.createNewWallet()
+            createWalletButton.isHidden = false
         }
+    }
+
+    @IBAction func createWallet(_ sender: Any) {
+        wallet.createNewWallet()
+        checkExistingWallet()
     }
 
     private func authenticateUser() {
