@@ -145,6 +145,8 @@ class SplashViewController: UIViewController {
           animationContainer.animationSpeed = 5
         #endif
 
+        createWalletButton.animateOut()
+
         animationContainer.play(
             fromProgress: 0,
             toProgress: 1,
