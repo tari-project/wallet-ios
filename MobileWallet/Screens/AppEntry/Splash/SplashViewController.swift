@@ -47,8 +47,6 @@ class SplashViewController: UIViewController {
     @IBOutlet weak var animationContainer: AnimationView!
     @IBOutlet weak var createWalletButton: ActionButton!
 
-    private let wallet = TariLib.wallet
-
     private let localAuthenticationContext = LAContext()
 
     override func viewDidLoad() {
@@ -76,7 +74,7 @@ class SplashViewController: UIViewController {
     }
 
     private func checkExistingWallet() {
-        if wallet.walletExists {
+        if TariLib.shared.walletExists {
             authenticateUser()
         } else {
             createWalletButton.isHidden = false
@@ -84,7 +82,7 @@ class SplashViewController: UIViewController {
     }
 
     @IBAction func createWallet(_ sender: Any) {
-        wallet.createNewWallet()
+        TariLib.shared.createNewWallet()
         checkExistingWallet()
     }
 

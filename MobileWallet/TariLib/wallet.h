@@ -290,7 +290,7 @@ bool wallet_remove_contact(struct TariWallet *wallet, struct TariContact *contac
 unsigned long long wallet_get_available_balance(struct TariWallet *wallet);
 
 // Gets the incoming balance from a TariWallet
-unsigned long long wallet_get_incoming_balance(struct TariWallet *wallet);
+unsigned long long wallet_get_pending_incoming_balance(struct TariWallet *wallet);
 
 // Gets the outgoing balance from a TariWallet
 unsigned long long wallet_get_outgoing_balance(struct TariWallet *wallet);
