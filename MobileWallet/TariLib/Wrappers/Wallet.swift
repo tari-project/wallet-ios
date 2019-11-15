@@ -48,12 +48,24 @@ class Wallet {
     }
 
     init(hex: String) {
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: (hex))
+        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
         ptr = private_key_from_hex(hexPtr)
     }
 
-    func getIncomingBalance() -> UInt64 {
+    func getAvailableBalance() -> UInt64 {
+        return wallet_get_available_balance(ptr)
+    }
+
+    func getPendingIncomingBalance() -> UInt64 {
         return wallet_get_pending_incoming_balance(ptr)
+    }
+
+    func getPendingOutgoingBalance() -> UInt64 {
+        wallet_get_pending_outgoing_balance(ptr)
+    }
+
+    func generateTestData() {
+        wallet_test_generate_data(ptr)
     }
 
     func pointer() -> OpaquePointer {

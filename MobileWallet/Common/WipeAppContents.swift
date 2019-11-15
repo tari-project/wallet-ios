@@ -55,18 +55,23 @@ func wipeIfRequiredOnSimulator() {
     print("***** Wiping app *****")
 
     let fileManager = FileManager.default
+    let directories = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
 
-    let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-    let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
+    for directory in directories {
+        let pathToDelete = directory.path
+        print(pathToDelete)
 
-    if fileManager.fileExists(atPath: databasePath, isDirectory: nil) {
-        do {
-            try fileManager.removeItem(at: URL(fileURLWithPath: databasePath))
-        } catch {
-            print(error)
-            fatalError("Failed to delete documents directory")
+        if fileManager.fileExists(atPath: pathToDelete, isDirectory: nil) {
+            do {
+                try fileManager.removeItem(at: URL(fileURLWithPath: pathToDelete))
+            } catch {
+                print(error)
+                fatalError("Failed to delete documents directory")
+            }
         }
     }
+
+    //let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
 
     //Remove all user defaults
     let domain = Bundle.main.bundleIdentifier!

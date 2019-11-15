@@ -48,7 +48,7 @@ class PrivateKey {
     }
 
     init(hex: String) {
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: (hex))
+        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
         ptr = private_key_from_hex(hexPtr)
     }
 
@@ -58,7 +58,6 @@ class PrivateKey {
 
     func getBytes() -> ByteVector {
         return ByteVector(pointer: private_key_get_bytes(ptr))
-
     }
 
     func pointer() -> OpaquePointer {

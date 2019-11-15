@@ -44,7 +44,6 @@ class CommsConfig {
     private var ptr: OpaquePointer
 
     init(privateKey: PrivateKey, databasePath: String, databaseName: String, address: String) {
-        let address = "0.0.0.0:80"
         let addressPointer = UnsafeMutablePointer<Int8>(mutating: (address as NSString).utf8String)
         let dbPointer = UnsafeMutablePointer<Int8>(mutating: (databaseName as NSString).utf8String)
         let pathPointer = UnsafeMutablePointer<Int8>(mutating: databasePath)

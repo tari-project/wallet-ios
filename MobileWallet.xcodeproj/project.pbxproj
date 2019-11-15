@@ -158,6 +158,7 @@
 		00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* CommsConfig.swift */; };
 		00BBD81B237EB31900EBF5E6 /* CommsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* CommsConfig.swift */; };
 		00BBD81C237EB31900EBF5E6 /* CommsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* CommsConfig.swift */; };
+		00BBD81E237ECDAA00EBF5E6 /* TariLibWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD81D237ECDAA00EBF5E6 /* TariLibWrapperTests.swift */; };
 		00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
@@ -269,6 +270,7 @@
 		00BBD811237E9EE200EBF5E6 /* PrivateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateKey.swift; sourceTree = "<group>"; };
 		00BBD815237EA67600EBF5E6 /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
 		00BBD819237EB31900EBF5E6 /* CommsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsConfig.swift; sourceTree = "<group>"; };
+		00BBD81D237ECDAA00EBF5E6 /* TariLibWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLibWrapperTests.swift; sourceTree = "<group>"; };
 		00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewController.swift; sourceTree = "<group>"; };
 		00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableTableViewCell.swift; sourceTree = "<group>"; };
 		00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableTableViewCell.xib; sourceTree = "<group>"; };
@@ -451,8 +453,8 @@
 			children = (
 				00BBD80D237DA07400EBF5E6 /* ByteVector.swift */,
 				00BBD811237E9EE200EBF5E6 /* PrivateKey.swift */,
-				00BBD815237EA67600EBF5E6 /* Wallet.swift */,
 				00BBD819237EB31900EBF5E6 /* CommsConfig.swift */,
+				00BBD815237EA67600EBF5E6 /* Wallet.swift */,
 			);
 			path = Wrappers;
 			sourceTree = "<group>";
@@ -559,6 +561,7 @@
 			children = (
 				00BBD7F6237B05A900EBF5E6 /* MobileWalletTests-Bridging-Header.h */,
 				00E491B52366E08F007B332D /* MobileWalletTests.swift */,
+				00BBD81D237ECDAA00EBF5E6 /* TariLibWrapperTests.swift */,
 				00E491B72366E08F007B332D /* Info.plist */,
 			);
 			path = MobileWalletTests;
@@ -1032,6 +1035,7 @@
 				00262EBA236F35CD00A6C8A0 /* Transaction.swift in Sources */,
 				00BBD80A237D80C800EBF5E6 /* Date.swift in Sources */,
 				001256302371D81500A9C067 /* SplashViewController.swift in Sources */,
+				00BBD81E237ECDAA00EBF5E6 /* TariLibWrapperTests.swift in Sources */,
 				00230B032376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
 				00BBD813237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 			);

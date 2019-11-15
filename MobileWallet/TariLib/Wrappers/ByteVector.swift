@@ -42,8 +42,9 @@ import Foundation
 
 class ByteVector {
     private var ptr: OpaquePointer
-    init(byte_array: [UInt8], count: UInt32) {
-        self.ptr = byte_vector_create(byte_array, count)
+
+    init(byte_array: [UInt8]) {
+        self.ptr = byte_vector_create(byte_array, UInt32(byte_array.count))
     }
 
     init (pointer: OpaquePointer) {
