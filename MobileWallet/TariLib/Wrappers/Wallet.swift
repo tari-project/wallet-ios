@@ -1,8 +1,8 @@
-//  WipeAppContents.swift
+//  Wallet.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/13
+	Created by Jason van den Berg on 2019/11/15
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,43 +40,39 @@
 
 import Foundation
 
-/*
-     Delete all app content and settings. Used only for UITesting on a simulator.
- */
-func wipeIfRequiredOnSimulator() {
-    #if !targetEnvironment(simulator)
-        return
-    #endif
+class Wallet {
+    private var ptr: OpaquePointer
 
-    if !CommandLine.arguments.contains("-wipe-app") {
-        return
+    init(config: OpaquePointer) {
+        ptr = wallet_create(config)
     }
 
-    print("***** Wiping app *****")
-
-    let fileManager = FileManager.default
-    let directories = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-
-    for directory in directories {
-        let pathToDelete = directory.path
-        print(pathToDelete)
-
-        if fileManager.fileExists(atPath: pathToDelete, isDirectory: nil) {
-            do {
-                try fileManager.removeItem(at: URL(fileURLWithPath: pathToDelete))
-            } catch {
-                print(error)
-                fatalError("Failed to delete documents directory")
-            }
-        }
+    init(hex: String) {
+        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
+        ptr = private_key_from_hex(hexPtr)
     }
 
-    //let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
+    func getAvailableBalance() -> UInt64 {
+        return wallet_get_available_balance(ptr)
+    }
 
-    //Remove all user defaults
-    let domain = Bundle.main.bundleIdentifier!
-    UserDefaults.standard.removePersistentDomain(forName: domain)
-    UserDefaults.standard.synchronize()
+    func getPendingIncomingBalance() -> UInt64 {
+        return wallet_get_pending_incoming_balance(ptr)
+    }
 
-    print("***** Wipe complete *****")
+    func getPendingOutgoingBalance() -> UInt64 {
+        wallet_get_pending_outgoing_balance(ptr)
+    }
+
+    func generateTestData() {
+        wallet_test_generate_data(ptr)
+    }
+
+    func pointer() -> OpaquePointer {
+        return ptr
+    }
+
+    deinit {
+        wallet_destroy(ptr)
+    }
 }

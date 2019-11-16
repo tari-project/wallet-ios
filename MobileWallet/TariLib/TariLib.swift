@@ -41,11 +41,13 @@
 import Foundation
 
 class TariLib {
-    static let wallet = TariLib()
+    static let shared = TariLib()
 
     private static let DATABASE_NAME = "tari_wallet"
 
     private let fileManager = FileManager.default
+
+    private var tariWallet: Wallet?
 
     var databasePath: String {
         get {
@@ -66,20 +68,14 @@ class TariLib {
         }
     }
 
-    init() {
-
-    }
+    init() {}
 
     /*
      Called automatically, just before instance deallocation takes place
      */
-    deinit {
-        //Destroy wallet
-    }
+    deinit {}
 
     func createNewWallet() {
-        print("New Wallet")
-
         do {
             try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
         } catch let error as NSError {
@@ -87,5 +83,13 @@ class TariLib {
         }
 
         print(databasePath)
+
+        let address = "0.0.0.0:80"
+        let hex_str = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
+        let privateKey = PrivateKey(hex: hex_str)
+
+        let comsConfig = CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: TariLib.DATABASE_NAME, address: address)
+
+        tariWallet = Wallet(config: comsConfig.pointer())
     }
 }

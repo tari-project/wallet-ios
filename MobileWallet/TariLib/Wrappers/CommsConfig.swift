@@ -1,8 +1,8 @@
-//  WipeAppContents.swift
+//  CommsConfig.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/13
+	Created by Jason van den Berg on 2019/11/15
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,43 +40,22 @@
 
 import Foundation
 
-/*
-     Delete all app content and settings. Used only for UITesting on a simulator.
- */
-func wipeIfRequiredOnSimulator() {
-    #if !targetEnvironment(simulator)
-        return
-    #endif
+class CommsConfig {
+    private var ptr: OpaquePointer
 
-    if !CommandLine.arguments.contains("-wipe-app") {
-        return
+    init(privateKey: PrivateKey, databasePath: String, databaseName: String, address: String) {
+        let addressPointer = UnsafeMutablePointer<Int8>(mutating: (address as NSString).utf8String)
+        let dbPointer = UnsafeMutablePointer<Int8>(mutating: (databaseName as NSString).utf8String)
+        let pathPointer = UnsafeMutablePointer<Int8>(mutating: databasePath)
+
+        ptr = comms_config_create(addressPointer, dbPointer, pathPointer, privateKey.pointer())
     }
 
-    print("***** Wiping app *****")
-
-    let fileManager = FileManager.default
-    let directories = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-
-    for directory in directories {
-        let pathToDelete = directory.path
-        print(pathToDelete)
-
-        if fileManager.fileExists(atPath: pathToDelete, isDirectory: nil) {
-            do {
-                try fileManager.removeItem(at: URL(fileURLWithPath: pathToDelete))
-            } catch {
-                print(error)
-                fatalError("Failed to delete documents directory")
-            }
-        }
+    func pointer() -> OpaquePointer {
+        return ptr
     }
 
-    //let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
-
-    //Remove all user defaults
-    let domain = Bundle.main.bundleIdentifier!
-    UserDefaults.standard.removePersistentDomain(forName: domain)
-    UserDefaults.standard.synchronize()
-
-    print("***** Wipe complete *****")
+    deinit {
+        comms_config_destroy(ptr)
+    }
 }

@@ -1,8 +1,8 @@
-//  WipeAppContents.swift
+//  PrivateKey.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/13
+	Created by Jason van den Berg on 2019/11/15
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,43 +40,31 @@
 
 import Foundation
 
-/*
-     Delete all app content and settings. Used only for UITesting on a simulator.
- */
-func wipeIfRequiredOnSimulator() {
-    #if !targetEnvironment(simulator)
-        return
-    #endif
+class PrivateKey {
+    private var ptr: OpaquePointer
 
-    if !CommandLine.arguments.contains("-wipe-app") {
-        return
+    init(byte_vector: ByteVector) {
+        self.ptr = private_key_create(byte_vector.pointer())
     }
 
-    print("***** Wiping app *****")
-
-    let fileManager = FileManager.default
-    let directories = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-
-    for directory in directories {
-        let pathToDelete = directory.path
-        print(pathToDelete)
-
-        if fileManager.fileExists(atPath: pathToDelete, isDirectory: nil) {
-            do {
-                try fileManager.removeItem(at: URL(fileURLWithPath: pathToDelete))
-            } catch {
-                print(error)
-                fatalError("Failed to delete documents directory")
-            }
-        }
+    init(hex: String) {
+        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
+        ptr = private_key_from_hex(hexPtr)
     }
 
-    //let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
+    init() {
+        self.ptr = private_key_generate()
+    }
 
-    //Remove all user defaults
-    let domain = Bundle.main.bundleIdentifier!
-    UserDefaults.standard.removePersistentDomain(forName: domain)
-    UserDefaults.standard.synchronize()
+    func getBytes() -> ByteVector {
+        return ByteVector(pointer: private_key_get_bytes(ptr))
+    }
 
-    print("***** Wipe complete *****")
+    func pointer() -> OpaquePointer {
+        return ptr
+    }
+
+    deinit {
+        private_key_destroy(ptr)
+    }
 }

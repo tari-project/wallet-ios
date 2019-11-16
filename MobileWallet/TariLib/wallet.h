@@ -275,7 +275,7 @@ void comms_config_destroy(struct TariCommsConfig *wc);
 struct TariWallet *wallet_create(struct TariWalletConfig *config);
 
 /// Generates test data
-bool wallet_generate_test_data(struct TariWallet *wallet);
+bool wallet_test_generate_data(struct TariWallet *wallet);
 
 // Adds a base node peer to the TariWallet
 bool wallet_add_base_node_peer(struct TariWallet *wallet, struct TariPublicKey *public_key, char *address);
@@ -290,10 +290,10 @@ bool wallet_remove_contact(struct TariWallet *wallet, struct TariContact *contac
 unsigned long long wallet_get_available_balance(struct TariWallet *wallet);
 
 // Gets the incoming balance from a TariWallet
-unsigned long long wallet_get_incoming_balance(struct TariWallet *wallet);
+unsigned long long wallet_get_pending_incoming_balance(struct TariWallet *wallet);
 
 // Gets the outgoing balance from a TariWallet
-unsigned long long wallet_get_outgoing_balance(struct TariWallet *wallet);
+unsigned long long wallet_get_pending_outgoing_balance(struct TariWallet *wallet);
 
 // Sends a TariPendingOutboundTransaction
 bool wallet_send_transaction(struct TariWallet *wallet, struct TariPublicKey *destination, unsigned long long amount, unsigned long long fee_per_gram,const char *message);
