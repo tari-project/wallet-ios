@@ -40,32 +40,75 @@
 
 import Foundation
 
+enum WalletErrors: Error {
+    case generateTestData
+    case insufficientFunds(microTariRequired: UInt64)
+    case createContact
+    case addContact
+    case invalidPublicKeyHex
+}
+
 class Wallet {
     private var ptr: OpaquePointer
+    var contacts: Contacts
 
-    init(config: OpaquePointer) {
-        ptr = wallet_create(config)
+    init(comsConfig: CommsConfig) {
+        ptr = wallet_create(comsConfig.pointer())
+        contacts = Contacts(contactsPointer: wallet_get_contacts(ptr))
     }
 
     init(hex: String) {
         let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
         ptr = private_key_from_hex(hexPtr)
+        contacts = Contacts(contactsPointer: wallet_get_contacts(ptr))
     }
 
-    func getAvailableBalance() -> UInt64 {
+    //TODO create convenience get var
+    func availableBalance() -> UInt64 {
         return wallet_get_available_balance(ptr)
     }
 
-    func getPendingIncomingBalance() -> UInt64 {
+    //TODO create convenience get var
+    func pendingIncomingBalance() -> UInt64 {
         return wallet_get_pending_incoming_balance(ptr)
     }
 
-    func getPendingOutgoingBalance() -> UInt64 {
+    //TODO create convenience get var
+    func pendingOutgoingBalance() -> UInt64 {
         wallet_get_pending_outgoing_balance(ptr)
     }
 
-    func generateTestData() {
-        wallet_test_generate_data(ptr)
+    func publicKey() -> PublicKey {
+        return PublicKey(pointer: wallet_get_public_key(ptr))
+    }
+
+    func addContact(alias: String, publicKeyHex: String) throws {
+        if !PublicKey.validHex(publicKeyHex) {
+            throw WalletErrors.invalidPublicKeyHex
+        }
+
+        let publicKey = PublicKey(hex: publicKeyHex)
+        let aliasPointer = UnsafeMutablePointer<Int8>(mutating: (alias as NSString).utf8String)
+        let contactPointer = contact_create(aliasPointer, publicKey.pointer())
+
+        if contactPointer != nil {
+            let newContact = Contact(contactPointer: contactPointer!)
+            let contactAdded = wallet_add_contact(ptr, newContact.pointer())
+
+            if !contactAdded {
+                throw WalletErrors.addContact
+            }
+        } else {
+           throw WalletErrors.createContact
+        }
+    }
+
+    func generateTestData() throws {
+        let didGenerateData = wallet_test_generate_data(ptr)
+
+        if !didGenerateData {
+            throw WalletErrors.generateTestData
+        }
     }
 
     func pointer() -> OpaquePointer {

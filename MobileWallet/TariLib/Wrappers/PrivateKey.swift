@@ -43,8 +43,8 @@ import Foundation
 class PrivateKey {
     private var ptr: OpaquePointer
 
-    init(byte_vector: ByteVector) {
-        self.ptr = private_key_create(byte_vector.pointer())
+    init(byteVector: ByteVector) {
+        self.ptr = private_key_create(byteVector.pointer())
     }
 
     init(hex: String) {
@@ -56,8 +56,21 @@ class PrivateKey {
         self.ptr = private_key_generate()
     }
 
-    func getBytes() -> ByteVector {
+    static func validHex(_ hex: String) -> Bool {
+        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
+        if private_key_from_hex(hexPtr) != nil {
+            return true
+        }
+
+        return false
+    }
+
+    func bytes() -> ByteVector {
         return ByteVector(pointer: private_key_get_bytes(ptr))
+    }
+
+    func hex() -> String {
+        return bytes().toString()
     }
 
     func pointer() -> OpaquePointer {
