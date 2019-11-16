@@ -89,4 +89,21 @@ class ActionButton: UIButton {
             self.transform = CGAffineTransform(scaleX: 1, y: 1)
         })
     }
+
+    func animateOut() {
+        //Wait till after pulse affect
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            UIView.animate(
+                withDuration: 0.2,
+                delay: 0,
+                options: .curveEaseOut,
+                animations: {
+                    self.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
+                }
+            ) { (_) in
+                self.isHidden = true
+            }
+        })
+
+    }
 }
