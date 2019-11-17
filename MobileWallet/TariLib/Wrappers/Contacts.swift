@@ -1,8 +1,8 @@
-//  ByteVector.swift
+//  Contacts.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/14
+	Created by Jason van den Berg on 2019/11/16
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,42 +40,29 @@
 
 import Foundation
 
-class ByteVector {
+enum ContactsErrors: Error {
+    case contactNotFound
+}
+
+class Contacts {
     private var ptr: OpaquePointer
 
-    init(byteArray: [UInt8]) {
-        self.ptr = byte_vector_create(byteArray, UInt32(byteArray.count))
-    }
-
-    init (pointer: OpaquePointer) {
-        ptr = pointer
+    init(contactsPointer: OpaquePointer) {
+        ptr = contactsPointer
     }
 
     func length() -> UInt32 {
-        return byte_vector_get_length(ptr)
+        return contacts_get_length(ptr)
     }
 
-    func at(position: UInt32) -> UInt8 {
-        return byte_vector_get_at(ptr, position)
-    }
+    func at(position: UInt32) throws -> Contact {
+        let contactPointer = contacts_get_at(ptr, position)
 
-    func toString() -> String {
-        var byteArray: [UInt8] = [UInt8]()
-
-        for n in 0...length() {
-            byteArray.append(at(position: n))
+        if contactPointer == nil {
+            throw ContactsErrors.contactNotFound
         }
 
-        let data = Data(byteArray)
-
-        var hexStr = data.map {String(format: "%02hhx", $0)}.joined()
-
-        //TODO figure out why the last 2 zeros need to be dropped
-        if hexStr.count > 2 {
-            hexStr = String(hexStr.dropLast(2))
-        }
-
-        return hexStr
+        return Contact(contactPointer: contactPointer!)
     }
 
     func pointer() -> OpaquePointer {
@@ -83,6 +70,6 @@ class ByteVector {
     }
 
     deinit {
-        byte_vector_destroy(ptr)
+        contacts_destroy(ptr)
     }
 }

@@ -1,8 +1,8 @@
-//  TariLib.swift
+//  PublicKey.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/12
+	Created by Jason van den Berg on 2019/11/16
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,56 +40,44 @@
 
 import Foundation
 
-class TariLib {
-    static let shared = TariLib()
+class PublicKey {
+    private var ptr: OpaquePointer
 
-    private static let DATABASE_NAME = "tari_wallet"
-
-    private let fileManager = FileManager.default
-
-    private var tariWallet: Wallet?
-
-    var databasePath: String {
-        get {
-            let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-            return documentsURL.appendingPathComponent(TariLib.DATABASE_NAME).path
-        }
+    init(privateKey: PrivateKey) {
+        ptr = public_key_from_private_key(privateKey.pointer())
     }
 
-    var walletExists: Bool {
-        get {
-            //TODO check for actual keys, not just the wallet directory
-            var isDir: ObjCBool = false
-            if fileManager.fileExists(atPath: databasePath, isDirectory: &isDir) {
-                return true
-            }
-
-            return false
-        }
+    init(hex: String) {
+        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
+        ptr = public_key_from_hex(hexPtr)
     }
 
-    init() {}
+    init(pointer: OpaquePointer) {
+        ptr = pointer
+    }
 
-    /*
-     Called automatically, just before instance deallocation takes place
-     */
-    deinit {}
-
-    func createNewWallet() {
-        do {
-            try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
-        } catch let error as NSError {
-            NSLog("Unable to create directory \(error.debugDescription)")
+    static func validHex(_ hex: String) -> Bool {
+        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
+        if public_key_from_hex(hexPtr) != nil {
+            return true
         }
 
-        print(databasePath)
+        return false
+    }
 
-        let address = "0.0.0.0:80"
-        let hex_str = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
-        let privateKey = PrivateKey(hex: hex_str)
+    func bytes() -> ByteVector {
+        return ByteVector(pointer: public_key_get_bytes(ptr))
+    }
 
-        let comsConfig = CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: TariLib.DATABASE_NAME, address: address)
+    func hex() -> String {
+        return bytes().toString()
+    }
 
-        tariWallet = Wallet(comsConfig: comsConfig)
+    func pointer() -> OpaquePointer {
+        return ptr
+    }
+
+    deinit {
+        public_key_destroy(ptr)
     }
 }

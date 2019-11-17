@@ -95,7 +95,7 @@ struct TariPublicKey *public_key_create(struct ByteVector *bytes);
 struct ByteVector *public_key_get_bytes(struct TariPublicKey *public_key);
 
 // Creates a TariPublicKey from a TariPrivateKey
-struct TariPublicKey *public_key_get_from_private_key(struct TariPrivateKey *secret_key);
+struct TariPublicKey *public_key_from_private_key(struct TariPrivateKey *secret_key);
 
 // Creates a TariPublicKey from a const char* filled with hexadecimal characters
 struct TariPublicKey *public_key_from_hex(const char *hex);

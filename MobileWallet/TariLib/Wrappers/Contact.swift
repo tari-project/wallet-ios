@@ -1,8 +1,8 @@
-//  TariLib.swift
+//  Contact.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/12
+	Created by Jason van den Berg on 2019/11/16
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,56 +40,36 @@
 
 import Foundation
 
-class TariLib {
-    static let shared = TariLib()
+enum ContactErrors: Error {
+    case contactNotFound
+    case invalidUTF8Sequence
+}
 
-    private static let DATABASE_NAME = "tari_wallet"
+class Contact {
+    private var ptr: OpaquePointer
 
-    private let fileManager = FileManager.default
-
-    private var tariWallet: Wallet?
-
-    var databasePath: String {
-        get {
-            let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-            return documentsURL.appendingPathComponent(TariLib.DATABASE_NAME).path
-        }
+    init(contactPointer: OpaquePointer) {
+        ptr = contactPointer
     }
 
-    var walletExists: Bool {
-        get {
-            //TODO check for actual keys, not just the wallet directory
-            var isDir: ObjCBool = false
-            if fileManager.fileExists(atPath: databasePath, isDirectory: &isDir) {
-                return true
+    func alias() throws -> String {
+        if let aliasPointer = contact_get_alias(ptr) {
+            if let string = String(validatingUTF8: aliasPointer) {
+                return string
+            } else {
+                throw ContactErrors.invalidUTF8Sequence
+
             }
-
-            return false
+        } else {
+            throw ContactErrors.contactNotFound
         }
     }
 
-    init() {}
+    func pointer() -> OpaquePointer {
+        return ptr
+    }
 
-    /*
-     Called automatically, just before instance deallocation takes place
-     */
-    deinit {}
-
-    func createNewWallet() {
-        do {
-            try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
-        } catch let error as NSError {
-            NSLog("Unable to create directory \(error.debugDescription)")
-        }
-
-        print(databasePath)
-
-        let address = "0.0.0.0:80"
-        let hex_str = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
-        let privateKey = PrivateKey(hex: hex_str)
-
-        let comsConfig = CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: TariLib.DATABASE_NAME, address: address)
-
-        tariWallet = Wallet(comsConfig: comsConfig)
+    deinit {
+        contact_destroy(ptr)
     }
 }
