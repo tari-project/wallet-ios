@@ -1,8 +1,8 @@
-//  PrivateKey.swift
+//  PendingOutboundTransaction.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/15
+	Created by Jason van den Berg on 2019/11/18
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,44 +40,18 @@
 
 import Foundation
 
-class PrivateKey {
+class PendingOutboundTransaction {
     private var ptr: OpaquePointer
 
     var pointer: OpaquePointer {
         return ptr
     }
 
-    var bytes: ByteVector {
-        return ByteVector(pointer: private_key_get_bytes(ptr))
-    }
-
-    var hex: String {
-         return bytes.hexString
-    }
-
-    init(byteVector: ByteVector) {
-        self.ptr = private_key_create(byteVector.pointer)
-    }
-
-    init(hex: String) {
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
-        ptr = private_key_from_hex(hexPtr)
-    }
-
-    init() {
-        self.ptr = private_key_generate()
-    }
-
-    static func validHex(_ hex: String) -> Bool {
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
-        if private_key_from_hex(hexPtr) != nil {
-            return true
-        }
-
-        return false
+    init(pendingOutboundTransactionPointer: OpaquePointer) {
+        ptr = pendingOutboundTransactionPointer
     }
 
     deinit {
-        private_key_destroy(ptr)
+        pending_outbound_transaction_destroy(ptr)
     }
 }

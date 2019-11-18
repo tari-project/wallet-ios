@@ -22,6 +22,8 @@ class MobileWalletUITests: XCTestCase {
         acceptPermissionsPromptIfRequired()
         Biometrics.successfulAuthentication()
         app.terminate()
+        
+        app.launchArguments = ["-disable-animations"]
     }
 
     override func tearDown() {

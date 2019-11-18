@@ -41,45 +41,55 @@
 import Foundation
 
 enum WalletErrors: Error {
-    case generateTestData
     case insufficientFunds(microTariRequired: UInt64)
-    case createContact
     case addContact
     case invalidPublicKeyHex
+    case generateTestData
+    case generateTestReceiveTransaction
+    case testTransactionBroadcast
 }
 
 class Wallet {
     private var ptr: OpaquePointer
-    var contacts: Contacts
 
-    init(comsConfig: CommsConfig) {
-        ptr = wallet_create(comsConfig.pointer())
-        contacts = Contacts(contactsPointer: wallet_get_contacts(ptr))
+    var pointer: OpaquePointer {
+        return ptr
     }
 
-    init(hex: String) {
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
-        ptr = private_key_from_hex(hexPtr)
-        contacts = Contacts(contactsPointer: wallet_get_contacts(ptr))
+    var contacts: Contacts {
+        return Contacts(contactsPointer: wallet_get_contacts(ptr))
     }
 
-    //TODO create convenience get var
-    func availableBalance() -> UInt64 {
+    var completedTransactions: CompletedTransactions {
+        return CompletedTransactions(completedTransactionsPointer: wallet_get_completed_transactions(ptr))
+    }
+
+    var pendingOutboundTransactions: PendingOutboundTransactions {
+        return PendingOutboundTransactions(pendingOutboundTransactionsPointer: wallet_get_pending_outbound_transactions(ptr))
+    }
+
+    var pendingInboundTransactions: PendingInboundTransactions {
+        return PendingInboundTransactions(pendingInboundTransactionsPointer: wallet_get_pending_inbound_transactions(ptr))
+    }
+
+    var availableBalance: UInt64 {
         return wallet_get_available_balance(ptr)
     }
 
-    //TODO create convenience get var
-    func pendingIncomingBalance() -> UInt64 {
+    var pendingIncomingBalance: UInt64 {
         return wallet_get_pending_incoming_balance(ptr)
     }
 
-    //TODO create convenience get var
-    func pendingOutgoingBalance() -> UInt64 {
-        wallet_get_pending_outgoing_balance(ptr)
+    var pendingOutgoingBalance: UInt64 {
+        return wallet_get_pending_outgoing_balance(ptr)
     }
 
-    func publicKey() -> PublicKey {
+    var publicKey: PublicKey {
         return PublicKey(pointer: wallet_get_public_key(ptr))
+    }
+
+    init(comsConfig: CommsConfig) {
+        ptr = wallet_create(comsConfig.pointer)
     }
 
     func addContact(alias: String, publicKeyHex: String) throws {
@@ -88,31 +98,13 @@ class Wallet {
         }
 
         let publicKey = PublicKey(hex: publicKeyHex)
-        let aliasPointer = UnsafeMutablePointer<Int8>(mutating: (alias as NSString).utf8String)
-        let contactPointer = contact_create(aliasPointer, publicKey.pointer())
 
-        if contactPointer != nil {
-            let newContact = Contact(contactPointer: contactPointer!)
-            let contactAdded = wallet_add_contact(ptr, newContact.pointer())
+        let newContact = Contact(alias: alias, publicKey: publicKey)
+        let contactAdded = wallet_add_contact(ptr, newContact.pointer)
 
-            if !contactAdded {
-                throw WalletErrors.addContact
-            }
-        } else {
-           throw WalletErrors.createContact
+        if !contactAdded {
+            throw WalletErrors.addContact
         }
-    }
-
-    func generateTestData() throws {
-        let didGenerateData = wallet_test_generate_data(ptr)
-
-        if !didGenerateData {
-            throw WalletErrors.generateTestData
-        }
-    }
-
-    func pointer() -> OpaquePointer {
-        return ptr
     }
 
     deinit {

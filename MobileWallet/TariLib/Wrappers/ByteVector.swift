@@ -43,26 +43,18 @@ import Foundation
 class ByteVector {
     private var ptr: OpaquePointer
 
-    init(byteArray: [UInt8]) {
-        self.ptr = byte_vector_create(byteArray, UInt32(byteArray.count))
+    var pointer: OpaquePointer {
+        return ptr
     }
 
-    init (pointer: OpaquePointer) {
-        ptr = pointer
-    }
-
-    func length() -> UInt32 {
+    var count: UInt32 {
         return byte_vector_get_length(ptr)
     }
 
-    func at(position: UInt32) -> UInt8 {
-        return byte_vector_get_at(ptr, position)
-    }
-
-    func toString() -> String {
+    var hexString: String {
         var byteArray: [UInt8] = [UInt8]()
 
-        for n in 0...length() {
+        for n in 0...count {
             byteArray.append(at(position: n))
         }
 
@@ -78,8 +70,16 @@ class ByteVector {
         return hexStr
     }
 
-    func pointer() -> OpaquePointer {
-        return ptr
+    init(byteArray: [UInt8]) {
+        self.ptr = byte_vector_create(byteArray, UInt32(byteArray.count))
+    }
+
+    init (pointer: OpaquePointer) {
+        ptr = pointer
+    }
+
+    func at(position: UInt32) -> UInt8 {
+        return byte_vector_get_at(ptr, position)
     }
 
     deinit {

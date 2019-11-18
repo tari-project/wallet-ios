@@ -214,7 +214,7 @@ const char *pending_outbound_transaction_get_message(struct TariPendingOutboundT
 unsigned long long pending_outbound_transaction_get_timestamp(struct TariPendingOutboundTransaction *transaction);
 
 // Frees memory for a TariPendingOutboundTactions
-void pending_inbound_transaction_destroy(struct TariPendingInboundTransaction *transaction);
+void pending_outbound_transaction_destroy(struct TariPendingOutboundTransaction *transaction);
 
 /// -------------------------------- OutboundTransactions ------------------------------------------------------ ///
 
