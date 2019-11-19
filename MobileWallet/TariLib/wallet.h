@@ -31,9 +31,12 @@
 //! updates.
 
 // TODO: Improve documentation
-
 #ifndef wallet_ffi_h
 #define wallet_ffi_h
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -180,7 +183,7 @@ int completed_transaction_get_status(struct TariCompletedTransaction *transactio
 unsigned long long completed_transaction_get_transaction_id(struct TariCompletedTransaction *transaction);
 
 // Gets the timestamp of a TariCompletedTransaction
-unsigned long long completed_transaction_get_transaction_timestamp(struct TariCompletedTransaction *transaction);
+unsigned long long completed_transaction_get_timestamp(struct TariCompletedTransaction *transaction);
 
 // Frees memory for a TariCompletedTransaction
 void completed_transaction_destroy(struct TariCompletedTransaction *transaction);
@@ -242,7 +245,7 @@ const char *pending_inbound_transaction_get_message(struct TariPendingInboundTra
 unsigned long long pending_inbound_transaction_get_amount(struct TariPendingInboundTransaction *transaction);
 
 // Gets the timestamp of a TariPendingInboundTransaction
-unsigned long long pending_inbound_get_timestamp(struct TariPendingInboundTransaction *transaction);
+unsigned long long pending_inbound_transaction_get_timestamp(struct TariPendingInboundTransaction *transaction);
 
 // Frees memory for a TariPendingInboundTransaction
 void pending_inbound_transaction_destroy(struct TariPendingInboundTransaction *transaction);
@@ -349,5 +352,8 @@ bool wallet_callback_register_received_transaction(struct TariWallet *wallet, vo
 // Registers a callback function for when a reply is received for a TariPendingOutboundTransaction
 bool wallet_callback_register_received_transaction_reply(struct TariWallet *wallet, void (*call)(struct TariCompletedTransaction*));
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* wallet_ffi_h */
