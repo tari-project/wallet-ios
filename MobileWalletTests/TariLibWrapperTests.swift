@@ -54,7 +54,6 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     override func setUp() {
-        wipeIfRequiredOnSimulator()
     }
 
     override func tearDown() {
@@ -63,7 +62,7 @@ class TariLibWrapperTests: XCTestCase {
     func testByteVector() {
         //Init manually. Initializing from pointers happens in priv/pub key tests.
         let byteVector = ByteVector(byteArray: [0, 1, 2, 3, 4, 5])
-        XCTAssertEqual(byteVector.toString(), "000102030405")
+        XCTAssertEqual(byteVector.hexString, "000102030405")
     }
     
     func testPrivateKey() {
@@ -71,7 +70,7 @@ class TariLibWrapperTests: XCTestCase {
         let originalPrivateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
         
         let privateKey = PrivateKey(hex: originalPrivateKeyHex)
-        XCTAssertEqual(privateKey.hex(), originalPrivateKeyHex)
+        XCTAssertEqual(privateKey.hex, originalPrivateKeyHex)
                 
         XCTAssertEqual(PrivateKey.validHex("I_made_this_up"), false)
         XCTAssertEqual(PrivateKey.validHex(originalPrivateKeyHex), true)
@@ -82,7 +81,7 @@ class TariLibWrapperTests: XCTestCase {
         let originalPublicKeyHex = "6a493210f7499cd17fecb510ae0cea23a110e8d5b901f8acadd3095c73a3b919"
         
         let publicKey = PublicKey(hex: originalPublicKeyHex)
-        XCTAssertEqual(publicKey.hex(), originalPublicKeyHex)
+        XCTAssertEqual(publicKey.hex, originalPublicKeyHex)
         
         XCTAssertEqual(PublicKey.validHex("I_made_this_up"), false)
         XCTAssertEqual(PublicKey.validHex(originalPublicKeyHex), true)
@@ -98,24 +97,11 @@ class TariLibWrapperTests: XCTestCase {
             address: "0.0.0.0:80"
         )
 
+        //MARK: Create new wallet
         let wallet = Wallet(comsConfig: comsConfig)
-                
-        //TODO If test data can be generated deterministically they wallet tests could cover more than just checking empty states
-//        do {
-//            try wallet.generateTestData()
-//        } catch {
-//            XCTFail(error.localizedDescription)
-//        }
+        XCTAssertEqual(wallet.publicKey.hex, "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40")
         
-//        let walletPublicKey = wallet.publicKey()
-//        XCTAssertEqual(walletPublicKey.hex(), "yup")
-                      
-        XCTAssertEqual(wallet.publicKey().hex(), "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40")
-        XCTAssertEqual(wallet.availableBalance(), 0)
-        XCTAssertEqual(wallet.pendingIncomingBalance(), 0)
-        XCTAssertEqual(wallet.pendingOutgoingBalance(), 0)
-        
-        //Add bob as a contact
+        //MARK: Add bob as a contact
         let bobPublicKeyHex = "6a493210f7499cd17fecb510ae0cea23a110e8d5b901f8acadd3095c73a3b919"
         let bobAlias = "BillyBob"
         
@@ -124,17 +110,60 @@ class TariLibWrapperTests: XCTestCase {
         } catch {
             XCTFail(error.localizedDescription)
         }
-
-        //TODO place back after debugged
-        //XCTAssertEqual(wallet.contacts.length(), 1)
+        
+        XCTAssertEqual(wallet.contacts.count, 1)
                 
         do {
-            let testContact = try wallet.contacts.at(position: 0)
-            let testAlias = try testContact.alias()
-            XCTAssertEqual(testAlias, bobAlias)
+            let justAddedContact = try wallet.contacts.at(position: 0)
+            let alias = justAddedContact.alias
+            XCTAssertEqual(alias, bobAlias)
         } catch {
-            //TODO place back after debugged
-            //XCTFail(error.localizedDescription)
+            XCTFail(error.localizedDescription)
         }
+        
+        XCTAssertEqual(wallet.completedTransactions.count, 0)
+        XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
+        XCTAssertEqual(wallet.pendingInboundTransactions.count, 0)
+        XCTAssertEqual(wallet.availableBalance, 0)
+        XCTAssertEqual(wallet.pendingIncomingBalance, 0)
+        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
+        
+        //MARK: Receive a transaction
+        
+        do {
+            try wallet.generateTestReceiveTransaction()
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+        
+        XCTAssertEqual(wallet.completedTransactions.count, 0)
+        XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
+        XCTAssertEqual(wallet.pendingInboundTransactions.count, 1)
+        XCTAssertEqual(wallet.availableBalance, 0)
+        XCTAssertGreaterThan(wallet.pendingIncomingBalance, 0)
+        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
+        
+        //MARK: Confirm received transaction
+        do {
+            let pendingInboundTransaction = try wallet.pendingInboundTransactions.at(position: 0)
+
+            try wallet.testTransactionBroadcast(pendingInboundTransaction: pendingInboundTransaction)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+        
+        XCTAssertEqual(wallet.completedTransactions.count, 1)
+        XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
+        XCTAssertEqual(wallet.pendingInboundTransactions.count, 0)
+        
+//        XCTAssertGreaterThan(wallet.availableBalance, 0)
+//        XCTAssertEqual(wallet.pendingIncomingBalance, 0)
+//        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
+     
+        //TODO create send tx
+        //TODO assert wallet.pendingOutgoingBalance
+        
+        //TODO confirm send tx
+        //TODO assert wallet.availableBalance
     }
 }

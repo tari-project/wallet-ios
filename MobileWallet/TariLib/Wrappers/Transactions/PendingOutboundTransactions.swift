@@ -1,8 +1,8 @@
-//  PrivateKey.swift
+//  PendingOutboundTransactions.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/15
+	Created by Jason van den Berg on 2019/11/18
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,44 +40,36 @@
 
 import Foundation
 
-class PrivateKey {
+enum PendingOutboundTransactionsErrors: Error {
+    case pendingOutboundTransactionNotFound
+}
+
+class PendingOutboundTransactions {
     private var ptr: OpaquePointer
 
     var pointer: OpaquePointer {
         return ptr
     }
 
-    var bytes: ByteVector {
-        return ByteVector(pointer: private_key_get_bytes(ptr))
+    var count: UInt32 {
+        return pending_outbound_transactions_get_length(ptr)
     }
 
-    var hex: String {
-         return bytes.hexString
+    init(pendingOutboundTransactionsPointer: OpaquePointer) {
+        ptr = pendingOutboundTransactionsPointer
     }
 
-    init(byteVector: ByteVector) {
-        self.ptr = private_key_create(byteVector.pointer)
-    }
+    func at(position: UInt32) throws -> PendingOutboundTransaction {
+        let pendingOutboundTransactionPointer = pending_outbound_transactions_get_at(ptr, position)
 
-    init(hex: String) {
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
-        ptr = private_key_from_hex(hexPtr)
-    }
-
-    init() {
-        self.ptr = private_key_generate()
-    }
-
-    static func validHex(_ hex: String) -> Bool {
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
-        if private_key_from_hex(hexPtr) != nil {
-            return true
+        if pendingOutboundTransactionPointer == nil {
+            throw PendingOutboundTransactionsErrors.pendingOutboundTransactionNotFound
         }
 
-        return false
+        return PendingOutboundTransaction(pendingOutboundTransactionPointer: pendingOutboundTransactionPointer!)
     }
 
     deinit {
-        private_key_destroy(ptr)
+        pending_outbound_transactions_destroy(ptr)
     }
 }

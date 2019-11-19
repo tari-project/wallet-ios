@@ -43,16 +43,16 @@ import Foundation
 class CommsConfig {
     private var ptr: OpaquePointer
 
+    var pointer: OpaquePointer {
+        return ptr
+    }
+
     init(privateKey: PrivateKey, databasePath: String, databaseName: String, address: String) {
         let addressPointer = UnsafeMutablePointer<Int8>(mutating: (address as NSString).utf8String)
         let dbPointer = UnsafeMutablePointer<Int8>(mutating: (databaseName as NSString).utf8String)
         let pathPointer = UnsafeMutablePointer<Int8>(mutating: databasePath)
 
-        ptr = comms_config_create(addressPointer, dbPointer, pathPointer, privateKey.pointer())
-    }
-
-    func pointer() -> OpaquePointer {
-        return ptr
+        ptr = comms_config_create(addressPointer, dbPointer, pathPointer, privateKey.pointer)
     }
 
     deinit {

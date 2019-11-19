@@ -1,8 +1,8 @@
-//  Contact.swift
+//  WipeAppContents.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/16
+	Created by Jason van den Berg on 2019/11/13
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,39 +38,61 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+import UIKit
 
-class Contact {
-    private var ptr: OpaquePointer
+/*
+ Delete all app content and settings. Used only for UITesting on a simulator.
+*/
+func wipeIfRequiredOnSimulator() {
+    #if !targetEnvironment(simulator)
+        return
+    #endif
 
-    var pointer: OpaquePointer {
-        return ptr
-    }
+    print("***** Wiping app *****")
 
-    var alias: String? {
-        if let aliasPointer = contact_get_alias(ptr) {
-            if let string = String(validatingUTF8: aliasPointer) {
-                return string
-            } else {
-                //TODO create error log
-                return nil
+    let fileManager = FileManager.default
+    let directories = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+
+    for directory in directories {
+        let pathToDelete = directory.path
+        print(pathToDelete)
+
+        if fileManager.fileExists(atPath: pathToDelete, isDirectory: nil) {
+            do {
+                try fileManager.removeItem(at: URL(fileURLWithPath: pathToDelete))
+            } catch {
+                print(error)
+                fatalError("Failed to delete documents directory")
             }
-        } else {
-            //TODO create error log
-            return nil
         }
     }
 
-    init(contactPointer: OpaquePointer) {
-        ptr = contactPointer
+    //let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
+
+    //Remove all user defaults
+    let domain = Bundle.main.bundleIdentifier!
+    UserDefaults.standard.removePersistentDomain(forName: domain)
+    UserDefaults.standard.synchronize()
+
+    print("***** Wipe complete *****")
+}
+
+/*
+ Disable animations which is useful for UI tests in simulator.
+*/
+func disableAnimations() {
+    UIView.setAnimationsEnabled(false)
+}
+
+/*
+ Needs to be called in AppDelegate.swift with didFinishLaunchingWithOptions
+*/
+func handleCommandLineArgs() {
+    if CommandLine.arguments.contains("-wipe-app") {
+        wipeIfRequiredOnSimulator()
     }
 
-    init(alias: String, publicKey: PublicKey) {
-        let aliasPointer = UnsafeMutablePointer<Int8>(mutating: (alias as NSString).utf8String)
-        ptr = contact_create(aliasPointer, publicKey.pointer)
-    }
-
-    deinit {
-        contact_destroy(ptr)
+    if CommandLine.arguments.contains("-disable-animations") {
+        disableAnimations()
     }
 }

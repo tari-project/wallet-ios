@@ -43,8 +43,20 @@ import Foundation
 class PublicKey {
     private var ptr: OpaquePointer
 
+    var pointer: OpaquePointer {
+        return ptr
+    }
+
+    var bytes: ByteVector {
+        return ByteVector(pointer: public_key_get_bytes(ptr))
+    }
+
+    var hex: String {
+        return bytes.hexString
+    }
+
     init(privateKey: PrivateKey) {
-        ptr = public_key_from_private_key(privateKey.pointer())
+        ptr = public_key_from_private_key(privateKey.pointer)
     }
 
     init(hex: String) {
@@ -63,18 +75,6 @@ class PublicKey {
         }
 
         return false
-    }
-
-    func bytes() -> ByteVector {
-        return ByteVector(pointer: public_key_get_bytes(ptr))
-    }
-
-    func hex() -> String {
-        return bytes().toString()
-    }
-
-    func pointer() -> OpaquePointer {
-        return ptr
     }
 
     deinit {

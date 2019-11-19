@@ -1,8 +1,8 @@
-//  WipeAppContents.swift
+//  WalletTestData.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/13
+	Created by Jason van den Berg on 2019/11/18
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,43 +40,28 @@
 
 import Foundation
 
-/*
-     Delete all app content and settings. Used only for UITesting on a simulator.
- */
-func wipeIfRequiredOnSimulator() {
-    #if !targetEnvironment(simulator)
-        return
-    #endif
+extension Wallet {
+    func generateTestData() throws {
+        let didGenerateData = wallet_test_generate_data(self.pointer)
 
-    if !CommandLine.arguments.contains("-wipe-app") {
-        return
-    }
-
-    print("***** Wiping app *****")
-
-    let fileManager = FileManager.default
-    let directories = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
-
-    for directory in directories {
-        let pathToDelete = directory.path
-        print(pathToDelete)
-
-        if fileManager.fileExists(atPath: pathToDelete, isDirectory: nil) {
-            do {
-                try fileManager.removeItem(at: URL(fileURLWithPath: pathToDelete))
-            } catch {
-                print(error)
-                fatalError("Failed to delete documents directory")
-            }
+        if !didGenerateData {
+            throw WalletErrors.generateTestData
         }
     }
 
-    //let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
+    func generateTestReceiveTransaction() throws {
+        let didCreateTestReceiveTransaction = wallet_test_receive_transaction(self.pointer)
 
-    //Remove all user defaults
-    let domain = Bundle.main.bundleIdentifier!
-    UserDefaults.standard.removePersistentDomain(forName: domain)
-    UserDefaults.standard.synchronize()
+        if !didCreateTestReceiveTransaction {
+            throw WalletErrors.generateTestReceiveTransaction
+        }
+    }
 
-    print("***** Wipe complete *****")
+    func testTransactionBroadcast(pendingInboundTransaction: PendingInboundTransaction) throws {
+        let didTestTransactionBroadcast = wallet_test_transaction_broadcast(self.pointer, pendingInboundTransaction.pointer)
+
+        if !didTestTransactionBroadcast {
+            throw WalletErrors.testTransactionBroadcast
+        }
+    }
 }

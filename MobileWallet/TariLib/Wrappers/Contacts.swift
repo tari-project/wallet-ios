@@ -47,12 +47,16 @@ enum ContactsErrors: Error {
 class Contacts {
     private var ptr: OpaquePointer
 
-    init(contactsPointer: OpaquePointer) {
-        ptr = contactsPointer
+    var pointer: OpaquePointer {
+        return ptr
     }
 
-    func length() -> UInt32 {
+    var count: UInt32 {
         return contacts_get_length(ptr)
+    }
+
+    init(contactsPointer: OpaquePointer) {
+        ptr = contactsPointer
     }
 
     func at(position: UInt32) throws -> Contact {
@@ -63,10 +67,6 @@ class Contacts {
         }
 
         return Contact(contactPointer: contactPointer!)
-    }
-
-    func pointer() -> OpaquePointer {
-        return ptr
     }
 
     deinit {

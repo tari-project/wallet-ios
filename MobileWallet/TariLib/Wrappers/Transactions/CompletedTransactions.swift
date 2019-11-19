@@ -1,8 +1,8 @@
-//  PrivateKey.swift
+//  CompletedTransaction.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/15
+	Created by Jason van den Berg on 2019/11/17
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,44 +40,36 @@
 
 import Foundation
 
-class PrivateKey {
+enum CompletedTransactionsErrors: Error {
+    case completedTransactionNotFound
+}
+
+class CompletedTransactions {
     private var ptr: OpaquePointer
 
     var pointer: OpaquePointer {
         return ptr
     }
 
-    var bytes: ByteVector {
-        return ByteVector(pointer: private_key_get_bytes(ptr))
+    var count: UInt32 {
+        return completed_transactions_get_length(ptr)
     }
 
-    var hex: String {
-         return bytes.hexString
+    init(completedTransactionsPointer: OpaquePointer) {
+        ptr = completedTransactionsPointer
     }
 
-    init(byteVector: ByteVector) {
-        self.ptr = private_key_create(byteVector.pointer)
-    }
+    func at(position: UInt32) throws -> CompletedTransaction {
+        let completedTransactionPointer = completed_transactions_get_at(ptr, position)
 
-    init(hex: String) {
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
-        ptr = private_key_from_hex(hexPtr)
-    }
-
-    init() {
-        self.ptr = private_key_generate()
-    }
-
-    static func validHex(_ hex: String) -> Bool {
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
-        if private_key_from_hex(hexPtr) != nil {
-            return true
+        if completedTransactionPointer == nil {
+            throw CompletedTransactionsErrors.completedTransactionNotFound
         }
 
-        return false
+        return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!)
     }
 
     deinit {
-        private_key_destroy(ptr)
+        completed_transactions_destroy(ptr)
     }
 }
