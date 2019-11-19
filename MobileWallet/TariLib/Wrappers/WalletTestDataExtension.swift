@@ -64,4 +64,12 @@ extension Wallet {
             throw WalletErrors.testTransactionBroadcast
         }
     }
+
+    func testTransactionMined(completedTransaction: CompletedTransaction) throws {
+        let didCompleteTransaction = wallet_test_mined(self.pointer, completedTransaction.pointer)
+
+        if !didCompleteTransaction {
+            throw WalletErrors.testTransactionMined
+        }
+    }
 }

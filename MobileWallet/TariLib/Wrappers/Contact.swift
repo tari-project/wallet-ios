@@ -61,6 +61,10 @@ class Contact {
         }
     }
 
+    var publicKey: PublicKey {
+        return PublicKey(pointer: contact_get_public_key(ptr))
+    }
+
     init(contactPointer: OpaquePointer) {
         ptr = contactPointer
     }

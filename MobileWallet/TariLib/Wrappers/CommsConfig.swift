@@ -47,12 +47,13 @@ class CommsConfig {
         return ptr
     }
 
-    init(privateKey: PrivateKey, databasePath: String, databaseName: String, address: String) {
-        let addressPointer = UnsafeMutablePointer<Int8>(mutating: (address as NSString).utf8String)
+    init(privateKey: PrivateKey, databasePath: String, databaseName: String, controlAddress: String, listenerAddress: String) {
+        let controlPointer = UnsafeMutablePointer<Int8>(mutating: (controlAddress as NSString).utf8String)
+        let listenerPointer = UnsafeMutablePointer<Int8>(mutating: (listenerAddress as NSString).utf8String)
         let dbPointer = UnsafeMutablePointer<Int8>(mutating: (databaseName as NSString).utf8String)
         let pathPointer = UnsafeMutablePointer<Int8>(mutating: databasePath)
 
-        ptr = comms_config_create(addressPointer, dbPointer, pathPointer, privateKey.pointer)
+        ptr = comms_config_create(controlPointer, listenerPointer, dbPointer, pathPointer, privateKey.pointer)
     }
 
     deinit {

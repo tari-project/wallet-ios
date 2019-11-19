@@ -49,11 +49,23 @@ class TariLib {
 
     private var tariWallet: Wallet?
 
+    private var storagePath: String {
+        get {
+            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            return documentsURL.path
+        }
+    }
+
     var databasePath: String {
         get {
-            let documentsURL =  fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-            return documentsURL.appendingPathComponent(TariLib.DATABASE_NAME).path
+            return "\(storagePath)/\(TariLib.DATABASE_NAME)"
         }
+    }
+
+    var loggingFilePath: String {
+       get {
+            return "\(storagePath)/log.txt"
+       }
     }
 
     var walletExists: Bool {
@@ -77,6 +89,7 @@ class TariLib {
 
     func createNewWallet() {
         do {
+            try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
             try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
         } catch let error as NSError {
             NSLog("Unable to create directory \(error.debugDescription)")
@@ -84,12 +97,12 @@ class TariLib {
 
         print(databasePath)
 
-        let address = "0.0.0.0:80"
-        let hex_str = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
-        let privateKey = PrivateKey(hex: hex_str)
+        let controlAddress = "127.0.0.1:80"
+        let listenerAddress = "0.0.0.0:80"
+        let privateKey = PrivateKey(hex: "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801")
 
-        let comsConfig = CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: TariLib.DATABASE_NAME, address: address)
+        let comsConfig = CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: TariLib.DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
 
-        tariWallet = Wallet(comsConfig: comsConfig)
+        tariWallet = Wallet(comsConfig: comsConfig, loggingFilePath: loggingFilePath)
     }
 }
