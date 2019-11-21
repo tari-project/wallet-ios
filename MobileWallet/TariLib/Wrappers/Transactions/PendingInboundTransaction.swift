@@ -47,6 +47,16 @@ class PendingInboundTransaction {
         return ptr
     }
 
+    var id: UInt64 {
+        return pending_inbound_transaction_get_transaction_id(ptr)
+    }
+
+    //TODO implement these
+//    pending_inbound_transaction_get_amount(<#T##transaction: OpaquePointer!##OpaquePointer!#>)
+//    pending_inbound_transaction_get_message(<#T##transaction: OpaquePointer!##OpaquePointer!#>)
+//    pending_inbound_transaction_get_timestamp(<#T##transaction: OpaquePointer!##OpaquePointer!#>)
+//    pending_inbound_transaction_get_source_public_key(<#T##transaction: OpaquePointer!##OpaquePointer!#>)
+
     init(pendingInboundTransactionPointer: OpaquePointer) {
         ptr = pendingInboundTransactionPointer
     }

@@ -42,15 +42,20 @@ import XCTest
 
 class TariLibWrapperTests: XCTestCase {
     //Use a random DB path for each test
-    private var dbName: String {        
-        return "test_db_\(UUID().uuidString)"
-    }
+    private var dbName = "test_db"
+        
+    private var storagePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("test_\(UUID().uuidString)").path
     
     var databasePath: String {
         get {
-            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-            return documentsURL.appendingPathComponent(dbName).path
+            return "\(storagePath)/\(dbName)"
         }
+    }
+    
+    var loggingFilePath: String {
+       get {
+            return "\(storagePath)/log.txt"
+       }
     }
     
     override func setUp() {
@@ -89,18 +94,22 @@ class TariLibWrapperTests: XCTestCase {
     
     func testWallet() {
         let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
+        
+        print(loggingFilePath)
+        print(databasePath)
 
         let comsConfig = CommsConfig(
             privateKey: PrivateKey(hex: privateKeyHex),
             databasePath: databasePath,
             databaseName: dbName,
-            address: "0.0.0.0:80"
+            controlAddress: "127.0.0.1:80",
+            listenerAddress: "0.0.0.0:80"
         )
-
-        //MARK: Create new wallet
-        let wallet = Wallet(comsConfig: comsConfig)
-        XCTAssertEqual(wallet.publicKey.hex, "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40")
         
+        //MARK: Create new wallet
+        let wallet = Wallet(comsConfig: comsConfig, loggingFilePath: loggingFilePath)
+        XCTAssertEqual(wallet.publicKey.hex, "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40")
+                
         //MARK: Add bob as a contact
         let bobPublicKeyHex = "6a493210f7499cd17fecb510ae0cea23a110e8d5b901f8acadd3095c73a3b919"
         let bobAlias = "BillyBob"
@@ -110,7 +119,7 @@ class TariLibWrapperTests: XCTestCase {
         } catch {
             XCTFail(error.localizedDescription)
         }
-        
+                
         XCTAssertEqual(wallet.contacts.count, 1)
                 
         do {
@@ -128,14 +137,13 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertEqual(wallet.pendingIncomingBalance, 0)
         XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
         
-        //MARK: Receive a transaction
-        
+        //MARK: Receive a test transaction
         do {
             try wallet.generateTestReceiveTransaction()
         } catch {
             XCTFail(error.localizedDescription)
         }
-        
+                
         XCTAssertEqual(wallet.completedTransactions.count, 0)
         XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
         XCTAssertEqual(wallet.pendingInboundTransactions.count, 1)
@@ -143,26 +151,56 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertGreaterThan(wallet.pendingIncomingBalance, 0)
         XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
         
-        //MARK: Confirm received transaction
+        //MARK: Broadcast received test transaction
         do {
             let pendingInboundTransaction = try wallet.pendingInboundTransactions.at(position: 0)
-
             try wallet.testTransactionBroadcast(pendingInboundTransaction: pendingInboundTransaction)
+            let completedTx = try wallet.completedTransactions.at(position: 0)
+            XCTAssertEqual(completedTx.status, .broadcast)
         } catch {
             XCTFail(error.localizedDescription)
         }
-        
+                
+        XCTAssertEqual(wallet.completedTransactions.count, 1)
+        XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
+        XCTAssertEqual(wallet.pendingInboundTransactions.count, 0)
+        XCTAssertEqual(wallet.availableBalance, 0)
+        XCTAssertGreaterThan(wallet.pendingIncomingBalance, 0)
+        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
+
+        //MARK: Mine received transaction
+        do {
+            let broadcastedCompletedTx = try wallet.completedTransactions.at(position: 0)
+            try wallet.testTransactionMined(completedTransaction: broadcastedCompletedTx)
+            
+            let minedCompletedTx = try wallet.completedTransactions.at(position: 0)
+            XCTAssertEqual(minedCompletedTx.status, .mined)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+                
         XCTAssertEqual(wallet.completedTransactions.count, 1)
         XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
         XCTAssertEqual(wallet.pendingInboundTransactions.count, 0)
         
-//        XCTAssertGreaterThan(wallet.availableBalance, 0)
-//        XCTAssertEqual(wallet.pendingIncomingBalance, 0)
-//        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
-     
-        //TODO create send tx
-        //TODO assert wallet.pendingOutgoingBalance
+        XCTAssertGreaterThan(wallet.availableBalance, 0)
+        XCTAssertEqual(wallet.pendingIncomingBalance, 0)
+        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
         
+        //MARK: Send transaction to bob
+        do {
+            let bob = try wallet.contacts.at(position: 0)
+            print(wallet.publicKey.hex)
+            print(bob.publicKey.hex)
+            try wallet.sendTransaction(destination: bob.publicKey, amount: 1000, fee: 101, message: "Oh hi bob")
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+                
+        XCTAssertEqual(wallet.availableBalance, 0)
+        XCTAssertGreaterThan(wallet.pendingIncomingBalance, 0)
+        XCTAssertGreaterThan(wallet.pendingOutgoingBalance, 0)
+               
         //TODO confirm send tx
         //TODO assert wallet.availableBalance
     }

@@ -47,6 +47,10 @@ class PendingOutboundTransaction {
         return ptr
     }
 
+    var id: UInt64 {
+        return pending_outbound_transaction_get_transaction_id(ptr)
+    }
+
     init(pendingOutboundTransactionPointer: OpaquePointer) {
         ptr = pendingOutboundTransactionPointer
     }

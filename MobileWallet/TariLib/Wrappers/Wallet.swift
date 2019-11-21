@@ -47,6 +47,8 @@ enum WalletErrors: Error {
     case generateTestData
     case generateTestReceiveTransaction
     case testTransactionBroadcast
+    case testTransactionMined
+    case sendingTransaction
 }
 
 class Wallet {
@@ -88,8 +90,10 @@ class Wallet {
         return PublicKey(pointer: wallet_get_public_key(ptr))
     }
 
-    init(comsConfig: CommsConfig) {
-        ptr = wallet_create(comsConfig.pointer)
+    init(comsConfig: CommsConfig, loggingFilePath: String) {
+        let loggingFilePathPointer = UnsafeMutablePointer<Int8>(mutating: (loggingFilePath as NSString).utf8String)
+
+        ptr = wallet_create(comsConfig.pointer, loggingFilePathPointer)
     }
 
     func addContact(alias: String, publicKeyHex: String) throws {
@@ -104,6 +108,17 @@ class Wallet {
 
         if !contactAdded {
             throw WalletErrors.addContact
+        }
+    }
+
+    func sendTransaction(destination: PublicKey, amount: UInt64, fee: UInt64, message: String) throws {
+        //TODO check available funds first
+
+        let messagePointer = UnsafeMutablePointer<Int8>(mutating: (message as NSString).utf8String)
+        let sendResult = wallet_send_transaction(ptr, destination.pointer, amount, fee, messagePointer)
+
+        if !sendResult {
+            throw WalletErrors.sendingTransaction
         }
     }
 

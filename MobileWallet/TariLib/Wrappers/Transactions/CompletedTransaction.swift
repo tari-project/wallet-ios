@@ -40,11 +40,40 @@
 
 import Foundation
 
+enum CompletedTransactionStatus: Error {
+    case transactionNullError
+    case completed
+    case broadcast
+    case mined
+    case unknown
+}
+
 class CompletedTransaction {
     private var ptr: OpaquePointer
 
     var pointer: OpaquePointer {
         return ptr
+    }
+
+    var id: UInt64 {
+        return completed_transaction_get_transaction_id(ptr)
+    }
+
+    var status: CompletedTransactionStatus {
+        let status: Int32 = completed_transaction_get_status(ptr)
+
+        switch status {
+        case -1:
+            return .transactionNullError
+        case 0:
+            return .completed
+        case 1:
+            return .broadcast
+        case 2:
+            return .mined
+        default:
+            return .unknown
+        }
     }
 
     init(completedTransactionPointer: OpaquePointer) {
