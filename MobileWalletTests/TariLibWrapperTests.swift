@@ -96,7 +96,6 @@ class TariLibWrapperTests: XCTestCase {
         let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
         
         print(loggingFilePath)
-        print(databasePath)
 
         let comsConfig = CommsConfig(
             privateKey: PrivateKey(hex: privateKeyHex),
@@ -188,11 +187,14 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
         
         //MARK: Send transaction to bob
+        var sendTransactionId: UInt64?
         do {
             let bob = try wallet.contacts.at(position: 0)
-            print(wallet.publicKey.hex)
-            print(bob.publicKey.hex)
             try wallet.sendTransaction(destination: bob.publicKey, amount: 1000, fee: 101, message: "Oh hi bob")
+            
+            let pendingOutboundTransaction = try wallet.pendingOutboundTransactions.at(position: 0)
+            sendTransactionId = pendingOutboundTransaction.id
+            
         } catch {
             XCTFail(error.localizedDescription)
         }
@@ -200,8 +202,34 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertEqual(wallet.availableBalance, 0)
         XCTAssertGreaterThan(wallet.pendingIncomingBalance, 0)
         XCTAssertGreaterThan(wallet.pendingOutgoingBalance, 0)
-               
-        //TODO confirm send tx
-        //TODO assert wallet.availableBalance
+       
+        //MARK: Complete sent transaction to bob
+        
+        var pendingOutboundTransaction: PendingOutboundTransaction?
+        if let id = sendTransactionId {
+            pendingOutboundTransaction = wallet.findPendingOutboundTransactionBy(id: id)
+        } else {
+            XCTFail("No sent transaction ID")
+        }
+
+        do {
+            try wallet.testCompleteSend(pendingOutboundTransaction: pendingOutboundTransaction!)
+            
+            if let broadcastedCompletedTx = wallet.findCompletedTransactionBy(id: sendTransactionId!) {
+                try wallet.testTransactionMined(completedTransaction: broadcastedCompletedTx)
+            } else {
+                XCTFail("Completed transaction not found with ID: \(sendTransactionId as Any)")
+            }
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+        
+        XCTAssertEqual(wallet.completedTransactions.count, 2)
+        XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
+        XCTAssertEqual(wallet.pendingInboundTransactions.count, 0)
+        
+        XCTAssertGreaterThan(wallet.availableBalance, 0)
+        XCTAssertEqual(wallet.pendingIncomingBalance, 0)
+        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
     }
 }
