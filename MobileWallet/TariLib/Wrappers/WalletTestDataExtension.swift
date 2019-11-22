@@ -72,4 +72,12 @@ extension Wallet {
             throw WalletErrors.testTransactionMined
         }
     }
+
+    func testCompleteSend(pendingOutboundTransaction: PendingOutboundTransaction) throws {
+        let didCompleteTransaction = wallet_test_complete_sent_transaction(self.pointer, pendingOutboundTransaction.pointer)
+
+        if !didCompleteTransaction {
+            throw WalletErrors.testSendCompleteTransaction
+        }
+    }
 }

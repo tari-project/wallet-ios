@@ -46,9 +46,10 @@ enum WalletErrors: Error {
     case invalidPublicKeyHex
     case generateTestData
     case generateTestReceiveTransaction
+    case sendingTransaction
     case testTransactionBroadcast
     case testTransactionMined
-    case sendingTransaction
+    case testSendCompleteTransaction
 }
 
 class Wallet {
@@ -120,6 +121,26 @@ class Wallet {
         if !sendResult {
             throw WalletErrors.sendingTransaction
         }
+    }
+
+    func findPendingOutboundTransactionBy(id: UInt64) -> PendingOutboundTransaction? {
+        let pendingOutboundTransactionPointer = wallet_get_pending_outbound_transaction_by_id(ptr, id)
+
+        if let txPointer = pendingOutboundTransactionPointer {
+            return PendingOutboundTransaction(pendingOutboundTransactionPointer: txPointer)
+        }
+
+        return nil
+    }
+
+    func findCompletedTransactionBy(id: UInt64) -> CompletedTransaction? {
+        let completedTransactionPointer = wallet_get_completed_transaction_by_id(ptr, id)
+
+        if let txPointer = completedTransactionPointer {
+            return CompletedTransaction(completedTransactionPointer: txPointer)
+        }
+
+        return nil
     }
 
     deinit {
