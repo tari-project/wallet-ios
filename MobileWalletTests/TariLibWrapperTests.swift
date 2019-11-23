@@ -97,7 +97,7 @@ class TariLibWrapperTests: XCTestCase {
         
         print(loggingFilePath)
 
-        let comsConfig = CommsConfig(
+        let commsConfig = CommsConfig(
             privateKey: PrivateKey(hex: privateKeyHex),
             databasePath: databasePath,
             databaseName: dbName,
@@ -106,7 +106,7 @@ class TariLibWrapperTests: XCTestCase {
         )
         
         //MARK: Create new wallet
-        let wallet = Wallet(comsConfig: comsConfig, loggingFilePath: loggingFilePath)
+        let wallet = Wallet(commsConfig: commsConfig, loggingFilePath: loggingFilePath)
         XCTAssertEqual(wallet.publicKey.hex, "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40")
                 
         //MARK: Add bob as a contact

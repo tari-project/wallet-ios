@@ -43,31 +43,30 @@ import UIKit
 /*
  Delete all app content and settings. Used only for UITesting on a simulator.
 */
-func wipeIfRequiredOnSimulator() {
-    #if !targetEnvironment(simulator)
-        return
-    #endif
-
+func wipeApp() {
     print("***** Wiping app *****")
 
     let fileManager = FileManager.default
-    let directories = fileManager.urls(for: .documentDirectory, in: .userDomainMask)
+    if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+        do {
+            let directoryContents = try fileManager.contentsOfDirectory(atPath: documentsDirectory.path)
 
-    for directory in directories {
-        let pathToDelete = directory.path
-        print(pathToDelete)
-
-        if fileManager.fileExists(atPath: pathToDelete, isDirectory: nil) {
-            do {
-                try fileManager.removeItem(at: URL(fileURLWithPath: pathToDelete))
-            } catch {
-                print(error)
-                fatalError("Failed to delete documents directory")
+            for path in directoryContents {
+                let pathToDelete = documentsDirectory.appendingPathComponent(path).path
+                if fileManager.fileExists(atPath: pathToDelete, isDirectory: nil) {
+                    do {
+                        try fileManager.removeItem(at: URL(fileURLWithPath: pathToDelete))
+                    } catch {
+                        print(error)
+                        fatalError("Failed to delete documents directory")
+                    }
+                }
             }
+        } catch {
+            print(error)
+            fatalError("Failed to read documents directory")
         }
     }
-
-    //let databasePath = documentsURL.appendingPathComponent("tari_wallet").path
 
     //Remove all user defaults
     let domain = Bundle.main.bundleIdentifier!
@@ -89,7 +88,9 @@ func disableAnimations() {
 */
 func handleCommandLineArgs() {
     if CommandLine.arguments.contains("-wipe-app") {
-        wipeIfRequiredOnSimulator()
+        #if targetEnvironment(simulator)
+            wipeApp()
+        #endif
     }
 
     if CommandLine.arguments.contains("-disable-animations") {

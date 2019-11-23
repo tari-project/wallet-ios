@@ -91,10 +91,10 @@ class Wallet {
         return PublicKey(pointer: wallet_get_public_key(ptr))
     }
 
-    init(comsConfig: CommsConfig, loggingFilePath: String) {
-        let loggingFilePathPointer = UnsafeMutablePointer<Int8>(mutating: (loggingFilePath as NSString).utf8String)
+    init(commsConfig: CommsConfig, loggingFilePath: String) {
+        let loggingFilePathPointer = UnsafeMutablePointer<Int8>(mutating: (loggingFilePath as NSString).utf8String)!
 
-        ptr = wallet_create(comsConfig.pointer, loggingFilePathPointer)
+        ptr = wallet_create(commsConfig.pointer, loggingFilePathPointer)
     }
 
     func addContact(alias: String, publicKeyHex: String) throws {

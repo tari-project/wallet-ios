@@ -189,6 +189,12 @@
 		00BBD81B237EB31900EBF5E6 /* CommsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* CommsConfig.swift */; };
 		00BBD81C237EB31900EBF5E6 /* CommsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* CommsConfig.swift */; };
 		00BBD81E237ECDAA00EBF5E6 /* TariLibWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD81D237ECDAA00EBF5E6 /* TariLibWrapperTests.swift */; };
+		00C185B9238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */; };
+		00C185BA238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */; };
+		00C185BB238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */; };
+		00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185BD238953F60096984E /* DebugLogsTableViewController.swift */; };
+		00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185BD238953F60096984E /* DebugLogsTableViewController.swift */; };
+		00C185C0238953F60096984E /* DebugLogsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185BD238953F60096984E /* DebugLogsTableViewController.swift */; };
 		00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E21238554FD00036DDC /* libsqlite3.tbd */; };
 		00DC2E242385559C00036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E232385559C00036DDC /* libsqlite3.tbd */; };
 		00DC2E25238555A200036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E232385559C00036DDC /* libsqlite3.tbd */; };
@@ -314,6 +320,8 @@
 		00BBD815237EA67600EBF5E6 /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
 		00BBD819237EB31900EBF5E6 /* CommsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsConfig.swift; sourceTree = "<group>"; };
 		00BBD81D237ECDAA00EBF5E6 /* TariLibWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLibWrapperTests.swift; sourceTree = "<group>"; };
+		00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewControllerDebugExtension.swift; sourceTree = "<group>"; };
+		00C185BD238953F60096984E /* DebugLogsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogsTableViewController.swift; sourceTree = "<group>"; };
 		00DC2E21238554FD00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		00DC2E232385559C00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewController.swift; sourceTree = "<group>"; };
@@ -525,6 +533,15 @@
 			path = Wrappers;
 			sourceTree = "<group>";
 		};
+		00C185BC238953B40096984E /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */,
+				00C185BD238953F60096984E /* DebugLogsTableViewController.swift */,
+			);
+			path = Debug;
+			sourceTree = "<group>";
+		};
 		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
 			isa = PBXGroup;
 			children = (
@@ -558,6 +575,7 @@
 			children = (
 				00BBD7FA237C462400EBF5E6 /* AppEntry */,
 				00E2BCB6236B46A400C2A105 /* Home */,
+				00C185BC238953B40096984E /* Debug */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -1076,7 +1094,9 @@
 				004997B32382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
 				00BBD816237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
+				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
+				00C185B9238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
 				004997B72382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				00E4922923683E54007B332D /* HomeViewController.swift in Sources */,
@@ -1094,6 +1114,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				004997B02382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
+				00C185BA238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
 				001F6CE52380253B00FA7002 /* Contact.swift in Sources */,
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
@@ -1105,6 +1126,7 @@
 				00A677892372C8E6001A853E /* TariValue.swift in Sources */,
 				00230AFB2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
+				00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
 				001F6CDD238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00BBD80F237DA07400EBF5E6 /* ByteVector.swift in Sources */,
@@ -1150,6 +1172,7 @@
 				00230AFC2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				004997BD2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				009BF8AE237ABB4700C02E44 /* TariLib.swift in Sources */,
+				00C185BB238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
 				00BBD814237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				00BBD803237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
@@ -1157,6 +1180,7 @@
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
+				00C185C0238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				001F6CE62380253B00FA7002 /* Contact.swift in Sources */,
 				009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */,
 				001F6CDE238011CA00FA7002 /* PublicKey.swift in Sources */,
