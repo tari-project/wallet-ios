@@ -40,43 +40,54 @@
 
 import Foundation
 
+enum TariLibErrors: Error {
+    case privateKeyNotFound
+}
+
 class TariLib {
     static let shared = TariLib()
 
-    private static let DATABASE_NAME = "tari_wallet"
-
-    private let fileManager = FileManager.default
-
-    private var tariWallet: Wallet?
+    private let DATABASE_NAME = "tari_wallet"
+    private let PRIVATE_KEY_STORAGE_KEY = "privateKey"
 
     private var storagePath: String {
-        get {
-            let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-            return documentsURL.path
-        }
+        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return documentsURL.path
     }
 
     var databasePath: String {
-        get {
-            return "\(storagePath)/\(TariLib.DATABASE_NAME)"
-        }
+        return "\(storagePath)/\(DATABASE_NAME)"
     }
 
-    var loggingFilePath: String {
-       get {
-            return "\(storagePath)/log.txt"
-       }
+    var logFilePath: String {
+        return "\(storagePath)/log.txt"
     }
+
+    var controlAddress: String {
+        return "127.0.0.1:80"
+    }
+
+    var listenerAddress: String {
+        return "0.0.0.0:80"
+    }
+
+    private let fileManager = FileManager.default
+
+    var tariWallet: Wallet?
 
     var walletExists: Bool {
         get {
-            //TODO check for actual keys, not just the wallet directory
-            var isDir: ObjCBool = false
-            if fileManager.fileExists(atPath: databasePath, isDirectory: &isDir) {
+            if let privateKeyHex = UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) {
                 return true
             }
 
             return false
+//            var isDir: ObjCBool = false
+//            if fileManager.fileExists(atPath: databasePath, isDirectory: &isDir) {
+//                return true
+//            }
+//
+//            return false
         }
     }
 
@@ -95,14 +106,26 @@ class TariLib {
             NSLog("Unable to create directory \(error.debugDescription)")
         }
 
-        print(databasePath)
+        print(TariLib.shared.databasePath)
 
-        let controlAddress = "127.0.0.1:80"
-        let listenerAddress = "0.0.0.0:80"
-        let privateKey = PrivateKey(hex: "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801")
+        let privateKey = PrivateKey()
 
-        let comsConfig = CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: TariLib.DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
+        //TODO use secure enclave
+        UserDefaults.standard.set(privateKey.hex, forKey: PRIVATE_KEY_STORAGE_KEY)
 
-        tariWallet = Wallet(comsConfig: comsConfig, loggingFilePath: loggingFilePath)
+        let commsConfig = CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
+
+        tariWallet = Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
+    }
+
+    func startExistingWallet() throws {
+        if let privateKeyHex = UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) {
+            let privateKey = PrivateKey(hex: privateKeyHex)
+
+            let commsConfig = CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
+            tariWallet = Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
+        } else {
+            throw TariLibErrors.privateKeyNotFound
+        }
     }
 }

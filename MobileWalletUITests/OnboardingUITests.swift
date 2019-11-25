@@ -57,21 +57,21 @@ class OnboardingUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
     
-    func testWalletCreationWithSuccessfulBiometrics() {
-        Biometrics.enrolled()
-        app.launch()
-        
-        expectation(for: NSPredicate(format: "exists == 1"), evaluatedWith: app.staticTexts["Create Wallet"], handler: nil)
-        waitForExpectations(timeout: 5, handler: nil)
-        XCUIApplication().buttons["Create Wallet"].tap()
-
-        acceptPermissionsPromptIfRequired()
-        Biometrics.successfulAuthentication()
-        
-        //Expect the home screen
-        expectation(for: NSPredicate(format: "exists == 1"), evaluatedWith: app.staticTexts["Total Balance"], handler: nil)
-        waitForExpectations(timeout: 10, handler: nil)
-    }
+//    func testWalletCreationWithSuccessfulBiometrics() {
+//        Biometrics.enrolled()
+//        app.launch()
+//        
+//        expectation(for: NSPredicate(format: "exists == 1"), evaluatedWith: app.staticTexts["Create Wallet"], handler: nil)
+//        waitForExpectations(timeout: 5, handler: nil)
+//        XCUIApplication().buttons["Create Wallet"].tap()
+//
+//        acceptPermissionsPromptIfRequired()
+//        Biometrics.successfulAuthentication()
+//        
+//        //Expect the home screen
+//        expectation(for: NSPredicate(format: "exists == 1"), evaluatedWith: app.staticTexts["Total Balance"], handler: nil)
+//        waitForExpectations(timeout: 10, handler: nil)
+//    }
     
     func testWalletCreationWithUnuccessfulBiometrics() {
         //Implement me
@@ -89,6 +89,4 @@ class OnboardingUITests: XCTestCase {
             }
         }
     }
-    
-    
 }

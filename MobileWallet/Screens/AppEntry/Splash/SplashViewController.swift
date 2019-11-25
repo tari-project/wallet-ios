@@ -75,6 +75,12 @@ class SplashViewController: UIViewController {
 
     private func checkExistingWallet() {
         if TariLib.shared.walletExists {
+            do {
+                try TariLib.shared.startExistingWallet()
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+
             authenticateUser()
         } else {
             createWalletButton.isHidden = false
@@ -83,7 +89,7 @@ class SplashViewController: UIViewController {
 
     @IBAction func createWallet(_ sender: Any) {
         TariLib.shared.createNewWallet()
-        checkExistingWallet()
+        authenticateUser()
     }
 
     private func authenticateUser() {

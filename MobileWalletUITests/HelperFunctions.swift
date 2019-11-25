@@ -55,6 +55,8 @@ func acceptPermissionsPromptIfRequired() {
 func wipeAppContents(_ app: XCUIApplication) {
     app.launchArguments = ["-wipe-app"]
     app.launch()
+    print("Wiping app contents")
+    sleep(2)
     app.terminate()
     app.launchArguments = []
 }
