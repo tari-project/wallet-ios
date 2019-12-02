@@ -44,16 +44,28 @@ class TransactionsTableViewController: UITableViewController {
     let CELL_IDENTIFIER = "TransactionTableTableViewCell"
     let transactions = dummyTransactions
     var actionDelegate: TransactionSelectedDelegate?
+    var refreshTransactionControl = UIRefreshControl()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         viewSetup()
         tableView.register(UINib(nibName: CELL_IDENTIFIER, bundle: nil), forCellReuseIdentifier: CELL_IDENTIFIER)
+        refreshTransactionControl.attributedTitle = NSAttributedString(string: "Pull to refresh") //TODO local
+        refreshTransactionControl.addTarget(self, action: #selector(refreshTransactions(_:)), for: .valueChanged)
+        //refreshControl = refreshTransactionControl
     }
 
     private func viewSetup() {
         tableView.separatorStyle = .none
         tableView.rowHeight = 74
         view.backgroundColor = Theme.shared.colors.transactionTableBackground
+    }
+
+    @objc private func refreshTransactions(_ sender: UIRefreshControl) {
+        refreshTransactionControl.attributedTitle = NSAttributedString(string: "Resfreshing...") //TODO local
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+            self.tableView.reloadData()
+            sender.endRefreshing()
+        })
     }
 }

@@ -41,9 +41,8 @@
 import UIKit
 
 class ActionButton: UIButton {
-    private let RADIUS_POINTS: CGFloat = 3.0
+    private let RADIUS_POINTS: CGFloat = 7.0
     private let HEIGHT: CGFloat = 53.0
-    private var isCompiled = false
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -60,7 +59,7 @@ class ActionButton: UIButton {
         bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: HEIGHT)
         layer.cornerRadius = RADIUS_POINTS
         heightAnchor.constraint(equalToConstant: HEIGHT).isActive = true
-        backgroundColor = Theme.shared.colors.sendButtonBackground
+        backgroundColor = Theme.shared.colors.actionButtonBackgroundSimple
         titleLabel?.font = Theme.shared.fonts.actionButton
     }
 
@@ -78,9 +77,7 @@ class ActionButton: UIButton {
         UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
             self.alpha = 0.94
             self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-           }) { (_) in
-
-           }
+        })
     }
 
     private func pulseOut() {
@@ -104,6 +101,5 @@ class ActionButton: UIButton {
                 self.isHidden = true
             }
         })
-
     }
 }

@@ -91,6 +91,6 @@ class TransactionTableTableViewCell: UITableViewCell {
             valueLabel.textColor = Theme.shared.colors.transactionCellValueNegativeText
         }
 
-        valueLabel.padding = UIEdgeInsets(top: 6, left: 6, bottom: 4, right: 6)
+        valueLabel.padding = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
     }
 }

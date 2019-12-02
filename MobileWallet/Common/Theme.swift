@@ -67,15 +67,20 @@ extension Loopable {
 }
 
 struct Colors: Loopable {
-    let sendButtonBackground = UIColor(named: "SendButtonBackground")
-    let homeBackground = UIColor(named: "TransactionViewValueBackground") //TODO remove this color when the background image is added
+    let actionButtonBackgroundSimple = UIColor(named: "ActionButtonBackgroundSimple")
+    let actionButtonBackgroundGradient1 = UIColor(named: "ActionButtonBackgroundGradient1")
+    let actionButtonBackgroundGradient2 = UIColor(named: "ActionButtonBackgroundGradient2")
+
     let transactionTableBackground = UIColor(named: "TransactionTableBackground")
     let splashBackground = UIColor(named: "SplashBackground")
     let appBackground = UIColor(named: "AppBackground")
 
     //Home screen
-    let homeScreenTotalBalanceLabel = UIColor(named: "SmallSubheading")
-    let homeScreenTotalBalanceValueLabel = UIColor(named: "Heading")
+    let homeScreenBackground = UIColor(named: "HomeScreenBackground")
+    let homeScreenTotalBalanceLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
+    let homeScreenTotalBalanceValueLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
+    let floatingPanelGrabber = UIColor(named: "FloatingPanelGrabber")
+    let qrButtonBackground = UIColor(named: "QRButtonBackground")
 
     //Transaction cell
     let transactionCellUsername = UIColor(named: "TransactionCellUsername")
@@ -95,6 +100,9 @@ struct Colors: Loopable {
     let transactionScreenDivider = UIColor(named: "DividerColor")
     let transactionScreenSubheadingLabel = UIColor(named: "SmallSubheading")
     let transactionScreenTextLabel = UIColor(named: "SmallText")
+
+    //Shadows
+    let actionButtonShadow = UIColor(named: "ActionButtonShadow")
 }
 
 struct Fonts: Loopable {
@@ -103,7 +111,8 @@ struct Fonts: Loopable {
 
     //Home screen
     let homeScreenTotalBalanceLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
-    let homeScreenTotalBalanceValueLabel = UIFont(name: "AvenirLTStd-Black", size: 50.0)
+    let homeScreenTotalBalanceValueLabel = UIFont(name: "AvenirLTStd-Black", size: 39.0)
+    let homeScreenTotalBalanceValueLabelDecimals = UIFont(name: "AvenirLTStd-Black", size: 15.6)
 
     //Transaction cell
     let transactionCellUsernameLabel = UIFont(name: "AvenirLTStd-Heavy", size: 13.0)
@@ -121,7 +130,7 @@ struct Fonts: Loopable {
     let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
 }
 
-struct Icons: Loopable {
+struct Images: Loopable {
     //Transaction icons
     let food = UIImage(named: "food")
     let game = UIImage(named: "game")
@@ -132,6 +141,10 @@ struct Icons: Loopable {
 
     //General icons
     let currencySymbol = UIImage(named: "Gem")
+    let qrButton = UIImage(named: "QRButton")
+
+    //Background images
+    let homeBackgroundImage = UIImage(named: "HomePattern")
 }
 
 struct Theme {
@@ -140,8 +153,8 @@ struct Theme {
     //NOTE: Any new theme properties must be added to tests to ensure all assets are included before deployment
 
     let colors = Colors()
-    let icons = Icons()
+    let images = Images()
     let fonts = Fonts()
 
-    let transactionIcons = Icons() //FIXME delete this and change all references to it
+    let transactionIcons = Images() //FIXME delete this and change all references to it
 }
