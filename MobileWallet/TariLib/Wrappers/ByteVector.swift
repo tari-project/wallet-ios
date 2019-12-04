@@ -54,20 +54,13 @@ class ByteVector {
     var hexString: String {
         var byteArray: [UInt8] = [UInt8]()
 
-        for n in 0...count {
+        for n in 0...count - 1 {
             byteArray.append(at(position: n))
         }
 
         let data = Data(byteArray)
 
-        var hexStr = data.map {String(format: "%02hhx", $0)}.joined()
-
-        //TODO figure out why the last 2 zeros need to be dropped
-        if hexStr.count > 2 {
-            hexStr = String(hexStr.dropLast(2))
-        }
-
-        return hexStr
+        return data.map {String(format: "%02hhx", $0)}.joined()
     }
 
     init(byteArray: [UInt8]) {
