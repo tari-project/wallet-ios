@@ -127,7 +127,7 @@ class TransactionViewController: UIViewController {
         valueLabel.font = Theme.shared.fonts.transactionScreenCurrencyValueLabel
         valueLabel.textColor = labelColor
 
-        currencySymbol.image = Theme.shared.icons.currencySymbol?.withTintColor(labelColor!)
+        currencySymbol.image = Theme.shared.images.currencySymbol?.withTintColor(labelColor!)
 
         valueContainerView.backgroundColor = Theme.shared.colors.transactionViewValueContainer
     }

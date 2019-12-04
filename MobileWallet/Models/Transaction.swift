@@ -76,12 +76,12 @@ var dummyTransactions: [[Transaction]] {
         var sortedTxs: [[Transaction]] = []
 
         let dummyIconNames = [
-            Theme.shared.transactionIcons.food,
-            Theme.shared.transactionIcons.game,
-            Theme.shared.transactionIcons.thanks,
-            Theme.shared.transactionIcons.transfer,
-            Theme.shared.transactionIcons.drinks,
-            Theme.shared.transactionIcons.services
+            Theme.shared.transactionIcons.transfer
+//            Theme.shared.transactionIcons.food,
+//            Theme.shared.transactionIcons.game,
+//            Theme.shared.transactionIcons.thanks,
+//            Theme.shared.transactionIcons.drinks,
+//            Theme.shared.transactionIcons.services
         ]
 
         var dummyIconNameIndex = 0

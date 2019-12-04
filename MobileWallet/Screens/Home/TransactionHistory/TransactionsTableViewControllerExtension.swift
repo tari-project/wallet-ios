@@ -45,25 +45,36 @@ extension TransactionsTableViewController {
 
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionHeaderView: UIView = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 56.0))
-        sectionHeaderView.backgroundColor = Theme.shared.colors.transactionTableBackground
-        let sectionHeaderLabel: UILabel = UILabel.init(frame: CGRect(x: 25.0, y: 54.0, width: tableView.frame.width - 40, height: 16))
+        let sectionHeaderView: UIView = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 36.0))
+        let sectionHeaderLabel = UILabel()
+
         sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
         sectionHeaderLabel.textColor = Theme.shared.colors.transactionDateValueLabel
         sectionHeaderLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
+        sectionHeaderLabel.backgroundColor = Theme.shared.colors.transactionTableBackground?.withAlphaComponent(0.8)
+        sectionHeaderLabel.textAlignment = .center
+
+        sectionHeaderLabel.layer.cornerRadius = 4
+        sectionHeaderLabel.layer.masksToBounds = true
+
+        sectionHeaderLabel.sizeToFit()
+        sectionHeaderLabel.frame = CGRect(x: 25.0, y: 44.0, width: sectionHeaderLabel.frame.width + 12, height: sectionHeaderLabel.frame.height + 8)
+
         sectionHeaderView.addSubview(sectionHeaderLabel)
+
         return sectionHeaderView
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 80.0
+        return 60.0
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         guard let txsDate = transactions[section].first?.date else {
             return nil
         }
-        return txsDate.relativeDayFromToday() // DateConfig.getRelativeDayValue(fromDate: txsDate)
+
+        return txsDate.relativeDayFromToday()
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {

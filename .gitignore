@@ -21,6 +21,7 @@ xcuserdata/
 *.moved-aside
 *.xccheckout
 *.xcscmblueprint
+*.hhea.xml
 
 ## Obj-C/Swift specific
 *.hmap
@@ -67,3 +68,4 @@ fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
 .DS_Store
+fastlane/Appfile
