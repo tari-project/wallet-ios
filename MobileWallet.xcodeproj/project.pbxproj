@@ -138,6 +138,9 @@
 		00262EB9236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
 		00262EBA236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
 		00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
+		00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00325EC9239E4A1000F76918 /* FadedOverlayView.swift */; };
+		00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00325EC9239E4A1000F76918 /* FadedOverlayView.swift */; };
+		00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00325EC9239E4A1000F76918 /* FadedOverlayView.swift */; };
 		004997AB2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997AA2382E893000A0B7D /* PendingOutboundTransactions.swift */; };
 		004997AC2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997AA2382E893000A0B7D /* PendingOutboundTransactions.swift */; };
 		004997AD2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997AA2382E893000A0B7D /* PendingOutboundTransactions.swift */; };
@@ -154,6 +157,12 @@
 		004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997BA2382F5ED000A0B7D /* WalletTestDataExtension.swift */; };
 		004997BD2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997BA2382F5ED000A0B7D /* WalletTestDataExtension.swift */; };
 		0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0070A7BB2379847100C25E1C /* LocalAuthentication.framework */; };
+		00746197239901FA00F00966 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00746196239901FA00F00966 /* SendViewController.swift */; };
+		00746198239901FA00F00966 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00746196239901FA00F00966 /* SendViewController.swift */; };
+		00746199239901FA00F00966 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00746196239901FA00F00966 /* SendViewController.swift */; };
+		0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
+		0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
+		0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8A8237AA13500C02E44 /* Biometrics.m */; };
 		009BF8AC237ABB4700C02E44 /* TariLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8AB237ABB4700C02E44 /* TariLib.swift */; };
 		009BF8AD237ABB4700C02E44 /* TariLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8AB237ABB4700C02E44 /* TariLib.swift */; };
@@ -304,12 +313,15 @@
 		00262EAE236F015000A6C8A0 /* UILableWithPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILableWithPadding.swift; sourceTree = "<group>"; };
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		00262EB8236F35CD00A6C8A0 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		00325EC9239E4A1000F76918 /* FadedOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadedOverlayView.swift; sourceTree = "<group>"; };
 		004997AA2382E893000A0B7D /* PendingOutboundTransactions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOutboundTransactions.swift; sourceTree = "<group>"; };
 		004997AE2382E938000A0B7D /* PendingOutboundTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOutboundTransaction.swift; sourceTree = "<group>"; };
 		004997B22382ED68000A0B7D /* PendingInboundTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingInboundTransaction.swift; sourceTree = "<group>"; };
 		004997B62382ED79000A0B7D /* PendingInboundTransactions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingInboundTransactions.swift; sourceTree = "<group>"; };
 		004997BA2382F5ED000A0B7D /* WalletTestDataExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTestDataExtension.swift; sourceTree = "<group>"; };
 		0070A7BB2379847100C25E1C /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+		00746196239901FA00F00966 /* SendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewController.swift; sourceTree = "<group>"; };
+		0074619A239A57B000F00966 /* UIBarButtonItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItem.swift; sourceTree = "<group>"; };
 		009BF8A6237AA13400C02E44 /* MobileWalletUITests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletUITests-Bridging-Header.h"; sourceTree = "<group>"; };
 		009BF8A8237AA13500C02E44 /* Biometrics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Biometrics.m; sourceTree = "<group>"; };
 		009BF8A9237AA13500C02E44 /* Biometrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Biometrics.h; sourceTree = "<group>"; };
@@ -488,6 +500,7 @@
 				00230AF92376C6DD00F23E34 /* Sequence.swift */,
 				00230B0823770CEA00F23E34 /* CALayer.swift */,
 				00BBD808237D80C800EBF5E6 /* Date.swift */,
+				0074619A239A57B000F00966 /* UIBarButtonItem.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -509,6 +522,14 @@
 				00262EB8236F35CD00A6C8A0 /* Transaction.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		00746195239901D200F00966 /* Send */ = {
+			isa = PBXGroup;
+			children = (
+				00746196239901FA00F00966 /* SendViewController.swift */,
+			);
+			path = Send;
 			sourceTree = "<group>";
 		};
 		00A6779C23743674001A853E /* Transaction */ = {
@@ -568,6 +589,7 @@
 			children = (
 				00E2BCB8236B5BC000C2A105 /* Buttons */,
 				00E2BCB0236B44DB00C2A105 /* FloatingPanel */,
+				00325EC9239E4A1000F76918 /* FadedOverlayView.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -583,6 +605,7 @@
 		00E2BCB5236B469C00C2A105 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				00746195239901D200F00966 /* Send */,
 				00BBD7FA237C462400EBF5E6 /* AppEntry */,
 				00E2BCB6236B46A400C2A105 /* Home */,
 				00C185BC238953B40096984E /* Debug */,
@@ -1085,15 +1108,18 @@
 			files = (
 				001F6CE82381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				001F6CE42380253B00FA7002 /* Contact.swift in Sources */,
+				00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00262EB9236F35CD00A6C8A0 /* Transaction.swift in Sources */,
 				00A6779E23743696001A853E /* TransactionViewController.swift in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
+				0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				009BF8AC237ABB4700C02E44 /* TariLib.swift in Sources */,
 				004997BB2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
+				00746197239901FA00F00966 /* SendViewController.swift in Sources */,
 				00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				001F6CE02380198D00FA7002 /* Contacts.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
@@ -1138,6 +1164,7 @@
 				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00262EB0236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
 				00E4922A23683E54007B332D /* HomeViewController.swift in Sources */,
+				0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				00A677892372C8E6001A853E /* TariValue.swift in Sources */,
 				00230AFB2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
@@ -1145,6 +1172,7 @@
 				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
 				001F6CDD238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00BBD80F237DA07400EBF5E6 /* ByteVector.swift in Sources */,
+				00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				004997AC2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
 				00A994342396434B007D9990 /* QRButton.swift in Sources */,
 				00230B0A23770CEA00F23E34 /* CALayer.swift in Sources */,
@@ -1152,6 +1180,7 @@
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				001F6CED2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
+				00746198239901FA00F00966 /* SendViewController.swift in Sources */,
 				009BF8AD237ABB4700C02E44 /* TariLib.swift in Sources */,
 				00BBD81B237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				00BBD817237EA67600EBF5E6 /* Wallet.swift in Sources */,
@@ -1188,6 +1217,7 @@
 				00A9943123952F77007D9990 /* SendButton.swift in Sources */,
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,
 				00A6778A2372C8E6001A853E /* TariValue.swift in Sources */,
+				00746199239901FA00F00966 /* SendViewController.swift in Sources */,
 				004997B12382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				00230AFC2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				004997BD2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
@@ -1195,6 +1225,7 @@
 				00C185BB238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
 				00BBD814237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				00BBD803237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
+				00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
@@ -1208,6 +1239,7 @@
 				00BBD807237D755600EBF5E6 /* HelperFunctions.swift in Sources */,
 				00BBD80B237D80C800EBF5E6 /* Date.swift in Sources */,
 				001F6CEA2381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
+				0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				001F6CEE2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				001256312371D81500A9C067 /* SplashViewController.swift in Sources */,
 				004997B52382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
@@ -1373,7 +1405,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 8974PBB98U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MobileWallet/Info.plist;
@@ -1400,7 +1432,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 8974PBB98U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MobileWallet/Info.plist;

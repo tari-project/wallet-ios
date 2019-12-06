@@ -40,11 +40,18 @@
 
 import UIKit
 
+protocol TransactionsTableViewDelegate {
+    func onTransactionSelect(_: Transaction)
+    func onScrollDirectionChange(_: ScrollDirection)
+}
+
 class TransactionsTableViewController: UITableViewController {
     let CELL_IDENTIFIER = "TransactionTableTableViewCell"
     let transactions = dummyTransactions
-    var actionDelegate: TransactionSelectedDelegate?
+    var actionDelegate: TransactionsTableViewDelegate?
     var refreshTransactionControl = UIRefreshControl()
+    private var lastContentOffset: CGFloat = 0
+    private var lastScrollDirection: ScrollDirection = .up
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,5 +74,37 @@ class TransactionsTableViewController: UITableViewController {
             self.tableView.reloadData()
             sender.endRefreshing()
         })
+    }
+
+    //Transaction gets tapped
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        let transaction = transactions[indexPath.section][indexPath.row]
+        actionDelegate?.onTransactionSelect(transaction)
+
+        return nil
+    }
+
+    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        self.lastContentOffset = scrollView.contentOffset.y
+    }
+
+    //Parent component needs to know which direction they're scrolling
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if (self.lastContentOffset + 25 < scrollView.contentOffset.y && lastScrollDirection != .down) {
+            actionDelegate?.onScrollDirectionChange(.down)
+            lastScrollDirection = .down
+        } else if (self.lastContentOffset - 25 > scrollView.contentOffset.y && lastScrollDirection != .up) {
+            actionDelegate?.onScrollDirectionChange(.up)
+            lastScrollDirection = .up
+        }
+    }
+
+    func scrollToTop() {
+        if transactions.count < 1 {
+            return
+        }
+
+        let indexPath = NSIndexPath(item: 0, section: 0)
+        tableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
     }
 }
