@@ -41,8 +41,11 @@
 import Foundation
 
 enum WalletErrors: Error {
+    case generic(_ errorCode: Int32)
     case insufficientFunds(microTariRequired: UInt64)
     case addContact
+    case removeContact
+    case addOwnContact
     case invalidPublicKeyHex
     case generateTestData
     case generateTestReceiveTransaction
@@ -50,62 +53,182 @@ enum WalletErrors: Error {
     case testTransactionBroadcast
     case testTransactionMined
     case testSendCompleteTransaction
+    case completedTransactionById
 }
 
 class Wallet {
     private var ptr: OpaquePointer
 
+    var dbPath: String
+    var dbName: String
+    var logPath: String
+
     var pointer: OpaquePointer {
         return ptr
     }
 
-    var contacts: Contacts {
-        return Contacts(contactsPointer: wallet_get_contacts(ptr))
+    var contacts: (Contacts?, Error?) {
+        var errorCode: Int32 = -1
+        let result = Contacts(contactsPointer: wallet_get_contacts(ptr, UnsafeMutablePointer<Int32>(&errorCode)))
+        guard errorCode == 0 else {
+            return (nil, WalletErrors.generic(errorCode))
+        }
+        return (result, nil)
     }
 
-    var completedTransactions: CompletedTransactions {
-        return CompletedTransactions(completedTransactionsPointer: wallet_get_completed_transactions(ptr))
+    var completedTransactions: (CompletedTransactions?, Error?) {
+        var errorCode: Int32 = -1
+        let result = CompletedTransactions(completedTransactionsPointer: wallet_get_completed_transactions(ptr, UnsafeMutablePointer<Int32>(&errorCode)))
+        guard errorCode == 0 else {
+            return (nil, WalletErrors.generic(errorCode))
+        }
+        return (result, nil)
     }
 
-    var pendingOutboundTransactions: PendingOutboundTransactions {
-        return PendingOutboundTransactions(pendingOutboundTransactionsPointer: wallet_get_pending_outbound_transactions(ptr))
+    var pendingOutboundTransactions: (PendingOutboundTransactions?, Error?) {
+        var errorCode: Int32 = -1
+        let result = PendingOutboundTransactions(
+            pendingOutboundTransactionsPointer: wallet_get_pending_outbound_transactions(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        )
+        guard errorCode == 0 else {
+            return (nil, WalletErrors.generic(errorCode))
+        }
+        return (result, nil)
     }
 
-    var pendingInboundTransactions: PendingInboundTransactions {
-        return PendingInboundTransactions(pendingInboundTransactionsPointer: wallet_get_pending_inbound_transactions(ptr))
+    var pendingInboundTransactions: (PendingInboundTransactions?, Error?) {
+        var errorCode: Int32 = -1
+        let result = PendingInboundTransactions(
+            pendingInboundTransactionsPointer: wallet_get_pending_inbound_transactions(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        )
+        guard errorCode == 0 else {
+            return (nil, WalletErrors.generic(errorCode))
+        }
+        return (result, nil)
     }
 
-    var availableBalance: UInt64 {
-        return wallet_get_available_balance(ptr)
+    var availableBalance: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = wallet_get_available_balance(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? WalletErrors.generic(errorCode) : nil)
     }
 
-    var pendingIncomingBalance: UInt64 {
-        return wallet_get_pending_incoming_balance(ptr)
+    var pendingIncomingBalance: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = wallet_get_pending_incoming_balance(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? WalletErrors.generic(errorCode) : nil)
     }
 
-    var pendingOutgoingBalance: UInt64 {
-        return wallet_get_pending_outgoing_balance(ptr)
+    var pendingOutgoingBalance: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = wallet_get_pending_outgoing_balance(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? WalletErrors.generic(errorCode) : nil)
     }
 
-    var publicKey: PublicKey {
-        return PublicKey(pointer: wallet_get_public_key(ptr))
+    var publicKey: (PublicKey?, Error?) {
+        var errorCode: Int32 = -1
+        let result = PublicKey(pointer: wallet_get_public_key(ptr, UnsafeMutablePointer<Int32>(&errorCode)))
+        guard errorCode == 0 else {
+            return (nil, WalletErrors.generic(errorCode))
+        }
+        return (result, nil)
     }
 
-    init(commsConfig: CommsConfig, loggingFilePath: String) {
+    init(commsConfig: CommsConfig, loggingFilePath: String) throws {
         let loggingFilePathPointer = UnsafeMutablePointer<Int8>(mutating: (loggingFilePath as NSString).utf8String)!
 
-        ptr = wallet_create(commsConfig.pointer, loggingFilePathPointer)
+        let callback_received_transaction_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
+            valuePointer in
+            let pendingInbound = PendingInboundTransaction.init(pendingInboundTransactionPointer: valuePointer!)
+            print(pendingInbound)
+            }
+
+        let callback_received_transaction_reply_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
+            valuePointer in
+            let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
+            print(completed)
+            }
+
+        let callback_received_finalized_transaction_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
+            valuePointer in
+            let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
+            print(completed)
+            }
+
+        let callback_transaction_broadcast_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
+            valuePointer in
+            let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
+            print(completed)
+            }
+
+        let callback_transaction_mined_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
+            valuePointer in
+            let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
+            print(completed)
+            }
+
+        let callback_discovery_process_complete_fn: (@convention(c) (UInt64, Bool) -> Void)? = {
+            txID, success in
+            print(txID, success)
+            }
+
+        dbPath = commsConfig.dbPath
+        dbName = commsConfig.dbName
+        logPath = loggingFilePath
+
+        var errorCode: Int32 = -1
+        let result = wallet_create(
+            commsConfig.pointer,
+            loggingFilePathPointer,
+            callback_received_transaction_fn,
+            callback_received_transaction_reply_fn,
+            callback_received_finalized_transaction_fn,
+            callback_transaction_broadcast_fn,
+            callback_transaction_mined_fn,
+            callback_discovery_process_complete_fn,
+            UnsafeMutablePointer<Int32>(&errorCode)
+        )
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+        ptr = result!
+    }
+
+    func removeContact(_ contact: Contact) throws {
+        var errorCode: Int32 = -1
+        let result = wallet_remove_contact(ptr, contact.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+
+        if !result {
+            throw WalletErrors.removeContact
+        }
     }
 
     func addContact(alias: String, publicKeyHex: String) throws {
-        if !PublicKey.validHex(publicKeyHex) {
-            throw WalletErrors.invalidPublicKeyHex
+        let publicKey = try PublicKey(hex: publicKeyHex)
+        let (currentWalletPublicKey, publicKeyError) = self.publicKey
+        if publicKeyError != nil {
+            throw publicKeyError!
         }
 
-        let publicKey = PublicKey(hex: publicKeyHex)
+        let (currentWalletPublicKeyHex, currentWalletPublicKeyHexError) = currentWalletPublicKey!.hex
+        if currentWalletPublicKeyHexError != nil {
+            throw currentWalletPublicKeyHexError!
+        }
 
-        let newContact = Contact(alias: alias, publicKey: publicKey)
-        let contactAdded = wallet_add_contact(ptr, newContact.pointer)
+        if (publicKeyHex == currentWalletPublicKeyHex) {
+            throw WalletErrors.addOwnContact
+        }
+
+        let newContact = try Contact(alias: alias, publicKey: publicKey)
+        var errorCode: Int32 = -1
+        let contactAdded = wallet_add_contact(ptr, newContact.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
 
         if !contactAdded {
             throw WalletErrors.addContact
@@ -113,34 +236,63 @@ class Wallet {
     }
 
     func sendTransaction(destination: PublicKey, amount: UInt64, fee: UInt64, message: String) throws {
-        //TODO check available funds first
+        let total = fee + amount
+        let (availableBalance, error) = self.availableBalance
+        if error != nil {
+            throw error!
+        }
+
+        if total > availableBalance {
+            throw WalletErrors.insufficientFunds(microTariRequired: total)
+        }
 
         let messagePointer = UnsafeMutablePointer<Int8>(mutating: (message as NSString).utf8String)
-        let sendResult = wallet_send_transaction(ptr, destination.pointer, amount, fee, messagePointer)
-
+        var errorCode: Int32 = -1
+        let sendResult = wallet_send_transaction(ptr, destination.pointer, amount, fee, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
         if !sendResult {
             throw WalletErrors.sendingTransaction
         }
     }
 
-    func findPendingOutboundTransactionBy(id: UInt64) -> PendingOutboundTransaction? {
-        let pendingOutboundTransactionPointer = wallet_get_pending_outbound_transaction_by_id(ptr, id)
-
+    func findPendingOutboundTransactionBy(id: UInt64) throws -> PendingOutboundTransaction? {
+        var errorCode: Int32 = -1
+        let pendingOutboundTransactionPointer = wallet_get_pending_outbound_transaction_by_id(ptr, id, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
         if let txPointer = pendingOutboundTransactionPointer {
             return PendingOutboundTransaction(pendingOutboundTransactionPointer: txPointer)
         }
-
         return nil
     }
 
-    func findCompletedTransactionBy(id: UInt64) -> CompletedTransaction? {
-        let completedTransactionPointer = wallet_get_completed_transaction_by_id(ptr, id)
+    func findPendingInboundTransactionBy(id: UInt64) throws -> PendingInboundTransaction? {
+         var errorCode: Int32 = -1
+         let pendingInboundTransactionPointer = wallet_get_pending_inbound_transaction_by_id(ptr, id, UnsafeMutablePointer<Int32>(&errorCode))
+         guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+         }
+         if let txPointer = pendingInboundTransactionPointer {
+             return PendingInboundTransaction(pendingInboundTransactionPointer: txPointer)
+         }
+         return nil
+     }
 
-        if let txPointer = completedTransactionPointer {
-            return CompletedTransaction(completedTransactionPointer: txPointer)
+    func findCompletedTransactionBy(id: UInt64) throws -> CompletedTransaction {
+        var errorCode: Int32 = -1
+        let completedTransactionPointer = wallet_get_completed_transaction_by_id(ptr, id, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
         }
 
-        return nil
+        guard completedTransactionPointer != nil else {
+            throw WalletErrors.completedTransactionById
+        }
+
+        return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!)
     }
 
     deinit {

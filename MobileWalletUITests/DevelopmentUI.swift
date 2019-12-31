@@ -60,7 +60,7 @@ class DevelopmentUI: XCTestCase {
         acceptPermissionsPromptIfRequired()
         Biometrics.successfulAuthentication()
 
-        sleep(40)
+        sleep(0)
     }
 
 }

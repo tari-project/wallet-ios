@@ -40,6 +40,10 @@
 
 import Foundation
 
+enum PendingInboundTransactionError: Error {
+    case generic(_ errorCode: Int32)
+}
+
 class PendingInboundTransaction {
     private var ptr: OpaquePointer
 
@@ -47,15 +51,45 @@ class PendingInboundTransaction {
         return ptr
     }
 
-    var id: UInt64 {
-        return pending_inbound_transaction_get_transaction_id(ptr)
+    var id: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = pending_inbound_transaction_get_transaction_id(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
     }
 
-    //TODO implement these
-//    pending_inbound_transaction_get_amount(<#T##transaction: OpaquePointer!##OpaquePointer!#>)
-//    pending_inbound_transaction_get_message(<#T##transaction: OpaquePointer!##OpaquePointer!#>)
-//    pending_inbound_transaction_get_timestamp(<#T##transaction: OpaquePointer!##OpaquePointer!#>)
-//    pending_inbound_transaction_get_source_public_key(<#T##transaction: OpaquePointer!##OpaquePointer!#>)
+    var amount: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = pending_inbound_transaction_get_amount(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
+    }
+
+    var message: (String, Error?) {
+        var errorCode: Int32 = -1
+        let resultPtr = pending_inbound_transaction_get_message(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = String(cString: resultPtr!)
+
+        let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
+        string_destroy(mutable)
+
+        return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
+    }
+
+    var timestamp: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = pending_inbound_transaction_get_timestamp(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
+    }
+
+    var sourcePublicKey: (PublicKey?, Error?) {
+        var errorCode: Int32 = -1
+        let err = UnsafeMutablePointer<Int32>(&errorCode)
+        let resultPointer = pending_inbound_transaction_get_source_public_key(ptr, err)
+        guard errorCode == 0 else {
+            return (nil, PendingInboundTransactionError.generic(errorCode))
+        }
+
+        return (PublicKey(pointer: resultPointer!), nil)
+    }
 
     init(pendingInboundTransactionPointer: OpaquePointer) {
         ptr = pendingInboundTransactionPointer

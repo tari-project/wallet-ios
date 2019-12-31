@@ -42,6 +42,7 @@ import Foundation
 
 enum PendingOutboundTransactionsErrors: Error {
     case pendingOutboundTransactionNotFound
+    case generic(_ errorCode: Int32)
 }
 
 class PendingOutboundTransactions {
@@ -51,8 +52,10 @@ class PendingOutboundTransactions {
         return ptr
     }
 
-    var count: UInt32 {
-        return pending_outbound_transactions_get_length(ptr)
+    var count: (UInt32, Error?) {
+        var errorCode: Int32 = -1
+        let result = pending_outbound_transactions_get_length(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? PendingOutboundTransactionsErrors.generic(errorCode) : nil)
     }
 
     init(pendingOutboundTransactionsPointer: OpaquePointer) {
@@ -60,7 +63,11 @@ class PendingOutboundTransactions {
     }
 
     func at(position: UInt32) throws -> PendingOutboundTransaction {
-        let pendingOutboundTransactionPointer = pending_outbound_transactions_get_at(ptr, position)
+        var errorCode: Int32 = -1
+        let pendingOutboundTransactionPointer = pending_outbound_transactions_get_at(ptr, position, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw PendingOutboundTransactionsErrors.generic(errorCode)
+        }
 
         if pendingOutboundTransactionPointer == nil {
             throw PendingOutboundTransactionsErrors.pendingOutboundTransactionNotFound

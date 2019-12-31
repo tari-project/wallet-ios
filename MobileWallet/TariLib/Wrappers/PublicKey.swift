@@ -40,6 +40,11 @@
 
 import Foundation
 
+enum PublicKeyError: Error {
+    case generic(_ errorCode: Int32)
+    case invalidHex
+}
+
 class PublicKey {
     private var ptr: OpaquePointer
 
@@ -47,34 +52,49 @@ class PublicKey {
         return ptr
     }
 
-    var bytes: ByteVector {
-        return ByteVector(pointer: public_key_get_bytes(ptr))
+    var bytes: (ByteVector?, Error?) {
+       var errorCode: Int32 = -1
+       let result = ByteVector(pointer: public_key_get_bytes(ptr, UnsafeMutablePointer<Int32>(&errorCode)))
+       guard errorCode == 0 else {
+           return (nil, PublicKeyError.generic(errorCode))
+       }
+
+       return (result, nil)
     }
 
-    var hex: String {
-        return bytes.hexString
+    var hex: (String, Error?) {
+        let (bytes, bytesError) = self.bytes
+        if bytesError != nil {
+            return ("", bytesError)
+        }
+
+        return bytes!.hexString
     }
 
-    init(privateKey: PrivateKey) {
-        ptr = public_key_from_private_key(privateKey.pointer)
+    init(privateKey: PrivateKey) throws {
+        var errorCode: Int32 = -1
+        ptr = public_key_from_private_key(privateKey.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw PublicKeyError.generic(errorCode)
+        }
     }
 
-    init(hex: String) {
+    init(hex: String) throws {
+        let chars = CharacterSet(charactersIn: "0123456789abcdef")
+        guard (hex.count == 64 && hex.rangeOfCharacter(from: chars) != nil) else {
+            throw PublicKeyError.invalidHex
+        }
         let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
-        ptr = public_key_from_hex(hexPtr)
+        var errorCode: Int32 = -1
+        let result = public_key_from_hex(hexPtr, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw PublicKeyError.generic(errorCode)
+        }
+        ptr = result!
     }
 
     init(pointer: OpaquePointer) {
         ptr = pointer
-    }
-
-    static func validHex(_ hex: String) -> Bool {
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
-        if public_key_from_hex(hexPtr) != nil {
-            return true
-        }
-
-        return false
     }
 
     deinit {

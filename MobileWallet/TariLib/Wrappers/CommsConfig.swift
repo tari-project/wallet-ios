@@ -40,6 +40,10 @@
 
 import Foundation
 
+enum CommsConfigError: Error {
+    case generic(_ errorCode: Int32)
+}
+
 class CommsConfig {
     private var ptr: OpaquePointer
 
@@ -47,13 +51,29 @@ class CommsConfig {
         return ptr
     }
 
-    init(privateKey: PrivateKey, databasePath: String, databaseName: String, controlAddress: String, listenerAddress: String) {
+    var dbPath: String
+    var dbName: String
+
+    init(privateKey: PrivateKey, databasePath: String, databaseName: String, controlAddress: String, listenerAddress: String) throws {
+        dbPath = databasePath
+        dbName = databaseName
         let controlPointer = UnsafeMutablePointer<Int8>(mutating: (controlAddress as NSString).utf8String)
         let listenerPointer = UnsafeMutablePointer<Int8>(mutating: (listenerAddress as NSString).utf8String)
         let dbPointer = UnsafeMutablePointer<Int8>(mutating: (databaseName as NSString).utf8String)
         let pathPointer = UnsafeMutablePointer<Int8>(mutating: databasePath)
-
-        ptr = comms_config_create(controlPointer, listenerPointer, dbPointer, pathPointer, privateKey.pointer)
+        var errorCode: Int32 = -1
+        let result = comms_config_create(
+            controlPointer,
+            listenerPointer,
+            dbPointer,
+            pathPointer,
+            privateKey.pointer,
+            UnsafeMutablePointer<Int32>(&errorCode)
+        )
+        guard errorCode == 0 else {
+            throw CommsConfigError.generic(errorCode)
+        }
+        ptr = result!
     }
 
     deinit {

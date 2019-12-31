@@ -64,11 +64,11 @@ class TariLib {
     }
 
     var controlAddress: String {
-        return "127.0.0.1:80"
+        return "/ip4/127.0.0.1/tcp/80"
     }
 
     var listenerAddress: String {
-        return "0.0.0.0:80"
+        return "/ip4/0.0.0.0/tcp/80"
     }
 
     private let fileManager = FileManager.default
@@ -77,17 +77,11 @@ class TariLib {
 
     var walletExists: Bool {
         get {
-            if let privateKeyHex = UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) {
+            if (UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) != nil) {
                 return true
             }
 
             return false
-//            var isDir: ObjCBool = false
-//            if fileManager.fileExists(atPath: databasePath, isDirectory: &isDir) {
-//                return true
-//            }
-//
-//            return false
         }
     }
 
@@ -98,13 +92,9 @@ class TariLib {
      */
     deinit {}
 
-    func createNewWallet() {
-        do {
-            try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
-            try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
-        } catch let error as NSError {
-            NSLog("Unable to create directory \(error.debugDescription)")
-        }
+    func createNewWallet() throws {
+        try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
+        try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
 
         print(TariLib.shared.databasePath)
 
@@ -113,17 +103,16 @@ class TariLib {
         //TODO use secure enclave
         UserDefaults.standard.set(privateKey.hex, forKey: PRIVATE_KEY_STORAGE_KEY)
 
-        let commsConfig = CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
+        let commsConfig = try CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
 
-        tariWallet = Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
+        tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
     }
 
     func startExistingWallet() throws {
         if let privateKeyHex = UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) {
-            let privateKey = PrivateKey(hex: privateKeyHex)
-
-            let commsConfig = CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
-            tariWallet = Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
+            //let privateKey = try! PrivateKey(hex: privateKeyHex)
+            //let commsConfig = try! CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
+            //tariWallet = try! Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
         } else {
             throw TariLibErrors.privateKeyNotFound
         }

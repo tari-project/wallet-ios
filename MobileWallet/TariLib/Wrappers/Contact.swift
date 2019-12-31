@@ -40,6 +40,10 @@
 
 import Foundation
 
+enum ContactError: Error {
+    case generic(_ errorCode: Int32)
+}
+
 class Contact {
     private var ptr: OpaquePointer
 
@@ -47,31 +51,38 @@ class Contact {
         return ptr
     }
 
-    var alias: String? {
-        if let aliasPointer = contact_get_alias(ptr) {
-            if let string = String(validatingUTF8: aliasPointer) {
-                return string
-            } else {
-                //TODO create error log
-                return nil
-            }
-        } else {
-            //TODO create error log
-            return nil
+    var alias: (String, Error?) {
+        var errorCode: Int32 = -1
+        let aliasPointer = contact_get_alias(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            return ("", ContactError.generic(errorCode))
         }
+
+        return (String(validatingUTF8: aliasPointer!)!, nil)
     }
 
-    var publicKey: PublicKey {
-        return PublicKey(pointer: contact_get_public_key(ptr))
+    var publicKey: (PublicKey?, Error?) {
+        var errorCode: Int32 = -1
+        let result = PublicKey(pointer: contact_get_public_key(ptr, UnsafeMutablePointer<Int32>(&errorCode)))
+        guard errorCode == 0 else {
+            return (nil, ContactError.generic(errorCode))
+        }
+
+        return (result, nil)
     }
 
     init(contactPointer: OpaquePointer) {
         ptr = contactPointer
     }
 
-    init(alias: String, publicKey: PublicKey) {
+    init(alias: String, publicKey: PublicKey) throws {
         let aliasPointer = UnsafeMutablePointer<Int8>(mutating: (alias as NSString).utf8String)
-        ptr = contact_create(aliasPointer, publicKey.pointer)
+        var errorCode: Int32 = -1
+        let result = contact_create(aliasPointer, publicKey.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw ContactError.generic(errorCode)
+        }
+        ptr = result!
     }
 
     deinit {

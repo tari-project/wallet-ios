@@ -40,6 +40,10 @@
 
 import Foundation
 
+enum PendingOutboundTransactionError: Error {
+   case generic(_ errorCode: Int32)
+}
+
 class PendingOutboundTransaction {
     private var ptr: OpaquePointer
 
@@ -47,8 +51,43 @@ class PendingOutboundTransaction {
         return ptr
     }
 
-    var id: UInt64 {
-        return pending_outbound_transaction_get_transaction_id(ptr)
+    var id: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = pending_outbound_transaction_get_transaction_id(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? PendingOutboundTransactionError.generic(errorCode) : nil)
+    }
+
+    var amount: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = pending_outbound_transaction_get_amount(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? PendingOutboundTransactionError.generic(errorCode) : nil)
+    }
+
+    var message: (String, Error?) {
+        var errorCode: Int32 = -1
+        let resultPtr = pending_outbound_transaction_get_message(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = String(cString: resultPtr!)
+
+        let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
+        string_destroy(mutable)
+
+        return (result, errorCode != 0 ? PendingOutboundTransactionError.generic(errorCode) : nil)
+    }
+
+    var timestamp: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = pending_outbound_transaction_get_timestamp(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? PendingOutboundTransactionError.generic(errorCode) : nil)
+    }
+
+    var destinationPublicKey: (PublicKey?, Error?) {
+        var errorCode: Int32 = -1
+        let resultPointer = pending_outbound_transaction_get_destination_public_key(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            return (nil, PendingOutboundTransactionError.generic(errorCode))
+        }
+
+        return (PublicKey(pointer: resultPointer!), nil)
     }
 
     init(pendingOutboundTransactionPointer: OpaquePointer) {
