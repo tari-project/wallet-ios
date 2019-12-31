@@ -70,6 +70,12 @@ class TransactionViewController: UIViewController {
         setup()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        navigationController?.setNavigationBarHidden(false, animated: false)
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -112,6 +118,14 @@ class TransactionViewController: UIViewController {
 
         setupValueView()
         setValues()
+
+//        if let navController = navigationController {
+//            let navBar = navController.navigationBar
+//            
+//            let backImage = UIImage(systemName: "arrow.left") //TODO use own asset when available
+//            navBar.backIndicatorImage = backImage
+//            navBar.backIndicatorTransitionMaskImage = backImage
+//        }
     }
 
     private func createBorders() {
@@ -137,9 +151,9 @@ class TransactionViewController: UIViewController {
             var title: String?
 
             if tx.value.sign == .positive {
-                title = NSLocalizedString("Payment Received", comment: "Navigation bar heading on transaction view screen")
+                title = NSLocalizedString("Payment Received", comment: "Navigation bar title on transaction view screen")
             } else {
-                title = NSLocalizedString("Payment Sent", comment: "Navigation bar heading on transaction view screen")
+                title = NSLocalizedString("Payment Sent", comment: "Navigation bar title on transaction view screen")
             }
 
             navigationItem.title = title

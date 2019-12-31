@@ -41,36 +41,77 @@
 import UIKit
 import FloatingPanel
 
-protocol TransactionSelectedDelegate {
-    func onTransactionSelect(_: Transaction)
+enum ScrollDirection {
+    case up
+    case down
 }
 
-class HomeViewController: UIViewController, FloatingPanelControllerDelegate, TransactionSelectedDelegate {
+class HomeViewController: UIViewController, FloatingPanelControllerDelegate, TransactionsTableViewDelegate {
     @IBOutlet weak var sendButton: SendButton!
     @IBOutlet weak var sendButtonBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var bottomFadeView: FadedOverlayView!
+    @IBOutlet weak var bottomFadeViewHeightConstraint: NSLayoutConstraint!
 
     @IBOutlet weak var balanceLabel: UILabel!
     @IBOutlet weak var balanceValueLabel: UILabel!
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var valueIcon: UIImageView!
 
+    private let transactionTableVC = TransactionsTableViewController(style: .grouped)
     private var fpc: FloatingPanelController!
+    private var grabberHandle: UIView!
     private var selectedTransaction: Transaction?
     private var maxSendButtonBottomConstraint: CGFloat = 50
     private var minSendButtonBottomConstraint: CGFloat = -20
+    private var defaultBottomFadeViewHeight: CGFloat = 0
     private var isAnimatingButton = false
     private var hapticEnabled = false
+    private let PANEL_BORDER_CORNER_RADIUS: CGFloat = 36.0
+    private let GRABBER_WIDTH: Double = 55.0
+    private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
 
-    let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+    private var isTransactionViewFullScreen: Bool = false {
+        didSet {
+            showHideFullScreen()
+            setNeedsStatusBarAppearanceUpdate()
+        }
+    }
+
+    private var isShowingSendButton: Bool = true {
+        didSet {
+            showHideSendButton()
+        }
+    }
 
     override func viewDidLoad() {
+        overrideUserInterfaceStyle = .light
+
         setup()
         super.viewDidLoad()
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        self.sendButtonBottomConstraint.constant = self.minSendButtonBottomConstraint
+        sendButtonBottomConstraint.constant = minSendButtonBottomConstraint
+        defaultBottomFadeViewHeight = bottomFadeViewHeightConstraint.constant
+        bottomFadeViewHeightConstraint.constant = 0
+
+        //Check if we're coming back from a segue
+        if !isTransactionViewFullScreen {
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        }
+
         super.viewWillAppear(animated)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        //Make sure the button animates into view when we navigate back to this controller
+        isShowingSendButton = isShowingSendButton == true
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return isTransactionViewFullScreen ? .darkContent : .lightContent
     }
 
     private func setup() {
@@ -123,6 +164,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.backgroundImageView.alpha = 1.0
             }
         )
+
+        bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
     }
 
     private func setupNavigatorBar() {
@@ -130,11 +173,11 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         if let navController = navigationController {
             let navBar = navController.navigationBar
-//            navController.setNavigationBarHidden(true, animated: false)
 
-            navBar.setBackgroundImage(UIImage(), for: .default)
-            navBar.shadowImage = UIImage()
+            navBar.barTintColor = Theme.shared.colors.navigationBarBackground
+            navBar.isTranslucent = false
 
+            navigationController?.setNavigationBarHidden(true, animated: false)
             navBar.tintColor = Theme.shared.colors.navigationBarTint
 
             navBar.titleTextAttributes = [
@@ -142,47 +185,107 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle!
             ]
 
-            let backImage = UIImage(systemName: "arrow.left") //TODO use own asset when available
-            navBar.backIndicatorImage = backImage
-            navBar.backIndicatorTransitionMaskImage = backImage
+            //Remove border
+            navBar.setBackgroundImage(UIImage(), for: .default)
+            navBar.shadowImage = UIImage()
+
+            //TODO fix size
+            navBar.backIndicatorImage = Theme.shared.images.backArrow
+            navBar.backIndicatorTransitionMaskImage = Theme.shared.images.backArrow
+
+            let closeButtonItem = UIBarButtonItem.customNavBarItem(target: self, image: Theme.shared.images.close!, action: #selector(closeFullScreen))
+
+            self.navigationItem.leftBarButtonItem = closeButtonItem
         }
+    }
+
+    @objc private func closeFullScreen() {
+        transactionTableVC.scrollToTop()
+        self.fpc.move(to: .tip, animated: true)
     }
 
     private func setupFloatingPanel() {
         fpc = FloatingPanelController()
 
         fpc.delegate = self
-        let transactionTableVC = TransactionsTableViewController(style: .grouped)
+
         transactionTableVC.actionDelegate = self
 
         fpc.set(contentViewController: transactionTableVC)
 
         //TODO move custom styling setup into generic function
-        fpc.surfaceView.cornerRadius = 36
+        fpc.surfaceView.cornerRadius = PANEL_BORDER_CORNER_RADIUS
         fpc.surfaceView.shadowColor = .black
         fpc.surfaceView.shadowRadius = 22
 
-        setGrabber(fpc)
+        setupGrabber(fpc)
 
         fpc.contentMode = .fitToBounds
 
         // Track a scroll view(or the siblings) in the content view controller.
         fpc.track(scrollView: transactionTableVC.tableView)
+
     }
 
-    private func setGrabber(_ fpc: FloatingPanelController) {
-        let grabberWidth = 55.0
-        let grabberHandel: UIView = UIView.init(
-            frame: CGRect(
-                x: Double(self.view.frame.size.width) / 2 - grabberWidth / 2,
-                y: 20,
-                width: grabberWidth,
-                height: 5)
-            )
-        grabberHandel.layer.cornerRadius = 2.5
-        grabberHandel.backgroundColor = Theme.shared.colors.floatingPanelGrabber
+    private func grabberRect(width: Double) -> CGRect {
+        return CGRect(
+            x: (Double(self.view.frame.size.width) / 2) - (width / 2),
+            y: 20,
+            width: width,
+            height: 5
+        )
+    }
+
+    private func setupGrabber(_ fpc: FloatingPanelController) {
+        grabberHandle = UIView(frame: grabberRect(width: GRABBER_WIDTH))
+        grabberHandle.layer.cornerRadius = 2.5
+        grabberHandle.backgroundColor = Theme.shared.colors.floatingPanelGrabber
         fpc.surfaceView.grabberHandle.isHidden = true
-        fpc.surfaceView.addSubview(grabberHandel)
+        fpc.surfaceView.addSubview(grabberHandle)
+    }
+
+    private func showHideFullScreen() {
+        if isTransactionViewFullScreen {
+            navigationController?.setNavigationBarHidden(false, animated: true)
+            self.isShowingSendButton = false
+            self.navigationItem.title = NSLocalizedString("Transactions", comment: "Transactions nav bar heading")
+
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
+                self.fpc.surfaceView.cornerRadius = 0
+                self.grabberHandle.frame = self.grabberRect(width: 0)
+                self.grabberHandle.alpha = 0
+                self.view.layoutIfNeeded()
+            })
+        } else {
+            navigationController?.setNavigationBarHidden(true, animated: true)
+            self.isShowingSendButton = true
+            self.navigationItem.title = ""
+
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
+                self.fpc.surfaceView.cornerRadius = self.PANEL_BORDER_CORNER_RADIUS
+                self.grabberHandle.frame = self.grabberRect(width: self.GRABBER_WIDTH)
+                self.grabberHandle.alpha = 1
+                self.view.layoutIfNeeded()
+            })
+        }
+    }
+
+    private func showHideSendButton() {
+        if isShowingSendButton {
+            UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveEaseIn, animations: {
+                self.sendButtonBottomConstraint.constant = self.maxSendButtonBottomConstraint
+                self.bottomFadeView.backgroundColor?.withAlphaComponent(0.5)
+                self.bottomFadeViewHeightConstraint.constant = self.defaultBottomFadeViewHeight
+                self.view.layoutIfNeeded()
+            })
+        } else {
+            UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveEaseIn, animations: {
+                self.sendButtonBottomConstraint.constant = self.minSendButtonBottomConstraint
+                self.bottomFadeView.backgroundColor?.withAlphaComponent(0.0)
+                self.bottomFadeViewHeightConstraint.constant = 0
+                self.view.layoutIfNeeded()
+            })
+        }
     }
 
     private func showFloatingPanel() {
@@ -191,6 +294,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         addChild(fpc)
 
         //Move send button to in front of panel
+        bottomFadeView.superview?.bringSubviewToFront(bottomFadeView)
         sendButton.superview?.bringSubviewToFront(sendButton)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
@@ -205,19 +309,36 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     @IBAction func onSendAction(_ sender: Any) {
-        print("Send")
+        self.performSegue(withIdentifier: "HomeToSend", sender: nil)
     }
 
-    // MARK: - Navigation
+    // MARK: - TransactionTableDelegateMethods
 
     func onTransactionSelect(_ transaction: Transaction) {
         selectedTransaction = transaction
         self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
     }
 
+    func onScrollDirectionChange(_ direction: ScrollDirection) {
+        if isTransactionViewFullScreen {
+            if direction == .up {
+                self.isShowingSendButton = true
+            } else if direction == .down {
+                self.isShowingSendButton = false
+            }
+        }
+    }
+
+    // MARK: - Navigation
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let transactionVC = segue.destination as! TransactionViewController
-        transactionVC.transaction = selectedTransaction
+        //TODO move segue identifiers to enum
+        if let identifier = segue.identifier {
+            if identifier == "HomeToTransactionDetails" {
+                let transactionVC = segue.destination as! TransactionViewController
+                transactionVC.transaction = selectedTransaction
+            }
+        }
     }
 
     // MARK: - Floating panel setup delegate methods
@@ -230,31 +351,23 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         return HomeViewFloatingPanelBehavior()
     }
 
+    func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
+        self.impactFeedbackGenerator.prepare()
+    }
+
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
         if vc.position == .full {
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
-                self.sendButtonBottomConstraint.constant = self.minSendButtonBottomConstraint
-                self.view.layoutIfNeeded()
-            }, completion: { (_) in
-            })
+            isTransactionViewFullScreen = true
         } else if vc.position == .tip || vc.position == .half {
             if hapticEnabled {
                 self.impactFeedbackGenerator.impactOccurred()
             }
             hapticEnabled = true
-
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
-                self.sendButtonBottomConstraint.constant = self.maxSendButtonBottomConstraint
-                self.view.layoutIfNeeded()
-            }, completion: { (_) in
-
-            })
+            isTransactionViewFullScreen = false
         }
     }
 
     func floatingPanelDidMove(_ vc: FloatingPanelController) {
-        self.impactFeedbackGenerator.prepare()
-
         let y = vc.surfaceView.frame.origin.y
         let tipY = vc.originYOfSurface(for: .tip)
 
@@ -264,9 +377,14 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             return
         }
 
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-            self.sendButtonBottomConstraint.constant = (self.minSendButtonBottomConstraint) * progress
-            self.view.layoutIfNeeded()
-        })
+        //TODO figure out why corner radius can't animate out but can in
+        self.fpc.surfaceView.cornerRadius = self.PANEL_BORDER_CORNER_RADIUS - (self.PANEL_BORDER_CORNER_RADIUS * progress)
+
+        if fpc.position == .tip && !isTransactionViewFullScreen {
+            UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
+                self.sendButtonBottomConstraint.constant = (self.minSendButtonBottomConstraint) * progress
+                self.view.layoutIfNeeded()
+            })
+        }
     }
 }

@@ -93,6 +93,7 @@ struct Colors: Loopable {
 
     //Navigation bar
     let navigationBarTint = UIColor(named: "Heading")
+    let navigationBarBackground = UIColor(named: "NavBarBackground")
 
     //Transaction view
     let transactionViewValueLabel = UIColor(named: "Heading")
@@ -142,6 +143,8 @@ struct Images: Loopable {
     //General icons
     let currencySymbol = UIImage(named: "Gem")
     let qrButton = UIImage(named: "QRButton")
+    let backArrow = UIImage(named: "BackArrow")
+    let close = UIImage(named: "Close")
 
     //Background images
     let homeBackgroundImage = UIImage(named: "HomePattern")
