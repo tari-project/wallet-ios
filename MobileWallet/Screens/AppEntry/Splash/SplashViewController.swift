@@ -88,8 +88,13 @@ class SplashViewController: UIViewController {
     }
 
     @IBAction func createWallet(_ sender: Any) {
-        TariLib.shared.createNewWallet()
-        authenticateUser()
+        do {
+            try TariLib.shared.createNewWallet()
+            authenticateUser()
+        } catch {
+            //TODO error alert
+            print(error.localizedDescription)
+        }
     }
 
     private func authenticateUser() {

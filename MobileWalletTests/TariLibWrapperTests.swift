@@ -66,170 +66,231 @@ class TariLibWrapperTests: XCTestCase {
 
     func testByteVector() {
         //Init manually. Initializing from pointers happens in priv/pub key tests.
-        let byteVector = ByteVector(byteArray: [0, 1, 2, 3, 4, 5])
-        XCTAssertEqual(byteVector.hexString, "000102030405")
+        do {
+            let byteVector = try ByteVector(byteArray: [0, 1, 2, 3, 4, 5])
+            
+            let (hexString, hexError) = byteVector.hexString
+            if hexError != nil {
+                XCTFail(hexError!.localizedDescription)
+            }
+            
+            XCTAssertEqual(hexString, "000102030405")
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
     
     func testPrivateKey() {
         //Create priv key from hex, then create hex from that to test ByteVector toString()
         let originalPrivateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
         
-        let privateKey = PrivateKey(hex: originalPrivateKeyHex)
-        XCTAssertEqual(privateKey.hex, originalPrivateKeyHex)
-                
-        XCTAssertEqual(PrivateKey.validHex("I_made_this_up"), false)
-        XCTAssertEqual(PrivateKey.validHex(originalPrivateKeyHex), true)
+        do {
+            let privateKey = try PrivateKey(hex: originalPrivateKeyHex)
+            let (hex, hexError) = privateKey.hex
+            if hexError != nil {
+                XCTFail(hexError!.localizedDescription)
+            }
+            
+            XCTAssertEqual(hex, originalPrivateKeyHex)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
     
     func testPublicKey() {
         //Create pub key from hex, then create hex from that to test ByteVector toString()
         let originalPublicKeyHex = "6a493210f7499cd17fecb510ae0cea23a110e8d5b901f8acadd3095c73a3b919"
         
-        let publicKey = PublicKey(hex: originalPublicKeyHex)
-        XCTAssertEqual(publicKey.hex, originalPublicKeyHex)
-        
-        XCTAssertEqual(PublicKey.validHex("I_made_this_up"), false)
-        XCTAssertEqual(PublicKey.validHex(originalPublicKeyHex), true)
+        do {
+            let publicKey = try PublicKey(hex: originalPublicKeyHex)
+            let (hex, hexError) = publicKey.hex
+            if hexError != nil {
+                XCTFail(hexError!.localizedDescription)
+            }
+            XCTAssertEqual(hex, originalPublicKeyHex)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
     
     func testWallet() {
+        let fileManager = FileManager.default
+        do {
+            try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            XCTFail("Unable to create directory \(error.localizedDescription)")
+        }
+        
         let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
         
-        print(loggingFilePath)
-
-        let commsConfig = CommsConfig(
-            privateKey: PrivateKey(hex: privateKeyHex),
-            databasePath: databasePath,
-            databaseName: dbName,
-            controlAddress: "127.0.0.1:80",
-            listenerAddress: "0.0.0.0:80"
-        )
-        
         //MARK: Create new wallet
-        let wallet = Wallet(commsConfig: commsConfig, loggingFilePath: loggingFilePath)
-        XCTAssertEqual(wallet.publicKey.hex, "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40")
-                
-        //MARK: Add bob as a contact
-        let bobPublicKeyHex = "6a493210f7499cd17fecb510ae0cea23a110e8d5b901f8acadd3095c73a3b919"
-        let bobAlias = "BillyBob"
-        
+        var wallet: Wallet? = nil
         do {
-            try wallet.addContact(alias: bobAlias, publicKeyHex: bobPublicKeyHex)
+            let commsConfig = try CommsConfig(
+                privateKey: PrivateKey(hex: privateKeyHex),
+                databasePath: databasePath,
+                databaseName: dbName,
+                controlAddress: "/ip4/127.0.0.1/tcp/80",
+                listenerAddress: "/ip4/0.0.0.0/tcp/80"
+            )
+            
+            wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: loggingFilePath)
+        } catch {
+            XCTFail("Unable to create wallet \(error.localizedDescription)")
+        }
+        
+        let testWalletPublicKey = "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40"
+        
+        let (walletPublicKey, pubKeyError) = wallet!.publicKey
+        if pubKeyError != nil {
+            XCTFail(pubKeyError!.localizedDescription)
+        }
+        
+        let (walletPublicKeyHex, walletPublicKeyHexError) = walletPublicKey!.hex
+        if walletPublicKeyHexError != nil {
+            XCTFail(walletPublicKeyHexError!.localizedDescription)
+        }
+        
+        XCTAssertEqual(walletPublicKeyHex, testWalletPublicKey)
+        
+        //MARK: Test data
+        do {
+            try wallet!.generateTestData()
         } catch {
             XCTFail(error.localizedDescription)
         }
-                
-        XCTAssertEqual(wallet.contacts.count, 1)
-                
-        do {
-            let justAddedContact = try wallet.contacts.at(position: 0)
-            let alias = justAddedContact.alias
-            XCTAssertEqual(alias, bobAlias)
-        } catch {
-            XCTFail(error.localizedDescription)
+        
+        //MARK: Remove Alice contact
+        let (contacts, contactsError) = wallet!.contacts
+        if contactsError != nil {
+            XCTFail(contactsError!.localizedDescription)
         }
         
-        XCTAssertEqual(wallet.completedTransactions.count, 0)
-        XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
-        XCTAssertEqual(wallet.pendingInboundTransactions.count, 0)
-        XCTAssertEqual(wallet.availableBalance, 0)
-        XCTAssertEqual(wallet.pendingIncomingBalance, 0)
-        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
+        do {
+            let aliceContact = try contacts!.at(position: 0)
+            try wallet!.removeContact(aliceContact)
+        }  catch {
+            XCTFail(error.localizedDescription)
+        }
+                
         
+        //MARK: Add Alice contact
+        do {
+            try wallet!.addContact(alias: "BillyBob", publicKeyHex: "a03d9be195e40466e255bd64eb612ad41ae0010519b6cbfc7698e5d0916a1a7c")
+        } catch {
+            XCTFail("Failed to add contact \(error.localizedDescription)")
+        }
+
         //MARK: Receive a test transaction
         do {
-            try wallet.generateTestReceiveTransaction()
+            try wallet!.generateTestReceiveTransaction()
         } catch {
             XCTFail(error.localizedDescription)
         }
-                
-        XCTAssertEqual(wallet.completedTransactions.count, 0)
-        XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
-        XCTAssertEqual(wallet.pendingInboundTransactions.count, 1)
-        XCTAssertEqual(wallet.availableBalance, 0)
-        XCTAssertGreaterThan(wallet.pendingIncomingBalance, 0)
-        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
-        
-        //MARK: Broadcast received test transaction
+
+        //MARK: Finalize and broadcast received test transaction
+        var txId: UInt64?
         do {
-            let pendingInboundTransaction = try wallet.pendingInboundTransactions.at(position: 0)
-            try wallet.testTransactionBroadcast(pendingInboundTransaction: pendingInboundTransaction)
-            let completedTx = try wallet.completedTransactions.at(position: 0)
-            XCTAssertEqual(completedTx.status, .broadcast)
+            let (pendingInboundTransactions, pendingInboundTransactionsError) = wallet!.pendingInboundTransactions
+            if pendingInboundTransactionsError != nil {
+                XCTFail(pendingInboundTransactionsError!.localizedDescription)
+            }
+            
+            let (pendingInboundTransactionsCount, pendingInboundTransactionsCountError) = pendingInboundTransactions!.count
+            if pendingInboundTransactionsCountError != nil {
+                XCTFail(pendingInboundTransactionsCountError!.localizedDescription)
+            }
+            
+            let pendingInboundTransaction = try pendingInboundTransactions!.at(position: pendingInboundTransactionsCount - 1)
+            
+            let (pendingInboundTransactionId, pendingInboundTransactionIdError) = pendingInboundTransaction.id
+            if pendingInboundTransactionIdError != nil {
+                XCTFail(pendingInboundTransactionIdError!.localizedDescription)
+            }
+            
+            txId = pendingInboundTransactionId
+            
+            try wallet!.testFinalizedReceivedTransaction(pendingInboundTransaction: pendingInboundTransaction)
+            var completedTx = try wallet!.findCompletedTransactionBy(id: txId!)
+            try wallet!.testTransactionBroadcast(completedTransaction: completedTx)
+            completedTx = try wallet!.findCompletedTransactionBy(id: txId!)
+            let (status, statusError) = completedTx.status
+            if statusError != nil {
+                XCTFail(statusError!.localizedDescription)
+            }
+        
+            XCTAssertEqual(status, .broadcast)
         } catch {
             XCTFail(error.localizedDescription)
         }
-                
-        XCTAssertEqual(wallet.completedTransactions.count, 1)
-        XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
-        XCTAssertEqual(wallet.pendingInboundTransactions.count, 0)
-        XCTAssertEqual(wallet.availableBalance, 0)
-        XCTAssertGreaterThan(wallet.pendingIncomingBalance, 0)
-        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
 
         //MARK: Mine received transaction
         do {
-            let broadcastedCompletedTx = try wallet.completedTransactions.at(position: 0)
-            try wallet.testTransactionMined(completedTransaction: broadcastedCompletedTx)
+            let broadcastedCompletedTx = try wallet!.findCompletedTransactionBy(id: txId!)
+            try wallet!.testTransactionMined(completedTransaction: broadcastedCompletedTx)
+
+            let minedCompletedTx = try wallet!.findCompletedTransactionBy(id: txId!)
             
-            let minedCompletedTx = try wallet.completedTransactions.at(position: 0)
-            XCTAssertEqual(minedCompletedTx.status, .mined)
+            let (status, statusError) = minedCompletedTx.status
+            if statusError != nil {
+                XCTFail(statusError!.localizedDescription)
+            }
+            
+            XCTAssertEqual(status, .mined)
         } catch {
             XCTFail(error.localizedDescription)
         }
-                
-        XCTAssertEqual(wallet.completedTransactions.count, 1)
-        XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
-        XCTAssertEqual(wallet.pendingInboundTransactions.count, 0)
-        
-        XCTAssertGreaterThan(wallet.availableBalance, 0)
-        XCTAssertEqual(wallet.pendingIncomingBalance, 0)
-        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
-        
+
         //MARK: Send transaction to bob
         var sendTransactionId: UInt64?
         do {
-            let bob = try wallet.contacts.at(position: 0)
-            try wallet.sendTransaction(destination: bob.publicKey, amount: 1000, fee: 101, message: "Oh hi bob")
+            let (contacts, contactsError) = wallet!.contacts
+            if contactsError != nil {
+                XCTFail(contactsError!.localizedDescription)
+            }
             
-            let pendingOutboundTransaction = try wallet.pendingOutboundTransactions.at(position: 0)
-            sendTransactionId = pendingOutboundTransaction.id
+            let bob = try contacts!.at(position: 0)
+            let (bobPublicKey, bobPublicKeyError) = bob.publicKey
+            if bobPublicKeyError != nil {
+                XCTFail(bobPublicKeyError!.localizedDescription)
+            }
             
+            try wallet!.sendTransaction(destination: bobPublicKey!, amount: 1000, fee: 101, message: "Oh hi bob")
+            let (pendingOutboundTransactions, pendingOutboundTransactionsError) = wallet!.pendingOutboundTransactions
+            if pendingOutboundTransactionsError != nil {
+                XCTFail(pendingOutboundTransactionsError!.localizedDescription)
+            }
+            
+            let pendingOutboundTransaction = try pendingOutboundTransactions!.at(position: 0)
+            let (pendingOutboundTransactionId, pendingOutboundTransactionIdError) = pendingOutboundTransaction.id
+            if pendingOutboundTransactionIdError != nil {
+                XCTFail(pendingOutboundTransactionIdError!.localizedDescription)
+            }
+            
+            sendTransactionId = pendingOutboundTransactionId
         } catch {
             XCTFail(error.localizedDescription)
-        }
-                
-        XCTAssertEqual(wallet.availableBalance, 0)
-        XCTAssertGreaterThan(wallet.pendingIncomingBalance, 0)
-        XCTAssertGreaterThan(wallet.pendingOutgoingBalance, 0)
-       
-        //MARK: Complete sent transaction to bob
-        
-        var pendingOutboundTransaction: PendingOutboundTransaction?
-        if let id = sendTransactionId {
-            pendingOutboundTransaction = wallet.findPendingOutboundTransactionBy(id: id)
-        } else {
-            XCTFail("No sent transaction ID")
         }
 
+        //MARK: Complete sent transaction to bob
         do {
-            try wallet.testCompleteSend(pendingOutboundTransaction: pendingOutboundTransaction!)
-            
-            if let broadcastedCompletedTx = wallet.findCompletedTransactionBy(id: sendTransactionId!) {
-                try wallet.testTransactionMined(completedTransaction: broadcastedCompletedTx)
-            } else {
-                XCTFail("Completed transaction not found with ID: \(sendTransactionId as Any)")
-            }
+            let pendingOutboundTransaction = try wallet!.findPendingOutboundTransactionBy(id: sendTransactionId!)
+
+            try wallet!.testCompleteSend(pendingOutboundTransaction: pendingOutboundTransaction!)
+
+            let broadcastedCompletedTx = try wallet!.findCompletedTransactionBy(id: sendTransactionId!)
+            try wallet!.testTransactionMined(completedTransaction: broadcastedCompletedTx)
         } catch {
             XCTFail(error.localizedDescription)
         }
+
+        let (availableBalance, _) = wallet!.availableBalance
+        let (pendingIncomingBalance, _) = wallet!.pendingIncomingBalance
+        let (pendingOutgoingBalance, _) = wallet!.pendingOutgoingBalance
         
-        XCTAssertEqual(wallet.completedTransactions.count, 2)
-        XCTAssertEqual(wallet.pendingOutboundTransactions.count, 0)
-        XCTAssertEqual(wallet.pendingInboundTransactions.count, 0)
-        
-        XCTAssertGreaterThan(wallet.availableBalance, 0)
-        XCTAssertEqual(wallet.pendingIncomingBalance, 0)
-        XCTAssertEqual(wallet.pendingOutgoingBalance, 0)
+        XCTAssertGreaterThan(availableBalance, 0)
+        XCTAssertGreaterThan(pendingIncomingBalance, 0)
+        XCTAssertGreaterThan(pendingOutgoingBalance, 0)
     }
 }

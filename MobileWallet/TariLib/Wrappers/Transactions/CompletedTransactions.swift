@@ -42,6 +42,7 @@ import Foundation
 
 enum CompletedTransactionsErrors: Error {
     case completedTransactionNotFound
+    case generic(_ errorCode: Int32)
 }
 
 class CompletedTransactions {
@@ -51,8 +52,10 @@ class CompletedTransactions {
         return ptr
     }
 
-    var count: UInt32 {
-        return completed_transactions_get_length(ptr)
+    var count: (UInt32, Error?) {
+        var errorCode: Int32 = -1
+        let result = completed_transactions_get_length(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? CompletedTransactionsErrors.generic(errorCode) : nil)
     }
 
     init(completedTransactionsPointer: OpaquePointer) {
@@ -60,7 +63,11 @@ class CompletedTransactions {
     }
 
     func at(position: UInt32) throws -> CompletedTransaction {
-        let completedTransactionPointer = completed_transactions_get_at(ptr, position)
+        var errorCode: Int32 = -1
+        let completedTransactionPointer = completed_transactions_get_at(ptr, position, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw CompletedTransactionsErrors.generic(errorCode)
+        }
 
         if completedTransactionPointer == nil {
             throw CompletedTransactionsErrors.completedTransactionNotFound

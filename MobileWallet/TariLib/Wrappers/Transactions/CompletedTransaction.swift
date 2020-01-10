@@ -48,31 +48,92 @@ enum CompletedTransactionStatus: Error {
     case unknown
 }
 
+enum CompletedTransactionError: Error {
+    case generic(_ errorCode: Int32)
+}
+
 class CompletedTransaction {
     private var ptr: OpaquePointer
+    private var cachedId: UInt64?
 
     var pointer: OpaquePointer {
         return ptr
     }
 
-    var id: UInt64 {
-        return completed_transaction_get_transaction_id(ptr)
+    var id: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = completed_transaction_get_transaction_id(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
     }
 
-    var status: CompletedTransactionStatus {
-        let status: Int32 = completed_transaction_get_status(ptr)
+    var amount: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = completed_transaction_get_amount(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
+    }
+
+    var fee: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = completed_transaction_get_fee(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
+    }
+
+    var message: (String, Error?) {
+        var errorCode: Int32 = -1
+        let resultPtr = completed_transaction_get_message(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = String(cString: resultPtr!)
+
+        let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
+        string_destroy(mutable)
+
+        return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
+    }
+
+    var timestamp: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = completed_transaction_get_timestamp(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
+    }
+
+    var sourcePublicKey: (PublicKey?, Error?) {
+        var errorCode: Int32 = -1
+        let err = UnsafeMutablePointer<Int32>(&errorCode)
+        let resultPointer = completed_transaction_get_source_public_key(ptr, err)
+        guard errorCode == 0 else {
+            return (nil, CompletedTransactionError.generic(errorCode))
+        }
+
+        return (PublicKey(pointer: resultPointer!), nil)
+    }
+
+    var destinationPublicKey: (PublicKey?, Error?) {
+        var errorCode: Int32 = -1
+        let resultPointer = completed_transaction_get_destination_public_key(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            return (nil, CompletedTransactionError.generic(errorCode))
+        }
+
+        return (PublicKey(pointer: resultPointer!), nil)
+    }
+
+    var status: (CompletedTransactionStatus, Error?) {
+        var errorCode: Int32 = -1
+        let status: Int32 = completed_transaction_get_status(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            return (.unknown, CompletedTransactionError.generic(errorCode))
+        }
 
         switch status {
-        case -1:
-            return .transactionNullError
-        case 0:
-            return .completed
-        case 1:
-            return .broadcast
-        case 2:
-            return .mined
-        default:
-            return .unknown
+            case -1:
+                return (.transactionNullError, nil)
+            case 0:
+                return (.completed, nil)
+            case 1:
+                return (.broadcast, nil)
+            case 2:
+                return (.mined, nil)
+            default:
+                return (.unknown, nil)
         }
     }
 

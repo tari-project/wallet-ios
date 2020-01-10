@@ -40,6 +40,10 @@
 
 import Foundation
 
+enum ByteVectorError: Error {
+    case generic(_ errorCode: Int32)
+}
+
 class ByteVector {
     private var ptr: OpaquePointer
 
@@ -47,32 +51,58 @@ class ByteVector {
         return ptr
     }
 
-    var count: UInt32 {
-        return byte_vector_get_length(ptr)
+    var count: (UInt32, Error?) {
+        var errorCode: Int32 = -1
+        let result = byte_vector_get_length(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? ByteVectorError.generic(errorCode) : nil )
     }
 
-    var hexString: String {
+    var hexString: (String, Error?) {
         var byteArray: [UInt8] = [UInt8]()
 
-        for n in 0...count - 1 {
-            byteArray.append(at(position: n))
+        let (byteArrayLength, error) = self.count
+
+        if error != nil {
+            return ("", error)
+        }
+
+        for n in 0...byteArrayLength - 1 {
+            do {
+                let byte = try self.at(position: n)
+                byteArray.append(byte)
+            } catch {
+                return ("", error)
+            }
         }
 
         let data = Data(byteArray)
 
-        return data.map {String(format: "%02hhx", $0)}.joined()
+        return (data.map {String(format: "%02hhx", $0)}.joined(), nil)
     }
 
-    init(byteArray: [UInt8]) {
-        self.ptr = byte_vector_create(byteArray, UInt32(byteArray.count))
+    init(byteArray: [UInt8]) throws {
+        var errorCode: Int32 = -1
+        let result = byte_vector_create(byteArray, UInt32(byteArray.count), UnsafeMutablePointer<Int32>(&errorCode))
+        guard (errorCode == 0) else {
+            throw ByteVectorError.generic(errorCode)
+        }
+
+        ptr = result!
     }
 
     init (pointer: OpaquePointer) {
         ptr = pointer
     }
 
-    func at(position: UInt32) -> UInt8 {
-        return byte_vector_get_at(ptr, position)
+    func at(position: UInt32) throws -> (UInt8) {
+        var errorCode: Int32 = -1
+        let result = byte_vector_get_at(ptr, position, UnsafeMutablePointer<Int32>(&errorCode))
+
+        guard errorCode == 0 else {
+            throw ByteVectorError.generic(errorCode)
+        }
+
+        return result
     }
 
     deinit {

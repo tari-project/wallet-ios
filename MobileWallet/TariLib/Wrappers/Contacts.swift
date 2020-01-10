@@ -40,7 +40,8 @@
 
 import Foundation
 
-enum ContactsErrors: Error {
+enum ContactsError: Error {
+    case generic(_ errorCode: Int32)
     case contactNotFound
 }
 
@@ -51,8 +52,10 @@ class Contacts {
         return ptr
     }
 
-    var count: UInt32 {
-        return contacts_get_length(ptr)
+    var count: (UInt32, Error?) {
+        var errorCode: Int32 = -1
+        let result = contacts_get_length(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        return (result, errorCode != 0 ? ContactsError.generic(errorCode) : nil)
     }
 
     init(contactsPointer: OpaquePointer) {
@@ -60,10 +63,13 @@ class Contacts {
     }
 
     func at(position: UInt32) throws -> Contact {
-        let contactPointer = contacts_get_at(ptr, position)
-
+        var errorCode: Int32 = -1
+        let contactPointer = contacts_get_at(ptr, position, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw ContactsError.generic(errorCode)
+        }
         if contactPointer == nil {
-            throw ContactsErrors.contactNotFound
+            throw ContactsError.contactNotFound
         }
 
         return Contact(contactPointer: contactPointer!)
