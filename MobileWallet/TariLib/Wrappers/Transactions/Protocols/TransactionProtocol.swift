@@ -1,8 +1,8 @@
-//  Date.swift
+//  TransactionProtocol.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/14
+	Created by Jason van den Berg on 2020/01/15
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,40 +40,42 @@
 
 import Foundation
 
-extension Date {
+enum TransactionDirection {
+    case inbound
+    case outbound
+}
 
-    /*
-     Creates a readable string from a given date
-    */
-    func relativeDayFromToday() -> String? {
-        if Calendar.current.isDateInToday(self) {
-            return NSLocalizedString("Today", comment: "Transaction list section heading")
-        } else if Calendar.current.isDateInYesterday(self) {
-            return NSLocalizedString("Yesterday", comment: "Transaction list section heading")
-        } else {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, yyyy", options: 0, locale: NSLocale.current)
-            //dateFormatter.timeZone = TimeZone.current
+protocol TransactionProtocol {
+    var pointer: OpaquePointer { get }
+    var id: (UInt64, Error?) { get }
+    var microTari: (MicroTari?, Error?) { get }
+    //var fee: (UInt64, Error?) { get }
+    var message: (String, Error?) { get }
+    var timestamp: (UInt64, Error?) { get }
+    //var sourcePublicKey: (PublicKey?, Error?) { get }
+    //var destinationPublicKey: (PublicKey?, Error?) { get }
+    var direction: TransactionDirection { get }
+    var contact: (Contact?, Error?) { get }
+}
 
-            return dateFormatter.string(from: self)
+extension TransactionProtocol {
+    var utcDate: (Date?, Error?) {
+        let (timestamp, error) = self.timestamp
+        if error != nil {
+            return (nil, error)
         }
+
+        return (Date(timeIntervalSince1970: Double(timestamp)), nil)
     }
 
-    /*
-     Creates a date and time string from a given date
-    */
-    func locallyFormattedDisplay() -> String? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMM d yyyy h:mm a", options: 0, locale: NSLocale.current)
-        //dateFormatter.timeZone = TimeZone.current
+    var localDate: (Date?, Error?) {
+        let (utcDate, error) = self.utcDate
+        if error != nil {
+            return (nil, error)
+        }
 
-        return dateFormatter.string(from: self)
-    }
+        let timeZoneOffset = Double(TimeZone.current.secondsFromGMT(for: utcDate!))
 
-    /*
-     Adjust a date by number of days
-    */
-    func shiftDateBy(days: Int) -> Date {
-        return Calendar.current.date(byAdding: Calendar.Component.day, value: days, to: self)!
+        return (utcDate!.addingTimeInterval(timeZoneOffset), nil)
     }
 }

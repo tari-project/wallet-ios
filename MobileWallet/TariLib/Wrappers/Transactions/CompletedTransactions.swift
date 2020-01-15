@@ -45,7 +45,9 @@ enum CompletedTransactionsErrors: Error {
     case generic(_ errorCode: Int32)
 }
 
-class CompletedTransactions {
+class CompletedTransactions: TransactionsProtocol {
+    typealias Tx = CompletedTransaction
+
     private var ptr: OpaquePointer
 
     var pointer: OpaquePointer {
@@ -56,6 +58,49 @@ class CompletedTransactions {
         var errorCode: Int32 = -1
         let result = completed_transactions_get_length(ptr, UnsafeMutablePointer<Int32>(&errorCode))
         return (result, errorCode != 0 ? CompletedTransactionsErrors.generic(errorCode) : nil)
+    }
+
+    var groupedByDate: ([[CompletedTransaction]], Error?) {
+        let (ungroupedTxs, error) = self.list
+        if error != nil {
+            return ([], error)
+        }
+
+        let grouped = ungroupedTxs.groupSort { (tx) -> Date in
+            let (date, error) = tx.localDate
+            if error != nil {
+                //TOOD figure out a way to handle a missing timestamp error inside this callback
+                return Date()
+            }
+
+            return date!
+        }
+
+        return (grouped, nil)
+    }
+
+    var list: ([CompletedTransaction], Error?) {
+        let (count, countError) = self.count
+        guard countError == nil else {
+            return ([], countError)
+        }
+
+        var list: [CompletedTransaction] = []
+
+        if count > 0 {
+            for n in 0...count - 1 {
+                do {
+                    let tx = try self.at(position: n)
+                    list.append(tx)
+                } catch {
+                    return ([], error)
+                }
+            }
+        }
+
+        let sortedList = list.sorted(by: { $0.localDate.0?.compare($1.localDate.0!) == .orderedDescending })
+
+        return (sortedList, nil)
     }
 
     init(completedTransactionsPointer: OpaquePointer) {

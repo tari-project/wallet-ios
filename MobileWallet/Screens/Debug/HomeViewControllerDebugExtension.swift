@@ -47,8 +47,13 @@ extension HomeViewController {
     }
 
     private func generateTestData() {
+        guard let wallet = TariLib.shared.tariWallet else {
+            print("Missing wallet")
+            return
+        }
+
         do {
-            try TariLib.shared.tariWallet!.generateTestData()
+            try wallet.generateTestData()
         } catch {
             let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
             errorAlert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))

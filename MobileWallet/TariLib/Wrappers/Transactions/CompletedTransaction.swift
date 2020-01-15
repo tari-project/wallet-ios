@@ -52,9 +52,9 @@ enum CompletedTransactionError: Error {
     case generic(_ errorCode: Int32)
 }
 
-class CompletedTransaction {
+class CompletedTransaction: TransactionProtocol {
     private var ptr: OpaquePointer
-    private var cachedId: UInt64?
+    private var cachedContact: Contact?
 
     var pointer: OpaquePointer {
         return ptr
@@ -66,10 +66,15 @@ class CompletedTransaction {
         return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
     }
 
-    var amount: (UInt64, Error?) {
+    var microTari: (MicroTari?, Error?) {
         var errorCode: Int32 = -1
         let result = completed_transaction_get_amount(ptr, UnsafeMutablePointer<Int32>(&errorCode))
-        return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
+
+        guard errorCode == 0 else {
+            return (nil, CompletedTransactionError.generic(errorCode))
+        }
+
+        return (MicroTari(result), nil)
     }
 
     var fee: (UInt64, Error?) {
@@ -134,6 +139,50 @@ class CompletedTransaction {
                 return (.mined, nil)
             default:
                 return (.unknown, nil)
+        }
+    }
+
+    var direction: TransactionDirection {
+        //TODO remove below code when this is fetched from the ffi
+        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        var direction: TransactionDirection = .inbound
+        let (sourcePubKey, _) = self.sourcePublicKey
+
+        if let wallet = TariLib.shared.tariWallet {
+            if (wallet.isWalletPubKey(publicKey: sourcePubKey!)) {
+                //Source pub key is mine
+                direction = .outbound
+            }
+        }
+        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+        return direction
+    }
+
+    var contact: (Contact?, Error?) {
+        if cachedContact != nil {
+            return (cachedContact, nil)
+        }
+
+        guard let wallet = TariLib.shared.tariWallet else {
+            return (nil, WalletErrors.walletNotInitialized)
+        }
+
+        let (contacts, contactsError) = wallet.contacts
+        guard contactsError == nil else {
+            return (nil, contactsError)
+        }
+
+        let (pubKey, pubKeyError) = self.direction == TransactionDirection.inbound ? self.sourcePublicKey : self.destinationPublicKey
+        guard pubKeyError == nil else {
+            return (nil, pubKeyError)
+        }
+
+        do {
+            cachedContact = try contacts!.find(publicKey: pubKey!)
+            return (cachedContact, nil)
+        } catch {
+            return (nil, error)
         }
     }
 

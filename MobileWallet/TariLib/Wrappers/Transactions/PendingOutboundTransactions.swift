@@ -45,7 +45,9 @@ enum PendingOutboundTransactionsErrors: Error {
     case generic(_ errorCode: Int32)
 }
 
-class PendingOutboundTransactions {
+class PendingOutboundTransactions: TransactionsProtocol {
+    typealias Tx = PendingOutboundTransaction
+
     private var ptr: OpaquePointer
 
     var pointer: OpaquePointer {
@@ -56,6 +58,30 @@ class PendingOutboundTransactions {
         var errorCode: Int32 = -1
         let result = pending_outbound_transactions_get_length(ptr, UnsafeMutablePointer<Int32>(&errorCode))
         return (result, errorCode != 0 ? PendingOutboundTransactionsErrors.generic(errorCode) : nil)
+    }
+
+    var list: ([PendingOutboundTransaction], Error?) {
+        let (count, countError) = self.count
+        guard countError == nil else {
+            return ([], countError)
+        }
+
+        var list: [PendingOutboundTransaction] = []
+
+        if count > 0 {
+            for n in 0...count - 1 {
+                do {
+                    let tx = try self.at(position: n)
+                    list.append(tx)
+                } catch {
+                    return ([], error)
+                }
+            }
+        }
+
+        let sortedList = list.sorted(by: { $0.localDate.0?.compare($1.localDate.0!) == .orderedDescending })
+
+        return (sortedList, nil)
     }
 
     init(pendingOutboundTransactionsPointer: OpaquePointer) {

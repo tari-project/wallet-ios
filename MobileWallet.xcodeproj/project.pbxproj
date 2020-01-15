@@ -135,9 +135,9 @@
 		00262EB4236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
 		00262EB5236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
 		00262EB6236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
-		00262EB9236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
-		00262EBA236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
-		00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* Transaction.swift */; };
+		00262EB9236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* DummyTransaction.swift */; };
+		00262EBA236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* DummyTransaction.swift */; };
+		00262EBB236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB8236F35CD00A6C8A0 /* DummyTransaction.swift */; };
 		00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00325EC9239E4A1000F76918 /* FadedOverlayView.swift */; };
 		00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00325EC9239E4A1000F76918 /* FadedOverlayView.swift */; };
 		00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00325EC9239E4A1000F76918 /* FadedOverlayView.swift */; };
@@ -156,6 +156,9 @@
 		004997BB2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997BA2382F5ED000A0B7D /* WalletTestDataExtension.swift */; };
 		004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997BA2382F5ED000A0B7D /* WalletTestDataExtension.swift */; };
 		004997BD2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997BA2382F5ED000A0B7D /* WalletTestDataExtension.swift */; };
+		006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
+		006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
+		006D211F23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
 		0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0070A7BB2379847100C25E1C /* LocalAuthentication.framework */; };
 		00746197239901FA00F00966 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00746196239901FA00F00966 /* SendViewController.swift */; };
 		00746198239901FA00F00966 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00746196239901FA00F00966 /* SendViewController.swift */; };
@@ -163,13 +166,16 @@
 		0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
+		00947CC223CF090D00526DD5 /* TransactionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC123CF090D00526DD5 /* TransactionProtocol.swift */; };
+		00947CC323CF090D00526DD5 /* TransactionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC123CF090D00526DD5 /* TransactionProtocol.swift */; };
+		00947CC423CF090D00526DD5 /* TransactionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC123CF090D00526DD5 /* TransactionProtocol.swift */; };
+		00947CC723D1A35200526DD5 /* TransactionsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC623D1A35200526DD5 /* TransactionsProtocol.swift */; };
+		00947CC823D1A35200526DD5 /* TransactionsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC623D1A35200526DD5 /* TransactionsProtocol.swift */; };
+		00947CC923D1A35200526DD5 /* TransactionsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC623D1A35200526DD5 /* TransactionsProtocol.swift */; };
 		009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8A8237AA13500C02E44 /* Biometrics.m */; };
 		009BF8AC237ABB4700C02E44 /* TariLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8AB237ABB4700C02E44 /* TariLib.swift */; };
 		009BF8AD237ABB4700C02E44 /* TariLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8AB237ABB4700C02E44 /* TariLib.swift */; };
 		009BF8AE237ABB4700C02E44 /* TariLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8AB237ABB4700C02E44 /* TariLib.swift */; };
-		00A677882372C8E6001A853E /* TariValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A677872372C8E6001A853E /* TariValue.swift */; };
-		00A677892372C8E6001A853E /* TariValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A677872372C8E6001A853E /* TariValue.swift */; };
-		00A6778A2372C8E6001A853E /* TariValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A677872372C8E6001A853E /* TariValue.swift */; };
 		00A677982373DA58001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A677992373DA59001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A6779A2373DA61001A853E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A12366E08B007B332D /* Main.storyboard */; };
@@ -312,21 +318,23 @@
 		00230B0823770CEA00F23E34 /* CALayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CALayer.swift; sourceTree = "<group>"; };
 		00262EAE236F015000A6C8A0 /* UILableWithPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILableWithPadding.swift; sourceTree = "<group>"; };
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
-		00262EB8236F35CD00A6C8A0 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		00262EB8236F35CD00A6C8A0 /* DummyTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyTransaction.swift; sourceTree = "<group>"; };
 		00325EC9239E4A1000F76918 /* FadedOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadedOverlayView.swift; sourceTree = "<group>"; };
 		004997AA2382E893000A0B7D /* PendingOutboundTransactions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOutboundTransactions.swift; sourceTree = "<group>"; };
 		004997AE2382E938000A0B7D /* PendingOutboundTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOutboundTransaction.swift; sourceTree = "<group>"; };
 		004997B22382ED68000A0B7D /* PendingInboundTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingInboundTransaction.swift; sourceTree = "<group>"; };
 		004997B62382ED79000A0B7D /* PendingInboundTransactions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingInboundTransactions.swift; sourceTree = "<group>"; };
 		004997BA2382F5ED000A0B7D /* WalletTestDataExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTestDataExtension.swift; sourceTree = "<group>"; };
+		006D211C23CEDF16007D1C10 /* MicroTari.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicroTari.swift; sourceTree = "<group>"; };
 		0070A7BB2379847100C25E1C /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		00746196239901FA00F00966 /* SendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewController.swift; sourceTree = "<group>"; };
 		0074619A239A57B000F00966 /* UIBarButtonItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItem.swift; sourceTree = "<group>"; };
+		00947CC123CF090D00526DD5 /* TransactionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionProtocol.swift; sourceTree = "<group>"; };
+		00947CC623D1A35200526DD5 /* TransactionsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsProtocol.swift; sourceTree = "<group>"; };
 		009BF8A6237AA13400C02E44 /* MobileWalletUITests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletUITests-Bridging-Header.h"; sourceTree = "<group>"; };
 		009BF8A8237AA13500C02E44 /* Biometrics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Biometrics.m; sourceTree = "<group>"; };
 		009BF8A9237AA13500C02E44 /* Biometrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Biometrics.h; sourceTree = "<group>"; };
 		009BF8AB237ABB4700C02E44 /* TariLib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLib.swift; sourceTree = "<group>"; };
-		00A677872372C8E6001A853E /* TariValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariValue.swift; sourceTree = "<group>"; };
 		00A6779D23743696001A853E /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		00A9942E23952F76007D9990 /* SendButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendButton.swift; sourceTree = "<group>"; };
 		00A994322396434B007D9990 /* QRButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRButton.swift; sourceTree = "<group>"; };
@@ -483,6 +491,7 @@
 		001F6CEF2381A43800FA7002 /* Transactions */ = {
 			isa = PBXGroup;
 			children = (
+				00947CC523D1A33900526DD5 /* Protocols */,
 				001F6CEB2381A39300FA7002 /* CompletedTransaction.swift */,
 				001F6CE72381A22E00FA7002 /* CompletedTransactions.swift */,
 				004997AE2382E938000A0B7D /* PendingOutboundTransaction.swift */,
@@ -497,7 +506,6 @@
 			isa = PBXGroup;
 			children = (
 				00262EAE236F015000A6C8A0 /* UILableWithPadding.swift */,
-				00230AF92376C6DD00F23E34 /* Sequence.swift */,
 				00230B0823770CEA00F23E34 /* CALayer.swift */,
 				00BBD808237D80C800EBF5E6 /* Date.swift */,
 				0074619A239A57B000F00966 /* UIBarButtonItem.swift */,
@@ -510,7 +518,6 @@
 			children = (
 				00262EAD236F013500A6C8A0 /* Extensions */,
 				00262EB3236F024400A6C8A0 /* Theme.swift */,
-				00A677872372C8E6001A853E /* TariValue.swift */,
 				00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */,
 			);
 			path = Common;
@@ -519,9 +526,19 @@
 		00262EB7236F35B200A6C8A0 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				00262EB8236F35CD00A6C8A0 /* Transaction.swift */,
+				00262EB8236F35CD00A6C8A0 /* DummyTransaction.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		006D211B23CEDEEE007D1C10 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				006D211C23CEDF16007D1C10 /* MicroTari.swift */,
+				00230AF92376C6DD00F23E34 /* Sequence.swift */,
+			);
+			name = Utils;
+			path = Wrappers/Utils;
 			sourceTree = "<group>";
 		};
 		00746195239901D200F00966 /* Send */ = {
@@ -530,6 +547,15 @@
 				00746196239901FA00F00966 /* SendViewController.swift */,
 			);
 			path = Send;
+			sourceTree = "<group>";
+		};
+		00947CC523D1A33900526DD5 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				00947CC123CF090D00526DD5 /* TransactionProtocol.swift */,
+				00947CC623D1A35200526DD5 /* TransactionsProtocol.swift */,
+			);
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 		00A6779C23743674001A853E /* Transaction */ = {
@@ -723,6 +749,7 @@
 				4C2C95C223796184005058AB /* libzmq.a */,
 				4C2C95AF23795919005058AB /* libwallet_ffi.a */,
 				009BF8AB237ABB4700C02E44 /* TariLib.swift */,
+				006D211B23CEDEEE007D1C10 /* Utils */,
 				00BBD80C237DA04300EBF5E6 /* Wrappers */,
 			);
 			path = TariLib;
@@ -1109,7 +1136,7 @@
 				001F6CE82381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				001F6CE42380253B00FA7002 /* Contact.swift in Sources */,
 				00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
-				00262EB9236F35CD00A6C8A0 /* Transaction.swift in Sources */,
+				00262EB9236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
 				00A6779E23743696001A853E /* TransactionViewController.swift in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
@@ -1120,12 +1147,12 @@
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00746197239901FA00F00966 /* SendViewController.swift in Sources */,
+				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				001F6CE02380198D00FA7002 /* Contacts.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
-				00A677882372C8E6001A853E /* TariValue.swift in Sources */,
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
 				00230AFA2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				00A9942F23952F77007D9990 /* SendButton.swift in Sources */,
@@ -1136,10 +1163,12 @@
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
+				00947CC723D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				00C185B9238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
 				004997B72382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				00E4922923683E54007B332D /* HomeViewController.swift in Sources */,
+				00947CC223CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,
 				00A994332396434B007D9990 /* QRButton.swift in Sources */,
 				00230B022376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
@@ -1160,16 +1189,17 @@
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
+				006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				00262EB5236F024400A6C8A0 /* Theme.swift in Sources */,
 				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00262EB0236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
 				00E4922A23683E54007B332D /* HomeViewController.swift in Sources */,
 				0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
-				00A677892372C8E6001A853E /* TariValue.swift in Sources */,
 				00230AFB2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
+				00947CC323CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
 				001F6CDD238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00BBD80F237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
@@ -1184,13 +1214,14 @@
 				009BF8AD237ABB4700C02E44 /* TariLib.swift in Sources */,
 				00BBD81B237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				00BBD817237EA67600EBF5E6 /* Wallet.swift in Sources */,
-				00262EBA236F35CD00A6C8A0 /* Transaction.swift in Sources */,
+				00262EBA236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
 				00BBD80A237D80C800EBF5E6 /* Date.swift in Sources */,
 				004997B42382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
 				001256302371D81500A9C067 /* SplashViewController.swift in Sources */,
 				001F6CE92381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				00BBD81E237ECDAA00EBF5E6 /* TariLibWrapperTests.swift in Sources */,
 				00230B032376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
+				00947CC823D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				00A9943023952F77007D9990 /* SendButton.swift in Sources */,
 				00BBD813237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				001F6CE12380198D00FA7002 /* Contacts.swift in Sources */,
@@ -1212,11 +1243,11 @@
 				00A994352396434B007D9990 /* QRButton.swift in Sources */,
 				00262EB6236F024400A6C8A0 /* Theme.swift in Sources */,
 				00BBD805237D746B00EBF5E6 /* OnboardingUITests.swift in Sources */,
+				00947CC923D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
 				00A9943123952F77007D9990 /* SendButton.swift in Sources */,
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,
-				00A6778A2372C8E6001A853E /* TariValue.swift in Sources */,
 				00746199239901FA00F00966 /* SendViewController.swift in Sources */,
 				004997B12382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				00230AFC2376C6DE00F23E34 /* Sequence.swift in Sources */,
@@ -1235,12 +1266,14 @@
 				001F6CE62380253B00FA7002 /* Contact.swift in Sources */,
 				009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */,
 				001F6CDE238011CA00FA7002 /* PublicKey.swift in Sources */,
-				00262EBB236F35CD00A6C8A0 /* Transaction.swift in Sources */,
+				00947CC423CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
+				00262EBB236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
 				00BBD807237D755600EBF5E6 /* HelperFunctions.swift in Sources */,
 				00BBD80B237D80C800EBF5E6 /* Date.swift in Sources */,
 				001F6CEA2381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				001F6CEE2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
+				006D211F23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				001256312371D81500A9C067 /* SplashViewController.swift in Sources */,
 				004997B52382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
 				00230B042376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
@@ -1405,7 +1438,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 8974PBB98U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MobileWallet/Info.plist;
@@ -1432,7 +1465,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = 8974PBB98U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MobileWallet/Info.plist;

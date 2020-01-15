@@ -62,7 +62,7 @@ class TransactionViewController: UIViewController {
 
     @IBOutlet weak var transactionIdLabel: UILabel!
 
-    var transaction: Transaction?
+    var transaction: DummyTransaction?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -150,7 +150,8 @@ class TransactionViewController: UIViewController {
         if let tx = transaction {
             var title: String?
 
-            if tx.value.sign == .positive {
+            //TODO
+            if true {
                 title = NSLocalizedString("Payment Received", comment: "Navigation bar title on transaction view screen")
             } else {
                 title = NSLocalizedString("Payment Sent", comment: "Navigation bar title on transaction view screen")
@@ -158,13 +159,13 @@ class TransactionViewController: UIViewController {
 
             navigationItem.title = title
 
-            valueLabel.text = tx.value.displayStringWithNegativeOperator
+            valueLabel.text = tx.value.formattedWithOperator
             fromUserNameLabel.text = tx.userName
             fromUserIdLabel.text = tx.userId
             noteValueLabel.text = tx.description
             transactionIcon.image = tx.icon
             dateValueLabel.text = tx.date.locallyFormattedDisplay()
-            transactionFeeValueLabel.text = tx.fee.displayStringWithNegativeOperator
+            transactionFeeValueLabel.text = tx.fee.formattedWithOperator
 
             let txLabelText = NSLocalizedString("Transaction ID:", comment: "Transaction view screen")
             transactionIdLabel.text = "\(txLabelText) \(tx.id)"

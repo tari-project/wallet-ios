@@ -52,21 +52,6 @@ class MobileWalletTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testPositiveMicroTariConversions() {
-        let tari = TariValue(microTari: 123000, sign: .positive)
-        XCTAssert(tari.floatValue == 0.123)
-        print(tari.displayStringWithOperator)
-        //Check 2 most common local formats
-        XCTAssert(tari.displayStringWithOperator == "+ 0.12" || tari.displayStringWithOperator == "+ 0,12")
-    }
-    
-    func testNegativeMicroTariConversions() {
-        let tari = TariValue(microTari: 234567, sign: .negative)
-        XCTAssert(tari.floatValue == -0.234567)
-        //Check 2 most common local formats
-        XCTAssert(tari.displayStringWithOperator == "- 0.23" || tari.displayStringWithOperator == "- 0,23")
-    }
-    
     func testThemeAssets() {
         let colors = Theme.shared.colors
         let fonts = Theme.shared.fonts
@@ -115,7 +100,7 @@ class MobileWalletTests: XCTestCase {
         */
         let threeDaysAgo = Calendar.current.date(byAdding: Calendar.Component.day, value: -3, to: Date())!
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, YYYY", options: 0, locale: NSLocale.current)
+        dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, yyyy", options: 0, locale: NSLocale.current)
         dateFormatter.timeZone = TimeZone.current
         let expectedResult = dateFormatter.string(from: threeDaysAgo)
         let threeDaysAgoValue = threeDaysAgo.relativeDayFromToday()

@@ -101,7 +101,12 @@ class TariLib {
         let privateKey = PrivateKey()
 
         //TODO use secure enclave
-        UserDefaults.standard.set(privateKey.hex, forKey: PRIVATE_KEY_STORAGE_KEY)
+        let (hex, hexError) = privateKey.hex
+        if hexError != nil {
+            throw hexError!
+        }
+
+        UserDefaults.standard.set(hex, forKey: PRIVATE_KEY_STORAGE_KEY)
 
         let commsConfig = try CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
 
@@ -110,9 +115,10 @@ class TariLib {
 
     func startExistingWallet() throws {
         if let privateKeyHex = UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) {
-            //let privateKey = try! PrivateKey(hex: privateKeyHex)
-            //let commsConfig = try! CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
-            //tariWallet = try! Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
+            print("databasePath: ", databasePath)
+            let privateKey = try PrivateKey(hex: privateKeyHex)
+            let commsConfig = try CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
+            tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
         } else {
             throw TariLibErrors.privateKeyNotFound
         }

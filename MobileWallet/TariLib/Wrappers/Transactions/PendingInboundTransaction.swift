@@ -44,8 +44,14 @@ enum PendingInboundTransactionError: Error {
     case generic(_ errorCode: Int32)
 }
 
-class PendingInboundTransaction {
+class PendingInboundTransaction: TransactionProtocol {
+    var cachedContact: Contact?
+
+    var destinationPublicKey: (PublicKey?, Error?)
+
     private var ptr: OpaquePointer
+
+    var direction: TransactionDirection = .inbound
 
     var pointer: OpaquePointer {
         return ptr
@@ -57,10 +63,15 @@ class PendingInboundTransaction {
         return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
     }
 
-    var amount: (UInt64, Error?) {
+    var microTari: (MicroTari?, Error?) {
         var errorCode: Int32 = -1
         let result = pending_inbound_transaction_get_amount(ptr, UnsafeMutablePointer<Int32>(&errorCode))
-        return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
+
+        guard errorCode == 0 else {
+            return (nil, CompletedTransactionError.generic(errorCode))
+        }
+
+        return (MicroTari(result), nil)
     }
 
     var message: (String, Error?) {
@@ -89,6 +100,33 @@ class PendingInboundTransaction {
         }
 
         return (PublicKey(pointer: resultPointer!), nil)
+    }
+
+    var contact: (Contact?, Error?) {
+        if cachedContact != nil {
+            return (cachedContact, nil)
+        }
+
+        guard let wallet = TariLib.shared.tariWallet else {
+            return (nil, WalletErrors.walletNotInitialized)
+        }
+
+        let (contacts, contactsError) = wallet.contacts
+        guard contactsError == nil else {
+            return (nil, contactsError)
+        }
+
+        let (pubKey, pubKeyError) = sourcePublicKey
+        guard pubKeyError == nil else {
+            return (nil, pubKeyError)
+        }
+
+        do {
+            cachedContact = try contacts!.find(publicKey: pubKey!)
+            return (cachedContact, nil)
+        } catch {
+            return (nil, error)
+        }
     }
 
     init(pendingInboundTransactionPointer: OpaquePointer) {

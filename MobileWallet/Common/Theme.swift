@@ -89,7 +89,7 @@ struct Colors: Loopable {
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
     let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
-    let transactionDateValueLabel = UIColor(named: "SmallSubheading")
+    let transactionSmallSubheadingLabel = UIColor(named: "SmallSubheading")
 
     //Navigation bar
     let navigationBarTint = UIColor(named: "Heading")
@@ -101,6 +101,7 @@ struct Colors: Loopable {
     let transactionScreenDivider = UIColor(named: "DividerColor")
     let transactionScreenSubheadingLabel = UIColor(named: "SmallSubheading")
     let transactionScreenTextLabel = UIColor(named: "SmallText")
+    let transactionScreenEmptyTitleLabel = UIColor(named: "Heading")
 
     //Shadows
     let actionButtonShadow = UIColor(named: "ActionButtonShadow")
@@ -126,6 +127,8 @@ struct Fonts: Loopable {
     let transactionScreenSubheadingLabel = UIFont(name: "AvenirLTStd-Medium", size: 13.0)
     let transactionScreenTextLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
     let transactionScreenTxIDLabel = UIFont(name: "AvenirLTStd-Roman", size: 13.0)
+    let transactionListEmptyTitleLabel = UIFont(name: "AvenirLTStd-Black", size: 33.0)
+    let transactionListEmptyMessageLabel = UIFont(name: "AvenirLTStd-Medium", size: 13.0)
 
     //Navigation bar
     let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
@@ -148,6 +151,9 @@ struct Images: Loopable {
 
     //Background images
     let homeBackgroundImage = UIImage(named: "HomePattern")
+
+    //Empty state
+    let emptyStateTransactionList = UIImage(named: "EmptyStateTransactions")
 }
 
 struct Theme {

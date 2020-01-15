@@ -46,9 +46,11 @@ extension Wallet {
         let filePathPointer = UnsafeMutablePointer<Int8>(mutating: (dbPath as NSString).utf8String)!
 
         let didGenerateData = wallet_test_generate_data(self.pointer, filePathPointer, UnsafeMutablePointer<Int32>(&errorCode))
+
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
+
         if !didGenerateData {
             throw WalletErrors.generateTestData
         }

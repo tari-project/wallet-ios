@@ -1,8 +1,8 @@
-//  TariValue.swift
+//  TransactionsProtocol.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/06
+	Created by Jason van den Berg on 2020/01/17
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,46 +40,14 @@
 
 import Foundation
 
-enum ValueSign {
-    case positive
-    case negative
+protocol TransactionsProtocol {
+    associatedtype Tx
+
+    var pointer: OpaquePointer { get }
+    var count: (UInt32, Error?) { get }
+    var list: ([Tx], Error?) { get }
 }
 
-//TODO tests when finalized
+extension TransactionsProtocol {
 
-struct TariValue {
-    private let CONVERSION = 1000000
-
-    let microTari: UInt64
-    let sign: ValueSign
-
-    var floatValue: Float {
-        //TODO re-evaluate this
-        var signedFloatValue = Float(self.microTari) / Float(CONVERSION)
-        if sign == .negative {
-            signedFloatValue = signedFloatValue * -1
-        }
-        return signedFloatValue
-    }
-
-    var displayStringWithOperator: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        formatter.positivePrefix = "+ "
-        formatter.negativePrefix = "- "
-
-        return formatter.string(from: NSNumber(value: self.floatValue))!
-    }
-
-    var displayStringWithNegativeOperator: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = 2
-        formatter.maximumFractionDigits = 2
-        formatter.negativePrefix = "-"
-
-        return formatter.string(from: NSNumber(value: self.floatValue))!
-    }
 }
