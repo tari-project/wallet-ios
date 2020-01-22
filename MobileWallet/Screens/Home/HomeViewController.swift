@@ -60,7 +60,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     private let transactionTableVC = TransactionsTableViewController(style: .grouped)
     private var fpc: FloatingPanelController!
     private var grabberHandle: UIView!
-    private var selectedTransaction: Transaction?
+    private var selectedTransaction: Any?
     private var maxSendButtonBottomConstraint: CGFloat = 50
     private var minSendButtonBottomConstraint: CGFloat = -20
     private var defaultBottomFadeViewHeight: CGFloat = 0
@@ -69,6 +69,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     private let PANEL_BORDER_CORNER_RADIUS: CGFloat = 36.0
     private let GRABBER_WIDTH: Double = 55.0
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+
+    private var tempRefreshTimer = Timer()
 
     private var isTransactionViewFullScreen: Bool = false {
         didSet {
@@ -88,6 +90,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         setup()
         super.viewDidLoad()
+
+        self.refreshBalance()
+        tempRefreshTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.refreshBalance), userInfo: nil, repeats: true)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -129,23 +134,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         balanceValueLabel.adjustsFontSizeToFitWidth = true
 
         //Balance has multiple font sizes
-        let balanceValueString = dummyBalance.displayStringWithNegativeOperator
-        let balanceLabelAttributedText = NSMutableAttributedString(
-            string: balanceValueString,
-            attributes: [
-                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel!
-            ]
-        )
-
-        balanceLabelAttributedText.addAttributes(
-            [
-                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals!,
-                NSAttributedString.Key.baselineOffset: balanceValueLabel.bounds.size.height - 4
-            ],
-            range: NSRange(location: balanceValueString.count - 3, length: 3) //Always last 3 chars as the decimal places
-        )
-
-        balanceValueLabel.attributedText = balanceLabelAttributedText
         balanceValueLabel.minimumScaleFactor = 0.3
         balanceValueLabel.lineBreakMode = .byTruncatingTail
         balanceValueLabel.numberOfLines = 1
@@ -166,6 +154,40 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         )
 
         bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
+    }
+
+    @objc private func refreshBalance() {
+        guard let wallet = TariLib.shared.tariWallet else {
+            //TOOD show error message to user possibly
+            print("Wallet not initialized")
+            return
+        }
+
+        let (totalMicroTari, error) = wallet.totalMicroTari
+        guard error == nil else {
+            //TODO handle error
+            print("Failed to load transactions: ", error!.localizedDescription)
+            return
+        }
+
+        let balanceValueString = totalMicroTari!.formatted
+        let balanceLabelAttributedText = NSMutableAttributedString(
+            string: balanceValueString,
+            attributes: [
+                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel!
+            ]
+        )
+
+        let lastNumberOfDigitsToFormat = MicroTari.ROUNDED_FRACTION_DIGITS + 1
+        balanceLabelAttributedText.addAttributes(
+            [
+                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals!
+                //NSAttributedString.Key.baselineOffset: balanceValueLabel.bounds.size.height - 4
+            ],
+            range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat) //Use fraction digits + 1 for "."
+        )
+
+        balanceValueLabel.attributedText = balanceLabelAttributedText
     }
 
     private func setupNavigatorBar() {
@@ -314,9 +336,10 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     // MARK: - TransactionTableDelegateMethods
 
-    func onTransactionSelect(_ transaction: Transaction) {
+    func onTransactionSelect(_ transaction: Any) {
         selectedTransaction = transaction
-        self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
+        //TODO on next VC check the type https://stackoverflow.com/questions/24091882/checking-if-an-object-is-a-given-type-in-swift
+        //self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
     }
 
     func onScrollDirectionChange(_ direction: ScrollDirection) {
@@ -331,15 +354,16 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     // MARK: - Navigation
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        //TODO move segue identifiers to enum
-        if let identifier = segue.identifier {
-            if identifier == "HomeToTransactionDetails" {
-                let transactionVC = segue.destination as! TransactionViewController
-                transactionVC.transaction = selectedTransaction
-            }
-        }
-    }
+    //TODO add back when working on next screen
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        //TODO move segue identifiers to enum
+//        if let identifier = segue.identifier {
+//            if identifier == "HomeToTransactionDetails" {
+//                let transactionVC = segue.destination as! TransactionViewController
+//                transactionVC.transaction = selectedTransaction
+//            }
+//        }
+//    }
 
     // MARK: - Floating panel setup delegate methods
 

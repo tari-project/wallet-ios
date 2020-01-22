@@ -49,7 +49,7 @@ extension TransactionsTableViewController {
         let sectionHeaderLabel = UILabel()
 
         sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
-        sectionHeaderLabel.textColor = Theme.shared.colors.transactionDateValueLabel
+        sectionHeaderLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
         sectionHeaderLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
         sectionHeaderLabel.backgroundColor = Theme.shared.colors.transactionTableBackground?.withAlphaComponent(0.8)
         sectionHeaderLabel.textAlignment = .center
@@ -70,32 +70,111 @@ extension TransactionsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let txsDate = transactions[section].first?.date else {
-            return nil
+        if section == 0 && showsPendingGroup {
+            return NSLocalizedString("Pending Transactions", comment: "Home view table of transactions")
+        } else {
+            let index = showsPendingGroup ? section - 1 : section
+
+            guard let tx = groupedCompletedTransactions[index].first else {
+                return ""
+            }
+
+            let (date, _) = tx.localDate
+            if let displayDate = date {
+                return displayDate.relativeDayFromToday()
+            }
         }
 
-        return txsDate.relativeDayFromToday()
+        return ""
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return transactions.count
+        var count = groupedCompletedTransactions.count
+
+        if showsPendingGroup {
+            count += 1
+        }
+
+        if count == 0 {
+            showsEmptyState = true
+        } else {
+            showsEmptyState = false
+        }
+
+        return count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return transactions[section].count
+        //If it's the first group and we're showing the pending group
+        if section == 0 && showsPendingGroup {
+            return pendingInboundTransactions.count + pendingOutboundTransactions.count
+        }
+
+        let index = showsPendingGroup ? section - 1 : section
+
+        return groupedCompletedTransactions[index].count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath) as! TransactionTableTableViewCell
 
-        let transaction = transactions[indexPath.section][indexPath.row]
-
-        cell.icon.image = transaction.icon
-        cell.userNameLabel.text = transaction.userName
-        cell.descriptionLabel.text = transaction.description
-
-        cell.setValueLabel(tariValue: transaction.value)
+        //If it's the first group and we're showing the pending group
+        if indexPath.section == 0 && showsPendingGroup {
+            if indexPath.row < pendingInboundTransactions.count {
+                let inboundTransaction = pendingInboundTransactions[indexPath.row]
+                cell.setDetails(pendingInboundTransaction: inboundTransaction)
+            } else {
+                let outboundTransaction = pendingOutboundTransactions[indexPath.row - pendingInboundTransactions.count]
+                cell.setDetails(pendingOutboundTransaction: outboundTransaction)
+            }
+        } else {
+            //Handle as a completed transaction
+            let index = showsPendingGroup ? indexPath.section - 1 : indexPath.section
+            let transaction = groupedCompletedTransactions[index][indexPath.row]
+            cell.setDetails(completedTransaction: transaction)
+        }
 
         return cell
+    }
+
+    func setEmptyView() {
+        let emptyView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+
+        let imageView = UIImageView(image: Theme.shared.images.emptyStateTransactionList)
+        imageView.frame = CGRect(x: 0, y: 0, width: 275, height: 192)
+        imageView.contentMode = .scaleAspectFit
+        imageView.center = CGPoint(x: tableView.center.x, y: tableView.center.y - 200)
+        emptyView.addSubview(imageView)
+
+        let titleLabel = UILabel()
+        let messageLabel = UILabel()
+        messageLabel.numberOfLines = 0
+        messageLabel.textAlignment = .center
+        titleLabel.text = NSLocalizedString("Let's get started", comment: "Home view table when there are no transactions")
+        messageLabel.text = NSLocalizedString("Shake to show debug menu", comment: "Home view table when there are no transactions")
+
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.textColor = Theme.shared.colors.transactionScreenEmptyTitleLabel
+        titleLabel.font = Theme.shared.fonts.transactionListEmptyTitleLabel
+        emptyView.addSubview(titleLabel)
+
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        messageLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
+        messageLabel.font = Theme.shared.fonts.transactionListEmptyMessageLabel
+        emptyView.addSubview(messageLabel)
+
+        titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 40).isActive = true
+        titleLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
+        titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: titleLabel.font.pointSize * 1.2).isActive = true
+
+        messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20).isActive = true
+        messageLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
+        messageLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: messageLabel.font.pointSize * 1.2).isActive = true
+
+        tableView.backgroundView = emptyView
+    }
+
+    func removeEmptyView() {
+        tableView.backgroundView = nil
     }
 }

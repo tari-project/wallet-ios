@@ -41,17 +41,37 @@
 import UIKit
 
 protocol TransactionsTableViewDelegate {
-    func onTransactionSelect(_: Transaction)
+    func onTransactionSelect(_: Any)
     func onScrollDirectionChange(_: ScrollDirection)
 }
 
 class TransactionsTableViewController: UITableViewController {
     let CELL_IDENTIFIER = "TransactionTableTableViewCell"
-    let transactions = dummyTransactions
     var actionDelegate: TransactionsTableViewDelegate?
     var refreshTransactionControl = UIRefreshControl()
     private var lastContentOffset: CGFloat = 0
     private var lastScrollDirection: ScrollDirection = .up
+
+    var groupedCompletedTransactions: [[CompletedTransaction]] = []
+    var pendingInboundTransactions: [PendingInboundTransaction] = []
+    var pendingOutboundTransactions: [PendingOutboundTransaction] = []
+
+    var showsPendingGroup: Bool {
+        return pendingInboundTransactions.count > 0 || pendingOutboundTransactions.count > 0
+    }
+
+    var showsEmptyState: Bool = false {
+        willSet {
+            //Stop it from getting re added each time unnecessarily
+            if newValue && !showsEmptyState {
+                setEmptyView()
+            } else if !newValue {
+                removeEmptyView()
+            }
+        }
+    }
+
+    private var tempRefreshTimer = Timer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,6 +80,9 @@ class TransactionsTableViewController: UITableViewController {
         refreshTransactionControl.attributedTitle = NSAttributedString(string: "Pull to refresh") //TODO local
         refreshTransactionControl.addTarget(self, action: #selector(refreshTransactions(_:)), for: .valueChanged)
         //refreshControl = refreshTransactionControl
+
+        self.refreshTable()
+        tempRefreshTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.refreshTable), userInfo: nil, repeats: true)
     }
 
     private func viewSetup() {
@@ -76,10 +99,63 @@ class TransactionsTableViewController: UITableViewController {
         })
     }
 
+    @objc private func refreshTable() {
+        guard let wallet = TariLib.shared.tariWallet else {
+            //TODO show error message alert (coming soon)
+            print("Wallet does not exist")
+            return
+        }
+
+        //All completed txs
+        let (completedTransactions, completedTransactionsError) = wallet.completedTransactions
+        guard completedTransactionsError == nil else {
+            print("Failed to load transactions: ", completedTransactionsError!.localizedDescription)
+            return
+        }
+
+        let (groupedTransactions, groupedTransactionsError) = completedTransactions!.groupedByDate
+        guard groupedTransactionsError == nil else {
+            print("Failed to load grouped transactions: ", groupedTransactionsError!.localizedDescription)
+            return
+        }
+
+        //All pending inbound
+        let (pendingInboundTxs, pendingInboundTxsError) = wallet.pendingInboundTransactions
+        guard pendingInboundTxsError == nil else {
+            print("Failed to load pending inbound transactions: ", pendingInboundTxsError!.localizedDescription)
+            return
+        }
+
+        let (pendingInboundTxsList, pendingInboundTxsListError) = pendingInboundTxs!.list
+        guard pendingInboundTxsListError == nil else {
+            print("Failed to load pending inbound transactions list: ", pendingInboundTxsListError!.localizedDescription)
+            return
+        }
+
+        //All pending outbound
+        let (pendingOutboundTxs, pendingOutboundTxsError) = wallet.pendingOutboundTransactions
+        guard pendingOutboundTxsError == nil else {
+            print("Failed to load pending outbound transactions: ", pendingOutboundTxsError!.localizedDescription)
+            return
+        }
+
+        let (pendingOutboundTxsList, pendingOutboundTxsListError) = pendingOutboundTxs!.list
+        guard pendingOutboundTxsListError == nil else {
+            print("Failed to load pending outbound transactions list: ", pendingOutboundTxsListError!.localizedDescription)
+            return
+        }
+
+        groupedCompletedTransactions = groupedTransactions
+        pendingInboundTransactions = pendingInboundTxsList
+        pendingOutboundTransactions = pendingOutboundTxsList
+
+        tableView.reloadData()
+    }
+
     //Transaction gets tapped
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        let transaction = transactions[indexPath.section][indexPath.row]
-        actionDelegate?.onTransactionSelect(transaction)
+//        let transaction = groupedCompletedTransactions[indexPath.section][indexPath.row]
+//        actionDelegate?.onTransactionSelect(transaction)
 
         return nil
     }
@@ -100,7 +176,7 @@ class TransactionsTableViewController: UITableViewController {
     }
 
     func scrollToTop() {
-        if transactions.count < 1 {
+        if groupedCompletedTransactions.count < 1 {
             return
         }
 

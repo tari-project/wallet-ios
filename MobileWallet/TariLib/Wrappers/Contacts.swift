@@ -75,6 +75,38 @@ class Contacts {
         return Contact(contactPointer: contactPointer!)
     }
 
+    //TODO this might be more better to be searched by in the lib instead of iterating though them here
+    func find(publicKey: PublicKey) throws -> Contact {
+        let (searchHex, seachHexError) = publicKey.hex
+        guard seachHexError == nil else {
+            throw seachHexError!
+        }
+
+        let (count, countError) = self.count
+        guard countError == nil else {
+            throw countError!
+        }
+
+        for n in 0...count - 1 {
+            let contact = try self.at(position: n)
+            let (contactPubKey, contactPubKeyError) = contact.publicKey
+            guard contactPubKeyError == nil else {
+                throw contactPubKeyError!
+            }
+
+            let (contactHex, contactHexError) = contactPubKey!.hex
+            guard contactHexError == nil else {
+                throw contactHexError!
+            }
+
+            if searchHex == contactHex {
+                return contact
+            }
+        }
+
+        throw ContactsError.contactNotFound
+    }
+
     deinit {
         contacts_destroy(ptr)
     }

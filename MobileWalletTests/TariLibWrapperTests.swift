@@ -44,20 +44,18 @@ class TariLibWrapperTests: XCTestCase {
     //Use a random DB path for each test
     private var dbName = "test_db"
         
-    private var storagePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("test_\(UUID().uuidString)").path
-    
-    var databasePath: String {
-        get {
-            return "\(storagePath)/\(dbName)"
-        }
+    private var newTestStoragePath: String {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("test_\(UUID().uuidString)").path
     }
     
-    var loggingFilePath: String {
-       get {
-            return "\(storagePath)/log.txt"
-       }
+    private func databaseTestPath(_ storagePath: String) -> String {
+        return "\(storagePath)/\(dbName)"
     }
     
+    private func loggingTestPath(_ storagePath: String) -> String {
+        return "\(storagePath)/log.txt"
+    }
+
     override func setUp() {
     }
 
@@ -114,7 +112,14 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     func testWallet() {
+        //MARK: Create new wallet
+        var w: Wallet?
+        
         let fileManager = FileManager.default
+        let storagePath = newTestStoragePath
+        let databasePath = databaseTestPath(storagePath)
+        let loggingFilePath = loggingTestPath(storagePath)
+        
         do {
             try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
             try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
@@ -123,9 +128,6 @@ class TariLibWrapperTests: XCTestCase {
         }
         
         let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
-        
-        //MARK: Create new wallet
-        var wallet: Wallet? = nil
         do {
             let commsConfig = try CommsConfig(
                 privateKey: PrivateKey(hex: privateKeyHex),
@@ -135,14 +137,22 @@ class TariLibWrapperTests: XCTestCase {
                 listenerAddress: "/ip4/0.0.0.0/tcp/80"
             )
             
-            wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: loggingFilePath)
+            print("LOGGING: ", loggingFilePath)
+            
+            w = try Wallet(commsConfig: commsConfig, loggingFilePath: loggingFilePath)
         } catch {
             XCTFail("Unable to create wallet \(error.localizedDescription)")
+            return
+        }
+        
+        guard let wallet = w else {
+            XCTFail("Wallet not initialized")
+            return
         }
         
         let testWalletPublicKey = "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40"
         
-        let (walletPublicKey, pubKeyError) = wallet!.publicKey
+        let (walletPublicKey, pubKeyError) = wallet.publicKey
         if pubKeyError != nil {
             XCTFail(pubKeyError!.localizedDescription)
         }
@@ -156,20 +166,20 @@ class TariLibWrapperTests: XCTestCase {
         
         //MARK: Test data
         do {
-            try wallet!.generateTestData()
+            try wallet.generateTestData()
         } catch {
             XCTFail(error.localizedDescription)
         }
         
         //MARK: Remove Alice contact
-        let (contacts, contactsError) = wallet!.contacts
+        let (contacts, contactsError) = wallet.contacts
         if contactsError != nil {
             XCTFail(contactsError!.localizedDescription)
         }
         
         do {
             let aliceContact = try contacts!.at(position: 0)
-            try wallet!.removeContact(aliceContact)
+            try wallet.removeContact(aliceContact)
         }  catch {
             XCTFail(error.localizedDescription)
         }
@@ -177,14 +187,14 @@ class TariLibWrapperTests: XCTestCase {
         
         //MARK: Add Alice contact
         do {
-            try wallet!.addContact(alias: "BillyBob", publicKeyHex: "a03d9be195e40466e255bd64eb612ad41ae0010519b6cbfc7698e5d0916a1a7c")
+            try wallet.addContact(alias: "BillyBob", publicKeyHex: "a03d9be195e40466e255bd64eb612ad41ae0010519b6cbfc7698e5d0916a1a7c")
         } catch {
             XCTFail("Failed to add contact \(error.localizedDescription)")
         }
 
         //MARK: Receive a test transaction
         do {
-            try wallet!.generateTestReceiveTransaction()
+            try wallet.generateTestReceiveTransaction()
         } catch {
             XCTFail(error.localizedDescription)
         }
@@ -192,7 +202,7 @@ class TariLibWrapperTests: XCTestCase {
         //MARK: Finalize and broadcast received test transaction
         var txId: UInt64?
         do {
-            let (pendingInboundTransactions, pendingInboundTransactionsError) = wallet!.pendingInboundTransactions
+            let (pendingInboundTransactions, pendingInboundTransactionsError) = wallet.pendingInboundTransactions
             if pendingInboundTransactionsError != nil {
                 XCTFail(pendingInboundTransactionsError!.localizedDescription)
             }
@@ -211,10 +221,10 @@ class TariLibWrapperTests: XCTestCase {
             
             txId = pendingInboundTransactionId
             
-            try wallet!.testFinalizedReceivedTransaction(pendingInboundTransaction: pendingInboundTransaction)
-            var completedTx = try wallet!.findCompletedTransactionBy(id: txId!)
-            try wallet!.testTransactionBroadcast(completedTransaction: completedTx)
-            completedTx = try wallet!.findCompletedTransactionBy(id: txId!)
+            try wallet.testFinalizedReceivedTransaction(pendingInboundTransaction: pendingInboundTransaction)
+            var completedTx = try wallet.findCompletedTransactionBy(id: txId!)
+            try wallet.testTransactionBroadcast(completedTransaction: completedTx)
+            completedTx = try wallet.findCompletedTransactionBy(id: txId!)
             let (status, statusError) = completedTx.status
             if statusError != nil {
                 XCTFail(statusError!.localizedDescription)
@@ -227,10 +237,10 @@ class TariLibWrapperTests: XCTestCase {
 
         //MARK: Mine received transaction
         do {
-            let broadcastedCompletedTx = try wallet!.findCompletedTransactionBy(id: txId!)
-            try wallet!.testTransactionMined(completedTransaction: broadcastedCompletedTx)
+            let broadcastedCompletedTx = try wallet.findCompletedTransactionBy(id: txId!)
+            try wallet.testTransactionMined(completedTransaction: broadcastedCompletedTx)
 
-            let minedCompletedTx = try wallet!.findCompletedTransactionBy(id: txId!)
+            let minedCompletedTx = try wallet.findCompletedTransactionBy(id: txId!)
             
             let (status, statusError) = minedCompletedTx.status
             if statusError != nil {
@@ -245,7 +255,7 @@ class TariLibWrapperTests: XCTestCase {
         //MARK: Send transaction to bob
         var sendTransactionId: UInt64?
         do {
-            let (contacts, contactsError) = wallet!.contacts
+            let (contacts, contactsError) = wallet.contacts
             if contactsError != nil {
                 XCTFail(contactsError!.localizedDescription)
             }
@@ -256,8 +266,8 @@ class TariLibWrapperTests: XCTestCase {
                 XCTFail(bobPublicKeyError!.localizedDescription)
             }
             
-            try wallet!.sendTransaction(destination: bobPublicKey!, amount: 1000, fee: 101, message: "Oh hi bob")
-            let (pendingOutboundTransactions, pendingOutboundTransactionsError) = wallet!.pendingOutboundTransactions
+            try wallet.sendTransaction(destination: bobPublicKey!, amount: 1000, fee: 101, message: "Oh hi bob")
+            let (pendingOutboundTransactions, pendingOutboundTransactionsError) = wallet.pendingOutboundTransactions
             if pendingOutboundTransactionsError != nil {
                 XCTFail(pendingOutboundTransactionsError!.localizedDescription)
             }
@@ -275,22 +285,47 @@ class TariLibWrapperTests: XCTestCase {
 
         //MARK: Complete sent transaction to bob
         do {
-            let pendingOutboundTransaction = try wallet!.findPendingOutboundTransactionBy(id: sendTransactionId!)
+            let pendingOutboundTransaction = try wallet.findPendingOutboundTransactionBy(id: sendTransactionId!)
 
-            try wallet!.testCompleteSend(pendingOutboundTransaction: pendingOutboundTransaction!)
+            try wallet.testCompleteSend(pendingOutboundTransaction: pendingOutboundTransaction!)
 
-            let broadcastedCompletedTx = try wallet!.findCompletedTransactionBy(id: sendTransactionId!)
-            try wallet!.testTransactionMined(completedTransaction: broadcastedCompletedTx)
+            let broadcastedCompletedTx = try wallet.findCompletedTransactionBy(id: sendTransactionId!)
+            try wallet.testTransactionMined(completedTransaction: broadcastedCompletedTx)
         } catch {
             XCTFail(error.localizedDescription)
         }
 
-        let (availableBalance, _) = wallet!.availableBalance
-        let (pendingIncomingBalance, _) = wallet!.pendingIncomingBalance
-        let (pendingOutgoingBalance, _) = wallet!.pendingOutgoingBalance
+        let (availableBalance, _) = wallet.availableBalance
+        let (pendingIncomingBalance, _) = wallet.pendingIncomingBalance
+        let (pendingOutgoingBalance, _) = wallet.pendingOutgoingBalance
         
         XCTAssertGreaterThan(availableBalance, 0)
         XCTAssertGreaterThan(pendingIncomingBalance, 0)
         XCTAssertGreaterThan(pendingOutgoingBalance, 0)
+        
+        let (completedTransactions, completedTransactionsError) = wallet.completedTransactions
+        guard completedTransactionsError == nil else {
+            print("Failed to load transactions: ", completedTransactionsError!.localizedDescription)
+            return
+        }
+        
+        let (groupedTransactions, groupedTransactionsError) = completedTransactions!.groupedByDate
+        guard groupedTransactionsError == nil else {
+            XCTFail("Failed to load grouped transactions: /(groupedTransactionsError!.localizedDescription)")
+            return
+        }
+                    
+        XCTAssertEqual(groupedTransactions.count, 1)
+        XCTAssertEqual(groupedTransactions[0].count, 8)
+    }
+    
+    func testMicroTari() {
+        let microTari = MicroTari(98234567)
+        XCTAssert(microTari.taris == 98.234567)
+        //Check 2 most common local formats
+        XCTAssert(microTari.formatted == "98.23" || microTari.formatted == "98,23")
+        XCTAssert(microTari.formattedWithOperator == "+ 98.23" || microTari.formattedWithOperator == "+ 98,23")
+        XCTAssert(microTari.formattedWithNegativeOperator == "- 98.23" || microTari.formattedWithNegativeOperator == "- 98,23")
+        XCTAssert(microTari.formattedPrecise == "98.2345657" || microTari.formattedPrecise == "98,2345657")
     }
 }

@@ -54,6 +54,7 @@ enum WalletErrors: Error {
     case testTransactionMined
     case testSendCompleteTransaction
     case completedTransactionById
+    case walletNotInitialized
 }
 
 class Wallet {
@@ -125,12 +126,32 @@ class Wallet {
         return (result, errorCode != 0 ? WalletErrors.generic(errorCode) : nil)
     }
 
+    var totalMicroTari: (MicroTari?, Error?) {
+        let (availableBalance, availableBalanceError) = self.availableBalance
+        if availableBalanceError != nil {
+            return (nil, availableBalanceError)
+        }
+
+        let (pendingIncomingBalance, pendingIncomingBalanceError) = self.pendingIncomingBalance
+        if pendingIncomingBalanceError != nil {
+            return (nil, pendingIncomingBalanceError)
+        }
+
+        let (pendingOutgoingBalance, pendingOutgoingBalanceError) = self.pendingOutgoingBalance
+        if pendingOutgoingBalanceError != nil {
+            return (nil, pendingOutgoingBalanceError)
+        }
+
+        return (MicroTari(availableBalance + pendingIncomingBalance - pendingOutgoingBalance), nil)
+    }
+
     var publicKey: (PublicKey?, Error?) {
         var errorCode: Int32 = -1
         let result = PublicKey(pointer: wallet_get_public_key(ptr, UnsafeMutablePointer<Int32>(&errorCode)))
         guard errorCode == 0 else {
             return (nil, WalletErrors.generic(errorCode))
         }
+
         return (result, nil)
     }
 
@@ -140,37 +161,36 @@ class Wallet {
         let callback_received_transaction_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let pendingInbound = PendingInboundTransaction.init(pendingInboundTransactionPointer: valuePointer!)
-            print(pendingInbound)
+                print("pendingInbound callback")
             }
 
         let callback_received_transaction_reply_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
-            print(completed)
+                print("completed callback")
             }
 
         let callback_received_finalized_transaction_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
-            print(completed)
+                print("completed callback")
             }
 
         let callback_transaction_broadcast_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
-            print(completed)
+                print("completed callback")
             }
 
         let callback_transaction_mined_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
-            print(completed)
+                print("completed callback")
             }
 
-        let callback_discovery_process_complete_fn: (@convention(c) (UInt64, Bool) -> Void)? = {
-            txID, success in
+        let callback_discovery_process_complete_fn: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
             print(txID, success)
-            }
+        }
 
         dbPath = commsConfig.dbPath
         dbName = commsConfig.dbName
@@ -294,6 +314,18 @@ class Wallet {
 
         return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!)
     }
+
+    //TODO Remove when lib supports getting direction of a completed tx
+    //Used for now in completed tx to determin if a TX is sent/received
+    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    func isWalletPubKey(publicKey: PublicKey) -> Bool {
+        let (hex, _) = publicKey.hex
+        let (walletPubKey, _) = self.publicKey
+        let (walletHex, _) = walletPubKey!.hex
+
+        return hex == walletHex
+    }
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     deinit {
         wallet_destroy(ptr)

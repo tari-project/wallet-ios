@@ -44,8 +44,14 @@ enum PendingOutboundTransactionError: Error {
    case generic(_ errorCode: Int32)
 }
 
-class PendingOutboundTransaction {
+class PendingOutboundTransaction: TransactionProtocol {
+    var cachedContact: Contact?
+
+    var sourcePublicKey: (PublicKey?, Error?)
+
     private var ptr: OpaquePointer
+
+    var direction: TransactionDirection = .outbound
 
     var pointer: OpaquePointer {
         return ptr
@@ -57,10 +63,15 @@ class PendingOutboundTransaction {
         return (result, errorCode != 0 ? PendingOutboundTransactionError.generic(errorCode) : nil)
     }
 
-    var amount: (UInt64, Error?) {
+    var microTari: (MicroTari?, Error?) {
         var errorCode: Int32 = -1
         let result = pending_outbound_transaction_get_amount(ptr, UnsafeMutablePointer<Int32>(&errorCode))
-        return (result, errorCode != 0 ? PendingOutboundTransactionError.generic(errorCode) : nil)
+
+        guard errorCode == 0 else {
+            return (nil, CompletedTransactionError.generic(errorCode))
+        }
+
+        return (MicroTari(result), nil)
     }
 
     var message: (String, Error?) {
@@ -88,6 +99,33 @@ class PendingOutboundTransaction {
         }
 
         return (PublicKey(pointer: resultPointer!), nil)
+    }
+
+    var contact: (Contact?, Error?) {
+        if cachedContact != nil {
+            return (cachedContact, nil)
+        }
+
+        guard let wallet = TariLib.shared.tariWallet else {
+            return (nil, WalletErrors.walletNotInitialized)
+        }
+
+        let (contacts, contactsError) = wallet.contacts
+        guard contactsError == nil else {
+            return (nil, contactsError)
+        }
+
+        let (pubKey, pubKeyError) = destinationPublicKey
+        guard pubKeyError == nil else {
+            return (nil, pubKeyError)
+        }
+
+        do {
+            cachedContact = try contacts!.find(publicKey: pubKey!)
+            return (cachedContact, nil)
+        } catch {
+            return (nil, error)
+        }
     }
 
     init(pendingOutboundTransactionPointer: OpaquePointer) {

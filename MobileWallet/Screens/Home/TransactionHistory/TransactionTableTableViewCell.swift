@@ -76,21 +76,64 @@ class TransactionTableTableViewCell: UITableViewCell {
 
         descriptionLabel.font = Theme.shared.fonts.transactionCellDescriptionLabel
         descriptionLabel.textColor = Theme.shared.colors.transactionCellDescription
+        descriptionLabel.lineBreakMode = .byTruncatingTail
+
+        icon.image = Theme.shared.images.transfer
 
         selectionStyle = .none
     }
 
-    func setValueLabel(tariValue: TariValue) {
-        valueLabel.text = tariValue.displayStringWithOperator
-
-        if tariValue.sign == .positive {
-            valueLabel.backgroundColor = Theme.shared.colors.transactionCellValuePositiveBackground
-            valueLabel.textColor = Theme.shared.colors.transactionCellValuePositiveText
+    private func setValue(microTari: MicroTari?, direction: TransactionDirection) {
+        if let mt = microTari {
+            if direction == .inbound {
+                valueLabel.text = mt.formattedWithOperator
+                valueLabel.backgroundColor = Theme.shared.colors.transactionCellValuePositiveBackground
+                valueLabel.textColor = Theme.shared.colors.transactionCellValuePositiveText
+            } else {
+                valueLabel.text = mt.formattedWithNegativeOperator
+                valueLabel.backgroundColor = Theme.shared.colors.transactionCellValueNegativeBackground
+                valueLabel.textColor = Theme.shared.colors.transactionCellValueNegativeText
+            }
         } else {
-            valueLabel.backgroundColor = Theme.shared.colors.transactionCellValueNegativeBackground
-            valueLabel.textColor = Theme.shared.colors.transactionCellValueNegativeText
+            //Unlikely to happen scenario
+            valueLabel.text = "0"
+            valueLabel.backgroundColor = Theme.shared.colors.transactionTableBackground
+            valueLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
         }
 
         valueLabel.padding = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
+    }
+
+    private func setMessage(_ message: String) {
+        descriptionLabel.text = message != "" ? message : "*Missing message*"
+        descriptionLabel.sizeToFit()
+    }
+
+    private func setUsername(_ contact: Contact?) {
+        var userName = "-"
+        if let c = contact {
+            let (alias, _) = c.alias
+            userName = alias
+        }
+
+        userNameLabel.text = userName
+    }
+
+    func setDetails(completedTransaction: CompletedTransaction) {
+        setMessage(completedTransaction.message.0)
+        setUsername(completedTransaction.contact.0)
+        setValue(microTari: completedTransaction.microTari.0, direction: completedTransaction.direction)
+    }
+
+    func setDetails(pendingInboundTransaction: PendingInboundTransaction) {
+        setMessage(pendingInboundTransaction.message.0)
+        setUsername(pendingInboundTransaction.contact.0)
+        setValue(microTari: pendingInboundTransaction.microTari.0, direction: pendingInboundTransaction.direction)
+    }
+
+    func setDetails(pendingOutboundTransaction: PendingOutboundTransaction) {
+        setMessage(pendingOutboundTransaction.message.0)
+        setUsername(pendingOutboundTransaction.contact.0)
+        setValue(microTari: pendingOutboundTransaction.microTari.0, direction: pendingOutboundTransaction.direction)
     }
 }
