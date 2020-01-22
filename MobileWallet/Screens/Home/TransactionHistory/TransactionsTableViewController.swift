@@ -71,18 +71,39 @@ class TransactionsTableViewController: UITableViewController {
         }
     }
 
-    private var tempRefreshTimer = Timer()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         viewSetup()
         tableView.register(UINib(nibName: CELL_IDENTIFIER, bundle: nil), forCellReuseIdentifier: CELL_IDENTIFIER)
         refreshTransactionControl.attributedTitle = NSAttributedString(string: "Pull to refresh") //TODO local
-        refreshTransactionControl.addTarget(self, action: #selector(refreshTransactions(_:)), for: .valueChanged)
-        //refreshControl = refreshTransactionControl
+        refreshTransactionControl.addTarget(self, action: #selector(refreshPullTransactions(_:)), for: .valueChanged)
 
         self.refreshTable()
-        tempRefreshTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.refreshTable), userInfo: nil, repeats: true)
+
+        TariEventBus.onMainThread(self, eventType: .receievedTransaction) { [weak self] (result) in
+            guard let _ = self else {
+                return
+            }
+
+            if let tx: PendingInboundTransaction = result?.object as? PendingInboundTransaction {
+                print("New transaction receieved ", tx.id.0)
+                //TODO animate in the new TX instead of just refreshing the table below
+            }
+        }
+
+        TariEventBus.onMainThread(self, eventType: .transactionListUpdate) { [weak self] (_) in
+            guard let self = self else {
+                return
+            }
+
+            self.refreshTable()
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        TariEventBus.unregister(self)
     }
 
     private func viewSetup() {
@@ -91,7 +112,7 @@ class TransactionsTableViewController: UITableViewController {
         view.backgroundColor = Theme.shared.colors.transactionTableBackground
     }
 
-    @objc private func refreshTransactions(_ sender: UIRefreshControl) {
+    @objc private func refreshPullTransactions(_ sender: UIRefreshControl) {
         refreshTransactionControl.attributedTitle = NSAttributedString(string: "Resfreshing...") //TODO local
         DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
             self.tableView.reloadData()
@@ -99,49 +120,75 @@ class TransactionsTableViewController: UITableViewController {
         })
     }
 
-    @objc private func refreshTable() {
+    private func refreshTable() {
         guard let wallet = TariLib.shared.tariWallet else {
-            //TODO show error message alert (coming soon)
-            print("Wallet does not exist")
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Failed to access wallet", comment: "Home screen"),
+                description: ""
+            )
             return
         }
 
         //All completed txs
         let (completedTransactions, completedTransactionsError) = wallet.completedTransactions
         guard completedTransactionsError == nil else {
-            print("Failed to load transactions: ", completedTransactionsError!.localizedDescription)
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
+                description: NSLocalizedString("Could not load completed transactions", comment: "Home screen"),
+                error: completedTransactionsError
+            )
             return
         }
 
         let (groupedTransactions, groupedTransactionsError) = completedTransactions!.groupedByDate
         guard groupedTransactionsError == nil else {
-            print("Failed to load grouped transactions: ", groupedTransactionsError!.localizedDescription)
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
+                description: NSLocalizedString("Could not load grouped completed transactions", comment: "Home screen"),
+                error: groupedTransactionsError
+            )
             return
         }
 
         //All pending inbound
         let (pendingInboundTxs, pendingInboundTxsError) = wallet.pendingInboundTransactions
         guard pendingInboundTxsError == nil else {
-            print("Failed to load pending inbound transactions: ", pendingInboundTxsError!.localizedDescription)
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
+                description: NSLocalizedString("Could not load pending inbound transactions", comment: "Home screen"),
+                error: pendingInboundTxsError
+            )
             return
         }
 
         let (pendingInboundTxsList, pendingInboundTxsListError) = pendingInboundTxs!.list
         guard pendingInboundTxsListError == nil else {
-            print("Failed to load pending inbound transactions list: ", pendingInboundTxsListError!.localizedDescription)
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
+                description: NSLocalizedString("Could not load list of pending inbound transactions", comment: "Home screen"),
+                error: pendingInboundTxsListError
+            )
             return
         }
 
         //All pending outbound
         let (pendingOutboundTxs, pendingOutboundTxsError) = wallet.pendingOutboundTransactions
         guard pendingOutboundTxsError == nil else {
-            print("Failed to load pending outbound transactions: ", pendingOutboundTxsError!.localizedDescription)
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
+                description: NSLocalizedString("Could not load pending outbound transactions", comment: "Home screen"),
+                error: pendingOutboundTxsError
+            )
             return
         }
 
         let (pendingOutboundTxsList, pendingOutboundTxsListError) = pendingOutboundTxs!.list
         guard pendingOutboundTxsListError == nil else {
-            print("Failed to load pending outbound transactions list: ", pendingOutboundTxsListError!.localizedDescription)
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
+                description: NSLocalizedString("Could not load list of pending outbound transactions", comment: "Home screen"),
+                error: pendingOutboundTxsListError
+            )
             return
         }
 

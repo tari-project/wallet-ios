@@ -70,8 +70,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     private let GRABBER_WIDTH: Double = 55.0
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
 
-    private var tempRefreshTimer = Timer()
-
     private var isTransactionViewFullScreen: Bool = false {
         didSet {
             showHideFullScreen()
@@ -92,7 +90,13 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         super.viewDidLoad()
 
         self.refreshBalance()
-        tempRefreshTimer = Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.refreshBalance), userInfo: nil, repeats: true)
+        TariEventBus.onMainThread(self, eventType: .balanceUpdate) { [weak self] (_) in
+            guard let self = self else {
+                return
+            }
+
+            self.refreshBalance()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -113,6 +117,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         //Make sure the button animates into view when we navigate back to this controller
         isShowingSendButton = isShowingSendButton == true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        TariEventBus.unregister(self)
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -156,7 +166,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
     }
 
-    @objc private func refreshBalance() {
+    private func refreshBalance() {
         guard let wallet = TariLib.shared.tariWallet else {
             //TOOD show error message to user possibly
             print("Wallet not initialized")
@@ -165,8 +175,11 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         let (totalMicroTari, error) = wallet.totalMicroTari
         guard error == nil else {
-            //TODO handle error
-            print("Failed to load transactions: ", error!.localizedDescription)
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Balance update failed", comment: "Home screen"),
+                description: "",
+                error: error
+            )
             return
         }
 

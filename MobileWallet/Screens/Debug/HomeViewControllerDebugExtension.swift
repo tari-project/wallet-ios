@@ -55,9 +55,11 @@ extension HomeViewController {
         do {
             try wallet.generateTestData()
         } catch {
-            let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-            errorAlert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            present(errorAlert, animated: true, completion: nil)
+            UserFeedback.shared.error(
+                title: "Error generating test data",
+                description: "Failed to generate test data, this could be because you've already attempted this.",
+                error: error
+            )
         }
     }
 
@@ -65,9 +67,11 @@ extension HomeViewController {
         do {
             try TariLib.shared.tariWallet!.generateTestReceiveTransaction()
         } catch {
-            let errorAlert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
-            errorAlert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
-            present(errorAlert, animated: true, completion: nil)
+            UserFeedback.shared.error(
+                title: "Error simulating receive transaction",
+                description: "Failed to create test recieve transaction, this could be because you've already attempted this.",
+                error: error
+            )
         }
     }
 

@@ -39,7 +39,6 @@ class MobileWalletUITests: XCTestCase {
 //        
 //        app.swipeUp()
 //        app.tables.staticTexts["Payment for 25 tacos"].tap()
-//        //TODO make some view asserts
 //        app.navigationBars["Payment Received"].buttons["Back"].tap()
 //        
 //        app.swipeDown()

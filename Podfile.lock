@@ -1,24 +1,32 @@
 PODS:
   - FloatingPanel (1.7.0)
   - lottie-ios (3.1.5)
+  - QuickLayout (3.0.0)
+  - SwiftEntryKit (1.2.3):
+    - QuickLayout (= 3.0.0)
   - SwiftLint (0.36.0)
 
 DEPENDENCIES:
   - FloatingPanel
   - lottie-ios
+  - SwiftEntryKit (= 1.2.3)
   - SwiftLint
 
 SPEC REPOS:
   trunk:
     - FloatingPanel
     - lottie-ios
+    - QuickLayout
+    - SwiftEntryKit
     - SwiftLint
 
 SPEC CHECKSUMS:
   FloatingPanel: f686602da8eff56375e577f19be37348a95f4e24
   lottie-ios: 32bf84389337d86fbc8b12266e88452e0abf1dee
+  QuickLayout: 07b45a72b10083fee3f095990cfed1c1e7b27f0a
+  SwiftEntryKit: 340713c2e4a6662c5149629990bf1088bf5f0389
   SwiftLint: fc9859e4e1752340664851f667bb1898b9c90114
 
-PODFILE CHECKSUM: 6f7cc906df36591e867b0dc09cc8cc7d06d29f3b
+PODFILE CHECKSUM: 0c4332e4744566ba8d45c12d457b4f900a773375
 
 COCOAPODS: 1.8.4

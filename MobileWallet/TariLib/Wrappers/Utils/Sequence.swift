@@ -41,7 +41,7 @@
 import Foundation
 
 extension Sequence {
-    func groupSort(ascending: Bool = true, byDate dateKey: (Iterator.Element) -> Date) -> [[Iterator.Element]] {
+    func groupSort(ascending: Bool = false, byDate dateKey: (Iterator.Element) -> Date) -> [[Iterator.Element]] {
         var categories: [[Iterator.Element]] = []
         for element in self {
             let key = dateKey(element)

@@ -105,6 +105,11 @@ struct Colors: Loopable {
 
     //Shadows
     let actionButtonShadow = UIColor(named: "ActionButtonShadow")
+
+    //Feedback
+    let feedbackPopupBackground = UIColor(named: "FeedbackScreenBackground")
+    let errorFeedbackPopupTitle = UIColor(named: "Heading")
+    let errorFeedbackPopupDescription = UIColor(named: "SmallSubheading")
 }
 
 struct Fonts: Loopable {
@@ -132,6 +137,10 @@ struct Fonts: Loopable {
 
     //Navigation bar
     let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
+
+    //Popup User feedback
+    let errorFeedbackPopupTitle = UIFont(name: "AvenirLTStd-Light", size: 18)
+    let errorFeedbackPopupDescription = UIFont(name: "AvenirLTStd-Medium", size: 14)
 }
 
 struct Images: Loopable {
