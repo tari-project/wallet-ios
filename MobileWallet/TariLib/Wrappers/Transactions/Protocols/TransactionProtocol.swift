@@ -43,6 +43,7 @@ import Foundation
 enum TransactionDirection {
     case inbound
     case outbound
+    case none
 }
 
 protocol TransactionProtocol {
