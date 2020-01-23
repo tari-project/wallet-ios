@@ -1,8 +1,8 @@
-//  SendViewController.swift
+//  UIViewExtension.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/12/05
+	Created by Gabriel Lupu on 23/01/2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,42 +40,36 @@
 
 import UIKit
 
-class SendViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        view.backgroundColor = Theme.shared.colors.appBackground
-        navigationItem.title = NSLocalizedString("Send to", comment: "Navigation bar title on send view screen")
+extension UIView {
+    func addTopBorder(with color: UIColor?, andWidth borderWidth: CGFloat) {
+        let border = UIView()
+        border.backgroundColor = color
+        border.autoresizingMask = [.flexibleWidth, .flexibleBottomMargin]
+        border.frame = CGRect(x: 0, y: 0, width: frame.size.width, height: borderWidth)
+        addSubview(border)
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        navigationController?.setNavigationBarHidden(false, animated: false)
+    func addBottomBorder(with color: UIColor?, andWidth borderWidth: CGFloat) {
+        let border = UIView()
+        border.backgroundColor = color
+        border.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
+        border.frame = CGRect(x: 0, y: frame.size.height - borderWidth, width: frame.size.width, height: borderWidth)
+        addSubview(border)
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    func addLeftBorder(with color: UIColor?, andWidth borderWidth: CGFloat) {
+        let border = UIView()
+        border.backgroundColor = color
+        border.frame = CGRect(x: 0, y: 0, width: borderWidth, height: frame.size.height)
+        border.autoresizingMask = [.flexibleHeight, .flexibleRightMargin]
+        addSubview(border)
     }
-    */
-    @IBAction func onScanAction(_ sender: Any) {
-        let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
-        guard let vc = storyBoard.instantiateViewController(identifier: "ScanViewController") as? ScanViewController else { return }
-        vc.delegate = self
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true, completion: nil)
-    }
-}
 
-extension SendViewController: ScanViewControllerDelegate {
-    func found(code: String) {
-        // do something with the code here
+    func addRightBorder(with color: UIColor?, andWidth borderWidth: CGFloat) {
+        let border = UIView()
+        border.backgroundColor = color
+        border.autoresizingMask = [.flexibleHeight, .flexibleLeftMargin]
+        border.frame = CGRect(x: frame.size.width - borderWidth, y: 0, width: borderWidth, height: frame.size.height)
+        addSubview(border)
     }
 }
