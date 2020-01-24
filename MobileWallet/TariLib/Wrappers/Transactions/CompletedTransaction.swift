@@ -144,7 +144,7 @@ class CompletedTransaction: TransactionProtocol {
 
     var direction: TransactionDirection {
         var direction: TransactionDirection = .inbound
-        
+
         if let wallet = TariLib.shared.tariWallet {
             do {
                 let isOutboud = try (wallet.isCompletedTransactionOutbound(tx: self))
