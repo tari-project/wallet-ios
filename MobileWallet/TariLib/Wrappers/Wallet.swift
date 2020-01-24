@@ -43,7 +43,7 @@ import Foundation
 enum WalletErrors: Error {
     case generic(_ errorCode: Int32)
     case insufficientFunds(microTariRequired: UInt64)
-    case addContact
+    case addUpdateContact
     case removeContact
     case addOwnContact
     case invalidPublicKeyHex
@@ -241,8 +241,12 @@ class Wallet {
         }
     }
 
-    func addContact(alias: String, publicKeyHex: String) throws {
+    func addUpdateContact(alias: String, publicKeyHex: String) throws {
         let publicKey = try PublicKey(hex: publicKeyHex)
+        try addUpdateContact(alias: alias, publicKey: publicKey)
+    }
+
+    func addUpdateContact(alias: String, publicKey: PublicKey) throws {
         let (currentWalletPublicKey, publicKeyError) = self.publicKey
         if publicKeyError != nil {
             throw publicKeyError!
@@ -253,21 +257,23 @@ class Wallet {
             throw currentWalletPublicKeyHexError!
         }
 
-        if (publicKeyHex == currentWalletPublicKeyHex) {
+        if (publicKey.hex.0 == currentWalletPublicKeyHex) {
             throw WalletErrors.addOwnContact
         }
 
         let newContact = try Contact(alias: alias, publicKey: publicKey)
         var errorCode: Int32 = -1
-        let contactAdded = wallet_add_contact(ptr, newContact.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+        let contactAdded = wallet_upsert_contact(ptr, newContact.pointer, UnsafeMutablePointer<Int32>(&errorCode))
 
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
 
         if !contactAdded {
-            throw WalletErrors.addContact
+            throw WalletErrors.addUpdateContact
         }
+
+        TariEventBus.postToMainThread(.transactionListUpdate)
     }
 
     func sendTransaction(destination: PublicKey, amount: UInt64, fee: UInt64, message: String) throws {

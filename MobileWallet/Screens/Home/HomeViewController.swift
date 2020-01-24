@@ -352,7 +352,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     func onTransactionSelect(_ transaction: Any) {
         selectedTransaction = transaction
         //TODO on next VC check the type https://stackoverflow.com/questions/24091882/checking-if-an-object-is-a-given-type-in-swift
-        //self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
+        self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
     }
 
     func onScrollDirectionChange(_ direction: ScrollDirection) {
@@ -367,16 +367,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     // MARK: - Navigation
 
-    //TODO add back when working on next screen
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        //TODO move segue identifiers to enum
-//        if let identifier = segue.identifier {
-//            if identifier == "HomeToTransactionDetails" {
-//                let transactionVC = segue.destination as! TransactionViewController
-//                transactionVC.transaction = selectedTransaction
-//            }
-//        }
-//    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        //TODO move segue identifiers to enum
+        if let transactionVC = segue.destination as? TransactionViewController {
+            transactionVC.transaction = selectedTransaction
+        }
+    }
 
     // MARK: - Floating panel setup delegate methods
 

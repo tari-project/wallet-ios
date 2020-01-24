@@ -41,35 +41,120 @@
 import UIKit
 import Lottie
 import LocalAuthentication
+import AVFoundation
 
 class SplashViewController: UIViewController {
+    // MARK: - Variables and constants
+    private var player: AVQueuePlayer!
+    private var playerLayer: AVPlayerLayer!
+    private var playerItem: AVPlayerItem!
+    private var playerLooper: AVPlayerLooper!
+    private let localAuthenticationContext = LAContext()
+    var ticketTop: NSLayoutConstraint?
+
+    // MARK: - Outlets
+    @IBOutlet weak var videoView: UIView!
     @IBOutlet weak var versionLabel: UILabel!
     @IBOutlet weak var animationContainer: AnimationView!
     @IBOutlet weak var createWalletButton: ActionButton!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet weak var distanceTitleSubtitle: NSLayoutConstraint!
 
-    private let localAuthenticationContext = LAContext()
-
+    // MARK: - Override functions
     override func viewDidLoad() {
         super.viewDidLoad()
 
         createWalletButton.isHidden = true
         setupView()
         loadAnimation()
+        setupConstraintsAnimationContainer()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         checkExistingWallet()
+        titleAnimation()
+    }
+
+    // MARK: - Private functions
+    private func setupVideoAnimation() {
+        if let path = Bundle.main.path(forResource: "1-Intro", ofType: "mp4") {
+
+            _ = try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default, options: .mixWithOthers)
+            let pathURL = URL(fileURLWithPath: path)
+            let duration = Int64( ( (Float64(CMTimeGetSeconds(AVAsset(url: pathURL).duration)) *  10.0) - 1) / 10.0 )
+
+            player = AVQueuePlayer()
+            playerLayer = AVPlayerLayer(player: player)
+            playerItem = AVPlayerItem(url: pathURL)
+            playerLooper = AVPlayerLooper(player: player,
+                                          templateItem: playerItem,
+                                          timeRange: CMTimeRange(start: CMTime.zero, end: CMTimeMake(value: duration, timescale: 1)))
+            playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
+            playerLayer.frame = videoView.layer.bounds
+            player.play()
+            videoView.layer.insertSublayer(playerLayer, at: 0)
+        }
     }
 
     private func setupView() {
         createWalletButton.setTitle(NSLocalizedString("Create Wallet", comment: "Main action button on the onboarding screen"), for: .normal)
+        titleLabel.text = NSLocalizedString("A crypto wallet that’s easy to use.", comment: "Title Label on the onboarding screen")
+        titleLabel.font = Theme.shared.fonts.splashTitleLabel
+        titleLabel.textColor = Theme.shared.colors.splashTitleColor
+
+        subtitleLabel.text = NSLocalizedString("Tari wallet puts you and your privacy at the core of everything and is still easy to use.", comment: "Subtitle Label on the onboarding screen")
 
         versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             let labelText = NSLocalizedString("Testnet", comment: "Bottom version label for splash screen")
             versionLabel.text = "\(labelText) V\(version)".uppercased()
+        }
+    }
+
+    private func setupConstraintsAnimationContainer() {
+        if TariLib.shared.walletExists {
+            animationContainer.translatesAutoresizingMaskIntoConstraints = false
+            animationContainer.widthAnchor.constraint(equalToConstant: 240).isActive = true
+            animationContainer.heightAnchor.constraint(equalToConstant: 128).isActive = true
+            animationContainer.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 0).isActive = true
+            animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+
+        } else {
+            animationContainer.translatesAutoresizingMaskIntoConstraints = false
+            animationContainer.widthAnchor.constraint(equalToConstant: 240).isActive = true
+            animationContainer.heightAnchor.constraint(equalToConstant: 128).isActive = true
+            ticketTop = animationContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
+            ticketTop?.isActive = true
+            animationContainer.bottomAnchor.constraint(equalTo: videoView.topAnchor, constant: 110).isActive = true
+            animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        }
+    }
+
+    private func titleAnimation() {
+        self.distanceTitleSubtitle.constant = 26.0
+        UIView.animate(withDuration: 0.5) { [weak self] in
+            guard let self = self else { return }
+            self.view.layoutIfNeeded()
+        }
+    }
+
+    private func topAnimationAndRemoveVideoAnimation() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.ticketTop?.isActive = false
+            self.videoView.isHidden = true
+            self.animationContainer.bottomAnchor.constraint(equalTo: self.titleLabel.topAnchor, constant: 0).isActive = true
+
+            UIView.animate(withDuration: 2.0, animations: { [weak self] in
+                guard let self = self else { return }
+                self.view.layoutIfNeeded()
+            }) { [weak self] (_) in
+                guard let self = self else { return }
+                self.startAnimation()
+            }
         }
     }
 
@@ -83,6 +168,7 @@ class SplashViewController: UIViewController {
 
             authenticateUser()
         } else {
+            setupVideoAnimation()
             createWalletButton.isHidden = false
         }
     }
@@ -105,15 +191,23 @@ class SplashViewController: UIViewController {
         var error: NSError?
         if localAuthenticationContext.canEvaluatePolicy(authPolicy, error: &error) {
                 let reason = "Log in to your account"
-                self.localAuthenticationContext.evaluatePolicy(authPolicy, localizedReason: reason ) { success, error in
+                self.localAuthenticationContext.evaluatePolicy(authPolicy, localizedReason: reason ) { [weak self] success, error in
+                    guard let self = self else { return }
                     if success {
-                        DispatchQueue.main.async {
-                            self.startAnimation()
+                        if let _ = self.ticketTop {
+                            self.topAnimationAndRemoveVideoAnimation()
+                        } else {
+                            DispatchQueue.main.async { [weak self] in
+                                guard let self = self else { return }
+                                self.startAnimation()
+                            }
                         }
+
                     } else {
                         let reason = error?.localizedDescription ?? NSLocalizedString("Failed to authenticate", comment: "Failed Face ID alert")
                         print(reason)
-                        DispatchQueue.main.async {
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
                             self.authenticationFailedAlertOptions(reason: reason)
                         }
                     }
@@ -121,7 +215,8 @@ class SplashViewController: UIViewController {
         } else {
             let reason = error?.localizedDescription ?? NSLocalizedString("No available biometrics available", comment: "Failed Face ID alert")
             print(reason)
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
                 self.authenticationFailedAlertOptions(reason: reason)
             }
         }
@@ -129,11 +224,13 @@ class SplashViewController: UIViewController {
 
     private func authenticationFailedAlertOptions(reason: String) {
         let alert = UIAlertController(title: "Authentication failed", message: reason, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Try again", style: .default, handler: { _ in
+        alert.addAction(UIAlertAction(title: "Try again", style: .default, handler: { [weak self] _ in
+            guard let self = self else { return }
             self.authenticateUser()
         }))
 
-        alert.addAction(UIAlertAction(title: "Open settings", style: .default, handler: { _ in
+        alert.addAction(UIAlertAction(title: "Open settings", style: .default, handler: { [weak self] _ in
+            guard let self = self else { return }
             self.openAppSettings()
         }))
 
@@ -162,7 +259,8 @@ class SplashViewController: UIViewController {
             fromProgress: 0,
             toProgress: 1,
             loopMode: .playOnce,
-            completion: { (_) in
+            completion: { [weak self] (_) in
+                guard let self = self else { return }
                 self.navigateToHome()
             }
         )

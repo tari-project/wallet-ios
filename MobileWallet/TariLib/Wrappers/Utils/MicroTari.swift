@@ -45,9 +45,10 @@ struct MicroTari {
     static let PRECISE_FRACTION_DIGITS = String(MicroTari.CONVERSION).count
     static let ROUNDED_FRACTION_DIGITS = 2
 
-    private let formatterWithOperator = NumberFormatter()
     private let defaultFormatter = NumberFormatter()
+    private let withOperatorFormatter = NumberFormatter()
     private let preciseFormatter = NumberFormatter()
+    private let preciseWithOperatorFormatter = NumberFormatter()
 
     let rawValue: UInt64
 
@@ -60,15 +61,19 @@ struct MicroTari {
     }
 
     var formattedWithOperator: String {
-        return formatterWithOperator.string(from: NSNumber(value: self.taris))!
+        return withOperatorFormatter.string(from: NSNumber(value: self.taris))!
     }
 
     var formattedWithNegativeOperator: String {
-        return formatterWithOperator.string(from: NSNumber(value: self.taris * -1))!
+        return withOperatorFormatter.string(from: NSNumber(value: self.taris * -1))!
     }
 
     var formattedPrecise: String {
         return preciseFormatter.string(from: NSNumber(value: self.taris))!
+    }
+
+    var formattedPreciseWithOperator: String {
+        return preciseWithOperatorFormatter.string(from: NSNumber(value: self.taris))!
     }
 
     init(_ rawValue: UInt64) {
@@ -79,15 +84,21 @@ struct MicroTari {
         defaultFormatter.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
         defaultFormatter.negativePrefix = "-"
 
-        formatterWithOperator.numberStyle = .decimal
-        formatterWithOperator.minimumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
-        formatterWithOperator.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
-        formatterWithOperator.positivePrefix = "+ "
-        formatterWithOperator.negativePrefix = "- "
+        withOperatorFormatter.numberStyle = .decimal
+        withOperatorFormatter.minimumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
+        withOperatorFormatter.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
+        withOperatorFormatter.positivePrefix = "+ "
+        withOperatorFormatter.negativePrefix = "- "
 
         preciseFormatter.numberStyle = .decimal
         preciseFormatter.minimumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
         preciseFormatter.maximumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
         preciseFormatter.negativePrefix = "- "
+
+        preciseWithOperatorFormatter.numberStyle = .decimal
+        preciseWithOperatorFormatter.minimumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
+        preciseWithOperatorFormatter.maximumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
+        preciseWithOperatorFormatter.positivePrefix = "+ "
+        preciseWithOperatorFormatter.negativePrefix = "- "
     }
 }

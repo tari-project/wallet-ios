@@ -16,26 +16,35 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Testnet V1.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrT-Tl-QNW">
-                                <rect key="frame" x="179.5" y="826" width="55" height="11"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="9"/>
-                                <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Gem" translatesAutoresizingMaskIntoConstraints="NO" id="YyS-f0-YOr">
-                                <rect key="frame" x="195" y="786" width="24" height="24"/>
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9YY-0o-nvV">
+                                <rect key="frame" x="-50" y="-66" width="514" height="385.5"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="24" id="ezg-vO-rok"/>
-                                    <constraint firstAttribute="width" constant="24" id="t66-Cn-l5E"/>
-                                </constraints>
-                            </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K5K-jz-bn0" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="87" y="384" width="240" height="128"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="128" id="YnL-rr-8lZ"/>
-                                    <constraint firstAttribute="width" constant="240" id="eex-JT-ihY"/>
+                                    <constraint firstAttribute="width" secondItem="9YY-0o-nvV" secondAttribute="height" multiplier="4:3" id="enm-Jp-0Fj"/>
                                 </constraints>
                             </view>
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K5K-jz-bn0" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="87" y="44" width="240" height="0.0"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I22-mF-dFz">
+                                <rect key="frame" x="27" y="660.5" width="360" height="82"/>
+                                <string key="text">A crypto wallet 
+that’s easy to use.</string>
+                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AvL-7H-2gZ">
+                                <rect key="frame" x="0.0" y="642.5" width="414" height="219.5"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tari wallet puts you and your privacy at the core of everything and is still easy to use." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qJ9-sa-FQv">
+                                <rect key="frame" x="27" y="642.5" width="360" height="38.5"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" name="Avenir-Medium" family="Avenir" pointSize="14"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="0.80000000000000004" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fLD-Gb-rum" customClass="ActionButton" customModule="MobileWalletTests" customModuleProvider="target">
                                 <rect key="frame" x="25" y="721" width="364" height="30"/>
                                 <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -44,25 +53,53 @@
                                     <action selector="createWallet:" destination="Dn2-Hl-tr9" eventType="touchUpInside" id="hU3-eY-2vb"/>
                                 </connections>
                             </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Gem" translatesAutoresizingMaskIntoConstraints="NO" id="YyS-f0-YOr">
+                                <rect key="frame" x="195" y="786" width="24" height="24"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="24" id="ezg-vO-rok"/>
+                                    <constraint firstAttribute="width" constant="24" id="t66-Cn-l5E"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Testnet V1.0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xrT-Tl-QNW">
+                                <rect key="frame" x="179.5" y="826" width="55" height="11"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="9"/>
+                                <color key="textColor" cocoaTouchSystemColor="lightTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" name="SplashBackground"/>
                         <constraints>
-                            <constraint firstItem="K5K-jz-bn0" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="55M-o5-pQl"/>
+                            <constraint firstItem="9YY-0o-nvV" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" constant="-50" id="Aa0-d0-MfP"/>
+                            <constraint firstItem="qJ9-sa-FQv" firstAttribute="top" secondItem="AvL-7H-2gZ" secondAttribute="top" id="Cpn-Gx-5Tq"/>
+                            <constraint firstItem="I22-mF-dFz" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" constant="27" id="DeI-sc-eDJ"/>
+                            <constraint firstItem="qJ9-sa-FQv" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" constant="27" id="GZj-TK-YHx"/>
                             <constraint firstItem="xrT-Tl-QNW" firstAttribute="top" secondItem="YyS-f0-YOr" secondAttribute="bottom" constant="16" id="JG0-aq-aIH"/>
+                            <constraint firstItem="AvL-7H-2gZ" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" id="JGR-Gm-b4e"/>
+                            <constraint firstItem="qJ9-sa-FQv" firstAttribute="top" secondItem="I22-mF-dFz" secondAttribute="bottom" constant="-100" id="JtF-lH-gdW"/>
                             <constraint firstItem="fLD-Gb-rum" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" constant="25" id="OUn-eh-qZQ"/>
                             <constraint firstItem="YyS-f0-YOr" firstAttribute="top" secondItem="fLD-Gb-rum" secondAttribute="bottom" constant="35" id="TKP-BA-27d"/>
+                            <constraint firstItem="fLD-Gb-rum" firstAttribute="top" secondItem="qJ9-sa-FQv" secondAttribute="bottom" constant="40" id="Ttg-dR-FGs"/>
                             <constraint firstItem="xrT-Tl-QNW" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="clf-3V-Nen"/>
+                            <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="AvL-7H-2gZ" secondAttribute="trailing" id="d4v-Sd-b9J"/>
                             <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="fLD-Gb-rum" secondAttribute="trailing" constant="25" id="iUS-e7-WU0"/>
+                            <constraint firstItem="9YY-0o-nvV" firstAttribute="top" secondItem="K5K-jz-bn0" secondAttribute="bottom" constant="-110" id="jRg-k7-zRL"/>
+                            <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="bottom" secondItem="AvL-7H-2gZ" secondAttribute="bottom" id="ohV-Ps-wOs"/>
                             <constraint firstItem="YyS-f0-YOr" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="pJr-V6-0rn"/>
+                            <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="qJ9-sa-FQv" secondAttribute="trailing" constant="27" id="plc-YH-APr"/>
                             <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="bottom" secondItem="xrT-Tl-QNW" secondAttribute="bottom" constant="25" id="sLr-gN-4h4"/>
-                            <constraint firstItem="K5K-jz-bn0" firstAttribute="centerY" secondItem="W2N-Ra-naU" secondAttribute="centerY" id="wLb-C2-Vgj"/>
+                            <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="I22-mF-dFz" secondAttribute="trailing" constant="27" id="tB1-g2-znh"/>
+                            <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="9YY-0o-nvV" secondAttribute="trailing" constant="-50" id="wKp-dT-X6B"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Qtm-HJ-rTJ"/>
                     </view>
                     <connections>
                         <outlet property="animationContainer" destination="K5K-jz-bn0" id="Tpk-4q-2Ki"/>
                         <outlet property="createWalletButton" destination="fLD-Gb-rum" id="B4K-j2-kcb"/>
+                        <outlet property="distanceTitleSubtitle" destination="JtF-lH-gdW" id="5M3-lZ-JNW"/>
+                        <outlet property="subtitleLabel" destination="qJ9-sa-FQv" id="zUK-eq-gAX"/>
+                        <outlet property="titleLabel" destination="I22-mF-dFz" id="sXo-2f-KO2"/>
                         <outlet property="versionLabel" destination="xrT-Tl-QNW" id="YNK-wH-SbN"/>
+                        <outlet property="videoView" destination="9YY-0o-nvV" id="niW-zP-xhm"/>
                         <segue destination="JVr-OT-SNV" kind="presentation" identifier="SplashToHome" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="xMA-mJ-gEX"/>
                     </connections>
                 </viewController>

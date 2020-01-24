@@ -62,10 +62,9 @@ extension Date {
     /*
      Creates a date and time string from a given date
     */
-    func locallyFormattedDisplay() -> String? {
+    func formattedDisplay() -> String? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMM d yyyy h:mm a", options: 0, locale: NSLocale.current)
-        //dateFormatter.timeZone = TimeZone.current
 
         return dateFormatter.string(from: self)
     }

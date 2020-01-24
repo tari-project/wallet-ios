@@ -73,6 +73,8 @@ class TransactionTableTableViewCell: UITableViewCell {
 
         userNameLabel.font = Theme.shared.fonts.transactionCellUsernameLabel
         userNameLabel.textColor = Theme.shared.colors.transactionCellUsername
+        userNameLabel.text = ""
+        userNameLabel.lineBreakMode = .byTruncatingMiddle
 
         descriptionLabel.font = Theme.shared.fonts.transactionCellDescriptionLabel
         descriptionLabel.textColor = Theme.shared.colors.transactionCellDescription
@@ -109,31 +111,59 @@ class TransactionTableTableViewCell: UITableViewCell {
         descriptionLabel.sizeToFit()
     }
 
-    private func setUsername(_ contact: Contact?) {
-        var userName = "-"
-        if let c = contact {
-            let (alias, _) = c.alias
-            userName = alias
-        }
+    private func setAlias(_ contact: Contact) {
+        let (alias, _) = contact.alias
+        userNameLabel.text = alias
+    }
 
-        userNameLabel.text = userName
+    private func setEmojis(_ pubKey: PublicKey) {
+        let (emojis, _) = pubKey.emojis
+        userNameLabel.text = emojis
     }
 
     func setDetails(completedTransaction: CompletedTransaction) {
         setMessage(completedTransaction.message.0)
-        setUsername(completedTransaction.contact.0)
         setValue(microTari: completedTransaction.microTari.0, direction: completedTransaction.direction)
+        if let contact = completedTransaction.contact.0 {
+            setAlias(contact)
+        } else {
+            if completedTransaction.direction == .inbound {
+                let (publicKey, _) = completedTransaction.sourcePublicKey
+                if let pubKey = publicKey {
+                    setEmojis(pubKey)
+                }
+            } else if completedTransaction.direction == .outbound {
+                let (publicKey, _) = completedTransaction.destinationPublicKey
+                if let pubKey = publicKey {
+                    setEmojis(pubKey)
+                }
+            }
+        }
     }
 
     func setDetails(pendingInboundTransaction: PendingInboundTransaction) {
         setMessage(pendingInboundTransaction.message.0)
-        setUsername(pendingInboundTransaction.contact.0)
         setValue(microTari: pendingInboundTransaction.microTari.0, direction: pendingInboundTransaction.direction)
+        if let contact = pendingInboundTransaction.contact.0 {
+            setAlias(contact)
+        } else {
+            let (publicKey, _) = pendingInboundTransaction.sourcePublicKey
+            if let pubKey = publicKey {
+                setEmojis(pubKey)
+            }
+        }
     }
 
     func setDetails(pendingOutboundTransaction: PendingOutboundTransaction) {
         setMessage(pendingOutboundTransaction.message.0)
-        setUsername(pendingOutboundTransaction.contact.0)
         setValue(microTari: pendingOutboundTransaction.microTari.0, direction: pendingOutboundTransaction.direction)
+        if let contact = pendingOutboundTransaction.contact.0 {
+            setAlias(contact)
+        } else {
+            let (publicKey, _) = pendingOutboundTransaction.destinationPublicKey
+            if let pubKey = publicKey {
+                setEmojis(pubKey)
+            }
+        }
     }
 }

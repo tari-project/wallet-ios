@@ -47,6 +47,7 @@ enum PublicKeyError: Error {
 
 class PublicKey {
     private var ptr: OpaquePointer
+    private var cachedEmojiId: String?
 
     var pointer: OpaquePointer {
         return ptr
@@ -70,6 +71,18 @@ class PublicKey {
 
         return bytes!.hexString
     }
+
+    //TOOD implement actual function
+    var emojis: (String, Error?) {
+        if cachedEmojiId == nil {
+            cachedEmojiId = dummyUserId
+        }
+
+        return (cachedEmojiId!, nil)
+    }
+
+    //TODO setup attributed string version with dots in the middle for shortened version in Common dir.
+    //https://stackoverflow.com/questions/19318421/how-to-embed-small-icon-in-uilabel
 
     init(privateKey: PrivateKey) throws {
         var errorCode: Int32 = -1
