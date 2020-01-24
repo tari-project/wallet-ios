@@ -268,6 +268,12 @@
 		4C2C95C523796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
 		4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C6237962CB005058AB /* libc++.tbd */; };
 		83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */; };
+		BF6C4BCA23D8833B005CC4EC /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */; };
+		BF6C4BCB23D88342005CC4EC /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */; };
+		BF6C4BCC23D88343005CC4EC /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */; };
+		BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
+		BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
+		BFC5532723D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -403,6 +409,8 @@
 		540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		867662CACBB1C47B665EBA55 /* Pods-MobileWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.release.xcconfig"; sourceTree = "<group>"; };
 		9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
+		BFC5532423D9B8E4009130A8 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		CB7DC916E97096D5FCB440E3 /* Pods-MobileWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E6C8060CF3B17C7AA315F558 /* Pods-MobileWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet.release.xcconfig"; path = "Target Support Files/Pods-MobileWallet/Pods-MobileWallet.release.xcconfig"; sourceTree = "<group>"; };
 		F28D9135828811CA84244432 /* Pods_MobileWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -522,6 +530,7 @@
 			isa = PBXGroup;
 			children = (
 				00262EAE236F015000A6C8A0 /* UILableWithPadding.swift */,
+				BFC5532423D9B8E4009130A8 /* UIView.swift */,
 				00230B0823770CEA00F23E34 /* CALayer.swift */,
 				00BBD808237D80C800EBF5E6 /* Date.swift */,
 				0074619A239A57B000F00966 /* UIBarButtonItem.swift */,
@@ -659,6 +668,7 @@
 		00E2BCB5236B469C00C2A105 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				BF6C4BC823D8831F005CC4EC /* Scan */,
 				00746195239901D200F00966 /* Send */,
 				00BBD7FA237C462400EBF5E6 /* AppEntry */,
 				00E2BCB6236B46A400C2A105 /* Home */,
@@ -798,6 +808,14 @@
 				28164FB1973A4277E7C47F6D /* Pods-MobileWalletUITests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		BF6C4BC823D8831F005CC4EC /* Scan */ = {
+			isa = PBXGroup;
+			children = (
+				BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */,
+			);
+			path = Scan;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1168,6 +1186,7 @@
 				00BFF8DF23D9912F003DCEA2 /* ErrorFeedback.swift in Sources */,
 				001F6CE42380253B00FA7002 /* Contact.swift in Sources */,
 				00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
+				BF6C4BCA23D8833B005CC4EC /* ScanViewController.swift in Sources */,
 				00262EB9236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
 				00A6779E23743696001A853E /* TransactionViewController.swift in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
@@ -1180,6 +1199,7 @@
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
 				00746197239901FA00F00966 /* SendViewController.swift in Sources */,
+				BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				001F6CE02380198D00FA7002 /* Contacts.swift in Sources */,
@@ -1220,6 +1240,7 @@
 				00BFF8E023D9912F003DCEA2 /* ErrorFeedback.swift in Sources */,
 				004997B02382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				00C185BA238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
+				BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */,
 				001F6CE52380253B00FA7002 /* Contact.swift in Sources */,
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
@@ -1254,6 +1275,7 @@
 				00262EBA236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
 				00BBD80A237D80C800EBF5E6 /* Date.swift in Sources */,
 				004997B42382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
+				BF6C4BCB23D88342005CC4EC /* ScanViewController.swift in Sources */,
 				001256302371D81500A9C067 /* SplashViewController.swift in Sources */,
 				001F6CE92381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				00BBD81E237ECDAA00EBF5E6 /* TariLibWrapperTests.swift in Sources */,
@@ -1275,6 +1297,7 @@
 				00BBD810237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				004997B92382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				00C185C62390221A0096984E /* DevelopmentUI.swift in Sources */,
+				BFC5532723D9B8E4009130A8 /* UIView.swift in Sources */,
 				00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */,
 				004997AD2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
 				00A994352396434B007D9990 /* QRButton.swift in Sources */,
@@ -1282,6 +1305,7 @@
 				00BBD805237D746B00EBF5E6 /* OnboardingUITests.swift in Sources */,
 				00947CC923D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
+				BF6C4BCC23D88343005CC4EC /* ScanViewController.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
 				00A9943123952F77007D9990 /* SendButton.swift in Sources */,
