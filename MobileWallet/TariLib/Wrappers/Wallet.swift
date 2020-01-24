@@ -329,14 +329,14 @@ class Wallet {
 
         return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!)
     }
-    
+
     func isCompletedTransactionOutbound(tx: CompletedTransaction) throws -> Bool {
         var errorCode: Int32 = -1
         let result = wallet_is_completed_transaction_outbound(ptr, tx.pointer, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
-        
+
         return result
     }
 
