@@ -87,6 +87,10 @@ class Contacts {
             throw countError!
         }
 
+        if count < 1 {
+            throw ContactsError.contactNotFound
+        }
+
         for n in 0...count - 1 {
             let contact = try self.at(position: n)
             let (contactPubKey, contactPubKeyError) = contact.publicKey

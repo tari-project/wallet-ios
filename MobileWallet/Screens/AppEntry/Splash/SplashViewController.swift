@@ -92,8 +92,10 @@ class SplashViewController: UIViewController {
             try TariLib.shared.createNewWallet()
             authenticateUser()
         } catch {
-            //TODO error alert
-            print(error.localizedDescription)
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Failed to create new wallet", comment: ""),
+                description: NSLocalizedString("", comment: ""), error: error //TODO copy update
+            )
         }
     }
 

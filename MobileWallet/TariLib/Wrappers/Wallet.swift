@@ -158,38 +158,53 @@ class Wallet {
     init(commsConfig: CommsConfig, loggingFilePath: String) throws {
         let loggingFilePathPointer = UnsafeMutablePointer<Int8>(mutating: (loggingFilePath as NSString).utf8String)!
 
-        let callback_received_transaction_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
+        let receivedTransactionCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let pendingInbound = PendingInboundTransaction.init(pendingInboundTransactionPointer: valuePointer!)
-                print("pendingInbound callback")
-            }
+            TariEventBus.postToMainThread(.receievedTransaction, sender: pendingInbound)
+            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+            print("receivedTransactionCallback")
+        }
 
-        let callback_received_transaction_reply_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
+        let receivedTransactionReplyCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
-                print("completed callback")
-            }
+            TariEventBus.postToMainThread(.receievedTransactionReply, sender: completed)
+            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+            print("receivedTransactionReply")
+        }
 
-        let callback_received_finalized_transaction_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
+        let receivedFinalizedTransactionCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
-                print("completed callback")
-            }
+            TariEventBus.postToMainThread(.receivedFinalizedTransaction, sender: completed)
+            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+            print("receivedFinalizedTransaction")
+        }
 
-        let callback_transaction_broadcast_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
+        let transactionBroadcastCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
-                print("completed callback")
-            }
+            TariEventBus.postToMainThread(.transactionBroadcast, sender: completed)
+            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+            print("transactionBroadcast")
+        }
 
-        let callback_transaction_mined_fn: (@convention(c) (OpaquePointer?) -> Void)? = {
+        let transactionMinedCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
-                print("completed callback")
-            }
+            TariEventBus.postToMainThread(.transactionMined, sender: completed)
+            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+            print("callbackTransactionMined")
+        }
 
-        let callback_discovery_process_complete_fn: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
-            print(txID, success)
+        let discoveryProcessCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
+            print("discoveryProcessCompleteCallback: \(txID) Success: \(success)")
         }
 
         dbPath = commsConfig.dbPath
@@ -200,12 +215,12 @@ class Wallet {
         let result = wallet_create(
             commsConfig.pointer,
             loggingFilePathPointer,
-            callback_received_transaction_fn,
-            callback_received_transaction_reply_fn,
-            callback_received_finalized_transaction_fn,
-            callback_transaction_broadcast_fn,
-            callback_transaction_mined_fn,
-            callback_discovery_process_complete_fn,
+            receivedTransactionCallback,
+            receivedTransactionReplyCallback,
+            receivedFinalizedTransactionCallback,
+            transactionBroadcastCallback,
+            transactionMinedCallback,
+            discoveryProcessCompleteCallback,
             UnsafeMutablePointer<Int32>(&errorCode)
         )
         guard errorCode == 0 else {
