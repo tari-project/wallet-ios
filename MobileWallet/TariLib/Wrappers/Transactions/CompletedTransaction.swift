@@ -143,18 +143,18 @@ class CompletedTransaction: TransactionProtocol {
     }
 
     var direction: TransactionDirection {
-        //TODO remove below code when this is fetched from the ffi
-        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         var direction: TransactionDirection = .inbound
-        let (sourcePubKey, _) = self.sourcePublicKey
-
+        
         if let wallet = TariLib.shared.tariWallet {
-            if (wallet.isWalletPubKey(publicKey: sourcePubKey!)) {
-                //Source pub key is mine
-                direction = .outbound
+            do {
+                let isOutboud = try (wallet.isCompletedTransactionOutbound(tx: self))
+                if (isOutboud) {
+                   direction = .outbound
+                }
+            } catch {
+                direction = .none
             }
         }
-        //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
         return direction
     }

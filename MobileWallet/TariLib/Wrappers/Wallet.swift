@@ -329,18 +329,16 @@ class Wallet {
 
         return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!)
     }
-
-    //TODO Remove when lib supports getting direction of a completed tx
-    //Used for now in completed tx to determin if a TX is sent/received
-    //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    func isWalletPubKey(publicKey: PublicKey) -> Bool {
-        let (hex, _) = publicKey.hex
-        let (walletPubKey, _) = self.publicKey
-        let (walletHex, _) = walletPubKey!.hex
-
-        return hex == walletHex
+    
+    func isCompletedTransactionOutbound(tx: CompletedTransaction) throws -> Bool {
+        var errorCode: Int32 = -1
+        let result = wallet_is_completed_transaction_outbound(ptr, tx.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+        
+        return result
     }
-    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     deinit {
         wallet_destroy(ptr)

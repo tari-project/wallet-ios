@@ -73,6 +73,17 @@ class PendingOutboundTransaction: TransactionProtocol {
 
         return (MicroTari(result), nil)
     }
+    
+    var fee: (MicroTari?, Error?) {
+        var errorCode: Int32 = -1
+        let result = pending_outbound_transaction_get_fee(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+
+        guard errorCode == 0 else {
+            return (nil, CompletedTransactionError.generic(errorCode))
+        }
+
+        return (MicroTari(result), nil)
+    }
 
     var message: (String, Error?) {
         var errorCode: Int32 = -1
