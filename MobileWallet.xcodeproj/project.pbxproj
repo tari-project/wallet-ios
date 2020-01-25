@@ -274,6 +274,8 @@
 		BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 		BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 		BFC5532723D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
+		BFE5007923DE4E2800DE4FD9 /* 1-Intro.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFE5007723DE4E2700DE4FD9 /* 1-Intro.mp4 */; };
+		BFE5007A23DE4E2800DE4FD9 /* 2-Loop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFE5007823DE4E2800DE4FD9 /* 2-Loop.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -411,6 +413,8 @@
 		9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		BFC5532423D9B8E4009130A8 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		BFE5007723DE4E2700DE4FD9 /* 1-Intro.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "1-Intro.mp4"; sourceTree = "<group>"; };
+		BFE5007823DE4E2800DE4FD9 /* 2-Loop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "2-Loop.mp4"; sourceTree = "<group>"; };
 		CB7DC916E97096D5FCB440E3 /* Pods-MobileWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E6C8060CF3B17C7AA315F558 /* Pods-MobileWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet.release.xcconfig"; path = "Target Support Files/Pods-MobileWallet/Pods-MobileWallet.release.xcconfig"; sourceTree = "<group>"; };
 		F28D9135828811CA84244432 /* Pods_MobileWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -462,6 +466,8 @@
 			children = (
 				0012563A2371E89300A9C067 /* SplashAnimation.json */,
 				0012562E2371D81500A9C067 /* SplashViewController.swift */,
+				BFE5007723DE4E2700DE4FD9 /* 1-Intro.mp4 */,
+				BFE5007823DE4E2800DE4FD9 /* 2-Loop.mp4 */,
 			);
 			path = Splash;
 			sourceTree = "<group>";
@@ -949,6 +955,7 @@
 				001256B42372918B00A9C067 /* AvenirLTStd-Medium.otf in Resources */,
 				00BFF8E723D99741003DCEA2 /* ErrorFeedback.xib in Resources */,
 				001256662372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */,
+				BFE5007923DE4E2800DE4FD9 /* 1-Intro.mp4 in Resources */,
 				0012566C2372918B00A9C067 /* AvenirLTStd-Heavy.otf in Resources */,
 				001256932372918B00A9C067 /* AvenirNextLTPro-UltLtCnIt.otf in Resources */,
 				001256A52372918B00A9C067 /* AvenirNextLTPro-BoldCn.otf in Resources */,
@@ -962,6 +969,7 @@
 				0012569C2372918B00A9C067 /* AvenirNextLTPro-BoldCnIt.otf in Resources */,
 				001256962372918B00A9C067 /* AvenirNextLTPro-HeavyCn.otf in Resources */,
 				001256A82372918B00A9C067 /* AvenirNextLTPro-MediumCn.otf in Resources */,
+				BFE5007A23DE4E2800DE4FD9 /* 2-Loop.mp4 in Resources */,
 				001256BA2372918B00A9C067 /* AvenirNextLTPro-Regular.otf in Resources */,
 				00E491A32366E08B007B332D /* Main.storyboard in Resources */,
 				001256452371EC1900A9C067 /* Entry.storyboard in Resources */,

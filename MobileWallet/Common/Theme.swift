@@ -75,6 +75,9 @@ struct Colors: Loopable {
     let splashBackground = UIColor(named: "SplashBackground")
     let appBackground = UIColor(named: "AppBackground")
 
+    // Splash
+    let splashTitleColor = UIColor.white
+
     //Home screen
     let homeScreenBackground = UIColor(named: "HomeScreenBackground")
     let homeScreenTotalBalanceLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
@@ -115,6 +118,9 @@ struct Colors: Loopable {
 struct Fonts: Loopable {
     let splashTestnetFooterLabel = UIFont(name: "AvenirLTStd-Heavy", size: 9.0)
     let actionButton = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)
+
+    //Splash
+    let splashTitleLabel = UIFont(name: "AvenirLTStd-Black", size: 30.0)
 
     //Home screen
     let homeScreenTotalBalanceLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
