@@ -149,7 +149,7 @@ struct Fonts: Loopable {
     let transactionScreenTextLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
     let transactionScreenTxIDLabel = UIFont(name: "AvenirLTStd-Roman", size: 13.0)
     let transactionListEmptyTitleLabel = UIFont(name: "AvenirLTStd-Black", size: 33.0)
-    let transactionListEmptyMessageLabel = UIFont(name: "AvenirLTStd-Medium", size: 13.0)
+    let transactionListEmptyMessageLabel = UIFont(name: "AvenirLTStd-Medium", size: 14.0)
     let transactionFeeLabel = UIFont(name: "AvenirLTStd-Heavy", size: 14.0)
 
     //Navigation bar
@@ -181,9 +181,6 @@ struct Images: Loopable {
 
     //Background images
     let homeBackgroundImage = UIImage(named: "HomePattern")
-
-    //Empty state
-    let emptyStateTransactionList = UIImage(named: "EmptyStateTransactions")
 }
 
 struct Theme {
