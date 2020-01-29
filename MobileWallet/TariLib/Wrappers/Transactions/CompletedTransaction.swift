@@ -77,10 +77,10 @@ class CompletedTransaction: TransactionProtocol {
         return (MicroTari(result), nil)
     }
 
-    var fee: (UInt64, Error?) {
+    var fee: (MicroTari?, Error?) {
         var errorCode: Int32 = -1
         let result = completed_transaction_get_fee(ptr, UnsafeMutablePointer<Int32>(&errorCode))
-        return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
+        return (MicroTari(result), errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
     }
 
     var message: (String, Error?) {

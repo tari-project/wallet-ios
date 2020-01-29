@@ -53,8 +53,8 @@ protocol TransactionProtocol {
     //var fee: (UInt64, Error?) { get }
     var message: (String, Error?) { get }
     var timestamp: (UInt64, Error?) { get }
-    //var sourcePublicKey: (PublicKey?, Error?) { get }
-    //var destinationPublicKey: (PublicKey?, Error?) { get }
+    var sourcePublicKey: (PublicKey?, Error?) { get }
+    var destinationPublicKey: (PublicKey?, Error?) { get }
     var direction: TransactionDirection { get }
     var contact: (Contact?, Error?) { get }
 }

@@ -108,11 +108,21 @@ struct Colors: Loopable {
 
     //Shadows
     let actionButtonShadow = UIColor(named: "ActionButtonShadow")
+    let transactionScreenBottomHeaderShadow = UIColor(named: "DefaultShadow")
 
     //Feedback
     let feedbackPopupBackground = UIColor(named: "FeedbackScreenBackground")
     let errorFeedbackPopupTitle = UIColor(named: "Heading")
     let errorFeedbackPopupDescription = UIColor(named: "SmallSubheading")
+
+    //Emoji button
+    let emojiButtonShadow = UIColor(named: "EmojiButtonShadow")
+    let emojiButtonBackground = UIColor(named: "AppBackground")
+    let emojiButtonClip = UIColor(named: "EmojiClip")
+
+    //Simple text button
+    let textButton = UIColor(named: "TextButton")
+    let textButtonSecondary = UIColor(named: "TextButtonSecondary")
 }
 
 struct Fonts: Loopable {
@@ -140,6 +150,7 @@ struct Fonts: Loopable {
     let transactionScreenTxIDLabel = UIFont(name: "AvenirLTStd-Roman", size: 13.0)
     let transactionListEmptyTitleLabel = UIFont(name: "AvenirLTStd-Black", size: 33.0)
     let transactionListEmptyMessageLabel = UIFont(name: "AvenirLTStd-Medium", size: 13.0)
+    let transactionFeeLabel = UIFont(name: "AvenirLTStd-Heavy", size: 14.0)
 
     //Navigation bar
     let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
@@ -147,6 +158,9 @@ struct Fonts: Loopable {
     //Popup User feedback
     let errorFeedbackPopupTitle = UIFont(name: "AvenirLTStd-Light", size: 18)
     let errorFeedbackPopupDescription = UIFont(name: "AvenirLTStd-Medium", size: 14)
+
+    //Simple text button
+    let textButton = UIFont(name: "AvenirLTStd-Medium", size: 14)
 }
 
 struct Images: Loopable {
@@ -163,6 +177,7 @@ struct Images: Loopable {
     let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
     let close = UIImage(named: "Close")
+    let transactionFee = UIImage(named: "TransactionFee")
 
     //Background images
     let homeBackgroundImage = UIImage(named: "HomePattern")

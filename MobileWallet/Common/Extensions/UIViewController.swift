@@ -1,8 +1,8 @@
-//  Date.swift
+//  UIViewController.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/14
+	Created by Jason van den Berg on 2020/01/28
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,41 +38,21 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+import UIKit
 
-extension Date {
+// Put this piece of code anywhere you like
+extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
 
-    /*
-     Creates a readable string from a given date
-    */
-    func relativeDayFromToday() -> String? {
-        if Calendar.current.isDateInToday(self) {
-            return NSLocalizedString("Today", comment: "Transaction list section heading")
-        } else if Calendar.current.isDateInYesterday(self) {
-            return NSLocalizedString("Yesterday", comment: "Transaction list section heading")
-        } else {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, yyyy", options: 0, locale: NSLocale.current)
-            //dateFormatter.timeZone = TimeZone.current
-
-            return dateFormatter.string(from: self)
-        }
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        swipeDown.direction = UISwipeGestureRecognizer.Direction.down
+        view.addGestureRecognizer(swipeDown)
     }
 
-    /*
-     Creates a date and time string from a given date
-    */
-    func formattedDisplay() -> String? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMM d yyyy h:mm a", options: 0, locale: NSLocale.current)
-
-        return dateFormatter.string(from: self)
-    }
-
-    /*
-     Adjust a date by number of days
-    */
-    func shiftDateBy(days: Int) -> Date {
-        return Calendar.current.date(byAdding: Calendar.Component.day, value: days, to: self)!
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
 }

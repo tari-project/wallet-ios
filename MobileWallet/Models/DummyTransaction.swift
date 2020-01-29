@@ -64,7 +64,7 @@ extension Array {
 
 var dummyUserId: String {
     get {
-        let emojis = "😉☝️🔥🤓🎃🤯🍺🏀🎂😍👍🔥🐰🤯🍺🏀🎂😉☝️🔥🤓"
+        let emojis = "😉☝️🔥🤓🎃🤯🍺🏀🎂😍👍🔥🐰🤯🍺🏀🎂😉☝️🔥🤓😉☝️🔥🤓"
         var emojiArray = Array(emojis)
         emojiArray.shuffle()
         return String(emojiArray)

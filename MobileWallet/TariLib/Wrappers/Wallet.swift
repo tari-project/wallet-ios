@@ -243,6 +243,10 @@ class Wallet {
 
     func addUpdateContact(alias: String, publicKeyHex: String) throws {
         let publicKey = try PublicKey(hex: publicKeyHex)
+        try addUpdateContact(alias: alias, publicKey: publicKey)
+    }
+
+    func addUpdateContact(alias: String, publicKey: PublicKey) throws {
         let (currentWalletPublicKey, publicKeyError) = self.publicKey
         if publicKeyError != nil {
             throw publicKeyError!
@@ -253,7 +257,7 @@ class Wallet {
             throw currentWalletPublicKeyHexError!
         }
 
-        if (publicKeyHex == currentWalletPublicKeyHex) {
+        if (publicKey.hex.0 == currentWalletPublicKeyHex) {
             throw WalletErrors.addOwnContact
         }
 
@@ -268,6 +272,8 @@ class Wallet {
         if !contactAdded {
             throw WalletErrors.addUpdateContact
         }
+
+        TariEventBus.postToMainThread(.transactionListUpdate)
     }
 
     func sendTransaction(destination: PublicKey, amount: UInt64, fee: UInt64, message: String) throws {

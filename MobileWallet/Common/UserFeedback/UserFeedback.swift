@@ -41,29 +41,68 @@
 import Foundation
 import SwiftEntryKit
 
+enum UserFeedbackTypes {
+    case error
+    case info
+}
+
 class UserFeedback {
     static let shared = UserFeedback()
+    private let VERTICAL_OFFSET: CGFloat = 14
 
-    func error(title: String, description: String, error: Error? = nil) {
-        let errorFeedbackView = ErrorFeedback()
-
-        var descriptionText = description
-        if let e = error {
-            descriptionText.append(" Error: \(e.localizedDescription)")
-        }
-        errorFeedbackView.setDetails(title: title, description: descriptionText)
-
+    private var defaultAttributes: EKAttributes {
         var attributes = EKAttributes.bottomFloat
         attributes.screenBackground = .color(color: EKColor(Theme.shared.colors.feedbackPopupBackground!))
         attributes.entryBackground = .clear
-        attributes.positionConstraints.size = .init(width: .offset(value: 14), height: .intrinsic)
-        attributes.positionConstraints.verticalOffset = 14
+        attributes.positionConstraints.size = .init(width: .offset(value: VERTICAL_OFFSET), height: .intrinsic)
+        attributes.positionConstraints.verticalOffset = VERTICAL_OFFSET
         attributes.screenInteraction = .dismiss
-        attributes.displayDuration = 12
-        attributes.roundCorners = .all(radius: 26)
-        attributes.hapticFeedbackType = .error
         attributes.entryInteraction = .delayExit(by: 2)
 
+        return attributes
+    }
+
+    func error(title: String, description: String, error: Error? = nil) {
+        let errorFeedbackView = FeedbackView()
+
+        var descriptionText = description
+        if let e = error {
+            descriptionText.append("\n\(e.localizedDescription)")
+        }
+
+        errorFeedbackView.setDetails(title: title, description: descriptionText)
+        var attributes = defaultAttributes
+        attributes.displayDuration = 12
+        attributes.hapticFeedbackType = .error
+
         SwiftEntryKit.display(entry: errorFeedbackView, using: attributes)
+    }
+
+    func info(title: String, description: String) {
+        let infoFeedbackView = FeedbackView()
+        infoFeedbackView.setDetails(title: title, description: description)
+        infoFeedbackView.onClose {
+            SwiftEntryKit.dismiss()
+        }
+
+        var attributes = defaultAttributes
+        attributes.displayDuration = .infinity
+        attributes.hapticFeedbackType = .none
+        attributes.entranceAnimation = .init(translate: .init(duration: 0.25, anchorPosition: .bottom, spring: .init(damping: 1, initialVelocity: 0)))
+
+        SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
+    }
+
+    func success(title: String) {
+        let infoFeedbackView = FeedbackView()
+        infoFeedbackView.setDetails(title: title)
+        var attributes = defaultAttributes
+        attributes.screenBackground = .clear
+        attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
+        attributes.displayDuration = 2
+        attributes.hapticFeedbackType = .success
+        attributes.screenInteraction = .forward
+
+        SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
     }
 }

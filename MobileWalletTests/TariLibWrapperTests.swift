@@ -129,6 +129,11 @@ class TariLibWrapperTests: XCTestCase {
         }
         
         let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
+        
+        print("privateKeyHex: ", privateKeyHex)
+        print("databasePath: ", databasePath)
+        print("dbName: ", dbName)
+
         do {
             let commsConfig = try CommsConfig(
                 privateKey: PrivateKey(hex: privateKeyHex),
@@ -316,7 +321,7 @@ class TariLibWrapperTests: XCTestCase {
             return
         }
                     
-        XCTAssertEqual(groupedTransactions.count, 1)
+        XCTAssertEqual(groupedTransactions.count, 8)
         XCTAssertEqual(groupedTransactions[0].count, 8)
     }
     

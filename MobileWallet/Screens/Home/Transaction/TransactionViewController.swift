@@ -40,34 +40,104 @@
 
 import UIKit
 
-class TransactionViewController: UIViewController {
-    @IBOutlet weak var valueContainerView: UIView!
-    @IBOutlet weak var valueLabel: UILabel!
-    @IBOutlet weak var currencySymbol: UIImageView!
-    @IBOutlet weak var detailsStackView: UIStackView!
+class TransactionViewController: UIViewController, UITextFieldDelegate {
+    let SIDE_PADDING: CGFloat = 25
+    let BOTTOM_HEADING_PADDING: CGFloat = 20
+    let VALUE_VIEW_HEIGHT_MULTIPLIER_FULL: CGFloat = 0.21
+    let VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTEND: CGFloat = 0.18
 
-    @IBOutlet weak var fromLabel: UILabel!
-    @IBOutlet weak var fromUserNameLabel: UILabel!
-    @IBOutlet weak var fromUserIdLabel: UILabel!
+    var contactPublicKey: PublicKey?
+    var contactAlias: String = ""
+    let dateContainerView = UIView()
+    let dateLabel = UILabel()
+    let valueContainerView = UIView()
+    var valueContainerViewHeightConstraintFull = NSLayoutConstraint()
+    var valueContainerViewHeightConstraintShortened = NSLayoutConstraint()
+    var valueCenterYAnchorConstraint = NSLayoutConstraint()
+    let valueLabel = UILabel()
+    let emojiButton = EmojiButton()
+    let fromHeadingLabel = UILabel()
+    let addContactButton = TextButton()
+    let contactNameHeadingLabel = UILabel()
+    let contactNameTextField = UITextField()
+    let editContactNameButton = TextButton()
+    let dividerView = UIView()
+    let noteHeadingLabel = UILabel()
+    let noteLabel = UILabel()
+    var noteHeadingLabelTopAnchorConstraintContactNameShowing = NSLayoutConstraint()
+    var noteHeadingLabelTopAnchorConstraintContactNameMissing = NSLayoutConstraint()
 
-    @IBOutlet weak var noteLabel: UILabel!
-    @IBOutlet weak var noteValueLabel: UILabel!
-    @IBOutlet weak var transactionIcon: UIImageView!
+    @IBOutlet weak var transactionIDLabel: UILabel!
 
-    @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var dateValueLabel: UILabel!
+    var isShowingContactAlias: Bool = true {
+        didSet {
+            if isShowingContactAlias {
+                noteHeadingLabelTopAnchorConstraintContactNameMissing.isActive = false
+                noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = true
+                addContactButton.isHidden = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: { [ weak self] in
+                    guard let self = self else { return }
 
-    @IBOutlet weak var transactionFeeLabel: UILabel!
-    @IBOutlet weak var transactionFeeValueLabel: UILabel!
+                    self.contactNameTextField.isHidden = false
+                    self.contactNameHeadingLabel.isHidden = false
+                    self.dividerView.isHidden = false
+                })
+            } else {
+                noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = false
+                noteHeadingLabelTopAnchorConstraintContactNameMissing.isActive = true
+                contactNameTextField.isHidden = true
+                contactNameHeadingLabel.isHidden = true
+                dividerView.isHidden = true
+                editContactNameButton.isHidden = true
+            }
+        }
+    }
 
-    @IBOutlet weak var transactionIdLabel: UILabel!
+    var isEditingContactName: Bool = false {
+        didSet {
+            if isEditingContactName {
+                contactNameTextField.becomeFirstResponder()
+                editContactNameButton.isHidden = true
 
-    var transaction: DummyTransaction?
+                UIView.animate(withDuration: 0.15, delay: 0, options: .curveLinear, animations: { [weak self] () in
+                    guard let self = self else { return }
+                    self.valueContainerViewHeightConstraintFull.isActive = false
+                    self.valueContainerViewHeightConstraintShortened.isActive = true
+                    self.view.layoutIfNeeded()
+                })
+
+            } else {
+                contactNameTextField.resignFirstResponder()
+                editContactNameButton.isHidden = false
+
+                UIView.animate(withDuration: 0.15, delay: 0, options: .curveLinear, animations: { [weak self] () in
+                    guard let self = self else { return }
+                    self.valueContainerViewHeightConstraintShortened.isActive = false
+                    self.valueContainerViewHeightConstraintFull.isActive = true
+                    self.view.layoutIfNeeded()
+                })
+            }
+        }
+    }
+
+    var transaction: Any?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setup()
+
+        do {
+            try setDetails()
+        } catch {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Transaction error", comment: "Transaction detail screen"),
+                description: NSLocalizedString("Failed to load transaction details", comment: "Transaction detail screen"),
+                error: error)
+        }
+
+        hideKeyboardWhenTappedAround()
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -78,97 +148,163 @@ class TransactionViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        createBorders()
     }
 
     private func setup() {
         view.backgroundColor = Theme.shared.colors.appBackground
 
-        fromLabel.text = NSLocalizedString("From", comment: "Transaction detail screen")
-        fromLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        fromLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
-        fromUserNameLabel.font = Theme.shared.fonts.transactionScreenTextLabel
-        fromUserNameLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
-
-        noteLabel.text = NSLocalizedString("Note", comment: "Transaction detail screen")
-        noteLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        noteLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
-        noteValueLabel.font = Theme.shared.fonts.transactionScreenTextLabel
-        noteValueLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
-
-        dateLabel.text = NSLocalizedString("Date and Time", comment: "Transaction detail screen")
-        dateLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        dateLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
-        dateValueLabel.font = Theme.shared.fonts.transactionScreenTextLabel
-        dateValueLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
-
-        transactionFeeLabel.text = NSLocalizedString("Transaction Fee", comment: "Transaction detail screen")
-        transactionFeeLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        transactionFeeLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
-        transactionFeeValueLabel.font = Theme.shared.fonts.transactionScreenTextLabel
-        transactionFeeValueLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
-
-        transactionIdLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
-        transactionIdLabel.font = Theme.shared.fonts.transactionScreenTxIDLabel
-
-        for view in self.detailsStackView.subviews {
-            view.backgroundColor = Theme.shared.colors.appBackground
-        }
-
+        setupDateView()
         setupValueView()
-        setValues()
+        setupFromEmojis()
+        setupAddContactButton()
+        setupContactName()
+        setupEditContactButton()
+        setupDivider()
+        setupNote()
 
-//        if let navController = navigationController {
-//            let navBar = navController.navigationBar
-//            
-//            let backImage = UIImage(systemName: "arrow.left") //TODO use own asset when available
-//            navBar.backIndicatorImage = backImage
-//            navBar.backIndicatorTransitionMaskImage = backImage
-//        }
+        //Transaction ID
+        transactionIDLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
+        transactionIDLabel.font = Theme.shared.fonts.transactionScreenTxIDLabel
     }
 
-    private func createBorders() {
-        for view in self.detailsStackView.subviews {
-            view.layer.addBorder(edge: .bottom, color: Theme.shared.colors.transactionScreenDivider!, thickness: 1.0)
+    @objc func keyboardWillHide(notification: NSNotification) {
+        if isEditingContactName {
+            isEditingContactName = false
         }
     }
 
-    private func setupValueView() {
-        let labelColor = Theme.shared.colors.transactionViewValueLabel
-
-        valueLabel.minimumScaleFactor = 0.2
-        valueLabel.font = Theme.shared.fonts.transactionScreenCurrencyValueLabel
-        valueLabel.textColor = labelColor
-
-        currencySymbol.image = Theme.shared.images.currencySymbol?.withTintColor(labelColor!)
-
-        valueContainerView.backgroundColor = Theme.shared.colors.transactionViewValueContainer
+    @objc func feeButtonPressed(_ sender: UIButton) {
+        UserFeedback.shared.info(
+            title: NSLocalizedString("Transaction Fee", comment: "Transaction detail view"),
+            description: NSLocalizedString("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas consequat risus sit amet laoreet mollis. ", comment: "Transaction detail view"))
     }
 
-    private func setValues() {
-        if let tx = transaction {
-            var title: String?
+    @objc func editContactButtonPressed(_ sender: UIButton) {
+        isEditingContactName = true
+    }
 
-            //TODO
-            if true {
-                title = NSLocalizedString("Payment Received", comment: "Navigation bar title on transaction view screen")
-            } else {
-                title = NSLocalizedString("Payment Sent", comment: "Navigation bar title on transaction view screen")
+    @objc func addContactButtonPressed(_ sender: UIButton) {
+        isShowingContactAlias = true
+        isEditingContactName = true
+    }
+
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        return isEditingContactName
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard textField.text != nil && textField.text != "" else {
+            textField.text = contactAlias
+            return false
+        }
+
+        isEditingContactName = false
+
+        guard contactPublicKey != nil else {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
+                description: NSLocalizedString("Missing public key from transaction.", comment: "Transaction detail screen")
+            )
+            return true
+        }
+
+        do {
+            try TariLib.shared.tariWallet!.addUpdateContact(alias: textField.text!, publicKey: contactPublicKey!)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
+                UserFeedback.shared.success(title: NSLocalizedString("Contact Updated!", comment: "Transaction detail screen"))
+            })
+
+        } catch {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
+                description: NSLocalizedString("Failed to save contact details.", comment: "Transaction detail screen"),
+                error: error
+            )
+        }
+
+        return true
+    }
+
+    private func setDetails() throws {
+        if let tx = transaction as? TransactionProtocol {
+            let (microTari, microTariError) = tx.microTari
+            guard microTariError == nil else {
+                throw microTariError!
             }
 
-            navigationItem.title = title
+            if tx.direction == .inbound {
+                navigationItem.title = NSLocalizedString("Payment Received", comment: "Navigation bar title on transaction view screen")
+                valueLabel.text = microTari!.formatted
+                contactPublicKey = tx.sourcePublicKey.0
+            } else if tx.direction == .outbound {
+                navigationItem.title = NSLocalizedString("Payment Sent", comment: "Navigation bar title on transaction view screen")
+                valueLabel.text = microTari!.formatted
+                contactPublicKey = tx.destinationPublicKey.0
+            }
 
-            valueLabel.text = tx.value.formattedWithOperator
-            fromUserNameLabel.text = tx.userName
-            fromUserIdLabel.text = tx.userId
-            noteValueLabel.text = tx.description
-            transactionIcon.image = tx.icon
-            dateValueLabel.text = tx.date.locallyFormattedDisplay()
-            transactionFeeValueLabel.text = tx.fee.formattedWithOperator
+            if let pubKey = contactPublicKey {
+                let (emojis, emojisError) = pubKey.emojis
+                guard emojisError == nil else {
+                    throw emojisError!
+                }
 
-            let txLabelText = NSLocalizedString("Transaction ID:", comment: "Transaction view screen")
-            transactionIdLabel.text = "\(txLabelText) \(tx.id)"
+                emojiButton.setEmojis(emojis)
+            }
+
+            let (date, dateError) = tx.localDate
+            guard dateError == nil else {
+                throw dateError!
+            }
+
+            dateLabel.text = date!.formattedDisplay()
+
+            let (contact, contactError) = tx.contact
+            if contactError == nil {
+                let (alias, aliasError) = contact!.alias
+                guard aliasError == nil else {
+                    throw aliasError!
+                }
+
+                contactAlias = alias
+                contactNameTextField.text = contactAlias
+                isShowingContactAlias = true
+            } else {
+                isShowingContactAlias = false
+            }
+
+            let (message, messageError) = tx.message
+            guard messageError == nil else {
+                throw messageError!
+            }
+
+            noteLabel.text = message
+
+            let (id, idError) = tx.id
+            guard idError == nil else {
+                throw idError!
+            }
+
+            transactionIDLabel.text = NSLocalizedString("Transaction ID:", comment: "Transaction detail view") + " \(String(id))"
+
+            //Get the fee for outbound transactions only
+            if let completedTx = tx as? CompletedTransaction {
+                if completedTx.direction == .outbound {
+                    let (fee, feeError) = completedTx.fee
+                    guard feeError == nil else {
+                        throw feeError!
+                    }
+
+                    setFeeLabel(fee!.formattedPreciseWithOperator)
+                }
+            } else if let pendingOutboundTx = tx as? PendingOutboundTransaction {
+                let (fee, feeError) = pendingOutboundTx.fee
+                guard feeError == nil else {
+                    throw feeError!
+                }
+
+                setFeeLabel(fee!.formattedPreciseWithOperator)
+            }
         }
     }
 }

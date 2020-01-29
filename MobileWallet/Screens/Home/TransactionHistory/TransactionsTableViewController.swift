@@ -77,6 +77,10 @@ class TransactionsTableViewController: UITableViewController {
         tableView.register(UINib(nibName: CELL_IDENTIFIER, bundle: nil), forCellReuseIdentifier: CELL_IDENTIFIER)
         refreshTransactionControl.attributedTitle = NSAttributedString(string: "Pull to refresh") //TODO local
         refreshTransactionControl.addTarget(self, action: #selector(refreshPullTransactions(_:)), for: .valueChanged)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
 
         self.refreshTable()
 
@@ -201,8 +205,22 @@ class TransactionsTableViewController: UITableViewController {
 
     //Transaction gets tapped
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-//        let transaction = groupedCompletedTransactions[indexPath.section][indexPath.row]
-//        actionDelegate?.onTransactionSelect(transaction)
+        var transaction: Any?
+
+        //If it's the first group and we're showing the pending group
+        if indexPath.section == 0 && showsPendingGroup {
+            if indexPath.row < pendingInboundTransactions.count {
+                transaction = pendingInboundTransactions[indexPath.row]
+            } else {
+                transaction = pendingOutboundTransactions[indexPath.row - pendingInboundTransactions.count]
+            }
+        } else {
+            //Handle as a completed transaction
+            let index = showsPendingGroup ? indexPath.section - 1 : indexPath.section
+            transaction = groupedCompletedTransactions[index][indexPath.row]
+        }
+
+        actionDelegate?.onTransactionSelect(transaction!)
 
         return nil
     }
