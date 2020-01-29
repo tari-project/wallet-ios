@@ -188,7 +188,7 @@ class TariLibWrapperTests: XCTestCase {
         
         //MARK: Add Alice contact
         do {
-            try wallet.addContact(alias: "BillyBob", publicKeyHex: "a03d9be195e40466e255bd64eb612ad41ae0010519b6cbfc7698e5d0916a1a7c")
+            try wallet.addUpdateContact(alias: "BillyBob", publicKeyHex: "a03d9be195e40466e255bd64eb612ad41ae0010519b6cbfc7698e5d0916a1a7c")
         } catch {
             XCTFail("Failed to add contact \(error.localizedDescription)")
         }
