@@ -139,38 +139,19 @@ extension TransactionsTableViewController {
 
     func setEmptyView() {
         let emptyView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
-
-        let imageView = UIImageView(image: Theme.shared.images.emptyStateTransactionList)
-        imageView.frame = CGRect(x: 0, y: 0, width: 275, height: 192)
-        imageView.contentMode = .scaleAspectFit
-        imageView.center = CGPoint(x: tableView.center.x, y: tableView.center.y - 200)
-        emptyView.addSubview(imageView)
-
-        let titleLabel = UILabel()
         let messageLabel = UILabel()
-        messageLabel.numberOfLines = 0
-        messageLabel.textAlignment = .center
-        titleLabel.text = NSLocalizedString("Let's get started", comment: "Home view table when there are no transactions")
-        messageLabel.text = NSLocalizedString("Shake to show debug menu", comment: "Home view table when there are no transactions")
-
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.textColor = Theme.shared.colors.transactionScreenEmptyTitleLabel
-        titleLabel.font = Theme.shared.fonts.transactionListEmptyTitleLabel
-        emptyView.addSubview(titleLabel)
-
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        messageLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
-        messageLabel.font = Theme.shared.fonts.transactionListEmptyMessageLabel
         emptyView.addSubview(messageLabel)
 
-        titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 40).isActive = true
-        titleLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
-        titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: titleLabel.font.pointSize * 1.2).isActive = true
+        messageLabel.text = NSLocalizedString("You don’t have any transactions yet", comment: "Home view table when there are no transactions")
+        messageLabel.textAlignment = .center
+        messageLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
+        messageLabel.font = Theme.shared.fonts.transactionListEmptyMessageLabel
 
-        messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20).isActive = true
+        messageLabel.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor).isActive = true
         messageLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
         messageLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: messageLabel.font.pointSize * 1.2).isActive = true
-
+        
         tableView.backgroundView = emptyView
     }
 
