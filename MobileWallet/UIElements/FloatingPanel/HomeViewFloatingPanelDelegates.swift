@@ -42,12 +42,20 @@ import Foundation
 import FloatingPanel
 
 class HomeViewFloatingPanelLayout: FloatingPanelLayout {
+    let navBarHeight: CGFloat
+    let initialFullScreen: Bool
+
+    init(navBarHeight: CGFloat, initialFullScreen: Bool) {
+        self.navBarHeight = navBarHeight
+        self.initialFullScreen = initialFullScreen
+    }
+
     var positionReference: FloatingPanelLayoutReference {
         return .fromSuperview
     }
 
     public var initialPosition: FloatingPanelPosition {
-        return .tip
+        return initialFullScreen ? .full : .tip
     }
 
     public var supportedPositions: Set<FloatingPanelPosition> {
@@ -55,7 +63,7 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
     }
 
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
-        let topInset: CGFloat = -1
+        let topInset: CGFloat = navBarHeight - 2
         let lowestHeight = UIScreen.main.bounds.height - 190
 
         switch position {
@@ -67,7 +75,8 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
 
     func backdropAlphaFor(position: FloatingPanelPosition) -> CGFloat {
         if position == .full {
-            return 0.9
+            //TODO refactor to allow for backdrop being set from HomeViewController
+            return 0.0
         }
 
         return 0.0

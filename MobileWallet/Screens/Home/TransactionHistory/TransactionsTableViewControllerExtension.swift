@@ -151,11 +151,110 @@ extension TransactionsTableViewController {
         messageLabel.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor).isActive = true
         messageLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
         messageLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: messageLabel.font.pointSize * 1.2).isActive = true
-        
+
         tableView.backgroundView = emptyView
     }
 
     func removeEmptyView() {
         tableView.backgroundView = nil
+    }
+
+    func setIntroView() {
+        let introView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+
+        let titleLabel = UILabel()
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        introView.addSubview(titleLabel)
+
+        let titleText = NSLocalizedString("Hello! This is your Tari Wallet", comment: "Home screen untro")
+
+        let attributedTitle = NSMutableAttributedString(
+            string: titleText,
+            attributes: [NSAttributedString.Key.font: Theme.shared.fonts.introTitle!]
+        )
+
+        //Bold first word
+        if let firstWordEndPosition = titleText.indexDistance(of: " ") {
+            attributedTitle.addAttributes(
+                [NSAttributedString.Key.font: Theme.shared.fonts.introTitleBold!],
+                range: NSRange(location: 0, length: firstWordEndPosition)
+            )
+        }
+
+        titleLabel.attributedText = attributedTitle
+        titleLabel.textAlignment = .center
+        titleLabel.centerYAnchor.constraint(equalTo: introView.centerYAnchor).isActive = true
+        titleLabel.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
+
+        titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: titleLabel.font.pointSize * 1.2).isActive = true
+
+        let messageLabel = UILabel()
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+        introView.addSubview(messageLabel)
+
+        messageLabel.text = NSLocalizedString("Swipe down and I'll show you around your wallet", comment: "Home view table on introdution to wallet")
+        messageLabel.textAlignment = .center
+        messageLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
+        messageLabel.font = Theme.shared.fonts.transactionListEmptyMessageLabel
+
+        messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15).isActive = true
+        messageLabel.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
+        messageLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: messageLabel.font.pointSize * 1.2).isActive = true
+
+        let introImage = UIImageView()
+        introImage.image = Theme.shared.images.handWave!
+        introImage.translatesAutoresizingMaskIntoConstraints = false
+        introView.addSubview(introImage)
+        introImage.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
+        introImage.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -15).isActive = true
+
+        let downArrow = UIImageView()
+        downArrow.image = Theme.shared.images.downArrow!
+        downArrow.translatesAutoresizingMaskIntoConstraints = false
+        introView.addSubview(downArrow)
+        downArrow.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
+        downArrow.topAnchor.constraint(equalTo: messageLabel.bottomAnchor, constant: 15).isActive = true
+
+        tableView.backgroundView = introView
+
+        animateWave(imageView: introImage)
+    }
+
+    private func animateWave(imageView: UIImageView) {
+        let degreesUp: CGFloat = 20.0
+        let degreesDown: CGFloat = -15.0
+        let duration: TimeInterval = 0.5
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+            //Clockwise
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+                imageView.transform = CGAffineTransform(rotationAngle: (degreesUp * .pi) / 180.0)
+            }, completion: { (_) in
+                //Anti clockwise
+                UIView.animate(withDuration: duration, delay: 0, options: .curveLinear, animations: {
+                    imageView.transform = CGAffineTransform(rotationAngle: (degreesDown * .pi) / 180.0)
+                }, completion: { (_) in
+                    //Back to start
+                    UIView.animate(withDuration: duration, delay: 0, options: .curveLinear, animations: {
+                        imageView.transform = CGAffineTransform(rotationAngle: 0)
+                    })
+
+                })
+            })
+        })
+    }
+
+    func showIntroContent(_ isIntro: Bool) {
+        if isIntro {
+            showsEmptyState = false
+            setIntroView()
+        } else {
+            removeEmptyView()
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: { [ weak self] in
+                guard let self = self else { return }
+                self.showsEmptyState = true
+            })
+        }
     }
 }
