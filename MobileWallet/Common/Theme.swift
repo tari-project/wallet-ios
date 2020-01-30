@@ -78,6 +78,11 @@ struct Colors: Loopable {
     // Splash
     let splashTitleColor = UIColor.white
 
+    //SplashCreatingWallet
+    let creatingWalletFirstLabel = UIColor(named: "CreatingWalletBlackLabel")
+    let creatingWalletSecondLabel = UIColor(named: "CreatingWalletBlackLabel")
+    let creatingWalletThirdLabel = UIColor(named: "CreatingWalletOtherLabel")
+
     //Home screen
     let homeScreenBackground = UIColor(named: "HomeScreenBackground")
     let homeScreenTotalBalanceLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
@@ -131,6 +136,12 @@ struct Fonts: Loopable {
 
     //Splash
     let splashTitleLabel = UIFont(name: "AvenirLTStd-Black", size: 30.0)
+
+    //SplashCreatingWallet
+    let createWalletFirstLabel = UIFont(name: "AvenirLTStd-Black", size: 18.0)
+    let createWalletSecondLabelFirstText = UIFont(name: "Avenir-Black", size: 18.0)
+    let createWalletSecondLabelSecondText = UIFont(name: "Avenir-Roman", size: 18.0)
+    let createWalletThirdLabel = UIFont(name: "Avenir-Medium", size: 14.0)
 
     //Home screen
     let homeScreenTotalBalanceLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)

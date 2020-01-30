@@ -51,6 +51,7 @@ class SplashViewController: UIViewController {
     private var playerLooper: AVPlayerLooper!
     private let localAuthenticationContext = LAContext()
     var ticketTop: NSLayoutConstraint?
+    var walletExistsInitially: Bool = false
 
     // MARK: - Outlets
     @IBOutlet weak var videoView: UIView!
@@ -121,7 +122,7 @@ class SplashViewController: UIViewController {
             animationContainer.heightAnchor.constraint(equalToConstant: 128).isActive = true
             animationContainer.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 0).isActive = true
             animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-
+            walletExistsInitially = true
         } else {
             animationContainer.translatesAutoresizingMaskIntoConstraints = false
             animationContainer.widthAnchor.constraint(equalToConstant: 240).isActive = true
@@ -130,6 +131,7 @@ class SplashViewController: UIViewController {
             ticketTop?.isActive = true
             animationContainer.bottomAnchor.constraint(equalTo: videoView.topAnchor, constant: 110).isActive = true
             animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+            walletExistsInitially = false
         }
     }
 
@@ -267,6 +269,18 @@ class SplashViewController: UIViewController {
     }
 
     private func navigateToHome() {
-        performSegue(withIdentifier: "SplashToHome", sender: nil)
+        if walletExistsInitially {
+            performSegue(withIdentifier: "WalletExistsToHome", sender: nil)
+        } else {
+            if let vc = self.storyboard?.instantiateViewController(withIdentifier: "WalletCreationViewController") as? WalletCreationViewController {
+                vc.modalPresentationStyle = .fullScreen
+                let transition = CATransition()
+                transition.duration = 0.5
+                transition.type = CATransitionType.push
+                transition.subtype = CATransitionSubtype.fromBottom
+                view.window!.layer.add(transition, forKey: kCATransition)
+                self.present(vc, animated: true, completion: nil)
+            }
+        }
     }
 }
