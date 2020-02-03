@@ -170,6 +170,14 @@ class TariLibWrapperTests: XCTestCase {
         
         XCTAssertEqual(walletPublicKeyHex, testWalletPublicKey)
         
+        // check wallet can sign a message and then verify the signature of the message it signed
+        let msg = "Hello"
+        let signature = try! wallet.signMessage(message: msg);
+        let verification = try!  wallet.verifyMessageSignature(contactPublicKey: walletPublicKey!, hexSignatureNonce: signature, message: msg)
+        if verification != true {
+            XCTFail("Verification of message failed")
+        }
+        
         //MARK: Test data
         do {
             try wallet.generateTestData()

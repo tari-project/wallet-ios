@@ -272,13 +272,13 @@
 		00E4922B23683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
-		4C2C95B023795919005058AB /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95AF23795919005058AB /* libwallet_ffi.a */; };
-		4C2C95B123795919005058AB /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95AF23795919005058AB /* libwallet_ffi.a */; };
-		4C2C95B223795919005058AB /* libwallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95AF23795919005058AB /* libwallet_ffi.a */; };
 		4C2C95C323796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
 		4C2C95C423796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
 		4C2C95C523796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
 		4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C6237962CB005058AB /* libc++.tbd */; };
+		4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
+		4CCF87EE23E8275800C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
+		4CCF87EF23E8276700C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
 		83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */; };
 		BF6C4BCA23D8833B005CC4EC /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */; };
 		BF6C4BCB23D88342005CC4EC /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */; };
@@ -428,6 +428,7 @@
 		4C2C95B8237959B3005058AB /* MobileWallet-bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWallet-bridging-header.h"; sourceTree = "<group>"; };
 		4C2C95C223796184005058AB /* libzmq.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzmq.a; sourceTree = "<group>"; };
 		4C2C95C6237962CB005058AB /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtari_wallet_ffi.a; path = MobileWallet/TariLib/libtari_wallet_ffi.a; sourceTree = "<group>"; };
 		540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		867662CACBB1C47B665EBA55 /* Pods-MobileWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.release.xcconfig"; sourceTree = "<group>"; };
 		9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -449,11 +450,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */,
 				00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */,
 				0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */,
 				4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */,
 				4C2C95C323796184005058AB /* libzmq.a in Frameworks */,
-				4C2C95B023795919005058AB /* libwallet_ffi.a in Frameworks */,
 				123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -462,9 +463,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CCF87EE23E8275800C8CDB1 /* libtari_wallet_ffi.a in Frameworks */,
 				00DC2E242385559C00036DDC /* libsqlite3.tbd in Frameworks */,
 				4C2C95C423796184005058AB /* libzmq.a in Frameworks */,
-				4C2C95B123795919005058AB /* libwallet_ffi.a in Frameworks */,
 				83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -473,9 +474,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4CCF87EF23E8276700C8CDB1 /* libtari_wallet_ffi.a in Frameworks */,
 				00DC2E25238555A200036DDC /* libsqlite3.tbd in Frameworks */,
 				4C2C95C523796184005058AB /* libzmq.a in Frameworks */,
-				4C2C95B223795919005058AB /* libwallet_ffi.a in Frameworks */,
 				1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -802,6 +803,7 @@
 		27F235021D9E2060A3CBB465 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */,
 				00DC2E21238554FD00036DDC /* libsqlite3.tbd */,
 				00DC2E232385559C00036DDC /* libsqlite3.tbd */,
 				00BBD7EE237B014100EBF5E6 /* libc++.tbd */,
