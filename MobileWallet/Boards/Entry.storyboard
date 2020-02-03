@@ -127,21 +127,44 @@ that’s easy to use.</string>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mQk-Ha-DV8">
                                 <rect key="frame" x="0.0" y="44" width="414" height="379"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" name="CreatingWalletBackground"/>
                             </view>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="nerdEmoji" translatesAutoresizingMaskIntoConstraints="NO" id="r9g-a0-MKW">
-                                <rect key="frame" x="187" y="372.5" width="40" height="30"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qmx-vh-IWf" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="167" y="342.5" width="80" height="60"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="40" id="Uep-EY-Wt3"/>
-                                    <constraint firstAttribute="height" constant="30" id="dtj-F5-DZ6"/>
+                                    <constraint firstAttribute="height" constant="60" id="J8G-bv-jvL"/>
+                                    <constraint firstAttribute="width" constant="80" id="XQK-CH-1wY"/>
                                 </constraints>
-                            </imageView>
+                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="63C-OS-6oP">
                                 <rect key="frame" x="186" y="439" width="42" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yrC-4Q-G9q">
+                                <rect key="frame" x="20" y="322" width="374" height="60.5"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Of0-FJ-fUs">
+                                        <rect key="frame" x="20" y="20" width="334" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="Of0-FJ-fUs" secondAttribute="trailing" constant="20" id="3IM-kP-usW"/>
+                                    <constraint firstItem="Of0-FJ-fUs" firstAttribute="leading" secondItem="yrC-4Q-G9q" secondAttribute="leading" constant="20" id="EnA-KF-gxI"/>
+                                    <constraint firstItem="Of0-FJ-fUs" firstAttribute="top" secondItem="yrC-4Q-G9q" secondAttribute="top" constant="20" id="fws-op-4eL"/>
+                                    <constraint firstAttribute="bottom" secondItem="Of0-FJ-fUs" secondAttribute="bottom" constant="20" id="gGD-fO-O3O"/>
+                                </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RC1-b4-FCh">
                                 <rect key="frame" x="186" y="402.5" width="42" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -157,7 +180,7 @@ that’s easy to use.</string>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="MOl-h7-Gpm">
                                 <rect key="frame" x="0.0" y="431" width="414" height="379"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" name="CreatingWalletBackground"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M8U-Ri-XyX">
                                 <rect key="frame" x="25" y="441" width="364" height="20.5"/>
@@ -180,34 +203,47 @@ that’s easy to use.</string>
                                     <constraint firstAttribute="width" constant="24" id="yDx-t6-sTG"/>
                                 </constraints>
                             </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uWX-iB-bc8" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="0.0" y="241" width="414" height="414"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="uWX-iB-bc8" secondAttribute="height" multiplier="374:374" id="FNO-ib-Syb"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="mQk-Ha-DV8" firstAttribute="top" secondItem="YAc-mi-fSA" secondAttribute="top" id="474-JK-vI0"/>
-                            <constraint firstItem="RC1-b4-FCh" firstAttribute="top" secondItem="r9g-a0-MKW" secondAttribute="bottom" id="8Ff-48-MxN"/>
                             <constraint firstItem="MOl-h7-Gpm" firstAttribute="leading" secondItem="YAc-mi-fSA" secondAttribute="leading" id="9UO-ZO-I83"/>
+                            <constraint firstItem="qmx-vh-IWf" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="BWL-Gt-IsG"/>
                             <constraint firstItem="HjF-br-qL7" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="Diz-tv-bSG"/>
                             <constraint firstItem="mQk-Ha-DV8" firstAttribute="leading" secondItem="YAc-mi-fSA" secondAttribute="leading" id="EXa-8e-7UQ"/>
                             <constraint firstItem="M8U-Ri-XyX" firstAttribute="leading" secondItem="YAc-mi-fSA" secondAttribute="leading" constant="25" id="EfR-0p-O0S"/>
+                            <constraint firstItem="RC1-b4-FCh" firstAttribute="top" secondItem="qmx-vh-IWf" secondAttribute="bottom" id="FTL-08-Soq"/>
                             <constraint firstItem="YAc-mi-fSA" firstAttribute="bottom" secondItem="MOl-h7-Gpm" secondAttribute="bottom" constant="52" id="K0i-PJ-0Cp"/>
                             <constraint firstItem="MOl-h7-Gpm" firstAttribute="top" secondItem="mQk-Ha-DV8" secondAttribute="bottom" constant="8" symbolic="YES" id="LLQ-cV-d0T"/>
                             <constraint firstItem="YAc-mi-fSA" firstAttribute="trailing" secondItem="MOl-h7-Gpm" secondAttribute="trailing" id="NZG-nt-yGU"/>
+                            <constraint firstItem="yrC-4Q-G9q" firstAttribute="leading" secondItem="YAc-mi-fSA" secondAttribute="leading" constant="20" id="PgN-xF-Kz0"/>
+                            <constraint firstItem="YAc-mi-fSA" firstAttribute="trailing" secondItem="yrC-4Q-G9q" secondAttribute="trailing" constant="20" id="QpJ-DI-Lds"/>
                             <constraint firstItem="RC1-b4-FCh" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="VRy-h4-Awb"/>
                             <constraint firstItem="HXv-Q0-Rqh" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="YDS-il-vTf"/>
                             <constraint firstItem="YAc-mi-fSA" firstAttribute="trailing" secondItem="mQk-Ha-DV8" secondAttribute="trailing" id="YlQ-zy-E86"/>
                             <constraint firstItem="M8U-Ri-XyX" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="ehB-76-lhf"/>
+                            <constraint firstItem="uWX-iB-bc8" firstAttribute="leading" secondItem="YAc-mi-fSA" secondAttribute="leading" constant="20" symbolic="YES" id="esX-W2-qFk"/>
                             <constraint firstItem="63C-OS-6oP" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="fLF-3G-R3Q"/>
+                            <constraint firstItem="YAc-mi-fSA" firstAttribute="trailing" secondItem="uWX-iB-bc8" secondAttribute="trailing" constant="20" symbolic="YES" id="fN0-ku-0vq"/>
+                            <constraint firstItem="uWX-iB-bc8" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="gHI-IJ-N0l"/>
                             <constraint firstItem="HjF-br-qL7" firstAttribute="top" secondItem="RC1-b4-FCh" secondAttribute="top" id="iju-cW-bwd"/>
                             <constraint firstItem="MOl-h7-Gpm" firstAttribute="height" secondItem="mQk-Ha-DV8" secondAttribute="height" id="jyO-8z-kq6"/>
+                            <constraint firstItem="RC1-b4-FCh" firstAttribute="top" secondItem="yrC-4Q-G9q" secondAttribute="bottom" constant="20" id="kwj-Y6-XBu"/>
                             <constraint firstItem="YAc-mi-fSA" firstAttribute="trailing" secondItem="HXv-Q0-Rqh" secondAttribute="trailing" constant="25" id="mfK-5D-biV"/>
                             <constraint firstItem="YAc-mi-fSA" firstAttribute="trailing" secondItem="M8U-Ri-XyX" secondAttribute="trailing" constant="25" id="mjJ-ob-xsD"/>
+                            <constraint firstItem="uWX-iB-bc8" firstAttribute="centerY" secondItem="SSR-AL-jY7" secondAttribute="centerY" id="nhX-RK-B3f"/>
                             <constraint firstItem="HXv-Q0-Rqh" firstAttribute="leading" secondItem="YAc-mi-fSA" secondAttribute="leading" constant="25" id="npu-HW-akg"/>
                             <constraint firstItem="YAc-mi-fSA" firstAttribute="bottom" secondItem="HXv-Q0-Rqh" secondAttribute="bottom" constant="-70" id="ovK-Nz-ta6"/>
                             <constraint firstItem="63C-OS-6oP" firstAttribute="top" secondItem="MOl-h7-Gpm" secondAttribute="top" constant="8" id="rgo-Ux-7xd"/>
                             <constraint firstItem="0t0-Ol-DRf" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="shF-HV-Poj"/>
                             <constraint firstItem="MOl-h7-Gpm" firstAttribute="top" secondItem="RC1-b4-FCh" secondAttribute="bottom" constant="8" symbolic="YES" id="tDu-RI-aN5"/>
                             <constraint firstItem="M8U-Ri-XyX" firstAttribute="top" secondItem="RC1-b4-FCh" secondAttribute="bottom" constant="18" id="tHN-Ra-8O1"/>
-                            <constraint firstItem="r9g-a0-MKW" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="tZr-Ja-UFQ"/>
                             <constraint firstItem="0t0-Ol-DRf" firstAttribute="top" secondItem="SSR-AL-jY7" secondAttribute="top" constant="70" id="uCT-qS-Koa"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="YAc-mi-fSA"/>
@@ -217,13 +253,16 @@ that’s easy to use.</string>
                         <outlet property="bottomWhiteView" destination="MOl-h7-Gpm" id="wJp-PV-Uve"/>
                         <outlet property="createEmojiButton" destination="HXv-Q0-Rqh" id="2Wf-Kw-BJp"/>
                         <outlet property="createEmojiButtonConstraint" destination="ovK-Nz-ta6" id="u68-uc-Oav"/>
-                        <outlet property="emojiImageView" destination="r9g-a0-MKW" id="qJc-cf-f3K"/>
+                        <outlet property="emojiWheelView" destination="uWX-iB-bc8" id="NAA-m6-Z47"/>
                         <outlet property="firstLabel" destination="63C-OS-6oP" id="fNm-8f-Fvt"/>
                         <outlet property="firstLabelTopConstraint" destination="rgo-Ux-7xd" id="mpN-rm-cYq"/>
+                        <outlet property="nerdAnimationView" destination="qmx-vh-IWf" id="ewd-i5-R9e"/>
                         <outlet property="secondLabel" destination="RC1-b4-FCh" id="fSH-fK-UXi"/>
                         <outlet property="thirdLabel" destination="M8U-Ri-XyX" id="Xmn-1N-yJa"/>
                         <outlet property="topImageView" destination="0t0-Ol-DRf" id="3W9-s1-xVV"/>
                         <outlet property="topWhiteView" destination="mQk-Ha-DV8" id="iNb-m6-IYU"/>
+                        <outlet property="userEmojiContainer" destination="yrC-4Q-G9q" id="Jhf-Pz-LWn"/>
+                        <outlet property="userEmojiLabel" destination="Of0-FJ-fUs" id="Q2s-z0-fc7"/>
                         <segue destination="JVr-OT-SNV" kind="presentation" identifier="SplashToHome" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="z9S-yK-CDI"/>
                     </connections>
                 </viewController>
@@ -234,12 +273,14 @@ that’s easy to use.</string>
     </scenes>
     <resources>
         <image name="Gem" width="227" height="227"/>
-        <image name="nerdEmoji" width="34" height="34"/>
+        <namedColor name="CreatingWalletBackground">
+            <color red="0.96470588235294119" green="0.96470588235294119" blue="0.96470588235294119" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="SplashBackground">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="5dS-d1-azU"/>
+        <segue reference="z9S-yK-CDI"/>
     </inferredMetricsTieBreakers>
 </document>

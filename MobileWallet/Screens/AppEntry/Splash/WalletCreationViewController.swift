@@ -43,7 +43,7 @@ import Lottie
 
 class WalletCreationViewController: UIViewController {
     // MARK: - Variables and constants
-
+    var shouldGoToHome: Bool = false
     // MARK: - Outlets
     @IBOutlet weak var createEmojiButtonConstraint: NSLayoutConstraint!
     @IBOutlet weak var firstLabelTopConstraint: NSLayoutConstraint!
@@ -53,9 +53,12 @@ class WalletCreationViewController: UIViewController {
     @IBOutlet weak var topWhiteView: UIView!
     @IBOutlet weak var bottomWhiteView: UIView!
     @IBOutlet weak var animationView: AnimationView!
+    @IBOutlet weak var emojiWheelView: AnimationView!
+    @IBOutlet weak var nerdAnimationView: AnimationView!
     @IBOutlet weak var createEmojiButton: ActionButton!
-    @IBOutlet weak var emojiImageView: UIImageView!
     @IBOutlet weak var topImageView: UIImageView!
+    @IBOutlet weak var userEmojiLabel: UILabel!
+    @IBOutlet weak var userEmojiContainer: UIView!
 
     // MARK: - Override functions
     override func viewDidLoad() {
@@ -102,6 +105,9 @@ class WalletCreationViewController: UIViewController {
 
         topImageView.image = topImageView.image?.withRenderingMode(.alwaysTemplate)
         topImageView.tintColor = .black
+
+        self.view.backgroundColor = Theme.shared.colors.creatingWalletBackground
+        self.userEmojiLabel.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
     }
 
     private func firstLabelAnimation() {
@@ -136,7 +142,6 @@ class WalletCreationViewController: UIViewController {
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
             guard let self = self else { return }
-            //self.displaySecondLabelAnimation()
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
                 guard let self = self else { return }
                 self.removeSecondLabelAnimation()
@@ -176,43 +181,137 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func runCheckMarkAnimation() {
-        //print("run checkmark animation")
-        loadAnimation()
-        startAnimation()
+        loadCheckMarkAnimation()
+        startCheckMarkAnimation()
     }
 
-    private func loadAnimation() {
+    private func loadCheckMarkAnimation() {
         let animation = Animation.named("CheckMark")
         animationView.animation = animation
     }
 
-    private func startAnimation() {
+    private func startCheckMarkAnimation() {
         animationView.play(
             fromProgress: 0,
             toProgress: 1,
             loopMode: .playOnce,
             completion: { [weak self] (_) in
                 guard let self = self else { return }
-                self.showLastScreenAnimation()
+                self.showCreateYourEmojiIdScreen()
             }
         )
     }
 
-    private func showLastScreenAnimation() {
+    private func runEmojiWheelAnimation() {
+        loadEmojiWheelAnimation()
+        startEmojiWheelAnimation()
+    }
+
+    private func startEmojiWheelAnimation() {
+        emojiWheelView.play(
+            fromProgress: 0,
+            toProgress: 1,
+            loopMode: .playOnce,
+            completion: { [weak self] (_) in
+                guard let self = self else { return }
+                self.showYourEmoji()
+            }
+        )
+    }
+
+    private func loadEmojiWheelAnimation() {
+        let animation = Animation.named("EmojiWheel")
+        emojiWheelView.animation = animation
+    }
+
+    private func runNerdEmojiAnimation() {
+        loadNerdEmojiAnimation()
+        startNerdEmojiAnimation()
+    }
+
+    private func loadNerdEmojiAnimation() {
+        let animation = Animation.named("NerdEmojiAnimation")
+        nerdAnimationView.animation = animation
+    }
+
+    private func startNerdEmojiAnimation() {
+        nerdAnimationView.play(
+            fromProgress: 0,
+            toProgress: 1,
+            loopMode: .playOnce,
+            completion: { [weak self] (_) in
+                guard let self = self else { return }
+                //self.showYourEmoji()
+            }
+        )
+    }
+
+    private func showCreateYourEmojiIdScreen() {
         self.createEmojiButtonConstraint.constant = 0
+        self.runNerdEmojiAnimation()
 
         UIView.animate(withDuration: 1, animations: { [weak self] in
             guard let self = self else { return }
             self.secondLabel.alpha = 1.0
             self.thirdLabel.alpha = 1.0
             self.createEmojiButton.alpha = 1.0
-            self.emojiImageView.alpha = 1.0
             self.view.layoutIfNeeded()
-        })
+        }) { [weak self] (_) in
+            guard let self = self else { return }
+        }
+    }
+
+    private func showYourEmoji() {
+        self.createEmojiButtonConstraint.constant = 0
+        self.createEmojiButton.animateIn()
+        UIView.animate(withDuration: 1, animations: { [weak self] in
+            guard let self = self else { return }
+            self.secondLabel.alpha = 1.0
+            self.thirdLabel.alpha = 1.0
+            self.userEmojiLabel.alpha = 1.0
+            self.userEmojiContainer.alpha = 1.0
+            self.view.layoutIfNeeded()
+        }) { [weak self] (_) in
+            guard let self = self else { return }
+            self.shouldGoToHome = true
+        }
     }
 
     // MARK: - Actions
     @IBAction func navigateToHoome(_ sender: Any) {
-        performSegue(withIdentifier: "SplashToHome", sender: nil)
+        if shouldGoToHome {
+            performSegue(withIdentifier: "SplashToHome", sender: nil)
+        } else {
+            self.createEmojiButton.animateOut()
+            UIView.animate(withDuration: 1, animations: {
+                self.secondLabel.alpha = 0.0
+                self.thirdLabel.alpha = 0.0
+                self.nerdAnimationView.alpha = 0.0
+                self.view.layoutIfNeeded()
+            }) { [weak self] (_) in
+                guard let self = self else { return }
+                self.runEmojiWheelAnimation()
+
+                let secondLabelString = NSLocalizedString("This is your Emoji ID", comment: "Splash show your emoji ID")
+                let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
+                    .font: Theme.shared.fonts.createWalletEmojiIDFirstText ?? UIFont.systemFont(ofSize: 12),
+                  .foregroundColor: UIColor(white: 0.0, alpha: 1.0),
+                  .kern: -0.33
+                ])
+                attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText ?? UIFont.systemFont(ofSize: 12), range: NSRange(location: 13, length: 8))
+
+                self.secondLabel.attributedText = attributedString
+                self.thirdLabel.text = NSLocalizedString("This set of emojis is your wallet address. It’s how your friends can find you and send you Tari.", comment: "Emoji Id third label on wallet creation")
+
+                self.createEmojiButton.setTitle(NSLocalizedString("Continue", comment: "This is your emoji screen on wallet creation"), for: .normal)
+
+                if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
+                    let (emojis, _) = pubKey.emojis
+
+                    self.userEmojiLabel.textColor = Theme.shared.colors.creatingWalletEmojisSeparator
+                    self.userEmojiLabel.text = String(emojis.enumerated().map { $0 > 0 && $0 % 4 == 0 ? ["|", $1] : [$1]}.joined())
+                }
+            }
+        }
     }
 }

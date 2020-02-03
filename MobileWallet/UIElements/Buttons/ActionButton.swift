@@ -94,12 +94,31 @@ class ActionButton: UIButton {
                 withDuration: 0.2,
                 delay: 0,
                 options: .curveEaseOut,
-                animations: {
+                animations: { [weak self] in
+                    guard let self = self else { return }
                     self.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
                 }
-            ) { (_) in
+            ) { [weak self] (_) in
+                guard let self = self else { return }
                 self.isHidden = true
             }
+        })
+    }
+
+    func animateIn() {
+        //Wait till after pulse affect
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: { [weak self] in
+            guard let self = self else { return }
+            self.isHidden = false
+            UIView.animate(
+                withDuration: 0.2,
+                delay: 0,
+                options: .curveEaseOut,
+                animations: { [weak self] in
+                    guard let self = self else { return }
+                    self.transform = CGAffineTransform(scaleX: 1, y: 1)
+                }
+            )
         })
     }
 }
