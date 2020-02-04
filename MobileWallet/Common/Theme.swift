@@ -86,6 +86,13 @@ struct Colors: Loopable {
     let creatingWalletEmojisLabelBackground = UIColor(named: "CreatingWalletEmojisLabel")
     let creatingWalletEmojisSeparator = UIColor(named: "CreatingWalletEmojiSeparator")
 
+    // Profile
+    let profileTitleTextColor = UIColor(named: "ProfileTitleTextBlack")
+    let profileCopyEmojiColor = UIColor(named: "ProfileCopyEmojiButton")
+    let profileSeparatorView = UIColor(named: "ProfileSeparatorView")
+    let profileMiddleLabel = UIColor(named: "ProfileMiddleLabel")
+    let profileQRShadow = UIColor(named: "ProfileQRShadow")
+
     //Home screen
     let homeScreenBackground = UIColor(named: "HomeScreenBackground")
     let homeScreenTotalBalanceLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
@@ -147,6 +154,12 @@ struct Fonts: Loopable {
     let createWalletThirdLabel = UIFont(name: "Avenir-Medium", size: 14.0)
     let createWalletEmojiIDFirstText = UIFont(name: "Avenir-Light", size: 18.0)
     let createWalletEmojiIDSecondText = UIFont(name: "Avenir-Black", size: 18.0)
+
+    //Profile
+    let profileTitleLightLabel = UIFont(name: "Avenir-Light", size: 18.0)
+    let profileTitleRegularLabel = UIFont(name: "Avenir-Black", size: 18.0)
+    let profileCopyEmojiButton = UIFont(name: "Avenir-Medium", size: 12)
+    let profileMiddleLabel = UIFont(name: "Avenir-Medium", size: 14)
 
     //Home screen
     let homeScreenTotalBalanceLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)

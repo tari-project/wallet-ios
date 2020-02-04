@@ -325,6 +325,12 @@
 		BFD758E123E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */; };
 		BFD758E223E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */; };
 		BFD758E323E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */; };
+		BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */; };
+		BFD758E723E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */; };
+		BFD758E823E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */; };
+		BFD758EA23E98BA300B0F1A5 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD758E923E98BA300B0F1A5 /* Profile.storyboard */; };
+		BFD758EB23E98BA300B0F1A5 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD758E923E98BA300B0F1A5 /* Profile.storyboard */; };
+		BFD758EC23E98BA300B0F1A5 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD758E923E98BA300B0F1A5 /* Profile.storyboard */; };
 		BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */; };
 		BFE1FC0223E229FF00BA5EEC /* CheckMark.json in Resources */ = {isa = PBXBuildFile; fileRef = BFE1FC0123E229FF00BA5EEC /* CheckMark.json */; };
 		BFE1FC0923E3ACD900BA5EEC /* WalletCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */; };
@@ -484,6 +490,8 @@
 		BFC5532423D9B8E4009130A8 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		BFD758DC23E96BB500B0F1A5 /* 1-Intro.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "1-Intro.mp4"; sourceTree = "<group>"; };
 		BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "2-Loop.mp4"; sourceTree = "<group>"; };
+		BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		BFD758E923E98BA300B0F1A5 /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
 		BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCreationViewController.swift; sourceTree = "<group>"; };
 		BFE1FC0123E229FF00BA5EEC /* CheckMark.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = CheckMark.json; sourceTree = "<group>"; };
 		CB7DC916E97096D5FCB440E3 /* Pods-MobileWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -552,6 +560,7 @@
 				00E491A92366E08F007B332D /* LaunchScreen.storyboard */,
 				001256442371EC1900A9C067 /* Entry.storyboard */,
 				00E491A12366E08B007B332D /* Main.storyboard */,
+				BFD758E923E98BA300B0F1A5 /* Profile.storyboard */,
 			);
 			path = Boards;
 			sourceTree = "<group>";
@@ -752,6 +761,7 @@
 		00E2BCB5236B469C00C2A105 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				BFD758E423E98A9F00B0F1A5 /* Profile */,
 				BF6C4BC823D8831F005CC4EC /* Scan */,
 				00746195239901D200F00966 /* Send */,
 				00BBD7FA237C462400EBF5E6 /* AppEntry */,
@@ -953,6 +963,14 @@
 			path = Scan;
 			sourceTree = "<group>";
 		};
+		BFD758E423E98A9F00B0F1A5 /* Profile */ = {
+			isa = PBXGroup;
+			children = (
+				BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */,
+			);
+			path = Profile;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1107,6 +1125,7 @@
 				001256BA2372918B00A9C067 /* AvenirNextLTPro-Regular.otf in Resources */,
 				BF191A0D23E5A96700D33C85 /* EmojiWheel.json in Resources */,
 				BF191A1A23E5AFA200D33C85 /* img_2.png in Resources */,
+				BFD758EA23E98BA300B0F1A5 /* Profile.storyboard in Resources */,
 				00E491A32366E08B007B332D /* Main.storyboard in Resources */,
 				BF191A2323E5AFA200D33C85 /* img_5.png in Resources */,
 				001256452371EC1900A9C067 /* Entry.storyboard in Resources */,
@@ -1133,6 +1152,7 @@
 				0012567F2372918B00A9C067 /* AvenirNextLTPro-MediumCnIt.otf in Resources */,
 				001256702372918B00A9C067 /* AvenirLTStd-HeavyOblique.otf in Resources */,
 				00A677982373DA58001A853E /* LaunchScreen.storyboard in Resources */,
+				BFD758EB23E98BA300B0F1A5 /* Profile.storyboard in Resources */,
 				0012566D2372918B00A9C067 /* AvenirLTStd-Heavy.otf in Resources */,
 				001256882372918B00A9C067 /* AvenirNextLTPro-CnIt.otf in Resources */,
 				0012566A2372918B00A9C067 /* AvenirLTStd-BookOblique.otf in Resources */,
@@ -1186,6 +1206,7 @@
 				001256802372918B00A9C067 /* AvenirNextLTPro-MediumCnIt.otf in Resources */,
 				001256712372918B00A9C067 /* AvenirLTStd-HeavyOblique.otf in Resources */,
 				00A677992373DA59001A853E /* LaunchScreen.storyboard in Resources */,
+				BFD758EC23E98BA300B0F1A5 /* Profile.storyboard in Resources */,
 				0012566E2372918B00A9C067 /* AvenirLTStd-Heavy.otf in Resources */,
 				001256892372918B00A9C067 /* AvenirNextLTPro-CnIt.otf in Resources */,
 				0012566B2372918B00A9C067 /* AvenirLTStd-BookOblique.otf in Resources */,
@@ -1365,6 +1386,7 @@
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
+				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				00746197239901FA00F00966 /* SendViewController.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
@@ -1418,6 +1440,7 @@
 				001F6CE52380253B00FA7002 /* Contact.swift in Sources */,
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
+				BFD758E723E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				004277F823E0628A00AE7BD9 /* UIViewController.swift in Sources */,
@@ -1482,6 +1505,7 @@
 				004997B92382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				00C185C62390221A0096984E /* DevelopmentUI.swift in Sources */,
 				BFC5532723D9B8E4009130A8 /* UIView.swift in Sources */,
+				BFD758E823E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */,
 				BFE1FC0A23E3ACDA00BA5EEC /* WalletCreationViewController.swift in Sources */,
 				004997AD2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,

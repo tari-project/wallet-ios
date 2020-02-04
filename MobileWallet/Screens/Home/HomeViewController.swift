@@ -388,6 +388,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         self.performSegue(withIdentifier: "HomeToSend", sender: nil)
     }
 
+    @IBAction func onProfileAction(_ sender: Any) {
+        let storyboard = UIStoryboard.init(name: "Profile", bundle: nil)
+        if let vc = storyboard.instantiateViewController(identifier: "ProfileViewController") as? ProfileViewController {
+            self.present(vc, animated: true, completion: nil)
+        }
+    }
     // MARK: - TransactionTableDelegateMethods
 
     func onTransactionSelect(_ transaction: Any) {

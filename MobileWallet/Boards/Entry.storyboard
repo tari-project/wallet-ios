@@ -17,16 +17,16 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9YY-0o-nvV">
-                                <rect key="frame" x="-28" y="192" width="470" height="468.5"/>
+                                <rect key="frame" x="-38" y="172" width="490" height="488.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="9YY-0o-nvV" secondAttribute="height" multiplier="750:748" id="enm-Jp-0Fj"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K5K-jz-bn0" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="87" y="44" width="240" height="148"/>
+                                <rect key="frame" x="87" y="44" width="240" height="128"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="148" id="2Im-LL-YSe"/>
+                                    <constraint firstAttribute="height" constant="128" id="2Im-LL-YSe"/>
                                     <constraint firstAttribute="width" constant="240" id="ezd-iy-aj7"/>
                                 </constraints>
                             </view>
@@ -100,6 +100,8 @@ that’s easy to use.</string>
                     </view>
                     <connections>
                         <outlet property="animationContainer" destination="K5K-jz-bn0" id="Tpk-4q-2Ki"/>
+                        <outlet property="animationContainerBottomAnchor" destination="jRg-k7-zRL" id="Yi9-Nf-Eit"/>
+                        <outlet property="animationContainerTopAnchor" destination="EJr-tf-fh4" id="zJ4-39-YaN"/>
                         <outlet property="createWalletButton" destination="fLD-Gb-rum" id="B4K-j2-kcb"/>
                         <outlet property="distanceTitleSubtitle" destination="JtF-lH-gdW" id="5M3-lZ-JNW"/>
                         <outlet property="subtitleLabel" destination="qJ9-sa-FQv" id="zUK-eq-gAX"/>
