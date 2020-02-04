@@ -16,15 +16,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9YY-0o-nvV">
-                                <rect key="frame" x="-50" y="-66" width="514" height="385.5"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9YY-0o-nvV">
+                                <rect key="frame" x="-28" y="192" width="470" height="468.5"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="9YY-0o-nvV" secondAttribute="height" multiplier="4:3" id="enm-Jp-0Fj"/>
+                                    <constraint firstAttribute="width" secondItem="9YY-0o-nvV" secondAttribute="height" multiplier="750:748" id="enm-Jp-0Fj"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K5K-jz-bn0" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="87" y="44" width="240" height="0.0"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K5K-jz-bn0" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="87" y="44" width="240" height="148"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="148" id="2Im-LL-YSe"/>
+                                    <constraint firstAttribute="width" constant="240" id="ezd-iy-aj7"/>
+                                </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I22-mF-dFz">
                                 <rect key="frame" x="27" y="660.5" width="360" height="82"/>
@@ -69,10 +73,12 @@ that’s easy to use.</string>
                         </subviews>
                         <color key="backgroundColor" name="SplashBackground"/>
                         <constraints>
-                            <constraint firstItem="9YY-0o-nvV" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" constant="-50" id="Aa0-d0-MfP"/>
+                            <constraint firstItem="K5K-jz-bn0" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="8WG-Fc-BDB"/>
                             <constraint firstItem="qJ9-sa-FQv" firstAttribute="top" secondItem="AvL-7H-2gZ" secondAttribute="top" id="Cpn-Gx-5Tq"/>
                             <constraint firstItem="I22-mF-dFz" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" constant="27" id="DeI-sc-eDJ"/>
+                            <constraint firstItem="K5K-jz-bn0" firstAttribute="top" secondItem="Qtm-HJ-rTJ" secondAttribute="top" id="EJr-tf-fh4"/>
                             <constraint firstItem="qJ9-sa-FQv" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" constant="27" id="GZj-TK-YHx"/>
+                            <constraint firstItem="I22-mF-dFz" firstAttribute="top" secondItem="9YY-0o-nvV" secondAttribute="bottom" id="It7-Jx-30o"/>
                             <constraint firstItem="xrT-Tl-QNW" firstAttribute="top" secondItem="YyS-f0-YOr" secondAttribute="bottom" constant="16" id="JG0-aq-aIH"/>
                             <constraint firstItem="AvL-7H-2gZ" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" id="JGR-Gm-b4e"/>
                             <constraint firstItem="qJ9-sa-FQv" firstAttribute="top" secondItem="I22-mF-dFz" secondAttribute="bottom" constant="-100" id="JtF-lH-gdW"/>
@@ -80,15 +86,15 @@ that’s easy to use.</string>
                             <constraint firstItem="YyS-f0-YOr" firstAttribute="top" secondItem="fLD-Gb-rum" secondAttribute="bottom" constant="35" id="TKP-BA-27d"/>
                             <constraint firstItem="fLD-Gb-rum" firstAttribute="top" secondItem="qJ9-sa-FQv" secondAttribute="bottom" constant="40" id="Ttg-dR-FGs"/>
                             <constraint firstItem="xrT-Tl-QNW" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="clf-3V-Nen"/>
+                            <constraint firstItem="9YY-0o-nvV" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="cvm-Km-MoC"/>
                             <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="AvL-7H-2gZ" secondAttribute="trailing" id="d4v-Sd-b9J"/>
                             <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="fLD-Gb-rum" secondAttribute="trailing" constant="25" id="iUS-e7-WU0"/>
-                            <constraint firstItem="9YY-0o-nvV" firstAttribute="top" secondItem="K5K-jz-bn0" secondAttribute="bottom" constant="-110" id="jRg-k7-zRL"/>
+                            <constraint firstItem="9YY-0o-nvV" firstAttribute="top" secondItem="K5K-jz-bn0" secondAttribute="bottom" id="jRg-k7-zRL"/>
                             <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="bottom" secondItem="AvL-7H-2gZ" secondAttribute="bottom" id="ohV-Ps-wOs"/>
                             <constraint firstItem="YyS-f0-YOr" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="pJr-V6-0rn"/>
                             <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="qJ9-sa-FQv" secondAttribute="trailing" constant="27" id="plc-YH-APr"/>
                             <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="bottom" secondItem="xrT-Tl-QNW" secondAttribute="bottom" constant="25" id="sLr-gN-4h4"/>
                             <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="I22-mF-dFz" secondAttribute="trailing" constant="27" id="tB1-g2-znh"/>
-                            <constraint firstItem="Qtm-HJ-rTJ" firstAttribute="trailing" secondItem="9YY-0o-nvV" secondAttribute="trailing" constant="-50" id="wKp-dT-X6B"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Qtm-HJ-rTJ"/>
                     </view>
@@ -274,13 +280,13 @@ that’s easy to use.</string>
     <resources>
         <image name="Gem" width="227" height="227"/>
         <namedColor name="CreatingWalletBackground">
-            <color red="0.96470588235294119" green="0.96470588235294119" blue="0.96470588235294119" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.9649999737739563" green="0.9649999737739563" blue="0.9649999737739563" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="SplashBackground">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="z9S-yK-CDI"/>
+        <segue reference="5dS-d1-azU"/>
     </inferredMetricsTieBreakers>
 </document>

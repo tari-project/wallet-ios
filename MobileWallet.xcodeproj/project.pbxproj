@@ -319,12 +319,16 @@
 		BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 		BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 		BFC5532723D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
+		BFD758DE23E96BB500B0F1A5 /* 1-Intro.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFD758DC23E96BB500B0F1A5 /* 1-Intro.mp4 */; };
+		BFD758DF23E96BB500B0F1A5 /* 1-Intro.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFD758DC23E96BB500B0F1A5 /* 1-Intro.mp4 */; };
+		BFD758E023E96BB500B0F1A5 /* 1-Intro.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFD758DC23E96BB500B0F1A5 /* 1-Intro.mp4 */; };
+		BFD758E123E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */; };
+		BFD758E223E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */; };
+		BFD758E323E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */; };
 		BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */; };
 		BFE1FC0223E229FF00BA5EEC /* CheckMark.json in Resources */ = {isa = PBXBuildFile; fileRef = BFE1FC0123E229FF00BA5EEC /* CheckMark.json */; };
 		BFE1FC0923E3ACD900BA5EEC /* WalletCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */; };
 		BFE1FC0A23E3ACDA00BA5EEC /* WalletCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */; };
-		BFE5007923DE4E2800DE4FD9 /* 1-Intro.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFE5007723DE4E2700DE4FD9 /* 1-Intro.mp4 */; };
-		BFE5007A23DE4E2800DE4FD9 /* 2-Loop.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFE5007823DE4E2800DE4FD9 /* 2-Loop.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -478,10 +482,10 @@
 		BF191A3123E70D3200D33C85 /* NerdEmojiAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = NerdEmojiAnimation.json; sourceTree = "<group>"; };
 		BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		BFC5532423D9B8E4009130A8 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		BFD758DC23E96BB500B0F1A5 /* 1-Intro.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "1-Intro.mp4"; sourceTree = "<group>"; };
+		BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "2-Loop.mp4"; sourceTree = "<group>"; };
 		BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCreationViewController.swift; sourceTree = "<group>"; };
 		BFE1FC0123E229FF00BA5EEC /* CheckMark.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = CheckMark.json; sourceTree = "<group>"; };
-		BFE5007723DE4E2700DE4FD9 /* 1-Intro.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "1-Intro.mp4"; sourceTree = "<group>"; };
-		BFE5007823DE4E2800DE4FD9 /* 2-Loop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "2-Loop.mp4"; sourceTree = "<group>"; };
 		CB7DC916E97096D5FCB440E3 /* Pods-MobileWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E6C8060CF3B17C7AA315F558 /* Pods-MobileWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet.release.xcconfig"; path = "Target Support Files/Pods-MobileWallet/Pods-MobileWallet.release.xcconfig"; sourceTree = "<group>"; };
 		F28D9135828811CA84244432 /* Pods_MobileWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -927,8 +931,8 @@
 		BF191A2F23E5B09900D33C85 /* RotatingStarsAnimation */ = {
 			isa = PBXGroup;
 			children = (
-				BFE5007723DE4E2700DE4FD9 /* 1-Intro.mp4 */,
-				BFE5007823DE4E2800DE4FD9 /* 2-Loop.mp4 */,
+				BFD758DC23E96BB500B0F1A5 /* 1-Intro.mp4 */,
+				BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */,
 			);
 			path = RotatingStarsAnimation;
 			sourceTree = "<group>";
@@ -1061,6 +1065,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD758E123E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */,
 				0012568D2372918B00A9C067 /* AvenirNextLTPro-Cn.otf in Resources */,
 				00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */,
 				001256812372918B00A9C067 /* AvenirNextLTPro-HeavyCnIt.otf in Resources */,
@@ -1082,8 +1087,8 @@
 				0012563B2371E89300A9C067 /* SplashAnimation.json in Resources */,
 				001256B42372918B00A9C067 /* AvenirLTStd-Medium.otf in Resources */,
 				001256662372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */,
-				BFE5007923DE4E2800DE4FD9 /* 1-Intro.mp4 in Resources */,
 				BF191A1D23E5AFA200D33C85 /* img_6.png in Resources */,
+				BFD758DE23E96BB500B0F1A5 /* 1-Intro.mp4 in Resources */,
 				0012566C2372918B00A9C067 /* AvenirLTStd-Heavy.otf in Resources */,
 				001256932372918B00A9C067 /* AvenirNextLTPro-UltLtCnIt.otf in Resources */,
 				001256A52372918B00A9C067 /* AvenirNextLTPro-BoldCn.otf in Resources */,
@@ -1099,7 +1104,6 @@
 				0012569C2372918B00A9C067 /* AvenirNextLTPro-BoldCnIt.otf in Resources */,
 				001256962372918B00A9C067 /* AvenirNextLTPro-HeavyCn.otf in Resources */,
 				001256A82372918B00A9C067 /* AvenirNextLTPro-MediumCn.otf in Resources */,
-				BFE5007A23DE4E2800DE4FD9 /* 2-Loop.mp4 in Resources */,
 				001256BA2372918B00A9C067 /* AvenirNextLTPro-Regular.otf in Resources */,
 				BF191A0D23E5A96700D33C85 /* EmojiWheel.json in Resources */,
 				BF191A1A23E5AFA200D33C85 /* img_2.png in Resources */,
@@ -1139,12 +1143,14 @@
 				0012568E2372918B00A9C067 /* AvenirNextLTPro-Cn.otf in Resources */,
 				001256B22372918B00A9C067 /* AvenirLTStd-LightOblique.otf in Resources */,
 				001256822372918B00A9C067 /* AvenirNextLTPro-HeavyCnIt.otf in Resources */,
+				BFD758E223E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */,
 				001256AF2372918B00A9C067 /* AvenirNextLTPro-It.otf in Resources */,
 				001256B82372918B00A9C067 /* AvenirNextLTPro-UltLtCn.otf in Resources */,
 				001256762372918B00A9C067 /* AvenirLTStd-BlackOblique.otf in Resources */,
 				001256942372918B00A9C067 /* AvenirNextLTPro-UltLtCnIt.otf in Resources */,
 				00A6779A2373DA61001A853E /* Main.storyboard in Resources */,
 				0012563C2371E89300A9C067 /* SplashAnimation.json in Resources */,
+				BFD758DF23E96BB500B0F1A5 /* 1-Intro.mp4 in Resources */,
 				BF191A2723E5AFA200D33C85 /* img_3.png in Resources */,
 				0012569A2372918B00A9C067 /* AvenirNextLTPro-DemiCn.otf in Resources */,
 				001256852372918B00A9C067 /* AvenirLTStd-Black.otf in Resources */,
@@ -1190,12 +1196,14 @@
 				0012568F2372918B00A9C067 /* AvenirNextLTPro-Cn.otf in Resources */,
 				001256B32372918B00A9C067 /* AvenirLTStd-LightOblique.otf in Resources */,
 				001256832372918B00A9C067 /* AvenirNextLTPro-HeavyCnIt.otf in Resources */,
+				BFD758E323E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */,
 				001256B02372918B00A9C067 /* AvenirNextLTPro-It.otf in Resources */,
 				001256B92372918B00A9C067 /* AvenirNextLTPro-UltLtCn.otf in Resources */,
 				001256772372918B00A9C067 /* AvenirLTStd-BlackOblique.otf in Resources */,
 				001256952372918B00A9C067 /* AvenirNextLTPro-UltLtCnIt.otf in Resources */,
 				00A6779B2373DA61001A853E /* Main.storyboard in Resources */,
 				0012563D2371E89300A9C067 /* SplashAnimation.json in Resources */,
+				BFD758E023E96BB500B0F1A5 /* 1-Intro.mp4 in Resources */,
 				BF191A2823E5AFA200D33C85 /* img_3.png in Resources */,
 				0012569B2372918B00A9C067 /* AvenirNextLTPro-DemiCn.otf in Resources */,
 				001256862372918B00A9C067 /* AvenirLTStd-Black.otf in Resources */,

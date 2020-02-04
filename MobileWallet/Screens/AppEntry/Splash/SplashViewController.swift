@@ -52,6 +52,7 @@ class SplashViewController: UIViewController {
     private let localAuthenticationContext = LAContext()
     var ticketTop: NSLayoutConstraint?
     var walletExistsInitially: Bool = false
+    var alreadyReplacedVideo: Bool = false
 
     // MARK: - Outlets
     @IBOutlet weak var videoView: UIView!
@@ -74,9 +75,9 @@ class SplashViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        checkExistingWallet()
+        
         titleAnimation()
+        checkExistingWallet()
     }
 
     // MARK: - Private functions
@@ -97,6 +98,26 @@ class SplashViewController: UIViewController {
             playerLayer.frame = videoView.layer.bounds
             player.play()
             videoView.layer.insertSublayer(playerLayer, at: 0)
+            videoView.clipsToBounds = true
+
+            NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd(notification:)), name: .AVPlayerItemDidPlayToEndTime, object: player.currentItem)
+        }
+    }
+
+    @objc func playerItemDidReachEnd(notification: Notification) {
+        if !alreadyReplacedVideo {
+            if let path = Bundle.main.path(forResource: "2-Loop", ofType: "mp4") {
+                let pathURL = URL(fileURLWithPath: path)
+                let duration = Int64( ( (Float64(CMTimeGetSeconds(AVAsset(url: pathURL).duration)) *  10.0) - 1) / 10.0 )
+
+                playerItem = AVPlayerItem(url: pathURL)
+                player.replaceCurrentItem(with: playerItem)
+
+                playerLooper = AVPlayerLooper(player: player,
+                                              templateItem: playerItem,
+                                              timeRange: CMTimeRange(start: CMTime.zero, end: CMTimeMake(value: duration, timescale: 1)))
+                alreadyReplacedVideo = true
+            }
         }
     }
 
@@ -129,7 +150,7 @@ class SplashViewController: UIViewController {
             animationContainer.heightAnchor.constraint(equalToConstant: 128).isActive = true
             ticketTop = animationContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
             ticketTop?.isActive = true
-            animationContainer.bottomAnchor.constraint(equalTo: videoView.topAnchor, constant: 110).isActive = true
+            animationContainer.bottomAnchor.constraint(equalTo: videoView.topAnchor, constant: 40).isActive = true
             animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
             walletExistsInitially = false
         }
