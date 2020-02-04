@@ -177,6 +177,10 @@ struct Fonts: Loopable {
 
     //Simple text button
     let textButton = UIFont(name: "AvenirLTStd-Medium", size: 14)
+
+    //Intro to wallet
+    let introTitleBold = UIFont(name: "AvenirLTStd-Black", size: 18)
+    let introTitle = UIFont(name: "AvenirLTStd-Light", size: 18)
 }
 
 struct Images: Loopable {
@@ -192,11 +196,14 @@ struct Images: Loopable {
     let currencySymbol = UIImage(named: "Gem")
     let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
+    let downArrow = UIImage(named: "DownArrow")
     let close = UIImage(named: "Close")
     let transactionFee = UIImage(named: "TransactionFee")
 
     //Background images
     let homeBackgroundImage = UIImage(named: "HomePattern")
+
+    let handWave = UIImage(named: "HandWave")
 }
 
 struct Theme {

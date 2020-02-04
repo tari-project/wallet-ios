@@ -20,6 +20,7 @@ platform :ios do
   lane :beta do
     increment_build_number(xcodeproj: "MobileWallet.xcodeproj")
     build_app(workspace: "MobileWallet.xcworkspace", scheme: "MobileWallet")
+    changelog_from_git_commits
     upload_to_testflight
   end
 end

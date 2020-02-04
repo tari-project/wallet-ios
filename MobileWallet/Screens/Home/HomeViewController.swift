@@ -69,6 +69,20 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     private let PANEL_BORDER_CORNER_RADIUS: CGFloat = 36.0
     private let GRABBER_WIDTH: Double = 55.0
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+    private let INTRO_TO_WALLET_USER_DEFAULTS_KEY = "walletHasBeenIntroduced"
+
+    var isFirstIntroToWallet: Bool {
+        if (UserDefaults.standard.string(forKey: INTRO_TO_WALLET_USER_DEFAULTS_KEY) == nil) {
+            return true
+        }
+
+        return false
+    }
+
+    var navBarHeight: CGFloat {
+        return (view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0) +
+            (self.navigationController?.navigationBar.frame.height ?? 0.0)
+    }
 
     private var isTransactionViewFullScreen: Bool = false {
         didSet {
@@ -168,8 +182,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     private func refreshBalance() {
         guard let wallet = TariLib.shared.tariWallet else {
-            //TOOD show error message to user possibly
-            print("Wallet not initialized")
+            UserFeedback.shared.error(title: NSLocalizedString("Wallet not initialized", comment: "Home screen"), description: "")
             return
         }
 
@@ -210,7 +223,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             let navBar = navController.navigationBar
 
             navBar.barTintColor = Theme.shared.colors.navigationBarBackground
-            navBar.isTranslucent = false
+            navBar.setBackgroundImage(UIImage(color: Theme.shared.colors.navigationBarBackground!), for: .default)
+
+            navBar.isTranslucent = true
 
             navigationController?.setNavigationBarHidden(true, animated: false)
             navBar.tintColor = Theme.shared.colors.navigationBarTint
@@ -221,7 +236,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             ]
 
             //Remove border
-            navBar.setBackgroundImage(UIImage(), for: .default)
             navBar.shadowImage = UIImage()
 
             //TODO fix size
@@ -259,7 +273,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         // Track a scroll view(or the siblings) in the content view controller.
         fpc.track(scrollView: transactionTableVC.tableView)
-
     }
 
     private func grabberRect(width: Double) -> CGRect {
@@ -281,8 +294,18 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     private func showHideFullScreen() {
         if isTransactionViewFullScreen {
+            //Don't show header for first intro
+            guard !isFirstIntroToWallet else {
+                self.isShowingSendButton = false
+                transactionTableVC.showIntroContent(true)
+                return
+            }
+
             navigationController?.setNavigationBarHidden(false, animated: true)
+            self.setBackgroundColor(isNavColor: true)
+
             self.isShowingSendButton = false
+
             self.navigationItem.title = NSLocalizedString("Transactions", comment: "Transactions nav bar heading")
 
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
@@ -292,6 +315,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.view.layoutIfNeeded()
             })
         } else {
+            //User swipes down for the first time
+            if isFirstIntroToWallet {
+                transactionTableVC.showIntroContent(false)
+                UserDefaults.standard.set(true, forKey: INTRO_TO_WALLET_USER_DEFAULTS_KEY)
+            }
+
             navigationController?.setNavigationBarHidden(true, animated: true)
             self.isShowingSendButton = true
             self.navigationItem.title = ""
@@ -302,6 +331,18 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.grabberHandle.alpha = 1
                 self.view.layoutIfNeeded()
             })
+        }
+    }
+
+    private func setBackgroundColor(isNavColor: Bool) {
+        if isNavColor {
+            UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveEaseIn, animations: {
+                self.view.backgroundColor = Theme.shared.colors.navigationBarBackground
+            })
+        } else {
+            UIView.animate(withDuration: 0.1) {
+                self.view.backgroundColor = Theme.shared.colors.homeScreenBackground
+            }
         }
     }
 
@@ -377,7 +418,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     // MARK: - Floating panel setup delegate methods
 
     func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
-        return HomeViewFloatingPanelLayout()
+        return HomeViewFloatingPanelLayout(navBarHeight: navBarHeight, initialFullScreen: isFirstIntroToWallet)
     }
 
     func floatingPanel(_ vc: FloatingPanelController, behaviorFor newCollection: UITraitCollection) -> FloatingPanelBehavior? {
@@ -401,6 +442,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     func floatingPanelDidMove(_ vc: FloatingPanelController) {
+        self.setBackgroundColor(isNavColor: false)
+
+        guard !isFirstIntroToWallet else {
+            return
+        }
+
         let y = vc.surfaceView.frame.origin.y
         let tipY = vc.originYOfSurface(for: .tip)
 
@@ -410,7 +457,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             return
         }
 
-        //TODO figure out why corner radius can't animate out but can in
         self.fpc.surfaceView.cornerRadius = self.PANEL_BORDER_CORNER_RADIUS - (self.PANEL_BORDER_CORNER_RADIUS * progress)
 
         if fpc.position == .tip && !isTransactionViewFullScreen {
