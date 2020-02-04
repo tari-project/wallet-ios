@@ -346,6 +346,35 @@ class Wallet {
         return result
     }
 
+    func signMessage(message: String) throws -> String {
+        var errorCode: Int32 = -1
+        let messagePointer = UnsafeMutablePointer<Int8>(mutating: (message as NSString).utf8String)
+        let resultPtr = wallet_sign_message(ptr, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+        let result = String(cString: resultPtr!)
+
+        let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
+        string_destroy(mutable)
+
+        return result
+    }
+
+    func verifyMessageSignature(contactPublicKey: PublicKey,
+                                hexSignatureNonce: String,
+                                message: String) throws -> Bool {
+        var errorCode: Int32 = -1
+        let messagePointer = UnsafeMutablePointer<Int8>(mutating: (message as NSString).utf8String)
+        let hexSigNoncePointer = UnsafeMutablePointer<Int8>(mutating: (hexSignatureNonce as NSString).utf8String)
+        let result = wallet_verify_message_signature(contactPublicKey.pointer, hexSigNoncePointer, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+
+        return result
+    }
+
     deinit {
         wallet_destroy(ptr)
     }
