@@ -60,23 +60,12 @@ protocol TransactionProtocol {
 }
 
 extension TransactionProtocol {
-    var utcDate: (Date?, Error?) {
+    var date: (Date?, Error?) {
         let (timestamp, error) = self.timestamp
         if error != nil {
             return (nil, error)
         }
 
         return (Date(timeIntervalSince1970: Double(timestamp)), nil)
-    }
-
-    var localDate: (Date?, Error?) {
-        let (utcDate, error) = self.utcDate
-        if error != nil {
-            return (nil, error)
-        }
-
-        let timeZoneOffset = Double(TimeZone.current.secondsFromGMT(for: utcDate!))
-
-        return (utcDate!.addingTimeInterval(timeZoneOffset), nil)
     }
 }

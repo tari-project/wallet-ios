@@ -285,10 +285,10 @@ struct TariWallet *wallet_create(struct TariWalletConfig *config,
                                     int* error_out);
 
 // Signs a message
-char* wallet_sign_message(struct TariWallet *wallet, char* msg, int* error_out);
+char* wallet_sign_message(struct TariWallet *wallet, const char* msg, int* error_out);
 
 // Verifies signature for a signed message
-bool wallet_verify_message_signature(struct TariPublicKey *public_key, char* hex_sig_nonce, char* msg, int* error_out);
+bool wallet_verify_message_signature(struct TariPublicKey *public_key, const char* hex_sig_nonce, const char* msg, int* error_out);
 
 /// Generates test data
 bool wallet_test_generate_data(struct TariWallet *wallet, char *datastore_path,int* error_out);
@@ -344,6 +344,10 @@ bool wallet_test_complete_sent_transaction(struct TariWallet *wallet, struct Tar
 // Checks if a TariCompletedTransaction was originally a TariPendingOutboundTransaction,
 // i.e the transaction was originally sent from the wallet
 bool wallet_is_completed_transaction_outbound(struct TariWallet *wallet, struct TariCompletedTransaction *tx,int* error_out);
+
+// Import a UTXO into the wallet. This will add a spendable UTXO and create a faux completed transaction to record the
+// event.
+unsigned long long wallet_import_utxo(struct TariWallet *wallet, unsigned long long amount, struct TariPrivateKey *spending_key, struct TariPublicKey *source_public_key, int* error_out);
 
 // Simulates the completion of a broadcasted TariPendingInboundTransaction
 bool wallet_test_broadcast_transaction(struct TariWallet *wallet, struct TariCompletedTransaction *tx, int* error_out);
