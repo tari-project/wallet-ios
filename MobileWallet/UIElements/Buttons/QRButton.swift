@@ -56,7 +56,7 @@ class QRButton: UIButton {
     private func commonSetup() {
         bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: bounds.height)
         layer.cornerRadius = RADIUS_POINTS
-        backgroundColor = Theme.shared.colors.qrButtonBackground
+        backgroundColor = .clear
         setTitle("", for: .normal)
         tintColor = Theme.shared.colors.actionButtonBackgroundSimple
         setImage(Theme.shared.images.qrButton, for: .normal)
@@ -74,7 +74,7 @@ class QRButton: UIButton {
 
     private func pulseIn() {
         UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-            self.alpha = 0.94
+            self.alpha = 0.6
             self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
         })
     }

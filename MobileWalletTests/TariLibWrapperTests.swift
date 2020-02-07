@@ -110,7 +110,7 @@ class TariLibWrapperTests: XCTestCase {
             XCTFail(error.localizedDescription)
         }
     }
-    
+   
     func testWallet() {
         return //TODO remove when lib is updated to fix weird wallet crash
         //MARK: Create new wallet
@@ -134,8 +134,9 @@ class TariLibWrapperTests: XCTestCase {
         print("databasePath: ", databasePath)
         print("dbName: ", dbName)
 
+        var commsConfig: CommsConfig?
         do {
-            let commsConfig = try CommsConfig(
+            commsConfig = try CommsConfig(
                 privateKey: PrivateKey(hex: privateKeyHex),
                 databasePath: databasePath,
                 databaseName: dbName,
@@ -144,8 +145,13 @@ class TariLibWrapperTests: XCTestCase {
             )
             
             print("LOGGING: ", loggingFilePath)
-            
-            w = try Wallet(commsConfig: commsConfig, loggingFilePath: loggingFilePath)
+        } catch {
+            XCTFail("Unable to create comms config \(error.localizedDescription)")
+            return
+        }
+        
+        do {
+            w = try Wallet(commsConfig: commsConfig!, loggingFilePath: loggingFilePath)
         } catch {
             XCTFail("Unable to create wallet \(error.localizedDescription)")
             return
@@ -172,11 +178,17 @@ class TariLibWrapperTests: XCTestCase {
         
         // check wallet can sign a message and then verify the signature of the message it signed
         let msg = "Hello"
-        let signature = try! wallet.signMessage(message: msg);
-        let verification = try!  wallet.verifyMessageSignature(contactPublicKey: walletPublicKey!, hexSignatureNonce: signature, message: msg)
-        if verification != true {
-            XCTFail("Verification of message failed")
+        let signature = try! wallet.signMessage(msg);
+        
+        do {
+            let verification = try signature.isValid(wallet: wallet)
+            if verification != true {
+                XCTFail("Verification of message failed")
+            }
+        } catch {
+            XCTFail(error.localizedDescription)
         }
+        
         
         //MARK: Test data
         do {
@@ -329,8 +341,8 @@ class TariLibWrapperTests: XCTestCase {
             return
         }
                     
-        XCTAssertEqual(groupedTransactions.count, 8)
-        XCTAssertEqual(groupedTransactions[0].count, 8)
+        XCTAssertGreaterThan(groupedTransactions.count, 1)
+        XCTAssertGreaterThan(groupedTransactions[0].count, 1)
     }
     
     func testMicroTari() {

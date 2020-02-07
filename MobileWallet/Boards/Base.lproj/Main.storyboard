@@ -60,7 +60,7 @@
                                 <rect key="frame" x="25" y="157" width="364" height="47"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" numberOfLines="0" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o0q-BV-Ysa">
-                                        <rect key="frame" x="24" y="13.5" width="294" height="20.5"/>
+                                        <rect key="frame" x="24" y="13.5" width="42" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -72,25 +72,13 @@
                                             <constraint firstAttribute="height" constant="16" id="ZmJ-Xc-WqK"/>
                                         </constraints>
                                     </imageView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qZz-9d-6kx" customClass="QRButton" customModule="MobileWalletTests" customModuleProvider="target">
-                                        <rect key="frame" x="326" y="4.5" width="38" height="38"/>
-                                        <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="38" id="9N4-oP-hDX"/>
-                                            <constraint firstAttribute="width" constant="38" id="ZPZ-bn-fZd"/>
-                                        </constraints>
-                                        <state key="normal" title="Button"/>
-                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
-                                    <constraint firstItem="qZz-9d-6kx" firstAttribute="centerY" secondItem="xCe-J5-eXY" secondAttribute="centerY" id="4ny-pB-aod"/>
                                     <constraint firstItem="gRh-WS-nTa" firstAttribute="centerY" secondItem="xCe-J5-eXY" secondAttribute="centerY" id="505-vA-ZnR"/>
                                     <constraint firstItem="o0q-BV-Ysa" firstAttribute="leading" secondItem="gRh-WS-nTa" secondAttribute="trailing" constant="8" id="6CY-jK-y9x"/>
                                     <constraint firstItem="o0q-BV-Ysa" firstAttribute="centerY" secondItem="xCe-J5-eXY" secondAttribute="centerY" id="7Qe-pI-aiU"/>
-                                    <constraint firstItem="qZz-9d-6kx" firstAttribute="leading" secondItem="o0q-BV-Ysa" secondAttribute="trailing" constant="8" id="AaR-PS-Zid"/>
                                     <constraint firstAttribute="height" constant="47" id="Fyy-EA-bLq"/>
-                                    <constraint firstAttribute="trailing" secondItem="qZz-9d-6kx" secondAttribute="trailing" id="MM6-hk-qzC"/>
                                     <constraint firstItem="gRh-WS-nTa" firstAttribute="leading" secondItem="xCe-J5-eXY" secondAttribute="leading" id="X5S-7Z-Zis"/>
                                     <constraint firstItem="o0q-BV-Ysa" firstAttribute="centerY" secondItem="xCe-J5-eXY" secondAttribute="centerY" id="gqy-S9-pVc"/>
                                 </constraints>

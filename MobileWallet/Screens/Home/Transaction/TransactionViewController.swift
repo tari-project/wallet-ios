@@ -146,10 +146,6 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
         navigationController?.setNavigationBarHidden(false, animated: false)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-
     private func setup() {
         view.backgroundColor = Theme.shared.colors.appBackground
 
@@ -252,7 +248,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                 emojiButton.setEmojis(emojis)
             }
 
-            let (date, dateError) = tx.localDate
+            let (date, dateError) = tx.date
             guard dateError == nil else {
                 throw dateError!
             }

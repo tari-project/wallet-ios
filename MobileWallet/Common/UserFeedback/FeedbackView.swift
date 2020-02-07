@@ -48,7 +48,9 @@ class FeedbackView: UIView {
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
     private var onCloseHandler: (() -> Void)?
-    private var descriptionBottomAnchorConstraint = NSLayoutConstraint()
+    private var onCallToActionHandler: (() -> Void)?
+    private let callToActionButton = SendButton()
+    private let closeButton = TextButton()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -64,94 +66,141 @@ class FeedbackView: UIView {
     private func setupView() {
         backgroundColor = Theme.shared.colors.appBackground
         layer.cornerRadius = CORNER_RADIUS
-
-        heightAnchor.constraint(greaterThanOrEqualToConstant: 50).isActive = true
+        heightAnchor.constraint(greaterThanOrEqualToConstant: 40).isActive = true
     }
 
     private func setupTitle() {
         addSubview(titleLabel)
-        titleLabel.textColor = Theme.shared.colors.errorFeedbackPopupTitle
+        titleLabel.textColor = Theme.shared.colors.feedbackPopupTitle
         titleLabel.font = Theme.shared.fonts.errorFeedbackPopupTitle
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
-    }
-
-    private func setupTitleAndDescription() {
-        setupTitle()
-        titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: SIDE_PADDING).isActive = true
-        titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 24).isActive = true
-
-        setupDescription()
-    }
-
-    private func setupOnlyTitle() {
-        setupTitle()
-        layer.cornerRadius = CORNER_RADIUS / 2
-        titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        titleLabel.heightAnchor.constraint(equalToConstant: titleLabel.font.pointSize * 1.2).isActive = true
     }
 
     private func setupDescription() {
         addSubview(descriptionLabel)
-        descriptionLabel.textColor = Theme.shared.colors.errorFeedbackPopupDescription
+        descriptionLabel.textColor = Theme.shared.colors.feedbackPopupDescription
         descriptionLabel.font = Theme.shared.fonts.errorFeedbackPopupDescription
         descriptionLabel.textAlignment = .center
         descriptionLabel.numberOfLines = 5
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+
         descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true
-        descriptionBottomAnchorConstraint = descriptionLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING)
-        descriptionBottomAnchorConstraint.isActive = true
+        descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -SIDE_PADDING).isActive = true
     }
 
     private func setupCloseButton() {
-        let closeButton = TextButton()
         closeButton.setVariation(.secondary)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(closeButton)
         closeButton.setTitle(NSLocalizedString("Close", comment: "User feedback bottom float"), for: .normal)
-        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
         closeButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-
-        descriptionBottomAnchorConstraint.isActive = false
-        descriptionLabel.bottomAnchor.constraint(equalTo: closeButton.topAnchor, constant: -ELEMENT_PADDING).isActive = true
-
         closeButton.addTarget(self, action: #selector(onCloseButtonPressed), for: .touchUpInside)
     }
 
+    private func setupCallToActionButton() {
+        callToActionButton.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(callToActionButton)
+        callToActionButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        callToActionButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 160).isActive = true
+        callToActionButton.addTarget(self, action: #selector(onCallToActionButtonPressed), for: .touchUpInside)
+    }
+
     @objc private func onCloseButtonPressed() {
-        if let closure = onCloseHandler {
-            closure()
+        if let onClose = onCloseHandler {
+            onClose()
         }
     }
 
-    func setDetails(title: String, description: String = "") {
+    @objc private func onCallToActionButtonPressed() {
+        if let onAction = onCallToActionHandler {
+            onAction()
+        }
+
+        if let onClose = onCloseHandler {
+            onClose()
+        }
+    }
+
+    private func setDescription(_ description: String) {
+        let attributedDescription = NSMutableAttributedString(string: description)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 10
+        paragraphStyle.alignment = .center
+        attributedDescription.addAttribute(
+            .paragraphStyle,
+            value: paragraphStyle,
+            range: NSRange(location: 0, length: attributedDescription.length)
+        )
+
+        descriptionLabel.attributedText = attributedDescription
+    }
+
+    func setupError(title: String, description: String) {
+        setupTitle()
         titleLabel.text = title
+        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: SIDE_PADDING).isActive = true
 
-        if description != "" {
-            setupTitleAndDescription()
-            let attributedDescription = NSMutableAttributedString(string: description)
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 10
-            paragraphStyle.alignment = .center
-            attributedDescription.addAttribute(
-                .paragraphStyle,
-                value: paragraphStyle,
-                range: NSRange(location: 0, length: attributedDescription.length)
-            )
-
-            //setupDescription()
-            descriptionLabel.attributedText = attributedDescription
-        } else {
-            setupOnlyTitle()
-        }
+        setupDescription()
+        setDescription(description)
+        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        descriptionLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
     }
 
-    func onClose(onClose: @escaping () -> Void) {
-        onCloseHandler = onClose
+    func setupInfo(title: String, description: String, onClose: @escaping () -> Void) {
+        setupTitle()
+        titleLabel.text = title
+        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: SIDE_PADDING).isActive = true
+
+        setupDescription()
+        setDescription(description)
+        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+
         setupCloseButton()
+        closeButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+
+        onCloseHandler = onClose
+    }
+
+    func setupSuccess(title: String) {
+        setupDescription()
+        descriptionLabel.text = title
+        descriptionLabel.textColor = Theme.shared.colors.successFeedbackPopupTitle
+        backgroundColor = Theme.shared.colors.successFeedbackPopupBackground
+        layer.cornerRadius = 0
+
+        descriptionLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+    }
+
+    func setupCallToAction(
+        title: String,
+        description: String,
+        cancelTitle: String,
+        actionTitle: String,
+        onClose: @escaping () -> Void,
+        onAction: @escaping () -> Void) {
+        setupTitle()
+        titleLabel.text = title
+        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: SIDE_PADDING).isActive = true
+
+        setupDescription()
+        setDescription(description)
+        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+
+        setupCallToActionButton()
+        onCallToActionHandler = onAction
+        callToActionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        callToActionButton.setTitle(actionTitle, for: .normal)
+
+        setupCloseButton()
+        onCloseHandler = onClose
+        closeButton.setTitle(cancelTitle, for: .normal)
+        closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
     }
 }
