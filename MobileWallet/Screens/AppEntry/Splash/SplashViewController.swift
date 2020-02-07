@@ -62,6 +62,8 @@ class SplashViewController: UIViewController {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var distanceTitleSubtitle: NSLayoutConstraint!
+    @IBOutlet weak var animationContainerTopAnchor: NSLayoutConstraint!
+    @IBOutlet weak var animationContainerBottomAnchor: NSLayoutConstraint!
 
     // MARK: - Override functions
     override func viewDidLoad() {
@@ -75,7 +77,7 @@ class SplashViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         titleAnimation()
         checkExistingWallet()
     }
@@ -141,6 +143,8 @@ class SplashViewController: UIViewController {
             animationContainer.translatesAutoresizingMaskIntoConstraints = false
             animationContainer.widthAnchor.constraint(equalToConstant: 240).isActive = true
             animationContainer.heightAnchor.constraint(equalToConstant: 128).isActive = true
+            animationContainerTopAnchor.isActive = false
+            animationContainerBottomAnchor.isActive = false
             animationContainer.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 0).isActive = true
             animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
             walletExistsInitially = true
