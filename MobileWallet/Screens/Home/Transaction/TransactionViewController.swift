@@ -252,7 +252,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                 emojiButton.setEmojis(emojis)
             }
 
-            let (date, dateError) = tx.localDate
+            let (date, dateError) = tx.date
             guard dateError == nil else {
                 throw dateError!
             }

@@ -57,7 +57,7 @@ class UserFeedback {
         attributes.positionConstraints.size = .init(width: .offset(value: VERTICAL_OFFSET), height: .intrinsic)
         attributes.positionConstraints.verticalOffset = VERTICAL_OFFSET
         attributes.screenInteraction = .dismiss
-        attributes.entryInteraction = .delayExit(by: 2)
+        attributes.entryInteraction = .forward
 
         return attributes
     }
@@ -70,7 +70,7 @@ class UserFeedback {
             descriptionText.append("\n\(e.localizedDescription)")
         }
 
-        errorFeedbackView.setDetails(title: title, description: descriptionText)
+        errorFeedbackView.setupError(title: title, description: descriptionText)
         var attributes = defaultAttributes
         attributes.displayDuration = 12
         attributes.hapticFeedbackType = .error
@@ -80,8 +80,7 @@ class UserFeedback {
 
     func info(title: String, description: String) {
         let infoFeedbackView = FeedbackView()
-        infoFeedbackView.setDetails(title: title, description: description)
-        infoFeedbackView.onClose {
+        infoFeedbackView.setupInfo(title: title, description: description) {
             SwiftEntryKit.dismiss()
         }
 
@@ -94,8 +93,8 @@ class UserFeedback {
     }
 
     func success(title: String) {
-        let infoFeedbackView = FeedbackView()
-        infoFeedbackView.setDetails(title: title)
+        let successFeedbackView = FeedbackView()
+        successFeedbackView.setupSuccess(title: title)
         var attributes = defaultAttributes
         attributes.screenBackground = .clear
         attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
@@ -103,6 +102,19 @@ class UserFeedback {
         attributes.hapticFeedbackType = .success
         attributes.screenInteraction = .forward
 
-        SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
+        SwiftEntryKit.display(entry: successFeedbackView, using: attributes)
+    }
+
+    func callToAction(title: String, description: String, cancelTitle: String, actionTitle: String, onAction: @escaping () -> Void) {
+        let ctaFeedbackView = FeedbackView()
+        ctaFeedbackView.setupCallToAction(title: title, description: description, cancelTitle: cancelTitle, actionTitle: actionTitle, onClose: {
+            SwiftEntryKit.dismiss()
+        }, onAction: onAction)
+
+        var attributes = defaultAttributes
+        attributes.displayDuration = .infinity
+        attributes.hapticFeedbackType = .success
+
+        SwiftEntryKit.display(entry: ctaFeedbackView, using: attributes)
     }
 }

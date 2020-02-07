@@ -178,6 +178,34 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         )
 
         bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
+        sendButton.applyShadow()
+    }
+
+    private func requestTestnetTokens() {
+        do {
+            let tempKeyServer = try TestnetKeyServer(wallet: TariLib.shared.tariWallet!)
+            try tempKeyServer.requestDrop(onSuccess: { () in
+                DispatchQueue.main.async { [weak self] in
+                    guard let _ = self else { return }
+                    UserFeedback.shared.callToAction(
+                        title: NSLocalizedString("You got some Tari!", comment: "Home view testnet airdrop"),
+                        description: NSLocalizedString("TariBot has just sent you some Tari. To give the wallet a quick test, try sending TariBot back some Tari to see how it works.", comment: "Home view testnet airdrop"),
+                        cancelTitle: NSLocalizedString("I’ll try it later", comment: "Home view testnet airdrop"),
+                        actionTitle: NSLocalizedString("Send Tari", comment: "Home view testnet airdrop"),
+                        onAction: {
+                            guard let self = self else { return }
+                            self.onSend()
+                        }
+                    )
+                }
+            }) { (error) in
+                DispatchQueue.main.async {
+                    UserFeedback.shared.error(title: "Failed to claim testnet tokens", description: "", error: error)
+                }
+            }
+        } catch {
+            UserFeedback.shared.error(title: "Failed to claim testnet tokens", description: "Could not setup key server.", error: error)
+        }
     }
 
     private func refreshBalance() {
@@ -249,6 +277,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     @objc private func closeFullScreen() {
+        setBackgroundColor(isNavColor: false)
         transactionTableVC.scrollToTop()
         self.fpc.move(to: .tip, animated: true)
     }
@@ -315,6 +344,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.view.layoutIfNeeded()
             })
         } else {
+            requestTestnetTokens()
             //User swipes down for the first time
             if isFirstIntroToWallet {
                 transactionTableVC.showIntroContent(false)
@@ -385,6 +415,10 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     @IBAction func onSendAction(_ sender: Any) {
+        onSend()
+    }
+
+    func onSend() {
         self.performSegue(withIdentifier: "HomeToSend", sender: nil)
     }
 

@@ -72,6 +72,31 @@ extension WalletErrors: LocalizedError {
             return NSLocalizedString("Failed to find completed transaction by ID.", comment: "Wallet errors")
         case .walletNotInitialized:
             return NSLocalizedString("Tari wallet not yet initialized", comment: "Wallet errors")
+        case .invalidSignatureAndNonceString:
+            return NSLocalizedString("Invalid signature created", comment: "Wallet errors")
+        }
+    }
+}
+
+extension TestnetKeyServerError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .server(let statusCode, let message):
+            if message != nil {
+                return message
+            }
+
+            return NSLocalizedString("Tari faucet server error. Status code: \(statusCode).", comment: "Tari key server error")
+        case .unknown:
+            return NSLocalizedString("Unknown Tari faucet error.", comment: "Tari key server error")
+        case .invalidSignature:
+            return NSLocalizedString("Invalid signature sent to Tari key server.", comment: "Tari key server error")
+        case .allCoinsAllAllocated:
+            return NSLocalizedString("All coins are allocated.", comment: "Tari key server error")
+        case .missingResponse:
+            return NSLocalizedString("Missing response from Tari key server.", comment: "Tari key server error")
+        case .responseInvalid:
+            return NSLocalizedString("Invalid response from Tari key server.", comment: "Tari key server error")
         }
     }
 }

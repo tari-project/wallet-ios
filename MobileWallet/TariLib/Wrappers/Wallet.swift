@@ -55,6 +55,7 @@ enum WalletErrors: Error {
     case testSendCompleteTransaction
     case completedTransactionById
     case walletNotInitialized
+    case invalidSignatureAndNonceString
 }
 
 class Wallet {
@@ -346,9 +347,9 @@ class Wallet {
         return result
     }
 
-    func signMessage(message: String) throws -> String {
+    func signMessage(_ message: String) throws -> Signature {
         var errorCode: Int32 = -1
-        let messagePointer = UnsafeMutablePointer<Int8>(mutating: (message as NSString).utf8String)
+        let messagePointer = (message as NSString).utf8String
         let resultPtr = wallet_sign_message(ptr, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
@@ -358,21 +359,38 @@ class Wallet {
         let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
         string_destroy(mutable)
 
-        return result
+        let (walletPubKey, publicKeyError) = self.publicKey
+        guard publicKeyError == nil else {
+            throw publicKeyError!
+        }
+
+        let splitResult = result.components(separatedBy: "|")
+        guard splitResult.count == 2 else {
+            throw WalletErrors.invalidSignatureAndNonceString
+        }
+
+        return Signature(hex: splitResult[0], nonce: splitResult[1], message: message, publicKey: walletPubKey!)
     }
 
-    func verifyMessageSignature(contactPublicKey: PublicKey,
-                                hexSignatureNonce: String,
-                                message: String) throws -> Bool {
+    func verifyMessageSignature(publicKey: PublicKey, signature: String, nonce: String, message: String) throws -> Bool {
         var errorCode: Int32 = -1
-        let messagePointer = UnsafeMutablePointer<Int8>(mutating: (message as NSString).utf8String)
-        let hexSigNoncePointer = UnsafeMutablePointer<Int8>(mutating: (hexSignatureNonce as NSString).utf8String)
-        let result = wallet_verify_message_signature(contactPublicKey.pointer, hexSigNoncePointer, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
+        let messagePointer = (message as NSString).utf8String
+        let hexSigNoncePointer = ("\(signature)|\(nonce)" as NSString).utf8String
+        let result = wallet_verify_message_signature(publicKey.pointer, hexSigNoncePointer, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
 
         return result
+    }
+
+    func importUtxo(value: UInt64, privateKey: PrivateKey, sourcePublicKey: PublicKey) throws {
+        var errorCode: Int32 = -1
+
+        _ = wallet_import_utxo(ptr, value, privateKey.pointer, sourcePublicKey.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
     }
 
     deinit {

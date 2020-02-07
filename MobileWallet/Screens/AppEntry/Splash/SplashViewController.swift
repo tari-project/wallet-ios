@@ -53,6 +53,9 @@ class SplashViewController: UIViewController {
     var ticketTop: NSLayoutConstraint?
     var walletExistsInitially: Bool = false
     var alreadyReplacedVideo: Bool = false
+    var unitTesting: Bool {
+        return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
 
     // MARK: - Outlets
     @IBOutlet weak var videoView: UIView!
@@ -78,8 +81,10 @@ class SplashViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        titleAnimation()
-        checkExistingWallet()
+        if !unitTesting {
+            titleAnimation()
+            checkExistingWallet()
+        }
     }
 
     // MARK: - Private functions
@@ -193,7 +198,11 @@ class SplashViewController: UIViewController {
                 fatalError(error.localizedDescription)
             }
 
-            authenticateUser()
+            #if targetEnvironment(simulator)
+                startAnimation()
+            #else
+                authenticateUser()
+            #endif
         } else {
             setupVideoAnimation()
             createWalletButton.isHidden = false

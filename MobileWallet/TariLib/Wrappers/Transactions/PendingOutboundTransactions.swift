@@ -79,7 +79,7 @@ class PendingOutboundTransactions: TransactionsProtocol {
             }
         }
 
-        let sortedList = list.sorted(by: { $0.localDate.0?.compare($1.localDate.0!) == .orderedDescending })
+        let sortedList = list.sorted(by: { $0.date.0?.compare($1.date.0!) == .orderedDescending })
 
         return (sortedList, nil)
     }
