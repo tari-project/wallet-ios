@@ -111,13 +111,18 @@ class ProfileViewController: UIViewController {
             return
         }
 
-        let (walletPublicKey, pubKeyError) = wallet.publicKey
-        if pubKeyError != nil {
+        let (walletPublicKey, _) = wallet.publicKey
+        guard let publicKey = walletPublicKey else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Failed to access wallet public key", comment: "Profile View Controller"), description: ""
             )
+            return
         }
-        let qrText = walletPublicKey?.emojis.0 ?? ""
+
+        guard let emojiString = publicKey.emojis.0 as? String else {
+            return
+        }
+        let qrText = emojiString
         let vcard = qrText.data(using: .utf8)
 
         let filter = CIFilter(name: "CIQRCodeGenerator")
@@ -174,23 +179,18 @@ class ProfileViewController: UIViewController {
         copyToClipboard()
         sendHapticNotification()
 
-        UIView.transition(with: copyEmojiButton,
-                          duration: 2.0,
-                          options: .transitionCrossDissolve,
-                          animations: { [weak self] in
-                            guard let self = self else { return }
-                            let titleButton = NSLocalizedString("Copied!",
-                                                                comment: "Profile copied button")
-                            self.copyEmojiButton.setTitle(titleButton,
-                                                          for: .normal)
-        },
-                          completion: { [weak self] (_) in
-                            guard let self = self else { return }
-                            let titleButton = NSLocalizedString("Copy my emoji ID",
-                                                                comment: "Profile title button")
-                            self.copyEmojiButton.setTitle(titleButton,
-                                                          for: .normal)
-        })
+        let titleButton = NSLocalizedString("Copied!",
+                                            comment: "Profile copied button")
+        self.copyEmojiButton.setTitle(titleButton,
+                                      for: .normal)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            guard let self = self else { return }
+            let titleButton = NSLocalizedString("Copy my emoji ID",
+                                                comment: "Profile title button")
+            self.copyEmojiButton.setTitle(titleButton,
+                                          for: .normal)
+        }
     }
 
 }

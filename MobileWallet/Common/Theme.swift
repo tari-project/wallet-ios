@@ -88,7 +88,6 @@ struct Colors: Loopable {
 
     // Profile
     let profileTitleTextColor = UIColor(named: "ProfileTitleTextBlack")
-    let profileCopyEmojiColor = UIColor(named: "ProfileCopyEmojiButton")
     let profileSeparatorView = UIColor(named: "ProfileSeparatorView")
     let profileMiddleLabel = UIColor(named: "ProfileMiddleLabel")
     let profileQRShadow = UIColor(named: "ProfileQRShadow")
