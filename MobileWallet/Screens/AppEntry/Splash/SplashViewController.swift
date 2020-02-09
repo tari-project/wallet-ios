@@ -51,6 +51,7 @@ class SplashViewController: UIViewController {
     private var playerLooper: AVPlayerLooper!
     private let localAuthenticationContext = LAContext()
     var ticketTop: NSLayoutConstraint?
+    var ticketBottom: NSLayoutConstraint?
     var walletExistsInitially: Bool = false
     var alreadyReplacedVideo: Bool = false
 
@@ -62,8 +63,8 @@ class SplashViewController: UIViewController {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var subtitleLabel: UILabel!
     @IBOutlet weak var distanceTitleSubtitle: NSLayoutConstraint!
-    @IBOutlet weak var animationContainerTopAnchor: NSLayoutConstraint!
     @IBOutlet weak var animationContainerBottomAnchor: NSLayoutConstraint!
+    @IBOutlet weak var animationContainerBottomAnchorToVideo: NSLayoutConstraint!
 
     // MARK: - Override functions
     override func viewDidLoad() {
@@ -141,21 +142,20 @@ class SplashViewController: UIViewController {
     private func setupConstraintsAnimationContainer() {
         if TariLib.shared.walletExists {
             animationContainer.translatesAutoresizingMaskIntoConstraints = false
-            animationContainer.widthAnchor.constraint(equalToConstant: 240).isActive = true
-            animationContainer.heightAnchor.constraint(equalToConstant: 128).isActive = true
-            animationContainerTopAnchor.isActive = false
             animationContainerBottomAnchor.isActive = false
             animationContainer.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 0).isActive = true
             animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
             walletExistsInitially = true
         } else {
             animationContainer.translatesAutoresizingMaskIntoConstraints = false
-            animationContainer.widthAnchor.constraint(equalToConstant: 240).isActive = true
-            animationContainer.heightAnchor.constraint(equalToConstant: 128).isActive = true
             ticketTop = animationContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
             ticketTop?.isActive = true
-            animationContainer.bottomAnchor.constraint(equalTo: videoView.topAnchor, constant: 40).isActive = true
-            animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+
+            ticketBottom = animationContainer.bottomAnchor.constraint(equalTo: videoView.topAnchor,
+                                                                      constant: 40)
+            ticketBottom?.isActive = true
+            animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+                                                        constant: 0).isActive = true
             walletExistsInitially = false
         }
     }
@@ -172,6 +172,9 @@ class SplashViewController: UIViewController {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.ticketTop?.isActive = false
+            self.animationContainerBottomAnchor?.isActive = false
+            self.animationContainerBottomAnchorToVideo?.isActive = false
+            self.ticketBottom?.isActive = false
             self.videoView.isHidden = true
             self.animationContainer.bottomAnchor.constraint(equalTo: self.titleLabel.topAnchor, constant: 0).isActive = true
 
@@ -203,7 +206,15 @@ class SplashViewController: UIViewController {
     @IBAction func createWallet(_ sender: Any) {
         do {
             try TariLib.shared.createNewWallet()
-            authenticateUser()
+
+            if let _ = self.ticketTop {
+                self.topAnimationAndRemoveVideoAnimation()
+            } else {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.startAnimation()
+                }
+            }
         } catch {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Failed to create new wallet", comment: ""),

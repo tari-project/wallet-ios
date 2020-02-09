@@ -196,6 +196,11 @@ struct Fonts: Loopable {
 }
 
 struct Images: Loopable {
+
+    // Create Wallet
+    let createWalletTouchID = UIImage(named: "fingerprint")
+    let createWalletFaceID = UIImage(named: "faceId")
+
     //Transaction icons
     let food = UIImage(named: "food")
     let game = UIImage(named: "game")

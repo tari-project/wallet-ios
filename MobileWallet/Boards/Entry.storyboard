@@ -16,15 +16,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9YY-0o-nvV">
-                                <rect key="frame" x="-38" y="172" width="490" height="488.5"/>
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9YY-0o-nvV">
+                                <rect key="frame" x="40" y="327.5" width="334" height="333"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="9YY-0o-nvV" secondAttribute="height" multiplier="750:748" id="enm-Jp-0Fj"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K5K-jz-bn0" customClass="AnimationView" customModule="Lottie">
-                                <rect key="frame" x="87" y="44" width="240" height="128"/>
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="K5K-jz-bn0" customClass="AnimationView" customModule="Lottie">
+                                <rect key="frame" x="87" y="199.5" width="240" height="128"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="128" id="2Im-LL-YSe"/>
                                     <constraint firstAttribute="width" constant="240" id="ezd-iy-aj7"/>
@@ -76,7 +76,6 @@ that’s easy to use.</string>
                             <constraint firstItem="K5K-jz-bn0" firstAttribute="centerX" secondItem="W2N-Ra-naU" secondAttribute="centerX" id="8WG-Fc-BDB"/>
                             <constraint firstItem="qJ9-sa-FQv" firstAttribute="top" secondItem="AvL-7H-2gZ" secondAttribute="top" id="Cpn-Gx-5Tq"/>
                             <constraint firstItem="I22-mF-dFz" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" constant="27" id="DeI-sc-eDJ"/>
-                            <constraint firstItem="K5K-jz-bn0" firstAttribute="top" secondItem="Qtm-HJ-rTJ" secondAttribute="top" id="EJr-tf-fh4"/>
                             <constraint firstItem="qJ9-sa-FQv" firstAttribute="leading" secondItem="Qtm-HJ-rTJ" secondAttribute="leading" constant="27" id="GZj-TK-YHx"/>
                             <constraint firstItem="I22-mF-dFz" firstAttribute="top" secondItem="9YY-0o-nvV" secondAttribute="bottom" id="It7-Jx-30o"/>
                             <constraint firstItem="xrT-Tl-QNW" firstAttribute="top" secondItem="YyS-f0-YOr" secondAttribute="bottom" constant="16" id="JG0-aq-aIH"/>
@@ -101,7 +100,7 @@ that’s easy to use.</string>
                     <connections>
                         <outlet property="animationContainer" destination="K5K-jz-bn0" id="Tpk-4q-2Ki"/>
                         <outlet property="animationContainerBottomAnchor" destination="jRg-k7-zRL" id="Yi9-Nf-Eit"/>
-                        <outlet property="animationContainerTopAnchor" destination="EJr-tf-fh4" id="zJ4-39-YaN"/>
+                        <outlet property="animationContainerBottomAnchorToVideo" destination="It7-Jx-30o" id="ajh-x3-h7m"/>
                         <outlet property="createWalletButton" destination="fLD-Gb-rum" id="B4K-j2-kcb"/>
                         <outlet property="distanceTitleSubtitle" destination="JtF-lH-gdW" id="5M3-lZ-JNW"/>
                         <outlet property="subtitleLabel" destination="qJ9-sa-FQv" id="zUK-eq-gAX"/>
@@ -217,6 +216,14 @@ that’s easy to use.</string>
                                     <constraint firstAttribute="width" secondItem="uWX-iB-bc8" secondAttribute="height" multiplier="374:374" id="FNO-ib-Syb"/>
                                 </constraints>
                             </view>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" alpha="0.0" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="n22-Jc-Nvd">
+                                <rect key="frame" x="138" y="281" width="138" height="138"/>
+                                <color key="backgroundColor" name="CreatingWalletBackground"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="138" id="Tnn-DC-7uJ"/>
+                                    <constraint firstAttribute="height" constant="138" id="r05-jj-3fF"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -236,9 +243,9 @@ that’s easy to use.</string>
                             <constraint firstItem="HXv-Q0-Rqh" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="YDS-il-vTf"/>
                             <constraint firstItem="YAc-mi-fSA" firstAttribute="trailing" secondItem="mQk-Ha-DV8" secondAttribute="trailing" id="YlQ-zy-E86"/>
                             <constraint firstItem="M8U-Ri-XyX" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="ehB-76-lhf"/>
-                            <constraint firstItem="uWX-iB-bc8" firstAttribute="leading" secondItem="YAc-mi-fSA" secondAttribute="leading" constant="20" symbolic="YES" id="esX-W2-qFk"/>
+                            <constraint firstItem="uWX-iB-bc8" firstAttribute="leading" secondItem="YAc-mi-fSA" secondAttribute="leading" symbolic="YES" id="esX-W2-qFk"/>
                             <constraint firstItem="63C-OS-6oP" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="fLF-3G-R3Q"/>
-                            <constraint firstItem="YAc-mi-fSA" firstAttribute="trailing" secondItem="uWX-iB-bc8" secondAttribute="trailing" constant="20" symbolic="YES" id="fN0-ku-0vq"/>
+                            <constraint firstItem="YAc-mi-fSA" firstAttribute="trailing" secondItem="uWX-iB-bc8" secondAttribute="trailing" symbolic="YES" id="fN0-ku-0vq"/>
                             <constraint firstItem="uWX-iB-bc8" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="gHI-IJ-N0l"/>
                             <constraint firstItem="HjF-br-qL7" firstAttribute="top" secondItem="RC1-b4-FCh" secondAttribute="top" id="iju-cW-bwd"/>
                             <constraint firstItem="MOl-h7-Gpm" firstAttribute="height" secondItem="mQk-Ha-DV8" secondAttribute="height" id="jyO-8z-kq6"/>
@@ -248,11 +255,13 @@ that’s easy to use.</string>
                             <constraint firstItem="uWX-iB-bc8" firstAttribute="centerY" secondItem="SSR-AL-jY7" secondAttribute="centerY" id="nhX-RK-B3f"/>
                             <constraint firstItem="HXv-Q0-Rqh" firstAttribute="leading" secondItem="YAc-mi-fSA" secondAttribute="leading" constant="25" id="npu-HW-akg"/>
                             <constraint firstItem="YAc-mi-fSA" firstAttribute="bottom" secondItem="HXv-Q0-Rqh" secondAttribute="bottom" constant="-70" id="ovK-Nz-ta6"/>
+                            <constraint firstItem="n22-Jc-Nvd" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="qN9-OE-USE"/>
                             <constraint firstItem="63C-OS-6oP" firstAttribute="top" secondItem="MOl-h7-Gpm" secondAttribute="top" constant="8" id="rgo-Ux-7xd"/>
                             <constraint firstItem="0t0-Ol-DRf" firstAttribute="centerX" secondItem="SSR-AL-jY7" secondAttribute="centerX" id="shF-HV-Poj"/>
                             <constraint firstItem="MOl-h7-Gpm" firstAttribute="top" secondItem="RC1-b4-FCh" secondAttribute="bottom" constant="8" symbolic="YES" id="tDu-RI-aN5"/>
                             <constraint firstItem="M8U-Ri-XyX" firstAttribute="top" secondItem="RC1-b4-FCh" secondAttribute="bottom" constant="18" id="tHN-Ra-8O1"/>
                             <constraint firstItem="0t0-Ol-DRf" firstAttribute="top" secondItem="SSR-AL-jY7" secondAttribute="top" constant="70" id="uCT-qS-Koa"/>
+                            <constraint firstItem="63C-OS-6oP" firstAttribute="top" secondItem="n22-Jc-Nvd" secondAttribute="bottom" constant="20" id="waZ-zv-fEQ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="YAc-mi-fSA"/>
                     </view>
@@ -264,6 +273,7 @@ that’s easy to use.</string>
                         <outlet property="emojiWheelView" destination="uWX-iB-bc8" id="NAA-m6-Z47"/>
                         <outlet property="firstLabel" destination="63C-OS-6oP" id="fNm-8f-Fvt"/>
                         <outlet property="firstLabelTopConstraint" destination="rgo-Ux-7xd" id="mpN-rm-cYq"/>
+                        <outlet property="localAuthentificationImageView" destination="n22-Jc-Nvd" id="UVg-iJ-aHV"/>
                         <outlet property="nerdAnimationView" destination="qmx-vh-IWf" id="ewd-i5-R9e"/>
                         <outlet property="secondLabel" destination="RC1-b4-FCh" id="fSH-fK-UXi"/>
                         <outlet property="thirdLabel" destination="M8U-Ri-XyX" id="Xmn-1N-yJa"/>
