@@ -154,8 +154,10 @@ class TestnetKeyServer {
                 return
             }
 
+            let message = "Imported UTXO"
+
             do {
-                try self.importKey(key: key, value: value, returnPubKeyHex: returnPubKeyHex)
+                try self.importKey(key: key, value: value, message: message, returnPubKeyHex: returnPubKeyHex)
             } catch {
                 onError(error)
                 return
@@ -167,10 +169,10 @@ class TestnetKeyServer {
         task.resume()
     }
 
-    private func importKey(key: String, value: UInt64, returnPubKeyHex: String) throws {
+    private func importKey(key: String, value: UInt64, message: String, returnPubKeyHex: String) throws {
         //Add TariBot as a contact
         try wallet.addUpdateContact(alias: "TariBot", publicKeyHex: returnPubKeyHex)
-        try wallet.importUtxo(value: value, privateKey: PrivateKey(hex: key), sourcePublicKey: PublicKey(hex: returnPubKeyHex))
+        try wallet.importUtxo(value: value, message: message, privateKey: PrivateKey(hex: key), sourcePublicKey: PublicKey(hex: returnPubKeyHex))
 
         TariEventBus.postToMainThread(.balanceUpdate)
         TariEventBus.postToMainThread(.transactionListUpdate)
