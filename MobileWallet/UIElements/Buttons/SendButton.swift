@@ -46,20 +46,22 @@ class SendButton: ActionButton {
     private let RADIUS_POINTS: CGFloat = 12.0
     private let GRADIENT_ANGLE: Double = 90.0
 
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        applyGradient()
+    }
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         isCompiled = true
         applyGradient()
-        setShadow()
     }
 
     override func layoutIfNeeded() {
         super.layoutIfNeeded()
 
         if isCompiled {
-            removeStyle()
             applyGradient()
-            setShadow()
         }
     }
 
@@ -71,8 +73,6 @@ class SendButton: ActionButton {
                }
            }
        }
-
-       layer.shadowOpacity = 0.0
    }
 
    private func applyGradient() {
@@ -98,7 +98,7 @@ class SendButton: ActionButton {
        layer.insertSublayer(gradient, at: 0)
    }
 
-   private func setShadow() {
+   func applyShadow() {
        layer.shadowColor = Theme.shared.colors.actionButtonShadow!.cgColor
        layer.shadowOffset = CGSize(width: 10.0, height: 10.0)
        layer.shadowRadius = 10

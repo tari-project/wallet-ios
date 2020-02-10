@@ -79,7 +79,7 @@ extension TransactionsTableViewController {
                 return ""
             }
 
-            let (date, _) = tx.localDate
+            let (date, _) = tx.date
             if let displayDate = date {
                 return displayDate.relativeDayFromToday()
             }

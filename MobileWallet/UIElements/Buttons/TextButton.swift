@@ -59,6 +59,10 @@ class TextButton: UIButton {
     private func commonSetup() {
         setTitleColor(Theme.shared.colors.textButton, for: .normal)
         titleLabel?.font = Theme.shared.fonts.textButton
+
+        if let label = titleLabel {
+            label.heightAnchor.constraint(equalToConstant: label.font.pointSize * 1.2).isActive = true
+        }
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

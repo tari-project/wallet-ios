@@ -67,7 +67,7 @@ class CompletedTransactions: TransactionsProtocol {
         }
 
         let grouped = ungroupedTxs.groupSort { (tx) -> Date in
-            let (date, error) = tx.localDate
+            let (date, error) = tx.date
             if error != nil {
                 //TOOD figure out a way to handle a missing timestamp error inside this callback
                 return Date()
@@ -98,7 +98,7 @@ class CompletedTransactions: TransactionsProtocol {
             }
         }
 
-        let sortedList = list.sorted(by: { $0.localDate.0?.compare($1.localDate.0!) == .orderedDescending })
+        let sortedList = list.sorted(by: { $0.date.0?.compare($1.date.0!) == .orderedDescending })
 
         return (sortedList, nil)
     }

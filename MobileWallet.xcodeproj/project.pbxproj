@@ -190,6 +190,12 @@
 		0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
+		0091D4A723ED879E004BF7F7 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4A623ED879E004BF7F7 /* Signature.swift */; };
+		0091D4A823ED879E004BF7F7 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4A623ED879E004BF7F7 /* Signature.swift */; };
+		0091D4A923ED879E004BF7F7 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4A623ED879E004BF7F7 /* Signature.swift */; };
+		0091D4AB23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */; };
+		0091D4AC23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */; };
+		0091D4AD23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */; };
 		00947CC223CF090D00526DD5 /* TransactionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC123CF090D00526DD5 /* TransactionProtocol.swift */; };
 		00947CC323CF090D00526DD5 /* TransactionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC123CF090D00526DD5 /* TransactionProtocol.swift */; };
 		00947CC423CF090D00526DD5 /* TransactionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC123CF090D00526DD5 /* TransactionProtocol.swift */; };
@@ -416,6 +422,8 @@
 		0070A7BB2379847100C25E1C /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		00746196239901FA00F00966 /* SendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewController.swift; sourceTree = "<group>"; };
 		0074619A239A57B000F00966 /* UIBarButtonItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItem.swift; sourceTree = "<group>"; };
+		0091D4A623ED879E004BF7F7 /* Signature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signature.swift; sourceTree = "<group>"; };
+		0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestnetKeyServer.swift; sourceTree = "<group>"; };
 		00947CC123CF090D00526DD5 /* TransactionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionProtocol.swift; sourceTree = "<group>"; };
 		00947CC623D1A35200526DD5 /* TransactionsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsProtocol.swift; sourceTree = "<group>"; };
 		009BF8A6237AA13400C02E44 /* MobileWalletUITests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletUITests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -656,6 +664,8 @@
 				00230AF92376C6DD00F23E34 /* Sequence.swift */,
 				00A057AE23D875840029C22A /* TariEventBus.swift */,
 				004277FA23E1A61F00AE7BD9 /* ErrorDescriptions.swift */,
+				0091D4A623ED879E004BF7F7 /* Signature.swift */,
+				0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */,
 			);
 			name = Utils;
 			path = Wrappers/Utils;
@@ -1401,10 +1411,12 @@
 				00262EAF236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
 				004997B32382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
+				0091D4A723ED879E004BF7F7 /* Signature.swift in Sources */,
 				00BBD816237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				004277FF23E2F1D700AE7BD9 /* UIImage.swift in Sources */,
+				0091D4AB23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
 				00947CC723D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				004277EF23E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
@@ -1439,9 +1451,11 @@
 				BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */,
 				001F6CE52380253B00FA7002 /* Contact.swift in Sources */,
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
+				0091D4AC23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				BFD758E723E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
+				0091D4A823ED879E004BF7F7 /* Signature.swift in Sources */,
 				006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				004277F823E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				00262EB5236F024400A6C8A0 /* Theme.swift in Sources */,
@@ -1534,6 +1548,7 @@
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				004277F123E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
+				0091D4AD23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
 				00C185C0238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				004277E923DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				004277F523E0407900AE7BD9 /* TextButton.swift in Sources */,
@@ -1544,6 +1559,7 @@
 				00947CC423CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
 				00A057B123D875840029C22A /* TariEventBus.swift in Sources */,
 				00262EBB236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
+				0091D4A923ED879E004BF7F7 /* Signature.swift in Sources */,
 				00BBD807237D755600EBF5E6 /* HelperFunctions.swift in Sources */,
 				0042780523E8421200AE7BD9 /* StringProtocol.swift in Sources */,
 				00BBD80B237D80C800EBF5E6 /* Date.swift in Sources */,
@@ -1716,7 +1732,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = 8974PBB98U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MobileWallet/Info.plist;
@@ -1743,7 +1759,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LIBRARY = "libc++";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_TEAM = 8974PBB98U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MobileWallet/Info.plist;

@@ -52,7 +52,7 @@ extension Date {
             return NSLocalizedString("Yesterday", comment: "Transaction list section heading")
         } else {
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, yyyy", options: 0, locale: NSLocale.current)
+            dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, yyyy", options: 0, locale: .current)
             //dateFormatter.timeZone = TimeZone.current
 
             return dateFormatter.string(from: self)
@@ -64,7 +64,8 @@ extension Date {
     */
     func formattedDisplay() -> String? {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMM d yyyy h:mm a", options: 0, locale: NSLocale.current)
+        dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMMM d yyyy h:mm a", options: 0, locale: .current)
+        dateFormatter.timeZone = TimeZone.current
 
         return dateFormatter.string(from: self)
     }
