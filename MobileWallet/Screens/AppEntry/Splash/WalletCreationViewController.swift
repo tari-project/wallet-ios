@@ -40,10 +40,18 @@
 
 import UIKit
 import Lottie
+import LocalAuthentication
+
+enum WalletCreationState {
+    case createEmojiId
+    case showEmojiId
+    case localAuthentification
+    case enableNotifications
+}
 
 class WalletCreationViewController: UIViewController {
     // MARK: - Variables and constants
-    var shouldGoToHome: Bool = false
+    var state: WalletCreationState = .createEmojiId
     // MARK: - Outlets
     @IBOutlet weak var createEmojiButtonConstraint: NSLayoutConstraint!
     @IBOutlet weak var firstLabelTopConstraint: NSLayoutConstraint!
@@ -59,6 +67,7 @@ class WalletCreationViewController: UIViewController {
     @IBOutlet weak var topImageView: UIImageView!
     @IBOutlet weak var userEmojiLabel: UILabel!
     @IBOutlet weak var userEmojiContainer: UIView!
+    @IBOutlet weak var localAuthentificationImageView: UIImageView!
 
     // MARK: - Override functions
     override func viewDidLoad() {
@@ -86,8 +95,8 @@ class WalletCreationViewController: UIViewController {
         let secondLabelString = NSLocalizedString("Just a sec…\nYour wallet is being created", comment: "Second label on wallet creation")
         let attributedString = NSMutableAttributedString(string: secondLabelString,
                                                          attributes: [
-                                                            .font: Theme.shared.fonts.createWalletSecondLabelSecondText ?? UIFont.systemFont(ofSize: 12),
-                                                            .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel ?? .black,
+                                                            .font: Theme.shared.fonts.createWalletSecondLabelSecondText!,
+                                                            .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
           .kern: -0.33
         ])
 
@@ -95,7 +104,7 @@ class WalletCreationViewController: UIViewController {
         if splitString.count > 0 {
             let length = splitString[0].count
             attributedString.addAttribute(.font,
-                                          value: Theme.shared.fonts.createWalletSecondLabelFirstText ?? UIFont.systemFont(ofSize: 12),
+                                          value: Theme.shared.fonts.createWalletSecondLabelFirstText!,
                                           range: NSRange(location: 0, length: length))
 
             secondLabel.attributedText = attributedString
@@ -159,8 +168,8 @@ class WalletCreationViewController: UIViewController {
             let secondLabelString = NSLocalizedString("Awesome!\nNow create your Emoji ID", comment: "Second label on wallet creation")
             let attributedString = NSMutableAttributedString(string: secondLabelString,
                                                              attributes: [
-                                                                .font: Theme.shared.fonts.createWalletSecondLabelSecondText ?? UIFont.systemFont(ofSize: 12),
-                                                                .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel ?? .black,
+                                                                .font: Theme.shared.fonts.createWalletSecondLabelSecondText!,
+                                                                .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
                                                                 .kern: -0.33
             ])
 
@@ -168,7 +177,7 @@ class WalletCreationViewController: UIViewController {
             if splitString.count > 0 {
                 let length = splitString[0].count
                 attributedString.addAttribute(.font,
-                                              value: Theme.shared.fonts.createWalletSecondLabelFirstText ?? UIFont.systemFont(ofSize: 12),
+                                              value: Theme.shared.fonts.createWalletSecondLabelFirstText!,
                                               range: NSRange(location: 0, length: length))
 
                 self.secondLabel.attributedText = attributedString
@@ -239,15 +248,13 @@ class WalletCreationViewController: UIViewController {
             fromProgress: 0,
             toProgress: 1,
             loopMode: .playOnce,
-            completion: { [weak self] (_) in
-                guard let self = self else { return }
-                //self.showYourEmoji()
+            completion: { (_) in
             }
         )
     }
 
     private func showCreateYourEmojiIdScreen() {
-        self.createEmojiButtonConstraint.constant = 0
+        self.createEmojiButtonConstraint.constant = 20
         self.runNerdEmojiAnimation()
 
         UIView.animate(withDuration: 1, animations: { [weak self] in
@@ -262,7 +269,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func showYourEmoji() {
-        self.createEmojiButtonConstraint.constant = 0
+        self.createEmojiButtonConstraint.constant = 20
         self.createEmojiButton.animateIn()
         UIView.animate(withDuration: 1, animations: { [weak self] in
             guard let self = self else { return }
@@ -273,15 +280,117 @@ class WalletCreationViewController: UIViewController {
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
             guard let self = self else { return }
-            self.shouldGoToHome = true
+            self.state = .showEmojiId
+        }
+    }
+
+    private func showLocalAuthentification() {
+        self.createEmojiButton.animateIn()
+        UIView.animate(withDuration: 1, animations: { [weak self] in
+            guard let self = self else { return }
+            self.secondLabel.alpha = 1.0
+            self.thirdLabel.alpha = 1.0
+            self.localAuthentificationImageView.alpha = 1.0
+            self.view.layoutIfNeeded()
+        }) { [weak self] (_) in
+            guard let self = self else { return }
+            self.state = .localAuthentification
+        }
+    }
+
+    private func updateLabelsForShowEmojiId() {
+        let secondLabelString = NSLocalizedString("This is your Emoji ID", comment: "Splash show your emoji ID")
+        let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
+            .font: Theme.shared.fonts.createWalletEmojiIDFirstText!,
+          .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
+          .kern: -0.33
+        ])
+        attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText!, range: NSRange(location: 13, length: 8))
+
+        self.secondLabel.attributedText = attributedString
+        self.thirdLabel.text = NSLocalizedString("This set of emojis is your wallet address. It’s how your friends can find you and send you Tari.", comment: "Emoji Id third label on wallet creation")
+
+        self.createEmojiButton.setTitle(NSLocalizedString("Continue", comment: "This is your emoji screen on wallet creation"), for: .normal)
+
+        if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
+            let (emojis, _) = pubKey.emojis
+
+            self.userEmojiLabel.textColor = Theme.shared.colors.creatingWalletEmojisSeparator
+            self.userEmojiLabel.text = String(emojis.enumerated().map { $0 > 0 && $0 % 4 == 0 ? ["|", $1] : [$1]}.joined())
+        }
+    }
+
+    private func updateLabelsForLocalAuthentification() {
+        let currentType = LAContext().biometricType
+        switch currentType {
+        case .faceID:
+            let secondLabelString = NSLocalizedString("Protect your wallet with Face ID", comment: "Splash face ID")
+            let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
+              .font: Theme.shared.fonts.createWalletEmojiIDFirstText!,
+              .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
+              .kern: -0.33
+            ])
+            attributedString.addAttribute(.font,
+                                          value: Theme.shared.fonts.createWalletEmojiIDSecondText!,
+                                          range: NSRange(location: 25, length: 7))
+            self.secondLabel.attributedText = attributedString
+
+            self.thirdLabel.text = NSLocalizedString("We recommend using Face ID to protect your Tari wallet for security and ease of use.",
+                                                     comment: "Face ID third label on wallet creation")
+
+            self.createEmojiButton.setTitle(NSLocalizedString("Enable Face ID",
+                                                              comment: "Enable Face ID on wallet creation"),
+                                            for: .normal)
+
+            self.localAuthentificationImageView.image = Theme.shared.images.createWalletFaceID!
+        case .touchID:
+
+            let secondLabelString = NSLocalizedString("Protect your wallet with Touch ID", comment: "Splash face ID")
+            let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
+              .font: Theme.shared.fonts.createWalletEmojiIDFirstText!,
+              .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
+              .kern: -0.33
+            ])
+            attributedString.addAttribute(.font,
+                                          value: Theme.shared.fonts.createWalletEmojiIDSecondText!,
+                                          range: NSRange(location: 25, length: 8))
+            self.secondLabel.attributedText = attributedString
+
+            self.thirdLabel.text = NSLocalizedString("We recommend using Touch ID to access your Tari wallet for security and ease of use.",
+                                                     comment: "Face ID third label on wallet creation")
+
+            self.createEmojiButton.setTitle(NSLocalizedString("Enable Touch ID",
+                                                              comment: "Enable Touch ID on wallet creation"),
+                                            for: .normal)
+            self.localAuthentificationImageView.image = Theme.shared.images.createWalletTouchID!
+        case .none:
+            // for iOS we do not implement Device PIN. So i will show the same thing just to be sure we show something on Simulator.
+            let secondLabelString = NSLocalizedString("Protect your wallet with Touch ID", comment: "Splash face ID")
+            let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
+              .font: Theme.shared.fonts.createWalletEmojiIDFirstText!,
+              .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
+              .kern: -0.33
+            ])
+            attributedString.addAttribute(.font,
+                                          value: Theme.shared.fonts.createWalletEmojiIDSecondText!,
+                                          range: NSRange(location: 25, length: 8))
+            self.secondLabel.attributedText = attributedString
+
+            self.thirdLabel.text = NSLocalizedString("We recommend using Touch ID to access your Tari wallet for security and ease of use.",
+                                                     comment: "Face ID third label on wallet creation")
+
+            self.createEmojiButton.setTitle(NSLocalizedString("Enable Touch ID",
+                                                              comment: "Enable Touch ID on wallet creation"),
+                                            for: .normal)
+            // To Do: change the image to faceID once karim provide to me.
+            self.localAuthentificationImageView.image = Theme.shared.images.createWalletTouchID!
         }
     }
 
     // MARK: - Actions
     @IBAction func navigateToHoome(_ sender: Any) {
-        if shouldGoToHome {
-            performSegue(withIdentifier: "SplashToHome", sender: nil)
-        } else {
+        switch state {
+        case .createEmojiId:
             self.createEmojiButton.animateOut()
             UIView.animate(withDuration: 1, animations: {
                 self.secondLabel.alpha = 0.0
@@ -291,27 +400,63 @@ class WalletCreationViewController: UIViewController {
             }) { [weak self] (_) in
                 guard let self = self else { return }
                 self.runEmojiWheelAnimation()
-
-                let secondLabelString = NSLocalizedString("This is your Emoji ID", comment: "Splash show your emoji ID")
-                let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
-                    .font: Theme.shared.fonts.createWalletEmojiIDFirstText ?? UIFont.systemFont(ofSize: 12),
-                  .foregroundColor: UIColor(white: 0.0, alpha: 1.0),
-                  .kern: -0.33
-                ])
-                attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText ?? UIFont.systemFont(ofSize: 12), range: NSRange(location: 13, length: 8))
-
-                self.secondLabel.attributedText = attributedString
-                self.thirdLabel.text = NSLocalizedString("This set of emojis is your wallet address. It’s how your friends can find you and send you Tari.", comment: "Emoji Id third label on wallet creation")
-
-                self.createEmojiButton.setTitle(NSLocalizedString("Continue", comment: "This is your emoji screen on wallet creation"), for: .normal)
-
-                if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
-                    let (emojis, _) = pubKey.emojis
-
-                    self.userEmojiLabel.textColor = Theme.shared.colors.creatingWalletEmojisSeparator
-                    self.userEmojiLabel.text = String(emojis.enumerated().map { $0 > 0 && $0 % 4 == 0 ? ["|", $1] : [$1]}.joined())
+                self.updateLabelsForShowEmojiId()
+            }
+        case .showEmojiId:
+            self.createEmojiButton.animateOut()
+            UIView.animate(withDuration: 1, animations: {
+                self.secondLabel.alpha = 0.0
+                self.thirdLabel.alpha = 0.0
+                self.userEmojiLabel.alpha = 0.0
+                self.userEmojiContainer.alpha = 0.0
+                self.view.layoutIfNeeded()
+            }) { [weak self] (_) in
+                guard let self = self else { return }
+                self.updateLabelsForLocalAuthentification()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
+                    guard let self = self else { return }
+                    self.showLocalAuthentification()
                 }
             }
+        case .localAuthentification:
+            let context = LAContext()
+            var error: NSError?
+
+            if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
+                                         error: &error) {
+                let reason = secondLabel.text ?? ""
+
+                context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) {
+                    [weak self] success, _ in
+
+                    DispatchQueue.main.async { [weak self] in
+                        guard let self = self else { return }
+                        if success {
+                            self.performSegue(withIdentifier: "SplashToHome", sender: nil)
+                        } else {
+                            let alert = UIAlertController(title: "There was an error",
+                                                          message: "",
+                                                          preferredStyle: .alert)
+                            alert.addAction(UIAlertAction(title: "Try again",
+                                                          style: .default,
+                                                          handler: nil))
+
+                            self.present(alert, animated: true, completion: nil)
+                        }
+                    }
+                }
+            } else {
+                let alert = UIAlertController(title: "There is no biometry",
+                                              message: "",
+                                              preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok",
+                                              style: .default,
+                                              handler: nil))
+
+                self.present(alert, animated: true, completion: nil)
+            }
+        case .enableNotifications:
+            performSegue(withIdentifier: "SplashToHome", sender: nil)
         }
     }
 }
