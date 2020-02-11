@@ -106,6 +106,12 @@ class TariLibWrapperTests: XCTestCase {
                 XCTFail(hexError!.localizedDescription)
             }
             XCTAssertEqual(hex, originalPublicKeyHex)
+            let (emoji, error) = publicKey.emojis
+            if error != nil {
+                XCTFail(error!.localizedDescription)
+            }
+            let emojiKey = try PublicKey(emojis: emoji)
+            XCTAssertEqual(emojiKey.hex.0, publicKey.hex.0)
         } catch {
             XCTFail(error.localizedDescription)
         }
