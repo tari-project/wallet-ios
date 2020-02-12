@@ -284,6 +284,9 @@
 		00E4922B23683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
+		491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
+		491AB89B23F1B36100372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
+		49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		4C2C95C323796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
 		4C2C95C423796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
 		4C2C95C523796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
@@ -479,6 +482,7 @@
 		153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet_MobileWalletUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		28164FB1973A4277E7C47F6D /* Pods-MobileWalletUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.release.xcconfig"; sourceTree = "<group>"; };
 		2FF33C780E811D173D3284C3 /* Pods-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
 		4C2C95AF23795919005058AB /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libwallet_ffi.a; sourceTree = "<group>"; };
 		4C2C95B723795930005058AB /* wallet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wallet.h; sourceTree = "<group>"; };
 		4C2C95B8237959B3005058AB /* MobileWallet-bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWallet-bridging-header.h"; sourceTree = "<group>"; };
@@ -761,6 +765,7 @@
 				00E2BCB8236B5BC000C2A105 /* Buttons */,
 				00E2BCB0236B44DB00C2A105 /* FloatingPanel */,
 				00325EC9239E4A1000F76918 /* FadedOverlayView.swift */,
+				49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -1439,6 +1444,7 @@
 				004277F723E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				00230B022376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
 				004997AB2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
+				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
 				001F6CEC2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
@@ -1491,6 +1497,7 @@
 				004997B82382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				001F6CED2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
+				491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				00746198239901FA00F00966 /* SendViewController.swift in Sources */,
 				009BF8AD237ABB4700C02E44 /* TariLib.swift in Sources */,
@@ -1543,6 +1550,7 @@
 				00746199239901FA00F00966 /* SendViewController.swift in Sources */,
 				004997B12382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				00230AFC2376C6DE00F23E34 /* Sequence.swift in Sources */,
+				491AB89B23F1B36100372189 /* AnimatedBalanceLabel.swift in Sources */,
 				004997BD2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				009BF8AE237ABB4700C02E44 /* TariLib.swift in Sources */,
 				BF8316FF23EF7EAA00235403 /* LAContext.swift in Sources */,

@@ -53,7 +53,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     @IBOutlet weak var bottomFadeViewHeightConstraint: NSLayoutConstraint!
 
     @IBOutlet weak var balanceLabel: UILabel!
-    @IBOutlet weak var balanceValueLabel: UILabel!
+    @IBOutlet weak var balanceValueLabel: AnimatedBalanceLabel!
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var valueIcon: UIImageView!
 
@@ -153,14 +153,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         balanceLabel.text = NSLocalizedString("Available Balance", comment: "Home screen balance label")
         balanceLabel.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
         balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
-        balanceValueLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceValueLabel
-
-        balanceValueLabel.adjustsFontSizeToFitWidth = true
 
         //Balance has multiple font sizes
         balanceValueLabel.minimumScaleFactor = 0.3
-        balanceValueLabel.lineBreakMode = .byTruncatingTail
-        balanceValueLabel.numberOfLines = 1
 
         setupFloatingPanel()
         setupNavigatorBar()
@@ -228,14 +223,16 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         let balanceLabelAttributedText = NSMutableAttributedString(
             string: balanceValueString,
             attributes: [
-                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel!
+                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel!,
+                NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!
             ]
         )
 
         let lastNumberOfDigitsToFormat = MicroTari.ROUNDED_FRACTION_DIGITS + 1
         balanceLabelAttributedText.addAttributes(
             [
-                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals!
+                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals!,
+                NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!
                 //NSAttributedString.Key.baselineOffset: balanceValueLabel.bounds.size.height - 4
             ],
             range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat) //Use fraction digits + 1 for "."
