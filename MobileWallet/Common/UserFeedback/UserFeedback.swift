@@ -95,7 +95,9 @@ class UserFeedback {
     func success(title: String) {
         let successFeedbackView = FeedbackView()
         successFeedbackView.setupSuccess(title: title)
-        var attributes = defaultAttributes
+        var attributes = EKAttributes.topToast
+
+        attributes.entryBackground = .color(color: EKColor(Theme.shared.colors.successFeedbackPopupBackground!))
         attributes.screenBackground = .clear
         attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
         attributes.displayDuration = 2

@@ -52,7 +52,7 @@ extension TransactionViewController {
         dateContainerView.heightAnchor.constraint(equalToConstant: 40).isActive = true
 
         dateContainerView.backgroundColor = Theme.shared.colors.appBackground
-        dateContainerView.layer.shadowColor = Theme.shared.colors.transactionScreenBottomHeaderShadow!.cgColor
+        dateContainerView.layer.shadowColor = Theme.shared.colors.navigationBottomShadow!.cgColor
         dateContainerView.layer.shadowOffset = CGSize(width: 10.0, height: 10.0)
         dateContainerView.layer.shadowRadius = 10
         dateContainerView.layer.shadowOpacity = 0.1

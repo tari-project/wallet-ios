@@ -100,7 +100,7 @@ struct Colors: Loopable {
     let qrButtonBackground = UIColor(named: "QRButtonBackground")
 
     //Transaction cell
-    let transactionCellUsername = UIColor(named: "TransactionCellUsername")
+    let transactionCellAlias = UIColor(named: "TableCellContactAlias")
     let transactionCellDescription = UIColor(named: "TransactionCellDescription")
     let transactionCellValueNegativeBackground = UIColor(named: "TransactionCellValueNegativeBackground")
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
@@ -122,12 +122,14 @@ struct Colors: Loopable {
 
     //Shadows
     let actionButtonShadow = UIColor(named: "ActionButtonShadow")
-    let transactionScreenBottomHeaderShadow = UIColor(named: "DefaultShadow")
+    let navigationBottomShadow = UIColor(named: "DefaultShadow")
 
     //Feedback
     let feedbackPopupBackground = UIColor(named: "FeedbackScreenBackground")
-    let errorFeedbackPopupTitle = UIColor(named: "Heading")
-    let errorFeedbackPopupDescription = UIColor(named: "SmallSubheading")
+    let feedbackPopupTitle = UIColor(named: "Heading")
+    let feedbackPopupDescription = UIColor(named: "SmallSubheading")
+    let successFeedbackPopupBackground = UIColor(named: "SuccessFeedbackBackground")
+    let successFeedbackPopupTitle = UIColor(named: "SuccessFeedbackText")
 
     //Emoji button
     let emojiButtonShadow = UIColor(named: "EmojiButtonShadow")
@@ -137,6 +139,11 @@ struct Colors: Loopable {
     //Simple text button
     let textButton = UIColor(named: "TextButton")
     let textButtonSecondary = UIColor(named: "TextButtonSecondary")
+
+    //Add recipient view
+    let contactCellAlias = UIColor(named: "TableCellContactAlias")
+    let contactCellImageBackground = UIColor(named: "TableCellContactImageBackground")
+    let contactCellImage = UIColor(named: "TableCellContactImage")
 }
 
 struct Fonts: Loopable {
@@ -193,6 +200,11 @@ struct Fonts: Loopable {
     //Intro to wallet
     let introTitleBold = UIFont(name: "AvenirLTStd-Black", size: 18)
     let introTitle = UIFont(name: "AvenirLTStd-Light", size: 18)
+
+    //Add recipient view
+    let searchContactsInputBoxText = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
+    let contactCellAlias = UIFont(name: "AvenirLTStd-Heavy", size: 15.0)
+    let contactCellAliasLetter = UIFont(name: "AvenirLTStd-Heavy", size: 24.0)
 }
 
 struct Images: Loopable {
@@ -223,6 +235,11 @@ struct Images: Loopable {
     let handWave = UIImage(named: "HandWave")
 }
 
+struct Sizes {
+    let appSidePadding: CGFloat = 25 //TODO maybe adjust for smaller phones
+    //TODO move other contants here
+}
+
 struct Theme {
     static let shared = Theme()
 
@@ -231,6 +248,7 @@ struct Theme {
     let colors = Colors()
     let images = Images()
     let fonts = Fonts()
+    let sizes = Sizes()
 
     let transactionIcons = Images() //FIXME delete this and change all references to it
 }
