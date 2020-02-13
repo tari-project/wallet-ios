@@ -1,8 +1,8 @@
-//  SendViewController.swift
+//  UILabel.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/12/05
+	Created by Jason van den Berg on 2019/11/03
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,42 +40,51 @@
 
 import UIKit
 
-class SendViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        view.backgroundColor = Theme.shared.colors.appBackground
-        navigationItem.title = NSLocalizedString("Send to", comment: "Navigation bar title on send view screen")
+class UILabelWithPadding: UILabel {
+     private struct AssociatedKeys {
+        static var padding = UIEdgeInsets()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        navigationController?.setNavigationBarHidden(false, animated: false)
+    public var padding: UIEdgeInsets? {
+        get {
+            return objc_getAssociatedObject(self, &AssociatedKeys.padding) as? UIEdgeInsets
+        }
+        set {
+            if let newValue = newValue {
+                objc_setAssociatedObject(self, &AssociatedKeys.padding, newValue as UIEdgeInsets?, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            }
+        }
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override open func draw(_ rect: CGRect) {
+        if let insets = padding {
+            self.drawText(in: rect.inset(by: insets))
+        } else {
+            self.drawText(in: rect)
+        }
     }
-    */
-    @IBAction func onScanAction(_ sender: Any) {
-        let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
-        guard let vc = storyBoard.instantiateViewController(identifier: "ScanViewController") as? ScanViewController else { return }
-        vc.delegate = self
-        vc.modalPresentationStyle = .fullScreen
-        present(vc, animated: true, completion: nil)
-    }
-}
 
-extension SendViewController: ScanViewControllerDelegate {
-    func found(code: String) {
-        // do something with the code here
+    override open var intrinsicContentSize: CGSize {
+        guard let _ = self.text else {
+            return super.intrinsicContentSize
+        }
+
+        guard let insets = padding else {
+            return super.intrinsicContentSize
+        }
+
+        var contentSize = super.intrinsicContentSize
+        var textWidth: CGFloat = frame.size.width
+        var insetsHeight: CGFloat = 0.0
+        var insetsWidth: CGFloat = 0.0
+
+        insetsWidth += insets.left + insets.right
+        insetsHeight += insets.top + insets.bottom
+        textWidth -= insetsWidth
+
+        contentSize.height = ceil(super.intrinsicContentSize.height) + insetsHeight
+        contentSize.width = ceil(super.intrinsicContentSize.width) + insetsWidth
+
+        return contentSize
     }
 }

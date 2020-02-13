@@ -45,7 +45,7 @@ extension TransactionsTableViewController {
 
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionHeaderView: UIView = UIView.init(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 28.0))
+        let sectionHeaderView = UIView.init()
         let sectionHeaderLabel = UILabel()
 
         sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
@@ -58,7 +58,7 @@ extension TransactionsTableViewController {
         sectionHeaderLabel.layer.masksToBounds = true
 
         sectionHeaderLabel.sizeToFit()
-        sectionHeaderLabel.frame = CGRect(x: 25.0, y: 35.0, width: sectionHeaderLabel.frame.width + 12, height: sectionHeaderLabel.frame.height + 8)
+        sectionHeaderLabel.frame = CGRect(x: Theme.shared.sizes.appSidePadding, y: 35.0, width: sectionHeaderLabel.frame.width + 12, height: sectionHeaderLabel.frame.height + 8)
 
         sectionHeaderView.addSubview(sectionHeaderLabel)
 

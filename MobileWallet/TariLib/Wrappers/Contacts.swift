@@ -58,6 +58,27 @@ class Contacts {
         return (result, errorCode != 0 ? ContactsError.generic(errorCode) : nil)
     }
 
+    var list: ([Contact], Error?) {
+        let (count, countError) = self.count
+        guard countError == nil else {
+            return ([], countError)
+        }
+
+        var list: [Contact] = []
+
+        if count > 0 {
+            for n in 0...count - 1 {
+                do {
+                    list.append(try self.at(position: n))
+                } catch {
+                    return ([], error)
+                }
+            }
+        }
+
+        return (list, nil)
+    }
+
     init(contactsPointer: OpaquePointer) {
         ptr = contactsPointer
     }
@@ -109,6 +130,48 @@ class Contacts {
         }
 
         throw ContactsError.contactNotFound
+    }
+
+    //TODO This function could be improved. Can also including pending transactions
+    func recentContacts(wallet: Wallet, limit: Int) throws -> [Contact] {
+        let (completedTransactions, completedTxsError) = wallet.completedTransactions
+        guard let completedTxs = completedTransactions else {
+            throw completedTxsError!
+        }
+
+        let (completedTxsCount, completedTxsCountError) = completedTxs.count
+        guard completedTxsCountError == nil else {
+            throw completedTxsCountError!
+        }
+
+        var recentContactsList: [Contact] = []
+
+        if completedTxsCount > 0 {
+            for n in 0...completedTxsCount - 1 {
+                if recentContactsList.count >= limit {
+                    return recentContactsList
+                }
+
+                let tx = try completedTxs.at(position: UInt32(n))
+
+                let (pubKey, pubKeyError) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
+                guard pubKeyError == nil else {
+                    throw pubKeyError!
+                }
+
+                do {
+                    let contact = try find(publicKey: pubKey!)
+
+                    if !recentContactsList.contains { $0.publicKey.0?.hex.0 == contact.publicKey.0?.hex.0 } {
+                        recentContactsList.append(contact)
+                    }
+                } catch {
+                    continue
+                }
+            }
+        }
+
+        return recentContactsList
     }
 
     deinit {

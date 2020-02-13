@@ -66,12 +66,12 @@ class FeedbackView: UIView {
     private func setupView() {
         backgroundColor = Theme.shared.colors.appBackground
         layer.cornerRadius = CORNER_RADIUS
-        heightAnchor.constraint(greaterThanOrEqualToConstant: 50).isActive = true
+        heightAnchor.constraint(greaterThanOrEqualToConstant: 40).isActive = true
     }
 
     private func setupTitle() {
         addSubview(titleLabel)
-        titleLabel.textColor = Theme.shared.colors.errorFeedbackPopupTitle
+        titleLabel.textColor = Theme.shared.colors.feedbackPopupTitle
         titleLabel.font = Theme.shared.fonts.errorFeedbackPopupTitle
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -83,7 +83,7 @@ class FeedbackView: UIView {
 
     private func setupDescription() {
         addSubview(descriptionLabel)
-        descriptionLabel.textColor = Theme.shared.colors.errorFeedbackPopupDescription
+        descriptionLabel.textColor = Theme.shared.colors.feedbackPopupDescription
         descriptionLabel.font = Theme.shared.fonts.errorFeedbackPopupDescription
         descriptionLabel.textAlignment = .center
         descriptionLabel.numberOfLines = 5
@@ -168,11 +168,13 @@ class FeedbackView: UIView {
     }
 
     func setupSuccess(title: String) {
-        setupTitle()
-        titleLabel.text = title
-        layer.cornerRadius = CORNER_RADIUS / 2
-        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: SIDE_PADDING).isActive = true
-        titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+        setupDescription()
+        descriptionLabel.text = title
+        descriptionLabel.textColor = Theme.shared.colors.successFeedbackPopupTitle
+        backgroundColor = Theme.shared.colors.successFeedbackPopupBackground
+        layer.cornerRadius = 0
+
+        descriptionLabel.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
 
     func setupCallToAction(

@@ -79,11 +79,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         return false
     }
 
-    var navBarHeight: CGFloat {
-        return (view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0) +
-            (self.navigationController?.navigationBar.frame.height ?? 0.0)
-    }
-
     private var isTransactionViewFullScreen: Bool = false {
         didSet {
             showHideFullScreen()
@@ -416,7 +411,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     func onSend() {
-        self.performSegue(withIdentifier: "HomeToSend", sender: nil)
+        let sendVC = AddRecipientViewController()
+        self.navigationController?.pushViewController(sendVC, animated: true)
     }
 
     @IBAction func onProfileAction(_ sender: Any) {

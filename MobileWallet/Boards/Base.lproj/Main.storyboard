@@ -127,41 +127,11 @@
                         <outlet property="sendButtonBottomConstraint" destination="JJw-Fc-2YR" id="cBR-Pw-aa9"/>
                         <outlet property="valueIcon" destination="gRh-WS-nTa" id="jwI-Y3-zfq"/>
                         <segue destination="x8A-jP-29y" kind="show" identifier="HomeToTransactionDetails" id="ggO-ro-O9g"/>
-                        <segue destination="F4O-X0-6l1" kind="show" identifier="HomeToSend" id="uqJ-bA-wcP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="MHZ-YR-DHc" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="992.75362318840587" y="-491.51785714285711"/>
-        </scene>
-        <!--Send View Controller-->
-        <scene sceneID="Hbe-up-J4E">
-            <objects>
-                <viewController id="F4O-X0-6l1" customClass="SendViewController" customModule="MobileWalletTests" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="6L5-fu-xZS">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mf1-3s-BzR">
-                                <rect key="frame" x="189.5" y="832" width="35" height="30"/>
-                                <state key="normal" title="Scan"/>
-                                <connections>
-                                    <action selector="onScanAction:" destination="F4O-X0-6l1" eventType="touchUpInside" id="H0c-1g-drw"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstItem="Mf1-3s-BzR" firstAttribute="centerX" secondItem="6L5-fu-xZS" secondAttribute="centerX" id="6Vu-6j-SNf"/>
-                            <constraint firstItem="Mf1-3s-BzR" firstAttribute="bottom" secondItem="EKd-tD-CWQ" secondAttribute="bottom" id="eIW-Fn-1zt"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="EKd-tD-CWQ"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="gl8-fV-Ktw"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="K7e-3H-yxq" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="993" y="295"/>
         </scene>
         <!--Scan View Controller-->
         <scene sceneID="NvQ-aE-BrG">

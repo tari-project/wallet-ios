@@ -51,6 +51,7 @@ class ScanViewController: UIViewController {
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
     var delegate: ScanViewControllerDelegate?
+    private let darkenFillLayer = CAShapeLayer()
 
     let widthRectanglePath: CGFloat = CGFloat(276)
     let heightRectanglePath: CGFloat = CGFloat(259)
@@ -70,7 +71,7 @@ class ScanViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        customizeViews()
+        setupScanner()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -85,10 +86,12 @@ class ScanViewController: UIViewController {
         if (captureSession?.isRunning == false) {
             captureSession.startRunning()
         }
+
+        customizeViews()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
 
         if (captureSession?.isRunning == true) {
             captureSession.stopRunning()
@@ -116,8 +119,8 @@ class ScanViewController: UIViewController {
         bottomRightWhiteView.addRightBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
     }
 
-    private func customizeScanner() {
-        view.backgroundColor = UIColor.black
+    private func setupScanner() {
+        view.backgroundColor = .black
         captureSession = AVCaptureSession()
 
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return }
@@ -153,6 +156,11 @@ class ScanViewController: UIViewController {
         previewLayer.videoGravity = .resizeAspectFill
         view.layer.insertSublayer(previewLayer, at: 0)
 
+        captureSession.startRunning()
+
+    }
+
+    private func customizeScanner() {
         let originTitleLabel = titleLabel.frame.origin.y
         let xPositionTitleLabel = (UIScreen.main.bounds.width - widthRectanglePath) / 2
         let yPositionPath = originTitleLabel + distanceToTitleLabel + heightTitleLabel
@@ -164,17 +172,15 @@ class ScanViewController: UIViewController {
                                                       y: yPositionPath,
                                                       width: widthRectanglePath,
                                                       height: heightRectanglePath))
+
         path.append(rectanglePath)
         path.usesEvenOddFillRule = true
 
-        let fillLayer = CAShapeLayer()
-        fillLayer.path = path.cgPath
-        fillLayer.fillRule = .evenOdd
-        fillLayer.fillColor = UIColor.black.cgColor
-        fillLayer.opacity = 0.7
-        view.layer.insertSublayer(fillLayer, below: backButton.layer)
-
-        captureSession.startRunning()
+        darkenFillLayer.path = path.cgPath
+        darkenFillLayer.fillRule = .evenOdd
+        darkenFillLayer.fillColor = UIColor.black.cgColor
+        view.layer.insertSublayer(darkenFillLayer, below: backButton.layer)
+        darkenFillLayer.opacity = 0 //TODO change back to 0.7 if it can be faded in
     }
 
     private func failed() {

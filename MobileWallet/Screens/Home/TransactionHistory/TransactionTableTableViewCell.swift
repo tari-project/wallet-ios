@@ -46,7 +46,7 @@ class TransactionTableTableViewCell: UITableViewCell {
     @IBOutlet weak var icon: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var valueLabel: UILableWithPadding!
+    @IBOutlet weak var valueLabel: UILabelWithPadding!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -72,7 +72,7 @@ class TransactionTableTableViewCell: UITableViewCell {
         valueLabel.layer.masksToBounds = true
 
         userNameLabel.font = Theme.shared.fonts.transactionCellUsernameLabel
-        userNameLabel.textColor = Theme.shared.colors.transactionCellUsername
+        userNameLabel.textColor = Theme.shared.colors.transactionCellAlias
         userNameLabel.text = ""
         userNameLabel.lineBreakMode = .byTruncatingMiddle
 
@@ -107,7 +107,7 @@ class TransactionTableTableViewCell: UITableViewCell {
     }
 
     private func setMessage(_ message: String) {
-        descriptionLabel.text = message != "" ? message : "*Missing message*"
+        descriptionLabel.text = !message.isEmpty ? message : "*Missing message*"
         descriptionLabel.sizeToFit()
     }
 

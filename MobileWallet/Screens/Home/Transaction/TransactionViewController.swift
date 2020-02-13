@@ -193,7 +193,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard textField.text != nil && textField.text != "" else {
+        guard textField.text?.isEmpty == false else {
             textField.text = contactAlias
             return false
         }

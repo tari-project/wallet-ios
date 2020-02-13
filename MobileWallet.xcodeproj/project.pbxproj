@@ -129,9 +129,9 @@
 		00230B0923770CEA00F23E34 /* CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230B0823770CEA00F23E34 /* CALayer.swift */; };
 		00230B0A23770CEA00F23E34 /* CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230B0823770CEA00F23E34 /* CALayer.swift */; };
 		00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230B0823770CEA00F23E34 /* CALayer.swift */; };
-		00262EAF236F015000A6C8A0 /* UILableWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EAE236F015000A6C8A0 /* UILableWithPadding.swift */; };
-		00262EB0236F015000A6C8A0 /* UILableWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EAE236F015000A6C8A0 /* UILableWithPadding.swift */; };
-		00262EB1236F015000A6C8A0 /* UILableWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EAE236F015000A6C8A0 /* UILableWithPadding.swift */; };
+		00262EAF236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EAE236F015000A6C8A0 /* UILabelWithPadding.swift */; };
+		00262EB0236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EAE236F015000A6C8A0 /* UILabelWithPadding.swift */; };
+		00262EB1236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EAE236F015000A6C8A0 /* UILabelWithPadding.swift */; };
 		00262EB4236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
 		00262EB5236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
 		00262EB6236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
@@ -184,12 +184,21 @@
 		006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
 		006D211F23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
 		0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0070A7BB2379847100C25E1C /* LocalAuthentication.framework */; };
-		00746197239901FA00F00966 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00746196239901FA00F00966 /* SendViewController.swift */; };
-		00746198239901FA00F00966 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00746196239901FA00F00966 /* SendViewController.swift */; };
-		00746199239901FA00F00966 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00746196239901FA00F00966 /* SendViewController.swift */; };
 		0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
+		0087A1A923F4235400B89EE7 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A523F4235400B89EE7 /* ScanViewController.swift */; };
+		0087A1AA23F4235400B89EE7 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A523F4235400B89EE7 /* ScanViewController.swift */; };
+		0087A1AB23F4235400B89EE7 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A523F4235400B89EE7 /* ScanViewController.swift */; };
+		0087A1AC23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A623F4235400B89EE7 /* ContactsTableViewController.swift */; };
+		0087A1AD23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A623F4235400B89EE7 /* ContactsTableViewController.swift */; };
+		0087A1AE23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A623F4235400B89EE7 /* ContactsTableViewController.swift */; };
+		0087A1AF23F4235400B89EE7 /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A723F4235400B89EE7 /* ContactCell.swift */; };
+		0087A1B023F4235400B89EE7 /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A723F4235400B89EE7 /* ContactCell.swift */; };
+		0087A1B123F4235400B89EE7 /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A723F4235400B89EE7 /* ContactCell.swift */; };
+		0087A1B223F4235400B89EE7 /* AddRecipientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A823F4235400B89EE7 /* AddRecipientViewController.swift */; };
+		0087A1B323F4235400B89EE7 /* AddRecipientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A823F4235400B89EE7 /* AddRecipientViewController.swift */; };
+		0087A1B423F4235400B89EE7 /* AddRecipientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A823F4235400B89EE7 /* AddRecipientViewController.swift */; };
 		0091D4A723ED879E004BF7F7 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4A623ED879E004BF7F7 /* Signature.swift */; };
 		0091D4A823ED879E004BF7F7 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4A623ED879E004BF7F7 /* Signature.swift */; };
 		0091D4A923ED879E004BF7F7 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4A623ED879E004BF7F7 /* Signature.swift */; };
@@ -322,9 +331,6 @@
 		BF191A3223E70D3200D33C85 /* NerdEmojiAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BF191A3123E70D3200D33C85 /* NerdEmojiAnimation.json */; };
 		BF191A3323E70D3200D33C85 /* NerdEmojiAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BF191A3123E70D3200D33C85 /* NerdEmojiAnimation.json */; };
 		BF191A3423E70D3200D33C85 /* NerdEmojiAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BF191A3123E70D3200D33C85 /* NerdEmojiAnimation.json */; };
-		BF6C4BCA23D8833B005CC4EC /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */; };
-		BF6C4BCB23D88342005CC4EC /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */; };
-		BF6C4BCC23D88343005CC4EC /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */; };
 		BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8316FC23EF7EAA00235403 /* LAContext.swift */; };
 		BF8316FE23EF7EAA00235403 /* LAContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8316FC23EF7EAA00235403 /* LAContext.swift */; };
 		BF8316FF23EF7EAA00235403 /* LAContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8316FC23EF7EAA00235403 /* LAContext.swift */; };
@@ -407,7 +413,7 @@
 		00230AF92376C6DD00F23E34 /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		00230B012376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewControllerExtension.swift; sourceTree = "<group>"; };
 		00230B0823770CEA00F23E34 /* CALayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CALayer.swift; sourceTree = "<group>"; };
-		00262EAE236F015000A6C8A0 /* UILableWithPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILableWithPadding.swift; sourceTree = "<group>"; };
+		00262EAE236F015000A6C8A0 /* UILabelWithPadding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelWithPadding.swift; sourceTree = "<group>"; };
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		00262EB8236F35CD00A6C8A0 /* DummyTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyTransaction.swift; sourceTree = "<group>"; };
 		00325EC9239E4A1000F76918 /* FadedOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadedOverlayView.swift; sourceTree = "<group>"; };
@@ -426,8 +432,11 @@
 		004997BA2382F5ED000A0B7D /* WalletTestDataExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTestDataExtension.swift; sourceTree = "<group>"; };
 		006D211C23CEDF16007D1C10 /* MicroTari.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicroTari.swift; sourceTree = "<group>"; };
 		0070A7BB2379847100C25E1C /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
-		00746196239901FA00F00966 /* SendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewController.swift; sourceTree = "<group>"; };
 		0074619A239A57B000F00966 /* UIBarButtonItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItem.swift; sourceTree = "<group>"; };
+		0087A1A523F4235400B89EE7 /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
+		0087A1A623F4235400B89EE7 /* ContactsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
+		0087A1A723F4235400B89EE7 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
+		0087A1A823F4235400B89EE7 /* AddRecipientViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRecipientViewController.swift; sourceTree = "<group>"; };
 		0091D4A623ED879E004BF7F7 /* Signature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signature.swift; sourceTree = "<group>"; };
 		0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestnetKeyServer.swift; sourceTree = "<group>"; };
 		00947CC123CF090D00526DD5 /* TransactionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionProtocol.swift; sourceTree = "<group>"; };
@@ -501,7 +510,6 @@
 		BF191A1523E5AFA200D33C85 /* img_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_3.png; sourceTree = "<group>"; };
 		BF191A1623E5AFA200D33C85 /* img_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_0.png; sourceTree = "<group>"; };
 		BF191A3123E70D3200D33C85 /* NerdEmojiAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = NerdEmojiAnimation.json; sourceTree = "<group>"; };
-		BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		BF8316FC23EF7EAA00235403 /* LAContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LAContext.swift; sourceTree = "<group>"; };
 		BFC5532423D9B8E4009130A8 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		BFD758DC23E96BB500B0F1A5 /* 1-Intro.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "1-Intro.mp4"; sourceTree = "<group>"; };
@@ -634,7 +642,7 @@
 		00262EAD236F013500A6C8A0 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
-				00262EAE236F015000A6C8A0 /* UILableWithPadding.swift */,
+				00262EAE236F015000A6C8A0 /* UILabelWithPadding.swift */,
 				BF8316FC23EF7EAA00235403 /* LAContext.swift */,
 				BFC5532423D9B8E4009130A8 /* UIView.swift */,
 				00230B0823770CEA00F23E34 /* CALayer.swift */,
@@ -683,9 +691,20 @@
 		00746195239901D200F00966 /* Send */ = {
 			isa = PBXGroup;
 			children = (
-				00746196239901FA00F00966 /* SendViewController.swift */,
+				0087A1A423F4231E00B89EE7 /* AddRecipient */,
 			);
 			path = Send;
+			sourceTree = "<group>";
+		};
+		0087A1A423F4231E00B89EE7 /* AddRecipient */ = {
+			isa = PBXGroup;
+			children = (
+				0087A1A823F4235400B89EE7 /* AddRecipientViewController.swift */,
+				0087A1A723F4235400B89EE7 /* ContactCell.swift */,
+				0087A1A623F4235400B89EE7 /* ContactsTableViewController.swift */,
+				0087A1A523F4235400B89EE7 /* ScanViewController.swift */,
+			);
+			path = AddRecipient;
 			sourceTree = "<group>";
 		};
 		00947CC523D1A33900526DD5 /* Protocols */ = {
@@ -782,7 +801,6 @@
 			isa = PBXGroup;
 			children = (
 				BFD758E423E98A9F00B0F1A5 /* Profile */,
-				BF6C4BC823D8831F005CC4EC /* Scan */,
 				00746195239901D200F00966 /* Send */,
 				00BBD7FA237C462400EBF5E6 /* AppEntry */,
 				00E2BCB6236B46A400C2A105 /* Home */,
@@ -973,14 +991,6 @@
 				BF191A3123E70D3200D33C85 /* NerdEmojiAnimation.json */,
 			);
 			path = NerdEmojiAnimation;
-			sourceTree = "<group>";
-		};
-		BF6C4BC823D8831F005CC4EC /* Scan */ = {
-			isa = PBXGroup;
-			children = (
-				BF6C4BC923D8833B005CC4EC /* ScanViewController.swift */,
-			);
-			path = Scan;
 			sourceTree = "<group>";
 		};
 		BFD758E423E98A9F00B0F1A5 /* Profile */ = {
@@ -1390,10 +1400,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				004277DD23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */,
+				0087A1A923F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				001F6CE82381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				001F6CE42380253B00FA7002 /* Contact.swift in Sources */,
 				00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
-				BF6C4BCA23D8833B005CC4EC /* ScanViewController.swift in Sources */,
 				00262EB9236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
 				00A6779E23743696001A853E /* TransactionViewController.swift in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
@@ -1407,7 +1417,6 @@
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
-				00746197239901FA00F00966 /* SendViewController.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
@@ -1418,9 +1427,10 @@
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
 				00230AFA2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				00A9942F23952F77007D9990 /* SendButton.swift in Sources */,
-				00262EAF236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
+				00262EAF236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
 				004997B32382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
+				0087A1B223F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
 				0091D4A723ED879E004BF7F7 /* Signature.swift in Sources */,
 				00BBD816237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
@@ -1444,12 +1454,14 @@
 				004277F723E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				00230B022376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
 				004997AB2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
+				0087A1AF23F4235400B89EE7 /* ContactCell.swift in Sources */,
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
 				001F6CEC2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				004277FB23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				0042780323E8421200AE7BD9 /* StringProtocol.swift in Sources */,
+				0087A1AC23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1469,10 +1481,11 @@
 				00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				0091D4A823ED879E004BF7F7 /* Signature.swift in Sources */,
 				006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */,
+				0087A1B323F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
 				004277F823E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				00262EB5236F024400A6C8A0 /* Theme.swift in Sources */,
 				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
-				00262EB0236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
+				00262EB0236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				004277E823DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				0042780023E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				00E4922A23683E54007B332D /* HomeViewController.swift in Sources */,
@@ -1487,6 +1500,7 @@
 				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
 				BFE1FC0923E3ACD900BA5EEC /* WalletCreationViewController.swift in Sources */,
 				00947CC323CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
+				0087A1AD23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				001F6CDD238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00BBD80F237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
@@ -1499,16 +1513,16 @@
 				001F6CED2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
-				00746198239901FA00F00966 /* SendViewController.swift in Sources */,
+				0087A1AA23F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				009BF8AD237ABB4700C02E44 /* TariLib.swift in Sources */,
 				00BBD81B237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				00BBD817237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				00262EBA236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
 				00BBD80A237D80C800EBF5E6 /* Date.swift in Sources */,
 				004997B42382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
-				BF6C4BCB23D88342005CC4EC /* ScanViewController.swift in Sources */,
 				001256302371D81500A9C067 /* SplashViewController.swift in Sources */,
 				001F6CE92381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
+				0087A1B023F4235400B89EE7 /* ContactCell.swift in Sources */,
 				BF8316FE23EF7EAA00235403 /* LAContext.swift in Sources */,
 				00BBD81E237ECDAA00EBF5E6 /* TariLibWrapperTests.swift in Sources */,
 				00230B032376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
@@ -1530,6 +1544,7 @@
 				004277F923E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				001F6CE22380198D00FA7002 /* Contacts.swift in Sources */,
 				00BBD810237DA07400EBF5E6 /* ByteVector.swift in Sources */,
+				0087A1B123F4235400B89EE7 /* ContactCell.swift in Sources */,
 				004997B92382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				00C185C62390221A0096984E /* DevelopmentUI.swift in Sources */,
 				BFC5532723D9B8E4009130A8 /* UIView.swift in Sources */,
@@ -1542,17 +1557,16 @@
 				00BBD805237D746B00EBF5E6 /* OnboardingUITests.swift in Sources */,
 				00947CC923D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
-				BF6C4BCC23D88343005CC4EC /* ScanViewController.swift in Sources */,
-				00262EB1236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
+				00262EB1236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
 				00A9943123952F77007D9990 /* SendButton.swift in Sources */,
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,
-				00746199239901FA00F00966 /* SendViewController.swift in Sources */,
 				004997B12382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				00230AFC2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				491AB89B23F1B36100372189 /* AnimatedBalanceLabel.swift in Sources */,
 				004997BD2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				009BF8AE237ABB4700C02E44 /* TariLib.swift in Sources */,
+				0087A1B423F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
 				BF8316FF23EF7EAA00235403 /* LAContext.swift in Sources */,
 				00C185BB238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
 				00BBD814237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
@@ -1561,6 +1575,7 @@
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
+				0087A1AE23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				004277F123E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
@@ -1579,6 +1594,7 @@
 				00BBD807237D755600EBF5E6 /* HelperFunctions.swift in Sources */,
 				0042780523E8421200AE7BD9 /* StringProtocol.swift in Sources */,
 				00BBD80B237D80C800EBF5E6 /* Date.swift in Sources */,
+				0087A1AB23F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				001F6CEA2381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				001F6CEE2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
