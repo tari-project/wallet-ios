@@ -46,9 +46,24 @@ enum TextButtonVariation {
 }
 
 class TextButton: UIButton {
+    private static let imageHorizontalSpaceing: CGFloat = 1
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         commonSetup()
+    }
+
+    convenience init() {
+        self.init(frame: CGRect.zero)
+        commonSetup()
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        if let image = image(for: .normal) {
+            setRightImage(image)
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -103,9 +118,11 @@ class TextButton: UIButton {
         } else {
             setImage(image, for: .normal)
         }
+        imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: TextButton.imageHorizontalSpaceing)
+        titleEdgeInsets = UIEdgeInsets(top: 0, left: TextButton.imageHorizontalSpaceing, bottom: 0, right: 0)
 
-        semanticContentAttribute = .forceRightToLeft //Getting the image to show the other side of the button
-        titleEdgeInsets = UIEdgeInsets(top: 0, left: -2, bottom: 0, right: 2)
-        sizeToFit()
+        transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+        titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+        imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
     }
 }

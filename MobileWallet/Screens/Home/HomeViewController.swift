@@ -150,7 +150,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
 
         //Balance has multiple font sizes
-        balanceValueLabel.minimumScaleFactor = 0.3
 
         setupFloatingPanel()
         setupNavigatorBar()

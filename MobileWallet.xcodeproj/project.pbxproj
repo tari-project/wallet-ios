@@ -295,6 +295,9 @@
 		1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
 		491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		491AB89B23F1B36100372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
+		491AB8A023F3FF4400372189 /* AmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AmountViewController.swift */; };
+		491AB8A123F3FF4400372189 /* AmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AmountViewController.swift */; };
+		491AB8A223F3FF4400372189 /* AmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AmountViewController.swift */; };
 		49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		4C2C95C323796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
 		4C2C95C423796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
@@ -491,6 +494,7 @@
 		153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet_MobileWalletUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		28164FB1973A4277E7C47F6D /* Pods-MobileWalletUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.release.xcconfig"; sourceTree = "<group>"; };
 		2FF33C780E811D173D3284C3 /* Pods-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		491AB89F23F3FF4400372189 /* AmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountViewController.swift; sourceTree = "<group>"; };
 		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
 		4C2C95AF23795919005058AB /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libwallet_ffi.a; sourceTree = "<group>"; };
 		4C2C95B723795930005058AB /* wallet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wallet.h; sourceTree = "<group>"; };
@@ -800,6 +804,7 @@
 		00E2BCB5236B469C00C2A105 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				491AB89E23F3FF1200372189 /* Amount */,
 				BFD758E423E98A9F00B0F1A5 /* Profile */,
 				00746195239901D200F00966 /* Send */,
 				00BBD7FA237C462400EBF5E6 /* AppEntry */,
@@ -913,6 +918,14 @@
 				9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		491AB89E23F3FF1200372189 /* Amount */ = {
+			isa = PBXGroup;
+			children = (
+				491AB89F23F3FF4400372189 /* AmountViewController.swift */,
+			);
+			path = Amount;
 			sourceTree = "<group>";
 		};
 		4C2C95AA2379554B005058AB /* TariLib */ = {
@@ -1456,6 +1469,7 @@
 				004997AB2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
 				0087A1AF23F4235400B89EE7 /* ContactCell.swift in Sources */,
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
+				491AB8A023F3FF4400372189 /* AmountViewController.swift in Sources */,
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
 				001F6CEC2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
@@ -1490,6 +1504,7 @@
 				0042780023E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				00E4922A23683E54007B332D /* HomeViewController.swift in Sources */,
 				0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
+				491AB8A123F3FF4400372189 /* AmountViewController.swift in Sources */,
 				004277FC23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				00230AFB2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				00A057B023D875840029C22A /* TariEventBus.swift in Sources */,
@@ -1558,6 +1573,9 @@
 				00947CC923D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
+				BF6C4BCC23D88343005CC4EC /* ScanViewController.swift in Sources */,
+				00262EB1236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
+				491AB8A223F3FF4400372189 /* AmountViewController.swift in Sources */,
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
 				00A9943123952F77007D9990 /* SendButton.swift in Sources */,
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,

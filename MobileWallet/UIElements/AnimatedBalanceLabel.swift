@@ -53,14 +53,12 @@ class AnimatedBalanceLabel: UIView {
         setup()
     }
 
-    private func setup() {
-        backgroundColor = .clear
+    convenience init() {
+        self.init(frame: CGRect.zero)
     }
 
-    var minimumScaleFactor: CGFloat = 0.0 {
-        didSet {
-            labels.forEach({ $0.minimumScaleFactor = minimumScaleFactor})
-        }
+    private func setup() {
+        backgroundColor = .clear
     }
 
     var textAlignment: NSTextAlignment = .left {
@@ -69,22 +67,45 @@ class AnimatedBalanceLabel: UIView {
         }
     }
 
+    override var bounds: CGRect {
+        didSet {
+            self.attributedText = _attributedText
+        }
+    }
+
+    enum Animation {
+        case update
+        case type
+    }
+
     var animationDuration = 0.2
     var delayBetweenCharacterAnimations = 0.05
     var slideAnimationDuration = 0.2
+    var animation = Animation.update
+
+    let fontSizeCalculatorLabel = UILabel()
 
     private var animating = false
 
     private var labelsLeftLayoutGuide: UILayoutGuide = UILayoutGuide()
     private var labelsRightLayoutGuide: UILayoutGuide = UILayoutGuide()
 
+    private var _attributedText: NSAttributedString?
     var attributedText: NSAttributedString? {
-        didSet {
+        set {
+            if let newValue = newValue, !attributedTextFitsInWidth(attributedText: newValue, width: bounds.width), bounds.width >= 0 {
+                self._attributedText = attributedTextFittingInWidth(attributedText: newValue, width: bounds.width)
+            } else {
+                self._attributedText = newValue
+            }
             updateDisplayedText()
+        }
+        get {
+            return _attributedText
         }
     }
 
-    var displayedAttributedText: NSAttributedString?
+    private var displayedAttributedText: NSAttributedString?
 
     private var labels = [UILabel]()
 
@@ -130,8 +151,6 @@ class AnimatedBalanceLabel: UIView {
         let label = UILabel()
         label.numberOfLines = 1
         label.textAlignment = .left
-        label.adjustsFontSizeToFitWidth = true
-        label.minimumScaleFactor = 0.5
         label.backgroundColor = .clear
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -142,8 +161,6 @@ class AnimatedBalanceLabel: UIView {
     private func adjustLabelTextAlignment() {
         removeLayoutGuide(labelsLeftLayoutGuide)
         removeLayoutGuide(labelsRightLayoutGuide)
-        labelsLeftLayoutGuide = UILayoutGuide()
-        labelsRightLayoutGuide = UILayoutGuide()
 
         addLayoutGuide(labelsLeftLayoutGuide)
         labelsLeftLayoutGuide.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
@@ -179,12 +196,14 @@ class AnimatedBalanceLabel: UIView {
             var leftAnc: NSLayoutXAxisAnchor!
 
             if i == 0 {
-                let constraint = label.centerYAnchor.constraint(equalTo: centerYAnchor)
-                constraint.isActive = true
+                label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
                 leftAnc = labelsLeftLayoutGuide.rightAnchor
             } else {
-                let constraint = label.firstBaselineAnchor.constraint(equalTo: labels[i - 1].firstBaselineAnchor)
-                constraint.isActive = true
+                if animation == .update {
+                    label.firstBaselineAnchor.constraint(equalTo: labels[i - 1].firstBaselineAnchor).isActive = true
+                } else {
+                    label.centerYAnchor.constraint(equalTo: labels[i - 1].centerYAnchor).isActive = true
+                }
                 leftAnc = labels[i - 1].rightAnchor
             }
             label.leftAnchor.constraint(equalTo: leftAnc).isActive = true
@@ -197,17 +216,24 @@ class AnimatedBalanceLabel: UIView {
     private func enabledCharacterAnimations(displayedAttributedText: NSAttributedString) -> [Bool] {
         var oldText = labels.compactMap({$0.attributedText?.string ?? " "})
         var newText = displayedAttributedText.string.map({String($0)})
-        var requiredAnimations = Array.init(repeating: true, count: max(oldText.count, newText.count))
+        var requiredAnimations = Array.init(repeating: false, count: max(oldText.count, newText.count))
 
-        if oldText.count < newText.count {
-            oldText.insert(contentsOf: Array.init(repeating: " ", count: newText.count - oldText.count), at: 0)
-        } else if newText.count < oldText.count {
-            newText.insert(contentsOf: Array.init(repeating: " ", count: oldText.count - newText.count), at: 0)
+        if animation == .type {
+            if oldText.count < newText.count {
+                requiredAnimations[requiredAnimations.count - 1] = true
+            }
+        } else {
+            if oldText.count < newText.count {
+                oldText.insert(contentsOf: Array.init(repeating: " ", count: newText.count - oldText.count), at: animation == .type ? oldText.count : 0)
+            } else if newText.count < oldText.count {
+                newText.insert(contentsOf: Array.init(repeating: " ", count: oldText.count - newText.count), at: animation == .type ? newText.count : 0)
+            }
+
+            for i in 0..<requiredAnimations.count {
+                requiredAnimations[i] = oldText[i] != newText[i]
+            }
         }
 
-        for i in 0..<requiredAnimations.count {
-            requiredAnimations[i] = oldText[i] != newText[i]
-        }
         return requiredAnimations
     }
 
@@ -224,8 +250,8 @@ class AnimatedBalanceLabel: UIView {
             for i in oldLength..<newLength {
                 let label = createLabel()
                 label.isHidden = true
-                label.attributedText = displayedAttributedText.attributedSubstring(from: NSRange(location: i - oldLength, length: 1))
-                labels.insert(label, at: i - oldLength)
+                label.attributedText = displayedAttributedText.attributedSubstring(from: NSRange(location: animation == .update ? i - oldLength : i, length: 1))
+                labels.insert(label, at: animation == .update ? i - oldLength : labels.count)
             }
 
             labels.forEach({$0.removeFromSuperview()})
@@ -256,43 +282,58 @@ class AnimatedBalanceLabel: UIView {
             }
 
         } else {
-            var delay = 0.0
-            for i in 0..<oldLength {
-                let requiresAnimation = charactersRequiringAnimation[i]
-                DispatchQueue.main.asyncAfter(deadline: .now() + (requiresAnimation ? delay : 0)) { [requiresAnimation, i, weak self] in
-                    guard let self = self else {return}
-                    let label = self.labels[i]
-                    if i < oldLength - newLength {
-                        UIView.animate(withDuration: self.animationDuration) {
-                            label.isHidden = true
+
+            if animation == .update {
+                var delay = 0.0
+                for i in 0..<oldLength {
+                    let requiresAnimation = charactersRequiringAnimation[i]
+                    DispatchQueue.main.asyncAfter(deadline: .now() + (requiresAnimation ? delay : 0)) { [requiresAnimation, i, weak self] in
+                        guard let self = self else {return}
+                        let label = self.labels[i]
+                        if self.animation == .update {
+                            if i < oldLength - newLength {
+                                UIView.animate(withDuration: self.animationDuration) {
+                                    label.isHidden = true
+                                }
+                            } else {
+                                label.attributedText = displayedAttributedText.attributedSubstring(from: NSRange(location: i - (oldLength - newLength), length: 1))
+                            }
+                        } else if i >= newLength {
+                            UIView.animate(withDuration: self.animationDuration) {
+                                label.isHidden = true
+                            }
                         }
-                    } else {
-                        label.attributedText = displayedAttributedText.attributedSubstring(from: NSRange(location: i - (oldLength - newLength), length: 1))
+                        if requiresAnimation {
+                            let transitionSubtype: CATransitionSubtype = self.animation == .update ? (i < oldLength - newLength ? .fromBottom : .fromTop) : .fromBottom
+                            self.pushTransition(self.animationDuration, layer: label.layer, transitionSubtype: transitionSubtype)
+                        }
                     }
-                    if requiresAnimation {
-                        self.pushTransition(self.animationDuration, layer: label.layer, transitionSubtype: i < oldLength - newLength ? .fromBottom : .fromTop)
+                    delay += requiresAnimation ? self.delayBetweenCharacterAnimations : 0
+                }
+
+                let slideAnimationDelay = delay + self.animationDuration - self.delayBetweenCharacterAnimations
+                DispatchQueue.main.asyncAfter(deadline: .now() + slideAnimationDelay) { [weak self] in
+                    guard let self = self else {return}
+
+                    for _ in 0..<oldLength - newLength {
+                        self.labels.first?.removeFromSuperview()
+                        self.labels.removeFirst()
+                    }
+
+                    UIView.animate(withDuration: self.slideAnimationDuration, delay: 0, options: [.curveEaseIn], animations: {
+                            self.labels.first?.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+                            self.labels.first?.leftAnchor.constraint(equalTo: self.labelsLeftLayoutGuide.rightAnchor).isActive = true
+                        self.layoutIfNeeded()
+                    }) { (_) in
+                        self.animating = false
+                        self.updateDisplayedText()
                     }
                 }
-                delay += requiresAnimation ? self.delayBetweenCharacterAnimations : 0
-            }
-
-            let slideAnimationDelay = delay + self.animationDuration - self.delayBetweenCharacterAnimations
-            DispatchQueue.main.asyncAfter(deadline: .now() + slideAnimationDelay) { [weak self] in
-                guard let self = self else {return}
-
-                for _ in 0..<oldLength - newLength {
-                    self.labels.first?.removeFromSuperview()
-                    self.labels.remove(at: 0)
-                }
-
-                UIView.animate(withDuration: self.slideAnimationDuration, delay: 0, options: [.curveEaseIn], animations: {
-                    self.labels.first?.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-                    self.labels.first?.leftAnchor.constraint(equalTo: self.labelsLeftLayoutGuide.rightAnchor).isActive = true
-                    self.layoutIfNeeded()
-                }) { (_) in
-                    self.animating = false
-                    self.updateDisplayedText()
-                }
+            } else {
+                clearLabels()
+                labels = createLabels(attributedText: displayedAttributedText)
+                layoutLabels()
+                animating = false
             }
         }
     }
@@ -305,6 +346,56 @@ class AnimatedBalanceLabel: UIView {
         moveAnimation.subtype = transitionSubtype
         moveAnimation.duration = duration
         layer.add(moveAnimation, forKey: CATransitionType.push.rawValue)
+    }
+
+    func attributedTextFitsInWidth(attributedText: NSAttributedString, width: CGFloat) -> Bool {
+
+        var attributedTextWidth: CGFloat = 0
+        for i in 0..<attributedText.length {
+            fontSizeCalculatorLabel.attributedText = attributedText.attributedSubstring(from: NSRange(location: i, length: 1))
+            fontSizeCalculatorLabel.sizeToFit()
+            attributedTextWidth += fontSizeCalculatorLabel.bounds.width
+        }
+        return attributedTextWidth <= width
+    }
+
+    func attributedTextFittingInWidth(attributedText: NSAttributedString, width: CGFloat) -> NSAttributedString {
+
+        var currentFontScale: CGFloat = 0.1
+        let fontScaleStep: CGFloat = 0.1
+        while let adjustedWidth = widthForAttributedText(attributedText, fontScale: currentFontScale) {
+            if adjustedWidth > width {
+                break
+            } else {
+                currentFontScale += fontScaleStep
+            }
+        }
+
+        currentFontScale -= fontScaleStep
+
+        let adjustedAttributedString = NSMutableAttributedString(attributedString: attributedText)
+        for i in 0..<attributedText.length {
+            let currentAttributedString = attributedText.attributedSubstring(from: NSRange(location: i, length: 1))
+            if let font = currentAttributedString.attribute(NSAttributedString.Key.font, at: 0, effectiveRange: nil) as? UIFont {
+                adjustedAttributedString.addAttribute(NSAttributedString.Key.font, value: font.withSize(font.pointSize * currentFontScale), range: NSRange(location: i, length: 1))
+            }
+        }
+
+        return adjustedAttributedString
+    }
+
+    func widthForAttributedText(_ attributedText: NSAttributedString, fontScale: CGFloat) -> CGFloat? {
+        var totalWidth: CGFloat = 0
+        for i in 0..<attributedText.length {
+            let currentAttributedString = NSMutableAttributedString(attributedString: attributedText.attributedSubstring(from: NSRange(location: i, length: 1)))
+            if let font = currentAttributedString.attribute(NSAttributedString.Key.font, at: 0, effectiveRange: nil) as? UIFont {
+                currentAttributedString.setAttributes([NSAttributedString.Key.font: font.withSize(font.pointSize * fontScale)], range: NSRange(location: 0, length: 1))
+            }
+            fontSizeCalculatorLabel.attributedText = currentAttributedString
+            fontSizeCalculatorLabel.sizeToFit()
+            totalWidth += fontSizeCalculatorLabel.bounds.width
+        }
+        return totalWidth
     }
 
 }
