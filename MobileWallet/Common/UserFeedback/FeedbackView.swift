@@ -91,6 +91,7 @@ class FeedbackView: UIView {
 
         descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true
         descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        descriptionLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: descriptionLabel.font.pointSize * 1.15).isActive = true
     }
 
     private func setupCloseButton() {

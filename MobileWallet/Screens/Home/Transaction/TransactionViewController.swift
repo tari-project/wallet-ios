@@ -136,7 +136,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                 error: error)
         }
 
-        hideKeyboardWhenTappedAround()
+        hideKeyboardWhenTappedAroundOrSwipedDown()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 

@@ -41,8 +41,13 @@
 import UIKit
 import AVFoundation
 
-protocol ScanViewControllerDelegate {
-    func found(code: String)
+protocol ScanViewControllerDelegate: class {
+    func onAdd(publicKey: PublicKey)
+}
+
+enum ScannerErrors: Error {
+    case invalidQR
+    case missingPublicKey
 }
 
 class ScanViewController: UIViewController {
@@ -50,7 +55,7 @@ class ScanViewController: UIViewController {
     // MARK: - Variables and constants
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
-    var delegate: ScanViewControllerDelegate?
+    weak var actionDelegate: ScanViewControllerDelegate?
     private let darkenFillLayer = CAShapeLayer()
 
     let widthRectanglePath: CGFloat = CGFloat(276)
@@ -190,8 +195,33 @@ class ScanViewController: UIViewController {
         captureSession = nil
     }
 
-    private func found(code: String) {
-        self.delegate?.found(code: code)
+    private func foundQR(text: String) {
+        do {
+            guard let data = text.data(using: .utf8) else {
+                throw ScannerErrors.invalidQR
+            }
+
+            guard let responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String] else {
+                throw ScannerErrors.invalidQR
+            }
+
+            guard let hexKey = responseDict["pubkey"] else {
+                throw ScannerErrors.missingPublicKey
+            }
+
+            let publicKey = try PublicKey(hex: hexKey)
+
+            self.actionDelegate?.onAdd(publicKey: publicKey)
+            let generator = UINotificationFeedbackGenerator()
+            generator.notificationOccurred(.success)
+        } catch {
+            UserFeedback.shared.error(
+            title: NSLocalizedString("Scanning error", comment: "Scanner view"),
+            description: NSLocalizedString("Failed to import user's public key", comment: "Scanner view"),
+            error: error)
+        }
+
+         dismiss(animated: true)
     }
 
 // MARK: - Actions
@@ -209,10 +239,8 @@ extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
         if let metadataObject = metadataObjects.first {
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             guard let stringValue = readableObject.stringValue else { return }
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            found(code: stringValue)
+            //AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            foundQR(text: stringValue)
         }
-
-        dismiss(animated: true)
     }
 }

@@ -1,8 +1,8 @@
-//  UIViewController.swift
+//  PasteEmojisView.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/01/28
+	Created by Jason van den Berg on 2020/02/17
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,24 +40,40 @@
 
 import UIKit
 
-// Put this piece of code anywhere you like
-extension UIViewController {
-    func hideKeyboardWhenTappedAroundOrSwipedDown() {
-        let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
-        tap.cancelsTouchesInView = false
-        view.addGestureRecognizer(tap)
+class PasteEmojisView: UIView {
+    private let textButton = TextButton()
+    private let emojiLabel = UILabel()
+    private let PADDING: CGFloat = 14
+    private var onPressCallback: (() -> Void)?
 
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
-        swipeDown.direction = UISwipeGestureRecognizer.Direction.down
-        view.addGestureRecognizer(swipeDown)
+    override func draw(_ rect: CGRect) {
+        backgroundColor = Theme.shared.colors.appBackground
+
+        textButton.setVariation(.secondary)
+        textButton.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(textButton)
+        textButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        textButton.topAnchor.constraint(equalTo: topAnchor, constant: PADDING).isActive = true
+
+        emojiLabel.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(emojiLabel)
+        emojiLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        emojiLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -PADDING).isActive = true
+        emojiLabel.textAlignment = .center
+
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (onTap(_:))))
+        textButton.addTarget(self, action: #selector(onTap(_:)), for: .touchUpInside)
     }
 
-    @objc func dismissKeyboard() {
-        view.endEditing(true)
+    func setEmojis(emojis: String, onPress: @escaping () -> Void) {
+        textButton.setTitle(NSLocalizedString("Paste copied Emoji ID", comment: ""), for: .normal)
+        emojiLabel.text = emojis
+        self.onPressCallback = onPress
     }
 
-    var navBarHeight: CGFloat {
-        return (view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0) +
-            (self.navigationController?.navigationBar.frame.height ?? 0.0)
+    @objc func onTap(_ sender: UITapGestureRecognizer) {
+        if let callBack = onPressCallback {
+            callBack()
+        }
     }
 }

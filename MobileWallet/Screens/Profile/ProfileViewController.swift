@@ -51,6 +51,8 @@ class ProfileViewController: UIViewController {
     @IBOutlet weak var qrContainer: UIView!
     @IBOutlet weak var qrImageView: UIImageView!
 
+    private var emojis: String?
+
     // MARK: - Override functions
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -82,6 +84,8 @@ class ProfileViewController: UIViewController {
         if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
             let (emojis, _) = pubKey.emojis
 
+            self.emojis = emojis
+
             self.emojiLabel.textColor = Theme.shared.colors.creatingWalletEmojisSeparator
             self.emojiLabel.text = String(emojis.enumerated().map { $0 > 0 && $0 % 4 == 0 ? ["|", $1] : [$1]}.joined())
         }
@@ -105,24 +109,22 @@ class ProfileViewController: UIViewController {
         self.middleLabel.textColor = Theme.shared.colors.profileMiddleLabel!
     }
 
-    private func genQRCode() {
-
+    private func genQRCode() throws {
         guard let wallet = TariLib.shared.tariWallet else {
-            return
+            throw WalletErrors.walletNotInitialized
         }
 
-        let (walletPublicKey, _) = wallet.publicKey
-        guard let publicKey = walletPublicKey else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to access wallet public key", comment: "Profile View Controller"), description: ""
-            )
-            return
+        let (walletPublicKey, walletPublicKeyError) = wallet.publicKey
+        guard let pubKey = walletPublicKey else {
+            throw walletPublicKeyError!
         }
 
-        guard let emojiString = publicKey.emojis.0 as? String else {
-            return
+        let (hex, hexError) = pubKey.hex
+        guard hexError == nil else {
+            throw hexError!
         }
-        let qrText = emojiString
+
+        let qrText = "{\"pubkey\":\"\(hex)\"}"
         let vcard = qrText.data(using: .utf8)
 
         let filter = CIFilter(name: "CIQRCodeGenerator")
@@ -144,12 +146,22 @@ class ProfileViewController: UIViewController {
         customizeCopyMyEmojiButton()
         customizeSeparatorView()
         customizeMiddleLabel()
-        genQRCode()
+
+        do {
+            try genQRCode()
+        } catch {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Failed to generate QR", comment: "Profile view"),
+                description: "",
+                error: error)
+        }
     }
 
     private func copyToClipboard() {
-        let pasteboard = UIPasteboard.general
-        pasteboard.string = emojiLabel.text ?? ""
+        if let emojis = self.emojis {
+            let pasteboard = UIPasteboard.general
+            pasteboard.string = emojis
+        }
     }
 
     private func sendHapticNotification() {
