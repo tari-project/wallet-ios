@@ -337,6 +337,9 @@
 		BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8316FC23EF7EAA00235403 /* LAContext.swift */; };
 		BF8316FE23EF7EAA00235403 /* LAContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8316FC23EF7EAA00235403 /* LAContext.swift */; };
 		BF8316FF23EF7EAA00235403 /* LAContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8316FC23EF7EAA00235403 /* LAContext.swift */; };
+		BFAB5D1123FDEA69009E8563 /* EmoticonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */; };
+		BFAB5D1223FDEA6A009E8563 /* EmoticonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */; };
+		BFAB5D1323FDEA6A009E8563 /* EmoticonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */; };
 		BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 		BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 		BFC5532723D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
@@ -515,6 +518,7 @@
 		BF191A1623E5AFA200D33C85 /* img_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_0.png; sourceTree = "<group>"; };
 		BF191A3123E70D3200D33C85 /* NerdEmojiAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = NerdEmojiAnimation.json; sourceTree = "<group>"; };
 		BF8316FC23EF7EAA00235403 /* LAContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LAContext.swift; sourceTree = "<group>"; };
+		BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmoticonView.swift; sourceTree = "<group>"; };
 		BFC5532423D9B8E4009130A8 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		BFD758DC23E96BB500B0F1A5 /* 1-Intro.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "1-Intro.mp4"; sourceTree = "<group>"; };
 		BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "2-Loop.mp4"; sourceTree = "<group>"; };
@@ -791,6 +795,7 @@
 				00E2BCB0236B44DB00C2A105 /* FloatingPanel */,
 				00325EC9239E4A1000F76918 /* FadedOverlayView.swift */,
 				49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */,
+				BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -1473,6 +1478,7 @@
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
 				001F6CEC2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
+				BFAB5D1123FDEA69009E8563 /* EmoticonView.swift in Sources */,
 				004277FB23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				0042780323E8421200AE7BD9 /* StringProtocol.swift in Sources */,
 				0087A1AC23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
@@ -1528,6 +1534,7 @@
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				001F6CED2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */,
+				BFAB5D1223FDEA6A009E8563 /* EmoticonView.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				0087A1AA23F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				009BF8AD237ABB4700C02E44 /* TariLib.swift in Sources */,
@@ -1576,6 +1583,9 @@
 				00262EB1236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */,
+				BF6C4BCC23D88343005CC4EC /* ScanViewController.swift in Sources */,
+				BFAB5D1323FDEA6A009E8563 /* EmoticonView.swift in Sources */,
+				00262EB1236F015000A6C8A0 /* UILableWithPadding.swift in Sources */,
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,
 				004997B12382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,

@@ -155,6 +155,8 @@ struct Colors: Loopable {
     let amountWarningLabel = UIColor(named: "AmountWarningLabel")
     let amountLabel = UIColor(named: "AmountLabel")
 
+    //EmoticonView
+    let emoticonBlackBackgroundAlpha = UIColor(named: "EmoticonBlackBackgroundAlpha")
 }
 
 struct Fonts: Loopable {

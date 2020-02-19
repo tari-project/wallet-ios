@@ -55,7 +55,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
     var valueContainerViewHeightConstraintShortened = NSLayoutConstraint()
     var valueCenterYAnchorConstraint = NSLayoutConstraint()
     let valueLabel = UILabel()
-    let emojiButton = EmojiButton()
+    let emojiButton = EmoticonView()
     let fromHeadingLabel = UILabel()
     let addContactButton = TextButton()
     let contactNameHeadingLabel = UILabel()
@@ -161,7 +161,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
         setupEditContactButton()
         setupDivider()
         setupNote()
-
+        self.view.bringSubviewToFront(emojiButton)
         //Transaction ID
         transactionIDLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         transactionIDLabel.font = Theme.shared.fonts.transactionScreenTxIDLabel
@@ -249,7 +249,10 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                     throw emojisError!
                 }
 
-                emojiButton.setEmojis(emojis)
+                emojiButton.setUpView(emojiText: emojis,
+                                      type: .buttonView,
+                                      textCentered: false,
+                                      inViewController: self)
             }
 
             let (date, dateError) = tx.date

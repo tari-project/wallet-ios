@@ -65,8 +65,7 @@ class WalletCreationViewController: UIViewController {
     @IBOutlet weak var nerdAnimationView: AnimationView!
     @IBOutlet weak var createEmojiButton: ActionButton!
     @IBOutlet weak var topImageView: UIImageView!
-    @IBOutlet weak var userEmojiLabel: UILabel!
-    @IBOutlet weak var userEmojiContainer: UIView!
+    @IBOutlet weak var userEmojiContainer: EmoticonView!
     @IBOutlet weak var localAuthentificationImageView: UIImageView!
 
     // MARK: - Override functions
@@ -116,7 +115,6 @@ class WalletCreationViewController: UIViewController {
         topImageView.tintColor = .black
 
         self.view.backgroundColor = Theme.shared.colors.creatingWalletBackground
-        self.userEmojiLabel.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
     }
 
     private func firstLabelAnimation() {
@@ -275,7 +273,6 @@ class WalletCreationViewController: UIViewController {
             guard let self = self else { return }
             self.secondLabel.alpha = 1.0
             self.thirdLabel.alpha = 1.0
-            self.userEmojiLabel.alpha = 1.0
             self.userEmojiContainer.alpha = 1.0
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
@@ -314,9 +311,10 @@ class WalletCreationViewController: UIViewController {
 
         if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
             let (emojis, _) = pubKey.emojis
-
-            self.userEmojiLabel.textColor = Theme.shared.colors.creatingWalletEmojisSeparator
-            self.userEmojiLabel.text = String(emojis.enumerated().map { $0 > 0 && $0 % 4 == 0 ? ["|", $1] : [$1]}.joined())
+            self.userEmojiContainer.setUpView(emojiText: emojis,
+                                              type: .normalView,
+                                              textCentered: true,
+                                              inViewController: self)
         }
     }
 
@@ -407,7 +405,6 @@ class WalletCreationViewController: UIViewController {
             UIView.animate(withDuration: 1, animations: {
                 self.secondLabel.alpha = 0.0
                 self.thirdLabel.alpha = 0.0
-                self.userEmojiLabel.alpha = 0.0
                 self.userEmojiContainer.alpha = 0.0
                 self.view.layoutIfNeeded()
             }) { [weak self] (_) in
