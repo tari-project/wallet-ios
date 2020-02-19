@@ -40,7 +40,7 @@
 
 import UIKit
 
-class AddRecipientViewController: UIViewController, ContactsTableDelegate {
+class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITextFieldDelegate, ScanViewControllerDelegate {
     private let SIDE_PADDING = Theme.shared.sizes.appSidePadding
     private let INPUT_CORNER_RADIUS: CGFloat = 6
     private let INPUT_CONTAINER_HEIGHT: CGFloat = 90
@@ -48,8 +48,70 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate {
     private let inputContainerView = UIView()
     private let inputBox = UITextField()
     private let scanButton = QRButton()
+    private let continueButton = ActionButton()
+    private var continueButtonBottomConstraint = NSLayoutConstraint()
+    private let contactsTableVC = ContactsTableViewController(style: .grouped)
+    private let pasteEmojisView = PasteEmojisView()
+    private var pasteEmojisViewBottomAnchorConstraint = NSLayoutConstraint()
+    private let dimView = UIView()
 
-    private let contactsTableVC = ContactsTableViewController()
+    private var isEditingSearchBox: Bool = false {
+        didSet {
+            if isEditingSearchBox {
+                inputBox.becomeFirstResponder()
+            } else {
+                inputBox.resignFirstResponder()
+            }
+        }
+    }
+
+    private var isShowingContinueButton: Bool = false {
+        didSet {
+            if isShowingContinueButton {
+                contactsTableVC.tableView.removeFromSuperview()
+
+                continueButtonBottomConstraint.isActive = false
+
+                UIView.animate(withDuration: 0.5) { [weak self] in
+                    guard let self = self else { return }
+                    self.continueButtonBottomConstraint = self.continueButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -self.SIDE_PADDING)
+                    self.continueButtonBottomConstraint.isActive = true
+                    self.inputContainerView.layer.shadowOpacity = 0.1
+                    self.view.layoutIfNeeded()
+                }
+            } else {
+                continueButtonBottomConstraint.isActive = false
+                continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 100)
+                continueButtonBottomConstraint.isActive = true
+            }
+        }
+    }
+
+    private var clipboardEmojis: String = "" {
+        didSet {
+            if clipboardEmojis.isEmpty {
+                pasteEmojisView.isHidden = true
+            } else {
+                pasteEmojisView.setEmojis(emojis: clipboardEmojis) { [weak self] in
+                    guard let self = self else { return }
+
+                    do {
+                        let pubKey = try PublicKey(emojis: self.clipboardEmojis)
+                        self.onAdd(publicKey: pubKey)
+                    } catch {
+                        UserFeedback.shared.error(
+                            title: NSLocalizedString("Could not use Emoji ID", comment: "Add recipient screen"),
+                            description: "Failed to create a valid contact from the pasted Emoji ID",
+                            error: error)
+                    }
+
+                    self.inputBox.text = self.clipboardEmojis
+                    self.isEditingSearchBox = false
+                }
+                pasteEmojisView.isHidden = false
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,19 +119,46 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate {
         contactsTableVC.actionDelegate = self
 
         setup()
+        hideKeyboardWhenTappedAroundOrSwipedDown()
+        contactsTableVC.tableView.keyboardDismissMode = .interactive
+        inputBox.addTarget(self, action: #selector(textInputidChange(_:)), for: .editingChanged)
+        setupPasteEmojisView()
     }
 
-    func found(code: String) {
-        //TODO something with the code
-        UserFeedback.shared.info(title: "Scanned", description: "")
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        checkClipboard()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(showClipboardEmojis), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(hideClipboardEmojis), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
-    @objc func openScanner() {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        isEditingSearchBox = true
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        clipboardEmojis = ""
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc private func openScanner() {
         let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
         guard let vc = storyBoard.instantiateViewController(identifier: "ScanViewController") as? ScanViewController else { return }
-        vc.delegate = self as? ScanViewControllerDelegate
+        vc.actionDelegate = self as ScanViewControllerDelegate
         vc.modalPresentationStyle = .popover
         present(vc, animated: true, completion: nil)
+    }
+
+    @objc private func textInputidChange(_ textField: UITextField) {
+        if let text = textField.text {
+            contactsTableVC.filter = text
+        }
     }
 
     private func setup() {
@@ -79,6 +168,8 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate {
 
         setupContactInputBar()
         setupContactsTable()
+        setupContinueButton()
+        setupDimView()
     }
 
     private func setupContactInputBar() {
@@ -100,7 +191,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate {
 
         //Input layout
         inputBox.translatesAutoresizingMaskIntoConstraints = false
-        inputContainerView.addSubview(inputBox)
+        view.addSubview(inputBox)
         inputBox.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor).isActive = true
         inputBox.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: SIDE_PADDING).isActive = true
         inputBox.trailingAnchor.constraint(equalTo: inputContainerView.trailingAnchor, constant: -SIDE_PADDING).isActive = true
@@ -134,25 +225,145 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate {
         contactsTableVC.tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         contactsTableVC.tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         contactsTableVC.tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+    }
 
-        //inputContainerView.bringSubviewToFront(view)
+    private func setupContinueButton() {
+        continueButton.setTitle(NSLocalizedString("Continue", comment: "Add recipient view"), for: .normal)
+        view.addSubview(continueButton)
+        continueButton.translatesAutoresizingMaskIntoConstraints = false
+
+        continueButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
+        continueButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+
+        isShowingContinueButton = false
+
+        continueButton.addTarget(self, action: #selector(onContinue), for: .touchUpInside)
+    }
+
+    private func setupPasteEmojisView() {
+        pasteEmojisView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(pasteEmojisView)
+
+        pasteEmojisView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        pasteEmojisView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        pasteEmojisView.heightAnchor.constraint(equalToConstant: 78).isActive = true
+
+        pasteEmojisViewBottomAnchorConstraint = pasteEmojisView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 100)
+        pasteEmojisViewBottomAnchorConstraint.isActive = true
+
+        pasteEmojisView.layer.shadowOpacity = 0.1
+        pasteEmojisView.layer.shadowOffset = CGSize(width: 0, height: 5)
+        pasteEmojisView.layer.shadowRadius = 10
+        pasteEmojisView.layer.shadowColor = Theme.shared.colors.navigationBottomShadow!.cgColor
+    }
+
+    private func setupDimView() {
+        dimView.translatesAutoresizingMaskIntoConstraints = false
+        dimView.backgroundColor = UIColor.black.withAlphaComponent(0)
+        view.addSubview(dimView)
+        dimView.topAnchor.constraint(equalTo: view.topAnchor, constant: 0).isActive = true
+        dimView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        dimView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        dimView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        dimView.isHidden = true
+    }
+
+    private func checkClipboard() {
+        let pasteboardString: String? = UIPasteboard.general.string
+
+        if let text = pasteboardString {
+            do {
+                _ = try PublicKey(emojis: text)
+                clipboardEmojis = text
+            } catch {
+                //Not valid emojis, don't show them
+                clipboardEmojis = ""
+            }
+        }
+    }
+
+    @objc private func showClipboardEmojis(notification: NSNotification) {
+        if clipboardEmojis.isEmpty {
+            return
+        }
+
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            let keyboardHeight = keyboardSize.height
+            pasteEmojisViewBottomAnchorConstraint.isActive = false
+
+            self.dimView.isHidden = false
+            dimView.addSubview(inputBox)
+            UIView.animate(withDuration: 0.5) { [weak self] in
+                guard let self = self else { return }
+                self.pasteEmojisViewBottomAnchorConstraint = self.pasteEmojisView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
+                self.pasteEmojisViewBottomAnchorConstraint.isActive = true
+                self.navigationController?.setNavigationBarHidden(true, animated: true)
+                self.dimView.backgroundColor = UIColor.black.withAlphaComponent(0.62)
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+
+    @objc private func hideClipboardEmojis() {
+        if clipboardEmojis.isEmpty {
+            return
+        }
+
+        UIView.animate(withDuration: 0.25, animations: { [weak self] in
+            guard let self = self else { return }
+            self.pasteEmojisViewBottomAnchorConstraint.isActive = false
+            self.pasteEmojisViewBottomAnchorConstraint = self.pasteEmojisView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 100)
+            self.pasteEmojisViewBottomAnchorConstraint.isActive = true
+            self.navigationController?.setNavigationBarHidden(false, animated: true)
+            self.dimView.backgroundColor = UIColor.black.withAlphaComponent(0)
+            self.view.layoutIfNeeded()
+        }) { [weak self] (_) in
+            guard let self = self else { return }
+            self.dimView.isHidden = true
+            self.view.addSubview(self.inputBox)
+        }
     }
 
     func onScrollTopHit(_ isAtTop: Bool) {
         if isAtTop {
-            UIView.animate(withDuration: 0.5) {
+            UIView.animate(withDuration: 0.5) { [weak self] in
+                guard let self = self else { return }
                 self.inputContainerView.layer.shadowOpacity = 0
                 self.view.layoutIfNeeded()
             }
         } else {
-            UIView.animate(withDuration: 0.5) {
+            UIView.animate(withDuration: 0.5) { [weak self] in
+                guard let self = self else { return }
                 self.inputContainerView.layer.shadowOpacity = 0.1
                 self.view.layoutIfNeeded()
             }
         }
     }
 
+    @objc private func onContinue() {
+        UserFeedback.shared.info(title: "Next view", description: "Coming soon")
+    }
+
+    func onSelect(publicKey: PublicKey) {
+        //TODO this will probably set the emojis when we have the custom emoji view
+        inputBox.text = publicKey.emojis.0
+        inputBox.rightView = nil
+
+        //Remove table and show continue button
+        isShowingContinueButton = true
+    }
+
     func onSelect(contact: Contact) {
-        UserFeedback.shared.success(title: "Selected \(contact.alias.0)")
+        let (publicKey, publicKeyError) = contact.publicKey
+        guard publicKeyError == nil else {
+            return
+        }
+
+        onSelect(publicKey: publicKey!)
+    }
+
+    //Used by the scanner and paste from clipboard
+    func onAdd(publicKey: PublicKey) {
+        onSelect(publicKey: publicKey)
     }
 }

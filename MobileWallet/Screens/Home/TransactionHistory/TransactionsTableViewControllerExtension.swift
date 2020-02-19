@@ -45,7 +45,7 @@ extension TransactionsTableViewController {
 
     // MARK: - Table view data source
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionHeaderView = UIView.init()
+        let sectionHeaderView = UIView()
         let sectionHeaderLabel = UILabel()
 
         sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel

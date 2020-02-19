@@ -113,9 +113,10 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         defaultBottomFadeViewHeight = bottomFadeViewHeightConstraint.constant
         bottomFadeViewHeightConstraint.constant = 0
 
-        //Check if we're coming back from a segue
+        //Check if we're coming back from a segue and ensure the state is correct by calling `didSet`
         if !isTransactionViewFullScreen {
             navigationController?.setNavigationBarHidden(true, animated: true)
+            setNeedsStatusBarAppearanceUpdate()
         }
 
         super.viewWillAppear(animated)
@@ -123,6 +124,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        self.refreshBalance()
 
         //Make sure the button animates into view when we navigate back to this controller
         isShowingSendButton = isShowingSendButton == true

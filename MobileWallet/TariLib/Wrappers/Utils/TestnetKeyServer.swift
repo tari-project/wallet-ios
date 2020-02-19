@@ -56,10 +56,12 @@ struct TestnetServerRequest: Codable {
 
 class TestnetKeyServer {
     private let MESSAGE_PREFIX = "Hello Tari from"
-    private let SERVER = "https://dropper.free.beeceptor.com" //TODO store in config
+    private let SERVER = "https://faucet.tari.com" //TODO store in config
+    private let TARIBOT_MESSAGE = "Some Tari to get you started."
     private let signature: Signature
     private let url: URL
     private let wallet: Wallet
+    static var isRequestInProgress = false
 
     init(wallet: Wallet) throws {
         let (publicKey, publicKeyError) = wallet.publicKey
@@ -80,14 +82,29 @@ class TestnetKeyServer {
     }
 
     func requestDrop(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
-        let (availableBalance, availableBalanceError) = wallet.availableBalance
-        guard availableBalanceError == nil else {
-            throw availableBalanceError!
+        guard TestnetKeyServer.isRequestInProgress == false else {
+            print("Request in progress")
+            return
+        }
+
+        TestnetKeyServer.isRequestInProgress = true
+
+        let (completedTransactions, completedTransactionsError) = wallet.completedTransactions
+        guard let completedTxs = completedTransactions else {
+            TestnetKeyServer.isRequestInProgress = false
+            throw completedTransactionsError!
+        }
+
+        let (completedTransactionsCount, completedTransactionsCountError) = completedTxs.count
+        guard completedTransactionsCountError == nil else {
+            TestnetKeyServer.isRequestInProgress = false
+            throw completedTransactionsCountError!
         }
 
         //If the user has a spendable balance, just ignore this request
-        guard availableBalance == 0 else {
+        guard completedTransactionsCount == 0 else {
             print("Wallet already has funds")
+            TestnetKeyServer.isRequestInProgress = false
             return
         }
 
@@ -102,19 +119,24 @@ class TestnetKeyServer {
             )
         )
 
+        let onRequestError = {(error: Error) in
+            onError(error)
+            TestnetKeyServer.isRequestInProgress = false
+        }
+
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard error == nil else {
-                onError(error!)
+                onRequestError(error!)
                 return
             }
 
             guard let data = data, let response = response as? HTTPURLResponse else {
-                onError(TestnetKeyServerError.unknown)
+                onRequestError(TestnetKeyServerError.unknown)
                 return
             }
 
             guard response.statusCode != 403 else {
-                onError(TestnetKeyServerError.invalidSignature)
+                onRequestError(TestnetKeyServerError.invalidSignature)
                 return
             }
 
@@ -124,7 +146,7 @@ class TestnetKeyServer {
                     do {
                         responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String]
                     } catch {
-                        onError(error)
+                        onRequestError(error)
                     }
                 }
             }
@@ -135,35 +157,34 @@ class TestnetKeyServer {
                     message = res["error"]
                 }
 
-                onError(TestnetKeyServerError.server(response.statusCode, message: message))
+                onRequestError(TestnetKeyServerError.server(response.statusCode, message: message))
                 return
             }
 
             guard let res = responseDict else {
-                onError(TestnetKeyServerError.missingResponse)
+                onRequestError(TestnetKeyServerError.missingResponse)
                 return
             }
 
             guard let key = res["key"], let valueString = res["value"], let returnPubKeyHex = res["return_wallet_id"] else {
-                onError(TestnetKeyServerError.responseInvalid)
+                onRequestError(TestnetKeyServerError.responseInvalid)
                 return
             }
 
             guard let value = UInt64(valueString) else {
-                onError(TestnetKeyServerError.responseInvalid)
+                onRequestError(TestnetKeyServerError.responseInvalid)
                 return
             }
 
-            let message = "Imported UTXO"
-
             do {
-                try self.importKey(key: key, value: value, message: message, returnPubKeyHex: returnPubKeyHex)
+                try self.importKey(key: key, value: value, message: self.TARIBOT_MESSAGE, returnPubKeyHex: returnPubKeyHex)
             } catch {
-                onError(error)
+                onRequestError(error)
                 return
             }
 
             onSuccess()
+            TestnetKeyServer.isRequestInProgress = false
         }
 
         task.resume()

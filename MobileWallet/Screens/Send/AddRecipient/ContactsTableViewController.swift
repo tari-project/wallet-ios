@@ -40,16 +40,33 @@
 
 import UIKit
 
-protocol ContactsTableDelegate {
+protocol ContactsTableDelegate: class {
     func onScrollTopHit(_: Bool)
     func onSelect(contact: Contact)
 }
 
 class ContactsTableViewController: UITableViewController {
-    var actionDelegate: ContactsTableDelegate?
+    weak var actionDelegate: ContactsTableDelegate?
+
+    var filter: String = "" {
+        didSet {
+            if filter.isEmpty {
+                filteredRecentContactList =  recentContactList
+                filteredContactList = contactList
+            } else {
+                filteredRecentContactList = recentContactList.filter { $0.alias.0.localizedCaseInsensitiveContains(filter) }
+                filteredContactList = contactList.filter { $0.alias.0.localizedCaseInsensitiveContains(filter) }
+            }
+
+            tableView.reloadData()
+        }
+    }
 
     private var recentContactList: [Contact] = []
     private var contactList: [Contact] = []
+    private var filteredRecentContactList: [Contact] = []
+    private var filteredContactList: [Contact] = []
+
     private let CELL_IDENTIFIER = "CONTACT_CELL"
     private let CONTACT_CELL_HEIGHT: CGFloat = 70
     private let SIDE_PADDING = Theme.shared.sizes.appSidePadding
@@ -105,6 +122,10 @@ class ContactsTableViewController: UITableViewController {
         contactList = list
         recentContactList = try contacts!.recentContacts(wallet: wallet, limit: 3)
 
+        //Filtered lists are full lists by default
+        filteredContactList = contactList
+        filteredRecentContactList = recentContactList
+
         tableView.reloadData()
     }
 
@@ -116,10 +137,10 @@ class ContactsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return recentContactList.count
+            return filteredRecentContactList.count
         }
 
-        return contactList.count
+        return filteredContactList.count
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -130,9 +151,9 @@ class ContactsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath) as! ContactCell
 
         if indexPath.section == 0 {
-            cell.setContact(recentContactList[indexPath.row])
+            cell.setContact(filteredRecentContactList[indexPath.row])
         } else if indexPath.section == 1 {
-            cell.setContact(contactList[indexPath.row])
+            cell.setContact(filteredContactList[indexPath.row])
         }
 
         return cell
@@ -140,7 +161,7 @@ class ContactsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         //If there's no data in a section, don't show anything
-        if (section == 0 && recentContactList.count == 0) || (section == 1 && contactList.count == 0) {
+        if (section == 0 && filteredRecentContactList.count == 0) || (section == 1 && filteredContactList.count == 0) {
             return UIView()
         }
 
@@ -155,7 +176,7 @@ class ContactsTableViewController: UITableViewController {
         sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
         sectionHeaderLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
         sectionHeaderLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
-        sectionHeaderLabel.backgroundColor = Theme.shared.colors.appBackground?.withAlphaComponent(0.2)
+        sectionHeaderLabel.backgroundColor = .clear
         sectionHeaderLabel.heightAnchor.constraint(equalToConstant: sectionHeaderLabel.font.pointSize * 1.3).isActive = true
         sectionHeaderLabel.layer.cornerRadius = 4
         sectionHeaderLabel.layer.masksToBounds = true
@@ -176,9 +197,9 @@ class ContactsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.section == 0 {
-            actionDelegate?.onSelect(contact: recentContactList[indexPath.row])
+            actionDelegate?.onSelect(contact: filteredRecentContactList[indexPath.row])
         } else if indexPath.section == 1 {
-            actionDelegate?.onSelect(contact: contactList[indexPath.row])
+            actionDelegate?.onSelect(contact: filteredContactList[indexPath.row])
         }
 
         return nil
@@ -201,5 +222,4 @@ class ContactsTableViewController: UITableViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
 }

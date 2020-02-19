@@ -40,14 +40,14 @@
 
 import UIKit
 
-protocol TransactionsTableViewDelegate {
+protocol TransactionsTableViewDelegate: class {
     func onTransactionSelect(_: Any)
     func onScrollDirectionChange(_: ScrollDirection)
 }
 
 class TransactionsTableViewController: UITableViewController {
     let CELL_IDENTIFIER = "TransactionTableTableViewCell"
-    var actionDelegate: TransactionsTableViewDelegate?
+    weak var actionDelegate: TransactionsTableViewDelegate?
     var refreshTransactionControl = UIRefreshControl()
     private var lastContentOffset: CGFloat = 0
     private var lastScrollDirection: ScrollDirection = .up
