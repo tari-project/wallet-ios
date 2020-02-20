@@ -107,10 +107,7 @@ struct TariPublicKey *public_key_from_hex(const char *hex,int* error_out);
 void public_key_destroy(struct TariPublicKey *pk);
 
 //Converts a TariPublicKey to char array in emoji format
-char *public_key_to_emoji(struct TariPublicKey *pk, int* error_out);
-
-//Converts a char array in emoji format to a TariPublicKey
-struct TariPublicKey *public_key_from_emoji(const char* emoji, int* error_out);
+char *public_key_to_emoji_node_id(struct TariPublicKey *pk, int* error_out);
 
 /// -------------------------------- TariPrivateKey ----------------------------------------------- ///
 
@@ -354,6 +351,9 @@ bool wallet_is_completed_transaction_outbound(struct TariWallet *wallet, struct 
 // Import a UTXO into the wallet. This will add a spendable UTXO and create a faux completed transaction to record the
 // event.
 unsigned long long wallet_import_utxo(struct TariWallet *wallet, unsigned long long amount, struct TariPrivateKey *spending_key, struct TariPublicKey *source_public_key, const char *message, int* error_out);
+
+// This function will tell the wallet to query the set base node to confirm the status of wallet data.
+bool wallet_sync_with_base_node(struct TariWallet *wallet, int* error_out);
 
 // Simulates the completion of a broadcasted TariPendingInboundTransaction
 bool wallet_test_broadcast_transaction(struct TariWallet *wallet, struct TariCompletedTransaction *tx, int* error_out);

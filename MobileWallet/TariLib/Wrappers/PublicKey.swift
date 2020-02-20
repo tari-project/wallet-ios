@@ -74,7 +74,7 @@ class PublicKey {
 
     var emojis: (String, Error?) {
         var errorCode: Int32 = -1
-        let emojiPtr = public_key_to_emoji(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let emojiPtr = public_key_to_emoji_node_id(ptr, UnsafeMutablePointer<Int32>(&errorCode))
         let result = String(cString: emojiPtr!)
 
         let mutable = UnsafeMutablePointer<Int8>(mutating: emojiPtr!)
@@ -102,16 +102,6 @@ class PublicKey {
         let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
         var errorCode: Int32 = -1
         let result = public_key_from_hex(hexPtr, UnsafeMutablePointer<Int32>(&errorCode))
-        guard errorCode == 0 else {
-            throw PublicKeyError.generic(errorCode)
-        }
-        ptr = result!
-    }
-
-    init(emojis: String) throws {
-        let emojiPtr = UnsafeMutablePointer<Int8>(mutating: emojis)
-        var errorCode: Int32 = -1
-        let result = public_key_from_emoji(emojiPtr, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             throw PublicKeyError.generic(errorCode)
         }
