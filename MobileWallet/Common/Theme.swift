@@ -70,6 +70,8 @@ struct Colors: Loopable {
     let actionButtonBackgroundSimple = UIColor(named: "ActionButtonBackgroundSimple")
     let actionButtonBackgroundGradient1 = UIColor(named: "ActionButtonBackgroundGradient1")
     let actionButtonBackgroundGradient2 = UIColor(named: "ActionButtonBackgroundGradient2")
+    let actionButtonDisabled = UIColor(named: "ActionButtonDisabled")
+    let actionButtonDisabledTitle = UIColor(named: "ActionButtonDisabledTitle")
 
     let transactionTableBackground = UIColor(named: "TransactionTableBackground")
     let splashBackground = UIColor(named: "SplashBackground")
@@ -144,6 +146,13 @@ struct Colors: Loopable {
     let contactCellAlias = UIColor(named: "TableCellContactAlias")
     let contactCellImageBackground = UIColor(named: "TableCellContactImageBackground")
     let contactCellImage = UIColor(named: "TableCellContactImage")
+
+    //Amount screen
+    let keypadButton = UIColor(named: "KeypadButton")
+    let amountWarning = UIColor(named: "AmountWarning")
+    let amountWarningLabel = UIColor(named: "AmountWarningLabel")
+    let amountLabel = UIColor(named: "AmountLabel")
+
 }
 
 struct Fonts: Loopable {
@@ -205,6 +214,13 @@ struct Fonts: Loopable {
     let searchContactsInputBoxText = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
     let contactCellAlias = UIFont(name: "AvenirLTStd-Heavy", size: 15.0)
     let contactCellAliasLetter = UIFont(name: "AvenirLTStd-Heavy", size: 24.0)
+
+    //Amount screen
+    let keypadButton = UIFont(name: "AvenirLTStd-Heavy", size: 22.0)
+    let amountLabel = UIFont(name: "AvenirLTStd-Black", size: 80.0)
+    let warningBalanceLabel = UIFont(name: "AvenirLTStd-Heavy", size: 14.0)
+    let amountWarningLabel = UIFont(name: "AvenirLTStd-Roman", size: 13.0)
+
 }
 
 struct Images: Loopable {
@@ -233,6 +249,9 @@ struct Images: Loopable {
     let homeBackgroundImage = UIImage(named: "HomePattern")
 
     let handWave = UIImage(named: "HandWave")
+
+    //Amount
+    let delete = UIImage(named: "numpad-delete")
 }
 
 struct Sizes {

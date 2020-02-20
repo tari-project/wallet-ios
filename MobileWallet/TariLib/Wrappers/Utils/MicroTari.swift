@@ -43,62 +43,101 @@ import Foundation
 struct MicroTari {
     private static let CONVERSION = 1000000
     static let PRECISE_FRACTION_DIGITS = String(MicroTari.CONVERSION).count
-    static let ROUNDED_FRACTION_DIGITS = 2
+    public static let ROUNDED_FRACTION_DIGITS = 2
 
-    private let defaultFormatter = NumberFormatter()
-    private let withOperatorFormatter = NumberFormatter()
-    private let preciseFormatter = NumberFormatter()
-    private let preciseWithOperatorFormatter = NumberFormatter()
+    private static let defaultFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
+        formatter.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
+        formatter.negativePrefix = "-"
+        return formatter
+    }()
+    private static let withOperatorFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
+        formatter.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
+        formatter.positivePrefix = "+ "
+        formatter.negativePrefix = "- "
+        return formatter
+    }()
+    private static let preciseFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
+        formatter.maximumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
+        formatter.negativePrefix = "- "
+        return formatter
+    }()
+    private static let preciseWithOperatorFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
+        formatter.maximumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
+        formatter.positivePrefix = "+ "
+        formatter.negativePrefix = "- "
+        return formatter
+    }()
+    private static let editFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumFractionDigits = 0
+        formatter.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
+        formatter.negativePrefix = "-"
+        return formatter
+    }()
 
-    let rawValue: UInt64
+    public static var groupingSeparator: String {
+        return defaultFormatter.groupingSeparator
+    }
+
+    public static var decimalSeparator: String {
+        return defaultFormatter.decimalSeparator
+    }
+
+    var rawValue: UInt64
 
     var taris: Float {
         return Float(self.rawValue) / Float(MicroTari.CONVERSION)
     }
 
     var formatted: String {
-        return defaultFormatter.string(from: NSNumber(value: self.taris))!
+        return MicroTari.defaultFormatter.string(from: NSNumber(value: self.taris))!
     }
 
     var formattedWithOperator: String {
-        return withOperatorFormatter.string(from: NSNumber(value: self.taris))!
+        return MicroTari.withOperatorFormatter.string(from: NSNumber(value: self.taris))!
     }
 
     var formattedWithNegativeOperator: String {
-        return withOperatorFormatter.string(from: NSNumber(value: self.taris * -1))!
+        return MicroTari.withOperatorFormatter.string(from: NSNumber(value: self.taris * -1))!
     }
 
     var formattedPrecise: String {
-        return preciseFormatter.string(from: NSNumber(value: self.taris))!
+        return MicroTari.preciseFormatter.string(from: NSNumber(value: self.taris))!
     }
 
     var formattedPreciseWithOperator: String {
-        return preciseWithOperatorFormatter.string(from: NSNumber(value: self.taris))!
+        return MicroTari.preciseWithOperatorFormatter.string(from: NSNumber(value: self.taris))!
     }
 
     init(_ rawValue: UInt64) {
         self.rawValue = rawValue
+    }
 
-        defaultFormatter.numberStyle = .decimal
-        defaultFormatter.minimumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
-        defaultFormatter.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
-        defaultFormatter.negativePrefix = "-"
+    public static func toTariNumber(_ number: NSNumber) -> UInt64 {
+        return number.uint64Value * UInt64(CONVERSION)
+    }
+}
 
-        withOperatorFormatter.numberStyle = .decimal
-        withOperatorFormatter.minimumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
-        withOperatorFormatter.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
-        withOperatorFormatter.positivePrefix = "+ "
-        withOperatorFormatter.negativePrefix = "- "
+extension MicroTari {
+    public static func convertToNumber(_ number: String) -> NSNumber? {
+        return defaultFormatter.number(from: number)
+    }
 
-        preciseFormatter.numberStyle = .decimal
-        preciseFormatter.minimumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
-        preciseFormatter.maximumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
-        preciseFormatter.negativePrefix = "- "
-
-        preciseWithOperatorFormatter.numberStyle = .decimal
-        preciseWithOperatorFormatter.minimumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
-        preciseWithOperatorFormatter.maximumFractionDigits = MicroTari.PRECISE_FRACTION_DIGITS
-        preciseWithOperatorFormatter.positivePrefix = "+ "
-        preciseWithOperatorFormatter.negativePrefix = "- "
+    public static func convertToString(_ number: NSNumber, minimumFractionDigits: Int) -> String? {
+        editFormatter.minimumFractionDigits = minimumFractionDigits
+        return editFormatter.string(from: number)
     }
 }

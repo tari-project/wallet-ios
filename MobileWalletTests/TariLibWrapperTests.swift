@@ -359,5 +359,10 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssert(microTari.formattedWithOperator == "+ 98.23" || microTari.formattedWithOperator == "+ 98,23")
         XCTAssert(microTari.formattedWithNegativeOperator == "- 98.23" || microTari.formattedWithNegativeOperator == "- 98,23")
         XCTAssert(microTari.formattedPrecise == "98.2345657" || microTari.formattedPrecise == "98,2345657")
+        XCTAssert(MicroTari.toTariNumber(NSNumber(3)) == 3000000)
+        XCTAssert(MicroTari.convertToNumber("10.03") == NSNumber(10.03))
+        XCTAssert(MicroTari.convertToString(NSNumber(10.03), minimumFractionDigits: 2) == "10.03")
+        XCTAssert(MicroTari.convertToString(NSNumber(10), minimumFractionDigits: 1) == "10.0")
+        XCTAssert(MicroTari.convertToString(NSNumber(10.0), minimumFractionDigits: 0) == "10")
     }
 }

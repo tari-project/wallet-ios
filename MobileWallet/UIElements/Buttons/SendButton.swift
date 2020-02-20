@@ -43,12 +43,19 @@ import UIKit
 class SendButton: ActionButton {
     private let GRADIENT_LAYER_NAME = "GradientLayer"
     private var isCompiled = false
-    private let RADIUS_POINTS: CGFloat = 12.0
     private let GRADIENT_ANGLE: Double = 90.0
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         applyGradient()
+    }
+
+    override var isEnabled: Bool {
+        didSet {
+            if isEnabled != oldValue {
+                applyStyle()
+            }
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -61,11 +68,17 @@ class SendButton: ActionButton {
         super.layoutIfNeeded()
 
         if isCompiled {
-            applyGradient()
+            applyStyle()
         }
     }
 
-    private func removeStyle() {
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        applyStyle()
+    }
+
+    private func removeGradient() {
        if let sublayers = layer.sublayers {
            for layer in sublayers {
                if layer.name == GRADIENT_LAYER_NAME {
@@ -75,7 +88,16 @@ class SendButton: ActionButton {
        }
    }
 
+    private func applyStyle() {
+        if isEnabled {
+            applyGradient()
+        } else {
+            applyDisabledStyle()
+        }
+    }
+
    private func applyGradient() {
+       removeGradient()
        let gradient: CAGradientLayer = CAGradientLayer()
        gradient.frame = bounds
        gradient.colors = [
@@ -106,4 +128,15 @@ class SendButton: ActionButton {
        clipsToBounds = true
        layer.masksToBounds = false
    }
+
+    private func applyDisabledStyle() {
+        removeGradient()
+
+        let disabledLayer: CALayer = CALayer()
+        disabledLayer.frame = bounds
+        disabledLayer.backgroundColor = Theme.shared.colors.actionButtonDisabled!.cgColor
+        disabledLayer.name = GRADIENT_LAYER_NAME
+        disabledLayer.cornerRadius = RADIUS_POINTS
+        layer.insertSublayer(disabledLayer, at: 0)
+    }
 }

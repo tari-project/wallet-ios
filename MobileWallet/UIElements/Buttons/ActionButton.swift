@@ -41,7 +41,7 @@
 import UIKit
 
 class ActionButton: UIButton {
-    private let RADIUS_POINTS: CGFloat = 7.0
+    let RADIUS_POINTS: CGFloat = 12.0
     private let HEIGHT: CGFloat = 53.0
 
     override init(frame: CGRect) {
@@ -56,6 +56,7 @@ class ActionButton: UIButton {
 
     private func commonSetup() {
         setTitleColor(.white, for: .normal)
+        setTitleColor(Theme.shared.colors.actionButtonDisabledTitle, for: .disabled)
         bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: HEIGHT)
         layer.cornerRadius = RADIUS_POINTS
         heightAnchor.constraint(equalToConstant: HEIGHT).isActive = true
