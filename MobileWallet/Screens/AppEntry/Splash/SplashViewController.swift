@@ -213,6 +213,8 @@ class SplashViewController: UIViewController {
     }
 
     @IBAction func createWallet(_ sender: Any) {
+        createWalletButton.variation = .loading
+
         do {
             try TariLib.shared.createNewWallet()
 
@@ -229,6 +231,8 @@ class SplashViewController: UIViewController {
                 title: NSLocalizedString("Failed to create new wallet", comment: ""),
                 description: NSLocalizedString("", comment: ""), error: error //TODO copy update
             )
+
+            createWalletButton.variation = .normal
         }
     }
 
@@ -299,8 +303,6 @@ class SplashViewController: UIViewController {
         #if targetEnvironment(simulator)
           animationContainer.animationSpeed = 5
         #endif
-
-        createWalletButton.animateOut()
 
         animationContainer.play(
             fromProgress: 0,

@@ -1,4 +1,4 @@
-//  AmountViewController.swift
+//  AddAmountViewController.swift
 
 /*
 	Package MobileWallet
@@ -40,17 +40,16 @@
 
 import UIKit
 
-class AmountViewController: UIViewController {
-
+class AddAmountViewController: UIViewController {
     private var buttons = [UIButton]()
-    private let continueButton = SendButton(frame: .zero)
+    private let continueButton = ActionButton(frame: .zero)
     private let amountLabel = AnimatedBalanceLabel()
     private let keypadContainerStackView = UIStackView()
     private let warningView = UIView()
     private let warningLabel = UILabel()
     private let warningBalanceLabel = UILabel()
     private let transactionViewContainer = UIView()
-    private let animationDuration = 0.3
+    private let animationDuration = 0.2
     private var balanceCheckTimer: Timer?
     private let transactionFeeLabel = UILabel()
     private let gemImageString: NSAttributedString = {
@@ -191,7 +190,7 @@ class AmountViewController: UIViewController {
             balanceCheckTimer?.invalidate()
         }
         if isValidNumber(string: rawInput, finalNumber: true) {
-            balanceCheckTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(checkAvailableBalance), userInfo: nil, repeats: false)
+            balanceCheckTimer = Timer.scheduledTimer(timeInterval: 0.8, target: self, selector: #selector(checkAvailableBalance), userInfo: nil, repeats: false)
         }
     }
 
@@ -258,6 +257,8 @@ class AmountViewController: UIViewController {
     }
 
     private func showBalanceExceeded(balance: String) {
+        UINotificationFeedbackGenerator().notificationOccurred(.error)
+
         warningBalanceLabel.text = balance
         warningView.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
         UIView.animate(withDuration: animationDuration, animations: { [weak self] in
@@ -300,11 +301,11 @@ class AmountViewController: UIViewController {
     }
 
     @objc private func continueButtonTapped() {
-
+        UserFeedback.shared.info(title: "Next view", description: "Coming soon")
     }
 }
 
-extension AmountViewController {
+extension AddAmountViewController {
     private func setup() {
         //contiue button
         view.addSubview(continueButton)
@@ -381,6 +382,7 @@ extension AmountViewController {
         warningLabel.textColor = Theme.shared.colors.amountWarningLabel
         warningLabel.text = NSLocalizedString("Not enough Tari in your available balance", comment: "Balance amount error")
         warningLabel.textAlignment = .center
+        warningLabel.heightAnchor.constraint(equalToConstant: warningLabel.font.pointSize * 1.2).isActive = true
 
         //transaction fee
         transactionViewContainer.alpha = 0.0
