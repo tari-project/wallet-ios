@@ -68,6 +68,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
     private var isShowingContinueButton: Bool = false {
         didSet {
             if isShowingContinueButton {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 contactsTableVC.tableView.removeFromSuperview()
 
                 continueButtonBottomConstraint.isActive = false
@@ -341,7 +342,8 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
     }
 
     @objc private func onContinue() {
-        UserFeedback.shared.info(title: "Next view", description: "Coming soon")
+        let amountVC = AddAmountViewController()
+        self.navigationController?.pushViewController(amountVC, animated: true)
     }
 
     func onSelect(publicKey: PublicKey) {

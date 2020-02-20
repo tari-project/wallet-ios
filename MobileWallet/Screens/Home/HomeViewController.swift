@@ -47,7 +47,7 @@ enum ScrollDirection {
 }
 
 class HomeViewController: UIViewController, FloatingPanelControllerDelegate, TransactionsTableViewDelegate {
-    @IBOutlet weak var sendButton: SendButton!
+    @IBOutlet weak var sendButton: ActionButton!
     @IBOutlet weak var sendButtonBottomConstraint: NSLayoutConstraint!
     @IBOutlet weak var bottomFadeView: FadedOverlayView!
     @IBOutlet weak var bottomFadeViewHeightConstraint: NSLayoutConstraint!
@@ -170,7 +170,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         )
 
         bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
-        sendButton.applyShadow()
+        sendButton.variation = .raised
     }
 
     private func requestTestnetTokens() {

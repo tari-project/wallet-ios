@@ -70,8 +70,10 @@ struct Colors: Loopable {
     let actionButtonBackgroundSimple = UIColor(named: "ActionButtonBackgroundSimple")
     let actionButtonBackgroundGradient1 = UIColor(named: "ActionButtonBackgroundGradient1")
     let actionButtonBackgroundGradient2 = UIColor(named: "ActionButtonBackgroundGradient2")
-    let actionButtonDisabled = UIColor(named: "ActionButtonDisabled")
-    let actionButtonDisabledTitle = UIColor(named: "ActionButtonDisabledTitle")
+    let actionButtonTitle = UIColor(named: "ActionButtonTitle")
+
+    let actionButtonBackgroundDisabled = UIColor(named: "ActionButtonBackgroundDisabled")
+    let actionButtonTitleDisabled = UIColor(named: "ActionButtonTitleDisabled")
 
     let transactionTableBackground = UIColor(named: "TransactionTableBackground")
     let splashBackground = UIColor(named: "SplashBackground")

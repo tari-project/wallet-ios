@@ -49,7 +49,7 @@ class FeedbackView: UIView {
     private let descriptionLabel = UILabel()
     private var onCloseHandler: (() -> Void)?
     private var onCallToActionHandler: (() -> Void)?
-    private let callToActionButton = SendButton()
+    private let callToActionButton = ActionButton()
     private let closeButton = TextButton()
 
     override init(frame: CGRect) {

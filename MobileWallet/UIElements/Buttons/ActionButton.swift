@@ -40,9 +40,25 @@
 
 import UIKit
 
+enum ActionButtonVariation {
+    case normal
+    case raised //Like normal but with a shadow
+    case loading
+    case disabled
+}
+
 class ActionButton: UIButton {
-    let RADIUS_POINTS: CGFloat = 12.0
+    private let GRADIENT_LAYER_NAME = "GradientLayer"
+    private let RADIUS_POINTS: CGFloat = 7.0
     private let HEIGHT: CGFloat = 53.0
+    private let GRADIENT_ANGLE: Double = 90
+    //private var isCompiled = false
+
+    var variation: ActionButtonVariation = .normal {
+        didSet {
+            updateStyle()
+        }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -55,8 +71,8 @@ class ActionButton: UIButton {
     }
 
     private func commonSetup() {
-        setTitleColor(.white, for: .normal)
-        setTitleColor(Theme.shared.colors.actionButtonDisabledTitle, for: .disabled)
+        setTitleColor(Theme.shared.colors.actionButtonTitle, for: .normal)
+        setTitleColor(Theme.shared.colors.actionButtonTitleDisabled, for: .disabled)
         bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: HEIGHT)
         layer.cornerRadius = RADIUS_POINTS
         heightAnchor.constraint(equalToConstant: HEIGHT).isActive = true
@@ -64,27 +80,113 @@ class ActionButton: UIButton {
         titleLabel?.font = Theme.shared.fonts.actionButton
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        updateStyle()
+    }
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         super.touchesBegan(touches, with: event)
-        pulseIn()
-    }
 
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        pulseOut()
-    }
-
-    private func pulseIn() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
+        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: { [weak self] in
+            guard let self = self else { return }
             self.alpha = 0.94
             self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
         })
     }
 
-    private func pulseOut() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+
+        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: { [weak self] in
+            guard let self = self else { return }
             self.alpha = 1
             self.transform = CGAffineTransform(scaleX: 1, y: 1)
+        })
+    }
+
+     private func removeStyle() {
+        if let sublayers = layer.sublayers {
+            for layer in sublayers {
+                if layer.name == GRADIENT_LAYER_NAME {
+                     layer.removeFromSuperlayer()
+                }
+            }
+        }
+
+        backgroundColor = Theme.shared.colors.actionButtonBackgroundSimple
+    }
+
+    private func applyGradient() {
+        let gradient: CAGradientLayer = CAGradientLayer()
+        gradient.frame = bounds
+        gradient.colors = [
+            Theme.shared.colors.actionButtonBackgroundGradient1!.cgColor,
+            Theme.shared.colors.actionButtonBackgroundGradient2!.cgColor
+        ]
+        gradient.locations = [-0.8, 3]
+        gradient.cornerRadius = RADIUS_POINTS
+        gradient.name = GRADIENT_LAYER_NAME
+
+        let x: Double! = GRADIENT_ANGLE / 360.0
+        let a = pow(sinf(Float(2 * Double.pi * ((x + 0.75) / 2.0))), 2.0)
+        let b = pow(sinf(Float(2 * Double.pi * ((x + 0.0) / 2))), 2)
+        let c = pow(sinf(Float(2 * Double.pi * ((x + 0.25) / 2))), 2)
+        let d = pow(sinf(Float(2 * Double.pi * ((x + 0.5) / 2))), 2)
+
+        gradient.endPoint = CGPoint(x: CGFloat(c), y: CGFloat(d))
+        gradient.startPoint = CGPoint(x: CGFloat(a), y: CGFloat(b))
+
+        layer.insertSublayer(gradient, at: 0)
+    }
+
+    private func applyShadow() {
+        layer.shadowColor = Theme.shared.colors.actionButtonShadow!.cgColor
+        layer.shadowOffset = CGSize(width: 10.0, height: 10.0)
+        layer.shadowRadius = 10
+        layer.shadowOpacity = 0.5
+        clipsToBounds = true
+        layer.masksToBounds = false
+    }
+
+    private func updateStyle() {
+        removeStyle()
+        switch variation {
+            case .normal:
+                isEnabled = true
+                applyGradient()
+                return
+            case .raised:
+                isEnabled = true
+                applyGradient()
+                applyShadow()
+                return
+            case .loading:
+                isEnabled = false
+                applyGradient()
+                //TODO spinner
+                return
+            case .disabled:
+                isEnabled = false
+                backgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled
+                return
+        }
+    }
+
+    func animateIn() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: { [weak self] in
+            guard let self = self else { return }
+            self.isHidden = false
+            UIView.animate(
+                withDuration: 0.2,
+                delay: 0,
+                options: .curveEaseOut,
+                animations: { [weak self] in
+                    guard let self = self else { return }
+                    self.transform = CGAffineTransform(scaleX: 1, y: 1)
+                }
+            )
         })
     }
 
@@ -98,28 +200,10 @@ class ActionButton: UIButton {
                 animations: { [weak self] in
                     guard let self = self else { return }
                     self.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-                }
-            ) { [weak self] (_) in
-                guard let self = self else { return }
-                self.isHidden = true
-            }
-        })
-    }
-
-    func animateIn() {
-        //Wait till after pulse affect
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: { [weak self] in
-            guard let self = self else { return }
-            self.isHidden = false
-            UIView.animate(
-                withDuration: 0.2,
-                delay: 0,
-                options: .curveEaseOut,
-                animations: { [weak self] in
+                }, completion: { [weak self] (_) in
                     guard let self = self else { return }
-                    self.transform = CGAffineTransform(scaleX: 1, y: 1)
-                }
-            )
+                    self.isHidden = true
+            })
         })
     }
 }
