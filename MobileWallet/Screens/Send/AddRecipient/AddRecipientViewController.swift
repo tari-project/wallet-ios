@@ -97,8 +97,8 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
                     guard let self = self else { return }
 
                     do {
-                        let pubKey = try PublicKey(emojis: self.clipboardEmojis)
-                        self.onAdd(publicKey: pubKey)
+                        //let pubKey = try PublicKey(emojis: self.clipboardEmojis)
+                        //self.onAdd(publicKey: pubKey)
                     } catch {
                         UserFeedback.shared.error(
                             title: NSLocalizedString("Could not use Emoji ID", comment: "Add recipient screen"),
@@ -274,7 +274,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
 
         if let text = pasteboardString {
             do {
-                _ = try PublicKey(emojis: text)
+                //_ = try PublicKey(emojis: text)
                 clipboardEmojis = text
             } catch {
                 //Not valid emojis, don't show them
