@@ -155,7 +155,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         //Balance has multiple font sizes
 
         setupFloatingPanel()
-        setupNavigatorBar()
+        styleNavigatorBar()
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        setNavigationBarLeftCloseButton(action: #selector(closeFullScreen))
         showFloatingPanel()
 
         backgroundImageView.alpha = 0.0
@@ -236,38 +238,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         )
 
         balanceValueLabel.attributedText = balanceLabelAttributedText
-    }
-
-    private func setupNavigatorBar() {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
-
-        if let navController = navigationController {
-            let navBar = navController.navigationBar
-
-            navBar.barTintColor = Theme.shared.colors.navigationBarBackground
-            navBar.setBackgroundImage(UIImage(color: Theme.shared.colors.navigationBarBackground!), for: .default)
-
-            navBar.isTranslucent = true
-
-            navigationController?.setNavigationBarHidden(true, animated: false)
-            navBar.tintColor = Theme.shared.colors.navigationBarTint
-
-            navBar.titleTextAttributes = [
-                NSAttributedString.Key.foregroundColor: Theme.shared.colors.navigationBarTint!,
-                NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle!
-            ]
-
-            //Remove border
-            navBar.shadowImage = UIImage()
-
-            //TODO fix size
-            navBar.backIndicatorImage = Theme.shared.images.backArrow
-            navBar.backIndicatorTransitionMaskImage = Theme.shared.images.backArrow
-
-            let closeButtonItem = UIBarButtonItem.customNavBarItem(target: self, image: Theme.shared.images.close!, action: #selector(closeFullScreen))
-
-            self.navigationItem.leftBarButtonItem = closeButtonItem
-        }
     }
 
     @objc private func closeFullScreen() {
