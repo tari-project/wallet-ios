@@ -106,19 +106,18 @@ class TariLibWrapperTests: XCTestCase {
                 XCTFail(hexError!.localizedDescription)
             }
             XCTAssertEqual(hex, originalPublicKeyHex)
-            let (emoji, error) = publicKey.emojis
+            let (emojis, error) = publicKey.emojis
             if error != nil {
                 XCTFail(error!.localizedDescription)
             }
-            //let emojiKey = try PublicKey(emojis: emoji)
-            //XCTAssertEqual(emojiKey.hex.0, publicKey.hex.0)
+            
+            XCTAssertEqual(emojis, "🤣👁🥿🤛😔🦃🐗🦒🙊🤮👆🖕🐗")
         } catch {
             XCTFail(error.localizedDescription)
         }
     }
    
     func testWallet() {
-        return //TODO remove when lib is updated to fix weird wallet crash
         //MARK: Create new wallet
         var w: Wallet?
         
