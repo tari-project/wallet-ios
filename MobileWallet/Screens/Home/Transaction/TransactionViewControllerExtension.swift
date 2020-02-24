@@ -167,6 +167,7 @@ extension TransactionViewController {
         view.addSubview(emojiButton)
         emojiButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: BOTTOM_HEADING_PADDING).isActive = true
         emojiButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
+        emojiButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
     }
 
     func setupAddContactButton() {

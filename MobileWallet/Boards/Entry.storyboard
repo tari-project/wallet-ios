@@ -149,29 +149,6 @@ that’s easy to use.</string>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view clipsSubviews="YES" alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yrC-4Q-G9q">
-                                <rect key="frame" x="20" y="322" width="374" height="60.5"/>
-                                <subviews>
-                                    <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Of0-FJ-fUs">
-                                        <rect key="frame" x="20" y="20" width="334" height="20.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                                <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="Of0-FJ-fUs" secondAttribute="trailing" constant="20" id="3IM-kP-usW"/>
-                                    <constraint firstItem="Of0-FJ-fUs" firstAttribute="leading" secondItem="yrC-4Q-G9q" secondAttribute="leading" constant="20" id="EnA-KF-gxI"/>
-                                    <constraint firstItem="Of0-FJ-fUs" firstAttribute="top" secondItem="yrC-4Q-G9q" secondAttribute="top" constant="20" id="fws-op-4eL"/>
-                                    <constraint firstAttribute="bottom" secondItem="Of0-FJ-fUs" secondAttribute="bottom" constant="20" id="gGD-fO-O3O"/>
-                                </constraints>
-                                <userDefinedRuntimeAttributes>
-                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                        <integer key="value" value="5"/>
-                                    </userDefinedRuntimeAttribute>
-                                </userDefinedRuntimeAttributes>
-                            </view>
                             <label opaque="NO" userInteractionEnabled="NO" alpha="0.0" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RC1-b4-FCh">
                                 <rect key="frame" x="186" y="402.5" width="42" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -224,6 +201,13 @@ that’s easy to use.</string>
                                     <constraint firstAttribute="height" constant="138" id="r05-jj-3fF"/>
                                 </constraints>
                             </imageView>
+                            <view alpha="0.0" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="yrC-4Q-G9q" customClass="EmoticonView" customModule="MobileWalletTests" customModuleProvider="target">
+                                <rect key="frame" x="20" y="322" width="374" height="60.5"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60.5" id="i85-R3-n7R"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -280,7 +264,6 @@ that’s easy to use.</string>
                         <outlet property="topImageView" destination="0t0-Ol-DRf" id="3W9-s1-xVV"/>
                         <outlet property="topWhiteView" destination="mQk-Ha-DV8" id="iNb-m6-IYU"/>
                         <outlet property="userEmojiContainer" destination="yrC-4Q-G9q" id="Jhf-Pz-LWn"/>
-                        <outlet property="userEmojiLabel" destination="Of0-FJ-fUs" id="Q2s-z0-fc7"/>
                         <segue destination="JVr-OT-SNV" kind="presentation" identifier="SplashToHome" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" id="z9S-yK-CDI"/>
                     </connections>
                 </viewController>
@@ -299,6 +282,6 @@ that’s easy to use.</string>
         </namedColor>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="5dS-d1-azU"/>
+        <segue reference="z9S-yK-CDI"/>
     </inferredMetricsTieBreakers>
 </document>
