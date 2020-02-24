@@ -67,9 +67,10 @@ extension Loopable {
 }
 
 struct Colors: Loopable {
+    let gradient1 = UIColor(named: "Gradient1")
+    let gradient2 = UIColor(named: "Gradient2")
+
     let actionButtonBackgroundSimple = UIColor(named: "ActionButtonBackgroundSimple")
-    let actionButtonBackgroundGradient1 = UIColor(named: "ActionButtonBackgroundGradient1")
-    let actionButtonBackgroundGradient2 = UIColor(named: "ActionButtonBackgroundGradient2")
     let actionButtonTitle = UIColor(named: "ActionButtonTitle")
 
     let actionButtonBackgroundDisabled = UIColor(named: "ActionButtonBackgroundDisabled")
@@ -248,9 +249,6 @@ struct Images: Loopable {
     let downArrow = UIImage(named: "DownArrow")
     let close = UIImage(named: "Close")
     let transactionFee = UIImage(named: "TransactionFee")
-
-    //Background images
-    let homeBackgroundImage = UIImage(named: "HomePattern")
 
     let handWave = UIImage(named: "HandWave")
 

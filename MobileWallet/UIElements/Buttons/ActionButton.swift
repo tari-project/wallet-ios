@@ -122,8 +122,8 @@ class ActionButton: UIButton {
         let gradient: CAGradientLayer = CAGradientLayer()
         gradient.frame = bounds
         gradient.colors = [
-            Theme.shared.colors.actionButtonBackgroundGradient1!.cgColor,
-            Theme.shared.colors.actionButtonBackgroundGradient2!.cgColor
+            Theme.shared.colors.gradient1!.cgColor,
+            Theme.shared.colors.gradient2!.cgColor
         ]
         gradient.locations = [-0.8, 3]
         gradient.cornerRadius = RADIUS_POINTS
