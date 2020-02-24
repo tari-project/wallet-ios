@@ -43,7 +43,9 @@ import UIKit
 extension HomeViewController {
     private func showTariLibLogs() {
         let logsVC = DebugLogsTableViewController()
-        navigationController?.pushViewController(logsVC, animated: true)
+
+        self.navigationController?.view.layer.add(Theme.shared.transitions.pushUpOpen, forKey: kCATransition)
+        self.navigationController?.pushViewController(logsVC, animated: false)
     }
 
     private func generateTestData() {

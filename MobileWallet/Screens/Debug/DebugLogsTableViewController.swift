@@ -78,13 +78,42 @@ class DebugLogsTableViewController: UITableViewController {
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.separatorStyle = .none
 
-        navigationController?.navigationBar.barTintColor = theme.backgroundColor
-        navigationController?.navigationBar.isTranslucent = false
+        if let navBar = navigationController?.navigationBar {
+            navBar.tintColor = theme.lineTextColor
+
+            navBar.titleTextAttributes = [
+                NSAttributedString.Key.foregroundColor: theme.lineTextColor,
+                NSAttributedString.Key.font: theme.font.withSize(16)
+            ]
+
+            navBar.setBackgroundImage(UIImage(color: theme.backgroundColor), for: .default)
+            navBar.isTranslucent = true
+
+            navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(self.onClose))
+        }
+
         if let currentLogFile = currentLogFile {
             title = currentLogFile.lastPathComponent
         } else {
             title = "Debug Logs"
         }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        //If it's a log file scroll to the bottom to view newest lines
+        guard logLines.count > 0 else { return }
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            let indexPath = IndexPath(row: self.logLines.count-1, section: 0)
+            self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+        }
+    }
+
+    @objc func onClose() {
+        navigationController?.view.layer.add(Theme.shared.transitions.pushDownClose, forKey: kCATransition)
+        navigationController?.popViewController(animated: false)
     }
 
     private func loadLogs() {
@@ -125,7 +154,9 @@ class DebugLogsTableViewController: UITableViewController {
             cell.textLabel?.text = logLines[indexPath.row]
             cell.textLabel?.numberOfLines = 10
         } else {
-            cell.textLabel?.text = TariLib.shared.allLogFiles[indexPath.row].lastPathComponent
+            let filename = TariLib.shared.allLogFiles[indexPath.row].lastPathComponent
+
+            cell.textLabel?.text = TariLib.shared.logFilePath.contains(filename) ? "\(filename) (current)" : filename
             cell.textLabel?.numberOfLines = 0
         }
 
@@ -143,5 +174,4 @@ class DebugLogsTableViewController: UITableViewController {
         logsVC.currentLogFile = TariLib.shared.allLogFiles[indexPath.row]
         navigationController?.pushViewController(logsVC, animated: true)
     }
-
 }
