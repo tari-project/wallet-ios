@@ -263,6 +263,28 @@ struct Sizes {
     //TODO move other contants here
 }
 
+struct Transitions {
+    var pushUpOpen: CATransition {
+        let transition = CATransition()
+        transition.duration = 0.3
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        transition.type = CATransitionType.push
+        transition.subtype = CATransitionSubtype.fromTop
+
+        return transition
+    }
+
+    var pushDownClose: CATransition {
+        let transition = CATransition()
+        transition.duration = 0.3
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        transition.type = CATransitionType.reveal
+        transition.subtype = CATransitionSubtype.fromBottom
+
+        return transition
+    }
+}
+
 struct Theme {
     static let shared = Theme()
 
@@ -272,6 +294,7 @@ struct Theme {
     let images = Images()
     let fonts = Fonts()
     let sizes = Sizes()
+    let transitions = Transitions()
 
     let transactionIcons = Images() //FIXME delete this and change all references to it
 }
