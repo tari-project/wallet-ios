@@ -54,7 +54,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     @IBOutlet weak var balanceLabel: UILabel!
     @IBOutlet weak var balanceValueLabel: AnimatedBalanceLabel!
-    @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var valueIcon: UIImageView!
 
     private let transactionTableVC = TransactionsTableViewController(style: .grouped)
@@ -70,6 +69,13 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     private let GRABBER_WIDTH: Double = 55.0
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     private let INTRO_TO_WALLET_USER_DEFAULTS_KEY = "walletHasBeenIntroduced"
+    fileprivate let BACKGROUND_GRADIENT_LAYER_NAME = "background-gradient"
+    fileprivate let backgroundGradients = [
+        Theme.shared.colors.gradient2!.cgColor,
+        Theme.shared.colors.gradient1!.cgColor
+    ]
+    fileprivate var backgroundColorIsNavColor = false
+    fileprivate let initialBackgroundColorView = UIView()
 
     var isFirstIntroToWallet: Bool {
         if (UserDefaults.standard.string(forKey: INTRO_TO_WALLET_USER_DEFAULTS_KEY) == nil) {
@@ -139,38 +145,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return isTransactionViewFullScreen ? .darkContent : .lightContent
-    }
-
-    private func setup() {
-        maxSendButtonBottomConstraint = sendButtonBottomConstraint.constant
-        minSendButtonBottomConstraint = -view.safeAreaInsets.bottom - sendButton.frame.height - sendButtonBottomConstraint.constant - 20
-
-        valueIcon.image = Theme.shared.images.currencySymbol
-        view.backgroundColor = Theme.shared.colors.homeScreenBackground
-        sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
-        balanceLabel.text = NSLocalizedString("Available Balance", comment: "Home screen balance label")
-        balanceLabel.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
-        balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
-
-        //Balance has multiple font sizes
-
-        setupFloatingPanel()
-        setupNavigatorBar()
-        showFloatingPanel()
-
-        backgroundImageView.alpha = 0.0
-        backgroundImageView.image = Theme.shared.images.homeBackgroundImage
-        UIView.animate(
-            withDuration: 0.6,
-            delay: 0.25,
-            options: .curveEaseIn,
-            animations: {
-                self.backgroundImageView.alpha = 1.0
-            }
-        )
-
-        bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
-        sendButton.variation = .raised
     }
 
     private func requestTestnetTokens() {
@@ -276,28 +250,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         self.fpc.move(to: .tip, animated: true)
     }
 
-    private func setupFloatingPanel() {
-        fpc = FloatingPanelController()
-
-        fpc.delegate = self
-
-        transactionTableVC.actionDelegate = self
-
-        fpc.set(contentViewController: transactionTableVC)
-
-        //TODO move custom styling setup into generic function
-        fpc.surfaceView.cornerRadius = PANEL_BORDER_CORNER_RADIUS
-        fpc.surfaceView.shadowColor = .black
-        fpc.surfaceView.shadowRadius = 22
-
-        setupGrabber(fpc)
-
-        fpc.contentMode = .fitToBounds
-
-        // Track a scroll view(or the siblings) in the content view controller.
-        fpc.track(scrollView: transactionTableVC.tableView)
-    }
-
     private func grabberRect(width: Double) -> CGRect {
         return CGRect(
             x: (Double(self.view.frame.size.width) / 2) - (width / 2),
@@ -305,14 +257,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             width: width,
             height: 5
         )
-    }
-
-    private func setupGrabber(_ fpc: FloatingPanelController) {
-        grabberHandle = UIView(frame: grabberRect(width: GRABBER_WIDTH))
-        grabberHandle.layer.cornerRadius = 2.5
-        grabberHandle.backgroundColor = Theme.shared.colors.floatingPanelGrabber
-        fpc.surfaceView.grabberHandle.isHidden = true
-        fpc.surfaceView.addSubview(grabberHandle)
     }
 
     private func showHideFullScreen() {
@@ -325,7 +269,15 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             }
 
             navigationController?.setNavigationBarHidden(false, animated: true)
-            self.setBackgroundColor(isNavColor: true)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+                guard let self = self else { return }
+                guard let navController = self.navigationController else { return }
+
+                if !navController.isNavigationBarHidden {
+                    self.setBackgroundColor(isNavColor: true)
+                }
+            }
 
             self.isShowingSendButton = false
 
@@ -358,18 +310,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         }
     }
 
-    private func setBackgroundColor(isNavColor: Bool) {
-        if isNavColor {
-            UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveEaseIn, animations: {
-                self.view.backgroundColor = Theme.shared.colors.navigationBarBackground
-            })
-        } else {
-            UIView.animate(withDuration: 0.1) {
-                self.view.backgroundColor = Theme.shared.colors.homeScreenBackground
-            }
-        }
-    }
-
     private func showHideSendButton() {
         if isShowingSendButton {
             UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveEaseIn, animations: {
@@ -397,7 +337,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         bottomFadeView.superview?.bringSubviewToFront(bottomFadeView)
         sendButton.superview?.bringSubviewToFront(sendButton)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: { [weak self] in
+            guard let self = self else { return }
             self.fpc.show(animated: true) {
                 self.didMove(toParent: self)
             }
@@ -500,5 +441,119 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.view.layoutIfNeeded()
             })
         }
+    }
+}
+
+extension HomeViewController {
+    fileprivate func setup() {
+        maxSendButtonBottomConstraint = sendButtonBottomConstraint.constant
+        minSendButtonBottomConstraint = -view.safeAreaInsets.bottom - sendButton.frame.height - sendButtonBottomConstraint.constant - 20
+
+        valueIcon.image = Theme.shared.images.currencySymbol
+
+        applyBackgroundGradient(
+            from: [Theme.shared.colors.gradient1!.cgColor, Theme.shared.colors.gradient1!.cgColor],
+            to: self.backgroundGradients,
+            duration: 1.5
+        )
+
+        sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
+        balanceLabel.text = NSLocalizedString("Available Balance", comment: "Home screen balance label")
+        balanceLabel.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
+        balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
+
+        setupFloatingPanel()
+        setupNavigatorBar()
+        showFloatingPanel()
+
+        bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
+    }
+
+    fileprivate func setupFloatingPanel() {
+        fpc = FloatingPanelController()
+
+        fpc.delegate = self
+
+        transactionTableVC.actionDelegate = self
+
+        fpc.set(contentViewController: transactionTableVC)
+
+        //TODO move custom styling setup into generic function
+        fpc.surfaceView.cornerRadius = PANEL_BORDER_CORNER_RADIUS
+        fpc.surfaceView.shadowColor = .black
+        fpc.surfaceView.shadowRadius = 22
+
+        setupGrabber(fpc)
+
+        fpc.contentMode = .fitToBounds
+
+        // Track a scroll view(or the siblings) in the content view controller.
+        fpc.track(scrollView: transactionTableVC.tableView)
+    }
+
+    fileprivate func setupGrabber(_ fpc: FloatingPanelController) {
+        grabberHandle = UIView(frame: grabberRect(width: GRABBER_WIDTH))
+        grabberHandle.layer.cornerRadius = 2.5
+        grabberHandle.backgroundColor = Theme.shared.colors.floatingPanelGrabber
+        fpc.surfaceView.grabberHandle.isHidden = true
+        fpc.surfaceView.addSubview(grabberHandle)
+    }
+
+    fileprivate func setBackgroundColor(isNavColor: Bool) {
+        guard backgroundColorIsNavColor != isNavColor else { return }
+
+        backgroundColorIsNavColor = isNavColor
+
+        print("isNavColor: ", isNavColor)
+        if isNavColor {
+            self.applyBackgroundGradient(
+                from: self.backgroundGradients,
+                to: [Theme.shared.colors.navigationBarBackground!.cgColor, Theme.shared.colors.navigationBarBackground!.cgColor],
+                duration: 0.2
+            )
+        } else {
+            self.applyBackgroundGradient(
+                from: [Theme.shared.colors.navigationBarBackground!.cgColor, Theme.shared.colors.navigationBarBackground!.cgColor],
+                to: self.backgroundGradients,
+                duration: 0.1
+            )
+        }
+    }
+
+    private func applyBackgroundGradient(from fromColors: [CGColor], to toColors: [CGColor], duration: TimeInterval) {
+        //If there is a gradient set, remove it first
+        if let sublayers = view.layer.sublayers {
+            for layer in sublayers {
+                if layer.name == BACKGROUND_GRADIENT_LAYER_NAME {
+                     layer.removeFromSuperlayer()
+                }
+            }
+        }
+
+        let GRADIENT_ANGLE: Double = 180
+
+        let gradient: CAGradientLayer = CAGradientLayer()
+        gradient.frame = view.bounds
+        gradient.colors = fromColors
+        gradient.locations = [0.0, 1.0]
+        gradient.name = BACKGROUND_GRADIENT_LAYER_NAME
+
+        let x: Double! = GRADIENT_ANGLE / 360.0
+        let a = pow(sinf(Float(2 * Double.pi * ((x + 0.75) / 2.0))), 2.0)
+        let b = pow(sinf(Float(2 * Double.pi * ((x + 0.0) / 2))), 2)
+        let c = pow(sinf(Float(2 * Double.pi * ((x + 0.25) / 2))), 2)
+        let d = pow(sinf(Float(2 * Double.pi * ((x + 0.5) / 2))), 2)
+
+        gradient.endPoint = CGPoint(x: CGFloat(c), y: CGFloat(d))
+        gradient.startPoint = CGPoint(x: CGFloat(a), y: CGFloat(b))
+
+        view.layer.insertSublayer(gradient, at: 0)
+
+        let gradientChangeAnimation = CABasicAnimation(keyPath: "colors")
+        gradientChangeAnimation.duration = duration
+        gradientChangeAnimation.toValue = toColors
+        gradientChangeAnimation.fillMode = CAMediaTimingFillMode.forwards
+        gradientChangeAnimation.isRemovedOnCompletion = false
+        gradient.add(gradientChangeAnimation, forKey: "colorChange")
     }
 }
