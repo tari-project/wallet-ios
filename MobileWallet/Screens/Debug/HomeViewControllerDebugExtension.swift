@@ -43,7 +43,7 @@ import UIKit
 extension HomeViewController {
     private func showTariLibLogs() {
         let logsVC = DebugLogsTableViewController()
-        present(logsVC, animated: true, completion: nil)
+        navigationController?.pushViewController(logsVC, animated: true)
     }
 
     private func generateTestData() {

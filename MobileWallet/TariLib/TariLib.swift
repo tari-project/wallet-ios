@@ -59,8 +59,26 @@ class TariLib {
         return "\(storagePath)/\(DATABASE_NAME)"
     }
 
-    var logFilePath: String {
-        return "\(storagePath)/log.txt"
+    static let logFilePrefix = "log"
+
+    lazy var logFilePath: String = {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+        let dateString = dateFormatter.string(from: Date())
+        return "\(storagePath)/\(TariLib.logFilePrefix)-\(dateString).txt"
+    }()
+
+    var allLogFiles: [URL] {
+        let fileManager = FileManager.default
+        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
+        do {
+            let allLogFiles = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil).filter({$0.lastPathComponent.contains(TariLib.logFilePrefix)}).sorted(by: { (a, b) -> Bool in
+                return a.path > b.path
+            })
+            return allLogFiles
+        } catch {
+            return []
+        }
     }
 
     var controlAddress: String {

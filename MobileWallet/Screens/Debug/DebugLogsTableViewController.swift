@@ -52,6 +52,20 @@ class DebugLogsTableViewController: UITableViewController {
     let CELL_IDENTIFIER = "logLineCell"
 
     var logLines: [String] = []
+    var currentLogFile: URL? {
+        didSet {
+            if currentLogFile != nil {
+                loadLogs()
+            }
+            tableView.reloadData()
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        navigationController?.setNavigationBarHidden(false, animated: true)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,20 +78,26 @@ class DebugLogsTableViewController: UITableViewController {
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.separatorStyle = .none
 
-        loadLogs()
+        navigationController?.navigationBar.barTintColor = theme.backgroundColor
+        navigationController?.navigationBar.isTranslucent = false
+        if let currentLogFile = currentLogFile {
+            title = currentLogFile.lastPathComponent
+        } else {
+            title = "Debug Logs"
+        }
     }
 
     private func loadLogs() {
-        let logFilePath = TariLib.shared.logFilePath
-
-        do {
-            let data = try String(contentsOfFile: logFilePath, encoding: .utf8)
-            logLines = data.components(separatedBy: .newlines)
-        } catch {
-            logLines.append("Failed to load log file: \(logFilePath)")
+        guard let currentLogFile = currentLogFile else {
+            return
         }
 
-        tableView.reloadData()
+        do {
+            let data = try String(contentsOf: currentLogFile, encoding: .utf8)
+            logLines = data.components(separatedBy: .newlines)
+        } catch {
+            logLines = ["Failed to load log file: \(currentLogFile.path)"]
+        }
     }
 
     // MARK: - Table view data source
@@ -87,44 +107,41 @@ class DebugLogsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return logLines.count
+        return currentLogFile != nil ? logLines.count : TariLib.shared.allLogFiles.count
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+    override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
+        return currentLogFile == nil
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath)
 
-        let lineEntry = logLines[indexPath.row]
-
         cell.backgroundColor = theme.backgroundColor
         cell.textLabel?.font = theme.font
         cell.textLabel?.textColor = theme.lineTextColor
-        cell.textLabel?.text = lineEntry
-        cell.textLabel?.numberOfLines = 10
+
+        if currentLogFile != nil {
+            cell.textLabel?.text = logLines[indexPath.row]
+            cell.textLabel?.numberOfLines = 10
+        } else {
+            cell.textLabel?.text = TariLib.shared.allLogFiles[indexPath.row].lastPathComponent
+            cell.textLabel?.numberOfLines = 0
+        }
 
         return cell
     }
 
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
 
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        guard currentLogFile == nil else {
+            return
+        }
+
+        let logsVC = DebugLogsTableViewController()
+        logsVC.currentLogFile = TariLib.shared.allLogFiles[indexPath.row]
+        navigationController?.pushViewController(logsVC, animated: true)
     }
-    */
+
 }
