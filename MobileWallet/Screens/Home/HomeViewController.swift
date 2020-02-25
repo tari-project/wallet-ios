@@ -92,7 +92,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         }
     }
 
-    private var isShowingSendButton: Bool = true {
+    private var isShowingSendButton: Bool = false {
         didSet {
             showHideSendButton()
         }
@@ -115,13 +115,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     override func viewWillAppear(_ animated: Bool) {
+        styleNavigatorBar(isHidden: !isTransactionViewFullScreen)
         sendButtonBottomConstraint.constant = minSendButtonBottomConstraint
         defaultBottomFadeViewHeight = bottomFadeViewHeightConstraint.constant
         bottomFadeViewHeightConstraint.constant = 0
 
-        //Check if we're coming back from a segue and ensure the state is correct by calling `didSet`
         if !isTransactionViewFullScreen {
-            navigationController?.setNavigationBarHidden(true, animated: true)
             setNeedsStatusBarAppearanceUpdate()
         }
 
@@ -133,8 +132,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         self.refreshBalance()
 
-        //Make sure the button animates into view when we navigate back to this controller
         isShowingSendButton = isShowingSendButton == true
+        isTransactionViewFullScreen = isTransactionViewFullScreen == true
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -212,38 +211,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         balanceValueLabel.attributedText = balanceLabelAttributedText
     }
 
-    private func setupNavigatorBar() {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
-
-        if let navController = navigationController {
-            let navBar = navController.navigationBar
-
-            navBar.barTintColor = Theme.shared.colors.navigationBarBackground
-            navBar.setBackgroundImage(UIImage(color: Theme.shared.colors.navigationBarBackground!), for: .default)
-
-            navBar.isTranslucent = true
-
-            navigationController?.setNavigationBarHidden(true, animated: false)
-            navBar.tintColor = Theme.shared.colors.navigationBarTint
-
-            navBar.titleTextAttributes = [
-                NSAttributedString.Key.foregroundColor: Theme.shared.colors.navigationBarTint!,
-                NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle!
-            ]
-
-            //Remove border
-            navBar.shadowImage = UIImage()
-
-            //TODO fix size
-            navBar.backIndicatorImage = Theme.shared.images.backArrow
-            navBar.backIndicatorTransitionMaskImage = Theme.shared.images.backArrow
-
-            let closeButtonItem = UIBarButtonItem.customNavBarItem(target: self, image: Theme.shared.images.close!, action: #selector(closeFullScreen))
-
-            self.navigationItem.leftBarButtonItem = closeButtonItem
-        }
-    }
-
     @objc private func closeFullScreen() {
         setBackgroundColor(isNavColor: false)
         transactionTableVC.scrollToTop()
@@ -312,6 +279,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     private func showHideSendButton() {
         if isShowingSendButton {
+            sendButton.isHidden = false
+            bottomFadeView.isHidden = false
+
             UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveEaseIn, animations: {
                 self.sendButtonBottomConstraint.constant = self.maxSendButtonBottomConstraint
                 self.bottomFadeView.backgroundColor?.withAlphaComponent(0.5)
@@ -334,8 +304,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         addChild(fpc)
 
         //Move send button to in front of panel
-        bottomFadeView.superview?.bringSubviewToFront(bottomFadeView)
-        sendButton.superview?.bringSubviewToFront(sendButton)
+        bottomFadeView.superview?.bringSubviewToFront(self.bottomFadeView)
+        sendButton.superview?.bringSubviewToFront(self.sendButton)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: { [weak self] in
             guard let self = self else { return }
@@ -463,10 +433,14 @@ extension HomeViewController {
         balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
 
         setupFloatingPanel()
-        setupNavigatorBar()
+        styleNavigatorBar(isHidden: !isTransactionViewFullScreen)
+        setNavigationBarLeftCloseButton(action: #selector(closeFullScreen))
         showFloatingPanel()
 
         bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
+
+        sendButton.isHidden = true
+        bottomFadeView.isHidden = true
     }
 
     fileprivate func setupFloatingPanel() {

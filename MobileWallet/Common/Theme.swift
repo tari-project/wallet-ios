@@ -80,6 +80,8 @@ struct Colors: Loopable {
     let splashBackground = UIColor(named: "SplashBackground")
     let appBackground = UIColor(named: "AppBackground")
 
+    let inputPlaceholder = UIColor(named: "Placeholder")
+
     // Splash
     let splashTitleColor = UIColor(named: "SplashTitleColor")
 
@@ -154,7 +156,11 @@ struct Colors: Loopable {
     let keypadButton = UIColor(named: "KeypadButton")
     let amountWarning = UIColor(named: "AmountWarning")
     let amountWarningLabel = UIColor(named: "AmountWarningLabel")
-    let amountLabel = UIColor(named: "AmountLabel")
+    let amountLabel = UIColor(named: "InputText")
+
+    //Add note screen
+    let addNoteTitleLabel = UIColor(named: "Heading")
+    let addNoteInputView = UIColor(named: "InputText")
 
     //EmoticonView
     let emoticonBlackBackgroundAlpha = UIColor(named: "EmoticonBlackBackgroundAlpha")
@@ -220,16 +226,18 @@ struct Fonts: Loopable {
     let contactCellAlias = UIFont(name: "AvenirLTStd-Heavy", size: 15.0)
     let contactCellAliasLetter = UIFont(name: "AvenirLTStd-Heavy", size: 24.0)
 
-    //Amount screen
+    //Add amount screen
     let keypadButton = UIFont(name: "AvenirLTStd-Heavy", size: 22.0)
     let amountLabel = UIFont(name: "AvenirLTStd-Black", size: 80.0)
     let warningBalanceLabel = UIFont(name: "AvenirLTStd-Heavy", size: 14.0)
     let amountWarningLabel = UIFont(name: "AvenirLTStd-Roman", size: 13.0)
 
+    //Add note screen
+    let addNoteTitleLabel = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)
+    let addNoteInputView = UIFont(name: "AvenirLTStd-Medium", size: 20.0)
 }
 
 struct Images: Loopable {
-
     // Create Wallet
     let createWalletTouchID = UIImage(named: "fingerprint")
     let createWalletFaceID = UIImage(named: "faceId")
@@ -246,6 +254,7 @@ struct Images: Loopable {
     let currencySymbol = UIImage(named: "Gem")
     let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
+    let forwardArrow = UIImage(named: "ForwardArrow")
     let downArrow = UIImage(named: "DownArrow")
     let close = UIImage(named: "Close")
     let transactionFee = UIImage(named: "TransactionFee")
@@ -258,7 +267,7 @@ struct Images: Loopable {
 
 struct Sizes {
     let appSidePadding: CGFloat = 25 //TODO maybe adjust for smaller phones
-    //TODO move other contants here
+    //TODO move other constants here
 }
 
 struct Transitions {

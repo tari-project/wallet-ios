@@ -40,8 +40,18 @@
 
 import UIKit
 
-// Put this piece of code anywhere you like
+var navBarEmojis: EmoticonView?
+
 extension UIViewController {
+    var keyWindow: UIView? {
+        return UIApplication.shared.connectedScenes
+        .filter({$0.activationState == .foregroundActive})
+        .map({$0 as? UIWindowScene})
+        .compactMap({$0})
+        .first?.windows
+        .filter({$0.isKeyWindow}).first
+    }
+
     func hideKeyboardWhenTappedAroundOrSwipedDown() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -59,5 +69,64 @@ extension UIViewController {
     var navBarHeight: CGFloat {
         return (view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0) +
             (self.navigationController?.navigationBar.frame.height ?? 0.0)
+    }
+
+    func setNavigationBarLeftCloseButton(action: Selector) {
+        let closeButtonItem = UIBarButtonItem.customNavBarItem(target: self, image: Theme.shared.images.close!, action: action)
+        navigationItem.leftBarButtonItem = closeButtonItem
+    }
+
+    func styleNavigatorBar(isHidden: Bool) {
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
+
+        if let navController = navigationController {
+            let navBar = navController.navigationBar
+
+            navBar.barTintColor = Theme.shared.colors.navigationBarBackground
+            navBar.setBackgroundImage(UIImage(color: Theme.shared.colors.navigationBarBackground!), for: .default)
+            navBar.isTranslucent = true
+            navBar.tintColor = Theme.shared.colors.navigationBarTint
+
+            navBar.titleTextAttributes = [
+                NSAttributedString.Key.foregroundColor: Theme.shared.colors.navigationBarTint!,
+                NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle!
+            ]
+
+            //Remove border
+            navBar.shadowImage = UIImage()
+
+            //TODO fix size
+            navBar.backIndicatorImage = Theme.shared.images.backArrow
+            navBar.backIndicatorTransitionMaskImage = Theme.shared.images.backArrow
+
+            navController.setNavigationBarHidden(isHidden, animated: false)
+        }
+    }
+
+    func showNavbarEmojies(_ publicKey: PublicKey) throws {
+        let (emojis, emojisError) = publicKey.emojis
+        guard emojisError == nil else {
+            throw emojisError!
+        }
+
+        if navBarEmojis == nil { navBarEmojis = EmoticonView() }
+
+        if let emojiView = navBarEmojis {
+            emojiView.setUpView(emojiText: emojis, type: .buttonView, textCentered: true, inViewController: self)
+
+            emojiView.translatesAutoresizingMaskIntoConstraints = false
+
+            if let window = keyWindow {
+                window.addSubview(emojiView)
+                emojiView.topAnchor.constraint(equalTo: window.topAnchor, constant: window.safeAreaInsets.top + navBarHeight / 2).isActive = true
+                emojiView.leadingAnchor.constraint(equalTo: window.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+                emojiView.trailingAnchor.constraint(equalTo: window.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+            }
+        }
+    }
+
+    func hideNavbarEmojis() {
+        navBarEmojis?.removeFromSuperview()
+        navBarEmojis = nil
     }
 }

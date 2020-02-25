@@ -238,7 +238,6 @@ extension TransactionsTableViewController {
                     UIView.animate(withDuration: duration, delay: 0, options: .curveLinear, animations: {
                         imageView.transform = CGAffineTransform(rotationAngle: 0)
                     })
-
                 })
             })
         })

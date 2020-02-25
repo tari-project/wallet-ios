@@ -77,7 +77,6 @@ class EmoticonView: UIView {
     }
 
     func setUpView (emojiText: String, type: EmoticonViewType, textCentered: Bool, inViewController vc: UIViewController) {
-
         self.superVc = vc
         self.emojiText = emojiText
         self.backgroundColor = .clear
@@ -194,7 +193,6 @@ class EmoticonView: UIView {
     }
 
     private func disableFullScreen() {
-
         self.labelInitialWidth?.constant = 152
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
@@ -216,7 +214,6 @@ class EmoticonView: UIView {
     }
 
     private func enableFullScreen() {
-
         if backgroundLeft == nil && backgroundRight == nil && backgroundBottom == nil && backgroundTop == nil {
             if let superview = self.superview {
                 backgroundLeft = containerView.leadingAnchor.constraint(equalTo: superview.leadingAnchor)
@@ -240,6 +237,9 @@ class EmoticonView: UIView {
 
         self.labelInitialWidth?.constant = self.frame.width
 
+        //If they're typing somewhere, close the keyboard
+        superVc.view.endEditing(true)
+
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
             self.containerView.alpha = 0.7
@@ -256,7 +256,6 @@ class EmoticonView: UIView {
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-
         if clipsToBounds || isHidden || alpha == 0 {
             return nil
         }

@@ -41,6 +41,7 @@
 import UIKit
 
 class AddAmountViewController: UIViewController {
+    var publicKey: PublicKey?
     private var buttons = [UIButton]()
     private let continueButton = ActionButton(frame: .zero)
     private let amountLabel = AnimatedBalanceLabel()
@@ -72,12 +73,25 @@ class AddAmountViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        styleNavigatorBar(isHidden: false)
 
-        navigationController?.setNavigationBarHidden(false, animated: true)
+        guard let pubKey = publicKey else { return }
+
+        do {
+            try showNavbarEmojies(pubKey)
+        } catch {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Public key error", comment: "Add amount view"),
+                description: NSLocalizedString("Failed to get Emoji ID from user's contact", comment: "Add amount view"),
+                error: error
+            )
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+
+        hideNavbarEmojis()
 
         balanceCheckTimer?.invalidate()
         balanceCheckTimer = nil
@@ -88,7 +102,13 @@ class AddAmountViewController: UIViewController {
     }
 
     @objc private func checkAvailableBalance() {
-        guard let transactionAmount = MicroTari.convertToNumber(rawInput) else {
+        var microTariAmount = MicroTari(0)
+
+        do {
+            microTariAmount = try MicroTari(tariValue: rawInput)
+        } catch {
+            continueButton.variation = .disabled
+            showInvalidNumberError(error)
             return
         }
 
@@ -96,29 +116,29 @@ class AddAmountViewController: UIViewController {
             return
         }
 
-        let (availableBalance, availableBalanceError) = wallet.availableBalance
-        guard availableBalanceError == nil else {
+        let (totalMicroTari, totalMicroTariError) = wallet.totalMicroTari
+        guard totalMicroTariError == nil else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Available Balance error", comment: "Amount screen"),
                 description: NSLocalizedString("Failed to get the available balance.", comment: "Amount screen"),
-                error: availableBalanceError
+                error: totalMicroTariError
             )
             return
         }
 
-        guard !transactionAmount.isEqual(to: NSNumber(0)) else {
+        guard totalMicroTari!.rawValue != 0 else {
+            continueButton.variation = .disabled
             return
         }
 
-        if availableBalance < MicroTari.toTariNumber(transactionAmount) {
-            let balanceTari = MicroTari(availableBalance)
-            showBalanceExceeded(balance: balanceTari.formatted)
+        if totalMicroTari!.rawValue < microTariAmount.rawValue {
+            showBalanceExceeded(balance: totalMicroTari!.formatted)
+            continueButton.variation = .disabled
         } else {
-            continueButton.isEnabled = true
+            continueButton.variation = .normal
         }
 
-        //TODO: change the fee
-        showTransactionFee("+15.75")
+        showTransactionFee(microTariAmount)
     }
 
     @objc private func keypadButtonTapped(_ sender: UIButton) {
@@ -137,6 +157,14 @@ class AddAmountViewController: UIViewController {
         } else {
             deleteCharacter()
         }
+    }
+
+    //Shouldn't ever really be used but just in case
+    private func showInvalidNumberError(_ error: Error?) {
+        UserFeedback.shared.error(
+        title: NSLocalizedString("Invalid number", comment: "Add amount screen"),
+        description: "",
+        error: error)
     }
 
     private func deleteCharacter() {
@@ -220,7 +248,12 @@ class AddAmountViewController: UIViewController {
             return false
         }
 
-        return MicroTari.convertToNumber(str) != nil
+        do {
+            let mt = try MicroTari(tariValue: str)
+            return mt.rawValue > 0
+        } catch {
+            return false
+        }
     }
 
     private func convertRawToFormattedString() -> String? {
@@ -280,9 +313,14 @@ class AddAmountViewController: UIViewController {
         warningView.isHidden = true
     }
 
-    private func showTransactionFee(_ amount: String) {
+    private func showTransactionFee(_ amount: MicroTari) {
+        guard let wallet = TariLib.shared.tariWallet else {
+            return
+        }
+        let fee = wallet.calculateTransactionFee(amount)
+
         transactionViewContainer.alpha = 0.0
-        transactionFeeLabel.text = amount
+        transactionFeeLabel.text = fee.formattedPreciseWithOperator
         let moveAnimation: CATransition = CATransition()
         moveAnimation.timingFunction = CAMediaTimingFunction(name:
                 CAMediaTimingFunctionName.easeIn)
@@ -301,7 +339,15 @@ class AddAmountViewController: UIViewController {
     }
 
     @objc private func continueButtonTapped() {
-        UserFeedback.shared.info(title: "Next view", description: "Coming soon")
+        let noteVC = AddNoteViewController()
+        noteVC.publicKey = publicKey
+
+        do {
+            noteVC.amount = try MicroTari(tariValue: rawInput)
+            navigationController?.pushViewController(noteVC, animated: true)
+        } catch {
+            showInvalidNumberError(error)
+        }
     }
 }
 
@@ -409,6 +455,7 @@ extension AddAmountViewController {
         feeButton.setTitle(NSLocalizedString("Transaction Fee", comment: "Transaction view screen"), for: .normal)
         feeButton.setRightImage(Theme.shared.images.transactionFee!)
         feeButton.addTarget(self, action: #selector(feeButtonPressed), for: .touchUpInside)
+        continueButton.variation = .disabled
 
         transactionStackView.addArrangedSubview(transactionFeeLabel)
         transactionStackView.addArrangedSubview(feeButton)

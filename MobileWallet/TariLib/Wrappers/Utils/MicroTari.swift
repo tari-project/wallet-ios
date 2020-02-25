@@ -40,6 +40,10 @@
 
 import Foundation
 
+enum MicroTariErrors: Error {
+    case invalidStringFormat
+}
+
 struct MicroTari {
     private static let CONVERSION = 1000000
     static let PRECISE_FRACTION_DIGITS = String(MicroTari.CONVERSION).count
@@ -124,6 +128,14 @@ struct MicroTari {
 
     init(_ rawValue: UInt64) {
         self.rawValue = rawValue
+    }
+
+    init(tariValue: String) throws {
+        guard let tariNumber = MicroTari.defaultFormatter.number(from: tariValue) else {
+            throw MicroTariErrors.invalidStringFormat
+        }
+
+        self.rawValue = UInt64(tariNumber.floatValue * Float(MicroTari.CONVERSION))
     }
 
     public static func toTariNumber(_ number: NSNumber) -> UInt64 {
