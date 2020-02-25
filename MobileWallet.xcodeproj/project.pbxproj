@@ -13,9 +13,6 @@
 		0012563B2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
 		0012563C2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
 		0012563D2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
-		001256452371EC1900A9C067 /* Entry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Entry.storyboard */; };
-		001256462371EC1900A9C067 /* Entry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Entry.storyboard */; };
-		001256472371EC1900A9C067 /* Entry.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 001256442371EC1900A9C067 /* Entry.storyboard */; };
 		001256662372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */ = {isa = PBXBuildFile; fileRef = 001256492372918900A9C067 /* AvenirLTStd-Roman.otf */; };
 		001256672372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */ = {isa = PBXBuildFile; fileRef = 001256492372918900A9C067 /* AvenirLTStd-Roman.otf */; };
 		001256682372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */ = {isa = PBXBuildFile; fileRef = 001256492372918900A9C067 /* AvenirLTStd-Roman.otf */; };
@@ -387,7 +384,6 @@
 /* Begin PBXFileReference section */
 		0012562E2371D81500A9C067 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		0012563A2371E89300A9C067 /* SplashAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SplashAnimation.json; sourceTree = "<group>"; };
-		001256442371EC1900A9C067 /* Entry.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Entry.storyboard; sourceTree = "<group>"; };
 		001256492372918900A9C067 /* AvenirLTStd-Roman.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Roman.otf"; sourceTree = "<group>"; };
 		0012564A2372918900A9C067 /* AvenirLTStd-BookOblique.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-BookOblique.otf"; sourceTree = "<group>"; };
 		0012564B2372918900A9C067 /* AvenirLTStd-Heavy.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "AvenirLTStd-Heavy.otf"; sourceTree = "<group>"; };
@@ -598,7 +594,6 @@
 			isa = PBXGroup;
 			children = (
 				00E491A92366E08F007B332D /* LaunchScreen.storyboard */,
-				001256442371EC1900A9C067 /* Entry.storyboard */,
 				00E491A12366E08B007B332D /* Main.storyboard */,
 				BFD758E923E98BA300B0F1A5 /* Profile.storyboard */,
 			);
@@ -1194,7 +1189,6 @@
 				BFD758EA23E98BA300B0F1A5 /* Profile.storyboard in Resources */,
 				00E491A32366E08B007B332D /* Main.storyboard in Resources */,
 				BF191A2323E5AFA200D33C85 /* img_5.png in Resources */,
-				001256452371EC1900A9C067 /* Entry.storyboard in Resources */,
 				001256A22372918B00A9C067 /* AvenirNextLTPro-Bold.otf in Resources */,
 				BF191A2623E5AFA200D33C85 /* img_3.png in Resources */,
 			);
@@ -1246,7 +1240,6 @@
 				001256672372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */,
 				BF191A2123E5AFA200D33C85 /* img_1.png in Resources */,
 				BF191A1B23E5AFA200D33C85 /* img_2.png in Resources */,
-				001256462371EC1900A9C067 /* Entry.storyboard in Resources */,
 				001256B52372918B00A9C067 /* AvenirLTStd-Medium.otf in Resources */,
 				001256972372918B00A9C067 /* AvenirNextLTPro-HeavyCn.otf in Resources */,
 				001256792372918B00A9C067 /* AvenirLTStd-MediumOblique.otf in Resources */,
@@ -1300,7 +1293,6 @@
 				001256682372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */,
 				BF191A2223E5AFA200D33C85 /* img_1.png in Resources */,
 				BF191A1C23E5AFA200D33C85 /* img_2.png in Resources */,
-				001256472371EC1900A9C067 /* Entry.storyboard in Resources */,
 				001256B62372918B00A9C067 /* AvenirLTStd-Medium.otf in Resources */,
 				001256982372918B00A9C067 /* AvenirNextLTPro-HeavyCn.otf in Resources */,
 				0012567A2372918B00A9C067 /* AvenirLTStd-MediumOblique.otf in Resources */,

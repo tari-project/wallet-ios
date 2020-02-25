@@ -83,7 +83,9 @@ struct Colors: Loopable {
     let inputPlaceholder = UIColor(named: "Placeholder")
 
     // Splash
-    let splashTitleColor = UIColor(named: "SplashTitleColor")
+    let splashTitle = UIColor(named: "SplashTitle")
+    let splashSubtitle = UIColor(named: "SplashSubtitle")
+    let splashVersionLabel = UIColor(named: "SplashVersionLabel")
 
     //SplashCreatingWallet
     let creatingWalletFirstLabel = UIColor(named: "CreatingWalletBlackLabel")
@@ -171,7 +173,8 @@ struct Fonts: Loopable {
     let actionButton = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)
 
     //Splash
-    let splashTitleLabel = UIFont(name: "AvenirLTStd-Black", size: 30.0)
+    let splashTitleLabelFont = UIFont(name: "AvenirLTStd-Black", size: 30.0)
+    let splashSubtitleLabelFont = UIFont(name: "Avenir-Medium", size: 14.0)
 
     //SplashCreatingWallet
     let createWalletFirstLabel = UIFont(name: "AvenirLTStd-Black", size: 18.0)
