@@ -53,24 +53,26 @@ class WalletCreationViewController: UIViewController {
     // MARK: - Variables and constants
     var state: WalletCreationState = .createEmojiId
     // MARK: - Outlets
-    @IBOutlet weak var createEmojiButtonConstraint: NSLayoutConstraint!
-    @IBOutlet weak var firstLabelTopConstraint: NSLayoutConstraint!
-    @IBOutlet weak var firstLabel: UILabel!
-    @IBOutlet weak var secondLabel: UILabel!
-    @IBOutlet weak var thirdLabel: UILabel!
-    @IBOutlet weak var topWhiteView: UIView!
-    @IBOutlet weak var bottomWhiteView: UIView!
-    @IBOutlet weak var animationView: AnimationView!
-    @IBOutlet weak var emojiWheelView: AnimationView!
-    @IBOutlet weak var nerdAnimationView: AnimationView!
-    @IBOutlet weak var createEmojiButton: ActionButton!
-    @IBOutlet weak var topImageView: UIImageView!
-    @IBOutlet weak var userEmojiContainer: EmoticonView!
-    @IBOutlet weak var localAuthentificationImageView: UIImageView!
+    var createEmojiButtonConstraint: NSLayoutConstraint?
+    var createEmojiButtonSecondConstraint: NSLayoutConstraint?
+    var firstLabelTopConstraint: NSLayoutConstraint?
+    var firstLabel: UILabel!
+    var secondLabel: UILabel!
+    var thirdLabel: UILabel!
+    var topWhiteView: UIView!
+    var bottomWhiteView: UIView!
+    var animationView: AnimationView!
+    var emojiWheelView: AnimationView!
+    var nerdAnimationView: AnimationView!
+    var createEmojiButton: ActionButton!
+    var topImageView: UIImageView!
+    var userEmojiContainer: EmoticonView!
+    var localAuthentificationImageView: UIImageView!
 
     // MARK: - Override functions
     override func viewDidLoad() {
         super.viewDidLoad()
+
         setupView()
         // Do any additional setup after loading the view.
     }
@@ -82,7 +84,183 @@ class WalletCreationViewController: UIViewController {
 
     // MARK: - Private functions
 
+    private func updateConstraintsTopWhiteView() {
+        topWhiteView = UIView()
+        topWhiteView.backgroundColor = Theme.shared.colors.creatingWalletBackground
+        view.addSubview(topWhiteView)
+        topWhiteView.translatesAutoresizingMaskIntoConstraints = false
+        topWhiteView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: 0).isActive = true
+        topWhiteView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: 0).isActive = true
+        topWhiteView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,
+                                          constant: 0).isActive = true
+    }
+
+    private func updateConstraintsNerdAnimationView() {
+        nerdAnimationView = AnimationView()
+        view.addSubview(nerdAnimationView)
+        nerdAnimationView.translatesAutoresizingMaskIntoConstraints = false
+        nerdAnimationView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        nerdAnimationView.widthAnchor.constraint(equalToConstant: 80).isActive = true
+        nerdAnimationView.heightAnchor.constraint(equalToConstant: 80).isActive = true
+    }
+
+    private func updateConstraintsFirstLabel() {
+        firstLabel = UILabel()
+        firstLabel.numberOfLines = 1
+        firstLabel.textAlignment = .center
+        view.addSubview(firstLabel)
+        firstLabel.translatesAutoresizingMaskIntoConstraints = false
+        firstLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+    }
+
+    private func updateConstraintsSecondLabel() {
+        secondLabel = UILabel()
+        secondLabel.numberOfLines = 0
+        secondLabel.alpha = 0.0
+        secondLabel.textAlignment = .center
+        view.addSubview(secondLabel)
+        secondLabel.translatesAutoresizingMaskIntoConstraints = false
+        secondLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        secondLabel.topAnchor.constraint(equalTo: nerdAnimationView.bottomAnchor, constant: 0).isActive = true
+    }
+
+    private func updateConstraintsAnimationView() {
+        animationView = AnimationView()
+        view.addSubview(animationView)
+        animationView.translatesAutoresizingMaskIntoConstraints = false
+        animationView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        animationView.widthAnchor.constraint(equalToConstant: 35).isActive = true
+        animationView.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        animationView.topAnchor.constraint(equalTo: secondLabel.topAnchor, constant: 0).isActive = true
+    }
+
+    private func updateConstraintsBottomWhiteView() {
+        bottomWhiteView = UIView()
+        view.addSubview(bottomWhiteView)
+        bottomWhiteView.backgroundColor = Theme.shared.colors.creatingWalletBackground
+        bottomWhiteView.translatesAutoresizingMaskIntoConstraints = false
+        bottomWhiteView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: 0).isActive = true
+        bottomWhiteView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: 0).isActive = true
+        bottomWhiteView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                                          constant: -52).isActive = true
+        bottomWhiteView.topAnchor.constraint(equalTo: topWhiteView.bottomAnchor, constant: 0).isActive = true
+        bottomWhiteView.topAnchor.constraint(equalTo: secondLabel.bottomAnchor, constant: 0).isActive = true
+
+        firstLabelTopConstraint = firstLabel.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: 8)
+        firstLabelTopConstraint?.isActive = true
+
+        bottomWhiteView.heightAnchor.constraint(equalTo: topWhiteView.heightAnchor, multiplier: 1).isActive = true
+
+    }
+
+    func updateConstraintsThirdLabel() {
+        thirdLabel = UILabel()
+        thirdLabel.numberOfLines = 0
+        thirdLabel.alpha = 0.0
+        thirdLabel.textAlignment = .center
+        view.addSubview(thirdLabel)
+        thirdLabel.translatesAutoresizingMaskIntoConstraints = false
+        thirdLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+                                            constant: 0).isActive = true
+        thirdLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
+        thirdLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        thirdLabel.topAnchor.constraint(equalTo: secondLabel.bottomAnchor, constant: 18).isActive = true
+    }
+
+    private func updateConstraintsEmojiButton() {
+        createEmojiButton = ActionButton()
+        createEmojiButton.addTarget(self, action: #selector(navigateToHome), for: .touchUpInside)
+        createEmojiButton.alpha = 0.0
+        view.addSubview(createEmojiButton)
+        createEmojiButton.translatesAutoresizingMaskIntoConstraints = false
+        createEmojiButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
+        createEmojiButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        createEmojiButton.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+        constant: 0).isActive = true
+        createEmojiButtonConstraint = createEmojiButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 70)
+        createEmojiButtonConstraint?.isActive = true
+        createEmojiButtonConstraint?.priority = UILayoutPriority(rawValue: 999)
+
+        createEmojiButtonSecondConstraint = view.bottomAnchor.constraint(greaterThanOrEqualTo: createEmojiButton.bottomAnchor, constant: 20)
+        createEmojiButtonSecondConstraint?.priority = UILayoutPriority(rawValue: 1000)
+        createEmojiButtonSecondConstraint?.isActive = false
+
+    }
+
+    private func updateConstraintsTopImageView() {
+        topImageView = UIImageView()
+        view.addSubview(topImageView)
+        topImageView.translatesAutoresizingMaskIntoConstraints = false
+        topImageView.image = Theme.shared.images.currencySymbol//UIImage(named: "Gem")
+        topImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+                                              constant: 0).isActive = true
+        topImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        topImageView.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        topImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 70).isActive = true
+    }
+
+    private func updateConstraintsEmojiWheelView() {
+        emojiWheelView = AnimationView()
+        view.addSubview(emojiWheelView)
+        emojiWheelView.translatesAutoresizingMaskIntoConstraints = false
+        emojiWheelView.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+        constant: 0).isActive = true
+        emojiWheelView.centerYAnchor.constraint(equalTo: view.centerYAnchor,
+        constant: 0).isActive = true
+        emojiWheelView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: 0).isActive = true
+        emojiWheelView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: 0).isActive = true
+        emojiWheelView.widthAnchor.constraint(equalTo: emojiWheelView.heightAnchor, multiplier: 1.0/1.0).isActive = true
+
+    }
+
+    private func updateConstraintsLocalAuthentificationImageView() {
+        localAuthentificationImageView = UIImageView()
+        localAuthentificationImageView.alpha = 0.0
+        view.addSubview(localAuthentificationImageView)
+        localAuthentificationImageView.translatesAutoresizingMaskIntoConstraints = false
+        localAuthentificationImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        localAuthentificationImageView.widthAnchor.constraint(equalToConstant: 138).isActive = true
+        localAuthentificationImageView.heightAnchor.constraint(equalToConstant: 138).isActive = true
+        firstLabel.topAnchor.constraint(equalTo: localAuthentificationImageView.bottomAnchor, constant: 20).isActive = true
+    }
+
+    private func updateConstraintsUserEmojiContainer() {
+        userEmojiContainer = EmoticonView()
+        userEmojiContainer.alpha = 0.0
+        view.addSubview(userEmojiContainer)
+        userEmojiContainer.translatesAutoresizingMaskIntoConstraints = false
+        userEmojiContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
+        userEmojiContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        secondLabel.topAnchor.constraint(equalTo: userEmojiContainer.bottomAnchor, constant: 20).isActive = true
+        userEmojiContainer.heightAnchor.constraint(greaterThanOrEqualToConstant: 60).isActive = true
+    }
+
     private func setupView() {
+        updateConstraintsTopWhiteView()
+        updateConstraintsNerdAnimationView()
+        updateConstraintsFirstLabel()
+        updateConstraintsSecondLabel()
+        updateConstraintsAnimationView()
+        updateConstraintsBottomWhiteView()
+        updateConstraintsThirdLabel()
+        updateConstraintsEmojiButton()
+        updateConstraintsTopImageView()
+        updateConstraintsEmojiWheelView()
+        updateConstraintsLocalAuthentificationImageView()
+        updateConstraintsUserEmojiContainer()
+
         firstLabel.text = NSLocalizedString("Hello Friend", comment: "First label on wallet creation")
         firstLabel.font = Theme.shared.fonts.createWalletFirstLabel
         firstLabel.textColor = Theme.shared.colors.creatingWalletFirstLabel
@@ -118,7 +296,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func firstLabelAnimation() {
-        self.firstLabelTopConstraint.constant = -50.0
+        firstLabelTopConstraint?.constant = -50.0
 
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
@@ -252,8 +430,9 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func showCreateYourEmojiIdScreen() {
-        self.createEmojiButtonConstraint.constant = 20
-        self.runNerdEmojiAnimation()
+        createEmojiButtonConstraint?.constant = 0
+        createEmojiButtonSecondConstraint?.isActive = true
+        runNerdEmojiAnimation()
 
         UIView.animate(withDuration: 1, animations: { [weak self] in
             guard let self = self else { return }
@@ -267,8 +446,9 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func showYourEmoji() {
-        self.createEmojiButtonConstraint.constant = 20
-        self.createEmojiButton.animateIn()
+        createEmojiButtonConstraint?.constant = 0
+        createEmojiButtonSecondConstraint?.isActive = true
+        createEmojiButton.animateIn()
         UIView.animate(withDuration: 1, animations: { [weak self] in
             guard let self = self else { return }
             self.secondLabel.alpha = 1.0
@@ -386,7 +566,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     // MARK: - Actions
-    @IBAction func navigateToHoome(_ sender: Any) {
+    @objc func navigateToHome() {
         switch state {
         case .createEmojiId:
             self.createEmojiButton.animateOut()
@@ -429,7 +609,11 @@ class WalletCreationViewController: UIViewController {
                     DispatchQueue.main.async { [weak self] in
                         guard let self = self else { return }
                         if success {
-                            self.performSegue(withIdentifier: "SplashToHome", sender: nil)
+                            let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+                            if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
+                                nav.modalPresentationStyle = .overFullScreen
+                                self.present(nav, animated: true, completion: nil)
+                            }
                         } else {
                             let alert = UIAlertController(title: "There was an error",
                                                           message: "",
@@ -453,7 +637,11 @@ class WalletCreationViewController: UIViewController {
                 self.present(alert, animated: true, completion: nil)
             }
         case .enableNotifications:
-            performSegue(withIdentifier: "SplashToHome", sender: nil)
+            let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+            if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
+                nav.modalPresentationStyle = .overFullScreen
+                present(nav, animated: true, completion: nil)
+            }
         }
     }
 }

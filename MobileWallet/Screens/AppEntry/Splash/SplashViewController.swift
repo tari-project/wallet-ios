@@ -59,24 +59,23 @@ class SplashViewController: UIViewController {
     }
 
     // MARK: - Outlets
-    @IBOutlet weak var videoView: UIView!
-    @IBOutlet weak var versionLabel: UILabel!
-    @IBOutlet weak var animationContainer: AnimationView!
-    @IBOutlet weak var createWalletButton: ActionButton!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var subtitleLabel: UILabel!
-    @IBOutlet weak var distanceTitleSubtitle: NSLayoutConstraint!
-    @IBOutlet weak var animationContainerBottomAnchor: NSLayoutConstraint!
-    @IBOutlet weak var animationContainerBottomAnchorToVideo: NSLayoutConstraint!
+    var videoView: UIView!
+    var versionLabel: UILabel!
+    var animationContainer: AnimationView!
+    var createWalletButton: ActionButton!
+    var titleLabel: UILabel!
+    var subtitleLabel: UILabel!
+    var bottomBackgroundView: UIView!
+    var gemImageView: UIImageView!
+    var distanceTitleSubtitle: NSLayoutConstraint!
+    var animationContainerBottomAnchor: NSLayoutConstraint?
+    var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
 
     // MARK: - Override functions
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        createWalletButton.isHidden = true
         setupView()
         loadAnimation()
-        setupConstraintsAnimationContainer()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -130,39 +129,161 @@ class SplashViewController: UIViewController {
     }
 
     private func setupView() {
+        updateConstraintsAnimationContainer()
+        updateConstraintsVideoView()
+        updateConstraintsTitleLabel()
+        updateConstraintsSubtitleLabel()
+        updateConstraintsBottomBagroundView()
+        updateConstraintsCreateWalletButton()
+        updateConstraintsGemImageView()
+        setupContraintsVersionLabel()
+        createWalletButton.isHidden = true
+
         createWalletButton.setTitle(NSLocalizedString("Create Wallet", comment: "Main action button on the onboarding screen"), for: .normal)
         titleLabel.text = NSLocalizedString("A crypto wallet that’s easy to use.", comment: "Title Label on the onboarding screen")
-        titleLabel.font = Theme.shared.fonts.splashTitleLabel
-        titleLabel.textColor = Theme.shared.colors.splashTitleColor
+        titleLabel.font = Theme.shared.fonts.splashTitleLabelFont
+        titleLabel.textColor = Theme.shared.colors.splashTitle
 
         subtitleLabel.text = NSLocalizedString("Tari wallet puts you and your privacy at the core of everything and is still easy to use.", comment: "Subtitle Label on the onboarding screen")
 
+        subtitleLabel.textColor = Theme.shared.colors.splashSubtitle
+        subtitleLabel.font = Theme.shared.fonts.splashSubtitleLabelFont
+
         versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
+        versionLabel.textColor = Theme.shared.colors.splashVersionLabel
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
             let labelText = NSLocalizedString("Testnet", comment: "Bottom version label for splash screen")
             versionLabel.text = "\(labelText) V\(version)".uppercased()
         }
     }
 
-    private func setupConstraintsAnimationContainer() {
+    private func updateConstraintsAnimationContainer() {
+        animationContainer = AnimationView()
+        view.addSubview(animationContainer)
+        animationContainer.translatesAutoresizingMaskIntoConstraints = false
+        animationContainer.widthAnchor.constraint(equalToConstant: 240).isActive = true
+        animationContainer.heightAnchor.constraint(equalToConstant: 128).isActive = true
+        animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+
         if TariLib.shared.walletExists {
-            animationContainer.translatesAutoresizingMaskIntoConstraints = false
-            animationContainerBottomAnchor.isActive = false
-            animationContainer.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 0).isActive = true
             animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
             walletExistsInitially = true
         } else {
-            animationContainer.translatesAutoresizingMaskIntoConstraints = false
             ticketTop = animationContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
             ticketTop?.isActive = true
 
-            ticketBottom = animationContainer.bottomAnchor.constraint(equalTo: videoView.topAnchor,
-                                                                      constant: 40)
-            ticketBottom?.isActive = true
             animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor,
                                                         constant: 0).isActive = true
             walletExistsInitially = false
         }
+    }
+
+    private func updateConstraintsVideoView() {
+        videoView = UIView()
+        view.addSubview(videoView)
+        videoView.translatesAutoresizingMaskIntoConstraints = false
+        if TariLib.shared.walletExists {
+            animationContainerBottomAnchor?.isActive = false
+        } else {
+            animationContainerBottomAnchor = videoView.topAnchor.constraint(equalTo: animationContainer.bottomAnchor,
+            constant: 0)
+            animationContainerBottomAnchor?.isActive = true
+
+            videoView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+            videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+            videoView.widthAnchor.constraint(equalTo: videoView.heightAnchor, multiplier: 750.0/748.0).isActive = true
+        }
+    }
+
+    private func updateConstraintsTitleLabel() {
+        titleLabel = UILabel()
+        view.addSubview(titleLabel)
+
+        titleLabel.numberOfLines = 0
+        titleLabel.textAlignment = .center
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+
+        if TariLib.shared.walletExists {
+            animationContainer.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 0).isActive = true
+        }
+    }
+
+    private func updateConstraintsSubtitleLabel() {
+        subtitleLabel = UILabel()
+        view.addSubview(subtitleLabel)
+
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.textAlignment = .center
+
+        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+        subtitleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
+        subtitleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
+
+        subtitleLabel.topAnchor.constraint(equalTo: videoView.bottomAnchor, constant: 100).isActive = true
+        distanceTitleSubtitle = subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: -100)
+        distanceTitleSubtitle.isActive = true
+    }
+
+    private func updateConstraintsBottomBagroundView() {
+        bottomBackgroundView = UIView()
+        view.insertSubview(bottomBackgroundView, belowSubview: subtitleLabel)
+        bottomBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        bottomBackgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: 0).isActive = true
+        bottomBackgroundView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: 0).isActive = true
+        bottomBackgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                                                     constant: 0).isActive = true
+        bottomBackgroundView.topAnchor.constraint(equalTo: subtitleLabel.topAnchor,
+                                                  constant: 0).isActive = true
+        bottomBackgroundView.backgroundColor = .black
+    }
+
+    private func updateConstraintsCreateWalletButton() {
+        createWalletButton = ActionButton()
+        createWalletButton.addTarget(self, action: #selector(createWallet), for: .touchUpInside)
+        view.addSubview(createWalletButton)
+        createWalletButton.translatesAutoresizingMaskIntoConstraints = false
+
+        createWalletButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
+        createWalletButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        createWalletButton.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor,
+                                                constant: 25).isActive = true
+
+    }
+
+    private func updateConstraintsGemImageView() {
+        gemImageView = UIImageView()
+        view.addSubview(gemImageView)
+        gemImageView.image = UIImage(named: "Gem")
+        gemImageView.translatesAutoresizingMaskIntoConstraints = false
+        gemImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        gemImageView.topAnchor.constraint(equalTo: createWalletButton.bottomAnchor, constant: 35).isActive = true
+        gemImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        gemImageView.heightAnchor.constraint(equalToConstant: 24).isActive = true
+    }
+
+    private func setupContraintsVersionLabel() {
+        versionLabel = UILabel()
+        view.addSubview(versionLabel)
+        versionLabel.textAlignment = .center
+        versionLabel.numberOfLines = 0
+        versionLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        versionLabel.bottomAnchor.constraint(lessThanOrEqualTo: view.layoutMarginsGuide.bottomAnchor, constant: 0).isActive = true
+        versionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
+        versionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        versionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        versionLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 16).isActive = true
+        versionLabel.topAnchor.constraint(equalTo: gemImageView.bottomAnchor, constant: 16).isActive = true
     }
 
     private func titleAnimation() {
@@ -212,7 +333,7 @@ class SplashViewController: UIViewController {
         }
     }
 
-    @IBAction func createWallet(_ sender: Any) {
+    @objc func createWallet() {
         createWalletButton.variation = .loading
 
         do {
@@ -317,16 +438,21 @@ class SplashViewController: UIViewController {
 
     private func navigateToHome() {
         if walletExistsInitially {
-            performSegue(withIdentifier: "WalletExistsToHome", sender: nil)
+            let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+            if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
+                nav.modalPresentationStyle = .overFullScreen
+                self.present(nav, animated: true, completion: nil)
+            }
         } else {
-            if let vc = self.storyboard?.instantiateViewController(withIdentifier: "WalletCreationViewController") as? WalletCreationViewController {
-                vc.modalPresentationStyle = .fullScreen
-                let transition = CATransition()
-                transition.duration = 0.5
-                transition.type = CATransitionType.push
-                transition.subtype = CATransitionSubtype.fromBottom
-                view.window!.layer.add(transition, forKey: kCATransition)
-                self.present(vc, animated: true, completion: nil)
+            let vc = WalletCreationViewController()
+            vc.modalPresentationStyle = .fullScreen
+            let transition = CATransition()
+            transition.duration = 0.5
+            transition.type = CATransitionType.push
+            transition.subtype = CATransitionSubtype.fromBottom
+            if let window = view.window {
+                window.layer.add(transition, forKey: kCATransition)
+                present(vc, animated: false, completion: nil)
             }
         }
     }
