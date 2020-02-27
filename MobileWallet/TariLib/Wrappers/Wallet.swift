@@ -42,7 +42,7 @@ import Foundation
 
 enum WalletErrors: Error {
     case generic(_ errorCode: Int32)
-    case insufficientFunds(microTariRequired: UInt64)
+    case insufficientFunds(microTariRequired: MicroTari)
     case addUpdateContact
     case removeContact
     case addOwnContact
@@ -138,12 +138,7 @@ class Wallet {
             return (nil, pendingIncomingBalanceError)
         }
 
-        let (pendingOutgoingBalance, pendingOutgoingBalanceError) = self.pendingOutgoingBalance
-        if pendingOutgoingBalanceError != nil {
-            return (nil, pendingOutgoingBalanceError)
-        }
-
-        return (MicroTari(availableBalance + pendingIncomingBalance - pendingOutgoingBalance), nil)
+        return (MicroTari(availableBalance + pendingIncomingBalance), nil)
     }
 
     var publicKey: (PublicKey?, Error?) {
@@ -277,23 +272,37 @@ class Wallet {
         TariEventBus.postToMainThread(.transactionListUpdate)
     }
 
-    func sendTransaction(destination: PublicKey, amount: UInt64, fee: UInt64, message: String) throws {
-        let total = fee + amount
+    func calculateTransactionFee(_ amount: MicroTari) -> MicroTari {
+        //TODO when preflight function is ready, use that instead of assuming inputs and outputs
+
+        let baseCost: UInt64 = 500
+        let numInputs: UInt64 = 3
+        let numOutputs: UInt64 = 2
+        let r: UInt64 = 250
+
+        let fee = baseCost + (numInputs + 4 * numOutputs) * r
+
+        return MicroTari(fee)
+    }
+
+    func sendTransaction(destination: PublicKey, amount: MicroTari, fee: MicroTari, message: String) throws {
+        let total = fee.rawValue + amount.rawValue
         let (availableBalance, error) = self.availableBalance
         if error != nil {
             throw error!
         }
 
         if total > availableBalance {
-            throw WalletErrors.insufficientFunds(microTariRequired: total)
+            throw WalletErrors.insufficientFunds(microTariRequired: MicroTari(total))
         }
 
         let messagePointer = UnsafeMutablePointer<Int8>(mutating: (message as NSString).utf8String)
         var errorCode: Int32 = -1
-        let sendResult = wallet_send_transaction(ptr, destination.pointer, amount, fee, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
+        let sendResult = wallet_send_transaction(ptr, destination.pointer, amount.rawValue, fee.rawValue, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
+
         if !sendResult {
             throw WalletErrors.sendingTransaction
         }

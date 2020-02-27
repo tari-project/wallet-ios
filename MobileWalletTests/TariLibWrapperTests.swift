@@ -297,7 +297,7 @@ class TariLibWrapperTests: XCTestCase {
                 XCTFail(bobPublicKeyError!.localizedDescription)
             }
             
-            try wallet.sendTransaction(destination: bobPublicKey!, amount: 1000, fee: 101, message: "Oh hi bob")
+            try wallet.sendTransaction(destination: bobPublicKey!, amount: MicroTari(1000), fee: MicroTari(101), message: "Oh hi bob")
             let (pendingOutboundTransactions, pendingOutboundTransactionsError) = wallet.pendingOutboundTransactions
             if pendingOutboundTransactionsError != nil {
                 XCTFail(pendingOutboundTransactionsError!.localizedDescription)

@@ -40,7 +40,7 @@
 
 import UIKit
 
-class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITextFieldDelegate, ScanViewControllerDelegate {
+class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanViewControllerDelegate {
     private let SIDE_PADDING = Theme.shared.sizes.appSidePadding
     private let INPUT_CORNER_RADIUS: CGFloat = 6
     private let INPUT_CONTAINER_HEIGHT: CGFloat = 90
@@ -65,9 +65,10 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
         }
     }
 
-    private var isShowingContinueButton: Bool = false {
+    private var selectedRecipientPublicKey: PublicKey? = nil {
         didSet {
-            if isShowingContinueButton {
+            if selectedRecipientPublicKey != nil {
+                inputBox.textAlignment = .center
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 contactsTableVC.tableView.removeFromSuperview()
 
@@ -81,6 +82,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
                     self.view.layoutIfNeeded()
                 }
             } else {
+                inputBox.textAlignment = .left
                 continueButtonBottomConstraint.isActive = false
                 continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 100)
                 continueButtonBottomConstraint.isActive = true
@@ -97,8 +99,8 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
                     guard let self = self else { return }
 
                     do {
-                        //let pubKey = try PublicKey(emojis: self.clipboardEmojis)
-                        //self.onAdd(publicKey: pubKey)
+                        let pubKey = try PublicKey(privateKey: PrivateKey()) //TODO add back real check // try PublicKey(emojis: self.clipboardEmojis)
+                        self.onAdd(publicKey: pubKey)
                     } catch {
                         UserFeedback.shared.error(
                             title: NSLocalizedString("Could not use Emoji ID", comment: "Add recipient screen"),
@@ -129,7 +131,12 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        checkClipboard()
+        styleNavigatorBar(isHidden: false)
+
+        //If they're going back a view, don't check the clipboard if they already have text in it
+        if self.inputBox.text?.isEmpty ?? true {
+            checkClipboard()
+        }
 
         NotificationCenter.default.addObserver(self, selector: #selector(showClipboardEmojis), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hideClipboardEmojis), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -145,7 +152,6 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
         super.viewWillDisappear(animated)
 
         clipboardEmojis = ""
-        NotificationCenter.default.removeObserver(self)
     }
 
     @objc private func openScanner() {
@@ -158,14 +164,16 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
 
     @objc private func textInputidChange(_ textField: UITextField) {
         if let text = textField.text {
+            //TODO as soon as it's a valid emoji ID, init a pub key
+
             contactsTableVC.filter = text
         }
     }
 
     private func setup() {
-        navigationController?.setNavigationBarHidden(false, animated: false)
+        styleNavigatorBar(isHidden: false)
         view.backgroundColor = Theme.shared.colors.appBackground
-        navigationItem.title = NSLocalizedString("Send to", comment: "Navigation bar title on send view screen")
+        navigationItem.title = NSLocalizedString("Send To", comment: "Navigation bar title on send view screen")
 
         setupContactInputBar()
         setupContactsTable()
@@ -235,8 +243,8 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
 
         continueButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
         continueButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
-
-        isShowingContinueButton = false
+        continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200)
+        continueButtonBottomConstraint.isActive = true
 
         continueButton.addTarget(self, action: #selector(onContinue), for: .touchUpInside)
     }
@@ -275,7 +283,10 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
         if let text = pasteboardString {
             do {
                 //_ = try PublicKey(emojis: text)
-                clipboardEmojis = text
+                //TODO add real chec in once the lib is working
+                if text.containsEmoji {
+                    clipboardEmojis = text
+                }
             } catch {
                 //Not valid emojis, don't show them
                 clipboardEmojis = ""
@@ -343,6 +354,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
 
     @objc private func onContinue() {
         let amountVC = AddAmountViewController()
+        amountVC.publicKey = selectedRecipientPublicKey
         self.navigationController?.pushViewController(amountVC, animated: true)
     }
 
@@ -352,7 +364,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, UITex
         inputBox.rightView = nil
 
         //Remove table and show continue button
-        isShowingContinueButton = true
+        selectedRecipientPublicKey = publicKey
     }
 
     func onSelect(contact: Contact) {
