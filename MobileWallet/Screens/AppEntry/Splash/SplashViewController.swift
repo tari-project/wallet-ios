@@ -198,7 +198,8 @@ class SplashViewController: UIViewController {
             do {
                 try TariLib.shared.startExistingWallet()
             } catch {
-                fatalError(error.localizedDescription)
+                UserFeedback.shared.error(title: "Wallet error", description: "Error starting existing wallet", error: error)
+                return
             }
 
             #if targetEnvironment(simulator)

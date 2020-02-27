@@ -81,12 +81,32 @@ class TariLib {
         }
     }
 
-    var controlAddress: String {
-        return "/ip4/127.0.0.1/tcp/80"
+    var publicAddress: String {
+        return "/ip4/172.30.30.112/tcp/9838"
     }
 
     var listenerAddress: String {
-        return "/ip4/0.0.0.0/tcp/80"
+        return "/ip4/0.0.0.0/tcp/9838"
+    }
+
+    var socksUser: String {
+        return ""
+    }
+
+    var socksPass: String {
+        return ""
+    }
+
+    var torPort: Int {
+        return 39060
+    }
+
+    var torPass: String {
+        return ""
+    }
+
+    var torKey: String {
+        return ""
     }
 
     private let fileManager = FileManager.default
@@ -110,6 +130,10 @@ class TariLib {
      */
     deinit {}
 
+    private func addBaseNode() throws {
+        try tariWallet?.addBaseNodePeer(publicKey: PublicKey(hex: "14e43082e567a48bd66a35c11fd9905fbeb5b58d5d3c5bafb69ec70404680366"), address: "/ip4/172.30.30.140/tcp/18141")
+    }
+
     func createNewWallet() throws {
         try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
         try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
@@ -126,16 +150,26 @@ class TariLib {
 
         UserDefaults.standard.set(hex, forKey: PRIVATE_KEY_STORAGE_KEY)
 
-        let commsConfig = try CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
+        let torBytes = [UInt8](torKey.utf8)
+        let torPrivateKey = try ByteVector(byteArray: torBytes)
+        //let transport = try TransportType(controlServerAddress: controlAddress, torPort: torPort, torPrivateKey: torPrivateKey, torPassword: torPass, socksUsername: socksUser, socksPassword: socksPass)
+        let transport = try TransportType(listenerAddress: listenerAddress)
+        let commsConfig = try CommsConfig(privateKey: privateKey, transport: transport, databasePath: databasePath, databaseName: DATABASE_NAME, publicAddress: publicAddress)
 
         tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
+
+        try addBaseNode()
     }
 
     func startExistingWallet() throws {
         if let privateKeyHex = UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) {
             print("databasePath: ", databasePath)
+            let torBytes = [UInt8](torKey.utf8)
+            let torPrivateKey = try ByteVector(byteArray: torBytes)
             let privateKey = try PrivateKey(hex: privateKeyHex)
-            let commsConfig = try CommsConfig(privateKey: privateKey, databasePath: databasePath, databaseName: DATABASE_NAME, controlAddress: controlAddress, listenerAddress: listenerAddress)
+            //let transport = try TransportType(controlServerAddress: controlAddress, torPort: torPort, torPrivateKey: torPrivateKey, torPassword: torPass, socksUsername: socksUser, socksPassword: socksPass)
+            let transport = try TransportType(listenerAddress: listenerAddress)
+            let commsConfig = try CommsConfig(privateKey: privateKey, transport: transport, databasePath: databasePath, databaseName: DATABASE_NAME, publicAddress: publicAddress)
             tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
         } else {
             throw TariLibErrors.privateKeyNotFound
