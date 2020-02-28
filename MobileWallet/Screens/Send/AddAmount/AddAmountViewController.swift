@@ -467,7 +467,6 @@ extension AddAmountViewController {
         keypadContainerStackView.axis = .vertical
         keypadContainerStackView.distribution = .equalSpacing
         keypadContainerStackView.backgroundColor = .clear
-        keypadContainerStackView.translatesAutoresizingMaskIntoConstraints = false
         keypadContainerStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         keypadContainerStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -41).isActive = true
         keypadContainerStackView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true

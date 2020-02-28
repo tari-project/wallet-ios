@@ -41,11 +41,6 @@
 import Foundation
 import SwiftEntryKit
 
-enum UserFeedbackTypes {
-    case error
-    case info
-}
-
 class UserFeedback {
     static let shared = UserFeedback()
     private let VERTICAL_OFFSET: CGFloat = 14
