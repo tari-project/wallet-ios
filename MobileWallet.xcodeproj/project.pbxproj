@@ -302,13 +302,13 @@
 		491AB8A123F3FF4400372189 /* AddAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AddAmountViewController.swift */; };
 		491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AddAmountViewController.swift */; };
 		49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
-		4C2C95C323796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
-		4C2C95C423796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
-		4C2C95C523796184005058AB /* libzmq.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C223796184005058AB /* libzmq.a */; };
 		4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C6237962CB005058AB /* libc++.tbd */; };
 		4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
 		4CCF87EE23E8275800C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
 		4CCF87EF23E8276700C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
+		4CD20A362407967B007B64D8 /* TransportType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportType.swift */; };
+		4CD20A372407967B007B64D8 /* TransportType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportType.swift */; };
+		4CD20A382407967B007B64D8 /* TransportType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportType.swift */; };
 		83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */; };
 		BF191A0D23E5A96700D33C85 /* EmojiWheel.json in Resources */ = {isa = PBXBuildFile; fileRef = BF191A0C23E5A96700D33C85 /* EmojiWheel.json */; };
 		BF191A0E23E5A96700D33C85 /* EmojiWheel.json in Resources */ = {isa = PBXBuildFile; fileRef = BF191A0C23E5A96700D33C85 /* EmojiWheel.json */; };
@@ -509,6 +509,7 @@
 		4C2C95C223796184005058AB /* libzmq.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzmq.a; sourceTree = "<group>"; };
 		4C2C95C6237962CB005058AB /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtari_wallet_ffi.a; path = MobileWallet/TariLib/libtari_wallet_ffi.a; sourceTree = "<group>"; };
+		4CD20A352407967B007B64D8 /* TransportType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportType.swift; sourceTree = "<group>"; };
 		540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		867662CACBB1C47B665EBA55 /* Pods-MobileWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.release.xcconfig"; sourceTree = "<group>"; };
 		9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -546,7 +547,6 @@
 				00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */,
 				0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */,
 				4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */,
-				4C2C95C323796184005058AB /* libzmq.a in Frameworks */,
 				123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -557,7 +557,6 @@
 			files = (
 				4CCF87EE23E8275800C8CDB1 /* libtari_wallet_ffi.a in Frameworks */,
 				00DC2E242385559C00036DDC /* libsqlite3.tbd in Frameworks */,
-				4C2C95C423796184005058AB /* libzmq.a in Frameworks */,
 				83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -568,7 +567,6 @@
 			files = (
 				4CCF87EF23E8276700C8CDB1 /* libtari_wallet_ffi.a in Frameworks */,
 				00DC2E25238555A200036DDC /* libsqlite3.tbd in Frameworks */,
-				4C2C95C523796184005058AB /* libzmq.a in Frameworks */,
 				1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -767,6 +765,7 @@
 		00BBD80C237DA04300EBF5E6 /* Wrappers */ = {
 			isa = PBXGroup;
 			children = (
+				4CD20A352407967B007B64D8 /* TransportType.swift */,
 				00BBD80D237DA07400EBF5E6 /* ByteVector.swift */,
 				00BBD811237E9EE200EBF5E6 /* PrivateKey.swift */,
 				00BBD819237EB31900EBF5E6 /* CommsConfig.swift */,
@@ -1442,6 +1441,7 @@
 				00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
+				4CD20A362407967B007B64D8 /* TransportType.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
@@ -1510,6 +1510,7 @@
 				0053873124065F6C00901A68 /* SlideView.swift in Sources */,
 				0091D4AC23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
+				4CD20A372407967B007B64D8 /* TransportType.swift in Sources */,
 				BFD758E723E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				0091D4A823ED879E004BF7F7 /* Signature.swift in Sources */,
@@ -1639,6 +1640,7 @@
 				0087A1AB23F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				001F6CEA2381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
+				4CD20A382407967B007B64D8 /* TransportType.swift in Sources */,
 				001F6CEE2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				006D211F23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				001256312371D81500A9C067 /* SplashViewController.swift in Sources */,

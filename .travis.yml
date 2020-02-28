@@ -5,4 +5,7 @@ xcode_scheme: MobileWallet
 xcode_only_testing: MobileWalletTests
 xcode_destination: platform=iOS Simulator,OS=13.2.2,name=iPhone 11
 before_install:
+- curl -O https://www.tari.com/binaries/libtari_wallet_ffi-ios-0.1.3.tar.gz
+- tar -xvf libtari_wallet_ffi-ios-0.1.3.tar.gz
+- mv libtari_wallet_ffi.a MobileWallet/TariLib/
 - pod install

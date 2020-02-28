@@ -141,12 +141,13 @@ class TariLibWrapperTests: XCTestCase {
 
         var commsConfig: CommsConfig?
         do {
+            let transport = TransportType()
             commsConfig = try CommsConfig(
                 privateKey: PrivateKey(hex: privateKeyHex),
+                transport: transport,
                 databasePath: databasePath,
                 databaseName: dbName,
-                controlAddress: "/ip4/127.0.0.1/tcp/80",
-                listenerAddress: "/ip4/0.0.0.0/tcp/80"
+                publicAddress: "/ip4/127.0.0.1/tcp/80"
             )
             
             print("LOGGING: ", loggingFilePath)

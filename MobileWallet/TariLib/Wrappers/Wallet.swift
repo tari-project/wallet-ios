@@ -151,6 +151,15 @@ class Wallet {
         return (result, nil)
     }
 
+    var torPrivateKey: (ByteVector?, Error?) {
+        var errorCode: Int32 = -1
+        let resultPtr = wallet_get_tor_private_key(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            return (nil, WalletErrors.generic(errorCode))
+        }
+        return (ByteVector(pointer: resultPtr!), nil)
+    }
+
     init(commsConfig: CommsConfig, loggingFilePath: String) throws {
         let loggingFilePathPointer = UnsafeMutablePointer<Int8>(mutating: (loggingFilePath as NSString).utf8String)!
 
@@ -397,6 +406,17 @@ class Wallet {
         var errorCode: Int32 = -1
         let messagePointer = (message as NSString).utf8String
         _ = wallet_import_utxo(ptr, value, privateKey.pointer, sourcePublicKey.pointer, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+    }
+
+    func addBaseNodePeer(publicKey: PublicKey, address: String) throws {
+        var errorCode: Int32 = -1
+        let addressPointer = (address as NSString).utf8String
+
+        _ = wallet_add_base_node_peer(ptr, publicKey.pointer, addressPointer, UnsafeMutablePointer<Int32>(&errorCode))
+
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
