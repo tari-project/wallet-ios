@@ -39,15 +39,34 @@
 */
 
 import UIKit
+import SwiftEntryKit
 
 class DebugLogsTableViewController: UITableViewController {
-    struct DebugLogColors {
+    struct DebugLogTheme {
         var backgroundColor: UIColor = .black
         var lineTextColor: UIColor = .green
         var font = UIFont.systemFont(ofSize: 12, weight: .light)
+        var popupBackground = UIColor.systemGray6
     }
 
-    let theme = DebugLogColors()
+    private static let theme = DebugLogTheme()
+
+    private let debugLevels: [String] = ["INFO", "WARN", "ERROR", "DEBUG"]
+    private var debugLevelsOn: [String] = ["INFO", "WARN", "ERROR"]
+
+    private var filterAttributes: EKAttributes {
+        var attributes = EKAttributes.centerFloat
+        attributes.screenBackground = .color(color: EKColor(Theme.shared.colors.feedbackPopupBackground!))
+        attributes.entryBackground = .clear
+        attributes.positionConstraints.size = .init(width: .intrinsic, height: .intrinsic)
+        attributes.screenInteraction = .dismiss
+        attributes.entryInteraction = .forward
+        attributes.displayDuration = .infinity
+
+        return attributes
+    }
+
+    public let filterView = UIView()
 
     let CELL_IDENTIFIER = "logLineCell"
 
@@ -57,7 +76,6 @@ class DebugLogsTableViewController: UITableViewController {
             if currentLogFile != nil {
                 loadLogs()
             }
-            tableView.reloadData()
         }
     }
 
@@ -72,21 +90,21 @@ class DebugLogsTableViewController: UITableViewController {
 
         tableView.dataSource = self
         tableView.delegate = self
-        view.backgroundColor = theme.backgroundColor
+        view.backgroundColor = DebugLogsTableViewController.theme.backgroundColor
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: CELL_IDENTIFIER)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.separatorStyle = .none
 
         if let navBar = navigationController?.navigationBar {
-            navBar.tintColor = theme.lineTextColor
+            navBar.tintColor = DebugLogsTableViewController.theme.lineTextColor
 
             navBar.titleTextAttributes = [
-                NSAttributedString.Key.foregroundColor: theme.lineTextColor,
-                NSAttributedString.Key.font: theme.font.withSize(16)
+                NSAttributedString.Key.foregroundColor: DebugLogsTableViewController.theme.lineTextColor,
+                NSAttributedString.Key.font: DebugLogsTableViewController.theme.font.withSize(16)
             ]
 
-            navBar.setBackgroundImage(UIImage(color: theme.backgroundColor), for: .default)
+            navBar.setBackgroundImage(UIImage(color: DebugLogsTableViewController.theme.backgroundColor), for: .default)
             navBar.isTranslucent = true
 
             navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Close", style: .plain, target: self, action: #selector(self.onClose))
@@ -94,6 +112,8 @@ class DebugLogsTableViewController: UITableViewController {
 
         if let currentLogFile = currentLogFile {
             title = currentLogFile.lastPathComponent
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Filter", style: .plain, target: self, action: #selector(self.onShowFilterOptions))
+            setupFilterDialog()
         } else {
             title = "Debug Logs"
         }
@@ -116,17 +136,80 @@ class DebugLogsTableViewController: UITableViewController {
         navigationController?.popViewController(animated: false)
     }
 
+    @objc func onShowFilterOptions() {
+        SwiftEntryKit.display(entry: filterView, using: filterAttributes)
+    }
+
+    @objc func onFilterChange(filterSwitch: UISwitch) {
+        let level = debugLevels[filterSwitch.tag]
+
+        if filterSwitch.isOn {
+            debugLevelsOn.append(level)
+        } else {
+            if let index = debugLevelsOn.firstIndex(of: level) {
+                debugLevelsOn.remove(at: index)
+            }
+        }
+
+        loadLogs()
+    }
+
+    private func setupFilterDialog() {
+        filterView.backgroundColor = DebugLogsTableViewController.theme.popupBackground
+        filterView.layer.cornerRadius = 10
+        filterView.heightAnchor.constraint(greaterThanOrEqualToConstant: 250).isActive = true
+        filterView.widthAnchor.constraint(equalToConstant: 200).isActive = true
+
+        let sv = UIStackView()
+        sv.axis = .vertical
+        sv.distribution = .equalCentering
+        sv.translatesAutoresizingMaskIntoConstraints = false
+        filterView.addSubview(sv)
+        let padding: CGFloat = 20
+        sv.topAnchor.constraint(equalTo: filterView.topAnchor, constant: padding).isActive = true
+        sv.bottomAnchor.constraint(equalTo: filterView.bottomAnchor, constant: -padding).isActive = true
+        sv.centerXAnchor.constraint(equalTo: filterView.centerXAnchor).isActive = true
+        sv.leadingAnchor.constraint(equalTo: filterView.leadingAnchor, constant: padding).isActive = true
+        sv.trailingAnchor.constraint(equalTo: filterView.trailingAnchor, constant: -padding).isActive = true
+
+        for level in debugLevels {
+            let row = UIStackView()
+
+            row.axis = .horizontal
+            row.distribution = .equalCentering
+
+            let logLevelSwitch = UISwitch()
+            logLevelSwitch.addTarget(self, action: #selector(onFilterChange(filterSwitch:)), for: .valueChanged)
+
+            logLevelSwitch.translatesAutoresizingMaskIntoConstraints = false
+            row.addArrangedSubview(logLevelSwitch)
+            logLevelSwitch.tag = debugLevels.firstIndex(of: level) ?? 0
+            logLevelSwitch.isOn = debugLevelsOn.firstIndex(of: level) != nil
+
+            let logLable = UILabel()
+            logLable.text = level
+            logLable.translatesAutoresizingMaskIntoConstraints = false
+            row.addArrangedSubview(logLable)
+
+            sv.addArrangedSubview(row)
+        }
+    }
+
     private func loadLogs() {
         guard let currentLogFile = currentLogFile else {
             return
         }
 
+        var allLines: [String] = []
         do {
             let data = try String(contentsOf: currentLogFile, encoding: .utf8)
-            logLines = data.components(separatedBy: .newlines)
+            allLines = data.components(separatedBy: .newlines)
         } catch {
-            logLines = ["Failed to load log file: \(currentLogFile.path)"]
+            allLines = ["Failed to load log file: \(currentLogFile.path)"]
         }
+
+        logLines = allLines.filter { debugLevelsOn.contains(where: $0.contains) }
+        tableView.reloadData()
     }
 
     // MARK: - Table view data source
@@ -146,9 +229,9 @@ class DebugLogsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath)
 
-        cell.backgroundColor = theme.backgroundColor
-        cell.textLabel?.font = theme.font
-        cell.textLabel?.textColor = theme.lineTextColor
+        cell.backgroundColor = DebugLogsTableViewController.theme.backgroundColor
+        cell.textLabel?.font = DebugLogsTableViewController.theme.font
+        cell.textLabel?.textColor = DebugLogsTableViewController.theme.lineTextColor
 
         if currentLogFile != nil {
             cell.textLabel?.text = logLines[indexPath.row]
