@@ -422,6 +422,16 @@ class Wallet {
         }
     }
 
+    func syncBaseNode() throws
+    {
+        var errorCode: Int32 = -1
+        _ = wallet_sync_with_base_node(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+    }
+    
     deinit {
         wallet_destroy(ptr)
     }
