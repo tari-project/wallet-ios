@@ -141,13 +141,13 @@ class SplashViewController: UIViewController {
 
         createWalletButton.setTitle(NSLocalizedString("Create Wallet", comment: "Main action button on the onboarding screen"), for: .normal)
         titleLabel.text = NSLocalizedString("A crypto wallet that’s easy to use.", comment: "Title Label on the onboarding screen")
-        titleLabel.font = Theme.shared.fonts.splashTitleLabelFont
+        titleLabel.font = Theme.shared.fonts.splashTitleLabel
         titleLabel.textColor = Theme.shared.colors.splashTitle
 
         subtitleLabel.text = NSLocalizedString("Tari wallet puts you and your privacy at the core of everything and is still easy to use.", comment: "Subtitle Label on the onboarding screen")
 
         subtitleLabel.textColor = Theme.shared.colors.splashSubtitle
-        subtitleLabel.font = Theme.shared.fonts.splashSubtitleLabelFont
+        subtitleLabel.font = Theme.shared.fonts.splashSubtitleLabel
 
         versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
         versionLabel.textColor = Theme.shared.colors.splashVersionLabel

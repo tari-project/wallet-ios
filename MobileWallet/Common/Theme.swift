@@ -117,6 +117,10 @@ struct Colors: Loopable {
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
     let transactionSmallSubheadingLabel = UIColor(named: "SmallSubheading")
 
+    // Sending Tari
+    let sendingTariTitle = UIColor(named: "SendingTariTitleText")
+    let sendingTariBackground = UIColor(named: "SendingTariBackground")
+
     //Navigation bar
     let navigationBarTint = UIColor(named: "Heading")
     let navigationBarBackground = UIColor(named: "NavBarBackground")
@@ -173,8 +177,8 @@ struct Fonts: Loopable {
     let actionButton = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)
 
     //Splash
-    let splashTitleLabelFont = UIFont(name: "AvenirLTStd-Black", size: 30.0)
-    let splashSubtitleLabelFont = UIFont(name: "Avenir-Medium", size: 14.0)
+    let splashTitleLabel = UIFont(name: "AvenirLTStd-Black", size: 30.0)
+    let splashSubtitleLabel = UIFont(name: "Avenir-Medium", size: 14.0)
 
     //SplashCreatingWallet
     let createWalletFirstLabel = UIFont(name: "AvenirLTStd-Black", size: 18.0)
@@ -209,6 +213,12 @@ struct Fonts: Loopable {
     let transactionListEmptyTitleLabel = UIFont(name: "AvenirLTStd-Black", size: 33.0)
     let transactionListEmptyMessageLabel = UIFont(name: "AvenirLTStd-Medium", size: 14.0)
     let transactionFeeLabel = UIFont(name: "AvenirLTStd-Heavy", size: 14.0)
+
+    // Sending tari screen
+
+    let sendingTariTitleLabelFirst = UIFont(name: "Avenir-Black", size: 18.0)
+    let sendingTariTitleLabelSecond = UIFont(name: "Avenir-Light", size: 18.0)
+    let sendingTariTitleLabelThird = UIFont(name: "Avenir-Book", size: 18.0)
 
     //Navigation bar
     let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
