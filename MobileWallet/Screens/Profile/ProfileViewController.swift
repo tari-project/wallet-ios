@@ -158,10 +158,19 @@ class ProfileViewController: UIViewController {
     }
 
     private func copyToClipboard() {
-        if let emojis = self.emojis {
-            let pasteboard = UIPasteboard.general
-            pasteboard.string = emojis
+        if let wallet = TariLib.shared.tariWallet {
+            if let pubKeyHex = wallet.publicKey.0?.hex.0 {
+                let pasteboard = UIPasteboard.general
+                pasteboard.string = pubKeyHex
+            }
         }
+
+        //TODO remove above and uncomment below when emojis are ready
+
+//        if let emojis = self.emojis {
+//            let pasteboard = UIPasteboard.general
+//            pasteboard.string = emojis
+//        }
     }
 
     private func sendHapticNotification() {

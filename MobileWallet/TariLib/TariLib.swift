@@ -131,7 +131,7 @@ class TariLib {
     deinit {}
 
     private func addBaseNode() throws {
-        try tariWallet?.addBaseNodePeer(publicKey: PublicKey(hex: "14e43082e567a48bd66a35c11fd9905fbeb5b58d5d3c5bafb69ec70404680366"), address: "/ip4/172.30.30.140/tcp/18141")
+        try tariWallet?.addBaseNodePeer(publicKey: PublicKey(hex: "982d74cfecbcad95e6057efc2ca6f26e938d04544d173990e99db3b0ad4bf636"), address: "/ip4/172.30.30.140/tcp/18141")
     }
 
     func createNewWallet() throws {

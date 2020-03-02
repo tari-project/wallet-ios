@@ -101,9 +101,8 @@ class TestnetKeyServer {
             throw completedTransactionsCountError!
         }
 
-        //If the user has a spendable balance, just ignore this request
+        //If the user has a completed, just ignore this request as it's not a fresh install
         guard completedTransactionsCount == 0 else {
-            print("Wallet already has funds")
             TestnetKeyServer.isRequestInProgress = false
             return
         }
@@ -197,5 +196,7 @@ class TestnetKeyServer {
 
         TariEventBus.postToMainThread(.balanceUpdate)
         TariEventBus.postToMainThread(.transactionListUpdate)
+
+        try wallet.syncBaseNode()
     }
 }
