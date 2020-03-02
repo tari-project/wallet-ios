@@ -153,7 +153,7 @@ class Wallet {
 
     var torPrivateKey: (ByteVector?, Error?) {
         var errorCode: Int32 = -1
-        let resultPtr = wallet_get_tor_private_key(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let resultPtr = wallet_get_tor_identity(ptr, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             return (nil, WalletErrors.generic(errorCode))
         }
@@ -422,8 +422,7 @@ class Wallet {
         }
     }
 
-    func syncBaseNode() throws
-    {
+    func syncBaseNode() throws {
         var errorCode: Int32 = -1
         _ = wallet_sync_with_base_node(ptr, UnsafeMutablePointer<Int32>(&errorCode))
 
@@ -431,7 +430,7 @@ class Wallet {
             throw WalletErrors.generic(errorCode)
         }
     }
-    
+
     deinit {
         wallet_destroy(ptr)
     }
