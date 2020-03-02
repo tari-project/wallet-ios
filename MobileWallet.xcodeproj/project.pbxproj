@@ -362,6 +362,15 @@
 		BFE1FC0223E229FF00BA5EEC /* CheckMark.json in Resources */ = {isa = PBXBuildFile; fileRef = BFE1FC0123E229FF00BA5EEC /* CheckMark.json */; };
 		BFE1FC0923E3ACD900BA5EEC /* WalletCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */; };
 		BFE1FC0A23E3ACDA00BA5EEC /* WalletCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */; };
+		BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF1ED9C2408111000CC9EF6 /* SendingTariViewController.swift */; };
+		BFF1ED9E2408111000CC9EF6 /* SendingTariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF1ED9C2408111000CC9EF6 /* SendingTariViewController.swift */; };
+		BFF1ED9F2408111000CC9EF6 /* SendingTariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF1ED9C2408111000CC9EF6 /* SendingTariViewController.swift */; };
+		BFF1EDA32408225900CC9EF6 /* sendingTariAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BFF1EDA22408225900CC9EF6 /* sendingTariAnimation.json */; };
+		BFF1EDA42408225900CC9EF6 /* sendingTariAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BFF1EDA22408225900CC9EF6 /* sendingTariAnimation.json */; };
+		BFF1EDA52408225900CC9EF6 /* sendingTariAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BFF1EDA22408225900CC9EF6 /* sendingTariAnimation.json */; };
+		BFF1EDA72408226200CC9EF6 /* sending-background.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFF1EDA62408226200CC9EF6 /* sending-background.mp4 */; };
+		BFF1EDA82408226200CC9EF6 /* sending-background.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFF1EDA62408226200CC9EF6 /* sending-background.mp4 */; };
+		BFF1EDA92408226200CC9EF6 /* sending-background.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BFF1EDA62408226200CC9EF6 /* sending-background.mp4 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -531,6 +540,9 @@
 		BFD758E923E98BA300B0F1A5 /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
 		BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCreationViewController.swift; sourceTree = "<group>"; };
 		BFE1FC0123E229FF00BA5EEC /* CheckMark.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = CheckMark.json; sourceTree = "<group>"; };
+		BFF1ED9C2408111000CC9EF6 /* SendingTariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendingTariViewController.swift; sourceTree = "<group>"; };
+		BFF1EDA22408225900CC9EF6 /* sendingTariAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sendingTariAnimation.json; sourceTree = "<group>"; };
+		BFF1EDA62408226200CC9EF6 /* sending-background.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "sending-background.mp4"; sourceTree = "<group>"; };
 		CB7DC916E97096D5FCB440E3 /* Pods-MobileWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E6C8060CF3B17C7AA315F558 /* Pods-MobileWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet.release.xcconfig"; path = "Target Support Files/Pods-MobileWallet/Pods-MobileWallet.release.xcconfig"; sourceTree = "<group>"; };
 		F28D9135828811CA84244432 /* Pods_MobileWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -711,6 +723,7 @@
 				0087A1A423F4231E00B89EE7 /* AddRecipient */,
 				491AB89E23F3FF1200372189 /* AddAmount */,
 				005387222405132700901A68 /* AddNote */,
+				BFF1ED9B240810E500CC9EF6 /* SendingTari */,
 			);
 			path = Send;
 			sourceTree = "<group>";
@@ -1031,6 +1044,32 @@
 			path = Profile;
 			sourceTree = "<group>";
 		};
+		BFF1ED9B240810E500CC9EF6 /* SendingTari */ = {
+			isa = PBXGroup;
+			children = (
+				BFF1EDA12408223000CC9EF6 /* Video */,
+				BFF1ED9C2408111000CC9EF6 /* SendingTariViewController.swift */,
+				BFF1EDA02408222300CC9EF6 /* Animation */,
+			);
+			path = SendingTari;
+			sourceTree = "<group>";
+		};
+		BFF1EDA02408222300CC9EF6 /* Animation */ = {
+			isa = PBXGroup;
+			children = (
+				BFF1EDA22408225900CC9EF6 /* sendingTariAnimation.json */,
+			);
+			path = Animation;
+			sourceTree = "<group>";
+		};
+		BFF1EDA12408223000CC9EF6 /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				BFF1EDA62408226200CC9EF6 /* sending-background.mp4 */,
+			);
+			path = Video;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1145,6 +1184,7 @@
 			files = (
 				BFD758E123E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */,
 				0012568D2372918B00A9C067 /* AvenirNextLTPro-Cn.otf in Resources */,
+				BFF1EDA72408226200CC9EF6 /* sending-background.mp4 in Resources */,
 				00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */,
 				001256812372918B00A9C067 /* AvenirNextLTPro-HeavyCnIt.otf in Resources */,
 				00E2BCAC236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */,
@@ -1184,6 +1224,7 @@
 				001256A82372918B00A9C067 /* AvenirNextLTPro-MediumCn.otf in Resources */,
 				001256BA2372918B00A9C067 /* AvenirNextLTPro-Regular.otf in Resources */,
 				BF191A0D23E5A96700D33C85 /* EmojiWheel.json in Resources */,
+				BFF1EDA32408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
 				BF191A1A23E5AFA200D33C85 /* img_2.png in Resources */,
 				BFD758EA23E98BA300B0F1A5 /* Profile.storyboard in Resources */,
 				00E491A32366E08B007B332D /* Main.storyboard in Resources */,
@@ -1207,6 +1248,7 @@
 				0012569D2372918B00A9C067 /* AvenirNextLTPro-BoldCnIt.otf in Resources */,
 				BF191A3323E70D3200D33C85 /* NerdEmojiAnimation.json in Resources */,
 				001256912372918B00A9C067 /* AvenirNextLTPro-DemiCnIt.otf in Resources */,
+				BFF1EDA82408226200CC9EF6 /* sending-background.mp4 in Resources */,
 				001256BB2372918B00A9C067 /* AvenirNextLTPro-Regular.otf in Resources */,
 				0012567F2372918B00A9C067 /* AvenirNextLTPro-MediumCnIt.otf in Resources */,
 				001256702372918B00A9C067 /* AvenirLTStd-HeavyOblique.otf in Resources */,
@@ -1220,6 +1262,7 @@
 				BF191A1E23E5AFA200D33C85 /* img_6.png in Resources */,
 				001256A62372918B00A9C067 /* AvenirNextLTPro-BoldCn.otf in Resources */,
 				0012568E2372918B00A9C067 /* AvenirNextLTPro-Cn.otf in Resources */,
+				BFF1EDA42408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
 				001256B22372918B00A9C067 /* AvenirLTStd-LightOblique.otf in Resources */,
 				001256822372918B00A9C067 /* AvenirNextLTPro-HeavyCnIt.otf in Resources */,
 				BFD758E223E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */,
@@ -1260,6 +1303,7 @@
 				0012569E2372918B00A9C067 /* AvenirNextLTPro-BoldCnIt.otf in Resources */,
 				BF191A3423E70D3200D33C85 /* NerdEmojiAnimation.json in Resources */,
 				001256922372918B00A9C067 /* AvenirNextLTPro-DemiCnIt.otf in Resources */,
+				BFF1EDA92408226200CC9EF6 /* sending-background.mp4 in Resources */,
 				001256BC2372918B00A9C067 /* AvenirNextLTPro-Regular.otf in Resources */,
 				001256802372918B00A9C067 /* AvenirNextLTPro-MediumCnIt.otf in Resources */,
 				001256712372918B00A9C067 /* AvenirLTStd-HeavyOblique.otf in Resources */,
@@ -1273,6 +1317,7 @@
 				BF191A1F23E5AFA200D33C85 /* img_6.png in Resources */,
 				001256A72372918B00A9C067 /* AvenirNextLTPro-BoldCn.otf in Resources */,
 				0012568F2372918B00A9C067 /* AvenirNextLTPro-Cn.otf in Resources */,
+				BFF1EDA52408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
 				001256B32372918B00A9C067 /* AvenirLTStd-LightOblique.otf in Resources */,
 				001256832372918B00A9C067 /* AvenirNextLTPro-HeavyCnIt.otf in Resources */,
 				BFD758E323E96BB500B0F1A5 /* 2-Loop.mp4 in Resources */,
@@ -1488,6 +1533,7 @@
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
 				491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
+				BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				001F6CEC2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				BFAB5D1123FDEA69009E8563 /* EmoticonView.swift in Sources */,
@@ -1567,6 +1613,7 @@
 				00947CC823D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				004277DE23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */,
 				00BBD813237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
+				BFF1ED9E2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				001F6CE12380198D00FA7002 /* Contacts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1600,6 +1647,7 @@
 				00262EB1236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				BFAB5D1323FDEA6A009E8563 /* EmoticonView.swift in Sources */,
+				BFF1ED9F2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
 				00E4922B23683E54007B332D /* HomeViewController.swift in Sources */,

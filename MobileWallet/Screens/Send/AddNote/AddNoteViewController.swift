@@ -182,9 +182,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
                 message: noteText
             )
 
-            //TODO this will go to a new sending view before popping to root
-            navigationController?.popToRootViewController(animated: true)
-            UserFeedback.shared.success(title: "Transaction Sent!")
+            let vc = SendingTariViewController()
+            self.navigationController?.pushViewController(vc, animated: false)
         } catch {
             UserFeedback.shared.error(
             title: NSLocalizedString("Transaction failed", comment: "Add note view"),
