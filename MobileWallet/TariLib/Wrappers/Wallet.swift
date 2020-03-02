@@ -42,7 +42,7 @@ import Foundation
 
 enum WalletErrors: Error {
     case generic(_ errorCode: Int32)
-    case insufficientFunds(microTariRequired: MicroTari)
+    case insufficientFunds(microTariSpendable: MicroTari)
     case addUpdateContact
     case removeContact
     case addOwnContact
@@ -302,7 +302,7 @@ class Wallet {
         }
 
         if total > availableBalance {
-            throw WalletErrors.insufficientFunds(microTariRequired: MicroTari(total))
+            throw WalletErrors.insufficientFunds(microTariSpendable: MicroTari(availableBalance))
         }
 
         let messagePointer = UnsafeMutablePointer<Int8>(mutating: (message as NSString).utf8String)

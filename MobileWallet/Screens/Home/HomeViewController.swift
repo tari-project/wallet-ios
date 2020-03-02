@@ -257,6 +257,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.view.layoutIfNeeded()
             })
         } else {
+            syncBaseNode()
             requestTestnetTokens()
             //User swipes down for the first time
             if isFirstIntroToWallet {
@@ -274,6 +275,16 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.grabberHandle.alpha = 1
                 self.view.layoutIfNeeded()
             })
+        }
+    }
+
+    private func syncBaseNode() {
+        do {
+            if let wallet = TariLib.shared.tariWallet {
+                try wallet.syncBaseNode()
+            }
+        } catch {
+            UserFeedback.shared.error(title: "Base node error", description: "Could not sync to base node", error: error)
         }
     }
 
@@ -478,7 +489,6 @@ extension HomeViewController {
 
         backgroundColorIsNavColor = isNavColor
 
-        print("isNavColor: ", isNavColor)
         if isNavColor {
             self.applyBackgroundGradient(
                 from: self.backgroundGradients,

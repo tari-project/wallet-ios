@@ -46,8 +46,8 @@ extension WalletErrors: LocalizedError {
         case .generic(let code):
             //TODO create a map of Tari errors from rust
             return  "\(NSLocalizedString("Generic error code:", comment: "Wallet errors")) \(code)."
-        case .insufficientFunds(let microTariRequired):
-            return "\(NSLocalizedString("Insufficient funds. Available Tari required:", comment: "Wallet errors")) \(microTariRequired.formattedWithNegativeOperator)."
+        case .insufficientFunds(let microTariSpendable):
+            return "\(NSLocalizedString("Insufficient funds. Available spendable Tari:", comment: "Wallet errors")) \(microTariSpendable.formatted)."
         case .addUpdateContact:
             return NSLocalizedString("Failed to add/update contact.", comment: "Wallet errors")
         case .removeContact:
