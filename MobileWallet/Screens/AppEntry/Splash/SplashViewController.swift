@@ -41,20 +41,21 @@
 import UIKit
 import Lottie
 import LocalAuthentication
+import SwiftEntryKit
 import AVFoundation
 
 class SplashViewController: UIViewController {
     // MARK: - Variables and constants
-    private var player: AVQueuePlayer!
-    private var playerLayer: AVPlayerLayer!
-    private var playerItem: AVPlayerItem!
-    private var playerLooper: AVPlayerLooper!
+    var player: AVQueuePlayer!
+    var playerLayer: AVPlayerLayer!
+    var playerItem: AVPlayerItem!
+    var playerLooper: AVPlayerLooper!
     private let localAuthenticationContext = LAContext()
-    var ticketTop: NSLayoutConstraint?
+    var ticketTopLayoutConstraint: NSLayoutConstraint?
     var ticketBottom: NSLayoutConstraint?
     var walletExistsInitially: Bool = false
     var alreadyReplacedVideo: Bool = false
-    var unitTesting: Bool {
+    var isUnitTesting: Bool {
         return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
@@ -71,6 +72,8 @@ class SplashViewController: UIViewController {
     var animationContainerBottomAnchor: NSLayoutConstraint?
     var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
 
+    private let progressFeedbackView = FeedbackView()
+
     // MARK: - Override functions
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -81,35 +84,109 @@ class SplashViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if !unitTesting {
+        if !isUnitTesting {
             titleAnimation()
             checkExistingWallet()
+        }
+
+        handleWalletEvents()
+    }
+
+    private func handleWalletEvents() {
+        //Handle tor progress
+        TariEventBus.onMainThread(self, eventType: .torConnectionProgress) { [weak self] (result) in
+            guard let self = self else { return }
+
+            if let progress: Int = result?.object as? Int {
+                if progress == 0 {
+                    var attributes = EKAttributes.topToast
+                    attributes.entryBackground = .color(color: EKColor(Theme.shared.colors.successFeedbackPopupBackground!))
+                    attributes.screenBackground = .clear
+                    attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
+                    attributes.displayDuration = .infinity
+                    attributes.screenInteraction = .forward
+                    SwiftEntryKit.display(entry: self.progressFeedbackView, using: attributes)
+                }
+
+                self.progressFeedbackView.setupSuccess(title: "Tor bootstrapping: \(progress)%")
+            }
+        }
+
+        //Handle on tor connected
+        TariEventBus.onMainThread(self, eventType: .torConnected) { [weak self] (_) in
+            guard let self = self else { return }
+
+            self.progressFeedbackView.setupSuccess(title: "Tor connection established")
+
+            if self.walletExistsInitially {
+                self.startExistingWallet()
+            } else {
+                self.createNewWallet()
+            }
+        }
+
+        TariEventBus.onMainThread(self, eventType: .torConnectionFailed) { [weak self] (result) in
+            guard let _ = self else { return }
+
+            let error: Error? = result?.object as? Error
+
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Tor connection error", comment: "Splash screen"),
+                description: NSLocalizedString("Could not establish a connection to the network", comment: "Splash screen"),
+                error: error
+            )
+        }
+    }
+
+    private func startExistingWallet() {
+        //Kick off wallet creation on a background thread
+        DispatchQueue.global().async {
+            do {
+                try TariLib.shared.startExistingWallet()
+
+                DispatchQueue.main.async {
+                    SwiftEntryKit.dismiss()
+                    self.authenticateUser()
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    UserFeedback.shared.error(
+                        title: NSLocalizedString("Wallet error", comment: "Splash screen"),
+                        description: NSLocalizedString("Error starting existing wallet", comment: "Splash screen"),
+                        error: error
+                    )
+                }
+            }
+        }
+    }
+
+    private func createNewWallet() {
+        do {
+            try TariLib.shared.createNewWallet()
+            SwiftEntryKit.dismiss()
+
+            if let _ = self.ticketTopLayoutConstraint {
+                self.topAnimationAndRemoveVideoAnimation { [weak self] (_) in
+                    guard let self = self else { return }
+                    self.startAnimation()
+                }
+            } else {
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+                    self.startAnimation()
+                }
+            }
+        } catch {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Wallet error", comment: "Splash screen for new users"),
+                description: NSLocalizedString("Failed to create a new wallet", comment: "Splash screen for new users"), error: error //TODO copy update
+            )
+
+            createWalletButton.variation = .normal
         }
     }
 
     // MARK: - Private functions
-    private func setupVideoAnimation() {
-        if let path = Bundle.main.path(forResource: "1-Intro", ofType: "mp4") {
-
-            _ = try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default, options: .mixWithOthers)
-            let pathURL = URL(fileURLWithPath: path)
-            let duration = Int64( ( (Float64(CMTimeGetSeconds(AVAsset(url: pathURL).duration)) *  10.0) - 1) / 10.0 )
-
-            player = AVQueuePlayer()
-            playerLayer = AVPlayerLayer(player: player)
-            playerItem = AVPlayerItem(url: pathURL)
-            playerLooper = AVPlayerLooper(player: player,
-                                          templateItem: playerItem,
-                                          timeRange: CMTimeRange(start: CMTime.zero, end: CMTimeMake(value: duration, timescale: 1)))
-            playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
-            playerLayer.frame = videoView.layer.bounds
-            player.play()
-            videoView.layer.insertSublayer(playerLayer, at: 0)
-            videoView.clipsToBounds = true
-
-            NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd(notification:)), name: .AVPlayerItemDidPlayToEndTime, object: player.currentItem)
-        }
-    }
 
     @objc func playerItemDidReachEnd(notification: Notification) {
         if !alreadyReplacedVideo {
@@ -128,237 +205,27 @@ class SplashViewController: UIViewController {
         }
     }
 
-    private func setupView() {
-        updateConstraintsAnimationContainer()
-        updateConstraintsVideoView()
-        updateConstraintsTitleLabel()
-        updateConstraintsSubtitleLabel()
-        updateConstraintsBottomBagroundView()
-        updateConstraintsCreateWalletButton()
-        updateConstraintsGemImageView()
-        setupContraintsVersionLabel()
-        createWalletButton.isHidden = true
-
-        createWalletButton.setTitle(NSLocalizedString("Create Wallet", comment: "Main action button on the onboarding screen"), for: .normal)
-        titleLabel.text = NSLocalizedString("A crypto wallet that’s easy to use.", comment: "Title Label on the onboarding screen")
-        titleLabel.font = Theme.shared.fonts.splashTitleLabel
-        titleLabel.textColor = Theme.shared.colors.splashTitle
-
-        subtitleLabel.text = NSLocalizedString("Tari wallet puts you and your privacy at the core of everything and is still easy to use.", comment: "Subtitle Label on the onboarding screen")
-
-        subtitleLabel.textColor = Theme.shared.colors.splashSubtitle
-        subtitleLabel.font = Theme.shared.fonts.splashSubtitleLabel
-
-        versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
-        versionLabel.textColor = Theme.shared.colors.splashVersionLabel
-        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            let labelText = NSLocalizedString("Testnet", comment: "Bottom version label for splash screen")
-            versionLabel.text = "\(labelText) V\(version)".uppercased()
-        }
-    }
-
-    private func updateConstraintsAnimationContainer() {
-        animationContainer = AnimationView()
-        view.addSubview(animationContainer)
-        animationContainer.translatesAutoresizingMaskIntoConstraints = false
-        animationContainer.widthAnchor.constraint(equalToConstant: 240).isActive = true
-        animationContainer.heightAnchor.constraint(equalToConstant: 128).isActive = true
-        animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-
-        if TariLib.shared.walletExists {
-            animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-            walletExistsInitially = true
-        } else {
-            ticketTop = animationContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 0)
-            ticketTop?.isActive = true
-
-            animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor,
-                                                        constant: 0).isActive = true
-            walletExistsInitially = false
-        }
-    }
-
-    private func updateConstraintsVideoView() {
-        videoView = UIView()
-        view.addSubview(videoView)
-        videoView.translatesAutoresizingMaskIntoConstraints = false
-        if TariLib.shared.walletExists {
-            animationContainerBottomAnchor?.isActive = false
-        } else {
-            animationContainerBottomAnchor = videoView.topAnchor.constraint(equalTo: animationContainer.bottomAnchor,
-            constant: 0)
-            animationContainerBottomAnchor?.isActive = true
-
-            videoView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-            videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-            videoView.widthAnchor.constraint(equalTo: videoView.heightAnchor, multiplier: 750.0/748.0).isActive = true
-        }
-    }
-
-    private func updateConstraintsTitleLabel() {
-        titleLabel = UILabel()
-        view.addSubview(titleLabel)
-
-        titleLabel.numberOfLines = 0
-        titleLabel.textAlignment = .center
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-
-        if TariLib.shared.walletExists {
-            animationContainer.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 0).isActive = true
-        }
-    }
-
-    private func updateConstraintsSubtitleLabel() {
-        subtitleLabel = UILabel()
-        view.addSubview(subtitleLabel)
-
-        subtitleLabel.numberOfLines = 0
-        subtitleLabel.textAlignment = .center
-
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subtitleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
-        subtitleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
-
-        subtitleLabel.topAnchor.constraint(equalTo: videoView.bottomAnchor, constant: 100).isActive = true
-        distanceTitleSubtitle = subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: -100)
-        distanceTitleSubtitle.isActive = true
-    }
-
-    private func updateConstraintsBottomBagroundView() {
-        bottomBackgroundView = UIView()
-        view.insertSubview(bottomBackgroundView, belowSubview: subtitleLabel)
-        bottomBackgroundView.translatesAutoresizingMaskIntoConstraints = false
-        bottomBackgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                                               constant: 0).isActive = true
-        bottomBackgroundView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                                                constant: 0).isActive = true
-        bottomBackgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
-                                                     constant: 0).isActive = true
-        bottomBackgroundView.topAnchor.constraint(equalTo: subtitleLabel.topAnchor,
-                                                  constant: 0).isActive = true
-        bottomBackgroundView.backgroundColor = .black
-    }
-
-    private func updateConstraintsCreateWalletButton() {
-        createWalletButton = ActionButton()
-        createWalletButton.addTarget(self, action: #selector(createWallet), for: .touchUpInside)
-        view.addSubview(createWalletButton)
-        createWalletButton.translatesAutoresizingMaskIntoConstraints = false
-
-        createWalletButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
-        createWalletButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        createWalletButton.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor,
-                                                constant: 25).isActive = true
-
-    }
-
-    private func updateConstraintsGemImageView() {
-        gemImageView = UIImageView()
-        view.addSubview(gemImageView)
-        gemImageView.image = UIImage(named: "Gem")
-        gemImageView.translatesAutoresizingMaskIntoConstraints = false
-        gemImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        gemImageView.topAnchor.constraint(equalTo: createWalletButton.bottomAnchor, constant: 35).isActive = true
-        gemImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
-        gemImageView.heightAnchor.constraint(equalToConstant: 24).isActive = true
-    }
-
-    private func setupContraintsVersionLabel() {
-        versionLabel = UILabel()
-        view.addSubview(versionLabel)
-        versionLabel.textAlignment = .center
-        versionLabel.numberOfLines = 0
-        versionLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        versionLabel.bottomAnchor.constraint(lessThanOrEqualTo: view.layoutMarginsGuide.bottomAnchor, constant: 0).isActive = true
-        versionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
-        versionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        versionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        versionLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 16).isActive = true
-        versionLabel.topAnchor.constraint(equalTo: gemImageView.bottomAnchor, constant: 16).isActive = true
-    }
-
-    private func titleAnimation() {
-        self.distanceTitleSubtitle.constant = 26.0
-        UIView.animate(withDuration: 0.5) { [weak self] in
-            guard let self = self else { return }
-            self.view.layoutIfNeeded()
-        }
-    }
-
-    private func topAnimationAndRemoveVideoAnimation() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.ticketTop?.isActive = false
-            self.animationContainerBottomAnchor?.isActive = false
-            self.animationContainerBottomAnchorToVideo?.isActive = false
-            self.ticketBottom?.isActive = false
-            self.videoView.isHidden = true
-            self.animationContainer.bottomAnchor.constraint(equalTo: self.titleLabel.topAnchor, constant: 0).isActive = true
-
-            UIView.animate(withDuration: 2.0, animations: { [weak self] in
-                guard let self = self else { return }
-                self.view.layoutIfNeeded()
-            }) { [weak self] (_) in
-                guard let self = self else { return }
-                self.startAnimation()
-            }
-        }
-    }
-
     private func checkExistingWallet() {
         if TariLib.shared.walletExists {
-            do {
-                try TariLib.shared.startExistingWallet()
-            } catch {
-                UserFeedback.shared.error(title: "Wallet error", description: "Error starting existing wallet", error: error)
-                return
-            }
-
-            #if targetEnvironment(simulator)
-                startAnimation()
-            #else
-                authenticateUser()
-            #endif
+            TariLib.shared.startTor()
         } else {
             setupVideoAnimation()
             createWalletButton.isHidden = false
         }
     }
 
-    @objc func createWallet() {
+    @objc func onCreateWalletTap() {
         createWalletButton.variation = .loading
-
-        do {
-            try TariLib.shared.createNewWallet()
-
-            if let _ = self.ticketTop {
-                self.topAnimationAndRemoveVideoAnimation()
-            } else {
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    self.startAnimation()
-                }
-            }
-        } catch {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to create new wallet", comment: ""),
-                description: NSLocalizedString("", comment: ""), error: error //TODO copy update
-            )
-
-            createWalletButton.variation = .normal
-        }
+        TariLib.shared.startTor()
     }
 
     private func authenticateUser() {
+        #if targetEnvironment(simulator)
+        //Skip auth on simulator, quicker for development
+        self.startAnimation()
+        return
+        #endif
+
         let authPolicy: LAPolicy = .deviceOwnerAuthentication
 
         var error: NSError?
@@ -367,8 +234,11 @@ class SplashViewController: UIViewController {
                 self.localAuthenticationContext.evaluatePolicy(authPolicy, localizedReason: reason ) { [weak self] success, error in
                     guard let self = self else { return }
                     if success {
-                        if let _ = self.ticketTop {
-                            self.topAnimationAndRemoveVideoAnimation()
+                        if let _ = self.ticketTopLayoutConstraint {
+                            self.topAnimationAndRemoveVideoAnimation { [weak self] (_) in
+                                guard let self = self else { return }
+                                self.startAnimation()
+                            }
                         } else {
                             DispatchQueue.main.async { [weak self] in
                                 guard let self = self else { return }
@@ -416,11 +286,6 @@ class SplashViewController: UIViewController {
         }
     }
 
-    private func loadAnimation() {
-        let animation = Animation.named("SplashAnimation")
-        animationContainer.animation = animation
-    }
-
     private func startAnimation() {
         #if targetEnvironment(simulator)
           animationContainer.animationSpeed = 5
@@ -432,6 +297,7 @@ class SplashViewController: UIViewController {
             loopMode: .playOnce,
             completion: { [weak self] (_) in
                 guard let self = self else { return }
+
                 self.navigateToHome()
             }
         )

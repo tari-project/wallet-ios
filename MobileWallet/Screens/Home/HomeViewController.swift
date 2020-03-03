@@ -105,13 +105,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         super.viewDidLoad()
 
         self.refreshBalance()
-        TariEventBus.onMainThread(self, eventType: .balanceUpdate) { [weak self] (_) in
-            guard let self = self else {
-                return
-            }
-
-            self.refreshBalance()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -134,10 +127,16 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         isShowingSendButton = isShowingSendButton == true
         isTransactionViewFullScreen = isTransactionViewFullScreen == true
+
+        TariEventBus.onMainThread(self, eventType: .balanceUpdate) { [weak self] (_) in
+            guard let self = self else { return }
+
+            self.refreshBalance()
+        }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
 
         TariEventBus.unregister(self)
     }

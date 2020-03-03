@@ -73,14 +73,13 @@ class TransportType {
         ptr = result!
     }
 
-    init(controlServerAddress: String, torPort: Int, torPrivateKey: ByteVector, torPassword: String = "", socksUsername: String = "", socksPassword: String = "") throws {
+    init(controlServerAddress: String, torPort: Int, torIdentity: ByteVector, torCookie: ByteVector, socksUsername: String = "", socksPassword: String = "") throws {
         var errorCode: Int32 = -1
-        let torPrivateKeyPtr = torPrivateKey.count.0 > 0 ? torPrivateKey.pointer : nil
+        let torPrivateKeyPtr = torIdentity.count.0 > 0 ? torIdentity.pointer : nil
         let controlPtr = controlServerAddress.count > 0 ? UnsafeMutablePointer<Int8>(mutating: controlServerAddress) : nil
-        let torPassPtr = torPassword.count > 0 ? UnsafeMutablePointer<Int8>(mutating: torPassword) : nil
         let socksPassPtr = socksPassword.count > 0 ? UnsafeMutablePointer<Int8>(mutating: socksPassword) : nil
         let socksUserPtr = socksUsername.count > 0 ? UnsafeMutablePointer<Int8>(mutating: socksUsername) : nil
-        let result = transport_tor_create(controlPtr, torPassPtr, torPrivateKeyPtr, UInt16(torPort), socksUserPtr, socksPassPtr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = transport_tor_create(controlPtr, torCookie.pointer, torPrivateKeyPtr, UInt16(torPort), socksUserPtr, socksPassPtr, UnsafeMutablePointer<Int32>(&errorCode))
         guard (errorCode == 0) else {
             throw TransportTypeError.generic(errorCode)
         }

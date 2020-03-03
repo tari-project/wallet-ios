@@ -42,16 +42,21 @@ import Foundation
 
 public enum TariEventTypes: String {
     //Wallet callbacks
-    case receievedTransaction = "receieved-transaction"
-    case receievedTransactionReply = "receieved-transaction-reply"
-    case receivedFinalizedTransaction = "received-finalized-transaction"
-    case transactionBroadcast = "transaction-broadcase"
-    case transactionMined = "transaction-mined"
-    case discoveryProcessComplete = "discovery-process-complete"
+    case receievedTransaction = "tari-event-receieved-transaction"
+    case receievedTransactionReply = "tari-event-receieved-transaction-reply"
+    case receivedFinalizedTransaction = "tari-event-received-finalized-transaction"
+    case transactionBroadcast = "tari-event-transaction-broadcase"
+    case transactionMined = "tari-event-transaction-mined"
+    case discoveryProcessComplete = "tari-event-discovery-process-complete"
 
     //Common UI updates
-    case transactionListUpdate = "transaction-list-update"
-    case balanceUpdate = "balance-update"
+    case transactionListUpdate = "tari-event-transaction-list-update"
+    case balanceUpdate = "tari-event-balance-update"
+
+    //Tor instantiation statuses
+    case torConnectionProgress = "tari-event-tor-connection-progress"
+    case torConnected = "tari-event-tor-connected"
+    case torConnectionFailed = "tari-event-tor-connection-failed"
 }
 
 private let IDENTIFIER = "com.tari.eventbus"

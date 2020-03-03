@@ -89,26 +89,6 @@ class TariLib {
         return "/ip4/0.0.0.0/tcp/9838"
     }
 
-    var socksUser: String {
-        return ""
-    }
-
-    var socksPass: String {
-        return ""
-    }
-
-    var torPort: Int {
-        return 39060
-    }
-
-    var torPass: String {
-        return ""
-    }
-
-    var torKey: String {
-        return ""
-    }
-
     private let fileManager = FileManager.default
 
     var tariWallet: Wallet?
@@ -131,7 +111,52 @@ class TariLib {
     deinit {}
 
     private func addBaseNode() throws {
-        try tariWallet?.addBaseNodePeer(publicKey: PublicKey(hex: "982d74cfecbcad95e6057efc2ca6f26e938d04544d173990e99db3b0ad4bf636"), address: "/ip4/172.30.30.140/tcp/18141")
+        //Stanimals node:
+        try tariWallet?.addBaseNodePeer(
+            publicKey: PublicKey(hex: "90d8fe54c377ecabff383f7d8f0ba708c5b5d2a60590f326fbf1a2e74ea2441f"),
+            address: "/onion3/plvcskybsckbfeubywjbmpnbm4kjqm2ip6kbwimakaim6xyucydpityd:18001")
+    }
+
+    private func transportType() throws -> TransportType {
+        let torKey = ""
+        let torBytes = [UInt8](torKey.utf8)
+        let torIdentity = try ByteVector(byteArray: torBytes)
+
+        let torCookieBytes = [UInt8](OnionManager.cookie)
+        let torCookie = try ByteVector(byteArray: torCookieBytes)
+
+        return try TransportType(
+            controlServerAddress: "/ip4/127.0.0.1/tcp/39069",
+            torPort: 39058, //TODO move ports to shared config
+            torIdentity: torIdentity,
+            torCookie: torCookie,
+            socksUsername: "",
+            socksPassword: ""
+        )
+    }
+
+    func startTor() {
+        TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(0))
+        OnionConnector().start(
+            progress: { [weak self] percentage in
+                TariEventBus.postToMainThread(.torConnectionProgress, sender: percentage)
+            },
+            completion: { [weak self] result in
+                guard let self = self else { return }
+
+                TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(100))
+
+                switch result {
+                    case .success(let urlSessionConfiguration):
+                        print("Tor connected")
+                        TariEventBus.postToMainThread(.torConnected, sender: urlSessionConfiguration)
+                    case .failure(let error):
+                        print("Tor connection failed")
+                        print(error)
+                        TariEventBus.postToMainThread(.torConnectionFailed, sender: error)
+                }
+            }
+        )
     }
 
     func createNewWallet() throws {
@@ -150,10 +175,9 @@ class TariLib {
 
         UserDefaults.standard.set(hex, forKey: PRIVATE_KEY_STORAGE_KEY)
 
-        let torBytes = [UInt8](torKey.utf8)
-        let torPrivateKey = try ByteVector(byteArray: torBytes)
-        //let transport = try TransportType(controlServerAddress: controlAddress, torPort: torPort, torPrivateKey: torPrivateKey, torPassword: torPass, socksUsername: socksUser, socksPassword: socksPass)
-        let transport = try TransportType(listenerAddress: listenerAddress)
+        let transport = try transportType()
+        //let transport = try TransportType(listenerAddress: listenerAddress)
+
         let commsConfig = try CommsConfig(privateKey: privateKey, transport: transport, databasePath: databasePath, databaseName: DATABASE_NAME, publicAddress: publicAddress)
 
         tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
@@ -164,11 +188,12 @@ class TariLib {
     func startExistingWallet() throws {
         if let privateKeyHex = UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) {
             print("databasePath: ", databasePath)
-            let torBytes = [UInt8](torKey.utf8)
-            let torPrivateKey = try ByteVector(byteArray: torBytes)
+
             let privateKey = try PrivateKey(hex: privateKeyHex)
-            //let transport = try TransportType(controlServerAddress: controlAddress, torPort: torPort, torPrivateKey: torPrivateKey, torPassword: torPass, socksUsername: socksUser, socksPassword: socksPass)
-            let transport = try TransportType(listenerAddress: listenerAddress)
+            let transport = try transportType()
+
+            //TODO maybe on a simulator we don't use tor so development is sped up
+            //let transport = try TransportType(listenerAddress: listenerAddress)
             let commsConfig = try CommsConfig(privateKey: privateKey, transport: transport, databasePath: databasePath, databaseName: DATABASE_NAME, publicAddress: publicAddress)
             tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
         } else {
