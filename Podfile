@@ -10,6 +10,7 @@ target 'MobileWallet' do
   pod 'FloatingPanel'
   pod 'lottie-ios'
   pod 'SwiftEntryKit', '1.2.3'
+  pod 'ReachabilitySwift'
   
   target 'MobileWalletTests' do
     inherit! :search_paths
