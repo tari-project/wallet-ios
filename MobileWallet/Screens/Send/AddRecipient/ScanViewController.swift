@@ -64,19 +64,124 @@ class ScanViewController: UIViewController {
     let heightTitleLabel: CGFloat = CGFloat(44)
 
     // MARK: - Outlets
-    @IBOutlet weak var backButton: UIButton!
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var middleView: UIView!
-    @IBOutlet weak var topLeftWhiteView: UIView!
-    @IBOutlet weak var topRightWhiteView: UIView!
-    @IBOutlet weak var bottomLeftWhiteView: UIView!
-    @IBOutlet weak var bottomRightWhiteView: UIView!
+    var backButton: UIButton!
+    var titleLabel: UILabel!
+    var middleView: UIView!
+    var topLeftWhiteView: UIView!
+    var topRightWhiteView: UIView!
+    var bottomLeftWhiteView: UIView!
+    var bottomRightWhiteView: UIView!
 
     // MARK: - Override functions
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        updateConstraintsBackButton()
+        updateConstraintsTitleLabel()
+        updateConstraintsMiddleView()
+        updateConstraintsTopLeftView()
+        updateConstraintsTopRightView()
+        updateConstraintsBottomLeftView()
+        updateConstraintsBottomRightView()
         setupScanner()
+    }
+
+    private func updateConstraintsBackButton() {
+        backButton = UIButton(type: .system)
+        backButton.setImage(Theme.shared.images.close!, for: .normal)
+        backButton.tintColor = .white
+        backButton.addTarget(self, action: #selector(onBackAction), for: .touchUpInside)
+        view.addSubview(backButton)
+        backButton.translatesAutoresizingMaskIntoConstraints = false
+
+        backButton.widthAnchor.constraint(equalToConstant: 32).isActive = true
+        backButton.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        backButton.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                             constant: 20).isActive = true
+        backButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor,
+                                         constant: 20).isActive = true
+    }
+
+    private func updateConstraintsTitleLabel() {
+        titleLabel = UILabel()
+        titleLabel.numberOfLines = 0
+        titleLabel.textAlignment = .center
+        view.addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                            constant: 64).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                             constant: -64).isActive = true
+        titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: backButton.bottomAnchor,
+                                        constant: 76.5).isActive = true
+        titleLabel.heightAnchor.constraint(equalToConstant: 44).isActive = true
+    }
+
+    private func updateConstraintsMiddleView() {
+        middleView = UIView()
+        middleView.backgroundColor = .clear
+        view.addSubview(middleView)
+        middleView.translatesAutoresizingMaskIntoConstraints = false
+        middleView.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+                                                constant: 0).isActive = true
+        middleView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor,
+                                            constant: 80).isActive = true
+        middleView.widthAnchor.constraint(equalToConstant: 276).isActive = true
+        middleView.heightAnchor.constraint(equalToConstant: 259).isActive = true
+
+    }
+
+    private func updateConstraintsTopLeftView() {
+        topLeftWhiteView = UIView()
+        topLeftWhiteView.backgroundColor = .clear
+        view.addSubview(topLeftWhiteView)
+        topLeftWhiteView.translatesAutoresizingMaskIntoConstraints = false
+        topLeftWhiteView.topAnchor.constraint(equalTo: middleView.topAnchor,
+                                            constant: 0).isActive = true
+        topLeftWhiteView.leftAnchor.constraint(equalTo: middleView.leftAnchor,
+                                               constant: 0).isActive = true
+        topLeftWhiteView.widthAnchor.constraint(equalToConstant: 72).isActive = true
+        topLeftWhiteView.heightAnchor.constraint(equalToConstant: 69).isActive = true
+
+    }
+
+    private func updateConstraintsTopRightView() {
+        topRightWhiteView = UIView()
+        topRightWhiteView.backgroundColor = .clear
+        view.addSubview(topRightWhiteView)
+        topRightWhiteView.translatesAutoresizingMaskIntoConstraints = false
+        topRightWhiteView.topAnchor.constraint(equalTo: middleView.topAnchor,
+                                            constant: 0).isActive = true
+        topRightWhiteView.rightAnchor.constraint(equalTo: middleView.rightAnchor,
+                                               constant: 0).isActive = true
+        topRightWhiteView.widthAnchor.constraint(equalToConstant: 72).isActive = true
+        topRightWhiteView.heightAnchor.constraint(equalToConstant: 69).isActive = true
+    }
+
+    private func updateConstraintsBottomLeftView() {
+        bottomLeftWhiteView = UIView()
+        bottomLeftWhiteView.backgroundColor = .clear
+        view.addSubview(bottomLeftWhiteView)
+        bottomLeftWhiteView.translatesAutoresizingMaskIntoConstraints = false
+        bottomLeftWhiteView.bottomAnchor.constraint(equalTo: middleView.bottomAnchor,
+                                            constant: 0).isActive = true
+        bottomLeftWhiteView.leftAnchor.constraint(equalTo: middleView.leftAnchor,
+                                               constant: 0).isActive = true
+        bottomLeftWhiteView.widthAnchor.constraint(equalToConstant: 72).isActive = true
+        bottomLeftWhiteView.heightAnchor.constraint(equalToConstant: 69).isActive = true
+    }
+
+    private func updateConstraintsBottomRightView() {
+        bottomRightWhiteView = UIView()
+        bottomRightWhiteView.backgroundColor = .clear
+        view.addSubview(bottomRightWhiteView)
+        bottomRightWhiteView.translatesAutoresizingMaskIntoConstraints = false
+        bottomRightWhiteView.bottomAnchor.constraint(equalTo: middleView.bottomAnchor,
+                                            constant: 0).isActive = true
+        bottomRightWhiteView.rightAnchor.constraint(equalTo: middleView.rightAnchor,
+                                               constant: 0).isActive = true
+        bottomRightWhiteView.widthAnchor.constraint(equalToConstant: 72).isActive = true
+        bottomRightWhiteView.heightAnchor.constraint(equalToConstant: 69).isActive = true
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -114,6 +219,8 @@ class ScanViewController: UIViewController {
     // MARK: - Private functions
     private func customizeViews() {
         self.titleLabel.text = NSLocalizedString("Scan Tari QR code in the box below to a send Tari to receipient.", comment: "Scan contact camera view")
+        self.titleLabel.textColor = Theme.shared.colors.scannerTitle
+        self.titleLabel.font = Theme.shared.fonts.scannerTitleLabel
         topLeftWhiteView.addTopBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
         topLeftWhiteView.addLeftBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
         topRightWhiteView.addTopBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
@@ -226,7 +333,7 @@ class ScanViewController: UIViewController {
 
 // MARK: - Actions
 
-    @IBAction func onBackAction(_ sender: Any) {
+    @objc func onBackAction() {
         dismiss(animated: true, completion: nil)
     }
 }

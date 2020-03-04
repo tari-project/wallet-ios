@@ -171,6 +171,9 @@ struct Colors: Loopable {
 
     //EmoticonView
     let emoticonBlackBackgroundAlpha = UIColor(named: "EmoticonBlackBackgroundAlpha")
+
+    //ScannerView
+    let scannerTitle = UIColor(named: "ScannerTitle")
 }
 
 struct Fonts: Loopable {
@@ -249,6 +252,9 @@ struct Fonts: Loopable {
     //Add note screen
     let addNoteTitleLabel = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)
     let addNoteInputView = UIFont(name: "AvenirLTStd-Medium", size: 20.0)
+
+    //Add note screen
+    let scannerTitleLabel = UIFont(name: "Avenir-Heavy", size: 16.0)
 }
 
 struct Images: Loopable {

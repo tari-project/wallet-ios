@@ -155,8 +155,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
     }
 
     @objc private func openScanner() {
-        let storyBoard = UIStoryboard.init(name: "Main", bundle: nil)
-        guard let vc = storyBoard.instantiateViewController(identifier: "ScanViewController") as? ScanViewController else { return }
+        let vc = ScanViewController()
         vc.actionDelegate = self as ScanViewControllerDelegate
         vc.modalPresentationStyle = .popover
         present(vc, animated: true, completion: nil)
