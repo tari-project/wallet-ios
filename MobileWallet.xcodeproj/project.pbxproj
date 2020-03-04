@@ -258,6 +258,18 @@
 		00BBD81B237EB31900EBF5E6 /* CommsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* CommsConfig.swift */; };
 		00BBD81C237EB31900EBF5E6 /* CommsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* CommsConfig.swift */; };
 		00BBD81E237ECDAA00EBF5E6 /* TariLibWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD81D237ECDAA00EBF5E6 /* TariLibWrapperTests.swift */; };
+		00BCE47F240D5A9700B181F3 /* OnionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE47D240D5A9700B181F3 /* OnionManager.swift */; };
+		00BCE480240D5A9700B181F3 /* OnionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE47D240D5A9700B181F3 /* OnionManager.swift */; };
+		00BCE481240D5A9700B181F3 /* OnionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE47D240D5A9700B181F3 /* OnionManager.swift */; };
+		00BCE482240D5A9700B181F3 /* OnionConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE47E240D5A9700B181F3 /* OnionConnector.swift */; };
+		00BCE483240D5A9700B181F3 /* OnionConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE47E240D5A9700B181F3 /* OnionConnector.swift */; };
+		00BCE484240D5A9700B181F3 /* OnionConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE47E240D5A9700B181F3 /* OnionConnector.swift */; };
+		00BCE487240D5C4100B181F3 /* Tor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BCE486240D5C4100B181F3 /* Tor.framework */; };
+		00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE488240EB1EE00B181F3 /* SplashViewControllerSetup.swift */; };
+		00BCE48A240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE488240EB1EE00B181F3 /* SplashViewControllerSetup.swift */; };
+		00BCE48B240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE488240EB1EE00B181F3 /* SplashViewControllerSetup.swift */; };
+		00BCE48C240F9FA000B181F3 /* Tor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BCE486240D5C4100B181F3 /* Tor.framework */; };
+		00BCE48D240F9FA100B181F3 /* Tor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BCE486240D5C4100B181F3 /* Tor.framework */; };
 		00C185B9238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */; };
 		00C185BA238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */; };
 		00C185BB238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */; };
@@ -477,6 +489,10 @@
 		00BBD815237EA67600EBF5E6 /* Wallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wallet.swift; sourceTree = "<group>"; };
 		00BBD819237EB31900EBF5E6 /* CommsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsConfig.swift; sourceTree = "<group>"; };
 		00BBD81D237ECDAA00EBF5E6 /* TariLibWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLibWrapperTests.swift; sourceTree = "<group>"; };
+		00BCE47D240D5A9700B181F3 /* OnionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnionManager.swift; sourceTree = "<group>"; };
+		00BCE47E240D5A9700B181F3 /* OnionConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnionConnector.swift; sourceTree = "<group>"; };
+		00BCE486240D5C4100B181F3 /* Tor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Tor.framework; path = Carthage/Build/iOS/Tor.framework; sourceTree = "<group>"; };
+		00BCE488240EB1EE00B181F3 /* SplashViewControllerSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewControllerSetup.swift; sourceTree = "<group>"; };
 		00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewControllerDebugExtension.swift; sourceTree = "<group>"; };
 		00C185BD238953F60096984E /* DebugLogsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogsTableViewController.swift; sourceTree = "<group>"; };
 		00C185C52390221A0096984E /* DevelopmentUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentUI.swift; sourceTree = "<group>"; };
@@ -556,6 +572,7 @@
 				0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */,
 				4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */,
 				123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */,
+				00BCE487240D5C4100B181F3 /* Tor.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -565,6 +582,7 @@
 			files = (
 				4CCF87EE23E8275800C8CDB1 /* libtari_wallet_ffi.a in Frameworks */,
 				00DC2E242385559C00036DDC /* libsqlite3.tbd in Frameworks */,
+				00BCE48C240F9FA000B181F3 /* Tor.framework in Frameworks */,
 				83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -575,6 +593,7 @@
 			files = (
 				4CCF87EF23E8276700C8CDB1 /* libtari_wallet_ffi.a in Frameworks */,
 				00DC2E25238555A200036DDC /* libsqlite3.tbd in Frameworks */,
+				00BCE48D240F9FA100B181F3 /* Tor.framework in Frameworks */,
 				1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -591,6 +610,7 @@
 				BF191A2D23E5B05400D33C85 /* CheckMarkAnimation */,
 				BF191A2C23E5B02F00D33C85 /* EmojiWheelAnimation */,
 				0012562E2371D81500A9C067 /* SplashViewController.swift */,
+				00BCE488240EB1EE00B181F3 /* SplashViewControllerSetup.swift */,
 				BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */,
 			);
 			path = Splash;
@@ -787,6 +807,15 @@
 			path = Wrappers;
 			sourceTree = "<group>";
 		};
+		00BCE485240D5A9E00B181F3 /* Tor */ = {
+			isa = PBXGroup;
+			children = (
+				00BCE47E240D5A9700B181F3 /* OnionConnector.swift */,
+				00BCE47D240D5A9700B181F3 /* OnionManager.swift */,
+			);
+			path = Tor;
+			sourceTree = "<group>";
+		};
 		00C185BC238953B40096984E /* Debug */ = {
 			isa = PBXGroup;
 			children = (
@@ -932,6 +961,7 @@
 		27F235021D9E2060A3CBB465 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				00BCE486240D5C4100B181F3 /* Tor.framework */,
 				4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */,
 				00DC2E21238554FD00036DDC /* libsqlite3.tbd */,
 				00DC2E232385559C00036DDC /* libsqlite3.tbd */,
@@ -960,6 +990,7 @@
 				4C2C95C223796184005058AB /* libzmq.a */,
 				4C2C95AF23795919005058AB /* libwallet_ffi.a */,
 				009BF8AB237ABB4700C02E44 /* TariLib.swift */,
+				00BCE485240D5A9E00B181F3 /* Tor */,
 				006D211B23CEDEEE007D1C10 /* Utils */,
 				00BBD80C237DA04300EBF5E6 /* Wrappers */,
 			);
@@ -1096,6 +1127,7 @@
 				00E491AD2366E08F007B332D /* Sources */,
 				00E491AE2366E08F007B332D /* Frameworks */,
 				00E491AF2366E08F007B332D /* Resources */,
+				00BCE48E240FA14B00B181F3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1116,6 +1148,7 @@
 				00E491B92366E08F007B332D /* Frameworks */,
 				00E491BA2366E08F007B332D /* Resources */,
 				D547E6E3A0F51CA88BB64A82 /* [CP] Embed Pods Frameworks */,
+				00BCE48F240FA16F00B181F3 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1339,6 +1372,42 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		00BCE48E240FA14B00B181F3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Tor.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
+		00BCE48F240FA16F00B181F3 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Tor.framework",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
+		};
 		00E491E823670555007B332D /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1347,6 +1416,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Tor.framework",
 			);
 			outputFileListPaths = (
 			);
@@ -1354,7 +1424,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if which \"${PODS_ROOT}/SwiftLint/swiftlint\" >/dev/null; then\n  \"${PODS_ROOT}/SwiftLint/swiftlint\" autocorrect \"${PROJECT_DIR}/MobileWallet/\"\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n\nTAGS=\"TODO|FIXME\"\nERRORTAG=\"PROBLEM\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" -or -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$|($ERRORTAG).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\" | perl -p -e \"s/($ERRORTAG)/ error: \\$1/\"\n";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n\nif which \"${PODS_ROOT}/SwiftLint/swiftlint\" >/dev/null; then\n  \"${PODS_ROOT}/SwiftLint/swiftlint\" autocorrect \"${PROJECT_DIR}/MobileWallet/\"\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n\nTAGS=\"TODO|FIXME\"\nERRORTAG=\"PROBLEM\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" -or -name \"*.swift\" \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$|($ERRORTAG).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\" | perl -p -e \"s/($ERRORTAG)/ error: \\$1/\"\n";
 		};
 		1D2ED85D52528FD37F207E5E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1470,6 +1540,7 @@
 				00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00262EB9236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
 				00A6779E23743696001A853E /* TransactionViewController.swift in Sources */,
+				00BCE482240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */,
 				0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
@@ -1483,6 +1554,7 @@
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */,
+				00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				001F6CE02380198D00FA7002 /* Contacts.swift in Sources */,
@@ -1510,6 +1582,7 @@
 				00C185B9238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
+				00BCE47F240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
 				004997B72382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
@@ -1541,6 +1614,7 @@
 			files = (
 				004997B02382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				00C185BA238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
+				00BCE48A240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				0042780423E8421200AE7BD9 /* String.swift in Sources */,
 				BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */,
 				001F6CE52380253B00FA7002 /* Contact.swift in Sources */,
@@ -1548,6 +1622,7 @@
 				0053873124065F6C00901A68 /* SlideView.swift in Sources */,
 				0091D4AC23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
+				00BCE483240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				4CD20A372407967B007B64D8 /* TransportType.swift in Sources */,
 				BFD758E723E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
@@ -1587,6 +1662,7 @@
 				001F6CED2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */,
 				BFAB5D1223FDEA6A009E8563 /* EmoticonView.swift in Sources */,
+				00BCE480240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				0087A1AA23F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				005387252405136700901A68 /* AddNoteViewController.swift in Sources */,
@@ -1631,6 +1707,7 @@
 				004997AD2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
 				00A994352396434B007D9990 /* QRButton.swift in Sources */,
 				00262EB6236F024400A6C8A0 /* Theme.swift in Sources */,
+				00BCE48B240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				00BBD805237D746B00EBF5E6 /* OnboardingUITests.swift in Sources */,
 				00947CC923D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				0053873224065F6C00901A68 /* SlideView.swift in Sources */,
@@ -1653,6 +1730,7 @@
 				BF8316FF23EF7EAA00235403 /* LAContext.swift in Sources */,
 				00C185BB238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
 				00BBD814237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
+				00BCE481240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				00BBD803237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
@@ -1672,6 +1750,7 @@
 				001F6CDE238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00947CC423CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
 				00A057B123D875840029C22A /* TariEventBus.swift in Sources */,
+				00BCE484240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				00262EBB236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
 				0091D4A923ED879E004BF7F7 /* Signature.swift in Sources */,
 				00BBD807237D755600EBF5E6 /* HelperFunctions.swift in Sources */,
@@ -1851,6 +1930,10 @@
 				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = 8974PBB98U;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MobileWallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1878,6 +1961,10 @@
 				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = 8974PBB98U;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MobileWallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1904,6 +1991,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8974PBB98U;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MobileWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1934,6 +2025,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8974PBB98U;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MobileWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1963,6 +2058,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8974PBB98U;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1992,6 +2091,10 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8974PBB98U;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

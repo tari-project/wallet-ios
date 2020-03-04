@@ -288,7 +288,8 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                 throw idError!
             }
 
-            transactionIDLabel.text = NSLocalizedString("Transaction ID:", comment: "Transaction detail view") + " \(String(id))"
+            let txIdDisplay = NSLocalizedString("Transaction ID:", comment: "Transaction detail view") + " \(String(id))"
+            var statusEmoji = ""
 
             //Get the fee for outbound transactions only
             if let completedTx = tx as? CompletedTransaction {
@@ -300,6 +301,17 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
 
                     setFeeLabel(fee!.formattedPreciseWithOperator)
                 }
+
+                switch completedTx.status.0 {
+                case .completed:
+                    statusEmoji = " ✔️"
+                case .broadcast:
+                    statusEmoji = " 📡"
+                case .mined:
+                    statusEmoji = " ⛏️"
+                default:
+                    statusEmoji = " 🤔"
+                }
             } else if let pendingOutboundTx = tx as? PendingOutboundTransaction {
                 let (fee, feeError) = pendingOutboundTx.fee
                 guard feeError == nil else {
@@ -308,6 +320,8 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
 
                 setFeeLabel(fee!.formattedPreciseWithOperator)
             }
+
+            transactionIDLabel.text = "\(txIdDisplay)\(statusEmoji)"
         }
     }
 }

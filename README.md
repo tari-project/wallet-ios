@@ -17,6 +17,13 @@ Third party frameworks and Library are managed using Cocoapods.
     - pod 'SwiftLint'
     - pod 'FloatingPanel'
     - pod 'lottie-ios'
+    - pod 'SwiftEntryKit', '1.2.3'
+    - pod 'ReachabilitySwift'
+
+### Carthage packages used used 
+
+    - binary "https://icepa.github.io/Tor.framework/Tor.json" == 400.6.3
+
 
 ### Version Management
 
