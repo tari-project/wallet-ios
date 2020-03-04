@@ -42,14 +42,16 @@ import UIKit
 
 class ProfileViewController: UIViewController {
 
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var emojiContainer: UIView!
-    @IBOutlet weak var emojiLabel: UILabel!
-    @IBOutlet weak var copyEmojiButton: TextButton!
-    @IBOutlet weak var separatorView: UIView!
-    @IBOutlet weak var middleLabel: UILabel!
-    @IBOutlet weak var qrContainer: UIView!
-    @IBOutlet weak var qrImageView: UIImageView!
+    var closeButton: UIButton!
+    var titleLabel: UILabel!
+    var emojiContainer: UIView!
+    var emojiLabel: UILabel!
+    var copyEmojiButton: TextButton!
+    var separatorView: UIView!
+    var middleLabel: UILabel!
+    var bottomView: UIView!
+    var qrContainer: UIView!
+    var qrImageView: UIImageView!
 
     private var emojis: String?
 
@@ -57,16 +59,189 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        updateConstraintsCloseButton()
+        updateConstraintsTitleLabel()
+        updateConstraintsEmojiContainer()
+        updateConstraintsEmojiLabel()
+        updateConstraintsCopyEmojiButton()
+        updateConstraintsSeparatorView()
+        updateConstraintsMiddleLabel()
+        updateConstraintsBottomView()
+        updateConstraintsQRContainer()
+        updateConstraintsQRImageView()
+        generateQRCode()
         customizeViews()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
         addShadowToQRView()
     }
 
     // MARK: - Private functions
+
+    private func updateConstraintsCloseButton() {
+        closeButton = UIButton()
+        closeButton.setImage(Theme.shared.images.close!, for: .normal)
+        closeButton.addTarget(self, action: #selector(onDismissAction), for: .touchUpInside)
+        view.addSubview(closeButton)
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+
+        closeButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
+        closeButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        closeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor,
+                                             constant: 25).isActive = true
+        closeButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor,
+                                         constant: 25).isActive = true
+    }
+
+    private func updateConstraintsTitleLabel() {
+        titleLabel = UILabel()
+        titleLabel.numberOfLines = 0
+        titleLabel.textAlignment = .center
+        view.addSubview(titleLabel)
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                            constant: Theme.shared.sizes.appSidePadding).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                             constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor,
+            constant: 33).isActive = true
+    }
+
+    private func updateConstraintsEmojiContainer() {
+        emojiContainer = UIView()
+        emojiContainer.backgroundColor = .systemBackground
+        emojiContainer.layer.cornerRadius = 5.0
+        emojiContainer.clipsToBounds = true
+        view.addSubview(emojiContainer)
+        emojiContainer.translatesAutoresizingMaskIntoConstraints = false
+        emojiContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                                constant: Theme.shared.sizes.appSidePadding).isActive = true
+        emojiContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                 constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        emojiContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+                                                constant: 0).isActive = true
+        emojiContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor,
+                                            constant: 20).isActive = true
+
+    }
+
+    private func updateConstraintsEmojiLabel() {
+        emojiLabel = UILabel()
+        emojiLabel.numberOfLines = 0
+        emojiLabel.textAlignment = .center
+        view.addSubview(emojiLabel)
+        emojiLabel.translatesAutoresizingMaskIntoConstraints = false
+        emojiLabel.leadingAnchor.constraint(equalTo: emojiContainer.leadingAnchor,
+                                            constant: 20).isActive = true
+        emojiLabel.trailingAnchor.constraint(equalTo: emojiContainer.trailingAnchor,
+                                             constant: -20).isActive = true
+        emojiLabel.topAnchor.constraint(equalTo: emojiContainer.topAnchor,
+                                        constant: 20).isActive = true
+        emojiLabel.bottomAnchor.constraint(equalTo: emojiContainer.bottomAnchor,
+            constant: -20).isActive = true
+    }
+
+    private func updateConstraintsCopyEmojiButton() {
+        copyEmojiButton = TextButton()
+        copyEmojiButton.addTarget(self, action: #selector(onCopyEmojiAction), for: .touchUpInside)
+        view.addSubview(copyEmojiButton)
+        copyEmojiButton.translatesAutoresizingMaskIntoConstraints = false
+        copyEmojiButton.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+                                                 constant: 0).isActive = true
+        copyEmojiButton.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor,
+                                                 constant: 20).isActive = true
+        copyEmojiButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor,
+                                                  constant: -20).isActive = true
+        copyEmojiButton.topAnchor.constraint(equalTo: emojiContainer.bottomAnchor,
+                                             constant: 20).isActive = true
+        copyEmojiButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
+    }
+
+    private func updateConstraintsSeparatorView() {
+        separatorView = UIView()
+        separatorView.backgroundColor = .systemBackground
+        view.addSubview(separatorView)
+        separatorView.translatesAutoresizingMaskIntoConstraints = false
+        separatorView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                                constant: Theme.shared.sizes.appSidePadding).isActive = true
+        separatorView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                 constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        separatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        separatorView.topAnchor.constraint(equalTo: copyEmojiButton.bottomAnchor,
+                                            constant: 23).isActive = true
+    }
+
+    private func updateConstraintsMiddleLabel() {
+        middleLabel = UILabel()
+        middleLabel.numberOfLines = 0
+        middleLabel.textAlignment = .center
+        view.addSubview(middleLabel)
+        middleLabel.translatesAutoresizingMaskIntoConstraints = false
+        middleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                                constant: Theme.shared.sizes.appSidePadding).isActive = true
+        middleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                 constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        middleLabel.topAnchor.constraint(equalTo: separatorView.bottomAnchor,
+                                         constant: 23).isActive = true
+
+    }
+
+    private func updateConstraintsBottomView() {
+        bottomView = UIView()
+        bottomView.backgroundColor = Theme.shared.colors.profileBackground!
+        view.addSubview(bottomView)
+        bottomView.translatesAutoresizingMaskIntoConstraints = false
+        bottomView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                                constant: 0).isActive = true
+        bottomView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                 constant: 0).isActive = true
+        bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                                              constant: 0).isActive = true
+        bottomView.topAnchor.constraint(equalTo: middleLabel.bottomAnchor,
+                                            constant: 23).isActive = true
+    }
+
+    private func updateConstraintsQRContainer() {
+        qrContainer = UIView()
+        qrContainer.backgroundColor = .systemBackground
+        bottomView.addSubview(qrContainer)
+        qrContainer.translatesAutoresizingMaskIntoConstraints = false
+        qrContainer.leadingAnchor.constraint(greaterThanOrEqualTo: bottomView.leadingAnchor,
+                                             constant: 50).isActive = true
+        qrContainer.centerXAnchor.constraint(equalTo: bottomView.centerXAnchor,
+                                             constant: 0).isActive = true
+//        let widthConstraint = qrContainer.widthAnchor.constraint(equalTo: bottomView.widthAnchor, multiplier: 1)
+//        widthConstraint.priority = UILayoutPriority(rawValue: 200)
+//        widthConstraint.isActive = true
+
+        qrContainer.trailingAnchor.constraint(greaterThanOrEqualTo: bottomView.trailingAnchor,
+                                              constant: -50).isActive = true
+
+        qrContainer.topAnchor.constraint(equalTo: bottomView.topAnchor,
+                                         constant: 20).isActive = true
+
+        bottomView.bottomAnchor.constraint(greaterThanOrEqualTo: qrContainer.bottomAnchor, constant: 20).isActive = true
+        qrContainer.heightAnchor.constraint(equalTo: qrContainer.widthAnchor,
+                                          multiplier: 1).isActive = true
+    }
+
+    private func updateConstraintsQRImageView() {
+        qrImageView = UIImageView()
+        qrContainer.addSubview(qrImageView)
+        qrImageView.translatesAutoresizingMaskIntoConstraints = false
+        qrImageView.leadingAnchor.constraint(equalTo: qrContainer.leadingAnchor,
+                                                constant: 20).isActive = true
+        qrImageView.trailingAnchor.constraint(equalTo: qrContainer.trailingAnchor,
+                                                 constant: -20).isActive = true
+        qrImageView.bottomAnchor.constraint(equalTo: qrContainer.bottomAnchor,
+                                              constant: -20).isActive = true
+        qrImageView.topAnchor.constraint(equalTo: qrContainer.topAnchor,
+                                            constant: 20).isActive = true
+    }
+
     private func customizeTitleLabel() {
         let shareYourEmojiString = NSLocalizedString("Share your Emoji ID to receive Tari", comment: "profile title label")
         let attributedString = NSMutableAttributedString(string: shareYourEmojiString,
@@ -132,8 +307,8 @@ class ProfileViewController: UIViewController {
         filter?.setValue("L", forKey: "inputCorrectionLevel")
 
         if let output = filter?.outputImage {
-            let scaleX = qrImageView.frame.size.width / output.extent.size.width
-            let scaleY = qrImageView.frame.size.height / output.extent.size.height
+            let scaleX = UIScreen.main.bounds.width / output.extent.size.width
+            let scaleY = UIScreen.main.bounds.width / output.extent.size.height
             let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
             let scaledOutput = output.transformed(by: transform)
             qrImageView.image = UIImage(ciImage: scaledOutput)
@@ -141,12 +316,15 @@ class ProfileViewController: UIViewController {
     }
 
     private func customizeViews() {
+        view.backgroundColor = Theme.shared.colors.profileBackground!
         customizeTitleLabel()
         customizeEmoji()
         customizeCopyMyEmojiButton()
         customizeSeparatorView()
         customizeMiddleLabel()
+    }
 
+    private func generateQRCode() {
         do {
             try genQRCode()
         } catch {
@@ -192,11 +370,11 @@ class ProfileViewController: UIViewController {
     }
 
     // MARK: - Actions
-    @IBAction func onDismissAction(_ sender: Any) {
+    @objc func onDismissAction() {
         self.dismiss(animated: true, completion: nil)
     }
 
-    @IBAction func onCopyEmojiAction(_ sender: Any) {
+    @objc func onCopyEmojiAction() {
         copyToClipboard()
         sendHapticNotification()
 

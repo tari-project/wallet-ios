@@ -100,6 +100,7 @@ struct Colors: Loopable {
     let profileSeparatorView = UIColor(named: "ProfileSeparatorView")
     let profileMiddleLabel = UIColor(named: "ProfileMiddleLabel")
     let profileQRShadow = UIColor(named: "ProfileQRShadow")
+    let profileBackground = UIColor(named: "ProfileBackground")
 
     //Home screen
     let homeScreenBackground = UIColor(named: "HomeScreenBackground")

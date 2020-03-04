@@ -355,9 +355,6 @@
 		BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */; };
 		BFD758E723E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */; };
 		BFD758E823E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */; };
-		BFD758EA23E98BA300B0F1A5 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD758E923E98BA300B0F1A5 /* Profile.storyboard */; };
-		BFD758EB23E98BA300B0F1A5 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD758E923E98BA300B0F1A5 /* Profile.storyboard */; };
-		BFD758EC23E98BA300B0F1A5 /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFD758E923E98BA300B0F1A5 /* Profile.storyboard */; };
 		BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */; };
 		BFE1FC0223E229FF00BA5EEC /* CheckMark.json in Resources */ = {isa = PBXBuildFile; fileRef = BFE1FC0123E229FF00BA5EEC /* CheckMark.json */; };
 		BFE1FC0923E3ACD900BA5EEC /* WalletCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */; };
@@ -537,7 +534,6 @@
 		BFD758DC23E96BB500B0F1A5 /* 1-Intro.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "1-Intro.mp4"; sourceTree = "<group>"; };
 		BFD758DD23E96BB500B0F1A5 /* 2-Loop.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "2-Loop.mp4"; sourceTree = "<group>"; };
 		BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
-		BFD758E923E98BA300B0F1A5 /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
 		BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCreationViewController.swift; sourceTree = "<group>"; };
 		BFE1FC0123E229FF00BA5EEC /* CheckMark.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = CheckMark.json; sourceTree = "<group>"; };
 		BFF1ED9C2408111000CC9EF6 /* SendingTariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendingTariViewController.swift; sourceTree = "<group>"; };
@@ -605,7 +601,6 @@
 			children = (
 				00E491A92366E08F007B332D /* LaunchScreen.storyboard */,
 				00E491A12366E08B007B332D /* Main.storyboard */,
-				BFD758E923E98BA300B0F1A5 /* Profile.storyboard */,
 			);
 			path = Boards;
 			sourceTree = "<group>";
@@ -1226,7 +1221,6 @@
 				BF191A0D23E5A96700D33C85 /* EmojiWheel.json in Resources */,
 				BFF1EDA32408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
 				BF191A1A23E5AFA200D33C85 /* img_2.png in Resources */,
-				BFD758EA23E98BA300B0F1A5 /* Profile.storyboard in Resources */,
 				00E491A32366E08B007B332D /* Main.storyboard in Resources */,
 				BF191A2323E5AFA200D33C85 /* img_5.png in Resources */,
 				001256A22372918B00A9C067 /* AvenirNextLTPro-Bold.otf in Resources */,
@@ -1253,7 +1247,6 @@
 				0012567F2372918B00A9C067 /* AvenirNextLTPro-MediumCnIt.otf in Resources */,
 				001256702372918B00A9C067 /* AvenirLTStd-HeavyOblique.otf in Resources */,
 				00A677982373DA58001A853E /* LaunchScreen.storyboard in Resources */,
-				BFD758EB23E98BA300B0F1A5 /* Profile.storyboard in Resources */,
 				0012566D2372918B00A9C067 /* AvenirLTStd-Heavy.otf in Resources */,
 				001256882372918B00A9C067 /* AvenirNextLTPro-CnIt.otf in Resources */,
 				0012566A2372918B00A9C067 /* AvenirLTStd-BookOblique.otf in Resources */,
@@ -1308,7 +1301,6 @@
 				001256802372918B00A9C067 /* AvenirNextLTPro-MediumCnIt.otf in Resources */,
 				001256712372918B00A9C067 /* AvenirLTStd-HeavyOblique.otf in Resources */,
 				00A677992373DA59001A853E /* LaunchScreen.storyboard in Resources */,
-				BFD758EC23E98BA300B0F1A5 /* Profile.storyboard in Resources */,
 				0012566E2372918B00A9C067 /* AvenirLTStd-Heavy.otf in Resources */,
 				001256892372918B00A9C067 /* AvenirNextLTPro-CnIt.otf in Resources */,
 				0012566B2372918B00A9C067 /* AvenirLTStd-BookOblique.otf in Resources */,
