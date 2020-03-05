@@ -57,6 +57,8 @@ class SendingTariViewController: UIViewController {
     var videoView: UIView!
     var bottomView = UIView()
 
+    var tariAmount: MicroTari?
+
     var animationStarted: Bool = false
 
     override func viewDidLoad() {
@@ -154,18 +156,20 @@ class SendingTariViewController: UIViewController {
         titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
-        titleLabelTopConstraint = titleLabel.topAnchor.constraint(equalTo: animationContainer.bottomAnchor,
-                                        constant: 20)
+        titleLabelTopConstraint = titleLabel.topAnchor.constraint(equalTo: animationContainer.bottomAnchor, constant: 20)
         titleLabelTopConstraint?.isActive = true
 
-        let sendingString = NSLocalizedString("Sending 150 Tari…", comment: "Title Label on the sending tari screen")
+        let sendingString = String(format: NSLocalizedString("Sending %@ Tari…", comment: "Title Label on the sending tari screen"), tariAmount?.formatted ?? "")
 
-        let attributedString = NSMutableAttributedString(string: sendingString,
-                                                         attributes: [.font: Theme.shared.fonts.sendingTariTitleLabelFirst!,
-                                                                      .foregroundColor: Theme.shared.colors.sendingTariTitle!,
-          .kern: -0.33
+        let attributedString = NSMutableAttributedString(
+            string: sendingString,
+            attributes: [
+                .font: Theme.shared.fonts.sendingTariTitleLabelFirst!,
+                .foregroundColor: Theme.shared.colors.sendingTariTitle!,
+                .kern: -0.33
         ])
 
+        //TODO this is broken, need to use the char positons and not just hardcoded ranges
         attributedString.addAttribute(.font, value: Theme.shared.fonts.sendingTariTitleLabelSecond!, range: NSRange(location: 0, length: 7))
         attributedString.addAttribute(.font, value: Theme.shared.fonts.sendingTariTitleLabelThird!, range: NSRange(location: 16, length: 1))
 

@@ -231,10 +231,10 @@ class TransactionsTableViewController: UITableViewController {
 
     //Parent component needs to know which direction they're scrolling
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if (self.lastContentOffset + 25 < scrollView.contentOffset.y && lastScrollDirection != .down) {
+        if self.lastContentOffset + 25 < scrollView.contentOffset.y && lastScrollDirection != .down {
             actionDelegate?.onScrollDirectionChange(.down)
             lastScrollDirection = .down
-        } else if (self.lastContentOffset - 25 > scrollView.contentOffset.y && lastScrollDirection != .up) {
+        } else if self.lastContentOffset - 25 > scrollView.contentOffset.y && lastScrollDirection != .up {
             actionDelegate?.onScrollDirectionChange(.up)
             lastScrollDirection = .up
         }

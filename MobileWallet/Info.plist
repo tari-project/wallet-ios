@@ -17,9 +17,11 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>24</string>
+	<string>39</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Tari needs access to the camera to scan the QR</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Enable Face ID to protect your wallet</string>
 	<key>UIAppFonts</key>
@@ -102,8 +104,6 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Tari needs access to the camera to scan the QR</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
 </dict>

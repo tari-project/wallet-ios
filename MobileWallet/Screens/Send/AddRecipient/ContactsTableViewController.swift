@@ -207,7 +207,7 @@ class ContactsTableViewController: UITableViewController {
 
     //Parent component needs to know which direction they're scrolling
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if (scrollView.contentOffset.y <= 20) {
+        if scrollView.contentOffset.y <= 20 {
             isScrolledToTop = true
         } else {
             isScrolledToTop = false

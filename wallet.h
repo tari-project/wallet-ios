@@ -82,15 +82,15 @@ struct TariTransportType *transport_tcp_create(const char *listener_address,int*
 // Creates a tor transport type
 struct TariTransportType *transport_tor_create(
     const char *control_server_address,
-    const char *tor_password,
-    struct ByteVector *tor_private_key,
+    struct ByteVector *tor_cookie,
+    struct ByteVector *tor_identity,
     unsigned short tor_port,
     const char *socks_username,
     const char *socks_password,
     int* error_out);
 
 // Gets the tor private key from the wallet
-struct ByteVector *wallet_get_tor_private_key(struct TariWallet *wallet,int* error_out );
+struct ByteVector *wallet_get_tor_identity(struct TariWallet *wallet,int* error_out );
 
 // Gets the address from a memory transport type
 char *transport_memory_get_address(struct TariTransportType *transport,int* error_out);
@@ -325,7 +325,7 @@ bool wallet_verify_message_signature(struct TariWallet *wallet, struct TariPubli
 bool wallet_test_generate_data(struct TariWallet *wallet, char *datastore_path,int* error_out);
 
 // Adds a base node peer to the TariWallet
-bool wallet_add_base_node_peer(struct TariWallet *wallet, struct TariPublicKey *public_key, char *address,int* error_out);
+bool wallet_add_base_node_peer(struct TariWallet *wallet, struct TariPublicKey *public_key, const char *address,int* error_out);
 
 // Upserts a TariContact to the TariWallet, if the contact does not exist it is inserted and if it does the alias is updated
 bool wallet_upsert_contact(struct TariWallet *wallet, struct TariContact *contact,int* error_out);

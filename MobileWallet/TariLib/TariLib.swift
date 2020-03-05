@@ -47,6 +47,13 @@ enum TariLibErrors: Error {
 class TariLib {
     static let shared = TariLib()
 
+    //For UI changes it can be a bit slow to keep waiting for tor to bootstrap
+    #if targetEnvironment(simulator)
+    private let TOR_ENABLED = false
+    #else
+    private let TOR_ENABLED = true
+    #endif
+
     private let DATABASE_NAME = "tari_wallet"
     private let PRIVATE_KEY_STORAGE_KEY = "privateKey"
 
@@ -95,7 +102,7 @@ class TariLib {
 
     var walletExists: Bool {
         get {
-            if (UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) != nil) {
+            if UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) != nil {
                 return true
             }
 
@@ -110,48 +117,57 @@ class TariLib {
      */
     deinit {}
 
-    private func addBaseNode() throws {
-        //Stanimals node:
+    private func addDefaultBaseNode() throws {
+        //Lee's node:
         try tariWallet?.addBaseNodePeer(
-            publicKey: PublicKey(hex: "90d8fe54c377ecabff383f7d8f0ba708c5b5d2a60590f326fbf1a2e74ea2441f"),
-            address: "/onion3/plvcskybsckbfeubywjbmpnbm4kjqm2ip6kbwimakaim6xyucydpityd:18001")
+            publicKey: PublicKey(hex: "5edb022af1c21d644dfceeea2fcc7d3fac7a57ab44cf775b9a6f692cb75ed767"),
+            address: "/onion3/vjkj44zpriqzrlve2qbiasrluaaxagrb6iuavzaascbujri6gw3rcmyd:18141")
     }
 
     private func transportType() throws -> TransportType {
-        let torKey = ""
-        let torBytes = [UInt8](torKey.utf8)
-        let torIdentity = try ByteVector(byteArray: torBytes)
+        if TariLib.shared.TOR_ENABLED {
+            let torKey = ""
+            let torBytes = [UInt8](torKey.utf8)
+            let torIdentity = try ByteVector(byteArray: torBytes)
 
-        let torCookieBytes = [UInt8](try OnionManager.getCookie())
-        let torCookie = try ByteVector(byteArray: torCookieBytes)
+            let torCookieBytes = [UInt8](try OnionManager.getCookie())
+            let torCookie = try ByteVector(byteArray: torCookieBytes)
 
-        return try TransportType(
-            controlServerAddress: "/ip4/127.0.0.1/tcp/39069",
-            torPort: 39058, //TODO move ports to shared config
-            torIdentity: torIdentity,
-            torCookie: torCookie,
-            socksUsername: "",
-            socksPassword: ""
-        )
+            return try TransportType(
+                controlServerAddress: "/ip4/\(OnionManager.CONTROL_ADDRESS)/tcp/\(OnionManager.CONTROL_PORT)",
+                torPort: 39051,
+                torIdentity: torIdentity,
+                torCookie: torCookie,
+                socksUsername: "",
+                socksPassword: ""
+            )
+        } else {
+            return TransportType() //In memory transport
+        }
     }
 
     func startTor() {
+        guard TariLib.shared.TOR_ENABLED else {
+            TariEventBus.postToMainThread(.torConnected, sender: URLSessionConfiguration.default)
+            return
+        }
+
         TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(0))
         OnionConnector().start(
             progress: { [weak self] percentage in
+                guard let _ = self else { return }
+
                 TariEventBus.postToMainThread(.torConnectionProgress, sender: percentage)
             },
             completion: { [weak self] result in
-                guard let self = self else { return }
+                guard let _ = self else { return }
 
                 TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(100))
 
                 switch result {
                     case .success(let urlSessionConfiguration):
-                        print("Tor connected")
                         TariEventBus.postToMainThread(.torConnected, sender: urlSessionConfiguration)
                     case .failure(let error):
-                        print("Tor connection failed")
                         print(error)
                         TariEventBus.postToMainThread(.torConnectionFailed, sender: error)
                 }
@@ -163,26 +179,24 @@ class TariLib {
         try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
         try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
 
-        print(TariLib.shared.databasePath)
+        print("databasePath: ", databasePath)
 
         let privateKey = PrivateKey()
 
-        //TODO use secure enclave
         let (hex, hexError) = privateKey.hex
         if hexError != nil {
             throw hexError!
         }
 
+        //TODO use secure enclave
         UserDefaults.standard.set(hex, forKey: PRIVATE_KEY_STORAGE_KEY)
 
         let transport = try transportType()
-        //let transport = try TransportType(listenerAddress: listenerAddress)
-
         let commsConfig = try CommsConfig(privateKey: privateKey, transport: transport, databasePath: databasePath, databaseName: DATABASE_NAME, publicAddress: publicAddress)
 
         tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
 
-        try addBaseNode()
+        try addDefaultBaseNode()
     }
 
     func startExistingWallet() throws {
@@ -191,9 +205,6 @@ class TariLib {
 
             let privateKey = try PrivateKey(hex: privateKeyHex)
             let transport = try transportType()
-
-            //TODO maybe on a simulator we don't use tor so development is sped up
-            //let transport = try TransportType(listenerAddress: listenerAddress)
             let commsConfig = try CommsConfig(privateKey: privateKey, transport: transport, databasePath: databasePath, databaseName: DATABASE_NAME, publicAddress: publicAddress)
             tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
         } else {

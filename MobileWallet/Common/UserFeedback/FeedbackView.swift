@@ -40,6 +40,12 @@
 
 import UIKit
 
+struct UserFeedbackFormInput {
+    let key: String
+    let placeholder: String
+    //Possibly add keyboard type
+}
+
 class FeedbackView: UIView {
     private let SIDE_PADDING: CGFloat = 30
     private let ELEMENT_PADDING: CGFloat = 20
@@ -49,6 +55,9 @@ class FeedbackView: UIView {
     private let descriptionLabel = UILabel()
     private var onCloseHandler: (() -> Void)?
     private var onCallToActionHandler: (() -> Void)?
+    private var onSubmitActionHandler: (([String: String]) -> Void)?
+    //private var formInputResults: [String: String]?
+    private var formInputs: [String: UITextField] = [:]
     private let callToActionButton = ActionButton()
     private let closeButton = TextButton()
 
@@ -103,12 +112,12 @@ class FeedbackView: UIView {
         closeButton.addTarget(self, action: #selector(onCloseButtonPressed), for: .touchUpInside)
     }
 
-    private func setupCallToActionButton() {
+    private func setupCallToActionButton(_ action: Selector) {
         callToActionButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(callToActionButton)
         callToActionButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         callToActionButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 160).isActive = true
-        callToActionButton.addTarget(self, action: #selector(onCallToActionButtonPressed), for: .touchUpInside)
+        callToActionButton.addTarget(self, action: action, for: .touchUpInside)
     }
 
     @objc private func onCloseButtonPressed() {
@@ -120,6 +129,25 @@ class FeedbackView: UIView {
     @objc private func onCallToActionButtonPressed() {
         if let onAction = onCallToActionHandler {
             onAction()
+        }
+
+        if let onClose = onCloseHandler {
+            onClose()
+        }
+    }
+
+    @objc private func onSubmitActionButtonPressed() {
+        if let onAction = onSubmitActionHandler {
+            var results: [String: String] = [:]
+
+            formInputs.forEach { (arg0) in
+                let (key, inputField) = arg0
+                if let text = inputField.text {
+                    results[key] = text
+                }
+            }
+
+            onAction(results)
         }
 
         if let onClose = onCloseHandler {
@@ -193,9 +221,70 @@ class FeedbackView: UIView {
         setDescription(description)
         descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
 
-        setupCallToActionButton()
+        setupCallToActionButton(#selector(onCallToActionButtonPressed))
         onCallToActionHandler = onAction
         callToActionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        callToActionButton.setTitle(actionTitle, for: .normal)
+
+        setupCloseButton()
+        onCloseHandler = onClose
+        closeButton.setTitle(cancelTitle, for: .normal)
+        closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+    }
+
+    private func setupInputField(_ inputField: UITextField) {
+        inputField.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(inputField)
+
+        inputField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true
+        inputField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        inputField.heightAnchor.constraint(equalToConstant: 40).isActive = true
+
+        inputField.borderStyle = .roundedRect
+    }
+
+    func setupForm(
+        title: String,
+        cancelTitle: String,
+        actionTitle: String,
+        inputs: [UserFeedbackFormInput],
+        onClose: @escaping () -> Void,
+        onSubmit: @escaping ([String: String]) -> Void) {
+        setupTitle()
+        titleLabel.text = title
+        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: SIDE_PADDING).isActive = true
+
+        setupCallToActionButton(#selector(onSubmitActionButtonPressed))
+        onSubmitActionHandler = onSubmit
+
+        var lastInput: UITextField?
+
+        formInputs = [:]
+
+        inputs.forEach { (input) in
+            let inputField = UITextField()
+            setupInputField(inputField)
+            formInputs[input.key] = inputField
+
+            inputField.placeholder = input.placeholder
+
+            if let previousInput = lastInput {
+                inputField.topAnchor.constraint(equalTo: previousInput.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+            } else {
+                //This is the first input
+                inputField.becomeFirstResponder()
+                inputField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+            }
+
+            lastInput = inputField
+        }
+
+        if let bottomInput = lastInput {
+            callToActionButton.topAnchor.constraint(equalTo: bottomInput.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        } else {
+            callToActionButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        }
         callToActionButton.setTitle(actionTitle, for: .normal)
 
         setupCloseButton()

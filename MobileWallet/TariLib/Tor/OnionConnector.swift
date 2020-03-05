@@ -75,6 +75,7 @@ extension OnionConnector: OnionManagerDelegate {
         } else {
             configuration.tlsMinimumSupportedProtocol = .tlsProtocol12
         }
+
         completion?(.success(configuration))
     }
 

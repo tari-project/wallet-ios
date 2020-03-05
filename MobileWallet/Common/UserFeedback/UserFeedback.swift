@@ -114,4 +114,26 @@ class UserFeedback {
 
         SwiftEntryKit.display(entry: ctaFeedbackView, using: attributes)
     }
+
+    func acceptUserInput(title: String, cancelTitle: String, actionTitle: String, inputs: [UserFeedbackFormInput], onSubmit: @escaping ([String: String]) -> Void) {
+        let successFeedbackView = FeedbackView()
+        successFeedbackView.setupForm(
+            title: title,
+            cancelTitle: cancelTitle,
+            actionTitle: actionTitle,
+            inputs: inputs,
+            onClose: {
+                SwiftEntryKit.dismiss()
+            }, onSubmit: onSubmit)
+
+        var attributes = EKAttributes.float
+
+        attributes.screenBackground = .visualEffect(style: .dark)
+        attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
+        attributes.displayDuration = .infinity
+        attributes.screenInteraction = .absorbTouches
+        attributes.entryInteraction = .absorbTouches
+
+        SwiftEntryKit.display(entry: successFeedbackView, using: attributes)
+    }
 }

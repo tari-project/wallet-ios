@@ -48,6 +48,39 @@ extension HomeViewController {
         self.navigationController?.pushViewController(logsVC, animated: false)
     }
 
+    private func showAddCustomBaseNode() {
+        let inputs: [UserFeedbackFormInput] = [
+            UserFeedbackFormInput(key: "pubkey", placeholder: "Public key"),
+            UserFeedbackFormInput(key: "toraddress", placeholder: "Tor address")
+        ]
+
+        let title = NSLocalizedString("Custom Base Node", comment: "Custom base node details form")
+        let cancelTitle = NSLocalizedString("Cancel", comment: "Custom base node details form")
+        let actionTitle = NSLocalizedString("Save", comment: "Custom base node details form")
+
+        UserFeedback.shared.acceptUserInput(title: title, cancelTitle: cancelTitle, actionTitle: actionTitle, inputs: inputs) { (result) in
+            if let pubKeyHex = result["pubkey"], let torAddress = result["toraddress"] {
+                guard let wallet = TariLib.shared.tariWallet else { return }
+
+                do {
+                    let pubKey = try PublicKey(hex: pubKeyHex)
+                    try wallet.addBaseNodePeer(publicKey: pubKey, address: torAddress)
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                } catch {
+                    print(error)
+
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+                        guard let _ = self else { return }
+                        UserFeedback.shared.error(
+                        title: NSLocalizedString("Wallet error", comment: "Custom base node details form"),
+                        description: NSLocalizedString("Could not update base node peer", comment: "Custom base node details form"),
+                        error: error)
+                    }
+                }
+            }
+        }
+    }
+
     private func generateTestData() {
         guard let wallet = TariLib.shared.tariWallet else {
             print("Missing wallet")
@@ -103,13 +136,17 @@ extension HomeViewController {
             self.showTariLibLogs()
         }))
 
-        alert.addAction(UIAlertAction(title: "Generate test data", style: .default, handler: { (_)in
-            self.generateTestData()
+        alert.addAction(UIAlertAction(title: "Add custom base node", style: .default, handler: { (_)in
+            self.showAddCustomBaseNode()
         }))
 
-        alert.addAction(UIAlertAction(title: "Simulate recieve transaction", style: .default, handler: { (_)in
-            self.simulateReceieveTransactions()
-        }))
+//        alert.addAction(UIAlertAction(title: "Generate test data", style: .default, handler: { (_)in
+//            self.generateTestData()
+//        }))
+//
+//        alert.addAction(UIAlertAction(title: "Simulate recieve transaction", style: .default, handler: { (_)in
+//            self.simulateReceieveTransactions()
+//        }))
 
 //        alert.addAction(UIAlertAction(title: "Simulate confirm sent transaction", style: .default, handler: { (_)in
 //            self.simulateConfirmSendTransactions()

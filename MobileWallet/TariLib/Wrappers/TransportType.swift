@@ -67,7 +67,7 @@ class TransportType {
         var errorCode: Int32 = -1
         let listenerPtr = UnsafeMutablePointer<Int8>(mutating: listenerAddress)
         let result = transport_tcp_create(listenerPtr, UnsafeMutablePointer<Int32>(&errorCode))
-        guard (errorCode == 0) else {
+        guard errorCode == 0 else {
             throw TransportTypeError.generic(errorCode)
         }
         ptr = result!
@@ -80,7 +80,7 @@ class TransportType {
         let socksPassPtr = socksPassword.count > 0 ? UnsafeMutablePointer<Int8>(mutating: socksPassword) : nil
         let socksUserPtr = socksUsername.count > 0 ? UnsafeMutablePointer<Int8>(mutating: socksUsername) : nil
         let result = transport_tor_create(controlPtr, torCookie.pointer, torPrivateKeyPtr, UInt16(torPort), socksUserPtr, socksPassPtr, UnsafeMutablePointer<Int32>(&errorCode))
-        guard (errorCode == 0) else {
+        guard errorCode == 0 else {
             throw TransportTypeError.generic(errorCode)
         }
         ptr = result!

@@ -96,7 +96,7 @@ class PublicKey {
 
     init(hex: String) throws {
         let chars = CharacterSet(charactersIn: "0123456789abcdef")
-        guard (hex.count == 64 && hex.rangeOfCharacter(from: chars) != nil) else {
+        guard hex.count == 64 && hex.rangeOfCharacter(from: chars) != nil else {
             throw PublicKeyError.invalidHex
         }
         let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)

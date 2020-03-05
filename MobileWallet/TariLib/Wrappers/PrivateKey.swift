@@ -81,7 +81,7 @@ class PrivateKey {
 
     init(hex: String) throws {
         let chars = CharacterSet(charactersIn: "0123456789abcdef")
-        guard (hex.count == 64 && hex.rangeOfCharacter(from: chars) != nil) else {
+        guard hex.count == 64 && hex.rangeOfCharacter(from: chars) != nil else {
             throw PrivateKeyError.invalidHex
         }
 

@@ -83,7 +83,7 @@ class ByteVector {
     init(byteArray: [UInt8]) throws {
         var errorCode: Int32 = -1
         let result = byte_vector_create(byteArray, UInt32(byteArray.count), UnsafeMutablePointer<Int32>(&errorCode))
-        guard (errorCode == 0) else {
+        guard errorCode == 0 else {
             throw ByteVectorError.generic(errorCode)
         }
 

@@ -302,16 +302,17 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                     setFeeLabel(fee!.formattedPreciseWithOperator)
                 }
 
-                switch completedTx.status.0 {
-                case .completed:
-                    statusEmoji = " ✔️"
-                case .broadcast:
-                    statusEmoji = " 📡"
-                case .mined:
-                    statusEmoji = " ⛏️"
-                default:
-                    statusEmoji = " 🤔"
-                }
+                //Hopefully we can add this back some time
+//                switch completedTx.status.0 {
+//                case .completed:
+//                    statusEmoji = " ✔️"
+//                case .broadcast:
+//                    statusEmoji = " 📡"
+//                case .mined:
+//                    statusEmoji = " ⛏️"
+//                default:
+//                    statusEmoji = " 🤔"
+//                }
             } else if let pendingOutboundTx = tx as? PendingOutboundTransaction {
                 let (fee, feeError) = pendingOutboundTx.fee
                 guard feeError == nil else {

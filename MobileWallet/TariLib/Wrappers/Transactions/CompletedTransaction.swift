@@ -148,7 +148,7 @@ class CompletedTransaction: TransactionProtocol {
         if let wallet = TariLib.shared.tariWallet {
             do {
                 let isOutboud = try (wallet.isCompletedTransactionOutbound(tx: self))
-                if (isOutboud) {
+                if isOutboud {
                    direction = .outbound
                 }
             } catch {
