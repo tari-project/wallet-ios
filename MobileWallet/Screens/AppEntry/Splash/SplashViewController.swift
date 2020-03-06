@@ -65,13 +65,15 @@ class SplashViewController: UIViewController {
     var animationContainer: AnimationView!
     var createWalletButton: ActionButton!
     var titleLabel: UILabel!
+    var titleSecondLabel: UILabel!
     var subtitleLabel: UILabel!
     var bottomBackgroundView: UIView!
     var gemImageView: UIImageView!
     var distanceTitleSubtitle: NSLayoutConstraint!
+    var distanceSecondTitleSubtitle: NSLayoutConstraint!
     var animationContainerBottomAnchor: NSLayoutConstraint?
     var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
-
+    var maskBackgroundView: UIView!
     private let progressFeedbackView = FeedbackView()
 
     // MARK: - Override functions
@@ -85,11 +87,11 @@ class SplashViewController: UIViewController {
         super.viewDidAppear(animated)
 
         if !isUnitTesting {
+            maskBackgroundAnimation()
             titleAnimation()
             checkExistingWallet()
         }
-
-        handleWalletEvents()
+	handleWalletEvents()
     }
 
     private func handleWalletEvents() {
@@ -186,25 +188,6 @@ class SplashViewController: UIViewController {
         }
     }
 
-    // MARK: - Private functions
-
-    @objc func playerItemDidReachEnd(notification: Notification) {
-        if !alreadyReplacedVideo {
-            if let path = Bundle.main.path(forResource: "2-Loop", ofType: "mp4") {
-                let pathURL = URL(fileURLWithPath: path)
-                let duration = Int64( ( (Float64(CMTimeGetSeconds(AVAsset(url: pathURL).duration)) *  10.0) - 1) / 10.0 )
-
-                playerItem = AVPlayerItem(url: pathURL)
-                player.replaceCurrentItem(with: playerItem)
-
-                playerLooper = AVPlayerLooper(player: player,
-                                              templateItem: playerItem,
-                                              timeRange: CMTimeRange(start: CMTime.zero, end: CMTimeMake(value: duration, timescale: 1)))
-                alreadyReplacedVideo = true
-            }
-        }
-    }
-
     private func checkExistingWallet() {
         if TariLib.shared.walletExists {
             TariLib.shared.startTor()
@@ -225,7 +208,6 @@ class SplashViewController: UIViewController {
         self.startAnimation()
         return
         #endif
-
         let authPolicy: LAPolicy = .deviceOwnerAuthentication
 
         var error: NSError?
@@ -286,7 +268,7 @@ class SplashViewController: UIViewController {
         }
     }
 
-    private func startAnimation() {
+    func startAnimation() {
         #if targetEnvironment(simulator)
           animationContainer.animationSpeed = 5
         #endif
@@ -297,7 +279,6 @@ class SplashViewController: UIViewController {
             loopMode: .playOnce,
             completion: { [weak self] (_) in
                 guard let self = self else { return }
-
                 self.navigateToHome()
             }
         )
