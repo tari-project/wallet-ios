@@ -193,7 +193,7 @@ class ScanViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        if (captureSession?.isRunning == false) {
+        if captureSession?.isRunning == false {
             captureSession.startRunning()
         }
 
@@ -203,7 +203,7 @@ class ScanViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        if (captureSession?.isRunning == true) {
+        if captureSession?.isRunning == true {
             captureSession.stopRunning()
         }
     }
@@ -244,7 +244,7 @@ class ScanViewController: UIViewController {
             return
         }
 
-        if (captureSession.canAddInput(videoInput)) {
+        if captureSession.canAddInput(videoInput) {
             captureSession.addInput(videoInput)
         } else {
             failed()
@@ -253,7 +253,7 @@ class ScanViewController: UIViewController {
 
         let metadataOutput = AVCaptureMetadataOutput()
 
-        if (captureSession.canAddOutput(metadataOutput)) {
+        if captureSession.canAddOutput(metadataOutput) {
             captureSession.addOutput(metadataOutput)
 
             metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
@@ -328,7 +328,7 @@ class ScanViewController: UIViewController {
             error: error)
         }
 
-         dismiss(animated: true)
+        dismiss(animated: true)
     }
 
 // MARK: - Actions

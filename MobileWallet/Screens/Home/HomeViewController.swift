@@ -78,7 +78,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     fileprivate let initialBackgroundColorView = UIView()
 
     var isFirstIntroToWallet: Bool {
-        if (UserDefaults.standard.string(forKey: INTRO_TO_WALLET_USER_DEFAULTS_KEY) == nil) {
+        if UserDefaults.standard.string(forKey: INTRO_TO_WALLET_USER_DEFAULTS_KEY) == nil {
             return true
         }
 

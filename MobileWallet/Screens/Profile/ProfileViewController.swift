@@ -339,6 +339,7 @@ class ProfileViewController: UIViewController {
         if let wallet = TariLib.shared.tariWallet {
             if let pubKeyHex = wallet.publicKey.0?.hex.0 {
                 let pasteboard = UIPasteboard.general
+                print(pubKeyHex)
                 pasteboard.string = pubKeyHex
             }
         }
@@ -378,18 +379,13 @@ class ProfileViewController: UIViewController {
         copyToClipboard()
         sendHapticNotification()
 
-        let titleButton = NSLocalizedString("Copied!",
-                                            comment: "Profile copied button")
-        self.copyEmojiButton.setTitle(titleButton,
-                                      for: .normal)
+        let titleButton = NSLocalizedString("Copied!", comment: "Profile copied button")
+        self.copyEmojiButton.setTitle(titleButton, for: .normal)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             guard let self = self else { return }
-            let titleButton = NSLocalizedString("Copy my emoji ID",
-                                                comment: "Profile title button")
-            self.copyEmojiButton.setTitle(titleButton,
-                                          for: .normal)
+            let titleButton = NSLocalizedString("Copy my emoji ID", comment: "Profile title button")
+            self.copyEmojiButton.setTitle(titleButton, for: .normal)
         }
     }
-
 }

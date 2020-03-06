@@ -262,7 +262,7 @@ class Wallet {
             throw currentWalletPublicKeyHexError!
         }
 
-        if (publicKey.hex.0 == currentWalletPublicKeyHex) {
+        if publicKey.hex.0 == currentWalletPublicKeyHex {
             throw WalletErrors.addOwnContact
         }
 

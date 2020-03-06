@@ -183,6 +183,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             )
 
             let vc = SendingTariViewController()
+            vc.tariAmount = recipientAmount
             self.navigationController?.pushViewController(vc, animated: false)
         } catch {
             UserFeedback.shared.error(

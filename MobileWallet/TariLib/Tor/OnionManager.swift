@@ -29,6 +29,9 @@ public class OnionManager: NSObject {
 
     public static let shared = OnionManager()
     
+    public static let CONTROL_ADDRESS = "127.0.0.1"
+    public static let CONTROL_PORT = "39069"
+
     public static func getCookie() throws -> Data {
         if let cookieURL = OnionManager.torBaseConf.dataDirectory?.appendingPathComponent("control_auth_cookie") {
             let cookie = try Data(contentsOf: cookieURL)
@@ -90,8 +93,7 @@ public class OnionManager: NSObject {
             "--ignore-missing-torrc",
             "--clientonly", "1",
             "--socksport", "39059",
-            "--controlport", "127.0.0.1:39069",
-            "--HashedControlPassword", "16:815CCA972ABC34916026A20408CBE87FB3C015003E3E4E0C1348719C56",
+            "--controlport", "\(OnionManager.CONTROL_ADDRESS):\(OnionManager.CONTROL_PORT)",
             "--log", log_loc,
             "--clientuseipv6", "1",
             "--ClientTransportPlugin", "obfs4 socks5 127.0.0.1:47351",
@@ -218,11 +220,11 @@ public class OnionManager: NSObject {
                                 #if DEBUG
                                 print("[\(String(describing: OnionManager.self))] connection established")
                                 #endif
-
+                                
                                 self.torController?.getSessionConfiguration({ configuration in
-                                    if let conf = configuration {
-                                        delegate?.torConnFinished(configuration: conf)
-                                    }
+                                    //TODO once below issue is resolved we can update to < 400.6.3 then the session config will not be nil
+                                    //https://github.com/iCepa/Tor.framework/issues/60
+                                    delegate?.torConnFinished(configuration: configuration ?? URLSessionConfiguration.default)
                                 })
                             }
                         }) // torController.addObserver
