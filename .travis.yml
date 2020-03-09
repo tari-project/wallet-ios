@@ -5,4 +5,4 @@ xcode_scheme: MobileWallet
 xcode_only_testing: MobileWalletTests
 xcode_destination: platform=iOS Simulator,OS=13.2.2,name=iPhone 11
 before_script:
-- update_dependencies.sh
+- bash update_dependencies.sh
