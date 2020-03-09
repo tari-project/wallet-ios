@@ -8,17 +8,26 @@ Mobile-based UI client that connects to a full node in the Tari network.
 
 Code follows [Github's](https://github.com/github/swift-style-guide) style guide and the [SwiftLint](https://github.com/realm/SwiftLint) is run on each build using. Code is linted on each build.
 
+### Getting started
+
+```bash
+git clone git@github.com:tari-project/wallet-ios.git
+sh update_dependencies.sh
+```
+
 ### Dependencies
 
-Third party frameworks and Library are managed using Cocoapods.
+Third party frameworks and Library are managed using a pre-compiled [Tari](https://github.com/tari-project/tari) binary from https://www.tari.com/downloads/ as well as packages from Cocoapods and Carthage.
 
 ### Pods used 
 
-    - pod 'SwiftLint'
-    - pod 'FloatingPanel'
-    - pod 'lottie-ios'
-    - pod 'SwiftEntryKit', '1.2.3'
-    - pod 'ReachabilitySwift'
+```ruby
+- pod 'SwiftLint'
+- pod 'FloatingPanel'
+- pod 'lottie-ios'
+- pod 'SwiftEntryKit', '1.2.3'
+- pod 'ReachabilitySwift'
+```
 
 ### Carthage packages used used 
 
@@ -27,7 +36,7 @@ Third party frameworks and Library are managed using Cocoapods.
 
 ### Version Management
 
-* Build Number willl increased for each iTunes submission
+* Build Number willl increased for each iTunes submission and are increased automatically with fastlane
 * App version will only increase on app submiting to App Store
 
 ### Folder Structure and Architecture
