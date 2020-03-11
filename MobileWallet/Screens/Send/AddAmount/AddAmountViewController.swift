@@ -314,9 +314,7 @@ class AddAmountViewController: UIViewController {
     }
 
     private func showTransactionFee(_ amount: MicroTari) {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return
-        }
+        guard let wallet = TariLib.shared.tariWallet else { return }
         let fee = wallet.calculateTransactionFee(amount)
 
         transactionViewContainer.alpha = 0.0
@@ -339,15 +337,38 @@ class AddAmountViewController: UIViewController {
     }
 
     @objc private func continueButtonTapped() {
-        let noteVC = AddNoteViewController()
-        noteVC.publicKey = publicKey
+        //Check the actual available balance first, to see if we have enough mined transactions
+        guard let wallet = TariLib.shared.tariWallet else { return }
+        let (availableBalance, availableBalanceError) = wallet.availableBalance
+        guard availableBalanceError == nil else {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Available balance error", comment: "Add amount view"),
+                description: NSLocalizedString("Could not get available balance from wallet", comment: "Add amount view"),
+                error: availableBalanceError)
+            return
+        }
 
+        var tariAmount: MicroTari?
         do {
-            noteVC.amount = try MicroTari(tariValue: rawInput)
-            navigationController?.pushViewController(noteVC, animated: true)
+            tariAmount = try MicroTari(tariValue: rawInput)
         } catch {
             showInvalidNumberError(error)
         }
+
+        guard let amount = tariAmount else { return }
+        if amount.rawValue + wallet.calculateTransactionFee(amount).rawValue  > availableBalance {
+            UserFeedback.shared.info(
+                title: NSLocalizedString("Hold your horses! 🐴", comment: "Add amount view"),
+                description: NSLocalizedString("Sorry, you can’t send this much Tari at once. Please wait for your other transaction to be completed and then try again.", comment: "Add amount view")
+            )
+            return
+        }
+
+        let noteVC = AddNoteViewController()
+        noteVC.publicKey = publicKey
+        noteVC.amount = tariAmount
+
+        navigationController?.pushViewController(noteVC, animated: true)
     }
 }
 
