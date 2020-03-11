@@ -44,22 +44,28 @@ import Lottie
 
 extension SplashViewController {
     func setupView() {
-        setupConstraintsAnimationContainer()
-        setupConstraintsVideoView()
-        setupConstraintsTitleLabel()
-        setupConstraintsSubtitleLabel()
-        setupConstraintsBottomBagroundView()
-        setupConstraintsCreateWalletButton()
-        setupConstraintsGemImageView()
+        updateConstraintsAnimationContainer()
+        updateConstraintsVideoView()
+        updateConstraintsTitleLabel()
+        updateConstraintsSecondTitleLabel()
+        updateConstraintsSubtitleLabel()
+        updateConstraintsBottomBagroundView()
+        updateConstraintsCreateWalletButton()
+        updateConstraintsGemImageView()
         setupContraintsVersionLabel()
+        setupMaskBackground()
         createWalletButton.isHidden = true
 
         createWalletButton.setTitle(NSLocalizedString("Create Wallet", comment: "Main action button on the onboarding screen"), for: .normal)
-        titleLabel.text = NSLocalizedString("A crypto wallet that’s easy to use.", comment: "Title Label on the onboarding screen")
+        titleLabel.text = NSLocalizedString("A crypto wallet", comment: "Title Label on the onboarding screen")
         titleLabel.font = Theme.shared.fonts.splashTitleLabel
         titleLabel.textColor = Theme.shared.colors.splashTitle
 
-        subtitleLabel.text = NSLocalizedString("Tari wallet puts you and your privacy at the core of everything and is still easy to use.", comment: "Subtitle Label on the onboarding screen")
+        titleSecondLabel.text = NSLocalizedString("that’s easy to use.", comment: "Second Title Line Label on the onboarding screen")
+        titleSecondLabel.font = Theme.shared.fonts.splashTitleLabel
+        titleSecondLabel.textColor = Theme.shared.colors.splashTitle
+
+        subtitleLabel.text = NSLocalizedString("Tari wallet puts you and your privacy at the core\n of everything and is still easy to use.", comment: "Subtitle Label on the onboarding screen")
 
         subtitleLabel.textColor = Theme.shared.colors.splashSubtitle
         subtitleLabel.font = Theme.shared.fonts.splashSubtitleLabel
@@ -78,8 +84,7 @@ extension SplashViewController {
     }
 
     func setupVideoAnimation() {
-        if let path = Bundle.main.path(forResource: "1-Intro", ofType: "mp4") {
-
+        if let path = Bundle.main.path(forResource: "purple_orb", ofType: "mp4") {
             _ = try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default, options: .mixWithOthers)
             let pathURL = URL(fileURLWithPath: path)
             let duration = Int64( ( (Float64(CMTimeGetSeconds(AVAsset(url: pathURL).duration)) *  10.0) - 1) / 10.0 )
@@ -91,21 +96,21 @@ extension SplashViewController {
                                           templateItem: playerItem,
                                           timeRange: CMTimeRange(start: CMTime.zero, end: CMTimeMake(value: duration, timescale: 1)))
             playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
-            playerLayer.frame = videoView.layer.bounds
+            let rect = videoView.layer.bounds
+            let changedRect = CGRect(x: -160, y: -20, width: rect.width + 320, height: rect.height * 1.1)
+            playerLayer.frame = changedRect
             player.play()
             videoView.layer.insertSublayer(playerLayer, at: 0)
             videoView.clipsToBounds = true
-
-            NotificationCenter.default.addObserver(self, selector: #selector(playerItemDidReachEnd(notification:)), name: .AVPlayerItemDidPlayToEndTime, object: player.currentItem)
         }
     }
 
-    func setupConstraintsAnimationContainer() {
+    func updateConstraintsAnimationContainer() {
         animationContainer = AnimationView()
         view.addSubview(animationContainer)
         animationContainer.translatesAutoresizingMaskIntoConstraints = false
-        animationContainer.widthAnchor.constraint(equalToConstant: 240).isActive = true
-        animationContainer.heightAnchor.constraint(equalToConstant: 128).isActive = true
+        animationContainer.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        animationContainer.heightAnchor.constraint(equalToConstant: 80).isActive = true
         animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
 
         if TariLib.shared.walletExists {
@@ -121,7 +126,7 @@ extension SplashViewController {
         }
     }
 
-    func setupConstraintsVideoView() {
+    func updateConstraintsVideoView() {
         videoView = UIView()
         view.addSubview(videoView)
         videoView.translatesAutoresizingMaskIntoConstraints = false
@@ -129,16 +134,15 @@ extension SplashViewController {
             animationContainerBottomAnchor?.isActive = false
         } else {
             animationContainerBottomAnchor = videoView.topAnchor.constraint(equalTo: animationContainer.bottomAnchor,
-            constant: 0)
+            constant: 20)
             animationContainerBottomAnchor?.isActive = true
-
-            videoView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-            videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-            videoView.widthAnchor.constraint(equalTo: videoView.heightAnchor, multiplier: 750.0/748.0).isActive = true
+            videoView.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+                                               constant: 0).isActive = true
+            videoView.widthAnchor.constraint(equalTo: videoView.heightAnchor, multiplier: 750.0/648.0).isActive = true
         }
     }
 
-    func setupConstraintsTitleLabel() {
+    func updateConstraintsTitleLabel() {
         titleLabel = UILabel()
         view.addSubview(titleLabel)
 
@@ -147,13 +151,29 @@ extension SplashViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        titleLabel.heightAnchor.constraint(equalToConstant: 35).isActive = true
+
+        titleLabel.topAnchor.constraint(equalTo: videoView.bottomAnchor,
+                                        constant: 20).isActive = true
 
         if TariLib.shared.walletExists {
             animationContainer.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 0).isActive = true
         }
     }
 
-    func setupConstraintsSubtitleLabel() {
+    func updateConstraintsSecondTitleLabel() {
+        titleSecondLabel = UILabel()
+        view.addSubview(titleSecondLabel)
+
+        titleSecondLabel.numberOfLines = 0
+        titleSecondLabel.textAlignment = .center
+        titleSecondLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleSecondLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        titleSecondLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        titleSecondLabel.heightAnchor.constraint(equalToConstant: 35).isActive = true
+    }
+
+    func updateConstraintsSubtitleLabel() {
         subtitleLabel = UILabel()
         view.addSubview(subtitleLabel)
 
@@ -166,12 +186,15 @@ extension SplashViewController {
         subtitleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
                                                 constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
-        subtitleLabel.topAnchor.constraint(equalTo: videoView.bottomAnchor, constant: 100).isActive = true
+        subtitleLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
         distanceTitleSubtitle = subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: -100)
         distanceTitleSubtitle.isActive = true
+
+        distanceSecondTitleSubtitle = subtitleLabel.topAnchor.constraint(equalTo: titleSecondLabel.bottomAnchor, constant: -100)
+        distanceSecondTitleSubtitle.isActive = true
     }
 
-    func setupConstraintsBottomBagroundView() {
+    func updateConstraintsBottomBagroundView() {
         bottomBackgroundView = UIView()
         view.insertSubview(bottomBackgroundView, belowSubview: subtitleLabel)
         bottomBackgroundView.translatesAutoresizingMaskIntoConstraints = false
@@ -186,7 +209,7 @@ extension SplashViewController {
         bottomBackgroundView.backgroundColor = .black
     }
 
-    func setupConstraintsCreateWalletButton() {
+    func updateConstraintsCreateWalletButton() {
         createWalletButton = ActionButton()
         createWalletButton.addTarget(self, action: #selector(onCreateWalletTap), for: .touchUpInside)
         view.addSubview(createWalletButton)
@@ -197,10 +220,11 @@ extension SplashViewController {
         createWalletButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
                                                 constant: -Theme.shared.sizes.appSidePadding).isActive = true
         createWalletButton.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor,
-                                                constant: 25).isActive = true
+                                                constant: 40).isActive = true
+
     }
 
-    func setupConstraintsGemImageView() {
+    func updateConstraintsGemImageView() {
         gemImageView = UIImageView()
         view.addSubview(gemImageView)
         gemImageView.image = UIImage(named: "Gem")
@@ -218,7 +242,7 @@ extension SplashViewController {
         versionLabel.numberOfLines = 0
         versionLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        versionLabel.bottomAnchor.constraint(lessThanOrEqualTo: view.layoutMarginsGuide.bottomAnchor, constant: 0).isActive = true
+        versionLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -20).isActive = true
         versionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
                                                constant: Theme.shared.sizes.appSidePadding).isActive = true
         versionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
@@ -228,10 +252,39 @@ extension SplashViewController {
         versionLabel.topAnchor.constraint(equalTo: gemImageView.bottomAnchor, constant: 16).isActive = true
     }
 
+    func setupMaskBackground() {
+        maskBackgroundView = UIView()
+        view.addSubview(maskBackgroundView)
+        maskBackgroundView.translatesAutoresizingMaskIntoConstraints = false
+        maskBackgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+                                               constant: 0).isActive = true
+        maskBackgroundView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+                                                constant: 0).isActive = true
+        maskBackgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                                                     constant: 0).isActive = true
+        maskBackgroundView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor,
+                                                  constant: 0).isActive = true
+        maskBackgroundView.backgroundColor = .black
+    }
+
     func titleAnimation() {
-        self.distanceTitleSubtitle.constant = 26.0
         UIView.animate(withDuration: 0.5) { [weak self] in
             guard let self = self else { return }
+            self.distanceTitleSubtitle.constant = 69.0
+            self.view.layoutIfNeeded()
+        }
+
+        UIView.animate(withDuration: 0.75) { [weak self] in
+            guard let self = self else { return }
+            self.distanceSecondTitleSubtitle.constant = 26.0
+            self.view.layoutIfNeeded()
+        }
+    }
+
+    func maskBackgroundAnimation() {
+        UIView.animate(withDuration: 2) { [weak self] in
+            guard let self = self else { return }
+            self.maskBackgroundView.alpha = 0.0
             self.view.layoutIfNeeded()
         }
     }
@@ -246,10 +299,19 @@ extension SplashViewController {
             self.videoView.isHidden = true
             self.animationContainer.bottomAnchor.constraint(equalTo: self.titleLabel.topAnchor, constant: 0).isActive = true
 
-            UIView.animate(withDuration: 2.0, animations: { [weak self] in
+            UIView.animate(withDuration: 1.0, animations: { [weak self] in
                 guard let self = self else { return }
+                self.titleLabel.alpha = 0.0
+                self.titleSecondLabel.alpha = 0.0
+                self.subtitleLabel.alpha = 0.0
+                self.createWalletButton.alpha = 0.0
+                self.gemImageView.alpha = 0.0
+                self.versionLabel.alpha = 0.0
                 self.view.layoutIfNeeded()
-            }, completion: completion)
+            }) { [weak self] (_) in
+                guard let self = self else { return }
+                self.startAnimation()
+            }
         }
     }
 }

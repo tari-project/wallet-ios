@@ -49,7 +49,7 @@ enum ActionButtonVariation {
 
 class ActionButton: UIButton {
     static let GRADIENT_LAYER_NAME = "GradientLayer"
-    static let RADIUS_POINTS: CGFloat = 7.0
+    static let RADIUS_POINTS: CGFloat = 4.0
     static let HEIGHT: CGFloat = 53.0
     static let GRADIENT_ANGLE: Double = 90
     //private var isCompiled = false
