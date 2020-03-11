@@ -237,6 +237,10 @@
 		00A994332396434B007D9990 /* QRButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A994322396434B007D9990 /* QRButton.swift */; };
 		00A994342396434B007D9990 /* QRButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A994322396434B007D9990 /* QRButton.swift */; };
 		00A994352396434B007D9990 /* QRButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A994322396434B007D9990 /* QRButton.swift */; };
+		00B4D6B82416A50C00ED8318 /* MobileWalletUISnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6B72416A50C00ED8318 /* MobileWalletUISnapshots.swift */; };
+		00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6BA2417894800ED8318 /* SnapshotHelper.swift */; };
+		00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8A8237AA13500C02E44 /* Biometrics.m */; };
+		00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD806237D755600EBF5E6 /* HelperFunctions.swift */; };
 		00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
 		00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
 		00BBD803237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
@@ -383,6 +387,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		00B4D6B02416A32200ED8318 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00E4918E2366E08B007B332D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00E491952366E08B007B332D;
+			remoteInfo = MobileWallet;
+		};
 		00E491B22366E08F007B332D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 00E4918E2366E08B007B332D /* Project object */;
@@ -478,6 +489,11 @@
 		00A057B323D979DA0029C22A /* UserFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFeedback.swift; sourceTree = "<group>"; };
 		00A6779D23743696001A853E /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		00A994322396434B007D9990 /* QRButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRButton.swift; sourceTree = "<group>"; };
+		00B4D6AB2416A32200ED8318 /* MobileWalletUISnapshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileWalletUISnapshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00B4D6AF2416A32200ED8318 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		00B4D6B72416A50C00ED8318 /* MobileWalletUISnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileWalletUISnapshots.swift; sourceTree = "<group>"; };
+		00B4D6B9241787F600ED8318 /* MobileWalletUISnapshots-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletUISnapshots-Bridging-Header.h"; sourceTree = "<group>"; };
+		00B4D6BA2417894800ED8318 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		00BBD7EE237B014100EBF5E6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 		00BBD7F6237B05A900EBF5E6 /* MobileWalletTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandLineArgs.swift; sourceTree = "<group>"; };
@@ -563,6 +579,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		00B4D6A82416A32200ED8318 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		00E491932366E08B007B332D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -782,6 +805,17 @@
 			path = Transaction;
 			sourceTree = "<group>";
 		};
+		00B4D6AC2416A32200ED8318 /* MobileWalletUISnapshots */ = {
+			isa = PBXGroup;
+			children = (
+				00B4D6B72416A50C00ED8318 /* MobileWalletUISnapshots.swift */,
+				00B4D6BA2417894800ED8318 /* SnapshotHelper.swift */,
+				00B4D6AF2416A32200ED8318 /* Info.plist */,
+				00B4D6B9241787F600ED8318 /* MobileWalletUISnapshots-Bridging-Header.h */,
+			);
+			path = MobileWalletUISnapshots;
+			sourceTree = "<group>";
+		};
 		00BBD7FA237C462400EBF5E6 /* AppEntry */ = {
 			isa = PBXGroup;
 			children = (
@@ -896,6 +930,7 @@
 				00E491982366E08B007B332D /* MobileWallet */,
 				00E491B42366E08F007B332D /* MobileWalletTests */,
 				00E491BF2366E08F007B332D /* MobileWalletUITests */,
+				00B4D6AC2416A32200ED8318 /* MobileWalletUISnapshots */,
 				00E491972366E08B007B332D /* Products */,
 				71F4BDBF8B1AF18134115485 /* Pods */,
 				27F235021D9E2060A3CBB465 /* Frameworks */,
@@ -908,6 +943,7 @@
 				00E491962366E08B007B332D /* Tari.app */,
 				00E491B12366E08F007B332D /* MobileWalletTests.xctest */,
 				00E491BC2366E08F007B332D /* MobileWalletUITests.xctest */,
+				00B4D6AB2416A32200ED8318 /* MobileWalletUISnapshots.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1099,6 +1135,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		00B4D6AA2416A32200ED8318 /* MobileWalletUISnapshots */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00B4D6B42416A32200ED8318 /* Build configuration list for PBXNativeTarget "MobileWalletUISnapshots" */;
+			buildPhases = (
+				00B4D6A72416A32200ED8318 /* Sources */,
+				00B4D6A82416A32200ED8318 /* Frameworks */,
+				00B4D6A92416A32200ED8318 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				00B4D6B12416A32200ED8318 /* PBXTargetDependency */,
+			);
+			name = MobileWalletUISnapshots;
+			productName = MobileWalletUISnapshots;
+			productReference = 00B4D6AB2416A32200ED8318 /* MobileWalletUISnapshots.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		00E491952366E08B007B332D /* MobileWallet */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E491C52366E08F007B332D /* Build configuration list for PBXNativeTarget "MobileWallet" */;
@@ -1166,10 +1220,15 @@
 		00E4918E2366E08B007B332D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1110;
+				LastSwiftUpdateCheck = 1130;
 				LastUpgradeCheck = 1110;
 				ORGANIZATIONNAME = "Jason van den Berg";
 				TargetAttributes = {
+					00B4D6AA2416A32200ED8318 = {
+						CreatedOnToolsVersion = 11.3.1;
+						LastSwiftMigration = 1130;
+						TestTargetID = 00E491952366E08B007B332D;
+					};
 					00E491952366E08B007B332D = {
 						CreatedOnToolsVersion = 11.1;
 					};
@@ -1201,11 +1260,19 @@
 				00E491952366E08B007B332D /* MobileWallet */,
 				00E491B02366E08F007B332D /* MobileWalletTests */,
 				00E491BB2366E08F007B332D /* MobileWalletUITests */,
+				00B4D6AA2416A32200ED8318 /* MobileWalletUISnapshots */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		00B4D6A92416A32200ED8318 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		00E491942366E08B007B332D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1529,6 +1596,17 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		00B4D6A72416A32200ED8318 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00B4D6B82416A50C00ED8318 /* MobileWalletUISnapshots.swift in Sources */,
+				00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */,
+				00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */,
+				00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		00E491922366E08B007B332D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1772,6 +1850,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		00B4D6B12416A32200ED8318 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00E491952366E08B007B332D /* MobileWallet */;
+			targetProxy = 00B4D6B02416A32200ED8318 /* PBXContainerItemProxy */;
+		};
 		00E491B32366E08F007B332D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 00E491952366E08B007B332D /* MobileWallet */;
@@ -1804,6 +1887,51 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		00B4D6B22416A32200ED8318 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8974PBB98U;
+				INFOPLIST_FILE = MobileWalletUISnapshots/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tari.MobileWalletUISnapshots;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/MobileWalletUISnapshots/MobileWalletUISnapshots-bridging-header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MobileWallet;
+			};
+			name = Debug;
+		};
+		00B4D6B32416A32200ED8318 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8974PBB98U;
+				INFOPLIST_FILE = MobileWalletUISnapshots/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.tari.MobileWalletUISnapshots;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/MobileWalletUISnapshots/MobileWalletUISnapshots-bridging-header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MobileWallet;
+			};
+			name = Release;
+		};
 		00E491C32366E08F007B332D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2117,6 +2245,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		00B4D6B42416A32200ED8318 /* Build configuration list for PBXNativeTarget "MobileWalletUISnapshots" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00B4D6B22416A32200ED8318 /* Debug */,
+				00B4D6B32416A32200ED8318 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		00E491912366E08B007B332D /* Build configuration list for PBXProject "MobileWallet" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

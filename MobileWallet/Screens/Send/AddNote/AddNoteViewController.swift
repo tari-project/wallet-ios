@@ -221,6 +221,12 @@ extension AddNoteViewController {
         sendButton.showSliderText = true
         sendButton.labelText = NSLocalizedString("Slide to Send", comment: "Add note view")
         sendButton.delegate = self
+
+        //If we're in testmode, the slide to send doesn't seem to work so allow it to be tapped in this case
+        if ProcessInfo.processInfo.arguments.contains("ui-test-mode") {
+            let tapButtonGesture = UITapGestureRecognizer(target: self, action: #selector (self.slideViewDidFinish (_:)))
+            sendButton.addGestureRecognizer(tapButtonGesture)
+        }
     }
 
     fileprivate func setupNoteInput() {

@@ -47,3 +47,7 @@ Coming soon.
 
 - `development` will be the semi-stable branch with `tag` on each stable merge. This is the branch from where IPA should be published to iTunes Test Flight.
 - `master` will have code that are fully stable with `release` on each merge. App store publishing should be done from this branch only.
+
+### UI testing
+
+Right now we don't have UI tests using asserts but running `generate_screenshots.sh` will automatically generate a report containing screenshots of each view on multiple simulators. This report can be used to visually inspect each PR for any possible UI or layout bugs that might have been introduced.

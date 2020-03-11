@@ -1,8 +1,8 @@
-//  OnboardingTests.swift
+//  MobileWalletUISnapshots-Bridging-Header.h
 	
 /*
-	Package MobileWalletUITests
-	Created by Jason van den Berg on 2019/11/14
+	Package MobileWalletUISnapshots
+	Created by Jason van den Berg on 2020/03/10
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,27 +38,4 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import XCTest
-
-class OnboardingUITests: XCTestCase {
-    private let app = XCUIApplication()
-    
-    override func setUp() {        
-        continueAfterFailure = false
-        
-        app.launchArguments = ["-disable-animations"]
-    }
-
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    func testLaunchPerformance() {
-//        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, *) {
-//            // This measures how long it takes to launch your application.
-//            measure(metrics: [XCTOSSignpostMetric.applicationLaunch]) {
-//                app.launch()
-//            }
-//        }
-    }
-}
+#import "../MobileWalletUITests/Biometrics.h"
