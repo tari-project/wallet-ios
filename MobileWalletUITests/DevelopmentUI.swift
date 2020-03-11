@@ -54,13 +54,13 @@ class DevelopmentUI: XCTestCase {
      Used to speed up checking of UI in development
      */
     func testDevelopment() {
-        let app = XCUIApplication()
-        app.launch()
-
-        acceptPermissionsPromptIfRequired()
-        Biometrics.successfulAuthentication()
-
-        sleep(0)
+//        let app = XCUIApplication()
+//        app.launch()
+//
+//        acceptPermissionsPromptIfRequired()
+//        Biometrics.successfulAuthentication()
+//
+//        sleep(0)
     }
 
 }

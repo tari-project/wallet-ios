@@ -48,6 +48,16 @@
                ReferencedContainer = "container:MobileWallet.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "00B4D6AA2416A32200ED8318"
+               BuildableName = "MobileWalletUISnapshots.xctest"
+               BlueprintName = "MobileWalletUISnapshots"
+               ReferencedContainer = "container:MobileWallet.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

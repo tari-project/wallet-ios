@@ -120,8 +120,8 @@ class TariLib {
     private func addDefaultBaseNode() throws {
         //Lee's node:
         try tariWallet?.addBaseNodePeer(
-            publicKey: PublicKey(hex: "5edb022af1c21d644dfceeea2fcc7d3fac7a57ab44cf775b9a6f692cb75ed767"),
-            address: "/onion3/vjkj44zpriqzrlve2qbiasrluaaxagrb6iuavzaascbujri6gw3rcmyd:18141")
+            publicKey: PublicKey(hex: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43"),
+            address: "/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
     }
 
     private func transportType() throws -> TransportType {
