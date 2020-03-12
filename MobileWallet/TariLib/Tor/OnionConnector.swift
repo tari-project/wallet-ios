@@ -41,14 +41,24 @@
 import Foundation
 
 public final class OnionConnector {
+    public static let shared = OnionConnector()
+
     public enum OnionError: Error {
         case connectionError
     }
 
+    public enum OnionConnectionState {
+        case notConnected
+        case connecting
+        case connected
+    }
+
+    var currentTorConnectionState: OnionConnectionState = .notConnected
+
     private var progress: ((Int) -> Void)?
     private var completion: ((Result<URLSessionConfiguration, OnionError>) -> Void)?
 
-    public init() {}
+    private init() {}
 
     public func start(progress: ((Int) -> Void)?, completion: @escaping (Result<URLSessionConfiguration, OnionError>) -> Void) {
         self.progress = progress
@@ -59,10 +69,12 @@ public final class OnionConnector {
 
 extension OnionConnector: OnionManagerDelegate {
     func torConnProgress(_ progress: Int) {
+        currentTorConnectionState = .connecting
         self.progress?(progress)
     }
 
     func torConnFinished(configuration: URLSessionConfiguration) {
+        currentTorConnectionState = .connected
         // TODO: this is a fix for Tor 400.5.2. Can be removed once there is a
         // new release on github.
         configuration.connectionProxyDictionary = [
@@ -80,6 +92,7 @@ extension OnionConnector: OnionManagerDelegate {
     }
 
     func torConnError() {
+        currentTorConnectionState = .notConnected
         print("Tor connection error")
         completion?(.failure(.connectionError))
     }

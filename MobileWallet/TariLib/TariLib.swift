@@ -147,13 +147,17 @@ class TariLib {
     }
 
     func startTor() {
+        guard OnionConnector.shared.currentTorConnectionState != .connected else {
+            return
+        }
+
         guard TariLib.shared.TOR_ENABLED else {
             TariEventBus.postToMainThread(.torConnected, sender: URLSessionConfiguration.default)
             return
         }
 
         TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(0))
-        OnionConnector().start(
+        OnionConnector.shared.start(
             progress: { [weak self] percentage in
                 guard let _ = self else { return }
 
@@ -199,14 +203,27 @@ class TariLib {
         try addDefaultBaseNode()
     }
 
-    func startExistingWallet() throws {
+    func startExistingWallet(isBackgroundTask: Bool = false) throws {
         if let privateKeyHex = UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) {
             print("databasePath: ", databasePath)
 
             let privateKey = try PrivateKey(hex: privateKeyHex)
             let transport = try transportType()
-            let commsConfig = try CommsConfig(privateKey: privateKey, transport: transport, databasePath: databasePath, databaseName: DATABASE_NAME, publicAddress: publicAddress)
-            tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
+            let commsConfig = try CommsConfig(
+                privateKey: privateKey,
+                transport: transport,
+                databasePath: databasePath,
+                databaseName: DATABASE_NAME,
+                publicAddress: publicAddress
+            )
+
+            var loggingFilePath = TariLib.shared.logFilePath
+            //So we can check the logs for sessions that happend in the background
+            if isBackgroundTask {
+                loggingFilePath = loggingFilePath.replacingOccurrences(of: ".txt", with: "-background.txt")
+            }
+
+            tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: loggingFilePath)
         } else {
             throw TariLibErrors.privateKeyNotFound
         }
