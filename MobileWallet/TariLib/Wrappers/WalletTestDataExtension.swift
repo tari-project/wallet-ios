@@ -67,11 +67,11 @@ extension Wallet {
         }
     }
 
-    func testTransactionBroadcast(completedTransaction: CompletedTransaction) throws {
+    func testTransactionBroadcast(txID: UInt64) throws {
         var errorCode: Int32 = -1
         let didTestTransactionBroadcast = wallet_test_broadcast_transaction(
             self.pointer,
-            completedTransaction.pointer,
+            txID,
             UnsafeMutablePointer<Int32>(&errorCode)
         )
         guard errorCode == 0 else {
@@ -82,11 +82,11 @@ extension Wallet {
         }
     }
 
-    func testTransactionMined(completedTransaction: CompletedTransaction) throws {
+    func testTransactionMined(txID: UInt64) throws {
         var errorCode: Int32 = -1
         let didCompleteTransaction = wallet_test_mine_transaction(
             self.pointer,
-            completedTransaction.pointer,
+            txID,
             UnsafeMutablePointer<Int32>(&errorCode)
         )
         guard errorCode == 0 else {

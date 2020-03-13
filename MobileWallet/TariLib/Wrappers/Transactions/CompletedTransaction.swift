@@ -45,6 +45,8 @@ enum CompletedTransactionStatus: Error {
     case completed
     case broadcast
     case mined
+    case imported
+    case pending
     case unknown
 }
 
@@ -137,6 +139,10 @@ class CompletedTransaction: TransactionProtocol {
                 return (.broadcast, nil)
             case 2:
                 return (.mined, nil)
+            case 3:
+                 return (.imported, nil)
+            case 4:
+                 return (.pending, nil)
             default:
                 return (.unknown, nil)
         }
