@@ -91,7 +91,8 @@ class SplashViewController: UIViewController {
             titleAnimation()
             checkExistingWallet()
         }
-	handleWalletEvents()
+        
+        handleWalletEvents()
     }
 
     private func handleWalletEvents() {
