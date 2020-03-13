@@ -68,17 +68,17 @@ class MobileWalletUISnapshots: XCTestCase {
 
     func testSnapshots() {
         let createWalletButton = app.buttons["Create Wallet"]
-        _ = createWalletButton.waitForExistence(timeout: 5)
+        guard createWalletButton.waitForExistence(timeout: 5) else { return }
         snapshot("001 create wallet")
         createWalletButton.tap()
         
         let createEmojiIdButton = app.buttons["Continue & Create Emoji ID"]
-        _ = createEmojiIdButton.waitForExistence(timeout: 20)
+        guard createEmojiIdButton.waitForExistence(timeout: 20) else { return }
         snapshot("002 Create emoji ID")
         createEmojiIdButton.tap()
         
         let continueButton = app.buttons["Continue"]
-        _ = continueButton.waitForExistence(timeout: 20)
+        guard continueButton.waitForExistence(timeout: 20) else { return }
         snapshot("003 Emoji ID display")
         continueButton.tap()
         
@@ -100,19 +100,19 @@ class MobileWalletUISnapshots: XCTestCase {
         snapshot("006 Wallet intro")
 
         
-        let welcomeStaticText = app.staticTexts["Swipe down and I'll show you around your wallet"]
-        _ = welcomeStaticText.waitForExistence(timeout: 5)
+//        let welcomeStaticText = app.staticTexts["Swipe down and I'll show you around your wallet"]
+//        welcomeStaticText.waitForExistence(timeout: 5)
         
         sleep(5)
         app.swipeDown()
         
         let youGotSomeTariStaticText = app.staticTexts["You got some Tari!"]
-        _ = youGotSomeTariStaticText.waitForExistence(timeout: 20)
+        guard youGotSomeTariStaticText.waitForExistence(timeout: 20) else { return }
         snapshot("007 TariBot recieved")
         
         
         let sendTariButton = app.children(matching: .window).element(boundBy: 2).buttons["Send Tari"]
-        _ = sendTariButton.waitForExistence(timeout: 15)
+        guard sendTariButton.waitForExistence(timeout: 15) else { return }
         sendTariButton.tap()
         
         snapshot("008 Add recipient")
@@ -120,7 +120,7 @@ class MobileWalletUISnapshots: XCTestCase {
         app.tables.children(matching: .cell).element(boundBy: 0).staticTexts["TariBot"].tap()
         
         let sendContinueButton = app.buttons["Continue"]
-        _ = sendContinueButton.waitForExistence(timeout: 4)
+        guard sendContinueButton.waitForExistence(timeout: 4) else { return }
         snapshot("009 Add recipient selected")
         sendContinueButton.tap()
         
@@ -129,7 +129,7 @@ class MobileWalletUISnapshots: XCTestCase {
         app.buttons["5"].tap()
         
         let amountContinueButton = app.buttons["Continue"]
-        _ = amountContinueButton.waitForExistence(timeout: 4)
+        guard amountContinueButton.waitForExistence(timeout: 4) else { return }
         snapshot("011 Send amount set")
         amountContinueButton.tap()
         
@@ -148,7 +148,7 @@ class MobileWalletUISnapshots: XCTestCase {
         snapshot("013 Sending")
         
         let heyTxNote = app.tables.staticTexts["Hey"]
-        _ = heyTxNote.waitForExistence(timeout: 15)
+        guard heyTxNote.waitForExistence(timeout: 15) else { return }
         
         snapshot("014 Home view")
     

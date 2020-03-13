@@ -241,6 +241,8 @@
 		00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6BA2417894800ED8318 /* SnapshotHelper.swift */; };
 		00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8A8237AA13500C02E44 /* Biometrics.m */; };
 		00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD806237D755600EBF5E6 /* HelperFunctions.swift */; };
+		00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F5241B778D00ED8318 /* BackgroundTaskManager.swift */; };
+		00B4D6F8241B77A900ED8318 /* NodeSyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F7241B77A900ED8318 /* NodeSyncOperation.swift */; };
 		00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
 		00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
 		00BBD803237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
@@ -491,6 +493,8 @@
 		00B4D6B72416A50C00ED8318 /* MobileWalletUISnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileWalletUISnapshots.swift; sourceTree = "<group>"; };
 		00B4D6B9241787F600ED8318 /* MobileWalletUISnapshots-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletUISnapshots-Bridging-Header.h"; sourceTree = "<group>"; };
 		00B4D6BA2417894800ED8318 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
+		00B4D6F5241B778D00ED8318 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
+		00B4D6F7241B77A900ED8318 /* NodeSyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeSyncOperation.swift; sourceTree = "<group>"; };
 		00BBD7EE237B014100EBF5E6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 		00BBD7F6237B05A900EBF5E6 /* MobileWalletTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandLineArgs.swift; sourceTree = "<group>"; };
@@ -713,6 +717,7 @@
 		00262EB2236F022000A6C8A0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				00B4D6F4241B777500ED8318 /* BackgroundTasks */,
 				00A057B223D979BA0029C22A /* UserFeedback */,
 				00262EAD236F013500A6C8A0 /* Extensions */,
 				00262EB3236F024400A6C8A0 /* Theme.swift */,
@@ -810,6 +815,15 @@
 				00B4D6B9241787F600ED8318 /* MobileWalletUISnapshots-Bridging-Header.h */,
 			);
 			path = MobileWalletUISnapshots;
+			sourceTree = "<group>";
+		};
+		00B4D6F4241B777500ED8318 /* BackgroundTasks */ = {
+			isa = PBXGroup;
+			children = (
+				00B4D6F5241B778D00ED8318 /* BackgroundTaskManager.swift */,
+				00B4D6F7241B77A900ED8318 /* NodeSyncOperation.swift */,
+			);
+			path = BackgroundTasks;
 			sourceTree = "<group>";
 		};
 		00BBD7FA237C462400EBF5E6 /* AppEntry */ = {
@@ -1620,6 +1634,7 @@
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				4CD20A362407967B007B64D8 /* TransportType.swift in Sources */,
+				00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
@@ -1648,6 +1663,7 @@
 				00947CC723D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				004277EF23E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
+				00B4D6F8241B77A900ED8318 /* NodeSyncOperation.swift in Sources */,
 				004277E723DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				00C185B9238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
