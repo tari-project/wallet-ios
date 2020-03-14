@@ -116,6 +116,16 @@ class TariLibWrapperTests: XCTestCase {
             XCTFail(error.localizedDescription)
         }
     }
+    
+    func testBaseNode() {
+        //Invalid peers
+        XCTAssertThrowsError(try BaseNode("bla bla bla"))
+        XCTAssertThrowsError(try BaseNode("5edb022af1c21d644dfceeea2fcc7d3fac7a57ab44cf775b9a6f692cb75ed767::/onion3/vjkj44zpriqzrlve2qbiasrluaaxagrb6iuavzaascbujri6gw3rcmyd"))
+        XCTAssertThrowsError(try BaseNode("5edb022af1c21d644dfceeea2fcc7d3fac7a57ab44cf775b9a6f692cb75ed767::vjkj44zpriqzrlve2qbiasrluaaxagrb6iuavzaascbujri6gw3rcmyd:18141"))
+
+        //Valid peer
+        XCTAssertNoThrow(try BaseNode("5edb022af1c21d644dfceeea2fcc7d3fac7a57ab44cf775b9a6f692cb75ed767::/onion3/vjkj44zpriqzrlve2qbiasrluaaxagrb6iuavzaascbujri6gw3rcmyd:18141"))
+    }
    
     func testWallet() {
         //MARK: Create new wallet

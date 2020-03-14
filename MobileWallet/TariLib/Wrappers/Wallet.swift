@@ -411,11 +411,11 @@ class Wallet {
         }
     }
 
-    func addBaseNodePeer(publicKey: PublicKey, address: String) throws {
+    func addBaseNodePeer(_ basenode: BaseNode) throws {
         var errorCode: Int32 = -1
-        let addressPointer = (address as NSString).utf8String
+        let addressPointer = (basenode.address as NSString).utf8String
 
-        _ = wallet_add_base_node_peer(ptr, publicKey.pointer, addressPointer, UnsafeMutablePointer<Int32>(&errorCode))
+        _ = wallet_add_base_node_peer(ptr, basenode.publicKey.pointer, addressPointer, UnsafeMutablePointer<Int32>(&errorCode))
 
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)

@@ -48,6 +48,8 @@ class NodeSyncOperation: Operation {
             return
         }
 
+        NotificationManager.shared.scheduleNotification(title: "Background task", body: "Starting Tor")
+
         if TariLib.shared.walletExists {
             handleWalletEvents()
             TariLib.shared.startTor()
@@ -62,21 +64,15 @@ class NodeSyncOperation: Operation {
         TariEventBus.onMainThread(self, eventType: .torConnected) {(_) in
             do {
                 try TariLib.shared.startExistingWallet(isBackgroundTask: true)
+
+                NotificationManager.shared.scheduleNotification(title: "Background task", body: "Wallet started")
+
+                //TODO this is useful for testing but should remove this when push notifications are working properly
+                self.testReceiveTx()
             } catch {
                 print("Failed to start wallet")
                 self.onComplete(false)
             }
-
-            //TODO this is useful for testing but should remove this when push notifications are working properly
-//            DispatchQueue.global().asyncAfter(deadline: .now() + 5, execute: {
-//                if let wallet = TariLib.shared.tariWallet {
-//                    do {
-//                        try wallet.generateTestReceiveTransaction()
-//                    } catch {
-//                        print("Failed to make test send TX")
-//                    }
-//                }
-//            })
         }
 
         TariEventBus.onMainThread(self, eventType: .torConnectionFailed) {(result) in
@@ -84,8 +80,10 @@ class NodeSyncOperation: Operation {
 
             self.onComplete(false)
 
+            NotificationManager.shared.scheduleNotification(title: "Background task", body: "Tor connection failed")
+
             print("Failed to connect to tor")
-            print(error)
+            print(error as Any)
         }
 
         //TODO when a callback is added for when a node is synced, we should use that instead.
@@ -93,6 +91,17 @@ class NodeSyncOperation: Operation {
             //guard let _ = self else { return }
             print("Transaction receieved!")
             //TODO send local push notication here
+
+            NotificationManager.shared.scheduleNotification(
+                title: NSLocalizedString("You've got Tari!", comment: "Background refresh TX received notification"),
+                body: String(
+                    format: NSLocalizedString(
+                        "Someone just sent you some %@Tari",
+                        comment: "Background refresh TX received notification"),
+                    TariSettings.shared.network != .mainnet ? "Testnet " : ""
+                )
+            )
+
             self.onComplete(true)
         }
 
@@ -104,5 +113,19 @@ class NodeSyncOperation: Operation {
             TariEventBus.unregister(self)
             done(success)
         }
+    }
+}
+
+extension NodeSyncOperation {
+    fileprivate func testReceiveTx() {
+        DispatchQueue.global().asyncAfter(deadline: .now() + 5, execute: {
+            if let wallet = TariLib.shared.tariWallet {
+                do {
+                    try wallet.generateTestReceiveTransaction()
+                } catch {
+                    print("Failed to make test send TX")
+                }
+            }
+        })
     }
 }

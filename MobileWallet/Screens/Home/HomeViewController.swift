@@ -133,6 +133,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
             self.refreshBalance()
         }
+
+        checkClipboardForBaseNode()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -154,8 +156,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                     UserFeedback.shared.callToAction(
                         title: NSLocalizedString("You got some Tari!", comment: "Home view testnet airdrop"),
                         description: NSLocalizedString("TariBot has just sent you some Tari. To give the wallet a quick test, try sending TariBot back some Tari to see how it works.", comment: "Home view testnet airdrop"),
-                        cancelTitle: NSLocalizedString("I’ll try it later", comment: "Home view testnet airdrop"),
                         actionTitle: NSLocalizedString("Send Tari", comment: "Home view testnet airdrop"),
+                        cancelTitle: NSLocalizedString("I’ll try it later", comment: "Home view testnet airdrop"),
                         onAction: {
                             guard let self = self else { return }
                             self.onSend()

@@ -47,13 +47,6 @@ enum TariLibErrors: Error {
 class TariLib {
     static let shared = TariLib()
 
-    //For UI changes it can be a bit slow to keep waiting for tor to bootstrap
-    #if targetEnvironment(simulator)
-    private let TOR_ENABLED = false
-    #else
-    private let TOR_ENABLED = true
-    #endif
-
     private let DATABASE_NAME = "tari_wallet"
     private let PRIVATE_KEY_STORAGE_KEY = "privateKey"
 
@@ -117,15 +110,8 @@ class TariLib {
      */
     deinit {}
 
-    private func addDefaultBaseNode() throws {
-        //Lee's node:
-        try tariWallet?.addBaseNodePeer(
-            publicKey: PublicKey(hex: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43"),
-            address: "/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
-    }
-
     private func transportType() throws -> TransportType {
-        if TariLib.shared.TOR_ENABLED {
+        if TariSettings.shared.TOR_ENABLED {
             let torKey = ""
             let torBytes = [UInt8](torKey.utf8)
             let torIdentity = try ByteVector(byteArray: torBytes)
@@ -151,7 +137,7 @@ class TariLib {
             return
         }
 
-        guard TariLib.shared.TOR_ENABLED else {
+        guard TariSettings.shared.TOR_ENABLED else {
             TariEventBus.postToMainThread(.torConnected, sender: URLSessionConfiguration.default)
             return
         }
@@ -200,7 +186,8 @@ class TariLib {
 
         tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
 
-        try addDefaultBaseNode()
+        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.defaultBasenodePeer))
+
     }
 
     func startExistingWallet(isBackgroundTask: Bool = false) throws {

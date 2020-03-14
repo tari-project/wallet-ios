@@ -48,36 +48,42 @@ extension HomeViewController {
         self.navigationController?.pushViewController(logsVC, animated: false)
     }
 
-    private func showAddCustomBaseNode() {
-        let inputs: [UserFeedbackFormInput] = [
-            UserFeedbackFormInput(key: "pubkey", placeholder: "Public key"),
-            UserFeedbackFormInput(key: "toraddress", placeholder: "Tor address")
-        ]
+    func checkClipboardForBaseNode() {
+        let pasteboardString: String? = UIPasteboard.general.string
+        guard let clipboardText = pasteboardString else { return }
 
-        let title = NSLocalizedString("Custom Base Node", comment: "Custom base node details form")
-        let cancelTitle = NSLocalizedString("Cancel", comment: "Custom base node details form")
-        let actionTitle = NSLocalizedString("Save", comment: "Custom base node details form")
+        do {
+            let baseNode = try BaseNode(clipboardText)
 
-        UserFeedback.shared.acceptUserInput(title: title, cancelTitle: cancelTitle, actionTitle: actionTitle, inputs: inputs) { (result) in
-            if let pubKeyHex = result["pubkey"], let torAddress = result["toraddress"] {
-                guard let wallet = TariLib.shared.tariWallet else { return }
-
-                do {
-                    let pubKey = try PublicKey(hex: pubKeyHex)
-                    try wallet.addBaseNodePeer(publicKey: pubKey, address: torAddress)
-                    UINotificationFeedbackGenerator().notificationOccurred(.success)
-                } catch {
-                    print(error)
-
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
-                        guard let _ = self else { return }
+            UserFeedback.shared.callToAction(
+                title: NSLocalizedString("Set custom base node", comment: "Custom base node in clipboard call to action"),
+                description: String(
+                    format: NSLocalizedString(
+                        "We found a base node peer in your clipboard, would you like to use this instead of the default?\n\n%@",
+                        comment: "Custom base node in clipboard call to action"
+                    ),
+                    clipboardText
+                ),
+                actionTitle: NSLocalizedString("Set", comment: "Custom base node in clipboard call to action"),
+                cancelTitle: NSLocalizedString("Keep default", comment: "Custom base node in clipboard call to action"),
+                onAction: {
+                    do {
+                        try TariLib.shared.tariWallet?.addBaseNodePeer(baseNode)
+                        UIPasteboard.general.string = ""
+                    } catch {
                         UserFeedback.shared.error(
-                        title: NSLocalizedString("Wallet error", comment: "Custom base node details form"),
-                        description: NSLocalizedString("Could not update base node peer", comment: "Custom base node details form"),
-                        error: error)
+                            title: NSLocalizedString("Base node error", comment: "Custom base node in clipboard call to action"),
+                            description: NSLocalizedString("Failed to set custom base node from clipboard", comment: "Custom base node in clipboard call to action"),
+                            error: error
+                        )
                     }
+                },
+                onCancel: {
+                    UIPasteboard.general.string = ""
                 }
-            }
+            )
+        } catch {
+            //No valid peer string found in clipboard
         }
     }
 
@@ -134,10 +140,6 @@ extension HomeViewController {
 
         alert.addAction(UIAlertAction(title: "View TariLib logs", style: .default, handler: { (_)in
             self.showTariLibLogs()
-        }))
-
-        alert.addAction(UIAlertAction(title: "Add custom base node", style: .default, handler: { (_)in
-            self.showAddCustomBaseNode()
         }))
 
 //        alert.addAction(UIAlertAction(title: "Generate test data", style: .default, handler: { (_)in
