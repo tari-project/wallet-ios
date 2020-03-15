@@ -185,12 +185,15 @@ struct Fonts: Loopable {
     let splashSubtitleLabel = UIFont(name: "Avenir-Medium", size: 14.0)
 
     //SplashCreatingWallet
-    let createWalletFirstLabel = UIFont(name: "AvenirLTStd-Black", size: 18.0)
+    let createWalletFirstLabel = UIFont(name: "Avenir-Black", size: 18.0)
     let createWalletSecondLabelFirstText = UIFont(name: "Avenir-Black", size: 18.0)
     let createWalletSecondLabelSecondText = UIFont(name: "Avenir-Roman", size: 18.0)
     let createWalletThirdLabel = UIFont(name: "Avenir-Medium", size: 14.0)
     let createWalletEmojiIDFirstText = UIFont(name: "Avenir-Light", size: 18.0)
     let createWalletEmojiIDSecondText = UIFont(name: "Avenir-Black", size: 18.0)
+    let createWalletNotificationsFirstLabel = UIFont(name: "Avenir-Light", size: 18.0)
+    let createWalletNotificationsSecondLabel = UIFont(name: "Avenir-Black", size: 18.0)
+    let createWalletNotificationsThirdLabel = UIFont(name: "Avenir-Medium", size: 14.0)
 
     //Profile
     let profileTitleLightLabel = UIFont(name: "Avenir-Light", size: 18.0)
@@ -261,6 +264,7 @@ struct Images: Loopable {
     // Create Wallet
     let createWalletTouchID = UIImage(named: "fingerprint")
     let createWalletFaceID = UIImage(named: "faceId")
+    let createWalletNofications = UIImage(named: "bell7")
 
     //Transaction icons
     let food = UIImage(named: "food")
