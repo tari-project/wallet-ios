@@ -289,8 +289,12 @@ class SplashViewController: UIViewController {
         if walletExistsInitially {
             let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
             if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
-                nav.modalPresentationStyle = .overFullScreen
-                self.present(nav, animated: true, completion: nil)
+                if let window = UIApplication.shared.windows.first {
+                    UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
+                        window.rootViewController = nav
+                        window.makeKeyAndVisible()
+                    }, completion: nil)
+                }
             }
         } else {
             let vc = WalletCreationViewController()
