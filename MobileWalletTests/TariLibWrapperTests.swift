@@ -111,7 +111,9 @@ class TariLibWrapperTests: XCTestCase {
                 XCTFail(error!.localizedDescription)
             }
             
-            XCTAssertEqual(emojis, "🤣👁🥿🤛😔🦃🐗🦒🙊🤮👆🖕🐗")
+            let emojiKey = try PublicKey(emojis: emojis)
+            XCTAssertEqual(emojiKey.hex.0, publicKey.hex.0)
+            
         } catch {
             XCTFail(error.localizedDescription)
         }
@@ -152,12 +154,13 @@ class TariLibWrapperTests: XCTestCase {
         var commsConfig: CommsConfig?
         do {
             let transport = TransportType()
+            let address = transport.address.0
             commsConfig = try CommsConfig(
                 privateKey: PrivateKey(hex: privateKeyHex),
                 transport: transport,
                 databasePath: databasePath,
                 databaseName: dbName,
-                publicAddress: "/ip4/127.0.0.1/tcp/80"
+                publicAddress: address
             )
             
             print("LOGGING: ", loggingFilePath)
@@ -254,41 +257,34 @@ class TariLibWrapperTests: XCTestCase {
                 XCTFail(pendingInboundTransactionsCountError!.localizedDescription)
             }
             
-            let pendingInboundTransaction = try pendingInboundTransactions!.at(position: pendingInboundTransactionsCount - 1)
-            
-            let (pendingInboundTransactionId, pendingInboundTransactionIdError) = pendingInboundTransaction.id
-            if pendingInboundTransactionIdError != nil {
-                XCTFail(pendingInboundTransactionIdError!.localizedDescription)
+            var currTx = 0
+            txId = 0
+            var pendingInboundTransaction: PendingInboundTransaction? = nil
+            while ( currTx < pendingInboundTransactionsCount)
+            {
+                pendingInboundTransaction = try pendingInboundTransactions!.at(position: UInt32(currTx))
+                let (pendingInboundTransactionId, pendingInboundTransactionIdError) = pendingInboundTransaction!.id
+                if pendingInboundTransactionIdError != nil {
+                    XCTFail(pendingInboundTransactionIdError!.localizedDescription)
+                }
+                txId = pendingInboundTransactionId
+                let (pendingInboundTransactionStatus, _) = pendingInboundTransaction!.status
+                if pendingInboundTransactionStatus == PendingInboundTransactionStatus.pending
+                {
+                    break;
+                }
+                currTx += 1
             }
             
-            txId = pendingInboundTransactionId
-            
-            try wallet.testFinalizedReceivedTransaction(pendingInboundTransaction: pendingInboundTransaction)
-            var completedTx = try wallet.findCompletedTransactionBy(id: txId!)
-            try wallet.testTransactionBroadcast(completedTransaction: completedTx)
-            completedTx = try wallet.findCompletedTransactionBy(id: txId!)
+            try wallet.testFinalizedReceivedTransaction(pendingInboundTransaction: pendingInboundTransaction!)
+            try wallet.testTransactionBroadcast(txID: txId!)
+            try wallet.testTransactionMined(txID: txId!)
+            let completedTx = try wallet.findCompletedTransactionBy(id: txId!)
             let (status, statusError) = completedTx.status
             if statusError != nil {
                 XCTFail(statusError!.localizedDescription)
             }
         
-            XCTAssertEqual(status, .broadcast)
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-
-        //MARK: Mine received transaction
-        do {
-            let broadcastedCompletedTx = try wallet.findCompletedTransactionBy(id: txId!)
-            try wallet.testTransactionMined(completedTransaction: broadcastedCompletedTx)
-
-            let minedCompletedTx = try wallet.findCompletedTransactionBy(id: txId!)
-            
-            let (status, statusError) = minedCompletedTx.status
-            if statusError != nil {
-                XCTFail(statusError!.localizedDescription)
-            }
-            
             XCTAssertEqual(status, .mined)
         } catch {
             XCTFail(error.localizedDescription)
@@ -331,8 +327,7 @@ class TariLibWrapperTests: XCTestCase {
 
             try wallet.testCompleteSend(pendingOutboundTransaction: pendingOutboundTransaction!)
 
-            let broadcastedCompletedTx = try wallet.findCompletedTransactionBy(id: sendTransactionId!)
-            try wallet.testTransactionMined(completedTransaction: broadcastedCompletedTx)
+            try wallet.testTransactionMined(txID: sendTransactionId!)
         } catch {
             XCTFail(error.localizedDescription)
         }

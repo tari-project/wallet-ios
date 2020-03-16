@@ -74,13 +74,23 @@ class PublicKey {
 
     var emojis: (String, Error?) {
         var errorCode: Int32 = -1
-        let emojiPtr = public_key_to_emoji_node_id(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let emojiPtr = public_key_to_emoji_id(ptr, UnsafeMutablePointer<Int32>(&errorCode))
         let result = String(cString: emojiPtr!)
 
         let mutable = UnsafeMutablePointer<Int8>(mutating: emojiPtr!)
         string_destroy(mutable)
 
         return (result, errorCode != 0 ? PublicKeyError.generic(errorCode) : nil)
+    }
+
+    init(emojis: String) throws {
+        let emojiPtr = UnsafeMutablePointer<Int8>(mutating: emojis)
+        var errorCode: Int32 = -1
+        let result = emoji_id_to_public_key(emojiPtr, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw PublicKeyError.generic(errorCode)
+        }
+        ptr = result!
     }
 
     //TODO setup attributed string version with dots in the middle for shortened version in Common dir.
