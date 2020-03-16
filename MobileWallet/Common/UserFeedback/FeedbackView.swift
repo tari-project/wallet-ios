@@ -95,7 +95,7 @@ class FeedbackView: UIView {
         descriptionLabel.textColor = Theme.shared.colors.feedbackPopupDescription
         descriptionLabel.font = Theme.shared.fonts.errorFeedbackPopupDescription
         descriptionLabel.textAlignment = .center
-        descriptionLabel.numberOfLines = 5
+        descriptionLabel.numberOfLines = 0
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
 
         descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true

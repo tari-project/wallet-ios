@@ -243,6 +243,7 @@
 		00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD806237D755600EBF5E6 /* HelperFunctions.swift */; };
 		00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F5241B778D00ED8318 /* BackgroundTaskManager.swift */; };
 		00B4D6F8241B77A900ED8318 /* NodeSyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F7241B77A900ED8318 /* NodeSyncOperation.swift */; };
+		00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F9241B910200ED8318 /* NotificationManager.swift */; };
 		00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
 		00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
 		00BBD803237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
@@ -286,6 +287,12 @@
 		00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E21238554FD00036DDC /* libsqlite3.tbd */; };
 		00DC2E242385559C00036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E232385559C00036DDC /* libsqlite3.tbd */; };
 		00DC2E25238555A200036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E232385559C00036DDC /* libsqlite3.tbd */; };
+		00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160A241CCE0600C955B4 /* TariSettings.swift */; };
+		00DD160C241CCE5B00C955B4 /* TariSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160A241CCE0600C955B4 /* TariSettings.swift */; };
+		00DD160D241CCE5B00C955B4 /* TariSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160A241CCE0600C955B4 /* TariSettings.swift */; };
+		00DD160F241CD41D00C955B4 /* BaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160E241CD41D00C955B4 /* BaseNode.swift */; };
+		00DD1610241CD42500C955B4 /* BaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160E241CD41D00C955B4 /* BaseNode.swift */; };
+		00DD1611241CD42500C955B4 /* BaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160E241CD41D00C955B4 /* BaseNode.swift */; };
 		00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
 		00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */; };
@@ -495,6 +502,8 @@
 		00B4D6BA2417894800ED8318 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		00B4D6F5241B778D00ED8318 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		00B4D6F7241B77A900ED8318 /* NodeSyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeSyncOperation.swift; sourceTree = "<group>"; };
+		00B4D6F9241B910200ED8318 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		00B4D6FB241B97CD00ED8318 /* Tari.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tari.entitlements; sourceTree = "<group>"; };
 		00BBD7EE237B014100EBF5E6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 		00BBD7F6237B05A900EBF5E6 /* MobileWalletTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandLineArgs.swift; sourceTree = "<group>"; };
@@ -515,6 +524,8 @@
 		00C185C52390221A0096984E /* DevelopmentUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentUI.swift; sourceTree = "<group>"; };
 		00DC2E21238554FD00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		00DC2E232385559C00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
+		00DD160A241CCE0600C955B4 /* TariSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariSettings.swift; sourceTree = "<group>"; };
+		00DD160E241CD41D00C955B4 /* BaseNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNode.swift; sourceTree = "<group>"; };
 		00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsTableViewController.swift; sourceTree = "<group>"; };
 		00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableTableViewCell.swift; sourceTree = "<group>"; };
 		00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableTableViewCell.xib; sourceTree = "<group>"; };
@@ -722,6 +733,7 @@
 				00262EAD236F013500A6C8A0 /* Extensions */,
 				00262EB3236F024400A6C8A0 /* Theme.swift */,
 				00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */,
+				00B4D6F9241B910200ED8318 /* NotificationManager.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -751,6 +763,7 @@
 				004277FA23E1A61F00AE7BD9 /* ErrorDescriptions.swift */,
 				0091D4A623ED879E004BF7F7 /* Signature.swift */,
 				0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */,
+				00DD160E241CD41D00C955B4 /* BaseNode.swift */,
 			);
 			name = Utils;
 			path = Wrappers/Utils;
@@ -961,6 +974,7 @@
 		00E491982366E08B007B332D /* MobileWallet */ = {
 			isa = PBXGroup;
 			children = (
+				00B4D6FB241B97CD00ED8318 /* Tari.entitlements */,
 				4C2C95B8237959B3005058AB /* MobileWallet-bridging-header.h */,
 				4C2C95AA2379554B005058AB /* TariLib */,
 				00E491992366E08B007B332D /* AppDelegate.swift */,
@@ -1036,6 +1050,7 @@
 				4C2C95C223796184005058AB /* libzmq.a */,
 				4C2C95AF23795919005058AB /* libwallet_ffi.a */,
 				009BF8AB237ABB4700C02E44 /* TariLib.swift */,
+				00DD160A241CCE0600C955B4 /* TariSettings.swift */,
 				00BCE485240D5A9E00B181F3 /* Tor */,
 				006D211B23CEDEEE007D1C10 /* Utils */,
 				00BBD80C237DA04300EBF5E6 /* Wrappers */,
@@ -1623,6 +1638,7 @@
 				001F6CE42380253B00FA7002 /* Contact.swift in Sources */,
 				00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00262EB9236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
+				00DD160F241CD41D00C955B4 /* BaseNode.swift in Sources */,
 				00A6779E23743696001A853E /* TransactionViewController.swift in Sources */,
 				00BCE482240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
@@ -1632,8 +1648,10 @@
 				004997BB2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
+				00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */,
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				4CD20A362407967B007B64D8 /* TransportType.swift in Sources */,
+				00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */,
 				00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
@@ -1713,6 +1731,7 @@
 				BFD758E723E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				0091D4A823ED879E004BF7F7 /* Signature.swift in Sources */,
+				00DD1610241CD42500C955B4 /* BaseNode.swift in Sources */,
 				006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				0087A1B323F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
 				004277F823E0628A00AE7BD9 /* UIViewController.swift in Sources */,
@@ -1740,6 +1759,7 @@
 				00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00A057B523D979DA0029C22A /* UserFeedback.swift in Sources */,
 				004997AC2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
+				00DD160D241CCE5B00C955B4 /* TariSettings.swift in Sources */,
 				00A994342396434B007D9990 /* QRButton.swift in Sources */,
 				00230B0A23770CEA00F23E34 /* CALayer.swift in Sources */,
 				0039B1B323FA925500F91E0F /* PasteEmojisView.swift in Sources */,
@@ -1820,6 +1840,7 @@
 				00BBD803237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
+				00DD1611241CD42500C955B4 /* BaseNode.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
 				0087A1AE23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
@@ -1829,6 +1850,7 @@
 				0091D4AD23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
 				00C185C0238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				004277E923DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
+				00DD160C241CCE5B00C955B4 /* TariSettings.swift in Sources */,
 				004277F523E0407900AE7BD9 /* TextButton.swift in Sources */,
 				001F6CE62380253B00FA7002 /* Contact.swift in Sources */,
 				009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */,
@@ -2062,6 +2084,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LIBRARY = "libc++";
+				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 41;
 				DEVELOPMENT_TEAM = 8974PBB98U;
@@ -2093,6 +2116,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_CXX_LIBRARY = "libc++";
+				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 41;
 				DEVELOPMENT_TEAM = 8974PBB98U;

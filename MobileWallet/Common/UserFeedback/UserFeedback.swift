@@ -102,10 +102,11 @@ class UserFeedback {
         SwiftEntryKit.display(entry: successFeedbackView, using: attributes)
     }
 
-    func callToAction(title: String, description: String, cancelTitle: String, actionTitle: String, onAction: @escaping () -> Void) {
+    func callToAction(title: String, description: String, actionTitle: String, cancelTitle: String, onAction: @escaping () -> Void, onCancel: (() -> Void)? = nil) {
         let ctaFeedbackView = FeedbackView()
         ctaFeedbackView.setupCallToAction(title: title, description: description, cancelTitle: cancelTitle, actionTitle: actionTitle, onClose: {
             SwiftEntryKit.dismiss()
+            onCancel?()
         }, onAction: onAction)
 
         var attributes = defaultAttributes
