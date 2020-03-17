@@ -43,6 +43,10 @@ import Foundation
 enum PublicKeyError: Error {
     case generic(_ errorCode: Int32)
     case invalidHex
+    case invalidDeepLink
+    case invalidDeepLinkNetwork //When a deep link is valid but for wring network
+    case invalidDeepLinkType //If it doesn't contain "/eid/" or "/pubkey/"
+    case cantDerivePublicKeyFromString
 }
 
 class PublicKey {
@@ -83,6 +87,15 @@ class PublicKey {
         return (result, errorCode != 0 ? PublicKeyError.generic(errorCode) : nil)
     }
 
+    var deeplink: (String, Error?) {
+        let (emojisPubkey, emojisError) = emojis
+        guard emojisError == nil else {
+            return ("", emojisError)
+        }
+
+        return ("\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/\(emojisPubkey)", nil)
+    }
+
     init(emojis: String) throws {
         let emojiPtr = UnsafeMutablePointer<Int8>(mutating: emojis)
         var errorCode: Int32 = -1
@@ -116,6 +129,56 @@ class PublicKey {
             throw PublicKeyError.generic(errorCode)
         }
         ptr = result!
+    }
+
+    //Accepts deep links using either emoji ID or hex. i.e:
+    //tari://rincewind/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱🖐🙀🤳🖖👍✊🐈☂💀👚😶🤟😳👢😘😺🙌🎩🤬🐼😎🥺
+    //tari://rincewind/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a
+    convenience init(deeplink: String) throws {
+        guard deeplink.hasPrefix("\(TariSettings.shared.deeplinkURI)://") else {
+            throw PublicKeyError.invalidDeepLink
+        }
+
+        let deeplinkPrefix = "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)"
+
+        //Link is for a different network
+        guard deeplink.hasPrefix(deeplinkPrefix) else {
+            throw PublicKeyError.invalidDeepLinkNetwork
+        }
+
+        if deeplink.hasPrefix("\(deeplinkPrefix)/eid/") {
+            //TODO this might not work once we add url params for alias and amount
+            let emojis = deeplink.replacingOccurrences(of: "\(deeplinkPrefix)/eid/", with: "")
+            try self.init(emojis: emojis)
+            return
+        } else if deeplink.hasPrefix("\(deeplinkPrefix)/pubkey/") {
+            //TODO this might not work once we add url params for alias and amount
+            let hex = deeplink.replacingOccurrences(of: "\(deeplinkPrefix)/pubkey/", with: "")
+            try self.init(hex: hex)
+            return
+        }
+
+        throw PublicKeyError.invalidDeepLinkType
+    }
+
+    //Attempts to derive a pubkey from a deeplink, hex, or emoji string
+    convenience init(any: String) throws {
+        do {
+            try self.init(hex: any)
+            return
+        } catch {}
+
+        do {
+            try self.init(emojis: any)
+            return
+        } catch {}
+
+        do {
+            try self.init(deeplink: any)
+            return
+        } catch {}
+
+        throw PublicKeyError.cantDerivePublicKeyFromString
     }
 
     init(pointer: OpaquePointer) {

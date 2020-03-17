@@ -99,7 +99,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
                     guard let self = self else { return }
 
                     do {
-                        let pubKey = try PublicKey(privateKey: PrivateKey()) //TODO add back real check // try PublicKey(emojis: self.clipboardEmojis)
+                        let pubKey = try PublicKey(emojis: self.clipboardEmojis)
                         self.onAdd(publicKey: pubKey)
                     } catch {
                         UserFeedback.shared.error(
@@ -280,15 +280,15 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
         let pasteboardString: String? = UIPasteboard.general.string
 
         if let text = pasteboardString {
+
+            //Try get a pubkey from clipboard text
             do {
-                //_ = try PublicKey(emojis: text)
-                //TODO add real chec in once the lib is working
-                if text.containsEmoji {
-                    clipboardEmojis = text
-                }
+                let pubKeyFromDeeplink = try PublicKey(any: text)
+                clipboardEmojis = pubKeyFromDeeplink.emojis.0
+                return
             } catch {
-                //Not valid emojis, don't show them
-                clipboardEmojis = ""
+                //It's not a deep link or emoji string or hex
+               clipboardEmojis = ""
             }
         }
     }
@@ -358,7 +358,6 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
     }
 
     func onSelect(publicKey: PublicKey) {
-        //TODO this will probably set the emojis when we have the custom emoji view
         inputBox.text = publicKey.emojis.0
         inputBox.rightView = nil
 
@@ -377,6 +376,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
 
     //Used by the scanner and paste from clipboard
     func onAdd(publicKey: PublicKey) {
+        dismissKeyboard()
         onSelect(publicKey: publicKey)
     }
 }

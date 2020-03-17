@@ -46,6 +46,16 @@ enum TransactionDirection {
     case none
 }
 
+enum TransactionStatus: Error {
+    case transactionNullError
+    case completed
+    case broadcast
+    case mined
+    case imported
+    case pending
+    case unknown
+}
+
 protocol TransactionProtocol {
     var pointer: OpaquePointer { get }
     var id: (UInt64, Error?) { get }
@@ -54,6 +64,7 @@ protocol TransactionProtocol {
     var message: (String, Error?) { get }
     var timestamp: (UInt64, Error?) { get }
     var sourcePublicKey: (PublicKey?, Error?) { get }
+    var status: (TransactionStatus, Error?) { get }
     var destinationPublicKey: (PublicKey?, Error?) { get }
     var direction: TransactionDirection { get }
     var contact: (Contact?, Error?) { get }
@@ -67,5 +78,24 @@ extension TransactionProtocol {
         }
 
         return (Date(timeIntervalSince1970: Double(timestamp)), nil)
+    }
+
+    func statusFrom(code: Int32) -> TransactionStatus {
+        switch code {
+            case -1:
+                return .transactionNullError
+            case 0:
+                return .completed
+            case 1:
+                return .broadcast
+            case 2:
+                return .mined
+            case 3:
+                 return .imported
+            case 4:
+                 return .pending
+            default:
+                return .unknown
+        }
     }
 }

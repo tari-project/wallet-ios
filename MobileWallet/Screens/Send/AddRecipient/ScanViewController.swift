@@ -302,21 +302,9 @@ class ScanViewController: UIViewController {
         captureSession = nil
     }
 
-    private func foundQR(text: String) {
+    private func foundQR(qrText: String) {
         do {
-            guard let data = text.data(using: .utf8) else {
-                throw ScannerErrors.invalidQR
-            }
-
-            guard let responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String] else {
-                throw ScannerErrors.invalidQR
-            }
-
-            guard let hexKey = responseDict["pubkey"] else {
-                throw ScannerErrors.missingPublicKey
-            }
-
-            let publicKey = try PublicKey(hex: hexKey)
+            let publicKey = try PublicKey(deeplink: qrText)
 
             self.actionDelegate?.onAdd(publicKey: publicKey)
             let generator = UINotificationFeedbackGenerator()
@@ -347,7 +335,7 @@ extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             guard let stringValue = readableObject.stringValue else { return }
             //AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            foundQR(text: stringValue)
+            foundQR(qrText: stringValue)
         }
     }
 }

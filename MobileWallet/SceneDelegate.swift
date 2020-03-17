@@ -58,6 +58,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            guard let deeplink = NSString(string: url.absoluteString).removingPercentEncoding else {
+                return
+            }
+
+            Deeplinker.handleShortcut(type: .send(deeplink: deeplink))
+        }
+    }
+
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.
@@ -68,6 +78,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+
+        Deeplinker.checkDeepLink()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -94,4 +106,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
     }
 
+    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        completionHandler(Deeplinker.handleShortcut(item: shortcutItem))
+    }
 }

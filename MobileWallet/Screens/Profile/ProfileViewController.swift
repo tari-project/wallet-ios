@@ -294,13 +294,12 @@ class ProfileViewController: UIViewController {
             throw walletPublicKeyError!
         }
 
-        let (hex, hexError) = pubKey.hex
-        guard hexError == nil else {
-            throw hexError!
+        let (deeplink, deeplinkError) = pubKey.deeplink
+        guard deeplinkError == nil else {
+            throw deeplinkError!
         }
 
-        let qrText = "{\"pubkey\":\"\(hex)\"}"
-        let vcard = qrText.data(using: .utf8)
+        let vcard = deeplink.data(using: .utf8)
 
         let filter = CIFilter(name: "CIQRCodeGenerator")
         filter?.setValue(vcard, forKey: "inputMessage")
@@ -335,21 +334,23 @@ class ProfileViewController: UIViewController {
         }
     }
 
-    private func copyToClipboard() {
-        if let wallet = TariLib.shared.tariWallet {
-            if let pubKeyHex = wallet.publicKey.0?.hex.0 {
-                let pasteboard = UIPasteboard.general
-                print(pubKeyHex)
-                pasteboard.string = pubKeyHex
-            }
+    private func copyToClipboard() throws {
+        guard let wallet = TariLib.shared.tariWallet else {
+            throw WalletErrors.walletNotInitialized
         }
 
-        //TODO remove above and uncomment below when emojis are ready
+        let (walletPublicKey, walletPublicKeyError) = wallet.publicKey
+        guard let pubKey = walletPublicKey else {
+            throw walletPublicKeyError!
+        }
 
-//        if let emojis = self.emojis {
-//            let pasteboard = UIPasteboard.general
-//            pasteboard.string = emojis
-//        }
+        let (deeplink, deeplinkError) = pubKey.deeplink
+        guard deeplinkError == nil else {
+            throw deeplinkError!
+        }
+
+        let pasteboard = UIPasteboard.general
+        pasteboard.string = deeplink
     }
 
     private func sendHapticNotification() {
@@ -376,7 +377,15 @@ class ProfileViewController: UIViewController {
     }
 
     @objc func onCopyEmojiAction() {
-        copyToClipboard()
+        do {
+            try copyToClipboard()
+        } catch {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Failed to copy to clipboard", comment: "Profile view"),
+                description: "",
+                error: error
+            )
+        }
         sendHapticNotification()
 
         let titleButton = NSLocalizedString("Copied!", comment: "Profile copied button")
