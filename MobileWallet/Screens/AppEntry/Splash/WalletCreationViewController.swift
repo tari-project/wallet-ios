@@ -598,7 +598,6 @@ class WalletCreationViewController: UIViewController {
         }
 
         secondLabelTopConstaint?.constant = -50
-
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
