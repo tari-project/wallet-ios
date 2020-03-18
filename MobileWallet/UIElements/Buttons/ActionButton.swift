@@ -211,4 +211,13 @@ class ActionButton: UIButton {
             })
         })
     }
+
+    func hideButtonWithAlpha() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
+            UIView.animate(withDuration: 0.5) {
+                self.alpha = 0.0
+                self.layoutIfNeeded()
+            }
+        })
+    }
 }
