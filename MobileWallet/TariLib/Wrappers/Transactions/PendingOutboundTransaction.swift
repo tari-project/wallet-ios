@@ -40,16 +40,6 @@
 
 import Foundation
 
-enum PendingOutboundTransactionStatus: Error {
-    case transactionNullError
-    case completed
-    case broadcast
-    case mined
-    case imported
-    case pending
-    case unknown
-}
-
 enum PendingOutboundTransactionError: Error {
    case generic(_ errorCode: Int32)
 }
@@ -117,29 +107,14 @@ class PendingOutboundTransaction: TransactionProtocol {
         return (PublicKey(pointer: resultPointer!), nil)
     }
 
-    var status: (PendingOutboundTransactionStatus, Error?) {
+    var status: (TransactionStatus, Error?) {
         var errorCode: Int32 = -1
-        let status: Int32 = pending_outbound_transaction_get_status(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let statusCode: Int32 = pending_outbound_transaction_get_status(ptr, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             return (.unknown, PendingOutboundTransactionError.generic(errorCode))
         }
 
-     switch status {
-            case -1:
-                return (.transactionNullError, nil)
-            case 0:
-                return (.completed, nil)
-            case 1:
-                return (.broadcast, nil)
-            case 2:
-                return (.mined, nil)
-            case 3:
-                 return (.imported, nil)
-            case 4:
-                 return (.pending, nil)
-            default:
-                return (.unknown, nil)
-        }
+        return (statusFrom(code: statusCode), nil)
     }
 
     var contact: (Contact?, Error?) {

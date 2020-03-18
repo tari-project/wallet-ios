@@ -100,6 +100,8 @@ class TariLibWrapperTests: XCTestCase {
         let originalPublicKeyHex = "6a493210f7499cd17fecb510ae0cea23a110e8d5b901f8acadd3095c73a3b919"
         
         do {
+            _ = try PublicKey(privateKey: PrivateKey())
+            
             let publicKey = try PublicKey(hex: originalPublicKeyHex)
             let (hex, hexError) = publicKey.hex
             if hexError != nil {
@@ -113,10 +115,21 @@ class TariLibWrapperTests: XCTestCase {
             
             let emojiKey = try PublicKey(emojis: emojis)
             XCTAssertEqual(emojiKey.hex.0, publicKey.hex.0)
-            
         } catch {
             XCTFail(error.localizedDescription)
         }
+        
+        //Valid deep links
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱🖐🙀🤳🖖👍✊🐈☂💀👚😶🤟😳👢😘😺🙌🎩🤬🐼😎🥺"))
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
+        //Derive a deep link from random pubkey, then init a pubkey using that deep link
+        XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).deeplink.0))
+
+        //Invalid deep links
+        XCTAssertThrowsError(try PublicKey(deeplink: "bla bla bla"))
+        XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱"))
+        XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/invalid"))
+        XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://made-up-net/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
     }
     
     func testBaseNode() {
@@ -269,7 +282,7 @@ class TariLibWrapperTests: XCTestCase {
                 }
                 txId = pendingInboundTransactionId
                 let (pendingInboundTransactionStatus, _) = pendingInboundTransaction!.status
-                if pendingInboundTransactionStatus == PendingInboundTransactionStatus.pending
+                if pendingInboundTransactionStatus == TransactionStatus.pending
                 {
                     break;
                 }
@@ -352,7 +365,7 @@ class TariLibWrapperTests: XCTestCase {
             return
         }
                     
-        XCTAssertGreaterThan(groupedTransactions.count, 1)
+        XCTAssertGreaterThan(groupedTransactions.count, 0)
         XCTAssertGreaterThan(groupedTransactions[0].count, 1)
     }
     

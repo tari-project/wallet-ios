@@ -138,6 +138,9 @@
 		00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00325EC9239E4A1000F76918 /* FadedOverlayView.swift */; };
 		00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00325EC9239E4A1000F76918 /* FadedOverlayView.swift */; };
 		00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00325EC9239E4A1000F76918 /* FadedOverlayView.swift */; };
+		00369D7D24221ACB00BAB95B /* DeepLinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */; };
+		00369D7E2422670300BAB95B /* DeepLinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */; };
+		00369D7F2422670400BAB95B /* DeepLinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */; };
 		0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B323FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B423FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
@@ -460,6 +463,7 @@
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		00262EB8236F35CD00A6C8A0 /* DummyTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyTransaction.swift; sourceTree = "<group>"; };
 		00325EC9239E4A1000F76918 /* FadedOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadedOverlayView.swift; sourceTree = "<group>"; };
+		00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkManager.swift; sourceTree = "<group>"; };
 		0039B1B123FA925500F91E0F /* PasteEmojisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteEmojisView.swift; sourceTree = "<group>"; };
 		004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiButton.swift; sourceTree = "<group>"; };
 		004277E623DF4A5600AE7BD9 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
@@ -734,6 +738,7 @@
 				00262EB3236F024400A6C8A0 /* Theme.swift */,
 				00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */,
 				00B4D6F9241B910200ED8318 /* NotificationManager.swift */,
+				00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1703,6 +1708,7 @@
 				491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
 				BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
+				00369D7D24221ACB00BAB95B /* DeepLinkManager.swift in Sources */,
 				001F6CEC2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				BFAB5D1123FDEA69009E8563 /* EmoticonView.swift in Sources */,
@@ -1751,6 +1757,7 @@
 				004277F023E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
 				00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
+				00369D7E2422670300BAB95B /* DeepLinkManager.swift in Sources */,
 				BFE1FC0923E3ACD900BA5EEC /* WalletCreationViewController.swift in Sources */,
 				00947CC323CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
 				0087A1AD23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
@@ -1851,6 +1858,7 @@
 				00C185C0238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				004277E923DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				00DD160C241CCE5B00C955B4 /* TariSettings.swift in Sources */,
+				00369D7F2422670400BAB95B /* DeepLinkManager.swift in Sources */,
 				004277F523E0407900AE7BD9 /* TextButton.swift in Sources */,
 				001F6CE62380253B00FA7002 /* Contact.swift in Sources */,
 				009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */,

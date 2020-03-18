@@ -237,9 +237,23 @@ class DebugLogsTableViewController: UITableViewController {
             cell.textLabel?.text = logLines[indexPath.row]
             cell.textLabel?.numberOfLines = 10
         } else {
-            let filename = TariLib.shared.allLogFiles[indexPath.row].lastPathComponent
+            let url = TariLib.shared.allLogFiles[indexPath.row]
+            let filename = url.lastPathComponent
 
-            cell.textLabel?.text = TariLib.shared.logFilePath.contains(filename) ? "\(filename) (current)" : filename
+            var labelText = TariLib.shared.logFilePath.contains(filename) ? "\(filename) (current)" : filename
+
+            do {
+                let attr = try FileManager.default.attributesOfItem(atPath: url.path)
+                let fileSize = attr[FileAttributeKey.size] as! UInt64
+
+                let formattedSize = ByteCountFormatter.string(fromByteCount: Int64(fileSize), countStyle: .file)
+
+                labelText = "\(labelText) - \(formattedSize)"
+            } catch {
+                print("Error: \(error)")
+            }
+
+            cell.textLabel?.text = labelText
             cell.textLabel?.numberOfLines = 0
         }
 

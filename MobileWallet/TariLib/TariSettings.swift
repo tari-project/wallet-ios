@@ -49,6 +49,7 @@ struct TariSettings {
     static let shared = TariSettings()
 
     let network: TariNetworks = .rincewind //TODO this will come from a build config
+    let deeplinkURI = "tari"
 
     //Taribot faucet node
     let defaultBasenodePeer = "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"

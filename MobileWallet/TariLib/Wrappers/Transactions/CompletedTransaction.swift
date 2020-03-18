@@ -40,16 +40,6 @@
 
 import Foundation
 
-enum CompletedTransactionStatus: Error {
-    case transactionNullError
-    case completed
-    case broadcast
-    case mined
-    case imported
-    case pending
-    case unknown
-}
-
 enum CompletedTransactionError: Error {
     case generic(_ errorCode: Int32)
 }
@@ -123,29 +113,14 @@ class CompletedTransaction: TransactionProtocol {
         return (PublicKey(pointer: resultPointer!), nil)
     }
 
-    var status: (CompletedTransactionStatus, Error?) {
+    var status: (TransactionStatus, Error?) {
         var errorCode: Int32 = -1
-        let status: Int32 = completed_transaction_get_status(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let statusCode: Int32 = completed_transaction_get_status(ptr, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             return (.unknown, CompletedTransactionError.generic(errorCode))
         }
 
-        switch status {
-            case -1:
-                return (.transactionNullError, nil)
-            case 0:
-                return (.completed, nil)
-            case 1:
-                return (.broadcast, nil)
-            case 2:
-                return (.mined, nil)
-            case 3:
-                 return (.imported, nil)
-            case 4:
-                 return (.pending, nil)
-            default:
-                return (.unknown, nil)
-        }
+        return (statusFrom(code: statusCode), nil)
     }
 
     var direction: TransactionDirection {

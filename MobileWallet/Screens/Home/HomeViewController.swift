@@ -135,6 +135,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         }
 
         checkClipboardForBaseNode()
+
+        Deeplinker.checkDeepLink()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -335,8 +337,17 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         onSend()
     }
 
-    func onSend() {
+    func onSend(pubKey: PublicKey? = nil) {
         let sendVC = AddRecipientViewController()
+
+        //This is used by the deep link manager
+        if let publicKey = pubKey {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
+                guard let _ = self else { return }
+                sendVC.onAdd(publicKey: publicKey)
+            })
+        }
+
         self.navigationController?.pushViewController(sendVC, animated: true)
     }
 
