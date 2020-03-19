@@ -290,10 +290,16 @@ class SplashViewController: UIViewController {
             let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
             if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
                 if let window = UIApplication.shared.windows.first {
-                    UIView.transition(with: window, duration: 0.3, options: .transitionCrossDissolve, animations: {
+                    let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
+                    if let vc = nav.viewControllers.first {
+                        vc.view.addSubview(overlayView)
                         window.rootViewController = nav
-                        window.makeKeyAndVisible()
-                    }, completion: nil)
+                        UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
+                            overlayView.alpha = 0
+                        }, completion: { _ in
+                            overlayView.removeFromSuperview()
+                        })
+                    }
                 }
             }
         } else {
