@@ -184,14 +184,10 @@ class WalletCreationViewController: UIViewController {
         bottomWhiteView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
                                           constant: -52).isActive = true
         bottomWhiteView.topAnchor.constraint(equalTo: topWhiteView.bottomAnchor, constant: 0).isActive = true
-        bottomWhiteView.topAnchor.constraint(equalTo: secondLabelBottom.bottomAnchor, constant: 0).isActive = true
-
         firstLabelTopConstraint = firstLabel.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: 8)
         firstLabelTopConstraint?.isActive = true
-
         secondLabelTopConstaint = secondLabelTop.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: 8)
         secondLabelTopConstaint?.isActive = true
-
         secondLabelBottomConstaint = secondLabelBottom.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: 8)
         secondLabelBottomConstaint?.isActive = true
 
