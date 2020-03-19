@@ -863,19 +863,27 @@ class WalletCreationViewController: UIViewController {
                 DispatchQueue.main.async {
                     let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
                     if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
-                        if let window = UIApplication.shared.windows.first {
-                            let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
-                            if let vc = nav.viewControllers.first {
-                                vc.view.addSubview(overlayView)
-                                window.rootViewController = nav
-                                UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
-                                    overlayView.alpha = 0
-                                }, completion: { _ in
-                                    overlayView.removeFromSuperview()
-                                })
-                            }
-                        }
+                        nav.modalPresentationStyle = .overFullScreen
+                        self.present(nav, animated: true, completion: nil)
                     }
+                    
+                    //Below code isn't being used, there's an issue with it:
+                    //https://github.com/tari-project/wallet-ios/issues/186
+//                    let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+//                    if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
+//                        if let window = UIApplication.shared.windows.first {
+//                            let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
+//                            if let vc = nav.viewControllers.first {
+//                                vc.view.addSubview(overlayView)
+//                                window.rootViewController = nav
+//                                UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
+//                                    overlayView.alpha = 0
+//                                }, completion: { _ in
+//                                    overlayView.removeFromSuperview()
+//                                })
+//                            }
+//                        }
+//                    }
                 }
             }
         }
