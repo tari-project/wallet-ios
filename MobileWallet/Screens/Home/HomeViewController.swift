@@ -125,7 +125,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         self.refreshBalance()
 
-        isShowingSendButton = isShowingSendButton == true
         isTransactionViewFullScreen = isTransactionViewFullScreen == true
 
         TariEventBus.onMainThread(self, eventType: .balanceUpdate) { [weak self] (_) in
@@ -134,8 +133,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             self.refreshBalance()
         }
 
-        checkClipboardForBaseNode()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
+            guard let self = self else { return }
+            self.isShowingSendButton = self.isShowingSendButton == true
+        })
 
+        checkClipboardForBaseNode()
         Deeplinker.checkDeepLink()
     }
 
@@ -321,7 +324,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         bottomFadeView.superview?.bringSubviewToFront(self.bottomFadeView)
         sendButton.superview?.bringSubviewToFront(self.sendButton)
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
             guard let self = self else { return }
             self.fpc.show(animated: true) {
                 self.didMove(toParent: self)
@@ -445,7 +448,7 @@ extension HomeViewController {
         applyBackgroundGradient(
             from: [Theme.shared.colors.gradient1!.cgColor, Theme.shared.colors.gradient1!.cgColor],
             to: self.backgroundGradients,
-            duration: 1.5
+            duration: 2.5
         )
 
         sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
@@ -529,7 +532,7 @@ extension HomeViewController {
         let gradient: CAGradientLayer = CAGradientLayer()
         gradient.frame = view.bounds
         gradient.colors = fromColors
-        gradient.locations = [0.0, 1.0]
+        gradient.locations = [0.0, 0.9]
         gradient.name = BACKGROUND_GRADIENT_LAYER_NAME
 
         let x: Double! = GRADIENT_ANGLE / 360.0

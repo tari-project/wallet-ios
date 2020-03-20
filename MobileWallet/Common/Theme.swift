@@ -295,22 +295,22 @@ struct Sizes {
 }
 
 struct Transitions {
-    var pushUpOpen: CATransition {
+    var pullDownOpen: CATransition {
         let transition = CATransition()
-        transition.duration = 0.3
+        transition.duration = 0.5
         transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         transition.type = CATransitionType.push
-        transition.subtype = CATransitionSubtype.fromTop
+        transition.subtype = CATransitionSubtype.fromBottom
 
         return transition
     }
 
-    var pushDownClose: CATransition {
+    var pushUpClose: CATransition {
         let transition = CATransition()
         transition.duration = 0.3
         transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
         transition.type = CATransitionType.reveal
-        transition.subtype = CATransitionSubtype.fromBottom
+        transition.subtype = CATransitionSubtype.fromTop
 
         return transition
     }

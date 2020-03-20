@@ -103,6 +103,10 @@ class TariLib {
         }
     }
 
+    var isTorConnected: Bool {
+        return OnionConnector.shared.currentTorConnectionState == .connected
+    }
+
     init() {}
 
     /*

@@ -57,14 +57,17 @@ extension SplashViewController {
         createWalletButton.isHidden = true
 
         createWalletButton.setTitle(NSLocalizedString("Create Wallet", comment: "Main action button on the onboarding screen"), for: .normal)
+        titleLabel.isHidden = true
         titleLabel.text = NSLocalizedString("A crypto wallet", comment: "Title Label on the onboarding screen")
         titleLabel.font = Theme.shared.fonts.splashTitleLabel
         titleLabel.textColor = Theme.shared.colors.splashTitle
 
+        titleSecondLabel.isHidden = true
         titleSecondLabel.text = NSLocalizedString("that’s easy to use.", comment: "Second Title Line Label on the onboarding screen")
         titleSecondLabel.font = Theme.shared.fonts.splashTitleLabel
         titleSecondLabel.textColor = Theme.shared.colors.splashTitle
 
+        subtitleLabel.isHidden = true
         subtitleLabel.text = NSLocalizedString("Tari wallet puts you and your privacy at the core\n of everything and is still easy to use.", comment: "Subtitle Label on the onboarding screen")
 
         subtitleLabel.textColor = Theme.shared.colors.splashSubtitle
@@ -289,7 +292,7 @@ extension SplashViewController {
         }
     }
 
-    func topAnimationAndRemoveVideoAnimation(completion: @escaping (Bool) -> Void) {
+    func topAnimationAndRemoveVideoAnimation(onComplete: @escaping () -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.ticketTopLayoutConstraint?.isActive = false
@@ -310,7 +313,7 @@ extension SplashViewController {
                 self.view.layoutIfNeeded()
             }) { [weak self] (_) in
                 guard let self = self else { return }
-                self.startAnimation()
+                self.startAnimation(onComplete: onComplete)
             }
         }
     }
