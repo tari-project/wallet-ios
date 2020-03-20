@@ -866,7 +866,7 @@ class WalletCreationViewController: UIViewController {
                         nav.modalPresentationStyle = .overFullScreen
                         self.present(nav, animated: true, completion: nil)
                     }
-                    
+
                     //Below code isn't being used, there's an issue with it:
                     //https://github.com/tari-project/wallet-ios/issues/186
 //                    let storyboard = UIStoryboard.init(name: "Main", bundle: nil)

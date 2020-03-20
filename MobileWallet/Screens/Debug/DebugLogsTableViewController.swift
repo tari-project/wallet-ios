@@ -132,7 +132,7 @@ class DebugLogsTableViewController: UITableViewController {
     }
 
     @objc func onClose() {
-        navigationController?.view.layer.add(Theme.shared.transitions.pushDownClose, forKey: kCATransition)
+        navigationController?.view.layer.add(Theme.shared.transitions.pushUpClose, forKey: kCATransition)
         navigationController?.popViewController(animated: false)
     }
 

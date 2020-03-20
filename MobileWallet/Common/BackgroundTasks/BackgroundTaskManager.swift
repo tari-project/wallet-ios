@@ -72,6 +72,7 @@ struct BackgroundTaskManager {
         queue.addOperation(appRefreshOperation)
 
         task.expirationHandler = {
+            //NotificationManager.shared.scheduleNotification(title: "Background task", body: "Refresh task cancelled by OS")
             queue.cancelAllOperations()
             task.setTaskCompleted(success: false)
         }
@@ -84,7 +85,7 @@ struct BackgroundTaskManager {
 
     func scheduleAppRefresh() {
         let taskRequest = BGAppRefreshTaskRequest(identifier: BackgroundTaskManager.APP_BACKGROUND_SYNC_IDENTIFIER)
-        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: 60) //Seconds
+        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 15) //20min
 
         do {
             try BGTaskScheduler.shared.submit(taskRequest)

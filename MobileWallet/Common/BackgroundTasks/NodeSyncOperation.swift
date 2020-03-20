@@ -48,7 +48,7 @@ class NodeSyncOperation: Operation {
             return
         }
 
-        NotificationManager.shared.scheduleNotification(title: "Background task", body: "Starting Tor")
+        //NotificationManager.shared.scheduleNotification(title: "Background task", body: "Starting Tor")
 
         if TariLib.shared.walletExists {
             handleWalletEvents()
@@ -80,7 +80,7 @@ class NodeSyncOperation: Operation {
 
             self.onComplete(false)
 
-            NotificationManager.shared.scheduleNotification(title: "Background task", body: "Tor connection failed")
+            //NotificationManager.shared.scheduleNotification(title: "Background task", body: "Tor connection failed")
 
             print("Failed to connect to tor")
             print(error as Any)
@@ -89,9 +89,6 @@ class NodeSyncOperation: Operation {
         //TODO when a callback is added for when a node is synced, we should use that instead.
         TariEventBus.onMainThread(self, eventType: .receievedTransaction) {(_) in
             //guard let _ = self else { return }
-            print("Transaction receieved!")
-            //TODO send local push notication here
-
             NotificationManager.shared.scheduleNotification(
                 title: NSLocalizedString("You've got Tari!", comment: "Background refresh TX received notification"),
                 body: String(

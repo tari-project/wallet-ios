@@ -212,7 +212,8 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
             try TariLib.shared.tariWallet!.addUpdateContact(alias: textField.text!, publicKey: contactPublicKey!)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
-                UserFeedback.shared.success(title: NSLocalizedString("Contact Updated!", comment: "Transaction detail screen"))
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                //UserFeedback.shared.success(title: NSLocalizedString("Contact Updated!", comment: "Transaction detail screen"))
             })
 
         } catch {

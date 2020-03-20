@@ -81,6 +81,11 @@ class SplashViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         loadAnimation()
+
+        handleWalletEvents()
+
+        //TODO start tor here
+        TariLib.shared.startTor()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -91,8 +96,6 @@ class SplashViewController: UIViewController {
             titleAnimation()
             checkExistingWallet()
         }
-
-        handleWalletEvents()
     }
 
     private func handleWalletEvents() {
@@ -108,7 +111,7 @@ class SplashViewController: UIViewController {
                     attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
                     attributes.displayDuration = .infinity
                     attributes.screenInteraction = .forward
-                    SwiftEntryKit.display(entry: self.progressFeedbackView, using: attributes)
+                    //SwiftEntryKit.display(entry: self.progressFeedbackView, using: attributes)
                 }
 
                 self.progressFeedbackView.setupSuccess(title: "Tor bootstrapping: \(progress)%")
@@ -121,11 +124,7 @@ class SplashViewController: UIViewController {
 
             self.progressFeedbackView.setupSuccess(title: "Tor connection established")
 
-            if self.walletExistsInitially {
-                self.startExistingWallet()
-            } else {
-                self.createNewWallet()
-            }
+            SwiftEntryKit.dismiss()
         }
 
         TariEventBus.onMainThread(self, eventType: .torConnectionFailed) { [weak self] (result) in
@@ -135,22 +134,35 @@ class SplashViewController: UIViewController {
 
             UserFeedback.shared.error(
                 title: NSLocalizedString("Tor connection error", comment: "Splash screen"),
-                description: NSLocalizedString("Could not establish a connection to the network", comment: "Splash screen"),
+                description: NSLocalizedString("Could not establish a connection to the network. Retrying...", comment: "Splash screen"),
                 error: error
             )
+
+            TariLib.shared.startTor()
         }
     }
 
-    private func startExistingWallet() {
+    private func onTorSuccess(_ onComplete: @escaping () -> Void) {
+        if TariLib.shared.isTorConnected {
+            onComplete()
+            return
+        }
+
+        //Handle tor connected later
+        TariEventBus.onMainThread(self, eventType: .torConnected) { [weak self] (_) in
+            guard let _ = self else { return }
+            onComplete()
+        }
+    }
+
+    private func startExistingWallet(onComplete: @escaping () -> Void) {
         //Kick off wallet creation on a background thread
         DispatchQueue.global().async {
             do {
                 try TariLib.shared.startExistingWallet()
-
-                DispatchQueue.main.async {
-                    SwiftEntryKit.dismiss()
-                    self.authenticateUser()
-                }
+                    DispatchQueue.main.async {
+                        onComplete()
+                    }
             } catch {
                 DispatchQueue.main.async {
                     UserFeedback.shared.error(
@@ -166,17 +178,16 @@ class SplashViewController: UIViewController {
     private func createNewWallet() {
         do {
             try TariLib.shared.createNewWallet()
-            SwiftEntryKit.dismiss()
 
             if let _ = self.ticketTopLayoutConstraint {
-                self.topAnimationAndRemoveVideoAnimation { [weak self] (_) in
+                self.topAnimationAndRemoveVideoAnimation { [weak self] () in
                     guard let self = self else { return }
-                    self.startAnimation()
+                    self.navigateToHome()
                 }
             } else {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    self.startAnimation()
+                    self.navigateToHome()
                 }
             }
         } catch {
@@ -191,22 +202,39 @@ class SplashViewController: UIViewController {
 
     private func checkExistingWallet() {
         if TariLib.shared.walletExists {
-            TariLib.shared.startTor()
+            //Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
+            authenticateUser {
+                self.startAnimation {
+                    self.onTorSuccess {
+                        self.startExistingWallet {
+                            self.navigateToHome()
+                        }
+                    }
+                }
+            }
+
         } else {
+            //No wallet exists, setup for welcome splash screen
             setupVideoAnimation()
+            titleLabel.isHidden = false
+            titleSecondLabel.isHidden = false
+            subtitleLabel.isHidden = false
             createWalletButton.isHidden = false
         }
     }
 
     @objc func onCreateWalletTap() {
         createWalletButton.variation = .loading
-        TariLib.shared.startTor()
+        //TariLib.shared.startTor()
+        onTorSuccess {
+            self.createNewWallet()
+        }
     }
 
-    private func authenticateUser() {
+    private func authenticateUser(onSuccess: @escaping () -> Void) {
         #if targetEnvironment(simulator)
         //Skip auth on simulator, quicker for development
-        self.startAnimation()
+        onSuccess()
         return
         #endif
         let authPolicy: LAPolicy = .deviceOwnerAuthentication
@@ -218,14 +246,14 @@ class SplashViewController: UIViewController {
                     guard let self = self else { return }
                     if success {
                         if let _ = self.ticketTopLayoutConstraint {
-                            self.topAnimationAndRemoveVideoAnimation { [weak self] (_) in
-                                guard let self = self else { return }
-                                self.startAnimation()
+                            self.topAnimationAndRemoveVideoAnimation { [weak self] () in
+                                guard let _ = self else { return }
+                                onSuccess()
                             }
                         } else {
                             DispatchQueue.main.async { [weak self] in
-                                guard let self = self else { return }
-                                self.startAnimation()
+                                guard let _ = self else { return }
+                                onSuccess()
                             }
                         }
 
@@ -234,7 +262,7 @@ class SplashViewController: UIViewController {
                         print(reason)
                         DispatchQueue.main.async { [weak self] in
                             guard let self = self else { return }
-                            self.authenticationFailedAlertOptions(reason: reason)
+                            self.authenticationFailedAlertOptions(reason: reason, onSuccess: onSuccess)
                         }
                     }
                 }
@@ -243,16 +271,16 @@ class SplashViewController: UIViewController {
             print(reason)
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
-                self.authenticationFailedAlertOptions(reason: reason)
+                self.authenticationFailedAlertOptions(reason: reason, onSuccess: onSuccess)
             }
         }
     }
 
-    private func authenticationFailedAlertOptions(reason: String) {
+    private func authenticationFailedAlertOptions(reason: String, onSuccess: @escaping () -> Void) {
         let alert = UIAlertController(title: "Authentication failed", message: reason, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Try again", style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
-            self.authenticateUser()
+            self.authenticateUser(onSuccess: onSuccess)
         }))
 
         alert.addAction(UIAlertAction(title: "Open settings", style: .default, handler: { [weak self] _ in
@@ -269,7 +297,7 @@ class SplashViewController: UIViewController {
         }
     }
 
-    func startAnimation() {
+    func startAnimation(onComplete: @escaping () -> Void) {
         #if targetEnvironment(simulator)
           animationContainer.animationSpeed = 5
         #endif
@@ -279,8 +307,8 @@ class SplashViewController: UIViewController {
             toProgress: 1,
             loopMode: .playOnce,
             completion: { [weak self] (_) in
-                guard let self = self else { return }
-                self.navigateToHome()
+                guard let _ = self else { return }
+                onComplete()
             }
         )
     }
@@ -305,12 +333,8 @@ class SplashViewController: UIViewController {
         } else {
             let vc = WalletCreationViewController()
             vc.modalPresentationStyle = .fullScreen
-            let transition = CATransition()
-            transition.duration = 0.5
-            transition.type = CATransitionType.push
-            transition.subtype = CATransitionSubtype.fromBottom
             if let window = view.window {
-                window.layer.add(transition, forKey: kCATransition)
+                window.layer.add(Theme.shared.transitions.pullDownOpen, forKey: kCATransition)
                 present(vc, animated: false, completion: nil)
             }
         }

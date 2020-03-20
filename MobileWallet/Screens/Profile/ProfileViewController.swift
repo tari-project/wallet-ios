@@ -299,10 +299,9 @@ class ProfileViewController: UIViewController {
             throw deeplinkError!
         }
 
-        let vcard = deeplink.data(using: .utf8)
-
+        let deepLinkData = deeplink.data(using: .utf8)
         let filter = CIFilter(name: "CIQRCodeGenerator")
-        filter?.setValue(vcard, forKey: "inputMessage")
+        filter?.setValue(deepLinkData, forKey: "inputMessage")
         filter?.setValue("L", forKey: "inputCorrectionLevel")
 
         if let output = filter?.outputImage {
