@@ -226,6 +226,10 @@ class Wallet {
             TariLogger.verbose("Base node sync lib callback. requestID=\(requestID) success=\(success)")
         }
 
+        let baseNodeSyncCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { requestID, success in
+            print("baseNodeSyncCompleteCallback: \(requestID) Success: \(success)")
+        }
+
         dbPath = commsConfig.dbPath
         dbName = commsConfig.dbName
         logPath = loggingFilePath
