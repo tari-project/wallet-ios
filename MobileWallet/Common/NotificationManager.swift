@@ -51,8 +51,7 @@ class NotificationManager {
         notificationCenter.requestAuthorization(options: options) {
             (didAllow, error) in
             guard error == nil else {
-                print("PUSH ERROR")
-                print(error)
+                TariLogger.error("NotificationManager request authorization", error: error)
                 completionHandler(false)
                 return
             }
@@ -87,7 +86,7 @@ class NotificationManager {
 
         notificationCenter.add(request) { (error) in
             if let error = error {
-                print("Error \(error.localizedDescription)")
+                TariLogger.error("Scheduling local push notification", error: error)
             }
         }
     }

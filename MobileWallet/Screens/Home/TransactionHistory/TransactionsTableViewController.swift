@@ -90,8 +90,8 @@ class TransactionsTableViewController: UITableViewController {
             }
 
             if let tx: PendingInboundTransaction = result?.object as? PendingInboundTransaction {
-                print("New transaction receieved ", tx.id.0)
                 //TODO animate in the new TX instead of just refreshing the table below
+                TariLogger.verbose("New transaction receieved txId=\(tx.id.0)")
             }
         }
 

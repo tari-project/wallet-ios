@@ -83,7 +83,7 @@ class TestnetKeyServer {
 
     func requestDrop(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
         guard TestnetKeyServer.isRequestInProgress == false else {
-            print("Request in progress")
+            TariLogger.warn("Key server request already in progress")
             return
         }
 

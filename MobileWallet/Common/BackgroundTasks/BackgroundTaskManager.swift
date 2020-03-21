@@ -44,9 +44,9 @@ import BackgroundTasks
 struct BackgroundTaskManager {
     static let shared = BackgroundTaskManager()
 
-    static let APP_BACKGROUND_SYNC_IDENTIFIER = "com.tari.ios.wallet.sync"
+    static let APP_BACKGROUND_SYNC_IDENTIFIER = "com.tari.wallet.sync"
     //For testing using the debugger, pause, paste below command in and unpause
-    //e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.tari.ios.wallet.sync"]
+    //e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.tari.wallet.sync"]
 
     func registerNodeSyncTask() {
         BGTaskScheduler.shared.register(
@@ -90,8 +90,7 @@ struct BackgroundTaskManager {
         do {
             try BGTaskScheduler.shared.submit(taskRequest)
         } catch {
-            print("Scheduling error:")
-            print(error)
+            TariLogger.error("Scheduling app refresh", error: error)
         }
     }
 }

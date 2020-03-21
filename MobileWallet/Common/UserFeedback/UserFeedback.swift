@@ -71,6 +71,7 @@ class UserFeedback {
         attributes.hapticFeedbackType = .error
 
         SwiftEntryKit.display(entry: errorFeedbackView, using: attributes)
+        TariLogger.error("User feedback: title=\(title) description=\(description)", error: error)
     }
 
     func info(title: String, description: String) {
@@ -85,6 +86,7 @@ class UserFeedback {
         attributes.entranceAnimation = .init(translate: .init(duration: 0.25, anchorPosition: .bottom, spring: .init(damping: 1, initialVelocity: 0)))
 
         SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
+        TariLogger.verbose("User feedback: title=\(title) description=\(description)")
     }
 
     func success(title: String) {
@@ -100,6 +102,7 @@ class UserFeedback {
         attributes.screenInteraction = .forward
 
         SwiftEntryKit.display(entry: successFeedbackView, using: attributes)
+        TariLogger.verbose("User success feedback: title=\(title)")
     }
 
     func callToAction(title: String, description: String, actionTitle: String, cancelTitle: String, onAction: @escaping () -> Void, onCancel: (() -> Void)? = nil) {
@@ -114,6 +117,7 @@ class UserFeedback {
         attributes.hapticFeedbackType = .success
 
         SwiftEntryKit.display(entry: ctaFeedbackView, using: attributes)
+        TariLogger.verbose("User call to action: title=\(title) description=\(description)")
     }
 
     func acceptUserInput(title: String, cancelTitle: String, actionTitle: String, inputs: [UserFeedbackFormInput], onSubmit: @escaping ([String: String]) -> Void) {
@@ -136,5 +140,6 @@ class UserFeedback {
         attributes.entryInteraction = .absorbTouches
 
         SwiftEntryKit.display(entry: successFeedbackView, using: attributes)
+        TariLogger.verbose("User call accept user input: title=\(title)")
     }
 }

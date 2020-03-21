@@ -590,7 +590,7 @@ class WalletCreationViewController: UIViewController {
             case .touchID:
                 runTouchIdAnimation()
             case .none:
-                print("nothing")
+                TariLogger.error("No biometrics available")
         }
 
         secondLabelTopConstaint?.constant = -50

@@ -69,9 +69,10 @@ class PasteEmojisView: UIView {
         textButton.setTitle(NSLocalizedString("Paste copied Emoji ID", comment: ""), for: .normal)
         emojiLabel.text = emojis
         self.onPressCallback = onPress
+        textButton.addTarget(self, action: #selector(onTap), for: .allTouchEvents)
     }
 
-    @objc func onTap(_ sender: UITapGestureRecognizer) {
+    @objc func onTap(_ sender: Any?) {
         if let callBack = onPressCallback {
             callBack()
         }

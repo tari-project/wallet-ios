@@ -138,6 +138,13 @@ class Wallet {
             return (nil, pendingIncomingBalanceError)
         }
 
+        let (pendingOutgoingBalance, pendingOutgoingBalanceError) = self.pendingOutgoingBalance
+        if pendingOutgoingBalanceError != nil {
+            return (nil, pendingOutgoingBalanceError)
+        }
+
+        TariLogger.verbose("\n🤑availableBalance: \(availableBalance)\n🤑pendingIncomingBalance: \(pendingIncomingBalance)\n🤑pendingOutgoingBalance: \(pendingOutgoingBalance)")
+
         return (MicroTari(availableBalance + pendingIncomingBalance), nil)
     }
 
@@ -169,7 +176,7 @@ class Wallet {
             TariEventBus.postToMainThread(.receievedTransaction, sender: pendingInbound)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
-            print("receivedTransactionCallback")
+            TariLogger.verbose("Receive transaction lib callback")
         }
 
         let receivedTransactionReplyCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
@@ -178,7 +185,7 @@ class Wallet {
             TariEventBus.postToMainThread(.receievedTransactionReply, sender: completed)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
-            print("receivedTransactionReply")
+            TariLogger.verbose("Receive transaction reply lib callback")
         }
 
         let receivedFinalizedTransactionCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
@@ -187,7 +194,7 @@ class Wallet {
             TariEventBus.postToMainThread(.receivedFinalizedTransaction, sender: completed)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
-            print("receivedFinalizedTransaction")
+            TariLogger.verbose("Receive finalized transaction lib callback")
         }
 
         let transactionBroadcastCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
@@ -196,7 +203,7 @@ class Wallet {
             TariEventBus.postToMainThread(.transactionBroadcast, sender: completed)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
-            print("transactionBroadcast")
+            TariLogger.verbose("Transaction broadcast lib callback")
         }
 
         let transactionMinedCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
@@ -205,11 +212,16 @@ class Wallet {
             TariEventBus.postToMainThread(.transactionMined, sender: completed)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
-            print("callbackTransactionMined")
+            TariLogger.verbose("Transaction mined lib callback")
+
         }
 
         let discoveryProcessCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
-            print("discoveryProcessCompleteCallback: \(txID) Success: \(success)")
+            TariLogger.verbose("Discovery process complete lib callback. txID=\(txID) success=\(success)")
+        }
+
+        let baseNodeSyncCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { requestID, success in
+            TariLogger.verbose("Base node sync lib callback. requestID=\(requestID) success=\(success)")
         }
 
         dbPath = commsConfig.dbPath
@@ -226,6 +238,7 @@ class Wallet {
             transactionBroadcastCallback,
             transactionMinedCallback,
             discoveryProcessCompleteCallback,
+            baseNodeSyncCompleteCallback,
             UnsafeMutablePointer<Int32>(&errorCode)
         )
         guard errorCode == 0 else {

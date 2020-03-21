@@ -44,7 +44,7 @@ import UIKit
  Delete all app content and settings. Used only for UITesting on a simulator.
 */
 func wipeApp() {
-    print("***** Wiping app *****")
+    TariLogger.warn("Wiping app")
 
     let fileManager = FileManager.default
     if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
@@ -57,14 +57,14 @@ func wipeApp() {
                     do {
                         try fileManager.removeItem(at: URL(fileURLWithPath: pathToDelete))
                     } catch {
-                        print(error)
-                        fatalError("Failed to delete documents directory")
+                        TariLogger.error("Failed to delete documents directory", error: error)
+                        fatalError()
                     }
                 }
             }
         } catch {
-            print(error)
-            fatalError("Failed to read documents directory")
+            TariLogger.error("Failed to read documents directory", error: error)
+            fatalError()
         }
     }
 
@@ -73,7 +73,7 @@ func wipeApp() {
     UserDefaults.standard.removePersistentDomain(forName: domain)
     UserDefaults.standard.synchronize()
 
-    print("***** Wipe complete *****")
+    TariLogger.warn("Wipe complete")
 }
 
 /*
