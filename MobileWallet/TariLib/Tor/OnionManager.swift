@@ -36,10 +36,8 @@ public class OnionManager: NSObject {
         if let cookieURL = OnionManager.torBaseConf.dataDirectory?.appendingPathComponent("control_auth_cookie") {
             let cookie = try Data(contentsOf: cookieURL)
             
-            #if DEBUG
-            print("[\(String(describing: OnionManager.self))] cookieURL=", cookieURL as Any)
-            print("[\(String(describing: OnionManager.self))] cookie=", cookie)
-            #endif
+            TariLogger.verbose("cookieURL=\(cookieURL)")
+            TariLogger.verbose("cookie=\(cookie)")
             
             return cookie
         } else {
@@ -59,22 +57,21 @@ public class OnionManager: NSObject {
         let dirPaths = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
         let docsDir = dirPaths[0].path
         let dataDir = URL(fileURLWithPath: docsDir, isDirectory: true).appendingPathComponent("tor", isDirectory: true)
-        #if DEBUG
-        print("[\(String(describing: OnionManager.self))] dataDir=\(dataDir)")
-        #endif
+
+        TariLogger.verbose("dataDir=\(dataDir)")
 
         // Create tor data directory if it does not yet exist
         do {
             try FileManager.default.createDirectory(atPath: dataDir.path, withIntermediateDirectories: true, attributes: nil)
         } catch let error as NSError {
-            print("[\(String(describing: OnionManager.self))] error=\(error.localizedDescription))")
+            TariLogger.error("Failed to create tor directory", error: error)
         }
         // Create tor v3 auth directory if it does not yet exist
         let authDir = URL(fileURLWithPath: dataDir.path, isDirectory: true).appendingPathComponent("auth", isDirectory: true)
         do {
             try FileManager.default.createDirectory(atPath: authDir.path, withIntermediateDirectories: true, attributes: nil)
         } catch let error as NSError {
-            print("[\(String(describing: OnionManager.self))] error=\(error.localizedDescription))")
+            TariLogger.error("Failed to create tor auth directory", error: error)
         }
 
         // Configure tor and return the configuration object
@@ -150,7 +147,7 @@ public class OnionManager: NSObject {
         do {
             reachability = try Reachability()
         } catch {
-            print("[\(String(describing: OnionManager.self))] error=\(error)")
+            TariLogger.error("Failed to init Reachability", error: error)
         }
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.networkChange), name: NSNotification.Name.reachabilityChanged, object: nil)
@@ -171,8 +168,8 @@ public class OnionManager: NSObject {
             needsReconfiguration = false
 
             self.torThread?.start()
-
-            print("[\(String(describing: OnionManager.self))] Starting Tor")
+            
+            TariLogger.verbose("Starting Tor")
         } else {
             if needsReconfiguration {
                 // Not using bridges, so null out the "Bridge" conf
@@ -199,7 +196,7 @@ public class OnionManager: NSObject {
                 do {
                     try self.torController?.connect()
                 } catch {
-                    print("[\(String(describing: OnionManager.self))] error=\(error)")
+                    TariLogger.error("Tor controller connection", error: error)
                 }
             }
             
@@ -217,9 +214,8 @@ public class OnionManager: NSObject {
                                 self.torController?.removeObserver(completeObs)
                                 self.cancelInitRetry()
                                 self.cancelFailGuard()
-                                #if DEBUG
-                                print("[\(String(describing: OnionManager.self))] connection established")
-                                #endif
+
+                                TariLogger.info("Tor connection established")
                                 
                                 self.torController?.getSessionConfiguration({ configuration in
                                     //TODO once below issue is resolved we can update to < 400.6.3 then the session config will not be nil
@@ -238,10 +234,8 @@ public class OnionManager: NSObject {
                                 guard let progressArg = args["PROGRESS"] else { return false }
                                 guard let progress = Int(progressArg) else { return false }
                                 
-                                #if DEBUG
-                                print("[\(String(describing: OnionManager.self))] progress=\(progress)")
-                                #endif
-
+                                TariLogger.verbose("Tor bootstrap progress: \(progress)")
+                                
                                 delegate?.torConnProgress(progress)
 
                                 if progress >= 100 {
@@ -254,18 +248,19 @@ public class OnionManager: NSObject {
                             return false
                         }) // torController.addObserver
                     } // if success (authenticate)
-                    else { print("[\(String(describing: OnionManager.self))] Didn't connect to control port.") }
+                    else {
+                        TariLogger.error("Didn't connect to control port.")
+                    }
                 }) // controller authenticate
             } catch {
-                print("[\(String(describing: OnionManager.self))] error=\(error)")
+                TariLogger.error("Tor auth error", error: error)
             }
         }) //delay
         initRetry = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
             
-            #if DEBUG
-            print("[\(String(describing: OnionManager.self))] Triggering Tor connection retry.")
-            #endif
+            TariLogger.warn("Triggering Tor connection retry.")
+            
             self.torController?.setConfForKey("DisableNetwork", withValue: "1", completion: { _, _ in
             })
 
@@ -293,7 +288,7 @@ public class OnionManager: NSObject {
      Experimental Tor shutdown.
      */
     @objc func stopTor() {
-        print("[\(String(describing: OnionManager.self))] #stopTor")
+        TariLogger.info("Stop tor")
 
         // under the hood, TORController will SIGNAL SHUTDOWN and set it's channel to nil, so
         // we actually rely on that to stop tor and reset the state of torController. (we can

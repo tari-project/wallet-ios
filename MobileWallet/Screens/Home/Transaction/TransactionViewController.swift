@@ -133,7 +133,8 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Transaction error", comment: "Transaction detail screen"),
                 description: NSLocalizedString("Failed to load transaction details", comment: "Transaction detail screen"),
-                error: error)
+                error: error
+            )
         }
 
         hideKeyboardWhenTappedAroundOrSwipedDown()

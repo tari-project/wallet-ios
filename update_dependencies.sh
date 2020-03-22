@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "\n\n***Pulling latest Tari lib build***"
-curl -O https://www.tari.com/binaries/libtari_wallet_ffi-ios-0.2.3.tar.gz
+curl -O https://www.tari.com/binaries/libtari_wallet_ffi-ios-0.3.1.tar.gz
 tar -xvf libtari_wallet_ffi-ios-*.tar.gz
 mv libtari_wallet_ffi.a MobileWallet/TariLib/
 

@@ -89,7 +89,7 @@ extension HomeViewController {
 
     private func generateTestData() {
         guard let wallet = TariLib.shared.tariWallet else {
-            print("Missing wallet")
+            TariLogger.error("Wallet not initialized")
             return
         }
 

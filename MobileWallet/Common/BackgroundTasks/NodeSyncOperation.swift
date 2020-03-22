@@ -67,10 +67,10 @@ class NodeSyncOperation: Operation {
 
                 NotificationManager.shared.scheduleNotification(title: "Background task", body: "Wallet started")
 
-                //TODO this is useful for testing but should remove this when push notifications are working properly
-                self.testReceiveTx()
+                //This is useful for testing but should remove this when push notifications are working properly
+                //self.testReceiveTx()
             } catch {
-                print("Failed to start wallet")
+                TariLogger.error("Failed to start wallet", error: error)
                 self.onComplete(false)
             }
         }
@@ -82,8 +82,7 @@ class NodeSyncOperation: Operation {
 
             //NotificationManager.shared.scheduleNotification(title: "Background task", body: "Tor connection failed")
 
-            print("Failed to connect to tor")
-            print(error as Any)
+            TariLogger.error("Failed to connect to tor", error: error)
         }
 
         //TODO when a callback is added for when a node is synced, we should use that instead.
@@ -120,7 +119,7 @@ extension NodeSyncOperation {
                 do {
                     try wallet.generateTestReceiveTransaction()
                 } catch {
-                    print("Failed to make test send TX")
+                    TariLogger.error("Failed to make test send TX", error: error)
                 }
             }
         })

@@ -193,7 +193,8 @@ class SplashViewController: UIViewController {
         } catch {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Wallet error", comment: "Splash screen for new users"),
-                description: NSLocalizedString("Failed to create a new wallet", comment: "Splash screen for new users"), error: error //TODO copy update
+                description: NSLocalizedString("Failed to create a new wallet", comment: "Splash screen for new users"),
+                error: error //TODO copy update
             )
 
             createWalletButton.variation = .normal
@@ -258,8 +259,8 @@ class SplashViewController: UIViewController {
                         }
 
                     } else {
-                        let reason = error?.localizedDescription ?? NSLocalizedString("Failed to authenticate", comment: "Failed Face ID alert")
-                        print(reason)
+                        let reason = error?.localizedDescription ?? NSLocalizedString("Failed to authenticate", comment: "Failed Face/Touch ID alert")
+                        TariLogger.error("Biometrics auth failed", error: error)
                         DispatchQueue.main.async { [weak self] in
                             guard let self = self else { return }
                             self.authenticationFailedAlertOptions(reason: reason, onSuccess: onSuccess)
@@ -268,7 +269,7 @@ class SplashViewController: UIViewController {
                 }
         } else {
             let reason = error?.localizedDescription ?? NSLocalizedString("No available biometrics available", comment: "Failed Face ID alert")
-            print(reason)
+            TariLogger.error("Biometrics unavailable", error: error)
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.authenticationFailedAlertOptions(reason: reason, onSuccess: onSuccess)

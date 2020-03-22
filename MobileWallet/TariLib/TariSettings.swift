@@ -54,6 +54,9 @@ struct TariSettings {
     //Taribot faucet node
     let defaultBasenodePeer = "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"
 
+    //Local macbook node
+    //let defaultBasenodePeer = "10092c2299efcb5b8ec27ab847b5ec645d79536cf8cf40c7b8757fa141151864::/onion3/kgk5tclng6v2ohbufp3nhhes7f4camb5ukkxyudoph6hzj5ip65dv4yd:9050"
+
     //For UI changes it can be a bit slow to keep waiting for tor to bootstrap
     #if targetEnvironment(simulator)
     let TOR_ENABLED = false

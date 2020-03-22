@@ -160,10 +160,6 @@ class TariLibWrapperTests: XCTestCase {
         
         let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
         
-        print("privateKeyHex: ", privateKeyHex)
-        print("databasePath: ", databasePath)
-        print("dbName: ", dbName)
-
         var commsConfig: CommsConfig?
         do {
             let transport = TransportType()
@@ -176,7 +172,7 @@ class TariLibWrapperTests: XCTestCase {
                 publicAddress: address
             )
             
-            print("LOGGING: ", loggingFilePath)
+            TariLogger.verbose("TariLib Logging path: \(loggingFilePath)")
         } catch {
             XCTFail("Unable to create comms config \(error.localizedDescription)")
             return
@@ -355,7 +351,7 @@ class TariLibWrapperTests: XCTestCase {
         
         let (completedTransactions, completedTransactionsError) = wallet.completedTransactions
         guard completedTransactionsError == nil else {
-            print("Failed to load transactions: ", completedTransactionsError!.localizedDescription)
+            TariLogger.error("Failed to load transactions", error: completedTransactionsError)
             return
         }
         

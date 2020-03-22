@@ -153,7 +153,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         guard let wallet = TariLib.shared.tariWallet else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Wallet error", comment: "Add note view"),
-                description: NSLocalizedString("Wallet not initialized", comment: "Add note view"))
+                description: NSLocalizedString("Wallet not initialized", comment: "Add note view")
+            )
             sender.resetStateWithAnimation(true)
             return
         }
@@ -161,7 +162,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         guard let recipientPubKey = publicKey else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Missing public key", comment: "Add note view"),
-                description: NSLocalizedString("Recipient public key not set", comment: "Add note view"))
+                description: NSLocalizedString("Recipient public key not set", comment: "Add note view")
+            )
             sender.resetStateWithAnimation(true)
             return
         }
@@ -169,7 +171,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         guard let recipientAmount = amount else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Missing amount", comment: "Add note view"),
-                description: NSLocalizedString("Recipient amount not set", comment: "Add note view"))
+                description: NSLocalizedString("Recipient amount not set", comment: "Add note view")
+            )
             sender.resetStateWithAnimation(true)
             return
         }
@@ -182,16 +185,24 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
                 message: noteText
             )
 
-            let vc = SendingTariViewController()
-            vc.tariAmount = recipientAmount
-            self.navigationController?.pushViewController(vc, animated: false)
+            onSendComplete(recipientAmount)
+        } catch WalletErrors.generic(210) {
+            //Discovery still needs to happen, this error is actually alright
+            onSendComplete(recipientAmount)
         } catch {
             UserFeedback.shared.error(
-            title: NSLocalizedString("Transaction failed", comment: "Add note view"),
-            description: NSLocalizedString("Could not send transaction to recipient", comment: "Add note view"),
-            error: error)
+                title: NSLocalizedString("Transaction failed", comment: "Add note view"),
+                description: NSLocalizedString("Could not send transaction to recipient", comment: "Add note view"),
+                error: error
+            )
             sender.resetStateWithAnimation(true)
         }
+    }
+
+    func onSendComplete(_ amount: MicroTari) {
+        let vc = SendingTariViewController()
+        vc.tariAmount = amount
+        self.navigationController?.pushViewController(vc, animated: false)
     }
 }
 

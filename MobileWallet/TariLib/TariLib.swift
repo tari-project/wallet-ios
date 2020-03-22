@@ -104,7 +104,8 @@ class TariLib {
     }
 
     var isTorConnected: Bool {
-        return OnionConnector.shared.currentTorConnectionState == .connected
+        //If we're not using tor (for a simulator) or if tor is actually connected
+        return TariSettings.shared.TOR_ENABLED == false || OnionConnector.shared.currentTorConnectionState == .connected
     }
 
     init() {}
@@ -132,6 +133,7 @@ class TariLib {
                 socksPassword: ""
             )
         } else {
+            TariLogger.warn("Tor disabled. Update TariSettings.swift to enable it on a simulator.")
             return TransportType() //In memory transport
         }
     }
@@ -162,7 +164,7 @@ class TariLib {
                     case .success(let urlSessionConfiguration):
                         TariEventBus.postToMainThread(.torConnected, sender: urlSessionConfiguration)
                     case .failure(let error):
-                        print(error)
+                        TariLogger.error("Tor connection failed to complete", error: error)
                         TariEventBus.postToMainThread(.torConnectionFailed, sender: error)
                 }
             }
@@ -173,7 +175,7 @@ class TariLib {
         try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
         try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
 
-        print("databasePath: ", databasePath)
+        TariLogger.verbose("Database path: \(databasePath)")
 
         let privateKey = PrivateKey()
 
@@ -196,7 +198,7 @@ class TariLib {
 
     func startExistingWallet(isBackgroundTask: Bool = false) throws {
         if let privateKeyHex = UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) {
-            print("databasePath: ", databasePath)
+            TariLogger.verbose("Database path: \(databasePath)")
 
             let privateKey = try PrivateKey(hex: privateKeyHex)
             let transport = try transportType()

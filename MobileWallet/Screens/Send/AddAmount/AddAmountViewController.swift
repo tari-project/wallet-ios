@@ -162,9 +162,10 @@ class AddAmountViewController: UIViewController {
     //Shouldn't ever really be used but just in case
     private func showInvalidNumberError(_ error: Error?) {
         UserFeedback.shared.error(
-        title: NSLocalizedString("Invalid number", comment: "Add amount screen"),
-        description: "",
-        error: error)
+            title: NSLocalizedString("Invalid number", comment: "Add amount screen"),
+            description: "",
+            error: error
+        )
     }
 
     private func deleteCharacter() {
@@ -344,7 +345,8 @@ class AddAmountViewController: UIViewController {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Available balance error", comment: "Add amount view"),
                 description: NSLocalizedString("Could not get available balance from wallet", comment: "Add amount view"),
-                error: availableBalanceError)
+                error: availableBalanceError
+            )
             return
         }
 

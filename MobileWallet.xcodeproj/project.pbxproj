@@ -141,6 +141,10 @@
 		00369D7D24221ACB00BAB95B /* DeepLinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */; };
 		00369D7E2422670300BAB95B /* DeepLinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */; };
 		00369D7F2422670400BAB95B /* DeepLinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */; };
+		00369D812426080D00BAB95B /* TariLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D802426080D00BAB95B /* TariLogger.swift */; };
+		00369D84242618A900BAB95B /* TariLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D802426080D00BAB95B /* TariLogger.swift */; };
+		00369D852426195100BAB95B /* TariLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D802426080D00BAB95B /* TariLogger.swift */; };
+		00369D862426195300BAB95B /* TariLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D802426080D00BAB95B /* TariLogger.swift */; };
 		0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B323FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B423FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
@@ -499,6 +503,7 @@
 		00262EB8236F35CD00A6C8A0 /* DummyTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyTransaction.swift; sourceTree = "<group>"; };
 		00325EC9239E4A1000F76918 /* FadedOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadedOverlayView.swift; sourceTree = "<group>"; };
 		00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkManager.swift; sourceTree = "<group>"; };
+		00369D802426080D00BAB95B /* TariLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLogger.swift; sourceTree = "<group>"; };
 		0039B1B123FA925500F91E0F /* PasteEmojisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteEmojisView.swift; sourceTree = "<group>"; };
 		004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiButton.swift; sourceTree = "<group>"; };
 		004277E623DF4A5600AE7BD9 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
@@ -1103,6 +1108,7 @@
 				4C2C95AF23795919005058AB /* libwallet_ffi.a */,
 				009BF8AB237ABB4700C02E44 /* TariLib.swift */,
 				00DD160A241CCE0600C955B4 /* TariSettings.swift */,
+				00369D802426080D00BAB95B /* TariLogger.swift */,
 				00BCE485240D5A9E00B181F3 /* Tor */,
 				006D211B23CEDEEE007D1C10 /* Utils */,
 				00BBD80C237DA04300EBF5E6 /* Wrappers */,
@@ -1742,6 +1748,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00B4D6B82416A50C00ED8318 /* MobileWalletUISnapshots.swift in Sources */,
+				00369D862426195300BAB95B /* TariLogger.swift in Sources */,
 				00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */,
 				BFE61E4B24226A7F003DC99D /* NotificationManager.swift in Sources */,
 				00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */,
@@ -1788,6 +1795,7 @@
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
 				00230AFA2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				00262EAF236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
+				00369D812426080D00BAB95B /* TariLogger.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
 				004997B32382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
 				0087A1B223F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
@@ -1913,6 +1921,7 @@
 				00BBD813237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				BFF1ED9E2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				001F6CE12380198D00FA7002 /* Contacts.swift in Sources */,
+				00369D84242618A900BAB95B /* TariLogger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1972,6 +1981,7 @@
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				004277F123E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
+				00369D852426195100BAB95B /* TariLogger.swift in Sources */,
 				0091D4AD23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
 				00C185C0238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				004277E923DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
@@ -2048,7 +2058,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8974PBB98U;
+				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				INFOPLIST_FILE = MobileWalletUISnapshots/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2071,7 +2081,7 @@
 			buildSettings = {
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8974PBB98U;
+				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				INFOPLIST_FILE = MobileWalletUISnapshots/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2214,7 +2224,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 42;
-				DEVELOPMENT_TEAM = 8974PBB98U;
+				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2229,7 +2239,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.tari.ios.wallet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = Tari;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/MobileWallet/MobileWallet-bridging-header.h";
@@ -2248,7 +2258,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 42;
-				DEVELOPMENT_TEAM = 8974PBB98U;
+				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2263,7 +2273,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.tari.ios.wallet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = Tari;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/MobileWallet/MobileWallet-bridging-header.h";
@@ -2280,7 +2290,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8974PBB98U;
+				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -2314,7 +2324,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8974PBB98U;
+				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -2347,7 +2357,7 @@
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Tari.app/Tari";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8974PBB98U;
+				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
@@ -2380,7 +2390,7 @@
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Tari.app/Tari";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8974PBB98U;
+				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
