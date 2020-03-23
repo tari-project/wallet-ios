@@ -51,33 +51,51 @@ class SendingTariViewController: UIViewController {
     private var playerLooper: AVPlayerLooper!
 
     var titleLabelTopConstraint: NSLayoutConstraint?
-    var animationContainer: AnimationView!
-    var createWalletButton: ActionButton!
-    var titleLabel: UILabel!
-    var videoView: UIView!
+    var animationContainer = AnimationView()
+    var createWalletButton = ActionButton()
+    var titleLabel = UILabel()
+    var videoView = UIView()
     var bottomView = UIView()
+    var debugLabel = UILabel()
+    var debugMessage = "" {
+        didSet {
+            debugLabel.text = "DEBUG STATUS: \(debugMessage)"
+        }
+    }
 
     var tariAmount: MicroTari?
 
     var animationStarted: Bool = false
 
+    var isDiscoveryComplete = false {
+        didSet {
+            if !isDiscoveryComplete {
+                self.startListeningForDiscovery()
+            }
+        }
+    }
+    private var onDiscoveryComplete: ((Bool) -> Void)?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        updateConstraintsVideoView()
-        updateConstraintsAnimationContainer()
-        updateConstraintsTitleLabel()
+        setupConstraintsVideoView()
+        setupConstraintsAnimationContainer()
+        setupTitleLabel()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        self.setupDebugLabel()
     }
 
     override func viewDidLayoutSubviews() {
         if !animationStarted {
+            animationStarted = true
             setupVideoAnimation()
             loadAnimation()
-            startAnimation()
+            handleSendingComplete()
         }
     }
 
@@ -108,8 +126,7 @@ class SendingTariViewController: UIViewController {
         navigationController?.setNavigationBarHidden(true, animated: false)
     }
 
-    private func updateConstraintsVideoView() {
-        videoView = UIView()
+    private func setupConstraintsVideoView() {
         view.addSubview(videoView)
         videoView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -121,8 +138,7 @@ class SendingTariViewController: UIViewController {
         videoView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
     }
 
-    private func updateConstraintsAnimationContainer() {
-        animationContainer = AnimationView()
+    private func setupConstraintsAnimationContainer() {
         view.addSubview(animationContainer)
         animationContainer.translatesAutoresizingMaskIntoConstraints = false
         animationContainer.widthAnchor.constraint(equalToConstant: 55).isActive = true
@@ -131,10 +147,9 @@ class SendingTariViewController: UIViewController {
                                                     constant: 0).isActive = true
         animationContainer.centerYAnchor.constraint(equalTo: view.centerYAnchor,
                                                     constant: 0).isActive = true
-
     }
 
-    private func updateConstraintsBottomView() {
+    private func setupConstraintsBottomView() {
         bottomView.backgroundColor = Theme.shared.colors.sendingTariBackground
         view.addSubview(bottomView)
         bottomView.translatesAutoresizingMaskIntoConstraints = false
@@ -147,8 +162,7 @@ class SendingTariViewController: UIViewController {
         bottomView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 0).isActive = true
     }
 
-    private func updateConstraintsTitleLabel() {
-        titleLabel = UILabel()
+    private func setupTitleLabel() {
         view.addSubview(titleLabel)
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
@@ -159,21 +173,40 @@ class SendingTariViewController: UIViewController {
         titleLabelTopConstraint = titleLabel.topAnchor.constraint(equalTo: animationContainer.bottomAnchor, constant: 20)
         titleLabelTopConstraint?.isActive = true
 
-        let sendingString = String(format: NSLocalizedString("Sending %@ Tari…", comment: "Title Label on the sending tari screen"), tariAmount?.formatted ?? "")
+        let sendingString = String(format: NSLocalizedString("Sending %@ Tari...", comment: "Title Label on the sending tari screen"), tariAmount?.formatted ?? "")
 
         let attributedString = NSMutableAttributedString(
             string: sendingString,
             attributes: [
-                .font: Theme.shared.fonts.sendingTariTitleLabelFirst!,
+                .font: Theme.shared.fonts.sendingTariTitleLabelSecond!,
                 .foregroundColor: Theme.shared.colors.sendingTariTitle!,
                 .kern: -0.33
         ])
 
-        //TODO this is broken, need to use the char positons and not just hardcoded ranges
-        attributedString.addAttribute(.font, value: Theme.shared.fonts.sendingTariTitleLabelSecond!, range: NSRange(location: 0, length: 7))
-        attributedString.addAttribute(.font, value: Theme.shared.fonts.sendingTariTitleLabelThird!, range: NSRange(location: 16, length: 1))
+        attributedString.addAttribute(.font, value: Theme.shared.fonts.sendingTariTitleLabelFirst!, range: NSRange(location: 0, length: 7)) //"Sending"
+        if let elipsesPosition = sendingString.indexDistance(of: "...") {
+            attributedString.addAttribute(.font, value: Theme.shared.fonts.sendingTariTitleLabelFirst!, range: NSRange(location: elipsesPosition, length: 3)) // "..."
+        }
 
         titleLabel.attributedText = attributedString
+    }
+
+    //Small label at the bottom of the view, only visible when app is running in debug mode
+    private func setupDebugLabel() {
+        if TariSettings.shared.isDebug {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                guard let self = self else { return }
+
+                self.view.addSubview(self.debugLabel)
+                self.view.bringSubviewToFront(self.debugLabel)
+                self.debugLabel.textAlignment = .center
+                self.debugLabel.font = Theme.shared.fonts.sendingTariTitleLabelFirst!.withSize(12)
+                self.debugLabel.translatesAutoresizingMaskIntoConstraints = false
+                self.debugLabel.leadingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+                self.debugLabel.trailingAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+                self.debugLabel.topAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: 5).isActive = true
+            }
+        }
     }
 
     private func loadAnimation() {
@@ -192,16 +225,37 @@ class SendingTariViewController: UIViewController {
         }
     }
 
-    private func startAnimation() {
-        self.animationContainer.play(
-            fromProgress: 0,
-            toProgress: 1,
-            loopMode: .playOnce,
-            completion: { [weak self] (_) in
-                guard let self = self else { return }
-                self.removeTitleAnimation()
+    //If a discovery has not happened, start listening so we know when to finish this send animation
+    private func startListeningForDiscovery() {
+        TariEventBus.onMainThread(self, eventType: .discoveryProcessComplete) { [weak self] (result) in
+            guard let self = self else { return }
+
+            self.isDiscoveryComplete = true
+
+            //TODO check which tx we're listening for once added to the callback in Wallet.swift
+            var isSuccess = true //Assume true
+            if let success: Bool = result?.object as? Bool {
+                isSuccess = success
             }
-        )
+
+            if let callback = self.onDiscoveryComplete {
+                callback(isSuccess)
+            }
+        }
+    }
+
+    private func checkDiscoveryComplete(_ onComplete: @escaping (Bool) -> Void) {
+        if isDiscoveryComplete {
+            onComplete(true)
+        } else {
+            self.onDiscoveryComplete = onComplete
+        }
+    }
+
+    private func animateSuccess(from: AnimationProgressTime, to: AnimationProgressTime, onComplete: @escaping () -> Void) {
+        self.animationContainer.play(fromProgress: from, toProgress: to, loopMode: .playOnce) { (_) in
+            onComplete()
+        }
     }
 
     private func removeTitleAnimation() {
@@ -212,6 +266,44 @@ class SendingTariViewController: UIViewController {
         }) { [weak self] (_) in
             guard let self = self else { return }
             self.navigationController?.popToRootViewController(animated: false)
+        }
+    }
+
+    private func handleSendingComplete() {
+        let pauseAnimationAt: AnimationProgressTime = 0.2
+
+        //1. Start the animation
+        //2. Wait till discovery is complete
+        //3. Complete the animation if successful, else just go straight back without the success animation
+
+        debugMessage = isDiscoveryComplete ? "Discovery complete" : "Discovery in progress..."
+
+        animateSuccess(from: 0, to: pauseAnimationAt) { [weak self] () in
+            guard let self = self else { return }
+
+            self.checkDiscoveryComplete { [weak self] (discoverySuccess) in
+                guard let self = self else { return }
+
+                if discoverySuccess {
+                    self.debugMessage = "Peer discovered successfully"
+                    TariLogger.info("Peer discovered successfully")
+                    //Success animation
+                    self.animateSuccess(from: pauseAnimationAt, to: 1) { [weak self] () in
+                        guard let self = self else { return }
+                        self.removeTitleAnimation()
+                    }
+                } else {
+                    self.debugMessage = "Failed to discover peer"
+                    TariLogger.error("Failed to discover peer")
+                    //No success animation, just go home and display an error
+                    self.removeTitleAnimation()
+
+                    UserFeedback.shared.error(
+                        title: NSLocalizedString("Transaction failed", comment: "Discovery failed when sending a tx"),
+                        description: NSLocalizedString("We could not find that wallet on the Tari network", comment: "Discovery failed when sending a tx")
+                    )
+                }
+            }
         }
     }
 }

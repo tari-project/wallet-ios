@@ -188,7 +188,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             onSendComplete(recipientAmount)
         } catch WalletErrors.generic(210) {
             //Discovery still needs to happen, this error is actually alright
-            onSendComplete(recipientAmount)
+            onSendComplete(recipientAmount, isDiscoveryComplete: false)
         } catch {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Transaction failed", comment: "Add note view"),
@@ -199,9 +199,10 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         }
     }
 
-    func onSendComplete(_ amount: MicroTari) {
+    func onSendComplete(_ amount: MicroTari, isDiscoveryComplete: Bool = true) {
         let vc = SendingTariViewController()
         vc.tariAmount = amount
+        vc.isDiscoveryComplete = isDiscoveryComplete
         self.navigationController?.pushViewController(vc, animated: false)
     }
 }

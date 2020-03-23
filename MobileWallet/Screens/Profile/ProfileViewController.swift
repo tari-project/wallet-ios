@@ -343,13 +343,13 @@ class ProfileViewController: UIViewController {
             throw walletPublicKeyError!
         }
 
-        let (deeplink, deeplinkError) = pubKey.deeplink
-        guard deeplinkError == nil else {
-            throw deeplinkError!
+        let (emojis, emojisError) = pubKey.emojis
+        guard emojisError == nil else {
+            throw emojisError!
         }
 
         let pasteboard = UIPasteboard.general
-        pasteboard.string = deeplink
+        pasteboard.string = emojis
     }
 
     private func sendHapticNotification() {

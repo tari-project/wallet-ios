@@ -313,21 +313,25 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
 
             //Hopefully we can add this back some time
             var statusEmoji = ""
-            switch tx.status.0 {
-            case .completed:
-                statusEmoji = " ✔️"
-            case .broadcast:
-                statusEmoji = " 📡"
-            case .mined:
-                statusEmoji = " ⛏️"
-            case .imported:
-                statusEmoji = " 🤖"
-            case .pending:
-                statusEmoji = " ⏳"
-            case .transactionNullError:
-                statusEmoji = " 🤔"
-            case .unknown:
-                statusEmoji = " 🤷"
+
+            //If the app is in debug mode, show the status
+            if TariSettings.shared.isDebug {
+                switch tx.status.0 {
+                case .completed:
+                    statusEmoji = " ✔️"
+                case .broadcast:
+                    statusEmoji = " 📡"
+                case .mined:
+                    statusEmoji = " ⛏️"
+                case .imported:
+                    statusEmoji = " 🤖"
+                case .pending:
+                    statusEmoji = " ⏳"
+                case .transactionNullError:
+                    statusEmoji = " 🤔"
+                case .unknown:
+                    statusEmoji = " 🤷"
+                }
             }
 
             transactionIDLabel.text = "\(txIdDisplay)\(statusEmoji)"

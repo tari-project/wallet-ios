@@ -50,6 +50,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         BackgroundTaskManager.shared.registerNodeSyncTask()
         ShortcutParser.shared.registerShortcuts()
 
+        if TariSettings.shared.isDebug {
+            TariLogger.info("Running app in debug mode")
+        }
+
         return true
     }
 

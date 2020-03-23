@@ -223,9 +223,8 @@ struct Fonts: Loopable {
 
     // Sending tari screen
 
-    let sendingTariTitleLabelFirst = UIFont(name: "Avenir-Black", size: 18.0)
-    let sendingTariTitleLabelSecond = UIFont(name: "Avenir-Light", size: 18.0)
-    let sendingTariTitleLabelThird = UIFont(name: "Avenir-Book", size: 18.0)
+    let sendingTariTitleLabelFirst = UIFont(name: "Avenir-Light", size: 18.0)
+    let sendingTariTitleLabelSecond = UIFont(name: "Avenir-Black", size: 18.0)
 
     //Navigation bar
     let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
