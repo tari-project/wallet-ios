@@ -217,10 +217,12 @@ class Wallet {
         }
 
         let discoveryProcessCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
+            TariEventBus.postToMainThread(.discoveryProcessComplete, sender: success) //TODO add the tx to the send and listener as well
             TariLogger.verbose("Discovery process complete lib callback. txID=\(txID) success=\(success)")
         }
 
         let baseNodeSyncCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { requestID, success in
+            TariEventBus.postToMainThread(.baseNodeSyncComplete)
             TariLogger.verbose("Base node sync lib callback. requestID=\(requestID) success=\(success)")
         }
 

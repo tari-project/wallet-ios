@@ -2,8 +2,7 @@
 
 echo "\n\n***Pulling latest Tari lib build***"
 curl -O https://www.tari.com/binaries/libtari_wallet_ffi-ios-0.3.1.tar.gz
-tar -xvf libtari_wallet_ffi-ios-*.tar.gz
-mv libtari_wallet_ffi.a MobileWallet/TariLib/
+tar -xvf libtari_wallet_ffi-ios-*.tar.gz && mv libtari_wallet_ffi.a MobileWallet/TariLib/
 
 echo "\n\n***Cleaning up***"
 rm libtari_wallet_ffi-ios-*.tar.gz

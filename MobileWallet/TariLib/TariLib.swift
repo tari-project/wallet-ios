@@ -105,7 +105,7 @@ class TariLib {
 
     var isTorConnected: Bool {
         //If we're not using tor (for a simulator) or if tor is actually connected
-        return TariSettings.shared.TOR_ENABLED == false || OnionConnector.shared.currentTorConnectionState == .connected
+        return TariSettings.shared.torEnabled == false || OnionConnector.shared.currentTorConnectionState == .connected
     }
 
     init() {}
@@ -116,7 +116,7 @@ class TariLib {
     deinit {}
 
     private func transportType() throws -> TransportType {
-        if TariSettings.shared.TOR_ENABLED {
+        if TariSettings.shared.torEnabled {
             let torKey = ""
             let torBytes = [UInt8](torKey.utf8)
             let torIdentity = try ByteVector(byteArray: torBytes)
@@ -143,7 +143,7 @@ class TariLib {
             return
         }
 
-        guard TariSettings.shared.TOR_ENABLED else {
+        guard TariSettings.shared.torEnabled else {
             TariEventBus.postToMainThread(.torConnected, sender: URLSessionConfiguration.default)
             return
         }
@@ -220,5 +220,7 @@ class TariLib {
         } else {
             throw TariLibErrors.privateKeyNotFound
         }
+
+        logCleanup(maxMB: TariSettings.shared.maxMbLogsStorage)
     }
 }

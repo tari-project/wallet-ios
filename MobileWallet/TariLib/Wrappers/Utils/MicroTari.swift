@@ -57,6 +57,7 @@ struct MicroTari {
         formatter.negativePrefix = "-"
         return formatter
     }()
+
     private static let withOperatorFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -66,6 +67,7 @@ struct MicroTari {
         formatter.negativePrefix = "- "
         return formatter
     }()
+
     private static let preciseFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -74,6 +76,7 @@ struct MicroTari {
         formatter.negativePrefix = "- "
         return formatter
     }()
+
     private static let preciseWithOperatorFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -83,6 +86,7 @@ struct MicroTari {
         formatter.negativePrefix = "- "
         return formatter
     }()
+
     private static let editFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal

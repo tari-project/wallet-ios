@@ -48,6 +48,7 @@ public enum TariEventTypes: String {
     case transactionBroadcast = "tari-event-transaction-broadcase"
     case transactionMined = "tari-event-transaction-mined"
     case discoveryProcessComplete = "tari-event-discovery-process-complete"
+    case baseNodeSyncComplete = "tari-event-base-node-synce-complete"
 
     //Common UI updates
     case transactionListUpdate = "tari-event-transaction-list-update"

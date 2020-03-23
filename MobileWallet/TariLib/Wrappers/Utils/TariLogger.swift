@@ -6,6 +6,8 @@
 	Using Swift 5.0
 	Running on macOS 10.15
 
+    Used for logging from Swift code. Protocol logging happens in the Tari library.
+ 
 	Adapted from https://github.com/LN-Zap/zap-iOS/blob/master/Logger/Logger.swift
 */
 
