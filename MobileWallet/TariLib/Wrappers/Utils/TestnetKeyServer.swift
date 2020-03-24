@@ -57,7 +57,7 @@ struct TestnetServerRequest: Codable {
 class TestnetKeyServer {
     private let MESSAGE_PREFIX = "Hello Tari from"
     private let SERVER = "https://faucet.tari.com" //TODO store in config
-    private let TARIBOT_MESSAGE = "Some Tari to get you started."
+    private let TARIBOT_MESSAGE = "💸 Here’s some Testnet Tari!"
     private let signature: Signature
     private let url: URL
     private let wallet: Wallet

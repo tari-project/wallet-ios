@@ -218,7 +218,7 @@ class ScanViewController: UIViewController {
 
     // MARK: - Private functions
     private func customizeViews() {
-        self.titleLabel.text = NSLocalizedString("Scan Tari QR code in the box below to a send Tari to receipient.", comment: "Scan contact camera view")
+        self.titleLabel.text = NSLocalizedString("Scan a Tari QR code to send Tari to the recipient.", comment: "Scan contact camera view")
         self.titleLabel.textColor = Theme.shared.colors.scannerTitle
         self.titleLabel.font = Theme.shared.fonts.scannerTitleLabel
         topLeftWhiteView.addTopBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)

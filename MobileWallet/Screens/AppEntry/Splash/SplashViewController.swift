@@ -60,20 +60,18 @@ class SplashViewController: UIViewController {
     }
 
     // MARK: - Outlets
-    var videoView: UIView!
-    var versionLabel: UILabel!
-    var animationContainer: AnimationView!
-    var createWalletButton: ActionButton!
-    var titleLabel: UILabel!
-    var titleSecondLabel: UILabel!
-    var subtitleLabel: UILabel!
-    var bottomBackgroundView: UIView!
-    var gemImageView: UIImageView!
-    var distanceTitleSubtitle: NSLayoutConstraint!
-    var distanceSecondTitleSubtitle: NSLayoutConstraint!
+    var videoView = UIView()
+    var versionLabel = UILabel()
+    var animationContainer = AnimationView()
+    var createWalletButton = ActionButton()
+    var titleLabel = UILabel()
+    var subtitleLabel = UILabel()
+    var bottomBackgroundView = UIView()
+    var gemImageView = UIImageView()
+    var distanceTitleSubtitle = NSLayoutConstraint()
     var animationContainerBottomAnchor: NSLayoutConstraint?
     var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
-    var maskBackgroundView: UIView!
+    var maskBackgroundView = UIView()
     private let progressFeedbackView = FeedbackView()
 
     // MARK: - Override functions
@@ -218,7 +216,6 @@ class SplashViewController: UIViewController {
             //No wallet exists, setup for welcome splash screen
             setupVideoAnimation()
             titleLabel.isHidden = false
-            titleSecondLabel.isHidden = false
             subtitleLabel.isHidden = false
             createWalletButton.isHidden = false
         }

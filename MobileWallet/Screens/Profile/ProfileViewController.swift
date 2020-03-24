@@ -243,14 +243,20 @@ class ProfileViewController: UIViewController {
     }
 
     private func customizeTitleLabel() {
-        let shareYourEmojiString = NSLocalizedString("Share your Emoji ID to receive Tari", comment: "profile title label")
-        let attributedString = NSMutableAttributedString(string: shareYourEmojiString,
-                                                         attributes: [.font: Theme.shared.fonts.profileTitleLightLabel!,
-                                                                      .foregroundColor: Theme.shared.colors.profileTitleTextColor!,
-                                                                      .kern: -0.33])
-        attributedString.addAttribute(.font,
-                                      value: Theme.shared.fonts.profileTitleRegularLabel!,
-                                      range: NSRange(location: 11, length: 8))
+        let shareYourEmojiString = NSLocalizedString("Your Emoji ID is your wallet address. Share it with others to receive Tari.", comment: "Profile title label")
+        let toMakeBold = NSLocalizedString("Emoji ID", comment: "Profile title label")
+
+        let attributedString = NSMutableAttributedString(
+            string: shareYourEmojiString,
+            attributes: [
+                .font: Theme.shared.fonts.profileTitleLightLabel!,
+                .foregroundColor: Theme.shared.colors.profileTitleTextColor!,
+                .kern: -0.33
+        ])
+
+        if let startIndex = shareYourEmojiString.indexDistance(of: toMakeBold) {
+            attributedString.addAttribute(.font, value: Theme.shared.fonts.profileTitleRegularLabel!, range: NSRange(location: startIndex, length: toMakeBold.count))
+        }
 
         titleLabel.attributedText = attributedString
     }
@@ -277,7 +283,7 @@ class ProfileViewController: UIViewController {
     }
 
     private func customizeMiddleLabel() {
-        let middleLabelText = NSLocalizedString("Transacting in person? Your sender can get your emoji ID by scanning this QR code in their Tari app", comment: "Profile middle label")
+        let middleLabelText = NSLocalizedString("Transacting in person? Others can scan this QR code from the Tari Aurora App to send you Tari.", comment: "Profile middle label")
 
         self.middleLabel.text = middleLabelText
         self.middleLabel.font = Theme.shared.fonts.profileMiddleLabel

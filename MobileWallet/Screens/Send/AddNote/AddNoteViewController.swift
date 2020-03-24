@@ -217,7 +217,7 @@ extension AddNoteViewController {
         titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: SIDE_PADDING).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -SIDE_PADDING).isActive = true
         titleLabel.heightAnchor.constraint(equalToConstant: titleLabel.font.pointSize * 1.1).isActive = true
-        titleLabel.text = NSLocalizedString("What's it for?", comment: "Add note view")
+        titleLabel.text = NSLocalizedString("Transaction Note", comment: "Add note view")
     }
 
     fileprivate func setupSendButton() {
@@ -273,7 +273,7 @@ extension AddNoteViewController {
         notePlaceholder.numberOfLines = 0
 
         notePlaceholder.attributedText = NSAttributedString(
-            string: NSLocalizedString("You'll have to live with this note\nforever. No pressure.", comment: "Add note view"),
+            string: NSLocalizedString("Let the recipient know what the payment is for", comment: "Add note view"),
             attributes: [
                 NSAttributedString.Key.paragraphStyle: paragraphStyle,
                 NSAttributedString.Key.font: font,

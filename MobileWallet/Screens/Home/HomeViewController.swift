@@ -159,10 +159,10 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 DispatchQueue.main.async { [weak self] in
                     guard let _ = self else { return }
                     UserFeedback.shared.callToAction(
-                        title: NSLocalizedString("You got some Tari!", comment: "Home view testnet airdrop"),
-                        description: NSLocalizedString("TariBot has just sent you some Tari. To give the wallet a quick test, try sending TariBot back some Tari to see how it works.", comment: "Home view testnet airdrop"),
+                        title: NSLocalizedString("You just got some Testnet Tari!", comment: "Home view testnet airdrop"),
+                        description: NSLocalizedString("Try sending a bit of Testnet Tari back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).", comment: "Home view testnet airdrop"),
                         actionTitle: NSLocalizedString("Send Tari", comment: "Home view testnet airdrop"),
-                        cancelTitle: NSLocalizedString("I’ll try it later", comment: "Home view testnet airdrop"),
+                        cancelTitle: NSLocalizedString("Try it later", comment: "Home view testnet airdrop"),
                         onAction: {
                             guard let self = self else { return }
                             self.onSend()
