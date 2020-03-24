@@ -176,8 +176,9 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
 
     @objc func feeButtonPressed(_ sender: UIButton) {
         UserFeedback.shared.info(
-            title: NSLocalizedString("Transaction Fee", comment: "Transaction detail view"),
-            description: NSLocalizedString("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas consequat risus sit amet laoreet mollis. ", comment: "Transaction detail view"))
+            title: NSLocalizedString("Where does the fee go?", comment: "Transaction detail view"),
+            description: NSLocalizedString("The transaction fee is distributed to the thousands of computers (also known as “miners”) who ensure that your Tari transactions are fast and secure.", comment: "Transaction detail view")
+        )
     }
 
     @objc func editContactButtonPressed(_ sender: UIButton) {

@@ -123,7 +123,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hdD-3E-cij">
-                                <rect key="frame" x="25" y="845.5" width="364" height="20.5"/>
+                                <rect key="frame" x="25" y="837.5" width="364" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -132,7 +132,7 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="hdD-3E-cij" firstAttribute="leading" secondItem="D8f-xl-Z80" secondAttribute="leading" constant="25" id="mue-ur-Gph"/>
-                            <constraint firstItem="hdD-3E-cij" firstAttribute="bottom" secondItem="D8f-xl-Z80" secondAttribute="bottom" constant="4" id="qGy-5M-0zL"/>
+                            <constraint firstItem="hdD-3E-cij" firstAttribute="bottom" secondItem="D8f-xl-Z80" secondAttribute="bottom" constant="-4" id="qGy-5M-0zL"/>
                             <constraint firstItem="D8f-xl-Z80" firstAttribute="trailing" secondItem="hdD-3E-cij" secondAttribute="trailing" constant="25" id="zfd-Ji-ybY"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="D8f-xl-Z80"/>

@@ -313,7 +313,7 @@ class WalletCreationViewController: UIViewController {
         updateConstraintsUserEmojiContainer()
         updateConstraintsVideoView()
 
-        firstLabel.text = NSLocalizedString("Hello Friend", comment: "First label on wallet creation")
+        firstLabel.text = NSLocalizedString("Hello, Friend", comment: "First label on wallet creation")
         firstLabel.font = Theme.shared.fonts.createWalletFirstLabel
         firstLabel.textColor = Theme.shared.colors.creatingWalletFirstLabel
 
@@ -321,15 +321,15 @@ class WalletCreationViewController: UIViewController {
         thirdLabel.font = Theme.shared.fonts.createWalletThirdLabel
         thirdLabel.textColor = Theme.shared.colors.creatingWalletThirdLabel
 
-        secondLabelTop.text = NSLocalizedString("Just a sec…", comment: "Second label on wallet creation Top")
+        secondLabelTop.text = NSLocalizedString("Hold on a sec…", comment: "Second label on wallet creation Top")
         secondLabelTop.font = Theme.shared.fonts.createWalletSecondLabelFirstText
         secondLabelTop.textColor = Theme.shared.colors.creatingWalletSecondLabel
 
-        secondLabelBottom.text = NSLocalizedString("Your wallet is being created", comment: "Second label on wallet creation Bottom")
+        secondLabelBottom.text = NSLocalizedString("We’re creating your wallet.", comment: "Second label on wallet creation Bottom")
         secondLabelBottom.font = Theme.shared.fonts.createWalletSecondLabelSecondText
         secondLabelBottom.textColor = Theme.shared.colors.creatingWalletSecondLabel
 
-        createEmojiButton.setTitle(NSLocalizedString("Continue & Create Emoji ID", comment: "Create button on wallet creation"), for: .normal)
+        createEmojiButton.setTitle(NSLocalizedString("Create Your Emoji ID", comment: "Create button on wallet creation"), for: .normal)
 
         self.view.backgroundColor = Theme.shared.colors.creatingWalletBackground
     }
@@ -390,8 +390,8 @@ class WalletCreationViewController: UIViewController {
 
             self.secondLabelTopConstaint?.constant = 8
             self.secondLabelBottomConstaint?.constant = 8
-            self.secondLabelTop.text = NSLocalizedString("Awesome!", comment: "Second label on wallet creation Top")
-            self.secondLabelBottom.text = NSLocalizedString("Now create your Emoji ID", comment: "Second label on wallet creation Bottom")
+            self.secondLabelTop.text = NSLocalizedString("We’re off to a great start!", comment: "Second label on wallet creation Top")
+            self.secondLabelBottom.text = NSLocalizedString("Now, let’s create your Emoji ID.", comment: "Second label on wallet creation Bottom")
 
             DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
                 guard let self = self else { return }
@@ -590,6 +590,7 @@ class WalletCreationViewController: UIViewController {
             case .touchID:
                 runTouchIdAnimation()
             case .none:
+                //TODO secure with pin
                 TariLogger.error("No biometrics available")
         }
 
@@ -668,14 +669,14 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func updateLabelsForEnablingNotifications() {
-        let secondLabelStringBottom = NSLocalizedString("your payments", comment: "Splash EnableNotifications")
-        let secondLabelStringTop = NSLocalizedString("Get important updates on", comment: "Splash EnableNotifications")
+        let secondLabelStringTop = NSLocalizedString("Don’t miss out when people", comment: "Splash EnableNotifications")
+        let secondLabelStringBottom = NSLocalizedString("send you money.", comment: "Splash EnableNotifications")
         self.secondLabelTop.font = Theme.shared.fonts.createWalletNotificationsFirstLabel
         self.secondLabelBottom.font = Theme.shared.fonts.createWalletNotificationsSecondLabel
         self.secondLabelTop.text = secondLabelStringTop
         self.secondLabelBottom.text = secondLabelStringBottom
         self.thirdLabel.font = Theme.shared.fonts.createWalletNotificationsThirdLabel
-        self.thirdLabel.text = NSLocalizedString("We recommend enabling push notifications for Tari Wallet. We’ll only notify you when someone sends you money or there’s an update on one of your transactions.", comment: "Create Wallet enable Notifications screen")
+        self.thirdLabel.text = NSLocalizedString("Enable push notifications to keep tabs on your payments.", comment: "Create Wallet enable Notifications screen")
 
         self.createEmojiButton.setTitle(NSLocalizedString("Turn on Notifications", comment: "Create Wallet Turn on Notifications"), for: .normal)
 
@@ -699,9 +700,9 @@ class WalletCreationViewController: UIViewController {
         attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText!, range: NSRange(location: 13, length: 8))
 
         self.secondLabelBottom.attributedText = attributedString
-        self.thirdLabel.text = NSLocalizedString("This set of emojis is your wallet address.\nIt’s how your friends can find you and send you Tari.", comment: "Emoji Id third label on wallet creation")
+        self.thirdLabel.text = NSLocalizedString("Your Emoji ID is your wallet’s address, and how others can find you and send you Tari.", comment: "Emoji Id third label on wallet creation")
 
-        self.createEmojiButton.setTitle(NSLocalizedString("Continue", comment: "This is your emoji screen on wallet creation"), for: .normal)
+        self.createEmojiButton.setTitle(NSLocalizedString("Secure Your Wallet", comment: "This is your emoji screen on wallet creation"), for: .normal)
 
         if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
             let (emojis, _) = pubKey.emojis
@@ -727,64 +728,26 @@ class WalletCreationViewController: UIViewController {
         thirdLabelTrailingConstaint?.constant = -Theme.shared.sizes.appSidePadding
         thirdLabel.layoutIfNeeded()
 
+        let secondLabelString = NSLocalizedString("🔑 Let’s secure your wallet. 🔑", comment: "Splash face/touch ID")
+        let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
+          .font: Theme.shared.fonts.createWalletEmojiIDSecondText!,
+          .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
+          .kern: -0.33
+        ])
+        //attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText!, range: NSRange(location: 25, length: 7))
+        self.secondLabelBottom.attributedText = attributedString
+
+        self.thirdLabel.text = NSLocalizedString("Sleep well at night knowing you’ve taken precautions to keep your Tari wallet safe and sound.",
+        comment: "Face ID third label on wallet creation")
+
         let currentType = LAContext().biometricType
         switch currentType {
         case .faceID:
-            let secondLabelString = NSLocalizedString("Protect your wallet with Face ID", comment: "Splash face ID")
-            let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
-              .font: Theme.shared.fonts.createWalletEmojiIDFirstText!,
-              .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
-              .kern: -0.33
-            ])
-            attributedString.addAttribute(.font,
-                                          value: Theme.shared.fonts.createWalletEmojiIDSecondText!,
-                                          range: NSRange(location: 25, length: 7))
-            self.secondLabelBottom.attributedText = attributedString
-
-            self.thirdLabel.text = NSLocalizedString("We recommend using Face ID to protect your Tari\nwallet for security and ease of use.",
-                                                     comment: "Face ID third label on wallet creation")
-
-            self.createEmojiButton.setTitle(NSLocalizedString("Enable Face ID",
-                                                              comment: "Enable Face ID on wallet creation"),
-                                            for: .normal)
-
+            self.createEmojiButton.setTitle(NSLocalizedString("Secure with Face ID", comment: "Enable authentication on wallet creation"), for: .normal)
         case .touchID:
-            let secondLabelString = NSLocalizedString("Protect your wallet with Touch ID", comment: "Splash face ID")
-            let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
-              .font: Theme.shared.fonts.createWalletEmojiIDFirstText!,
-              .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
-              .kern: -0.33
-            ])
-            attributedString.addAttribute(.font,
-                                          value: Theme.shared.fonts.createWalletEmojiIDSecondText!,
-                                          range: NSRange(location: 25, length: 8))
-            self.secondLabelBottom.attributedText = attributedString
-
-            self.thirdLabel.text = NSLocalizedString("We recommend using Touch ID to access your Tari\nwallet for security and ease of use.",
-                                                     comment: "Face ID third label on wallet creation")
-
-            self.createEmojiButton.setTitle(NSLocalizedString("Enable Touch ID",
-                                                              comment: "Enable Touch ID on wallet creation"),
-                                            for: .normal)
+            self.createEmojiButton.setTitle(NSLocalizedString("Secure with Touch ID", comment: "Enable authentication on wallet creation"), for: .normal)
         case .none:
-            // for iOS we do not implement Device PIN. So i will show the same thing just to be sure we show something on Simulator.
-            let secondLabelString = NSLocalizedString("Protect your wallet with Touch ID", comment: "Splash face ID")
-            let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
-              .font: Theme.shared.fonts.createWalletEmojiIDFirstText!,
-              .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
-              .kern: -0.33
-            ])
-            attributedString.addAttribute(.font,
-                                          value: Theme.shared.fonts.createWalletEmojiIDSecondText!,
-                                          range: NSRange(location: 25, length: 8))
-            self.secondLabelTop.attributedText = attributedString
-
-            self.thirdLabel.text = NSLocalizedString("We recommend using Touch ID to access your Tari wallet for security and ease of use.",
-                                                     comment: "Face ID third label on wallet creation")
-
-            self.createEmojiButton.setTitle(NSLocalizedString("Enable Touch ID",
-                                                              comment: "Enable Touch ID on wallet creation"),
-                                            for: .normal)
+            self.createEmojiButton.setTitle(NSLocalizedString("Secure with Pin", comment: "Enable authentication on wallet creation"), for: .normal)
         }
     }
 
