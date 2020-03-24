@@ -123,7 +123,8 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱🖐🙀🤳🖖👍✊🐈☂💀👚😶🤟😳👢😘😺🙌🎩🤬🐼😎🥺"))
         XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
         //Derive a deep link from random pubkey, then init a pubkey using that deep link
-        XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).deeplink.0))
+        XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).emojiDeeplink.0))
+        XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).hexDeeplink.0))
 
         //Invalid deep links
         XCTAssertThrowsError(try PublicKey(deeplink: "bla bla bla"))

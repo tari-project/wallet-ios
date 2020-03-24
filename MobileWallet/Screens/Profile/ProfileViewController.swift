@@ -300,7 +300,7 @@ class ProfileViewController: UIViewController {
             throw walletPublicKeyError!
         }
 
-        let (deeplink, deeplinkError) = pubKey.deeplink
+        let (deeplink, deeplinkError) = pubKey.hexDeeplink
         guard deeplinkError == nil else {
             throw deeplinkError!
         }

@@ -87,13 +87,22 @@ class PublicKey {
         return (result, errorCode != 0 ? PublicKeyError.generic(errorCode) : nil)
     }
 
-    var deeplink: (String, Error?) {
+    var emojiDeeplink: (String, Error?) {
         let (emojisPubkey, emojisError) = emojis
         guard emojisError == nil else {
             return ("", emojisError)
         }
 
         return ("\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/\(emojisPubkey)", nil)
+    }
+
+    var hexDeeplink: (String, Error?) {
+        let (hexPubkey, hexError) = hex
+        guard hexError == nil else {
+            return ("", hexError)
+        }
+
+        return ("\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/\(hexPubkey)", nil)
     }
 
     init(emojis: String) throws {

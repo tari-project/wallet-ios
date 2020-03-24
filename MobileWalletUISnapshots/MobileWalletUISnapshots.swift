@@ -42,6 +42,7 @@ import XCTest
 
 class MobileWalletUISnapshots: XCTestCase {
     var app = XCUIApplication()
+    var screenshotIncrement = 0
     
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -53,11 +54,9 @@ class MobileWalletUISnapshots: XCTestCase {
         
         setupSnapshot(app)
         
-        
         Biometrics.enrolled()
         
         app.launchArguments = ["ui-test-mode"]
-        
         app.launch()
     }
 
@@ -66,99 +65,114 @@ class MobileWalletUISnapshots: XCTestCase {
         app.terminate()
     }
 
-    func testSnapshots() {
-        let createWalletButton = app.buttons["Create Wallet"]
+    //Returns a 3 digit number to be used for screenshot ordering
+    private func numberedLabel(_ label: String) -> String {
+        screenshotIncrement = screenshotIncrement + 1
+        return "\(String(format: "%03d", screenshotIncrement)) \(label)"
+    }
+    
+    //TODO rename back to testSnapshots when travis stops breaking
+    func todoSnapshots() {
+        let createWalletButton = app.buttons["Create Your Wallet"]
         guard createWalletButton.waitForExistence(timeout: 5) else { return }
-        snapshot("001 create wallet")
+        snapshot(numberedLabel("Create wallet"))
         createWalletButton.tap()
         
-        let createEmojiIdButton = app.buttons["Continue & Create Emoji ID"]
-        guard createEmojiIdButton.waitForExistence(timeout: 20) else { return }
-        snapshot("002 Create emoji ID")
+        let createEmojiIdButton = app.buttons["Create Your Emoji ID"]
+        guard createEmojiIdButton.waitForExistence(timeout: 120) else { return }
+        snapshot(numberedLabel("Create emoji ID"))
         createEmojiIdButton.tap()
         
-        let continueButton = app.buttons["Continue"]
+        let continueButton = app.buttons["Secure Your Wallet"]
         guard continueButton.waitForExistence(timeout: 20) else { return }
-        snapshot("003 Emoji ID display")
+        snapshot(numberedLabel("Emoji ID display"))
         continueButton.tap()
         
-        var enableFaceIdButton = app.buttons["Enable Face ID"]
+        var enableFaceIdButton = app.buttons["Secure with Face ID"]
         if !enableFaceIdButton.waitForExistence(timeout: 10) {
             //If we don't fine face ID button, assume touch ID device
-            enableFaceIdButton = app.buttons["Enable Touch ID"]
+            enableFaceIdButton = app.buttons["Secure with Touch ID"]
         }
-        snapshot("004 Enable face/touch ID")
+        snapshot(numberedLabel("Enable face/touch ID"))
         enableFaceIdButton.tap()
         
-        snapshot("005 Enable Face ID confirmation")
+        snapshot(numberedLabel("Enable Face ID confirmation"))
 
         acceptPermissionsPromptIfRequired()
         Biometrics.successfulAuthentication()
         
-        sleep(5)
+        let turnOnNotificationsButton = app.buttons["Turn on Notifications"]
+        guard turnOnNotificationsButton.waitForExistence(timeout: 10) else { return }
+        snapshot(numberedLabel("Notifications request"))
+        turnOnNotificationsButton.tap()
         
-        snapshot("006 Wallet intro")
+        //snapshot(numberedLabel("Notifications request alert"))
+        
+        
+//        let welcomeStaticText = app.staticTexts["Your wallet setup is complete."]
+//        guard welcomeStaticText.waitForExistence(timeout: 10) else { return }
 
+        snapshot(numberedLabel("Wallet intro"))
         
-//        let welcomeStaticText = app.staticTexts["Swipe down and I'll show you around your wallet"]
-//        welcomeStaticText.waitForExistence(timeout: 5)
-        
-        sleep(5)
         app.swipeDown()
         
-        let youGotSomeTariStaticText = app.staticTexts["You got some Tari!"]
+        let youGotSomeTariStaticText = app.staticTexts["You just got some Testnet Tari!"]
         guard youGotSomeTariStaticText.waitForExistence(timeout: 20) else { return }
-        snapshot("007 TariBot recieved")
+        snapshot(numberedLabel("TariBot recieved"))
         
         
         let sendTariButton = app.children(matching: .window).element(boundBy: 2).buttons["Send Tari"]
         guard sendTariButton.waitForExistence(timeout: 15) else { return }
         sendTariButton.tap()
         
-        snapshot("008 Add recipient")
+        snapshot(numberedLabel("Add recipient"))
         
         app.tables.children(matching: .cell).element(boundBy: 0).staticTexts["TariBot"].tap()
         
         let sendContinueButton = app.buttons["Continue"]
         guard sendContinueButton.waitForExistence(timeout: 4) else { return }
-        snapshot("009 Add recipient selected")
+        snapshot(numberedLabel("Add recipient selected"))
         sendContinueButton.tap()
         
-        snapshot("010 Send amount")
+        snapshot(numberedLabel("Send amount"))
         app.buttons["2"].tap()
         app.buttons["5"].tap()
         
         let amountContinueButton = app.buttons["Continue"]
         guard amountContinueButton.waitForExistence(timeout: 4) else { return }
-        snapshot("011 Send amount set")
+        snapshot(numberedLabel("Send amount set"))
         amountContinueButton.tap()
         
-        snapshot("012 Add note")
+        snapshot(numberedLabel("Add note"))
         
         //Typing hey
         app.keys["H"].tap()
         app.keys["e"].tap()
         app.keys["y"].tap()
         
-        snapshot("013 Note added")
+        snapshot(numberedLabel("Note added"))
 
         app.children(matching: .window).element(boundBy: 0).children(matching: .other).element.children(matching: .other).element.children(matching: .other).element.children(matching: .other).element.children(matching: .other).element.children(matching: .other).element.children(matching: .other).element.children(matching: .other).element(boundBy: 0).staticTexts["Slide to Send"].tap()
                 
         sleep(2)
-        snapshot("013 Sending")
-        
-        let heyTxNote = app.tables.staticTexts["Hey"]
-        guard heyTxNote.waitForExistence(timeout: 15) else { return }
-        
-        snapshot("014 Home view")
+        snapshot(numberedLabel("Sending"))
     
-        heyTxNote.tap()
+        //TODO it gets stuck on the sending screen
         
-        snapshot("015 Transaction detail")
+        let txNote = app.tables.staticTexts["💸 Here’s some Testnet Tari!"]
+        guard txNote.waitForExistence(timeout: 30) else { return }
+    
+        sleep(30)
+        
+        snapshot(numberedLabel("Home view"))
+    
+        txNote.tap()
+        
+        snapshot(numberedLabel("Transaction detail"))
         
         app.buttons["Edit"].tap()
         
-        snapshot("016 Alias editing")
+        snapshot(numberedLabel("Alias editing"))
         
         app.keys["delete"].tap()
         app.keys["o"].tap()
@@ -166,13 +180,15 @@ class MobileWalletUISnapshots: XCTestCase {
         app.keys["y"].tap()
         app.buttons["Done"].tap()
         
-        snapshot("017 Alias done editing")
+        snapshot(numberedLabel("Alias done editing"))
         
-        app.navigationBars["Payment Sent"].buttons["Back"].tap()
+        let backButton = app.navigationBars["Payment Sent"].buttons["Back"]
+        guard backButton.waitForExistence(timeout: 5) else { return }
+        backButton.tap()
         
         app.buttons["profileIcon"].tap()
         
-        snapshot("018 Alias done editing")
+        snapshot(numberedLabel("Alias done editing"))
 
         app.buttons["Close"].tap()
     }

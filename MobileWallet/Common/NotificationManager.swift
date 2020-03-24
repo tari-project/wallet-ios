@@ -48,6 +48,11 @@ class NotificationManager {
     private let options: UNAuthorizationOptions = [.alert, .sound, .badge]
 
     func requestAuthorization(_ completionHandler: @escaping (Bool) -> Void) {
+        if ProcessInfo.processInfo.arguments.contains("ui-test-mode") {
+            completionHandler(true)
+            return
+        }
+
         notificationCenter.requestAuthorization(options: options) {
             (didAllow, error) in
             guard error == nil else {
