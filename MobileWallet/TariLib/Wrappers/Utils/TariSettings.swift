@@ -53,17 +53,20 @@ struct TariSettings {
 
     //For UI changes it can be a bit slow to keep waiting for tor to bootstrap.
     //Set to false if you're just working on the UI.
+    #if targetEnvironment(simulator)
+    let torEnabled = true
+    #else
+    let torEnabled = true
+    #endif
 
     #if DEBUG
     //Used for showing a little extra detail in the UI to help debugging
     let isDebug = true
-    let torEnabled = false
     //Local macbook node
     let defaultBasenodePeer = "10092c2299efcb5b8ec27ab847b5ec645d79536cf8cf40c7b8757fa141151864::/onion3/kgk5tclng6v2ohbufp3nhhes7f4camb5ukkxyudoph6hzj5ip65dv4yd:9050"
     let maxMbLogsStorage: UInt64 = 5000 //5GB
     #else
     let isDebug = false
-    let torEnabled = true
     //Taribot faucet node
     let defaultBasenodePeer = "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"
     let maxMbLogsStorage: UInt64 = 500 //500MB

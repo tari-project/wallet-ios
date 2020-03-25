@@ -187,6 +187,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
             onSendComplete(recipientAmount)
         } catch WalletErrors.generic(210) {
+            TariLogger.warn("Error 210. Will wait for discovery.")
             //Discovery still needs to happen, this error is actually alright
             onSendComplete(recipientAmount, isDiscoveryComplete: false)
         } catch {
@@ -200,6 +201,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
     }
 
     func onSendComplete(_ amount: MicroTari, isDiscoveryComplete: Bool = true) {
+        TariLogger.info("Sending transaction.")
+
         let vc = SendingTariViewController()
         vc.tariAmount = amount
         vc.isDiscoveryComplete = isDiscoveryComplete
@@ -268,8 +271,8 @@ extension AddNoteViewController {
         notePlaceholder.translatesAutoresizingMaskIntoConstraints = false
         noteInput.addSubview(notePlaceholder)
         notePlaceholder.topAnchor.constraint(equalTo: noteInput.topAnchor).isActive = true
-        notePlaceholder.leadingAnchor.constraint(equalTo: noteInput.leadingAnchor).isActive = true
-        notePlaceholder.trailingAnchor.constraint(equalTo: noteInput.trailingAnchor).isActive = true
+        notePlaceholder.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
+        notePlaceholder.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
         notePlaceholder.numberOfLines = 0
 
         notePlaceholder.attributedText = NSAttributedString(
