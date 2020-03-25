@@ -67,13 +67,7 @@ class SendingTariViewController: UIViewController {
 
     var animationStarted: Bool = false
 
-    var isDiscoveryComplete = false {
-        didSet {
-            if !isDiscoveryComplete {
-                self.startListeningForDiscovery()
-            }
-        }
-    }
+    private var isDiscoveryComplete = false
     private var onDiscoveryComplete: ((Bool) -> Void)?
 
     override func viewDidLoad() {
@@ -82,6 +76,7 @@ class SendingTariViewController: UIViewController {
         setupConstraintsVideoView()
         setupConstraintsAnimationContainer()
         setupTitleLabel()
+        startListeningForDiscovery()
     }
 
     override func viewDidAppear(_ animated: Bool) {

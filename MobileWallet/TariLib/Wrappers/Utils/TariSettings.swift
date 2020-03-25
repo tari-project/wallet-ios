@@ -43,6 +43,24 @@ import Foundation
 enum TariNetworks: String {
     case mainnet = "mainnet"
     case rincewind = "rincewind"
+
+    var currencyDisplayName: String {
+        switch self {
+        case .rincewind:
+            return "testnet Tari"
+        default:
+            return "Tari"
+        }
+    }
+
+    var networkDisplayName: String {
+        switch self {
+        case .rincewind:
+            return "testnet"
+        default:
+            return "mainnet"
+        }
+    }
 }
 
 struct TariSettings {
@@ -51,10 +69,13 @@ struct TariSettings {
     let network: TariNetworks = .rincewind //TODO this will come from a build config
     let deeplinkURI = "tari"
 
+    let userAgreementUrl = "https://tarilabs.com/user_agreement/"
+    let privacyPolicyUrl = "https://tarilabs.com/privacy_policy/"
+
     //For UI changes it can be a bit slow to keep waiting for tor to bootstrap.
     //Set to false if you're just working on the UI.
     #if targetEnvironment(simulator)
-    let torEnabled = true
+    let torEnabled = false
     #else
     let torEnabled = true
     #endif

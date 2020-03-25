@@ -78,17 +78,17 @@ class AnimatedBalanceLabel: UIView {
         case type
     }
 
-    var animationDuration = 0.2
-    var delayBetweenCharacterAnimations = 0.05
-    var slideAnimationDuration = 0.2
+    var animationDuration = 0.08
+    var delayBetweenCharacterAnimations = 0.025
+    var slideAnimationDuration = 0.08
     var animation = Animation.update
 
     let fontSizeCalculatorLabel = UILabel()
 
     private var animating = false
 
-    private var labelsLeftLayoutGuide: UILayoutGuide = UILayoutGuide()
-    private var labelsRightLayoutGuide: UILayoutGuide = UILayoutGuide()
+    private var labelsLeftLayoutGuide = UILayoutGuide()
+    private var labelsRightLayoutGuide = UILayoutGuide()
 
     private var _attributedText: NSAttributedString?
     var attributedText: NSAttributedString? {
@@ -256,7 +256,7 @@ class AnimatedBalanceLabel: UIView {
 
             labels.forEach({$0.removeFromSuperview()})
 
-            UIView.animate(withDuration: slideAnimationDuration, delay: 0, options: [.curveEaseIn], animations: { [weak self] in
+            UIView.animate(withDuration: slideAnimationDuration, delay: 0, options: [.curveEaseInOut], animations: { [weak self] in
                 guard let self = self else {return}
                 self.layoutLabels()
             }) { [weak self] (_) in
@@ -320,7 +320,7 @@ class AnimatedBalanceLabel: UIView {
                         self.labels.removeFirst()
                     }
 
-                    UIView.animate(withDuration: self.slideAnimationDuration, delay: 0, options: [.curveEaseIn], animations: {
+                    UIView.animate(withDuration: self.slideAnimationDuration, delay: 0, options: [.curveEaseInOut], animations: {
                             self.labels.first?.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
                             self.labels.first?.leftAnchor.constraint(equalTo: self.labelsLeftLayoutGuide.rightAnchor).isActive = true
                         self.layoutIfNeeded()

@@ -83,7 +83,7 @@ class MobileWalletUISnapshots: XCTestCase {
         snapshot(numberedLabel("Create emoji ID"))
         createEmojiIdButton.tap()
         
-        let continueButton = app.buttons["Secure Your Wallet"]
+        let continueButton = app.buttons["Continue"]
         guard continueButton.waitForExistence(timeout: 20) else { return }
         snapshot(numberedLabel("Emoji ID display"))
         continueButton.tap()

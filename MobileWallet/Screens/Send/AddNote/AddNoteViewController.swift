@@ -189,7 +189,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         } catch WalletErrors.generic(210) {
             TariLogger.warn("Error 210. Will wait for discovery.")
             //Discovery still needs to happen, this error is actually alright
-            onSendComplete(recipientAmount, isDiscoveryComplete: false)
+            onSendComplete(recipientAmount)
         } catch {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Transaction failed", comment: "Add note view"),
@@ -200,12 +200,11 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         }
     }
 
-    func onSendComplete(_ amount: MicroTari, isDiscoveryComplete: Bool = true) {
+    func onSendComplete(_ amount: MicroTari) {
         TariLogger.info("Sending transaction.")
 
         let vc = SendingTariViewController()
         vc.tariAmount = amount
-        vc.isDiscoveryComplete = isDiscoveryComplete
         self.navigationController?.pushViewController(vc, animated: false)
     }
 }

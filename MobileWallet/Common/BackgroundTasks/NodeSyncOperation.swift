@@ -92,9 +92,9 @@ class NodeSyncOperation: Operation {
                 title: NSLocalizedString("You've got Tari!", comment: "Background refresh TX received notification"),
                 body: String(
                     format: NSLocalizedString(
-                        "Someone just sent you some %@Tari",
+                        "Someone just sent you some %@",
                         comment: "Background refresh TX received notification"),
-                    TariSettings.shared.network != .mainnet ? "Testnet " : ""
+                    TariSettings.shared.network.currencyDisplayName
                 )
             )
 

@@ -153,14 +153,19 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     private func requestTestnetTokens() {
+        let errorTitle = String(format: NSLocalizedString("Failed to claim %@", comment: "Home view testnet airdrop"), TariSettings.shared.network.currencyDisplayName)
+
         do {
             let tempKeyServer = try TestnetKeyServer(wallet: TariLib.shared.tariWallet!)
             try tempKeyServer.requestDrop(onSuccess: { () in
                 DispatchQueue.main.async { [weak self] in
                     guard let _ = self else { return }
+                    let title = String(format: NSLocalizedString("You just got some %@!", comment: "Home view testnet airdrop"), TariSettings.shared.network.currencyDisplayName)
+                    let description = String(format: NSLocalizedString("Try sending a bit of %@ back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).", comment: "Home view testnet airdrop"), TariSettings.shared.network.currencyDisplayName)
+
                     UserFeedback.shared.callToAction(
-                        title: NSLocalizedString("You just got some Testnet Tari!", comment: "Home view testnet airdrop"),
-                        description: NSLocalizedString("Try sending a bit of Testnet Tari back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).", comment: "Home view testnet airdrop"),
+                        title: title,
+                        description: description,
                         actionTitle: NSLocalizedString("Send Tari", comment: "Home view testnet airdrop"),
                         cancelTitle: NSLocalizedString("Try it later", comment: "Home view testnet airdrop"),
                         onAction: {
@@ -171,11 +176,11 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 }
             }) { (error) in
                 DispatchQueue.main.async {
-                    UserFeedback.shared.error(title: "Failed to claim testnet tokens", description: "", error: error)
+                    UserFeedback.shared.error(title: errorTitle, description: "", error: error)
                 }
             }
         } catch {
-            UserFeedback.shared.error(title: "Failed to claim testnet tokens", description: "Could not setup key server.", error: error)
+            UserFeedback.shared.error(title: errorTitle, description: "Could not setup key server.", error: error)
         }
     }
 

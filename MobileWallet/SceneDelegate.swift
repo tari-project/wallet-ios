@@ -93,6 +93,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         //Remove badges from push notifications
         UIApplication.shared.applicationIconBadgeNumber = 0
+        TariLib.shared.reconnectTor()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
