@@ -255,7 +255,8 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                 emojiButton.setUpView(emojiText: emojis,
                                       type: .buttonView,
                                       textCentered: false,
-                                      inViewController: self)
+                                      inViewController: self,
+                                      showContainerViewBlur: false)
             }
 
             let (date, dateError) = tx.date

@@ -112,7 +112,10 @@ extension UIViewController {
         if navBarEmojis == nil { navBarEmojis = EmoticonView() }
 
         if let emojiView = navBarEmojis {
-            emojiView.setUpView(emojiText: emojis, type: .buttonView, textCentered: true, inViewController: self)
+            emojiView.setUpView(emojiText: emojis,
+                                type: .buttonView,
+                                textCentered: true,
+                                inViewController: self)
 
             emojiView.translatesAutoresizingMaskIntoConstraints = false
 

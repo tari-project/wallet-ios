@@ -199,7 +199,6 @@
 		0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
-		008758ED2427C9E800DC6BCB /* TariLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D802426080D00BAB95B /* TariLogger.swift */; };
 		0087A1A923F4235400B89EE7 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A523F4235400B89EE7 /* ScanViewController.swift */; };
 		0087A1AA23F4235400B89EE7 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A523F4235400B89EE7 /* ScanViewController.swift */; };
 		0087A1AB23F4235400B89EE7 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A523F4235400B89EE7 /* ScanViewController.swift */; };
@@ -416,6 +415,7 @@
 		BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 		BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 		BFC5532723D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
+		BFCA0E6C242CA8780024FC0C /* TariLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D802426080D00BAB95B /* TariLogger.swift */; };
 		BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */; };
 		BFD758E723E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */; };
 		BFD758E823E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */; };
@@ -1753,9 +1753,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				00B4D6B82416A50C00ED8318 /* MobileWalletUISnapshots.swift in Sources */,
-				008758ED2427C9E800DC6BCB /* TariLogger.swift in Sources */,
 				00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */,
 				BFE61E4B24226A7F003DC99D /* NotificationManager.swift in Sources */,
+				BFCA0E6C242CA8780024FC0C /* TariLogger.swift in Sources */,
 				00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */,
 				00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */,
 			);
