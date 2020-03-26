@@ -105,7 +105,7 @@ class TariLib {
 
     var isTorConnected: Bool {
         //If we're not using tor (for a simulator) or if tor is actually connected
-        return TariSettings.shared.torEnabled == false || OnionConnector.shared.currentTorConnectionState == .connected
+        return TariSettings.shared.torEnabled == false || OnionConnector.shared.connectionState == .connected
     }
 
     init() {}
@@ -138,8 +138,9 @@ class TariLib {
         }
     }
 
+    //TODO move tor status updates to OnionManager for "didSet". Maybe new bus type enum for state changes.
     func startTor() {
-        guard OnionConnector.shared.currentTorConnectionState != .connected else {
+        guard OnionConnector.shared.connectionState != .connected && OnionConnector.shared.connectionState != .started else {
             return
         }
 
@@ -169,6 +170,10 @@ class TariLib {
                 }
             }
         )
+    }
+
+    func reconnectTor() {
+        OnionConnector.shared.reconnect()
     }
 
     func createNewWallet() throws {

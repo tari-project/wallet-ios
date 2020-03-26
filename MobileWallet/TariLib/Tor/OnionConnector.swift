@@ -47,13 +47,9 @@ public final class OnionConnector {
         case connectionError
     }
 
-    public enum OnionConnectionState {
-        case notConnected
-        case connecting
-        case connected
+    var connectionState: OnionManager.TorState {
+        return OnionManager.shared.state
     }
-
-    var currentTorConnectionState: OnionConnectionState = .notConnected
 
     private var progress: ((Int) -> Void)?
     private var completion: ((Result<URLSessionConfiguration, OnionError>) -> Void)?
@@ -65,21 +61,22 @@ public final class OnionConnector {
         self.completion = completion
         OnionManager.shared.startTor(delegate: self)
     }
+
+    public func reconnect() {
+        OnionManager.shared.torReconnect()
+    }
 }
 
 extension OnionConnector: OnionManagerDelegate {
     func torConnProgress(_ progress: Int) {
-        currentTorConnectionState = .connecting
         self.progress?(progress)
     }
 
     func torConnFinished(configuration: URLSessionConfiguration) {
-        currentTorConnectionState = .connected
         completion?(.success(configuration))
     }
 
     func torConnError() {
-        currentTorConnectionState = .notConnected
         TariLogger.error("Tor connection error", error: OnionError.connectionError)
         completion?(.failure(.connectionError))
     }

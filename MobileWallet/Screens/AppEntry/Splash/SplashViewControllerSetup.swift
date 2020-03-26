@@ -44,16 +44,18 @@ import Lottie
 
 extension SplashViewController {
     func setupView() {
-        updateConstraintsAnimationContainer()
-        updateConstraintsVideoView()
-        updateConstraintsTitleLabel()
-        updateConstraintsSubtitleLabel()
-        updateConstraintsBottomBagroundView()
-        updateConstraintsCreateWalletButton()
-        updateConstraintsGemImageView()
+        setupAnimationContainer()
+        setupVideoView()
+        setupTitleLabel()
+        setupSubtitleLabel()
+        setupBottomBackgroundView()
+        setupCreateWalletButton()
+        setupDisclaimer()
+        setupGemImageView()
         setupContraintsVersionLabel()
         setupMaskBackground()
         createWalletButton.isHidden = true
+        disclaimerText.isHidden = true
 
         createWalletButton.setTitle(NSLocalizedString("Create Your Wallet", comment: "Main action button on the onboarding screen"), for: .normal)
         titleLabel.isHidden = true
@@ -69,16 +71,19 @@ extension SplashViewController {
         titleLabel.textColor = Theme.shared.colors.splashTitle
 
         subtitleLabel.isHidden = true
-        subtitleLabel.text = NSLocalizedString("Get ready to send and receive Testnet Tari with an easy-to-use crypto wallet that puts privacy first.", comment: "Subtitle Label on the onboarding screen")
+
+        subtitleLabel.text = String(
+            format: NSLocalizedString("Get ready to send and receive %@! with an easy-to-use crypto wallet that puts privacy first.", comment: "Subtitle Label on the onboarding screen"),
+            TariSettings.shared.network.currencyDisplayName
+        )
 
         subtitleLabel.textColor = Theme.shared.colors.splashSubtitle
         subtitleLabel.font = Theme.shared.fonts.splashSubtitleLabel
 
-        versionLabel.font = Theme.shared.fonts.splashTestnetFooterLabel
+        versionLabel.font = Theme.shared.fonts.splashVersionFooterLabel
         versionLabel.textColor = Theme.shared.colors.splashVersionLabel
-        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            let labelText = NSLocalizedString("Testnet", comment: "Bottom version label for splash screen")
-            versionLabel.text = "\(labelText) V\(version)".uppercased()
+        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+            versionLabel.text = "\(TariSettings.shared.network.networkDisplayName) V\(version) (\(build))".uppercased()
         }
     }
 
@@ -109,7 +114,7 @@ extension SplashViewController {
         }
     }
 
-    func updateConstraintsAnimationContainer() {
+    func setupAnimationContainer() {
         animationContainer = AnimationView()
         view.addSubview(animationContainer)
         animationContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -129,7 +134,7 @@ extension SplashViewController {
         }
     }
 
-    func updateConstraintsVideoView() {
+    func setupVideoView() {
         view.addSubview(videoView)
         videoView.translatesAutoresizingMaskIntoConstraints = false
         if TariLib.shared.walletExists {
@@ -142,7 +147,7 @@ extension SplashViewController {
         }
     }
 
-    func updateConstraintsTitleLabel() {
+    func setupTitleLabel() {
         view.addSubview(titleLabel)
 
         titleLabel.numberOfLines = 0
@@ -159,7 +164,7 @@ extension SplashViewController {
         }
     }
 
-    func updateConstraintsSubtitleLabel() {
+    func setupSubtitleLabel() {
         view.addSubview(subtitleLabel)
 
         subtitleLabel.numberOfLines = 0
@@ -174,7 +179,7 @@ extension SplashViewController {
         distanceTitleSubtitle.isActive = true
     }
 
-    func updateConstraintsBottomBagroundView() {
+    func setupBottomBackgroundView() {
         view.insertSubview(bottomBackgroundView, belowSubview: subtitleLabel)
         bottomBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         bottomBackgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
@@ -183,8 +188,7 @@ extension SplashViewController {
         bottomBackgroundView.topAnchor.constraint(equalTo: subtitleLabel.topAnchor, constant: 0).isActive = true
     }
 
-    func updateConstraintsCreateWalletButton() {
-        createWalletButton = ActionButton()
+    func setupCreateWalletButton() {
         createWalletButton.addTarget(self, action: #selector(onCreateWalletTap), for: .touchUpInside)
         view.addSubview(createWalletButton)
         createWalletButton.translatesAutoresizingMaskIntoConstraints = false
@@ -194,13 +198,59 @@ extension SplashViewController {
         createWalletButton.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 40).isActive = true
     }
 
-    func updateConstraintsGemImageView() {
-        gemImageView = UIImageView()
+    func setupDisclaimer() {
+        view.addSubview(disclaimerText)
+        disclaimerText.translatesAutoresizingMaskIntoConstraints = false
+
+        let userAgreementLinkText = NSLocalizedString("User Agreement", comment: "Splash screen disclaimer")
+        let privacyPolicyLinkText = NSLocalizedString("Privacy Policy", comment: "Splash screen disclaimer")
+        let text = NSLocalizedString("By creating a wallet, you agree to the terms of the User Agreement and Privacy Policy", comment: "Splash screen disclaimer")
+
+        let attributedText = NSMutableAttributedString(string: text)
+
+        disclaimerText.linkTextAttributes = [
+            NSAttributedString.Key.foregroundColor: Theme.shared.colors.splashVersionLabel!,
+            NSAttributedString.Key.underlineColor: Theme.shared.colors.splashVersionLabel!,
+            NSAttributedString.Key.underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
+
+        if let userAgreementStartIndex = text.indexDistance(of: userAgreementLinkText) {
+            let range = NSRange(location: userAgreementStartIndex, length: userAgreementLinkText.count)
+            attributedText.addAttribute(.link, value: TariSettings.shared.userAgreementUrl, range: range)
+            attributedText.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: range)
+            attributedText.addAttribute(.foregroundColor, value: UIColor.red, range: range)
+        }
+
+        if let privacyPolicyStartIndex = text.indexDistance(of: privacyPolicyLinkText) {
+            let range = NSRange(location: privacyPolicyStartIndex, length: privacyPolicyLinkText.count)
+            attributedText.addAttribute(.link, value: TariSettings.shared.privacyPolicyUrl, range: range)
+            attributedText.addAttribute(.underlineStyle, value: NSUnderlineStyle.single.rawValue, range: range)
+        }
+
+        disclaimerText.attributedText = attributedText
+
+        disclaimerText.backgroundColor = .clear
+        disclaimerText.textColor = Theme.shared.colors.splashVersionLabel
+        disclaimerText.font = Theme.shared.fonts.splashDisclaimerLabel
+        disclaimerText.textAlignment = .center
+        disclaimerText.isScrollEnabled = false
+
+        disclaimerText.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, multiplier: 0.6).isActive = true
+        disclaimerText.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        disclaimerText.topAnchor.constraint(equalTo: createWalletButton.bottomAnchor, constant: 20).isActive = true
+    }
+
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        UIApplication.shared.open(URL)
+        return false
+    }
+
+    func setupGemImageView() {
         view.addSubview(gemImageView)
         gemImageView.image = UIImage(named: "Gem")
         gemImageView.translatesAutoresizingMaskIntoConstraints = false
         gemImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        gemImageView.topAnchor.constraint(equalTo: createWalletButton.bottomAnchor, constant: 35).isActive = true
+        gemImageView.topAnchor.constraint(equalTo: disclaimerText.bottomAnchor, constant: 25).isActive = true
         gemImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
         gemImageView.heightAnchor.constraint(equalToConstant: 24).isActive = true
     }
@@ -263,11 +313,12 @@ extension SplashViewController {
 
             UIView.animate(withDuration: 1.0, animations: { [weak self] in
                 guard let self = self else { return }
-                self.titleLabel.alpha = 0.0
-                self.subtitleLabel.alpha = 0.0
-                self.createWalletButton.alpha = 0.0
-                self.gemImageView.alpha = 0.0
-                self.versionLabel.alpha = 0.0
+                self.titleLabel.alpha = 0
+                self.subtitleLabel.alpha = 0
+                self.createWalletButton.alpha = 0
+                self.disclaimerText.alpha = 0
+                self.gemImageView.alpha = 0
+                self.versionLabel.alpha = 0
                 self.view.layoutIfNeeded()
             }) { [weak self] (_) in
                 guard let self = self else { return }

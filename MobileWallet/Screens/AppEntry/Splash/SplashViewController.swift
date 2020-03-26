@@ -44,7 +44,7 @@ import LocalAuthentication
 import SwiftEntryKit
 import AVFoundation
 
-class SplashViewController: UIViewController {
+class SplashViewController: UIViewController, UITextViewDelegate {
     // MARK: - Variables and constants
     var player: AVQueuePlayer!
     var playerLayer: AVPlayerLayer!
@@ -72,6 +72,7 @@ class SplashViewController: UIViewController {
     var animationContainerBottomAnchor: NSLayoutConstraint?
     var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
     var maskBackgroundView = UIView()
+    var disclaimerText = UITextView()
     private let progressFeedbackView = FeedbackView()
 
     // MARK: - Override functions
@@ -218,6 +219,7 @@ class SplashViewController: UIViewController {
             titleLabel.isHidden = false
             subtitleLabel.isHidden = false
             createWalletButton.isHidden = false
+            disclaimerText.isHidden = false
         }
     }
 

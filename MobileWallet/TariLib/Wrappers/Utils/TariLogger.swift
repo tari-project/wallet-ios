@@ -43,7 +43,7 @@ public class TariLogger {
     public static func warn(_ message: Any, error: Error? = nil, file: String = #file, function: String = #function, line: Int = #line) {
         log(
             level: .warning,
-            message: error != nil ? "\(message) ❗\(String(describing: error?.localizedDescription))❗" : message,
+            message: error != nil ? "\(message) ❗\(String(describing: error!.localizedDescription))❗" : message,
             file: file,
             function: function,
             line: line
@@ -53,7 +53,7 @@ public class TariLogger {
     public static func error(_ message: Any, error: Error? = nil, file: String = #file, function: String = #function, line: Int = #line) {
         log(
             level: .error,
-            message: error != nil ? "\(message) ❗\(String(describing: error?.localizedDescription))❗" : message,
+            message: error != nil ? "\(message) ❗\(String(describing: error!.localizedDescription))❗" : message,
             file: file,
             function: function,
             line: line

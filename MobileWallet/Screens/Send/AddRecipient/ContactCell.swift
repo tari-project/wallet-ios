@@ -82,7 +82,6 @@ class ContactCell: UITableViewCell {
         //Container view
         cellView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(cellView)
-        //cellView.backgroundColor = .systemRed
         cellView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         cellView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
         cellView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true

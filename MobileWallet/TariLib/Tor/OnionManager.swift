@@ -107,7 +107,7 @@ public class OnionManager: NSObject {
 
     private var torThread: TorThread?
 
-    public var state = TorState.none
+    public var state: TorState = .none
     private var initRetry: DispatchWorkItem?
     private var failGuard: DispatchWorkItem?
 
@@ -127,6 +127,7 @@ public class OnionManager: NSObject {
     }
 
     func torReconnect() {
+        TariLogger.info("Tor reconnecting...")
         torController?.sendCommand("RELOAD", arguments: nil, data: nil, observer: { _, _, _ -> Bool in
             true
         })
@@ -160,9 +161,8 @@ public class OnionManager: NSObject {
 
             let args = torConf.arguments
 
-            #if DEBUG
-            dump("\n\n\(String(describing: args))\n\n")
-            #endif
+            TariLogger.warn(String(describing: args))
+
             torConf.arguments = args
             self.torThread = TorThread(configuration: torConf)
             needsReconfiguration = false
