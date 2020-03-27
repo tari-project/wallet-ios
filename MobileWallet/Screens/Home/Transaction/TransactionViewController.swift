@@ -139,6 +139,8 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
 
         hideKeyboardWhenTappedAroundOrSwipedDown()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+
+        Tracker.shared.track("/home/tx_details", "Transaction Details")
     }
 
     override func viewWillAppear(_ animated: Bool) {

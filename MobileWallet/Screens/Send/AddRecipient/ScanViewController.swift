@@ -83,6 +83,8 @@ class ScanViewController: UIViewController {
         updateConstraintsBottomLeftView()
         updateConstraintsBottomRightView()
         setupScanner()
+
+        Tracker.shared.track("/home/send_tari/add_recipient/qr_scan", "Send Tari - Add Recipient - Scan QR Code")
     }
 
     private func updateConstraintsBackButton() {

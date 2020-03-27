@@ -72,14 +72,21 @@ struct BackgroundTaskManager {
         queue.addOperation(appRefreshOperation)
 
         task.expirationHandler = {
-            //NotificationManager.shared.scheduleNotification(title: "Background task", body: "Refresh task cancelled by OS")
+            if TariSettings.shared.isDebug {
+                NotificationManager.shared.scheduleNotification(title: "Background task", body: "Refresh task cancelled by OS")
+            }
             queue.cancelAllOperations()
             task.setTaskCompleted(success: false)
         }
 
         let lastOperation = queue.operations.last
         lastOperation?.completionBlock = {
-            task.setTaskCompleted(success: !(lastOperation?.isCancelled ?? false))
+            let success = !(lastOperation?.isCancelled ?? false)
+            if TariSettings.shared.isDebug {
+                NotificationManager.shared.scheduleNotification(title: "Background task", body: "Task complete (\(success))")
+            }
+
+            task.setTaskCompleted(success: success)
         }
     }
 

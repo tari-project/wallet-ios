@@ -178,6 +178,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         do {
             try TariLib.shared.createNewWallet()
 
+            Tracker.shared.track("/onboarding/create_wallet", "Onboarding - Create Wallet")
+
             if let _ = self.ticketTopLayoutConstraint {
                 self.topAnimationAndRemoveVideoAnimation { [weak self] () in
                     guard let self = self else { return }
@@ -220,6 +222,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             subtitleLabel.isHidden = false
             createWalletButton.isHidden = false
             disclaimerText.isHidden = false
+
+            Tracker.shared.track("/onboarding/introduction", "Onboarding - Introduction")
         }
     }
 

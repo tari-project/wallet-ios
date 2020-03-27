@@ -84,7 +84,7 @@ struct TariSettings {
     //Used for showing a little extra detail in the UI to help debugging
     let isDebug = true
     //Local macbook node
-    let defaultBasenodePeer = "10092c2299efcb5b8ec27ab847b5ec645d79536cf8cf40c7b8757fa141151864::/onion3/kgk5tclng6v2ohbufp3nhhes7f4camb5ukkxyudoph6hzj5ip65dv4yd:9050"
+    let defaultBasenodePeer = "5ae7945e17dadbe9e437b4c3d3dd46ec7a4a292b9a8a53ed4c385ca81edb7a68::/onion3/obu3tnfqvq6mcurafcnxadd7vnpv6vjsouflnk3wigxuq3tb2ynnnlid:9051"
     let maxMbLogsStorage: UInt64 = 5000 //5GB
     #else
     let isDebug = false

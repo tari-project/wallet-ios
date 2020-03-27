@@ -105,6 +105,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         super.viewDidLoad()
 
         self.refreshBalance()
+
+        Tracker.shared.track("/home", "Home - Transaction List")
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -158,8 +160,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         do {
             let tempKeyServer = try TestnetKeyServer(wallet: TariLib.shared.tariWallet!)
             try tempKeyServer.requestDrop(onSuccess: { () in
-                DispatchQueue.main.async { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
                     guard let _ = self else { return }
+
                     let title = String(format: NSLocalizedString("You just got some %@!", comment: "Home view testnet airdrop"), TariSettings.shared.network.currencyDisplayName)
                     let description = String(format: NSLocalizedString("Try sending a bit of %@ back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).", comment: "Home view testnet airdrop"), TariSettings.shared.network.currencyDisplayName)
 
@@ -168,11 +171,16 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                         description: description,
                         actionTitle: NSLocalizedString("Send Tari", comment: "Home view testnet airdrop"),
                         cancelTitle: NSLocalizedString("Try it later", comment: "Home view testnet airdrop"),
-                        onAction: {
+                        onAction: { [weak self] in
                             guard let self = self else { return }
                             self.onSend()
                         }
                     )
+                })
+
+                DispatchQueue.main.async { [weak self] in
+                    guard let _ = self else { return }
+
                 }
             }) { (error) in
                 DispatchQueue.main.async {

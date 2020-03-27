@@ -11,7 +11,8 @@ target 'MobileWallet' do
   pod 'lottie-ios'
   pod 'SwiftEntryKit', '1.2.3'
   pod 'ReachabilitySwift'
-  
+  pod 'MatomoTracker', '~> 7.2'
+
   target 'MobileWalletTests' do
     inherit! :search_paths
     # Pods for testing
