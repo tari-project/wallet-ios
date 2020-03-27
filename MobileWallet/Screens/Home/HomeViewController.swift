@@ -251,6 +251,13 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             guard !isFirstIntroToWallet else {
                 self.isShowingSendButton = false
                 transactionTableVC.showIntroContent(true)
+                //Wait before auto pulling down
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: { [weak self] in
+                    guard let self = self else { return }
+                    if self.isTransactionViewFullScreen {
+                        self.fpc.move(to: .tip, animated: true)
+                    }
+                })
                 return
             }
 

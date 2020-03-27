@@ -40,7 +40,7 @@
 
 import UIKit
 
-class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanViewControllerDelegate {
+class AddRecipientViewController: UIViewController, UITextFieldDelegate, ContactsTableDelegate, ScanViewControllerDelegate {
     private let SIDE_PADDING = Theme.shared.sizes.appSidePadding
     private let INPUT_CORNER_RADIUS: CGFloat = 6
     private let INPUT_CONTAINER_HEIGHT: CGFloat = 90
@@ -69,6 +69,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
         didSet {
             if selectedRecipientPublicKey != nil {
                 inputBox.textAlignment = .center
+                inputBox.returnKeyType = .continue
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 contactsTableVC.tableView.removeFromSuperview()
 
@@ -83,6 +84,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
                 }
             } else {
                 inputBox.textAlignment = .left
+                inputBox.returnKeyType = .default
                 continueButtonBottomConstraint.isActive = false
                 continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 100)
                 continueButtonBottomConstraint.isActive = true
@@ -122,10 +124,6 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
         contactsTableVC.actionDelegate = self
 
         setup()
-        hideKeyboardWhenTappedAroundOrSwipedDown()
-        contactsTableVC.tableView.keyboardDismissMode = .interactive
-        inputBox.addTarget(self, action: #selector(textInputidChange(_:)), for: .editingChanged)
-        setupPasteEmojisView()
 
         Tracker.shared.track("/home/send_tari/add_recipient", "Send Tari - Add Recipient")
     }
@@ -163,12 +161,29 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
         present(vc, animated: true, completion: nil)
     }
 
-    @objc private func textInputidChange(_ textField: UITextField) {
+    func textFieldDidChangeSelection(_ textField: UITextField) {
         if let text = textField.text {
-            //TODO as soon as it's a valid emoji ID, init a pub key
+            contactsTableVC.filter = text.trimmingCharacters(in: .whitespaces)
 
-            contactsTableVC.filter = text
+            do {
+                let pubKey = try PublicKey(emojis: text)
+                onSelect(publicKey: pubKey)
+            } catch {
+                if selectedRecipientPublicKey != nil {
+                    selectedRecipientPublicKey = nil
+                }
+            }
         }
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if selectedRecipientPublicKey != nil {
+            onContinue()
+        }
+
+        dismissKeyboard()
+
+        return true
     }
 
     private func setup() {
@@ -180,6 +195,11 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
         setupContactsTable()
         setupContinueButton()
         setupDimView()
+
+        hideKeyboardWhenTappedAroundOrSwipedDown()
+        contactsTableVC.tableView.keyboardDismissMode = .interactive
+        inputBox.delegate = self
+        setupPasteEmojisView()
     }
 
     private func setupContactInputBar() {
@@ -360,6 +380,7 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
     }
 
     func onSelect(publicKey: PublicKey) {
+        dismissKeyboard()
         inputBox.text = publicKey.emojis.0
         inputBox.rightView = nil
 
@@ -374,11 +395,11 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
         }
 
         onSelect(publicKey: publicKey!)
+        onContinue()
     }
 
     //Used by the scanner and paste from clipboard
     func onAdd(publicKey: PublicKey) {
-        dismissKeyboard()
         onSelect(publicKey: publicKey)
     }
 }

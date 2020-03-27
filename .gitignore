@@ -71,3 +71,4 @@ fastlane/test_output
 .DS_Store
 fastlane/Appfile
 MobileWallet/TariLib/libtari_wallet_ffi.a
+.idea/

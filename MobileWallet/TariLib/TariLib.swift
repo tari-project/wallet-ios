@@ -197,7 +197,7 @@ class TariLib {
 
         tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
 
-        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.defaultBasenodePeer))
+        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.defaultBaseNodePeer))
 
     }
 
