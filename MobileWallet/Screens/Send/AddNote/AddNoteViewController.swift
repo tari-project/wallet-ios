@@ -66,6 +66,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         setup()
 
         hideKeyboardWhenTappedAroundOrSwipedDown()
+
+        Tracker.shared.track("/home/send_tari/add_note", "Send Tari - Add Note")
     }
 
     override func viewWillAppear(_ animated: Bool) {

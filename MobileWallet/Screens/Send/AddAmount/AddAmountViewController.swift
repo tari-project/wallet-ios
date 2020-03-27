@@ -69,6 +69,8 @@ class AddAmountViewController: UIViewController {
         overrideUserInterfaceStyle = .light
         setup()
         updateLabelText()
+
+        Tracker.shared.track("/home/send_tari/add_amount", "Send Tari - Add Amount")
     }
 
     override func viewWillAppear(_ animated: Bool) {

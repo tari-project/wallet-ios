@@ -216,7 +216,7 @@ class WalletCreationViewController: UIViewController {
 
     private func updateConstraintsEmojiButton() {
         createEmojiButton = ActionButton()
-        createEmojiButton.addTarget(self, action: #selector(navigateToHome), for: .touchUpInside)
+        createEmojiButton.addTarget(self, action: #selector(onNavigateNext), for: .touchUpInside)
         createEmojiButton.alpha = 0.0
         view.addSubview(createEmojiButton)
         createEmojiButton.translatesAutoresizingMaskIntoConstraints = false
@@ -795,7 +795,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     // MARK: - Actions
-    @objc func navigateToHome() {
+    @objc func onNavigateNext() {
         switch state {
         case .createEmojiId:
             self.createEmojiButton.hideButtonWithAlpha()
@@ -810,6 +810,7 @@ class WalletCreationViewController: UIViewController {
                 guard let self = self else { return }
                 self.runEmojiWheelAnimation()
                 self.updateLabelsForShowEmojiId()
+                Tracker.shared.track("/onboarding/create_emoji_id", "Onboarding - Create Emoji Id")
             }
         case .showEmojiId:
             self.createEmojiButton.hideButtonWithAlpha()
@@ -844,6 +845,8 @@ class WalletCreationViewController: UIViewController {
                         guard let self = self else { return }
                         if success {
                             self.hideLocalAuthentification()
+
+                            Tracker.shared.track("/onboarding/enable_local_auth", "Onboarding - Enable Local Authentication")
                         } else {
                             let alert = UIAlertController(title: "There was an error",
                                                           message: "",
@@ -869,6 +872,8 @@ class WalletCreationViewController: UIViewController {
         case .enableNotifications:
             NotificationManager.shared.requestAuthorization {_ in
                 DispatchQueue.main.async {
+                    Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
+
                     let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
                     if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
                         nav.modalPresentationStyle = .overFullScreen

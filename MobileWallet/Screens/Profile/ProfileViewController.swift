@@ -71,6 +71,8 @@ class ProfileViewController: UIViewController {
         updateConstraintsQRImageView()
         generateQRCode()
         customizeViews()
+
+        Tracker.shared.track("/home/profile", "Profile - Wallet Info")
     }
 
     override func viewDidAppear(_ animated: Bool) {

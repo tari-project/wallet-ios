@@ -126,6 +126,8 @@ class AddRecipientViewController: UIViewController, ContactsTableDelegate, ScanV
         contactsTableVC.tableView.keyboardDismissMode = .interactive
         inputBox.addTarget(self, action: #selector(textInputidChange(_:)), for: .editingChanged)
         setupPasteEmojisView()
+
+        Tracker.shared.track("/home/send_tari/add_recipient", "Send Tari - Add Recipient")
     }
 
     override func viewWillAppear(_ animated: Bool) {

@@ -286,6 +286,8 @@ class SendingTariViewController: UIViewController {
                     self.animateSuccess(from: pauseAnimationAt, to: 1) { [weak self] () in
                         guard let self = self else { return }
                         self.removeTitleAnimation()
+
+                        Tracker.shared.track("/home/send_tari/successful", "Send Tari - Successful")
                     }
                 } else {
                     self.debugMessage = "Failed to discover peer"
