@@ -81,6 +81,8 @@ class WalletCreationViewController: UIViewController {
     var videoView: UIView!
     var createEmojiButton: ActionButton!
     var userEmojiContainer: EmoticonView!
+    var tapToSeeFullEmojiButton: UIButton!
+    var arrowImageView: UIImageView!
     var faceIDView: AnimationView!
 
     // MARK: - Override functions
@@ -276,6 +278,35 @@ class WalletCreationViewController: UIViewController {
         userEmojiContainer.heightAnchor.constraint(greaterThanOrEqualToConstant: 60).isActive = true
     }
 
+    private func updateConstraintsTapToSeeFullEmoji() {
+        tapToSeeFullEmojiButton = UIButton()
+        tapToSeeFullEmojiButton.layer.cornerRadius = 4.0
+        tapToSeeFullEmojiButton.layer.masksToBounds = true
+        tapToSeeFullEmojiButton.backgroundColor = Theme.shared.colors.tapToSeeFullEmojiBackground!
+        tapToSeeFullEmojiButton.alpha = 0.0
+        tapToSeeFullEmojiButton.setTitle(NSLocalizedString("Tap to see full Emoji ID", comment: "Tap to see full Emoji ID in wallet creation"), for: .normal)
+        tapToSeeFullEmojiButton.setTitleColor(Theme.shared.colors.tapToSeeFullEmoji!, for: .normal)
+        tapToSeeFullEmojiButton!.titleLabel?.font = Theme.shared.fonts.tapToSeeFullEmojiLabel!
+
+        view.addSubview(tapToSeeFullEmojiButton)
+        tapToSeeFullEmojiButton.translatesAutoresizingMaskIntoConstraints = false
+
+        tapToSeeFullEmojiButton.bottomAnchor.constraint(equalTo: userEmojiContainer.topAnchor, constant: -16).isActive = true
+        tapToSeeFullEmojiButton.widthAnchor.constraint(equalToConstant: 159).isActive = true
+        tapToSeeFullEmojiButton.heightAnchor.constraint(equalToConstant: 33).isActive = true
+        tapToSeeFullEmojiButton.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+
+        arrowImageView = UIImageView()
+        arrowImageView.alpha = 0.0
+        arrowImageView.image = Theme.shared.images.createWalletDownArrow!
+        view.addSubview(arrowImageView)
+        arrowImageView.translatesAutoresizingMaskIntoConstraints = false
+        arrowImageView.bottomAnchor.constraint(equalTo: userEmojiContainer.topAnchor, constant: -11).isActive = true
+        arrowImageView.widthAnchor.constraint(equalToConstant: 7).isActive = true
+        arrowImageView.heightAnchor.constraint(equalToConstant: 5).isActive = true
+        arrowImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+    }
+
     func setupVideoAnimation() {
         if let path = Bundle.main.path(forResource: "loader", ofType: "mp4") {
             _ = try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default, options: .mixWithOthers)
@@ -311,6 +342,7 @@ class WalletCreationViewController: UIViewController {
         updateConstraintsEmojiWheelView()
         updateConstraintsFaceIDView()
         updateConstraintsUserEmojiContainer()
+        updateConstraintsTapToSeeFullEmoji()
         updateConstraintsVideoView()
 
         firstLabel.text = NSLocalizedString("Hello, Friend", comment: "First label on wallet creation")
@@ -553,7 +585,6 @@ class WalletCreationViewController: UIViewController {
     private func showYourEmoji() {
         createEmojiButtonConstraint?.constant = 0
         createEmojiButtonSecondConstraint?.isActive = true
-        createEmojiButton.animateIn()
         secondLabelTopConstaint?.constant = -50
 
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
@@ -572,7 +603,8 @@ class WalletCreationViewController: UIViewController {
             self.secondLabelBottom.alpha = 1.0
             self.thirdLabel.alpha = 1.0
             self.userEmojiContainer.alpha = 1.0
-            self.createEmojiButton.alpha = 1.0
+            self.tapToSeeFullEmojiButton.alpha = 1.0
+            self.arrowImageView.alpha = 1.0
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
             guard let self = self else { return }
@@ -707,9 +739,20 @@ class WalletCreationViewController: UIViewController {
         if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
             let (emojis, _) = pubKey.emojis
             self.userEmojiContainer.setUpView(emojiText: emojis,
-                                              type: .normalView,
+                                              type: .buttonView,
                                               textCentered: true,
-                                              inViewController: self)
+                                              inViewController: self,
+                                              initialHeight: CGFloat(46),
+                                              showContainerViewBlur: false)
+
+            self.userEmojiContainer.tapToExpand = { [weak self] in
+                guard let self = self else { return }
+                if self.state == .showEmojiId {
+                    self.createEmojiButton.alpha = 1.0
+                    self.arrowImageView.alpha = 0.0
+                    self.tapToSeeFullEmojiButton.alpha = 0.0
+                }
+            }
         }
 
         secondLabelTopConstaint?.constant = 8
@@ -775,6 +818,8 @@ class WalletCreationViewController: UIViewController {
                 self.secondLabelBottom.alpha = 0.0
                 self.thirdLabel.alpha = 0.0
                 self.userEmojiContainer.alpha = 0.0
+                self.tapToSeeFullEmojiButton.alpha = 0.0
+                self.arrowImageView.alpha = 0.0
                 self.view.layoutIfNeeded()
             }) { [weak self] (_) in
                 guard let self = self else { return }

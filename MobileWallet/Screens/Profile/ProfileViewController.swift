@@ -267,7 +267,7 @@ class ProfileViewController: UIViewController {
 
             self.emojis = emojis
 
-            self.emojiLabel.textColor = Theme.shared.colors.creatingWalletEmojisSeparator
+            self.emojiLabel.textColor = Theme.shared.colors.emojisSeparator
             self.emojiLabel.text = String(emojis.enumerated().map { $0 > 0 && $0 % 4 == 0 ? ["|", $1] : [$1]}.joined())
         }
     }

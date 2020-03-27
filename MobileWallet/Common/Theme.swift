@@ -93,7 +93,8 @@ struct Colors: Loopable {
     let creatingWalletThirdLabel = UIColor(named: "CreatingWalletOtherLabel")
     let creatingWalletBackground = UIColor(named: "CreatingWalletBackground")
     let creatingWalletEmojisLabelBackground = UIColor(named: "CreatingWalletEmojisLabel")
-    let creatingWalletEmojisSeparator = UIColor(named: "CreatingWalletEmojiSeparator")
+    let tapToSeeFullEmoji = UIColor(named: "CreatingWalletTapToSeeFullEmoji")
+    let tapToSeeFullEmojiBackground = UIColor(named: "CreatingWalletTapToSeeFullEmojiIDBackground")
 
     // Profile
     let profileTitleTextColor = UIColor(named: "ProfileTitleTextBlack")
@@ -174,6 +175,10 @@ struct Colors: Loopable {
 
     //ScannerView
     let scannerTitle = UIColor(named: "ScannerTitle")
+
+    // EmoticonView
+    let emojisSeparator = UIColor(named: "CreatingWalletEmojiSeparator")
+    let emojisSeparatorExpanded = UIColor(named: "CreatingWalletEmojiSeparatorExpanded")
 }
 
 struct Fonts: Loopable {
@@ -195,6 +200,7 @@ struct Fonts: Loopable {
     let createWalletNotificationsFirstLabel = UIFont(name: "Avenir-Light", size: 18.0)
     let createWalletNotificationsSecondLabel = UIFont(name: "Avenir-Black", size: 18.0)
     let createWalletNotificationsThirdLabel = UIFont(name: "Avenir-Medium", size: 14.0)
+    let tapToSeeFullEmojiLabel = UIFont(name: "Avenir-Heavy", size: 12)
 
     //Profile
     let profileTitleLightLabel = UIFont(name: "Avenir-Light", size: 18.0)
@@ -265,6 +271,7 @@ struct Images: Loopable {
     let createWalletTouchID = UIImage(named: "fingerprint")
     let createWalletFaceID = UIImage(named: "faceId")
     let createWalletNofications = UIImage(named: "bell7")
+    let createWalletDownArrow = UIImage(named: "notch_down")
 
     //Transaction icons
     let food = UIImage(named: "food")
