@@ -120,7 +120,7 @@ class DeeplinkNavigator {
                 homeVC.onSend()
             }
         case .showQR:
-            homeVC.onProfileAction(self)
+            homeVC.onProfileShow(self)
         case .viewTransaction(deeplink: let deeplinkWithTxId):
             //homeVC.onTransactionSelect()
             //TODO implement when push notifications are up and working

@@ -80,6 +80,17 @@ class ActionButton: UIButton {
         titleLabel?.font = Theme.shared.fonts.actionButton
     }
 
+    override func setImage(_ image: UIImage?, for state: UIControl.State) {
+        if let color = titleColor(for: .normal), let newImage = image {
+            super.setImage(newImage.withTintColor(color), for: state)
+        } else {
+            super.setImage(image, for: state)
+        }
+
+        imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 7)
+        titleEdgeInsets = UIEdgeInsets(top: 0, left: 7, bottom: 0, right: 0)
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
 

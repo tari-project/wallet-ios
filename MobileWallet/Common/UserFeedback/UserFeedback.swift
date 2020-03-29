@@ -43,13 +43,14 @@ import SwiftEntryKit
 
 class UserFeedback {
     static let shared = UserFeedback()
-    private let VERTICAL_OFFSET: CGFloat = 14
+    private let VERTICAL_OFFSET: CGFloat = hasNotch ? -14 : 14
+    private let SIDE_OFFSET: CGFloat = 14
 
     private var defaultAttributes: EKAttributes {
         var attributes = EKAttributes.bottomFloat
         attributes.screenBackground = .color(color: EKColor(Theme.shared.colors.feedbackPopupBackground!))
         attributes.entryBackground = .clear
-        attributes.positionConstraints.size = .init(width: .offset(value: VERTICAL_OFFSET), height: .intrinsic)
+        attributes.positionConstraints.size = .init(width: .offset(value: SIDE_OFFSET), height: .intrinsic)
         attributes.positionConstraints.verticalOffset = VERTICAL_OFFSET
         attributes.screenInteraction = .dismiss
         attributes.entryInteraction = .forward
@@ -141,5 +142,47 @@ class UserFeedback {
 
         SwiftEntryKit.display(entry: successFeedbackView, using: attributes)
         TariLogger.verbose("User call accept user input: title=\(title)")
+    }
+
+    // MARK: - Custom pop ups
+    func callToActionStore() {
+        let imageTop: CGFloat = 55 //Distance image should stick out by
+        let containerView = UIView()
+        let ctaFeedbackView = FeedbackView()
+        ctaFeedbackView.setupCallToActionDetailed(
+            containerView: containerView,
+            image: Theme.shared.images.storeModal!,
+            imageTop: imageTop,
+            title: NSLocalizedString("Use testnet Tari for exclusive items", comment: "Store modal"),
+            boldedTitle: NSLocalizedString("exclusive items", comment: "Store modal"),
+            description: NSLocalizedString("Now that you have some testnet Tari, use it to get real-life, exclusive products at the Testnet Tari Limited (TTL) store.", comment: "Store modal"),
+            cancelTitle: NSLocalizedString("Not now", comment: "Store modal"),
+            actionTitle: NSLocalizedString("Visit the Store", comment: "Store modal"),
+            actionIcon: Theme.shared.images.storeIcon!,
+            onClose: {
+                SwiftEntryKit.dismiss()
+            }) {
+                SwiftEntryKit.dismiss()
+                guard let url = URL(string: TariSettings.shared.storeUrl) else {
+                    return
+                }
+
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                TariLogger.verbose("Opened store link")
+            }
+
+        ctaFeedbackView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(ctaFeedbackView)
+        ctaFeedbackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: imageTop).isActive = true
+        ctaFeedbackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
+        ctaFeedbackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
+        ctaFeedbackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
+
+        var attributes = defaultAttributes
+        attributes.displayDuration = .infinity
+
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        SwiftEntryKit.display(entry: containerView, using: attributes)
+        TariLogger.verbose("User call to action store")
     }
 }
