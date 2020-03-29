@@ -111,7 +111,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
     }
 
     func textViewDidChangeSelection(_ textView: UITextView) {
-        let trimmedText = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        var trimmedText = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if trimmedText.isEmpty {
             titleLabel.textColor = Theme.shared.colors.addNoteTitleLabel
@@ -119,6 +119,14 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         } else {
             titleLabel.textColor = Theme.shared.colors.inputPlaceholder
             notePlaceholder.isHidden = true
+        }
+
+        //Limit to the size of a tx note
+        let charLimit = 280
+        if trimmedText.count > charLimit {
+            TariLogger.warn("Limitting tx note to \(charLimit) chars")
+            trimmedText = String(trimmedText.prefix(charLimit))
+            textView.text = trimmedText
         }
 
         noteText = trimmedText
@@ -179,6 +187,12 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             return
         }
 
+        //Init first so it starts listening for a callback right away
+        let sendingVC = SendingTariViewController()
+        sendingVC.tariAmount = amount
+        sendingVC.startListeningForDiscovery()
+
+        TariLogger.info("Sending transaction.")
         do {
             try wallet.sendTransaction(
                 destination: recipientPubKey,
@@ -187,11 +201,11 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
                 message: noteText
             )
 
-            onSendComplete(recipientAmount)
+            self.navigationController?.pushViewController(sendingVC, animated: false)
         } catch WalletErrors.generic(210) {
             TariLogger.warn("Error 210. Will wait for discovery.")
             //Discovery still needs to happen, this error is actually alright
-            onSendComplete(recipientAmount)
+            self.navigationController?.pushViewController(sendingVC, animated: false)
         } catch {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Transaction failed", comment: "Add note view"),
@@ -200,14 +214,6 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             )
             sender.resetStateWithAnimation(true)
         }
-    }
-
-    func onSendComplete(_ amount: MicroTari) {
-        TariLogger.info("Sending transaction.")
-
-        let vc = SendingTariViewController()
-        vc.tariAmount = amount
-        self.navigationController?.pushViewController(vc, animated: false)
     }
 }
 

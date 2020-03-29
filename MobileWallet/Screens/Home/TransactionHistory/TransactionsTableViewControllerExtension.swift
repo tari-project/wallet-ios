@@ -201,13 +201,6 @@ extension TransactionsTableViewController {
         introImage.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
         introImage.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -15).isActive = true
 
-        let downArrow = UIImageView()
-        downArrow.image = Theme.shared.images.downArrow!
-        downArrow.translatesAutoresizingMaskIntoConstraints = false
-        introView.addSubview(downArrow)
-        downArrow.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
-        downArrow.topAnchor.constraint(equalTo: messageLabel.bottomAnchor, constant: 15).isActive = true
-
         tableView.backgroundView = introView
 
         animateWave(imageView: introImage)

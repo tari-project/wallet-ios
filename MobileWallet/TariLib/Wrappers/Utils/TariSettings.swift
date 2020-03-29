@@ -84,12 +84,12 @@ struct TariSettings {
     //Used for showing a little extra detail in the UI to help debugging
     let isDebug = true
     //Local macbook node
-    let defaultBasenodePeer = "5ae7945e17dadbe9e437b4c3d3dd46ec7a4a292b9a8a53ed4c385ca81edb7a68::/onion3/obu3tnfqvq6mcurafcnxadd7vnpv6vjsouflnk3wigxuq3tb2ynnnlid:9051"
+    let defaultBaseNodePeer = "626b71ffe979bda1cb9b8c411c68435de0a966bd50ae324d67e31bd6710c8f58::/onion3/5usjvbf5rprsgdn5bxwelj5mzlcjfrpwhhklkwtcq2cl4ehmexiolvyd:18141"
     let maxMbLogsStorage: UInt64 = 5000 //5GB
     #else
     let isDebug = false
     //Taribot faucet node
-    let defaultBasenodePeer = "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"
+    let defaultBaseNodePeer = "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"
     let maxMbLogsStorage: UInt64 = 500 //500MB
     #endif
 }

@@ -76,7 +76,6 @@ class SendingTariViewController: UIViewController {
         setupConstraintsVideoView()
         setupConstraintsAnimationContainer()
         setupTitleLabel()
-        startListeningForDiscovery()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -221,7 +220,8 @@ class SendingTariViewController: UIViewController {
     }
 
     //If a discovery has not happened, start listening so we know when to finish this send animation
-    private func startListeningForDiscovery() {
+    func startListeningForDiscovery() {
+        TariLogger.info("Waiting for discovery callback")
         TariEventBus.onMainThread(self, eventType: .discoveryProcessComplete) { [weak self] (result) in
             guard let self = self else { return }
 

@@ -46,7 +46,7 @@ import AVFoundation
 enum WalletCreationState {
     case createEmojiId
     case showEmojiId
-    case localAuthentification
+    case localAuthentication
     case enableNotifications
 }
 
@@ -62,10 +62,10 @@ class WalletCreationViewController: UIViewController {
     var createEmojiButtonConstraint: NSLayoutConstraint?
     var createEmojiButtonSecondConstraint: NSLayoutConstraint?
     var firstLabelTopConstraint: NSLayoutConstraint?
-    var secondLabelTopConstaint: NSLayoutConstraint?
-    var secondLabelBottomConstaint: NSLayoutConstraint?
-    var thirdLabelLeadingConstaint: NSLayoutConstraint?
-    var thirdLabelTrailingConstaint: NSLayoutConstraint?
+    var secondLabelTopConstant: NSLayoutConstraint?
+    var secondLabelBottomConstant: NSLayoutConstraint?
+    var thirdLabelLeadingConstant: NSLayoutConstraint?
+    var thirdLabelTrailingConstant: NSLayoutConstraint?
     var faceIdWidthConstaint: NSLayoutConstraint?
     var faceIdHeightConstaint: NSLayoutConstraint?
     var faceIdDistanceToLabel: NSLayoutConstraint?
@@ -188,10 +188,10 @@ class WalletCreationViewController: UIViewController {
         bottomWhiteView.topAnchor.constraint(equalTo: topWhiteView.bottomAnchor, constant: 0).isActive = true
         firstLabelTopConstraint = firstLabel.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: 8)
         firstLabelTopConstraint?.isActive = true
-        secondLabelTopConstaint = secondLabelTop.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: 8)
-        secondLabelTopConstaint?.isActive = true
-        secondLabelBottomConstaint = secondLabelBottom.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: 8)
-        secondLabelBottomConstaint?.isActive = true
+        secondLabelTopConstant = secondLabelTop.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: 8)
+        secondLabelTopConstant?.isActive = true
+        secondLabelBottomConstant = secondLabelBottom.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: 8)
+        secondLabelBottomConstant?.isActive = true
 
         bottomWhiteView.heightAnchor.constraint(equalTo: topWhiteView.heightAnchor, multiplier: 0.705).isActive = true
     }
@@ -205,12 +205,12 @@ class WalletCreationViewController: UIViewController {
         thirdLabel.translatesAutoresizingMaskIntoConstraints = false
         thirdLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor,
                                             constant: 0).isActive = true
-        thirdLabelLeadingConstaint = thirdLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+        thirdLabelLeadingConstant = thirdLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
                                                constant: 10)
-        thirdLabelLeadingConstaint?.isActive = true
-        thirdLabelTrailingConstaint = thirdLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+        thirdLabelLeadingConstant?.isActive = true
+        thirdLabelTrailingConstant = thirdLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
                                                 constant: -10)
-        thirdLabelTrailingConstaint?.isActive = true
+        thirdLabelTrailingConstant?.isActive = true
         thirdLabel.topAnchor.constraint(equalTo: secondLabelBottom.bottomAnchor, constant: 18).isActive = true
     }
 
@@ -392,7 +392,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func displaySecondLabelAnimation() {
-        secondLabelTopConstaint?.constant = -50
+        secondLabelTopConstant?.constant = -50
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
@@ -404,7 +404,7 @@ class WalletCreationViewController: UIViewController {
             }
         }
 
-        secondLabelBottomConstaint?.constant = -25
+        secondLabelBottomConstant?.constant = -25
         UIView.animate(withDuration: 0.75, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
@@ -420,8 +420,8 @@ class WalletCreationViewController: UIViewController {
         }) { [weak self] (_) in
             guard let self = self else { return }
 
-            self.secondLabelTopConstaint?.constant = 8
-            self.secondLabelBottomConstaint?.constant = 8
+            self.secondLabelTopConstant?.constant = 8
+            self.secondLabelBottomConstant?.constant = 8
             self.secondLabelTop.text = NSLocalizedString("We’re off to a great start!", comment: "Second label on wallet creation Top")
             self.secondLabelBottom.text = NSLocalizedString("Now, let’s create your Emoji ID.", comment: "Second label on wallet creation Bottom")
 
@@ -561,14 +561,14 @@ class WalletCreationViewController: UIViewController {
         createEmojiButtonConstraint?.constant = 0
         createEmojiButtonSecondConstraint?.isActive = true
         runNerdEmojiAnimation()
-        secondLabelTopConstaint?.constant = -50
+        secondLabelTopConstant?.constant = -50
 
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
         })
 
-        secondLabelBottomConstaint?.constant = -25
+        secondLabelBottomConstant?.constant = -25
         UIView.animate(withDuration: 0.75, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
@@ -585,14 +585,14 @@ class WalletCreationViewController: UIViewController {
     private func showYourEmoji() {
         createEmojiButtonConstraint?.constant = 0
         createEmojiButtonSecondConstraint?.isActive = true
-        secondLabelTopConstaint?.constant = -50
+        secondLabelTopConstant?.constant = -50
 
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
         })
 
-        secondLabelBottomConstaint?.constant = -25
+        secondLabelBottomConstant?.constant = -25
         UIView.animate(withDuration: 0.75, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
@@ -626,13 +626,13 @@ class WalletCreationViewController: UIViewController {
                 TariLogger.error("No biometrics available")
         }
 
-        secondLabelTopConstaint?.constant = -50
+        secondLabelTopConstant?.constant = -50
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
         })
 
-        secondLabelBottomConstaint?.constant = -25
+        secondLabelBottomConstant?.constant = -25
         UIView.animate(withDuration: 0.75, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
@@ -646,7 +646,7 @@ class WalletCreationViewController: UIViewController {
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
             guard let self = self else { return }
-            self.state = .localAuthentification
+            self.state = .localAuthentication
         }
     }
 
@@ -661,7 +661,7 @@ class WalletCreationViewController: UIViewController {
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
             guard let self = self else { return }
-            self.state = .localAuthentification
+            self.state = .localAuthentication
             DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
                 guard let self = self else { return }
                 self.updateLabelsForEnablingNotifications()
@@ -674,13 +674,13 @@ class WalletCreationViewController: UIViewController {
     private func showEnableNotifications() {
         createEmojiButton.animateIn()
         runNotificationAnimation()
-        secondLabelTopConstaint?.constant = -50
+        secondLabelTopConstant?.constant = -50
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
         })
 
-        secondLabelBottomConstaint?.constant = -25
+        secondLabelBottomConstant?.constant = -25
         UIView.animate(withDuration: 0.75, animations: { [weak self] in
             guard let self = self else { return }
             self.view.layoutIfNeeded()
@@ -712,8 +712,8 @@ class WalletCreationViewController: UIViewController {
 
         self.createEmojiButton.setTitle(NSLocalizedString("Turn on Notifications", comment: "Create Wallet Turn on Notifications"), for: .normal)
 
-        secondLabelTopConstaint?.constant = 8
-        secondLabelBottomConstaint?.constant = 8
+        secondLabelTopConstant?.constant = 8
+        secondLabelBottomConstant?.constant = 8
         faceIdWidthConstaint?.constant = 330
         faceIdHeightConstaint?.constant = 362
         faceIdDistanceToLabel?.constant = -90
@@ -755,20 +755,20 @@ class WalletCreationViewController: UIViewController {
             }
         }
 
-        secondLabelTopConstaint?.constant = 8
-        secondLabelBottomConstaint?.constant = 8
+        secondLabelTopConstant?.constant = 8
+        secondLabelBottomConstant?.constant = 8
         secondLabelTop.layoutIfNeeded()
         secondLabelBottom.layoutIfNeeded()
     }
 
     private func updateLabelsForLocalAuthentification() {
-        secondLabelTopConstaint?.constant = 8
-        secondLabelBottomConstaint?.constant = 8
+        secondLabelTopConstant?.constant = 8
+        secondLabelBottomConstant?.constant = 8
         secondLabelTop.layoutIfNeeded()
         secondLabelBottom.layoutIfNeeded()
 
-        thirdLabelLeadingConstaint?.constant = Theme.shared.sizes.appSidePadding
-        thirdLabelTrailingConstaint?.constant = -Theme.shared.sizes.appSidePadding
+        thirdLabelLeadingConstant?.constant = Theme.shared.sizes.appSidePadding
+        thirdLabelTrailingConstant?.constant = -Theme.shared.sizes.appSidePadding
         thirdLabel.layoutIfNeeded()
 
         let secondLabelString = NSLocalizedString("🔑 Let’s secure your wallet. 🔑", comment: "Splash face/touch ID")
@@ -830,7 +830,7 @@ class WalletCreationViewController: UIViewController {
                     self.showLocalAuthentification()
                 }
             }
-        case .localAuthentification:
+        case .localAuthentication:
             let context = LAContext()
             var error: NSError?
 

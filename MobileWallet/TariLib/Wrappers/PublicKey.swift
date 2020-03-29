@@ -42,6 +42,7 @@ import Foundation
 
 enum PublicKeyError: Error {
     case generic(_ errorCode: Int32)
+    case invalidEmojis
     case invalidHex
     case invalidDeepLink
     case invalidDeepLinkNetwork //When a deep link is valid but for wring network
@@ -106,7 +107,12 @@ class PublicKey {
     }
 
     init(emojis: String) throws {
-        let emojiPtr = UnsafeMutablePointer<Int8>(mutating: emojis)
+        let cleanEmojis = emojis.replacingOccurrences(of: "|", with: "")
+        if cleanEmojis.count < 33 {
+            throw PublicKeyError.invalidEmojis
+        }
+
+        let emojiPtr = UnsafeMutablePointer<Int8>(mutating: cleanEmojis)
         var errorCode: Int32 = -1
         let result = emoji_id_to_public_key(emojiPtr, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
