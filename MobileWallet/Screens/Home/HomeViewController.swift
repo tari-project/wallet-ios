@@ -76,6 +76,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     ]
     fileprivate var backgroundColorIsNavColor = false
     fileprivate let initialBackgroundColorView = UIView()
+    private var testnetKeyServer: TestnetKeyServer?
 
     var isFirstIntroToWallet: Bool {
         if UserDefaults.standard.string(forKey: INTRO_TO_WALLET_USER_DEFAULTS_KEY) == nil {
@@ -107,6 +108,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         self.refreshBalance()
 
         Tracker.shared.track("/home", "Home - Transaction List")
+
+        setupTestnetKeyServer()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -142,6 +145,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         checkClipboardForBaseNode()
         Deeplinker.checkDeepLink()
+
+        checkImportSecondUtxo()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -154,12 +159,28 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         return isTransactionViewFullScreen ? .darkContent : .lightContent
     }
 
+    private func setupTestnetKeyServer() {
+        guard let wallet = TariLib.shared.tariWallet else {
+            return
+        }
+
+        do {
+            testnetKeyServer = try TestnetKeyServer(wallet: wallet)
+        } catch {
+            TariLogger.error("Failed to initialise TestnetKeyServer")
+        }
+    }
+
     private func requestTestnetTokens() {
+        guard let keyServer = testnetKeyServer else {
+            TariLogger.error("No TestnetKeyServer initialised")
+            return
+        }
+
         let errorTitle = String(format: NSLocalizedString("Failed to claim %@", comment: "Home view testnet airdrop"), TariSettings.shared.network.currencyDisplayName)
 
         do {
-            let tempKeyServer = try TestnetKeyServer(wallet: TariLib.shared.tariWallet!)
-            try tempKeyServer.requestDrop(onSuccess: { () in
+            try keyServer.requestDrop(onSuccess: { () in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
                     guard let _ = self else { return }
 
@@ -189,6 +210,26 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             }
         } catch {
             UserFeedback.shared.error(title: errorTitle, description: "Could not setup key server.", error: error)
+        }
+    }
+
+    //If we have a second stored utxo, import it
+    private func checkImportSecondUtxo() {
+        guard let keyServer = testnetKeyServer else {
+            TariLogger.error("No TestnetKeyServer initialised")
+            return
+        }
+
+        DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
+            guard let self = self else { return }
+
+            do {
+                try keyServer.importSecondUtxo {
+                    UserFeedback.shared.callToActionStore()
+                }
+            } catch {
+                TariLogger.error("Failed to import 2nd UTXO", error: error)
+            }
         }
     }
 

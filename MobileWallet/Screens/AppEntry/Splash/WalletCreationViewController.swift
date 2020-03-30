@@ -95,7 +95,9 @@ class WalletCreationViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        firstLabelAnimation()
+
+        displaySecondLabelAnimation()
+        //firstLabelAnimation() //TODO remove code for animating the first label if we're keeping it left out permanently
         setupVideoAnimation()
     }
 

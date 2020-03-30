@@ -427,13 +427,21 @@ class Wallet {
         return result
     }
 
-    func importUtxo(value: UInt64, message: String, privateKey: PrivateKey, sourcePublicKey: PublicKey) throws {
+    func importUtxo(_ utxo: UTXO) throws {
+        let privateKey = try utxo.getPrivateKey()
+        let sourcePublicKey = try utxo.getSourcePublicKey()
+
         var errorCode: Int32 = -1
-        let messagePointer = (message as NSString).utf8String
-        _ = wallet_import_utxo(ptr, value, privateKey.pointer, sourcePublicKey.pointer, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
+        let messagePointer = (utxo.message as NSString).utf8String
+        _ = wallet_import_utxo(ptr, utxo.value, privateKey.pointer, sourcePublicKey.pointer, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
+
+        TariEventBus.postToMainThread(.balanceUpdate)
+        TariEventBus.postToMainThread(.transactionListUpdate)
+
+        try syncBaseNode()
     }
 
     func addBaseNodePeer(_ basenode: BaseNode) throws {
