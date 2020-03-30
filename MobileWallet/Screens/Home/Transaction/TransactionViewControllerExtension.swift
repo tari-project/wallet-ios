@@ -159,7 +159,6 @@ extension TransactionViewController {
         view.addSubview(fromHeadingLabel)
         fromHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         fromHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        fromHeadingLabel.text = NSLocalizedString("From", comment: "Transaction detail view")
         fromHeadingLabel.topAnchor.constraint(equalTo: valueContainerView.bottomAnchor, constant: SIDE_PADDING).isActive = true
         fromHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
 

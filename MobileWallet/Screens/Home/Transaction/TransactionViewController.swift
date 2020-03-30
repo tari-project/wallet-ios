@@ -240,10 +240,12 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
 
             if tx.direction == .inbound {
                 navigationItem.title = NSLocalizedString("Payment Received", comment: "Navigation bar title on transaction view screen")
+                fromHeadingLabel.text = NSLocalizedString("From", comment: "Transaction detail view")
                 valueLabel.text = microTari!.formatted
                 contactPublicKey = tx.sourcePublicKey.0
             } else if tx.direction == .outbound {
                 navigationItem.title = NSLocalizedString("Payment Sent", comment: "Navigation bar title on transaction view screen")
+                fromHeadingLabel.text = NSLocalizedString("To", comment: "Transaction detail view")
                 valueLabel.text = microTari!.formatted
                 contactPublicKey = tx.destinationPublicKey.0
             }
