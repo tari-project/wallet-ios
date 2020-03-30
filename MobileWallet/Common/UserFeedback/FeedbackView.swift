@@ -81,7 +81,7 @@ class FeedbackView: UIView {
     private func setupTitle() {
         addSubview(titleLabel)
         titleLabel.textColor = Theme.shared.colors.feedbackPopupTitle
-        titleLabel.font = Theme.shared.fonts.errorFeedbackPopupTitle
+        titleLabel.font = Theme.shared.fonts.feedbackPopupTitle
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
@@ -93,7 +93,7 @@ class FeedbackView: UIView {
     private func setupDescription() {
         addSubview(descriptionLabel)
         descriptionLabel.textColor = Theme.shared.colors.feedbackPopupDescription
-        descriptionLabel.font = Theme.shared.fonts.errorFeedbackPopupDescription
+        descriptionLabel.font = Theme.shared.fonts.feedbackPopupDescription
         descriptionLabel.textAlignment = .center
         descriptionLabel.numberOfLines = 0
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -225,6 +225,65 @@ class FeedbackView: UIView {
         onCallToActionHandler = onAction
         callToActionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
         callToActionButton.setTitle(actionTitle, for: .normal)
+
+        setupCloseButton()
+        onCloseHandler = onClose
+        closeButton.setTitle(cancelTitle, for: .normal)
+        closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+    }
+
+    func setupCallToActionDetailed(
+        containerView: UIView,
+        image: UIImage,
+        imageTop: CGFloat,
+        title: String,
+        boldedTitle: String,
+        description: String,
+        cancelTitle: String,
+        actionTitle: String,
+        actionIcon: UIImage,
+        onClose: @escaping () -> Void,
+        onAction: @escaping () -> Void) {
+
+        let imageView = UIImageView()
+        imageView.image = image
+        imageView.contentMode = .scaleAspectFit
+        addSubview(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        imageView.heightAnchor.constraint(equalToConstant: 180).isActive = true
+        imageView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        imageView.topAnchor.constraint(equalTo: topAnchor, constant: -imageTop).isActive = true
+
+        setupTitle()
+
+        let attributedTitle = NSMutableAttributedString(
+            string: title,
+            attributes: [
+                .font: Theme.shared.fonts.feedbackPopupTitle!,
+                .foregroundColor: Theme.shared.colors.feedbackPopupTitle!
+            ]
+        )
+
+        if let startIndex = title.indexDistance(of: boldedTitle) {
+            let range = NSRange(location: startIndex, length: boldedTitle.count)
+            attributedTitle.addAttribute(.font, value: Theme.shared.fonts.feedbackPopupHeavy!, range: range)
+        }
+
+        titleLabel.attributedText = attributedTitle
+        titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+
+        setupDescription()
+        setDescription(description)
+        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+
+        setupCallToActionButton(#selector(onCallToActionButtonPressed))
+        onCallToActionHandler = onAction
+        callToActionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: SIDE_PADDING).isActive = true
+        callToActionButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
+        callToActionButton.setTitle(actionTitle, for: .normal)
+        callToActionButton.setImage(actionIcon, for: .normal)
 
         setupCloseButton()
         onCloseHandler = onClose

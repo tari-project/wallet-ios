@@ -65,7 +65,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     private var defaultBottomFadeViewHeight: CGFloat = 0
     private var isAnimatingButton = false
     private var hapticEnabled = false
-    private let PANEL_BORDER_CORNER_RADIUS: CGFloat = 36.0
+    private let PANEL_BORDER_CORNER_RADIUS: CGFloat = 15.0
     private let GRABBER_WIDTH: Double = 55.0
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     private let INTRO_TO_WALLET_USER_DEFAULTS_KEY = "walletHasBeenIntroduced"
@@ -374,10 +374,15 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         self.navigationController?.pushViewController(sendVC, animated: true)
     }
 
-    @IBAction func onProfileAction(_ sender: Any) {
+    @objc func onProfileShow(_ sender: Any) {
         let vc = ProfileViewController()
         self.present(vc, animated: true, completion: nil)
     }
+
+    @objc func onStoreModalShow(_ sender: Any) {
+        UserFeedback.shared.callToActionStore()
+    }
+
     // MARK: - TransactionTableDelegateMethods
 
     func onTransactionSelect(_ transaction: Any) {
@@ -460,6 +465,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
 extension HomeViewController {
     fileprivate func setup() {
+        setupTopButtons()
+
         maxSendButtonBottomConstraint = sendButtonBottomConstraint.constant
         minSendButtonBottomConstraint = -view.safeAreaInsets.bottom - sendButton.frame.height - sendButtonBottomConstraint.constant - 20
 
@@ -572,5 +579,29 @@ extension HomeViewController {
         gradientChangeAnimation.fillMode = CAMediaTimingFillMode.forwards
         gradientChangeAnimation.isRemovedOnCompletion = false
         gradient.add(gradientChangeAnimation, forKey: "colorChange")
+    }
+
+    private func setupTopButtons() {
+        let iconSize: CGFloat = 30
+
+        let profileButton = UIButton(type: .custom)
+        profileButton.setImage(Theme.shared.images.profileIcon, for: .normal)
+        profileButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(profileButton)
+        profileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        profileButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        profileButton.widthAnchor.constraint(equalToConstant: iconSize).isActive = true
+        profileButton.heightAnchor.constraint(equalToConstant: iconSize).isActive = true
+        profileButton.addTarget(self, action: #selector(onProfileShow), for: .touchUpInside)
+
+        let storeButton = UIButton(type: .custom)
+        storeButton.setImage(Theme.shared.images.storeButton, for: .normal)
+        storeButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(storeButton)
+        storeButton.topAnchor.constraint(equalTo: profileButton.topAnchor).isActive = true
+        storeButton.trailingAnchor.constraint(equalTo: profileButton.leadingAnchor, constant: -10).isActive = true
+        storeButton.widthAnchor.constraint(equalToConstant: iconSize).isActive = true
+        storeButton.heightAnchor.constraint(equalToConstant: iconSize).isActive = true
+        storeButton.addTarget(self, action: #selector(onStoreModalShow), for: .touchUpInside)
     }
 }

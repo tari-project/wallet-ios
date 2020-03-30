@@ -51,6 +51,11 @@ var keyWindow: UIWindow? {
     .filter({$0.isKeyWindow}).first
 }
 
+var hasNotch: Bool {
+    let bottom = keyWindow?.safeAreaInsets.bottom ?? 0
+    return bottom > 0
+}
+
 extension UIViewController {
     func hideKeyboardWhenTappedAroundOrSwipedDown() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))

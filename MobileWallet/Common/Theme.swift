@@ -214,8 +214,8 @@ struct Fonts: Loopable {
     let homeScreenTotalBalanceValueLabelDecimals = UIFont(name: "AvenirLTStd-Black", size: 15.6)
 
     //Transaction cell
-    let transactionCellUsernameLabel = UIFont(name: "AvenirLTStd-Heavy", size: 13.0)
-    let transactionCellDescriptionLabel = UIFont(name: "AvenirLTStd-Roman", size: 12.0)
+    let transactionCellUsernameLabel = UIFont(name: "AvenirLTStd-Heavy", size: 15.0)
+    let transactionCellDescriptionLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
     let transactionCellValueLabel = UIFont(name: "AvenirLTStd-Black", size: 12.0)
     let transactionDateValueLabel = UIFont(name: "AvenirLTStd-Medium", size: 12.0)
 
@@ -237,8 +237,9 @@ struct Fonts: Loopable {
     let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
 
     //Popup User feedback
-    let errorFeedbackPopupTitle = UIFont(name: "AvenirLTStd-Light", size: 18)
-    let errorFeedbackPopupDescription = UIFont(name: "AvenirLTStd-Medium", size: 14)
+    let feedbackPopupTitle = UIFont(name: "AvenirLTStd-Light", size: 18)
+    let feedbackPopupHeavy = UIFont(name: "AvenirLTStd-Black", size: 18)
+    let feedbackPopupDescription = UIFont(name: "AvenirLTStd-Medium", size: 14)
 
     //Simple text button
     let textButton = UIFont(name: "AvenirLTStd-Medium", size: 14)
@@ -289,6 +290,10 @@ struct Images: Loopable {
     let downArrow = UIImage(named: "DownArrow")
     let close = UIImage(named: "Close")
     let transactionFee = UIImage(named: "TransactionFee")
+    let profileIcon = UIImage(named: "profileIcon")
+    let storeIcon = UIImage(named: "store-icon")
+    let storeButton = UIImage(named: "store-button")
+    let storeModal = UIImage(named: "store-modal")
 
     let handWave = UIImage(named: "HandWave")
 

@@ -71,6 +71,7 @@ struct TariSettings {
 
     let userAgreementUrl = "https://tarilabs.com/user_agreement/"
     let privacyPolicyUrl = "https://tarilabs.com/privacy_policy/"
+    let storeUrl = "https://store.tarilabs.com/"
 
     //For UI changes it can be a bit slow to keep waiting for tor to bootstrap.
     //Set to false if you're just working on the UI.
@@ -80,16 +81,18 @@ struct TariSettings {
     let torEnabled = true
     #endif
 
+    let defaultBaseNodePeer = "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"
+
     #if DEBUG
     //Used for showing a little extra detail in the UI to help debugging
     let isDebug = true
     //Local macbook node
-    let defaultBaseNodePeer = "626b71ffe979bda1cb9b8c411c68435de0a966bd50ae324d67e31bd6710c8f58::/onion3/5usjvbf5rprsgdn5bxwelj5mzlcjfrpwhhklkwtcq2cl4ehmexiolvyd:18141"
+    //let defaultBaseNodePeer = "626b71ffe979bda1cb9b8c411c68435de0a966bd50ae324d67e31bd6710c8f58::/onion3/5usjvbf5rprsgdn5bxwelj5mzlcjfrpwhhklkwtcq2cl4ehmexiolvyd:18141"
     let maxMbLogsStorage: UInt64 = 5000 //5GB
     #else
     let isDebug = false
     //Taribot faucet node
-    let defaultBaseNodePeer = "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"
+//    let defaultBaseNodePeer = "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"
     let maxMbLogsStorage: UInt64 = 500 //500MB
     #endif
 }

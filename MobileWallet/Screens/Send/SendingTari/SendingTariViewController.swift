@@ -296,8 +296,8 @@ class SendingTariViewController: UIViewController {
                     self.removeTitleAnimation()
 
                     UserFeedback.shared.error(
-                        title: NSLocalizedString("Transaction failed", comment: "Discovery failed when sending a tx"),
-                        description: NSLocalizedString("We could not find that wallet on the Tari network", comment: "Discovery failed when sending a tx")
+                        title: NSLocalizedString("Sorry, you can't send Tari to offline users", comment: "Discovery failed when sending a tx"),
+                        description: NSLocalizedString("Please make sure your recipient has a reliable internet connection and has the Aurora app open on their device, and then try again. If that doesn't work, please verify you have the correct Emoji ID.", comment: "Discovery failed when sending a tx")
                     )
                 }
             }
