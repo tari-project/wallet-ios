@@ -97,6 +97,12 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         }
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        SwiftEntryKit.dismiss()
+    }
+
     private func handleWalletEvents() {
         //Handle tor progress
         TariEventBus.onMainThread(self, eventType: .torConnectionProgress) { [weak self] (result) in
@@ -110,7 +116,10 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                     attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
                     attributes.displayDuration = .infinity
                     attributes.screenInteraction = .forward
-                    //SwiftEntryKit.display(entry: self.progressFeedbackView, using: attributes)
+
+                    if TariSettings.shared.isDebug {
+                        SwiftEntryKit.display(entry: self.progressFeedbackView, using: attributes)
+                    }
                 }
 
                 self.progressFeedbackView.setupSuccess(title: "Tor bootstrapping: \(progress)%")
@@ -122,8 +131,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             guard let self = self else { return }
 
             self.progressFeedbackView.setupSuccess(title: "Tor connection established")
-
-            SwiftEntryKit.dismiss()
         }
 
         TariEventBus.onMainThread(self, eventType: .torConnectionFailed) { [weak self] (result) in
@@ -142,13 +149,13 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func onTorSuccess(_ onComplete: @escaping () -> Void) {
-        if TariLib.shared.isTorConnected {
+        if TariLib.shared.torPortsOpened {
             onComplete()
             return
         }
 
-        //Handle tor connected later
-        TariEventBus.onMainThread(self, eventType: .torConnected) { [weak self] (_) in
+        //Handle if tor ports opened later
+        TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
             guard let _ = self else { return }
             onComplete()
         }

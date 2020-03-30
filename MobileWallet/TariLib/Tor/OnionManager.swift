@@ -15,6 +15,7 @@ enum OnionManagerErrors: Error {
 
 protocol OnionManagerDelegate {
     func torConnProgress(_: Int)
+    func torPortsOpened()
     func torConnFinished(configuration: URLSessionConfiguration)
     func torConnError()
 }
@@ -28,25 +29,25 @@ public class OnionManager: NSObject {
     }
 
     public static let shared = OnionManager()
-    
+
     public static let CONTROL_ADDRESS = "127.0.0.1"
     public static let CONTROL_PORT = "39069"
 
     public static func getCookie() throws -> Data {
         if let cookieURL = OnionManager.torBaseConf.dataDirectory?.appendingPathComponent("control_auth_cookie") {
             let cookie = try Data(contentsOf: cookieURL)
-            
+
             TariLogger.verbose("cookieURL=\(cookieURL)")
             TariLogger.verbose("cookie=\(cookie)")
-            
+
             return cookie
         } else {
             throw OnionManagerErrors.missingCookieFile
         }
     }
-    
+
     private var reachability: Reachability?
-    
+
     // Show Tor log in iOS' app log.
     private static let TOR_LOGGING = false
 
@@ -144,7 +145,7 @@ public class OnionManager: NSObject {
         if (self.torController == nil) {
             self.torController = TorController(socketHost: "127.0.0.1", port: 39069)
         }
-  
+
         do {
             reachability = try Reachability()
         } catch {
@@ -168,7 +169,7 @@ public class OnionManager: NSObject {
             needsReconfiguration = false
 
             self.torThread?.start()
-            
+
             TariLogger.verbose("Starting Tor")
         } else {
             if needsReconfiguration {
@@ -185,7 +186,7 @@ public class OnionManager: NSObject {
         // progress.
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
             guard let self = self else { return }
-            
+
             if OnionManager.TOR_LOGGING {
                 // Show Tor log in iOS' app log.
                 TORInstallTorLogging()
@@ -199,14 +200,17 @@ public class OnionManager: NSObject {
                     TariLogger.error("Tor controller connection", error: error)
                 }
             }
-            
+
             do {
                 let cookie = try OnionManager.getCookie()
-                
+
                 self.torController?.authenticate(with: cookie, completion: { [weak self] success, _ in
                     guard let self = self else { return }
-                    
+
                     if success {
+                        delegate?.torPortsOpened()
+                        TariLogger.verbose("Tor ports opened")
+
                         var completeObs: Any?
                         completeObs = self.torController?.addObserver(forCircuitEstablished: { established in
                             if established {
@@ -216,7 +220,7 @@ public class OnionManager: NSObject {
                                 self.cancelFailGuard()
 
                                 TariLogger.info("Tor connection established")
-                                
+
                                 self.torController?.getSessionConfiguration({ configuration in
                                     //TODO once below issue is resolved we can update to < 400.6.3 then the session config will not be nil
                                     //https://github.com/iCepa/Tor.framework/issues/60
@@ -233,9 +237,9 @@ public class OnionManager: NSObject {
                                 guard let args = arguments else { return false }
                                 guard let progressArg = args["PROGRESS"] else { return false }
                                 guard let progress = Int(progressArg) else { return false }
-                                
+
                                 TariLogger.verbose("Tor bootstrap progress: \(progress)")
-                                
+
                                 delegate?.torConnProgress(progress)
 
                                 if progress >= 100 {
@@ -258,9 +262,9 @@ public class OnionManager: NSObject {
         }) //delay
         initRetry = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
-            
+
             TariLogger.warn("Triggering Tor connection retry.")
-            
+
             self.torController?.setConfForKey("DisableNetwork", withValue: "1", completion: { _, _ in
             })
 
@@ -309,7 +313,7 @@ public class OnionManager: NSObject {
         initRetry?.cancel()
         initRetry = nil
     }
-    
+
     /**
      Cancel the fail guard.
      */

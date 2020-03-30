@@ -108,6 +108,8 @@ class TariLib {
         return TariSettings.shared.torEnabled == false || OnionConnector.shared.connectionState == .connected
     }
 
+    var torPortsOpened = false
+
     init() {}
 
     /*
@@ -138,7 +140,6 @@ class TariLib {
         }
     }
 
-    //TODO move tor status updates to OnionManager for "didSet". Maybe new bus type enum for state changes.
     func startTor() {
         guard OnionConnector.shared.connectionState != .connected && OnionConnector.shared.connectionState != .started else {
             return
@@ -151,12 +152,16 @@ class TariLib {
 
         TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(0))
         OnionConnector.shared.start(
-            progress: { [weak self] percentage in
+            onProgress: { [weak self] percentage in
                 guard let _ = self else { return }
-
                 TariEventBus.postToMainThread(.torConnectionProgress, sender: percentage)
             },
-            completion: { [weak self] result in
+            onPortsOpen: { [weak self] in
+                guard let self = self else { return }
+                self.torPortsOpened = true
+                TariEventBus.postToMainThread(.torPortsOpened, sender: nil)
+            },
+            onCompletion: { [weak self] result in
                 guard let _ = self else { return }
 
                 TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(100))
