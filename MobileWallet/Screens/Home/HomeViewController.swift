@@ -225,7 +225,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
             do {
                 try keyServer.importSecondUtxo {
-                    UserFeedback.shared.callToActionStore()
+                    DispatchQueue.main.async {
+                        UserFeedback.shared.callToActionStore()
+                    }
                 }
             } catch {
                 TariLogger.error("Failed to import 2nd UTXO", error: error)

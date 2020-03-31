@@ -106,8 +106,22 @@ class PublicKey {
         return ("\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/\(hexPubkey)", nil)
     }
 
+    //TODO setup attributed string version with dots in the middle for shortened version in Common dir.
+    //https://stackoverflow.com/questions/19318421/how-to-embed-small-icon-in-uilabel
+
+    init(privateKey: PrivateKey) throws {
+        var errorCode: Int32 = -1
+        ptr = public_key_from_private_key(privateKey.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw PublicKeyError.generic(errorCode)
+        }
+    }
+
     init(emojis: String) throws {
-        let cleanEmojis = emojis.replacingOccurrences(of: "|", with: "")
+        let cleanEmojis = emojis
+            .replacingOccurrences(of: "|", with: "")
+            .replacingOccurrences(of: "`", with: "")
+            .replacingOccurrences(of: " ", with: "")
         if cleanEmojis.count < 33 {
             throw PublicKeyError.invalidEmojis
         }
@@ -119,17 +133,6 @@ class PublicKey {
             throw PublicKeyError.generic(errorCode)
         }
         ptr = result!
-    }
-
-    //TODO setup attributed string version with dots in the middle for shortened version in Common dir.
-    //https://stackoverflow.com/questions/19318421/how-to-embed-small-icon-in-uilabel
-
-    init(privateKey: PrivateKey) throws {
-        var errorCode: Int32 = -1
-        ptr = public_key_from_private_key(privateKey.pointer, UnsafeMutablePointer<Int32>(&errorCode))
-        guard errorCode == 0 else {
-            throw PublicKeyError.generic(errorCode)
-        }
     }
 
     init(hex: String) throws {
@@ -176,13 +179,8 @@ class PublicKey {
         throw PublicKeyError.invalidDeepLinkType
     }
 
-    //Attempts to derive a pubkey from a deeplink, hex, or emoji string
+    //Attempts to derive a pubkey from a emoji deeplink, or hex string (In order of most likely)
     convenience init(any: String) throws {
-        do {
-            try self.init(hex: any)
-            return
-        } catch {}
-
         do {
             try self.init(emojis: any)
             return
@@ -190,6 +188,11 @@ class PublicKey {
 
         do {
             try self.init(deeplink: any)
+            return
+        } catch {}
+
+        do {
+            try self.init(hex: any)
             return
         } catch {}
 

@@ -57,17 +57,21 @@ class PasteEmojisView: UIView {
 
         emojiLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(emojiLabel)
-        emojiLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        emojiLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: PADDING).isActive = true
+        emojiLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -PADDING).isActive = true
         emojiLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -PADDING).isActive = true
         emojiLabel.textAlignment = .center
-
+        emojiLabel.textColor = Theme.shared.colors.emojisSeparatorExpanded
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (onTap(_:))))
         textButton.addTarget(self, action: #selector(onTap(_:)), for: .touchUpInside)
     }
 
     func setEmojis(emojis: String, onPress: @escaping () -> Void) {
         textButton.setTitle(NSLocalizedString("Paste copied Emoji ID", comment: ""), for: .normal)
-        emojiLabel.text = emojis
+        let first = "\(emojis.prefix(6))".insertSeparator(" | ", atEvery: 3)
+        let last = "\(emojis.suffix(6))".insertSeparator(" | ", atEvery: 3)
+        emojiLabel.text = "\(first)...\(last)"
+
         self.onPressCallback = onPress
         textButton.addTarget(self, action: #selector(onTap), for: .allTouchEvents)
     }
