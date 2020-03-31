@@ -55,6 +55,7 @@ public enum TariEventTypes: String {
     case balanceUpdate = "tari-event-balance-update"
 
     //Tor instantiation statuses
+    case torPortsOpened = "tari-event-tor-ports-opened"
     case torConnectionProgress = "tari-event-tor-connection-progress"
     case torConnected = "tari-event-tor-connected"
     case torConnectionFailed = "tari-event-tor-connection-failed"

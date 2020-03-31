@@ -61,7 +61,6 @@ private func getUnusedLogFiles() -> [URL] {
 
     //Exclude current log file being written to
     TariLib.shared.allLogFiles.forEach { (file) in
-        print(file.lastPathComponent)
         guard !TariLib.shared.logFilePath.contains(file.lastPathComponent) else {
             return
         }
