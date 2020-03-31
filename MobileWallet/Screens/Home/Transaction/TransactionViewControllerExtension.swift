@@ -86,7 +86,7 @@ extension TransactionViewController {
         valueContainerViewHeightConstraintFull.isActive = true
 
         //Create disabled shorted constraint to use later for when keyboard pops up
-        valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTEND)
+        valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTENED)
         valueContainerViewHeightConstraintShortened.isActive = false
 
         view.sendSubviewToBack(valueContainerView)
@@ -127,7 +127,7 @@ extension TransactionViewController {
         valueContainerViewHeightConstraintFull.isActive = true
 
         valueContainerViewHeightConstraintShortened.isActive = false
-        valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTEND, constant: 30)
+        valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTENED, constant: 30)
 
         valueCenterYAnchorConstraint.isActive = false
         valueLabel.centerYAnchor.constraint(equalTo: valueContainerView.centerYAnchor, constant: -22).isActive = true
@@ -240,9 +240,18 @@ extension TransactionViewController {
         view.addSubview(noteLabel)
         noteLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
         noteLabel.font = Theme.shared.fonts.transactionScreenTextLabel
-        noteLabel.numberOfLines = 5
+        noteLabel.numberOfLines = 0
         noteLabel.topAnchor.constraint(equalTo: noteHeadingLabel.bottomAnchor, constant: BOTTOM_HEADING_PADDING).isActive = true
         noteLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        noteLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 24).isActive = true
+        noteLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        noteLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 45).isActive = true
+    }
+
+    func setNoteText(_ text: String) {
+        let attributedTitleString = NSMutableAttributedString(string: text)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 4
+        attributedTitleString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedTitleString.length))
+        noteLabel.attributedText = attributedTitleString
     }
 }
