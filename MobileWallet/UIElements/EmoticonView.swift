@@ -51,7 +51,7 @@ class EmoticonView: UIView {
     var expanded: Bool = false
     var type: EmoticonViewType = .normalView
     var shouldShowBlurContainerViewWhenExpanded = true
-    private var initialWidth: CGFloat = CGFloat(179)
+    private var initialWidth: CGFloat = CGFloat(172)
     var tapToExpand: (() -> Void)?
     private var backgroundTop: NSLayoutConstraint?
     private var backgroundLeft: NSLayoutConstraint?
@@ -67,7 +67,7 @@ class EmoticonView: UIView {
     private var labelWidthConstraint: NSLayoutConstraint?
 
     private var emojiText: String!
-    private let RADIUS_POINTS: CGFloat = 12.0
+    private let RADIUS_POINTS: CGFloat = 6.0
 
     private var superVc: UIViewController!
 
@@ -83,7 +83,7 @@ class EmoticonView: UIView {
                    type: EmoticonViewType,
                    textCentered: Bool,
                    inViewController vc: UIViewController,
-                   initialWidth: CGFloat = CGFloat(179),
+                   initialWidth: CGFloat = CGFloat(172),
                    initialHeight: CGFloat = CGFloat(32),
                    showContainerViewBlur: Bool = true) {
         self.superVc = vc
@@ -94,7 +94,7 @@ class EmoticonView: UIView {
             label.numberOfLines = 0
             self.addSubview(label)
 
-            self.layer.cornerRadius = 6.0
+            self.layer.cornerRadius = RADIUS_POINTS
             self.layer.masksToBounds = true
             label.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground!
             label.textAlignment = .center
@@ -149,7 +149,7 @@ class EmoticonView: UIView {
             labelContainer.layer.shadowColor = Theme.shared.colors.emojiButtonShadow!.cgColor
             labelContainer.layer.shadowOffset = .zero
             labelContainer.layer.shadowRadius = RADIUS_POINTS * 1.2
-            labelContainer.layer.shadowOpacity = 0.1
+            labelContainer.layer.shadowOpacity = 1.0
             labelContainer.clipsToBounds = true
             labelContainer.layer.masksToBounds = false
 
@@ -166,14 +166,14 @@ class EmoticonView: UIView {
             scrollView.bottomAnchor.constraint(equalTo: labelContainer.bottomAnchor,
                                                constant: 0).isActive = true
 
-            scrollView.layer.cornerRadius = 12.0
+            scrollView.layer.cornerRadius = RADIUS_POINTS
             scrollView.layer.masksToBounds = true
 
             label = UILabelWithPadding()
             label.padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
             scrollView.addSubview(label)
 
-            label.layer.cornerRadius = 12.0
+            label.layer.cornerRadius = 6.0
             label.layer.masksToBounds = true
             label.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
             label.textAlignment = .center
@@ -244,68 +244,86 @@ class EmoticonView: UIView {
     }
 
     private func enableFullScreen() {
-        determineEmojiLabelText(emojiText: emojiText)
-        if backgroundLeft == nil && backgroundRight == nil && backgroundBottom == nil && backgroundTop == nil {
-            if let superview = self.superview {
-                backgroundLeft = containerView.leadingAnchor.constraint(equalTo: superview.leadingAnchor)
-                backgroundRight = containerView.trailingAnchor.constraint(equalTo: superview.trailingAnchor)
-                backgroundTop = containerView.topAnchor.constraint(equalTo: superview.topAnchor)
-                backgroundBottom = containerView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
-            }
-        }
-
-        containerViewLeadingInitial?.isActive = false
-        containerViewTrailingInitial?.isActive = false
-        containerViewBottomInitial?.isActive = false
-        containerViewTopInitial?.isActive = false
-
-        backgroundLeft?.isActive = true
-        backgroundRight?.isActive = true
-        backgroundTop?.isActive = true
-        backgroundBottom?.isActive = true
-
-        self.layoutIfNeeded()
-
-        self.labelInitialWidth?.constant = self.frame.width
-
-        //If they're typing somewhere, close the keyboard
-        superVc.view.endEditing(true)
-
-        if shouldShowBlurContainerViewWhenExpanded {
-            UIView.animate(withDuration: 0.5, animations: { [weak self] in
-                guard let self = self else { return }
-                self.containerView.alpha = 0.7
-                self.superVc.navigationController?.navigationBar.layer.zPosition = -1
-                self.layoutIfNeeded()
-            })
-        }
-
-        tapToExpand?()
-
-        scrollView.contentOffset = CGPoint(x: 30, y: 0)
 
         UIView.animate(withDuration: 0.3, animations: { [weak self] in
             guard let self = self else { return }
-            self.scrollView.contentOffset = CGPoint(x: -30, y: 0)
-            self.layoutIfNeeded()
+            self.label.alpha = 0.0
         }) { [weak self] (_) in
             guard let self = self else { return }
+            self.determineEmojiLabelText(emojiText: self.emojiText)
+            self.runFullScreenAnimation()
             UIView.animate(withDuration: 0.3, animations: { [weak self] in
                 guard let self = self else { return }
-                self.scrollView.contentOffset = CGPoint(x: 30, y: 0)
+                self.label.alpha = 1.0
+            }) { [weak self] (_) in
+                guard let self = self else { return }
+
+            }
+        }
+    }
+
+    private func runFullScreenAnimation() {
+        if backgroundLeft == nil && backgroundRight == nil && backgroundBottom == nil && backgroundTop == nil {
+                if let superview = self.superview {
+                    backgroundLeft = containerView.leadingAnchor.constraint(equalTo: superview.leadingAnchor)
+                    backgroundRight = containerView.trailingAnchor.constraint(equalTo: superview.trailingAnchor)
+                    backgroundTop = containerView.topAnchor.constraint(equalTo: superview.topAnchor)
+                    backgroundBottom = containerView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+                }
+            }
+
+            containerViewLeadingInitial?.isActive = false
+            containerViewTrailingInitial?.isActive = false
+            containerViewBottomInitial?.isActive = false
+            containerViewTopInitial?.isActive = false
+
+            backgroundLeft?.isActive = true
+            backgroundRight?.isActive = true
+            backgroundTop?.isActive = true
+            backgroundBottom?.isActive = true
+
+            self.layoutIfNeeded()
+
+            self.labelInitialWidth?.constant = self.frame.width
+
+            //If they're typing somewhere, close the keyboard
+            superVc.view.endEditing(true)
+
+            if shouldShowBlurContainerViewWhenExpanded {
+                UIView.animate(withDuration: 0.5, animations: { [weak self] in
+                    guard let self = self else { return }
+                    self.containerView.alpha = 0.7
+                    self.superVc.navigationController?.navigationBar.layer.zPosition = -1
+                    self.layoutIfNeeded()
+                })
+            }
+
+            tapToExpand?()
+
+            scrollView.contentOffset = CGPoint(x: 30, y: 0)
+
+            UIView.animate(withDuration: 0.3, animations: { [weak self] in
+                guard let self = self else { return }
+                self.scrollView.contentOffset = CGPoint(x: -30, y: 0)
                 self.layoutIfNeeded()
             }) { [weak self] (_) in
                 guard let self = self else { return }
                 UIView.animate(withDuration: 0.3, animations: { [weak self] in
                     guard let self = self else { return }
-                    self.scrollView.contentOffset = CGPoint(x: -10, y: 0)
+                    self.scrollView.contentOffset = CGPoint(x: 30, y: 0)
                     self.layoutIfNeeded()
                 }) { [weak self] (_) in
                     guard let self = self else { return }
-                    self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                    UIView.animate(withDuration: 0.3, animations: { [weak self] in
+                        guard let self = self else { return }
+                        self.scrollView.contentOffset = CGPoint(x: -10, y: 0)
+                        self.layoutIfNeeded()
+                    }) { [weak self] (_) in
+                        guard let self = self else { return }
+                        self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+                    }
                 }
             }
-        }
     }
 
     private func determineEmojiLabelText(emojiText: String) {
