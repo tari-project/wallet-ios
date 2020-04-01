@@ -1,12 +1,7 @@
 #!/bin/bash
 
 echo "\n\n***Pulling latest Tari lib build***"
-curl -O https://www.tari.com/binaries/libtari_wallet_ffi-ios-0.4.1.tar.gz
-tar -xvf libtari_wallet_ffi-ios-*.tar.gz && mv libtari_wallet_ffi.a MobileWallet/TariLib/
-
-echo "\n\n***Cleaning up***"
-rm libtari_wallet_ffi-ios-*.tar.gz
-rm wallet.h
+curl -s "https://www.tari.com/binaries/$(curl -s --compressed "https://www.tari.com/downloads/" | egrep -o  'libtari_wallet_ffi-ios-[0-9\.]+.tar.gz' | sort -V  | tail -1)" | tar xz - -C MobileWallet/TariLib/ --exclude wallet.h
 
 echo "\n\n***Updating pods***"
 pod install
