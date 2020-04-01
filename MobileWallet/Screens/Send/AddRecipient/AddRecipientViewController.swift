@@ -67,13 +67,15 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     private var selectedRecipientPublicKey: PublicKey? = nil {
         didSet {
-            if selectedRecipientPublicKey != nil {
+            if let _ = selectedRecipientPublicKey {
                 inputBox.textAlignment = .center
                 inputBox.returnKeyType = .continue
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                contactsTableVC.tableView.removeFromSuperview()
+                contactsTableVC.tableView.isHidden = true
 
                 continueButtonBottomConstraint.isActive = false
+
+                inputBox.textColor = Theme.shared.colors.emojisSeparatorExpanded
 
                 UIView.animate(withDuration: 0.5) { [weak self] in
                     guard let self = self else { return }
@@ -88,6 +90,15 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                 continueButtonBottomConstraint.isActive = false
                 continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 100)
                 continueButtonBottomConstraint.isActive = true
+                contactsTableVC.tableView.isHidden = false
+
+                inputBox.textColor = nil //default color
+
+                UIView.animate(withDuration: 0.5) { [weak self] in
+                    guard let self = self else { return }
+                    self.inputContainerView.layer.shadowOpacity = 0.0
+                    self.view.layoutIfNeeded()
+                }
             }
         }
     }
@@ -103,6 +114,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                     do {
                         let pubKey = try PublicKey(emojis: self.clipboardEmojis)
                         self.onAdd(publicKey: pubKey)
+                        self.setInputText(publicKey: pubKey)
                     } catch {
                         UserFeedback.shared.error(
                             title: NSLocalizedString("Could not use Emoji ID", comment: "Add recipient screen"),
@@ -110,7 +122,6 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                             error: error)
                     }
 
-                    self.inputBox.text = self.clipboardEmojis
                     self.isEditingSearchBox = false
                 }
                 pasteEmojisView.isHidden = false
@@ -122,7 +133,6 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         super.viewDidLoad()
 
         contactsTableVC.actionDelegate = self
-
         setup()
 
         Tracker.shared.track("/home/send_tari/add_recipient", "Send Tari - Add Recipient")
@@ -133,10 +143,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
         styleNavigatorBar(isHidden: false)
 
-        //If they're going back a view, don't check the clipboard if they already have text in it
-        if self.inputBox.text?.isEmpty ?? true {
-            checkClipboard()
-        }
+        checkClipboard()
 
         NotificationCenter.default.addObserver(self, selector: #selector(showClipboardEmojis), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hideClipboardEmojis), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -145,7 +152,9 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        isEditingSearchBox = true
+        if selectedRecipientPublicKey == nil {
+            isEditingSearchBox = true
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -166,7 +175,13 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
             contactsTableVC.filter = text.trimmingCharacters(in: .whitespaces)
 
             do {
-                let pubKey = try PublicKey(emojis: text)
+                let pubKey = try PublicKey(any: text)
+
+                //Only if they never had this set, dimiss the keyboard
+                if selectedRecipientPublicKey == nil {
+                    dismissKeyboard()
+                }
+
                 onSelect(publicKey: pubKey)
             } catch {
                 if selectedRecipientPublicKey != nil {
@@ -203,6 +218,8 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     private func setupContactInputBar() {
+        let emojiIdHeight: CGFloat = 46
+
         inputContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(inputContainerView)
 
@@ -225,13 +242,12 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputBox.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor).isActive = true
         inputBox.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: SIDE_PADDING).isActive = true
         inputBox.trailingAnchor.constraint(equalTo: inputContainerView.trailingAnchor, constant: -SIDE_PADDING).isActive = true
-        inputBox.heightAnchor.constraint(equalToConstant: 46).isActive = true
+        inputBox.heightAnchor.constraint(equalToConstant: emojiIdHeight).isActive = true
 
         //Input style
         inputBox.placeholder = NSLocalizedString("Enter Emoji ID or Contact Name", comment: "Add recipient view")
         inputBox.backgroundColor = Theme.shared.colors.appBackground
         inputBox.font = Theme.shared.fonts.searchContactsInputBoxText
-
         inputBox.leftView = UIView(frame: CGRect(x: 0, y: 0, width: SIDE_PADDING / 2, height: inputBox.frame.height))
         inputBox.leftViewMode = .always
 
@@ -299,24 +315,33 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     private func checkClipboard() {
+        //If they're going back a view, don't check the clipboard if they already have text in it
+        guard inputBox.text?.isEmpty == true else {
+            return
+        }
+
         let pasteboardString: String? = UIPasteboard.general.string
 
         if let text = pasteboardString {
-
             //Try get a pubkey from clipboard text
             do {
                 let pubKeyFromDeeplink = try PublicKey(any: text)
                 clipboardEmojis = pubKeyFromDeeplink.emojis.0
                 return
             } catch {
-                //It's not a deep link or emoji string or hex
+               //No valid pubkey found
                clipboardEmojis = ""
             }
         }
     }
 
     @objc private func showClipboardEmojis(notification: NSNotification) {
-        if clipboardEmojis.isEmpty {
+        guard !clipboardEmojis.isEmpty else {
+            return
+        }
+
+        //If it's already selected, no need to show this option as well
+        guard clipboardEmojis != selectedRecipientPublicKey?.emojis.0 else {
             return
         }
 
@@ -379,13 +404,21 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         self.navigationController?.pushViewController(amountVC, animated: true)
     }
 
+    private func setInputText(publicKey: PublicKey) {
+        let newEmojiText = publicKey.emojis.0.insertSeparator(" | ", atEvery: 3)
+        guard inputBox.text != newEmojiText else {
+            return
+        }
+
+        inputBox.text = newEmojiText
+    }
+
     func onSelect(publicKey: PublicKey) {
-        dismissKeyboard()
-        inputBox.text = publicKey.emojis.0
         inputBox.rightView = nil
 
-        //Remove table and show continue button
+        //Hide table and show continue button
         selectedRecipientPublicKey = publicKey
+        setInputText(publicKey: publicKey)
     }
 
     func onSelect(contact: Contact) {
@@ -395,11 +428,13 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         }
 
         onSelect(publicKey: publicKey!)
+        dismissKeyboard()
         onContinue()
     }
 
     //Used by the scanner and paste from clipboard
     func onAdd(publicKey: PublicKey) {
         onSelect(publicKey: publicKey)
+        dismissKeyboard()
     }
 }

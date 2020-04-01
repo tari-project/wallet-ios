@@ -49,6 +49,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
+        //If the user opens a deep link while the app is closed
+        if let url = connectionOptions.urlContexts.first?.url {
+            if let deeplink = NSString(string: url.absoluteString).removingPercentEncoding {
+                Deeplinker.handleShortcut(type: .send(deeplink: deeplink))
+            }
+        }
+
+        //If the user opens a home screen shortcut while the app is closed
+        if let shortcutItem = connectionOptions.shortcutItem {
+            Deeplinker.handleShortcut(item: shortcutItem)
+        }
+
         guard let _ = (scene as? UIWindowScene) else { return }
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)

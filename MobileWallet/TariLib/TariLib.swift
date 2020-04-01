@@ -105,10 +105,11 @@ class TariLib {
 
     var isTorConnected: Bool {
         //If we're not using tor (for a simulator) or if tor is actually connected
-        return TariSettings.shared.torEnabled == false || OnionConnector.shared.connectionState == .connected
+        return !TariSettings.shared.torEnabled || OnionConnector.shared.connectionState == .connected
     }
 
-    var torPortsOpened = false
+    //If we're not using tor at all, assume the ports start as open
+    var torPortsOpened = !TariSettings.shared.torEnabled
 
     init() {}
 
