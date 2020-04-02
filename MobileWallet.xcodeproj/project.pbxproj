@@ -284,15 +284,18 @@
 		00BCE48B240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE488240EB1EE00B181F3 /* SplashViewControllerSetup.swift */; };
 		00BCE48C240F9FA000B181F3 /* Tor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BCE486240D5C4100B181F3 /* Tor.framework */; };
 		00BCE48D240F9FA100B181F3 /* Tor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BCE486240D5C4100B181F3 /* Tor.framework */; };
-		00C185B9238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */; };
-		00C185BA238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */; };
-		00C185BB238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */; };
+		00C185B9238943980096984E /* UIViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* UIViewControllerDebugExtension.swift */; };
+		00C185BA238943980096984E /* UIViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* UIViewControllerDebugExtension.swift */; };
+		00C185BB238943980096984E /* UIViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* UIViewControllerDebugExtension.swift */; };
 		00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185BD238953F60096984E /* DebugLogsTableViewController.swift */; };
 		00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185BD238953F60096984E /* DebugLogsTableViewController.swift */; };
 		00C185C0238953F60096984E /* DebugLogsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185BD238953F60096984E /* DebugLogsTableViewController.swift */; };
 		00C185C62390221A0096984E /* DevelopmentUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185C52390221A0096984E /* DevelopmentUI.swift */; };
 		00C9F436242E08E70098E619 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A9190A242CDD7700B7F14D /* Tracker.swift */; };
 		00C9F437242E08E80098E619 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A9190A242CDD7700B7F14D /* Tracker.swift */; };
+		00D7BD8924349AE3009DD097 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7BD8824349AE3009DD097 /* UIDevice.swift */; };
+		00D7BD8A24349AE3009DD097 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7BD8824349AE3009DD097 /* UIDevice.swift */; };
+		00D7BD8B24349AE3009DD097 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7BD8824349AE3009DD097 /* UIDevice.swift */; };
 		00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E21238554FD00036DDC /* libsqlite3.tbd */; };
 		00DC2E242385559C00036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E232385559C00036DDC /* libsqlite3.tbd */; };
 		00DC2E25238555A200036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E232385559C00036DDC /* libsqlite3.tbd */; };
@@ -573,9 +576,10 @@
 		00BCE47E240D5A9700B181F3 /* OnionConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnionConnector.swift; sourceTree = "<group>"; };
 		00BCE486240D5C4100B181F3 /* Tor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Tor.framework; path = Carthage/Build/iOS/Tor.framework; sourceTree = "<group>"; };
 		00BCE488240EB1EE00B181F3 /* SplashViewControllerSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewControllerSetup.swift; sourceTree = "<group>"; };
-		00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewControllerDebugExtension.swift; sourceTree = "<group>"; };
+		00C185B8238943980096984E /* UIViewControllerDebugExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerDebugExtension.swift; sourceTree = "<group>"; };
 		00C185BD238953F60096984E /* DebugLogsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogsTableViewController.swift; sourceTree = "<group>"; };
 		00C185C52390221A0096984E /* DevelopmentUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentUI.swift; sourceTree = "<group>"; };
+		00D7BD8824349AE3009DD097 /* UIDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
 		00DC2E21238554FD00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		00DC2E232385559C00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		00DD160A241CCE0600C955B4 /* TariSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariSettings.swift; sourceTree = "<group>"; };
@@ -788,6 +792,7 @@
 				0074619A239A57B000F00966 /* UIBarButtonItem.swift */,
 				004277F623E0628A00AE7BD9 /* UIViewController.swift */,
 				004277FE23E2F1D700AE7BD9 /* UIImage.swift */,
+				00D7BD8824349AE3009DD097 /* UIDevice.swift */,
 				0042780223E8421100AE7BD9 /* String.swift */,
 			);
 			path = Extensions;
@@ -950,7 +955,7 @@
 		00C185BC238953B40096984E /* Debug */ = {
 			isa = PBXGroup;
 			children = (
-				00C185B8238943980096984E /* HomeViewControllerDebugExtension.swift */,
+				00C185B8238943980096984E /* UIViewControllerDebugExtension.swift */,
 				00C185BD238953F60096984E /* DebugLogsTableViewController.swift */,
 			);
 			path = Debug;
@@ -1784,6 +1789,7 @@
 				00DD160F241CD41D00C955B4 /* BaseNode.swift in Sources */,
 				00A6779E23743696001A853E /* TransactionViewController.swift in Sources */,
 				00BCE482240D5A9700B181F3 /* OnionConnector.swift in Sources */,
+				00D7BD8924349AE3009DD097 /* UIDevice.swift in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */,
 				0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
@@ -1828,7 +1834,7 @@
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
 				00B4D6F8241B77A900ED8318 /* NodeSyncOperation.swift in Sources */,
 				004277E723DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
-				00C185B9238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
+				00C185B9238943980096984E /* UIViewControllerDebugExtension.swift in Sources */,
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
 				00BCE47F240D5A9700B181F3 /* OnionManager.swift in Sources */,
@@ -1865,7 +1871,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				004997B02382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
-				00C185BA238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
+				00C185BA238943980096984E /* UIViewControllerDebugExtension.swift in Sources */,
 				00BCE48A240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				0042780423E8421200AE7BD9 /* String.swift in Sources */,
 				BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */,
@@ -1886,6 +1892,7 @@
 				004277F823E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				00262EB5236F024400A6C8A0 /* Theme.swift in Sources */,
 				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
+				00D7BD8A24349AE3009DD097 /* UIDevice.swift in Sources */,
 				00F53A6B24290FAE00448466 /* LogCleanup.swift in Sources */,
 				00262EB0236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				004277E823DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
@@ -1972,6 +1979,7 @@
 				00947CC923D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				0053873224065F6C00901A68 /* SlideView.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
+				00D7BD8B24349AE3009DD097 /* UIDevice.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */,
@@ -1988,7 +1996,7 @@
 				009BF8AE237ABB4700C02E44 /* TariLib.swift in Sources */,
 				0087A1B423F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
 				BF8316FF23EF7EAA00235403 /* LAContext.swift in Sources */,
-				00C185BB238943980096984E /* HomeViewControllerDebugExtension.swift in Sources */,
+				00C185BB238943980096984E /* UIViewControllerDebugExtension.swift in Sources */,
 				00BBD814237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				BFE61E4A24226A7F003DC99D /* NotificationManager.swift in Sources */,
 				00BCE481240D5A9700B181F3 /* OnionManager.swift in Sources */,
