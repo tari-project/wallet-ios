@@ -314,6 +314,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                     throw feeError!
                 }
 
+                navigationItem.title = NSLocalizedString("Payment In Progress", comment: "Navigation bar title on transaction view screen")
                 setFeeLabel(fee!.formattedPreciseWithOperator)
             }
 

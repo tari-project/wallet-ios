@@ -39,6 +39,7 @@
 */
 
 import UIKit
+import Lottie
 
 protocol TransactionsTableViewDelegate: class {
     func onTransactionSelect(_: Any)
@@ -70,6 +71,16 @@ class TransactionsTableViewController: UITableViewController {
             }
         }
     }
+
+    lazy var pendingAnimationContainer: AnimationView = {
+        let animation = Animation.named("pendingTx")
+        var animationContainer = AnimationView()
+        animationContainer.animation = animation
+        animationContainer.loopMode = .loop
+        return animationContainer
+    }()
+
+    let pendingLabelText = NSLocalizedString("In Progress Transactions", comment: "Home view table of transactions")
 
     override func viewDidLoad() {
         super.viewDidLoad()

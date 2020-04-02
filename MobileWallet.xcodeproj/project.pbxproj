@@ -233,6 +233,9 @@
 		00A057B423D979DA0029C22A /* UserFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057B323D979DA0029C22A /* UserFeedback.swift */; };
 		00A057B523D979DA0029C22A /* UserFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057B323D979DA0029C22A /* UserFeedback.swift */; };
 		00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057B323D979DA0029C22A /* UserFeedback.swift */; };
+		00A66513243624070046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66512243624070046E730 /* pendingTx.json */; };
+		00A66514243624070046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66512243624070046E730 /* pendingTx.json */; };
+		00A66515243624070046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66512243624070046E730 /* pendingTx.json */; };
 		00A677982373DA58001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A677992373DA59001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A6779A2373DA61001A853E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A12366E08B007B332D /* Main.storyboard */; };
@@ -549,6 +552,7 @@
 		009BF8AB237ABB4700C02E44 /* TariLib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLib.swift; sourceTree = "<group>"; };
 		00A057AE23D875840029C22A /* TariEventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariEventBus.swift; sourceTree = "<group>"; };
 		00A057B323D979DA0029C22A /* UserFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFeedback.swift; sourceTree = "<group>"; };
+		00A66512243624070046E730 /* pendingTx.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pendingTx.json; sourceTree = "<group>"; };
 		00A6779D23743696001A853E /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		00A9190A242CDD7700B7F14D /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		00A994322396434B007D9990 /* QRButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRButton.swift; sourceTree = "<group>"; };
@@ -964,6 +968,7 @@
 		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
 			isa = PBXGroup;
 			children = (
+				00A66512243624070046E730 /* pendingTx.json */,
 				00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */,
 				00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */,
 				00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */,
@@ -1446,6 +1451,7 @@
 				001256992372918B00A9C067 /* AvenirNextLTPro-DemiCn.otf in Resources */,
 				0012567E2372918B00A9C067 /* AvenirNextLTPro-MediumCnIt.otf in Resources */,
 				0012563B2371E89300A9C067 /* SplashAnimation.json in Resources */,
+				00A66513243624070046E730 /* pendingTx.json in Resources */,
 				001256B42372918B00A9C067 /* AvenirLTStd-Medium.otf in Resources */,
 				BF0A7766241EEA0A00861A3E /* FaceID.json in Resources */,
 				001256662372918B00A9C067 /* AvenirLTStd-Roman.otf in Resources */,
@@ -1512,6 +1518,7 @@
 				001256AC2372918B00A9C067 /* AvenirLTStd-Book.otf in Resources */,
 				BF191A1E23E5AFA200D33C85 /* img_6.png in Resources */,
 				BF0A7767241EEA0A00861A3E /* FaceID.json in Resources */,
+				00A66514243624070046E730 /* pendingTx.json in Resources */,
 				001256A62372918B00A9C067 /* AvenirNextLTPro-BoldCn.otf in Resources */,
 				0012568E2372918B00A9C067 /* AvenirNextLTPro-Cn.otf in Resources */,
 				BF5537BA2412B9BB0071328C /* purple_orb.mp4 in Resources */,
@@ -1573,6 +1580,7 @@
 				001256AD2372918B00A9C067 /* AvenirLTStd-Book.otf in Resources */,
 				BF191A1F23E5AFA200D33C85 /* img_6.png in Resources */,
 				BF0A7768241EEA0A00861A3E /* FaceID.json in Resources */,
+				00A66515243624070046E730 /* pendingTx.json in Resources */,
 				001256A72372918B00A9C067 /* AvenirNextLTPro-BoldCn.otf in Resources */,
 				0012568F2372918B00A9C067 /* AvenirNextLTPro-Cn.otf in Resources */,
 				BF5537BB2412B9BB0071328C /* purple_orb.mp4 in Resources */,
