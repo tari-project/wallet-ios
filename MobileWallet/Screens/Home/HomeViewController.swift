@@ -295,7 +295,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.isShowingSendButton = false
                 transactionTableVC.showIntroContent(true)
                 //Wait before auto pulling down
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.5, execute: { [weak self] in
                     guard let self = self else { return }
                     if self.isTransactionViewFullScreen {
                         self.fpc.move(to: .tip, animated: true)
