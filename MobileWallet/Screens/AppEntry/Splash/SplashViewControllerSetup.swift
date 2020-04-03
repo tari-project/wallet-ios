@@ -47,7 +47,7 @@ extension SplashViewController {
         setupAnimationContainer()
         setupVideoView()
         setupTitleLabel()
-        setupSubtitleLabel()
+        //setupSubtitleLabel()
         setupBottomBackgroundView()
         setupCreateWalletButton()
         setupDisclaimer()
@@ -58,11 +58,11 @@ extension SplashViewController {
         disclaimerText.isHidden = true
 
         createWalletButton.setTitle(NSLocalizedString("Create Your Wallet", comment: "Main action button on the onboarding screen"), for: .normal)
-        titleLabel.isHidden = true
 
-        let attributedTitleString = NSMutableAttributedString(string: NSLocalizedString("Welcome to Tari Aurora.", comment: "Title Label on the onboarding screen"))
+        titleLabel.isHidden = true
+        let attributedTitleString = NSMutableAttributedString(string: NSLocalizedString("Private by default.\nUseful by design.", comment: "Title Label on the onboarding screen"))
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 8
+        paragraphStyle.lineSpacing = 10
         paragraphStyle.alignment = .center
         attributedTitleString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedTitleString.length))
         titleLabel.attributedText = attributedTitleString
@@ -70,15 +70,15 @@ extension SplashViewController {
         titleLabel.font = Theme.shared.fonts.splashTitleLabel
         titleLabel.textColor = Theme.shared.colors.splashTitle
 
-        subtitleLabel.isHidden = true
-
-        subtitleLabel.text = String(
-            format: NSLocalizedString("Get ready to send and receive %@! with an easy-to-use crypto wallet that puts privacy first.", comment: "Subtitle Label on the onboarding screen"),
-            TariSettings.shared.network.currencyDisplayName
-        )
-
-        subtitleLabel.textColor = Theme.shared.colors.splashSubtitle
-        subtitleLabel.font = Theme.shared.fonts.splashSubtitleLabel
+//        subtitleLabel.isHidden = true
+//
+//        subtitleLabel.text = String(
+//            format: NSLocalizedString("Get ready to send and receive %@! with an easy-to-use crypto wallet that puts privacy first.", comment: "Subtitle Label on the onboarding screen"),
+//            TariSettings.shared.network.currencyDisplayName
+//        )
+//
+//        subtitleLabel.textColor = Theme.shared.colors.splashSubtitle
+//        subtitleLabel.font = Theme.shared.fonts.splashSubtitleLabel
 
         versionLabel.font = Theme.shared.fonts.splashVersionFooterLabel
         versionLabel.textColor = Theme.shared.colors.splashVersionLabel
@@ -155,8 +155,7 @@ extension SplashViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        //titleLabel.heightAnchor.constraint(equalToConstant: 35).isActive = true
-
+        titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 80).isActive = true
         titleLabel.topAnchor.constraint(equalTo: videoView.bottomAnchor, constant: 30).isActive = true
 
         if TariLib.shared.walletExists {
@@ -164,28 +163,28 @@ extension SplashViewController {
         }
     }
 
-    func setupSubtitleLabel() {
-        view.addSubview(subtitleLabel)
-
-        subtitleLabel.numberOfLines = 0
-        subtitleLabel.textAlignment = .center
-
-        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
-        subtitleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        subtitleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-
-        //subtitleLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        distanceTitleSubtitle = subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: -20)
-        distanceTitleSubtitle.isActive = true
-    }
+//    func setupSubtitleLabel() {
+//        view.addSubview(subtitleLabel)
+//
+//        subtitleLabel.numberOfLines = 0
+//        subtitleLabel.textAlignment = .center
+//
+//        subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
+//        subtitleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+//        subtitleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+//
+//        //subtitleLabel.heightAnchor.constraint(equalToConstant: 40).isActive = true
+//        distanceTitleSubtitle = subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: -20)
+//        distanceTitleSubtitle.isActive = true
+//    }
 
     func setupBottomBackgroundView() {
-        view.insertSubview(bottomBackgroundView, belowSubview: subtitleLabel)
+        view.insertSubview(bottomBackgroundView, belowSubview: titleLabel)
         bottomBackgroundView.translatesAutoresizingMaskIntoConstraints = false
         bottomBackgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
         bottomBackgroundView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
         bottomBackgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
-        bottomBackgroundView.topAnchor.constraint(equalTo: subtitleLabel.topAnchor, constant: 0).isActive = true
+        bottomBackgroundView.topAnchor.constraint(equalTo: titleLabel.topAnchor, constant: 0).isActive = true
     }
 
     func setupCreateWalletButton() {
@@ -195,7 +194,7 @@ extension SplashViewController {
 
         createWalletButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         createWalletButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        createWalletButton.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 30).isActive = true
+        createWalletButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30).isActive = true
     }
 
     func setupDisclaimer() {
@@ -316,7 +315,7 @@ extension SplashViewController {
             UIView.animate(withDuration: 1.0, animations: { [weak self] in
                 guard let self = self else { return }
                 self.titleLabel.alpha = 0
-                self.subtitleLabel.alpha = 0
+                //self.subtitleLabel.alpha = 0
                 self.createWalletButton.alpha = 0
                 self.disclaimerText.alpha = 0
                 self.gemImageView.alpha = 0
