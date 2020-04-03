@@ -44,11 +44,9 @@ enum EmoticonViewType {
 }
 
 class EmoticonView: UIView {
-
     var containerView: UIView!
     var scrollView: UIScrollView!
     var label: UILabelWithPadding!
-    var expanded: Bool = false
     var type: EmoticonViewType = .normalView
     var shouldShowBlurContainerViewWhenExpanded = true
     private var initialWidth: CGFloat = CGFloat(172)
@@ -70,6 +68,16 @@ class EmoticonView: UIView {
     private let RADIUS_POINTS: CGFloat = 6.0
 
     private var superVc: UIViewController!
+
+    var expanded: Bool = false {
+        didSet {
+            if expanded {
+                enableFullScreen()
+            } else {
+                disableFullScreen()
+            }
+        }
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -113,7 +121,7 @@ class EmoticonView: UIView {
             containerView = UIView()
             containerView.backgroundColor = Theme.shared.colors.emoticonBlackBackgroundAlpha!
             containerView.alpha = 0.0
-            self.addSubview(containerView)
+            addSubview(containerView)
             containerView.translatesAutoresizingMaskIntoConstraints = false
             containerViewLeadingInitial = containerView.widthAnchor.constraint(equalToConstant: 0)
             containerViewLeadingInitial?.isActive = true
@@ -125,7 +133,7 @@ class EmoticonView: UIView {
             containerViewBottomInitial = containerView.centerYAnchor.constraint(equalTo: centerYAnchor, constant: 0)
             containerViewBottomInitial?.isActive = true
 
-            self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
+            addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
 
             shouldShowBlurContainerViewWhenExpanded = showContainerViewBlur
 
@@ -210,13 +218,7 @@ class EmoticonView: UIView {
     }
 
     @objc func tap(_ gestureRecognizer: UITapGestureRecognizer) {
-        if !expanded {
-            expanded = true
-            enableFullScreen()
-        } else {
-            expanded = false
-            disableFullScreen()
-        }
+        expanded = !expanded
     }
 
     private func disableFullScreen() {

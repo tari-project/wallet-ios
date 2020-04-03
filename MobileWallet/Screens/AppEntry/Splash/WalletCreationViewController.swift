@@ -733,21 +733,22 @@ class WalletCreationViewController: UIViewController {
         ])
         attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText!, range: NSRange(location: 13, length: 8))
 
-        self.secondLabelBottom.attributedText = attributedString
-        self.thirdLabel.text = NSLocalizedString("Your Emoji ID is your wallet’s address, and how others can find you and send you Tari.", comment: "Emoji Id third label on wallet creation")
+        secondLabelBottom.attributedText = attributedString
+        thirdLabel.text = NSLocalizedString("Your Emoji ID is your wallet’s address, and how others can find you and send you Tari.", comment: "Emoji Id third label on wallet creation")
 
         self.createEmojiButton.setTitle(NSLocalizedString("Continue", comment: "This is your emoji screen on wallet creation"), for: .normal)
 
         if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
             let (emojis, _) = pubKey.emojis
-            self.userEmojiContainer.setUpView(emojiText: emojis,
+            userEmojiContainer.setUpView(emojiText: emojis,
                                               type: .buttonView,
                                               textCentered: true,
                                               inViewController: self,
                                               initialHeight: CGFloat(46),
                                               showContainerViewBlur: false)
+            userEmojiContainer.expanded = true
 
-            self.userEmojiContainer.tapToExpand = { [weak self] in
+            userEmojiContainer.tapToExpand = { [weak self] in
                 guard let self = self else { return }
                 if self.state == .showEmojiId {
                     self.createEmojiButton.alpha = 1.0
