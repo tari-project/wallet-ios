@@ -203,8 +203,7 @@ class TariLib {
 
         tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
 
-        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.defaultBaseNodePeer))
-
+        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
     }
 
     func startExistingWallet(isBackgroundTask: Bool = false) throws {

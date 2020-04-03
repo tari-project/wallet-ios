@@ -82,12 +82,12 @@ class AnimatedBalanceLabel: UIView {
     var delayBetweenCharacterAnimations = 0.025
     var slideAnimationDuration = 0.08
 
-    enum animationSpeeds {
+    enum AnimationSpeeds {
         case slow //Slower for displaying balances that update
         case fast //Responsive for entering values
     }
 
-    var animationSpeed: animationSpeeds = .fast {
+    var animationSpeed: AnimationSpeeds = .fast {
         didSet {
             switch animationSpeed {
             case .slow:

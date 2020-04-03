@@ -87,7 +87,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         self.navigationController?.view.layer.add(Theme.shared.transitions.pullDownOpen, forKey: kCATransition)
         self.navigationController?.pushViewController(logsVC, animated: false)
     }
-    
+
     private func deleteWallet() {
         let alert = UIAlertController(title: "Delete wallet", message: "This will erase all data and close the app.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Erase", style: .destructive, handler: { (_)in
