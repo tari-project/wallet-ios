@@ -65,7 +65,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     var animationContainer = AnimationView()
     var createWalletButton = ActionButton()
     var titleLabel = UILabel()
-    var subtitleLabel = UILabel()
+    //var subtitleLabel = UILabel()
     var bottomBackgroundView = UIView()
     var gemImageView = UIImageView()
     var distanceTitleSubtitle = NSLayoutConstraint()
@@ -226,7 +226,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             //No wallet exists, setup for welcome splash screen
             setupVideoAnimation()
             titleLabel.isHidden = false
-            subtitleLabel.isHidden = false
+            //subtitleLabel.isHidden = false
             createWalletButton.isHidden = false
             disclaimerText.isHidden = false
 
@@ -267,7 +267,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                                 onSuccess()
                             }
                         }
-
                     } else {
                         let reason = error?.localizedDescription ?? NSLocalizedString("Failed to authenticate", comment: "Failed Face/Touch ID alert")
                         TariLogger.error("Biometrics auth failed", error: error)
