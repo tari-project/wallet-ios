@@ -146,6 +146,9 @@
 		00A057B423D979DA0029C22A /* UserFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057B323D979DA0029C22A /* UserFeedback.swift */; };
 		00A057B523D979DA0029C22A /* UserFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057B323D979DA0029C22A /* UserFeedback.swift */; };
 		00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057B323D979DA0029C22A /* UserFeedback.swift */; };
+		00A66517243772A70046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66516243772A70046E730 /* pendingTx.json */; };
+		00A66518243772A70046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66516243772A70046E730 /* pendingTx.json */; };
+		00A66519243772A70046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66516243772A70046E730 /* pendingTx.json */; };
 		00A677982373DA58001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A677992373DA59001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A6779A2373DA61001A853E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A12366E08B007B332D /* Main.storyboard */; };
@@ -433,6 +436,7 @@
 		009BF8AB237ABB4700C02E44 /* TariLib.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLib.swift; sourceTree = "<group>"; };
 		00A057AE23D875840029C22A /* TariEventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariEventBus.swift; sourceTree = "<group>"; };
 		00A057B323D979DA0029C22A /* UserFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFeedback.swift; sourceTree = "<group>"; };
+		00A66516243772A70046E730 /* pendingTx.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pendingTx.json; sourceTree = "<group>"; };
 		00A6779D23743696001A853E /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		00A9190A242CDD7700B7F14D /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		00A994322396434B007D9990 /* QRButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRButton.swift; sourceTree = "<group>"; };
@@ -812,6 +816,7 @@
 		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
 			isa = PBXGroup;
 			children = (
+				00A66516243772A70046E730 /* pendingTx.json */,
 				00E2BCA7236AB28200C2A105 /* TransactionTableTableViewCell.swift */,
 				00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */,
 				00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */,
@@ -1270,6 +1275,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				00A66517243772A70046E730 /* pendingTx.json in Resources */,
 				BFF1EDA72408226200CC9EF6 /* sending-background.mp4 in Resources */,
 				00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */,
 				BF162C01241A510D00647740 /* loader.mp4 in Resources */,
@@ -1316,6 +1322,7 @@
 				BF0A77A5241F904D00861A3E /* faceId@2x.png in Resources */,
 				00E2BCAD236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */,
 				BF191A1E23E5AFA200D33C85 /* img_6.png in Resources */,
+				00A66518243772A70046E730 /* pendingTx.json in Resources */,
 				BF0A7767241EEA0A00861A3E /* FaceID.json in Resources */,
 				BF5537BA2412B9BB0071328C /* purple_orb.mp4 in Resources */,
 				BF0A77B62420CF1200861A3E /* NotificationAnimation.json in Resources */,
@@ -1348,6 +1355,7 @@
 				BF0A77A6241F904D00861A3E /* faceId@2x.png in Resources */,
 				00E2BCAE236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */,
 				BF191A1F23E5AFA200D33C85 /* img_6.png in Resources */,
+				00A66519243772A70046E730 /* pendingTx.json in Resources */,
 				BF0A7768241EEA0A00861A3E /* FaceID.json in Resources */,
 				BF5537BB2412B9BB0071328C /* purple_orb.mp4 in Resources */,
 				BF0A77B72420CF1200861A3E /* NotificationAnimation.json in Resources */,
