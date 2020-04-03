@@ -81,6 +81,27 @@ class AnimatedBalanceLabel: UIView {
     var animationDuration = 0.08
     var delayBetweenCharacterAnimations = 0.025
     var slideAnimationDuration = 0.08
+
+    enum animationSpeeds {
+        case slow //Slower for displaying balances that update
+        case fast //Responsive for entering values
+    }
+
+    var animationSpeed: animationSpeeds = .fast {
+        didSet {
+            switch animationSpeed {
+            case .slow:
+                animationDuration = 0.2
+                delayBetweenCharacterAnimations = 0.1
+                slideAnimationDuration = 0.3
+            default:
+                animationDuration = 0.08
+                delayBetweenCharacterAnimations = 0.025
+                slideAnimationDuration = 0.08
+            }
+        }
+    }
+
     var animation = Animation.update
 
     let fontSizeCalculatorLabel = UILabel()

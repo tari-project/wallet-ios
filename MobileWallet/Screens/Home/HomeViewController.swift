@@ -535,6 +535,8 @@ extension HomeViewController {
 
         sendButton.isHidden = true
         bottomFadeView.isHidden = true
+
+        balanceValueLabel.animationSpeed = .slow
     }
 
     fileprivate func setupFloatingPanel() {
