@@ -40,7 +40,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xCe-J5-eXY" userLabel="BalanceView">
-                                <rect key="frame" x="25" y="157" width="364" height="54"/>
+                                <rect key="frame" x="25" y="149" width="364" height="54"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lRr-wq-3sr" customClass="AnimatedBalanceLabel" customModule="Tari">
                                         <rect key="frame" x="24" y="3.5" width="320" height="47"/>
@@ -70,7 +70,7 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="xCe-J5-eXY" firstAttribute="top" secondItem="ENx-MR-mo9" secondAttribute="bottom" constant="8" id="92c-BB-Nkv"/>
+                            <constraint firstItem="xCe-J5-eXY" firstAttribute="top" secondItem="ENx-MR-mo9" secondAttribute="bottom" id="92c-BB-Nkv"/>
                             <constraint firstItem="xuz-Or-cBG" firstAttribute="trailing" secondItem="14X-p9-0HZ" secondAttribute="trailing" id="ESV-4a-oeZ"/>
                             <constraint firstAttribute="bottomMargin" secondItem="nEn-jd-PvX" secondAttribute="bottom" constant="16" id="JJw-Fc-2YR"/>
                             <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="ENx-MR-mo9" secondAttribute="trailing" constant="25" id="KCB-kB-Lha"/>

@@ -144,7 +144,7 @@ extension TransactionsTableViewController {
         emptyView.addSubview(messageLabel)
 
         messageLabel.numberOfLines = 0
-        messageLabel.text = NSLocalizedString("We don’t see any transactions yet.\n\nHopefully something happens soon…🤞 ", comment: "Home view table when there are no transactions")
+        messageLabel.text = NSLocalizedString("We don’t see any transactions yet.\nHopefully something happens soon…🤞 ", comment: "Home view table when there are no transactions")
         messageLabel.textAlignment = .center
         messageLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
         messageLabel.font = Theme.shared.fonts.transactionListEmptyMessageLabel

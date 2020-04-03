@@ -182,11 +182,11 @@ struct Colors: Loopable {
 }
 
 struct Fonts: Loopable {
-    let splashVersionFooterLabel = UIFont(name: "AvenirLTStd-Heavy", size: 9.0)
-    let actionButton = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)
+    let splashVersionFooterLabel = UIFont(name: "Avenir-Heavy", size: 9.0)
+    let actionButton = UIFont(name: "Avenir-Heavy", size: 16.0)
 
     //Splash
-    let splashTitleLabel = UIFont(name: "AvenirLTStd-Black", size: 30.0)
+    let splashTitleLabel = UIFont(name: "Avenir-Black", size: 30.0)
     let splashSubtitleLabel = UIFont(name: "Avenir-Medium", size: 14.0)
     let splashDisclaimerLabel = UIFont(name: "Avenir-Medium", size: 12.0)
 
@@ -209,24 +209,24 @@ struct Fonts: Loopable {
     let profileMiddleLabel = UIFont(name: "Avenir-Medium", size: 14)
 
     //Home screen
-    let homeScreenTotalBalanceLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
-    let homeScreenTotalBalanceValueLabel = UIFont(name: "AvenirLTStd-Black", size: 39.0)
-    let homeScreenTotalBalanceValueLabelDecimals = UIFont(name: "AvenirLTStd-Black", size: 15.6)
+    let homeScreenTotalBalanceLabel = UIFont(name: "Avenir-Roman", size: 14.0)
+    let homeScreenTotalBalanceValueLabel = UIFont(name: "Avenir-Black", size: 39.0)
+    let homeScreenTotalBalanceValueLabelDecimals = UIFont(name: "Avenir-Black", size: 15.6)
 
     //Transaction cell
-    let transactionCellUsernameLabel = UIFont(name: "AvenirLTStd-Heavy", size: 15.0)
-    let transactionCellDescriptionLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
-    let transactionCellValueLabel = UIFont(name: "AvenirLTStd-Black", size: 12.0)
-    let transactionDateValueLabel = UIFont(name: "AvenirLTStd-Medium", size: 12.0)
+    let transactionCellUsernameLabel = UIFont(name: "Avenir-Heavy", size: 15.0)
+    let transactionCellDescriptionLabel = UIFont(name: "Avenir-Roman", size: 14.0)
+    let transactionCellValueLabel = UIFont(name: "Avenir-Black", size: 12.0)
+    let transactionDateValueLabel = UIFont(name: "Avenir-Medium", size: 12.0)
 
     //View transaction screen
-    let transactionScreenCurrencyValueLabel = UIFont(name: "AvenirLTStd-Black", size: 90.0)
-    let transactionScreenSubheadingLabel = UIFont(name: "AvenirLTStd-Medium", size: 13.0)
-    let transactionScreenTextLabel = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
-    let transactionScreenTxIDLabel = UIFont(name: "AvenirLTStd-Roman", size: 13.0)
-    let transactionListEmptyTitleLabel = UIFont(name: "AvenirLTStd-Black", size: 33.0)
-    let transactionListEmptyMessageLabel = UIFont(name: "AvenirLTStd-Medium", size: 14.0)
-    let transactionFeeLabel = UIFont(name: "AvenirLTStd-Heavy", size: 14.0)
+    let transactionScreenCurrencyValueLabel = UIFont(name: "Avenir-Black", size: 90.0)
+    let transactionScreenSubheadingLabel = UIFont(name: "Avenir-Medium", size: 13.0)
+    let transactionScreenTextLabel = UIFont(name: "Avenir-Roman", size: 14.0)
+    let transactionScreenTxIDLabel = UIFont(name: "Avenir-Roman", size: 13.0)
+    let transactionListEmptyTitleLabel = UIFont(name: "Avenir-Black", size: 33.0)
+    let transactionListEmptyMessageLabel = UIFont(name: "Avenir-Medium", size: 14.0)
+    let transactionFeeLabel = UIFont(name: "Avenir-Heavy", size: 14.0)
 
     // Sending tari screen
 
@@ -234,34 +234,34 @@ struct Fonts: Loopable {
     let sendingTariTitleLabelSecond = UIFont(name: "Avenir-Black", size: 18.0)
 
     //Navigation bar
-    let navigationBarTitle = UIFont(name: "AvenirLTStd-Heavy", size: 16.5) //Design spec size is 14.0
+    let navigationBarTitle = UIFont(name: "Avenir-Heavy", size: 16.5) //Design spec size is 14.0
 
     //Popup User feedback
-    let feedbackPopupTitle = UIFont(name: "AvenirLTStd-Light", size: 18)
-    let feedbackPopupHeavy = UIFont(name: "AvenirLTStd-Black", size: 18)
-    let feedbackPopupDescription = UIFont(name: "AvenirLTStd-Medium", size: 14)
+    let feedbackPopupTitle = UIFont(name: "Avenir-Light", size: 18)
+    let feedbackPopupHeavy = UIFont(name: "Avenir-Black", size: 18)
+    let feedbackPopupDescription = UIFont(name: "Avenir-Medium", size: 14)
 
     //Simple text button
-    let textButton = UIFont(name: "AvenirLTStd-Medium", size: 14)
+    let textButton = UIFont(name: "Avenir-Medium", size: 14)
 
     //Intro to wallet
-    let introTitleBold = UIFont(name: "AvenirLTStd-Black", size: 18)
-    let introTitle = UIFont(name: "AvenirLTStd-Light", size: 18)
+    let introTitleBold = UIFont(name: "Avenir-Black", size: 18)
+    let introTitle = UIFont(name: "Avenir-Light", size: 18)
 
     //Add recipient view
-    let searchContactsInputBoxText = UIFont(name: "AvenirLTStd-Roman", size: 14.0)
-    let contactCellAlias = UIFont(name: "AvenirLTStd-Heavy", size: 15.0)
-    let contactCellAliasLetter = UIFont(name: "AvenirLTStd-Heavy", size: 24.0)
+    let searchContactsInputBoxText = UIFont(name: "Avenir-Roman", size: 14.0)
+    let contactCellAlias = UIFont(name: "Avenir-Heavy", size: 15.0)
+    let contactCellAliasLetter = UIFont(name: "Avenir-Heavy", size: 24.0)
 
     //Add amount screen
-    let keypadButton = UIFont(name: "AvenirLTStd-Heavy", size: 22.0)
-    let amountLabel = UIFont(name: "AvenirLTStd-Black", size: 80.0)
-    let warningBalanceLabel = UIFont(name: "AvenirLTStd-Heavy", size: 14.0)
-    let amountWarningLabel = UIFont(name: "AvenirLTStd-Roman", size: 13.0)
+    let keypadButton = UIFont(name: "Avenir-Heavy", size: 22.0)
+    let amountLabel = UIFont(name: "Avenir-Black", size: 80.0)
+    let warningBalanceLabel = UIFont(name: "Avenir-Heavy", size: 14.0)
+    let amountWarningLabel = UIFont(name: "Avenir-Roman", size: 13.0)
 
     //Add note screen
-    let addNoteTitleLabel = UIFont(name: "AvenirLTStd-Heavy", size: 16.0)
-    let addNoteInputView = UIFont(name: "AvenirLTStd-Medium", size: 20.0)
+    let addNoteTitleLabel = UIFont(name: "Avenir-Heavy", size: 16.0)
+    let addNoteInputView = UIFont(name: "Avenir-Medium", size: 20.0)
 
     //Add note screen
     let scannerTitleLabel = UIFont(name: "Avenir-Heavy", size: 16.0)
