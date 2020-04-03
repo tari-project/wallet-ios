@@ -48,9 +48,11 @@ extension TransactionsTableViewController {
         let sectionHeaderView = UIView()
         let sectionHeaderLabel = UILabel()
 
+        let labelText = self.tableView(tableView, titleForHeaderInSection: section)
+
         sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
         sectionHeaderLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
-        sectionHeaderLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
+        sectionHeaderLabel.text = labelText
         sectionHeaderLabel.backgroundColor = Theme.shared.colors.transactionTableBackground?.withAlphaComponent(0.8)
         sectionHeaderLabel.textAlignment = .center
 
@@ -62,6 +64,16 @@ extension TransactionsTableViewController {
 
         sectionHeaderView.addSubview(sectionHeaderLabel)
 
+        if labelText == pendingLabelText {
+            sectionHeaderView.addSubview(pendingAnimationContainer)
+            pendingAnimationContainer.translatesAutoresizingMaskIntoConstraints = false
+            pendingAnimationContainer.widthAnchor.constraint(equalToConstant: 40).isActive = true
+            pendingAnimationContainer.heightAnchor.constraint(equalToConstant: 5).isActive = true
+            pendingAnimationContainer.centerYAnchor.constraint(equalTo: sectionHeaderLabel.centerYAnchor).isActive = true
+            pendingAnimationContainer.trailingAnchor.constraint(equalTo: sectionHeaderView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+            pendingAnimationContainer.play()
+        }
+
         return sectionHeaderView
     }
 
@@ -71,7 +83,7 @@ extension TransactionsTableViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 && showsPendingGroup {
-            return NSLocalizedString("Pending Transactions", comment: "Home view table of transactions")
+            return pendingLabelText
         } else {
             let index = showsPendingGroup ? section - 1 : section
 

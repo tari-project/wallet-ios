@@ -317,6 +317,10 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                 setFeeLabel(fee!.formattedPreciseWithOperator)
             }
 
+            if tx.status.0 != .mined {
+                navigationItem.title = NSLocalizedString("Payment In Progress", comment: "Navigation bar title on transaction view screen")
+            }
+
             //Hopefully we can add this back some time
             var statusEmoji = ""
 
