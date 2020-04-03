@@ -42,7 +42,7 @@ import UIKit
 
 class TransactionViewController: UIViewController, UITextFieldDelegate {
     let SIDE_PADDING: CGFloat = 25
-    let BOTTOM_HEADING_PADDING: CGFloat = 20
+    let BOTTOM_HEADING_PADDING: CGFloat = 12
     let VALUE_VIEW_HEIGHT_MULTIPLIER_FULL: CGFloat = 0.21
     let VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTENED: CGFloat = 0.18
 

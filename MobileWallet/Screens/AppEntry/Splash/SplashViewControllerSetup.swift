@@ -62,7 +62,6 @@ extension SplashViewController {
         titleLabel.isHidden = true
         let attributedTitleString = NSMutableAttributedString(string: NSLocalizedString("Private by default.\nUseful by design.", comment: "Title Label on the onboarding screen"))
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 10
         paragraphStyle.alignment = .center
         attributedTitleString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedTitleString.length))
         titleLabel.attributedText = attributedTitleString

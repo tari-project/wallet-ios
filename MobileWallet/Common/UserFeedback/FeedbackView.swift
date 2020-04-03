@@ -158,7 +158,6 @@ class FeedbackView: UIView {
     private func setDescription(_ description: String) {
         let attributedDescription = NSMutableAttributedString(string: description)
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 10
         paragraphStyle.alignment = .center
         attributedDescription.addAttribute(
             .paragraphStyle,

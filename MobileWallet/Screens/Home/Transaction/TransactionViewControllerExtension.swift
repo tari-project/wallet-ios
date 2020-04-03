@@ -105,7 +105,6 @@ extension TransactionViewController {
         valueLabel.font = Theme.shared.fonts.transactionScreenCurrencyValueLabel
         valueLabel.textColor = valueColor
         valueLabel.adjustsFontSizeToFitWidth = true
-        valueLabel.minimumScaleFactor = 0.2
         valueLabel.textAlignment = .center
 
         //Currency image
@@ -130,7 +129,7 @@ extension TransactionViewController {
         valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTENED, constant: 30)
 
         valueCenterYAnchorConstraint.isActive = false
-        valueLabel.centerYAnchor.constraint(equalTo: valueContainerView.centerYAnchor, constant: -22).isActive = true
+        valueLabel.centerYAnchor.constraint(equalTo: valueContainerView.centerYAnchor, constant: -20).isActive = true
 
         let feeLabel = UILabel()
         feeLabel.text = feeText
@@ -138,7 +137,7 @@ extension TransactionViewController {
         valueContainerView.addSubview(feeLabel)
 
         feeLabel.centerXAnchor.constraint(equalTo: valueContainerView.centerXAnchor).isActive = true
-        feeLabel.topAnchor.constraint(equalTo: valueLabel.bottomAnchor, constant: 12).isActive = true
+        feeLabel.topAnchor.constraint(equalTo: valueLabel.bottomAnchor, constant: -5).isActive = true
         feeLabel.font = Theme.shared.fonts.transactionFeeLabel
         feeLabel.textColor = Theme.shared.colors.transactionViewValueLabel
 
@@ -148,13 +147,12 @@ extension TransactionViewController {
         feeButton.setTitle(NSLocalizedString("Transaction Fee", comment: "Transaction view screen"), for: .normal)
         feeButton.setRightImage(Theme.shared.images.transactionFee!)
 
-        feeButton.topAnchor.constraint(equalTo: feeLabel.bottomAnchor, constant: 6).isActive = true
+        feeButton.topAnchor.constraint(equalTo: feeLabel.bottomAnchor, constant: 0).isActive = true
         feeButton.centerXAnchor.constraint(equalTo: valueContainerView.centerXAnchor).isActive = true
         feeButton.addTarget(self, action: #selector(feeButtonPressed), for: .touchUpInside)
     }
 
     func setupFromEmojis() {
-
         fromHeadingLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(fromHeadingLabel)
         fromHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
@@ -164,7 +162,7 @@ extension TransactionViewController {
 
         emojiButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(emojiButton)
-        emojiButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: BOTTOM_HEADING_PADDING).isActive = true
+        emojiButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 2).isActive = true
         emojiButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
         emojiButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
     }
@@ -186,7 +184,7 @@ extension TransactionViewController {
         contactNameHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         contactNameHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         contactNameHeadingLabel.text = NSLocalizedString("Contact Name", comment: "Transaction detail view")
-        contactNameHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 2).isActive = true
+        contactNameHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 3).isActive = true
         contactNameHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
 
         contactNameTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -228,11 +226,10 @@ extension TransactionViewController {
         noteHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         noteHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         noteHeadingLabel.text = NSLocalizedString("Note", comment: "Transaction detail view")
-        noteHeadingLabelTopAnchorConstraintContactNameShowing = noteHeadingLabel.topAnchor.constraint(equalTo: dividerView.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 1.5)
+        noteHeadingLabelTopAnchorConstraintContactNameShowing = noteHeadingLabel.topAnchor.constraint(equalTo: dividerView.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 2)
         noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = true
-        noteHeadingLabelTopAnchorConstraintContactNameMissing = noteHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 1.5)
+        noteHeadingLabelTopAnchorConstraintContactNameMissing = noteHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 3)
         noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = false
-
         noteHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
 
         noteLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -249,7 +246,6 @@ extension TransactionViewController {
     func setNoteText(_ text: String) {
         let attributedTitleString = NSMutableAttributedString(string: text)
         let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 4
         attributedTitleString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedTitleString.length))
         noteLabel.attributedText = attributedTitleString
     }
