@@ -54,7 +54,7 @@ class CommsConfig {
     var dbPath: String
     var dbName: String
 
-    init(privateKey: PrivateKey, transport: TransportType, databasePath: String, databaseName: String, publicAddress: String) throws {
+    init(privateKey: PrivateKey, transport: TransportType, databasePath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64) throws {
         dbPath = databasePath
         dbName = databaseName
         let publicPointer = UnsafeMutablePointer<Int8>(mutating: (publicAddress as NSString).utf8String)
@@ -67,6 +67,7 @@ class CommsConfig {
             dbPointer,
             pathPointer,
             privateKey.pointer,
+            discoveryTimeoutSec,
             UnsafeMutablePointer<Int32>(&errorCode)
         )
         guard errorCode == 0 else {
