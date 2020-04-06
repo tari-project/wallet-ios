@@ -53,6 +53,7 @@ enum PublicKeyError: Error {
 class PublicKey {
     private var ptr: OpaquePointer
     private var cachedEmojiId: String?
+    private static let EMOJIS_IN_PUB_KEY = 33 //Used for some pre validation before hitting the FFI
 
     var pointer: OpaquePointer {
         return ptr
@@ -122,7 +123,7 @@ class PublicKey {
             .replacingOccurrences(of: "|", with: "")
             .replacingOccurrences(of: "`", with: "")
             .replacingOccurrences(of: " ", with: "")
-        if cleanEmojis.count < 33 {
+        if cleanEmojis.count < PublicKey.EMOJIS_IN_PUB_KEY {
             throw PublicKeyError.invalidEmojis
         }
 
@@ -196,11 +197,41 @@ class PublicKey {
             return
         } catch {}
 
+        //Attempt to strip out a valid emoji ID from the string and init again
+        if any.count >= PublicKey.EMOJIS_IN_PUB_KEY && PublicKey.containsEmojis(any) {
+            do {
+                try self.init(emojis: PublicKey.filterEmojis(any))
+                return
+            } catch {}
+        }
+
         throw PublicKeyError.cantDerivePublicKeyFromString
     }
 
     init(pointer: OpaquePointer) {
         ptr = pointer
+    }
+
+    private static func containsEmojis(_ text: String) -> Bool {
+        for scalar in text.unicodeScalars {
+            if scalar.properties.isEmoji {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    private static func filterEmojis(_ text: String) -> String {
+        var emojis = ""
+
+        for scalar in text.unicodeScalars {
+            if scalar.properties.isEmoji {
+                emojis.append(Character(scalar))
+            }
+        }
+
+        return emojis
     }
 
     deinit {

@@ -162,7 +162,7 @@ struct Colors: Loopable {
 
     //Amount screen
     let keypadButton = UIColor(named: "KeypadButton")
-    let amountWarning = UIColor(named: "AmountWarning")
+    let warningBoxBorder = UIColor(named: "WarningBox")
     let amountWarningLabel = UIColor(named: "AmountWarningLabel")
     let amountLabel = UIColor(named: "InputText")
 
@@ -229,7 +229,6 @@ struct Fonts: Loopable {
     let transactionFeeLabel = UIFont(name: "Avenir-Heavy", size: 14.0)
 
     // Sending tari screen
-
     let sendingTariTitleLabelFirst = UIFont(name: "Avenir-Light", size: 18.0)
     let sendingTariTitleLabelSecond = UIFont(name: "Avenir-Black", size: 18.0)
 
@@ -256,7 +255,7 @@ struct Fonts: Loopable {
     //Add amount screen
     let keypadButton = UIFont(name: "Avenir-Heavy", size: 22.0)
     let amountLabel = UIFont(name: "Avenir-Black", size: 80.0)
-    let warningBalanceLabel = UIFont(name: "Avenir-Heavy", size: 14.0)
+    let warningBoxTitleLabel = UIFont(name: "Avenir-Heavy", size: 14.0)
     let amountWarningLabel = UIFont(name: "Avenir-Roman", size: 13.0)
 
     //Add note screen

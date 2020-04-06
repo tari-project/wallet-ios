@@ -309,8 +309,7 @@ class ScanViewController: UIViewController {
             let publicKey = try PublicKey(deeplink: qrText)
 
             self.actionDelegate?.onAdd(publicKey: publicKey)
-            let generator = UINotificationFeedbackGenerator()
-            generator.notificationOccurred(.success)
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
         } catch {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Scanning error", comment: "Scanner view"),

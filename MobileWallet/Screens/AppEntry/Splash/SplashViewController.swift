@@ -213,13 +213,16 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         if TariLib.shared.walletExists {
             //Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
             authenticateUser {
-                self.startAnimation {
-                    self.onTorSuccess {
-                        self.startExistingWallet {
-                            self.navigateToHome()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
+                    guard let self = self else { return }
+                    self.startAnimation {
+                        self.onTorSuccess {
+                            self.startExistingWallet {
+                                self.navigateToHome()
+                            }
                         }
                     }
-                }
+                })
             }
 
         } else {
@@ -309,7 +312,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
     func startAnimation(onComplete: @escaping () -> Void) {
         #if targetEnvironment(simulator)
-          animationContainer.animationSpeed = 5
+          //animationContainer.animationSpeed = 5
         #endif
 
         animationContainer.play(
