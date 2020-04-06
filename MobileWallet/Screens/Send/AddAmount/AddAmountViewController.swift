@@ -419,7 +419,7 @@ extension AddAmountViewController {
         warningView.layer.cornerRadius = 12
         warningView.layer.masksToBounds = true
         warningView.layer.borderWidth = 1
-        warningView.layer.borderColor = Theme.shared.colors.amountWarning?.cgColor
+        warningView.layer.borderColor = Theme.shared.colors.warningBoxBorder?.cgColor
         warningView.setContentCompressionResistancePriority(.required, for: .vertical)
 
         let warningStackView = UIStackView()
@@ -442,11 +442,11 @@ extension AddAmountViewController {
         warningBalanceIcon.widthAnchor.constraint(equalToConstant: 11).isActive = true
         warningBalanceIcon.heightAnchor.constraint(equalToConstant: 11).isActive = true
         warningBalanceIcon.contentMode = .scaleAspectFit
-        warningBalanceIcon.tintColor = Theme.shared.colors.amountWarning
+        warningBalanceIcon.tintColor = Theme.shared.colors.warningBoxBorder
         warningBalanceStackView.addArrangedSubview(warningBalanceIcon)
         warningBalanceStackView.addArrangedSubview(warningBalanceLabel)
-        warningBalanceLabel.font = Theme.shared.fonts.warningBalanceLabel
-        warningBalanceLabel.textColor = Theme.shared.colors.amountWarning
+        warningBalanceLabel.font = Theme.shared.fonts.warningBoxTitleLabel
+        warningBalanceLabel.textColor = Theme.shared.colors.warningBoxBorder
 
         warningStackView.addArrangedSubview(warningLabel)
         warningLabel.font = Theme.shared.fonts.amountWarningLabel

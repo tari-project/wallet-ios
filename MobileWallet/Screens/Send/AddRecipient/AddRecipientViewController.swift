@@ -54,6 +54,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     private let pasteEmojisView = PasteEmojisView()
     private var pasteEmojisViewBottomAnchorConstraint = NSLayoutConstraint()
     private let dimView = UIView()
+    private var currentTextInputContent = "" //Used to check if something actually changed to avoid unnecessary ffi calls
 
     private var isEditingSearchBox: Bool = false {
         didSet {
@@ -65,9 +66,18 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         }
     }
 
+    let errorMessageView: ErrorView = ErrorView()
+
     private var selectedRecipientPublicKey: PublicKey? = nil {
         didSet {
-            if let _ = selectedRecipientPublicKey {
+            if let pubKey = selectedRecipientPublicKey {
+                guard pubKey.hex.0 != TariLib.shared.tariWallet?.publicKey.0?.hex.0 else {
+                    errorMessageView.message = NSLocalizedString("Sorry, you cannot send Tari to yourself", comment: "Add recipient view")
+                    return
+                }
+
+                errorMessageView.message = ""
+
                 inputBox.textAlignment = .center
                 inputBox.returnKeyType = .continue
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -143,8 +153,6 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
         styleNavigatorBar(isHidden: false)
 
-        checkClipboard()
-
         NotificationCenter.default.addObserver(self, selector: #selector(showClipboardEmojis), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hideClipboardEmojis), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -172,8 +180,13 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     func textFieldDidChangeSelection(_ textField: UITextField) {
         if let text = textField.text {
-            contactsTableVC.filter = text.trimmingCharacters(in: .whitespaces)
+            //Check if something actually changed to avoid unnecessary ffi calls and checks
+            guard currentTextInputContent != text else {
+                return
+            }
 
+            currentTextInputContent = text
+            contactsTableVC.filter = text.trimmingCharacters(in: .whitespaces)
             do {
                 let pubKey = try PublicKey(any: text)
 
@@ -187,18 +200,26 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                 if selectedRecipientPublicKey != nil {
                     selectedRecipientPublicKey = nil
                 }
+
+                errorMessageView.message = ""
             }
         }
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if selectedRecipientPublicKey != nil {
+        if selectedRecipientPublicKey != nil && selectedRecipientPublicKey?.hex.0 != TariLib.shared.tariWallet?.publicKey.0?.hex.0 {
             onContinue()
+        } else if contactsTableVC.isEmptyList() {
+            errorMessageView.message = NSLocalizedString("Invalid Emoji ID", comment: "Add recipient view")
         }
 
         dismissKeyboard()
 
         return true
+    }
+
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        checkClipboard()
     }
 
     private func setup() {
@@ -215,6 +236,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         contactsTableVC.tableView.keyboardDismissMode = .interactive
         inputBox.delegate = self
         setupPasteEmojisView()
+        setupErrorView()
     }
 
     private func setupContactInputBar() {
@@ -301,6 +323,16 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         pasteEmojisView.layer.shadowOffset = CGSize(width: 0, height: 5)
         pasteEmojisView.layer.shadowRadius = 10
         pasteEmojisView.layer.shadowColor = Theme.shared.colors.navigationBottomShadow!.cgColor
+    }
+
+    private func setupErrorView() {
+        errorMessageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(errorMessageView)
+
+        errorMessageView.topAnchor.constraint(equalTo: inputContainerView.bottomAnchor).isActive = true
+        errorMessageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
+        errorMessageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        errorMessageView.heightAnchor.constraint(equalToConstant: 35).isActive = true
     }
 
     private func setupDimView() {
@@ -414,7 +446,14 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     func onSelect(publicKey: PublicKey) {
+        //This can be triggered by the paste emoji function as well as the input box, this stops everything for triggering multipe times
+        guard selectedRecipientPublicKey?.hex.0 != publicKey.hex.0 else {
+            return
+        }
+
         inputBox.rightView = nil
+
+        TariLogger.verbose("Public key set")
 
         //Hide table and show continue button
         selectedRecipientPublicKey = publicKey

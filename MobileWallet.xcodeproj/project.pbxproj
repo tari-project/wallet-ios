@@ -10,9 +10,6 @@
 		0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012562E2371D81500A9C067 /* SplashViewController.swift */; };
 		001256302371D81500A9C067 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012562E2371D81500A9C067 /* SplashViewController.swift */; };
 		001256312371D81500A9C067 /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0012562E2371D81500A9C067 /* SplashViewController.swift */; };
-		0012563B2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
-		0012563C2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
-		0012563D2371E89300A9C067 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 0012563A2371E89300A9C067 /* SplashAnimation.json */; };
 		001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CDB238011CA00FA7002 /* PublicKey.swift */; };
 		001F6CDD238011CA00FA7002 /* PublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CDB238011CA00FA7002 /* PublicKey.swift */; };
 		001F6CDE238011CA00FA7002 /* PublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CDB238011CA00FA7002 /* PublicKey.swift */; };
@@ -149,6 +146,12 @@
 		00A66517243772A70046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66516243772A70046E730 /* pendingTx.json */; };
 		00A66518243772A70046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66516243772A70046E730 /* pendingTx.json */; };
 		00A66519243772A70046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66516243772A70046E730 /* pendingTx.json */; };
+		00A6651F2437AD9A0046E730 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A6651E2437AD9A0046E730 /* SplashAnimation.json */; };
+		00A665202437AD9A0046E730 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A6651E2437AD9A0046E730 /* SplashAnimation.json */; };
+		00A665212437AD9A0046E730 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A6651E2437AD9A0046E730 /* SplashAnimation.json */; };
+		00A66523243B3E380046E730 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66522243B3E380046E730 /* ErrorView.swift */; };
+		00A66524243B3E380046E730 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66522243B3E380046E730 /* ErrorView.swift */; };
+		00A66525243B3E380046E730 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66522243B3E380046E730 /* ErrorView.swift */; };
 		00A677982373DA58001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A677992373DA59001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A6779A2373DA61001A853E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A12366E08B007B332D /* Main.storyboard */; };
@@ -388,7 +391,6 @@
 
 /* Begin PBXFileReference section */
 		0012562E2371D81500A9C067 /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
-		0012563A2371E89300A9C067 /* SplashAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SplashAnimation.json; sourceTree = "<group>"; };
 		001F6CDB238011CA00FA7002 /* PublicKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKey.swift; sourceTree = "<group>"; };
 		001F6CDF2380198D00FA7002 /* Contacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contacts.swift; sourceTree = "<group>"; };
 		001F6CE32380253B00FA7002 /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
@@ -437,6 +439,8 @@
 		00A057AE23D875840029C22A /* TariEventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariEventBus.swift; sourceTree = "<group>"; };
 		00A057B323D979DA0029C22A /* UserFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFeedback.swift; sourceTree = "<group>"; };
 		00A66516243772A70046E730 /* pendingTx.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pendingTx.json; sourceTree = "<group>"; };
+		00A6651E2437AD9A0046E730 /* SplashAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SplashAnimation.json; sourceTree = "<group>"; };
+		00A66522243B3E380046E730 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		00A6779D23743696001A853E /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		00A9190A242CDD7700B7F14D /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		00A994322396434B007D9990 /* QRButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRButton.swift; sourceTree = "<group>"; };
@@ -719,6 +723,7 @@
 				0087A1A623F4235400B89EE7 /* ContactsTableViewController.swift */,
 				0087A1A523F4235400B89EE7 /* ScanViewController.swift */,
 				0039B1B123FA925500F91E0F /* PasteEmojisView.swift */,
+				00A66522243B3E380046E730 /* ErrorView.swift */,
 			);
 			path = AddRecipient;
 			sourceTree = "<group>";
@@ -1067,7 +1072,7 @@
 		BF191A2E23E5B07F00D33C85 /* SplashAnimation */ = {
 			isa = PBXGroup;
 			children = (
-				0012563A2371E89300A9C067 /* SplashAnimation.json */,
+				00A6651E2437AD9A0046E730 /* SplashAnimation.json */,
 			);
 			path = SplashAnimation;
 			sourceTree = "<group>";
@@ -1280,13 +1285,13 @@
 				00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */,
 				BF162C01241A510D00647740 /* loader.mp4 in Resources */,
 				BF5537B92412B9BB0071328C /* purple_orb.mp4 in Resources */,
+				00A6651F2437AD9A0046E730 /* SplashAnimation.json in Resources */,
 				00E2BCAC236AB28200C2A105 /* TransactionTableTableViewCell.xib in Resources */,
 				BF0A779C241F904D00861A3E /* faceId@3x.png in Resources */,
 				BF191A2923E5AFA200D33C85 /* img_0.png in Resources */,
 				00E491A82366E08F007B332D /* Assets.xcassets in Resources */,
 				BF191A1723E5AFA200D33C85 /* img_4.png in Resources */,
 				BF191A3223E70D3200D33C85 /* NerdEmojiAnimation.json in Resources */,
-				0012563B2371E89300A9C067 /* SplashAnimation.json in Resources */,
 				BF0A7766241EEA0A00861A3E /* FaceID.json in Resources */,
 				BF0A77A4241F904D00861A3E /* faceId@2x.png in Resources */,
 				BF191A1D23E5AFA200D33C85 /* img_6.png in Resources */,
@@ -1317,6 +1322,7 @@
 				BF191A3323E70D3200D33C85 /* NerdEmojiAnimation.json in Resources */,
 				BF0A779D241F904D00861A3E /* faceId@3x.png in Resources */,
 				BFF1EDA82408226200CC9EF6 /* sending-background.mp4 in Resources */,
+				00A665202437AD9A0046E730 /* SplashAnimation.json in Resources */,
 				BF0A77A1241F904D00861A3E /* faceId.png in Resources */,
 				00A677982373DA58001A853E /* LaunchScreen.storyboard in Resources */,
 				BF0A77A5241F904D00861A3E /* faceId@2x.png in Resources */,
@@ -1329,7 +1335,6 @@
 				BFF1EDA42408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
 				00A6779A2373DA61001A853E /* Main.storyboard in Resources */,
 				BF162BFD241A42C100647740 /* LoadingButtonAnimation.json in Resources */,
-				0012563C2371E89300A9C067 /* SplashAnimation.json in Resources */,
 				BF191A2723E5AFA200D33C85 /* img_3.png in Resources */,
 				BF191A2A23E5AFA200D33C85 /* img_0.png in Resources */,
 				BF191A2123E5AFA200D33C85 /* img_1.png in Resources */,
@@ -1350,6 +1355,7 @@
 				BF191A3423E70D3200D33C85 /* NerdEmojiAnimation.json in Resources */,
 				BF0A779E241F904D00861A3E /* faceId@3x.png in Resources */,
 				BFF1EDA92408226200CC9EF6 /* sending-background.mp4 in Resources */,
+				00A665212437AD9A0046E730 /* SplashAnimation.json in Resources */,
 				BF0A77A2241F904D00861A3E /* faceId.png in Resources */,
 				00A677992373DA59001A853E /* LaunchScreen.storyboard in Resources */,
 				BF0A77A6241F904D00861A3E /* faceId@2x.png in Resources */,
@@ -1362,7 +1368,6 @@
 				BFF1EDA52408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
 				00A6779B2373DA61001A853E /* Main.storyboard in Resources */,
 				BF162BFE241A42C200647740 /* LoadingButtonAnimation.json in Resources */,
-				0012563D2371E89300A9C067 /* SplashAnimation.json in Resources */,
 				BF191A2823E5AFA200D33C85 /* img_3.png in Resources */,
 				BF191A2B23E5AFA200D33C85 /* img_0.png in Resources */,
 				BF191A2223E5AFA200D33C85 /* img_1.png in Resources */,
@@ -1615,6 +1620,7 @@
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,
 				00A057B423D979DA0029C22A /* UserFeedback.swift in Sources */,
 				00A994332396434B007D9990 /* QRButton.swift in Sources */,
+				00A66523243B3E380046E730 /* ErrorView.swift in Sources */,
 				004277F723E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				00230B022376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
 				004997AB2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
@@ -1645,6 +1651,7 @@
 				BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */,
 				001F6CE52380253B00FA7002 /* Contact.swift in Sources */,
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
+				00A66524243B3E380046E730 /* ErrorView.swift in Sources */,
 				0053873124065F6C00901A68 /* SlideView.swift in Sources */,
 				BFE61E4924226A7E003DC99D /* NotificationManager.swift in Sources */,
 				0091D4AC23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
@@ -1798,6 +1805,7 @@
 				0091D4A923ED879E004BF7F7 /* Signature.swift in Sources */,
 				00BBD807237D755600EBF5E6 /* HelperFunctions.swift in Sources */,
 				0042780523E8421200AE7BD9 /* String.swift in Sources */,
+				00A66525243B3E380046E730 /* ErrorView.swift in Sources */,
 				00BBD80B237D80C800EBF5E6 /* Date.swift in Sources */,
 				0087A1AB23F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				001F6CEA2381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
@@ -2023,7 +2031,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 49;
+				CURRENT_PROJECT_VERSION = 54;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2039,6 +2047,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = Tari;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2057,7 +2066,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 49;
+				CURRENT_PROJECT_VERSION = 54;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2073,6 +2082,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
+				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = Tari;
 				PROVISIONING_PROFILE_SPECIFIER = "";

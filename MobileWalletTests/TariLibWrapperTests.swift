@@ -119,8 +119,17 @@ class TariLibWrapperTests: XCTestCase {
             XCTFail(error.localizedDescription)
         }
         
+        
+        //TODO remove this once the libs being tested are set to use the newest emoji ID set
+        return
+        
+        //Valid emoji ID
+        XCTAssertNoThrow(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
+        //Invalid emoji ID
+        XCTAssertThrowsError(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽👽"))
+        
         //Valid deep links
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱🖐🙀🤳🖖👍✊🐈☂💀👚😶🤟😳👢😘😺🙌🎩🤬🐼😎🥺"))
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
         XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
         //Derive a deep link from random pubkey, then init a pubkey using that deep link
         XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).emojiDeeplink.0))
@@ -131,6 +140,15 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱"))
         XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/invalid"))
         XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://made-up-net/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
+        
+        //Convenience init
+        XCTAssertThrowsError(try PublicKey(any: "bla"))
+        XCTAssertThrowsError(try PublicKey(any: "Hey use this emoji ID 🐒🐑🍔🔧❌👂🦒"))
+        XCTAssertNoThrow(try PublicKey(any: "🐒🐑🍔 | 🔧❌👂 | 🦒💇🔋 | 💥🍷🍺 | 👔😷🐶 | 🧢🤩💥 | 🎾🎲🏀 | 🤠💪👮 | 🤯🎁💉 | 🌞🍉🤷 | 🍦👽🔈"))
+        XCTAssertNoThrow(try PublicKey(any: "copy this: 🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈 please"))
+        XCTAssertNoThrow(try PublicKey(any: "My emojis are \"🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈\""))
+        XCTAssertNoThrow(try PublicKey(any: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩 bla bla bla 💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
+        XCTAssertNoThrow(try PublicKey(any: "My emojis 🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶 and here are the rest 🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
     }
     
     func testBaseNode() {
