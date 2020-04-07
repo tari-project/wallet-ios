@@ -188,7 +188,8 @@ class TariLibWrapperTests: XCTestCase {
                 transport: transport,
                 databasePath: databasePath,
                 databaseName: dbName,
-                publicAddress: address
+                publicAddress: address,
+                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
             )
             
             TariLogger.verbose("TariLib Logging path: \(loggingFilePath)")

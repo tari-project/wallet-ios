@@ -67,6 +67,7 @@ struct TariSettings {
     static let shared = TariSettings()
 
     let network: TariNetworks = .rincewind //TODO this will come from a build config
+    let discoveryTimeoutSec: UInt64 = 20
     let deeplinkURI = "tari"
 
     let userAgreementUrl = "https://tarilabs.com/user_agreement/"

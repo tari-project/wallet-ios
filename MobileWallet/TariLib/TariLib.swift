@@ -199,7 +199,7 @@ class TariLib {
         UserDefaults.standard.set(hex, forKey: PRIVATE_KEY_STORAGE_KEY)
 
         let transport = try transportType()
-        let commsConfig = try CommsConfig(privateKey: privateKey, transport: transport, databasePath: databasePath, databaseName: DATABASE_NAME, publicAddress: publicAddress)
+        let commsConfig = try CommsConfig(privateKey: privateKey, transport: transport, databasePath: databasePath, databaseName: DATABASE_NAME, publicAddress: publicAddress, discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec)
 
         tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
 
@@ -217,7 +217,8 @@ class TariLib {
                 transport: transport,
                 databasePath: databasePath,
                 databaseName: DATABASE_NAME,
-                publicAddress: publicAddress
+                publicAddress: publicAddress,
+                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
             )
 
             var loggingFilePath = TariLib.shared.logFilePath
