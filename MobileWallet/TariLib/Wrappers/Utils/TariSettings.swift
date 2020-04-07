@@ -75,13 +75,7 @@ struct TariSettings {
     let storeUrl = "https://store.tarilabs.com/"
     let bugReportEmail = "bug_reports@tari.com"
 
-    //For UI changes it can be a bit slow to keep waiting for tor to bootstrap.
-    //Set to false if you're just working on the UI.
-    #if targetEnvironment(simulator)
-    let torEnabled = false
-    #else
     let torEnabled = true
-    #endif
 
     let defaultBaseNodePool: [String] = [
         //Faucet

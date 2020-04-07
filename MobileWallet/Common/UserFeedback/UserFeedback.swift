@@ -62,7 +62,7 @@ class UserFeedback {
         let errorFeedbackView = FeedbackView()
 
         var descriptionText = description
-        if let e = error {
+        if TariSettings.shared.isDebug, let e = error {
             descriptionText.append("\n\(e.localizedDescription)")
         }
 
@@ -184,5 +184,28 @@ class UserFeedback {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         SwiftEntryKit.display(entry: containerView, using: attributes)
         TariLogger.verbose("User call to action store")
+    }
+
+    func showDebugConnectionStatus() {
+        let infoFeedbackView = FeedbackView()
+
+        let setupView = {
+            infoFeedbackView.setupInfo(title: "Connection status", description: ConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n\n")) {
+                SwiftEntryKit.dismiss()
+                TariEventBus.unregister(self, eventType: .connectionMonitorStatusChanged)
+            }
+        }
+
+        setupView()
+        TariEventBus.onMainThread(self, eventType: .connectionMonitorStatusChanged) { (_) in
+            setupView()
+        }
+
+        var attributes = defaultAttributes
+        attributes.displayDuration = .infinity
+        attributes.hapticFeedbackType = .none
+        attributes.entranceAnimation = .init(translate: .init(duration: 0.25, anchorPosition: .bottom, spring: .init(damping: 1, initialVelocity: 0)))
+
+        SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
     }
 }

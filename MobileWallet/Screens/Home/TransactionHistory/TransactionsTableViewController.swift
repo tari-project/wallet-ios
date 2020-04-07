@@ -135,7 +135,7 @@ class TransactionsTableViewController: UITableViewController {
         })
     }
 
-    private func refreshTable() {
+    func refreshTable() {
         guard let wallet = TariLib.shared.tariWallet else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Failed to access wallet", comment: "Home screen"),

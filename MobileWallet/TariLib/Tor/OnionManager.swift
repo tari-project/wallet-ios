@@ -31,7 +31,7 @@ public class OnionManager: NSObject {
     public static let shared = OnionManager()
 
     public static let CONTROL_ADDRESS = "127.0.0.1"
-    public static let CONTROL_PORT = "39069"
+    public static let CONTROL_PORT: UInt16 = 39069
 
     public static func getCookie() throws -> Data {
         if let cookieURL = OnionManager.torBaseConf.dataDirectory?.appendingPathComponent("control_auth_cookie") {
@@ -47,7 +47,7 @@ public class OnionManager: NSObject {
     }
 
     private var reachability: Reachability?
-
+    
     // Show Tor log in iOS' app log.
     private static let TOR_LOGGING = false
 
@@ -105,10 +105,12 @@ public class OnionManager: NSObject {
 
     // MARK: - OnionManager instance
     private var torController: TorController?
+    var delegate: OnionManagerDelegate?
 
     private var torThread: TorThread?
 
     public var state: TorState = .none
+        
     private var initRetry: DispatchWorkItem?
     private var failGuard: DispatchWorkItem?
 
@@ -122,38 +124,43 @@ public class OnionManager: NSObject {
         confs.append(["key": "ClientPreferIPv6ORPort", "value": "auto"])
         confs.append(["key": "clientuseipv4", "value": "1"])
 
-        torController?.setConfs(confs, completion: { _, _ in
+        torController?.setConfs(confs, completion: { [weak self] _, _ in
+            guard let self = self else { return }
+            self.torReconnect()
         })
-        torReconnect()
     }
 
     func torReconnect() {
         TariLogger.info("Tor reconnecting...")
-        torController?.sendCommand("RELOAD", arguments: nil, data: nil, observer: { _, _, _ -> Bool in
-            true
-        })
-        torController?.sendCommand("SIGNAL NEWNYM", arguments: nil, data: nil, observer: { _, _, _ -> Bool in
-            true
+        
+        torController?.resetConnection({ (complete) in
+            TariLogger.info("Tor reconnected")
         })
     }
-
-    func startTor(delegate: OnionManagerDelegate?) {
-        cancelInitRetry()
-        cancelFailGuard()
-        state = .started
-
-        if (self.torController == nil) {
-            self.torController = TorController(socketHost: "127.0.0.1", port: 39069)
-        }
-
-        do {
-            reachability = try Reachability()
-        } catch {
-            TariLogger.error("Failed to init Reachability", error: error)
+    
+    func reconnectOnNetworkChanges() {
+        if reachability == nil {
+            do {
+                reachability = try Reachability()
+            } catch {
+                TariLogger.error("Failed to init Reachability", error: error)
+            }
         }
 
         NotificationCenter.default.addObserver(self, selector: #selector(self.networkChange), name: NSNotification.Name.reachabilityChanged, object: nil)
         try? reachability?.startNotifier()
+    }
+
+    func startTor(delegate: OnionManagerDelegate) {
+        self.delegate = delegate
+        cancelInitRetry()
+        cancelFailGuard()
+        
+        state = .started
+
+        if (self.torController == nil) {
+            self.torController = TorController(socketHost: OnionManager.CONTROL_ADDRESS, port: OnionManager.CONTROL_PORT)
+        }
 
         if ((self.torThread == nil) || (self.torThread?.isCancelled ?? true)) {
             self.torThread = nil
@@ -204,31 +211,37 @@ public class OnionManager: NSObject {
             do {
                 let cookie = try OnionManager.getCookie()
 
-                self.torController?.authenticate(with: cookie, completion: { [weak self] success, _ in
+                self.torController?.authenticate(with: cookie, completion: { [weak self] success, error in
                     guard let self = self else { return }
 
                     if success {
-                        delegate?.torPortsOpened()
-                        TariLogger.verbose("Tor ports opened")
+                        self.delegate?.torPortsOpened()
+                        TariLogger.verbose("Tor cookie auth success and ports opened")
 
                         var completeObs: Any?
+                                                
                         completeObs = self.torController?.addObserver(forCircuitEstablished: { established in
-                            if established {
+                            if established || self.torController?.isConnected ?? false {
                                 self.state = .connected
                                 self.torController?.removeObserver(completeObs)
                                 self.cancelInitRetry()
                                 self.cancelFailGuard()
+                                self.reconnectOnNetworkChanges()
 
                                 TariLogger.info("Tor connection established")
 
-                                self.torController?.getSessionConfiguration({ configuration in
+                                self.torController?.getSessionConfiguration({ [weak self] configuration in
+                                    guard let self = self else { return }
                                     //TODO once below issue is resolved we can update to < 400.6.3 then the session config will not be nil
                                     //https://github.com/iCepa/Tor.framework/issues/60
-                                    delegate?.torConnFinished(configuration: configuration ?? URLSessionConfiguration.default)
+                                    self.delegate?.torConnFinished(configuration: configuration ?? URLSessionConfiguration.default)
                                 })
+                            } else {
+                                TariLogger.error("Tor connection not established")
                             }
                         }) // torController.addObserver
                         var progressObs: Any?
+                        
                         progressObs = self.torController?.addObserver(forStatusEvents: { [weak self]
                             (type: String, _: String, action: String, arguments: [String: String]?) -> Bool in
                             guard let self = self else { return false }
@@ -240,8 +253,8 @@ public class OnionManager: NSObject {
 
                                 TariLogger.verbose("Tor bootstrap progress: \(progress)")
 
-                                delegate?.torConnProgress(progress)
-
+                                self.delegate?.torConnProgress(progress)
+                                
                                 if progress >= 100 {
                                     self.torController?.removeObserver(progressObs)
                                 }
@@ -253,7 +266,7 @@ public class OnionManager: NSObject {
                         }) // torController.addObserver
                     } // if success (authenticate)
                     else {
-                        TariLogger.error("Didn't connect to control port.")
+                        TariLogger.error("Didn't connect to control port.", error: error)
                     }
                 }) // controller authenticate
             } catch {
@@ -273,7 +286,7 @@ public class OnionManager: NSObject {
 
             self.failGuard = DispatchWorkItem {
                 if self.state != .connected {
-                    delegate?.torConnError()
+                    self.delegate?.torConnError()
                 }
             }
 
@@ -292,18 +305,22 @@ public class OnionManager: NSObject {
      Experimental Tor shutdown.
      */
     @objc func stopTor() {
-        TariLogger.info("Stop tor")
+        TariLogger.info("Stopping tor")
 
         // under the hood, TORController will SIGNAL SHUTDOWN and set it's channel to nil, so
         // we actually rely on that to stop tor and reset the state of torController. (we can
         // SIGNAL SHUTDOWN here, but we can't reset the torController "isConnected" state.)
-        self.torController?.disconnect()
+        self.torController?.removeObserver(self)
+        torController?.disconnect()
 
-        self.torController = nil
+        torController = nil
 
         // More cleanup
-        self.torThread?.cancel()
-        self.state = .stopped
+        torThread?.cancel()
+        torThread = nil
+        state = .stopped
+        
+        reachability?.stopNotifier()
     }
 
     /**

@@ -105,7 +105,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         //Remove badges from push notifications
         UIApplication.shared.applicationIconBadgeNumber = 0
-        TariLib.shared.reconnectTor()
+        ConnectionMonitor.shared.start()
+        TariLib.shared.startTor()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -117,6 +118,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+        TariLib.shared.stopTor()
+        ConnectionMonitor.shared.stop()
     }
 
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
