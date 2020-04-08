@@ -68,8 +68,8 @@ public final class OnionConnector {
         OnionManager.shared.startTor(delegate: self)
     }
 
-    public func reconnect() {
-        OnionManager.shared.torReconnect()
+    public func stop() {
+        OnionManager.shared.stopTor()
     }
 }
 

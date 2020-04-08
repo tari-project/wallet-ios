@@ -147,6 +147,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         Deeplinker.checkDeepLink()
 
         checkImportSecondUtxo()
+        transactionTableVC.refreshTable()
     }
 
     override func viewDidDisappear(_ animated: Bool) {

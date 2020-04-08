@@ -123,6 +123,8 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             let (key, value) = arg0
             footer.append("<br/>\(key): \(value)")
         }
+        footer.append("<br/>")
+        footer.append(ConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "<br/>"))
         footer.append("</i></p>")
 
         return footer
@@ -203,6 +205,10 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
 
         alert.addAction(UIAlertAction(title: "Report a bug", style: .default, handler: { (_)in
             self.onSendFeedback()
+        }))
+
+        alert.addAction(UIAlertAction(title: "View connection status", style: .default, handler: { (_)in
+            UserFeedback.shared.showDebugConnectionStatus()
         }))
 
         if TariSettings.shared.isDebug {

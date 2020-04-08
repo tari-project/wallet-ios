@@ -119,10 +119,6 @@ class TariLibWrapperTests: XCTestCase {
             XCTFail(error.localizedDescription)
         }
         
-        
-        //TODO remove this once the libs being tested are set to use the newest emoji ID set
-        return
-        
         //Valid emoji ID
         XCTAssertNoThrow(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
         //Invalid emoji ID
@@ -158,7 +154,7 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertThrowsError(try BaseNode("5edb022af1c21d644dfceeea2fcc7d3fac7a57ab44cf775b9a6f692cb75ed767::vjkj44zpriqzrlve2qbiasrluaaxagrb6iuavzaascbujri6gw3rcmyd:18141"))
 
         //Valid peer
-        XCTAssertNoThrow(try BaseNode("5edb022af1c21d644dfceeea2fcc7d3fac7a57ab44cf775b9a6f692cb75ed767::/onion3/vjkj44zpriqzrlve2qbiasrluaaxagrb6iuavzaascbujri6gw3rcmyd:18141"))
+        XCTAssertNoThrow(try BaseNode("2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"))
     }
    
     func testWallet() {

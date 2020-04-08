@@ -82,9 +82,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         loadAnimation()
 
         handleWalletEvents()
-
-        //TODO start tor here
-        TariLib.shared.startTor()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -118,7 +115,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                     attributes.screenInteraction = .forward
 
                     if TariSettings.shared.isDebug {
-                        SwiftEntryKit.display(entry: self.progressFeedbackView, using: attributes)
+                        //SwiftEntryKit.display(entry: self.progressFeedbackView, using: attributes)
                     }
                 }
 
@@ -140,11 +137,9 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
             UserFeedback.shared.error(
                 title: NSLocalizedString("Tor connection error", comment: "Splash screen"),
-                description: NSLocalizedString("Could not establish a connection to the network. Retrying...", comment: "Splash screen"),
+                description: NSLocalizedString("Could not establish a connection to the network.", comment: "Splash screen"),
                 error: error
             )
-
-            TariLib.shared.startTor()
         }
     }
 

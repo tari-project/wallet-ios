@@ -59,6 +59,9 @@ public enum TariEventTypes: String {
     case torConnectionProgress = "tari-event-tor-connection-progress"
     case torConnected = "tari-event-tor-connected"
     case torConnectionFailed = "tari-event-tor-connection-failed"
+
+    //Connection monitor
+    case connectionMonitorStatusChanged = "connection-monitor-status-changed"
 }
 
 private let IDENTIFIER = "com.tari.eventbus"

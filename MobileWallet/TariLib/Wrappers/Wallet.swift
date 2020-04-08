@@ -227,7 +227,7 @@ class Wallet {
         }
 
         let baseNodeSyncCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { requestID, success in
-            TariEventBus.postToMainThread(.baseNodeSyncComplete)
+            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: success)
             let message = "Base node sync lib callback. requestID=\(requestID)"
             if success {
                 TariLogger.verbose("\(message) ✅")

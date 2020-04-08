@@ -152,6 +152,9 @@
 		00A66523243B3E380046E730 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66522243B3E380046E730 /* ErrorView.swift */; };
 		00A66524243B3E380046E730 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66522243B3E380046E730 /* ErrorView.swift */; };
 		00A66525243B3E380046E730 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66522243B3E380046E730 /* ErrorView.swift */; };
+		00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66526243C766D0046E730 /* ConnectionMonitor.swift */; };
+		00A66528243C766D0046E730 /* ConnectionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66526243C766D0046E730 /* ConnectionMonitor.swift */; };
+		00A66529243C766D0046E730 /* ConnectionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66526243C766D0046E730 /* ConnectionMonitor.swift */; };
 		00A677982373DA58001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A677992373DA59001A853E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00A6779A2373DA61001A853E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A12366E08B007B332D /* Main.storyboard */; };
@@ -441,6 +444,7 @@
 		00A66516243772A70046E730 /* pendingTx.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pendingTx.json; sourceTree = "<group>"; };
 		00A6651E2437AD9A0046E730 /* SplashAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SplashAnimation.json; sourceTree = "<group>"; };
 		00A66522243B3E380046E730 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
+		00A66526243C766D0046E730 /* ConnectionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionMonitor.swift; sourceTree = "<group>"; };
 		00A6779D23743696001A853E /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		00A9190A242CDD7700B7F14D /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		00A994322396434B007D9990 /* QRButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRButton.swift; sourceTree = "<group>"; };
@@ -699,6 +703,7 @@
 				00DD160E241CD41D00C955B4 /* BaseNode.swift */,
 				00F53A632428E44700448466 /* LogCleanup.swift */,
 				619190C6EBD050DC647D1D7B /* UTXO.swift */,
+				00A66526243C766D0046E730 /* ConnectionMonitor.swift */,
 			);
 			name = Utils;
 			path = Wrappers/Utils;
@@ -1597,6 +1602,7 @@
 				0091D4A723ED879E004BF7F7 /* Signature.swift in Sources */,
 				0053873024065F6C00901A68 /* SlideView.swift in Sources */,
 				00BBD816237EA67600EBF5E6 /* Wallet.swift in Sources */,
+				00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				004277FF23E2F1D700AE7BD9 /* UIImage.swift in Sources */,
@@ -1686,6 +1692,7 @@
 				00369D7E2422670300BAB95B /* DeepLinkManager.swift in Sources */,
 				BFE1FC0923E3ACD900BA5EEC /* WalletCreationViewController.swift in Sources */,
 				00947CC323CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
+				00A66528243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				0087A1AD23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				001F6CDD238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00BBD80F237DA07400EBF5E6 /* ByteVector.swift in Sources */,
@@ -1817,6 +1824,7 @@
 				004277DF23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */,
 				004997B52382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
 				00230B042376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
+				00A66529243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				619198F3E20DFABEB23F63FE /* UTXO.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
