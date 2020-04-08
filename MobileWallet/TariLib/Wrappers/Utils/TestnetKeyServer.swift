@@ -57,8 +57,21 @@ struct TestnetServerRequest: Codable {
 class TestnetKeyServer {
     private let MESSAGE_PREFIX = "Hello Tari from"
     private let SERVER = "https://faucet.tari.com" //TODO store in config
-    private let TARIBOT_MESSAGE1 = String(format: NSLocalizedString("💸 Here’s some %@!", comment: "TariBot transaction"), TariSettings.shared.network.currencyDisplayName)
-    private let TARIBOT_MESSAGE2 = String(format: NSLocalizedString("Nice work! Here's more Tari to fill your coffers. Be sure to hit the Store icon to see real, exclusive items you can redeem with your \"hard-earned\" testnet Tari.", comment: "TariBot transaction"), TariSettings.shared.network.currencyDisplayName)
+    private let TARIBOT_MESSAGE1 = String(
+        format: NSLocalizedString(
+            "💸 Here’s some %@!",
+            comment: "TariBot transaction"
+        ),
+        TariSettings.shared.network.currencyDisplayName
+    )
+    private let TARIBOT_MESSAGE2 = String(
+        format: NSLocalizedString(
+            "Nice work! Here's more Tari to fill your coffers. Be sure to hit the Store icon to see real, "
+            + "exclusive items you can redeem with your \"hard-earned\" testnet Tari.",
+            comment: "TariBot transaction"
+        ),
+        TariSettings.shared.network.currencyDisplayName
+    )
     private let signature: Signature
     private let url: URL
     private let wallet: Wallet
@@ -189,7 +202,12 @@ class TestnetKeyServer {
             }
 
             do {
-                let utxo = UTXO(privateKeyHex: key1, value: value1, message: self.TARIBOT_MESSAGE1, sourcePublicKeyHex: returnPubKeyHex)
+                let utxo = UTXO(
+                    privateKeyHex: key1,
+                    value: value1,
+                    message: self.TARIBOT_MESSAGE1,
+                    sourcePublicKeyHex: returnPubKeyHex
+                )
 
                 //Add TariBot as a contact
                 try self.wallet.addUpdateContact(alias: "TariBot", publicKeyHex: utxo.sourcePublicKeyHex)
@@ -211,7 +229,13 @@ class TestnetKeyServer {
             }
 
             do {
-                try self.storeUtxo(utxo: UTXO(privateKeyHex: key2, value: value2, message: self.TARIBOT_MESSAGE2, sourcePublicKeyHex: returnPubKeyHex))
+                try self.storeUtxo(
+                    utxo: UTXO(
+                        privateKeyHex: key2,
+                        value: value2,
+                        message: self.TARIBOT_MESSAGE2,
+                        sourcePublicKeyHex: returnPubKeyHex)
+                )
             } catch {
                 onRequestError(error)
                 return

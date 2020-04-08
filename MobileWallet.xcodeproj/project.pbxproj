@@ -485,7 +485,7 @@
 		00E2BCA8236AB28200C2A105 /* TransactionTableTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TransactionTableTableViewCell.xib; sourceTree = "<group>"; };
 		00E2BCB1236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewFloatingPanelDelegates.swift; sourceTree = "<group>"; };
 		00E2BCB9236B5BE800C2A105 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
-		00E491962366E08B007B332D /* Tari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tari.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E491962366E08B007B332D /* Tari Aurora.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Tari Aurora.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E491992366E08B007B332D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		00E4919B2366E08B007B332D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		00E491A22366E08B007B332D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -905,7 +905,7 @@
 		00E491972366E08B007B332D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				00E491962366E08B007B332D /* Tari.app */,
+				00E491962366E08B007B332D /* Tari Aurora.app */,
 				00E491B12366E08F007B332D /* MobileWalletTests.xctest */,
 				00E491BC2366E08F007B332D /* MobileWalletUITests.xctest */,
 				00B4D6AB2416A32200ED8318 /* MobileWalletUISnapshots.xctest */,
@@ -1170,7 +1170,7 @@
 			);
 			name = MobileWallet;
 			productName = MobileWallet;
-			productReference = 00E491962366E08B007B332D /* Tari.app */;
+			productReference = 00E491962366E08B007B332D /* Tari Aurora.app */;
 			productType = "com.apple.product-type.application";
 		};
 		00E491B02366E08F007B332D /* MobileWalletTests */ = {
@@ -2057,7 +2057,7 @@
 				);
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
-				PRODUCT_NAME = Tari;
+				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/MobileWallet/MobileWallet-bridging-header.h";
 				SWIFT_VERSION = 5.0;
@@ -2092,7 +2092,7 @@
 				);
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
-				PRODUCT_NAME = Tari;
+				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/MobileWallet/MobileWallet-bridging-header.h";
 				SWIFT_VERSION = 5.0;
@@ -2130,7 +2130,7 @@
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tari.app/Tari";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tari Aurora.app/Tari Aurora";
 			};
 			name = Debug;
 		};
@@ -2163,7 +2163,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "MobileWalletTests/MobileWalletTests-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tari.app/Tari";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Tari Aurora.app/Tari Aurora";
 			};
 			name = Release;
 		};
@@ -2172,7 +2172,6 @@
 			baseConfigurationReference = 540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Tari.app/Tari";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
@@ -2205,7 +2204,6 @@
 			baseConfigurationReference = F82E54DCA5096D029377C454 /* Pods-MobileWallet-MobileWalletUITests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Tari.app/Tari";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;

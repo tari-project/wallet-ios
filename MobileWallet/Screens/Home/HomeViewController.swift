@@ -221,12 +221,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             return
         }
 
-        DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
+        DispatchQueue.global().asyncAfter(deadline: .now() + 1.5) { [weak self] in
             guard let self = self else { return }
 
             do {
                 try keyServer.importSecondUtxo {
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
                         UserFeedback.shared.callToActionStore()
                     }
                 }
