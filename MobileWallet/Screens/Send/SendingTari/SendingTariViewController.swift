@@ -104,9 +104,14 @@ class SendingTariViewController: UIViewController {
             player = AVQueuePlayer()
             playerLayer = AVPlayerLayer(player: player)
             playerItem = AVPlayerItem(url: pathURL)
-            playerLooper = AVPlayerLooper(player: player,
-                                          templateItem: playerItem,
-                                          timeRange: CMTimeRange(start: CMTime.zero, end: CMTimeMake(value: duration, timescale: 1)))
+            playerLooper = AVPlayerLooper(
+                player: player,
+                templateItem: playerItem,
+                timeRange: CMTimeRange(
+                    start: CMTime.zero,
+                    end: CMTimeMake(value: duration, timescale: 1)
+                )
+            )
             playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
             playerLayer.frame = videoView.layer.bounds
             player.play()
