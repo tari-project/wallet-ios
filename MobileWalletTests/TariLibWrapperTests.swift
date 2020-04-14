@@ -121,6 +121,10 @@ class TariLibWrapperTests: XCTestCase {
         
         //Valid emoji ID
         XCTAssertNoThrow(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
+        
+        //Valid emoji ID
+        XCTAssertNoThrow(try PublicKey(emojis: "😷💍💎🐍🤩💺🚔💊🧗🤤😉⛅🐶✋🧦🧜🤠🧤💻🌸📌👸🥁🍇🏀🎲😵💇❓⛵💊🦋🎸"))
+        
         //Invalid emoji ID
         XCTAssertThrowsError(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽👽"))
         

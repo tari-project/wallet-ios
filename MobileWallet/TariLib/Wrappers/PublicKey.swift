@@ -127,9 +127,17 @@ class PublicKey {
             throw PublicKeyError.invalidEmojis
         }
 
-        let emojiPtr = UnsafeMutablePointer<Int8>(mutating: cleanEmojis)
+        let count = cleanEmojis.utf8.count + 1
+        let emojiPtr = UnsafeMutablePointer<Int8>.allocate(capacity: count)
+        cleanEmojis.withCString { (baseAddress) in
+            emojiPtr.initialize(from: baseAddress, count: count)
+        }
+
         var errorCode: Int32 = -1
         let result = emoji_id_to_public_key(emojiPtr, UnsafeMutablePointer<Int32>(&errorCode))
+
+        emojiPtr.deinitialize(count: count)
+
         guard errorCode == 0 else {
             throw PublicKeyError.generic(errorCode)
         }
