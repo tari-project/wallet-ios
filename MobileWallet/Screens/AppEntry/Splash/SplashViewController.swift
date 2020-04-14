@@ -323,6 +323,9 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
     private func navigateToHome() {
         if walletExistsInitially {
+            //Calling this here in case they did not succesfully register the token in the onboarding
+            NotificationManager.shared.requestAuthorization()
+
             let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
             if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
                 if let window = UIApplication.shared.windows.first {

@@ -63,6 +63,7 @@ class SendingTariViewController: UIViewController {
         }
     }
 
+    var recipientPubKey: PublicKey?
     var tariAmount: MicroTari?
 
     var animationStarted: Bool = false
@@ -226,6 +227,19 @@ class SendingTariViewController: UIViewController {
 
     //If a discovery has not happened, start listening so we know when to finish this send animation
     func startListeningForDiscovery() {
+        //TODO add this notification back when store and forward has been completed
+//        if let toPublicKey = recipientPubKey {
+//            do {
+//                try NotificationManager.shared.sendToRecipient(toPublicKey, onSuccess: {
+//                    TariLogger.info("Recipient has been notified")
+//                }) { (error) in
+//                    TariLogger.error("Failed to notify recipient", error: error)
+//                }
+//            } catch {
+//                TariLogger.error("Failed to notify recipient", error: error)
+//            }
+//        }
+
         TariLogger.info("Waiting for discovery callback")
         TariEventBus.onMainThread(self, eventType: .discoveryProcessComplete) { [weak self] (result) in
             guard let self = self else { return }
