@@ -78,6 +78,14 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     fileprivate let initialBackgroundColorView = UIView()
     private var testnetKeyServer: TestnetKeyServer?
 
+    private lazy var gradientLayer: CAGradientLayer = {
+        let gradient = CAGradientLayer()
+        gradient.frame = view.bounds
+        gradient.colors = CGColor.mainGradient
+        view.layer.insertSublayer(gradient, at: 0)
+        return gradient
+    }()
+
     var isFirstIntroToWallet: Bool {
         if UserDefaults.standard.string(forKey: INTRO_TO_WALLET_USER_DEFAULTS_KEY) == nil {
             return true
@@ -221,9 +229,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             return
         }
 
-        DispatchQueue.global().asyncAfter(deadline: .now() + 1.5) { [weak self] in
-            guard let self = self else { return }
-
+        DispatchQueue.global().asyncAfter(deadline: .now() + 1.5) {
             do {
                 try keyServer.importSecondUtxo {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
@@ -257,7 +263,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             string: balanceValueString,
             attributes: [
                 NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel!,
-                NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!
+                NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
+                NSAttributedString.Key.kern: -1.43
             ]
         )
 
@@ -265,7 +272,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         balanceLabelAttributedText.addAttributes(
             [
                 NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals!,
-                NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!
+                NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
+                NSAttributedString.Key.kern: -0.57
                 //NSAttributedString.Key.baselineOffset: balanceValueLabel.bounds.size.height - 4
             ],
             range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat) //Use fraction digits + 1 for "."
@@ -327,7 +335,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.view.layoutIfNeeded()
             })
         } else {
-            syncBaseNode()
             requestTestnetTokens()
             //User swipes down for the first time
             if isFirstIntroToWallet {
@@ -510,17 +517,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 extension HomeViewController {
     fileprivate func setup() {
         setupTopButtons()
-
         maxSendButtonBottomConstraint = sendButtonBottomConstraint.constant
         minSendButtonBottomConstraint = -view.safeAreaInsets.bottom - sendButton.frame.height - sendButtonBottomConstraint.constant - 20
 
         valueIcon.image = Theme.shared.images.currencySymbol
 
-        applyBackgroundGradient(
-            from: [Theme.shared.colors.gradient1!.cgColor, Theme.shared.colors.gradient1!.cgColor],
-            to: self.backgroundGradients,
-            duration: 2.5
-        )
+        applyBackgroundGradient(colors: CGColor.mainGradient, duration: 2.5)
 
         sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
         balanceLabel.text = NSLocalizedString("Available Balance", comment: "Home screen balance label")
@@ -556,7 +558,7 @@ extension HomeViewController {
 
         setupGrabber(fpc)
 
-        fpc.contentMode = .fitToBounds
+        fpc.contentMode = .static
 
         // Track a scroll view(or the siblings) in the content view controller.
         fpc.track(scrollView: transactionTableVC.tableView)
@@ -576,55 +578,30 @@ extension HomeViewController {
         backgroundColorIsNavColor = isNavColor
 
         if isNavColor {
-            self.applyBackgroundGradient(
-                from: self.backgroundGradients,
-                to: [Theme.shared.colors.navigationBarBackground!.cgColor, Theme.shared.colors.navigationBarBackground!.cgColor],
-                duration: 0.2
-            )
+            applyBackgroundGradient(colors: [Theme.shared.colors.navigationBarBackground!.cgColor, Theme.shared.colors.navigationBarBackground!.cgColor], duration: CATransaction.animationDuration())
         } else {
-            self.applyBackgroundGradient(
-                from: [Theme.shared.colors.navigationBarBackground!.cgColor, Theme.shared.colors.navigationBarBackground!.cgColor],
-                to: self.backgroundGradients,
-                duration: 0.1
-            )
+            applyBackgroundGradient(colors: CGColor.mainGradient, duration: CATransaction.animationDuration())
         }
     }
 
-    private func applyBackgroundGradient(from fromColors: [CGColor], to toColors: [CGColor], duration: TimeInterval) {
-        //If there is a gradient set, remove it first
-        if let sublayers = view.layer.sublayers {
-            for layer in sublayers {
-                if layer.name == BACKGROUND_GRADIENT_LAYER_NAME {
-                     layer.removeFromSuperlayer()
-                }
-            }
-        }
+    private func applyBackgroundGradient(colors: [CGColor], duration: TimeInterval) {
 
-        let GRADIENT_ANGLE: Double = 180
+        let locations: [NSNumber] = [0.0, 0.06, 0.18, 0.3, 0.39, 0.51, 0.68, 0.89, 1.0]
 
-        let gradient: CAGradientLayer = CAGradientLayer()
-        gradient.frame = view.bounds
-        gradient.colors = fromColors
-        gradient.locations = [0.0, 0.9]
-        gradient.name = BACKGROUND_GRADIENT_LAYER_NAME
+        gradientLayer.locations = locations
 
-        let x: Double! = GRADIENT_ANGLE / 360.0
-        let a = pow(sinf(Float(2 * Double.pi * ((x + 0.75) / 2.0))), 2.0)
-        let b = pow(sinf(Float(2 * Double.pi * ((x + 0.0) / 2))), 2)
-        let c = pow(sinf(Float(2 * Double.pi * ((x + 0.25) / 2))), 2)
-        let d = pow(sinf(Float(2 * Double.pi * ((x + 0.5) / 2))), 2)
+        let oldColors = gradientLayer.colors
+        let newColors = colors
 
-        gradient.endPoint = CGPoint(x: CGFloat(c), y: CGFloat(d))
-        gradient.startPoint = CGPoint(x: CGFloat(a), y: CGFloat(b))
+        let animation: CABasicAnimation = CABasicAnimation(keyPath: "colors")
+        animation.fromValue = oldColors
+        animation.toValue = newColors
+        animation.duration = duration
+        animation.isRemovedOnCompletion = false
+        animation.fillMode = CAMediaTimingFillMode.forwards
+        animation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
 
-        view.layer.insertSublayer(gradient, at: 0)
-
-        let gradientChangeAnimation = CABasicAnimation(keyPath: "colors")
-        gradientChangeAnimation.duration = duration
-        gradientChangeAnimation.toValue = toColors
-        gradientChangeAnimation.fillMode = CAMediaTimingFillMode.forwards
-        gradientChangeAnimation.isRemovedOnCompletion = false
-        gradient.add(gradientChangeAnimation, forKey: "colorChange")
+        gradientLayer.add(animation, forKey: "animateGradientColorChange")
     }
 
     private func setupTopButtons() {

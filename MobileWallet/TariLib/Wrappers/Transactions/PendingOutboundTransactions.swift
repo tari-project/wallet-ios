@@ -56,7 +56,9 @@ class PendingOutboundTransactions: TransactionsProtocol {
 
     var count: (UInt32, Error?) {
         var errorCode: Int32 = -1
-        let result = pending_outbound_transactions_get_length(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            pending_outbound_transactions_get_length(ptr, error)
+        })
         return (result, errorCode != 0 ? PendingOutboundTransactionsErrors.generic(errorCode) : nil)
     }
 
@@ -90,7 +92,9 @@ class PendingOutboundTransactions: TransactionsProtocol {
 
     func at(position: UInt32) throws -> PendingOutboundTransaction {
         var errorCode: Int32 = -1
-        let pendingOutboundTransactionPointer = pending_outbound_transactions_get_at(ptr, position, UnsafeMutablePointer<Int32>(&errorCode))
+        let pendingOutboundTransactionPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+            pending_outbound_transactions_get_at(ptr, position, error)
+        })
         guard errorCode == 0 else {
             throw PendingOutboundTransactionsErrors.generic(errorCode)
         }

@@ -53,7 +53,9 @@ class Contact {
 
     var alias: (String, Error?) {
         var errorCode: Int32 = -1
-        let aliasPointer = contact_get_alias(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let aliasPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+            contact_get_alias(ptr, error)
+        })
         guard errorCode == 0 else {
             return ("", ContactError.generic(errorCode))
         }
@@ -63,7 +65,9 @@ class Contact {
 
     var publicKey: (PublicKey?, Error?) {
         var errorCode: Int32 = -1
-        let result = PublicKey(pointer: contact_get_public_key(ptr, UnsafeMutablePointer<Int32>(&errorCode)))
+        let result = withUnsafeMutablePointer( to: &errorCode, { error in
+            PublicKey(pointer: contact_get_public_key(ptr, error))
+        })
         guard errorCode == 0 else {
             return (nil, ContactError.generic(errorCode))
         }
@@ -78,7 +82,9 @@ class Contact {
     init(alias: String, publicKey: PublicKey) throws {
         let aliasPointer = UnsafeMutablePointer<Int8>(mutating: (alias as NSString).utf8String)
         var errorCode: Int32 = -1
-        let result = contact_create(aliasPointer, publicKey.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            contact_create(aliasPointer, publicKey.pointer, error)
+        })
         guard errorCode == 0 else {
             throw ContactError.generic(errorCode)
         }

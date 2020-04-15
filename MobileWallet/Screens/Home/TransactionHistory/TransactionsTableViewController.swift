@@ -48,8 +48,16 @@ protocol TransactionsTableViewDelegate: class {
 
 class TransactionsTableViewController: UITableViewController {
     let CELL_IDENTIFIER = "TransactionTableTableViewCell"
+    let SECTION_HEADER_HEIGHT: CGFloat = 35
     weak var actionDelegate: TransactionsTableViewDelegate?
     var refreshTransactionControl = UIRefreshControl()
+    var isRefreshing = false {
+        didSet {
+            //Header view that contains the loading animation needs to update
+            self.tableView.reloadData()
+        }
+    }
+    let animatedRefresher = AnimatedRefreshingView()
     private var lastContentOffset: CGFloat = 0
     private var lastScrollDirection: ScrollDirection = .up
 
@@ -77,6 +85,7 @@ class TransactionsTableViewController: UITableViewController {
         var animationContainer = AnimationView()
         animationContainer.animation = animation
         animationContainer.loopMode = .loop
+        animationContainer.backgroundBehavior = .pauseAndRestore
         return animationContainer
     }()
 
@@ -86,8 +95,11 @@ class TransactionsTableViewController: UITableViewController {
         super.viewDidLoad()
         viewSetup()
         tableView.register(UINib(nibName: CELL_IDENTIFIER, bundle: nil), forCellReuseIdentifier: CELL_IDENTIFIER)
-        refreshTransactionControl.attributedTitle = NSAttributedString(string: "Pull to refresh") //TODO local
         refreshTransactionControl.addTarget(self, action: #selector(refreshPullTransactions(_:)), for: .valueChanged)
+        tableView.addSubview(refreshTransactionControl)
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = SECTION_HEADER_HEIGHT
+        listenForRefreshUpdates()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -96,9 +108,7 @@ class TransactionsTableViewController: UITableViewController {
         self.refreshTable()
 
         TariEventBus.onMainThread(self, eventType: .receievedTransaction) { [weak self] (result) in
-            guard let _ = self else {
-                return
-            }
+            guard let _ = self else { return }
 
             if let tx: PendingInboundTransaction = result?.object as? PendingInboundTransaction {
                 //TODO animate in the new TX instead of just refreshing the table below
@@ -107,9 +117,7 @@ class TransactionsTableViewController: UITableViewController {
         }
 
         TariEventBus.onMainThread(self, eventType: .transactionListUpdate) { [weak self] (_) in
-            guard let self = self else {
-                return
-            }
+            guard let self = self else { return }
 
             self.refreshTable()
         }
@@ -127,12 +135,92 @@ class TransactionsTableViewController: UITableViewController {
         view.backgroundColor = Theme.shared.colors.transactionTableBackground
     }
 
-    @objc private func refreshPullTransactions(_ sender: UIRefreshControl) {
-        refreshTransactionControl.attributedTitle = NSAttributedString(string: "Resfreshing...") //TODO local
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
-            self.tableView.reloadData()
-            sender.endRefreshing()
+    private func showRefreshingSpinner(_ show: Bool) {
+        refreshTransactionControl.attributedTitle = nil
+
+        if show {
+            refreshTransactionControl.tintColor = .systemGray
+            refreshTransactionControl.subviews.first?.alpha = 1
+        } else {
+            UIView.animate(withDuration: 0.25, animations: { [weak self] in
+                guard let self = self else { return }
+                self.refreshTransactionControl.tintColor = .clear
+                self.refreshTransactionControl.subviews.first?.alpha = 0
+            }) { _ in
+                //Switch off the pull to refresh part
+                self.refreshTransactionControl.endRefreshing()
+            }
+        }
+    }
+
+    private func listenForRefreshUpdates() {
+        self.animatedRefresher.setupView(.loading)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
+            guard let self = self else { return }
+            //We know where refreshing if this is the first load
+            self.beginRefreshing()
         })
+
+        //After first load if they bring the app into the foreground listen for the connection starting
+        TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
+            guard let self = self else { return }
+            self.beginRefreshing()
+        }
+
+        //Listen for when to stop refreshing
+        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
+            guard let self = self else { return }
+
+            if let success: Bool = result?.object as? Bool {
+                if success == true {
+                    self.endRefreshingWithSuccess()
+                } else {
+                    //TODO base node always fails the first few times. When that stabalises we can show an error here.
+                }
+            }
+        }
+    }
+
+    private func beginRefreshing() {
+        showRefreshingSpinner(false)
+
+        guard !isRefreshing else {
+            return
+        }
+        isRefreshing = true
+
+        animatedRefresher.updateState(.loading)
+        animatedRefresher.animateIn()
+
+        try? TariLib.shared.tariWallet?.syncBaseNode()
+    }
+
+    private func endRefreshingWithSuccess() {
+        guard isRefreshing else {
+            return
+        }
+
+        self.animatedRefresher.updateState(.success)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
+            guard let self = self else { return }
+
+            self.animatedRefresher.animateOut { [weak self] in
+                guard let self = self else { return }
+
+                self.isRefreshing = false
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
+                    guard let self = self else { return }
+                    self.showRefreshingSpinner(true)
+                })
+            }
+        })
+    }
+
+    @objc private func refreshPullTransactions(_ sender: UIRefreshControl) {
+        beginRefreshing()
     }
 
     func refreshTable() {
