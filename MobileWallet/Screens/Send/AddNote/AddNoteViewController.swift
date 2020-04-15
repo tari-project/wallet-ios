@@ -187,9 +187,18 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             return
         }
 
+        sendTransaction(wallet, recipientPubKey: recipientPubKey, recipientAmount: recipientAmount) { (success) in
+            if !success {
+                sender.resetStateWithAnimation(true)
+            }
+        }
+    }
+
+    private func sendTransaction(_ wallet: Wallet, recipientPubKey: PublicKey, recipientAmount: MicroTari, onCompletion: (Bool) -> Void) {
         //Init first so it starts listening for a callback right away
         let sendingVC = SendingTariViewController()
         sendingVC.tariAmount = amount
+        sendingVC.recipientPubKey = recipientPubKey
         sendingVC.startListeningForDiscovery()
 
         TariLogger.info("Sending transaction.")
@@ -202,17 +211,20 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             )
 
             self.navigationController?.pushViewController(sendingVC, animated: false)
+            onCompletion(true)
         } catch WalletErrors.generic(210) {
             TariLogger.warn("Error 210. Will wait for discovery.")
             //Discovery still needs to happen, this error is actually alright
             self.navigationController?.pushViewController(sendingVC, animated: false)
+            onCompletion(true)
         } catch {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Transaction failed", comment: "Add note view"),
                 description: NSLocalizedString("Could not send transaction to recipient", comment: "Add note view"),
                 error: error
             )
-            sender.resetStateWithAnimation(true)
+
+            onCompletion(false)
         }
     }
 }

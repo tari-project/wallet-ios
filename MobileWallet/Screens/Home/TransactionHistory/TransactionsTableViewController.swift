@@ -80,7 +80,7 @@ class TransactionsTableViewController: UITableViewController {
         return animationContainer
     }()
 
-    let pendingLabelText = NSLocalizedString("In Progress Transactions", comment: "Home view table of transactions")
+    let pendingLabelText = NSLocalizedString("In Progress", comment: "Home view table of transactions")
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -81,12 +81,12 @@ struct BackgroundTaskManager {
 
         let lastOperation = queue.operations.last
         lastOperation?.completionBlock = {
-            let success = !(lastOperation?.isCancelled ?? false)
+            let isCancelled = lastOperation?.isCancelled ?? false
             if TariSettings.shared.isDebug {
-                NotificationManager.shared.scheduleNotification(title: "Background task", body: "Task complete (\(success))")
+                NotificationManager.shared.scheduleNotification(title: "Background task", body: "Task was cancelled: (\(isCancelled))")
             }
 
-            task.setTaskCompleted(success: success)
+            task.setTaskCompleted(success: !isCancelled)
         }
     }
 

@@ -56,7 +56,6 @@ struct TestnetServerRequest: Codable {
 
 class TestnetKeyServer {
     private let MESSAGE_PREFIX = "Hello Tari from"
-    private let SERVER = "https://faucet.tari.com" //TODO store in config
     private let TARIBOT_MESSAGE1 = String(
         format: NSLocalizedString(
             "💸 Here’s some %@!",
@@ -93,7 +92,7 @@ class TestnetKeyServer {
 
         self.wallet = wallet
         self.signature = try wallet.signMessage(message)
-        self.url = URL(string: "\(SERVER)/free_tari/allocate_max/\(publicKeyHex)")!
+        self.url = URL(string: "\(TariSettings.shared.faucetServer)/free_tari/allocate_max/\(publicKeyHex)")!
     }
 
     func requestDrop(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {

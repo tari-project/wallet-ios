@@ -70,6 +70,9 @@ struct TariSettings {
     let discoveryTimeoutSec: UInt64 = 20
     let deeplinkURI = "tari"
 
+    let faucetServer = "https://faucet.tari.com"
+    let pushNotificationServer = "https://push.tari.com"
+
     let userAgreementUrl = "https://tarilabs.com/user_agreement/"
     let privacyPolicyUrl = "https://tarilabs.com/privacy_policy/"
     let storeUrl = "https://store.tarilabs.com/"

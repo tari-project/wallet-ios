@@ -356,7 +356,6 @@
 		BFE1FC0A23E3ACDA00BA5EEC /* WalletCreationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */; };
 		BFE61E4924226A7E003DC99D /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F9241B910200ED8318 /* NotificationManager.swift */; };
 		BFE61E4A24226A7F003DC99D /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F9241B910200ED8318 /* NotificationManager.swift */; };
-		BFE61E4B24226A7F003DC99D /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F9241B910200ED8318 /* NotificationManager.swift */; };
 		BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF1ED9C2408111000CC9EF6 /* SendingTariViewController.swift */; };
 		BFF1ED9E2408111000CC9EF6 /* SendingTariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF1ED9C2408111000CC9EF6 /* SendingTariViewController.swift */; };
 		BFF1ED9F2408111000CC9EF6 /* SendingTariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFF1ED9C2408111000CC9EF6 /* SendingTariViewController.swift */; };
@@ -1547,7 +1546,6 @@
 			files = (
 				00B4D6B82416A50C00ED8318 /* MobileWalletUISnapshots.swift in Sources */,
 				00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */,
-				BFE61E4B24226A7F003DC99D /* NotificationManager.swift in Sources */,
 				BFCA0E6C242CA8780024FC0C /* TariLogger.swift in Sources */,
 				00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */,
 				00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */,
