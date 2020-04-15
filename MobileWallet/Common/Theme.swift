@@ -137,7 +137,7 @@ struct Colors: Loopable {
 
     //Shadows
     let actionButtonShadow = UIColor(named: "ActionButtonShadow")
-    let navigationBottomShadow = UIColor(named: "DefaultShadow")
+    let defaultShadow = UIColor(named: "DefaultShadow")
 
     //Feedback
     let feedbackPopupBackground = UIColor(named: "FeedbackScreenBackground")
@@ -179,6 +179,10 @@ struct Colors: Loopable {
     // EmoticonView
     let emojisSeparator = UIColor(named: "CreatingWalletEmojiSeparator")
     let emojisSeparatorExpanded = UIColor(named: "CreatingWalletEmojiSeparatorExpanded")
+
+    //Refresh view
+    let refreshViewLabelLoading = UIColor(named: "RefreshViewLabelLoading")
+    let refreshViewLabelSuccess = UIColor(named: "RefreshViewLabelSuccess")
 }
 
 struct Fonts: Loopable {
@@ -264,6 +268,9 @@ struct Fonts: Loopable {
 
     //Add note screen
     let scannerTitleLabel = UIFont(name: "Avenir-Heavy", size: 16.0)
+
+    //Refresh view
+    let refreshViewLabel = UIFont(name: "Avenir-Heavy", size: 12.0)
 }
 
 struct Images: Loopable {

@@ -199,22 +199,17 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         let sendingVC = SendingTariViewController()
         sendingVC.tariAmount = amount
         sendingVC.recipientPubKey = recipientPubKey
-        sendingVC.startListeningForDiscovery()
+        sendingVC.startListeningForStoreAndForward()
 
         TariLogger.info("Sending transaction.")
         do {
-            try wallet.sendTransaction(
+            let txId = try wallet.sendTransaction(
                 destination: recipientPubKey,
                 amount: recipientAmount,
                 fee: wallet.calculateTransactionFee(recipientAmount),
                 message: noteText
             )
 
-            self.navigationController?.pushViewController(sendingVC, animated: false)
-            onCompletion(true)
-        } catch WalletErrors.generic(210) {
-            TariLogger.warn("Error 210. Will wait for discovery.")
-            //Discovery still needs to happen, this error is actually alright
             self.navigationController?.pushViewController(sendingVC, animated: false)
             onCompletion(true)
         } catch {

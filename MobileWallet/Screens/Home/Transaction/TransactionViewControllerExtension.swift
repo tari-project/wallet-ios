@@ -41,35 +41,16 @@
 import UIKit
 
 extension TransactionViewController {
-    func setupDateView() {
-        dateContainerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(dateContainerView)
+
+    func setupNavigationBar() {
+        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(navigationBar)
 
         //Constraints
-        dateContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        dateContainerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        dateContainerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        dateContainerView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-
-        dateContainerView.backgroundColor = Theme.shared.colors.appBackground
-        dateContainerView.layer.shadowColor = Theme.shared.colors.navigationBottomShadow!.cgColor
-        dateContainerView.layer.shadowOffset = CGSize(width: 10.0, height: 10.0)
-        dateContainerView.layer.shadowRadius = 10
-        dateContainerView.layer.shadowOpacity = 0.1
-        dateContainerView.clipsToBounds = true
-        dateContainerView.layer.masksToBounds = false
-
-        //Setup date label
-        dateContainerView.addSubview(dateLabel)
-        dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.topAnchor.constraint(equalTo: dateContainerView.topAnchor).isActive = true
-        dateLabel.centerXAnchor.constraint(equalTo: dateContainerView.centerXAnchor).isActive = true
-        dateLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
-
-        //Date style
-        dateLabel.textAlignment = .center
-        dateLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        dateLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
+        navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        navigationBar.heightAnchor.constraint(equalToConstant: 96).isActive = true
     }
 
     func setupValueView() {
@@ -78,7 +59,7 @@ extension TransactionViewController {
         view.addSubview(valueContainerView)
 
         //Constraints
-        valueContainerView.topAnchor.constraint(equalTo: dateContainerView.bottomAnchor).isActive = true
+        valueContainerView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
         valueContainerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         valueContainerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
 
@@ -99,6 +80,7 @@ extension TransactionViewController {
         valueCenterYAnchorConstraint = valueLabel.centerYAnchor.constraint(equalTo: valueContainerView.centerYAnchor)
         valueCenterYAnchorConstraint.isActive = true
         valueLabel.widthAnchor.constraint(lessThanOrEqualTo: valueContainerView.widthAnchor, constant: SIDE_PADDING * -4).isActive = true
+        valueLabel.heightAnchor.constraint(equalToConstant: Theme.shared.fonts.transactionScreenCurrencyValueLabel!.pointSize).isActive = true
 
         let valueColor = Theme.shared.colors.transactionViewValueLabel
         valueLabel.minimumScaleFactor = 0.2
@@ -106,6 +88,7 @@ extension TransactionViewController {
         valueLabel.textColor = valueColor
         valueLabel.adjustsFontSizeToFitWidth = true
         valueLabel.textAlignment = .center
+        valueLabel.baselineAdjustment = .alignCenters
 
         //Currency image
         let valueImage = UIImageView()
@@ -153,18 +136,27 @@ extension TransactionViewController {
     }
 
     func setupFromEmojis() {
+        fromContainerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(fromContainerView)
+        fromContainerView.backgroundColor = .clear
+        fromContainerView.topAnchor.constraint(equalTo: valueContainerView.bottomAnchor, constant: SIDE_PADDING).isActive = true
+        fromContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
+        fromContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        fromContainerView.heightAnchor.constraint(equalToConstant: 61).isActive = true
+
         fromHeadingLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(fromHeadingLabel)
+        fromContainerView.addSubview(fromHeadingLabel)
         fromHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         fromHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        fromHeadingLabel.topAnchor.constraint(equalTo: valueContainerView.bottomAnchor, constant: SIDE_PADDING).isActive = true
-        fromHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
+        fromHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.topAnchor).isActive = true
+        fromHeadingLabel.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor).isActive = true
 
         emojiButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(emojiButton)
-        emojiButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 2).isActive = true
-        emojiButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        emojiButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        fromContainerView.addSubview(emojiButton)
+        emojiButton.bottomAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: -16).isActive = true
+        emojiButton.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor).isActive = true
+        emojiButton.trailingAnchor.constraint(equalTo: fromContainerView.trailingAnchor).isActive = true
+        emojiButton.cornerRadius = 12.0
     }
 
     func setupAddContactButton() {
@@ -184,7 +176,7 @@ extension TransactionViewController {
         contactNameHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         contactNameHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         contactNameHeadingLabel.text = NSLocalizedString("Contact Name", comment: "Transaction detail view")
-        contactNameHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 3).isActive = true
+        contactNameHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: 40.0).isActive = true
         contactNameHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
 
         contactNameTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -212,7 +204,7 @@ extension TransactionViewController {
     func setupDivider() {
         dividerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(dividerView)
-        dividerView.topAnchor.constraint(equalTo: contactNameTextField.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 1.5).isActive = true
+        dividerView.topAnchor.constraint(equalTo: contactNameTextField.bottomAnchor, constant: 20.0).isActive = true
         dividerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
         dividerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
         dividerView.heightAnchor.constraint(equalToConstant: 1).isActive = true
@@ -226,9 +218,9 @@ extension TransactionViewController {
         noteHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         noteHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         noteHeadingLabel.text = NSLocalizedString("Note", comment: "Transaction detail view")
-        noteHeadingLabelTopAnchorConstraintContactNameShowing = noteHeadingLabel.topAnchor.constraint(equalTo: dividerView.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 2)
+        noteHeadingLabelTopAnchorConstraintContactNameShowing = noteHeadingLabel.topAnchor.constraint(equalTo: dividerView.bottomAnchor, constant: 26)
         noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = true
-        noteHeadingLabelTopAnchorConstraintContactNameMissing = noteHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: BOTTOM_HEADING_PADDING * 3)
+        noteHeadingLabelTopAnchorConstraintContactNameMissing = noteHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: 26)
         noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = false
         noteHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
 
@@ -237,10 +229,10 @@ extension TransactionViewController {
         noteLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
         noteLabel.font = Theme.shared.fonts.transactionScreenTextLabel
         noteLabel.numberOfLines = 0
-        noteLabel.topAnchor.constraint(equalTo: noteHeadingLabel.bottomAnchor, constant: BOTTOM_HEADING_PADDING).isActive = true
+        noteLabel.topAnchor.constraint(equalTo: noteHeadingLabel.bottomAnchor, constant: 10).isActive = true
         noteLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
         noteLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
-        noteLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 45).isActive = true
+        noteLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 100).isActive = true
     }
 
     func setNoteText(_ text: String) {

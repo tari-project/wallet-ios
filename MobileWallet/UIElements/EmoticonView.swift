@@ -45,9 +45,9 @@ enum EmoticonViewType {
 
 class EmoticonView: UIView {
 
-    var containerView: UIView!
-    var scrollView: UIScrollView!
-    var label: UILabelWithPadding!
+    var containerView = UIView()
+    var scrollView = UIScrollView()
+    var label = UILabelWithPadding()
     var expanded: Bool = false
     var type: EmoticonViewType = .normalView
     var shouldShowBlurContainerViewWhenExpanded = true
@@ -67,7 +67,14 @@ class EmoticonView: UIView {
     private var labelWidthConstraint: NSLayoutConstraint?
 
     private var emojiText: String!
-    private let RADIUS_POINTS: CGFloat = 6.0
+
+    private var RADIUS_POINTS: CGFloat = 6.0 {
+        didSet (newValue) {
+            self.layer.cornerRadius = newValue
+            scrollView.layer.cornerRadius = newValue
+            label.layer.cornerRadius = newValue
+        }
+    }
 
     private var superVc: UIViewController!
 
@@ -79,13 +86,24 @@ class EmoticonView: UIView {
         super.init(coder: aDecoder)
     }
 
+    var cornerRadius: CGFloat {
+        get {
+            return RADIUS_POINTS
+        }
+
+        set {
+            RADIUS_POINTS = newValue
+        }
+    }
+
     func setUpView(emojiText: String,
                    type: EmoticonViewType,
                    textCentered: Bool,
                    inViewController vc: UIViewController,
                    initialWidth: CGFloat = CGFloat(172),
                    initialHeight: CGFloat = CGFloat(32),
-                   showContainerViewBlur: Bool = true) {
+                   showContainerViewBlur: Bool = true,
+                   cornerRadius: CGFloat = 6.0) {
         self.superVc = vc
         self.emojiText = emojiText
         self.backgroundColor = .clear
@@ -94,7 +112,6 @@ class EmoticonView: UIView {
             label.numberOfLines = 0
             self.addSubview(label)
 
-            self.layer.cornerRadius = RADIUS_POINTS
             self.layer.masksToBounds = true
             label.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground!
             label.textAlignment = .center
@@ -148,7 +165,7 @@ class EmoticonView: UIView {
 
             labelContainer.layer.shadowColor = Theme.shared.colors.emojiButtonShadow!.cgColor
             labelContainer.layer.shadowOffset = .zero
-            labelContainer.layer.shadowRadius = RADIUS_POINTS * 1.2
+            labelContainer.layer.shadowRadius = cornerRadius * 1.2
             labelContainer.layer.shadowOpacity = 1.0
             labelContainer.clipsToBounds = true
             labelContainer.layer.masksToBounds = false
@@ -166,14 +183,12 @@ class EmoticonView: UIView {
             scrollView.bottomAnchor.constraint(equalTo: labelContainer.bottomAnchor,
                                                constant: 0).isActive = true
 
-            scrollView.layer.cornerRadius = RADIUS_POINTS
             scrollView.layer.masksToBounds = true
 
             label = UILabelWithPadding()
             label.padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
             scrollView.addSubview(label)
 
-            label.layer.cornerRadius = 6.0
             label.layer.masksToBounds = true
             label.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
             label.textAlignment = .center
@@ -204,6 +219,7 @@ class EmoticonView: UIView {
                 rightView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
                 leftView.widthAnchor.constraint(equalTo: rightView.widthAnchor, multiplier: 1).isActive = true
             }
+            self.cornerRadius = cornerRadius
         }
 
         self.superVc.navigationController?.navigationBar.layer.zPosition = 0
