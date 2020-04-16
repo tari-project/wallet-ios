@@ -225,47 +225,6 @@ class SendingTariViewController: UIViewController {
         }
     }
 
-    //If a discovery has not happened, start listening so we know when to finish this send animation
-    func startListeningForDiscovery() {
-        //TODO add this notification back when store and forward has been completed
-//        if let toPublicKey = recipientPubKey {
-//            do {
-//                try NotificationManager.shared.sendToRecipient(toPublicKey, onSuccess: {
-//                    TariLogger.info("Recipient has been notified")
-//                }) { (error) in
-//                    TariLogger.error("Failed to notify recipient", error: error)
-//                }
-//            } catch {
-//                TariLogger.error("Failed to notify recipient", error: error)
-//            }
-//        }
-
-        TariLogger.info("Waiting for discovery callback")
-        TariEventBus.onMainThread(self, eventType: .discoveryProcessComplete) { [weak self] (result) in
-            guard let self = self else { return }
-
-            self.isDiscoveryComplete = true
-
-            //TODO check which tx we're listening for once added to the callback in Wallet.swift
-            var isSuccess = true //Assume true
-            if let success: Bool = result?.object as? Bool {
-                isSuccess = success
-            }
-
-            if let callback = self.onDiscoveryComplete {
-                callback(isSuccess)
-            }
-        }
-    }
-
-    private func checkDiscoveryComplete(_ onComplete: @escaping (Bool) -> Void) {
-        if isDiscoveryComplete {
-            onComplete(true)
-        } else {
-            self.onDiscoveryComplete = onComplete
-        }
-    }
-
     private func animateSuccess(from: AnimationProgressTime, to: AnimationProgressTime, onComplete: @escaping () -> Void) {
         self.animationContainer.play(fromProgress: from, toProgress: to, loopMode: .playOnce) { (_) in
             onComplete()
@@ -287,38 +246,14 @@ class SendingTariViewController: UIViewController {
         let pauseAnimationAt: AnimationProgressTime = 0.2
 
         //1. Start the animation
-        //2. Wait till discovery is complete
-        //3. Complete the animation if successful, else just go straight back without the success animation
-
-        debugMessage = isDiscoveryComplete ? "Discovery complete" : "Discovery in progress..."
+        //2. Complete the animation
 
         animateSuccess(from: 0, to: pauseAnimationAt) { [weak self] () in
             guard let self = self else { return }
-
-            self.checkDiscoveryComplete { [weak self] (discoverySuccess) in
+            self.animateSuccess(from: pauseAnimationAt, to: 1) { [weak self] () in
                 guard let self = self else { return }
-
-                if discoverySuccess {
-                    self.debugMessage = "Peer discovered successfully"
-                    TariLogger.info("Peer discovered successfully")
-                    //Success animation
-                    self.animateSuccess(from: pauseAnimationAt, to: 1) { [weak self] () in
-                        guard let self = self else { return }
-                        self.removeTitleAnimation()
-
-                        Tracker.shared.track("/home/send_tari/successful", "Send Tari - Successful")
-                    }
-                } else {
-                    self.debugMessage = "Failed to discover peer"
-                    TariLogger.error("Failed to discover peer")
-                    //No success animation, just go home and display an error
-                    self.removeTitleAnimation()
-
-                    UserFeedback.shared.error(
-                        title: NSLocalizedString("Sorry, you can't send Tari to offline users", comment: "Discovery failed when sending a tx"),
-                        description: NSLocalizedString("Please make sure your recipient has a reliable internet connection and has the Aurora app open on their device, and then try again. If that doesn't work, please verify you have the correct Emoji ID.", comment: "Discovery failed when sending a tx")
-                    )
-                }
+                self.removeTitleAnimation()
+                Tracker.shared.track("/home/send_tari/successful", "Send Tari - Successful")
             }
         }
     }

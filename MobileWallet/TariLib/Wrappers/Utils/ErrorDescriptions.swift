@@ -74,6 +74,8 @@ extension WalletErrors: LocalizedError {
             return NSLocalizedString("Tari wallet not yet initialized", comment: "Wallet errors")
         case .invalidSignatureAndNonceString:
             return NSLocalizedString("Invalid signature created", comment: "Wallet errors")
+        case .cancellingTransaction:
+            return NSLocalizedString("Failed to cancel transaction", comment: "Wallet errors")
         }
     }
 }

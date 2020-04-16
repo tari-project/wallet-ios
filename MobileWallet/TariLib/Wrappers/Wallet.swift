@@ -56,6 +56,7 @@ enum WalletErrors: Error {
     case completedTransactionById
     case walletNotInitialized
     case invalidSignatureAndNonceString
+    case cancellingTransaction
 }
 
 class Wallet {
@@ -168,7 +169,7 @@ class Wallet {
     }
 
     init(commsConfig: CommsConfig, loggingFilePath: String) throws {
-        let loggingFilePathPointer = UnsafeMutablePointer<Int8>(mutating: (loggingFilePath as NSString).utf8String)!
+        let loggingFilePathPointer = UnsafePointer<Int8>((loggingFilePath as NSString).utf8String)!
 
         let receivedTransactionCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
@@ -216,16 +217,6 @@ class Wallet {
 
         }
 
-        let discoveryProcessCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
-            TariEventBus.postToMainThread(.discoveryProcessComplete, sender: success) //TODO add the tx to the send and listener as well
-            let message = "Discovery process complete lib callback. txID=\(txID)"
-            if success {
-                TariLogger.verbose("\(message) ✅")
-            } else {
-                TariLogger.error("\(message) failure")
-            }
-        }
-
         let baseNodeSyncCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { requestID, success in
             TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: success)
             let message = "Base node sync lib callback. requestID=\(requestID)"
@@ -234,6 +225,32 @@ class Wallet {
             } else {
                 TariLogger.error("\(message) failure")
             }
+        }
+
+        let directSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
+            TariEventBus.postToMainThread(.directSend, sender: success)
+            let message = "Direct send lib callback. txID=\(txID)"
+            if success {
+                TariLogger.verbose("\(message) ✅")
+            } else {
+                TariLogger.error("\(message) failure")
+            }
+        }
+
+        let storeAndForwardSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
+            TariEventBus.postToMainThread(.storeAndForward, sender: success)
+            let message = "Store and forward lib callback. txID=\(txID)"
+            if success {
+                TariLogger.verbose("\(message) ✅")
+            } else {
+                TariLogger.error("\(message) failure")
+            }
+        }
+
+        let transcationCancelledCallback: (@convention(c) (UInt64) -> Void)? = { txID in
+            TariEventBus.postToMainThread(.cancelledTransaction)
+            let message = "Transaction cancelled callback. txID=\(txID)"
+                TariLogger.verbose("\(message)")
         }
 
         dbPath = commsConfig.dbPath
@@ -249,7 +266,9 @@ class Wallet {
             receivedFinalizedTransactionCallback,
             transactionBroadcastCallback,
             transactionMinedCallback,
-            discoveryProcessCompleteCallback,
+            directSendResultCallback,
+            storeAndForwardSendResultCallback,
+            transcationCancelledCallback,
             baseNodeSyncCompleteCallback,
             UnsafeMutablePointer<Int32>(&errorCode)
         )
@@ -332,13 +351,25 @@ class Wallet {
 
         let messagePointer = UnsafeMutablePointer<Int8>(mutating: (message as NSString).utf8String)
         var errorCode: Int32 = -1
-        let sendResult = wallet_send_transaction(ptr, destination.pointer, amount.rawValue, fee.rawValue, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
+        let sendTxID = wallet_send_transaction(ptr, destination.pointer, amount.rawValue, fee.rawValue, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
 
-        if !sendResult {
+        if !(sendTxID > 0) {
             throw WalletErrors.sendingTransaction
+        }
+    }
+
+    func cancelTransaction(txID: UInt64) throws {
+        var errorCode: Int32 = -1
+        let success = wallet_cancel_pending_transaction(ptr, txID, UnsafeMutablePointer<Int32>(&errorCode))
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+
+        if !success {
+            throw WalletErrors.cancellingTransaction
         }
     }
 

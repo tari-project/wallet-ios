@@ -199,7 +199,6 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         let sendingVC = SendingTariViewController()
         sendingVC.tariAmount = amount
         sendingVC.recipientPubKey = recipientPubKey
-        sendingVC.startListeningForDiscovery()
 
         TariLogger.info("Sending transaction.")
         do {
