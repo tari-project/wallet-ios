@@ -289,8 +289,7 @@ class TariLibWrapperTests: XCTestCase {
             var currTx = 0
             txId = 0
             var pendingInboundTransaction: PendingInboundTransaction? = nil
-            while ( currTx < pendingInboundTransactionsCount)
-            {
+            while (currTx < pendingInboundTransactionsCount) {
                 pendingInboundTransaction = try pendingInboundTransactions!.at(position: UInt32(currTx))
                 let (pendingInboundTransactionId, pendingInboundTransactionIdError) = pendingInboundTransaction!.id
                 if pendingInboundTransactionIdError != nil {
@@ -333,7 +332,7 @@ class TariLibWrapperTests: XCTestCase {
                 XCTFail(bobPublicKeyError!.localizedDescription)
             }
             
-            try wallet.sendTransaction(destination: bobPublicKey!, amount: MicroTari(1000), fee: MicroTari(101), message: "Oh hi bob")
+            _ = try wallet.sendTransaction(destination: bobPublicKey!, amount: MicroTari(1000), fee: MicroTari(101), message: "Oh hi bob")
             let (pendingOutboundTransactions, pendingOutboundTransactionsError) = wallet.pendingOutboundTransactions
             if pendingOutboundTransactionsError != nil {
                 XCTFail(pendingOutboundTransactionsError!.localizedDescription)
@@ -352,11 +351,13 @@ class TariLibWrapperTests: XCTestCase {
 
         //MARK: Complete sent transaction to bob
         do {
-            let pendingOutboundTransaction = try wallet.findPendingOutboundTransactionBy(id: sendTransactionId!)
+            _ = try wallet.findPendingOutboundTransactionBy(id: sendTransactionId!)
 
-            try wallet.testCompleteSend(pendingOutboundTransaction: pendingOutboundTransaction!)
-
-            try wallet.testTransactionMined(txID: sendTransactionId!)
+            do {
+                try wallet.testTransactionMined(txID: sendTransactionId!)
+            } catch {
+                XCTFail(error.localizedDescription)
+            }
         } catch {
             XCTFail(error.localizedDescription)
         }
@@ -382,7 +383,11 @@ class TariLibWrapperTests: XCTestCase {
         }
                     
         XCTAssertGreaterThan(groupedTransactions.count, 0)
-        XCTAssertGreaterThan(groupedTransactions[0].count, 1)
+        XCTAssertGreaterThan(groupedTransactions[0].count, 0)
+        
+        //Test cancel function when a pending tx has aged for 2 seconds
+        sleep(2)
+        XCTAssertNoThrow(try wallet.cancelExpiredPendingTransactions(after: 1))
     }
     
     func testMicroTari() {
