@@ -153,11 +153,11 @@ class UserFeedback {
             containerView: containerView,
             image: Theme.shared.images.storeModal!,
             imageTop: imageTop,
-            title: NSLocalizedString("Use testnet Tari for exclusive items", comment: "Store modal"),
-            boldedTitle: NSLocalizedString("exclusive items", comment: "Store modal"),
-            description: NSLocalizedString("Now that you have some testnet Tari, use it to get real-life, exclusive products at the Testnet Tari Limited (TTL) store.", comment: "Store modal"),
-            cancelTitle: NSLocalizedString("Not now", comment: "Store modal"),
-            actionTitle: NSLocalizedString("Visit the Store", comment: "Store modal"),
+            title: NSLocalizedString("Spend testnet Tari on real (exclusive) stuff", comment: "Store modal"),
+            boldedTitle: NSLocalizedString("", comment: "Store modal"),
+            description: NSLocalizedString("Check out TTL (Testnet Tari Limited) to spend your “hard-earned” testnet Tari on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!", comment: "Store modal"),
+            cancelTitle: NSLocalizedString("I’ll check it out later", comment: "Store modal"),
+            actionTitle: NSLocalizedString("Visit the TTL Store", comment: "Store modal"),
             actionIcon: Theme.shared.images.storeIcon!,
             onClose: {
                 SwiftEntryKit.dismiss()

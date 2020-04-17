@@ -42,20 +42,22 @@ import UIKit
 
 class TransactionViewController: UIViewController, UITextFieldDelegate {
     let SIDE_PADDING: CGFloat = 25
-    let BOTTOM_HEADING_PADDING: CGFloat = 12
-    let VALUE_VIEW_HEIGHT_MULTIPLIER_FULL: CGFloat = 0.21
+    let BOTTOM_HEADING_PADDING: CGFloat = 11
+    let VALUE_VIEW_HEIGHT_MULTIPLIER_FULL: CGFloat = 0.2536
     let VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTENED: CGFloat = 0.18
 
     var contactPublicKey: PublicKey?
     var contactAlias: String = ""
-    let dateContainerView = UIView()
-    let dateLabel = UILabel()
+
+    let navigationBar = TransactionsNavigationBar()
+
     let valueContainerView = UIView()
     var valueContainerViewHeightConstraintFull = NSLayoutConstraint()
     var valueContainerViewHeightConstraintShortened = NSLayoutConstraint()
     var valueCenterYAnchorConstraint = NSLayoutConstraint()
     let valueLabel = UILabel()
     let emojiButton = EmoticonView()
+    let fromContainerView = UIView()
     let fromHeadingLabel = UILabel()
     let addContactButton = TextButton()
     let contactNameHeadingLabel = UILabel()
@@ -143,20 +145,13 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
         Tracker.shared.track("/home/tx_details", "Transaction Details")
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        navigationController?.setNavigationBarHidden(false, animated: false)
-    }
-
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
     }
 
     private func setup() {
         view.backgroundColor = Theme.shared.colors.appBackground
-
-        setupDateView()
+        setupNavigationBar()
         setupValueView()
         setupFromEmojis()
         setupAddContactButton()
@@ -239,12 +234,12 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
             }
 
             if tx.direction == .inbound {
-                navigationItem.title = NSLocalizedString("Payment Received", comment: "Navigation bar title on transaction view screen")
+                navigationBar.title = NSLocalizedString("Payment Received", comment: "Navigation bar title on transaction view screen")
                 fromHeadingLabel.text = NSLocalizedString("From", comment: "Transaction detail view")
                 valueLabel.text = microTari!.formatted
                 contactPublicKey = tx.sourcePublicKey.0
             } else if tx.direction == .outbound {
-                navigationItem.title = NSLocalizedString("Payment Sent", comment: "Navigation bar title on transaction view screen")
+                navigationBar.title = NSLocalizedString("Payment Sent", comment: "Navigation bar title on transaction view screen")
                 fromHeadingLabel.text = NSLocalizedString("To", comment: "Transaction detail view")
                 valueLabel.text = microTari!.formatted
                 contactPublicKey = tx.destinationPublicKey.0
@@ -268,7 +263,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                 throw dateError!
             }
 
-            dateLabel.text = date!.formattedDisplay()
+            navigationBar.subtitle = date!.formattedDisplay()
 
             let (contact, contactError) = tx.contact
             if contactError == nil {
@@ -318,7 +313,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
             }
 
             if tx.status.0 != .mined {
-                navigationItem.title = NSLocalizedString("Payment In Progress", comment: "Navigation bar title on transaction view screen")
+                navigationBar.title = NSLocalizedString("Payment In Progress", comment: "Navigation bar title on transaction view screen")
             }
 
             //Hopefully we can add this back some time

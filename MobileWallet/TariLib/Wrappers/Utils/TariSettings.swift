@@ -71,7 +71,6 @@ struct TariSettings {
     let deeplinkURI = "tari"
 
     let faucetServer = "https://faucet.tari.com"
-    let pushNotificationServer = "https://push.tari.com"
 
     let userAgreementUrl = "https://tarilabs.com/user_agreement/"
     let privacyPolicyUrl = "https://tarilabs.com/privacy_policy/"
@@ -107,8 +106,16 @@ struct TariSettings {
     //Used for showing a little extra detail in the UI to help debugging
     let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
+    let pushNotificationServer = "https://1c1c2bea.ngrok.io"
+    let expirePendingTransactionsAfter: TimeInterval = 60 //A minute
     #else
     let isDebug = false
     let maxMbLogsStorage: UInt64 = 500 //500MB
+    let pushNotificationServer = "https://push.tari.com"
+    let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 3 //3 days
     #endif
+
+    var isUnitTesting: Bool {
+        return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
 }
