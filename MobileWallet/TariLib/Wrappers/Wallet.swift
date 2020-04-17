@@ -56,6 +56,13 @@ enum WalletErrors: Error {
     case completedTransactionById
     case walletNotInitialized
     case invalidSignatureAndNonceString
+    case cancelNonPendingTransaction
+    case transactionsToCancel
+}
+
+struct CallbackTxResult {
+    let id: UInt64
+    let success: Bool
 }
 
 class Wallet {
@@ -213,17 +220,33 @@ class Wallet {
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction mined lib callback")
-
         }
 
-        let discoveryProcessCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
-            TariEventBus.postToMainThread(.discoveryProcessComplete, sender: success) //TODO add the tx to the send and listener as well
-            let message = "Discovery process complete lib callback. txID=\(txID)"
+        let directSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
+            TariEventBus.postToMainThread(.directSend, sender: CallbackTxResult(id: txID, success: success))
+            let message = "Direct send lib callback. txID=\(txID)"
             if success {
                 TariLogger.verbose("\(message) ✅")
             } else {
                 TariLogger.error("\(message) failure")
             }
+        }
+
+        let storeAndForwardSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
+            TariEventBus.postToMainThread(.storeAndForwardSend, sender: CallbackTxResult(id: txID, success: success))
+            let message = "Store and forward lib callback. txID=\(txID)"
+            if success {
+                TariLogger.verbose("\(message) ✅")
+            } else {
+                TariLogger.error("\(message) failure")
+            }
+        }
+
+        let transactionCancellationCallback: (@convention(c) (UInt64) -> Void)? = { txID in
+            TariEventBus.postToMainThread(.storeAndForwardSend, sender: CallbackTxResult(id: txID, success: true))
+            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+            TariLogger.verbose("Transaction cancelled callback. txID=\(txID) ✅")
         }
 
         let baseNodeSyncCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { requestID, success in
@@ -249,7 +272,9 @@ class Wallet {
             receivedFinalizedTransactionCallback,
             transactionBroadcastCallback,
             transactionMinedCallback,
-            discoveryProcessCompleteCallback,
+            directSendResultCallback,
+            storeAndForwardSendResultCallback,
+            transactionCancellationCallback,
             baseNodeSyncCompleteCallback,
             UnsafeMutablePointer<Int32>(&errorCode)
         )
@@ -319,7 +344,7 @@ class Wallet {
         return MicroTari(fee)
     }
 
-    func sendTransaction(destination: PublicKey, amount: MicroTari, fee: MicroTari, message: String) throws {
+    func sendTransaction(destination: PublicKey, amount: MicroTari, fee: MicroTari, message: String) throws -> UInt64 {
         let total = fee.rawValue + amount.rawValue
         let (availableBalance, error) = self.availableBalance
         if error != nil {
@@ -332,14 +357,16 @@ class Wallet {
 
         let messagePointer = UnsafeMutablePointer<Int8>(mutating: (message as NSString).utf8String)
         var errorCode: Int32 = -1
-        let sendResult = wallet_send_transaction(ptr, destination.pointer, amount.rawValue, fee.rawValue, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
+        let txId = wallet_send_transaction(ptr, destination.pointer, amount.rawValue, fee.rawValue, messagePointer, UnsafeMutablePointer<Int32>(&errorCode))
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
 
-        if !sendResult {
+        if txId == 0 {
             throw WalletErrors.sendingTransaction
         }
+
+        return txId
     }
 
     func findPendingOutboundTransactionBy(id: UInt64) throws -> PendingOutboundTransaction? {
@@ -458,6 +485,49 @@ class Wallet {
     func syncBaseNode() throws {
         var errorCode: Int32 = -1
         _ = wallet_sync_with_base_node(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+    }
+
+    /// Cancel all pending transactions after a certain amount of time has passed.
+    /// - Parameter after: Amount of time after a transaction was created
+    func cancelExpiredPendingTransactions(after: TimeInterval = TariSettings.shared.expirePendingTransactionsAfter) throws {
+        guard let outboundList = pendingOutboundTransactions.0?.list.0, let inboundList = pendingInboundTransactions.0?.list.0 else {
+            throw WalletErrors.transactionsToCancel
+        }
+
+        let list: [TransactionProtocol] = outboundList + inboundList
+
+        try list.forEach({ (tx) in
+            guard tx.status.0 == .pending, let date = tx.date.0 else {
+                return
+            }
+
+            if date.distance(to: Date()) > after {
+                try cancelPendingTransaction(tx)
+            }
+        })
+    }
+
+    /// Cancels a transaction that's currently pending.
+    /// Helpful for expiring transactions where the other party has failed to sign their part after a certain amount of time.
+    /// - Parameter tx: Pending transaction to be cancelled
+    func cancelPendingTransaction(_ tx: TransactionProtocol) throws {
+        guard tx.status.0 == .pending else {
+            throw WalletErrors.cancelNonPendingTransaction
+        }
+
+        try cancelPendingTransaction(tx.id.0)
+    }
+
+    /// Cancels a transaction that's currently pending.
+    /// Helpful for expiring transactions where the other party has failed to sign their part after a certain amount of time.
+    /// - Parameter txId: ID of pending incoming or outgoing transaction
+    private func cancelPendingTransaction(_ txId: UInt64) throws {
+        var errorCode: Int32 = -1
+        _ = wallet_cancel_pending_transaction(ptr, txId, UnsafeMutablePointer<Int32>(&errorCode))
 
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)

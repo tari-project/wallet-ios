@@ -55,9 +55,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     var ticketBottom: NSLayoutConstraint?
     var walletExistsInitially: Bool = false
     var alreadyReplacedVideo: Bool = false
-    var isUnitTesting: Bool {
-        return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
-    }
 
     // MARK: - Outlets
     var videoView = UIView()
@@ -87,7 +84,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if !isUnitTesting {
+        if !TariSettings.shared.isUnitTesting {
             maskBackgroundAnimation()
             titleAnimation()
             checkExistingWallet()
