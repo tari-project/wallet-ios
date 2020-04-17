@@ -256,7 +256,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputContainerView.layer.shadowOpacity = 0
         inputContainerView.layer.shadowOffset = CGSize(width: 0, height: 5)
         inputContainerView.layer.shadowRadius = 10
-        inputContainerView.layer.shadowColor = Theme.shared.colors.navigationBottomShadow!.cgColor
+        inputContainerView.layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
 
         //Input layout
         inputBox.translatesAutoresizingMaskIntoConstraints = false
@@ -277,7 +277,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputBox.layer.shadowOpacity = 0.15
         inputBox.layer.shadowOffset = CGSize(width: 0, height: 0)
         inputBox.layer.shadowRadius = INPUT_CORNER_RADIUS
-        inputBox.layer.shadowColor = Theme.shared.colors.navigationBottomShadow!.cgColor
+        inputBox.layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
 
         //Scan button
         inputBox.rightView = scanButton
@@ -322,7 +322,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         pasteEmojisView.layer.shadowOpacity = 0.1
         pasteEmojisView.layer.shadowOffset = CGSize(width: 0, height: 5)
         pasteEmojisView.layer.shadowRadius = 10
-        pasteEmojisView.layer.shadowColor = Theme.shared.colors.navigationBottomShadow!.cgColor
+        pasteEmojisView.layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
     }
 
     private func setupErrorView() {

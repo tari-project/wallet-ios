@@ -83,11 +83,11 @@ class FeedbackView: UIView {
         titleLabel.textColor = Theme.shared.colors.feedbackPopupTitle
         titleLabel.font = Theme.shared.fonts.feedbackPopupTitle
         titleLabel.textAlignment = .center
+        titleLabel.numberOfLines = 0
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
         titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -SIDE_PADDING).isActive = true
-        titleLabel.heightAnchor.constraint(equalToConstant: titleLabel.font.pointSize * 1.2).isActive = true
     }
 
     private func setupDescription() {

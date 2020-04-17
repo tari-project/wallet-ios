@@ -43,7 +43,6 @@ import UIKit
 enum DeeplinkType {
    case send(deeplink: String?)
    case showQR
-   case viewTransaction(deeplink: String)
 }
 
 let Deeplinker = DeepLinkManager()
@@ -81,9 +80,11 @@ class DeepLinkManager {
             return
         }
 
-        DeeplinkNavigator.shared.proceedToDeeplink(deeplinkType, homeVC: homeVC)
-        //TODO maybe a onsuccess handler that does the below nil set
-        //If we're not on the Home VC yet, try later when we've been through the splash
+        //Slight delay so the home view finishes loading. Else next view ends up without a navbar
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            DeeplinkNavigator.shared.proceedToDeeplink(deeplinkType, homeVC: homeVC)
+        }
+
         self.deeplinkType = nil
     }
 
@@ -121,10 +122,6 @@ class DeeplinkNavigator {
             }
         case .showQR:
             homeVC.onProfileShow(self)
-        case .viewTransaction(deeplink: let deeplinkWithTxId):
-            //homeVC.onTransactionSelect()
-            //TODO implement when push notifications are up and working
-            UserFeedback.shared.info(title: "Show TX", description: "txid: \(deeplinkWithTxId)")
         }
     }
 }

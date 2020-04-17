@@ -77,8 +77,6 @@ struct TariSettings {
     let storeUrl = "https://store.tarilabs.com/"
     let bugReportEmail = "bug_reports@tari.com"
 
-    let torEnabled = true
-
     let defaultBaseNodePool: [String] = [
         //Faucet
         "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141",
@@ -103,12 +101,14 @@ struct TariSettings {
     }
 
     #if DEBUG
+    let torEnabled = true //If just working on UI updates, this can be made false
     //Used for showing a little extra detail in the UI to help debugging
     let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
     let pushNotificationServer = "https://1c1c2bea.ngrok.io"
     let expirePendingTransactionsAfter: TimeInterval = 60 //A minute
     #else
+    let torEnabled = true
     let isDebug = false
     let maxMbLogsStorage: UInt64 = 500 //500MB
     let pushNotificationServer = "https://push.tari.com"

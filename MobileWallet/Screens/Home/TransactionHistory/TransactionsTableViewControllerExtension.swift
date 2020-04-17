@@ -48,22 +48,21 @@ extension TransactionsTableViewController {
         let sectionHeaderView = UIView()
         let sectionHeaderLabel = UILabel()
 
+        sectionHeaderLabel.translatesAutoresizingMaskIntoConstraints = false
+        sectionHeaderView.addSubview(sectionHeaderLabel)
+
         let labelText = self.tableView(tableView, titleForHeaderInSection: section)
 
         sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
         sectionHeaderLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
         sectionHeaderLabel.text = labelText
-        sectionHeaderLabel.backgroundColor = Theme.shared.colors.transactionTableBackground?.withAlphaComponent(0.8)
         sectionHeaderLabel.textAlignment = .center
-
-        sectionHeaderLabel.layer.cornerRadius = 4
-        sectionHeaderLabel.layer.masksToBounds = true
-
         sectionHeaderLabel.sizeToFit()
-        sectionHeaderLabel.frame = CGRect(x: Theme.shared.sizes.appSidePadding, y: 35.0, width: sectionHeaderLabel.frame.width + 12, height: sectionHeaderLabel.frame.height + 8)
 
-        sectionHeaderView.addSubview(sectionHeaderLabel)
+        sectionHeaderLabel.bottomAnchor.constraint(equalTo: sectionHeaderView.bottomAnchor, constant: 0).isActive = true
+        sectionHeaderLabel.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
+        //Add lottie loader if this is the section header for in progress transactions
         if labelText == pendingLabelText {
             sectionHeaderView.addSubview(pendingAnimationContainer)
             pendingAnimationContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -74,11 +73,21 @@ extension TransactionsTableViewController {
             pendingAnimationContainer.play()
         }
 
-        return sectionHeaderView
-    }
+        if section == 0 && isRefreshing {
+            animatedRefresher.translatesAutoresizingMaskIntoConstraints = false
+            sectionHeaderView.addSubview(animatedRefresher)
 
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 60.0
+            animatedRefresher.bottomAnchor.constraint(equalTo: sectionHeaderLabel.topAnchor, constant: -20).isActive = true
+            animatedRefresher.bottomAnchor.constraint(equalTo: sectionHeaderLabel.topAnchor, constant: -20).isActive = true
+            animatedRefresher.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+            animatedRefresher.trailingAnchor.constraint(equalTo: sectionHeaderView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+
+            sectionHeaderView.heightAnchor.constraint(greaterThanOrEqualToConstant: SECTION_HEADER_HEIGHT + 100).isActive = true
+        } else if section == 0 {
+            sectionHeaderView.heightAnchor.constraint(greaterThanOrEqualToConstant: SECTION_HEADER_HEIGHT + 30).isActive = true
+        }
+
+        return sectionHeaderView
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
