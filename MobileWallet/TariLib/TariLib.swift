@@ -173,6 +173,11 @@ class TariLib {
     }
 
     func startTor() {
+        guard !TariSettings.shared.isUnitTesting else {
+            TariLogger.verbose("Ignoring tor start for unit tests")
+            return
+        }
+
         guard OnionConnector.shared.connectionState != .connected && OnionConnector.shared.connectionState != .started else {
             return
         }
@@ -214,6 +219,11 @@ class TariLib {
     }
 
     func stopTor() {
+        guard !TariSettings.shared.isUnitTesting else {
+            TariLogger.verbose("Ignoring tor stop for unit tests")
+            return
+        }
+
         OnionConnector.shared.stop()
     }
 
@@ -267,6 +277,12 @@ class TariLib {
             tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: loggingFilePath)
         } else {
             throw TariLibErrors.privateKeyNotFound
+        }
+
+        do {
+            try tariWallet?.cancelExpiredPendingTransactions()
+        } catch {
+            TariLogger.error("Failed to cancel expired pending transactions", error: error)
         }
 
         logCleanup(maxMB: TariSettings.shared.maxMbLogsStorage)
