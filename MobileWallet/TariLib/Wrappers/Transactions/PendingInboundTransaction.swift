@@ -59,13 +59,16 @@ class PendingInboundTransaction: TransactionProtocol {
 
     var id: (UInt64, Error?) {
         var errorCode: Int32 = -1
-        let result = pending_inbound_transaction_get_transaction_id(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            pending_inbound_transaction_get_transaction_id(ptr, error)
+        })
         return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
     }
 
     var microTari: (MicroTari?, Error?) {
         var errorCode: Int32 = -1
-        let result = pending_inbound_transaction_get_amount(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            pending_inbound_transaction_get_amount(ptr, error) })
 
         guard errorCode == 0 else {
             return (nil, CompletedTransactionError.generic(errorCode))
@@ -76,7 +79,9 @@ class PendingInboundTransaction: TransactionProtocol {
 
     var message: (String, Error?) {
         var errorCode: Int32 = -1
-        let resultPtr = pending_inbound_transaction_get_message(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let resultPtr = withUnsafeMutablePointer(to: &errorCode, { error in
+            pending_inbound_transaction_get_message(ptr, error)
+        })
         let result = String(cString: resultPtr!)
 
         let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
@@ -87,14 +92,17 @@ class PendingInboundTransaction: TransactionProtocol {
 
     var timestamp: (UInt64, Error?) {
         var errorCode: Int32 = -1
-        let result = pending_inbound_transaction_get_timestamp(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            pending_inbound_transaction_get_timestamp(ptr, error)
+        })
         return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
     }
 
     var sourcePublicKey: (PublicKey?, Error?) {
         var errorCode: Int32 = -1
-        let err = UnsafeMutablePointer<Int32>(&errorCode)
-        let resultPointer = pending_inbound_transaction_get_source_public_key(ptr, err)
+        let resultPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+            pending_inbound_transaction_get_source_public_key(ptr, error)
+        })
         guard errorCode == 0 else {
             return (nil, PendingInboundTransactionError.generic(errorCode))
         }
@@ -104,7 +112,9 @@ class PendingInboundTransaction: TransactionProtocol {
 
     var status: (TransactionStatus, Error?) {
         var errorCode: Int32 = -1
-        let statusCode: Int32 = pending_inbound_transaction_get_status(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let statusCode: Int32 = withUnsafeMutablePointer(to: &errorCode, { error in
+            pending_inbound_transaction_get_status(ptr, error)
+        })
         guard errorCode == 0 else {
             return (.unknown, PendingInboundTransactionError.generic(errorCode))
         }

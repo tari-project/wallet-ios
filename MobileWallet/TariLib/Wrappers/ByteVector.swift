@@ -53,7 +53,9 @@ class ByteVector {
 
     var count: (UInt32, Error?) {
         var errorCode: Int32 = -1
-        let result = byte_vector_get_length(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            byte_vector_get_length(ptr, error)
+        })
         return (result, errorCode != 0 ? ByteVectorError.generic(errorCode) : nil )
     }
 
@@ -82,7 +84,9 @@ class ByteVector {
 
     init(byteArray: [UInt8]) throws {
         var errorCode: Int32 = -1
-        let result = byte_vector_create(byteArray, UInt32(byteArray.count), UnsafeMutablePointer<Int32>(&errorCode))
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            byte_vector_create(byteArray, UInt32(byteArray.count), error)
+        })
         guard errorCode == 0 else {
             throw ByteVectorError.generic(errorCode)
         }
@@ -96,7 +100,9 @@ class ByteVector {
 
     func at(position: UInt32) throws -> (UInt8) {
         var errorCode: Int32 = -1
-        let result = byte_vector_get_at(ptr, position, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            byte_vector_get_at(ptr, position, error)
+        })
 
         guard errorCode == 0 else {
             throw ByteVectorError.generic(errorCode)

@@ -56,7 +56,11 @@ class CompletedTransactions: TransactionsProtocol {
 
     var count: (UInt32, Error?) {
         var errorCode: Int32 = -1
-        let result = completed_transactions_get_length(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+             completed_transactions_get_length(ptr, error)
+        })
+
         return (result, errorCode != 0 ? CompletedTransactionsErrors.generic(errorCode) : nil)
     }
 
@@ -109,7 +113,10 @@ class CompletedTransactions: TransactionsProtocol {
 
     func at(position: UInt32) throws -> CompletedTransaction {
         var errorCode: Int32 = -1
-        let completedTransactionPointer = completed_transactions_get_at(ptr, position, UnsafeMutablePointer<Int32>(&errorCode))
+        let completedTransactionPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+            completed_transactions_get_at(ptr, position, error)
+
+        })
         guard errorCode == 0 else {
             throw CompletedTransactionsErrors.generic(errorCode)
         }

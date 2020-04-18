@@ -61,7 +61,9 @@ class PublicKey {
 
     var bytes: (ByteVector?, Error?) {
        var errorCode: Int32 = -1
-       let result = ByteVector(pointer: public_key_get_bytes(ptr, UnsafeMutablePointer<Int32>(&errorCode)))
+       let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            ByteVector(pointer: public_key_get_bytes(ptr, error))
+        })
        guard errorCode == 0 else {
            return (nil, PublicKeyError.generic(errorCode))
        }
@@ -80,7 +82,9 @@ class PublicKey {
 
     var emojis: (String, Error?) {
         var errorCode: Int32 = -1
-        let emojiPtr = public_key_to_emoji_id(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let emojiPtr = withUnsafeMutablePointer(to: &errorCode, { error in
+            public_key_to_emoji_id(ptr, error)
+        })
         let result = String(cString: emojiPtr!)
 
         let mutable = UnsafeMutablePointer<Int8>(mutating: emojiPtr!)
@@ -112,7 +116,9 @@ class PublicKey {
 
     init(privateKey: PrivateKey) throws {
         var errorCode: Int32 = -1
-        ptr = public_key_from_private_key(privateKey.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+        ptr = withUnsafeMutablePointer(to: &errorCode, { error in
+            public_key_from_private_key(privateKey.pointer, error)
+        })
         guard errorCode == 0 else {
             throw PublicKeyError.generic(errorCode)
         }
@@ -134,7 +140,8 @@ class PublicKey {
         }
 
         var errorCode: Int32 = -1
-        let result = emoji_id_to_public_key(emojiPtr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            emoji_id_to_public_key(emojiPtr, error)})
 
         emojiPtr.deinitialize(count: count)
 
@@ -149,9 +156,11 @@ class PublicKey {
         guard hex.count == 64 && hex.rangeOfCharacter(from: chars) != nil else {
             throw PublicKeyError.invalidHex
         }
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
         var errorCode: Int32 = -1
-        let result = public_key_from_hex(hexPtr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = hex.withCString({ chars in
+            withUnsafeMutablePointer(to: &errorCode, { error in
+            public_key_from_hex(chars, error)})
+        })
         guard errorCode == 0 else {
             throw PublicKeyError.generic(errorCode)
         }
