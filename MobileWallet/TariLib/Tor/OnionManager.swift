@@ -322,14 +322,14 @@ public class OnionManager: NSObject {
         // under the hood, TORController will SIGNAL SHUTDOWN and set it's channel to nil, so
         // we actually rely on that to stop tor and reset the state of torController. (we can
         // SIGNAL SHUTDOWN here, but we can't reset the torController "isConnected" state.)
-        self.torController?.removeObserver(self)
+        
+        //torController?.removeObserver(self) //Causes EXC_BAD_ACCESS (code=257). Setting the controller to nil should acomplish the same.
         torController?.disconnect()
 
         torController = nil
 
         // More cleanup
         torThread?.cancel()
-        torThread = nil
         state = .stopped
     }
 

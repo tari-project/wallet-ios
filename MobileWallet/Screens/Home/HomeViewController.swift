@@ -327,7 +327,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.view.layoutIfNeeded()
             })
         } else {
-            syncBaseNode()
             requestTestnetTokens()
             //User swipes down for the first time
             if isFirstIntroToWallet {
@@ -556,7 +555,7 @@ extension HomeViewController {
 
         setupGrabber(fpc)
 
-        fpc.contentMode = .fitToBounds
+        fpc.contentMode = .static
 
         // Track a scroll view(or the siblings) in the content view controller.
         fpc.track(scrollView: transactionTableVC.tableView)
