@@ -53,7 +53,8 @@ class TransportType {
 
     var address: (String, Error?) {
         var errorCode: Int32 = -1
-        let resultPtr = transport_memory_get_address(ptr, UnsafeMutablePointer<Int32>(&errorCode))
+        let resultPtr = withUnsafeMutablePointer(to: &errorCode, { error in
+            transport_memory_get_address(ptr, error)})
         let result = String(cString: resultPtr!)
         return (result, errorCode != 0 ? ByteVectorError.generic(errorCode) : nil )
     }
@@ -65,8 +66,10 @@ class TransportType {
 
     init(listenerAddress: String) throws {
         var errorCode: Int32 = -1
-        let listenerPtr = UnsafeMutablePointer<Int8>(mutating: listenerAddress)
-        let result = transport_tcp_create(listenerPtr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = listenerAddress.withCString({ chars in
+            withUnsafeMutablePointer(to: &errorCode, { error in
+            transport_tcp_create(chars, error)})
+        })
         guard errorCode == 0 else {
             throw TransportTypeError.generic(errorCode)
         }
@@ -76,10 +79,15 @@ class TransportType {
     init(controlServerAddress: String, torPort: Int, torIdentity: ByteVector, torCookie: ByteVector, socksUsername: String = "", socksPassword: String = "") throws {
         var errorCode: Int32 = -1
         let torPrivateKeyPtr = torIdentity.count.0 > 0 ? torIdentity.pointer : nil
-        let controlPtr = controlServerAddress.count > 0 ? UnsafeMutablePointer<Int8>(mutating: controlServerAddress) : nil
-        let socksPassPtr = socksPassword.count > 0 ? UnsafeMutablePointer<Int8>(mutating: socksPassword) : nil
-        let socksUserPtr = socksUsername.count > 0 ? UnsafeMutablePointer<Int8>(mutating: socksUsername) : nil
-        let result = transport_tor_create(controlPtr, torCookie.pointer, torPrivateKeyPtr, UInt16(torPort), socksUserPtr, socksPassPtr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = controlServerAddress.withCString({control in
+            socksUsername.withCString({ user in
+                socksPassword.withCString({ pass in
+                    withUnsafeMutablePointer(to: &errorCode, { error in
+                        transport_tor_create(controlServerAddress.count > 0 ? control : nil, torCookie.pointer, torPrivateKeyPtr, UInt16(torPort), socksUsername.count > 0 ? user : nil, socksPassword.count > 0 ? pass : nil, error)
+                    })
+                })
+            })
+        })
         guard errorCode == 0 else {
             throw TransportTypeError.generic(errorCode)
         }
