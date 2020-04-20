@@ -57,7 +57,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     @IBOutlet weak var valueIcon: UIImageView!
 
     private let transactionTableVC = TransactionsTableViewController(style: .grouped)
-    private var fpc: FloatingPanelController!
+    private var floatingPanelController: FloatingPanelController!
     private var grabberHandle: UIView!
     private var selectedTransaction: Any?
     private var maxSendButtonBottomConstraint: CGFloat = 50
@@ -144,7 +144,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         })
 
         checkClipboardForBaseNode()
-        Deeplinker.checkDeepLink()
+        deepLinker.checkDeepLink()
 
         checkImportSecondUtxo()
         transactionTableVC.refreshTable()
@@ -277,7 +277,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     @objc private func closeFullScreen() {
         setBackgroundColor(isNavColor: false)
         transactionTableVC.scrollToTop()
-        self.fpc.move(to: .tip, animated: true)
+        self.floatingPanelController.move(to: .tip, animated: true)
     }
 
     private func grabberRect(width: Double) -> CGRect {
@@ -299,7 +299,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: { [weak self] in
                     guard let self = self else { return }
                     if self.isTransactionViewFullScreen {
-                        self.fpc.move(to: .tip, animated: true)
+                        self.floatingPanelController.move(to: .tip, animated: true)
                     }
                 })
                 return
@@ -321,7 +321,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             self.navigationItem.title = NSLocalizedString("Transactions", comment: "Transactions nav bar heading")
 
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
-                self.fpc.surfaceView.cornerRadius = 0
+                self.floatingPanelController.surfaceView.cornerRadius = 0
                 self.grabberHandle.frame = self.grabberRect(width: 0)
                 self.grabberHandle.alpha = 0
                 self.view.layoutIfNeeded()
@@ -339,7 +339,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             self.navigationItem.title = ""
 
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
-                self.fpc.surfaceView.cornerRadius = self.PANEL_BORDER_CORNER_RADIUS
+                self.floatingPanelController.surfaceView.cornerRadius = self.PANEL_BORDER_CORNER_RADIUS
                 self.grabberHandle.frame = self.grabberRect(width: self.GRABBER_WIDTH)
                 self.grabberHandle.alpha = 1
                 self.view.layoutIfNeeded()
@@ -379,9 +379,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     private func showFloatingPanel() {
-        view.addSubview(fpc.view)
-        fpc.view.frame = view.bounds
-        addChild(fpc)
+        view.addSubview(floatingPanelController.view)
+        floatingPanelController.view.frame = view.bounds
+        addChild(floatingPanelController)
 
         //Move send button to in front of panel
         bottomFadeView.superview?.bringSubviewToFront(self.bottomFadeView)
@@ -389,14 +389,14 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
             guard let self = self else { return }
-            self.fpc.show(animated: true) {
+            self.floatingPanelController.show(animated: true) {
                 self.didMove(toParent: self)
             }
         })
     }
 
     private func hideFloatingPanel() {
-        fpc.removePanelFromParent(animated: true)
+        floatingPanelController.removePanelFromParent(animated: true)
     }
 
     @IBAction func onSendAction(_ sender: Any) {
@@ -495,9 +495,9 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             return
         }
 
-        self.fpc.surfaceView.cornerRadius = self.PANEL_BORDER_CORNER_RADIUS - (self.PANEL_BORDER_CORNER_RADIUS * progress)
+        self.floatingPanelController.surfaceView.cornerRadius = self.PANEL_BORDER_CORNER_RADIUS - (self.PANEL_BORDER_CORNER_RADIUS * progress)
 
-        if fpc.position == .tip && !isTransactionViewFullScreen {
+        if floatingPanelController.position == .tip && !isTransactionViewFullScreen {
             UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
                 self.sendButtonBottomConstraint.constant = (self.minSendButtonBottomConstraint) * progress
                 self.view.layoutIfNeeded()
@@ -540,25 +540,25 @@ extension HomeViewController {
     }
 
     fileprivate func setupFloatingPanel() {
-        fpc = FloatingPanelController()
+        floatingPanelController = FloatingPanelController()
 
-        fpc.delegate = self
+        floatingPanelController.delegate = self
 
         transactionTableVC.actionDelegate = self
 
-        fpc.set(contentViewController: transactionTableVC)
+        floatingPanelController.set(contentViewController: transactionTableVC)
 
         //TODO move custom styling setup into generic function
-        fpc.surfaceView.cornerRadius = PANEL_BORDER_CORNER_RADIUS
-        fpc.surfaceView.shadowColor = .black
-        fpc.surfaceView.shadowRadius = 22
+        floatingPanelController.surfaceView.cornerRadius = PANEL_BORDER_CORNER_RADIUS
+        floatingPanelController.surfaceView.shadowColor = .black
+        floatingPanelController.surfaceView.shadowRadius = 22
 
-        setupGrabber(fpc)
+        setupGrabber(floatingPanelController)
 
-        fpc.contentMode = .static
+        floatingPanelController.contentMode = .static
 
         // Track a scroll view(or the siblings) in the content view controller.
-        fpc.track(scrollView: transactionTableVC.tableView)
+        floatingPanelController.track(scrollView: transactionTableVC.tableView)
     }
 
     fileprivate func setupGrabber(_ fpc: FloatingPanelController) {
