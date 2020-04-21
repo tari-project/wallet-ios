@@ -58,13 +58,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         //If the user opens a deep link while the app is closed
         if let url = connectionOptions.urlContexts.first?.url {
             if let deeplink = NSString(string: url.absoluteString).removingPercentEncoding {
-                Deeplinker.handleShortcut(type: .send(deeplink: deeplink))
+                deepLinker.handleShortcut(type: .send(deeplink: deeplink))
             }
         }
 
         //If the user opens a home screen shortcut while the app is closed
         if let shortcutItem = connectionOptions.shortcutItem {
-            Deeplinker.handleShortcut(item: shortcutItem)
+            deepLinker.handleShortcut(item: shortcutItem)
         }
 
         guard let _ = (scene as? UIWindowScene) else { return }
@@ -82,7 +82,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 return
             }
 
-            Deeplinker.handleShortcut(type: .send(deeplink: deeplink))
+            deepLinker.handleShortcut(type: .send(deeplink: deeplink))
         }
     }
 
@@ -97,7 +97,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
 
-        Deeplinker.checkDeepLink()
+        deepLinker.checkDeepLink()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -129,6 +129,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
-        completionHandler(Deeplinker.handleShortcut(item: shortcutItem))
+        completionHandler(deepLinker.handleShortcut(item: shortcutItem))
     }
 }

@@ -45,7 +45,7 @@ enum DeeplinkType {
    case showQR
 }
 
-let Deeplinker = DeepLinkManager()
+let deepLinker = DeepLinkManager()
 
 class DeepLinkManager {
     fileprivate init() {}

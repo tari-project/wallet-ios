@@ -82,9 +82,9 @@ extension TransactionsTableViewController {
             animatedRefresher.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
             animatedRefresher.trailingAnchor.constraint(equalTo: sectionHeaderView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
-            sectionHeaderView.heightAnchor.constraint(greaterThanOrEqualToConstant: SECTION_HEADER_HEIGHT + 100).isActive = true
+            sectionHeaderView.heightAnchor.constraint(greaterThanOrEqualToConstant: sectionHeaderHeight + 100).isActive = true
         } else if section == 0 {
-            sectionHeaderView.heightAnchor.constraint(greaterThanOrEqualToConstant: SECTION_HEADER_HEIGHT + 30).isActive = true
+            sectionHeaderView.heightAnchor.constraint(greaterThanOrEqualToConstant: sectionHeaderHeight + 30).isActive = true
         }
 
         return sectionHeaderView
@@ -137,7 +137,7 @@ extension TransactionsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath) as! TransactionTableTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TransactionTableTableViewCell
 
         //If it's the first group and we're showing the pending group
         if indexPath.section == 0 && showsPendingGroup {
