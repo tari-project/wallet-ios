@@ -285,7 +285,7 @@ class TariLib {
             TariLogger.error("Failed to cancel expired pending transactions", error: error)
         }
 
-        logCleanup(maxMB: TariSettings.shared.maxMbLogsStorage)
+        backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
 
         baseNodeSyncCheck() //TODO remove when no longer needed
     }
