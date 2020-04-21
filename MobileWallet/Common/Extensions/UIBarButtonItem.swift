@@ -43,14 +43,13 @@ import UIKit
 extension UIBarButtonItem {
     static func customNavBarItem(target: Any?, image: UIImage, action: Selector) -> UIBarButtonItem {
         let menuBtn = UIButton(type: .custom)
-        menuBtn.setBackgroundImage(image, for: .normal)
-
+        menuBtn.setImage(image, for: .normal)//setBackgroundImage(image, for: .normal)
         menuBtn.addTarget(target, action: action, for: .touchUpInside)
 
         let menuBarItem = UIBarButtonItem(customView: menuBtn)
-        let currWidthConstraint = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 13)
+        let currWidthConstraint = menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 30)
         currWidthConstraint?.isActive = true
-        let currHeightConstraint = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 13)
+        let currHeightConstraint = menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 30)
         currHeightConstraint?.isActive = true
 
         return menuBarItem

@@ -57,23 +57,28 @@ class CommsConfig {
     init(privateKey: PrivateKey, transport: TransportType, databasePath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64) throws {
         dbPath = databasePath
         dbName = databaseName
-        let publicPointer = UnsafeMutablePointer<Int8>(mutating: (publicAddress as NSString).utf8String)
-        let dbPointer = UnsafeMutablePointer<Int8>(mutating: (databaseName as NSString).utf8String)
-        let pathPointer = UnsafeMutablePointer<Int8>(mutating: databasePath)
         var errorCode: Int32 = -1
-        let result = comms_config_create(
-            publicPointer,
-            transport.pointer,
-            dbPointer,
-            pathPointer,
-            privateKey.pointer,
-            discoveryTimeoutSec,
-            UnsafeMutablePointer<Int32>(&errorCode)
-        )
-        guard errorCode == 0 else {
-            throw CommsConfigError.generic(errorCode)
+        let result = databaseName.withCString({ db in
+            databasePath.withCString({ path in
+                publicAddress.withCString({ address in
+                     withUnsafeMutablePointer(to: &errorCode, { error in
+                        comms_config_create(
+                            address,
+                            transport.pointer,
+                            db,
+                            path,
+                            privateKey.pointer,
+                            discoveryTimeoutSec,
+                            error
+                        )
+                    })
+                })
+            })
+        })
+    ptr = result!
+    guard errorCode == 0 else {
+         throw CommsConfigError.generic(errorCode)
         }
-        ptr = result!
     }
 
     deinit {

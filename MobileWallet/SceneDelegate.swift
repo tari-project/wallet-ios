@@ -49,6 +49,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
+        //If the user opens the app from a notification when the app is closed
+        if let notification = connectionOptions.notificationResponse {
+            let content = notification.notification.request.content.userInfo
+            //TODO handle notification content here
+        }
+
         //If the user opens a deep link while the app is closed
         if let url = connectionOptions.urlContexts.first?.url {
             if let deeplink = NSString(string: url.absoluteString).removingPercentEncoding {
@@ -118,8 +124,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
-        TariLib.shared.stopTor()
         ConnectionMonitor.shared.stop()
+        TariLib.shared.stopTor()
     }
 
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {

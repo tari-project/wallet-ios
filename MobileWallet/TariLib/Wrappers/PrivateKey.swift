@@ -54,7 +54,9 @@ class PrivateKey {
 
     var bytes: (ByteVector?, Error?) {
         var errorCode: Int32 = -1
-        let result = ByteVector(pointer: private_key_get_bytes(ptr, UnsafeMutablePointer<Int32>(&errorCode)))
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            ByteVector(pointer: private_key_get_bytes(ptr, error))
+        })
         guard errorCode == 0 else {
             return (nil, PrivateKeyError.generic(errorCode))
         }
@@ -73,7 +75,9 @@ class PrivateKey {
 
     init(byteVector: ByteVector) throws {
         var errorCode: Int32 = -1
-        self.ptr = private_key_create(byteVector.pointer, UnsafeMutablePointer<Int32>(&errorCode))
+        self.ptr = withUnsafeMutablePointer(to: &errorCode, { error in
+            private_key_create(byteVector.pointer, error)
+        })
         guard errorCode == 0 else {
             throw PrivateKeyError.generic(errorCode)
         }
@@ -85,9 +89,12 @@ class PrivateKey {
             throw PrivateKeyError.invalidHex
         }
 
-        let hexPtr = UnsafeMutablePointer<Int8>(mutating: hex)
         var errorCode: Int32 = -1
-        let result = private_key_from_hex(hexPtr, UnsafeMutablePointer<Int32>(&errorCode))
+        let result = hex.withCString({ chars in
+            withUnsafeMutablePointer(to: &errorCode, { error in
+            private_key_from_hex(chars, error)
+        })
+        })
         guard errorCode == 0 else {
             throw PrivateKeyError.generic(errorCode)
         }

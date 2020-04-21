@@ -221,7 +221,7 @@ class AddAmountViewController: UIViewController {
             balanceCheckTimer?.invalidate()
         }
         if isValidNumber(string: rawInput, finalNumber: true) {
-            balanceCheckTimer = Timer.scheduledTimer(timeInterval: 0.8, target: self, selector: #selector(checkAvailableBalance), userInfo: nil, repeats: false)
+            balanceCheckTimer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(checkAvailableBalance), userInfo: nil, repeats: false)
         }
     }
 

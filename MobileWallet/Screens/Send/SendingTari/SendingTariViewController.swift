@@ -68,8 +68,8 @@ class SendingTariViewController: UIViewController {
 
     var animationStarted: Bool = false
 
-    private var isDiscoveryComplete = false
-    private var onDiscoveryComplete: ((Bool) -> Void)?
+    private var isStoreAndForwardComplete = false
+    private var onStoreAndForwardComplete: ((Bool) -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -225,44 +225,47 @@ class SendingTariViewController: UIViewController {
         }
     }
 
-    //If a discovery has not happened, start listening so we know when to finish this send animation
-    func startListeningForDiscovery() {
-        //TODO add this notification back when store and forward has been completed
-//        if let toPublicKey = recipientPubKey {
-//            do {
-//                try NotificationManager.shared.sendToRecipient(toPublicKey, onSuccess: {
-//                    TariLogger.info("Recipient has been notified")
-//                }) { (error) in
-//                    TariLogger.error("Failed to notify recipient", error: error)
-//                }
-//            } catch {
-//                TariLogger.error("Failed to notify recipient", error: error)
-//            }
-//        }
-
-        TariLogger.info("Waiting for discovery callback")
-        TariEventBus.onMainThread(self, eventType: .discoveryProcessComplete) { [weak self] (result) in
+    //Start listening for when store and forward completes so we know when to finish this send animation
+    func startListeningForStoreAndForward() {
+        TariLogger.info("Waiting for store and forward callback")
+        TariEventBus.onMainThread(self, eventType: .storeAndForwardSend) { [weak self] (result) in
             guard let self = self else { return }
 
-            self.isDiscoveryComplete = true
+            self.isStoreAndForwardComplete = true
 
             //TODO check which tx we're listening for once added to the callback in Wallet.swift
             var isSuccess = true //Assume true
-            if let success: Bool = result?.object as? Bool {
-                isSuccess = success
+            if let txResult: CallbackTxResult = result?.object as? CallbackTxResult {
+                //TODO use txResult.txID to make sure we're listening for the right tx
+                isSuccess = txResult.success
+                self.sendPushNotificationToRecipient()
             }
 
-            if let callback = self.onDiscoveryComplete {
+            if let callback = self.onStoreAndForwardComplete {
                 callback(isSuccess)
             }
         }
     }
 
-    private func checkDiscoveryComplete(_ onComplete: @escaping (Bool) -> Void) {
-        if isDiscoveryComplete {
+    private func sendPushNotificationToRecipient() {
+        if let toPublicKey = recipientPubKey {
+            do {
+                try NotificationManager.shared.sendToRecipient(toPublicKey, onSuccess: {
+                    TariLogger.info("Recipient has been notified")
+                }) { (error) in
+                    TariLogger.error("Failed to notify recipient", error: error)
+                }
+            } catch {
+                TariLogger.error("Failed to notify recipient", error: error)
+            }
+        }
+    }
+
+    private func checkStoreAndForwardComplete(_ onComplete: @escaping (Bool) -> Void) {
+        if isStoreAndForwardComplete {
             onComplete(true)
         } else {
-            self.onDiscoveryComplete = onComplete
+            self.onStoreAndForwardComplete = onComplete
         }
     }
 
@@ -287,20 +290,20 @@ class SendingTariViewController: UIViewController {
         let pauseAnimationAt: AnimationProgressTime = 0.2
 
         //1. Start the animation
-        //2. Wait till discovery is complete
+        //2. Wait till store and forward is complete
         //3. Complete the animation if successful, else just go straight back without the success animation
 
-        debugMessage = isDiscoveryComplete ? "Discovery complete" : "Discovery in progress..."
+        debugMessage = isStoreAndForwardComplete ? "Store and forward complete" : "Store and forward in progress..."
 
         animateSuccess(from: 0, to: pauseAnimationAt) { [weak self] () in
             guard let self = self else { return }
 
-            self.checkDiscoveryComplete { [weak self] (discoverySuccess) in
+            self.checkStoreAndForwardComplete { [weak self] (storeAndForwardSuccess) in
                 guard let self = self else { return }
 
-                if discoverySuccess {
-                    self.debugMessage = "Peer discovered successfully"
-                    TariLogger.info("Peer discovered successfully")
+                if storeAndForwardSuccess {
+                    self.debugMessage = "Store and forward success"
+                    TariLogger.info(self.debugMessage)
                     //Success animation
                     self.animateSuccess(from: pauseAnimationAt, to: 1) { [weak self] () in
                         guard let self = self else { return }
@@ -309,14 +312,14 @@ class SendingTariViewController: UIViewController {
                         Tracker.shared.track("/home/send_tari/successful", "Send Tari - Successful")
                     }
                 } else {
-                    self.debugMessage = "Failed to discover peer"
-                    TariLogger.error("Failed to discover peer")
+                    self.debugMessage = "Failed to store and forward"
+                    TariLogger.error(self.debugMessage)
                     //No success animation, just go home and display an error
                     self.removeTitleAnimation()
 
                     UserFeedback.shared.error(
-                        title: NSLocalizedString("Sorry, you can't send Tari to offline users", comment: "Discovery failed when sending a tx"),
-                        description: NSLocalizedString("Please make sure your recipient has a reliable internet connection and has the Aurora app open on their device, and then try again. If that doesn't work, please verify you have the correct Emoji ID.", comment: "Discovery failed when sending a tx")
+                        title: NSLocalizedString("Sorry, you can't send Tari to offline users", comment: "Store and forward failed when sending a tx"),
+                        description: NSLocalizedString("Please make sure your recipient has a reliable internet connection and has the Aurora app open on their device, and then try again. If that doesn't work, please verify you have the correct Emoji ID.", comment: "Store and forward failed when sending a tx")
                     )
                 }
             }

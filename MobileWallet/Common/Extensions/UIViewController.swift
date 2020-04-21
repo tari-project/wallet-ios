@@ -88,6 +88,7 @@ extension UIViewController {
             let navBar = navController.navigationBar
 
             navBar.barTintColor = Theme.shared.colors.navigationBarBackground
+            navBar.titleTextAttributes = [NSAttributedString.Key.font: UIFont(name: "Avenir-Heavy", size: 14)!]
             navBar.setBackgroundImage(UIImage(color: Theme.shared.colors.navigationBarBackground!), for: .default)
             navBar.isTranslucent = true
             navBar.tintColor = Theme.shared.colors.navigationBarTint

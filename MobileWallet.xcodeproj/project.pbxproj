@@ -218,6 +218,9 @@
 		00D7BD8924349AE3009DD097 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7BD8824349AE3009DD097 /* UIDevice.swift */; };
 		00D7BD8A24349AE3009DD097 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7BD8824349AE3009DD097 /* UIDevice.swift */; };
 		00D7BD8B24349AE3009DD097 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7BD8824349AE3009DD097 /* UIDevice.swift */; };
+		00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */; };
+		00D9886A2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */; };
+		00D9886B2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */; };
 		00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E21238554FD00036DDC /* libsqlite3.tbd */; };
 		00DC2E242385559C00036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E232385559C00036DDC /* libsqlite3.tbd */; };
 		00DC2E25238555A200036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E232385559C00036DDC /* libsqlite3.tbd */; };
@@ -258,6 +261,8 @@
 		00F53A6B24290FAE00448466 /* LogCleanup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F53A632428E44700448466 /* LogCleanup.swift */; };
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
+		37628AFE2449C341009E3ADF /* UIColor+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37628AFD2449C341009E3ADF /* UIColor+App.swift */; };
+		37628B002449D809009E3ADF /* CGColor+App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37628AFF2449D809009E3ADF /* CGColor+App.swift */; };
 		491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		491AB89B23F1B36100372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AddAmountViewController.swift */; };
@@ -475,6 +480,7 @@
 		00C185BD238953F60096984E /* DebugLogsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogsTableViewController.swift; sourceTree = "<group>"; };
 		00C185C52390221A0096984E /* DevelopmentUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentUI.swift; sourceTree = "<group>"; };
 		00D7BD8824349AE3009DD097 /* UIDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
+		00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedRefreshingView.swift; sourceTree = "<group>"; };
 		00DC2E21238554FD00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		00DC2E232385559C00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		00DD160A241CCE0600C955B4 /* TariSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariSettings.swift; sourceTree = "<group>"; };
@@ -505,6 +511,8 @@
 		153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet_MobileWalletUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		28164FB1973A4277E7C47F6D /* Pods-MobileWalletUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.release.xcconfig"; sourceTree = "<group>"; };
 		2FF33C780E811D173D3284C3 /* Pods-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		37628AFD2449C341009E3ADF /* UIColor+App.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIColor+App.swift"; sourceTree = "<group>"; };
+		37628AFF2449D809009E3ADF /* CGColor+App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGColor+App.swift"; sourceTree = "<group>"; };
 		491AB89F23F3FF4400372189 /* AddAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAmountViewController.swift; sourceTree = "<group>"; };
 		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
 		4C2C95AF23795919005058AB /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libwallet_ffi.a; sourceTree = "<group>"; };
@@ -643,6 +651,7 @@
 		00262EAD236F013500A6C8A0 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				37628AFD2449C341009E3ADF /* UIColor+App.swift */,
 				00262EAE236F015000A6C8A0 /* UILabelWithPadding.swift */,
 				BF8316FC23EF7EAA00235403 /* LAContext.swift */,
 				BFC5532423D9B8E4009130A8 /* UIView.swift */,
@@ -653,6 +662,7 @@
 				004277FE23E2F1D700AE7BD9 /* UIImage.swift */,
 				00D7BD8824349AE3009DD097 /* UIDevice.swift */,
 				0042780223E8421100AE7BD9 /* String.swift */,
+				37628AFF2449D809009E3ADF /* CGColor+App.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -842,6 +852,7 @@
 				00325EC9239E4A1000F76918 /* FadedOverlayView.swift */,
 				49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */,
 				BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */,
+				00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -1567,6 +1578,7 @@
 				00BCE482240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				00D7BD8924349AE3009DD097 /* UIDevice.swift in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
+				37628B002449D809009E3ADF /* CGColor+App.swift in Sources */,
 				BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */,
 				0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				009BF8AC237ABB4700C02E44 /* TariLib.swift in Sources */,
@@ -1582,6 +1594,7 @@
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */,
+				37628AFE2449C341009E3ADF /* UIColor+App.swift in Sources */,
 				00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
@@ -1619,6 +1632,7 @@
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
 				004997B72382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
+				00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00E4922923683E54007B332D /* HomeViewController.swift in Sources */,
 				00947CC223CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,
@@ -1692,6 +1706,7 @@
 				00947CC323CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
 				00A66528243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				0087A1AD23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
+				00D9886A2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				001F6CDD238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00BBD80F237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
@@ -1784,6 +1799,7 @@
 				00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00DD1611241CD42500C955B4 /* BaseNode.swift in Sources */,
+				00D9886B2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
 				0087A1AE23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
@@ -1967,6 +1983,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-v";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -2021,6 +2038,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "-v";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -2037,7 +2055,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 54;
+				CURRENT_PROJECT_VERSION = 59;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2072,7 +2090,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 54;
+				CURRENT_PROJECT_VERSION = 59;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
