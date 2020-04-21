@@ -111,6 +111,11 @@ open class TariEventBus {
         return TariEventBus.on(target, eventType: eventType, sender: sender, queue: OperationQueue.main, handler: handler)
     }
 
+    @discardableResult
+    open class func onBackgroundThread(_ target: AnyObject, eventType: TariEventTypes, sender: Any? = nil, handler: @escaping ((Notification?) -> Void)) -> NSObjectProtocol {
+        return TariEventBus.on(target, eventType: eventType, sender: sender, queue: OperationQueue(), handler: handler)
+    }
+
     // MARK: Unregister
 
     open class func unregister(_ target: AnyObject) {

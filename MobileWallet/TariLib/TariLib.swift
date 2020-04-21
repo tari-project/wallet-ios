@@ -227,6 +227,22 @@ class TariLib {
         OnionConnector.shared.stop()
     }
 
+    private func expirePendingTransactionsAfterSync() {
+        TariEventBus.onBackgroundThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
+            guard let self = self else { return }
+            if let success: Bool = result?.object as? Bool {
+                if success {
+                    do {
+                        try self.tariWallet?.cancelExpiredPendingTransactions()
+                        TariLogger.verbose("Checked for expired pending transactions")
+                    } catch {
+                        TariLogger.error("Failed to cancel expired pending transactions", error: error)
+                    }
+                }
+            }
+        }
+    }
+
     func createNewWallet() throws {
         try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
         try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
@@ -279,11 +295,7 @@ class TariLib {
             throw TariLibErrors.privateKeyNotFound
         }
 
-        do {
-            try tariWallet?.cancelExpiredPendingTransactions()
-        } catch {
-            TariLogger.error("Failed to cancel expired pending transactions", error: error)
-        }
+        expirePendingTransactionsAfterSync()
 
         logCleanup(maxMB: TariSettings.shared.maxMbLogsStorage)
 
