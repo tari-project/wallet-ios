@@ -56,7 +56,6 @@ extension TransactionsTableViewController {
         sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
         sectionHeaderLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
         sectionHeaderLabel.text = labelText
-
         sectionHeaderLabel.backgroundColor = Theme.shared.colors.transactionTableBackground?.withAlphaComponent(0.8)
         sectionHeaderLabel.textAlignment = .left
 
