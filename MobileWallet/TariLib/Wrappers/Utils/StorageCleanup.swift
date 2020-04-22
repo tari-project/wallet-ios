@@ -1,4 +1,4 @@
-//  LogCleanup.swift
+//  StorageCleanup.swift
 
 /*
 	Package MobileWallet
@@ -71,33 +71,60 @@ private func getUnusedLogFiles() -> [URL] {
     return allLogFiles
 }
 
-func logCleanup(maxMB: UInt64) {
-    DispatchQueue.global().async {
-        let maxBytes = maxMB * 1000000
+private func logCleanup(maxMB: UInt64) {
+    let maxBytes = maxMB * 1000000
 
-        let fileManager = FileManager.default
+    let fileManager = FileManager.default
 
-        var loopIterationsFailsafe = 0
-        while totalBytes(files: getUnusedLogFiles()) > maxBytes && loopIterationsFailsafe < 10 {
-            loopIterationsFailsafe = loopIterationsFailsafe + 1
+    var loopIterationsFailsafe = 0
+    while totalBytes(files: getUnusedLogFiles()) > maxBytes && loopIterationsFailsafe < 10 {
+        loopIterationsFailsafe = loopIterationsFailsafe + 1
 
-            guard let oldestFile = getUnusedLogFiles().last else {
-                TariLogger.error("Failed to get oldest log file")
-                break
-            }
+        guard let oldestFile = getUnusedLogFiles().last else {
+            TariLogger.error("Failed to get oldest log file")
+            break
+        }
 
-            guard fileManager.fileExists(atPath: oldestFile.path) else {
-                TariLogger.error("Oldest log file does not exist")
-                break
-            }
+        guard fileManager.fileExists(atPath: oldestFile.path) else {
+            TariLogger.error("Oldest log file does not exist")
+            break
+        }
 
-            do {
-                try fileManager.removeItem(at: oldestFile)
-                TariLogger.info("Deleting log file: \(oldestFile.lastPathComponent)")
-            } catch {
-                TariLogger.error("Failed to delete log file", error: error)
-                break
+        do {
+            try fileManager.removeItem(at: oldestFile)
+            TariLogger.info("Deleting log file: \(oldestFile.lastPathComponent)")
+        } catch {
+            TariLogger.error("Failed to delete log file", error: error)
+            break
+        }
+    }
+}
+
+private func bugReportZipFilesCleanup() {
+    let maximumHours: Double = 24
+    let minimumDate = Date().addingTimeInterval(-maximumHours*60*60)
+    func meetsRequirement(date: Date) -> Bool { return date < minimumDate }
+    func meetsRequirement(name: String) -> Bool { return name.hasSuffix("bug-report.zip") }
+
+    do {
+        let manager = FileManager.default
+        let documentDirUrl = try manager.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+        if manager.changeCurrentDirectoryPath(documentDirUrl.path) {
+            for file in try manager.contentsOfDirectory(atPath: ".") {
+                let creationDate = try manager.attributesOfItem(atPath: file)[FileAttributeKey.creationDate] as! Date
+                if meetsRequirement(name: file) && meetsRequirement(date: creationDate) {
+                    try manager.removeItem(atPath: file)
+                }
             }
         }
+    } catch {
+        TariLogger.error("Cannot cleanup the old zip files from bug reports files", error: error)
+    }
+}
+
+func backgroundStorageCleanup(logFilesMaxMB: UInt64) {
+    DispatchQueue.global().async {
+        logCleanup(maxMB: logFilesMaxMB)
+        bugReportZipFilesCleanup()
     }
 }

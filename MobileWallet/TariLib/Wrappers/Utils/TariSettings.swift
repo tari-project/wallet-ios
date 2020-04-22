@@ -72,8 +72,8 @@ struct TariSettings {
 
     let faucetServer = "https://faucet.tari.com"
 
-    let userAgreementUrl = "https://tarilabs.com/user_agreement/"
-    let privacyPolicyUrl = "https://tarilabs.com/privacy_policy/"
+    let userAgreementUrl = "https://www.tari.com/user_agreement/"
+    let privacyPolicyUrl = "https://www.tari.com/privacy_policy/"
     let storeUrl = "https://store.tarilabs.com/"
     let bugReportEmail = "bug_reports@tari.com"
 
@@ -105,8 +105,8 @@ struct TariSettings {
     //Used for showing a little extra detail in the UI to help debugging
     let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
-    let pushNotificationServer = "https://1c1c2bea.ngrok.io"
-    let expirePendingTransactionsAfter: TimeInterval = 60 //A minute
+    let pushNotificationServer = "https://push.tari.com" // "https://1c1c2bea.ngrok.io"
+    let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 1 //1 day
     #else
     let torEnabled = true
     let isDebug = false
