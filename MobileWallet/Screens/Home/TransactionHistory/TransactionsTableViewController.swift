@@ -100,6 +100,7 @@ class TransactionsTableViewController: UITableViewController {
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedSectionHeaderHeight = sectionHeaderHeight
 
+        beginRefreshing()
         registerEvents()
         NotificationCenter.default.addObserver(self, selector: #selector(registerEvents), name: UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(unregisterEvents), name: UIApplication.didEnterBackgroundNotification, object: nil)
@@ -107,14 +108,7 @@ class TransactionsTableViewController: UITableViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
         self.refreshTable()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        TariEventBus.unregister(self)
     }
 
     private func viewSetup() {
@@ -148,28 +142,13 @@ class TransactionsTableViewController: UITableViewController {
             self.refreshTable()
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: { [weak self] in
+        TariEventBus.onMainThread(self, eventType: .connectionMonitorStatusChanged) { [weak self] (_) in
             guard let self = self else { return }
 
-            //We know where refreshing if this is the first load unless it synced with a base node right away for some readon
-            let baseNodeSynced = ConnectionMonitor.shared.state.baseNodeSynced
-            guard baseNodeSynced == nil || baseNodeSynced == false else {
-                return
-            }
-
-            self.beginRefreshing()
-        })
-
-        //Listen for when to stop refreshing
-        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
-            guard let self = self else { return }
-
-            if let success: Bool = result?.object as? Bool {
-                if success == true {
-                    self.endRefreshingWithSuccess()
-                } else {
-                    //TODO base node always fails the first few times. When that stabalises we can show an error here.
-                }
+            if ConnectionMonitor.shared.state.baseNodeSynced == true {
+                self.endRefreshingWithSuccess()
+            } else {
+                self.beginRefreshing()
             }
         }
     }
@@ -181,12 +160,12 @@ class TransactionsTableViewController: UITableViewController {
     }
 
     private func beginRefreshing() {
-        //Makes the spinner transparent so it's visible while the refreshing animation is in view
-        hideRefreshingSpinner()
-
         guard !isRefreshing else {
             return
         }
+
+        //Makes the spinner transparent so it's visible while the refreshing animation is in view
+        hideRefreshingSpinner()
         isRefreshing = true
 
         animatedRefresher.updateState(.loading)
