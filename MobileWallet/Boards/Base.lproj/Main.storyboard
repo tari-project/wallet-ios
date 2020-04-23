@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tmd-fb-j9y">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="tmd-fb-j9y">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,6 +16,49 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="W8q-r2-nZs" userLabel="navigationBar">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="100"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wEM-Nc-7IM">
+                                        <rect key="frame" x="0.0" y="44" width="414" height="56"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Transactions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1bX-AM-zAI">
+                                                <rect key="frame" x="161" y="17" width="92" height="22"/>
+                                                <fontDescription key="fontDescription" name="Avenir-Heavy" family="Avenir" pointSize="16"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="efD-k0-G48">
+                                                <rect key="frame" x="20" y="7" width="42" height="42"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="42" id="S9E-QS-yPH"/>
+                                                    <constraint firstAttribute="height" constant="42" id="XV8-2n-quS"/>
+                                                </constraints>
+                                                <inset key="imageEdgeInsets" minX="-29" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                                <state key="normal" image="Close"/>
+                                                <connections>
+                                                    <action selector="closeButtonAction:" destination="EY7-bG-NLy" eventType="touchUpInside" id="FIW-c5-c4I"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="56" id="2b9-Eq-pgF"/>
+                                            <constraint firstItem="1bX-AM-zAI" firstAttribute="centerY" secondItem="wEM-Nc-7IM" secondAttribute="centerY" id="39b-dW-eN1"/>
+                                            <constraint firstItem="efD-k0-G48" firstAttribute="leading" secondItem="wEM-Nc-7IM" secondAttribute="leading" constant="20" id="Jp3-d6-hkE"/>
+                                            <constraint firstItem="efD-k0-G48" firstAttribute="centerY" secondItem="wEM-Nc-7IM" secondAttribute="centerY" id="KF7-Bt-A28"/>
+                                            <constraint firstItem="1bX-AM-zAI" firstAttribute="centerX" secondItem="wEM-Nc-7IM" secondAttribute="centerX" id="ODD-kk-ziZ"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" name="NavBarBackground"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="wEM-Nc-7IM" secondAttribute="bottom" id="Ivw-jc-30Z"/>
+                                    <constraint firstItem="wEM-Nc-7IM" firstAttribute="leading" secondItem="W8q-r2-nZs" secondAttribute="leading" id="U94-AK-XnE"/>
+                                    <constraint firstAttribute="height" constant="100" id="UGB-CL-Ytg"/>
+                                    <constraint firstAttribute="trailing" secondItem="wEM-Nc-7IM" secondAttribute="trailing" id="s0d-xX-MSP"/>
+                                </constraints>
+                            </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xuz-Or-cBG" userLabel="FadeView" customClass="FadedOverlayView" customModule="MobileWalletTests" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="776" width="414" height="120"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -34,13 +78,13 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ENx-MR-mo9">
-                                <rect key="frame" x="25" y="128" width="364" height="21"/>
+                                <rect key="frame" x="25" y="84" width="364" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xCe-J5-eXY" userLabel="BalanceView">
-                                <rect key="frame" x="25" y="149" width="364" height="54"/>
+                                <rect key="frame" x="25" y="105" width="364" height="54"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lRr-wq-3sr" customClass="AnimatedBalanceLabel" customModule="Tari_Aurora">
                                         <rect key="frame" x="24" y="3.5" width="320" height="47"/>
@@ -70,10 +114,14 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
+                            <constraint firstAttribute="top" secondItem="W8q-r2-nZs" secondAttribute="bottom" priority="999" id="3gu-Zk-8MT"/>
+                            <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="W8q-r2-nZs" secondAttribute="trailing" id="482-tZ-KoY"/>
+                            <constraint firstItem="W8q-r2-nZs" firstAttribute="leading" secondItem="hP5-V0-bt8" secondAttribute="leading" id="7zz-dh-PUL"/>
                             <constraint firstItem="xCe-J5-eXY" firstAttribute="top" secondItem="ENx-MR-mo9" secondAttribute="bottom" id="92c-BB-Nkv"/>
                             <constraint firstItem="xuz-Or-cBG" firstAttribute="trailing" secondItem="14X-p9-0HZ" secondAttribute="trailing" id="ESV-4a-oeZ"/>
                             <constraint firstAttribute="bottomMargin" secondItem="nEn-jd-PvX" secondAttribute="bottom" constant="16" id="JJw-Fc-2YR"/>
                             <constraint firstItem="14X-p9-0HZ" firstAttribute="trailing" secondItem="ENx-MR-mo9" secondAttribute="trailing" constant="25" id="KCB-kB-Lha"/>
+                            <constraint firstItem="W8q-r2-nZs" firstAttribute="top" secondItem="hP5-V0-bt8" secondAttribute="top" placeholder="YES" id="Ouv-Ep-0jc"/>
                             <constraint firstItem="xCe-J5-eXY" firstAttribute="leading" secondItem="14X-p9-0HZ" secondAttribute="leading" constant="25" id="Oxf-kc-3tB"/>
                             <constraint firstItem="ENx-MR-mo9" firstAttribute="top" secondItem="14X-p9-0HZ" secondAttribute="top" constant="40" id="Rn2-lq-8x8"/>
                             <constraint firstItem="xCe-J5-eXY" firstAttribute="leading" secondItem="14X-p9-0HZ" secondAttribute="leading" constant="25" id="Uda-J2-tsh"/>
@@ -91,6 +139,10 @@
                         <outlet property="balanceValueLabel" destination="lRr-wq-3sr" id="s7Z-2s-psg"/>
                         <outlet property="bottomFadeView" destination="xuz-Or-cBG" id="b2D-yC-ePc"/>
                         <outlet property="bottomFadeViewHeightConstraint" destination="FVa-yQ-b5v" id="CZP-I4-Lrb"/>
+                        <outlet property="navigationBar" destination="W8q-r2-nZs" id="6G6-uw-0Vw"/>
+                        <outlet property="navigationBarBottomConstraint" destination="3gu-Zk-8MT" id="P3z-n9-nXO"/>
+                        <outlet property="navigationBarHeightConstraint" destination="UGB-CL-Ytg" id="NSs-I3-eWL"/>
+                        <outlet property="navigationBarTitle" destination="1bX-AM-zAI" id="eQk-5T-8Za"/>
                         <outlet property="sendButton" destination="nEn-jd-PvX" id="WN2-cy-Tk7"/>
                         <outlet property="sendButtonBottomConstraint" destination="JJw-Fc-2YR" id="cBR-Pw-aa9"/>
                         <outlet property="valueIcon" destination="gRh-WS-nTa" id="jwI-Y3-zfq"/>
@@ -136,21 +188,24 @@
         <!--Navigation Controller-->
         <scene sceneID="2zm-7d-nM4">
             <objects>
-                <navigationController id="tmd-fb-j9y" sceneMemberID="viewController">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nKg-hE-Jpy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <navigationController navigationBarHidden="YES" id="tmd-fb-j9y" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6S1-3G-prl">
-                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
                         <segue destination="EY7-bG-NLy" kind="relationship" relationship="rootViewController" id="1AQ-pv-jx9"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="nKg-hE-Jpy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="991" y="-1235"/>
         </scene>
     </scenes>
     <resources>
-        <image name="questionmark.circle.fill" catalog="system" width="64" height="60"/>
+        <image name="Close" width="13" height="13"/>
+        <image name="questionmark.circle.fill" catalog="system" width="128" height="121"/>
+        <namedColor name="NavBarBackground">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>
