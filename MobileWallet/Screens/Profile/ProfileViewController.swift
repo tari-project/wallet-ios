@@ -128,7 +128,7 @@ class ProfileViewController: UIViewController {
         separatorView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         separatorView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         separatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        separatorView.topAnchor.constraint(equalTo: copyEmojiButton.bottomAnchor, constant: 23).isActive = true
+        separatorView.topAnchor.constraint(lessThanOrEqualTo: copyEmojiButton.bottomAnchor, constant: 23).isActive = true
     }
 
     private func setupMiddleLabel() {
@@ -138,7 +138,7 @@ class ProfileViewController: UIViewController {
         middleLabel.translatesAutoresizingMaskIntoConstraints = false
         middleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         middleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        middleLabel.topAnchor.constraint(equalTo: separatorView.bottomAnchor, constant: 23).isActive = true
+        middleLabel.topAnchor.constraint(lessThanOrEqualTo: separatorView.bottomAnchor, constant: 23).isActive = true
     }
 
     private func setupBottomView() {
@@ -148,7 +148,7 @@ class ProfileViewController: UIViewController {
         bottomView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
         bottomView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
         bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
-        bottomView.topAnchor.constraint(equalTo: middleLabel.bottomAnchor, constant: 23).isActive = true
+        bottomView.topAnchor.constraint(lessThanOrEqualTo: middleLabel.bottomAnchor, constant: 23).isActive = true
     }
 
     private func setupQRContainer() {
