@@ -362,7 +362,7 @@ class AddAmountViewController: UIViewController {
         if amount.rawValue + wallet.calculateTransactionFee(amount).rawValue  > availableBalance {
             UserFeedback.shared.info(
                 title: NSLocalizedString("Hold your horses! 🐴", comment: "Add amount view"),
-                description: NSLocalizedString("Sorry, you can’t send this much Tari at once. Please wait for your other transaction to be completed and then try again.", comment: "Add amount view")
+                description: NSLocalizedString("Sorry, you can’t send this much Tari until your previous transaction(s) are complete. Please wait for at least one transaction to complete and then try again.", comment: "Add amount view")
             )
             return
         }
