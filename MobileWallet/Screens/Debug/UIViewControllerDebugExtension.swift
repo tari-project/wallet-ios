@@ -40,6 +40,14 @@
 
 import UIKit
 import MessageUI
+import ZIPFoundation
+
+private enum DebugErrors: Error {
+    case zipURL
+    case createArchive
+    case zipArchive
+    case zipDBfiles
+}
 
 extension UIViewController: MFMailComposeViewControllerDelegate {
     func checkClipboardForBaseNode() {
@@ -131,22 +139,55 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
     }
 
     private func addAttachments(_ mail: MFMailComposeViewController) throws {
-        var limit = 3
-        try TariLib.shared.allLogFiles.forEach { (file) in
+        let archiveURL = try zipDebugFiles()
+        let data = try NSData(contentsOfFile: archiveURL.path) as Data
+        mail.addAttachmentData(data, mimeType: "application/zip", fileName: archiveURL.lastPathComponent)
+    }
+
+    private func zipDebugFiles() throws -> URL {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
+        let dateString = dateFormatter.string(from: Date())
+        let archiveName = "\(dateString)-bug-report.zip"
+
+        guard let archiveURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(archiveName) else {
+            TariLogger.error("Failed to create archive URL")
+            throw DebugErrors.zipURL
+        }
+
+        //ZIP db files only if this is testnet
+        //An archive needs to be created first before multipl files can be appended.
+        //If this is mainnet then just the current log file gets created and the rest will get appeneded below.
+        var sourceURL = URL(fileURLWithPath: TariLib.shared.logFilePath)
+        if TariSettings.shared.network != .mainnet {
+            sourceURL = URL(fileURLWithPath: TariLib.shared.databasePath)
+        }
+
+        do {
+            try FileManager().zipItem(at: sourceURL, to: archiveURL)
+        } catch {
+            TariLogger.error("Creation of ZIP archive failed with error", error: error)
+            throw DebugErrors.createArchive
+        }
+
+        //Add log file entries
+        guard let archive = Archive(url: archiveURL, accessMode: .update) else {
+            TariLogger.error("Failed to access archive")
+            throw DebugErrors.zipArchive
+        }
+
+        var limit = 5
+        try TariLib.shared.allLogFiles.forEach { (logFile) in
             guard limit > 0 else {
                 return
             }
 
-            var fileName = file.lastPathComponent
-            if TariLib.shared.logFilePath.contains(file.lastPathComponent) {
-                fileName = "current-\(fileName)"
-            }
+            try archive.addEntry(with: logFile.lastPathComponent, relativeTo: logFile.deletingLastPathComponent())
 
-            TariLogger.warn(file.path)
-            let data = try NSData(contentsOfFile: file.path) as Data
-            mail.addAttachmentData(data, mimeType: "text/plain", fileName: fileName)
             limit = limit - 1
         }
+
+        return archiveURL
     }
 
     private func onSendFeedback() {
@@ -170,7 +211,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
                 })
             }
         } else {
-            UserFeedback.shared.error(title: "Feedback failed", description: "Cannot construct email")
+            UserFeedback.shared.error(title: "Feedback failed", description: "Apple mail app needs to be setup to be able to send bug report mails")
         }
 
         TariLogger.info("Feedback shared")

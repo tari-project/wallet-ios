@@ -176,9 +176,6 @@ class AddAmountViewController: UIViewController {
         }
 
         let updatedInput = String(rawInput.dropLast())
-        guard isValidNumber(string: updatedInput, finalNumber: false) else {
-            return
-        }
 
         rawInput = updatedInput
         updateLabelText()
@@ -193,7 +190,11 @@ class AddAmountViewController: UIViewController {
             updatedText = value
         }
 
-        guard isValidNumber(string: updatedText, finalNumber: false) else {
+        if value == MicroTari.decimalSeparator && rawInput.contains(MicroTari.decimalSeparator) {
+            return
+        }
+
+        if numberOfDecimals(in: updatedText) > MicroTari.ROUNDED_FRACTION_DIGITS {
             return
         }
 
@@ -215,12 +216,14 @@ class AddAmountViewController: UIViewController {
 
         hideBalanceExceeded()
         hideTransactionFee()
-        continueButton.isEnabled = false
+
+        let isValidValue = isValidNumber(string: rawInput, finalNumber: true)
+        continueButton.variation = isValidValue ? .normal : .disabled
 
         if balanceCheckTimer != nil {
             balanceCheckTimer?.invalidate()
         }
-        if isValidNumber(string: rawInput, finalNumber: true) {
+        if isValidValue == true {
             balanceCheckTimer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(checkAvailableBalance), userInfo: nil, repeats: false)
         }
     }
@@ -245,10 +248,6 @@ class AddAmountViewController: UIViewController {
         var str = string
         if !finalNumber && string.last == MicroTari.decimalSeparator.first {
             str = String(str.dropLast())
-        }
-
-        if str == "0" && finalNumber {
-            return false
         }
 
         do {
@@ -363,7 +362,7 @@ class AddAmountViewController: UIViewController {
         if amount.rawValue + wallet.calculateTransactionFee(amount).rawValue  > availableBalance {
             UserFeedback.shared.info(
                 title: NSLocalizedString("Hold your horses! 🐴", comment: "Add amount view"),
-                description: NSLocalizedString("Sorry, you can’t send this much Tari at once. Please wait for your other transaction to be completed and then try again.", comment: "Add amount view")
+                description: NSLocalizedString("Sorry, you can’t send this much Tari until your previous transaction(s) are complete. Please wait for at least one transaction to complete and then try again.", comment: "Add amount view")
             )
             return
         }

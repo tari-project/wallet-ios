@@ -110,6 +110,16 @@ struct Colors: Loopable {
     let floatingPanelGrabber = UIColor(named: "FloatingPanelGrabber")
     let qrButtonBackground = UIColor(named: "QRButtonBackground")
 
+    let auroraGradient1 = UIColor(named: "auroraGradient1")
+    let auroraGradient2 = UIColor(named: "auroraGradient2")
+    let auroraGradient3 = UIColor(named: "auroraGradient3")
+    let auroraGradient4 = UIColor(named: "auroraGradient4")
+    let auroraGradient5 = UIColor(named: "auroraGradient5")
+    let auroraGradient6 = UIColor(named: "auroraGradient6")
+    let auroraGradient7 = UIColor(named: "auroraGradient7")
+    let auroraGradient8 = UIColor(named: "auroraGradient8")
+    let auroraGradient9 = UIColor(named: "auroraGradient9")
+
     //Transaction cell
     let transactionCellAlias = UIColor(named: "TableCellContactAlias")
     let transactionCellDescription = UIColor(named: "TransactionCellDescription")
@@ -237,7 +247,7 @@ struct Fonts: Loopable {
     let sendingTariTitleLabelSecond = UIFont(name: "Avenir-Black", size: 18.0)
 
     //Navigation bar
-    let navigationBarTitle = UIFont(name: "Avenir-Heavy", size: 16.5) //Design spec size is 14.0
+    let navigationBarTitle = UIFont(name: "Avenir-Heavy", size: 14.0) //Design spec size is 14.0
 
     //Popup User feedback
     let feedbackPopupTitle = UIFont(name: "Avenir-Light", size: 18)

@@ -12,6 +12,7 @@ target 'MobileWallet' do
   pod 'SwiftEntryKit', '1.2.3'
   pod 'ReachabilitySwift'
   pod 'MatomoTracker', '~> 7.2'
+  pod 'ZIPFoundation', '~> 0.9'
 
   target 'MobileWalletTests' do
     inherit! :search_paths

@@ -99,8 +99,8 @@ private class RefreshingInnerView: UIView {
 }
 
 class AnimatedRefreshingView: UIView {
-    private let CORNER_RADIUS: CGFloat = 20
-    private let HEIGHT: CGFloat = 48
+    private let cornerRadius: CGFloat = 20
+    private let containerHeight: CGFloat = 48
 
     private var currentInnerView = RefreshingInnerView()
     private var currentInnerViewTopAnchor = NSLayoutConstraint()
@@ -119,7 +119,7 @@ class AnimatedRefreshingView: UIView {
         currentState = type
         backgroundColor = Theme.shared.colors.appBackground
 
-        layer.cornerRadius = CORNER_RADIUS
+        layer.cornerRadius = cornerRadius
         layer.shadowOpacity = 0.08
         layer.shadowOffset = CGSize(width: 2, height: 2)
         layer.shadowRadius = 5
@@ -133,7 +133,7 @@ class AnimatedRefreshingView: UIView {
         currentInnerViewBottomAnchor = currentInnerView.bottomAnchor.constraint(equalTo: bottomAnchor)
         currentInnerViewBottomAnchor.isActive = true
 
-        heightAnchor.constraint(equalToConstant: HEIGHT).isActive = true
+        heightAnchor.constraint(equalToConstant: containerHeight).isActive = true
 
         if !visible {
             alpha = 0
@@ -141,10 +141,8 @@ class AnimatedRefreshingView: UIView {
     }
 
     func animateIn() {
-        //TODO animate height from zero so when it appeard in the tx list there's no jump
-
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
-            UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
                 guard let self = self else { return }
                 self.alpha = 1
                 self.layoutIfNeeded()
@@ -152,14 +150,14 @@ class AnimatedRefreshingView: UIView {
         })
     }
 
-    func animateOut(_ onComplete: @escaping () -> Void) {
+    func animateOut(_ onComplete: (() -> Void)? = nil) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-            UIView.animate(withDuration: 1, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
                 guard let self = self else { return }
                 self.alpha = 0
                 self.layoutIfNeeded()
             }) { (_) in
-                onComplete()
+                onComplete?()
             }
         })
     }
@@ -175,18 +173,22 @@ class AnimatedRefreshingView: UIView {
         guard currentState != type else {
             return
         }
+
         currentState = type
+
+        let shiftUpPoints: CGFloat = 20
 
         let newInnerView = RefreshingInnerView()
         newInnerView.setupView(type)
         newInnerView.alpha = 0
         setupInnerView(newInnerView)
 
-        let newInnerViewTopAnchor = newInnerView.topAnchor.constraint(equalTo: topAnchor, constant: 20)
+        let newInnerViewTopAnchor = newInnerView.topAnchor.constraint(equalTo: topAnchor, constant: shiftUpPoints)
         newInnerViewTopAnchor.isActive = true
-        let newInnerViewBottomAnchor = newInnerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 20)
+        let newInnerViewBottomAnchor = newInnerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: shiftUpPoints)
         newInnerViewBottomAnchor.isActive = true
 
+        //Shift the new inner view from the bottom up, while moving the current one up and out
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
                     guard let self = self else { return }
@@ -197,17 +199,22 @@ class AnimatedRefreshingView: UIView {
                     newInnerViewTopAnchor.constant = 0
                     newInnerViewBottomAnchor.constant = 0
 
-                    self.currentInnerViewTopAnchor.constant = -20
-                    self.currentInnerViewBottomAnchor.constant = -20
+                    self.currentInnerViewTopAnchor.constant = -shiftUpPoints
+                    self.currentInnerViewBottomAnchor.constant = -shiftUpPoints
                     self.layoutIfNeeded()
 
             }) { [weak self] (_) in
                 guard let self = self else { return }
 
+                self.currentInnerView.removeFromSuperview()
+
                 self.currentInnerView = newInnerView
 
                 self.currentInnerViewTopAnchor.isActive = false
                 self.currentInnerViewBottomAnchor.isActive = false
+
+                newInnerViewTopAnchor.isActive = false
+                newInnerViewBottomAnchor.isActive = false
 
                 self.currentInnerViewTopAnchor = newInnerViewTopAnchor
                 self.currentInnerViewBottomAnchor = newInnerViewBottomAnchor
