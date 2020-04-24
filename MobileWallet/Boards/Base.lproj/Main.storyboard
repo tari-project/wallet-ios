@@ -185,11 +185,10 @@
             </objects>
             <point key="canvasLocation" x="2309.5999999999999" y="-492.85714285714289"/>
         </scene>
-        <!--Navigation Controller-->
+        <!--Always Poppable Navigation Controller-->
         <scene sceneID="2zm-7d-nM4">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="nKg-hE-Jpy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-                <navigationController navigationBarHidden="YES" id="tmd-fb-j9y" sceneMemberID="viewController">
+                <navigationController navigationBarHidden="YES" id="tmd-fb-j9y" customClass="AlwaysPoppableNavigationController" customModule="MobileWalletTests" customModuleProvider="target" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6S1-3G-prl">
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -197,6 +196,7 @@
                         <segue destination="EY7-bG-NLy" kind="relationship" relationship="rootViewController" id="1AQ-pv-jx9"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nKg-hE-Jpy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="991" y="-1235"/>
         </scene>
