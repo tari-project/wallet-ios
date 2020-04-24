@@ -208,7 +208,13 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                     UserFeedback.shared.callToAction(
                         title: title,
                         description: description,
-                        actionTitle: NSLocalizedString("Send Tari", comment: "Home view testnet airdrop"),
+                        actionTitle: String(
+                            format: NSLocalizedString(
+                                "Send %@",
+                                comment: "Home view testnet airdrop"
+                            ),
+                            TariSettings.shared.network.currencyDisplayTicker
+                        ),
                         cancelTitle: NSLocalizedString("Try it later", comment: "Home view testnet airdrop"),
                         onAction: { [weak self] in
                             guard let self = self else { return }
@@ -550,7 +556,16 @@ extension HomeViewController {
 
         applyBackgroundGradient(duration: 2.5)
 
-        sendButton.setTitle(NSLocalizedString("Send Tari", comment: "Floating send Tari button on home screen"), for: .normal)
+        sendButton.setTitle(
+            String(
+                format: NSLocalizedString(
+                    "Send %@",
+                    comment: "Floating send Tari button on home screen"
+                ),
+                TariSettings.shared.network.currencyDisplayTicker
+            ),
+            for: .normal
+        )
         balanceLabel.text = NSLocalizedString("Available Balance", comment: "Home screen balance label")
         balanceLabel.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
         balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel

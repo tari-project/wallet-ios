@@ -47,9 +47,18 @@ enum TariNetworks: String {
     var currencyDisplayName: String {
         switch self {
         case .rincewind:
-            return "testnet Tari"
+            return "testnet XTR"
         default:
-            return "Tari"
+            return "XTR"
+        }
+    }
+
+    var currencyDisplayTicker: String {
+        switch self {
+        case .rincewind:
+            return "tXTR"
+        default:
+            return "XTR"
         }
     }
 

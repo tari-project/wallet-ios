@@ -173,7 +173,13 @@ class ProfileViewController: UIViewController {
     }
 
     private func customizeTitleLabel() {
-        let shareYourEmojiString = NSLocalizedString("Your Emoji ID is your wallet address. Share it with others to receive Tari.", comment: "Profile title label")
+        let shareYourEmojiString = String(
+            format: NSLocalizedString(
+                "Your Emoji ID is your wallet address. Share it with others to receive %@",
+                comment: "Profile title label"
+            ),
+            TariSettings.shared.network.currencyDisplayTicker
+        )
         let toMakeBold = NSLocalizedString("Emoji ID", comment: "Profile title label")
 
         let attributedString = NSMutableAttributedString(
@@ -212,8 +218,13 @@ class ProfileViewController: UIViewController {
     }
 
     private func customizeMiddleLabel() {
-        let middleLabelText = NSLocalizedString("Transacting in person? Others can scan this QR code from the Tari Aurora App to send you Tari.", comment: "Profile middle label")
-
+        let middleLabelText = String(
+            format: NSLocalizedString(
+                "ransacting in person? Others can scan this QR code from the Tari Aurora App to send you %@.",
+                comment: "COMMENT"
+            ),
+            TariSettings.shared.network.currencyDisplayTicker
+        )
         self.middleLabel.text = middleLabelText
         self.middleLabel.font = Theme.shared.fonts.profileMiddleLabel
         self.middleLabel.textColor = Theme.shared.colors.profileMiddleLabel!
