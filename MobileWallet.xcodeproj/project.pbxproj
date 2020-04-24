@@ -253,14 +253,14 @@
 		00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E491B52366E08F007B332D /* MobileWalletTests.swift */; };
 		00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E491C02366E08F007B332D /* MobileWalletUITests.swift */; };
-		00E4922923683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
-		00E4922A23683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
-		00E4922B23683E54007B332D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4922823683E54007B332D /* HomeViewController.swift */; };
 		00F53A642428E44700448466 /* StorageCleanup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F53A632428E44700448466 /* StorageCleanup.swift */; };
 		00F53A6A24290F7100448466 /* StorageCleanup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F53A632428E44700448466 /* StorageCleanup.swift */; };
 		00F53A6B24290FAE00448466 /* StorageCleanup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F53A632428E44700448466 /* StorageCleanup.swift */; };
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
+		37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
+		37CB9F8B2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
+		37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
 		37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
 		37F29D5824504B92008C046F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
 		37F29D5924504B92008C046F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
@@ -505,13 +505,13 @@
 		00E491BC2366E08F007B332D /* MobileWalletUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileWalletUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E491C02366E08F007B332D /* MobileWalletUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileWalletUITests.swift; sourceTree = "<group>"; };
 		00E491C22366E08F007B332D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00E4922823683E54007B332D /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		00F53A632428E44700448466 /* StorageCleanup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageCleanup.swift; sourceTree = "<group>"; };
 		0D5A214BA7374BF19AA25539 /* Pods-MobileWallet-MobileWalletTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet-MobileWalletTests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet-MobileWalletTests/Pods-MobileWallet-MobileWalletTests.debug.xcconfig"; sourceTree = "<group>"; };
 		149D41C0C9E88C8782E52C11 /* Pods-MobileWallet-MobileWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet-MobileWalletTests.release.xcconfig"; path = "Target Support Files/Pods-MobileWallet-MobileWalletTests/Pods-MobileWallet-MobileWalletTests.release.xcconfig"; sourceTree = "<group>"; };
 		153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet_MobileWalletUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		28164FB1973A4277E7C47F6D /* Pods-MobileWalletUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.release.xcconfig"; sourceTree = "<group>"; };
 		2FF33C780E811D173D3284C3 /* Pods-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		37CB9F892451A2AD00C495F2 /* String+Emoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Emoji.swift"; sourceTree = "<group>"; };
 		37E4B62A24501FB200FA302B /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		491AB89F23F3FF4400372189 /* AddAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAmountViewController.swift; sourceTree = "<group>"; };
 		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
@@ -661,6 +661,7 @@
 				004277FE23E2F1D700AE7BD9 /* UIImage.swift */,
 				00D7BD8824349AE3009DD097 /* UIDevice.swift */,
 				0042780223E8421100AE7BD9 /* String.swift */,
+				37CB9F892451A2AD00C495F2 /* String+Emoji.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1601,6 +1602,7 @@
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
 				00230AFA2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				00262EAF236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
+				37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
 				00369D812426080D00BAB95B /* TariLogger.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00F53A642428E44700448466 /* StorageCleanup.swift in Sources */,
@@ -1685,6 +1687,7 @@
 				00F53A6B24290FAE00448466 /* StorageCleanup.swift in Sources */,
 				00262EB0236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				004277E823DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
+				37CB9F8B2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
 				0042780023E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				491AB8A123F3FF4400372189 /* AddAmountViewController.swift in Sources */,
@@ -1797,6 +1800,7 @@
 				00D9886B2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
+				37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
 				0087A1AE23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				37F29D5924504B92008C046F /* HomeViewController.swift in Sources */,

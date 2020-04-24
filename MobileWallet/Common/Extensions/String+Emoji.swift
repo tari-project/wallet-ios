@@ -1,8 +1,8 @@
-//  StringProtocol.swift
+//  String+Emoji.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/02/03
+	Created by S.Shovkoplyas on 23.04.2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,35 +40,29 @@
 
 import Foundation
 
+extension Character {
+    /// A simple emoji is one scalar and presented to the user as an Emoji
+    var isSimpleEmoji: Bool {
+        guard let firstScalar = unicodeScalars.first else { return false }
+        return firstScalar.properties.isEmoji && firstScalar.value > 0x238C
+    }
+
+    /// Checks if the scalars will be merged into an emoji
+    var isCombinedIntoEmoji: Bool { unicodeScalars.count > 1 && unicodeScalars.first?.properties.isEmoji ?? false }
+
+    var isEmoji: Bool { isSimpleEmoji || isCombinedIntoEmoji }
+}
+
 extension String {
-    func insertSeparator(_ separatorString: String, atEvery n: Int) -> String {
-        guard 0 < n else { return self }
-        return self.enumerated().map({String($0.element) + (($0.offset != self.count - 1 && $0.offset % n ==  n - 1) ? "\(separatorString)" : "")}).joined()
-    }
+    var isSingleEmoji: Bool { count == 1 && containsEmoji }
 
-    mutating func insertedSeparator(_ separatorString: String, atEvery n: Int) {
-        self = insertSeparator(separatorString, atEvery: n)
-    }
-}
+    var containsEmoji: Bool { contains { $0.isEmoji } }
 
-extension StringProtocol {
-    func indexDistance(of element: Element) -> Int? {
-        firstIndex(of: element)?.distance(in: self)
-    }
+    var containsOnlyEmoji: Bool { !isEmpty && !contains { !$0.isEmoji } }
 
-    func indexDistance<S: StringProtocol>(of string: S) -> Int? {
-        range(of: string)?.lowerBound.distance(in: self)
-    }
-}
+    var emojiString: String { emojis.map { String($0) }.reduce("", +) }
 
-extension Collection {
-    func distance(to index: Index) -> Int {
-        distance(from: startIndex, to: index)
-    }
-}
+    var emojis: [Character] { filter { $0.isEmoji } }
 
-extension String.Index {
-    func distance<S: StringProtocol>(in string: S) -> Int {
-        string.distance(to: self)
-    }
+    var emojiScalars: [UnicodeScalar] { filter { $0.isEmoji }.flatMap { $0.unicodeScalars } }
 }
