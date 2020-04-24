@@ -159,7 +159,8 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         //An archive needs to be created first before multipl files can be appended.
         //If this is mainnet then just the current log file gets created and the rest will get appeneded below.
         var sourceURL = URL(fileURLWithPath: TariLib.shared.logFilePath)
-        if TariSettings.shared.network != .mainnet {
+        //TODO allow the user to check an option for attaching this
+        if TariSettings.shared.isDebug {
             sourceURL = URL(fileURLWithPath: TariLib.shared.databasePath)
         }
 

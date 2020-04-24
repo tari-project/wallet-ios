@@ -65,7 +65,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     private let floatingPanelController = FloatingPanelController()
     private var grabberHandle: UIView!
-    private var selectedTransaction: Any?
+    private var selectedTransaction: TransactionProtocol?
     private var maxSendButtonBottomConstraint: CGFloat = 50
     private var minSendButtonBottomConstraint: CGFloat = -20
     private var defaultBottomFadeViewHeight: CGFloat = 0
@@ -433,9 +433,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     // MARK: - TransactionTableDelegateMethods
 
     func onTransactionSelect(_ transaction: Any) {
-        selectedTransaction = transaction
-        //TODO on next VC check the type https://stackoverflow.com/questions/24091882/checking-if-an-object-is-a-given-type-in-swift
-        self.performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
+        selectedTransaction = transaction as? TransactionProtocol
+        performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
     }
 
     func onScrollDirectionChange(_ direction: ScrollDirection) {

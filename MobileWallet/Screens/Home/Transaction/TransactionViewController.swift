@@ -41,10 +41,10 @@
 import UIKit
 
 class TransactionViewController: UIViewController, UITextFieldDelegate {
-    let SIDE_PADDING: CGFloat = 25
-    let BOTTOM_HEADING_PADDING: CGFloat = 11
-    let VALUE_VIEW_HEIGHT_MULTIPLIER_FULL: CGFloat = 0.2536
-    let VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTENED: CGFloat = 0.18
+    let bottomHeadingPadding: CGFloat = 11
+    let valueViewHeightMultiplierFull: CGFloat = 0.2536
+    let valueViewHeightMultiplierShortened: CGFloat = 0.18
+    let defaultNavBarHeight: CGFloat = 90
 
     var contactPublicKey: PublicKey?
     var contactAlias: String = ""
@@ -66,6 +66,10 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
     let noteLabel = UILabel()
     var noteHeadingLabelTopAnchorConstraintContactNameShowing = NSLayoutConstraint()
     var noteHeadingLabelTopAnchorConstraintContactNameMissing = NSLayoutConstraint()
+    var navigationBarHeightAnchor = NSLayoutConstraint()
+    let txStateView = AnimatedRefreshingView()
+    var transaction: TransactionProtocol?
+    private var isShowingStateView = false
 
     @IBOutlet weak var transactionIDLabel: UILabel!
 
@@ -120,8 +124,6 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
         }
     }
 
-    var transaction: Any?
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
@@ -144,6 +146,14 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        registerEvents()
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        unRegisterEvents()
     }
 
     private func setup() {
@@ -157,7 +167,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
         setupEditContactButton()
         setupDivider()
         setupNote()
-        self.view.bringSubviewToFront(emojiButton)
+        view.bringSubviewToFront(emojiButton)
         //Transaction ID
         transactionIDLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         transactionIDLabel.font = Theme.shared.fonts.transactionScreenTxIDLabel
@@ -224,8 +234,138 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
         return true
     }
 
+    private func registerEvents() {
+        updateTxState()
+
+        let eventTypes: [TariEventTypes] = [
+            .receievedTransactionReply,
+            .receivedFinalizedTransaction,
+            .transactionBroadcast,
+            .transactionMined
+        ]
+
+        eventTypes.forEach { (eventType) in
+            TariEventBus.onMainThread(self, eventType: eventType) { [weak self] (result) in
+                guard let self = self else { return }
+                self.didRecieveUpdatedTx(updatedTx: result?.object as? TransactionProtocol)
+            }
+        }
+    }
+    
+    private func unRegisterEvents() {
+        TariEventBus.unregister(self)
+    }
+
+    func didRecieveUpdatedTx(updatedTx: TransactionProtocol?) {
+        guard let currentTx = transaction else {
+            return
+        }
+
+        guard let newTx = updatedTx else {
+            TariLogger.warn("Did not get transaction in callback reponse")
+            return
+        }
+
+        guard currentTx.id.0 == newTx.id.0 else {
+            //Received a tx update but it was for another tx
+            return
+        }
+
+        transaction = newTx
+
+        do {
+            try setDetails()
+            updateTxState()
+        } catch {
+            TariLogger.error("Failed to update TX state", error: error)
+        }
+    }
+
+    private func showStateView(defaultState: AnimatedRefreshingViewState, _ onComplete: @escaping () -> Void) {
+        guard !isShowingStateView else {
+            onComplete()
+            return
+        }
+
+        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+            guard let self = self else { return }
+
+            self.navigationBarHeightAnchor.constant = self.defaultNavBarHeight + AnimatedRefreshingView.containerHeight + 10
+            self.navigationBar.layoutIfNeeded()
+            self.view.layoutIfNeeded()
+        }) { [weak self] (_) in
+            guard let self = self else { return }
+
+            self.txStateView.translatesAutoresizingMaskIntoConstraints = false
+            self.navigationBar.addSubview(self.txStateView)
+            self.txStateView.bottomAnchor.constraint(equalTo: self.navigationBar.bottomAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+            self.txStateView.leadingAnchor.constraint(equalTo: self.navigationBar.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+            self.txStateView.trailingAnchor.constraint(equalTo: self.navigationBar.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+
+            self.txStateView.setupView(defaultState)
+            self.txStateView.animateIn()
+
+            self.isShowingStateView = true
+            onComplete()
+        }
+    }
+
+    private func hideStateView() {
+        guard isShowingStateView else {
+            return
+        }
+
+        self.txStateView.animateOut { [weak self] in
+            guard let self = self else { return }
+
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+                guard let self = self else { return }
+
+                self.navigationBarHeightAnchor.constant = self.defaultNavBarHeight
+                self.navigationBar.layoutIfNeeded()
+                self.view.layoutIfNeeded()
+            }) { [weak self] (_) in
+                guard let self = self else { return }
+                self.isShowingStateView = false
+            }
+        }
+    }
+
+    private func updateTxState() {
+        guard let tx = transaction else {
+            return
+        }
+
+        var newState: AnimatedRefreshingViewState?
+
+        switch tx.status.0 {
+        case .completed:
+            newState = .txWaitingForSender
+        case .pending:
+            if tx.direction == .inbound {
+                newState = .txWaitingForSender
+            } else if tx.direction == .outbound {
+                newState = .txWaitingForRecipient
+            }
+        case .broadcast:
+            newState = .txBroadcasted
+        default:
+            newState = nil
+        }
+
+        if let state = newState {
+            //Attempt to show it if it's not showing yet, else just update the state
+            showStateView(defaultState: state) { [weak self] in
+                guard let self = self else { return }
+                self.txStateView.updateState(state)
+            }
+        } else {
+            hideStateView()
+        }
+    }
+
     private func setDetails() throws {
-        if let tx = transaction as? TransactionProtocol {
+        if let tx = transaction {
             let (microTari, microTariError) = tx.microTari
             guard microTariError == nil else {
                 throw microTariError!
@@ -310,7 +450,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
                 setFeeLabel(fee!.formattedPreciseWithOperator)
             }
 
-            if tx.status.0 != .mined {
+            if tx.status.0 != .mined && tx.status.0 != .imported {
                 navigationBar.title = NSLocalizedString("Payment In Progress", comment: "Navigation bar title on transaction view screen")
             }
 

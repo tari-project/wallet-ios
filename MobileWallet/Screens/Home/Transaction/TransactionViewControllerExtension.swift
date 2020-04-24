@@ -47,7 +47,8 @@ extension TransactionViewController {
         navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        navigationBar.heightAnchor.constraint(equalToConstant: 96).isActive = true
+        navigationBarHeightAnchor = navigationBar.heightAnchor.constraint(equalToConstant: defaultNavBarHeight)
+        navigationBarHeightAnchor.isActive = true
     }
 
     func setupValueView() {
@@ -60,11 +61,11 @@ extension TransactionViewController {
         valueContainerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         valueContainerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
 
-        valueContainerViewHeightConstraintFull = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: VALUE_VIEW_HEIGHT_MULTIPLIER_FULL)
+        valueContainerViewHeightConstraintFull = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierFull)
         valueContainerViewHeightConstraintFull.isActive = true
 
         //Create disabled shorted constraint to use later for when keyboard pops up
-        valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTENED)
+        valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierShortened)
         valueContainerViewHeightConstraintShortened.isActive = false
 
         view.sendSubviewToBack(valueContainerView)
@@ -76,7 +77,7 @@ extension TransactionViewController {
         valueLabel.centerXAnchor.constraint(equalTo: valueContainerView.centerXAnchor).isActive = true
         valueCenterYAnchorConstraint = valueLabel.centerYAnchor.constraint(equalTo: valueContainerView.centerYAnchor)
         valueCenterYAnchorConstraint.isActive = true
-        valueLabel.widthAnchor.constraint(lessThanOrEqualTo: valueContainerView.widthAnchor, constant: SIDE_PADDING * -4).isActive = true
+        valueLabel.widthAnchor.constraint(lessThanOrEqualTo: valueContainerView.widthAnchor, constant: Theme.shared.sizes.appSidePadding * -4).isActive = true
         valueLabel.heightAnchor.constraint(equalToConstant: Theme.shared.fonts.transactionScreenCurrencyValueLabel!.pointSize).isActive = true
 
         let valueColor = Theme.shared.colors.transactionViewValueLabel
@@ -94,7 +95,7 @@ extension TransactionViewController {
         valueContainerView.addSubview(valueImage)
 
         valueImage.centerYAnchor.constraint(equalTo: valueLabel.centerYAnchor).isActive = true
-        valueImage.trailingAnchor.constraint(equalTo: valueLabel.leadingAnchor, constant: -SIDE_PADDING / 2).isActive = true
+        valueImage.trailingAnchor.constraint(equalTo: valueLabel.leadingAnchor, constant: -Theme.shared.sizes.appSidePadding / 2).isActive = true
         valueImage.heightAnchor.constraint(equalToConstant: 21).isActive = true
         valueImage.widthAnchor.constraint(equalToConstant: 21).isActive = true
         valueImage.contentMode = .scaleAspectFit
@@ -102,11 +103,11 @@ extension TransactionViewController {
 
     func setFeeLabel(_ feeText: String) {
         valueContainerViewHeightConstraintFull.isActive = false
-        valueContainerViewHeightConstraintFull = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: VALUE_VIEW_HEIGHT_MULTIPLIER_FULL, constant: 30)
+        valueContainerViewHeightConstraintFull = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierFull, constant: 30)
         valueContainerViewHeightConstraintFull.isActive = true
 
         valueContainerViewHeightConstraintShortened.isActive = false
-        valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: VALUE_VIEW_HEIGHT_MULTIPLIER_SHORTENED, constant: 30)
+        valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierShortened, constant: 30)
 
         valueCenterYAnchorConstraint.isActive = false
         valueLabel.centerYAnchor.constraint(equalTo: valueContainerView.centerYAnchor, constant: -20).isActive = true
@@ -136,9 +137,9 @@ extension TransactionViewController {
         fromContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(fromContainerView)
         fromContainerView.backgroundColor = .clear
-        fromContainerView.topAnchor.constraint(equalTo: valueContainerView.bottomAnchor, constant: SIDE_PADDING).isActive = true
-        fromContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        fromContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        fromContainerView.topAnchor.constraint(equalTo: valueContainerView.bottomAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        fromContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        fromContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         fromContainerView.heightAnchor.constraint(equalToConstant: 61).isActive = true
 
         fromHeadingLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -160,8 +161,8 @@ extension TransactionViewController {
         addContactButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(addContactButton)
 
-        addContactButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: BOTTOM_HEADING_PADDING).isActive = true
-        addContactButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        addContactButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
+        addContactButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         addContactButton.setTitle(NSLocalizedString("Add Contact Name", comment: "Transaction detail view"), for: .normal)
         addContactButton.setVariation(.secondary)
         addContactButton.addTarget(self, action: #selector(addContactButtonPressed), for: .touchUpInside)
@@ -174,7 +175,7 @@ extension TransactionViewController {
         contactNameHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         contactNameHeadingLabel.text = NSLocalizedString("Contact Name", comment: "Transaction detail view")
         contactNameHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: 40.0).isActive = true
-        contactNameHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
+        contactNameHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
         contactNameTextField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(contactNameTextField)
@@ -184,15 +185,15 @@ extension TransactionViewController {
         contactNameTextField.autocorrectionType = .no
         contactNameTextField.returnKeyType = .done
         contactNameTextField.delegate = self
-        contactNameTextField.topAnchor.constraint(equalTo: contactNameHeadingLabel.bottomAnchor, constant: BOTTOM_HEADING_PADDING).isActive = true
-        contactNameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
+        contactNameTextField.topAnchor.constraint(equalTo: contactNameHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
+        contactNameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
     }
 
     func setupEditContactButton() {
         editContactNameButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(editContactNameButton)
-        editContactNameButton.topAnchor.constraint(equalTo: contactNameHeadingLabel.bottomAnchor, constant: BOTTOM_HEADING_PADDING).isActive = true
-        editContactNameButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        editContactNameButton.topAnchor.constraint(equalTo: contactNameHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
+        editContactNameButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         editContactNameButton.setTitle(NSLocalizedString("Edit", comment: "Transaction detail view"), for: .normal)
         editContactNameButton.setVariation(.secondary)
         editContactNameButton.addTarget(self, action: #selector(editContactButtonPressed), for: .touchUpInside)
@@ -202,8 +203,8 @@ extension TransactionViewController {
         dividerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(dividerView)
         dividerView.topAnchor.constraint(equalTo: contactNameTextField.bottomAnchor, constant: 20.0).isActive = true
-        dividerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        dividerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        dividerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        dividerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         dividerView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         dividerView.layer.borderWidth = 1
         dividerView.layer.borderColor = Theme.shared.colors.transactionScreenDivider!.cgColor
@@ -219,7 +220,7 @@ extension TransactionViewController {
         noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = true
         noteHeadingLabelTopAnchorConstraintContactNameMissing = noteHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: 26)
         noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = false
-        noteHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
+        noteHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
         noteLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(noteLabel)
@@ -227,8 +228,8 @@ extension TransactionViewController {
         noteLabel.font = Theme.shared.fonts.transactionScreenTextLabel
         noteLabel.numberOfLines = 0
         noteLabel.topAnchor.constraint(equalTo: noteHeadingLabel.bottomAnchor, constant: 10).isActive = true
-        noteLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        noteLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        noteLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        noteLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         noteLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 100).isActive = true
     }
 
