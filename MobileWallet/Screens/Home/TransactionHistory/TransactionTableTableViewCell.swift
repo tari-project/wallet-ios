@@ -118,7 +118,8 @@ class TransactionTableTableViewCell: UITableViewCell {
 
     private func setEmojis(_ pubKey: PublicKey) {
         let (emojis, _) = pubKey.emojis
-        userNameLabel.text = emojis
+        let shortEmojisStr = "\(String(emojis.emojis.prefix(3)))···\(String(emojis.emojis.suffix(3)))"
+        userNameLabel.text = shortEmojisStr
     }
 
     func setDetails(completedTransaction: CompletedTransaction) {
