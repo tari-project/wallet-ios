@@ -287,6 +287,7 @@ class WalletCreationViewController: UIViewController {
         tapToSeeFullEmojiButton.backgroundColor = Theme.shared.colors.tapToSeeFullEmojiBackground!
         tapToSeeFullEmojiButton.alpha = 0.0
         tapToSeeFullEmojiButton.setTitle(NSLocalizedString("Tap to see full Emoji ID", comment: "Tap to see full Emoji ID in wallet creation"), for: .normal)
+        tapToSeeFullEmojiButton.addTarget(self, action: #selector(tapToSeeButtonAction(_ :)), for: .touchUpInside)
         tapToSeeFullEmojiButton.setTitleColor(Theme.shared.colors.tapToSeeFullEmoji!, for: .normal)
         tapToSeeFullEmojiButton!.titleLabel?.font = Theme.shared.fonts.tapToSeeFullEmojiLabel!
 
@@ -748,12 +749,7 @@ class WalletCreationViewController: UIViewController {
                                               showContainerViewBlur: false)
 
             self.userEmojiContainer.tapToExpand = { [weak self] in
-                guard let self = self else { return }
-                if self.state == .showEmojiId {
-                    self.createEmojiButton.alpha = 1.0
-                    self.arrowImageView.alpha = 0.0
-                    self.tapToSeeFullEmojiButton.alpha = 0.0
-                }
+                self?.tapToExpandAction()
             }
         }
 
@@ -761,6 +757,19 @@ class WalletCreationViewController: UIViewController {
         secondLabelBottomConstant?.constant = 8
         secondLabelTop.layoutIfNeeded()
         secondLabelBottom.layoutIfNeeded()
+    }
+
+    @objc public func tapToSeeButtonAction(_ sender: UIButton) {
+        userEmojiContainer.expand(true)
+        tapToExpandAction()
+    }
+
+    private func tapToExpandAction() {
+        if self.state == .showEmojiId {
+            self.createEmojiButton.alpha = 1.0
+            self.arrowImageView.alpha = 0.0
+            self.tapToSeeFullEmojiButton.alpha = 0.0
+        }
     }
 
     private func updateLabelsForLocalAuthentification() {

@@ -216,11 +216,14 @@ class EmoticonView: UIView {
     }
 
     @objc func tap(_ gestureRecognizer: UITapGestureRecognizer) {
-        if !expanded {
-            expanded = true
-            enableFullScreen()
+        expand(!expanded, callCompletion: true)
+    }
+
+    func expand(_ expand: Bool, callCompletion: Bool = false) {
+        expanded = expand
+        if expand == true {
+            enableFullScreen(callCompletion: callCompletion)
         } else {
-            expanded = false
             disableFullScreen()
         }
     }
@@ -249,7 +252,7 @@ class EmoticonView: UIView {
         }
     }
 
-    private func enableFullScreen() {
+    private func enableFullScreen(callCompletion: Bool) {
 
         UIView.animate(withDuration: 0.3, animations: { [weak self] in
             guard let self = self else { return }
@@ -257,18 +260,15 @@ class EmoticonView: UIView {
         }) { [weak self] (_) in
             guard let self = self else { return }
             self.determineEmojiLabelText(emojiText: self.emojiText)
-            self.runFullScreenAnimation()
+            self.runFullScreenAnimation(callCompletion: callCompletion)
             UIView.animate(withDuration: 0.3, animations: { [weak self] in
                 guard let self = self else { return }
                 self.label.alpha = 1.0
-            }) { [weak self] (_) in
-                guard let self = self else { return }
-
-            }
+            })
         }
     }
 
-    private func runFullScreenAnimation() {
+    private func runFullScreenAnimation(callCompletion: Bool) {
         if backgroundLeft == nil && backgroundRight == nil && backgroundBottom == nil && backgroundTop == nil {
                 if let superview = self.superview {
                     backgroundLeft = containerView.leadingAnchor.constraint(equalTo: superview.leadingAnchor)
@@ -304,7 +304,9 @@ class EmoticonView: UIView {
                 })
             }
 
+        if callCompletion == true {
             tapToExpand?()
+        }
 
             scrollView.contentOffset = CGPoint(x: 30, y: 0)
 
