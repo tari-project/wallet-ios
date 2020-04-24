@@ -135,7 +135,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        styleNavigatorBar(isHidden: true)
         sendButtonBottomConstraint.constant = minSendButtonBottomConstraint
         defaultBottomFadeViewHeight = bottomFadeViewHeightConstraint.constant
         bottomFadeViewHeightConstraint.constant = 0

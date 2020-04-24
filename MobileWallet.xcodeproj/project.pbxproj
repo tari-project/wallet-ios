@@ -261,6 +261,15 @@
 		37CB9F8E2451BC6C00C495F2 /* TransactionHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */; };
 		37CB9F8F2451C8CC00C495F2 /* TransactionHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */; };
 		37CB9F902451C8CD00C495F2 /* TransactionHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */; };
+		379D27AF244EF25000F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
+		379D27BA244F091A00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
+		379D27BB244F091B00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
+		37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */; };
+		37AFE266245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */; };
+		37AFE267245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */; };
+		37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
+		37CB9F8B2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
+		37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
 		37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
 		37F29D5824504B92008C046F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
 		37F29D5924504B92008C046F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
@@ -512,6 +521,9 @@
 		28164FB1973A4277E7C47F6D /* Pods-MobileWalletUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.release.xcconfig"; sourceTree = "<group>"; };
 		2FF33C780E811D173D3284C3 /* Pods-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistoryContainer.swift; sourceTree = "<group>"; };
+		379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarWithSubtitle.swift; sourceTree = "<group>"; };
+		37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlwaysPoppableNavigationController.swift; sourceTree = "<group>"; };
+		37CB9F892451A2AD00C495F2 /* String+Emoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Emoji.swift"; sourceTree = "<group>"; };
 		37E4B62A24501FB200FA302B /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		491AB89F23F3FF4400372189 /* AddAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAmountViewController.swift; sourceTree = "<group>"; };
 		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
@@ -661,6 +673,7 @@
 				004277FE23E2F1D700AE7BD9 /* UIImage.swift */,
 				00D7BD8824349AE3009DD097 /* UIDevice.swift */,
 				0042780223E8421100AE7BD9 /* String.swift */,
+				37CB9F892451A2AD00C495F2 /* String+Emoji.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -668,6 +681,7 @@
 		00262EB2236F022000A6C8A0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				37AFE263245193CA006EA270 /* AlwaysPoppableNavigationController */,
 				00B4D6F4241B777500ED8318 /* BackgroundTasks */,
 				00A057B223D979BA0029C22A /* UserFeedback */,
 				00262EAD236F013500A6C8A0 /* Extensions */,
@@ -852,6 +866,7 @@
 				49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */,
 				BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */,
 				00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */,
+				379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -983,6 +998,14 @@
 				9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		37AFE263245193CA006EA270 /* AlwaysPoppableNavigationController */ = {
+			isa = PBXGroup;
+			children = (
+				37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */,
+			);
+			path = AlwaysPoppableNavigationController;
 			sourceTree = "<group>";
 		};
 		491AB89E23F3FF1200372189 /* AddAmount */ = {
@@ -1603,6 +1626,7 @@
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
 				00230AFA2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				00262EAF236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
+				37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
 				00369D812426080D00BAB95B /* TariLogger.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00F53A642428E44700448466 /* StorageCleanup.swift in Sources */,
@@ -1648,7 +1672,9 @@
 				00369D7D24221ACB00BAB95B /* DeepLinkManager.swift in Sources */,
 				001F6CEC2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
+				379D27AF244EF25000F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				BFAB5D1123FDEA69009E8563 /* EmoticonView.swift in Sources */,
+				37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				004277FB23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
 				0087A1AC23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
@@ -1688,6 +1714,7 @@
 				00F53A6B24290FAE00448466 /* StorageCleanup.swift in Sources */,
 				00262EB0236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
 				004277E823DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
+				37CB9F8B2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
 				0042780023E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				491AB8A123F3FF4400372189 /* AddAmountViewController.swift in Sources */,
@@ -1718,6 +1745,8 @@
 				004997B82382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				001F6CED2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
+				379D27BA244F091A00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
+				37AFE266245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */,
 				BFAB5D1223FDEA6A009E8563 /* EmoticonView.swift in Sources */,
 				00BCE480240D5A9700B181F3 /* OnionManager.swift in Sources */,
@@ -1764,6 +1793,7 @@
 				BFC5532723D9B8E4009130A8 /* UIView.swift in Sources */,
 				BFD758E823E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */,
+				37AFE267245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				BFE1FC0A23E3ACDA00BA5EEC /* WalletCreationViewController.swift in Sources */,
 				004997AD2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
 				00A994352396434B007D9990 /* QRButton.swift in Sources */,
@@ -1780,6 +1810,7 @@
 				BFAB5D1323FDEA6A009E8563 /* EmoticonView.swift in Sources */,
 				BFF1ED9F2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				00262EB1236F015000A6C8A0 /* UILabelWithPadding.swift in Sources */,
+				379D27BB244F091B00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
 				004997B12382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				005387262405136700901A68 /* AddNoteViewController.swift in Sources */,
@@ -1800,6 +1831,7 @@
 				00D9886B2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
+				37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
 				0087A1AE23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				37F29D5924504B92008C046F /* HomeViewController.swift in Sources */,
