@@ -121,7 +121,7 @@ class MobileWalletUISnapshots: XCTestCase {
         snapshot(numberedLabel("TariBot recieved"))
         
         
-        let sendTariButton = app.children(matching: .window).element(boundBy: 2).buttons["Send Tari"]
+        let sendTariButton = app.children(matching: .window).element(boundBy: 2).buttons["Send tXTR"]
         guard sendTariButton.waitForExistence(timeout: 15) else { return }
         sendTariButton.tap()
         

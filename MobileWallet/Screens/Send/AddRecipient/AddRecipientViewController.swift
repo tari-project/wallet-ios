@@ -72,7 +72,13 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         didSet {
             if let pubKey = selectedRecipientPublicKey {
                 guard pubKey.hex.0 != TariLib.shared.tariWallet?.publicKey.0?.hex.0 else {
-                    errorMessageView.message = NSLocalizedString("Sorry, you cannot send Tari to yourself", comment: "Add recipient view")
+                    errorMessageView.message = String(
+                        format: NSLocalizedString(
+                            "Sorry, you cannot send %@ to yourself",
+                            comment: "Add recipient view"
+                        ),
+                        TariSettings.shared.network.currencyDisplayTicker
+                    )
                     return
                 }
 

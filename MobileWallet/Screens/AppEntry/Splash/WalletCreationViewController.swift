@@ -351,7 +351,13 @@ class WalletCreationViewController: UIViewController {
         firstLabel.font = Theme.shared.fonts.createWalletFirstLabel
         firstLabel.textColor = Theme.shared.colors.creatingWalletFirstLabel
 
-        thirdLabel.text = NSLocalizedString("Your Emoji ID is your wallet address.\n It’s how your friends can find you and send you Tari.", comment: "Third label on wallet creation")
+        thirdLabel.text = String(
+            format: NSLocalizedString(
+                "Your Emoji ID is your wallet address.\n It’s how your friends can find you and send you %@!",
+                comment: "Third label on wallet creation"
+            ),
+            TariSettings.shared.network.currencyDisplayName
+        )
         thirdLabel.font = Theme.shared.fonts.createWalletThirdLabel
         thirdLabel.textColor = Theme.shared.colors.creatingWalletThirdLabel
 
@@ -734,7 +740,13 @@ class WalletCreationViewController: UIViewController {
         attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText!, range: NSRange(location: 13, length: 8))
 
         self.secondLabelBottom.attributedText = attributedString
-        self.thirdLabel.text = NSLocalizedString("Your Emoji ID is your wallet’s address, and how others can find you and send you Tari.", comment: "Emoji Id third label on wallet creation")
+        self.thirdLabel.text = String(
+            format: NSLocalizedString(
+                "Your Emoji ID is your wallet’s address, and how others can find you and send you %@!",
+                comment: "Emoji Id third label on wallet creation"
+            ),
+            TariSettings.shared.network.currencyDisplayTicker
+        )
 
         self.createEmojiButton.setTitle(NSLocalizedString("Continue", comment: "This is your emoji screen on wallet creation"), for: .normal)
 
@@ -782,8 +794,13 @@ class WalletCreationViewController: UIViewController {
         //attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText!, range: NSRange(location: 25, length: 7))
         self.secondLabelBottom.attributedText = attributedString
 
-        self.thirdLabel.text = NSLocalizedString("Sleep well at night knowing you’ve taken precautions to keep your Tari wallet safe and sound.",
-        comment: "Face ID third label on wallet creation")
+        self.thirdLabel.text = String(
+            format: NSLocalizedString(
+                "Sleep well at night knowing you’ve taken precautions to keep your %@ wallet safe and sound.",
+                comment: "Face ID third label on wallet creation"
+            ),
+            TariSettings.shared.network.currencyDisplayTicker
+        )
 
         let currentType = LAContext().biometricType
         switch currentType {

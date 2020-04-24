@@ -153,9 +153,21 @@ class UserFeedback {
             containerView: containerView,
             image: Theme.shared.images.storeModal!,
             imageTop: imageTop,
-            title: NSLocalizedString("Spend testnet Tari on exclusive stuff", comment: "Store modal"),
+            title: String(
+                format: NSLocalizedString(
+                    "Spend %@ on exclusive stuff",
+                    comment: "Store modal"
+                ),
+                TariSettings.shared.network.currencyDisplayName
+            ),
             boldedTitle: NSLocalizedString("exclusive stuff", comment: "Store modal"),
-            description: NSLocalizedString("Check out TTL (Testnet Tari Limited) to spend your “hard-earned” testnet Tari on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!", comment: "Store modal"),
+            description: String(
+                format: NSLocalizedString(
+                    "Check out TTL (Testnet Tari Limited) to spend your “hard-earned” %@ on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!",
+                    comment: "Store modal"
+                ),
+                TariSettings.shared.network.currencyDisplayName
+            ),
             cancelTitle: NSLocalizedString("I’ll check it out later", comment: "Store modal"),
             actionTitle: NSLocalizedString("Visit the TTL Store", comment: "Store modal"),
             actionIcon: Theme.shared.images.storeIcon!,

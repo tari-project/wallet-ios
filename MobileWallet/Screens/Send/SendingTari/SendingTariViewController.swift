@@ -173,7 +173,11 @@ class SendingTariViewController: UIViewController {
         titleLabelTopConstraint = titleLabel.topAnchor.constraint(equalTo: animationContainer.bottomAnchor, constant: 20)
         titleLabelTopConstraint?.isActive = true
 
-        let sendingString = String(format: NSLocalizedString("Sending %@ Tari...", comment: "Title Label on the sending tari screen"), tariAmount?.formatted ?? "")
+        let sendingString = String(
+            format: NSLocalizedString("Sending %@ %@...", comment: "Title Label on the sending tari screen"),
+            tariAmount?.formatted ?? "",
+            TariSettings.shared.network.currencyDisplayTicker
+        )
 
         let attributedString = NSMutableAttributedString(
             string: sendingString,

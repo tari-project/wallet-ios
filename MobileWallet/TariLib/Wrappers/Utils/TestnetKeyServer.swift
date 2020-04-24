@@ -65,10 +65,11 @@ class TestnetKeyServer {
     )
     private let TARIBOT_MESSAGE2 = String(
         format: NSLocalizedString(
-            "Nice work! Here's more Tari to fill your coffers. Be sure to hit the Store icon to see real, "
-            + "exclusive items you can redeem with your \"hard-earned\" testnet Tari.",
+            "Nice work! Here's more %@ to fill your coffers. Be sure to hit the Store icon to see real, "
+            + "exclusive items you can redeem with your \"hard-earned\" %@.",
             comment: "TariBot transaction"
         ),
+        TariSettings.shared.network.currencyDisplayTicker,
         TariSettings.shared.network.currencyDisplayName
     )
     private let signature: Signature
