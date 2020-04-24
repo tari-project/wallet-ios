@@ -194,7 +194,7 @@ class Wallet {
 
         let receivedTransactionCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
-            let pendingInbound = PendingInboundTransaction.init(pendingInboundTransactionPointer: valuePointer!)
+            let pendingInbound = PendingInboundTransaction(pendingInboundTransactionPointer: valuePointer!)
             TariEventBus.postToMainThread(.receievedTransaction, sender: pendingInbound)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
@@ -203,7 +203,7 @@ class Wallet {
 
         let receivedTransactionReplyCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
-            let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
+            let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
             TariEventBus.postToMainThread(.receievedTransactionReply, sender: completed)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
@@ -212,7 +212,7 @@ class Wallet {
 
         let receivedFinalizedTransactionCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
-            let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
+            let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
             TariEventBus.postToMainThread(.receivedFinalizedTransaction, sender: completed)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
@@ -221,7 +221,7 @@ class Wallet {
 
         let transactionBroadcastCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
-            let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
+            let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
             TariEventBus.postToMainThread(.transactionBroadcast, sender: completed)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
@@ -230,7 +230,7 @@ class Wallet {
 
         let transactionMinedCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
-            let completed = CompletedTransaction.init(completedTransactionPointer: valuePointer!)
+            let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
             TariEventBus.postToMainThread(.transactionMined, sender: completed)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)

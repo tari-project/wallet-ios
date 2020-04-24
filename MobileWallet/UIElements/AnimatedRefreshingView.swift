@@ -41,9 +41,14 @@
 import UIKit
 
 enum AnimatedRefreshingViewState {
+    //Home view states
     case loading
     case receiving
     case success
+    //TX view states
+    case txWaitingForSender
+    case txWaitingForRecipient
+    case txBroadcasted
 }
 
 private class RefreshingInnerView: UIView {
@@ -80,27 +85,42 @@ private class RefreshingInnerView: UIView {
         spinner.hidesWhenStopped = true
 
         switch type {
-            case .loading:
-                emojiLabel.text = "⏳"
-                spinner.startAnimating()
-                statusLabel.text = NSLocalizedString("Checking for Updates", comment: "Refresh view")
-                statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
-            case .receiving:
-                emojiLabel.text = "🤝"
-                spinner.startAnimating()
-                statusLabel.text = NSLocalizedString("Receiving new transaction", comment: "Refresh view")
-                statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
-            case .success:
-                statusLabel.text = NSLocalizedString("You are up to date!", comment: "Refresh view")
-                spinner.stopAnimating()
-                statusLabel.textColor = Theme.shared.colors.refreshViewLabelSuccess
+        case .loading:
+            emojiLabel.text = "⏳"
+            spinner.startAnimating()
+            statusLabel.text = NSLocalizedString("Checking for Updates", comment: "Refresh view")
+            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
+        case .receiving:
+            emojiLabel.text = "🤝"
+            spinner.startAnimating()
+            statusLabel.text = NSLocalizedString("Receiving new transaction", comment: "Refresh view")
+            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
+        case .success:
+            statusLabel.text = NSLocalizedString("You are up to date!", comment: "Refresh view")
+            spinner.stopAnimating()
+            statusLabel.textColor = Theme.shared.colors.refreshViewLabelSuccess
+        case .txWaitingForRecipient:
+            emojiLabel.text = ""
+            spinner.stopAnimating()
+            statusLabel.text = NSLocalizedString("Waiting for recipient to accept transaction", comment: "Refresh view")
+            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
+        case .txWaitingForSender:
+            emojiLabel.text = ""
+            spinner.stopAnimating()
+            statusLabel.text = NSLocalizedString("Waiting for sender to complete transaction", comment: "Refresh view")
+            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
+        case .txBroadcasted:
+            emojiLabel.text = ""
+            spinner.stopAnimating()
+            statusLabel.text = NSLocalizedString("Completing final processing…", comment: "Refresh view")
+            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         }
     }
 }
 
 class AnimatedRefreshingView: UIView {
     private let cornerRadius: CGFloat = 20
-    private let containerHeight: CGFloat = 48
+    static let containerHeight: CGFloat = 48
 
     private var currentInnerView = RefreshingInnerView()
     private var currentInnerViewTopAnchor = NSLayoutConstraint()
@@ -133,7 +153,7 @@ class AnimatedRefreshingView: UIView {
         currentInnerViewBottomAnchor = currentInnerView.bottomAnchor.constraint(equalTo: bottomAnchor)
         currentInnerViewBottomAnchor.isActive = true
 
-        heightAnchor.constraint(equalToConstant: containerHeight).isActive = true
+        heightAnchor.constraint(equalToConstant: AnimatedRefreshingView.containerHeight).isActive = true
 
         if !visible {
             alpha = 0

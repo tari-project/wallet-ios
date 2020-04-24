@@ -40,12 +40,12 @@
 
 import UIKit
 
-protocol TransactionDetailNavigationBarProtocol: class {
+protocol NavigationBarWithSubtitleProtocol: class {
     var title: String? { get set }
     var subtitle: String? { get set }
 }
 
-class NavigationBarWithSubtitle: UIView, TransactionDetailNavigationBarProtocol {
+class NavigationBarWithSubtitle: UIView, NavigationBarWithSubtitleProtocol {
     private let titleLabel = UILabel()
     private let subtitleLabel = UILabel()
     private let backButton = UIButton()
@@ -135,7 +135,7 @@ class NavigationBarWithSubtitle: UIView, TransactionDetailNavigationBarProtocol 
         backButton.backgroundColor = .clear
     }
 
-      @objc public func backAction(_sender: UIButton) {
+    @objc public func backAction(_sender: UIButton) {
         if var topController = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
             while let presentedViewController = topController.presentedViewController {
                 topController = presentedViewController
@@ -143,5 +143,5 @@ class NavigationBarWithSubtitle: UIView, TransactionDetailNavigationBarProtocol 
             guard let navigationController = topController as? UINavigationController else { return }
             navigationController.popViewController(animated: true)
         }
-      }
+    }
 }
