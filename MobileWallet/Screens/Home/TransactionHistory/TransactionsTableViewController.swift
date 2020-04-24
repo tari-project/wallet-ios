@@ -142,13 +142,12 @@ class TransactionsTableViewController: UITableViewController {
             self.refreshTable()
         }
 
+        beginRefreshing()
         TariEventBus.onMainThread(self, eventType: .connectionMonitorStatusChanged) { [weak self] (_) in
             guard let self = self else { return }
 
             if ConnectionMonitor.shared.state.baseNodeSynced == true {
                 self.endRefreshingWithSuccess()
-            } else {
-                self.beginRefreshing()
             }
         }
     }
