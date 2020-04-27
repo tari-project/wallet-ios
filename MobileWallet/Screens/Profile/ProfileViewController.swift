@@ -220,8 +220,8 @@ class ProfileViewController: UIViewController {
     private func customizeMiddleLabel() {
         let middleLabelText = String(
             format: NSLocalizedString(
-                "ransacting in person? Others can scan this QR code from the Tari Aurora App to send you %@.",
-                comment: "COMMENT"
+                "Transacting in person? Others can scan this QR code from the Tari Aurora App to send you %@.",
+                comment: "Profile view"
             ),
             TariSettings.shared.network.currencyDisplayTicker
         )

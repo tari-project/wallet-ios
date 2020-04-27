@@ -72,7 +72,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     private var isAnimatingButton = false
     private var hapticEnabled = false
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
-    private var testnetKeyServer: TestnetKeyServer?
+    private var keyServer: KeyServer?
 
     //Navigation Bar
     @IBOutlet weak var navigationBar: UIView!
@@ -127,7 +127,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         Tracker.shared.track("/home", "Home - Transaction List")
 
-        setupTestnetKeyServer()
+        setupKeyServer()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -177,33 +177,33 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         return isTransactionViewFullScreen ? .darkContent : .lightContent
     }
 
-    private func setupTestnetKeyServer() {
+    private func setupKeyServer() {
         guard let wallet = TariLib.shared.tariWallet else {
             return
         }
 
         do {
-            testnetKeyServer = try TestnetKeyServer(wallet: wallet)
+            keyServer = try KeyServer(wallet: wallet)
         } catch {
-            TariLogger.error("Failed to initialise TestnetKeyServer")
+            TariLogger.error("Failed to initialise KeyServer")
         }
     }
 
-    private func requestTestnetTokens() {
-        guard let keyServer = testnetKeyServer else {
-            TariLogger.error("No TestnetKeyServer initialised")
+    private func requestKeyServerTokens() {
+        guard let keyServer = keyServer else {
+            TariLogger.error("No KeyServer initialised")
             return
         }
 
-        let errorTitle = String(format: NSLocalizedString("Failed to claim %@", comment: "Home view testnet airdrop"), TariSettings.shared.network.currencyDisplayName)
+        let errorTitle = String(format: NSLocalizedString("Failed to claim %@", comment: "Home view airdrop"), TariSettings.shared.network.currencyDisplayTicker)
 
         do {
             try keyServer.requestDrop(onSuccess: { () in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
                     guard let _ = self else { return }
 
-                    let title = String(format: NSLocalizedString("You just got some %@!", comment: "Home view testnet airdrop"), TariSettings.shared.network.currencyDisplayName)
-                    let description = String(format: NSLocalizedString("Try sending a bit of %@ back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).", comment: "Home view testnet airdrop"), TariSettings.shared.network.currencyDisplayName)
+                    let title = String(format: NSLocalizedString("You just got some %@!", comment: "Home view airdrop"), TariSettings.shared.network.currencyDisplayTicker)
+                    let description = String(format: NSLocalizedString("Try sending a bit of %@ back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).", comment: "Home view airdrop"), TariSettings.shared.network.currencyDisplayTicker)
 
                     UserFeedback.shared.callToAction(
                         title: title,
@@ -211,11 +211,11 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                         actionTitle: String(
                             format: NSLocalizedString(
                                 "Send %@",
-                                comment: "Home view testnet airdrop"
+                                comment: "Home view airdrop"
                             ),
                             TariSettings.shared.network.currencyDisplayTicker
                         ),
-                        cancelTitle: NSLocalizedString("Try it later", comment: "Home view testnet airdrop"),
+                        cancelTitle: NSLocalizedString("Try it later", comment: "Home view airdrop"),
                         onAction: { [weak self] in
                             guard let self = self else { return }
                             self.onSend()
@@ -239,8 +239,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     //If we have a second stored utxo, import it
     private func checkImportSecondUtxo() {
-        guard let keyServer = testnetKeyServer else {
-            TariLogger.error("No TestnetKeyServer initialised")
+        guard let keyServer = keyServer else {
+            TariLogger.error("No KeyServer initialised")
             return
         }
 
@@ -337,7 +337,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.view.layoutIfNeeded()
             })
         } else {
-            requestTestnetTokens()
+            requestKeyServerTokens()
             //User swipes down for the first time
             if isFirstIntroToWallet {
                 transactionTableVC.showIntroContent(false)

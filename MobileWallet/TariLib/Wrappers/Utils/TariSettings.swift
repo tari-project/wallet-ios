@@ -44,15 +44,6 @@ enum TariNetworks: String {
     case mainnet = "mainnet"
     case rincewind = "rincewind"
 
-    var currencyDisplayName: String {
-        switch self {
-        case .rincewind:
-            return "testnet XTR"
-        default:
-            return "XTR"
-        }
-    }
-
     var currencyDisplayTicker: String {
         switch self {
         case .rincewind:
@@ -65,7 +56,7 @@ enum TariNetworks: String {
     var networkDisplayName: String {
         switch self {
         case .rincewind:
-            return "testnet"
+            return "rincewind"
         default:
             return "mainnet"
         }
@@ -114,7 +105,7 @@ struct TariSettings {
     //Used for showing a little extra detail in the UI to help debugging
     let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
-    let pushNotificationServer = "https://push.tari.com" // "https://1c1c2bea.ngrok.io"
+    let pushNotificationServer = "https://push.tari.com"
     let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 1 //1 day
     #else
     let torEnabled = true

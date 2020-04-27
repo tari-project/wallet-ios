@@ -82,7 +82,7 @@ extension WalletErrors: LocalizedError {
     }
 }
 
-extension TestnetKeyServerError: LocalizedError {
+extension KeyServerError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .server(let statusCode, let message):

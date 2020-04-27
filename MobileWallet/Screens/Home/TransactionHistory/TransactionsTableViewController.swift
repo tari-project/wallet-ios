@@ -148,6 +148,25 @@ class TransactionsTableViewController: UITableViewController {
 
             if ConnectionMonitor.shared.state.baseNodeSynced == true {
                 self.endRefreshingWithSuccess()
+
+                //TODO this might not be the most appropriate place as it's not directly related to this VC
+                do {
+                    try NotificationManager.shared.cancelReminders(onSuccess: {
+                        TariLogger.info("Reminder notifications cancelled")
+                    }) { (error) in
+                        TariLogger.error("Failed to cancel reminder notifications", error: error)
+                    }
+                } catch {
+                    TariLogger.error("Failed to cancel reminder notifications", error: error)
+                }
+            }
+        }
+
+        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) {(result) in
+            if let success: Bool = result?.object as? Bool {
+                if success {
+
+                }
             }
         }
     }

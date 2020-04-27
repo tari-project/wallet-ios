@@ -251,7 +251,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
             }
         }
     }
-    
+
     private func unRegisterEvents() {
         TariEventBus.unregister(self)
     }

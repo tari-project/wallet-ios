@@ -158,15 +158,15 @@ class UserFeedback {
                     "Spend %@ on exclusive stuff",
                     comment: "Store modal"
                 ),
-                TariSettings.shared.network.currencyDisplayName
+                TariSettings.shared.network.currencyDisplayTicker
             ),
             boldedTitle: NSLocalizedString("exclusive stuff", comment: "Store modal"),
             description: String(
                 format: NSLocalizedString(
-                    "Check out TTL (Testnet Tari Limited) to spend your “hard-earned” %@ on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!",
+                    "Check out the TTL Store to spend your “hard-earned” %@ on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!",
                     comment: "Store modal"
                 ),
-                TariSettings.shared.network.currencyDisplayName
+                TariSettings.shared.network.currencyDisplayTicker
             ),
             cancelTitle: NSLocalizedString("I’ll check it out later", comment: "Store modal"),
             actionTitle: NSLocalizedString("Visit the TTL Store", comment: "Store modal"),
