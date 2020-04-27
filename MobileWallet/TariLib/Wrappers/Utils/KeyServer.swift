@@ -1,4 +1,4 @@
-//  TestnetKeyServer.swift
+//  KeyServer.swift
 
 /*
 	Package MobileWallet
@@ -40,7 +40,7 @@
 
 import Foundation
 
-enum TestnetKeyServerError: Error {
+enum KeyServerError: Error {
     case server(_ statusCode: Int, message: String?)
     case invalidSignature
     case allCoinsAllAllocated
@@ -49,19 +49,19 @@ enum TestnetKeyServerError: Error {
     case unknown
 }
 
-struct TestnetServerRequest: Codable {
+struct KeyServerRequest: Codable {
     let signature: String
     let public_nonce: String
 }
 
-class TestnetKeyServer {
+class KeyServer {
     private let MESSAGE_PREFIX = "Hello Tari from"
     private let TARIBOT_MESSAGE1 = String(
         format: NSLocalizedString(
             "💸 Here’s some %@!",
             comment: "TariBot transaction"
         ),
-        TariSettings.shared.network.currencyDisplayName
+        TariSettings.shared.network.currencyDisplayTicker
     )
     private let TARIBOT_MESSAGE2 = String(
         format: NSLocalizedString(
@@ -70,7 +70,7 @@ class TestnetKeyServer {
             comment: "TariBot transaction"
         ),
         TariSettings.shared.network.currencyDisplayTicker,
-        TariSettings.shared.network.currencyDisplayName
+        TariSettings.shared.network.currencyDisplayTicker
     )
     private let signature: Signature
     private let url: URL
@@ -97,28 +97,28 @@ class TestnetKeyServer {
     }
 
     func requestDrop(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
-        guard TestnetKeyServer.isRequestInProgress == false else {
+        guard KeyServer.isRequestInProgress == false else {
             TariLogger.warn("Key server request already in progress")
             return
         }
 
-        TestnetKeyServer.isRequestInProgress = true
+        KeyServer.isRequestInProgress = true
 
         let (completedTransactions, completedTransactionsError) = wallet.completedTransactions
         guard let completedTxs = completedTransactions else {
-            TestnetKeyServer.isRequestInProgress = false
+            KeyServer.isRequestInProgress = false
             throw completedTransactionsError!
         }
 
         let (completedTransactionsCount, completedTransactionsCountError) = completedTxs.count
         guard completedTransactionsCountError == nil else {
-            TestnetKeyServer.isRequestInProgress = false
+            KeyServer.isRequestInProgress = false
             throw completedTransactionsCountError!
         }
 
         //If the user has a completed, just ignore this request as it's not a fresh install
         guard completedTransactionsCount == 0 else {
-            TestnetKeyServer.isRequestInProgress = false
+            KeyServer.isRequestInProgress = false
             return
         }
 
@@ -127,7 +127,7 @@ class TestnetKeyServer {
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONEncoder().encode(
-            TestnetServerRequest(
+            KeyServerRequest(
                 signature: signature.hex,
                 public_nonce: signature.nonce
             )
@@ -135,7 +135,7 @@ class TestnetKeyServer {
 
         let onRequestError = {(error: Error) in
             onError(error)
-            TestnetKeyServer.isRequestInProgress = false
+            KeyServer.isRequestInProgress = false
         }
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -145,12 +145,12 @@ class TestnetKeyServer {
             }
 
             guard let data = data, let response = response as? HTTPURLResponse else {
-                onRequestError(TestnetKeyServerError.unknown)
+                onRequestError(KeyServerError.unknown)
                 return
             }
 
             guard response.statusCode != 403 else {
-                onRequestError(TestnetKeyServerError.invalidSignature)
+                onRequestError(KeyServerError.invalidSignature)
                 return
             }
 
@@ -172,32 +172,32 @@ class TestnetKeyServer {
                     message = res["error"] as? String
                 }
 
-                onRequestError(TestnetKeyServerError.server(response.statusCode, message: message))
+                onRequestError(KeyServerError.server(response.statusCode, message: message))
                 return
             }
 
             guard let res = responseDict else {
-                onRequestError(TestnetKeyServerError.missingResponse)
+                onRequestError(KeyServerError.missingResponse)
                 return
             }
 
             guard let keysDict = res["keys"] as? [[String: String]], let returnPubKeyHex = res["return_wallet_id"] as? String else {
-                onRequestError(TestnetKeyServerError.responseInvalid)
+                onRequestError(KeyServerError.responseInvalid)
                 return
             }
 
             guard keysDict.count == 2 else {
-                onRequestError(TestnetKeyServerError.responseInvalid)
+                onRequestError(KeyServerError.responseInvalid)
                 return
             }
 
             guard let key1 = keysDict[0]["key"], let valueString1 = keysDict[0]["value"] else {
-                onRequestError(TestnetKeyServerError.responseInvalid)
+                onRequestError(KeyServerError.responseInvalid)
                 return
             }
 
             guard let value1 = UInt64(valueString1) else {
-                onRequestError(TestnetKeyServerError.responseInvalid)
+                onRequestError(KeyServerError.responseInvalid)
                 return
             }
 
@@ -219,12 +219,12 @@ class TestnetKeyServer {
             }
 
             guard let key2 = keysDict[1]["key"], let valueString2 = keysDict[1]["value"] else {
-                onRequestError(TestnetKeyServerError.responseInvalid)
+                onRequestError(KeyServerError.responseInvalid)
                 return
             }
 
             guard let value2 = UInt64(valueString2) else {
-                onRequestError(TestnetKeyServerError.responseInvalid)
+                onRequestError(KeyServerError.responseInvalid)
                 return
             }
 
@@ -242,7 +242,7 @@ class TestnetKeyServer {
             }
 
             onSuccess()
-            TestnetKeyServer.isRequestInProgress = false
+            KeyServer.isRequestInProgress = false
         }
 
         task.resume()
@@ -283,7 +283,7 @@ class TestnetKeyServer {
     }
 
     func importSecondUtxo(onComplete: @escaping (() -> Void)) throws {
-        if let data = UserDefaults.standard.value(forKey: TestnetKeyServer.secondUtxoStorageKey) as? Data {
+        if let data = UserDefaults.standard.value(forKey: KeyServer.secondUtxoStorageKey) as? Data {
             guard hasSentATransaction() else {
                 return
             }
@@ -294,7 +294,7 @@ class TestnetKeyServer {
 
                 try self.wallet.importUtxo(utxo)
 
-                UserDefaults.standard.removeObject(forKey: TestnetKeyServer.secondUtxoStorageKey)
+                UserDefaults.standard.removeObject(forKey: KeyServer.secondUtxoStorageKey)
                 onComplete()
             } catch {
                 TariLogger.error("Unable to load stored UTXO", error: error)
@@ -304,6 +304,6 @@ class TestnetKeyServer {
 
     private func storeUtxo(utxo: UTXO) throws {
         TariLogger.verbose("Storing UTXO for later use")
-        UserDefaults.standard.set(try? PropertyListEncoder().encode(utxo), forKey: TestnetKeyServer.secondUtxoStorageKey)
+        UserDefaults.standard.set(try? PropertyListEncoder().encode(utxo), forKey: KeyServer.secondUtxoStorageKey)
     }
 }

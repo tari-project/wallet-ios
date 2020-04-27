@@ -357,7 +357,7 @@ class WalletCreationViewController: UIViewController {
                 "Your Emoji ID is your wallet address.\n It’s how your friends can find you and send you %@!",
                 comment: "Third label on wallet creation"
             ),
-            TariSettings.shared.network.currencyDisplayName
+            TariSettings.shared.network.currencyDisplayTicker
         )
         thirdLabel.font = Theme.shared.fonts.createWalletThirdLabel
         thirdLabel.textColor = Theme.shared.colors.creatingWalletThirdLabel

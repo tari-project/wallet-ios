@@ -100,7 +100,7 @@ class NodeSyncOperation: Operation {
                     format: NSLocalizedString(
                         "Someone just sent you some %@",
                         comment: "Background refresh TX received notification"),
-                    TariSettings.shared.network.currencyDisplayName
+                    TariSettings.shared.network.currencyDisplayTicker
                 )
             )
 

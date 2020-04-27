@@ -116,7 +116,7 @@ class MobileWalletUISnapshots: XCTestCase {
         
         app.swipeDown()
         
-        let youGotSomeTariStaticText = app.staticTexts["You just got some Testnet Tari!"]
+        let youGotSomeTariStaticText = app.staticTexts["You just got some tXTR Tari!"]
         guard youGotSomeTariStaticText.waitForExistence(timeout: 20) else { return }
         snapshot(numberedLabel("TariBot recieved"))
         
@@ -159,7 +159,7 @@ class MobileWalletUISnapshots: XCTestCase {
     
         //TODO it gets stuck on the sending screen
         
-        let txNote = app.tables.staticTexts["💸 Here’s some Testnet Tari!"]
+        let txNote = app.tables.staticTexts["💸 Here’s some tXTR!"]
         guard txNote.waitForExistence(timeout: 30) else { return }
     
         sleep(30)

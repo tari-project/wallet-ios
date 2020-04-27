@@ -124,9 +124,9 @@
 		0091D4A723ED879E004BF7F7 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4A623ED879E004BF7F7 /* Signature.swift */; };
 		0091D4A823ED879E004BF7F7 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4A623ED879E004BF7F7 /* Signature.swift */; };
 		0091D4A923ED879E004BF7F7 /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4A623ED879E004BF7F7 /* Signature.swift */; };
-		0091D4AB23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */; };
-		0091D4AC23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */; };
-		0091D4AD23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */; };
+		0091D4AB23ED87BE004BF7F7 /* KeyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4AA23ED87BE004BF7F7 /* KeyServer.swift */; };
+		0091D4AC23ED87BE004BF7F7 /* KeyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4AA23ED87BE004BF7F7 /* KeyServer.swift */; };
+		0091D4AD23ED87BE004BF7F7 /* KeyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4AA23ED87BE004BF7F7 /* KeyServer.swift */; };
 		00947CC223CF090D00526DD5 /* TransactionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC123CF090D00526DD5 /* TransactionProtocol.swift */; };
 		00947CC323CF090D00526DD5 /* TransactionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC123CF090D00526DD5 /* TransactionProtocol.swift */; };
 		00947CC423CF090D00526DD5 /* TransactionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC123CF090D00526DD5 /* TransactionProtocol.swift */; };
@@ -443,7 +443,7 @@
 		0087A1A723F4235400B89EE7 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
 		0087A1A823F4235400B89EE7 /* AddRecipientViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRecipientViewController.swift; sourceTree = "<group>"; };
 		0091D4A623ED879E004BF7F7 /* Signature.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Signature.swift; sourceTree = "<group>"; };
-		0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestnetKeyServer.swift; sourceTree = "<group>"; };
+		0091D4AA23ED87BE004BF7F7 /* KeyServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyServer.swift; sourceTree = "<group>"; };
 		00947CC123CF090D00526DD5 /* TransactionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionProtocol.swift; sourceTree = "<group>"; };
 		00947CC623D1A35200526DD5 /* TransactionsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsProtocol.swift; sourceTree = "<group>"; };
 		009BF8A6237AA13400C02E44 /* MobileWalletUITests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletUITests-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -716,7 +716,7 @@
 				00A057AE23D875840029C22A /* TariEventBus.swift */,
 				004277FA23E1A61F00AE7BD9 /* ErrorDescriptions.swift */,
 				0091D4A623ED879E004BF7F7 /* Signature.swift */,
-				0091D4AA23ED87BE004BF7F7 /* TestnetKeyServer.swift */,
+				0091D4AA23ED87BE004BF7F7 /* KeyServer.swift */,
 				00DD160E241CD41D00C955B4 /* BaseNode.swift */,
 				00F53A632428E44700448466 /* StorageCleanup.swift */,
 				619190C6EBD050DC647D1D7B /* UTXO.swift */,
@@ -1633,7 +1633,7 @@
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				004277FF23E2F1D700AE7BD9 /* UIImage.swift in Sources */,
-				0091D4AB23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
+				0091D4AB23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
 				00947CC723D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
@@ -1690,7 +1690,7 @@
 				00A66524243B3E380046E730 /* ErrorView.swift in Sources */,
 				0053873124065F6C00901A68 /* SlideView.swift in Sources */,
 				BFE61E4924226A7E003DC99D /* NotificationManager.swift in Sources */,
-				0091D4AC23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
+				0091D4AC23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				00BCE483240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				4CD20A372407967B007B64D8 /* TransportType.swift in Sources */,
@@ -1831,7 +1831,7 @@
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,
 				004277F123E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
 				00369D852426195100BAB95B /* TariLogger.swift in Sources */,
-				0091D4AD23ED87BE004BF7F7 /* TestnetKeyServer.swift in Sources */,
+				0091D4AD23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				00C185C0238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				004277E923DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				00DD160C241CCE5B00C955B4 /* TariSettings.swift in Sources */,
@@ -2079,7 +2079,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 62;
+				CURRENT_PROJECT_VERSION = 63;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2114,7 +2114,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 62;
+				CURRENT_PROJECT_VERSION = 63;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

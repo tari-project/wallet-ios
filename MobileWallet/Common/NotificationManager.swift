@@ -54,6 +54,12 @@ private struct SendNotificationServerRequest: Codable {
     let public_nonce: String
 }
 
+private struct CancelRemindersServerRequest: Codable {
+    let pub_key: String
+    let signature: String
+    let public_nonce: String
+}
+
 enum TokenServerError: Error {
     case server(_ statusCode: Int, message: String?)
     case invalidSignature
@@ -342,6 +348,93 @@ class NotificationManager {
                 NotificationManager.isSendRequestInProgress = false
             } else {
                 onRequestError(TokenServerError.pushNotSent)
+            }
+        }
+
+        task.resume()
+    }
+
+    //TODO refactor these. cancelReminders, sendToRecipient, registerDeviceToken functions can be consolidated into one
+    func cancelReminders(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
+        guard let wallet = TariLib.shared.tariWallet else {
+            return TariLogger.error("Failed to get wallet", error: WalletErrors.walletNotInitialized)
+        }
+
+        let (pubKey, pubKeyError) = wallet.publicKey
+        guard pubKeyError == nil else {
+            return TariLogger.error("Failed to get wallet pub key", error: pubKeyError)
+        }
+
+        let (pubKeyHex, hexError) = pubKey!.hex
+        guard hexError == nil else {
+            return TariLogger.error("Failed to get wallet hex pub key", error: hexError)
+        }
+
+        guard let signature = try? wallet.signMessage("cancel-reminders-\(pubKeyHex)") else {
+            return TariLogger.error("Failed to sign message")
+        }
+
+        let url = URL(string: "\(TariSettings.shared.pushNotificationServer)/cancel-reminders")!
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONEncoder().encode(
+            CancelRemindersServerRequest(
+                pub_key: pubKeyHex,
+                signature: signature.hex,
+                public_nonce: signature.nonce
+            )
+        )
+
+        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+            guard error == nil else {
+                onError(error!)
+                return
+            }
+
+            guard let data = data, let response = response as? HTTPURLResponse else {
+                onError(TokenServerError.unknown)
+                return
+            }
+
+            guard response.statusCode != 403 else {
+                onError(TokenServerError.invalidSignature)
+                return
+            }
+
+            var responseDict: [String: Any]?
+            if let responseString = String(data: data, encoding: .utf8) {
+                if let data = responseString.data(using: .utf8) {
+                    do {
+                        responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                    } catch {
+                        onError(error)
+                        return
+                    }
+                }
+            }
+
+            guard (200 ... 299) ~= response.statusCode else {
+                var message: String?
+                if let res = responseDict {
+                    message = res["error"] as? String
+                }
+
+                onError(TokenServerError.server(response.statusCode, message: message))
+                return
+            }
+
+            guard let isCancelled = responseDict?["cancelled"] as? Bool else {
+                onError(TokenServerError.responseInvalid)
+                return
+            }
+
+            if isCancelled {
+                onSuccess()
+            } else {
+                onError(TokenServerError.pushNotSent)
             }
         }
 

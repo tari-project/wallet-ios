@@ -73,7 +73,7 @@ extension SplashViewController {
 //
 //        subtitleLabel.text = String(
 //            format: NSLocalizedString("Get ready to send and receive %@ with an easy-to-use crypto wallet that puts privacy first.", comment: "Subtitle Label on the onboarding screen"),
-//            TariSettings.shared.network.currencyDisplayName
+//            TariSettings.shared.network.currencyDisplayTicker
 //        )
 //
 //        subtitleLabel.textColor = Theme.shared.colors.splashSubtitle
