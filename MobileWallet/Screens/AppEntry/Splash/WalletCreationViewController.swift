@@ -66,24 +66,30 @@ class WalletCreationViewController: UIViewController {
     var secondLabelBottomConstant: NSLayoutConstraint?
     var thirdLabelLeadingConstant: NSLayoutConstraint?
     var thirdLabelTrailingConstant: NSLayoutConstraint?
-    var faceIdWidthConstaint: NSLayoutConstraint?
-    var faceIdHeightConstaint: NSLayoutConstraint?
-    var faceIdDistanceToLabel: NSLayoutConstraint?
+    var accessAnimationViewWidthConstaint: NSLayoutConstraint?
+    var accessAnimationViewHeightConstaint: NSLayoutConstraint?
+    var accessAnimationViewDistanceToLabel: NSLayoutConstraint?
+    var accessAnimationViewDistanceToXCenter: NSLayoutConstraint?
+    var radialGradientViewDistanceToXCenter: NSLayoutConstraint?
+    var radialGradientViewDistanceToYCenter: NSLayoutConstraint?
+
     var firstLabel: UILabel!
     var secondLabelTop: UILabel!
     var secondLabelBottom: UILabel!
     var thirdLabel: UILabel!
     var topWhiteView: UIView!
     var bottomWhiteView: UIView!
-    var animationView: AnimationView!
     var emojiWheelView: AnimationView!
     var nerdAnimationView: AnimationView!
+    var checkmarkAnimationView: AnimationView!
     var videoView: UIView!
     var createEmojiButton: ActionButton!
     var userEmojiContainer: EmoticonView!
     var tapToSeeFullEmojiButton: UIButton!
     var arrowImageView: UIImageView!
-    var faceIDView: AnimationView!
+    var accessAnimationView: AnimationView!
+
+    let radialGradient: RadialGradientView = RadialGradientView(insideColor: Theme.shared.colors.accessAnimationViewShadow!, outsideColor: Theme.shared.colors.creatingWalletBackground!)
 
     // MARK: - Override functions
     override func viewDidLoad() {
@@ -167,13 +173,13 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func updateConstraintsAnimationView() {
-        animationView = AnimationView()
-        view.addSubview(animationView)
-        animationView.translatesAutoresizingMaskIntoConstraints = false
-        animationView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        animationView.widthAnchor.constraint(equalToConstant: 43.75).isActive = true
-        animationView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        animationView.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: -50).isActive = true
+        checkmarkAnimationView = AnimationView()
+        view.addSubview(checkmarkAnimationView)
+        checkmarkAnimationView.translatesAutoresizingMaskIntoConstraints = false
+        checkmarkAnimationView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        checkmarkAnimationView.widthAnchor.constraint(equalToConstant: 43.75).isActive = true
+        checkmarkAnimationView.heightAnchor.constraint(equalToConstant: 30).isActive = true
+        checkmarkAnimationView.topAnchor.constraint(equalTo: bottomWhiteView.topAnchor, constant: -50).isActive = true
     }
 
     private func updateConstraintsBottomWhiteView() {
@@ -254,17 +260,34 @@ class WalletCreationViewController: UIViewController {
 
     }
 
-    private func updateConstraintsFaceIDView() {
-        faceIDView = AnimationView()
-        view.addSubview(faceIDView)
-        faceIDView.translatesAutoresizingMaskIntoConstraints = false
-        faceIDView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        faceIdWidthConstaint = faceIDView.widthAnchor.constraint(equalToConstant: 238)
-        faceIdWidthConstaint?.isActive = true
-        faceIdHeightConstaint = faceIDView.heightAnchor.constraint(equalToConstant: 238)
-        faceIdHeightConstaint?.isActive = true
-        faceIdDistanceToLabel = secondLabelBottom.topAnchor.constraint(equalTo: faceIDView.bottomAnchor, constant: -30)
-        faceIdDistanceToLabel?.isActive = true
+    private func updateConstraintsAccessAnimationView() {
+        accessAnimationView = AnimationView()
+
+        radialGradient.gradienLayer.transform = CATransform3DMakeScale(0.75, 0.9, 0.7)
+        radialGradient.gradienLayer.locations = [0.0, 0.7]
+        radialGradient.gradienLayer.opacity = 0.2
+        radialGradient.alpha = 0.0
+
+        view.addSubview(accessAnimationView)
+        accessAnimationView.insertSubview(radialGradient, at: 0)
+
+        accessAnimationView.translatesAutoresizingMaskIntoConstraints = false
+        accessAnimationViewDistanceToXCenter = accessAnimationView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        accessAnimationViewDistanceToXCenter?.isActive = true
+        accessAnimationViewWidthConstaint = accessAnimationView.widthAnchor.constraint(equalToConstant: 238)
+        accessAnimationViewWidthConstaint?.isActive = true
+        accessAnimationViewHeightConstaint = accessAnimationView.heightAnchor.constraint(equalToConstant: 238)
+        accessAnimationViewHeightConstaint?.isActive = true
+        accessAnimationViewDistanceToLabel = secondLabelBottom.topAnchor.constraint(equalTo: accessAnimationView.bottomAnchor, constant: -30)
+        accessAnimationViewDistanceToLabel?.isActive = true
+
+        radialGradient.translatesAutoresizingMaskIntoConstraints = false
+        radialGradient.widthAnchor.constraint(equalTo: accessAnimationView.widthAnchor, multiplier: 1.0).isActive = true
+        radialGradient.heightAnchor.constraint(equalTo: accessAnimationView.heightAnchor, multiplier: 1.0).isActive = true
+        radialGradientViewDistanceToYCenter = radialGradient.centerYAnchor.constraint(equalTo: accessAnimationView.centerYAnchor)
+        radialGradientViewDistanceToYCenter?.isActive = true
+        radialGradientViewDistanceToXCenter = radialGradient.centerXAnchor.constraint(equalTo: accessAnimationView.centerXAnchor)
+        radialGradientViewDistanceToYCenter?.isActive = true
     }
 
     private func updateConstraintsUserEmojiContainer() {
@@ -343,7 +366,7 @@ class WalletCreationViewController: UIViewController {
         updateConstraintsThirdLabel()
         updateConstraintsEmojiButton()
         updateConstraintsEmojiWheelView()
-        updateConstraintsFaceIDView()
+        updateConstraintsAccessAnimationView()
         updateConstraintsUserEmojiContainer()
         updateConstraintsTapToSeeFullEmoji()
         updateConstraintsVideoView()
@@ -453,11 +476,11 @@ class WalletCreationViewController: UIViewController {
 
     private func loadCheckMarkAnimation() {
         let animation = Animation.named("CheckMark")
-        animationView.animation = animation
+        checkmarkAnimationView.animation = animation
     }
 
     private func startCheckMarkAnimation() {
-        animationView.play(
+        checkmarkAnimationView.play(
             fromProgress: 0,
             toProgress: 1,
             loopMode: .playOnce,
@@ -475,11 +498,11 @@ class WalletCreationViewController: UIViewController {
 
     private func loadFaceIDAnimation() {
         let animation = Animation.named("FaceID")
-        faceIDView.animation = animation
+        accessAnimationView.animation = animation
     }
 
     private func startFaceIDAnimation() {
-        faceIDView.play(
+        accessAnimationView.play(
             fromProgress: 0,
             toProgress: 1,
             loopMode: .playOnce,
@@ -493,11 +516,11 @@ class WalletCreationViewController: UIViewController {
 
     private func loadTouchIdAnimation() {
         let animation = Animation.named("TouchIdAnimation")
-        faceIDView.animation = animation
+        accessAnimationView.animation = animation
     }
 
     private func startTouchIdAnimation() {
-        faceIDView.play(
+        accessAnimationView.play(
             fromProgress: 0,
             toProgress: 1,
             loopMode: .playOnce,
@@ -511,11 +534,11 @@ class WalletCreationViewController: UIViewController {
 
     private func loadNotificationAnimation() {
         let animation = Animation.named("NotificationAnimation")
-        faceIDView.animation = animation
+        accessAnimationView.animation = animation
     }
 
     private func startNotificationAnimation() {
-        faceIDView.play(
+        accessAnimationView.play(
             fromProgress: 0,
             toProgress: 1,
             loopMode: .playOnce,
@@ -627,6 +650,7 @@ class WalletCreationViewController: UIViewController {
         let currentType = LAContext().biometricType
         switch currentType {
             case .faceID:
+                updateConstraintsForFaceIDAnimation()
                 runFaceIDAnimation()
             case .touchID:
                 runTouchIdAnimation()
@@ -635,27 +659,27 @@ class WalletCreationViewController: UIViewController {
                 TariLogger.error("No biometrics available")
         }
 
+        UIView.animate(withDuration: 1.0) { [weak self] in
+            self?.radialGradient.alpha = 1.0
+        }
+
         secondLabelTopConstant?.constant = -50
         UIView.animate(withDuration: 0.5, animations: { [weak self] in
-            guard let self = self else { return }
-            self.view.layoutIfNeeded()
+            self?.view.layoutIfNeeded()
         })
 
         secondLabelBottomConstant?.constant = -25
         UIView.animate(withDuration: 0.75, animations: { [weak self] in
-            guard let self = self else { return }
-            self.view.layoutIfNeeded()
+            self?.view.layoutIfNeeded()
         })
 
         UIView.animate(withDuration: 1, animations: { [weak self] in
-            guard let self = self else { return }
-            self.secondLabelBottom.alpha = 1.0
-            self.thirdLabel.alpha = 1.0
-            self.createEmojiButton.alpha = 1.0
-            self.view.layoutIfNeeded()
+            self?.secondLabelBottom.alpha = 1.0
+            self?.thirdLabel.alpha = 1.0
+            self?.createEmojiButton.alpha = 1.0
+            self?.view.layoutIfNeeded()
         }) { [weak self] (_) in
-            guard let self = self else { return }
-            self.state = .localAuthentication
+            self?.state = .localAuthentication
         }
     }
 
@@ -666,7 +690,7 @@ class WalletCreationViewController: UIViewController {
             self.secondLabelTop.alpha = 0.0
             self.secondLabelBottom.alpha = 0.0
             self.thirdLabel.alpha = 0.0
-            self.faceIDView.alpha = 0.0
+            self.accessAnimationView.alpha = 0.0
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
             guard let self = self else { return }
@@ -674,7 +698,7 @@ class WalletCreationViewController: UIViewController {
             DispatchQueue.main.asyncAfter(deadline: .now()) { [weak self] in
                 guard let self = self else { return }
                 self.updateLabelsForEnablingNotifications()
-                self.faceIDView.stop()
+                self.accessAnimationView.stop()
                 self.showEnableNotifications()
             }
         }
@@ -701,7 +725,7 @@ class WalletCreationViewController: UIViewController {
             self.secondLabelBottom.alpha = 1.0
             self.thirdLabel.alpha = 1.0
             self.createEmojiButton.alpha = 1.0
-            self.faceIDView.alpha = 1.0
+            self.accessAnimationView.alpha = 1.0
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
             guard let self = self else { return }
@@ -723,12 +747,27 @@ class WalletCreationViewController: UIViewController {
 
         secondLabelTopConstant?.constant = 8
         secondLabelBottomConstant?.constant = 8
-        faceIdWidthConstaint?.constant = 330
-        faceIdHeightConstaint?.constant = 362
-        faceIdDistanceToLabel?.constant = -90
-        faceIDView.layoutIfNeeded()
+        accessAnimationViewWidthConstaint?.constant = 330
+        accessAnimationViewHeightConstaint?.constant = 362
+        accessAnimationViewDistanceToLabel?.constant = -90
+
+        let translation = CATransform3DMakeTranslation(0.0, -70, 0)
+        let scale = CATransform3DMakeScale(0.6, 0.8, 0.7)
+        let combinedTransform = CATransform3DConcat(translation, scale)
+        radialGradient.gradienLayer.transform = combinedTransform
+
+        accessAnimationView.layoutIfNeeded()
         secondLabelTop.layoutIfNeeded()
         secondLabelBottom.layoutIfNeeded()
+    }
+
+    private func updateConstraintsForFaceIDAnimation() {
+        accessAnimationViewDistanceToXCenter?.constant = -7
+        radialGradientViewDistanceToXCenter?.constant = 7
+        radialGradientViewDistanceToYCenter?.constant = -10
+
+        let scale = CATransform3DMakeScale(1.0, 1.0, 1.0)
+        radialGradient.gradienLayer.transform = scale
     }
 
     private func updateLabelsForShowEmojiId() {

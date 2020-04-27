@@ -70,6 +70,8 @@ struct Colors: Loopable {
     let gradient1 = UIColor(named: "Gradient1")
     let gradient2 = UIColor(named: "Gradient2")
 
+    let accessAnimationViewShadow = UIColor(named: "AccessAnimationViewShadow")
+
     let actionButtonBackgroundSimple = UIColor(named: "ActionButtonBackgroundSimple")
     let actionButtonTitle = UIColor(named: "ActionButtonTitle")
 
