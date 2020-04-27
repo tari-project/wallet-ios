@@ -156,4 +156,16 @@ extension MicroTari {
         editFormatter.minimumFractionDigits = minimumFractionDigits
         return editFormatter.string(from: number)
     }
+
+    public static func checkValue(_ value: NSNumber) -> Bool {
+        guard let _ = UInt64(exactly: value.floatValue * Float(MicroTari.CONVERSION)) else {
+            return false
+        }
+        return true
+    }
+
+    public static func checkValue(_ value: String) -> Bool {
+        guard let number = convertToNumber(value) else { return false }
+        return checkValue(number)
+    }
 }
