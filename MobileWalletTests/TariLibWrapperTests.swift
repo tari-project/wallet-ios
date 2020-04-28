@@ -403,5 +403,7 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssert(MicroTari.convertToString(NSNumber(10.03), minimumFractionDigits: 2) == "10.03")
         XCTAssert(MicroTari.convertToString(NSNumber(10), minimumFractionDigits: 1) == "10.0")
         XCTAssert(MicroTari.convertToString(NSNumber(10.0), minimumFractionDigits: 0) == "10")
+        XCTAssertNoThrow(try MicroTari(tariValue: "1234567898"))
+        XCTAssertThrowsError(try MicroTari(tariValue: "1234567898765432123567")) //Too large to be converted to uint64 in micro tari
     }
 }

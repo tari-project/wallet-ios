@@ -163,13 +163,13 @@ class UserFeedback {
             boldedTitle: NSLocalizedString("exclusive stuff", comment: "Store modal"),
             description: String(
                 format: NSLocalizedString(
-                    "Check out the TTL Store to spend your “hard-earned” %@ on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!",
+                    "Check out The TTL Store to spend your “hard-earned” %@ on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!",
                     comment: "Store modal"
                 ),
                 TariSettings.shared.network.currencyDisplayTicker
             ),
             cancelTitle: NSLocalizedString("I’ll check it out later", comment: "Store modal"),
-            actionTitle: NSLocalizedString("Visit the TTL Store", comment: "Store modal"),
+            actionTitle: NSLocalizedString("Visit The TTL Store", comment: "Store modal"),
             actionIcon: Theme.shared.images.storeIcon!,
             onClose: {
                 SwiftEntryKit.dismiss()
