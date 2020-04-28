@@ -82,7 +82,7 @@ class TariLib {
     }
 
     var publicAddress: String {
-        return "/ip4/172.30.30.112/tcp/9838"
+        return "/ip4/0.0.0.0/tcp/9838"
     }
 
     var listenerAddress: String {

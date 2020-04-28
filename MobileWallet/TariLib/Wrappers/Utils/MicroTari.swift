@@ -139,6 +139,10 @@ struct MicroTari {
             throw MicroTariErrors.invalidStringFormat
         }
 
+        guard MicroTari.checkValue(tariValue) else {
+            throw MicroTariErrors.invalidStringFormat
+        }
+
         self.rawValue = UInt64(tariNumber.floatValue * Float(MicroTari.CONVERSION))
     }
 
