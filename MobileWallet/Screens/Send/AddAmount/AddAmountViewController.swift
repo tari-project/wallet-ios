@@ -198,8 +198,10 @@ class AddAmountViewController: UIViewController {
             return
         }
 
-        rawInput = updatedText
-        updateLabelText()
+        if MicroTari.checkValue(updatedText) {
+            rawInput = updatedText
+            updateLabelText()
+        }
     }
 
     private func updateLabelText() {

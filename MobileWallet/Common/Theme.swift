@@ -70,6 +70,8 @@ struct Colors: Loopable {
     let gradient1 = UIColor(named: "Gradient1")
     let gradient2 = UIColor(named: "Gradient2")
 
+    let accessAnimationViewShadow = UIColor(named: "AccessAnimationViewShadow")
+
     let actionButtonBackgroundSimple = UIColor(named: "ActionButtonBackgroundSimple")
     let actionButtonTitle = UIColor(named: "ActionButtonTitle")
 
@@ -198,6 +200,7 @@ struct Colors: Loopable {
 struct Fonts: Loopable {
     let splashVersionFooterLabel = UIFont(name: "Avenir-Heavy", size: 9.0)
     let actionButton = UIFont(name: "Avenir-Heavy", size: 16.0)
+    let copiedLabelFont = UIFont(name: "Avenir-Black", size: 13.0)
 
     //Splash
     let splashTitleLabel = UIFont(name: "Avenir-Black", size: 30.0)

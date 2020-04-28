@@ -1,8 +1,8 @@
-//  UILabel.swift
+//  RadialGradientView.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/03
+	Created by S.Shovkoplyas on 27.04.2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,51 +40,35 @@
 
 import UIKit
 
-class UILabelWithPadding: CopyableLabel {
-     private struct AssociatedKeys {
-        static var padding = UIEdgeInsets()
+class RadialGradientView: UIView {
+
+    var insideColor: UIColor
+    var outsideColor: UIColor
+
+    init(insideColor: UIColor, outsideColor: UIColor) {
+        self.insideColor = insideColor
+        self.outsideColor = outsideColor
+        super.init(frame: .zero)
     }
 
-    public var padding: UIEdgeInsets? {
-        get {
-            return objc_getAssociatedObject(self, &AssociatedKeys.padding) as? UIEdgeInsets
-        }
-        set {
-            if let newValue = newValue {
-                objc_setAssociatedObject(self, &AssociatedKeys.padding, newValue as UIEdgeInsets?, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            }
-        }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    override open func draw(_ rect: CGRect) {
-        if let insets = padding {
-            self.drawText(in: rect.inset(by: insets))
-        } else {
-            self.drawText(in: rect)
-        }
-    }
+    lazy var gradienLayer: CAGradientLayer = {
+        let l = CAGradientLayer()
+        l.type = .radial
+        l.colors = [insideColor.cgColor,
+                    outsideColor.cgColor]
+        l.startPoint = CGPoint(x: 0.5, y: 0.5)
+        l.endPoint = CGPoint(x: 1, y: 1)
+        layer.addSublayer(l)
+        return l
+    }()
 
-    override open var intrinsicContentSize: CGSize {
-        guard let _ = self.text else {
-            return super.intrinsicContentSize
-        }
-
-        guard let insets = padding else {
-            return super.intrinsicContentSize
-        }
-
-        var contentSize = super.intrinsicContentSize
-        var textWidth: CGFloat = frame.size.width
-        var insetsHeight: CGFloat = 0.0
-        var insetsWidth: CGFloat = 0.0
-
-        insetsWidth += insets.left + insets.right
-        insetsHeight += insets.top + insets.bottom
-        textWidth -= insetsWidth
-
-        contentSize.height = ceil(super.intrinsicContentSize.height) + insetsHeight
-        contentSize.width = ceil(super.intrinsicContentSize.width) + insetsWidth
-
-        return contentSize
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradienLayer.frame = bounds
+        gradienLayer.cornerRadius = bounds.width / 2.0
     }
 }
