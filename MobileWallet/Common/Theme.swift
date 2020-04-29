@@ -200,6 +200,7 @@ struct Colors: Loopable {
 struct Fonts: Loopable {
     let splashVersionFooterLabel = UIFont(name: "Avenir-Heavy", size: 9.0)
     let actionButton = UIFont(name: "Avenir-Heavy", size: 16.0)
+    let copiedLabelFont = UIFont(name: "Avenir-Black", size: 13.0)
 
     //Splash
     let splashTitleLabel = UIFont(name: "Avenir-Black", size: 30.0)

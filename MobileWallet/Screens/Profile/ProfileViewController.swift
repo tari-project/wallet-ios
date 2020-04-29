@@ -103,6 +103,7 @@ class ProfileViewController: UIViewController {
     }
 
     private func setupEmojiView() {
+        emojiView.enableCopy = false
         view.addSubview(emojiView)
         emojiView.translatesAutoresizingMaskIntoConstraints = false
         emojiView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true

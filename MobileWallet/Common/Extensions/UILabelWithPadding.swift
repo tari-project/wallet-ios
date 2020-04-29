@@ -40,7 +40,7 @@
 
 import UIKit
 
-class UILabelWithPadding: UILabel {
+class UILabelWithPadding: CopyableLabel {
      private struct AssociatedKeys {
         static var padding = UIEdgeInsets()
     }
