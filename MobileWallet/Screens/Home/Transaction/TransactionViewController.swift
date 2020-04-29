@@ -40,7 +40,7 @@
 
 import UIKit
 
-class TransactionViewController: UIViewController, UITextFieldDelegate {
+class TransactionViewController: UIViewController {
     let bottomHeadingPadding: CGFloat = 11
     let valueViewHeightMultiplierFull: CGFloat = 0.2536
     let valueViewHeightMultiplierShortened: CGFloat = 0.18
@@ -193,45 +193,6 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
     @objc func addContactButtonPressed(_ sender: UIButton) {
         isShowingContactAlias = true
         isEditingContactName = true
-    }
-
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        return isEditingContactName
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard textField.text?.isEmpty == false else {
-            textField.text = contactAlias
-            return false
-        }
-
-        isEditingContactName = false
-
-        guard contactPublicKey != nil else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
-                description: NSLocalizedString("Missing public key from transaction.", comment: "Transaction detail screen")
-            )
-            return true
-        }
-
-        do {
-            try TariLib.shared.tariWallet!.addUpdateContact(alias: textField.text!, publicKey: contactPublicKey!)
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
-                //UserFeedback.shared.success(title: NSLocalizedString("Contact Updated!", comment: "Transaction detail screen"))
-            })
-
-        } catch {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
-                description: NSLocalizedString("Failed to save contact details.", comment: "Transaction detail screen"),
-                error: error
-            )
-        }
-
-        return true
     }
 
     private func registerEvents() {
@@ -479,5 +440,53 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
 
             transactionIDLabel.text = "\(txIdDisplay)\(statusEmoji)"
         }
+    }
+}
+
+extension TransactionViewController: UITextFieldDelegate {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        return isEditingContactName
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard textField.text?.isEmpty == false else {
+            textField.text = contactAlias
+            return false
+        }
+
+        isEditingContactName = false
+
+        guard contactPublicKey != nil else {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
+                description: NSLocalizedString("Missing public key from transaction.", comment: "Transaction detail screen")
+            )
+            return true
+        }
+
+        do {
+            try TariLib.shared.tariWallet!.addUpdateContact(alias: textField.text!, publicKey: contactPublicKey!)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                //UserFeedback.shared.success(title: NSLocalizedString("Contact Updated!", comment: "Transaction detail screen"))
+            })
+
+        } catch {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
+                description: NSLocalizedString("Failed to save contact details.", comment: "Transaction detail screen"),
+                error: error
+            )
+        }
+
+        return true
+    }
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let maxLength = 40
+        guard let currentString = textField.text as NSString? else { return false }
+        let newString: NSString = currentString.replacingCharacters(in: range, with: string) as NSString
+        return newString.length <= maxLength
     }
 }
