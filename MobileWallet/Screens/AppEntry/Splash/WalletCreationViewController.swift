@@ -292,6 +292,7 @@ class WalletCreationViewController: UIViewController {
 
     private func updateConstraintsUserEmojiContainer() {
         userEmojiContainer = EmoticonView()
+        userEmojiContainer.enableCopy = false
         userEmojiContainer.alpha = 0.0
         view.addSubview(userEmojiContainer)
         userEmojiContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -639,8 +640,10 @@ class WalletCreationViewController: UIViewController {
             self.arrowImageView.alpha = 1.0
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
-            guard let self = self else { return }
-            self.state = .showEmojiId
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self?.userEmojiContainer.expand(false)
+            }
+            self?.state = .showEmojiId
         }
     }
 
@@ -798,7 +801,7 @@ class WalletCreationViewController: UIViewController {
                                               inViewController: self,
                                               initialHeight: CGFloat(46),
                                               showContainerViewBlur: false)
-
+            self.userEmojiContainer.expand(true, animated: false)
             self.userEmojiContainer.tapToExpand = { [weak self] in
                 self?.tapToExpandAction()
             }

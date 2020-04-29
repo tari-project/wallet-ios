@@ -47,10 +47,11 @@ class EmoticonView: UIView {
 
     var containerView = UIView()
     var scrollView = UIScrollView()
-    var label = UILabelWithPadding()
+    lazy var label: UILabelWithPadding = UILabelWithPadding(copiableViewParent: labelContainer)
     var expanded: Bool = false
     var type: EmoticonViewType = .normalView
     var shouldShowBlurContainerViewWhenExpanded = true
+    var enableCopy: Bool = true
     private var initialWidth: CGFloat = CGFloat(172)
     var tapToExpand: (() -> Void)?
     private var backgroundTop: NSLayoutConstraint?
@@ -66,25 +67,19 @@ class EmoticonView: UIView {
     private var labelInitialWidth: NSLayoutConstraint?
     private var labelWidthConstraint: NSLayoutConstraint?
 
+    private let labelContainer = UIView()
+
     private var emojiText: String!
 
     var cornerRadius: CGFloat = 6.0 {
-        didSet (newValue) {
-            self.layer.cornerRadius = newValue
-            scrollView.layer.cornerRadius = newValue
-            label.layer.cornerRadius = newValue
+        didSet {
+            self.layer.cornerRadius = cornerRadius
+            scrollView.layer.cornerRadius = cornerRadius
+            label.cornerRadius = cornerRadius
         }
     }
 
     private var superVc: UIViewController!
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
 
     func setUpView(emojiText: String,
                    type: EmoticonViewType,
@@ -94,14 +89,13 @@ class EmoticonView: UIView {
                    initialHeight: CGFloat = CGFloat(32),
                    showContainerViewBlur: Bool = true,
                    cornerRadius: CGFloat = 6.0) {
+        self.label.longPressGesture.isEnabled = false
         self.superVc = vc
         self.emojiText = emojiText
         self.backgroundColor = .clear
         if type == .normalView {
-            label = UILabelWithPadding()
             label.numberOfLines = 0
             self.addSubview(label)
-
             self.layer.masksToBounds = true
             label.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground!
             label.textAlignment = .center
@@ -136,7 +130,6 @@ class EmoticonView: UIView {
 
             shouldShowBlurContainerViewWhenExpanded = showContainerViewBlur
 
-            let labelContainer = UIView()
             self.addSubview(labelContainer)
             labelContainer.translatesAutoresizingMaskIntoConstraints = false
 
@@ -175,7 +168,6 @@ class EmoticonView: UIView {
 
             scrollView.layer.masksToBounds = true
 
-            label = UILabelWithPadding()
             label.padding = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
             scrollView.addSubview(label)
 
@@ -216,22 +208,26 @@ class EmoticonView: UIView {
     }
 
     @objc func tap(_ gestureRecognizer: UITapGestureRecognizer) {
-        expand(!expanded, callCompletion: true)
+        expand(!expanded, callTapCompletion: true)
     }
 
-    func expand(_ expand: Bool, callCompletion: Bool = false) {
+    func expand(_ expand: Bool, completion: (() -> Void)? = nil, callTapCompletion: Bool = false, animated: Bool = true) {
         expanded = expand
+        if enableCopy == true {
+            label.longPressGesture.isEnabled = expand
+            label.hideMenu()
+        }
         if expand == true {
-            enableFullScreen(callCompletion: callCompletion)
+            enableFullScreen(callTapCompletion: callTapCompletion, completion: completion, animated: animated)
         } else {
-            disableFullScreen()
+            disableFullScreen(completion: completion, animated: animated)
         }
     }
 
-    private func disableFullScreen() {
+    private func disableFullScreen(completion: (() -> Void)? = nil, animated: Bool = true) {
         self.labelInitialWidth?.constant = initialWidth
         determineEmojiLabelText(emojiText: emojiText)
-        UIView.animate(withDuration: 0.1, animations: { [weak self] in
+        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, animations: { [weak self] in
             guard let self = self else { return }
             if self.shouldShowBlurContainerViewWhenExpanded {
                 self.containerView.alpha = 0.0
@@ -249,26 +245,30 @@ class EmoticonView: UIView {
             self.containerViewTrailingInitial?.isActive = true
             self.containerViewBottomInitial?.isActive = true
             self.containerViewTopInitial?.isActive = true
+
+            completion?()
         }
     }
 
-    private func enableFullScreen(callCompletion: Bool) {
+    private func enableFullScreen(callTapCompletion: Bool, completion:(() -> Void)? = nil, animated: Bool = true) {
 
-        UIView.animate(withDuration: 0.3, animations: { [weak self] in
+        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, animations: { [weak self] in
             guard let self = self else { return }
             self.label.alpha = 0.0
         }) { [weak self] (_) in
             guard let self = self else { return }
             self.determineEmojiLabelText(emojiText: self.emojiText)
-            self.runFullScreenAnimation(callCompletion: callCompletion)
-            UIView.animate(withDuration: 0.3, animations: { [weak self] in
+            self.runFullScreenAnimation(callTapCompletion: callTapCompletion)
+            UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, animations: { [weak self] in
                 guard let self = self else { return }
                 self.label.alpha = 1.0
-            })
+            }) {(_) in
+                completion?()
+            }
         }
     }
 
-    private func runFullScreenAnimation(callCompletion: Bool) {
+    private func runFullScreenAnimation(callTapCompletion: Bool) {
         if backgroundLeft == nil && backgroundRight == nil && backgroundBottom == nil && backgroundTop == nil {
                 if let superview = self.superview {
                     backgroundLeft = containerView.leadingAnchor.constraint(equalTo: superview.leadingAnchor)
@@ -304,7 +304,7 @@ class EmoticonView: UIView {
                 })
             }
 
-        if callCompletion == true {
+        if callTapCompletion == true {
             tapToExpand?()
         }
 
