@@ -159,7 +159,7 @@ extension TransactionViewController {
 
     func setupAddContactButton() {
         addContactButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(addContactButton)
+        fromContainerView.insertSubview(addContactButton, belowSubview: emojiButton)
 
         addContactButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
         addContactButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
@@ -174,7 +174,11 @@ extension TransactionViewController {
         contactNameHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         contactNameHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         contactNameHeadingLabel.text = NSLocalizedString("Contact Name", comment: "Transaction detail view")
-        contactNameHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: 40.0).isActive = true
+        contactNameDistanceToFromContainerFull = contactNameHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: 40.0)
+        contactNameDistanceToFromContainerShortened = contactNameHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: 10.0)
+
+        contactNameDistanceToFromContainerFull.isActive = true
+
         contactNameHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
         contactNameTextField.translatesAutoresizingMaskIntoConstraints = false
