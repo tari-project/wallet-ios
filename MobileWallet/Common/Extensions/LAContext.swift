@@ -50,7 +50,7 @@ extension LAContext {
     var biometricType: BiometricType {
         var error: NSError?
 
-        guard self.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+        guard self.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
             // Capture these recoverable error thru Crashlytics
             return .none
         }
@@ -67,7 +67,7 @@ extension LAContext {
                 fatalError()
             }
         } else {
-            return  self.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) ? .touchID : .none
+            return  self.canEvaluatePolicy(.deviceOwnerAuthentication, error: nil) ? .touchID : .none
         }
     }
 }
