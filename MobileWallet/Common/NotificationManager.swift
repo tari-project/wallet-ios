@@ -60,11 +60,12 @@ private struct CancelRemindersServerRequest: Codable {
     let public_nonce: String
 }
 
-enum TokenServerError: Error {
+enum PushNotificationServerError: Error {
     case server(_ statusCode: Int, message: String?)
     case invalidSignature
     case responseInvalid
     case pushNotSent
+    case missingApiKey
     case unknown
 }
 
@@ -74,8 +75,6 @@ class NotificationManager {
     let notificationCenter = UNUserNotificationCenter.current()
     private let options: UNAuthorizationOptions = [.alert, .sound, .badge]
     private static let HAS_REGISTERED_TOKEN_STORAGE_KEY = "hasRegisteredPushToken"
-    private static var isRegisterRequestInProgress = false
-    private static var isSendRequestInProgress = false
 
     var hasRegisteredToken: Bool {
         get {
@@ -149,259 +148,103 @@ class NotificationManager {
     }
 
     func registerDeviceToken(_ deviceToken: Data) {
-        //Avoid duplicate requests
-        guard NotificationManager.isRegisterRequestInProgress == false else {
-            TariLogger.warn("Server request already in progress")
-            return
-        }
-
         let apnsDeviceToken = deviceToken.map {String(format: "%02.2hhx", $0)}.joined()
 
         TariLogger.verbose("Registering device token with public key")
 
-        guard let wallet = TariLib.shared.tariWallet else {
-            return TariLogger.error("Failed to get wallet", error: WalletErrors.walletNotInitialized)
-        }
-
-        let (pubKey, pubKeyError) = wallet.publicKey
-        guard pubKeyError == nil else {
-            return TariLogger.error("Failed to get wallet pub key", error: pubKeyError)
-        }
-
-        let (pubKeyHex, hexError) = pubKey!.hex
-        guard hexError == nil else {
-            return TariLogger.error("Failed to get wallet hex pub key", error: hexError)
-        }
-
-        guard let signature = try? wallet.signMessage("\(pubKeyHex)\(apnsDeviceToken)") else {
-            return TariLogger.error("Failed to sign message")
-        }
-
-        let url = URL(string: "\(TariSettings.shared.pushNotificationServer)/register/\(pubKeyHex)")!
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
         do {
-            request.httpBody = try JSONEncoder().encode(
+            let signature = try signRequestMessage(apnsDeviceToken)
+
+            let requestPayload = try JSONEncoder().encode(
                 TokenRegistrationServerRequest(
                     token: apnsDeviceToken,
                     signature: signature.hex,
                     public_nonce: signature.nonce
                 )
             )
+            pushServerRequest(
+                path: "/register/\(signature.publicKey.hex.0)",
+                requestPayload: requestPayload,
+                onSuccess: {
+                    UserDefaults.standard.set(true, forKey: NotificationManager.HAS_REGISTERED_TOKEN_STORAGE_KEY)
+                    TariLogger.info("Registered device token")
+                }) { (error) in
+                    TariLogger.error("Failed to register device token", error: error)
+                }
         } catch {
-            return TariLogger.error("Failed to JSON encode http body", error: error)
+            TariLogger.error("Failed to register device token", error: error)
         }
-
-        let onRequestError = {(requestError: Error) -> Void in
-            NotificationManager.isRegisterRequestInProgress = false
-            return TariLogger.error("Push notification register request failed", error: requestError)
-        }
-
-        NotificationManager.isRegisterRequestInProgress = true
-
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard error == nil else {
-                onRequestError(error!)
-                return
-            }
-
-            guard let data = data, let response = response as? HTTPURLResponse else {
-                onRequestError(TokenServerError.unknown)
-                return
-            }
-
-            guard response.statusCode != 403 else {
-                onRequestError(TokenServerError.invalidSignature)
-                return
-            }
-
-            var responseDict: [String: Any]?
-            if let responseString = String(data: data, encoding: .utf8) {
-                if let data = responseString.data(using: .utf8) {
-                    do {
-                        responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                    } catch {
-                        onRequestError(error)
-                        return
-                    }
-                }
-            }
-
-            guard (200 ... 299) ~= response.statusCode else {
-                var message: String?
-                if let res = responseDict {
-                    message = res["error"] as? String
-                }
-
-                onRequestError(TokenServerError.server(response.statusCode, message: message))
-                return
-            }
-
-            guard let registered = responseDict?["registered"] as? Bool else {
-                onRequestError(TokenServerError.responseInvalid)
-                return
-            }
-
-            TariLogger.info("Device token reigistered with public key")
-            UserDefaults.standard.set(true, forKey: NotificationManager.HAS_REGISTERED_TOKEN_STORAGE_KEY)
-
-            NotificationManager.isRegisterRequestInProgress = false
-        }
-
-        task.resume()
     }
 
     func sendToRecipient(_ toPublicKey: PublicKey, onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return TariLogger.error("Failed to get wallet", error: WalletErrors.walletNotInitialized)
-        }
+        let signature = try signRequestMessage(toPublicKey.hex.0)
 
-        let (pubKey, pubKeyError) = wallet.publicKey
-        guard pubKeyError == nil else {
-            return TariLogger.error("Failed to get wallet pub key", error: pubKeyError)
-        }
-
-        let (fromPubKeyHex, hexError) = pubKey!.hex
-        guard hexError == nil else {
-            return TariLogger.error("Failed to get wallet hex pub key", error: hexError)
-        }
-
-        let (toPubKeyHex, toHexError) = toPublicKey.hex
-        guard toHexError == nil else {
-            return TariLogger.error("Failed to get wallet to hex pub key", error: hexError)
-        }
-
-        guard let signature = try? wallet.signMessage("\(fromPubKeyHex)\(toPubKeyHex)") else {
-            return TariLogger.error("Failed to sign message")
-        }
-
-        let url = URL(string: "\(TariSettings.shared.pushNotificationServer)/send/\(toPubKeyHex)")!
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(
+        let requestPayload = try JSONEncoder().encode(
             SendNotificationServerRequest(
-                from_pub_key: fromPubKeyHex,
+                from_pub_key: signature.publicKey.hex.0,
                 signature: signature.hex,
                 public_nonce: signature.nonce
             )
         )
 
-        let onRequestError = {(error: Error) in
-            onError(error)
-            NotificationManager.isSendRequestInProgress = false
-        }
-
-        NotificationManager.isSendRequestInProgress = true
-
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard error == nil else {
-                onRequestError(error!)
-                return
-            }
-
-            guard let data = data, let response = response as? HTTPURLResponse else {
-                onRequestError(TokenServerError.unknown)
-                return
-            }
-
-            guard response.statusCode != 403 else {
-                onRequestError(TokenServerError.invalidSignature)
-                return
-            }
-
-            var responseDict: [String: Any]?
-            if let responseString = String(data: data, encoding: .utf8) {
-                if let data = responseString.data(using: .utf8) {
-                    do {
-                        responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                    } catch {
-                        onRequestError(error)
-                        return
-                    }
-                }
-            }
-
-            guard (200 ... 299) ~= response.statusCode else {
-                var message: String?
-                if let res = responseDict {
-                    message = res["error"] as? String
-                }
-
-                onRequestError(TokenServerError.server(response.statusCode, message: message))
-                return
-            }
-
-            guard let sent = responseDict?["sent"] as? Bool else {
-                onRequestError(TokenServerError.responseInvalid)
-                return
-            }
-
-            if sent {
-                onSuccess()
-                NotificationManager.isSendRequestInProgress = false
-            } else {
-                onRequestError(TokenServerError.pushNotSent)
-            }
-        }
-
-        task.resume()
+        pushServerRequest(path: "/send/\(toPublicKey.hex.0)", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
     }
 
-    //TODO refactor these. cancelReminders, sendToRecipient, registerDeviceToken functions can be consolidated into one
     func cancelReminders(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
+        let signature = try signRequestMessage("cancel-reminders")
+
+        let requestPayload = try JSONEncoder().encode(
+            CancelRemindersServerRequest(
+                pub_key: signature.publicKey.hex.0,
+                signature: signature.hex,
+                public_nonce: signature.nonce
+            )
+        )
+
+        pushServerRequest(path: "/cancel-reminders", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
+    }
+
+    private func signRequestMessage(_ message: String) throws -> Signature {
         guard let wallet = TariLib.shared.tariWallet else {
-            return TariLogger.error("Failed to get wallet", error: WalletErrors.walletNotInitialized)
+            throw WalletErrors.walletNotInitialized
         }
 
         let (pubKey, pubKeyError) = wallet.publicKey
         guard pubKeyError == nil else {
-            return TariLogger.error("Failed to get wallet pub key", error: pubKeyError)
+            throw pubKeyError!
         }
 
         let (pubKeyHex, hexError) = pubKey!.hex
         guard hexError == nil else {
-            return TariLogger.error("Failed to get wallet hex pub key", error: hexError)
+            throw hexError!
         }
 
-        guard let signature = try? wallet.signMessage("cancel-reminders-\(pubKeyHex)") else {
-            return TariLogger.error("Failed to sign message")
+        guard let apiKey = TariSettings.shared.pushServerApiKey else {
+            throw PushNotificationServerError.missingApiKey
         }
 
-        let url = URL(string: "\(TariSettings.shared.pushNotificationServer)/cancel-reminders")!
+        //TODO add apiKey when new push server redeployed
+        return try wallet.signMessage("\(pubKeyHex)\(message)")
+    }
 
-        var request = URLRequest(url: url)
+    private func pushServerRequest(path: String, requestPayload: Data, onSuccess: @escaping () -> Void, onError: @escaping (Error) -> Void) {
+        var request = URLRequest(url: URL(string: "\(TariSettings.shared.pushNotificationServer)\(path)")!)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(
-            CancelRemindersServerRequest(
-                pub_key: pubKeyHex,
-                signature: signature.hex,
-                public_nonce: signature.nonce
-            )
-        )
+        request.httpBody = requestPayload
 
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             guard error == nil else {
-                onError(error!)
-                return
+                return onError(error!)
             }
 
             guard let data = data, let response = response as? HTTPURLResponse else {
-                onError(TokenServerError.unknown)
-                return
+                return onError(PushNotificationServerError.unknown)
             }
 
             guard response.statusCode != 403 else {
-                onError(TokenServerError.invalidSignature)
-                return
+                return onError(PushNotificationServerError.invalidSignature)
             }
 
             var responseDict: [String: Any]?
@@ -410,8 +253,7 @@ class NotificationManager {
                     do {
                         responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
                     } catch {
-                        onError(error)
-                        return
+                        return onError(error)
                     }
                 }
             }
@@ -422,20 +264,14 @@ class NotificationManager {
                     message = res["error"] as? String
                 }
 
-                onError(TokenServerError.server(response.statusCode, message: message))
-                return
+                return onError(PushNotificationServerError.server(response.statusCode, message: message))
             }
 
-            guard let isCancelled = responseDict?["cancelled"] as? Bool else {
-                onError(TokenServerError.responseInvalid)
-                return
+            guard responseDict?["success"] as? Bool == true else {
+                return onError(PushNotificationServerError.responseInvalid)
             }
 
-            if isCancelled {
-                onSuccess()
-            } else {
-                onError(TokenServerError.pushNotSent)
-            }
+            onSuccess()
         }
 
         task.resume()

@@ -96,6 +96,8 @@ struct TariSettings {
         "b81b4071f72418cc410166d9baf0c6ef7a8c309e64671fafbbed88f7e1ee7709::/onion3/lwwcv4nq7epgem5vdcawom4mquqsw2odbwfcjzv3j6sksx4gr24e52ad:18141"
     ]
 
+    var pushServerApiKey: String?
+
     func getRandomBaseNode() -> String {
         return defaultBaseNodePool[Int.random(in: 0 ... (defaultBaseNodePool.count-1))]
     }
@@ -117,5 +119,29 @@ struct TariSettings {
 
     var isUnitTesting: Bool {
         return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
+    }
+
+    private init() {
+        TariLogger.info("Init settings...")
+
+        guard let envPath = Bundle.main.path(forResource: "env", ofType: "json") else {
+            TariLogger.error("Could not find envrionment file")
+            return
+        }
+
+        do {
+            let data = try Data(contentsOf: URL(fileURLWithPath: envPath), options: .mappedIfSafe)
+            let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
+
+            if let jsonResult = jsonResult as? [String: AnyObject] {
+                if let pushKey = jsonResult["pushServerApiKey"] as? String, !pushKey.isEmpty {
+                    pushServerApiKey = pushKey
+                } else {
+                    TariLogger.warn("pushServerApiKey not set in env.json. Sending push notifications will be disabled.")
+                }
+            }
+        } catch {
+            TariLogger.error("Could not load env vars", error: error)
+        }
     }
 }

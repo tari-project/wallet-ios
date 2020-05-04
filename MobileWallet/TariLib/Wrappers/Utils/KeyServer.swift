@@ -65,7 +65,7 @@ class KeyServer {
     )
     private let TARIBOT_MESSAGE2 = String(
         format: NSLocalizedString(
-            "Nice work! Here's more %@ to fill your coffers. Be sure to hit the Store icon to see real, "
+            "Nice work! Here's more %@ to fill your coffers. Be sure to hit the store icon to see real, "
             + "exclusive items you can redeem with your \"hard-earned\" %@.",
             comment: "TariBot transaction"
         ),
