@@ -686,6 +686,7 @@
 		00262EB2236F022000A6C8A0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				00A9190A242CDD7700B7F14D /* Tracker.swift */,
 				37BB6973245726FB0013AC4D /* CopyableLabel.swift */,
 				37AFE263245193CA006EA270 /* AlwaysPoppableNavigationController */,
 				00B4D6F4241B777500ED8318 /* BackgroundTasks */,
@@ -695,7 +696,6 @@
 				00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */,
 				00B4D6F9241B910200ED8318 /* NotificationManager.swift */,
 				00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */,
-				00A9190A242CDD7700B7F14D /* Tracker.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
