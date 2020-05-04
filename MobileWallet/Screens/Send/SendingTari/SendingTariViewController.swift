@@ -235,6 +235,8 @@ class SendingTariViewController: UIViewController {
         TariEventBus.onMainThread(self, eventType: .storeAndForwardSend) { [weak self] (result) in
             guard let self = self else { return }
 
+            Tracker.shared.track(eventWithCategory: "Transaction", action: "User's transaction is \("stored") after discovery times out", name: "Transaction Stored")
+
             self.isStoreAndForwardComplete = true
 
             //TODO check which tx we're listening for once added to the callback in Wallet.swift
@@ -320,7 +322,9 @@ class SendingTariViewController: UIViewController {
                     TariLogger.error(self.debugMessage)
                     //No success animation, just go home and display an error
                     self.removeTitleAnimation()
-
+                    if OnionManager.shared.state != .connected {
+                        Tracker.shared.track(eventWithCategory: "Transaction", action: "User's transaction fails - Tor issue", name: "Transaction Failed - Tor Issue")
+                    }
                     UserFeedback.shared.error(
                         title: NSLocalizedString("Sorry, you can't send Tari to offline users", comment: "Store and forward failed when sending a tx"),
                         description: NSLocalizedString("Please make sure your recipient has a reliable internet connection and has the Aurora app open on their device, and then try again. If that doesn't work, please verify you have the correct Emoji ID.", comment: "Store and forward failed when sending a tx")

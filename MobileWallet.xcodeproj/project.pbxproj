@@ -264,6 +264,9 @@
 		37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */; };
 		37AFE266245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */; };
 		37AFE267245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */; };
+		37BB6974245726FC0013AC4D /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB6973245726FB0013AC4D /* CopyableLabel.swift */; };
+		37BB6975245726FC0013AC4D /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB6973245726FB0013AC4D /* CopyableLabel.swift */; };
+		37BB6976245726FC0013AC4D /* CopyableLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB6973245726FB0013AC4D /* CopyableLabel.swift */; };
 		37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB696A245705D20013AC4D /* RadialGradientView.swift */; };
 		37BB696C245705E60013AC4D /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB696A245705D20013AC4D /* RadialGradientView.swift */; };
 		37BB696D245705E70013AC4D /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB696A245705D20013AC4D /* RadialGradientView.swift */; };
@@ -523,6 +526,7 @@
 		2FF33C780E811D173D3284C3 /* Pods-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarWithSubtitle.swift; sourceTree = "<group>"; };
 		37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlwaysPoppableNavigationController.swift; sourceTree = "<group>"; };
+		37BB6973245726FB0013AC4D /* CopyableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyableLabel.swift; sourceTree = "<group>"; };
 		37BB696A245705D20013AC4D /* RadialGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
 		37CB9F892451A2AD00C495F2 /* String+Emoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Emoji.swift"; sourceTree = "<group>"; };
 		37E4B62A24501FB200FA302B /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -682,6 +686,8 @@
 		00262EB2236F022000A6C8A0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				00A9190A242CDD7700B7F14D /* Tracker.swift */,
+				37BB6973245726FB0013AC4D /* CopyableLabel.swift */,
 				37AFE263245193CA006EA270 /* AlwaysPoppableNavigationController */,
 				00B4D6F4241B777500ED8318 /* BackgroundTasks */,
 				00A057B223D979BA0029C22A /* UserFeedback */,
@@ -690,7 +696,6 @@
 				00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */,
 				00B4D6F9241B910200ED8318 /* NotificationManager.swift */,
 				00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */,
-				00A9190A242CDD7700B7F14D /* Tracker.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1664,6 +1669,7 @@
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
 				004997B72382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
+				37BB6974245726FC0013AC4D /* CopyableLabel.swift in Sources */,
 				00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00947CC223CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,
@@ -1780,6 +1786,7 @@
 				004277DE23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */,
 				00BBD813237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				BFF1ED9E2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
+				37BB6975245726FC0013AC4D /* CopyableLabel.swift in Sources */,
 				001F6CE12380198D00FA7002 /* Contacts.swift in Sources */,
 				00369D84242618A900BAB95B /* TariLogger.swift in Sources */,
 				619197D2BB78CBBC06B0F87E /* UTXO.swift in Sources */,
@@ -1843,6 +1850,7 @@
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
 				37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
 				0087A1AE23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
+				37BB6976245726FC0013AC4D /* CopyableLabel.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				37F29D5924504B92008C046F /* HomeViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableTableViewCell.swift in Sources */,

@@ -40,10 +40,10 @@
 
 import UIKit
 
-class TransactionViewController: UIViewController, UITextFieldDelegate {
+class TransactionViewController: UIViewController {
     let bottomHeadingPadding: CGFloat = 11
     let valueViewHeightMultiplierFull: CGFloat = 0.2536
-    let valueViewHeightMultiplierShortened: CGFloat = 0.18
+    let valueViewHeightMultiplierShortened: CGFloat = 0.15
     let defaultNavBarHeight: CGFloat = 90
 
     var contactPublicKey: PublicKey?
@@ -52,6 +52,9 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
     let valueContainerView = UIView()
     var valueContainerViewHeightConstraintFull = NSLayoutConstraint()
     var valueContainerViewHeightConstraintShortened = NSLayoutConstraint()
+    var contactNameDistanceToFromContainerFull = NSLayoutConstraint()
+    var contactNameDistanceToFromContainerShortened = NSLayoutConstraint()
+
     var valueCenterYAnchorConstraint = NSLayoutConstraint()
     let valueLabel = UILabel()
     let emojiButton = EmoticonView()
@@ -140,6 +143,7 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
 
         hideKeyboardWhenTappedAroundOrSwipedDown()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
 
         Tracker.shared.track("/home/tx_details", "Transaction Details")
     }
@@ -173,12 +177,6 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
         transactionIDLabel.font = Theme.shared.fonts.transactionScreenTxIDLabel
     }
 
-    @objc func keyboardWillHide(notification: NSNotification) {
-        if isEditingContactName {
-            isEditingContactName = false
-        }
-    }
-
     @objc func feeButtonPressed(_ sender: UIButton) {
         UserFeedback.shared.info(
             title: NSLocalizedString("Where does the fee go?", comment: "Transaction detail view"),
@@ -193,45 +191,6 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
     @objc func addContactButtonPressed(_ sender: UIButton) {
         isShowingContactAlias = true
         isEditingContactName = true
-    }
-
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        return isEditingContactName
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard textField.text?.isEmpty == false else {
-            textField.text = contactAlias
-            return false
-        }
-
-        isEditingContactName = false
-
-        guard contactPublicKey != nil else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
-                description: NSLocalizedString("Missing public key from transaction.", comment: "Transaction detail screen")
-            )
-            return true
-        }
-
-        do {
-            try TariLib.shared.tariWallet!.addUpdateContact(alias: textField.text!, publicKey: contactPublicKey!)
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
-                //UserFeedback.shared.success(title: NSLocalizedString("Contact Updated!", comment: "Transaction detail screen"))
-            })
-
-        } catch {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
-                description: NSLocalizedString("Failed to save contact details.", comment: "Transaction detail screen"),
-                error: error
-            )
-        }
-
-        return true
     }
 
     private func registerEvents() {
@@ -478,6 +437,75 @@ class TransactionViewController: UIViewController, UITextFieldDelegate {
             }
 
             transactionIDLabel.text = "\(txIdDisplay)\(statusEmoji)"
+        }
+    }
+}
+
+extension TransactionViewController: UITextFieldDelegate {
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        return isEditingContactName
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        guard textField.text?.isEmpty == false else {
+            textField.text = contactAlias
+            return false
+        }
+
+        isEditingContactName = false
+
+        guard contactPublicKey != nil else {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
+                description: NSLocalizedString("Missing public key from transaction.", comment: "Transaction detail screen")
+            )
+            return true
+        }
+
+        do {
+            try TariLib.shared.tariWallet!.addUpdateContact(alias: textField.text!, publicKey: contactPublicKey!)
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+                //UserFeedback.shared.success(title: NSLocalizedString("Contact Updated!", comment: "Transaction detail screen"))
+            })
+
+        } catch {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
+                description: NSLocalizedString("Failed to save contact details.", comment: "Transaction detail screen"),
+                error: error
+            )
+        }
+
+        return true
+    }
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let maxLength = 40
+        guard let currentString = textField.text as NSString? else { return false }
+        let newString: NSString = currentString.replacingCharacters(in: range, with: string) as NSString
+        return newString.length <= maxLength
+    }
+}
+
+// MARK: Keyboard behavior
+extension TransactionViewController {
+    @objc private func keyboardWillShow(notification: NSNotification) {
+        self.valueContainerViewHeightConstraintFull.isActive = false
+        self.contactNameDistanceToFromContainerFull.isActive = false
+        self.valueContainerViewHeightConstraintShortened.isActive = true
+        self.contactNameDistanceToFromContainerShortened.isActive = true
+    }
+
+    @objc func keyboardWillHide(notification: NSNotification) {
+        self.valueContainerViewHeightConstraintFull.isActive = true
+        self.contactNameDistanceToFromContainerFull.isActive = true
+        self.valueContainerViewHeightConstraintShortened.isActive = false
+        self.contactNameDistanceToFromContainerShortened.isActive = false
+
+        if isEditingContactName {
+            isEditingContactName = false
         }
     }
 }

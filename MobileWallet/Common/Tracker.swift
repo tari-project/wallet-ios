@@ -42,14 +42,15 @@ import Foundation
 import MatomoTracker
 
 class Tracker {
-    let matomoTracker: MatomoTracker!
+    private static let matomoUrl = "https://matomo.tari.com/matomo.php"
+    private static let matomoSiteId = "2"
 
-    private let matomoUrl = "https://matomo.tari.com/matomo.php"
-    private let matomoSiteId = "2"
+    private let matomoTracker: MatomoTracker
 
     static let shared = Tracker()
+
     private init() {
-        matomoTracker = MatomoTracker(siteId: matomoSiteId, baseURL: URL(string: matomoUrl)!)
+        matomoTracker = MatomoTracker(siteId: Tracker.matomoSiteId, baseURL: URL(string: Tracker.matomoUrl)!)
 
         if TariSettings.shared.isDebug {
             TariLogger.warn("Opting out of tracking")
@@ -61,5 +62,10 @@ class Tracker {
         TariLogger.verbose("Tracking: \(page)")
         let view: [String] = page.components(separatedBy: "?")
         matomoTracker.track(view: view)
+    }
+
+    func track(eventWithCategory category: String, action: String, name: String? = nil) {
+        TariLogger.verbose("Tracking: \(action)")
+        matomoTracker.track(eventWithCategory: category, action: action, name: name, url: nil)
     }
 }
