@@ -488,8 +488,8 @@ extension TransactionViewController: UITextFieldDelegate {
         return newString.length <= maxLength
     }
 }
-// MARK: Keyboard behavior
 
+// MARK: Keyboard behavior
 extension TransactionViewController {
     @objc private func keyboardWillShow(notification: NSNotification) {
         self.valueContainerViewHeightConstraintFull.isActive = false
