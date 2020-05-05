@@ -43,6 +43,7 @@ import UIKit
 enum TextButtonVariation {
     case primary
     case secondary
+    case warning
 }
 
 class TextButton: UIButton {
@@ -72,8 +73,7 @@ class TextButton: UIButton {
     }
 
     private func commonSetup() {
-        setTitleColor(Theme.shared.colors.textButton, for: .normal)
-        titleLabel?.font = Theme.shared.fonts.textButton
+        setVariation(.primary)
 
         if let label = titleLabel {
             label.heightAnchor.constraint(equalToConstant: label.font.pointSize * 1.2).isActive = true
@@ -102,14 +102,19 @@ class TextButton: UIButton {
         })
     }
 
-    func setVariation(_ variation: TextButtonVariation) {
+    func setVariation(_ variation: TextButtonVariation, font: UIFont? = Theme.shared.fonts.textButton) {
         switch variation {
         case .secondary:
             setTitleColor(Theme.shared.colors.textButtonSecondary, for: .normal)
             break
+        case .warning:
+            setTitleColor(Theme.shared.colors.warningButtonTitle, for: .normal)
         default:
+            setTitleColor(Theme.shared.colors.textButton, for: .normal)
             break
         }
+
+        titleLabel?.font = font
     }
 
     func setRightImage(_ image: UIImage) {

@@ -43,17 +43,18 @@ import UIKit
 class TransactionViewController: UIViewController {
     let bottomHeadingPadding: CGFloat = 11
     let valueViewHeightMultiplierFull: CGFloat = 0.2536
-    let valueViewHeightMultiplierShortened: CGFloat = 0.15
-    let defaultNavBarHeight: CGFloat = 90
+    var valueViewHeightMultiplierShortened: CGFloat {
+        return isShowingCancelButton ? 0.14 : 0.16
+    }
+    static let defaultNavBarHeight: CGFloat = 90
+    private static let navBarHeightWithStatus = TransactionViewController.defaultNavBarHeight + AnimatedRefreshingView.containerHeight + 10
+    private static let navBarCancelButtonHeight: CGFloat = 25
 
     var contactPublicKey: PublicKey?
     var contactAlias: String = ""
     let navigationBar = NavigationBarWithSubtitle()
     let valueContainerView = UIView()
-    var valueContainerViewHeightConstraintFull = NSLayoutConstraint()
-    var valueContainerViewHeightConstraintShortened = NSLayoutConstraint()
-    var contactNameDistanceToFromContainerFull = NSLayoutConstraint()
-    var contactNameDistanceToFromContainerShortened = NSLayoutConstraint()
+    var valueContainerViewHeightAnchor = NSLayoutConstraint()
 
     var valueCenterYAnchorConstraint = NSLayoutConstraint()
     let valueLabel = UILabel()
@@ -61,6 +62,8 @@ class TransactionViewController: UIViewController {
     let fromContainerView = UIView()
     let fromHeadingLabel = UILabel()
     let addContactButton = TextButton()
+    var fromContainerViewTopAnchor = NSLayoutConstraint()
+    var contactNameHeadingLabelTopAnchor = NSLayoutConstraint()
     let contactNameHeadingLabel = UILabel()
     let contactNameTextField = UITextField()
     let editContactNameButton = TextButton()
@@ -71,8 +74,15 @@ class TransactionViewController: UIViewController {
     var noteHeadingLabelTopAnchorConstraintContactNameMissing = NSLayoutConstraint()
     var navigationBarHeightAnchor = NSLayoutConstraint()
     let txStateView = AnimatedRefreshingView()
+    let cancelButton = TextButton()
     var transaction: TransactionProtocol?
     private var isShowingStateView = false
+    private var isShowingCancelButton = false
+    private var txStateViewBottomAnchor = NSLayoutConstraint()
+    let feeLabel = UILabel()
+    let feeButton = TextButton()
+    let feeButtonHeight: CGFloat = 30
+    let headingLabelTopAnchorHeight: CGFloat = 40
 
     @IBOutlet weak var transactionIDLabel: UILabel!
 
@@ -102,25 +112,45 @@ class TransactionViewController: UIViewController {
 
     var isEditingContactName: Bool = false {
         didSet {
+            let isDisplayingFee = self.feeLabel.text?.isEmpty == false
+
             if isEditingContactName {
                 contactNameTextField.becomeFirstResponder()
                 editContactNameButton.isHidden = true
 
                 UIView.animate(withDuration: 0.15, delay: 0, options: .curveLinear, animations: { [weak self] () in
                     guard let self = self else { return }
-                    self.valueContainerViewHeightConstraintFull.isActive = false
-                    self.valueContainerViewHeightConstraintShortened.isActive = true
+                    self.valueContainerViewHeightAnchor.isActive = false
+                    self.valueContainerViewHeightAnchor = self.valueContainerView.heightAnchor.constraint(
+                        equalTo: self.view.heightAnchor,
+                        multiplier: self.valueViewHeightMultiplierShortened,
+                        constant: isDisplayingFee ? self.feeButtonHeight : 0
+                    )
+                    self.valueContainerViewHeightAnchor.isActive = true
+                    self.valueLabel.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                    self.feeLabel.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                    self.fromContainerViewTopAnchor.constant = 4
+                    self.contactNameHeadingLabelTopAnchor.constant = 8
                     self.view.layoutIfNeeded()
                 })
-
             } else {
                 contactNameTextField.resignFirstResponder()
                 editContactNameButton.isHidden = false
 
                 UIView.animate(withDuration: 0.15, delay: 0, options: .curveLinear, animations: { [weak self] () in
                     guard let self = self else { return }
-                    self.valueContainerViewHeightConstraintShortened.isActive = false
-                    self.valueContainerViewHeightConstraintFull.isActive = true
+
+                    self.valueContainerViewHeightAnchor.isActive = false
+                    self.valueContainerViewHeightAnchor = self.valueContainerView.heightAnchor.constraint(
+                        equalTo: self.view.heightAnchor,
+                        multiplier: self.valueViewHeightMultiplierFull,
+                        constant: isDisplayingFee ? self.feeButtonHeight : 0
+                    )
+                    self.valueContainerViewHeightAnchor.isActive = true
+                    self.valueLabel.transform = CGAffineTransform(scaleX: 1, y: 1)
+                    self.feeLabel.transform = CGAffineTransform(scaleX: 1, y: 1)
+                    self.fromContainerViewTopAnchor.constant = Theme.shared.sizes.appSidePadding
+                    self.contactNameHeadingLabelTopAnchor.constant = self.headingLabelTopAnchorHeight
                     self.view.layoutIfNeeded()
                 })
             }
@@ -143,7 +173,6 @@ class TransactionViewController: UIViewController {
 
         hideKeyboardWhenTappedAroundOrSwipedDown()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
 
         Tracker.shared.track("/home/tx_details", "Transaction Details")
     }
@@ -241,15 +270,27 @@ class TransactionViewController: UIViewController {
     }
 
     private func showStateView(defaultState: AnimatedRefreshingViewState, _ onComplete: @escaping () -> Void) {
+        let allowCancelling = defaultState == .txWaitingForRecipient
+
         guard !isShowingStateView else {
+            //If there's currently a cancel button and they can no longer cancel
+            if !allowCancelling && isShowingCancelButton {
+                self.txStateViewBottomAnchor.isActive = false
+                self.txStateViewBottomAnchor = self.txStateView.bottomAnchor.constraint(equalTo: self.navigationBar.bottomAnchor, constant: -Theme.shared.sizes.appSidePadding)
+                self.txStateViewBottomAnchor.isActive = true
+                self.cancelButton.removeFromSuperview()
+                self.navigationBarHeightAnchor.constant = TransactionViewController.navBarHeightWithStatus
+            }
+
             onComplete()
             return
         }
 
-        UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
             guard let self = self else { return }
 
-            self.navigationBarHeightAnchor.constant = self.defaultNavBarHeight + AnimatedRefreshingView.containerHeight + 10
+            self.navigationBarHeightAnchor.constant =
+                TransactionViewController.navBarHeightWithStatus + (allowCancelling ? TransactionViewController.navBarCancelButtonHeight : 0)
             self.navigationBar.layoutIfNeeded()
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
@@ -257,15 +298,34 @@ class TransactionViewController: UIViewController {
 
             self.txStateView.translatesAutoresizingMaskIntoConstraints = false
             self.navigationBar.addSubview(self.txStateView)
-            self.txStateView.bottomAnchor.constraint(equalTo: self.navigationBar.bottomAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+
+            //Make space for cancel button if needed
+            let bottomPadding = Theme.shared.sizes.appSidePadding + (allowCancelling ? TransactionViewController.navBarCancelButtonHeight : 0)
+            self.txStateViewBottomAnchor = self.txStateView.bottomAnchor.constraint(equalTo: self.navigationBar.bottomAnchor, constant: -bottomPadding)
+            self.txStateViewBottomAnchor.isActive = true
             self.txStateView.leadingAnchor.constraint(equalTo: self.navigationBar.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
             self.txStateView.trailingAnchor.constraint(equalTo: self.navigationBar.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
             self.txStateView.setupView(defaultState)
-            self.txStateView.animateIn()
+            self.txStateView.animateIn(delay: 0, withDuration: 0.15)
 
             self.isShowingStateView = true
-            onComplete()
+
+            guard allowCancelling else {
+                onComplete()
+                return
+            }
+
+            self.setupCancelButton()
+            UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+                guard let self = self else { return }
+
+                self.cancelButton.alpha = 1
+            }) { [weak self] (_) in
+                guard let self = self else { return }
+                onComplete()
+                self.isShowingCancelButton = true
+            }
         }
     }
 
@@ -274,13 +334,15 @@ class TransactionViewController: UIViewController {
             return
         }
 
+        cancelButton.removeFromSuperview()
+
         self.txStateView.animateOut { [weak self] in
             guard let self = self else { return }
 
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
                 guard let self = self else { return }
 
-                self.navigationBarHeightAnchor.constant = self.defaultNavBarHeight
+                self.navigationBarHeightAnchor.constant = TransactionViewController.defaultNavBarHeight
                 self.navigationBar.layoutIfNeeded()
                 self.view.layoutIfNeeded()
             }) { [weak self] (_) in
@@ -348,11 +410,13 @@ class TransactionViewController: UIViewController {
                     throw emojisError!
                 }
 
-                emojiButton.setUpView(emojiText: emojis,
-                                      type: .buttonView,
-                                      textCentered: false,
-                                      inViewController: self,
-                                      showContainerViewBlur: false)
+                emojiButton.setUpView(
+                    emojiText: emojis,
+                    type: .buttonView,
+                    textCentered: false,
+                    inViewController: self,
+                    showContainerViewBlur: false
+                )
             }
 
             let (date, dateError) = tx.date
@@ -369,9 +433,14 @@ class TransactionViewController: UIViewController {
                     throw aliasError!
                 }
 
-                contactAlias = alias
-                contactNameTextField.text = contactAlias
-                isShowingContactAlias = true
+                //Got a contact but the alias is blank
+                if !alias.isEmpty {
+                    contactAlias = alias
+                    contactNameTextField.text = contactAlias
+                    isShowingContactAlias = true
+                } else {
+                    isShowingContactAlias = false
+                }
             } else {
                 isShowingContactAlias = false
             }
@@ -439,6 +508,41 @@ class TransactionViewController: UIViewController {
             transactionIDLabel.text = "\(txIdDisplay)\(statusEmoji)"
         }
     }
+
+    @objc func onCancelTx() {
+        let alert = UIAlertController(
+            title: NSLocalizedString("Are you sure?", comment: "TX details view"),
+            message: NSLocalizedString("Your recipient will be notified of the cancellation.", comment: "TX details view"),
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Yes, cancel", comment: "TX details view"), style: .destructive, handler: { (_)in
+            if let tx = self.transaction {
+                guard tx.status.0 == .pending && tx.direction == .outbound else {
+                    UserFeedback.shared.error(
+                        title: NSLocalizedString("Failed to cancel transaction", comment: "Tx detail view"),
+                        description: NSLocalizedString("Transaction is no longer in a state where it can be cancelled.", comment: "Tx detail view")
+                    )
+                    return
+                }
+
+                do {
+                    try TariLib.shared.tariWallet?.cancelPendingTransaction(tx)
+
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    self.navigationController?.popViewController(animated: true)
+                } catch {
+                    UserFeedback.shared.error(
+                        title: NSLocalizedString("Failed to cancel transaction", comment: "Tx detail view"),
+                        description: "",
+                        error: error
+                    )
+                }
+            }
+        }))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Not now", comment: "TX details view"), style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
 }
 
 extension TransactionViewController: UITextFieldDelegate {
@@ -447,9 +551,8 @@ extension TransactionViewController: UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard textField.text?.isEmpty == false else {
-            textField.text = contactAlias
-            return false
+        guard let newAlias = textField.text else {
+            return true
         }
 
         isEditingContactName = false
@@ -463,13 +566,12 @@ extension TransactionViewController: UITextFieldDelegate {
         }
 
         do {
-            try TariLib.shared.tariWallet!.addUpdateContact(alias: textField.text!, publicKey: contactPublicKey!)
+            try TariLib.shared.tariWallet!.addUpdateContact(alias: newAlias, publicKey: contactPublicKey!)
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
                 //UserFeedback.shared.success(title: NSLocalizedString("Contact Updated!", comment: "Transaction detail screen"))
             })
-
         } catch {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
@@ -491,19 +593,7 @@ extension TransactionViewController: UITextFieldDelegate {
 
 // MARK: Keyboard behavior
 extension TransactionViewController {
-    @objc private func keyboardWillShow(notification: NSNotification) {
-        self.valueContainerViewHeightConstraintFull.isActive = false
-        self.contactNameDistanceToFromContainerFull.isActive = false
-        self.valueContainerViewHeightConstraintShortened.isActive = true
-        self.contactNameDistanceToFromContainerShortened.isActive = true
-    }
-
     @objc func keyboardWillHide(notification: NSNotification) {
-        self.valueContainerViewHeightConstraintFull.isActive = true
-        self.contactNameDistanceToFromContainerFull.isActive = true
-        self.valueContainerViewHeightConstraintShortened.isActive = false
-        self.contactNameDistanceToFromContainerShortened.isActive = false
-
         if isEditingContactName {
             isEditingContactName = false
         }

@@ -47,7 +47,7 @@ extension TransactionViewController {
         navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        navigationBarHeightAnchor = navigationBar.heightAnchor.constraint(equalToConstant: defaultNavBarHeight)
+        navigationBarHeightAnchor = navigationBar.heightAnchor.constraint(equalToConstant: TransactionViewController.defaultNavBarHeight)
         navigationBarHeightAnchor.isActive = true
     }
 
@@ -61,12 +61,11 @@ extension TransactionViewController {
         valueContainerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         valueContainerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
 
-        valueContainerViewHeightConstraintFull = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierFull)
-        valueContainerViewHeightConstraintFull.isActive = true
+        valueContainerViewHeightAnchor = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierFull)
+        valueContainerViewHeightAnchor.isActive = true
 
         //Create disabled shorted constraint to use later for when keyboard pops up
-        valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierShortened)
-        valueContainerViewHeightConstraintShortened.isActive = false
+        valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierShortened).isActive = false
 
         view.sendSubviewToBack(valueContainerView)
 
@@ -102,17 +101,9 @@ extension TransactionViewController {
     }
 
     func setFeeLabel(_ feeText: String) {
-        valueContainerViewHeightConstraintFull.isActive = false
-        valueContainerViewHeightConstraintFull = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierFull, constant: 30)
-        valueContainerViewHeightConstraintFull.isActive = true
+        valueContainerViewHeightAnchor.constant = feeButtonHeight
+        valueCenterYAnchorConstraint.constant = -20
 
-        valueContainerViewHeightConstraintShortened.isActive = false
-        valueContainerViewHeightConstraintShortened = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierShortened, constant: 30)
-
-        valueCenterYAnchorConstraint.isActive = false
-        valueLabel.centerYAnchor.constraint(equalTo: valueContainerView.centerYAnchor, constant: -20).isActive = true
-
-        let feeLabel = UILabel()
         feeLabel.text = feeText
         feeLabel.translatesAutoresizingMaskIntoConstraints = false
         valueContainerView.addSubview(feeLabel)
@@ -122,7 +113,6 @@ extension TransactionViewController {
         feeLabel.font = Theme.shared.fonts.transactionFeeLabel
         feeLabel.textColor = Theme.shared.colors.transactionViewValueLabel
 
-        let feeButton = TextButton()
         feeButton.translatesAutoresizingMaskIntoConstraints = false
         valueContainerView.addSubview(feeButton)
         feeButton.setTitle(NSLocalizedString("Transaction Fee", comment: "Transaction view screen"), for: .normal)
@@ -137,7 +127,8 @@ extension TransactionViewController {
         fromContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(fromContainerView)
         fromContainerView.backgroundColor = .clear
-        fromContainerView.topAnchor.constraint(equalTo: valueContainerView.bottomAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        fromContainerViewTopAnchor = fromContainerView.topAnchor.constraint(equalTo: valueContainerView.bottomAnchor, constant: Theme.shared.sizes.appSidePadding)
+        fromContainerViewTopAnchor.isActive = true
         fromContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         fromContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         fromContainerView.heightAnchor.constraint(equalToConstant: 61).isActive = true
@@ -174,11 +165,8 @@ extension TransactionViewController {
         contactNameHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         contactNameHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         contactNameHeadingLabel.text = NSLocalizedString("Contact Name", comment: "Transaction detail view")
-        contactNameDistanceToFromContainerFull = contactNameHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: 40.0)
-        contactNameDistanceToFromContainerShortened = contactNameHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: 10.0)
-
-        contactNameDistanceToFromContainerFull.isActive = true
-
+        contactNameHeadingLabelTopAnchor = contactNameHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: headingLabelTopAnchorHeight)
+        contactNameHeadingLabelTopAnchor.isActive = true
         contactNameHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
         contactNameTextField.translatesAutoresizingMaskIntoConstraints = false
@@ -220,9 +208,12 @@ extension TransactionViewController {
         noteHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         noteHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         noteHeadingLabel.text = NSLocalizedString("Note", comment: "Transaction detail view")
-        noteHeadingLabelTopAnchorConstraintContactNameShowing = noteHeadingLabel.topAnchor.constraint(equalTo: dividerView.bottomAnchor, constant: 26)
+        noteHeadingLabelTopAnchorConstraintContactNameShowing = noteHeadingLabel.topAnchor.constraint(
+            equalTo: dividerView.bottomAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        )
         noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = true
-        noteHeadingLabelTopAnchorConstraintContactNameMissing = noteHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: 26)
+        noteHeadingLabelTopAnchorConstraintContactNameMissing = noteHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: headingLabelTopAnchorHeight)
         noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = false
         noteHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
@@ -242,5 +233,18 @@ extension TransactionViewController {
         let paragraphStyle = NSMutableParagraphStyle()
         attributedTitleString.addAttribute(NSAttributedString.Key.paragraphStyle, value: paragraphStyle, range: NSRange(location: 0, length: attributedTitleString.length))
         noteLabel.attributedText = attributedTitleString
+    }
+
+    func setupCancelButton() {
+        cancelButton.alpha = 0
+        cancelButton.translatesAutoresizingMaskIntoConstraints = false
+        navigationBar.addSubview(cancelButton)
+        cancelButton.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 0).isActive = true
+        cancelButton.topAnchor.constraint(equalTo: txStateView.bottomAnchor, constant: 0).isActive = true
+        cancelButton.centerXAnchor.constraint(equalTo: navigationBar.centerXAnchor).isActive = true
+
+        cancelButton.setTitle(NSLocalizedString("Cancel Transaction", comment: "Tx detail view"), for: .normal)
+        cancelButton.setVariation(.warning, font: Theme.shared.fonts.textButtonCancel)
+        cancelButton.addTarget(self, action: #selector(onCancelTx), for: .touchUpInside)
     }
 }
