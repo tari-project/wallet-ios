@@ -132,7 +132,7 @@ class TransactionsTableViewController: UITableViewController {
     }
 
     private func hideRefreshingSpinner() {
-        UIView.animate(withDuration: 0.25, animations: { [weak self] in
+        UIView.animate(withDuration: 0.5, animations: { [weak self] in
             guard let self = self else { return }
             self.refreshTransactionControl.tintColor = .clear
             self.refreshTransactionControl.subviews.first?.alpha = 0
@@ -150,29 +150,29 @@ class TransactionsTableViewController: UITableViewController {
         }
 
         beginRefreshing()
-        TariEventBus.onMainThread(self, eventType: .connectionMonitorStatusChanged) { [weak self] (_) in
-            guard let self = self else { return }
-
-            if ConnectionMonitor.shared.state.baseNodeSynced == true {
-                self.endRefreshingWithSuccess()
-
-                //TODO this might not be the most appropriate place as it's not directly related to this VC
-                do {
-                    try NotificationManager.shared.cancelReminders(onSuccess: {
-                        TariLogger.info("Reminder notifications cancelled")
-                    }) { (error) in
-                        TariLogger.error("Failed to cancel reminder notifications", error: error)
-                    }
-                } catch {
-                    TariLogger.error("Failed to cancel reminder notifications", error: error)
-                }
-            }
-        }
+//        TariEventBus.onMainThread(self, eventType: .connectionMonitorStatusChanged) { [weak self] (_) in
+//            guard let self = self else { return }
+//
+//            if ConnectionMonitor.shared.state.baseNodeSynced == true {
+//
+//            }
+//        }
 
         TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) {(result) in
             if let success: Bool = result?.object as? Bool {
                 if success {
+                    self.endRefreshingWithSuccess()
 
+                    //TODO this might not be the most appropriate place as it's not directly related to this VC
+                    do {
+                        try NotificationManager.shared.cancelReminders(onSuccess: {
+                            TariLogger.info("Reminder notifications cancelled")
+                        }) { (error) in
+                            TariLogger.error("Failed to cancel reminder notifications", error: error)
+                        }
+                    } catch {
+                        TariLogger.error("Failed to cancel reminder notifications", error: error)
+                    }
                 }
             }
         }
@@ -185,18 +185,31 @@ class TransactionsTableViewController: UITableViewController {
     }
 
     private func beginRefreshing() {
+        //Makes the spinner transparent so it's visible while the refreshing animation is in view
+        hideRefreshingSpinner()
+
         guard !isRefreshing else {
             return
         }
 
-        //Makes the spinner transparent so it's visible while the refreshing animation is in view
-        hideRefreshingSpinner()
+        refreshTransactionControl.isEnabled = false
+
         isRefreshing = true
 
         animatedRefresher.updateState(.loading)
         animatedRefresher.animateIn()
 
-        try? TariLib.shared.tariWallet?.syncBaseNode()
+        do {
+            if let wallet = TariLib.shared.tariWallet {
+                try wallet.syncBaseNode()
+            }
+        } catch {
+            UserFeedback.shared.error(
+                title: NSLocalizedString("Base node error", comment: "Refreshing TX list view"),
+                description: NSLocalizedString("Could not sync to base node", comment: "Refreshing TX list view"),
+                error: error
+            )
+        }
     }
 
     private func endRefreshingWithSuccess() {
@@ -204,7 +217,8 @@ class TransactionsTableViewController: UITableViewController {
             return
         }
 
-        self.animatedRefresher.updateState(.success)
+        refreshTransactionControl.isEnabled = true
+        animatedRefresher.updateState(.success)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
             guard let self = self else { return }
@@ -214,11 +228,7 @@ class TransactionsTableViewController: UITableViewController {
 
                 self.isRefreshing = false
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
-                    guard let self = self else { return }
-                    //Makes the spinner not transparent so it's visible for the next pull to refresh
-                    self.showRefreshingSpinner()
-                })
+                self.showRefreshingSpinner()
             }
         })
     }
