@@ -97,6 +97,7 @@ struct TariSettings {
     ]
 
     var pushServerApiKey: String?
+    var sentryPublicDSN: String?
 
     func getRandomBaseNode() -> String {
         return defaultBaseNodePool[Int.random(in: 0 ... (defaultBaseNodePool.count-1))]
@@ -134,10 +135,15 @@ struct TariSettings {
             let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
 
             if let jsonResult = jsonResult as? [String: AnyObject] {
-                if let pushKey = jsonResult["pushServerApiKey"] as? String, !pushKey.isEmpty {
-                    pushServerApiKey = pushKey
+                if let pushServerApiKey = jsonResult["pushServerApiKey"] as? String, !pushServerApiKey.isEmpty {
+                    self.pushServerApiKey = pushServerApiKey
                 } else {
                     TariLogger.warn("pushServerApiKey not set in env.json. Sending push notifications will be disabled.")
+                }
+                if let sentryPublicDSN = jsonResult["sentryPublicDSN"] as? String, !sentryPublicDSN.isEmpty {
+                    self.sentryPublicDSN = sentryPublicDSN
+                } else {
+                    TariLogger.warn("sentryPublicDSN not set in env.json. Crash reporting will not work.")
                 }
             }
         } catch {
