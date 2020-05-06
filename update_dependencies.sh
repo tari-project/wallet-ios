@@ -1,5 +1,12 @@
 #!/bin/bash
 
+FILE=env.json
+if test ! -f "$FILE"; then
+    echo "$FILE does not exist. Creating default."
+    cp env-example.json env.json
+    echo "Please adjust env.json as needed."
+fi
+
 echo "\n\n***Pulling latest Tari lib build***"
 source dependencies.env
 if [[ -z "$FFI_VERSION" ]]; then
