@@ -260,6 +260,7 @@ struct Fonts: Loopable {
 
     //Simple text button
     let textButton = UIFont(name: "Avenir-Medium", size: 14)
+    let copyButton = UIFont(name: "Avenir-Heavy", size: 14)
     let textButtonCancel = UIFont(name: "Avenir-Medium", size: 12)
 
     //Intro to wallet

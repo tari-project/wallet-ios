@@ -70,7 +70,6 @@ class TransactionTableTableViewCell: UITableViewCell {
         valueLabel.font = Theme.shared.fonts.transactionCellValueLabel
         valueLabel.layer.cornerRadius = 3
         valueLabel.layer.masksToBounds = true
-        valueLabel.longPressGesture.isEnabled = false
 
         userNameLabel.font = Theme.shared.fonts.transactionCellUsernameLabel
         userNameLabel.textColor = Theme.shared.colors.transactionCellAlias

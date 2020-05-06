@@ -224,7 +224,7 @@ class TransactionViewController: UIViewController {
         setupEditContactButton()
         setupDivider()
         setupNote()
-        view.bringSubviewToFront(emojiButton)
+        view.bringSubviewToFront(fromContainerView)
         //Transaction ID
         transactionIDLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         transactionIDLabel.font = Theme.shared.fonts.transactionScreenTxIDLabel
@@ -417,9 +417,9 @@ class TransactionViewController: UIViewController {
                     emojiText: emojis,
                     type: .buttonView,
                     textCentered: false,
-                    inViewController: self,
-                    showContainerViewBlur: false
+                    inViewController: self
                 )
+                emojiButton.blackoutParent = view
             }
 
             let (date, dateError) = tx.date

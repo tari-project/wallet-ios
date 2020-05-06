@@ -134,7 +134,7 @@ extension TransactionViewController {
         fromContainerView.heightAnchor.constraint(equalToConstant: 61).isActive = true
 
         fromHeadingLabel.translatesAutoresizingMaskIntoConstraints = false
-        fromContainerView.addSubview(fromHeadingLabel)
+        view.addSubview(fromHeadingLabel)
         fromHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         fromHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         fromHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.topAnchor).isActive = true
