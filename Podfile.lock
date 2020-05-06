@@ -6,6 +6,9 @@ PODS:
   - MatomoTracker/Core (7.2.0)
   - QuickLayout (3.0.0)
   - ReachabilitySwift (5.0.0)
+  - Sentry (5.0.0):
+    - Sentry/Core (= 5.0.0)
+  - Sentry/Core (5.0.0)
   - SwiftEntryKit (1.2.3):
     - QuickLayout (= 3.0.0)
   - SwiftLint (0.39.1)
@@ -16,6 +19,7 @@ DEPENDENCIES:
   - lottie-ios
   - MatomoTracker (~> 7.2)
   - ReachabilitySwift
+  - Sentry (from `https://github.com/getsentry/sentry-cocoa.git`, tag `5.0.0`)
   - SwiftEntryKit (= 1.2.3)
   - SwiftLint
   - ZIPFoundation (~> 0.9)
@@ -31,16 +35,27 @@ SPEC REPOS:
     - SwiftLint
     - ZIPFoundation
 
+EXTERNAL SOURCES:
+  Sentry:
+    :git: https://github.com/getsentry/sentry-cocoa.git
+    :tag: 5.0.0
+
+CHECKOUT OPTIONS:
+  Sentry:
+    :git: https://github.com/getsentry/sentry-cocoa.git
+    :tag: 5.0.0
+
 SPEC CHECKSUMS:
   FloatingPanel: 3c9d0e30fe350e1613157557769d2ec97f76b96b
   lottie-ios: 85ce835dd8c53e02509f20729fc7d6a4e6645a0a
   MatomoTracker: 6f89e2561083685a360e223fb663e9ccd57c1d1a
   QuickLayout: 07b45a72b10083fee3f095990cfed1c1e7b27f0a
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
+  Sentry: 1279f37a5691c19b1b761f7e260bba5dab7c2311
   SwiftEntryKit: 340713c2e4a6662c5149629990bf1088bf5f0389
   SwiftLint: 55e96a4a4d537d4a3156859fc1c54bd24851a046
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 85bfbaf6f2ec4cf5bc2f729ada98b9400d4be443
+PODFILE CHECKSUM: 88f07b2ee0ec67ed161bb77e23fb9e5d0ddc0e57
 
 COCOAPODS: 1.9.1

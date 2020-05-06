@@ -40,6 +40,7 @@
 
 import UIKit
 import CoreData
+import Sentry
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -47,6 +48,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         handleCommandLineArgs()
+
+        // setup Sentry crash reporting
+        if let sentryPublicDSN = TariSettings.shared.sentryPublicDSN {
+            SentrySDK.start(options: [
+                "dsn": sentryPublicDSN,
+                "debug": true // Enabled debug when first installing is always helpful
+            ])
+            TariLogger.info("Sentry crash reporting has been started.")
+        }
 
         BackgroundTaskManager.shared.registerNodeSyncTask()
         ShortcutParser.shared.registerShortcuts()
