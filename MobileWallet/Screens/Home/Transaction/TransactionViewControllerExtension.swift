@@ -47,7 +47,7 @@ extension TransactionViewController {
         navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        navigationBarHeightAnchor = navigationBar.heightAnchor.constraint(equalToConstant: TransactionViewController.defaultNavBarHeight)
+        navigationBarHeightAnchor = navigationBar.heightAnchor.constraint(equalToConstant: navBarHeightConstant)
         navigationBarHeightAnchor.isActive = true
     }
 
@@ -236,7 +236,6 @@ extension TransactionViewController {
     }
 
     func setupCancelButton() {
-        cancelButton.alpha = 0
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
         navigationBar.addSubview(cancelButton)
         cancelButton.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 0).isActive = true
