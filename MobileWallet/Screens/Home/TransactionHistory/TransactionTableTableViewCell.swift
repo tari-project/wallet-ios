@@ -114,7 +114,14 @@ class TransactionTableTableViewCell: UITableViewCell {
 
     private func setAlias(_ contact: Contact) {
         let (alias, _) = contact.alias
-        userNameLabel.text = alias
+        if !alias.isEmpty {
+            //In contacts but alias is blank
+            userNameLabel.text = alias
+        } else {
+            if let pubKey = contact.publicKey.0 {
+                setEmojis(pubKey)
+            }
+        }
     }
 
     private func setEmojis(_ pubKey: PublicKey) {

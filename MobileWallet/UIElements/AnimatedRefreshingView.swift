@@ -160,9 +160,9 @@ class AnimatedRefreshingView: UIView {
         }
     }
 
-    func animateIn() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+    func animateIn(delay: TimeInterval = 0.25, withDuration: TimeInterval = 0.5) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: {
+            UIView.animate(withDuration: withDuration, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
                 guard let self = self else { return }
                 self.alpha = 1
                 self.layoutIfNeeded()
