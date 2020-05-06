@@ -46,9 +46,6 @@ class TransactionViewController: UIViewController {
     var valueViewHeightMultiplierShortened: CGFloat {
         return isShowingCancelButton ? 0.14 : 0.16
     }
-    static let defaultNavBarHeight: CGFloat = 90
-    private static let navBarHeightWithStatus = TransactionViewController.defaultNavBarHeight + AnimatedRefreshingView.containerHeight + 10
-    private static let navBarCancelButtonHeight: CGFloat = 25
 
     var contactPublicKey: PublicKey?
     var contactAlias: String = ""
@@ -157,6 +154,33 @@ class TransactionViewController: UIViewController {
         }
     }
 
+    var navBarHeightConstant: CGFloat {
+        let defaultNavBarHeight: CGFloat = 90
+        let navBarStatusHeight = AnimatedRefreshingView.containerHeight + 10
+        let navBarCancelButtonHeight: CGFloat = 25
+
+        guard let tx = transaction else {
+            return defaultNavBarHeight
+        }
+
+        switch tx.status.0 {
+        case .completed:
+            return defaultNavBarHeight
+        case .pending:
+            if tx.direction == .inbound {
+                return defaultNavBarHeight + navBarStatusHeight
+            } else if tx.direction == .outbound {
+                return defaultNavBarHeight + navBarStatusHeight + navBarCancelButtonHeight
+            }
+        case .broadcast:
+            return defaultNavBarHeight + navBarStatusHeight
+        default:
+           return defaultNavBarHeight
+        }
+
+        return defaultNavBarHeight
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setup()
@@ -204,6 +228,8 @@ class TransactionViewController: UIViewController {
         //Transaction ID
         transactionIDLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         transactionIDLabel.font = Theme.shared.fonts.transactionScreenTxIDLabel
+
+        updateTxState()
     }
 
     @objc func feeButtonPressed(_ sender: UIButton) {
@@ -223,8 +249,6 @@ class TransactionViewController: UIViewController {
     }
 
     private func registerEvents() {
-        updateTxState()
-
         let eventTypes: [TariEventTypes] = [
             .receievedTransactionReply,
             .receivedFinalizedTransaction,
@@ -279,54 +303,33 @@ class TransactionViewController: UIViewController {
                 self.txStateViewBottomAnchor = self.txStateView.bottomAnchor.constraint(equalTo: self.navigationBar.bottomAnchor, constant: -Theme.shared.sizes.appSidePadding)
                 self.txStateViewBottomAnchor.isActive = true
                 self.cancelButton.removeFromSuperview()
-                self.navigationBarHeightAnchor.constant = TransactionViewController.navBarHeightWithStatus
+                self.navigationBarHeightAnchor.constant = navBarHeightConstant
             }
 
             onComplete()
             return
         }
 
-        UIView.animate(withDuration: 0.25, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
-            guard let self = self else { return }
+        self.txStateView.translatesAutoresizingMaskIntoConstraints = false
+        self.navigationBar.addSubview(self.txStateView)
 
-            self.navigationBarHeightAnchor.constant =
-                TransactionViewController.navBarHeightWithStatus + (allowCancelling ? TransactionViewController.navBarCancelButtonHeight : 0)
-            self.navigationBar.layoutIfNeeded()
-            self.view.layoutIfNeeded()
-        }) { [weak self] (_) in
-            guard let self = self else { return }
+        //Make space for cancel button if needed
+        let bottomPadding = Theme.shared.sizes.appSidePadding + (allowCancelling ? Theme.shared.sizes.appSidePadding : 0)
+        self.txStateViewBottomAnchor = self.txStateView.bottomAnchor.constraint(equalTo: self.navigationBar.bottomAnchor, constant: -bottomPadding)
+        self.txStateViewBottomAnchor.isActive = true
+        self.txStateView.leadingAnchor.constraint(equalTo: self.navigationBar.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        self.txStateView.trailingAnchor.constraint(equalTo: self.navigationBar.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
-            self.txStateView.translatesAutoresizingMaskIntoConstraints = false
-            self.navigationBar.addSubview(self.txStateView)
+        self.txStateView.setupView(defaultState, visible: true)
 
-            //Make space for cancel button if needed
-            let bottomPadding = Theme.shared.sizes.appSidePadding + (allowCancelling ? TransactionViewController.navBarCancelButtonHeight : 0)
-            self.txStateViewBottomAnchor = self.txStateView.bottomAnchor.constraint(equalTo: self.navigationBar.bottomAnchor, constant: -bottomPadding)
-            self.txStateViewBottomAnchor.isActive = true
-            self.txStateView.leadingAnchor.constraint(equalTo: self.navigationBar.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-            self.txStateView.trailingAnchor.constraint(equalTo: self.navigationBar.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        self.isShowingStateView = true
 
-            self.txStateView.setupView(defaultState)
-            self.txStateView.animateIn(delay: 0, withDuration: 0.15)
-
-            self.isShowingStateView = true
-
-            guard allowCancelling else {
-                onComplete()
-                return
-            }
-
+        if allowCancelling {
             self.setupCancelButton()
-            UIView.animate(withDuration: 0.15, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
-                guard let self = self else { return }
-
-                self.cancelButton.alpha = 1
-            }) { [weak self] (_) in
-                guard let self = self else { return }
-                onComplete()
-                self.isShowingCancelButton = true
-            }
+            self.isShowingCancelButton = true
         }
+
+        onComplete()
     }
 
     private func hideStateView() {
@@ -342,7 +345,7 @@ class TransactionViewController: UIViewController {
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
                 guard let self = self else { return }
 
-                self.navigationBarHeightAnchor.constant = TransactionViewController.defaultNavBarHeight
+                self.navigationBarHeightAnchor.constant = self.navBarHeightConstant
                 self.navigationBar.layoutIfNeeded()
                 self.view.layoutIfNeeded()
             }) { [weak self] (_) in
