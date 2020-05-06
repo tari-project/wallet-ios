@@ -361,16 +361,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         }
     }
 
-    private func syncBaseNode() {
-        do {
-            if let wallet = TariLib.shared.tariWallet {
-                try wallet.syncBaseNode()
-            }
-        } catch {
-            UserFeedback.shared.error(title: "Base node error", description: "Could not sync to base node", error: error)
-        }
-    }
-
     private func showHideSendButton() {
         if isShowingSendButton {
             sendButton.isHidden = false
