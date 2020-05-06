@@ -59,7 +59,7 @@ extension TransactionsTableViewController {
         sectionHeaderLabel.textAlignment = .center
         sectionHeaderLabel.sizeToFit()
 
-        sectionHeaderLabel.bottomAnchor.constraint(equalTo: sectionHeaderView.bottomAnchor, constant: 0).isActive = true
+        sectionHeaderLabel.bottomAnchor.constraint(equalTo: sectionHeaderView.bottomAnchor).isActive = true
         sectionHeaderLabel.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
         //Add lottie loader if this is the section header for in progress transactions
@@ -77,14 +77,11 @@ extension TransactionsTableViewController {
             animatedRefresher.translatesAutoresizingMaskIntoConstraints = false
             sectionHeaderView.addSubview(animatedRefresher)
 
-            animatedRefresher.bottomAnchor.constraint(equalTo: sectionHeaderLabel.topAnchor, constant: -20).isActive = true
-            animatedRefresher.bottomAnchor.constraint(equalTo: sectionHeaderLabel.topAnchor, constant: -20).isActive = true
+            animatedRefresher.topAnchor.constraint(equalTo: sectionHeaderView.topAnchor).isActive = true
             animatedRefresher.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
             animatedRefresher.trailingAnchor.constraint(equalTo: sectionHeaderView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
-            sectionHeaderView.heightAnchor.constraint(greaterThanOrEqualToConstant: sectionHeaderHeight + 100).isActive = true
-        } else if section == 0 {
-            sectionHeaderView.heightAnchor.constraint(greaterThanOrEqualToConstant: sectionHeaderHeight + 30).isActive = true
+            sectionHeaderView.heightAnchor.constraint(equalToConstant: 90).isActive = true
         }
 
         return sectionHeaderView

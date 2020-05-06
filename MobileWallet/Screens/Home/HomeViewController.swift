@@ -61,8 +61,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     private static let INTRO_TO_WALLET_USER_DEFAULTS_KEY = "walletHasBeenIntroduced"
 
-    private let transactionTableVC = TransactionsTableViewController(style: .grouped)
-
     private let floatingPanelController = FloatingPanelController()
     private var grabberHandle: UIView!
     private var selectedTransaction: TransactionProtocol?
@@ -73,6 +71,12 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     private var hapticEnabled = false
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     private var keyServer: KeyServer?
+
+    private let transactionTableVC = TransactionsTableViewController(style: .grouped)
+    private lazy var tableViewContainer: TransactionHistoryContainer = {
+        let container = TransactionHistoryContainer(child: transactionTableVC)
+        return container
+    }()
 
     //Navigation Bar
     @IBOutlet weak var navigationBar: UIView!
@@ -588,7 +592,7 @@ extension HomeViewController {
         floatingPanelController.delegate = self
         transactionTableVC.actionDelegate = self
 
-        floatingPanelController.set(contentViewController: transactionTableVC)
+        floatingPanelController.set(contentViewController: tableViewContainer)
 
         //TODO move custom styling setup into generic function
         floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
@@ -596,11 +600,7 @@ extension HomeViewController {
         floatingPanelController.surfaceView.shadowRadius = 22
 
         setupGrabber(floatingPanelController)
-
         floatingPanelController.contentMode = .static
-
-        // Track a scroll view(or the siblings) in the content view controller.
-        floatingPanelController.track(scrollView: transactionTableVC.tableView)
     }
 
     private func setupGrabber(_ floatingPanelController: FloatingPanelController) {

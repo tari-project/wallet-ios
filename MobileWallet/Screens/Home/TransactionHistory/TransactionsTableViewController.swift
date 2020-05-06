@@ -48,7 +48,7 @@ protocol TransactionsTableViewDelegate: class {
 
 class TransactionsTableViewController: UITableViewController {
     let cellIdentifier = "TransactionTableTableViewCell"
-    let sectionHeaderHeight: CGFloat = 35
+    let sectionHeaderHeight: CGFloat = 0
     weak var actionDelegate: TransactionsTableViewDelegate?
     var refreshTransactionControl = UIRefreshControl()
     var isRefreshing = false {
@@ -97,8 +97,7 @@ class TransactionsTableViewController: UITableViewController {
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
         refreshTransactionControl.addTarget(self, action: #selector(refreshPullTransactions(_:)), for: .valueChanged)
         tableView.addSubview(refreshTransactionControl)
-        tableView.sectionHeaderHeight = UITableView.automaticDimension
-        tableView.estimatedSectionHeaderHeight = sectionHeaderHeight
+        tableView.estimatedSectionHeaderHeight = UITableView.automaticDimension
 
         beginRefreshing()
         registerEvents()
@@ -111,9 +110,17 @@ class TransactionsTableViewController: UITableViewController {
         self.refreshTable()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        tableView.layoutSubviews()
+    }
+
     private func viewSetup() {
         tableView.separatorStyle = .none
         tableView.rowHeight = 74
+        tableView.contentInsetAdjustmentBehavior = .never
+        tableView.contentInset = UIEdgeInsets(top: 48, left: 0, bottom: 0, right: 0)
+
         view.backgroundColor = Theme.shared.colors.transactionTableBackground
         refreshTransactionControl.attributedTitle = nil
         animatedRefresher.setupView(.loading)
