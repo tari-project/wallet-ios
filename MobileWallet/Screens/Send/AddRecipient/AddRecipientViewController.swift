@@ -156,9 +156,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-
-        styleNavigatorBar(isHidden: false)
-
+        styleNavigatorBar(isHidden: false, animated: true)
         NotificationCenter.default.addObserver(self, selector: #selector(showClipboardEmojis), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hideClipboardEmojis), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -173,6 +171,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        styleNavigatorBar(isHidden: true, animated: true)
 
         clipboardEmojis = ""
     }
@@ -229,7 +228,6 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     private func setup() {
-        styleNavigatorBar(isHidden: false)
         view.backgroundColor = Theme.shared.colors.appBackground
         navigationItem.title = NSLocalizedString("Send To", comment: "Navigation bar title on send view screen")
 
@@ -389,11 +387,11 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
             self.dimView.isHidden = false
             dimView.addSubview(inputBox)
-            UIView.animate(withDuration: 0.5) { [weak self] in
+            UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
                 guard let self = self else { return }
                 self.pasteEmojisViewBottomAnchorConstraint = self.pasteEmojisView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
                 self.pasteEmojisViewBottomAnchorConstraint.isActive = true
-                self.navigationController?.setNavigationBarHidden(true, animated: true)
+                self.styleNavigatorBar(isHidden: true, animated: true)
                 self.dimView.backgroundColor = UIColor.black.withAlphaComponent(0.62)
                 self.view.layoutIfNeeded()
             }

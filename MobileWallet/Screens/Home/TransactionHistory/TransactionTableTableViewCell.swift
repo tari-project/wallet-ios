@@ -70,7 +70,6 @@ class TransactionTableTableViewCell: UITableViewCell {
         valueLabel.font = Theme.shared.fonts.transactionCellValueLabel
         valueLabel.layer.cornerRadius = 3
         valueLabel.layer.masksToBounds = true
-        valueLabel.longPressGesture.isEnabled = false
 
         userNameLabel.font = Theme.shared.fonts.transactionCellUsernameLabel
         userNameLabel.textColor = Theme.shared.colors.transactionCellAlias
@@ -114,7 +113,14 @@ class TransactionTableTableViewCell: UITableViewCell {
 
     private func setAlias(_ contact: Contact) {
         let (alias, _) = contact.alias
-        userNameLabel.text = alias
+        if !alias.isEmpty {
+            //In contacts but alias is blank
+            userNameLabel.text = alias
+        } else {
+            if let pubKey = contact.publicKey.0 {
+                setEmojis(pubKey)
+            }
+        }
     }
 
     private func setEmojis(_ pubKey: PublicKey) {

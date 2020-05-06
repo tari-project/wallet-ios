@@ -120,8 +120,12 @@ class ContactCell: UITableViewCell {
 
     func setContact(_ contact: Contact) {
         let (alias, _) = contact.alias
+        var aliasDisplay = alias
+        if aliasDisplay.isEmpty, let emojis = contact.publicKey.0?.emojis.0 {
+            aliasDisplay = "\(emojis.prefix(3))...\(emojis.suffix(3))"
+        }
 
-        aliasLabel.text = alias
+        aliasLabel.text = aliasDisplay
 
         if !alias.isEmpty {
             contactLetter.text = String(alias.prefix(1))

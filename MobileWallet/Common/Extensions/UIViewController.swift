@@ -42,17 +42,8 @@ import UIKit
 
 var navBarEmojis: EmoticonView?
 
-var keyWindow: UIWindow? {
-    return UIApplication.shared.connectedScenes
-    .filter({$0.activationState == .foregroundActive})
-    .map({$0 as? UIWindowScene})
-    .compactMap({$0})
-    .first?.windows
-    .filter({$0.isKeyWindow}).first
-}
-
 var hasNotch: Bool {
-    let bottom = keyWindow?.safeAreaInsets.bottom ?? 0
+    let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
     return bottom > 0
 }
 
@@ -81,7 +72,7 @@ extension UIViewController {
         navigationItem.leftBarButtonItem = closeButtonItem
     }
 
-    func styleNavigatorBar(isHidden: Bool) {
+    func styleNavigatorBar(isHidden: Bool, animated: Bool = false) {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
 
         if let navController = navigationController {
@@ -105,7 +96,7 @@ extension UIViewController {
             navBar.backIndicatorImage = Theme.shared.images.backArrow
             navBar.backIndicatorTransitionMaskImage = Theme.shared.images.backArrow
 
-            navController.setNavigationBarHidden(isHidden, animated: false)
+            navController.setNavigationBarHidden(isHidden, animated: animated)
         }
     }
 
@@ -125,9 +116,13 @@ extension UIViewController {
 
             emojiView.translatesAutoresizingMaskIntoConstraints = false
 
-            if let window = keyWindow {
+            emojiView.tapToExpand = { expanded in
+                self.navigationItem.setHidesBackButton(expanded, animated: true)
+            }
+
+            if let window = UIApplication.shared.keyWindow {
                 window.addSubview(emojiView)
-                emojiView.topAnchor.constraint(equalTo: window.topAnchor, constant: window.safeAreaInsets.top + navBarHeight / 2).isActive = true
+                emojiView.topAnchor.constraint(equalTo: window.topAnchor, constant: window.safeAreaInsets.top + 46 / 2).isActive = true
                 emojiView.leadingAnchor.constraint(equalTo: window.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
                 emojiView.trailingAnchor.constraint(equalTo: window.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
             }

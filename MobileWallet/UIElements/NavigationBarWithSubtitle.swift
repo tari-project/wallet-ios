@@ -78,12 +78,17 @@ class NavigationBarWithSubtitle: UIView, NavigationBarWithSubtitleProtocol {
         clipsToBounds = true
         layer.masksToBounds = false
 
-        let animation = CABasicAnimation(keyPath: "shadowOpacity")
-        animation.fromValue = layer.shadowOpacity
-        animation.toValue = 0.1
-        animation.duration = CATransaction.animationDuration()
-        layer.add(animation, forKey: animation.keyPath)
-        layer.shadowOpacity = 0.1
+        //The shadow seems to be mistakenly added to all subviews briefly after loading.
+        //TODO figure out why this is happening so we can remove this delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
+            guard let self = self else { return }
+            let animation = CABasicAnimation(keyPath: "shadowOpacity")
+            animation.fromValue = self.layer.shadowOpacity
+            animation.toValue = 0.1
+            animation.duration = 0.25
+            self.layer.add(animation, forKey: animation.keyPath)
+            self.layer.shadowOpacity = 0.1
+        })
 
         setupTitle()
         setupSubtitle()

@@ -59,7 +59,7 @@ class DeepLinkManager {
             return
         }
 
-        guard let window = keyWindow else {
+        guard let window = UIApplication.shared.keyWindow else {
             return
         }
 

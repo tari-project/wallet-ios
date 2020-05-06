@@ -15,6 +15,8 @@ git clone git@github.com:tari-project/wallet-ios.git
 sh update_dependencies.sh
 ```
 
+This will also create a default `env.json` file for sensitive vars. Adjust these settings as needed.
+
 ### Dependencies
 
 Third party frameworks and Library are managed using a pre-compiled [Tari](https://github.com/tari-project/tari) binary from https://www.tari.com/downloads/ as well as packages from Cocoapods and Carthage.

@@ -292,7 +292,6 @@ class WalletCreationViewController: UIViewController {
 
     private func updateConstraintsUserEmojiContainer() {
         userEmojiContainer = EmoticonView()
-        userEmojiContainer.enableCopy = false
         userEmojiContainer.alpha = 0.0
         view.addSubview(userEmojiContainer)
         userEmojiContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -636,12 +635,13 @@ class WalletCreationViewController: UIViewController {
             self.secondLabelBottom.alpha = 1.0
             self.thirdLabel.alpha = 1.0
             self.userEmojiContainer.alpha = 1.0
-            self.tapToSeeFullEmojiButton.alpha = 1.0
             self.arrowImageView.alpha = 1.0
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                self?.userEmojiContainer.expand(false)
+                self?.userEmojiContainer.shrink(completion: { [weak self] in
+                    self?.tapToSeeFullEmojiButton.alpha = 1.0
+                })
             }
             self?.state = .showEmojiId
         }
@@ -799,11 +799,14 @@ class WalletCreationViewController: UIViewController {
                                               type: .buttonView,
                                               textCentered: true,
                                               inViewController: self,
-                                              initialHeight: CGFloat(46),
                                               showContainerViewBlur: false)
-            self.userEmojiContainer.expand(true, animated: false)
-            self.userEmojiContainer.tapToExpand = { [weak self] in
-                self?.tapToExpandAction()
+            self.userEmojiContainer.expand(animated: false)
+            self.userEmojiContainer.tapToExpand = { [weak self] expanded in
+                if self?.state == .showEmojiId {
+                    self?.createEmojiButton.alpha = 1.0
+                    self?.arrowImageView.alpha = expanded ? 0.0 : 1.0
+                    self?.tapToSeeFullEmojiButton.alpha = expanded ? 0.0 : 1.0
+                }
             }
         }
 
@@ -814,7 +817,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     @objc public func tapToSeeButtonAction(_ sender: UIButton) {
-        userEmojiContainer.expand(true)
+        userEmojiContainer.expand()
         tapToExpandAction()
     }
 
@@ -874,8 +877,6 @@ class WalletCreationViewController: UIViewController {
                 self.secondLabelBottom.alpha = 0.0
                 self.thirdLabel.alpha = 0.0
                 self.nerdAnimationView.alpha = 0.0
-                self.createEmojiButton.alpha = 0.0
-                self.view.layoutIfNeeded()
             }) { [weak self] (_) in
                 guard let self = self else { return }
                 self.runEmojiWheelAnimation()

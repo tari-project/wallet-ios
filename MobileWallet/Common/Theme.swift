@@ -166,6 +166,7 @@ struct Colors: Loopable {
     //Simple text button
     let textButton = UIColor(named: "TextButton")
     let textButtonSecondary = UIColor(named: "TextButtonSecondary")
+    let warningButtonTitle = UIColor(named: "Warning")
 
     //Add recipient view
     let contactCellAlias = UIColor(named: "TableCellContactAlias")
@@ -174,7 +175,7 @@ struct Colors: Loopable {
 
     //Amount screen
     let keypadButton = UIColor(named: "KeypadButton")
-    let warningBoxBorder = UIColor(named: "WarningBox")
+    let warningBoxBorder = UIColor(named: "Warning")
     let amountWarningLabel = UIColor(named: "AmountWarningLabel")
     let amountLabel = UIColor(named: "InputText")
 
@@ -259,6 +260,8 @@ struct Fonts: Loopable {
 
     //Simple text button
     let textButton = UIFont(name: "Avenir-Medium", size: 14)
+    let copyButton = UIFont(name: "Avenir-Heavy", size: 14)
+    let textButtonCancel = UIFont(name: "Avenir-Medium", size: 12)
 
     //Intro to wallet
     let introTitleBold = UIFont(name: "Avenir-Black", size: 18)

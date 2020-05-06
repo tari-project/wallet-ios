@@ -45,7 +45,6 @@ class ProfileViewController: UIViewController {
     var closeButton = UIButton()
     var titleLabel = UILabel()
     var emojiView = EmoticonView()
-    var copyEmojiButton = TextButton()
     var separatorView = UIView()
     var middleLabel = UILabel()
     var bottomView = UIView()
@@ -61,7 +60,6 @@ class ProfileViewController: UIViewController {
         setupCloseButton()
         setupTitleLabel()
         setupEmojiView()
-        setupCopyEmojiButton()
         setupSeparatorView()
         setupMiddleLabel()
         setupBottomView()
@@ -69,6 +67,8 @@ class ProfileViewController: UIViewController {
         setupQRImageView()
         generateQRCode()
         customizeViews()
+
+        view.bringSubviewToFront(emojiView)
 
         Tracker.shared.track("/home/profile", "Profile - Wallet Info")
     }
@@ -103,23 +103,11 @@ class ProfileViewController: UIViewController {
     }
 
     private func setupEmojiView() {
-        emojiView.enableCopy = false
         view.addSubview(emojiView)
         emojiView.translatesAutoresizingMaskIntoConstraints = false
         emojiView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
         emojiView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         emojiView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30).isActive = true
-    }
-
-    private func setupCopyEmojiButton() {
-        copyEmojiButton.addTarget(self, action: #selector(onCopyEmojiAction), for: .touchUpInside)
-        view.addSubview(copyEmojiButton)
-        copyEmojiButton.translatesAutoresizingMaskIntoConstraints = false
-        copyEmojiButton.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        copyEmojiButton.leadingAnchor.constraint(equalTo: view.layoutMarginsGuide.leadingAnchor, constant: 20).isActive = true
-        copyEmojiButton.trailingAnchor.constraint(equalTo: view.layoutMarginsGuide.trailingAnchor, constant: -20).isActive = true
-        copyEmojiButton.topAnchor.constraint(equalTo: emojiView.bottomAnchor, constant: 20).isActive = true
-        copyEmojiButton.heightAnchor.constraint(equalToConstant: 30).isActive = true
     }
 
     private func setupSeparatorView() {
@@ -129,7 +117,7 @@ class ProfileViewController: UIViewController {
         separatorView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         separatorView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         separatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        separatorView.topAnchor.constraint(lessThanOrEqualTo: copyEmojiButton.bottomAnchor, constant: 23).isActive = true
+        separatorView.topAnchor.constraint(lessThanOrEqualTo: emojiView.bottomAnchor, constant: 23).isActive = true
     }
 
     private func setupMiddleLabel() {
@@ -204,14 +192,9 @@ class ProfileViewController: UIViewController {
 
             self.emojis = emojis
 
-            emojiView.setUpView(emojiText: emojis, type: .buttonView, textCentered: true, inViewController: self, showContainerViewBlur: false)
+            emojiView.setUpView(emojiText: emojis, type: .buttonView, textCentered: true, inViewController: self)
+            emojiView.blackoutParent = view
         }
-    }
-
-    private func customizeCopyMyEmojiButton() {
-        copyEmojiButton.setVariation(.secondary)
-        let titleButton = NSLocalizedString("Copy my emoji ID", comment: "Profile title button")
-        self.copyEmojiButton.setTitle(titleButton, for: .normal)
     }
 
     private func customizeSeparatorView() {
@@ -264,7 +247,6 @@ class ProfileViewController: UIViewController {
         view.backgroundColor = Theme.shared.colors.profileBackground!
         customizeTitleLabel()
         setEmojiID()
-        customizeCopyMyEmojiButton()
         customizeSeparatorView()
         customizeMiddleLabel()
     }
@@ -315,27 +297,5 @@ class ProfileViewController: UIViewController {
     // MARK: - Actions
     @objc func onDismissAction() {
         self.dismiss(animated: true, completion: nil)
-    }
-
-    @objc func onCopyEmojiAction() {
-        do {
-            try copyToClipboard()
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-        } catch {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to copy to clipboard", comment: "Profile view"),
-                description: "",
-                error: error
-            )
-        }
-
-        let titleButton = NSLocalizedString("Copied!", comment: "Profile copied button")
-        self.copyEmojiButton.setTitle(titleButton, for: .normal)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-            guard let self = self else { return }
-            let titleButton = NSLocalizedString("Copy my emoji ID", comment: "Profile title button")
-            self.copyEmojiButton.setTitle(titleButton, for: .normal)
-        }
     }
 }
