@@ -81,7 +81,7 @@ extension UIViewController {
         navigationItem.leftBarButtonItem = closeButtonItem
     }
 
-    func styleNavigatorBar(isHidden: Bool) {
+    func styleNavigatorBar(isHidden: Bool, animated: Bool = false) {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
 
         if let navController = navigationController {
@@ -105,7 +105,7 @@ extension UIViewController {
             navBar.backIndicatorImage = Theme.shared.images.backArrow
             navBar.backIndicatorTransitionMaskImage = Theme.shared.images.backArrow
 
-            navController.setNavigationBarHidden(isHidden, animated: false)
+            navController.setNavigationBarHidden(isHidden, animated: animated)
         }
     }
 
