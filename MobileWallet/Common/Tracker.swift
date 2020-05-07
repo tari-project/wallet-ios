@@ -52,7 +52,7 @@ class Tracker {
     private init() {
         matomoTracker = MatomoTracker(siteId: Tracker.matomoSiteId, baseURL: URL(string: Tracker.matomoUrl)!)
 
-        if TariSettings.shared.isDebug {
+        if TariSettings.shared.environment != .production {
             TariLogger.warn("Opting out of tracking")
             matomoTracker.isOptedOut = true
         }

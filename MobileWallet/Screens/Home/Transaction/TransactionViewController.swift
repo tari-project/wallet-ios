@@ -489,7 +489,7 @@ class TransactionViewController: UIViewController {
             var statusEmoji = ""
 
             //If the app is in debug mode, show the status
-            if TariSettings.shared.isDebug {
+            if TariSettings.shared.environment == .debug {
                 switch tx.status.0 {
                 case .completed:
                     statusEmoji = " ✔️"
