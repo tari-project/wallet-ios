@@ -109,7 +109,7 @@ extension UIViewController {
         if navBarEmojis == nil { navBarEmojis = EmoticonView() }
 
         if let emojiView = navBarEmojis {
-            emojiView.setUpView(emojiText: emojis,
+            emojiView.setUpView(pubKey: publicKey,
                                 type: .buttonView,
                                 textCentered: true,
                                 inViewController: self)

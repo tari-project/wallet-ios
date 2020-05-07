@@ -408,13 +408,8 @@ class TransactionViewController: UIViewController {
             }
 
             if let pubKey = contactPublicKey {
-                let (emojis, emojisError) = pubKey.emojis
-                guard emojisError == nil else {
-                    throw emojisError!
-                }
-
                 emojiButton.setUpView(
-                    emojiText: emojis,
+                    pubKey: pubKey,
                     type: .buttonView,
                     textCentered: false,
                     inViewController: self
