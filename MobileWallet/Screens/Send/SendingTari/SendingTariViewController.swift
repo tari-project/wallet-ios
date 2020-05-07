@@ -83,6 +83,11 @@ class SendingTariViewController: UIViewController {
         super.viewDidAppear(animated)
 
         self.setupDebugLabel()
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
 
     override func viewDidLayoutSubviews() {
@@ -197,7 +202,7 @@ class SendingTariViewController: UIViewController {
 
     //Small label at the bottom of the view, only visible when app is running in debug mode
     private func setupDebugLabel() {
-        if TariSettings.shared.isDebug {
+        if TariSettings.shared.environment == .debug {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                 guard let self = self else { return }
 

@@ -50,20 +50,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         handleCommandLineArgs()
 
         // setup Sentry crash reporting
-        if let sentryPublicDSN = TariSettings.shared.sentryPublicDSN {
-            SentrySDK.start(options: [
-                "dsn": sentryPublicDSN,
-                "debug": true // Enabled debug when first installing is always helpful
-            ])
-            TariLogger.info("Sentry crash reporting has been started.")
+        if TariSettings.shared.environment != .debug {
+            if let sentryPublicDSN = TariSettings.shared.sentryPublicDSN {
+                SentrySDK.start(options: [
+                    "dsn": sentryPublicDSN,
+                    "debug": true // Enabled debug when first installing is always helpful
+                ])
+                TariLogger.info("Sentry crash reporting has been started.")
+            }
         }
 
         BackgroundTaskManager.shared.registerNodeSyncTask()
         ShortcutParser.shared.registerShortcuts()
-
-        if TariSettings.shared.isDebug {
-            TariLogger.info("Running app in debug mode")
-        }
 
         return true
     }
