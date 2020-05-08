@@ -384,7 +384,7 @@ extension EmoticonView {
         }
 
         UIApplication.shared.keyWindow?.addSubview(emojiMenu)
-        guard let globalFrame = globalFrame else { return }
+        guard let globalFrame = labelContainer.globalFrame else { return }
         let emojiMenuSize = CGSize(width: 119, height: 37)
         let xPosition = (bounds.width / 2) - (emojiMenuSize.width / 2) + 25
         emojiMenu.alpha = 0.0
@@ -392,7 +392,7 @@ extension EmoticonView {
 
         UIView.animate(withDuration: 0.5, delay: 0.3, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: { [weak self] in
             self?.emojiMenu.alpha = 1.0
-            self?.emojiMenu.frame = CGRect(x: xPosition, y: globalFrame.origin.y + 35, width: emojiMenuSize.width, height: emojiMenuSize.height)
+            self?.emojiMenu.frame = CGRect(x: xPosition, y: globalFrame.origin.y + 45, width: emojiMenuSize.width, height: emojiMenuSize.height)
         })
 
         fadeView(view: emojiMenu, fade: false)
