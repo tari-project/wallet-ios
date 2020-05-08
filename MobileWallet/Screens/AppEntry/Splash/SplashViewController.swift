@@ -110,10 +110,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                     attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
                     attributes.displayDuration = .infinity
                     attributes.screenInteraction = .forward
-
-                    if TariSettings.shared.isDebug {
-                        //SwiftEntryKit.display(entry: self.progressFeedbackView, using: attributes)
-                    }
                 }
 
                 self.progressFeedbackView.setupSuccess(title: "Tor bootstrapping: \(progress)%")

@@ -116,6 +116,7 @@ class TransactionTableTableViewCell: UITableViewCell {
         if !alias.isEmpty {
             //In contacts but alias is blank
             userNameLabel.text = alias
+            userNameLabel.textColor = Theme.shared.colors.transactionCellAlias
         } else {
             if let pubKey = contact.publicKey.0 {
                 setEmojis(pubKey)
@@ -125,8 +126,9 @@ class TransactionTableTableViewCell: UITableViewCell {
 
     private func setEmojis(_ pubKey: PublicKey) {
         let (emojis, _) = pubKey.emojis
-        let shortEmojisStr = "\(String(emojis.emojis.prefix(3)))···\(String(emojis.emojis.suffix(3)))"
+        let shortEmojisStr = "\(String(emojis.emojis.prefix(3)))•••\(String(emojis.emojis.suffix(3)))"
         userNameLabel.text = shortEmojisStr
+        userNameLabel.textColor = Theme.shared.colors.emojisSeparator
     }
 
     func setDetails(completedTransaction: CompletedTransaction) {

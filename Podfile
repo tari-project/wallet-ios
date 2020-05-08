@@ -13,6 +13,7 @@ target 'MobileWallet' do
   pod 'ReachabilitySwift'
   pod 'MatomoTracker', '~> 7.2'
   pod 'ZIPFoundation', '~> 0.9'
+  pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '5.0.0'
 
   target 'MobileWalletTests' do
     inherit! :search_paths

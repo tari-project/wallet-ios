@@ -408,13 +408,8 @@ class TransactionViewController: UIViewController {
             }
 
             if let pubKey = contactPublicKey {
-                let (emojis, emojisError) = pubKey.emojis
-                guard emojisError == nil else {
-                    throw emojisError!
-                }
-
                 emojiButton.setUpView(
-                    emojiText: emojis,
+                    pubKey: pubKey,
                     type: .buttonView,
                     textCentered: false,
                     inViewController: self
@@ -489,7 +484,7 @@ class TransactionViewController: UIViewController {
             var statusEmoji = ""
 
             //If the app is in debug mode, show the status
-            if TariSettings.shared.isDebug {
+            if TariSettings.shared.environment == .debug {
                 switch tx.status.0 {
                 case .completed:
                     statusEmoji = " ✔️"

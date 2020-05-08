@@ -48,10 +48,6 @@ class NodeSyncOperation: Operation {
             return
         }
 
-        if TariSettings.shared.isDebug {
-            NotificationManager.shared.scheduleNotification(title: "Background task", body: "Starting Tor")
-        }
-
         if TariLib.shared.walletExists {
             handleWalletEvents()
             TariLib.shared.startTor()
@@ -66,13 +62,6 @@ class NodeSyncOperation: Operation {
         TariEventBus.onMainThread(self, eventType: .torConnected) {(_) in
             do {
                 try TariLib.shared.startExistingWallet(isBackgroundTask: true)
-
-                NotificationManager.shared.scheduleNotification(title: "Background task", body: "Wallet started")
-
-                //This is useful for testing but should remove this when push notifications are working properly
-                if TariSettings.shared.isDebug {
-                    self.testReceiveTx()
-                }
             } catch {
                 TariLogger.error("Failed to start wallet", error: error)
                 self.onComplete(false)
@@ -83,10 +72,6 @@ class NodeSyncOperation: Operation {
             let error: Error? = result?.object as? Error
 
             self.onComplete(false)
-
-            if TariSettings.shared.isDebug {
-                NotificationManager.shared.scheduleNotification(title: "Background task", body: "Tor connection failed")
-            }
 
             TariLogger.error("Failed to connect to tor", error: error)
         }

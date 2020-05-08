@@ -57,7 +57,7 @@ class EmoticonView: UIView {
         return view
     }()
     var scrollView = UIScrollView()
-    lazy var label: UILabelWithPadding = UILabelWithPadding(copiableViewParent: labelContainer)
+    lazy var label = UILabelWithPadding(copiableViewParent: labelContainer)
     var expanded: Bool = false
     var type: EmoticonViewType = .normalView
     var blackoutWhileExpanded = true
@@ -82,6 +82,7 @@ class EmoticonView: UIView {
     private let labelContainer = UIView()
 
     private var emojiText: String!
+    private var pubKeyHex: String!
 
     var cornerRadius: CGFloat = 6.0 {
         didSet {
@@ -93,7 +94,7 @@ class EmoticonView: UIView {
 
     private var superVc: UIViewController!
 
-    func setUpView(emojiText: String,
+    func setUpView(pubKey: PublicKey,
                    type: EmoticonViewType,
                    textCentered: Bool,
                    inViewController vc: UIViewController,
@@ -101,22 +102,24 @@ class EmoticonView: UIView {
                    initialHeight: CGFloat = CGFloat(38),
                    showContainerViewBlur: Bool = true,
                    cornerRadius: CGFloat = 6.0) {
-        label.longPressGesture.isEnabled = false
         label.font = UIFont.systemFont(ofSize: 14.0)
         label.letterSpacing(value: 3.0)
         superVc = vc
-        self.emojiText = emojiText
+
+        emojiText = pubKey.emojis.0
+        pubKeyHex = pubKey.hex.0
         self.backgroundColor = .clear
+
+        label.copyText = emojiText
+
         if type == .normalView {
             label.numberOfLines = 0
-            self.addSubview(label)
-            self.layer.masksToBounds = true
+            addSubview(label)
+            layer.masksToBounds = true
             label.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground!
             label.textAlignment = .center
             label.textColor = Theme.shared.colors.emojisSeparator!
-
-            label.text = String(emojiText.enumerated().map { $0 > 0 && $0 % 4 == 0 ? ["|", $1] : [$1]}.joined())
-
+            label.text = emojiText.insertSeparator("|", atEvery: 3)
             label.translatesAutoresizingMaskIntoConstraints = false
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
@@ -128,7 +131,7 @@ class EmoticonView: UIView {
             containerView = UIView()
             containerView.backgroundColor = Theme.shared.colors.emoticonBlackBackgroundAlpha!
             containerView.alpha = 0.0
-            self.addSubview(containerView)
+            addSubview(containerView)
             containerView.translatesAutoresizingMaskIntoConstraints = false
             containerViewLeadingInitial = containerView.widthAnchor.constraint(equalToConstant: 0)
             containerViewLeadingInitial?.isActive = true
@@ -320,9 +323,10 @@ class EmoticonView: UIView {
         let firstThreeChar = emojiText.prefix(3)
         let lastThreeChar = emojiText.suffix(3)
 
-        let expandedString = self.emojiText.insertSeparator(" | ", atEvery: 3)
+        let expandedString = emojiText.insertSeparator(" | ", atEvery: 3)
         label.textColor = expanded ? Theme.shared.colors.emojisSeparatorExpanded! : Theme.shared.colors.emojisSeparator!
         label.text = expanded ? expandedString : "\(firstThreeChar)•••\(lastThreeChar)"
+        label.copyText = emojiText
     }
 
     override func willMove(toWindow newWindow: UIWindow?) {
@@ -375,9 +379,16 @@ extension EmoticonView {
     private func showMenu() {
         emojiMenu.alpha = 0.0
         emojiMenu.title = NSLocalizedString("Copy Emoji ID", comment: "")
-        emojiMenu.completion = { [weak self] in
-            self?.label.copy(nil)
-            self?.hideMenu()
+
+        emojiMenu.completion = { [weak self] isLongPress in
+            guard let self = self else { return }
+            if isLongPress {
+                self.label.copyText = self.pubKeyHex
+            } else {
+                self.label.copyText = self.emojiText
+            }
+            self.label.copy(nil)
+            self.hideMenu()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
                 self?.shrink(callTapCompletion: true)
             })
@@ -419,7 +430,7 @@ extension EmoticonView {
 private class EmojiMenuView: UIView {
 
     private let button = TextButton()
-    var completion: (() -> Void)?
+    var completion: ((Bool) -> Void)?
 
     var title: String? {
         didSet {
@@ -435,7 +446,13 @@ private class EmojiMenuView: UIView {
     }
 
     @objc func onTap(_ sender: Any?) {
-        completion?()
+        completion?(false)
+    }
+
+    @objc func onLongPress(gestureRecognizer: UIGestureRecognizer) {
+        if gestureRecognizer.state == .began {
+            completion?(true)
+        }
     }
 
     override func draw(_ rect: CGRect) {
@@ -473,6 +490,7 @@ private class EmojiMenuView: UIView {
         button.heightAnchor.constraint(equalTo: heightAnchor, constant: -5).isActive = true
 
         button.addTarget(self, action: #selector(onTap(_:)), for: .touchUpInside)
+        button.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(onLongPress)))
     }
 
     required init?(coder aDecoder: NSCoder) {

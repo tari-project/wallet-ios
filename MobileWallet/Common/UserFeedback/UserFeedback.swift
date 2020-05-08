@@ -62,7 +62,7 @@ class UserFeedback {
         let errorFeedbackView = FeedbackView()
 
         var descriptionText = description
-        if TariSettings.shared.isDebug, let e = error {
+        if TariSettings.shared.environment == .debug, let e = error {
             descriptionText.append("\n\(e.localizedDescription)")
         }
 

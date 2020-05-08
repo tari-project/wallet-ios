@@ -44,6 +44,7 @@ class CopyableLabel: UILabel {
 
     private let copiedView = UIView()
     private var copiableViewParent: UIView?
+    var copyText: String = ""
 
     var cornerRadius: CGFloat = 0.0 {
         didSet {
@@ -51,8 +52,6 @@ class CopyableLabel: UILabel {
             copiedView.layer.cornerRadius = cornerRadius
         }
     }
-
-    lazy var longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.showMenu))
 
     init(copiableViewParent: UIView? = nil) {
         self.copiableViewParent = copiableViewParent
@@ -67,7 +66,6 @@ class CopyableLabel: UILabel {
 
     private func sharedInit() {
         self.isUserInteractionEnabled = true
-        self.addGestureRecognizer(longPressGesture)
     }
 
     @objc func showMenu(sender: AnyObject?) {
@@ -94,7 +92,8 @@ class CopyableLabel: UILabel {
                 self?.layoutIfNeeded()
             })
         }
-        board.string = text
+        board.string = copyText
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
     }
 
     func hideMenu() {
@@ -131,7 +130,7 @@ extension CopyableLabel {
         greenView.backgroundColor = Theme.shared.colors.transactionCellValuePositiveText?.withAlphaComponent(0.12)
 
         let copiedLabel = UILabel()
-        copiedLabel.text = "COPIED"
+        copiedLabel.text = NSLocalizedString("COPIED", comment: "Emoji ID copied")
         copiedLabel.font = Theme.shared.fonts.copiedLabelFont
         copiedLabel.textColor = Theme.shared.colors.textButtonSecondary
 

@@ -126,6 +126,8 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             phoneDetails.append((key: "App build", value: build))
         }
 
+        phoneDetails.append((key: "App environment", value: "\(TariSettings.shared.environment)"))
+
         var footer = "<br/><br/><p><i>"
         phoneDetails.forEach { (arg0) in
             let (key, value) = arg0
@@ -159,8 +161,8 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         //An archive needs to be created first before multipl files can be appended.
         //If this is mainnet then just the current log file gets created and the rest will get appeneded below.
         var sourceURL = URL(fileURLWithPath: TariLib.shared.logFilePath)
-        //TODO allow the user to check an option for attaching this
-        if TariSettings.shared.isDebug {
+        //Only allow attaching DB files in debugn and testflight
+        if TariSettings.shared.environment != .production {
             sourceURL = URL(fileURLWithPath: TariLib.shared.databasePath)
         }
 
@@ -253,7 +255,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             UserFeedback.shared.showDebugConnectionStatus()
         }))
 
-        if TariSettings.shared.isDebug {
+        if TariSettings.shared.environment == .debug {
             alert.addAction(UIAlertAction(title: "Delete wallet", style: .destructive, handler: { (_)in
                 self.deleteWallet()
             }))

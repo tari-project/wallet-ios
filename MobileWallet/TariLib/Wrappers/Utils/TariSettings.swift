@@ -40,7 +40,7 @@
 
 import Foundation
 
-enum TariNetworks: String {
+enum TariNetwork: String {
     case mainnet = "mainnet"
     case rincewind = "rincewind"
 
@@ -63,10 +63,16 @@ enum TariNetworks: String {
     }
 }
 
+enum AppEnvironment {
+    case debug
+    case testflight
+    case production
+}
+
 struct TariSettings {
     static let shared = TariSettings()
 
-    let network: TariNetworks = .rincewind //TODO this will come from a build config
+    let network: TariNetwork = .rincewind //TODO this will come from a build config
     let discoveryTimeoutSec: UInt64 = 20
     let deeplinkURI = "tari"
 
@@ -97,6 +103,7 @@ struct TariSettings {
     ]
 
     var pushServerApiKey: String?
+    var sentryPublicDSN: String?
 
     func getRandomBaseNode() -> String {
         return defaultBaseNodePool[Int.random(in: 0 ... (defaultBaseNodePool.count-1))]
@@ -105,13 +112,13 @@ struct TariSettings {
     #if DEBUG
     let torEnabled = true //If just working on UI updates, this can be made false
     //Used for showing a little extra detail in the UI to help debugging
-    let isDebug = true
+    private let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
     let pushNotificationServer = "https://push.tari.com"
     let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 1 //1 day
     #else
     let torEnabled = true
-    let isDebug = false
+    private let isDebug = false
     let maxMbLogsStorage: UInt64 = 500 //500MB
     let pushNotificationServer = "https://push.tari.com"
     let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 3 //3 days
@@ -121,8 +128,19 @@ struct TariSettings {
         return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
+    var environment: AppEnvironment {
+        if isDebug {
+            return .debug
+        } else if Bundle.main.appStoreReceiptURL?.lastPathComponent == "sandboxReceipt" {
+            return .testflight
+        }
+
+        return .production
+    }
+
     private init() {
         TariLogger.info("Init settings...")
+        TariLogger.warn("environment \(environment)")
 
         guard let envPath = Bundle.main.path(forResource: "env", ofType: "json") else {
             TariLogger.error("Could not find envrionment file")
@@ -134,10 +152,15 @@ struct TariSettings {
             let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
 
             if let jsonResult = jsonResult as? [String: AnyObject] {
-                if let pushKey = jsonResult["pushServerApiKey"] as? String, !pushKey.isEmpty {
-                    pushServerApiKey = pushKey
+                if let pushServerApiKey = jsonResult["pushServerApiKey"] as? String, !pushServerApiKey.isEmpty {
+                    self.pushServerApiKey = pushServerApiKey
                 } else {
                     TariLogger.warn("pushServerApiKey not set in env.json. Sending push notifications will be disabled.")
+                }
+                if let sentryPublicDSN = jsonResult["sentryPublicDSN"] as? String, !sentryPublicDSN.isEmpty {
+                    self.sentryPublicDSN = sentryPublicDSN
+                } else {
+                    TariLogger.warn("sentryPublicDSN not set in env.json. Crash reporting will not work.")
                 }
             }
         } catch {

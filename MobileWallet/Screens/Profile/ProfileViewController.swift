@@ -196,7 +196,7 @@ class ProfileViewController: UIViewController {
 
             self.emojis = emojis
 
-            emojiView.setUpView(emojiText: emojis, type: .buttonView, textCentered: true, inViewController: self)
+            emojiView.setUpView(pubKey: pubKey, type: .buttonView, textCentered: true, inViewController: self)
             emojiView.blackoutParent = view
         }
     }
@@ -264,25 +264,6 @@ class ProfileViewController: UIViewController {
                 description: "",
                 error: error)
         }
-    }
-
-    private func copyToClipboard() throws {
-        guard let wallet = TariLib.shared.tariWallet else {
-            throw WalletErrors.walletNotInitialized
-        }
-
-        let (walletPublicKey, walletPublicKeyError) = wallet.publicKey
-        guard let pubKey = walletPublicKey else {
-            throw walletPublicKeyError!
-        }
-
-        let (emojis, emojisError) = pubKey.emojis
-        guard emojisError == nil else {
-            throw emojisError!
-        }
-
-        let pasteboard = UIPasteboard.general
-        pasteboard.string = emojis
     }
 
     private func addShadowToQRView() {
