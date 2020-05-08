@@ -114,9 +114,9 @@ extension TransactionsTableViewController {
         }
 
         if count == 0 {
-            showsEmptyState = true
+            backgroundType = .empty
         } else {
-            showsEmptyState = false
+            backgroundType = .none
         }
 
         return count
@@ -174,8 +174,12 @@ extension TransactionsTableViewController {
         tableView.backgroundView = emptyView
     }
 
-    func removeEmptyView() {
-        tableView.backgroundView = nil
+    func removeBackgroundView() {
+        UIView.animate(withDuration: CATransaction.animationDuration(), animations: { [weak self] in
+            self?.tableView.backgroundView?.alpha = 0.0
+        }) { [weak self] (_) in
+            self?.tableView.backgroundView = nil
+        }
     }
 
     func setIntroView() {
@@ -227,37 +231,31 @@ extension TransactionsTableViewController {
     private func animateWave(imageView: UIImageView) {
         let degreesUp: CGFloat = 20.0
         let degreesDown: CGFloat = -15.0
-        let duration: TimeInterval = 0.5
+        let duration: TimeInterval = 1.0
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration(), execute: {
             //Clockwise
-            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseInOut, animations: {
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseOut, animations: {
                 imageView.transform = CGAffineTransform(rotationAngle: (degreesUp * .pi) / 180.0)
             }, completion: { (_) in
                 //Anti clockwise
-                UIView.animate(withDuration: duration, delay: 0, options: .curveLinear, animations: {
+                UIView.animate(withDuration: duration, delay: 0, options: .curveEaseOut, animations: {
                     imageView.transform = CGAffineTransform(rotationAngle: (degreesDown * .pi) / 180.0)
                 }, completion: { (_) in
                     //Back to start
-                    UIView.animate(withDuration: duration, delay: 0, options: .curveLinear, animations: {
+                    UIView.animate(withDuration: duration, animations: {
                         imageView.transform = CGAffineTransform(rotationAngle: 0)
-                    })
+                    }) { [weak self] _ in
+                        if self?.backgroundType == .intro {
+                            self?.backgroundType = .none
+                        }
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
+                            self?.refreshTable()
+                        })
+                    }
                 })
             })
         })
-    }
-
-    func showIntroContent(_ isIntro: Bool) {
-        if isIntro {
-            showsEmptyState = false
-            setIntroView()
-        } else {
-            removeEmptyView()
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: { [ weak self] in
-                guard let self = self else { return }
-                self.showsEmptyState = true
-            })
-        }
     }
 }
