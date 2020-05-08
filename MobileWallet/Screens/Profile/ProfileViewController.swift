@@ -51,6 +51,8 @@ class ProfileViewController: UIViewController {
     var qrContainer = UIView()
     var qrImageView = UIImageView()
 
+    private var emojiViewContainer = UIView()
+
     private var emojis: String?
 
     // MARK: - Override functions
@@ -62,13 +64,12 @@ class ProfileViewController: UIViewController {
         setupEmojiView()
         setupSeparatorView()
         setupMiddleLabel()
-        setupBottomView()
         setupQRContainer()
         setupQRImageView()
         generateQRCode()
         customizeViews()
 
-        view.bringSubviewToFront(emojiView)
+        view.bringSubviewToFront(emojiViewContainer)
 
         Tracker.shared.track("/home/profile", "Profile - Wallet Info")
     }
@@ -89,35 +90,45 @@ class ProfileViewController: UIViewController {
         closeButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
         closeButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
         closeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25).isActive = true
-        closeButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 25).isActive = true
+        closeButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 20).isActive = true
     }
 
     private func setupTitleLabel() {
         titleLabel.numberOfLines = 0
         titleLabel.textAlignment = .center
+
         view.addSubview(titleLabel)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 33).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 20).isActive = true
     }
 
     private func setupEmojiView() {
-        view.addSubview(emojiView)
+        view.addSubview(emojiViewContainer)
+        emojiViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        emojiViewContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        emojiViewContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        emojiViewContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0).isActive = true
+
+        emojiViewContainer.addSubview(emojiView)
         emojiView.translatesAutoresizingMaskIntoConstraints = false
-        emojiView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        emojiView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        emojiView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30).isActive = true
+        emojiView.leadingAnchor.constraint(equalTo: emojiViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
+        emojiView.trailingAnchor.constraint(equalTo: emojiViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
+        emojiView.heightAnchor.constraint(equalToConstant: 38).isActive = true
+        emojiView.topAnchor.constraint(equalTo: emojiViewContainer.topAnchor, constant: 15).isActive = true
     }
 
     private func setupSeparatorView() {
         separatorView.backgroundColor = .white //TODO theme color
         view.addSubview(separatorView)
+
         separatorView.translatesAutoresizingMaskIntoConstraints = false
-        separatorView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        separatorView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        separatorView.leadingAnchor.constraint(equalTo: emojiView.leadingAnchor).isActive = true
+        separatorView.trailingAnchor.constraint(equalTo: emojiView.trailingAnchor).isActive = true
         separatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        separatorView.topAnchor.constraint(lessThanOrEqualTo: emojiView.bottomAnchor, constant: 23).isActive = true
+        separatorView.topAnchor.constraint(equalTo: emojiView.bottomAnchor, constant: 15).isActive = true
+        separatorView.topAnchor.constraint(equalTo: emojiViewContainer.bottomAnchor).isActive = true
     }
 
     private func setupMiddleLabel() {
@@ -127,29 +138,22 @@ class ProfileViewController: UIViewController {
         middleLabel.translatesAutoresizingMaskIntoConstraints = false
         middleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         middleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        middleLabel.topAnchor.constraint(lessThanOrEqualTo: separatorView.bottomAnchor, constant: 23).isActive = true
-    }
-
-    private func setupBottomView() {
-        bottomView.backgroundColor = Theme.shared.colors.profileBackground!
-        view.addSubview(bottomView)
-        bottomView.translatesAutoresizingMaskIntoConstraints = false
-        bottomView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 0).isActive = true
-        bottomView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 0).isActive = true
-        bottomView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: 0).isActive = true
-        bottomView.topAnchor.constraint(lessThanOrEqualTo: middleLabel.bottomAnchor, constant: 23).isActive = true
+        middleLabel.topAnchor.constraint(equalTo: emojiViewContainer.bottomAnchor, constant: 15).isActive = true
     }
 
     private func setupQRContainer() {
         qrContainer.backgroundColor = Theme.shared.colors.appBackground
-        bottomView.addSubview(qrContainer)
+        view.addSubview(qrContainer)
         qrContainer.translatesAutoresizingMaskIntoConstraints = false
-        qrContainer.leadingAnchor.constraint(greaterThanOrEqualTo: bottomView.leadingAnchor, constant: 50).isActive = true
-        qrContainer.centerXAnchor.constraint(equalTo: bottomView.centerXAnchor, constant: 0).isActive = true
-        qrContainer.trailingAnchor.constraint(greaterThanOrEqualTo: bottomView.trailingAnchor, constant: -50).isActive = true
-        qrContainer.topAnchor.constraint(equalTo: bottomView.topAnchor, constant: 20).isActive = true
-        bottomView.bottomAnchor.constraint(greaterThanOrEqualTo: qrContainer.bottomAnchor, constant: 20).isActive = true
+        qrContainer.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 50).isActive = true
+        qrContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+        qrContainer.trailingAnchor.constraint(greaterThanOrEqualTo: view.trailingAnchor, constant: -50).isActive = true
+        qrContainer.topAnchor.constraint(lessThanOrEqualTo: middleLabel.bottomAnchor, constant: 20).isActive = true
+        qrContainer.topAnchor.constraint(greaterThanOrEqualTo: middleLabel.bottomAnchor, constant: 10).isActive = true
         qrContainer.heightAnchor.constraint(equalTo: qrContainer.widthAnchor, multiplier: 1).isActive = true
+        let bottomConstraint = qrContainer.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
+        bottomConstraint.isActive = true
+        bottomConstraint.priority = UILayoutPriority(rawValue: 1)
     }
 
     private func setupQRImageView() {
