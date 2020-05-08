@@ -48,7 +48,7 @@ enum AnimatedRefreshingViewState {
     //TX view states
     case txWaitingForSender
     case txWaitingForRecipient
-    case txBroadcasted
+    case txCompleted
 }
 
 private class RefreshingInnerView: UIView {
@@ -109,7 +109,7 @@ private class RefreshingInnerView: UIView {
             spinner.stopAnimating()
             statusLabel.text = NSLocalizedString("Waiting for sender to complete transaction", comment: "Refresh view")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
-        case .txBroadcasted:
+        case .txCompleted:
             emojiLabel.text = ""
             spinner.stopAnimating()
             statusLabel.text = NSLocalizedString("Completing final processing…", comment: "Refresh view")

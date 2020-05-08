@@ -164,21 +164,17 @@ class TransactionViewController: UIViewController {
         }
 
         switch tx.status.0 {
-        case .completed:
+        case .mined, .imported, .transactionNullError, .unknown:
             return defaultNavBarHeight
         case .pending:
-            if tx.direction == .inbound {
-                return defaultNavBarHeight + navBarStatusHeight
-            } else if tx.direction == .outbound {
+            if tx.direction == .outbound {
                 return defaultNavBarHeight + navBarStatusHeight + navBarCancelButtonHeight
             }
-        case .broadcast:
-            return defaultNavBarHeight + navBarStatusHeight
         default:
-           return defaultNavBarHeight
+           return defaultNavBarHeight + navBarStatusHeight
         }
 
-        return defaultNavBarHeight
+        return defaultNavBarHeight + navBarStatusHeight
     }
 
     override func viewDidLoad() {
@@ -363,16 +359,14 @@ class TransactionViewController: UIViewController {
         var newState: AnimatedRefreshingViewState?
 
         switch tx.status.0 {
-        case .completed:
-            newState = .txWaitingForSender
         case .pending:
             if tx.direction == .inbound {
                 newState = .txWaitingForSender
             } else if tx.direction == .outbound {
                 newState = .txWaitingForRecipient
             }
-        case .broadcast:
-            newState = .txBroadcasted
+        case .broadcast, .completed:
+            newState = .txCompleted
         default:
             newState = nil
         }
