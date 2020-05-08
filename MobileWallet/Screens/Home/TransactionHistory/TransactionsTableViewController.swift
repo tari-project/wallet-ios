@@ -47,6 +47,28 @@ protocol TransactionsTableViewDelegate: class {
 }
 
 class TransactionsTableViewController: UITableViewController {
+
+    enum BackgroundViewType: Equatable {
+        case none
+        case intro
+        case empty
+    }
+
+    var backgroundType: BackgroundViewType = .none {
+        didSet {
+            if oldValue == backgroundType { return }
+            switch backgroundType {
+            case .empty:
+                if oldValue == .intro { backgroundType = .intro; return }
+                setEmptyView()
+            case .intro:
+                setIntroView()
+            default:
+                removeBackgroundView()
+            }
+        }
+    }
+
     let cellIdentifier = "TransactionTableTableViewCell"
     let sectionHeaderHeight: CGFloat = 0
     weak var actionDelegate: TransactionsTableViewDelegate?
@@ -69,17 +91,6 @@ class TransactionsTableViewController: UITableViewController {
         return pendingInboundTransactions.count > 0 || pendingOutboundTransactions.count > 0
     }
 
-    var showsEmptyState: Bool = false {
-        willSet {
-            //Stop it from getting re added each time unnecessarily
-            if newValue && !showsEmptyState {
-                setEmptyView()
-            } else if !newValue {
-                removeEmptyView()
-            }
-        }
-    }
-
     lazy var pendingAnimationContainer: AnimationView = {
         let animation = Animation.named("pendingTx")
         var animationContainer = AnimationView()
@@ -91,8 +102,20 @@ class TransactionsTableViewController: UITableViewController {
 
     let pendingLabelText = NSLocalizedString("In Progress", comment: "Home view table of transactions")
 
+    init(style: UITableView.Style, backgroundState: BackgroundViewType) {
+        self.backgroundType = backgroundState
+        super.init(style: style)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        if backgroundType == .intro {
+            setIntroView()
+        }
         viewSetup()
         tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
         refreshTransactionControl.addTarget(self, action: #selector(refreshPullTransactions(_:)), for: .valueChanged)

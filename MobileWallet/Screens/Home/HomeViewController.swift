@@ -61,6 +61,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     private static let INTRO_TO_WALLET_USER_DEFAULTS_KEY = "walletHasBeenIntroduced"
 
+    private lazy var transactionTableVC = TransactionsTableViewController(style: .grouped, backgroundState: isFirstIntroToWallet ? .intro : .empty)
+
     private let floatingPanelController = FloatingPanelController()
     private var grabberHandle: UIView!
     private var selectedTransaction: TransactionProtocol?
@@ -72,7 +74,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     private var keyServer: KeyServer?
 
-    private let transactionTableVC = TransactionsTableViewController(style: .grouped)
     private lazy var tableViewContainer: TransactionHistoryContainer = {
         let container = TransactionHistoryContainer(child: transactionTableVC)
         return container
@@ -203,7 +204,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         do {
             try keyServer.requestDrop(onSuccess: { () in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
                     guard let _ = self else { return }
 
                     let title = String(format: NSLocalizedString("You just got some %@!", comment: "Home view airdrop"), TariSettings.shared.network.currencyDisplayTicker)
@@ -322,9 +323,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             //Don't show header for first intro
             guard !isFirstIntroToWallet else {
                 self.isShowingSendButton = false
-                transactionTableVC.showIntroContent(true)
                 //Wait before auto pulling down
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5, execute: { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0 + CATransaction.animationDuration(), execute: { [weak self] in
                     guard let self = self else { return }
                     if self.isTransactionViewFullScreen {
                         self.floatingPanelController.move(to: .tip, animated: true)
@@ -341,10 +341,15 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 self.view.layoutIfNeeded()
             })
         } else {
-            requestKeyServerTokens()
+
+            let delayRequest = isFirstIntroToWallet ? 2.75 : 0.0
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + delayRequest, execute: { [weak self] in
+                self?.requestKeyServerTokens()
+            })
+
             //User swipes down for the first time
             if isFirstIntroToWallet {
-                transactionTableVC.showIntroContent(false)
                 UserDefaults.standard.set(true, forKey: HomeViewController.INTRO_TO_WALLET_USER_DEFAULTS_KEY)
             }
 
