@@ -504,7 +504,7 @@ class TransactionViewController: UIViewController {
     @objc func onCancelTx() {
         let alert = UIAlertController(
             title: NSLocalizedString("Are you sure?", comment: "TX details view"),
-            message: NSLocalizedString("Your recipient will be notified of the cancellation.", comment: "TX details view"),
+            message: NSLocalizedString("You will have to start a new transaction if you change your mind.", comment: "TX details view"),
             preferredStyle: .alert
         )
 
