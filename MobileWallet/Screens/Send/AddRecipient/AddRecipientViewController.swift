@@ -68,7 +68,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     let errorMessageView: ErrorView = ErrorView()
 
-    private var selectedRecipientPublicKey: PublicKey? = nil {
+    private var selectedRecipientPublicKey: PublicKey? {
         didSet {
             if let pubKey = selectedRecipientPublicKey {
                 guard pubKey.hex.0 != TariLib.shared.tariWallet?.publicKey.0?.hex.0 else {
@@ -87,13 +87,11 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                 inputBox.textAlignment = .center
                 inputBox.returnKeyType = .continue
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                contactsTableVC.tableView.isHidden = true
-
                 continueButtonBottomConstraint.isActive = false
 
                 inputBox.textColor = Theme.shared.colors.emojisSeparatorExpanded
 
-                UIView.animate(withDuration: 0.5) { [weak self] in
+                UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
                     guard let self = self else { return }
                     self.continueButtonBottomConstraint = self.continueButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -self.SIDE_PADDING)
                     self.continueButtonBottomConstraint.isActive = true
@@ -102,11 +100,11 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                 }
             } else {
                 inputBox.textAlignment = .left
+                inputBox.rightView = scanButton
                 inputBox.returnKeyType = .default
                 continueButtonBottomConstraint.isActive = false
                 continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 100)
                 continueButtonBottomConstraint.isActive = true
-                contactsTableVC.tableView.isHidden = false
 
                 inputBox.textColor = nil //default color
 
@@ -159,20 +157,24 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         styleNavigatorBar(isHidden: false, animated: true)
         NotificationCenter.default.addObserver(self, selector: #selector(showClipboardEmojis), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hideClipboardEmojis), name: UIResponder.keyboardWillHideNotification, object: nil)
+
+        contactsTableVC.filter = ""
+        inputBox.textAlignment = .left
+        inputBox.text = nil
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
         if selectedRecipientPublicKey == nil {
             isEditingSearchBox = true
         }
+
+        selectedRecipientPublicKey = nil
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         styleNavigatorBar(isHidden: true, animated: true)
-
         clipboardEmojis = ""
     }
 
@@ -185,13 +187,17 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     func textFieldDidChangeSelection(_ textField: UITextField) {
         if let text = textField.text {
+            if text.isEmpty {
+                inputBox.rightView = scanButton
+            }
             //Check if something actually changed to avoid unnecessary ffi calls and checks
             guard currentTextInputContent != text else {
                 return
             }
-
             currentTextInputContent = text
             contactsTableVC.filter = text.trimmingCharacters(in: .whitespaces)
+            updateSeparatorsIfNeeded()
+
             do {
                 let pubKey = try PublicKey(any: text)
 
@@ -201,6 +207,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                 }
 
                 onSelect(publicKey: pubKey)
+                setInputText(publicKey: pubKey)
             } catch {
                 if selectedRecipientPublicKey != nil {
                     selectedRecipientPublicKey = nil
@@ -225,6 +232,25 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
         checkClipboard()
+    }
+
+    func textField(_ textField: UITextField,
+                   shouldChangeCharactersIn range: NSRange,
+                   replacementString string: String) -> Bool {
+
+        let text = textField.text ?? ""
+        var textWithoutPiles = text.replacingOccurrences(of: "|", with: "")
+        textWithoutPiles = textWithoutPiles.replacingOccurrences(of: " ", with: "")
+
+        if textWithoutPiles.containsOnlyEmoji && (string.containsOnlyEmoji || string.count == 0) {
+            textField.textColor = Theme.shared.colors.emojisSeparatorExpanded
+        } else {
+            if textWithoutPiles.containsOnlyEmoji && textWithoutPiles.count > 3 && !string.containsEmoji {
+                return false
+            }
+            textField.textColor = nil
+        }
+        return true
     }
 
     private func setup() {
@@ -445,8 +471,21 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         guard inputBox.text != newEmojiText else {
             return
         }
-
+        inputBox.rightView = nil
+        inputBox.delegate = nil
         inputBox.text = newEmojiText
+        inputBox.delegate = self
+    }
+
+    private func updateSeparatorsIfNeeded() {
+        guard var textWithoutPiles = inputBox.text?.replacingOccurrences(of: "|", with: "") else { return }
+        textWithoutPiles = textWithoutPiles.replacingOccurrences(of: " ", with: "")
+
+        if textWithoutPiles.containsOnlyEmoji {
+            inputBox.delegate = nil
+            inputBox.text = textWithoutPiles.insertSeparator(" | ", atEvery: 3)
+            inputBox.delegate = self
+        }
     }
 
     func onSelect(publicKey: PublicKey) {
@@ -454,14 +493,10 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         guard selectedRecipientPublicKey?.hex.0 != publicKey.hex.0 else {
             return
         }
-
-        inputBox.rightView = nil
-
         TariLogger.verbose("Public key set")
 
         //Hide table and show continue button
         selectedRecipientPublicKey = publicKey
-        setInputText(publicKey: publicKey)
     }
 
     func onSelect(contact: Contact) {
@@ -469,7 +504,6 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         guard publicKeyError == nil else {
             return
         }
-
         onSelect(publicKey: publicKey!)
         dismissKeyboard()
         onContinue()
@@ -477,7 +511,9 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     //Used by the scanner and paste from clipboard
     func onAdd(publicKey: PublicKey) {
+        contactsTableVC.filter = publicKey.emojis.0
         onSelect(publicKey: publicKey)
+        setInputText(publicKey: publicKey)
         dismissKeyboard()
     }
 }
