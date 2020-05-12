@@ -51,6 +51,7 @@ class PasteEmojisView: UIView {
 
         textButton.setVariation(.secondary)
         textButton.translatesAutoresizingMaskIntoConstraints = false
+        textButton.isUserInteractionEnabled = false
         addSubview(textButton)
         textButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         textButton.topAnchor.constraint(equalTo: topAnchor, constant: PADDING).isActive = true
@@ -63,7 +64,6 @@ class PasteEmojisView: UIView {
         emojiLabel.textAlignment = .center
         emojiLabel.textColor = Theme.shared.colors.emojisSeparatorExpanded
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (onTap(_:))))
-        textButton.addTarget(self, action: #selector(onTap(_:)), for: .touchUpInside)
     }
 
     func setEmojis(emojis: String, onPress: @escaping () -> Void) {

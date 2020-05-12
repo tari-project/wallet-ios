@@ -77,17 +77,23 @@ class AddAmountViewController: UIViewController {
         super.viewWillAppear(animated)
         styleNavigatorBar(isHidden: false)
 
-        guard let pubKey = publicKey else { return }
-
-        do {
-            try showNavbarEmojies(pubKey)
-        } catch {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Public key error", comment: "Add amount view"),
-                description: NSLocalizedString("Failed to get Emoji ID from user's contact", comment: "Add amount view"),
-                error: error
-            )
+        guard let wallet = TariLib.shared.tariWallet, let pubKey = publicKey else {
+            return
         }
+
+        guard let contact = wallet.contacts.0?.list.0.filter({ $0.publicKey.0?.hex.0 == pubKey.hex.0}).first  else {
+            do {
+                try showNavbarEmojies(pubKey)
+            } catch {
+                UserFeedback.shared.error(
+                    title: NSLocalizedString("Public key error", comment: "Add amount view"),
+                    description: NSLocalizedString("Failed to get Emoji ID from user's contact", comment: "Add amount view"),
+                    error: error
+                )
+            }
+            return
+        }
+        title = contact.alias.0
     }
 
     override func viewWillDisappear(_ animated: Bool) {

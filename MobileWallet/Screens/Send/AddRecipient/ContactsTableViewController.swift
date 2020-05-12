@@ -54,8 +54,16 @@ class ContactsTableViewController: UITableViewController {
                 filteredRecentContactList =  recentContactList
                 filteredContactList = contactList
             } else {
-                filteredRecentContactList = recentContactList.filter { $0.alias.0.localizedCaseInsensitiveContains(filter) }
-                filteredContactList = contactList.filter { $0.alias.0.localizedCaseInsensitiveContains(filter) }
+
+                filteredRecentContactList = recentContactList.filter {
+                    ($0.publicKey.0?.emojis.0.localizedCaseInsensitiveContains(filter.emojiString))!
+                    || $0.alias.0.localizedCaseInsensitiveContains(filter)
+                }
+
+                filteredContactList = contactList.filter {
+                    ($0.publicKey.0?.emojis.0.localizedCaseInsensitiveContains(filter.emojiString))!
+                    || $0.alias.0.localizedCaseInsensitiveContains(filter)
+                }
             }
 
             tableView.reloadData()
@@ -102,6 +110,11 @@ class ContactsTableViewController: UITableViewController {
                 error: error
             )
         }
+    }
+
+    func getContact(publicKey: PublicKey?) -> Contact? {
+        guard let publicKey = publicKey else { return nil }
+        return contactList.filter { $0.publicKey.0?.emojis.0 == publicKey.emojis.0 }.first
     }
 
     private func loadContacts() throws {
