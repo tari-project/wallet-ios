@@ -113,6 +113,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UIApplication.shared.applicationIconBadgeNumber = 0
         ConnectionMonitor.shared.start()
         TariLib.shared.startTor()
+        TariLib.shared.restartWalletIfStopped() //Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -123,6 +124,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
         ConnectionMonitor.shared.stop()
+
+        //TODO add back when last of the crashes from stopping the wallet have been fixed
+        //TariLib.shared.stopWallet()
         TariLib.shared.stopTor()
     }
 

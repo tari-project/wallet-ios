@@ -163,7 +163,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         var sourceURL = URL(fileURLWithPath: TariLib.shared.logFilePath)
         //Only allow attaching DB files in debugn and testflight
         if TariSettings.shared.environment != .production {
-            sourceURL = URL(fileURLWithPath: TariLib.shared.databasePath)
+            sourceURL = TariLib.shared.databaseDirectory
         }
 
         do {

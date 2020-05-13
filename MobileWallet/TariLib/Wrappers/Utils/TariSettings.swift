@@ -104,6 +104,7 @@ struct TariSettings {
 
     var pushServerApiKey: String?
     var sentryPublicDSN: String?
+    var appleTeamID: String?
 
     func getRandomBaseNode() -> String {
         return defaultBaseNodePool[Int.random(in: 0 ... (defaultBaseNodePool.count-1))]
@@ -114,7 +115,7 @@ struct TariSettings {
     //Used for showing a little extra detail in the UI to help debugging
     private let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
-    let pushNotificationServer = "https://push.tari.com"
+    let pushNotificationServer = "https://b72d0e3c.ngrok.io" // "https://push.tari.com"
     let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 1 //1 day
     #else
     let torEnabled = true
@@ -138,9 +139,15 @@ struct TariSettings {
         return .production
     }
 
+    var storageDirectory: URL {
+        return FileManager.default.containerURL(
+          forSecurityApplicationGroupIdentifier: "group.com.tari.wallet"
+        )! //Force unwrapping here because it should never run unless it can access this dir
+    }
+
     private init() {
         TariLogger.info("Init settings...")
-        TariLogger.warn("environment \(environment)")
+        TariLogger.warn("Environment: \(environment)")
 
         guard let envPath = Bundle.main.path(forResource: "env", ofType: "json") else {
             TariLogger.error("Could not find envrionment file")
@@ -161,6 +168,12 @@ struct TariSettings {
                     self.sentryPublicDSN = sentryPublicDSN
                 } else {
                     TariLogger.warn("sentryPublicDSN not set in env.json. Crash reporting will not work.")
+                }
+
+                if let appleTeamID = jsonResult["appleTeamID"] as? String, !appleTeamID.isEmpty {
+                    self.appleTeamID = appleTeamID
+                } else {
+                    TariLogger.warn("appleTeamID not set in env.json. Shared keychain will not work.")
                 }
             }
         } catch {

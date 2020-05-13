@@ -183,12 +183,8 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     private func setupKeyServer() {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return
-        }
-
         do {
-            keyServer = try KeyServer(wallet: wallet)
+            keyServer = try KeyServer()
         } catch {
             TariLogger.error("Failed to initialise KeyServer")
         }

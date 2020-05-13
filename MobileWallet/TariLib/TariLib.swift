@@ -39,25 +39,19 @@
 */
 
 import Foundation
+import SwiftKeychainWrapper
 
 enum TariLibErrors: Error {
     case privateKeyNotFound
+    case saveToKeychain
+    case failedToCreateCommsConfig
 }
 
 class TariLib {
     static let shared = TariLib()
 
-    private let DATABASE_NAME = "tari_wallet"
-    private let PRIVATE_KEY_STORAGE_KEY = "privateKey"
-
-    private var storagePath: String {
-        let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        return documentsURL.path
-    }
-
-    var databasePath: String {
-        return "\(storagePath)/\(DATABASE_NAME)"
-    }
+    static let databaseName = "tari_wallet"
+    static let privatekeyStorageKey = "privateKey"
 
     static let logFilePrefix = "log"
 
@@ -65,14 +59,19 @@ class TariLib {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
         let dateString = dateFormatter.string(from: Date())
-        return "\(storagePath)/\(TariLib.logFilePrefix)-\(dateString).txt"
+        return "\(TariSettings.shared.storageDirectory.path)/\(TariLib.logFilePrefix)-\(dateString).txt"
+    }()
+
+    lazy var databaseDirectory: URL = {
+        return TariSettings.shared.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true)
     }()
 
     var allLogFiles: [URL] {
-        let fileManager = FileManager.default
-        let documentsURL = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0]
         do {
-            let allLogFiles = try fileManager.contentsOfDirectory(at: documentsURL, includingPropertiesForKeys: nil).filter({$0.lastPathComponent.contains(TariLib.logFilePrefix)}).sorted(by: { (a, b) -> Bool in
+            let allLogFiles = try FileManager.default.contentsOfDirectory(
+                at: TariSettings.shared.storageDirectory,
+                includingPropertiesForKeys: nil
+            ).filter({$0.lastPathComponent.contains(TariLib.logFilePrefix)}).sorted(by: { (a, b) -> Bool in
                 return a.path > b.path
             })
             return allLogFiles
@@ -89,16 +88,29 @@ class TariLib {
         return "/ip4/0.0.0.0/tcp/9838"
     }
 
-    private let fileManager = FileManager.default
-
     var tariWallet: Wallet?
 
-    var walletExists: Bool {
-        get {
-            if UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) != nil {
-                return true
-            }
+    let sharedKeychainGroup = KeychainWrapper(serviceName: "tari", accessGroup: "\(TariSettings.shared.appleTeamID ?? "").com.tari.wallet.keychain")
 
+    var storedPrivateKey: String? {
+        get {
+            return sharedKeychainGroup.string(forKey: TariLib.privatekeyStorageKey)
+        }
+        set {
+            if let privateKeyHex = newValue {
+                sharedKeychainGroup.set(privateKeyHex, forKey: TariLib.privatekeyStorageKey, withAccessibility: .alwaysThisDeviceOnly)
+            } else {
+                TariLogger.warn("Cannot unset private key in keychain")
+            }
+        }
+    }
+
+    var walletExists: Bool {
+        do {
+            let fileExists = try TariSettings.shared.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true).checkResourceIsReachable()
+            return fileExists
+        } catch {
+            TariLogger.warn("Database path not reachable. Assuming wallet doesn't exist.", error: error)
             return false
         }
     }
@@ -126,7 +138,36 @@ class TariLib {
         }
     }
 
-    init() {}
+    private var commsConfig: CommsConfig? {
+        guard let privateKeyHex = storedPrivateKey else {
+            TariLogger.error("Midding private key. Failed to create comms config.", error: TariLibErrors.privateKeyNotFound)
+            return nil
+        }
+
+        var config: CommsConfig?
+
+        do {
+            let privateKey = try PrivateKey(hex: privateKeyHex)
+            let transport = try transportType()
+            config = try CommsConfig(
+               privateKey: privateKey,
+               transport: transport,
+               databasePath: databaseDirectory.path,
+               databaseName: TariLib.databaseName,
+               publicAddress: publicAddress,
+               discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
+            )
+        } catch {
+            TariLogger.error("Failed to create comms config", error: error)
+        }
+
+        return config
+    }
+
+    //Used to determine whether or not to restart the wallet service when app moved to forground
+    var walletIsStopped = false
+
+    private init() {}
 
     /*
      Called automatically, just before instance deallocation takes place
@@ -244,25 +285,29 @@ class TariLib {
     }
 
     func createNewWallet() throws {
-        try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
-        try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
-
-        TariLogger.verbose("Database path: \(databasePath)")
+        try FileManager.default.createDirectory(at: databaseDirectory, withIntermediateDirectories: true, attributes: nil)
 
         let privateKey = PrivateKey()
 
-        let (hex, hexError) = privateKey.hex
+        let (privateKeyHex, hexError) = privateKey.hex
         if hexError != nil {
             throw hexError!
         }
 
-        //TODO use secure enclave
-        UserDefaults.standard.set(hex, forKey: PRIVATE_KEY_STORAGE_KEY)
+        //Save to keychain and then ensure it's there (If one exists already in the keychain this will overwrite it)
+        storedPrivateKey = privateKeyHex
+        guard storedPrivateKey != nil else {
+            TariLogger.error("Failed to save private key to keychain")
+            throw TariLibErrors.saveToKeychain
+        }
 
-        let transport = try transportType()
-        let commsConfig = try CommsConfig(privateKey: privateKey, transport: transport, databasePath: databasePath, databaseName: DATABASE_NAME, publicAddress: publicAddress, discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec)
+        guard let config = commsConfig else {
+            throw TariLibErrors.failedToCreateCommsConfig
+        }
 
-        tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: TariLib.shared.logFilePath)
+        TariLogger.verbose("Database path: \(databaseDirectory.path)")
+
+        tariWallet = try Wallet(commsConfig: config, loggingFilePath: TariLib.shared.logFilePath)
 
         try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
 
@@ -270,35 +315,50 @@ class TariLib {
     }
 
     func startExistingWallet(isBackgroundTask: Bool = false) throws {
-        if let privateKeyHex = UserDefaults.standard.string(forKey: PRIVATE_KEY_STORAGE_KEY) {
-            TariLogger.verbose("Database path: \(databasePath)")
-
-            let privateKey = try PrivateKey(hex: privateKeyHex)
-            let transport = try transportType()
-            let commsConfig = try CommsConfig(
-                privateKey: privateKey,
-                transport: transport,
-                databasePath: databasePath,
-                databaseName: DATABASE_NAME,
-                publicAddress: publicAddress,
-                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
-            )
-
-            var loggingFilePath = TariLib.shared.logFilePath
-            //So we can check the logs for sessions that happend in the background
-            if isBackgroundTask {
-                loggingFilePath = loggingFilePath.replacingOccurrences(of: ".txt", with: "-background.txt")
-            }
-
-            tariWallet = try Wallet(commsConfig: commsConfig, loggingFilePath: loggingFilePath)
-        } else {
-            throw TariLibErrors.privateKeyNotFound
+        guard let config = commsConfig else {
+            throw TariLibErrors.failedToCreateCommsConfig
         }
 
-        expirePendingTransactionsAfterSync()
+        var loggingFilePath = TariLib.shared.logFilePath
+        //So we can check the logs for sessions that happend in the background
+        if isBackgroundTask {
+            loggingFilePath = loggingFilePath.replacingOccurrences(of: ".txt", with: "-background.txt")
+        }
 
+        TariLogger.verbose("Database path: \(databaseDirectory.path)")
+
+        tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
+
+        expirePendingTransactionsAfterSync()
         backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
 
+        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
+
         baseNodeSyncCheck() //TODO remove when no longer needed
+    }
+
+    func restartWalletIfStopped() {
+        guard walletIsStopped else {
+            return
+        }
+
+        TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
+            guard let self = self else { return }
+
+            guard let config = self.commsConfig else {
+                TariLogger.error("Failed to get comms config", error: TariLibErrors.failedToCreateCommsConfig)
+                fatalError()
+            }
+
+            TariLogger.verbose("Restarting stopped wallet")
+
+            //Crash if we can't restart
+            self.tariWallet = try! Wallet(commsConfig: config, loggingFilePath: TariLib.shared.logFilePath)
+        }
+    }
+
+    func stopWallet() {
+        tariWallet = nil
+        walletIsStopped = true
     }
 }

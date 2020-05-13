@@ -74,11 +74,14 @@ class KeyServer {
     )
     private let signature: Signature
     private let url: URL
-    private let wallet: Wallet
     static var isRequestInProgress = false
     private static let secondUtxoStorageKey = "tari-available-utxo"
 
-    init(wallet: Wallet) throws {
+    init() throws {
+        guard let wallet = TariLib.shared.tariWallet else {
+            throw WalletErrors.walletNotInitialized
+        }
+
         let (publicKey, publicKeyError) = wallet.publicKey
         guard publicKeyError == nil else {
             throw publicKeyError!
@@ -91,12 +94,15 @@ class KeyServer {
 
         let message = "\(MESSAGE_PREFIX) \(publicKeyHex)"
 
-        self.wallet = wallet
         self.signature = try wallet.signMessage(message)
         self.url = URL(string: "\(TariSettings.shared.faucetServer)/free_tari/allocate_max/\(publicKeyHex)")!
     }
 
     func requestDrop(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
+        guard let wallet = TariLib.shared.tariWallet else {
+            return
+        }
+
         guard KeyServer.isRequestInProgress == false else {
             TariLogger.warn("Key server request already in progress")
             return
@@ -210,8 +216,8 @@ class KeyServer {
                 )
 
                 //Add TariBot as a contact
-                try self.wallet.addUpdateContact(alias: "TariBot", publicKeyHex: utxo.sourcePublicKeyHex)
-                try self.wallet.importUtxo(utxo)
+                try wallet.addUpdateContact(alias: "TariBot", publicKeyHex: utxo.sourcePublicKeyHex)
+                try wallet.importUtxo(utxo)
 
             } catch {
                 onRequestError(error)
@@ -249,6 +255,10 @@ class KeyServer {
     }
 
     private func hasSentATransaction() -> Bool {
+        guard let wallet = TariLib.shared.tariWallet else {
+            return false
+        }
+
         guard let (pendingOutboundTransactions) = wallet.pendingOutboundTransactions.0 else {
             TariLogger.error("Failed to load pendingOutboundTransactions")
             return false
@@ -283,6 +293,10 @@ class KeyServer {
     }
 
     func importSecondUtxo(onComplete: @escaping (() -> Void)) throws {
+        guard let wallet = TariLib.shared.tariWallet else {
+            return
+        }
+
         if let data = UserDefaults.standard.value(forKey: KeyServer.secondUtxoStorageKey) as? Data {
             guard hasSentATransaction() else {
                 return
@@ -292,7 +306,7 @@ class KeyServer {
                 let utxo = try PropertyListDecoder().decode(UTXO.self, from: data)
                 TariLogger.info("Importing stored 2nd utxo")
 
-                try self.wallet.importUtxo(utxo)
+                try wallet.importUtxo(utxo)
 
                 UserDefaults.standard.removeObject(forKey: KeyServer.secondUtxoStorageKey)
                 onComplete()
