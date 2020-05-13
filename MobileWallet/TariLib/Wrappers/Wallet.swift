@@ -242,6 +242,8 @@ class Wallet {
             let message = "Direct send lib callback. txID=\(txID)"
             if success {
                 TariLogger.verbose("\(message) ✅")
+                TariEventBus.postToMainThread(.transactionListUpdate)
+                TariEventBus.postToMainThread(.balanceUpdate)
             } else {
                 TariLogger.error("\(message) failure")
             }
@@ -252,6 +254,8 @@ class Wallet {
             let message = "Store and forward lib callback. txID=\(txID)"
             if success {
                 TariLogger.verbose("\(message) ✅")
+                TariEventBus.postToMainThread(.transactionListUpdate)
+                TariEventBus.postToMainThread(.balanceUpdate)
             } else {
                 TariLogger.error("\(message) failure")
             }

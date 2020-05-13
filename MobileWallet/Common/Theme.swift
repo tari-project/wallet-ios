@@ -134,6 +134,9 @@ struct Colors: Loopable {
     // Sending Tari
     let sendingTariTitle = UIColor(named: "SendingTariTitleText")
     let sendingTariBackground = UIColor(named: "SendingTariBackground")
+    let sendingTariPassiveProgressBackground = UIColor(named: "SendingTariPassiveProgressBackground")
+    let sendingTariActiveProgressBackground = UIColor(named: "SendingTariActiveProgressBackground")
+    let sendingTariProgress = UIColor(named: "SendingTariProgress")
 
     //Navigation bar
     let navigationBarTint = UIColor(named: "Heading")

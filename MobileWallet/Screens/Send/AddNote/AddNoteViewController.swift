@@ -178,7 +178,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             return
         }
 
-        guard let recipientPubKey = publicKey else {
+        guard let recipientPublicKey = publicKey else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Missing public key", comment: "Add note view"),
                 description: NSLocalizedString("Recipient public key not set", comment: "Add note view")
@@ -196,40 +196,22 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             return
         }
 
-        sendTransaction(wallet, recipientPubKey: recipientPubKey, recipientAmount: recipientAmount) { (success) in
-            if !success {
-                sender.resetStateWithAnimation(true)
-            }
-        }
+        sendTransaction(
+            wallet,
+            recipientPublicKey: recipientPublicKey,
+            amount: recipientAmount
+        )
     }
 
-    private func sendTransaction(_ wallet: Wallet, recipientPubKey: PublicKey, recipientAmount: MicroTari, onCompletion: (Bool) -> Void) {
+    private func sendTransaction(_ wallet: Wallet,
+                                 recipientPublicKey: PublicKey,
+                                 amount: MicroTari) {
         //Init first so it starts listening for a callback right away
         let sendingVC = SendingTariViewController()
-        sendingVC.tariAmount = amount
-        sendingVC.recipientPubKey = recipientPubKey
-        sendingVC.startListeningForStoreAndForward()
-
-        TariLogger.info("Sending transaction.")
-        do {
-            let txId = try wallet.sendTransaction(
-                destination: recipientPubKey,
-                amount: recipientAmount,
-                fee: wallet.calculateTransactionFee(recipientAmount),
-                message: noteText
-            )
-
-            self.navigationController?.pushViewController(sendingVC, animated: false)
-            onCompletion(true)
-        } catch {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Transaction failed", comment: "Add note view"),
-                description: NSLocalizedString("Could not send transaction to recipient", comment: "Add note view"),
-                error: error
-            )
-
-            onCompletion(false)
-        }
+        sendingVC.note = noteText
+        sendingVC.recipientPubKey = recipientPublicKey
+        sendingVC.amount = amount
+        self.navigationController?.pushViewController(sendingVC, animated: false)
     }
 }
 
