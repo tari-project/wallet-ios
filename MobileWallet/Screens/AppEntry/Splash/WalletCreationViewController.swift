@@ -213,11 +213,15 @@ class WalletCreationViewController: UIViewController {
         thirdLabel.translatesAutoresizingMaskIntoConstraints = false
         thirdLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor,
                                             constant: 0).isActive = true
-        thirdLabelLeadingConstant = thirdLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                                               constant: 10)
+        thirdLabelLeadingConstant = thirdLabel.leadingAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        )
         thirdLabelLeadingConstant?.isActive = true
-        thirdLabelTrailingConstant = thirdLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                                                constant: -10)
+        thirdLabelTrailingConstant = thirdLabel.trailingAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        )
         thirdLabelTrailingConstant?.isActive = true
         thirdLabel.topAnchor.constraint(equalTo: secondLabelBottom.bottomAnchor, constant: 18).isActive = true
     }
@@ -638,7 +642,7 @@ class WalletCreationViewController: UIViewController {
             self.arrowImageView.alpha = 1.0
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self?.userEmojiContainer.shrink(completion: { [weak self] in
                     self?.tapToSeeFullEmojiButton.alpha = 1.0
                 })
