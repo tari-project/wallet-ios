@@ -153,8 +153,6 @@ class AnimatedRefreshingView: UIView {
         currentInnerViewBottomAnchor = currentInnerView.bottomAnchor.constraint(equalTo: bottomAnchor)
         currentInnerViewBottomAnchor.isActive = true
 
-        heightAnchor.constraint(equalToConstant: AnimatedRefreshingView.containerHeight).isActive = true
-
         if !visible {
             alpha = 0
         }

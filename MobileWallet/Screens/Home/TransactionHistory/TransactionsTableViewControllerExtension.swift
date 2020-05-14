@@ -80,6 +80,7 @@ extension TransactionsTableViewController {
             animatedRefresher.topAnchor.constraint(equalTo: sectionHeaderView.topAnchor).isActive = true
             animatedRefresher.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
             animatedRefresher.trailingAnchor.constraint(equalTo: sectionHeaderView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+            animatedRefresher.heightAnchor.constraint(equalToConstant: 48).isActive = true
 
             sectionHeaderView.heightAnchor.constraint(equalToConstant: 90).isActive = true
         }

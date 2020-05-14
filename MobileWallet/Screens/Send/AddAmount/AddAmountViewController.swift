@@ -135,11 +135,6 @@ class AddAmountViewController: UIViewController {
             return
         }
 
-        guard totalMicroTari!.rawValue != 0 else {
-            continueButton.variation = .disabled
-            return
-        }
-
         if totalMicroTari!.rawValue < microTariAmount.rawValue {
             showBalanceExceeded(balance: totalMicroTari!.formatted)
             continueButton.variation = .disabled
@@ -227,7 +222,6 @@ class AddAmountViewController: UIViewController {
         hideTransactionFee()
 
         let isValidValue = isValidNumber(string: rawInput, finalNumber: true)
-        continueButton.variation = isValidValue ? .normal : .disabled
 
         if balanceCheckTimer != nil {
             balanceCheckTimer?.invalidate()

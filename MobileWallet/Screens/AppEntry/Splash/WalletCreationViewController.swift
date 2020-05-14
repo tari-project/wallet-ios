@@ -132,6 +132,7 @@ class WalletCreationViewController: UIViewController {
 
     private func updateConstraintsNerdAnimationView() {
         nerdAnimationView = AnimationView()
+        nerdAnimationView.backgroundBehavior = .pauseAndRestore
         view.addSubview(nerdAnimationView)
         nerdAnimationView.translatesAutoresizingMaskIntoConstraints = false
         nerdAnimationView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
@@ -182,6 +183,7 @@ class WalletCreationViewController: UIViewController {
 
     private func updateConstraintsAnimationView() {
         checkmarkAnimationView = AnimationView()
+        checkmarkAnimationView.backgroundBehavior = .pauseAndRestore
         view.addSubview(checkmarkAnimationView)
         checkmarkAnimationView.translatesAutoresizingMaskIntoConstraints = false
         checkmarkAnimationView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
@@ -258,6 +260,7 @@ class WalletCreationViewController: UIViewController {
 
     private func updateConstraintsEmojiWheelView() {
         emojiWheelView = AnimationView()
+        emojiWheelView.backgroundBehavior = .pauseAndRestore
         view.addSubview(emojiWheelView)
         emojiWheelView.translatesAutoresizingMaskIntoConstraints = false
         emojiWheelView.centerXAnchor.constraint(equalTo: view.centerXAnchor,
@@ -274,7 +277,7 @@ class WalletCreationViewController: UIViewController {
 
     private func updateConstraintsAccessAnimationView() {
         accessAnimationView = AnimationView()
-
+        accessAnimationView.backgroundBehavior = .pauseAndRestore
         radialGradient.gradienLayer.transform = CATransform3DMakeScale(0.75, 0.9, 0.7)
         radialGradient.gradienLayer.locations = [0.0, 0.7]
         radialGradient.gradienLayer.opacity = 0.2
@@ -984,7 +987,7 @@ class WalletCreationViewController: UIViewController {
 
                     let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
                     if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
-                        nav.modalPresentationStyle = .overFullScreen
+                        nav.modalPresentationStyle = .fullScreen
                         self.present(nav, animated: true, completion: nil)
                     }
 
