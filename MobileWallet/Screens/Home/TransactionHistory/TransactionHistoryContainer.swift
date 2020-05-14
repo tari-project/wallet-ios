@@ -70,12 +70,7 @@ extension TransactionHistoryContainer {
     private func setupContainer() {
         view.addSubview(viewContainer)
         viewContainer.clipsToBounds = false
-        viewContainer.translatesAutoresizingMaskIntoConstraints = false
-
-        viewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        viewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        viewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        viewContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 48).isActive = true
+        viewContainer.frame = CGRect(x: 0, y: 48, width: view.bounds.width, height: view.bounds.height - 48)
     }
 
     private func addChild() {

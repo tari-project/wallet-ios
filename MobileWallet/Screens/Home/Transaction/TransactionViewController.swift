@@ -315,6 +315,7 @@ class TransactionViewController: UIViewController {
         self.txStateViewBottomAnchor.isActive = true
         self.txStateView.leadingAnchor.constraint(equalTo: self.navigationBar.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         self.txStateView.trailingAnchor.constraint(equalTo: self.navigationBar.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        self.txStateView.heightAnchor.constraint(equalToConstant: 48).isActive = true
 
         self.txStateView.setupView(defaultState, visible: true)
 
