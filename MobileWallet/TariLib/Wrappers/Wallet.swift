@@ -100,6 +100,18 @@ class Wallet {
         return (result, nil)
     }
 
+    var cancelledTransactions: (CompletedTransactions?, Error?) {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            CompletedTransactions(completedTransactionsPointer: wallet_get_cancelled_transactions(ptr, error))
+
+        })
+        guard errorCode == 0 else {
+            return (nil, WalletErrors.generic(errorCode))
+        }
+        return (result, nil)
+    }
+
     var pendingOutboundTransactions: (PendingOutboundTransactions?, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
