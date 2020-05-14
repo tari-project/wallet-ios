@@ -116,7 +116,6 @@ class ScanViewController: UIViewController {
         titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
         titleLabel.topAnchor.constraint(equalTo: backButton.bottomAnchor,
                                         constant: 76.5).isActive = true
-        titleLabel.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
 
     private func updateConstraintsMiddleView() {
