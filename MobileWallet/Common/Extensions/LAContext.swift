@@ -45,29 +45,22 @@ extension LAContext {
         case none
         case touchID
         case faceID
+        case pin
     }
 
     var biometricType: BiometricType {
-        var error: NSError?
-
-        guard self.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
-            // Capture these recoverable error thru Crashlytics
-            return .none
-        }
-
-        if #available(iOS 11.0, *) {
-            switch self.biometryType {
-            case .none:
-                return .none
-            case .touchID:
-                return .touchID
-            case .faceID:
-                return .faceID
-            @unknown default:
-                fatalError()
+        if  self.canEvaluatePolicy(.deviceOwnerAuthentication, error: nil) {
+            if  self.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
+                if biometryType == .faceID {
+                    return .faceID
+                }
+                if biometryType == .touchID {
+                    return .touchID
+                }
             }
+            return .pin
         } else {
-            return  self.canEvaluatePolicy(.deviceOwnerAuthentication, error: nil) ? .touchID : .none
+            return .none
         }
     }
 }

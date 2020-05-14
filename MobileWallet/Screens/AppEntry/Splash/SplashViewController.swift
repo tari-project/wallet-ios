@@ -71,6 +71,9 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     var maskBackgroundView = UIView()
     var disclaimerText = UITextView()
     private let progressFeedbackView = FeedbackView()
+    private lazy var authStepPassed: Bool = {
+        UserDefaults.standard.bool(forKey: "authStepPassed")
+    }()
 
     // MARK: - Override functions
     override func viewDidLoad() {
@@ -239,12 +242,15 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         onSuccess()
         return
         #endif
-        let authPolicy: LAPolicy = .deviceOwnerAuthentication
 
-        var error: NSError?
-        if localAuthenticationContext.canEvaluatePolicy(authPolicy, error: &error) {
-                let reason = "Log in to your account"
-                self.localAuthenticationContext.evaluatePolicy(authPolicy, localizedReason: reason ) { [weak self] success, error in
+        switch localAuthenticationContext.biometricType {
+        case .faceID, .touchID, .pin:
+            let policy: LAPolicy = localAuthenticationContext.biometricType == .pin ? .deviceOwnerAuthentication : .deviceOwnerAuthenticationWithBiometrics
+            let reason = "Log in to your account"
+            localAuthenticationContext.evaluatePolicy(policy, localizedReason: reason) {
+                [weak self] success, error in
+
+                DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
                     if success {
                         if let _ = self.ticketTopLayoutConstraint {
@@ -267,24 +273,33 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                         }
                     }
                 }
-        } else {
-            let reason = error?.localizedDescription ?? NSLocalizedString("No available biometrics available", comment: "Failed Face ID alert")
-            TariLogger.error("Biometrics unavailable", error: error)
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.authenticationFailedAlertOptions(reason: reason, onSuccess: onSuccess)
             }
+        case .none:
+            let alert = UIAlertController(title: NSLocalizedString("Authentication Error", comment: "No biometric or passcode") ,
+                                          message: NSLocalizedString("Tari Aurora was not able to authenticate you. Do you still want to proceed?", comment: "No biometric or passcode"),
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"),
+                                          style: .cancel,
+                                          handler: { [weak self] _ in
+                                            self?.authenticateUser(onSuccess: onSuccess)
+            }))
+
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Proceed", comment: "Proceed button"), style: .default, handler: { _ in
+                onSuccess()
+            }))
+
+            self.present(alert, animated: true, completion: nil)
         }
     }
 
     private func authenticationFailedAlertOptions(reason: String, onSuccess: @escaping () -> Void) {
-        let alert = UIAlertController(title: "Authentication failed", message: reason, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Try again", style: .default, handler: { [weak self] _ in
+        let alert = UIAlertController(title: NSLocalizedString("Authentication failed", comment: "Auth failed"), message: reason, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"), style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
             self.authenticateUser(onSuccess: onSuccess)
         }))
 
-        alert.addAction(UIAlertAction(title: "Open settings", style: .default, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Open settings", comment: "Open settings button"), style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
             self.openAppSettings()
         }))
@@ -315,7 +330,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func navigateToHome() {
-        if walletExistsInitially {
+        if walletExistsInitially && authStepPassed {
             //Calling this here in case they did not succesfully register the token in the onboarding
             NotificationManager.shared.requestAuthorization()
 
@@ -336,6 +351,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             }
         } else {
             let vc = WalletCreationViewController()
+            vc.startFromLocalAuth = !authStepPassed && walletExistsInitially
+
             vc.modalPresentationStyle = .fullScreen
             if let window = view.window {
                 window.layer.add(Theme.shared.transitions.pullDownOpen, forKey: kCATransition)

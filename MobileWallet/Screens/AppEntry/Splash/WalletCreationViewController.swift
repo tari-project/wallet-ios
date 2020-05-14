@@ -53,6 +53,7 @@ enum WalletCreationState {
 class WalletCreationViewController: UIViewController {
     // MARK: - Variables and constants
     var state: WalletCreationState = .createEmojiId
+    var startFromLocalAuth: Bool = false
     var player: AVQueuePlayer!
     var playerLayer: AVPlayerLayer!
     var playerItem: AVPlayerItem!
@@ -80,6 +81,7 @@ class WalletCreationViewController: UIViewController {
     var topWhiteView: UIView!
     var bottomWhiteView: UIView!
     var emojiWheelView: AnimationView!
+    var numpadImageView: UIImageView!
     var nerdAnimationView: AnimationView!
     var checkmarkAnimationView: AnimationView!
     var videoView: UIView!
@@ -101,10 +103,16 @@ class WalletCreationViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        displaySecondLabelAnimation()
-        //firstLabelAnimation() //TODO remove code for animating the first label if we're keeping it left out permanently
-        setupVideoAnimation()
+        if startFromLocalAuth {
+            state = .showEmojiId
+            onNavigateNext()
+            createEmojiButtonConstraint?.isActive = false
+            createEmojiButtonSecondConstraint?.isActive = true
+        } else {
+            displaySecondLabelAnimation()
+            //firstLabelAnimation() //TODO remove code for animating the first label if we're keeping it left out permanently
+            setupVideoAnimation()
+        }
     }
 
     // MARK: - Private functions
@@ -294,6 +302,18 @@ class WalletCreationViewController: UIViewController {
         radialGradientViewDistanceToYCenter?.isActive = true
     }
 
+    private func updateConstraintsNumpadImageView() {
+        numpadImageView = UIImageView()
+        numpadImageView.image = Theme.shared.images.createWalletNumpad!
+        numpadImageView.isHidden = true
+        accessAnimationView.addSubview(numpadImageView)
+        numpadImageView.translatesAutoresizingMaskIntoConstraints = false
+        numpadImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        numpadImageView.centerYAnchor.constraint(equalTo: accessAnimationView.centerYAnchor).isActive = true
+        numpadImageView.heightAnchor.constraint(equalTo: accessAnimationView.heightAnchor).isActive = true
+        numpadImageView.widthAnchor.constraint(equalTo: accessAnimationView.widthAnchor, multiplier: 0.9).isActive = true
+    }
+
     private func updateConstraintsUserEmojiContainer() {
         userEmojiContainer = EmoticonView()
         userEmojiContainer.alpha = 0.0
@@ -371,6 +391,7 @@ class WalletCreationViewController: UIViewController {
         updateConstraintsEmojiButton()
         updateConstraintsEmojiWheelView()
         updateConstraintsAccessAnimationView()
+        updateConstraintsNumpadImageView()
         updateConstraintsUserEmojiContainer()
         updateConstraintsTapToSeeFullEmoji()
         updateConstraintsVideoView()
@@ -590,6 +611,11 @@ class WalletCreationViewController: UIViewController {
             }
         )
     }
+    
+    private func showNumpadView() {
+        radialGradient.isHidden = true
+        numpadImageView.isHidden = false
+    }
 
     private func showCreateYourEmojiIdScreen() {
         self.secondLabelTop.alpha = 1.0
@@ -656,14 +682,13 @@ class WalletCreationViewController: UIViewController {
 
         let currentType = LAContext().biometricType
         switch currentType {
-            case .faceID:
-                updateConstraintsForFaceIDAnimation()
-                runFaceIDAnimation()
-            case .touchID:
-                runTouchIdAnimation()
-            case .none:
-                //TODO secure with pin
-                TariLogger.error("No biometrics available")
+        case .faceID:
+            updateConstraintsForFaceIDAnimation()
+            runFaceIDAnimation()
+        case .touchID:
+            runTouchIdAnimation()
+        case .pin, .none:
+            showNumpadView()
         }
 
         UIView.animate(withDuration: 1.0) { [weak self] in
@@ -698,6 +723,7 @@ class WalletCreationViewController: UIViewController {
             self.secondLabelBottom.alpha = 0.0
             self.thirdLabel.alpha = 0.0
             self.accessAnimationView.alpha = 0.0
+            self.numpadImageView.alpha = 0.0
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in
             guard let self = self else { return }
@@ -707,6 +733,7 @@ class WalletCreationViewController: UIViewController {
                 self.updateLabelsForEnablingNotifications()
                 self.accessAnimationView.stop()
                 self.showEnableNotifications()
+                self.radialGradient.isHidden = false
             }
         }
     }
@@ -867,7 +894,7 @@ class WalletCreationViewController: UIViewController {
             self.createEmojiButton.setTitle(NSLocalizedString("Secure with Face ID", comment: "Enable authentication on wallet creation"), for: .normal)
         case .touchID:
             self.createEmojiButton.setTitle(NSLocalizedString("Secure with Touch ID", comment: "Enable authentication on wallet creation"), for: .normal)
-        case .none:
+        case .pin, .none:
             self.createEmojiButton.setTitle(NSLocalizedString("Secure with Pin", comment: "Enable authentication on wallet creation"), for: .normal)
         }
     }
@@ -908,13 +935,13 @@ class WalletCreationViewController: UIViewController {
             }
         case .localAuthentication:
             let context = LAContext()
-            var error: NSError?
+            let reason = secondLabelTop.text ?? ""
 
-            if context.canEvaluatePolicy(.deviceOwnerAuthentication,
-                                         error: &error) {
-                let reason = secondLabelTop.text ?? ""
+            switch context.biometricType {
+            case .faceID, .touchID, .pin:
+                let policy: LAPolicy = context.biometricType == .pin ? .deviceOwnerAuthentication : .deviceOwnerAuthenticationWithBiometrics
 
-                context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason) {
+                context.evaluatePolicy(policy, localizedReason: reason) {
                     [weak self] success, _ in
 
                     DispatchQueue.main.async { [weak self] in
@@ -924,28 +951,33 @@ class WalletCreationViewController: UIViewController {
 
                             Tracker.shared.track("/onboarding/enable_local_auth", "Onboarding - Enable Local Authentication")
                         } else {
-                            let alert = UIAlertController(title: "There was an error",
+                            let alert = UIAlertController(title: NSLocalizedString("There was an error", comment: "Auth failed"),
                                                           message: "",
                                                           preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: "Try again",
+                            alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"),
                                                           style: .default,
                                                           handler: nil))
-
+                            
                             self.present(alert, animated: true, completion: nil)
                         }
                     }
                 }
-            } else {
-                let alert = UIAlertController(title: "There is no biometry",
-                                              message: "",
+            case .none:
+                let alert = UIAlertController(title: NSLocalizedString("Authentication Error", comment: "No biometric or passcode"),
+                                              message: NSLocalizedString("Tari Aurora was not able to authenticate you. Do you still want to proceed?", comment: "No biometric or passcode"),
                                               preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "Ok",
-                                              style: .default,
+                alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel button"),
+                                              style: .cancel,
                                               handler: nil))
-
+                
+                alert.addAction(UIAlertAction(title: NSLocalizedString("Proceed", comment: "Proceed button"), style: .default, handler: { [weak self] _ in
+                    self?.hideLocalAuthentification()
+                }))
+                
                 self.present(alert, animated: true, completion: nil)
             }
         case .enableNotifications:
+            UserDefaults.standard.set(true, forKey: "authStepPassed")
             NotificationManager.shared.requestAuthorization {_ in
                 DispatchQueue.main.async {
                     Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")

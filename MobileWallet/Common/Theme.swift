@@ -298,6 +298,7 @@ struct Images: Loopable {
     let createWalletFaceID = UIImage(named: "faceId")
     let createWalletNofications = UIImage(named: "bell7")
     let createWalletDownArrow = UIImage(named: "notch_down")
+    let createWalletNumpad = UIImage(named: "numpad")
 
     //Transaction icons
     let food = UIImage(named: "food")
