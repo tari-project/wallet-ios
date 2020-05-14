@@ -255,3 +255,15 @@ class PublicKey {
         public_key_destroy(ptr)
     }
 }
+
+extension PublicKey: Equatable {
+    static func == (lhs: PublicKey, rhs: PublicKey) -> Bool {
+        return lhs.hex.0 == rhs.hex.0
+    }
+}
+
+extension PublicKey: Hashable {
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(hex.0)
+    }
+}

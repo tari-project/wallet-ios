@@ -43,6 +43,7 @@ import UIKit
 protocol ContactsTableDelegate: class {
     func onScrollTopHit(_: Bool)
     func onSelect(contact: Contact)
+    func onSelect(publicKey: PublicKey)
 }
 
 class ContactsTableViewController: UITableViewController {
@@ -51,14 +52,19 @@ class ContactsTableViewController: UITableViewController {
     var filter: String = "" {
         didSet {
             if filter.isEmpty {
-                filteredRecentContactList =  recentContactList
+                filteredRecentPublicKeyList =  recentContactList
                 filteredContactList = contactList
             } else {
 
-                filteredRecentContactList = recentContactList.filter {
-                    ($0.publicKey.0?.emojis.0.localizedCaseInsensitiveContains(filter.emojiString))!
-                    || $0.alias.0.localizedCaseInsensitiveContains(filter)
-                }
+                filteredRecentPublicKeyList = recentContactList.filter({ (publicKey) -> Bool in
+                    guard let wallet = TariLib.shared.tariWallet,
+                    let existContact = wallet.contacts.0?.list.0.filter({ $0.publicKey.0 == publicKey}).first
+                    else {
+                        return publicKey.emojis.0.localizedCaseInsensitiveContains(filter.emojiString)
+                    }
+
+                    return existContact.alias.0.localizedCaseInsensitiveContains(filter)
+                })
 
                 filteredContactList = contactList.filter {
                     ($0.publicKey.0?.emojis.0.localizedCaseInsensitiveContains(filter.emojiString))!
@@ -70,9 +76,9 @@ class ContactsTableViewController: UITableViewController {
         }
     }
 
-    private var recentContactList: [Contact] = []
+    private var recentContactList: [PublicKey] = []
     private var contactList: [Contact] = []
-    private var filteredRecentContactList: [Contact] = []
+    private var filteredRecentPublicKeyList: [PublicKey] = []
     private var filteredContactList: [Contact] = []
 
     private let CELL_IDENTIFIER = "CONTACT_CELL"
@@ -133,11 +139,12 @@ class ContactsTableViewController: UITableViewController {
         }
 
         contactList = list
-        recentContactList = try contacts!.recentContacts(wallet: wallet, limit: 3)
+
+        recentContactList = try wallet.recentPublicKeys(limit: 3)
 
         //Filtered lists are full lists by default
         filteredContactList = contactList
-        filteredRecentContactList = recentContactList
+        filteredRecentPublicKeyList = recentContactList
 
         tableView.reloadData()
     }
@@ -150,7 +157,7 @@ class ContactsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return filteredRecentContactList.count
+            return filteredRecentPublicKeyList.count
         }
 
         return filteredContactList.count
@@ -164,7 +171,7 @@ class ContactsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath) as! ContactCell
 
         if indexPath.section == 0 {
-            cell.setContact(filteredRecentContactList[indexPath.row])
+            cell.setPublicKey(filteredRecentPublicKeyList[indexPath.row])
         } else if indexPath.section == 1 {
             cell.setContact(filteredContactList[indexPath.row])
         }
@@ -174,7 +181,7 @@ class ContactsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         //If there's no data in a section, don't show anything
-        if (section == 0 && filteredRecentContactList.count == 0) || (section == 1 && filteredContactList.count == 0) {
+        if (section == 0 && filteredRecentPublicKeyList.count == 0) || (section == 1 && filteredContactList.count == 0) {
             return UIView()
         }
 
@@ -210,7 +217,7 @@ class ContactsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.section == 0 {
-            actionDelegate?.onSelect(contact: filteredRecentContactList[indexPath.row])
+            actionDelegate?.onSelect(publicKey: filteredRecentPublicKeyList[indexPath.row])
         } else if indexPath.section == 1 {
             actionDelegate?.onSelect(contact: filteredContactList[indexPath.row])
         }
@@ -228,6 +235,6 @@ class ContactsTableViewController: UITableViewController {
     }
 
     func isEmptyList() -> Bool {
-        return (filteredRecentContactList.count + filteredContactList.count) < 1
+        return (filteredRecentPublicKeyList.count + filteredContactList.count) < 1
     }
 }
