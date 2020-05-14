@@ -614,7 +614,7 @@ class WalletCreationViewController: UIViewController {
             }
         )
     }
-    
+
     private func showNumpadView() {
         radialGradient.isHidden = true
         numpadImageView.isHidden = false
@@ -960,7 +960,7 @@ class WalletCreationViewController: UIViewController {
                             alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"),
                                                           style: .default,
                                                           handler: nil))
-                            
+
                             self.present(alert, animated: true, completion: nil)
                         }
                     }
@@ -972,11 +972,11 @@ class WalletCreationViewController: UIViewController {
                 alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel button"),
                                               style: .cancel,
                                               handler: nil))
-                
+
                 alert.addAction(UIAlertAction(title: NSLocalizedString("Proceed", comment: "Proceed button"), style: .default, handler: { [weak self] _ in
                     self?.hideLocalAuthentification()
                 }))
-                
+
                 self.present(alert, animated: true, completion: nil)
             }
         case .enableNotifications:
