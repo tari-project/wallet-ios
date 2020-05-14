@@ -118,11 +118,28 @@ class ContactCell: UITableViewCell {
         aliasLabel.heightAnchor.constraint(equalToConstant: aliasLabel.font.pointSize * 1.15).isActive = true
     }
 
+    func setPublicKey(_ publicKey: PublicKey) {
+        guard let wallet = TariLib.shared.tariWallet else { return }
+        do {
+            guard let contact = try wallet.contacts.0?.find(publicKey: publicKey) else { return }
+            setContact(contact)
+        } catch {
+            let emojis = publicKey.emojis.0
+            aliasLabel.textColor = Theme.shared.colors.emojisSeparator!
+            aliasLabel.text = "\(emojis.prefix(3))•••\(emojis.suffix(3))"
+            contactLetter.text = "?"
+        }
+
+    }
+
     func setContact(_ contact: Contact) {
         let (alias, _) = contact.alias
         var aliasDisplay = alias
         if aliasDisplay.isEmpty, let emojis = contact.publicKey.0?.emojis.0 {
-            aliasDisplay = "\(emojis.prefix(3))...\(emojis.suffix(3))"
+            aliasLabel.textColor = Theme.shared.colors.emojisSeparator!
+            aliasDisplay = "\(emojis.prefix(3))•••\(emojis.suffix(3))"
+        } else {
+            aliasLabel.textColor = Theme.shared.colors.contactCellAlias
         }
 
         aliasLabel.text = aliasDisplay

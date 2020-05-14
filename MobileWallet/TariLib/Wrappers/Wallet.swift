@@ -571,6 +571,39 @@ class Wallet {
         }
     }
 
+    func recentPublicKeys(limit: Int) throws -> [PublicKey] {
+        let completedPublicKeys = try transactionsPublicKeys(completedTransactions, limit: limit)
+        let pendingInboundPublicKeys = try transactionsPublicKeys(pendingInboundTransactions, limit: limit)
+        let pendingOutboundPublicKeys = try transactionsPublicKeys(pendingOutboundTransactions, limit: limit)
+
+        return completedPublicKeys.union(pendingInboundPublicKeys).union(pendingOutboundPublicKeys).suffix(limit)
+    }
+
+    private func transactionsPublicKeys<Transactions: TransactionsProtocol>(_ transactions: (txs: Transactions?, txsError: Error?), limit: Int) throws -> Set<PublicKey> {
+        guard let txs = transactions.txs else { throw transactions.txsError! }
+
+        let (txsCount, txsCountError) = txs.count
+        guard txsCountError == nil else { throw txsCountError! }
+
+        var publicKeys: Set<PublicKey> = []
+
+        if txsCount > 0 {
+            for n in 0...txsCount - 1 {
+                if publicKeys.count >= limit {
+                    return publicKeys
+                }
+                let tx = try txs.at(position: UInt32(n))
+                let (publicKey, pubKeyError) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
+                guard let pubKey = publicKey, pubKeyError == nil else {
+                    throw pubKeyError!
+                }
+                publicKeys.insert(pubKey)
+            }
+        }
+
+        return publicKeys
+    }
+
     deinit {
         wallet_destroy(ptr)
     }

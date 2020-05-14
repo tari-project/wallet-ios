@@ -206,7 +206,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                     dismissKeyboard()
                 }
 
-                onSelect(publicKey: pubKey)
+                select(publicKey: pubKey)
                 setInputText(publicKey: pubKey)
             } catch {
                 if selectedRecipientPublicKey != nil {
@@ -488,7 +488,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         }
     }
 
-    func onSelect(publicKey: PublicKey) {
+    private func select(publicKey: PublicKey) {
         //This can be triggered by the paste emoji function as well as the input box, this stops everything for triggering multipe times
         guard selectedRecipientPublicKey?.hex.0 != publicKey.hex.0 else {
             return
@@ -505,6 +505,10 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
             return
         }
         onSelect(publicKey: publicKey!)
+    }
+
+    func onSelect(publicKey: PublicKey) {
+        select(publicKey: publicKey)
         dismissKeyboard()
         onContinue()
     }
@@ -512,7 +516,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     //Used by the scanner and paste from clipboard
     func onAdd(publicKey: PublicKey) {
         contactsTableVC.filter = publicKey.emojis.0
-        onSelect(publicKey: publicKey)
+        select(publicKey: publicKey)
         setInputText(publicKey: publicKey)
         dismissKeyboard()
     }

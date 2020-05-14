@@ -78,7 +78,10 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             return
         }
 
-        guard let contact = wallet.contacts.0?.list.0.filter({ $0.publicKey.0?.hex.0 == pubKey.hex.0}).first  else {
+        do {
+            guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
+            title = contact.alias.0
+        } catch {
             do {
                 try showNavbarEmojies(pubKey)
             } catch {
@@ -88,9 +91,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
                     error: error
                 )
             }
-            return
         }
-        title = contact.alias.0
     }
 
     override func viewDidAppear(_ animated: Bool) {
