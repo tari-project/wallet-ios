@@ -90,6 +90,9 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
     }
 
     private func showTariLibLogs() {
+        if navigationController?.topViewController is DebugLogsTableViewController {
+            return
+        }
         let logsVC = DebugLogsTableViewController()
 
         self.navigationController?.view.layer.add(Theme.shared.transitions.pullDownOpen, forKey: kCATransition)
