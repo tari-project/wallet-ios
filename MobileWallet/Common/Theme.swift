@@ -127,8 +127,10 @@ struct Colors: Loopable {
     let transactionCellDescription = UIColor(named: "TransactionCellDescription")
     let transactionCellValueNegativeBackground = UIColor(named: "TransactionCellValueNegativeBackground")
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
+    let transactionCellValueCancelledBackground = UIColor(named: "TransactionCellValueCancelledBackground")
     let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
+    let transactionCellValueCancelledText = UIColor(named: "TransactionCellValueCancelledText")
     let transactionSmallSubheadingLabel = UIColor(named: "SmallSubheading")
 
     // Sending Tari

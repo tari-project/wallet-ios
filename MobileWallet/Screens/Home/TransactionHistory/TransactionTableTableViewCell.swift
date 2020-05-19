@@ -85,9 +85,13 @@ class TransactionTableTableViewCell: UITableViewCell {
         selectionStyle = .none
     }
 
-    private func setValue(microTari: MicroTari?, direction: TransactionDirection) {
+    private func setValue(microTari: MicroTari?, direction: TransactionDirection, isCancelled: Bool = false) {
         if let mt = microTari {
-            if direction == .inbound {
+            if isCancelled {
+                valueLabel.text = mt.formatted
+                valueLabel.backgroundColor = Theme.shared.colors.transactionCellValueCancelledBackground
+                valueLabel.textColor = Theme.shared.colors.transactionCellValueCancelledText
+            } else if direction == .inbound {
                 valueLabel.text = mt.formattedWithOperator
                 valueLabel.backgroundColor = Theme.shared.colors.transactionCellValuePositiveBackground
                 valueLabel.textColor = Theme.shared.colors.transactionCellValuePositiveText
@@ -133,7 +137,7 @@ class TransactionTableTableViewCell: UITableViewCell {
 
     func setDetails(completedTransaction: CompletedTransaction) {
         setMessage(completedTransaction.message.0)
-        setValue(microTari: completedTransaction.microTari.0, direction: completedTransaction.direction)
+        setValue(microTari: completedTransaction.microTari.0, direction: completedTransaction.direction, isCancelled: completedTransaction.isCancelled)
         if let contact = completedTransaction.contact.0 {
             setAlias(contact)
         } else {

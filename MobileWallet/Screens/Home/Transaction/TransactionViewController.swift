@@ -163,6 +163,10 @@ class TransactionViewController: UIViewController {
             return defaultNavBarHeight
         }
 
+        guard !isCancelled else {
+            return defaultNavBarHeight
+        }
+
         switch tx.status.0 {
         case .mined, .imported, .transactionNullError, .unknown:
             return defaultNavBarHeight
@@ -175,6 +179,14 @@ class TransactionViewController: UIViewController {
         }
 
         return defaultNavBarHeight + navBarStatusHeight
+    }
+
+    var isCancelled: Bool {
+        if let completedTx = transaction as? CompletedTransaction {
+            return completedTx.isCancelled
+        }
+
+        return false
     }
 
     override func viewDidLoad() {
@@ -357,6 +369,10 @@ class TransactionViewController: UIViewController {
             return
         }
 
+        guard !isCancelled else {
+            return
+        }
+
         var newState: AnimatedRefreshingViewState?
 
         switch tx.status.0 {
@@ -471,7 +487,9 @@ class TransactionViewController: UIViewController {
                 setFeeLabel(fee!.formattedPreciseWithOperator)
             }
 
-            if tx.status.0 != .mined && tx.status.0 != .imported {
+            if isCancelled {
+                navigationBar.title = NSLocalizedString("Payment cancelled", comment: "Navigation bar title on transaction view screen")
+            } else if tx.status.0 != .mined && tx.status.0 != .imported {
                 navigationBar.title = NSLocalizedString("Payment In Progress", comment: "Navigation bar title on transaction view screen")
             }
 
@@ -509,7 +527,8 @@ class TransactionViewController: UIViewController {
             preferredStyle: .alert
         )
 
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Yes, cancel", comment: "TX details view"), style: .destructive, handler: { (_)in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Yes, cancel", comment: "TX details view"), style: .destructive, handler: { [weak self] (_) in
+            guard let self = self else { return }
             if let tx = self.transaction {
                 guard tx.status.0 == .pending && tx.direction == .outbound else {
                     UserFeedback.shared.error(
@@ -523,6 +542,19 @@ class TransactionViewController: UIViewController {
                     try TariLib.shared.tariWallet?.cancelPendingTransaction(tx)
 
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
+
+                    //Attempt to get the newly cancelled tx and reset the UI
+                    //TODO uncomment the below when the findCancelledTransactionBy PR is merged in
+//                    if let id = self.transaction?.id.0 {
+//                        if let cancelledTX = try? TariLib.shared.tariWallet?.findCancelledTransactionBy(id: id) {
+//                            self.transaction = cancelledTX
+//                            self.updateTxState()
+//                            try? self.setDetails()
+//                            return
+//                        }
+//                    }
+
+                    //If cancelled tx not found just go back to home view
                     self.navigationController?.popViewController(animated: true)
                 } catch {
                     UserFeedback.shared.error(

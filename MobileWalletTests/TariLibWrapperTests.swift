@@ -240,7 +240,7 @@ class TariLibWrapperTests: XCTestCase {
         
         // check wallet can sign a message and then verify the signature of the message it signed
         let msg = "Hello"
-        let signature = try! wallet.signMessage(msg);
+        let signature = try! wallet.signMessage(msg)
         
         do {
             let verification = try signature.isValid(wallet: wallet)
@@ -250,7 +250,6 @@ class TariLibWrapperTests: XCTestCase {
         } catch {
             XCTFail(error.localizedDescription)
         }
-        
         
         //MARK: Test data
         do {
@@ -383,14 +382,8 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertGreaterThan(availableBalance, 0)
         XCTAssertGreaterThan(pendingIncomingBalance, 0)
         XCTAssertGreaterThan(pendingOutgoingBalance, 0)
-        
-        let (completedTransactions, completedTransactionsError) = wallet.completedTransactions
-        guard completedTransactionsError == nil else {
-            TariLogger.error("Failed to load transactions", error: completedTransactionsError)
-            return
-        }
-        
-        let (groupedTransactions, groupedTransactionsError) = completedTransactions!.groupedByDate
+    
+        let (groupedTransactions, groupedTransactionsError) = wallet.groupedCompletedAndCancelledTransactions
         guard groupedTransactionsError == nil else {
             XCTFail("Failed to load grouped transactions: /(groupedTransactionsError!.localizedDescription)")
             return

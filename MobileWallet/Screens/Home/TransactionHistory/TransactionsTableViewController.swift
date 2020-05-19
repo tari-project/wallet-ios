@@ -269,18 +269,8 @@ class TransactionsTableViewController: UITableViewController {
             return
         }
 
-        //All completed txs
-        let (completedTransactions, completedTransactionsError) = wallet.completedTransactions
-        guard completedTransactionsError == nil else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
-                description: NSLocalizedString("Could not load completed transactions", comment: "Home screen"),
-                error: completedTransactionsError
-            )
-            return
-        }
-
-        let (groupedTransactions, groupedTransactionsError) = completedTransactions!.groupedByDate
+        //All completed/cancelled txs
+        let (groupedTransactions, groupedTransactionsError) = wallet.groupedCompletedAndCancelledTransactions
         guard groupedTransactionsError == nil else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
