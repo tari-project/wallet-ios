@@ -55,6 +55,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     private var pasteEmojisViewBottomAnchorConstraint = NSLayoutConstraint()
     private let dimView = UIView()
     private var currentTextInputContent = "" //Used to check if something actually changed to avoid unnecessary ffi calls
+    var deepLinkParams: DeepLinkParams?
 
     private var isEditingSearchBox: Bool = false {
         didSet {
@@ -463,6 +464,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     @objc private func onContinue() {
         let amountVC = AddAmountViewController()
         amountVC.publicKey = selectedRecipientPublicKey
+        amountVC.deepLinkParams = deepLinkParams
         self.navigationController?.pushViewController(amountVC, animated: true)
     }
 

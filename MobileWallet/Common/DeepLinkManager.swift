@@ -109,7 +109,8 @@ class DeeplinkNavigator {
             if let deeplink = link {
                 do {
                     let pubKey = try PublicKey(deeplink: deeplink)
-                    homeVC.onSend(pubKey: pubKey)
+                    let params = try DeepLinkParams(deeplink: deeplink)
+                    homeVC.onSend(pubKey: pubKey, deepLinkParams: params)
                 } catch {
                     UserFeedback.shared.error(
                         title: NSLocalizedString("Invalid link found", comment: "Deep link error"),

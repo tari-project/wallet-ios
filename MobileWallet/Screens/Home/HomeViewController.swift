@@ -412,13 +412,14 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         onSend()
     }
 
-    func onSend(pubKey: PublicKey? = nil) {
+    func onSend(pubKey: PublicKey? = nil, deepLinkParams: DeepLinkParams? = nil) {
         let sendVC = AddRecipientViewController()
 
         //This is used by the deep link manager
         if let publicKey = pubKey {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: { [weak self] in
                 guard let _ = self else { return }
+                sendVC.deepLinkParams = deepLinkParams
                 sendVC.onAdd(publicKey: publicKey)
             })
         }

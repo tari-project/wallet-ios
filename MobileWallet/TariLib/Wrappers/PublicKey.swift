@@ -169,7 +169,7 @@ class PublicKey {
 
     //Accepts deep links using either emoji ID or hex. i.e:
     //tari://rincewind/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱🖐🙀🤳🖖👍✊🐈☂💀👚😶🤟😳👢😘😺🙌🎩🤬🐼😎🥺
-    //tari://rincewind/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a
+    //tari://rincewind/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=2.3note=hi%20there
     convenience init(deeplink: String) throws {
         guard deeplink.hasPrefix("\(TariSettings.shared.deeplinkURI)://") else {
             throw PublicKeyError.invalidDeepLink
@@ -182,14 +182,14 @@ class PublicKey {
             throw PublicKeyError.invalidDeepLinkNetwork
         }
 
-        if deeplink.hasPrefix("\(deeplinkPrefix)/eid/") {
-            //TODO this might not work once we add url params for alias and amount
-            let emojis = deeplink.replacingOccurrences(of: "\(deeplinkPrefix)/eid/", with: "")
+        let strippedParamsLink = PublicKey.removeDeepURLParams(deeplink)
+
+        if strippedParamsLink.hasPrefix("\(deeplinkPrefix)/eid/") {
+            let emojis = strippedParamsLink.replacingOccurrences(of: "\(deeplinkPrefix)/eid/", with: "")
             try self.init(emojis: emojis)
             return
-        } else if deeplink.hasPrefix("\(deeplinkPrefix)/pubkey/") {
-            //TODO this might not work once we add url params for alias and amount
-            let hex = deeplink.replacingOccurrences(of: "\(deeplinkPrefix)/pubkey/", with: "")
+        } else if strippedParamsLink.hasPrefix("\(deeplinkPrefix)/pubkey/") {
+            let hex = strippedParamsLink.replacingOccurrences(of: "\(deeplinkPrefix)/pubkey/", with: "")
             try self.init(hex: hex)
             return
         }
@@ -227,6 +227,19 @@ class PublicKey {
 
     init(pointer: OpaquePointer) {
         ptr = pointer
+    }
+
+    private static func removeDeepURLParams(_ link: String) -> String {
+        guard let startIndex = link.lastIndex(of: "?") else {
+            return link
+        }
+
+        let endIndex = link.index(link.endIndex, offsetBy: -1)
+
+        var strippedLink = link
+        strippedLink.removeSubrange(startIndex...endIndex)
+
+        return strippedLink
     }
 
     private static func containsEmojis(_ text: String) -> Bool {

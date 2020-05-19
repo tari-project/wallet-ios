@@ -42,6 +42,7 @@ import UIKit
 
 class AddAmountViewController: UIViewController {
     var publicKey: PublicKey?
+    var deepLinkParams: DeepLinkParams?
     private var buttons = [UIButton]()
     private let continueButton = ActionButton(frame: .zero)
     private let amountLabel = AnimatedBalanceLabel()
@@ -79,6 +80,13 @@ class AddAmountViewController: UIViewController {
 
         guard let wallet = TariLib.shared.tariWallet, let pubKey = publicKey else {
             return
+        }
+
+        //Deep link value
+        if let params = deepLinkParams {
+            if params.amount.rawValue > 0 {
+                addCharacater(params.amount.formatted)
+            }
         }
 
         do {
@@ -373,6 +381,7 @@ class AddAmountViewController: UIViewController {
         let noteVC = AddNoteViewController()
         noteVC.publicKey = publicKey
         noteVC.amount = tariAmount
+        noteVC.deepLinkParams = deepLinkParams
 
         navigationController?.pushViewController(noteVC, animated: true)
     }

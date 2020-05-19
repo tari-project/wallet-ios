@@ -129,8 +129,12 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertThrowsError(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽👽"))
         
         //Valid deep links
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈")
+        )
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈?amount=32.1&note=hi%20there")
+        )
         XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=32.1note=hi%20there"))
         //Derive a deep link from random pubkey, then init a pubkey using that deep link
         XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).emojiDeeplink.0))
         XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).hexDeeplink.0))
@@ -149,6 +153,16 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertNoThrow(try PublicKey(any: "My emojis are \"🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈\""))
         XCTAssertNoThrow(try PublicKey(any: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩 bla bla bla 💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
         XCTAssertNoThrow(try PublicKey(any: "My emojis 🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶 and here are the rest 🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
+    }
+    
+    func testDeepLink() {
+        do {
+           let params = try DeepLinkParams(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=60.50&note=hi%20there")
+
+            XCTAssertEqual(60500000, params.amount.rawValue)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
     
     func testBaseNode() {
@@ -405,5 +419,8 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssert(MicroTari.convertToString(NSNumber(10.0), minimumFractionDigits: 0) == "10")
         XCTAssertNoThrow(try MicroTari(tariValue: "1234567898"))
         XCTAssertThrowsError(try MicroTari(tariValue: "1234567898765432123567")) //Too large to be converted to uint64 in micro tari
+        XCTAssertNoThrow(try MicroTari(decimalValue: 2))
+        XCTAssertNoThrow(try MicroTari(decimalValue: 1.1234))
+        XCTAssertThrowsError(try MicroTari(decimalValue: 0.123456789))
     }
 }
