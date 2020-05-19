@@ -54,6 +54,7 @@ enum WalletErrors: Error {
     case testTransactionMined
     case testSendCompleteTransaction
     case completedTransactionById
+    case cancelledTransactionById
     case walletNotInitialized
     case invalidSignatureAndNonceString
     case cancelNonPendingTransaction
@@ -273,11 +274,12 @@ class Wallet {
             }
         }
 
-        let transactionCancellationCallback: (@convention(c) (UInt64) -> Void)? = { txID in
-            TariEventBus.postToMainThread(.storeAndForwardSend, sender: CallbackTxResult(id: txID, success: true))
+        let transactionCancellationCallback: (@convention(c) (OpaquePointer?) -> Void)? = { valuePointer in
+            let completed = CompletedTransaction(completedTransactionPointer: valuePointer!).id
+            TariEventBus.postToMainThread(.storeAndForwardSend, sender: CallbackTxResult(id: completed.0, success: true))
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
-            TariLogger.verbose("Transaction cancelled callback. txID=\(txID) ✅")
+            TariLogger.verbose("Transaction cancelled callback. txID=\(completed) ✅")
         }
 
         let baseNodeSyncCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { requestID, success in
@@ -447,6 +449,21 @@ class Wallet {
 
         guard completedTransactionPointer != nil else {
             throw WalletErrors.completedTransactionById
+        }
+
+        return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!)
+    }
+
+    func findCancelledTransactionBy(id: UInt64) throws -> CompletedTransaction {
+        var errorCode: Int32 = -1
+        let completedTransactionPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+            wallet_get_cancelled_transaction_by_id(ptr, id, error)})
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+
+        guard completedTransactionPointer != nil else {
+            throw WalletErrors.cancelledTransactionById
         }
 
         return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!)
