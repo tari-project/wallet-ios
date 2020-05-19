@@ -50,6 +50,8 @@ class ContactCell: UITableViewCell {
     private let contactLetter = UILabel()
     private let aliasLabel = UILabel()
 
+    private let unknownContactImageView = UIImageView()
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
@@ -96,6 +98,7 @@ class ContactCell: UITableViewCell {
         contactLetterView.heightAnchor.constraint(equalToConstant: CONTACT_LETTER_VIEW_SIZE).isActive = true
         contactLetterView.widthAnchor.constraint(equalToConstant: CONTACT_LETTER_VIEW_SIZE).isActive = true
         contactLetterView.layer.cornerRadius = CONTACT_LETTER_VIEW_RADIUS
+        contactLetterView.clipsToBounds = true
 
         //Label inside contact image
         contactLetter.translatesAutoresizingMaskIntoConstraints = false
@@ -105,6 +108,19 @@ class ContactCell: UITableViewCell {
         contactLetterView.addSubview(contactLetter)
         contactLetter.centerXAnchor.constraint(equalTo: contactLetterView.centerXAnchor).isActive = true
         contactLetter.centerYAnchor.constraint(equalTo: contactLetterView.centerYAnchor).isActive = true
+
+        //Unknow "image"
+        unknownContactImageView.isHidden = true
+        unknownContactImageView.contentMode = .center
+        unknownContactImageView.image = Theme.shared.images.unknownUser
+        contactLetterView.addSubview(unknownContactImageView)
+
+        unknownContactImageView.translatesAutoresizingMaskIntoConstraints = false
+
+        unknownContactImageView.widthAnchor.constraint(equalTo: contactLetterView.widthAnchor).isActive = true
+        unknownContactImageView.heightAnchor.constraint(equalTo: contactLetterView.heightAnchor).isActive = true
+        unknownContactImageView.centerYAnchor.constraint(equalTo: contactLetterView.centerYAnchor).isActive = true
+        unknownContactImageView.centerXAnchor.constraint(equalTo: contactLetterView.centerXAnchor).isActive = true
 
         //Alias label
         aliasLabel.textColor = Theme.shared.colors.contactCellAlias
@@ -127,7 +143,8 @@ class ContactCell: UITableViewCell {
             let emojis = publicKey.emojis.0
             aliasLabel.textColor = Theme.shared.colors.emojisSeparator!
             aliasLabel.text = "\(emojis.prefix(3))•••\(emojis.suffix(3))"
-            contactLetter.text = "?"
+            contactLetter.text = ""
+            unknownContactImageView.isHidden = false
         }
 
     }
@@ -146,8 +163,10 @@ class ContactCell: UITableViewCell {
 
         if !alias.isEmpty {
             contactLetter.text = String(alias.prefix(1))
+            unknownContactImageView.isHidden = true
         } else {
-            contactLetter.text = "?"
+            contactLetter.text = ""
+            unknownContactImageView.isHidden = false
         }
     }
 }

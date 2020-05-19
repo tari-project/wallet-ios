@@ -44,7 +44,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
     var publicKey: PublicKey?
     var amount: MicroTari?
     private let SIDE_PADDING = Theme.shared.sizes.appSidePadding
-
+    private let navigationBar = NavigationBar()
     fileprivate let sendButton = SlideView()
     fileprivate var sendButtonBottomConstraint = NSLayoutConstraint()
     fileprivate let titleLabel = UILabel()
@@ -72,7 +72,6 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        styleNavigatorBar(isHidden: false)
 
         guard let wallet = TariLib.shared.tariWallet, let pubKey = publicKey else {
             return
@@ -80,10 +79,10 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
         do {
             guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
-            title = contact.alias.0
+            navigationBar.title = contact.alias.0
         } catch {
             do {
-                try showNavbarEmojies(pubKey)
+                try navigationBar.showEmoji(pubKey, animated: true)
             } catch {
                 UserFeedback.shared.error(
                     title: NSLocalizedString("Public key error", comment: "Add amount view"),
@@ -106,13 +105,14 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        hideNavbarEmojis()
+        navigationBar.hideEmoji(animated: false)
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
 
     private func setup() {
         view.backgroundColor = Theme.shared.colors.appBackground
 
+        setupNavigationBar()
         setupNoteTitle()
         setupSendButton()
         setupNoteInput()
@@ -217,12 +217,21 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 }
 
 extension AddNoteViewController {
+    private func setupNavigationBar() {
+        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(navigationBar)
+        navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        navigationBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
+    }
+
     fileprivate func setupNoteTitle() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(titleLabel)
         titleLabel.font = Theme.shared.fonts.addNoteTitleLabel
         titleLabel.textColor = Theme.shared.colors.addNoteTitleLabel
-        titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: SIDE_PADDING).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: SIDE_PADDING).isActive = true
         titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: SIDE_PADDING).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -SIDE_PADDING).isActive = true
         titleLabel.heightAnchor.constraint(equalToConstant: titleLabel.font.pointSize * 1.1).isActive = true

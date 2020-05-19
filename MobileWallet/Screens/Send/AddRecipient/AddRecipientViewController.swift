@@ -45,6 +45,8 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     private let INPUT_CORNER_RADIUS: CGFloat = 6
     private let INPUT_CONTAINER_HEIGHT: CGFloat = 90
 
+    private let navigationBar = NavigationBar()
+    private var navigationBarHeightConstraint = NSLayoutConstraint()
     private let inputContainerView = UIView()
     private let inputBox = UITextField()
     private let scanButton = QRButton()
@@ -88,7 +90,8 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                 inputBox.returnKeyType = .continue
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 continueButtonBottomConstraint.isActive = false
-
+                inputBox.rightView = nil
+                dismissKeyboard()
                 inputBox.textColor = Theme.shared.colors.emojisSeparatorExpanded
 
                 UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
@@ -154,7 +157,6 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        styleNavigatorBar(isHidden: false, animated: true)
         NotificationCenter.default.addObserver(self, selector: #selector(showClipboardEmojis), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(hideClipboardEmojis), name: UIResponder.keyboardWillHideNotification, object: nil)
 
@@ -174,7 +176,6 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        styleNavigatorBar(isHidden: true, animated: true)
         clipboardEmojis = ""
     }
 
@@ -255,8 +256,8 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     private func setup() {
         view.backgroundColor = Theme.shared.colors.appBackground
-        navigationItem.title = NSLocalizedString("Send To", comment: "Navigation bar title on send view screen")
 
+        setupNavigationBar()
         setupContactInputBar()
         setupContactsTable()
         setupContinueButton()
@@ -269,6 +270,17 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         setupErrorView()
     }
 
+    private func setupNavigationBar() {
+        navigationBar.title = NSLocalizedString("Send To", comment: "Navigation bar title on send view screen")
+        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(navigationBar)
+        navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        navigationBarHeightConstraint = navigationBar.heightAnchor.constraint(equalToConstant: 44)
+        navigationBarHeightConstraint.isActive = true
+    }
+
     private func setupContactInputBar() {
         let emojiIdHeight: CGFloat = 46
 
@@ -276,7 +288,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         view.addSubview(inputContainerView)
 
         //Container view layout
-        inputContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        inputContainerView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
         inputContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         inputContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         inputContainerView.heightAnchor.constraint(equalToConstant: INPUT_CONTAINER_HEIGHT).isActive = true
@@ -313,6 +325,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputBox.rightView = scanButton
         inputBox.rightViewMode = .always
         scanButton.addTarget(self, action: #selector(openScanner), for: .touchUpInside)
+        view.bringSubviewToFront(navigationBar)
     }
 
     private func setupContactsTable() {
@@ -417,7 +430,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                 guard let self = self else { return }
                 self.pasteEmojisViewBottomAnchorConstraint = self.pasteEmojisView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
                 self.pasteEmojisViewBottomAnchorConstraint.isActive = true
-                self.styleNavigatorBar(isHidden: true, animated: true)
+                self.navigationBarHeightConstraint.constant = 0
                 self.dimView.backgroundColor = UIColor.black.withAlphaComponent(0.62)
                 self.view.layoutIfNeeded()
             }
@@ -434,7 +447,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
             self.pasteEmojisViewBottomAnchorConstraint.isActive = false
             self.pasteEmojisViewBottomAnchorConstraint = self.pasteEmojisView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 100)
             self.pasteEmojisViewBottomAnchorConstraint.isActive = true
-            self.navigationController?.setNavigationBarHidden(false, animated: true)
+            self.navigationBarHeightConstraint.constant = 44
             self.dimView.backgroundColor = UIColor.black.withAlphaComponent(0)
             self.view.layoutIfNeeded()
         }) { [weak self] (_) in

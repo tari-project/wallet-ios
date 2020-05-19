@@ -40,24 +40,12 @@
 
 import UIKit
 
-protocol NavigationBarWithSubtitleProtocol: class {
-    var title: String? { get set }
+protocol NavigationBarWithSubtitleProtocol: NavigationBarProtocol {
     var subtitle: String? { get set }
 }
 
-class NavigationBarWithSubtitle: UIView, NavigationBarWithSubtitleProtocol {
-    private let titleLabel = UILabel()
+class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleProtocol {
     private let subtitleLabel = UILabel()
-    private let backButton = UIButton()
-
-    var title: String? {
-        get {
-            titleLabel.text
-        }
-        set {
-            titleLabel.text = newValue
-        }
-    }
 
     var subtitle: String? {
         get {
@@ -69,7 +57,7 @@ class NavigationBarWithSubtitle: UIView, NavigationBarWithSubtitleProtocol {
     }
 
     override func draw(_ rect: CGRect) {
-        backgroundColor = Theme.shared.colors.appBackground
+        super.draw(rect)
 
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 4.0)
@@ -89,22 +77,7 @@ class NavigationBarWithSubtitle: UIView, NavigationBarWithSubtitleProtocol {
             self.layer.add(animation, forKey: animation.keyPath)
             self.layer.shadowOpacity = 0.1
         })
-
-        setupTitle()
         setupSubtitle()
-        setupBackButton()
-    }
-
-    private func setupTitle() {
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(titleLabel)
-        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16.0).isActive = true
-        titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-
-        //Style
-        titleLabel.font = Theme.shared.fonts.navigationBarTitle
-        titleLabel.textColor = Theme.shared.colors.navigationBarTint
-        titleLabel.textAlignment = .center
     }
 
     private func setupSubtitle() {
@@ -138,15 +111,5 @@ class NavigationBarWithSubtitle: UIView, NavigationBarWithSubtitleProtocol {
         imageView.isUserInteractionEnabled = false
         //Style
         backButton.backgroundColor = .clear
-    }
-
-    @objc public func backAction(_sender: UIButton) {
-        if var topController = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
-            }
-            guard let navigationController = topController as? UINavigationController else { return }
-            navigationController.popViewController(animated: true)
-        }
     }
 }

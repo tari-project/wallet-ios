@@ -92,12 +92,12 @@ class EmoticonView: UIView {
         }
     }
 
-    private var superVc: UIViewController!
+    private var superVc: UIViewController?
 
     func setUpView(pubKey: PublicKey,
                    type: EmoticonViewType,
                    textCentered: Bool,
-                   inViewController vc: UIViewController,
+                   inViewController vc: UIViewController? = nil,
                    initialWidth: CGFloat = CGFloat(172),
                    initialHeight: CGFloat = CGFloat(38),
                    showContainerViewBlur: Bool = true,
@@ -203,7 +203,7 @@ class EmoticonView: UIView {
             self.cornerRadius = cornerRadius
         }
 
-        self.superVc.navigationController?.navigationBar.layer.zPosition = 0
+        superVc?.navigationController?.navigationBar.layer.zPosition = 0
     }
 
     @objc func tap(_ gestureRecognizer: UITapGestureRecognizer) {
@@ -293,7 +293,7 @@ class EmoticonView: UIView {
         self.labelInitialWidth?.constant = self.frame.width
 
         //If they're typing somewhere, close the keyboard
-        superVc.view.endEditing(true)
+        superVc?.view.endEditing(true)
 
         if callTapCompletion == true {
             tapToExpand?(true)
@@ -332,7 +332,7 @@ class EmoticonView: UIView {
     override func willMove(toWindow newWindow: UIWindow?) {
         super.willMove(toWindow: newWindow)
         if newWindow == nil {
-            superVc.navigationController?.navigationBar.layer.zPosition = 0
+            superVc?.navigationController?.navigationBar.layer.zPosition = 0
             hideMenu()
         }
     }

@@ -99,38 +99,4 @@ extension UIViewController {
             navController.setNavigationBarHidden(isHidden, animated: animated)
         }
     }
-
-    func showNavbarEmojies(_ publicKey: PublicKey) throws {
-        let (emojis, emojisError) = publicKey.emojis
-        guard emojisError == nil else {
-            throw emojisError!
-        }
-
-        if navBarEmojis == nil { navBarEmojis = EmoticonView() }
-
-        if let emojiView = navBarEmojis {
-            emojiView.setUpView(pubKey: publicKey,
-                                type: .buttonView,
-                                textCentered: true,
-                                inViewController: self)
-
-            emojiView.translatesAutoresizingMaskIntoConstraints = false
-
-            emojiView.tapToExpand = { expanded in
-                self.navigationItem.setHidesBackButton(expanded, animated: true)
-            }
-
-            if let window = UIApplication.shared.keyWindow {
-                window.addSubview(emojiView)
-                emojiView.topAnchor.constraint(equalTo: window.topAnchor, constant: window.safeAreaInsets.top + 46 / 2).isActive = true
-                emojiView.leadingAnchor.constraint(equalTo: window.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-                emojiView.trailingAnchor.constraint(equalTo: window.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-            }
-        }
-    }
-
-    func hideNavbarEmojis() {
-        navBarEmojis?.removeFromSuperview()
-        navBarEmojis = nil
-    }
 }

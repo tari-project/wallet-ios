@@ -268,6 +268,9 @@
 		37547D5624601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */; };
 		37547D5724601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */; };
 		37547D5824601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */; };
+		375DB1E0246E90D100B2BEF4 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */; };
+		375DB1E1246E90D100B2BEF4 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */; };
+		375DB1E2246E90D100B2BEF4 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */; };
 		379D27AF244EF25000F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
 		379D27BA244F091A00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
 		379D27BB244F091B00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
@@ -540,6 +543,7 @@
 		2FF33C780E811D173D3284C3 /* Pods-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+KeyWindow.swift"; sourceTree = "<group>"; };
 		37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+GlobalFrame.swift"; sourceTree = "<group>"; };
+		375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarWithSubtitle.swift; sourceTree = "<group>"; };
 		37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlwaysPoppableNavigationController.swift; sourceTree = "<group>"; };
 		37BB696A245705D20013AC4D /* RadialGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
@@ -894,6 +898,7 @@
 				BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */,
 				00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */,
 				379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */,
+				375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -1704,6 +1709,7 @@
 				37547D522460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */,
 				00A994332396434B007D9990 /* QRButton.swift in Sources */,
 				00A66523243B3E380046E730 /* ErrorView.swift in Sources */,
+				375DB1E0246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				004277F723E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				00230B022376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
 				004997AB2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
@@ -1805,6 +1811,7 @@
 				00BBD817237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				00262EBA236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
 				00BBD80A237D80C800EBF5E6 /* Date.swift in Sources */,
+				375DB1E1246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				004997B42382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
 				001256302371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00C9F436242E08E70098E619 /* Tracker.swift in Sources */,
@@ -1881,6 +1888,7 @@
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
 				37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
+				375DB1E2246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				0087A1AE23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				37BB6976245726FC0013AC4D /* CopyableLabel.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
