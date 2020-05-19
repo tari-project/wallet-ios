@@ -320,7 +320,7 @@ struct Images: Loopable {
     let storeIcon = UIImage(named: "store-icon")
     let storeButton = UIImage(named: "store-button")
     let storeModal = UIImage(named: "store-modal")
-
+    let unknownUser = UIImage(named: "unknownUser")
     let handWave = UIImage(named: "HandWave")
 
     //Amount

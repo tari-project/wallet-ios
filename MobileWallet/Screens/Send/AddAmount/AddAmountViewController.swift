@@ -44,6 +44,7 @@ class AddAmountViewController: UIViewController {
     var publicKey: PublicKey?
     var deepLinkParams: DeepLinkParams?
     private var buttons = [UIButton]()
+    private let navigationBar = NavigationBar()
     private let continueButton = ActionButton(frame: .zero)
     private let amountLabel = AnimatedBalanceLabel()
     private let keypadContainerStackView = UIStackView()
@@ -76,7 +77,6 @@ class AddAmountViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        styleNavigatorBar(isHidden: false)
 
         guard let wallet = TariLib.shared.tariWallet, let pubKey = publicKey else {
             return
@@ -91,10 +91,10 @@ class AddAmountViewController: UIViewController {
 
         do {
             guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
-            title = contact.alias.0
+            navigationBar.title = contact.alias.0
         } catch {
             do {
-                try showNavbarEmojies(pubKey)
+                try navigationBar.showEmoji(pubKey, animated: true)
             } catch {
                 UserFeedback.shared.error(
                     title: NSLocalizedString("Public key error", comment: "Add amount view"),
@@ -107,9 +107,7 @@ class AddAmountViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-
-        hideNavbarEmojis()
-
+        navigationBar.hideEmoji(animated: false)
         balanceCheckTimer?.invalidate()
         balanceCheckTimer = nil
     }
@@ -224,6 +222,7 @@ class AddAmountViewController: UIViewController {
         )
 
         amountAttributedText.insert(gemImageString, at: 0)
+        amountAttributedText.insert(NSAttributedString(string: "  "), at: 1)
         amountLabel.attributedText = amountAttributedText
 
         hideBalanceExceeded()
@@ -236,6 +235,8 @@ class AddAmountViewController: UIViewController {
         }
         if isValidValue == true {
             balanceCheckTimer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(checkAvailableBalance), userInfo: nil, repeats: false)
+        } else {
+            continueButton.variation = .disabled
         }
     }
 
@@ -389,6 +390,16 @@ class AddAmountViewController: UIViewController {
 
 extension AddAmountViewController {
     private func setup() {
+
+        // navigationBar
+
+        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(navigationBar)
+        navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        navigationBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
+
         //contiue button
         view.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
@@ -408,7 +419,7 @@ extension AddAmountViewController {
         let amountTopLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(amountTopLayoutGuide)
         amountTopLayoutGuide.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        amountTopLayoutGuide.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        amountTopLayoutGuide.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
         let amountBottomLayoutGuide = UILayoutGuide()
         view.addLayoutGuide(amountBottomLayoutGuide)
         amountBottomLayoutGuide.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -426,7 +437,7 @@ extension AddAmountViewController {
         warningView.translatesAutoresizingMaskIntoConstraints = false
         warningView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -50).isActive = true
         warningView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        warningView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 25).isActive = true
+        warningView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 25).isActive = true
         warningView.layer.cornerRadius = 12
         warningView.layer.masksToBounds = true
         warningView.layer.borderWidth = 1
