@@ -152,6 +152,8 @@ class NotificationManager {
 
         TariLogger.verbose("Registering device token with public key")
 
+        print("TODO: ", apnsDeviceToken)
+
         do {
             let signature = try signRequestMessage(apnsDeviceToken)
 
@@ -267,7 +269,8 @@ class NotificationManager {
                 return onError(PushNotificationServerError.server(response.statusCode, message: message))
             }
 
-            guard responseDict?["success"] as? Bool == true else {
+            //TODO remove the "success" field when server has been updated
+            guard responseDict?["success"] as? Bool == true || responseDict?["registered"] as? Bool == true  else {
                 return onError(PushNotificationServerError.responseInvalid)
             }
 

@@ -1,4 +1,5 @@
 {
 	"pushServerApiKey": "",
-	"sentryPublicDSN": ""
+	"sentryPublicDSN": "",
+	"appleTeamID": ""
 }

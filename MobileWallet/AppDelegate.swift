@@ -62,6 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         BackgroundTaskManager.shared.registerNodeSyncTask()
         ShortcutParser.shared.registerShortcuts()
+        Migrations.handle()
 
         return true
     }

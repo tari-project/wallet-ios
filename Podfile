@@ -14,10 +14,15 @@ target 'MobileWallet' do
   pod 'MatomoTracker', '~> 7.2'
   pod 'ZIPFoundation', '~> 0.9'
   pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '5.0.0'
-
+  pod 'SwiftKeychainWrapper'
+  
   target 'MobileWalletTests' do
     inherit! :search_paths
     # Pods for testing
+  end
+  
+  target 'MobileWalletNotificationService' do
+    inherit! :search_paths
   end
 
   target 'MobileWalletUITests' do
