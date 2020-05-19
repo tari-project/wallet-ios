@@ -460,8 +460,6 @@ class Wallet {
             throw WalletErrors.generic(errorCode)
         }
 
-        print("wallet_is_completed_transaction_outbound", result)
-
         return result
     }
 

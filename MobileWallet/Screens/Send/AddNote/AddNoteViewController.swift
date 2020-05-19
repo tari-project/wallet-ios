@@ -43,6 +43,7 @@ import UIKit
 class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDelegate {
     var publicKey: PublicKey?
     var amount: MicroTari?
+    var deepLinkParams: DeepLinkParams?
     private let SIDE_PADDING = Theme.shared.sizes.appSidePadding
 
     fileprivate let sendButton = SlideView()
@@ -102,6 +103,11 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
         noteInput.becomeFirstResponder()
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
+
+        if let params = deepLinkParams {
+            noteInput.text = params.note
+            textViewDidChangeSelection(noteInput)
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

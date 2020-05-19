@@ -152,8 +152,6 @@ class NotificationManager {
 
         TariLogger.verbose("Registering device token with public key")
 
-        print("TODO: ", apnsDeviceToken)
-
         do {
             let signature = try signRequestMessage(apnsDeviceToken)
 

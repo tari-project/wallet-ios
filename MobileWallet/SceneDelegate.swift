@@ -57,9 +57,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         //If the user opens a deep link while the app is closed
         if let url = connectionOptions.urlContexts.first?.url {
-            if let deeplink = NSString(string: url.absoluteString).removingPercentEncoding {
-                deepLinker.handleShortcut(type: .send(deeplink: deeplink))
-            }
+            deepLinker.handleShortcut(type: .send(deeplink: NSString(string: url.absoluteString) as String))
         }
 
         //If the user opens a home screen shortcut while the app is closed
@@ -78,11 +76,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let url = URLContexts.first?.url {
-            guard let deeplink = NSString(string: url.absoluteString).removingPercentEncoding else {
-                return
-            }
-
-            deepLinker.handleShortcut(type: .send(deeplink: deeplink))
+            deepLinker.handleShortcut(type: .send(deeplink: NSString(string: url.absoluteString) as String))
         }
     }
 

@@ -146,6 +146,14 @@ struct MicroTari {
         self.rawValue = UInt64(tariNumber.floatValue * Float(MicroTari.CONVERSION))
     }
 
+    init(decimalValue: Double) throws {
+        guard let rawVal = UInt64(exactly: decimalValue * Double(MicroTari.CONVERSION)) else {
+            throw MicroTariErrors.invalidStringFormat //TODO
+        }
+
+        self.rawValue = rawVal
+    }
+
     public static func toTariNumber(_ number: NSNumber) -> UInt64 {
         return number.uint64Value * UInt64(CONVERSION)
     }
