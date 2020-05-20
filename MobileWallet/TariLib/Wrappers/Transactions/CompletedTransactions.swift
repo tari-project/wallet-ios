@@ -49,6 +49,7 @@ class CompletedTransactions: TransactionsProtocol {
     typealias Tx = CompletedTransaction
 
     private var ptr: OpaquePointer
+    private let isCancelled: Bool
 
     var pointer: OpaquePointer {
         return ptr
@@ -62,25 +63,6 @@ class CompletedTransactions: TransactionsProtocol {
         })
 
         return (result, errorCode != 0 ? CompletedTransactionsErrors.generic(errorCode) : nil)
-    }
-
-    var groupedByDate: ([[CompletedTransaction]], Error?) {
-        let (ungroupedTxs, error) = self.list
-        if error != nil {
-            return ([], error)
-        }
-
-        let grouped = ungroupedTxs.groupSort { (tx) -> Date in
-            let (date, error) = tx.date
-            if error != nil {
-                //TOOD figure out a way to handle a missing timestamp error inside this callback
-                return Date()
-            }
-
-            return date!
-        }
-
-        return (grouped, nil)
     }
 
     var list: ([CompletedTransaction], Error?) {
@@ -107,8 +89,9 @@ class CompletedTransactions: TransactionsProtocol {
         return (sortedList, nil)
     }
 
-    init(completedTransactionsPointer: OpaquePointer) {
+    init(completedTransactionsPointer: OpaquePointer, isCancelled: Bool = false) {
         ptr = completedTransactionsPointer
+        self.isCancelled = isCancelled
     }
 
     func at(position: UInt32) throws -> CompletedTransaction {
@@ -125,7 +108,7 @@ class CompletedTransactions: TransactionsProtocol {
             throw CompletedTransactionsErrors.completedTransactionNotFound
         }
 
-        return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!)
+        return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!, isCancelled: isCancelled)
     }
 
     deinit {

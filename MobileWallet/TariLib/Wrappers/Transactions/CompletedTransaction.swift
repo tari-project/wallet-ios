@@ -47,6 +47,7 @@ enum CompletedTransactionError: Error {
 class CompletedTransaction: TransactionProtocol {
     private var ptr: OpaquePointer
     private var cachedContact: Contact?
+    let isCancelled: Bool
 
     var pointer: OpaquePointer {
         return ptr
@@ -178,8 +179,9 @@ class CompletedTransaction: TransactionProtocol {
         }
     }
 
-    init(completedTransactionPointer: OpaquePointer) {
+    init(completedTransactionPointer: OpaquePointer, isCancelled: Bool = false) {
         ptr = completedTransactionPointer
+        self.isCancelled = isCancelled
     }
 
     deinit {
