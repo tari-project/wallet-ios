@@ -70,6 +70,8 @@ extension WalletErrors: LocalizedError {
             return NSLocalizedString("Failed to complete test transaction.", comment: "Wallet errors")
         case .completedTransactionById:
             return NSLocalizedString("Failed to find completed transaction by ID.", comment: "Wallet errors")
+        case .cancelledTransactionById:
+            return NSLocalizedString("Failed to find cancelled transaction by ID.", comment: "Wallet errors")
         case .walletNotInitialized:
             return NSLocalizedString("Tari wallet not yet initialized", comment: "Wallet errors")
         case .invalidSignatureAndNonceString:

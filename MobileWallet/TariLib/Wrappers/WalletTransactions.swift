@@ -112,7 +112,6 @@ extension Wallet {
         }
 
         var ungroupedTxs = completedList
-        //TODO uncomment below when FFI is fixed and correct pub key is returned
         ungroupedTxs.append(contentsOf: cancelledList)
 
         let grouped = ungroupedTxs.groupSort { (tx) -> Date in

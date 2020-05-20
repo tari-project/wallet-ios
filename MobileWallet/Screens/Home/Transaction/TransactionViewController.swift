@@ -544,12 +544,20 @@ class TransactionViewController: UIViewController {
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
 
                     //Attempt to get the newly cancelled tx and reset the UI
-                    //TODO uncomment the below when the findCancelledTransactionBy PR is merged in
+                    //TODO uncomment the below when the findCancelledTransactionBy is returning correct direction
 //                    if let id = self.transaction?.id.0 {
 //                        if let cancelledTX = try? TariLib.shared.tariWallet?.findCancelledTransactionBy(id: id) {
 //                            self.transaction = cancelledTX
-//                            self.updateTxState()
-//                            try? self.setDetails()
+//                            do {
+//                                try self.setDetails()
+//                                self.updateTxState()
+//                            } catch {
+//                                UserFeedback.shared.error(
+//                                    title: NSLocalizedString("Transaction error", comment: "Transaction detail screen"),
+//                                    description: NSLocalizedString("Failed to load transaction details", comment: "Transaction detail screen"),
+//                                    error: error
+//                                )
+//                            }
 //                            return
 //                        }
 //                    }
