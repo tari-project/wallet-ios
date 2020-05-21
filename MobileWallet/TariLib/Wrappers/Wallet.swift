@@ -586,6 +586,20 @@ class Wallet {
         return publicKeys
     }
 
+    func coin_split(amount: UInt64, splitCount: UInt64, fee: UInt64, message: String, lockHeight: UInt64) throws -> UInt64 {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            message.withCString({ cstr in
+                wallet_coin_split(ptr, amount, splitCount, fee, cstr, lockHeight, error)
+            })
+            })
+
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+        return result
+    }
+
     deinit {
         TariLogger.warn("Wallet destroy")
         wallet_destroy(ptr)
