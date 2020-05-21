@@ -168,7 +168,7 @@ extension TransactionsTableViewController {
         messageLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
         messageLabel.font = Theme.shared.fonts.transactionListEmptyMessageLabel
 
-        messageLabel.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor).isActive = true
+        messageLabel.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: -50).isActive = true
         messageLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
         messageLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: messageLabel.font.pointSize * 1.2).isActive = true
 

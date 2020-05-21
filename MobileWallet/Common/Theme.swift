@@ -217,7 +217,7 @@ struct Fonts: Loopable {
     let createWalletFirstLabel = UIFont(name: "Avenir-Black", size: 18.0)
     let createWalletSecondLabelFirstText = UIFont(name: "Avenir-Black", size: 18.0)
     let createWalletSecondLabelSecondText = UIFont(name: "Avenir-Roman", size: 18.0)
-    let createWalletThirdLabel = UIFont(name: "Avenir-Medium", size: 14.0)
+    let createWalletThirdLabel = UIFont(name: "Avenir-Medium", size: 13.0)
     let createWalletEmojiIDFirstText = UIFont(name: "Avenir-Light", size: 18.0)
     let createWalletEmojiIDSecondText = UIFont(name: "Avenir-Black", size: 18.0)
     let createWalletNotificationsFirstLabel = UIFont(name: "Avenir-Light", size: 18.0)
