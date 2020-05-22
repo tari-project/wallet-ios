@@ -49,4 +49,14 @@ extension UIApplication {
         .first?.windows
         .filter({$0.isKeyWindow}).first
     }
+
+    func topController() -> UIViewController? {
+        if var topController = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
+            while let presentedViewController = topController.presentedViewController {
+                topController = presentedViewController
+            }
+            return topController
+        }
+        return nil
+    }
 }

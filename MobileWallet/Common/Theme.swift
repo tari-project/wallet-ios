@@ -318,6 +318,7 @@ struct Images: Loopable {
     let forwardArrow = UIImage(named: "ForwardArrow")
     let downArrow = UIImage(named: "DownArrow")
     let close = UIImage(named: "Close")
+    let share = UIImage(named: "share")
     let transactionFee = UIImage(named: "TransactionFee")
     let profileIcon = UIImage(named: "profileIcon")
     let storeIcon = UIImage(named: "store-icon")
