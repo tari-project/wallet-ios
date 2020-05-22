@@ -250,13 +250,14 @@ struct Fonts: Loopable {
     let transactionListEmptyTitleLabel = UIFont(name: "Avenir-Black", size: 33.0)
     let transactionListEmptyMessageLabel = UIFont(name: "Avenir-Medium", size: 14.0)
     let transactionFeeLabel = UIFont(name: "Avenir-Heavy", size: 14.0)
+    let transactionFeeButton = UIFont(name: "Avenir-Roman", size: 13.0)
 
     // Sending tari screen
     let sendingTariTitleLabelFirst = UIFont(name: "Avenir-Light", size: 18.0)
     let sendingTariTitleLabelSecond = UIFont(name: "Avenir-Black", size: 18.0)
 
     //Navigation bar
-    let navigationBarTitle = UIFont(name: "Avenir-Heavy", size: 14.0) //Design spec size is 14.0
+    let navigationBarTitle = UIFont(name: "Avenir-Heavy", size: 16.0)
 
     //Popup User feedback
     let feedbackPopupTitle = UIFont(name: "Avenir-Light", size: 18)

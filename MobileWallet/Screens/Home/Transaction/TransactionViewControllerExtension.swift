@@ -64,9 +64,6 @@ extension TransactionViewController {
         valueContainerViewHeightAnchor = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierFull)
         valueContainerViewHeightAnchor.isActive = true
 
-        //Create disabled shorted constraint to use later for when keyboard pops up
-        valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierShortened).isActive = false
-
         view.sendSubviewToBack(valueContainerView)
 
         //Value label
@@ -101,21 +98,21 @@ extension TransactionViewController {
     }
 
     func setFeeLabel(_ feeText: String) {
-        valueContainerViewHeightAnchor.constant = feeButtonHeight
-        valueCenterYAnchorConstraint.constant = -20
+        valueCenterYAnchorConstraint.constant = -11
 
         feeLabel.text = feeText
         feeLabel.translatesAutoresizingMaskIntoConstraints = false
         valueContainerView.addSubview(feeLabel)
 
         feeLabel.centerXAnchor.constraint(equalTo: valueContainerView.centerXAnchor).isActive = true
-        feeLabel.topAnchor.constraint(equalTo: valueLabel.bottomAnchor, constant: -5).isActive = true
+        feeLabel.topAnchor.constraint(equalTo: valueLabel.bottomAnchor).isActive = true
         feeLabel.font = Theme.shared.fonts.transactionFeeLabel
         feeLabel.textColor = Theme.shared.colors.transactionViewValueLabel
 
         feeButton.translatesAutoresizingMaskIntoConstraints = false
         valueContainerView.addSubview(feeButton)
         feeButton.setTitle(NSLocalizedString("Transaction Fee", comment: "Transaction view screen"), for: .normal)
+        feeButton.titleLabel?.font = Theme.shared.fonts.transactionFeeButton
         feeButton.setRightImage(Theme.shared.images.transactionFee!)
 
         feeButton.topAnchor.constraint(equalTo: feeLabel.bottomAnchor, constant: 0).isActive = true

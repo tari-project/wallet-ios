@@ -78,7 +78,7 @@ class TransactionViewController: UIViewController {
     private var txStateViewBottomAnchor = NSLayoutConstraint()
     let feeLabel = UILabel()
     let feeButton = TextButton()
-    let feeButtonHeight: CGFloat = 30
+    let feeButtonHeight: CGFloat = 37
     let headingLabelTopAnchorHeight: CGFloat = 40
 
     @IBOutlet weak var transactionIDLabel: UILabel!
