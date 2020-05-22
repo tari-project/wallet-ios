@@ -147,13 +147,8 @@ class NavigationBar: UIView, NavigationBarProtocol {
     }
 
     @objc public func backAction(_sender: UIButton) {
-        if var topController = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
-            }
-            guard let navigationController = topController as? UINavigationController else { return }
+            guard let navigationController = UIApplication.shared.topController() as? UINavigationController else { return }
             navigationController.popViewController(animated: true)
             hideEmoji(animated: false)
-        }
     }
 }

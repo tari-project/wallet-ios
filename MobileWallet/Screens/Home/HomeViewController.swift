@@ -42,6 +42,7 @@ import UIKit
 import FloatingPanel
 
 enum ScrollDirection {
+    case none
     case up
     case down
 }

@@ -173,13 +173,12 @@ class UserFeedback {
             actionIcon: Theme.shared.images.storeIcon!,
             onClose: {
                 SwiftEntryKit.dismiss()
-            }) {
+            }) { [weak self] in
                 SwiftEntryKit.dismiss()
                 guard let url = URL(string: TariSettings.shared.storeUrl) else {
                     return
                 }
-
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                self?.openWebBrowser(url: url)
                 TariLogger.verbose("Opened store link")
             }
 
@@ -219,5 +218,13 @@ class UserFeedback {
         attributes.entranceAnimation = .init(translate: .init(duration: 0.25, anchorPosition: .bottom, spring: .init(damping: 1, initialVelocity: 0)))
 
         SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
+    }
+
+    func openWebBrowser(url: URL) {
+        guard let topController = UIApplication.shared.topController() else { return }
+        let webBrowserViewController = WebBrowserViewController()
+        webBrowserViewController.url = url
+        webBrowserViewController.modalPresentationStyle = .popover
+        topController.present(webBrowserViewController, animated: true)
     }
 }
