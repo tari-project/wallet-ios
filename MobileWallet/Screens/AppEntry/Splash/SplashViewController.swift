@@ -60,16 +60,15 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     var videoView = UIView()
     var versionLabel = UILabel()
     var animationContainer = AnimationView()
+    var elementsContainer = UIView()
     var createWalletButton = ActionButton()
     var titleLabel = UILabel()
-    //var subtitleLabel = UILabel()
-    var bottomBackgroundView = UIView()
     var gemImageView = UIImageView()
+    var disclaimerText = UITextView()
+
     var distanceTitleSubtitle = NSLayoutConstraint()
     var animationContainerBottomAnchor: NSLayoutConstraint?
     var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
-    var maskBackgroundView = UIView()
-    var disclaimerText = UITextView()
     private let progressFeedbackView = FeedbackView()
     private lazy var authStepPassed: Bool = {
         UserDefaults.standard.bool(forKey: "authStepPassed")
@@ -88,7 +87,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         super.viewDidAppear(animated)
 
         if !TariSettings.shared.isUnitTesting {
-            maskBackgroundAnimation()
             titleAnimation()
             checkExistingWallet()
         }

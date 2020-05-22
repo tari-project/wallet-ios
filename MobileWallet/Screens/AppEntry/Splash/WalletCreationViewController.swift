@@ -618,6 +618,8 @@ extension WalletCreationViewController {
         case .nerdEmoji:
             animationViewWidthConstraint?.constant = 55.0
             animationViewHeightConstraint?.constant = 55.0
+
+        default: break
         }
 
         view.layoutIfNeeded()

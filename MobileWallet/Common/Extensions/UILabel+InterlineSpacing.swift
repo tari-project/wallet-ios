@@ -1,8 +1,8 @@
-//  Animation+EnumInit.swift
+//  UILabel+InterlineSpacing.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 20.05.2020
+	Created by S.Shovkoplyas on 22.05.2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,24 +38,23 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Lottie
+import UIKit
 
-extension Animation {
-    enum LottieAnimation: String {
-        case none
+extension UILabel {
+    // MARK: - spacingValue is spacing that you need
+    func interlineSpacing(spacingValue: CGFloat = 2) {
 
-        case splash = "SplashAnimation"
+        guard let textString = text else { return }
+        let attributedString = NSMutableAttributedString(string: textString)
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = spacingValue
 
-        case checkMark = "CheckMark"
-        case faceID = "FaceID"
-        case touchID = "TouchIdAnimation"
-        case notification = "NotificationAnimation"
-        case emojiWheel = "EmojiWheel"
-        case nerdEmoji = "NerdEmojiAnimation"
-    }
+        attributedString.addAttribute(
+            .paragraphStyle,
+            value: paragraphStyle,
+            range: NSRange(location: 0, length: attributedString.length
+        ))
 
-    static func named(_ animation: LottieAnimation) -> Animation? {
-        if animation == .none { return nil }
-        return Animation.named(animation.rawValue)
+        attributedText = attributedString
     }
 }
