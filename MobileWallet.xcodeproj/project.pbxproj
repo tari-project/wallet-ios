@@ -81,6 +81,10 @@
 		0042780323E8421200AE7BD9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0042780223E8421100AE7BD9 /* String.swift */; };
 		0042780423E8421200AE7BD9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0042780223E8421100AE7BD9 /* String.swift */; };
 		0042780523E8421200AE7BD9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0042780223E8421100AE7BD9 /* String.swift */; };
+		00434A9D2477D0B000C0104F /* AppContainerLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00434A9C2477D0AF00C0104F /* AppContainerLock.swift */; };
+		00434A9E2477D0B000C0104F /* AppContainerLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00434A9C2477D0AF00C0104F /* AppContainerLock.swift */; };
+		00434A9F2477D0B000C0104F /* AppContainerLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00434A9C2477D0AF00C0104F /* AppContainerLock.swift */; };
+		00434AA02477D0B000C0104F /* AppContainerLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00434A9C2477D0AF00C0104F /* AppContainerLock.swift */; };
 		0048AF43245ADCA300E1A359 /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
 		0048AF44245ADCA300E1A359 /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
 		0048AF45245ADCA300E1A359 /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
@@ -527,6 +531,7 @@
 		004277FA23E1A61F00AE7BD9 /* ErrorDescriptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDescriptions.swift; sourceTree = "<group>"; };
 		004277FE23E2F1D700AE7BD9 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		0042780223E8421100AE7BD9 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		00434A9C2477D0AF00C0104F /* AppContainerLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainerLock.swift; sourceTree = "<group>"; };
 		0048AF42245ADCA300E1A359 /* env.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = env.json; sourceTree = SOURCE_ROOT; };
 		004997AA2382E893000A0B7D /* PendingOutboundTransactions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOutboundTransactions.swift; sourceTree = "<group>"; };
 		004997AE2382E938000A0B7D /* PendingOutboundTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOutboundTransaction.swift; sourceTree = "<group>"; };
@@ -860,6 +865,7 @@
 				619190C6EBD050DC647D1D7B /* UTXO.swift */,
 				00A66526243C766D0046E730 /* ConnectionMonitor.swift */,
 				009DFCA62473E33F0061DBC9 /* DeepLinkParams.swift */,
+				00434A9C2477D0AF00C0104F /* AppContainerLock.swift */,
 			);
 			name = Utils;
 			path = Wrappers/Utils;
@@ -1851,6 +1857,7 @@
 				00C520C5246972140077BF7F /* Wallet.swift in Sources */,
 				00C520B2246971FC0077BF7F /* TariLib.swift in Sources */,
 				00C520B32469720A0077BF7F /* OnionConnector.swift in Sources */,
+				00434AA02477D0B000C0104F /* AppContainerLock.swift in Sources */,
 				00C520CA246972180077BF7F /* CompletedTransaction.swift in Sources */,
 				00C520BE2469720F0077BF7F /* StorageCleanup.swift in Sources */,
 				00C520C2246972140077BF7F /* ByteVector.swift in Sources */,
@@ -1928,6 +1935,7 @@
 				37547D5624601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
+				00434A9D2477D0B000C0104F /* AppContainerLock.swift in Sources */,
 				00BCE47F240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				00A9190B242CDD7700B7F14D /* Tracker.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
@@ -2026,6 +2034,7 @@
 				001F6CDD238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00BBD80F237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
+				00434A9E2477D0B000C0104F /* AppContainerLock.swift in Sources */,
 				00A057B523D979DA0029C22A /* UserFeedback.swift in Sources */,
 				004997AC2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
 				37F29D5824504B92008C046F /* HomeViewController.swift in Sources */,
@@ -2163,6 +2172,7 @@
 				0087A1AB23F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				001F6CEA2381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
+				00434A9F2477D0B000C0104F /* AppContainerLock.swift in Sources */,
 				37547D5824601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				4CD20A382407967B007B64D8 /* TransportType.swift in Sources */,
 				001F6CEE2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
@@ -2275,6 +2285,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 85;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2291,6 +2302,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
+				MARKETING_VERSION = 0.1.12;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet.MobileWalletNotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2310,6 +2322,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 85;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2326,6 +2339,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
+				MARKETING_VERSION = 0.1.12;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet.MobileWalletNotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2464,7 +2478,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 85;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2500,7 +2514,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 85;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

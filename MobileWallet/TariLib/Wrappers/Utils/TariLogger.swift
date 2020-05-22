@@ -15,11 +15,39 @@ import Foundation
 
 //Called TariLogger because it should be included when TariLib is moved into its own pod
 public class TariLogger {
+    public static var cachedLogs: [String] = []
+    public static var fileLoggerCallback: ((String) -> Void?)? {
+        didSet {
+            //Catch up on missed entries
+            TariLogger.cachedLogs.forEach { (entry) in
+                fileLoggerCallback?(entry)
+            }
+
+            TariLogger.cachedLogs = []
+        }
+    }
+
     public enum Level: String {
-        case info = "ℹ️"
-        case verbose = "🤫"
-        case warning = "⚠️"
-        case error = "❌"
+        case info = "INFO"
+        case verbose = "DEBUG"
+        case warning = "WARN"
+        case error = "ERROR"
+        case tor = "ONION"
+
+        var emoji: String {
+            switch self {
+            case .info:
+                return "ℹ️"
+            case .verbose:
+                return "🤫"
+            case .warning:
+                return "⚠️"
+            case .error:
+                return "❌"
+            case .tor:
+                return "🧅"
+            }
+        }
     }
 
     private static let dateFormatter: DateFormatter = {
@@ -60,12 +88,38 @@ public class TariLogger {
         )
     }
 
+    public static func tor(_ message: Any, error: Error? = nil, file: String = #file, function: String = #function, line: Int = #line) {
+        log(
+            level: .tor,
+            message: error != nil ? "\(message) ❗\(String(describing: error!.localizedDescription))❗" : message,
+            file: file,
+            function: function,
+            line: line
+        )
+    }
+
     private static func sourceFileName(filePath: String) -> String {
         let components = filePath.components(separatedBy: "/")
         return components.last?.components(separatedBy: ".").first ?? ""
     }
 
     private static func log(level: Level = .info, message: Any, file: String = #file, function: String = #function, line: Int = #line) {
-        print("\(time) \(level.rawValue) \(message) - (\(sourceFileName(filePath: file)).\(function):\(line))")
+        let logMessage = "\(message) - (\(sourceFileName(filePath: file)).\(function):\(line))".trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if let fileLogger = fileLoggerCallback {
+            fileLogger("SWIFT (\(level.rawValue)): \(logMessage)")
+        } else {
+            //Cache logs to write them when the wallet service is made available
+            TariLogger.cachedLogs.append("SWIFT CACHED (\(level.rawValue)): \(logMessage)")
+        }
+
+        //xcode debugger gets flooded without this check
+        if let msg = message as? String {
+            guard !msg.contains("[Tor") else {
+                return
+            }
+        }
+
+       print("\(time) \(level.emoji) \(logMessage)")
     }
 }

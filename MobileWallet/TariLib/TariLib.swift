@@ -45,6 +45,8 @@ enum TariLibErrors: Error {
     case privateKeyNotFound
     case saveToKeychain
     case failedToCreateCommsConfig
+    case extensionHasLock
+    case mainAppHasLock
 }
 
 class TariLib {
@@ -90,7 +92,10 @@ class TariLib {
 
     var tariWallet: Wallet?
 
-    let sharedKeychainGroup = KeychainWrapper(serviceName: "tari", accessGroup: "\(TariSettings.shared.appleTeamID ?? "").com.tari.wallet.keychain")
+    let sharedKeychainGroup = KeychainWrapper(
+        serviceName: "tari",
+        accessGroup: "\(TariSettings.shared.appleTeamID ?? "").com.tari.wallet.keychain"
+    )
 
     var storedPrivateKey: String? {
         get {
@@ -284,6 +289,44 @@ class TariLib {
         }
     }
 
+    /// Starts an existing wallet service. Must only be called if an private key has been already generated and store in keychain
+    /// - Parameter isBackgroundTask: isBackgroundTask Renames the log file for debugging tasks that happened in the background
+    /// - Throws: Can fail to generate a comms config, wallet creation and adding a basenode
+    func startWalletService(container: AppContainer = .main) throws {
+        if container == .main && AppContainerLock.shared.hasLock(.ext) {
+            throw TariLibErrors.extensionHasLock
+        }
+
+        if container == .ext && AppContainerLock.shared.hasLock(.main) {
+            throw TariLibErrors.mainAppHasLock
+        }
+
+        guard let config = commsConfig else {
+            throw TariLibErrors.failedToCreateCommsConfig
+        }
+
+        var loggingFilePath = TariLib.shared.logFilePath
+        if container != .main {
+            loggingFilePath = loggingFilePath.replacingOccurrences(of: ".txt", with: "-\(container.rawValue).txt")
+        }
+
+        TariLogger.verbose("Database path: \(databaseDirectory.path)")
+
+        tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
+
+        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
+
+        TariLogger.fileLoggerCallback = { [weak self] (message) in
+            self?.tariWallet?.logMessage(message)
+        }
+
+        expirePendingTransactionsAfterSync()
+
+        baseNodeSyncCheck() //TODO remove when no longer needed
+
+        backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
+    }
+
     func createNewWallet() throws {
         try FileManager.default.createDirectory(at: databaseDirectory, withIntermediateDirectories: true, attributes: nil)
 
@@ -301,40 +344,7 @@ class TariLib {
             throw TariLibErrors.saveToKeychain
         }
 
-        guard let config = commsConfig else {
-            throw TariLibErrors.failedToCreateCommsConfig
-        }
-
-        TariLogger.verbose("Database path: \(databaseDirectory.path)")
-
-        tariWallet = try Wallet(commsConfig: config, loggingFilePath: TariLib.shared.logFilePath)
-
-        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
-
-        baseNodeSyncCheck() //TODO remove when no longer needed
-    }
-
-    func startExistingWallet(isBackgroundTask: Bool = false) throws {
-        guard let config = commsConfig else {
-            throw TariLibErrors.failedToCreateCommsConfig
-        }
-
-        var loggingFilePath = TariLib.shared.logFilePath
-        //So we can check the logs for sessions that happend in the background
-        if isBackgroundTask {
-            loggingFilePath = loggingFilePath.replacingOccurrences(of: ".txt", with: "-background.txt")
-        }
-
-        TariLogger.verbose("Database path: \(databaseDirectory.path)")
-
-        tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
-
-        expirePendingTransactionsAfterSync()
-        backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
-
-        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
-
-        baseNodeSyncCheck() //TODO remove when no longer needed
+        try startWalletService()
     }
 
     func restartWalletIfStopped() {
@@ -345,20 +355,35 @@ class TariLib {
         TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
             guard let self = self else { return }
 
-            guard let config = self.commsConfig else {
-                TariLogger.error("Failed to get comms config", error: TariLibErrors.failedToCreateCommsConfig)
-                fatalError()
-            }
-
             TariLogger.verbose("Restarting stopped wallet")
 
             //Crash if we can't restart
-            self.tariWallet = try! Wallet(commsConfig: config, loggingFilePath: TariLib.shared.logFilePath)
+            do {
+                try self.startWalletService()
+            } catch {
+                TariLogger.error("Failed to restart wallet on first try", error: error)
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+                    guard let self = self else { return }
+                    guard self.walletIsStopped else { return }
+
+                    do {
+                        try self.startWalletService()
+                    } catch {
+                        TariLogger.error("Failed to restart wallet on second try", error: error)
+                    }
+                }
+            }
+
+            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
         }
     }
 
     func stopWallet() {
+        TariLogger.fileLoggerCallback = nil
         tariWallet = nil
         walletIsStopped = true
+        TariEventBus.unregister(self)
     }
 }

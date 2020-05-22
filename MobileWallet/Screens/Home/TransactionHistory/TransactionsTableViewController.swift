@@ -173,13 +173,6 @@ class TransactionsTableViewController: UITableViewController {
         }
 
         beginRefreshing()
-//        TariEventBus.onMainThread(self, eventType: .connectionMonitorStatusChanged) { [weak self] (_) in
-//            guard let self = self else { return }
-//
-//            if ConnectionMonitor.shared.state.baseNodeSynced == true {
-//
-//            }
-//        }
 
         TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) {(result) in
             if let success: Bool = result?.object as? Bool {

@@ -105,6 +105,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         //Remove badges from push notifications
         UIApplication.shared.applicationIconBadgeNumber = 0
+        AppContainerLock.shared.setLock(.main)
         ConnectionMonitor.shared.start()
         TariLib.shared.startTor()
         TariLib.shared.restartWalletIfStopped() //Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
@@ -119,9 +120,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
         ConnectionMonitor.shared.stop()
 
-        //TODO add back when last of the crashes from stopping the wallet have been fixed
-        //TariLib.shared.stopWallet()
+        if TariSettings.shared.extensionActive {
+            TariLib.shared.stopWallet()
+        }
         TariLib.shared.stopTor()
+        AppContainerLock.shared.removeLock(.main)
     }
 
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
