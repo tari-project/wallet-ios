@@ -217,10 +217,42 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
                 })
             }
         } else {
-            UserFeedback.shared.error(title: "Feedback failed", description: "Apple mail app needs to be setup to be able to send bug report mails")
+            shareFeedback()
         }
 
         TariLogger.info("Feedback shared")
+    }
+
+    private func shareFeedback() {
+        do {
+            let message = "Tari iOS bug report \(TariSettings.shared.bugReportEmail)"
+            let archiveURL = try zipDebugFiles()
+              let activityViewController: UIActivityViewController = UIActivityViewController(activityItems: [message, archiveURL], applicationActivities: nil)
+
+              activityViewController.popoverPresentationController?.sourceView = self.view
+              activityViewController.excludedActivityTypes = [
+                .postToFacebook,
+                .postToTwitter,
+                .postToWeibo,
+                .print,
+                .copyToPasteboard,
+                .assignToContact,
+                .saveToCameraRoll,
+                .addToReadingList,
+                .postToFlickr,
+                .postToVimeo,
+                .postToTencentWeibo,
+                .airDrop,
+                .openInIBooks,
+                .markupAsPDF
+              ]
+
+            self.present(activityViewController, animated: true, completion: nil)
+        } catch {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
+                UserFeedback.shared.error(title: "Sending feedback failed", description: "Failed to add attachment", error: error)
+            })
+        }
     }
 
     public func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
