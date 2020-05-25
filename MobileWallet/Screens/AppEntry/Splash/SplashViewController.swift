@@ -154,7 +154,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         //Kick off wallet creation on a background thread
         DispatchQueue.global().async {
             do {
-                try TariLib.shared.startExistingWallet()
+                try TariLib.shared.startWalletService()
                     DispatchQueue.main.async {
                         onComplete()
                     }

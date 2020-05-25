@@ -41,23 +41,44 @@
 import UserNotifications
 
 class NotificationService: UNNotificationServiceExtension {
-    var contentHandler: ((UNNotificationContent) -> Void)?
-    var bestAttemptContent: UNMutableNotificationContent?
+    private var contentHandler: ((UNNotificationContent) -> Void)?
+    private var bestAttemptContent: UNMutableNotificationContent?
+    private static var isInProgress = false
 
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
-        //Below 2 lines always need to be here
+        guard !AppContainerLock.shared.hasLock(.main) else {
+            TariLogger.warn("Cannot run while main app is in foreground")
+             self.completeHandler(success: false, debugMessage: "Main app has lock")
+            return
+        }
+        
+        guard !NotificationService.isInProgress else {
+            TariLogger.warn("Extension sync already in progress")
+            return
+        }
+        
+        //Below 3 lines always need to be here
         self.contentHandler = contentHandler
         self.bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
-
-        self.completeHandler()
-        //TODO add back when last of the crashes from stopping the wallet have been fixed
-        //self.listenForTorConnection()
+        NotificationService.isInProgress = true
+        AppContainerLock.shared.setLock(.ext)
+        
+        if TariSettings.shared.extensionActive {
+            self.listenForTorConnection()
+            
+            //If nothing happens in a minute kill it
+            DispatchQueue.global().asyncAfter(deadline: .now() + 60) { [weak self] in
+                self?.completeHandler(success: false, debugMessage: "Extension took longer than 60 seconds")
+            }
+        } else {
+            self.completeHandler(success: true, debugMessage: "Extension not active")
+        }
     }
     
     override func serviceExtensionTimeWillExpire() {
         // Called just before the extension will be terminated by the system.
         // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.
-        completeHandler()
+        completeHandler(success: false, debugMessage: "Expired")
     }
     
     private func listenForTorConnection() {
@@ -67,49 +88,56 @@ class NotificationService: UNNotificationServiceExtension {
             TariEventBus.unregister(self, eventType: .torConnected)
 
             do {
-                try TariLib.shared.startExistingWallet(isBackgroundTask: true)
+                try TariLib.shared.startWalletService(container: .ext)
+                try! TariLib.shared.tariWallet!.syncBaseNode()
                 self.listenForReceivedTransaction()
+                self.listenForBaseNodeSync()
             } catch {
-                TariLogger.error("Didn't start wallet", error: error)
-                self.completeHandler()
+                TariLogger.error("Did not start wallet", error: error)
+                self.completeHandler(success: false, debugMessage: "Wallet did not start")
             }
         }
     }
     
     private func listenForReceivedTransaction() {
-        try! TariLib.shared.tariWallet!.syncBaseNode()
         TariEventBus.onMainThread(self, eventType: .receievedTransaction) { [weak self] (result) in
             guard let self = self else { return }
                         
             //TX receieved, giving it some more time to send reply
             DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
                 guard let self = self else { return }
-                if let receivedTX = result?.object as? TransactionProtocol {
-                    let state = receivedTX.status.0
-                    if state == .completed || state == .broadcast || state == .mined {
-                        if TariSettings.shared.environment == .debug {
-                            self.updateContent(title: "TX received", body: "And reply sent")
-                        }
-                        self.completeHandler()
-                    }
-                }
+                self.completeHandler(success: true, debugMessage: "Received transaction successfully")
             }
         }
     }
     
-    private func updateContent(title: String, body: String) {
-        if let bestAttemptContent = self.bestAttemptContent {
-            bestAttemptContent.title =  title
-            bestAttemptContent.body =  body
+    private func listenForBaseNodeSync() {
+        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
+            guard let self = self else { return }
+
+            //If receievedTransaction isn't triggered 10s after a base node sync assume nothing is coming
+            DispatchQueue.global().asyncAfter(deadline: .now() + 10) { [weak self] in
+                guard let self = self else { return }
+                self.completeHandler(success: false, debugMessage: "Base node synced but no incoming transaction")
+            }
         }
     }
     
-    private func completeHandler() {
+    private func completeHandler(success: Bool, debugMessage: String = "") {
         if let contentHandler = contentHandler, let bestAttemptContent =  bestAttemptContent {
-            contentHandler(bestAttemptContent)
             TariEventBus.unregister(self)
             TariLib.shared.stopWallet()
             TariLib.shared.stopTor()
+            
+            if TariSettings.shared.environment == .debug {
+                bestAttemptContent.title =  "\(bestAttemptContent.title) \(success ? "✅" : "❌")"
+                bestAttemptContent.body =  "\(bestAttemptContent.body)\n~\(debugMessage)~"
+            }
+            
+            contentHandler(bestAttemptContent)
         }
+        
+        NotificationService.isInProgress = false
+        AppContainerLock.shared.removeLock(.ext)
     }
 }

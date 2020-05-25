@@ -51,8 +51,8 @@ class DebugLogsTableViewController: UITableViewController {
 
     private static let theme = DebugLogTheme()
 
-    private let debugLevels: [String] = ["INFO", "WARN", "ERROR", "DEBUG"]
-    private var debugLevelsOn: [String] = ["INFO", "WARN", "ERROR"]
+    private let debugLevels: [String] = ["INFO", "WARN", "ERROR", "SWIFT", "ONION", "DEBUG"]
+    private var debugLevelsOn: [String] = ["INFO", "WARN", "ERROR", "SWIFT"]
 
     private var filterAttributes: EKAttributes {
         var attributes = EKAttributes.centerFloat
@@ -157,7 +157,7 @@ class DebugLogsTableViewController: UITableViewController {
     private func setupFilterDialog() {
         filterView.backgroundColor = DebugLogsTableViewController.theme.popupBackground
         filterView.layer.cornerRadius = 10
-        filterView.heightAnchor.constraint(greaterThanOrEqualToConstant: 250).isActive = true
+        filterView.heightAnchor.constraint(greaterThanOrEqualToConstant: 350).isActive = true
         filterView.widthAnchor.constraint(equalToConstant: 200).isActive = true
 
         let sv = UIStackView()

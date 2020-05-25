@@ -48,71 +48,14 @@ class NodeSyncOperation: Operation {
             return
         }
 
-        if TariLib.shared.walletExists {
-            handleWalletEvents()
-            TariLib.shared.startTor()
-        } else {
-            //If there's no wallet, we're not syncing a node
-            onComplete(true)
-        }
-    }
+        //Any feature background logic here
 
-    private func handleWalletEvents() {
-        //Handle on tor connected
-        TariEventBus.onMainThread(self, eventType: .torConnected) {(_) in
-            do {
-                try TariLib.shared.startExistingWallet(isBackgroundTask: true)
-            } catch {
-                TariLogger.error("Failed to start wallet", error: error)
-                self.onComplete(false)
-            }
-        }
-
-        TariEventBus.onMainThread(self, eventType: .torConnectionFailed) {(result) in
-            let error: Error? = result?.object as? Error
-
-            self.onComplete(false)
-
-            TariLogger.error("Failed to connect to tor", error: error)
-        }
-
-        //TODO when a callback is added for when a node is synced, we should use that instead.
-        TariEventBus.onMainThread(self, eventType: .receievedTransaction) {(_) in
-            //guard let _ = self else { return }
-            NotificationManager.shared.scheduleNotification(
-                title: NSLocalizedString("You've got Tari!", comment: "Background refresh TX received notification"),
-                body: String(
-                    format: NSLocalizedString(
-                        "Someone just sent you some %@",
-                        comment: "Background refresh TX received notification"),
-                    TariSettings.shared.network.currencyDisplayTicker
-                )
-            )
-
-            self.onComplete(true)
-        }
-
-        //TODO we might want to listen on multiple events, to send push notications for different background events
+        onComplete(true)
     }
 
     private func onComplete(_ success: Bool) {
         if let done = self.completionHandler {
-            TariEventBus.unregister(self)
             done(success)
         }
-    }
-}
-
-extension NodeSyncOperation {
-    fileprivate func testReceiveTx() {
-        DispatchQueue.global().asyncAfter(deadline: .now() + 5, execute: {
-            if let wallet = TariLib.shared.tariWallet {
-                do {
-                    try wallet.generateTestReceiveTransaction()
-                } catch {
-                    TariLogger.error("Failed to make test send TX", error: error)
-                }
-            }
-        })
     }
 }

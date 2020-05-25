@@ -126,6 +126,12 @@ class NotificationManager {
         }
     }
 
+    func handleForegroundNotification(_ notification: UNNotification, completionHandler: (UNNotificationPresentationOptions) -> Void) {
+        ConnectionMonitor.shared.state.baseNodeSynced = nil
+        try? TariLib.shared.tariWallet?.syncBaseNode()
+        //completionHandler([.alert, .badge, .sound])
+    }
+
     //TODO remove time interval, probably not needed
     func scheduleNotification(title: String, body: String, timeInterval: TimeInterval = 1) {
         let content = UNMutableNotificationContent()

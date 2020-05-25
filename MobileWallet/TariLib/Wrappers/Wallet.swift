@@ -267,7 +267,7 @@ class Wallet {
         ptr = result!
     }
 
-    func logMessage(message: String) {
+    func logMessage(_ message: String) {
         message.withCString({ cstr in
             log_debug_message(cstr)
         })

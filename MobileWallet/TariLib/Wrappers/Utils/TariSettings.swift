@@ -115,7 +115,7 @@ struct TariSettings {
     //Used for showing a little extra detail in the UI to help debugging
     private let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
-    let pushNotificationServer = "https://b72d0e3c.ngrok.io" // "https://push.tari.com"
+    let pushNotificationServer = "https://b54ea87f.ngrok.io" // "https://push.tari.com"
     let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 1 //1 day
     #else
     let torEnabled = true
@@ -129,6 +129,10 @@ struct TariSettings {
         return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
+    var extensionActive: Bool {
+        return false // environment == .debug
+    }
+
     var environment: AppEnvironment {
         if isDebug {
             return .debug
@@ -139,9 +143,11 @@ struct TariSettings {
         return .production
     }
 
+    let groupIndentifier = "group.com.tari.wallet"
+
     var storageDirectory: URL {
         return FileManager.default.containerURL(
-          forSecurityApplicationGroupIdentifier: "group.com.tari.wallet"
+          forSecurityApplicationGroupIdentifier: groupIndentifier
         )! //Force unwrapping here because it should never run unless it can access this dir
     }
 
@@ -173,7 +179,7 @@ struct TariSettings {
                 if let appleTeamID = jsonResult["appleTeamID"] as? String, !appleTeamID.isEmpty {
                     self.appleTeamID = appleTeamID
                 } else {
-                    TariLogger.warn("appleTeamID not set in env.json. Shared keychain will not work.")
+                    fatalError("appleTeamID not set in env.json. Shared keychain will not work.")
                 }
             }
         } catch {

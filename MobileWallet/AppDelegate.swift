@@ -43,7 +43,7 @@ import CoreData
 import Sentry
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -60,11 +60,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
 
+        UNUserNotificationCenter.current().delegate = self
         BackgroundTaskManager.shared.registerNodeSyncTask()
         ShortcutParser.shared.registerShortcuts()
         Migrations.handle()
 
         return true
+    }
+
+    func applicationWillTerminate(_ application: UIApplication) {
+        AppContainerLock.shared.removeLock(.main)
     }
 
     // MARK: UISceneSession Lifecycle
@@ -87,6 +92,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
         TariLogger.error("Failed to register for push notifications", error: error)
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        NotificationManager.shared.handleForegroundNotification(notification, completionHandler: completionHandler)
     }
 
     // MARK: - Core Data stack

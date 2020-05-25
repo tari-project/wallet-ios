@@ -85,7 +85,7 @@ struct BackgroundTaskManager {
 
     func scheduleAppRefresh() {
         let taskRequest = BGAppRefreshTaskRequest(identifier: BackgroundTaskManager.APP_BACKGROUND_SYNC_IDENTIFIER)
-        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 15) //20min
+        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 15) //15min
 
         do {
             try BGTaskScheduler.shared.submit(taskRequest)
