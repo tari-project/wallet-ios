@@ -215,10 +215,22 @@ class WalletCreationViewController: UIViewController {
                 Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
 
                 let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
-                if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
-                    nav.modalPresentationStyle = .fullScreen
-                    self.present(nav, animated: true, completion: nil)
-                }
+
+                guard
+                    let navController = storyboard.instantiateInitialViewController() as? UINavigationController,
+                    let homeViewController = navController.viewControllers.first as? HomeViewController,
+                    let window = UIApplication.shared.windows.first
+                else { return }
+
+                let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
+                homeViewController.view.addSubview(overlayView)
+                window.rootViewController = navController
+
+                UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
+                    overlayView.alpha = 0
+                }, completion: { _ in
+                    overlayView.removeFromSuperview()
+                })
             }
         }
     }

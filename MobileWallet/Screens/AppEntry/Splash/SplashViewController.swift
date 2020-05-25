@@ -350,11 +350,16 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         } else {
             let vc = WalletCreationViewController()
             vc.startFromLocalAuth = !authStepPassed && walletExistsInitially
-
-            vc.modalPresentationStyle = .fullScreen
             if let window = view.window {
+                let transition: CATransition = CATransition()
+                transition.duration = 0.5
+                transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+                transition.type = CATransitionType.push
+                transition.subtype = CATransitionSubtype.fromTop
+
                 window.layer.add(Theme.shared.transitions.pullDownOpen, forKey: kCATransition)
-                present(vc, animated: false, completion: nil)
+                navigationController?.view.layer.add(transition, forKey: kCATransition)
+                navigationController?.pushViewController(vc, animated: false)
             }
         }
     }
