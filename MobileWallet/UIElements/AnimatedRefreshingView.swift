@@ -140,9 +140,9 @@ class AnimatedRefreshingView: UIView {
         backgroundColor = Theme.shared.colors.appBackground
 
         layer.cornerRadius = cornerRadius
-        layer.shadowOpacity = 0.08
-        layer.shadowOffset = CGSize(width: 2, height: 2)
-        layer.shadowRadius = 5
+        layer.shadowOpacity = 0.2
+        layer.shadowOffset = CGSize(width: 0, height: 2)
+        layer.shadowRadius = 3
         layer.shadowColor = Theme.shared.colors.defaultShadow?.cgColor
 
         currentInnerView.setupView(type)

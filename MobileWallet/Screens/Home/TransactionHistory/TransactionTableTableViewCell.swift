@@ -65,7 +65,7 @@ class TransactionTableTableViewCell: UITableViewCell {
     }
 
     private func viewSetup() {
-        backgroundColor = BACKGROUND_COLOR
+        contentView.backgroundColor = BACKGROUND_COLOR
 
         valueLabel.font = Theme.shared.fonts.transactionCellValueLabel
         valueLabel.layer.cornerRadius = 3

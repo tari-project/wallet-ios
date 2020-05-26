@@ -73,12 +73,6 @@ class TransactionsTableViewController: UITableViewController {
     let sectionHeaderHeight: CGFloat = 0
     weak var actionDelegate: TransactionsTableViewDelegate?
     var refreshTransactionControl = UIRefreshControl()
-    var isRefreshing = false {
-        didSet {
-            //Header view that contains the loading animation needs to update
-            self.tableView.reloadData()
-        }
-    }
     let animatedRefresher = AnimatedRefreshingView()
     private var lastContentOffset: CGFloat = 0
     private var lastScrollDirection: ScrollDirection = .up
@@ -113,17 +107,17 @@ class TransactionsTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewSetup()
+        registerEvents()
+
         if backgroundType == .intro {
             setIntroView()
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                self?.refreshPullTransactions()
+            }
         }
-        viewSetup()
-        tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
-        refreshTransactionControl.addTarget(self, action: #selector(refreshPullTransactions(_:)), for: .valueChanged)
-        tableView.addSubview(refreshTransactionControl)
-        tableView.estimatedSectionHeaderHeight = UITableView.automaticDimension
 
-        beginRefreshing()
-        registerEvents()
         NotificationCenter.default.addObserver(self, selector: #selector(registerEvents), name: UIApplication.willEnterForegroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(unregisterEvents), name: UIApplication.didEnterBackgroundNotification, object: nil)
     }
@@ -139,30 +133,17 @@ class TransactionsTableViewController: UITableViewController {
     }
 
     private func viewSetup() {
+        setupRefreshControl()
+
+        tableView.register(UINib(nibName: cellIdentifier, bundle: nil), forCellReuseIdentifier: cellIdentifier)
+        tableView.estimatedSectionHeaderHeight = UITableView.automaticDimension
+
         tableView.separatorStyle = .none
         tableView.rowHeight = 74
         tableView.contentInsetAdjustmentBehavior = .never
         tableView.contentInset = UIEdgeInsets(top: 48, left: 0, bottom: 0, right: 0)
 
         view.backgroundColor = Theme.shared.colors.transactionTableBackground
-        refreshTransactionControl.attributedTitle = nil
-        animatedRefresher.setupView(.loading)
-    }
-
-    private func showRefreshingSpinner() {
-        refreshTransactionControl.tintColor = .systemGray
-        refreshTransactionControl.subviews.first?.alpha = 1
-    }
-
-    private func hideRefreshingSpinner() {
-        UIView.animate(withDuration: 0.5, animations: { [weak self] in
-            guard let self = self else { return }
-            self.refreshTransactionControl.tintColor = .clear
-            self.refreshTransactionControl.subviews.first?.alpha = 0
-        }) { _ in
-            //Switch off the pull to refresh part
-            self.refreshTransactionControl.endRefreshing()
-        }
     }
 
     @objc private func registerEvents() {
@@ -197,21 +178,11 @@ class TransactionsTableViewController: UITableViewController {
     @objc private func unregisterEvents() {
         animatedRefresher.animateOut()
         TariEventBus.unregister(self)
-        isRefreshing = false
     }
 
     private func beginRefreshing() {
-        //Makes the spinner transparent so it's visible while the refreshing animation is in view
-        hideRefreshingSpinner()
-
-        guard !isRefreshing else {
-            return
-        }
-
-        refreshTransactionControl.isEnabled = false
-
-        isRefreshing = true
-
+        guard refreshTransactionControl.isRefreshing else { return }
+        tableView.reloadData()
         animatedRefresher.updateState(.loading)
         animatedRefresher.animateIn()
 
@@ -229,27 +200,20 @@ class TransactionsTableViewController: UITableViewController {
     }
 
     private func endRefreshingWithSuccess() {
-        guard isRefreshing else {
-            return
-        }
-
-        refreshTransactionControl.isEnabled = true
+        guard refreshTransactionControl.isRefreshing else { return }
         animatedRefresher.updateState(.success)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
             guard let self = self else { return }
-
             self.animatedRefresher.animateOut { [weak self] in
-                guard let self = self else { return }
-
-                self.isRefreshing = false
-
-                self.showRefreshingSpinner()
+                self?.tableView.reloadData()
+                self?.refreshTransactionControl.endRefreshing()
             }
         })
     }
 
-    @objc private func refreshPullTransactions(_ sender: UIRefreshControl) {
+    private func refreshPullTransactions() {
+        refreshTransactionControl.programaticallyBeginRefreshing(in: tableView)
         beginRefreshing()
     }
 
@@ -356,6 +320,11 @@ class TransactionsTableViewController: UITableViewController {
         } else if self.lastContentOffset - 25 > scrollView.contentOffset.y && lastScrollDirection != .up {
             actionDelegate?.onScrollDirectionChange(.up)
             lastScrollDirection = .up
+        }
+
+        if scrollView.contentOffset.y < -100 && !refreshTransactionControl.isRefreshing && scrollView.isDragging == true {
+            refreshPullTransactions()
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
         }
     }
 

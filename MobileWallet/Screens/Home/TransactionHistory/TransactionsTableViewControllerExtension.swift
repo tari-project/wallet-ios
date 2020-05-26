@@ -73,19 +73,14 @@ extension TransactionsTableViewController {
             pendingAnimationContainer.play()
         }
 
-        if section == 0 && isRefreshing {
-            animatedRefresher.translatesAutoresizingMaskIntoConstraints = false
-            sectionHeaderView.addSubview(animatedRefresher)
-
-            animatedRefresher.topAnchor.constraint(equalTo: sectionHeaderView.topAnchor).isActive = true
-            animatedRefresher.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-            animatedRefresher.trailingAnchor.constraint(equalTo: sectionHeaderView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-            animatedRefresher.heightAnchor.constraint(equalToConstant: 48).isActive = true
-
-            sectionHeaderView.heightAnchor.constraint(equalToConstant: 90).isActive = true
-        }
-
         return sectionHeaderView
+    }
+
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0 && refreshTransactionControl.isRefreshing {
+            return 30
+        }
+        return 16
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -227,6 +222,30 @@ extension TransactionsTableViewController {
         tableView.backgroundView = introView
 
         animateWave(imageView: introImage)
+    }
+
+    func setupRefreshControl() {
+        refreshTransactionControl.clipsToBounds = true
+        refreshTransactionControl.backgroundColor = .clear
+        refreshTransactionControl.tintColor = .clear
+        refreshTransactionControl.subviews.first?.alpha = 0
+
+        tableView.addSubview(refreshTransactionControl)
+        refreshTransactionControl.addSubview(animatedRefresher)
+
+        animatedRefresher.translatesAutoresizingMaskIntoConstraints = false
+        animatedRefresher.topAnchor.constraint(equalTo: refreshTransactionControl.topAnchor, constant: 3).isActive = true
+
+        let leading = animatedRefresher.leadingAnchor.constraint(equalTo: refreshTransactionControl.leadingAnchor, constant: Theme.shared.sizes.appSidePadding)
+        leading.isActive = true
+        leading.priority = .defaultHigh
+
+        let trailing = animatedRefresher.trailingAnchor.constraint(equalTo: refreshTransactionControl.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding)
+        trailing.isActive = true
+        trailing.priority = .defaultHigh
+
+        animatedRefresher.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        animatedRefresher.setupView(.loading)
     }
 
     private func animateWave(imageView: UIImageView) {
