@@ -102,7 +102,7 @@ private class RefreshingInnerView: UIView {
         case .txWaitingForRecipient:
             emojiLabel.text = ""
             spinner.stopAnimating()
-            statusLabel.text = NSLocalizedString("Waiting for recipient to accept transaction", comment: "Refresh view")
+            statusLabel.text = NSLocalizedString("Waiting for recipient to come online", comment: "Refresh view")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .txWaitingForSender:
             emojiLabel.text = ""
