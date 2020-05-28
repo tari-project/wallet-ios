@@ -1,41 +1,41 @@
 //  HomeViewControllerDebugExtension.swift
 
 /*
-	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/23
-	Using Swift 5.0
-	Running on macOS 10.15
+    Package MobileWallet
+    Created by Jason van den Berg on 2019/11/23
+    Using Swift 5.0
+    Running on macOS 10.15
 
-	Copyright 2019 The Tari Project
+    Copyright 2019 The Tari Project
 
-	Redistribution and use in source and binary forms, with or
-	without modification, are permitted provided that the
-	following conditions are met:
+    Redistribution and use in source and binary forms, with or
+    without modification, are permitted provided that the
+    following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above
-	copyright notice, this list of conditions and the following disclaimer in the
-	documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above
+    copyright notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
 
-	3. Neither the name of the copyright holder nor the names of
-	its contributors may be used to endorse or promote products
-	derived from this software without specific prior written permission.
+    3. Neither the name of the copyright holder nor the names of
+    its contributors may be used to endorse or promote products
+    derived from this software without specific prior written permission.
 
-	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-	CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+    CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+    CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+    OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 import UIKit
@@ -50,6 +50,9 @@ private enum DebugErrors: Error {
 }
 
 extension UIViewController: MFMailComposeViewControllerDelegate {
+
+    private static var debugMenuAlert: UIAlertController?
+
     func checkClipboardForBaseNode() {
         let pasteboardString: String? = UIPasteboard.general.string
         guard let clipboardText = pasteboardString else { return }
@@ -276,27 +279,64 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
     }
 
     override open func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        let alert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-
-        alert.addAction(UIAlertAction(title: "View logs", style: .default, handler: { (_)in
-            self.showTariLibLogs()
-        }))
-
-        alert.addAction(UIAlertAction(title: "Report a bug", style: .default, handler: { (_)in
-            self.onSendFeedback()
-        }))
-
-        alert.addAction(UIAlertAction(title: "View connection status", style: .default, handler: { (_)in
-            UserFeedback.shared.showDebugConnectionStatus()
-        }))
-
-        if TariSettings.shared.environment == .debug {
-            alert.addAction(UIAlertAction(title: "Delete wallet", style: .destructive, handler: { (_)in
-                self.deleteWallet()
-            }))
+        guard UIViewController.debugMenuAlert == nil else {
+            return
+        }
+        UIViewController.debugMenuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        guard let alert = UIViewController.debugMenuAlert else {
+            return
         }
 
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(
+            UIAlertAction(
+                title: "View logs",
+                style: .default,
+                handler: {
+                    (_) in
+                    UIViewController.debugMenuAlert = nil
+                    self.showTariLibLogs()
+            }))
+
+        alert.addAction(
+            UIAlertAction(
+                title: "Report a bug",
+                style: .default,
+                handler: {
+                    (_) in
+                    UIViewController.debugMenuAlert = nil
+                    self.onSendFeedback()
+            }))
+
+        alert.addAction(
+            UIAlertAction(
+                title: "View connection status",
+                style: .default,
+                handler: {
+                    (_) in
+                    UIViewController.debugMenuAlert = nil
+                    UserFeedback.shared.showDebugConnectionStatus()
+            }))
+
+        if TariSettings.shared.environment == .debug {
+            alert.addAction(
+                UIAlertAction(
+                    title: "Delete wallet",
+                    style: .destructive,
+                    handler: {
+                        (_) in
+                        UIViewController.debugMenuAlert = nil
+                        self.deleteWallet()
+                }))
+        }
+
+        alert.addAction(
+            UIAlertAction(
+                title: "Cancel",
+                style: .cancel,
+                handler: {
+                        (_) in
+                        UIViewController.debugMenuAlert = nil
+            }))
 
         present(alert, animated: true, completion: nil)
     }
