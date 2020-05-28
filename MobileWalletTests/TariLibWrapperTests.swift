@@ -400,15 +400,36 @@ class TariLibWrapperTests: XCTestCase {
     func testMicroTari() {
         let microTari = MicroTari(98234567)
         XCTAssert(microTari.taris == 98.234567)
-        //Check 2 most common local formats
-        XCTAssert(microTari.formatted == "98.23" || microTari.formatted == "98,23")
-        XCTAssert(microTari.formattedWithOperator == "+ 98.23" || microTari.formattedWithOperator == "+ 98,23")
-        XCTAssert(microTari.formattedWithNegativeOperator == "- 98.23" || microTari.formattedWithNegativeOperator == "- 98,23")
-        XCTAssert(microTari.formattedPrecise == "98.2345657" || microTari.formattedPrecise == "98,2345657")
         XCTAssert(MicroTari.toTariNumber(NSNumber(3)) == 3000000)
-        XCTAssert(MicroTari.convertToNumber("10.03") == NSNumber(10.03))
-        XCTAssert(MicroTari.convertToString(NSNumber(10.03), minimumFractionDigits: 2) == "10.03")
-        XCTAssert(MicroTari.convertToString(NSNumber(10), minimumFractionDigits: 1) == "10.0")
+        //Check 2 most common local formats
+        XCTAssert(
+            microTari.formatted == "98.23"
+                || microTari.formatted == "98,23"
+        )
+        XCTAssert(
+            microTari.formattedWithOperator == "+ 98.23"
+                || microTari.formattedWithOperator == "+ 98,23"
+        )
+        XCTAssert(
+            microTari.formattedWithNegativeOperator == "- 98.23"
+                || microTari.formattedWithNegativeOperator == "- 98,23"
+        )
+        XCTAssert(
+            microTari.formattedPrecise == "98.2345657"
+                || microTari.formattedPrecise == "98,2345657"
+        )
+        XCTAssert(
+            MicroTari.convertToNumber("10.03") == NSNumber(10.03)
+                || MicroTari.convertToNumber("10,03") == NSNumber(10.03)
+        )
+        XCTAssert(
+            MicroTari.convertToString(NSNumber(10.03), minimumFractionDigits: 2) == "10.03"
+                || MicroTari.convertToString(NSNumber(10.03), minimumFractionDigits: 2) == "10,03"
+        )
+        XCTAssert(
+            MicroTari.convertToString(NSNumber(10), minimumFractionDigits: 1) == "10.0"
+                || MicroTari.convertToString(NSNumber(10), minimumFractionDigits: 1) == "10,0"
+        )
         XCTAssert(MicroTari.convertToString(NSNumber(10.0), minimumFractionDigits: 0) == "10")
         XCTAssertNoThrow(try MicroTari(tariValue: "1234567898"))
         XCTAssertThrowsError(try MicroTari(tariValue: "1234567898765432123567")) //Too large to be converted to uint64 in micro tari
