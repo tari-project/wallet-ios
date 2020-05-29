@@ -61,7 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         }
 
         UNUserNotificationCenter.current().delegate = self
-        BackgroundTaskManager.shared.registerNodeSyncTask()
+        BackgroundTaskManager.shared.registerScheduleReminderNotificationsTask()
         ShortcutParser.shared.registerShortcuts()
         Migrations.handle()
 

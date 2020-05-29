@@ -1,4 +1,4 @@
-//  NodeSyncOperation.swift
+//  ScheduleReminderNotificationsOperation.swift
 
 /*
     Package MobileWallet
@@ -40,7 +40,7 @@
 
 import Foundation
 
-class NodeSyncOperation: Operation {
+class ScheduleReminderNotificationsOperation: Operation {
     var completionHandler: ((Bool) -> Void)?
 
     override func main() {
@@ -48,9 +48,29 @@ class NodeSyncOperation: Operation {
             return
         }
 
-        //Any feature background logic here
+        //TODO investigate why this passes occasionally when it shouldn't
+        guard ReminderNotifications.shared.shouldScheduleReminders else {
+            onComplete(true)
+            return
+        }
 
-        onComplete(true)
+        //Any feature background logic here
+        NotificationManager.shared.cancelAllFutureReminderNotifications()
+
+        var numberOfSetNotifications = 0
+        ReminderNotifications.recipientReminderNotifications.forEach { (reminderDetails) in
+            NotificationManager.shared.scheduleNotification(
+                title: reminderDetails.title,
+                body: reminderDetails.body,
+                identifier: reminderDetails.identifier,
+                timeInterval: reminderDetails.deliverAfter) { [weak self] (_) in
+                    numberOfSetNotifications = numberOfSetNotifications + 1
+                    //Know for certain all notifications have been scheduled
+                    if numberOfSetNotifications >= ReminderNotifications.recipientReminderNotifications.count {
+                        self?.onComplete(true)
+                    }
+                }
+        }
     }
 
     private func onComplete(_ success: Bool) {

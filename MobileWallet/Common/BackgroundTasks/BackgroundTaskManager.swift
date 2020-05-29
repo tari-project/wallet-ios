@@ -44,32 +44,47 @@ import BackgroundTasks
 struct BackgroundTaskManager {
     static let shared = BackgroundTaskManager()
 
-    static let APP_BACKGROUND_SYNC_IDENTIFIER = "com.tari.wallet.sync"
+    static let appBackgroundTaskScheduleReminderNotifications = "com.tari.wallet.scheduleReminderNotifications"
     //For testing using the debugger, pause, paste below command in and unpause
-    //e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.tari.wallet.sync"]
+    //e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.tari.wallet.scheduleReminderNotifications"]
 
-    func registerNodeSyncTask() {
+    private init() {}
+
+    func registerScheduleReminderNotificationsTask() {
         BGTaskScheduler.shared.register(
-            forTaskWithIdentifier: BackgroundTaskManager.APP_BACKGROUND_SYNC_IDENTIFIER,
-            using: nil
+            forTaskWithIdentifier: BackgroundTaskManager.appBackgroundTaskScheduleReminderNotifications,
+            using: DispatchQueue.global()
         ) { task in
             if let bgTask = task as? BGAppRefreshTask {
-                self.handleAppRefresh(task: bgTask)
+                self.handleScheduleRemindersTask(task: bgTask)
             }
+        }
+
+        scheduleBackgroundCheckForReminderNotifications()
+    }
+
+    func scheduleBackgroundCheckForReminderNotifications() {
+        let taskRequest = BGAppRefreshTaskRequest(identifier: BackgroundTaskManager.appBackgroundTaskScheduleReminderNotifications)
+        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 15) //15min
+
+        do {
+            try BGTaskScheduler.shared.submit(taskRequest)
+        } catch {
+            TariLogger.error("Scheduling task to schedule reminder notifications", error: error)
         }
     }
 
-    func handleAppRefresh(task: BGAppRefreshTask) {
-        scheduleAppRefresh()
+    func handleScheduleRemindersTask(task: BGAppRefreshTask) {
+        scheduleBackgroundCheckForReminderNotifications()
 
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
-        let appRefreshOperation = NodeSyncOperation()
-        appRefreshOperation.completionHandler = { success in
+        let scheduleRemindersOperation = ScheduleReminderNotificationsOperation()
+        scheduleRemindersOperation.completionHandler = { success in
             task.setTaskCompleted(success: success)
         }
 
-        queue.addOperation(appRefreshOperation)
+        queue.addOperation(scheduleRemindersOperation)
 
         task.expirationHandler = {
             queue.cancelAllOperations()
@@ -80,17 +95,6 @@ struct BackgroundTaskManager {
         lastOperation?.completionBlock = {
             let isCancelled = lastOperation?.isCancelled ?? false
             task.setTaskCompleted(success: !isCancelled)
-        }
-    }
-
-    func scheduleAppRefresh() {
-        let taskRequest = BGAppRefreshTaskRequest(identifier: BackgroundTaskManager.APP_BACKGROUND_SYNC_IDENTIFIER)
-        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 15) //15min
-
-        do {
-            try BGTaskScheduler.shared.submit(taskRequest)
-        } catch {
-            TariLogger.error("Scheduling app refresh", error: error)
         }
     }
 }

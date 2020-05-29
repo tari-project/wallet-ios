@@ -43,12 +43,20 @@ import UserNotifications
 class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNMutableNotificationContent?
-    private static var isInProgress = false
-
+    private static var isInProgress = false {
+        didSet {
+            if isInProgress {
+                ConnectionMonitor.shared.start()
+            } else {
+                ConnectionMonitor.shared.stop()
+            }
+        }
+    }
+    
     override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
         guard !AppContainerLock.shared.hasLock(.main) else {
             TariLogger.warn("Cannot run while main app is in foreground")
-             self.completeHandler(success: false, debugMessage: "Main app has lock")
+            self.completeHandler(success: false, debugMessage: "Main app has lock")
             return
         }
         
@@ -56,7 +64,7 @@ class NotificationService: UNNotificationServiceExtension {
             TariLogger.warn("Extension sync already in progress")
             return
         }
-        
+                
         //Below 3 lines always need to be here
         self.contentHandler = contentHandler
         self.bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
@@ -78,7 +86,7 @@ class NotificationService: UNNotificationServiceExtension {
     override func serviceExtensionTimeWillExpire() {
         // Called just before the extension will be terminated by the system.
         // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.
-        completeHandler(success: false, debugMessage: "Expired")
+        completeHandler(success: false, debugMessage: "Service expired. \n\(ConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n"))")
     }
     
     private func listenForTorConnection() {
@@ -115,8 +123,8 @@ class NotificationService: UNNotificationServiceExtension {
         TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
             guard let self = self else { return }
 
-            //If receievedTransaction isn't triggered 10s after a base node sync assume nothing is coming
-            DispatchQueue.global().asyncAfter(deadline: .now() + 10) { [weak self] in
+            //If receievedTransaction isn't triggered after a base node sync assume nothing is coming
+            DispatchQueue.global().asyncAfter(deadline: .now() + 5) { [weak self] in
                 guard let self = self else { return }
                 self.completeHandler(success: false, debugMessage: "Base node synced but no incoming transaction")
             }
@@ -124,14 +132,25 @@ class NotificationService: UNNotificationServiceExtension {
     }
     
     private func completeHandler(success: Bool, debugMessage: String = "") {
+        //A background operation will use this flag to set scheduled reminder notifications for users to open up the app if this extension failed to receieve the TX
+        if !success {
+            ReminderNotifications.shared.shouldScheduleReminders = true
+            TariLogger.info("Setting flag for scheduling reminder notificaions in main app background operation")
+        }
+        
+        if !debugMessage.isEmpty {
+            TariLogger.info("App extension completed \(success ? "✅" : "❌")")
+            TariLogger.info(debugMessage)
+        }
+        
         if let contentHandler = contentHandler, let bestAttemptContent =  bestAttemptContent {
             TariEventBus.unregister(self)
             TariLib.shared.stopWallet()
             TariLib.shared.stopTor()
             
             if TariSettings.shared.environment == .debug {
-                bestAttemptContent.title =  "\(bestAttemptContent.title) \(success ? "✅" : "❌")"
-                bestAttemptContent.body =  "\(bestAttemptContent.body)\n~\(debugMessage)~"
+                bestAttemptContent.title = "\(bestAttemptContent.title)\(success ? "✅" : "❌")"
+                bestAttemptContent.body =  "\(bestAttemptContent.body)\n\(debugMessage)"
             }
             
             contentHandler(bestAttemptContent)
@@ -139,5 +158,7 @@ class NotificationService: UNNotificationServiceExtension {
         
         NotificationService.isInProgress = false
         AppContainerLock.shared.removeLock(.ext)
+        
+        
     }
 }

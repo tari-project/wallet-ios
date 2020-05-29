@@ -111,6 +111,10 @@
 		006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
 		006D211F23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
 		0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0070A7BB2379847100C25E1C /* LocalAuthentication.framework */; };
+		0072BF24247E735700BD28FB /* ReminderNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0072BF23247E735700BD28FB /* ReminderNotifications.swift */; };
+		0072BF28247EB3A600BD28FB /* ReminderNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0072BF23247E735700BD28FB /* ReminderNotifications.swift */; };
+		0072BF29247EB3A900BD28FB /* ReminderNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0072BF23247E735700BD28FB /* ReminderNotifications.swift */; };
+		0072BF2A247EB3AA00BD28FB /* ReminderNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0072BF23247E735700BD28FB /* ReminderNotifications.swift */; };
 		0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
@@ -182,7 +186,7 @@
 		00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8A8237AA13500C02E44 /* Biometrics.m */; };
 		00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD806237D755600EBF5E6 /* HelperFunctions.swift */; };
 		00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F5241B778D00ED8318 /* BackgroundTaskManager.swift */; };
-		00B4D6F8241B77A900ED8318 /* NodeSyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F7241B77A900ED8318 /* NodeSyncOperation.swift */; };
+		00B4D6F8241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F7241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift */; };
 		00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F9241B910200ED8318 /* NotificationManager.swift */; };
 		00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
 		00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */; };
@@ -547,6 +551,7 @@
 		0053872F24065F6C00901A68 /* SlideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideView.swift; sourceTree = "<group>"; };
 		006D211C23CEDF16007D1C10 /* MicroTari.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicroTari.swift; sourceTree = "<group>"; };
 		0070A7BB2379847100C25E1C /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
+		0072BF23247E735700BD28FB /* ReminderNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotifications.swift; sourceTree = "<group>"; };
 		0074619A239A57B000F00966 /* UIBarButtonItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItem.swift; sourceTree = "<group>"; };
 		0087A1A523F4235400B89EE7 /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		0087A1A623F4235400B89EE7 /* ContactsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactsTableViewController.swift; sourceTree = "<group>"; };
@@ -577,7 +582,7 @@
 		00B4D6B9241787F600ED8318 /* MobileWalletUISnapshots-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletUISnapshots-Bridging-Header.h"; sourceTree = "<group>"; };
 		00B4D6BA2417894800ED8318 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		00B4D6F5241B778D00ED8318 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
-		00B4D6F7241B77A900ED8318 /* NodeSyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeSyncOperation.swift; sourceTree = "<group>"; };
+		00B4D6F7241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleReminderNotificationsOperation.swift; sourceTree = "<group>"; };
 		00B4D6F9241B910200ED8318 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		00B4D6FB241B97CD00ED8318 /* Tari.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tari.entitlements; sourceTree = "<group>"; };
 		00BBD7EE237B014100EBF5E6 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
@@ -946,7 +951,8 @@
 			isa = PBXGroup;
 			children = (
 				00B4D6F5241B778D00ED8318 /* BackgroundTaskManager.swift */,
-				00B4D6F7241B77A900ED8318 /* NodeSyncOperation.swift */,
+				00B4D6F7241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift */,
+				0072BF23247E735700BD28FB /* ReminderNotifications.swift */,
 			);
 			path = BackgroundTasks;
 			sourceTree = "<group>";
@@ -1860,6 +1866,7 @@
 				00C520B52469720F0077BF7F /* TariSettings.swift in Sources */,
 				00C520BB2469720F0077BF7F /* Signature.swift in Sources */,
 				00C520C4246972140077BF7F /* CommsConfig.swift in Sources */,
+				0072BF28247EB3A600BD28FB /* ReminderNotifications.swift in Sources */,
 				00C520C6246972140077BF7F /* WalletTestDataExtension.swift in Sources */,
 				00C520C8246972140077BF7F /* Contacts.swift in Sources */,
 				00C520B82469720F0077BF7F /* Sequence.swift in Sources */,
@@ -1929,6 +1936,7 @@
 				00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				009DFCA72473E33F0061DBC9 /* DeepLinkParams.swift in Sources */,
 				001F6CE02380198D00FA7002 /* Contacts.swift in Sources */,
+				0072BF24247E735700BD28FB /* ReminderNotifications.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TransactionTableViewCell.swift in Sources */,
@@ -1954,7 +1962,7 @@
 				00947CC723D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				004277EF23E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
-				00B4D6F8241B77A900ED8318 /* NodeSyncOperation.swift in Sources */,
+				00B4D6F8241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift in Sources */,
 				004277E723DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				00C185B9238943980096984E /* UIViewControllerDebugExtension.swift in Sources */,
 				37547D5624601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
@@ -2022,6 +2030,7 @@
 				00BCE483240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				4CD20A372407967B007B64D8 /* TransportType.swift in Sources */,
 				BFD758E723E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
+				0072BF29247EB3A900BD28FB /* ReminderNotifications.swift in Sources */,
 				00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				0091D4A823ED879E004BF7F7 /* Signature.swift in Sources */,
 				009DFCA82473EBCB0061DBC9 /* DeepLinkParams.swift in Sources */,
@@ -2197,6 +2206,7 @@
 				0042780523E8421200AE7BD9 /* String.swift in Sources */,
 				371A081A247290C000F97713 /* TransitionLabel.swift in Sources */,
 				00A66525243B3E380046E730 /* ErrorView.swift in Sources */,
+				0072BF2A247EB3AA00BD28FB /* ReminderNotifications.swift in Sources */,
 				00BBD80B237D80C800EBF5E6 /* Date.swift in Sources */,
 				0087A1AB23F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				001F6CEA2381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
@@ -2307,7 +2317,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2324,7 +2334,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.1.12;
+				MARKETING_VERSION = 0.1.14;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet.MobileWalletNotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2344,7 +2354,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2361,7 +2371,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.1.12;
+				MARKETING_VERSION = 0.1.14;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet.MobileWalletNotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2500,7 +2510,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2516,7 +2526,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.1.12;
+				MARKETING_VERSION = 0.1.14;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2536,7 +2546,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 85;
+				CURRENT_PROJECT_VERSION = 86;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2552,7 +2562,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.1.12;
+				MARKETING_VERSION = 0.1.14;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
