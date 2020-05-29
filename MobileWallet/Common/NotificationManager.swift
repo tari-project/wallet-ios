@@ -132,8 +132,12 @@ class NotificationManager {
         //completionHandler([.alert, .badge, .sound])
     }
 
-    //TODO remove time interval, probably not needed
-    func scheduleNotification(title: String, body: String, timeInterval: TimeInterval = 1) {
+    func scheduleNotification(
+        title: String,
+        body: String,
+        identifier: String = "Local Notification",
+        timeInterval: TimeInterval = 1,
+        onCompletion: ((Bool) -> Void)? = nil) {
         let content = UNMutableNotificationContent()
 
         content.title = title
@@ -141,16 +145,29 @@ class NotificationManager {
         content.sound = .default
         content.badge = 1
 
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
-
-        let identifier = "Local Notification"
-        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+        let request = UNNotificationRequest(
+            identifier: identifier,
+            content: content,
+            trigger: UNTimeIntervalNotificationTrigger(timeInterval: timeInterval, repeats: false)
+        )
 
         notificationCenter.add(request) { (error) in
             if let error = error {
                 TariLogger.error("Scheduling local push notification", error: error)
+                onCompletion?(false)
+            } else {
+                onCompletion?(true)
             }
         }
+    }
+
+    /// After syncing with base node we can cancel all prreviosuly scheduled reminder notifications that were going to remind the user to open up the app
+    func cancelAllFutureReminderNotifications() {
+        ReminderNotifications.shared.shouldScheduleReminders = false
+
+        var identifiers: [String] = []
+        ReminderNotifications.recipientReminderNotifications.forEach { identifiers.append($0.identifier) }
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: identifiers)
     }
 
     func registerDeviceToken(_ deviceToken: Data) {
@@ -196,6 +213,7 @@ class NotificationManager {
         pushServerRequest(path: "/send/\(toPublicKey.hex.0)", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
     }
 
+    //TODO remove this is local push notifications work better
     func cancelReminders(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
         let signature = try signRequestMessage("cancel-reminders")
 
