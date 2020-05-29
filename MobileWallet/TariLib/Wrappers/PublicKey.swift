@@ -168,7 +168,7 @@ class PublicKey {
     }
 
     //Accepts deep links using either emoji ID or hex. i.e:
-    //tari://rincewind/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱🖐🙀🤳🖖👍✊🐈☂💀👚😶🤟😳👢😘😺🙌🎩🤬🐼😎🥺
+    //tari://rincewind/eid/🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦
     //tari://rincewind/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=2.3note=hi%20there
     convenience init(deeplink: String) throws {
         guard deeplink.hasPrefix("\(TariSettings.shared.deeplinkURI)://") else {
@@ -182,7 +182,9 @@ class PublicKey {
             throw PublicKeyError.invalidDeepLinkNetwork
         }
 
-        let strippedParamsLink = PublicKey.removeDeepURLParams(deeplink)
+        guard let strippedParamsLink = PublicKey.removeDeepURLParams(deeplink).removingPercentEncoding else {
+            throw PublicKeyError.invalidDeepLink
+        }
 
         if strippedParamsLink.hasPrefix("\(deeplinkPrefix)/eid/") {
             let emojis = strippedParamsLink.replacingOccurrences(of: "\(deeplinkPrefix)/eid/", with: "")
