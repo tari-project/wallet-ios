@@ -100,6 +100,7 @@ class TransactionViewController: UIViewController {
                 noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = false
                 noteHeadingLabelTopAnchorConstraintContactNameMissing.isActive = true
                 contactNameTextField.isHidden = true
+                addContactButton.isHidden = false
                 contactNameHeadingLabel.isHidden = true
                 dividerView.isHidden = true
                 editContactNameButton.isHidden = true
@@ -583,12 +584,24 @@ extension TransactionViewController: UITextFieldDelegate {
         return isEditingContactName
     }
 
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if isEditingContactName {
+            isEditingContactName = false
+        }
+
+        if contactAlias.isEmpty {
+            isShowingContactAlias = false
+        }
+    }
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         guard let newAlias = textField.text else {
             return true
         }
 
-        isEditingContactName = false
+        if newAlias.isEmpty {
+            isShowingContactAlias = false
+        }
 
         guard contactPublicKey != nil else {
             UserFeedback.shared.error(
@@ -599,11 +612,11 @@ extension TransactionViewController: UITextFieldDelegate {
         }
 
         do {
-            try TariLib.shared.tariWallet!.addUpdateContact(alias: newAlias, publicKey: contactPublicKey!)
-
+            guard let wallet = TariLib.shared.tariWallet, let publicKey = contactPublicKey else { return true }
+            try wallet.addUpdateContact(alias: newAlias, publicKey: publicKey)
+            contactAlias = newAlias
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
-                //UserFeedback.shared.success(title: NSLocalizedString("Contact Updated!", comment: "Transaction detail screen"))
             })
         } catch {
             UserFeedback.shared.error(
@@ -613,6 +626,7 @@ extension TransactionViewController: UITextFieldDelegate {
             )
         }
 
+        textField.resignFirstResponder()
         return true
     }
 
@@ -627,8 +641,7 @@ extension TransactionViewController: UITextFieldDelegate {
 // MARK: Keyboard behavior
 extension TransactionViewController {
     @objc func keyboardWillHide(notification: NSNotification) {
-        if isEditingContactName {
-            isEditingContactName = false
-        }
+        contactNameTextField.endEditing(true)
+        contactNameTextField.text = contactAlias
     }
 }
