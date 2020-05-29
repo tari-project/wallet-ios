@@ -47,44 +47,32 @@ enum ScrollDirection {
     case down
 }
 
-class HomeViewController: UIViewController, FloatingPanelControllerDelegate, TransactionsTableViewDelegate {
-    @IBOutlet weak var sendButton: ActionButton!
-    @IBOutlet weak var sendButtonBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var bottomFadeView: FadedOverlayView!
-    @IBOutlet weak var bottomFadeViewHeightConstraint: NSLayoutConstraint!
-
-    @IBOutlet weak var balanceLabel: UILabel!
-    @IBOutlet weak var balanceValueLabel: AnimatedBalanceLabel!
-    @IBOutlet weak var valueIcon: UIImageView!
+class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
 
     private static let GRABBER_WIDTH: Double = 55.0
     private static let PANEL_BORDER_CORNER_RADIUS: CGFloat = 15.0
-
     private static let INTRO_TO_WALLET_USER_DEFAULTS_KEY = "walletHasBeenIntroduced"
 
+    private let navigationBar = UIView()
+    private var navigationBarBottomConstraint: NSLayoutConstraint?
+
+    private let bottomFadeView = FadedOverlayView()
+    private var bottomFadeBottomConstraint: NSLayoutConstraint?
+
+    private let balanceLabel = UILabel()
+    private let balanceValueLabel = AnimatedBalanceLabel()
+
+    private lazy var tableViewContainer = TransactionHistoryContainer(child: transactionTableVC)
     private lazy var transactionTableVC = TransactionsTableViewController(style: .grouped, backgroundState: isFirstIntroToWallet ? .intro : .empty)
 
     private let floatingPanelController = FloatingPanelController()
-    private var grabberHandle: UIView!
-    private var selectedTransaction: TransactionProtocol?
-    private var maxSendButtonBottomConstraint: CGFloat = 50
-    private var minSendButtonBottomConstraint: CGFloat = -20
-    private var defaultBottomFadeViewHeight: CGFloat = 0
-    private var isAnimatingButton = false
+    private lazy var grabberHandle = UIView(frame: grabberRect(width: HomeViewController.GRABBER_WIDTH))
+
     private var hapticEnabled = false
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
+
     private var keyServer: KeyServer?
-
-    private lazy var tableViewContainer: TransactionHistoryContainer = {
-        let container = TransactionHistoryContainer(child: transactionTableVC)
-        return container
-    }()
-
-    //Navigation Bar
-    @IBOutlet weak var navigationBar: UIView!
-    @IBOutlet weak var navigationBarHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var navigationBarTitle: UILabel!
-    @IBOutlet weak var navigationBarBottomConstraint: NSLayoutConstraint!
+    private var selectedTransaction: TransactionProtocol?
 
     private lazy var dimmingLayer: CALayer = {
         let layer = CALayer()
@@ -124,40 +112,20 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
     }
 
     override func viewDidLoad() {
-        overrideUserInterfaceStyle = .light
-
-        setup()
         super.viewDidLoad()
-
-        self.refreshBalance()
-
-        Tracker.shared.track("/home", "Home - Transaction List")
-
+        styleNavigatorBar(isHidden: true)
+        overrideUserInterfaceStyle = .light
+        setup()
+        refreshBalance()
         setupKeyServer()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        sendButtonBottomConstraint.constant = minSendButtonBottomConstraint
-        defaultBottomFadeViewHeight = bottomFadeViewHeightConstraint.constant
-        bottomFadeViewHeightConstraint.constant = 0
-
-        if !isTransactionViewFullScreen {
-            setNeedsStatusBarAppearanceUpdate()
-        }
-
-        super.viewWillAppear(animated)
+        Tracker.shared.track("/home", "Home - Transaction List")
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        self.refreshBalance()
-
-        isTransactionViewFullScreen = isTransactionViewFullScreen == true
-
+        refreshBalance()
         TariEventBus.onMainThread(self, eventType: .balanceUpdate) { [weak self] (_) in
             guard let self = self else { return }
-
             self.refreshBalance()
         }
 
@@ -170,12 +138,11 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         deepLinker.checkDeepLink()
 
         checkImportSecondUtxo()
-        transactionTableVC.refreshTable()
+        bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-
         TariEventBus.unregister(self)
     }
 
@@ -292,18 +259,11 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
                 NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals!,
                 NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
                 NSAttributedString.Key.kern: -0.57
-                //NSAttributedString.Key.baselineOffset: balanceValueLabel.bounds.size.height - 4
             ],
-            range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat) //Use fraction digits + 1 for "."
+            range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat)
         )
 
         balanceValueLabel.attributedText = balanceLabelAttributedText
-    }
-
-    @IBAction func closeButtonAction(_ sender: Any) {
-        transactionTableVC.scrollToTop()
-        floatingPanelController.move(to: .tip, animated: true)
-        animateNavBar(progress: 0.0)
     }
 
     private func grabberRect(width: Double) -> CGRect {
@@ -369,20 +329,15 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     private func showHideSendButton() {
         if isShowingSendButton {
-            sendButton.isHidden = false
-            bottomFadeView.isHidden = false
-
-            UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveEaseIn, animations: {
-                self.sendButtonBottomConstraint.constant = self.maxSendButtonBottomConstraint
+            UIView.animate(withDuration: CATransaction.animationDuration(), delay: 0.1, options: .curveEaseIn, animations: {
                 self.bottomFadeView.backgroundColor?.withAlphaComponent(0.5)
-                self.bottomFadeViewHeightConstraint.constant = self.defaultBottomFadeViewHeight
+                self.bottomFadeBottomConstraint?.constant = 0
                 self.view.layoutIfNeeded()
             })
         } else {
-            UIView.animate(withDuration: 0.2, delay: 0.1, options: .curveEaseIn, animations: {
-                self.sendButtonBottomConstraint.constant = self.minSendButtonBottomConstraint
+            UIView.animate(withDuration: CATransaction.animationDuration(), delay: 0.1, options: .curveEaseIn, animations: {
                 self.bottomFadeView.backgroundColor?.withAlphaComponent(0.0)
-                self.bottomFadeViewHeightConstraint.constant = 0
+                self.bottomFadeBottomConstraint?.constant = 120
                 self.view.layoutIfNeeded()
             })
         }
@@ -392,12 +347,7 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
         view.addSubview(floatingPanelController.view)
         floatingPanelController.view.frame = view.bounds
         addChild(floatingPanelController)
-
-        //Move send button to in front of panel
-        bottomFadeView.superview?.bringSubviewToFront(self.bottomFadeView)
-        sendButton.superview?.bringSubviewToFront(self.sendButton)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration(), execute: { [weak self] in
             guard let self = self else { return }
             self.floatingPanelController.show(animated: true) {
                 self.didMove(toParent: self)
@@ -407,10 +357,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
     private func hideFloatingPanel() {
         floatingPanelController.removePanelFromParent(animated: true)
-    }
-
-    @IBAction func onSendAction(_ sender: Any) {
-        onSend()
     }
 
     func onSend(pubKey: PublicKey? = nil, deepLinkParams: DeepLinkParams? = nil) {
@@ -427,21 +373,37 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
 
         self.navigationController?.pushViewController(sendVC, animated: true)
     }
+}
 
+// MARK: - Actions
+extension HomeViewController {
     @objc func onProfileShow(_ sender: Any) {
         let vc = ProfileViewController()
         self.present(vc, animated: true, completion: nil)
     }
 
-    @objc func onStoreModalShow(_ sender: Any) {
+    @objc private func onStoreModalShow(_ sender: Any) {
         UserFeedback.shared.callToActionStore()
     }
 
-    // MARK: - TransactionTableDelegateMethods
+    @objc private func onSendAction(_ sender: Any) {
+        onSend()
+    }
 
+    @objc private func closeButtonAction(_ sender: Any) {
+        transactionTableVC.scrollToTop()
+        floatingPanelController.move(to: .tip, animated: true)
+        animateNavBar(progress: 0.0, buttonAction: true)
+    }
+}
+
+// MARK: - TransactionTableDelegateMethods
+extension HomeViewController: TransactionsTableViewDelegate {
     func onTransactionSelect(_ transaction: Any) {
         selectedTransaction = transaction as? TransactionProtocol
-        performSegue(withIdentifier: "HomeToTransactionDetails", sender: nil)
+        let transactionVC = TransactionViewController()
+        transactionVC.transaction = selectedTransaction
+        self.navigationController?.pushViewController(transactionVC, animated: true)
     }
 
     func onScrollDirectionChange(_ direction: ScrollDirection) {
@@ -451,14 +413,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate, Tra
             } else if direction == .down {
                 self.isShowingSendButton = false
             }
-        }
-    }
-
-    // MARK: - Navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        //TODO move segue identifiers to enum
-        if let transactionVC = segue.destination as? TransactionViewController {
-            transactionVC.transaction = selectedTransaction
         }
     }
 }
@@ -490,7 +444,6 @@ extension HomeViewController {
     }
 
     func floatingPanelDidMove(_ vc: FloatingPanelController) {
-
         let progress = getCurrentProgress(floatingController: vc)
         animateNavBar(progress: progress)
 
@@ -505,8 +458,8 @@ extension HomeViewController {
         self.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS - (HomeViewController.PANEL_BORDER_CORNER_RADIUS * progress)
 
         if floatingPanelController.position == .tip && !isTransactionViewFullScreen {
+            bottomFadeBottomConstraint?.constant = bottomFadeView.bounds.height * progress
             UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-                self.sendButtonBottomConstraint.constant = (self.minSendButtonBottomConstraint) * progress
                 self.view.layoutIfNeeded()
             })
         }
@@ -532,80 +485,30 @@ extension HomeViewController {
         return progress
     }
 
-    private func animateNavBar(progress: CGFloat) {
+    private func animateNavBar(progress: CGFloat, buttonAction: Bool = false) {
         if progress >= 0.0 && progress <= 1.0 {
-            UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-                self.navigationBarBottomConstraint.constant = -self.navBarHeight * progress
-                self.dimmingLayer.opacity = Float(progress / 1.5)
-                self.view.layoutIfNeeded()
+            navigationBarBottomConstraint?.constant = navBarHeight * progress
+            let duration = buttonAction ? CATransaction.animationDuration() : 0.1
+
+            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseIn, animations: { [weak self] in
+                self?.dimmingLayer.opacity = Float(progress / 1.5)
+                self?.view.layoutIfNeeded()
             })
         }
     }
 }
 
-// MARK: Setup UI
+// MARK: setup subview
 extension HomeViewController {
     private func setup() {
-        setupTopButtons()
-        applyNavigationBarSettings()
-
-        maxSendButtonBottomConstraint = sendButtonBottomConstraint.constant
-        minSendButtonBottomConstraint = -view.safeAreaInsets.bottom - sendButton.frame.height - sendButtonBottomConstraint.constant - 20
-
-        valueIcon.image = Theme.shared.images.currencySymbol
-
         applyBackgroundGradient(duration: 2.5)
 
-        sendButton.setTitle(
-            String(
-                format: NSLocalizedString(
-                    "Send %@",
-                    comment: "Floating send Tari button on home screen"
-                ),
-                TariSettings.shared.network.currencyDisplayTicker
-            ),
-            for: .normal
-        )
-        balanceLabel.text = NSLocalizedString("Available Balance", comment: "Home screen balance label")
-        balanceLabel.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
-        balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
-
+        setupTopButtons()
+        setupBalanceLabel()
+        setupBalanceValueLabel()
+        setupNavigationBar()
         setupFloatingPanel()
-        showFloatingPanel()
-
-        bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
-
-        sendButton.isHidden = true
-        bottomFadeView.isHidden = true
-        balanceValueLabel.animationSpeed = .slow
-    }
-
-    private func applyNavigationBarSettings() {
-        navigationBarTitle.text = NSLocalizedString("Transactions", comment: "Transactions nav bar heading")
-        navigationBarHeightConstraint.constant = navBarHeight
-    }
-
-    private func setupFloatingPanel() {
-        floatingPanelController.delegate = self
-        transactionTableVC.actionDelegate = self
-
-        floatingPanelController.set(contentViewController: tableViewContainer)
-
-        //TODO move custom styling setup into generic function
-        floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
-        floatingPanelController.surfaceView.shadowColor = .black
-        floatingPanelController.surfaceView.shadowRadius = 22
-
-        setupGrabber(floatingPanelController)
-        floatingPanelController.contentMode = .static
-    }
-
-    private func setupGrabber(_ floatingPanelController: FloatingPanelController) {
-        grabberHandle = UIView(frame: grabberRect(width: HomeViewController.GRABBER_WIDTH))
-        grabberHandle.layer.cornerRadius = 2.5
-        grabberHandle.backgroundColor = Theme.shared.colors.floatingPanelGrabber
-        floatingPanelController.surfaceView.grabberHandle.isHidden = true
-        floatingPanelController.surfaceView.addSubview(grabberHandle)
+        setupFadeView()
     }
 
     private func setupTopButtons() {
@@ -631,6 +534,153 @@ extension HomeViewController {
         storeButton.widthAnchor.constraint(equalToConstant: iconSize).isActive = true
         storeButton.heightAnchor.constraint(equalToConstant: iconSize).isActive = true
         storeButton.addTarget(self, action: #selector(onStoreModalShow), for: .touchUpInside)
+    }
+
+    private func setupBalanceLabel() {
+        view.addSubview(balanceLabel)
+
+        balanceLabel.text = NSLocalizedString("Available Balance", comment: "Home screen balance label")
+        balanceLabel.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
+        balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
+
+        balanceLabel.translatesAutoresizingMaskIntoConstraints = false
+        balanceLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40).isActive = true
+        balanceLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25).isActive = true
+        balanceLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 25).isActive = true
+    }
+
+    private func setupBalanceValueLabel() {
+        let balanceContainer = UIView()
+        balanceContainer.backgroundColor = .clear
+
+        view.addSubview(balanceContainer)
+
+        balanceContainer.translatesAutoresizingMaskIntoConstraints = false
+        balanceContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25).isActive = true
+        balanceContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 25).isActive = true
+        balanceContainer.heightAnchor.constraint(equalToConstant: 54).isActive = true
+        balanceContainer.topAnchor.constraint(equalTo: balanceLabel.bottomAnchor).isActive = true
+
+        let valueIcon = UIImageView()
+        valueIcon.image = Theme.shared.images.currencySymbol
+
+        balanceContainer.addSubview(valueIcon)
+
+        valueIcon.translatesAutoresizingMaskIntoConstraints = false
+        valueIcon.heightAnchor.constraint(equalToConstant: 16).isActive = true
+        valueIcon.widthAnchor.constraint(equalToConstant: 16).isActive = true
+        valueIcon.centerYAnchor.constraint(equalTo: balanceContainer.centerYAnchor).isActive = true
+        valueIcon.leadingAnchor.constraint(equalTo: balanceContainer.leadingAnchor).isActive = true
+
+        balanceContainer.addSubview(balanceValueLabel)
+
+        balanceValueLabel.animationSpeed = .slow
+
+        balanceValueLabel.translatesAutoresizingMaskIntoConstraints = false
+        balanceValueLabel.heightAnchor.constraint(equalToConstant: 47).isActive = true
+        balanceValueLabel.centerYAnchor.constraint(equalTo: balanceContainer.centerYAnchor).isActive = true
+        balanceValueLabel.leadingAnchor.constraint(equalTo: valueIcon.trailingAnchor, constant: 8).isActive = true
+        balanceValueLabel.trailingAnchor.constraint(equalTo: balanceContainer.trailingAnchor).isActive = true
+    }
+
+    private func setupNavigationBar() {
+        view.addSubview(navigationBar)
+        navigationBar.backgroundColor = Theme.shared.colors.navigationBarBackground
+        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+
+        navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        navigationBar.heightAnchor.constraint(equalToConstant: navBarHeight).isActive = true
+
+        navigationBarBottomConstraint = navigationBar.bottomAnchor.constraint(equalTo: view.topAnchor)
+        navigationBarBottomConstraint?.isActive = true
+
+        let navigationBarContainer = UIView()
+        navigationBarContainer.backgroundColor = .clear
+
+        navigationBar.addSubview(navigationBarContainer)
+        navigationBarContainer.translatesAutoresizingMaskIntoConstraints = false
+
+        navigationBarContainer.heightAnchor.constraint(equalToConstant: 56).isActive = true
+        navigationBarContainer.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
+        navigationBarContainer.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor).isActive = true
+        navigationBarContainer.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor).isActive = true
+
+        let navigationBarTitle = UILabel()
+        navigationBarContainer.addSubview(navigationBarTitle)
+        navigationBarTitle.text = NSLocalizedString("Transactions", comment: "Transactions nav bar heading")
+        navigationBarTitle.font = Theme.shared.fonts.navigationBarTitle
+
+        navigationBarTitle.translatesAutoresizingMaskIntoConstraints = false
+        navigationBarTitle.centerXAnchor.constraint(equalTo: navigationBarContainer.centerXAnchor).isActive = true
+        navigationBarTitle.centerYAnchor.constraint(equalTo: navigationBarContainer.centerYAnchor).isActive = true
+
+        let xMarkButton = UIButton()
+        xMarkButton.addTarget(self, action: #selector(closeButtonAction(_:)), for: .touchUpInside)
+        xMarkButton.setImage(Theme.shared.images.close, for: .normal)
+
+        navigationBarContainer.addSubview(xMarkButton)
+
+        xMarkButton.translatesAutoresizingMaskIntoConstraints = false
+        xMarkButton.centerYAnchor.constraint(equalTo: navigationBarContainer.centerYAnchor).isActive = true
+        xMarkButton.leadingAnchor.constraint(equalTo: navigationBarContainer.leadingAnchor, constant: 20.0).isActive = true
+        xMarkButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
+        xMarkButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
+    }
+
+    private func setupFloatingPanel() {
+        floatingPanelController.delegate = self
+        transactionTableVC.actionDelegate = self
+
+        floatingPanelController.set(contentViewController: tableViewContainer)
+
+        floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
+        floatingPanelController.surfaceView.shadowColor = .black
+        floatingPanelController.surfaceView.shadowRadius = 22
+
+        setupGrabber(floatingPanelController)
+        floatingPanelController.contentMode = .static
+
+        showFloatingPanel()
+    }
+
+    private func setupGrabber(_ floatingPanelController: FloatingPanelController) {
+        grabberHandle.layer.cornerRadius = 2.5
+        grabberHandle.backgroundColor = Theme.shared.colors.floatingPanelGrabber
+        floatingPanelController.surfaceView.grabberHandle.isHidden = true
+        floatingPanelController.surfaceView.addSubview(grabberHandle)
+    }
+
+    private func setupFadeView() {
+        view.addSubview(bottomFadeView)
+
+        bottomFadeView.translatesAutoresizingMaskIntoConstraints = false
+        bottomFadeView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        bottomFadeView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        bottomFadeView.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        bottomFadeBottomConstraint = bottomFadeView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        bottomFadeBottomConstraint?.isActive = true
+
+        let sendButton = ActionButton()
+        view.addSubview(sendButton)
+        let title =  String(format: NSLocalizedString("Send %@",
+                                                      comment: "Floating send Tari button on home screen"),
+                            TariSettings.shared.network.currencyDisplayTicker )
+        sendButton.setTitle(title, for: .normal)
+        sendButton.addTarget(self, action: #selector(onSendAction(_:)), for: .touchUpInside)
+
+        sendButton.translatesAutoresizingMaskIntoConstraints = false
+        sendButton.widthAnchor.constraint(equalToConstant: 163).isActive = true
+        sendButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        sendButton.bottomAnchor.constraint(equalTo: bottomFadeView.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
+
+        bottomFadeView.alpha = 0.0
+        sendButton.alpha = 0.0
+
+        UIView.animate(withDuration: CATransaction.animationDuration(), delay: 0.5, options: .curveLinear, animations: { [weak self] in
+            self?.bottomFadeView.alpha = 1.0
+            sendButton.alpha = 1.0
+        })
     }
 }
 

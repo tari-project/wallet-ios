@@ -52,6 +52,8 @@ extension Animation {
         case notification = "NotificationAnimation"
         case emojiWheel = "EmojiWheel"
         case nerdEmoji = "NerdEmojiAnimation"
+
+        case waveEmoji = "WaveEmojiAnimation"
     }
 
     static func named(_ animation: LottieAnimation) -> Animation? {

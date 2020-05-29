@@ -214,23 +214,21 @@ class WalletCreationViewController: UIViewController {
             DispatchQueue.main.async {
                 Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
 
-                let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
+                let newNavigationController = AlwaysPoppableNavigationController()
+                let homeViewController = HomeViewController()
+                newNavigationController.setViewControllers([homeViewController], animated: false)
 
-                guard
-                    let navController = storyboard.instantiateInitialViewController() as? UINavigationController,
-                    let homeViewController = navController.viewControllers.first as? HomeViewController,
-                    let window = UIApplication.shared.windows.first
-                else { return }
+                if let window = UIApplication.shared.windows.first {
+                    let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
+                    homeViewController.view.addSubview(overlayView)
+                    window.rootViewController = newNavigationController
 
-                let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
-                homeViewController.view.addSubview(overlayView)
-                window.rootViewController = navController
-
-                UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
-                    overlayView.alpha = 0
-                }, completion: { _ in
-                    overlayView.removeFromSuperview()
-                })
+                    UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
+                        overlayView.alpha = 0
+                    }, completion: { _ in
+                        overlayView.removeFromSuperview()
+                    })
+                }
             }
         }
     }

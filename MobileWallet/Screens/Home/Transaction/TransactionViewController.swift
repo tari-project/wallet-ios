@@ -80,8 +80,7 @@ class TransactionViewController: UIViewController {
     let feeButton = TextButton()
     let feeButtonHeight: CGFloat = 37
     let headingLabelTopAnchorHeight: CGFloat = 40
-
-    @IBOutlet weak var transactionIDLabel: UILabel!
+    let transactionIDLabel = UILabel()
 
     var isShowingContactAlias: Bool = true {
         didSet {
@@ -232,11 +231,8 @@ class TransactionViewController: UIViewController {
         setupEditContactButton()
         setupDivider()
         setupNote()
+        setupTransactionIDLabel()
         view.bringSubviewToFront(fromContainerView)
-        //Transaction ID
-        transactionIDLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
-        transactionIDLabel.font = Theme.shared.fonts.transactionScreenTxIDLabel
-
         updateTxState()
     }
 
