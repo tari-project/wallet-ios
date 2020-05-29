@@ -1,8 +1,8 @@
-//  UIRefreshControl+ProgramaticallyBeginRefresh.swift
+//  UIScrollView+RefreshControl.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 21.05.2020
+	Created by S.Shovkoplyas on 29.05.2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,14 +40,28 @@
 
 import UIKit
 
-extension UIRefreshControl {
-    func programaticallyBeginRefreshing(in scrollView: UIScrollView) {
-        beginRefreshing()
-        let currentOffset = scrollView.contentOffset
-        let offsetPoint = CGPoint.init(x: 0, y: -frame.size.height)
-        scrollView.setContentOffset(offsetPoint, animated: true)
-        if scrollView.isDragging {
-            scrollView.setContentOffset(currentOffset, animated: false)
+extension UIScrollView {
+
+    func beginRefreshing() {
+        guard let refreshControl = refreshControl, !refreshControl.isRefreshing else { return }
+
+        refreshControl.beginRefreshing()
+        refreshControl.sendActions(for: .valueChanged)
+
+        let currentOffset = contentOffset
+        let contentOffset = CGPoint(x: 0, y: -refreshControl.frame.height - abs(currentOffset.y))
+
+        UIView.animate(withDuration: 0.1) { [weak self] in
+            self?.contentOffset = contentOffset
         }
+    }
+
+    func endRefreshing() {
+        refreshControl?.endRefreshing()
+    }
+
+    func isRefreshing() -> Bool {
+        guard let refreshControl = refreshControl else { return false }
+        return refreshControl .isRefreshing
     }
 }

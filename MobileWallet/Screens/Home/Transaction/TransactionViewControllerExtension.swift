@@ -225,6 +225,19 @@ extension TransactionViewController {
         noteLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 100).isActive = true
     }
 
+    func setupTransactionIDLabel() {
+        view.addSubview(transactionIDLabel)
+
+        transactionIDLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
+        transactionIDLabel.font = Theme.shared.fonts.transactionScreenTxIDLabel
+        transactionIDLabel.textAlignment = .center
+
+        transactionIDLabel.translatesAutoresizingMaskIntoConstraints = false
+        transactionIDLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25).isActive = true
+        transactionIDLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25).isActive = true
+        transactionIDLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -4).isActive = true
+    }
+
     func setNoteText(_ text: String) {
         let attributedTitleString = NSMutableAttributedString(string: text)
         let paragraphStyle = NSMutableParagraphStyle()

@@ -332,20 +332,20 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             //Calling this here in case they did not succesfully register the token in the onboarding
             NotificationManager.shared.requestAuthorization()
 
-            let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
-            if let nav = storyboard.instantiateInitialViewController() as? UINavigationController {
-                if let window = UIApplication.shared.windows.first {
-                    let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
-                    if let vc = nav.viewControllers.first {
-                        vc.view.addSubview(overlayView)
-                        window.rootViewController = nav
-                        UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
-                            overlayView.alpha = 0
-                        }, completion: { _ in
-                            overlayView.removeFromSuperview()
-                        })
-                    }
-                }
+            let nav = AlwaysPoppableNavigationController()
+            let homeViewController = HomeViewController()
+            nav.setViewControllers([homeViewController], animated: false)
+
+            if let window = UIApplication.shared.windows.first {
+                let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
+                homeViewController.view.addSubview(overlayView)
+                window.rootViewController = nav
+
+                UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
+                    overlayView.alpha = 0
+                }, completion: { _ in
+                    overlayView.removeFromSuperview()
+                })
             }
         } else {
             let vc = WalletCreationViewController()

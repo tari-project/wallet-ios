@@ -40,6 +40,7 @@
 
 import Foundation
 import UIKit
+import Lottie
 
 extension TransactionsTableViewController {
 
@@ -56,8 +57,7 @@ extension TransactionsTableViewController {
         sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
         sectionHeaderLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
         sectionHeaderLabel.text = labelText
-        sectionHeaderLabel.textAlignment = .center
-        sectionHeaderLabel.sizeToFit()
+        sectionHeaderLabel.textAlignment = .left
 
         sectionHeaderLabel.bottomAnchor.constraint(equalTo: sectionHeaderView.bottomAnchor).isActive = true
         sectionHeaderLabel.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
@@ -77,7 +77,7 @@ extension TransactionsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 && refreshTransactionControl.isRefreshing {
+        if section == 0 && tableView.isRefreshing() {
             return 30
         }
         return 16
@@ -130,7 +130,7 @@ extension TransactionsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TransactionTableTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TransactionTableViewCell
 
         //If it's the first group and we're showing the pending group
         if indexPath.section == 0 && showsPendingGroup {
@@ -212,70 +212,49 @@ extension TransactionsTableViewController {
         messageLabel.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
         messageLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: messageLabel.font.pointSize * 1.2).isActive = true
 
-        let introImage = UIImageView()
-        introImage.image = Theme.shared.images.handWave!
-        introImage.translatesAutoresizingMaskIntoConstraints = false
-        introView.addSubview(introImage)
-        introImage.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
-        introImage.bottomAnchor.constraint(equalTo: titleLabel.topAnchor, constant: -15).isActive = true
+        let waveAnimation = AnimationView()
+        waveAnimation.backgroundBehavior = .pauseAndRestore
+        waveAnimation.animation = Animation.named(.waveEmoji)
+        introView.addSubview(waveAnimation)
+
+        waveAnimation.translatesAutoresizingMaskIntoConstraints = false
+        waveAnimation.widthAnchor.constraint(equalToConstant: 70).isActive = true
+        waveAnimation.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        waveAnimation.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
+        waveAnimation.bottomAnchor.constraint(equalTo: titleLabel.topAnchor).isActive = true
+
+        waveAnimation.play(fromProgress: 0, toProgress: 1, loopMode: .playOnce, completion: { [weak self] _ in
+            self?.backgroundType = .none
+            DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
+                self?.refreshTable()
+            }
+        })
 
         tableView.backgroundView = introView
-
-        animateWave(imageView: introImage)
     }
 
     func setupRefreshControl() {
-        refreshTransactionControl.clipsToBounds = true
-        refreshTransactionControl.backgroundColor = .clear
-        refreshTransactionControl.tintColor = .clear
-        refreshTransactionControl.subviews.first?.alpha = 0
+        let refreshControl = UIRefreshControl()
+        refreshControl.clipsToBounds = true
+        refreshControl.backgroundColor = .clear
+        refreshControl.tintColor = .clear
+        refreshControl.subviews.first?.alpha = 0
 
-        tableView.addSubview(refreshTransactionControl)
-        refreshTransactionControl.addSubview(animatedRefresher)
+        tableView.refreshControl = refreshControl
+        refreshControl.addSubview(animatedRefresher)
 
         animatedRefresher.translatesAutoresizingMaskIntoConstraints = false
-        animatedRefresher.topAnchor.constraint(equalTo: refreshTransactionControl.topAnchor, constant: 3).isActive = true
+        animatedRefresher.topAnchor.constraint(equalTo: refreshControl.topAnchor, constant: 3).isActive = true
 
-        let leading = animatedRefresher.leadingAnchor.constraint(equalTo: refreshTransactionControl.leadingAnchor, constant: Theme.shared.sizes.appSidePadding)
+        let leading = animatedRefresher.leadingAnchor.constraint(equalTo: refreshControl.leadingAnchor, constant: Theme.shared.sizes.appSidePadding)
         leading.isActive = true
         leading.priority = .defaultHigh
 
-        let trailing = animatedRefresher.trailingAnchor.constraint(equalTo: refreshTransactionControl.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding)
+        let trailing = animatedRefresher.trailingAnchor.constraint(equalTo: refreshControl.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding)
         trailing.isActive = true
         trailing.priority = .defaultHigh
 
         animatedRefresher.heightAnchor.constraint(equalToConstant: 48).isActive = true
         animatedRefresher.setupView(.loading)
-    }
-
-    private func animateWave(imageView: UIImageView) {
-        let degreesUp: CGFloat = 20.0
-        let degreesDown: CGFloat = -15.0
-        let duration: TimeInterval = 1.0
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration(), execute: {
-            //Clockwise
-            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseOut, animations: {
-                imageView.transform = CGAffineTransform(rotationAngle: (degreesUp * .pi) / 180.0)
-            }, completion: { (_) in
-                //Anti clockwise
-                UIView.animate(withDuration: duration, delay: 0, options: .curveEaseOut, animations: {
-                    imageView.transform = CGAffineTransform(rotationAngle: (degreesDown * .pi) / 180.0)
-                }, completion: { (_) in
-                    //Back to start
-                    UIView.animate(withDuration: duration, animations: {
-                        imageView.transform = CGAffineTransform(rotationAngle: 0)
-                    }) { [weak self] _ in
-                        if self?.backgroundType == .intro {
-                            self?.backgroundType = .none
-                        }
-
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
-                            self?.refreshTable()
-                        })
-                    }
-                })
-            })
-        })
     }
 }

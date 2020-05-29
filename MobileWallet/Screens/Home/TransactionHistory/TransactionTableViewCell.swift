@@ -40,19 +40,13 @@
 
 import UIKit
 
-class TransactionTableTableViewCell: UITableViewCell {
+class TransactionTableViewCell: UITableViewCell {
     private let BACKGROUND_COLOR = Theme.shared.colors.transactionTableBackground
 
-    @IBOutlet weak var icon: UIImageView!
-    @IBOutlet weak var userNameLabel: UILabel!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var valueLabel: UILabelWithPadding!
-
-    override func awakeFromNib() {
-        super.awakeFromNib()
-
-        viewSetup()
-    }
+    private let icon = UIImageView()
+    private let userNameLabel = UILabel()
+    private let descriptionLabel = UILabel()
+    private let valueLabel = UILabelWithPadding()
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
@@ -64,25 +58,13 @@ class TransactionTableTableViewCell: UITableViewCell {
         }
     }
 
-    private func viewSetup() {
-        contentView.backgroundColor = BACKGROUND_COLOR
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        viewSetup()
+    }
 
-        valueLabel.font = Theme.shared.fonts.transactionCellValueLabel
-        valueLabel.layer.cornerRadius = 3
-        valueLabel.layer.masksToBounds = true
-
-        userNameLabel.font = Theme.shared.fonts.transactionCellUsernameLabel
-        userNameLabel.textColor = Theme.shared.colors.transactionCellAlias
-        userNameLabel.text = ""
-        userNameLabel.lineBreakMode = .byTruncatingMiddle
-
-        descriptionLabel.font = Theme.shared.fonts.transactionCellDescriptionLabel
-        descriptionLabel.textColor = Theme.shared.colors.transactionCellDescription
-        descriptionLabel.lineBreakMode = .byTruncatingTail
-
-        icon.image = Theme.shared.images.transfer
-
-        selectionStyle = .none
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func setValue(microTari: MicroTari?, direction: TransactionDirection, isCancelled: Bool = false) {
@@ -179,5 +161,80 @@ class TransactionTableTableViewCell: UITableViewCell {
                 setEmojis(pubKey)
             }
         }
+    }
+}
+
+// MARK: setup subviews
+extension TransactionTableViewCell {
+    private func viewSetup() {
+        contentView.backgroundColor = BACKGROUND_COLOR
+        selectionStyle = .none
+
+        setupIcon()
+        setupValueLabel()
+        setupLabels()
+    }
+
+    private func setupIcon() {
+        contentView.addSubview(icon)
+
+        icon.image = Theme.shared.images.transfer
+
+        icon.translatesAutoresizingMaskIntoConstraints = false
+
+        icon.widthAnchor.constraint(equalToConstant: 44).isActive = true
+        icon.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        icon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25).isActive = true
+        icon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+    }
+
+    private func setupValueLabel() {
+        contentView.addSubview(valueLabel)
+
+        valueLabel.font = Theme.shared.fonts.transactionCellValueLabel
+        valueLabel.layer.cornerRadius = 3
+        valueLabel.layer.masksToBounds = true
+
+        valueLabel.translatesAutoresizingMaskIntoConstraints = false
+        valueLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        valueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25).isActive = true
+
+        valueLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 251), for: .vertical)
+        valueLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 252), for: .horizontal)
+    }
+
+    private func setupLabels() {
+        let containerLabels = UIView()
+        containerLabels.backgroundColor = .clear
+        contentView.addSubview(containerLabels)
+
+        containerLabels.translatesAutoresizingMaskIntoConstraints = false
+        containerLabels.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        containerLabels.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        containerLabels.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 20).isActive = true
+        containerLabels.trailingAnchor.constraint(equalTo: valueLabel.leadingAnchor, constant: -8).isActive = true
+
+        contentView.addSubview(userNameLabel)
+
+        userNameLabel.font = Theme.shared.fonts.transactionCellUsernameLabel
+        userNameLabel.textColor = Theme.shared.colors.transactionCellAlias
+        userNameLabel.text = ""
+        userNameLabel.lineBreakMode = .byTruncatingMiddle
+
+        userNameLabel.translatesAutoresizingMaskIntoConstraints = false
+        userNameLabel.topAnchor.constraint(equalTo: containerLabels.topAnchor).isActive = true
+        userNameLabel.leadingAnchor.constraint(equalTo: containerLabels.leadingAnchor).isActive = true
+        userNameLabel.trailingAnchor.constraint(equalTo: containerLabels.trailingAnchor).isActive = true
+
+        contentView.addSubview(descriptionLabel)
+
+        descriptionLabel.font = Theme.shared.fonts.transactionCellDescriptionLabel
+        descriptionLabel.textColor = Theme.shared.colors.transactionCellDescription
+        descriptionLabel.lineBreakMode = .byTruncatingTail
+
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel.bottomAnchor.constraint(equalTo: containerLabels.bottomAnchor).isActive = true
+        descriptionLabel.leadingAnchor.constraint(equalTo: containerLabels.leadingAnchor).isActive = true
+        descriptionLabel.trailingAnchor.constraint(equalTo: containerLabels.trailingAnchor).isActive = true
     }
 }
