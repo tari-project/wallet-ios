@@ -63,7 +63,11 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
     private let balanceValueLabel = AnimatedBalanceLabel()
 
     private lazy var tableViewContainer = TransactionHistoryContainer(child: transactionTableVC)
-    private lazy var transactionTableVC = TransactionsTableViewController(style: .grouped, backgroundState: isFirstIntroToWallet ? .intro : .empty)
+    private lazy var transactionTableVC: TransactionsTableViewController = {
+        let transactionController = TransactionsTableViewController(style: .grouped)
+        transactionController.backgroundType =  isFirstIntroToWallet ? .intro : .empty
+        return transactionController
+    }()
 
     private let floatingPanelController = FloatingPanelController()
     private lazy var grabberHandle = UIView(frame: grabberRect(width: HomeViewController.GRABBER_WIDTH))

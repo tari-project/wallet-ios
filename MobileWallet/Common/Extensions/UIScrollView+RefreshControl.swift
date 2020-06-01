@@ -44,16 +44,14 @@ extension UIScrollView {
 
     func beginRefreshing() {
         guard let refreshControl = refreshControl, !refreshControl.isRefreshing else { return }
-
+        let refreshControlHeight: CGFloat = 60.0 // static because if fast drag tableView refreshControl height will not correct
+        let contentOffset = CGPoint(x: 0, y: -refreshControlHeight - contentInset.top)
         refreshControl.beginRefreshing()
         refreshControl.sendActions(for: .valueChanged)
-
-        let currentOffset = contentOffset
-        let contentOffset = CGPoint(x: 0, y: -refreshControl.frame.height - abs(currentOffset.y))
-
-        UIView.animate(withDuration: 0.1) { [weak self] in
-            self?.contentOffset = contentOffset
+        DispatchQueue.main.async {
+            self.setContentOffset(contentOffset, animated: !self.isDragging)
         }
+
     }
 
     func endRefreshing() {

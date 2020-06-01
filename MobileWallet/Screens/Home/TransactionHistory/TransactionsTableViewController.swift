@@ -95,15 +95,6 @@ class TransactionsTableViewController: UITableViewController {
 
     let pendingLabelText = NSLocalizedString("In Progress", comment: "Home view table of transactions")
 
-    init(style: UITableView.Style, backgroundState: BackgroundViewType) {
-        self.backgroundType = backgroundState
-        super.init(style: style)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         viewSetup()
@@ -126,11 +117,6 @@ class TransactionsTableViewController: UITableViewController {
         if backgroundType != .intro {
             self.refreshTable()
         }
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        tableView.layoutSubviews()
     }
 
     private func viewSetup() {
@@ -314,7 +300,11 @@ class TransactionsTableViewController: UITableViewController {
             lastScrollDirection = .up
         }
 
-        if scrollView.contentOffset.y < -100 && !scrollView.isRefreshing() && scrollView.isDragging == true {
+        if scrollView.contentOffset.y < -(80 + scrollView.contentInset.top) && !scrollView.isRefreshing() && scrollView.isDragging == true {
+            // stop dragging
+            scrollView.panGestureRecognizer.isEnabled = false
+            scrollView.panGestureRecognizer.isEnabled = true
+
             refreshPullTransactions()
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
         }
