@@ -80,7 +80,11 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
         do {
             guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
-            navigationBar.title = contact.alias.0
+            if contact.alias.0.trimmingCharacters(in: .whitespaces).isEmpty {
+                try navigationBar.showEmoji(pubKey, animated: true)
+            } else {
+                navigationBar.title = contact.alias.0
+            }
         } catch {
             do {
                 try navigationBar.showEmoji(pubKey, animated: true)
