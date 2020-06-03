@@ -314,6 +314,10 @@ class TariLib {
 
         tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
 
+        TariEventBus.postToMainThread(.walletServiceStarted)
+
+        walletIsStopped = false
+
         try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
 
         TariLogger.fileLoggerCallback = { [weak self] (message) in

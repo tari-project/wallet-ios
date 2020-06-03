@@ -122,9 +122,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
         ConnectionMonitor.shared.stop()
 
-        if TariSettings.shared.extensionActive {
-            TariLib.shared.stopWallet()
-        }
+        TariLib.shared.stopWallet()
         TariLib.shared.stopTor()
         AppContainerLock.shared.removeLock(.main)
     }

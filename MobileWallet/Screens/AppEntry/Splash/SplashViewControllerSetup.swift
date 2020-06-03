@@ -52,6 +52,7 @@ extension SplashViewController {
 
     func loadAnimation() {
         let animation = Animation.named(.splash)
+        animationContainer.backgroundBehavior = .stop
         animationContainer.animation = animation
     }
 
