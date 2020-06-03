@@ -115,7 +115,7 @@ struct TariSettings {
     //Used for showing a little extra detail in the UI to help debugging
     private let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
-    let pushNotificationServer = "https://c6604b7b.ngrok.io" // "https://push.tari.com"
+    let pushNotificationServer = "https://9e69320ddd75.ngrok.io" // "https://push.tari.com"
     let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 1 //1 day
     #else
     let torEnabled = true
@@ -128,8 +128,6 @@ struct TariSettings {
     var isUnitTesting: Bool {
         return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
-
-    var extensionActive = true
 
     var reminderNotificationsActive: Bool {
         return environment == .debug

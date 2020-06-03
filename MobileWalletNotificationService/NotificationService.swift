@@ -43,12 +43,15 @@ import UserNotifications
 class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNMutableNotificationContent?
+    private var safetyTimeoutCallBack: (() -> Void)?
     private static var isInProgress = false {
         didSet {
             if isInProgress {
                 ConnectionMonitor.shared.start()
+                AppContainerLock.shared.setLock(.ext)
             } else {
                 ConnectionMonitor.shared.stop()
+                AppContainerLock.shared.removeLock(.ext)
             }
         }
     }
@@ -69,17 +72,16 @@ class NotificationService: UNNotificationServiceExtension {
         self.contentHandler = contentHandler
         self.bestAttemptContent = (request.content.mutableCopy() as? UNMutableNotificationContent)
         NotificationService.isInProgress = true
-        AppContainerLock.shared.setLock(.ext)
         
-        if TariSettings.shared.extensionActive {
-            self.listenForTorConnection()
-            
-            //If nothing happens in a minute kill it
-            DispatchQueue.global().asyncAfter(deadline: .now() + 60) { [weak self] in
-                self?.completeHandler(success: false, debugMessage: "Extension took longer than 60 seconds")
-            }
-        } else {
-            self.completeHandler(success: true, debugMessage: "Extension not active")
+        self.listenForTorConnection()
+        
+        safetyTimeoutCallBack = { [weak self] in
+            self?.completeHandler(success: false, debugMessage: "Extension took longer than 60 seconds")
+        }
+
+        //If nothing happens in a minute kill it
+        DispatchQueue.global().asyncAfter(deadline: .now() + 60) { [weak self] in
+            self?.safetyTimeoutCallBack?()
         }
     }
     
@@ -110,7 +112,8 @@ class NotificationService: UNNotificationServiceExtension {
     private func listenForReceivedTransaction() {
         TariEventBus.onMainThread(self, eventType: .receievedTransaction) { [weak self] (result) in
             guard let self = self else { return }
-                        
+            self.safetyTimeoutCallBack = nil
+            
             //TX receieved, giving it some more time to send reply
             DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
                 guard let self = self else { return }
@@ -122,6 +125,7 @@ class NotificationService: UNNotificationServiceExtension {
     private func listenForBaseNodeSync() {
         TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
             guard let self = self else { return }
+            self.safetyTimeoutCallBack = nil
 
             //If receievedTransaction isn't triggered after a base node sync assume nothing is coming
             DispatchQueue.global().asyncAfter(deadline: .now() + 5) { [weak self] in
@@ -134,7 +138,7 @@ class NotificationService: UNNotificationServiceExtension {
     private func completeHandler(success: Bool, debugMessage: String = "") {
         //A background operation will use this flag to set scheduled reminder notifications for users to open up the app if this extension failed to receieve the TX
         if !success {
-            ReminderNotifications.shared.shouldScheduleReminders = true
+            ReminderNotifications.shared.setShouldScheduleReminder()
             TariLogger.info("Setting flag for scheduling reminder notificaions in main app background operation")
         }
         
@@ -143,11 +147,11 @@ class NotificationService: UNNotificationServiceExtension {
             TariLogger.info(debugMessage)
         }
         
+        TariEventBus.unregister(self)
+        TariLib.shared.stopWallet()
+        TariLib.shared.stopTor()
+        
         if let contentHandler = contentHandler, let bestAttemptContent =  bestAttemptContent {
-            TariEventBus.unregister(self)
-            TariLib.shared.stopWallet()
-            TariLib.shared.stopTor()
-            
             if TariSettings.shared.environment == .debug {
                 bestAttemptContent.title = "\(bestAttemptContent.title)\(success ? "✅" : "❌")"
                 bestAttemptContent.body =  "\(bestAttemptContent.body)\n\(debugMessage)"
@@ -157,8 +161,7 @@ class NotificationService: UNNotificationServiceExtension {
         }
         
         NotificationService.isInProgress = false
-        AppContainerLock.shared.removeLock(.ext)
         
-        
+        safetyTimeoutCallBack = nil
     }
 }

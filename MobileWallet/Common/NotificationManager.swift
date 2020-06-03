@@ -74,11 +74,11 @@ class NotificationManager {
 
     let notificationCenter = UNUserNotificationCenter.current()
     private let options: UNAuthorizationOptions = [.alert, .sound, .badge]
-    private static let HAS_REGISTERED_TOKEN_STORAGE_KEY = "hasRegisteredPushToken"
+    private static let hasRegisteredTokenKey = "hasRegisteredPushToken"
 
     var hasRegisteredToken: Bool {
         get {
-            return UserDefaults.standard.bool(forKey: NotificationManager.HAS_REGISTERED_TOKEN_STORAGE_KEY)
+            return UserDefaults.standard.bool(forKey: NotificationManager.hasRegisteredTokenKey)
         }
     }
 
@@ -114,7 +114,6 @@ class NotificationManager {
                 completionHandler?(true)
 
                 TariLogger.info("Notifications authorized")
-
                 DispatchQueue.main.async {
                     TariLogger.info("Registering for remote notifications with Apple")
                     UIApplication.shared.registerForRemoteNotifications()
@@ -163,7 +162,10 @@ class NotificationManager {
 
     /// After syncing with base node we can cancel all prreviosuly scheduled reminder notifications that were going to remind the user to open up the app
     func cancelAllFutureReminderNotifications() {
-        ReminderNotifications.shared.shouldScheduleReminders = false
+        // TODO remove below
+        return
+
+        ReminderNotifications.shared.shouldScheduleRemindersUpdatedAt = nil
 
         var identifiers: [String] = []
         ReminderNotifications.recipientReminderNotifications.forEach { identifiers.append($0.identifier) }
@@ -189,13 +191,13 @@ class NotificationManager {
                 path: "/register/\(signature.publicKey.hex.0)",
                 requestPayload: requestPayload,
                 onSuccess: {
-                    UserDefaults.standard.set(true, forKey: NotificationManager.HAS_REGISTERED_TOKEN_STORAGE_KEY)
+                    UserDefaults.standard.set(true, forKey: NotificationManager.hasRegisteredTokenKey)
                     TariLogger.info("Registered device token")
                 }) { (error) in
                     TariLogger.error("Failed to register device token", error: error)
                 }
         } catch {
-            TariLogger.error("Failed to register device token", error: error)
+            TariLogger.error("Failed to register device token. Will attempt again later.", error: error)
         }
     }
 
@@ -248,7 +250,7 @@ class NotificationManager {
         }
 
         //TODO add apiKey when new push server redeployed
-        return try wallet.signMessage("\(pubKeyHex)\(message)")
+        return try wallet.signMessage("\(apiKey)\(pubKeyHex)\(message)")
     }
 
     private func pushServerRequest(path: String, requestPayload: Data, onSuccess: @escaping () -> Void, onError: @escaping (Error) -> Void) {

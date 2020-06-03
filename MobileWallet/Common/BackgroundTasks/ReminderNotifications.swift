@@ -50,7 +50,7 @@ struct ScheduledReminder {
 /// Local push notifications scheduled to remind users to open up the app to accept their tari
 class ReminderNotifications {
     static let shared = ReminderNotifications()
-    static private let userDefaultsKey = "should-schedule-reminders"
+    static private let dateUserDefaultsKey = "should-schedule-reminders-updated-at"
 
     static let recipientReminderNotifications: [ScheduledReminder] = [
         ScheduledReminder(
@@ -69,23 +69,32 @@ class ReminderNotifications {
 
     let userDefaults = UserDefaults(suiteName: TariSettings.shared.groupIndentifier)!
 
-    var shouldScheduleReminders: Bool {
+    var shouldScheduleRemindersUpdatedAt: Date? {
         get {
             guard TariSettings.shared.reminderNotificationsActive else {
-                return false
+                return nil
             }
 
-            return userDefaults.bool(forKey: ReminderNotifications.userDefaultsKey) == true
+            return userDefaults.object(forKey: ReminderNotifications.dateUserDefaultsKey) as? Date
         }
         set {
             guard TariSettings.shared.reminderNotificationsActive else {
                 return
             }
 
-            userDefaults.set(newValue, forKey: ReminderNotifications.userDefaultsKey)
+            if let newDate = newValue {
+                userDefaults.set(newDate, forKey: ReminderNotifications.dateUserDefaultsKey)
+            } else {
+                userDefaults.removeObject(forKey: ReminderNotifications.dateUserDefaultsKey)
+            }
+
             userDefaults.synchronize()
         }
     }
 
     private init() {}
+
+    func setShouldScheduleReminder() {
+        shouldScheduleRemindersUpdatedAt = Date()
+    }
 }

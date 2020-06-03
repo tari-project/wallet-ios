@@ -48,8 +48,8 @@ class ScheduleReminderNotificationsOperation: Operation {
             return
         }
 
-        //TODO investigate why this passes occasionally when it shouldn't
-        guard ReminderNotifications.shared.shouldScheduleReminders else {
+        guard let setAt = ReminderNotifications.shared.shouldScheduleRemindersUpdatedAt else {
+            TariLogger.warn("Nothing to schedule")
             onComplete(true)
             return
         }
@@ -57,13 +57,26 @@ class ScheduleReminderNotificationsOperation: Operation {
         //Any feature background logic here
         NotificationManager.shared.cancelAllFutureReminderNotifications()
 
+        guard let firstReminder = ReminderNotifications.recipientReminderNotifications.first else {
+            TariLogger.warn("No recipient reminder notifications setup")
+            return
+        }
+
+        //Make sure this task scheduling the reminder isn't happening too late
+        let intervalOffset = Date().timeIntervalSince(setAt)
+
+        guard intervalOffset < firstReminder.deliverAfter else {
+            TariLogger.warn("Background refresh did not run in time. Too late to schedule reminders.")
+            return
+        }
+
         var numberOfSetNotifications = 0
         ReminderNotifications.recipientReminderNotifications.forEach { (reminderDetails) in
             NotificationManager.shared.scheduleNotification(
                 title: reminderDetails.title,
                 body: reminderDetails.body,
                 identifier: reminderDetails.identifier,
-                timeInterval: reminderDetails.deliverAfter) { [weak self] (_) in
+                timeInterval: reminderDetails.deliverAfter - intervalOffset) { [weak self] (_) in
                     numberOfSetNotifications = numberOfSetNotifications + 1
                     //Know for certain all notifications have been scheduled
                     if numberOfSetNotifications >= ReminderNotifications.recipientReminderNotifications.count {
@@ -71,6 +84,8 @@ class ScheduleReminderNotificationsOperation: Operation {
                     }
                 }
         }
+
+        TariLogger.info("Reminders scheduled")
     }
 
     private func onComplete(_ success: Bool) {

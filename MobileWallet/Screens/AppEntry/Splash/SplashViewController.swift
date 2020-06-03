@@ -151,6 +151,17 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func startExistingWallet(onComplete: @escaping () -> Void) {
+        //If they closed the app before the biometrics authentication or animation then don't try start the wallet as tor will be stopped.
+        //If they move the app back to the foreground, tor ports will open and this function can be retried
+        guard !TariLib.shared.walletIsStopped else {
+            TariLogger.warn("Moved to background before wallet could start. Will wait for restart if it moves to the foreground.")
+            TariEventBus.onMainThread(self, eventType: .walletServiceStarted) { (_) in
+                onComplete()
+            }
+
+            return
+        }
+
         //Kick off wallet creation on a background thread
         DispatchQueue.global().async {
             do {
