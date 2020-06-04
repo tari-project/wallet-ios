@@ -31,6 +31,11 @@ Just push a new beta build to App Store Connect
 fastlane ios qa
 ```
 
+### ios browserstack
+```
+fastlane ios browserstack
+```
+Only build and upload the IPA to browserstack
 
 ----
 

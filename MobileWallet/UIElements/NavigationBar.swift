@@ -145,7 +145,7 @@ class NavigationBar: UIView, NavigationBarProtocol {
             self?.emoji = nil
         }
     }
-    
+
     @objc public func backAction(_sender: UIButton) {
         guard let navigationController = UIApplication.shared.topController() as? UINavigationController else { return }
         navigationController.popViewController(animated: true)
