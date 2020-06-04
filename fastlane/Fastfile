@@ -22,7 +22,6 @@ platform :ios do
   end
   desc "Just push a new beta build to App Store Connect"
   lane :push do
-    run_tests(scheme: "MobileWalletTests")
     increment_build_number(xcodeproj: "MobileWallet.xcodeproj")
     build_app(workspace: "MobileWallet.xcworkspace", scheme: "MobileWallet")
     upload_to_testflight
@@ -65,4 +64,12 @@ platform :ios do
         browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"]
       )
   end
+  desc "Only build and upload the IPA to browserstack"
+  lane :browserstack do    
+    build_app(workspace: "MobileWallet.xcworkspace", scheme: "MobileWallet")
+    upload_to_browserstack_app_live(
+      browserstack_username: ENV["BROWSERSTACK_USERNAME"],
+      browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"]
+    )
+end
 end

@@ -373,5 +373,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 navigationController?.pushViewController(vc, animated: false)
             }
         }
+
+        TariEventBus.unregister(self)
     }
 }
