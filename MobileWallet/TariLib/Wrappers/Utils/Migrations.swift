@@ -39,29 +39,14 @@
 */
 
 import Foundation
+import SwiftKeychainWrapper
 
 class Migrations {
     /// Needs to be called from AppDelegate didFinishLaunchingWithOptions
     static func handle() {
         TariLogger.verbose("Checking for migrations")
-        Migrations.privateKeyToKeychain()
         Migrations.tariDBToGroupStorage()
         Migrations.torCacheToGroupStorage()
-    }
-
-    static private func privateKeyToKeychain() {
-        if let userDefaultsPrivateKey = UserDefaults.standard.string(forKey: "privateKey") {
-            TariLib.shared.storedPrivateKey = userDefaultsPrivateKey
-
-            //Ensure the private key is in the keychain before deleting from userDefaults
-            guard TariLib.shared.storedPrivateKey == userDefaultsPrivateKey else {
-                TariLogger.error("Failed to migrate private key to keychain")
-                return
-            }
-
-            UserDefaults.standard.removeObject(forKey: TariLib.privatekeyStorageKey)
-            TariLogger.info("Successfully migrated private key to keyhain")
-        }
     }
 
     static private func tariDBToGroupStorage() {
@@ -109,6 +94,35 @@ class Migrations {
         }
 
         TariLogger.verbose("Migrated Tor cache to shared app group storage")
+    }
+
+    /// Needs to be called with the comms config that is about to be used to start the wallet
+    /// - Parameter comms: Comms config used for wallet service
+    static func privateKeyKeychainToDB(_ comms: CommsConfig) {
+        let sharedKeychainGroup = KeychainWrapper(
+            serviceName: "tari",
+            accessGroup: "\(TariSettings.shared.appleTeamID ?? "").com.tari.wallet.keychain"
+        )
+
+        let forKey = "privateKey"
+
+        guard let privateKeyHex = sharedKeychainGroup.string(forKey: forKey) else {
+            return
+        }
+
+        guard let privateKey = try? PrivateKey(hex: privateKeyHex) else {
+            TariLogger.error("Private key not initialized with hex value")
+            return
+        }
+
+        do {
+            try comms.setPrivateKey(privateKey)
+
+            TariLogger.verbose("Migrated private key from keychain to database")
+            sharedKeychainGroup.removeObject(forKey: forKey)
+        } catch {
+            TariLogger.error("Failed to migrate private keyt from keychain to database", error: error)
+        }
     }
 
     static private func directoryExists(_ url: URL) -> Bool {

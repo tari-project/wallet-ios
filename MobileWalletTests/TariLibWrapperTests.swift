@@ -120,18 +120,16 @@ class TariLibWrapperTests: XCTestCase {
         }
         
         //Valid emoji ID
-        XCTAssertNoThrow(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
-        
-        //Valid emoji ID
-        XCTAssertNoThrow(try PublicKey(emojis: "😷💍💎🐍🤩💺🚔💊🧗🤤😉⛅🐶✋🧦🧜🤠🧤💻🌸📌👸🥁🍇🏀🎲😵💇❓⛵💊🦋🎸"))
+        XCTAssertNoThrow(try PublicKey(emojis: "🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇"))
+        XCTAssertNoThrow(try PublicKey(emojis: "🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊"))
         
         //Invalid emoji ID
         XCTAssertThrowsError(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽👽"))
         
         //Valid deep links
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈")
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇")
         )
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈?amount=32.1&note=hi%20there")
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇?amount=32.1&note=hi%20there")
         )
         XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
         XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=32.1note=hi%20there"))
@@ -148,11 +146,22 @@ class TariLibWrapperTests: XCTestCase {
         //Convenience init
         XCTAssertThrowsError(try PublicKey(any: "bla"))
         XCTAssertThrowsError(try PublicKey(any: "Hey use this emoji ID 🐒🐑🍔🔧❌👂🦒"))
-        XCTAssertNoThrow(try PublicKey(any: "🐒🐑🍔 | 🔧❌👂 | 🦒💇🔋 | 💥🍷🍺 | 👔😷🐶 | 🧢🤩💥 | 🎾🎲🏀 | 🤠💪👮 | 🤯🎁💉 | 🌞🍉🤷 | 🍦👽🔈"))
-        XCTAssertNoThrow(try PublicKey(any: "copy this: 🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈 please"))
-        XCTAssertNoThrow(try PublicKey(any: "My emojis are \"🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈\""))
-        XCTAssertNoThrow(try PublicKey(any: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩 bla bla bla 💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
-        XCTAssertNoThrow(try PublicKey(any: "My emojis 🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶 and here are the rest 🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽🔈"))
+        XCTAssertNoThrow(try PublicKey(any: "🎳🐍 | 💸🐼🐷 | 💍🍔💤 | 💘🔫😻 | 💨🎩😱 | 💭🎒🚧 | 🐵🏉🔦 | 🍴🎺🍺 | 🐪🍕👔 | 🍄🐍😇 | 🌂🐑🍭 | 😇"))
+        XCTAssertNoThrow(try PublicKey(any: "copy this: 🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊 please"))
+        XCTAssertNoThrow(try PublicKey(any: "My emojis are \"🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊\""))
+        XCTAssertNoThrow(try PublicKey(any: "🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹 bla bla bla 😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊"))
+        XCTAssertNoThrow(try PublicKey(any: "My emojis 🎳🐍💸🐼🐷💍🍔💤💘 and here are the rest 🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇"))
+        
+        //Test deprecated emoji sets
+        do {
+            _ = try PublicKey(any: "💨🎩😱😇🌂🐑😇🍭💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍🎳🐍💸🐼🐷💍🍔💤💘🔫🎁")
+        } catch {
+            if case PublicKeyError.invalidEmojiSet = error {
+                //Correct error
+            } else {
+                XCTFail("Invalid emoji set should throw error")
+            }
+        }
     }
     
     func testDeepLink() {
@@ -198,13 +207,15 @@ class TariLibWrapperTests: XCTestCase {
             let transport = TransportType()
             let address = transport.address.0
             commsConfig = try CommsConfig(
-                privateKey: PrivateKey(hex: privateKeyHex),
                 transport: transport,
                 databasePath: databasePath,
                 databaseName: dbName,
                 publicAddress: address,
                 discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
             )
+            
+            let privateKey = try PrivateKey(hex: privateKeyHex)
+            try commsConfig?.setPrivateKey(privateKey)
             
             TariLogger.verbose("TariLib Logging path: \(loggingFilePath)")
         } catch {
