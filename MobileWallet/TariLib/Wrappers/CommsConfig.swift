@@ -54,7 +54,7 @@ class CommsConfig {
     var dbPath: String
     var dbName: String
 
-    init(privateKey: PrivateKey, transport: TransportType, databasePath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64) throws {
+    init(transport: TransportType, databasePath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64) throws {
         dbPath = databasePath
         dbName = databaseName
         var errorCode: Int32 = -1
@@ -67,7 +67,6 @@ class CommsConfig {
                             transport.pointer,
                             db,
                             path,
-                            privateKey.pointer,
                             discoveryTimeoutSec,
                             error
                         )
@@ -78,6 +77,16 @@ class CommsConfig {
     ptr = result!
     guard errorCode == 0 else {
          throw CommsConfigError.generic(errorCode)
+        }
+    }
+
+    func setPrivateKey(_ privateKey: PrivateKey) throws {
+        var errorCode: Int32 = -1
+        withUnsafeMutablePointer(to: &errorCode, { error in
+            comms_config_set_secret_key(pointer, privateKey.pointer, error)
+        })
+        guard errorCode == 0 else {
+            throw CommsConfigError.generic(errorCode)
         }
     }
 
