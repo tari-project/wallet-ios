@@ -77,7 +77,7 @@ class TransactionTableViewCell: UITableViewCell {
                 valueLabel.text = mt.formattedWithOperator
                 valueLabel.backgroundColor = Theme.shared.colors.transactionCellValuePositiveBackground
                 valueLabel.textColor = Theme.shared.colors.transactionCellValuePositiveText
-            } else {
+            } else if direction == .outbound {
                 valueLabel.text = mt.formattedWithNegativeOperator
                 valueLabel.backgroundColor = Theme.shared.colors.transactionCellValueNegativeBackground
                 valueLabel.textColor = Theme.shared.colors.transactionCellValueNegativeText
