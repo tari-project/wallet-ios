@@ -71,6 +71,10 @@ struct TariPendingInboundTransaction;
 
 struct TariTransportType;
 
+struct TariSeedWords;
+
+struct EmojiSet;
+
 /// -------------------------------- Transport Types ----------------------------------------------- ///
 
 // Creates a memory transport type
@@ -156,6 +160,16 @@ struct TariPrivateKey *private_key_from_hex(const char *hex,int* error_out);
 
 // Frees memory for a TariPrivateKey
 void private_key_destroy(struct TariPrivateKey *pk);
+
+/// -------------------------------- Seed Words  -------------------------------------------------- ///
+// Get the number of seed words in the provided collection
+unsigned int seed_words_get_length(struct TariSeedWords *seed_words, int* error_out);
+
+// Get a seed word from the provided collection at the specified position
+char *seed_words_get_at(struct TariSeedWords *seed_words, unsigned int position, int* error_out);
+
+// Frees the memory for a TariSeedWords collection
+void seed_words_destroy(struct TariSeedWords *seed_words);
 
 /// -------------------------------- Contact ------------------------------------------------------ ///
 
@@ -420,6 +434,12 @@ unsigned long long wallet_import_utxo(struct TariWallet *wallet, unsigned long l
 // This function will tell the wallet to query the set base node to confirm the status of wallet data.
 unsigned long long wallet_sync_with_base_node(struct TariWallet *wallet, int* error_out);
 
+// Set the power mode of the wallet to Low Power mode which will reduce the amount of network operations the wallet performs to conserve power
+void wallet_set_low_power_mode(struct TariWallet *wallet, int* error_out);
+
+// Set the power mode of the wallet to Normal Power mode which will then use the standard level of network traffic
+void wallet_set_normal_power_mode(struct TariWallet *wallet, int* error_out);
+
 // Simulates the completion of a broadcasted TariPendingInboundTransaction
 bool wallet_test_broadcast_transaction(struct TariWallet *wallet, unsigned long long tx, int* error_out);
 
@@ -438,11 +458,23 @@ bool wallet_cancel_pending_transaction(struct TariWallet *wallet, unsigned long 
 /// Perform a coin split
 unsigned long long wallet_coin_split(struct TariWallet *wallet, unsigned long long amount, unsigned long long count, unsigned long long fee, const char* msg, unsigned long long lock_height, int* error_out);
 
+/// Get the seed words representing the seed private key of the provided TariWallet
+struct TariSeedWords *wallet_get_seed_words(struct TariWallet *wallet, int* error_out);
+
 // Frees memory for a TariWallet
 void wallet_destroy(struct TariWallet *wallet);
 
 /// This function will log the provided string at debug level. To be used to have a client log messages to the LibWallet
 void log_debug_message(const char* msg);
+
+
+struct EmojiSet *get_emoji_set(void);
+
+void emoji_set_destroy(struct EmojiSet *emoji_set);
+
+struct ByteVector *emoji_set_get_at(struct EmojiSet *emoji_set, unsigned int position, int* error_out);
+
+unsigned int emoji_set_get_length(struct EmojiSet *emoji_set, int* error_out);
 
 #ifdef __cplusplus
 }

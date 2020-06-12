@@ -369,6 +369,16 @@
 		491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AddAmountViewController.swift */; };
 		49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C6237962CB005058AB /* libc++.tbd */; };
+		4C8707F02492C7BE00CE2FD5 /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */; };
+		4C8707F12492C7BE00CE2FD5 /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */; };
+		4C8707F22492C7BE00CE2FD5 /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */; };
+		4C8707F32492C7BE00CE2FD5 /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */; };
+		4C8707F42492C7BE00CE2FD5 /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */; };
+		4C8707F62492C7D100CE2FD5 /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */; };
+		4C8707F72492C7D100CE2FD5 /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */; };
+		4C8707F82492C7D100CE2FD5 /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */; };
+		4C8707F92492C7D100CE2FD5 /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */; };
+		4C8707FA2492C7D100CE2FD5 /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */; };
 		4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
 		4CCF87EE23E8275800C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
 		4CCF87EF23E8276700C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
@@ -665,6 +675,8 @@
 		4C2C95B8237959B3005058AB /* MobileWallet-bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWallet-bridging-header.h"; sourceTree = "<group>"; };
 		4C2C95C223796184005058AB /* libzmq.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libzmq.a; sourceTree = "<group>"; };
 		4C2C95C6237962CB005058AB /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWords.swift; sourceTree = "<group>"; };
+		4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiSet.swift; sourceTree = "<group>"; };
 		4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtari_wallet_ffi.a; path = MobileWallet/TariLib/libtari_wallet_ffi.a; sourceTree = "<group>"; };
 		4CD20A352407967B007B64D8 /* TransportType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportType.swift; sourceTree = "<group>"; };
 		540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -979,6 +991,8 @@
 				001F6CDF2380198D00FA7002 /* Contacts.swift */,
 				001F6CE32380253B00FA7002 /* Contact.swift */,
 				001F6CEF2381A43800FA7002 /* Transactions */,
+				4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */,
+				4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */,
 			);
 			path = Wrappers;
 			sourceTree = "<group>";
@@ -1844,9 +1858,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				00B4D6B82416A50C00ED8318 /* MobileWalletUISnapshots.swift in Sources */,
+				4C8707F92492C7D100CE2FD5 /* EmojiSet.swift in Sources */,
 				37BB696E245705E70013AC4D /* RadialGradientView.swift in Sources */,
 				00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */,
 				BFCA0E6C242CA8780024FC0C /* TariLogger.swift in Sources */,
+				4C8707F32492C7BE00CE2FD5 /* SeedWords.swift in Sources */,
 				00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */,
 				00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */,
 			);
@@ -1859,7 +1875,9 @@
 				00C520B72469720F0077BF7F /* MicroTari.swift in Sources */,
 				00C520BA2469720F0077BF7F /* ErrorDescriptions.swift in Sources */,
 				00C520C9246972140077BF7F /* Contact.swift in Sources */,
+				4C8707FA2492C7D100CE2FD5 /* EmojiSet.swift in Sources */,
 				00C520C7246972140077BF7F /* PublicKey.swift in Sources */,
+				4C8707F42492C7BE00CE2FD5 /* SeedWords.swift in Sources */,
 				00C520CC246972180077BF7F /* PendingOutboundTransaction.swift in Sources */,
 				00C520D12469721D0077BF7F /* TransactionsProtocol.swift in Sources */,
 				00C520C1246972140077BF7F /* TransportType.swift in Sources */,
@@ -1972,6 +1990,7 @@
 				00BCE47F240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				00A9190B242CDD7700B7F14D /* Tracker.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
+				4C8707F02492C7BE00CE2FD5 /* SeedWords.swift in Sources */,
 				004997B72382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
 				37BB6974245726FC0013AC4D /* CopyableLabel.swift in Sources */,
@@ -2003,6 +2022,7 @@
 				37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */,
 				004277FB23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
+				4C8707F62492C7D100CE2FD5 /* EmojiSet.swift in Sources */,
 				0087A1AC23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				6191948FA1B3F223B37A0D9B /* UTXO.swift in Sources */,
 			);
@@ -2040,6 +2060,7 @@
 				0087A1B323F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
 				009DFCB224741F9B0061DBC9 /* WalletTransactions.swift in Sources */,
 				004277F823E0628A00AE7BD9 /* UIViewController.swift in Sources */,
+				4C8707F72492C7D100CE2FD5 /* EmojiSet.swift in Sources */,
 				00262EB5236F024400A6C8A0 /* Theme.swift in Sources */,
 				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00D7BD8A24349AE3009DD097 /* UIDevice.swift in Sources */,
@@ -2062,6 +2083,7 @@
 				00369D7E2422670300BAB95B /* DeepLinkManager.swift in Sources */,
 				37BB696C245705E60013AC4D /* RadialGradientView.swift in Sources */,
 				BFE1FC0923E3ACD900BA5EEC /* WalletCreationViewController.swift in Sources */,
+				4C8707F12492C7BE00CE2FD5 /* SeedWords.swift in Sources */,
 				00947CC323CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
 				00A66528243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				0087A1AD23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
@@ -2152,6 +2174,8 @@
 				379D27BB244F091B00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
 				004997B12382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
+				4C8707F22492C7BE00CE2FD5 /* SeedWords.swift in Sources */,
+				4C8707F82492C7D100CE2FD5 /* EmojiSet.swift in Sources */,
 				005387262405136700901A68 /* AddNoteViewController.swift in Sources */,
 				00230AFC2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				491AB89B23F1B36100372189 /* AnimatedBalanceLabel.swift in Sources */,

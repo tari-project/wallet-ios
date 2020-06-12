@@ -604,4 +604,35 @@ class Wallet {
         TariLogger.warn("Wallet destroy")
         wallet_destroy(ptr)
     }
+
+    func setPowerModeLow() throws {
+        var errorCode: Int32 = -1
+        withUnsafeMutablePointer(to: &errorCode, { error in
+                wallet_set_low_power_mode(ptr, error)
+            })
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+    }
+
+    func setPowerModeNormal() throws {
+        var errorCode: Int32 = -1
+        withUnsafeMutablePointer(to: &errorCode, { error in
+                wallet_set_normal_power_mode(ptr, error)
+            })
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+    }
+
+    func seedWords() throws -> SeedWords {
+        var errorCode: Int32 = -1
+        let resultPtr = withUnsafeMutablePointer(to: &errorCode, { error in
+            wallet_get_seed_words(ptr, error)})
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+
+        return SeedWords(pointer: resultPtr!)
+    }
 }
