@@ -44,6 +44,8 @@ import Lottie
 protocol TransactionsTableViewDelegate: class {
     func onTransactionSelect(_: Any)
     func onScrollDirectionChange(_: ScrollDirection)
+
+    func onScrollTopHit(_: Bool)
 }
 
 class TransactionsTableViewController: UITableViewController {
@@ -82,6 +84,17 @@ class TransactionsTableViewController: UITableViewController {
 
     var showsPendingGroup: Bool {
         return pendingInboundTransactions.count > 0 || pendingOutboundTransactions.count > 0
+    }
+
+    private var isScrolledToTop: Bool = true {
+        willSet {
+            //Only hit the delegate method if value actually changed
+            if newValue && !isScrolledToTop {
+                actionDelegate?.onScrollTopHit(true)
+            } else if !newValue && isScrolledToTop {
+                actionDelegate?.onScrollTopHit(false)
+            }
+        }
     }
 
     lazy var pendingAnimationContainer: AnimationView = {
@@ -292,6 +305,12 @@ class TransactionsTableViewController: UITableViewController {
 
     //Parent component needs to know which direction they're scrolling
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentOffset.y <= 0 {
+            isScrolledToTop = true
+        } else {
+            isScrolledToTop = false
+        }
+
         if self.lastContentOffset + 25 < scrollView.contentOffset.y && lastScrollDirection != .down {
             actionDelegate?.onScrollDirectionChange(.down)
             lastScrollDirection = .down

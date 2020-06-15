@@ -47,7 +47,7 @@ enum ScrollDirection {
     case down
 }
 
-class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
+class HomeViewController: UIViewController {
 
     private static let GRABBER_WIDTH: Double = 55.0
     private static let PANEL_BORDER_CORNER_RADIUS: CGFloat = 15.0
@@ -113,6 +113,10 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
         didSet {
             showHideSendButton()
         }
+    }
+
+    override var navBarHeight: CGFloat {
+        return (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0.0) + 56
     }
 
     override func viewDidLoad() {
@@ -253,7 +257,6 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
                 NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel!,
                 NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
                 NSAttributedString.Key.kern: -1.43
-
             ]
         )
 
@@ -262,9 +265,15 @@ class HomeViewController: UIViewController, FloatingPanelControllerDelegate {
             [
                 NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals!,
                 NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
+                NSAttributedString.Key.baselineOffset: 5,
                 NSAttributedString.Key.kern: -0.57
             ],
             range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat)
+        )
+
+        balanceLabelAttributedText.addAttributes(
+            [NSAttributedString.Key.kern: 1.5],
+            range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat - 1, length: 1)
         )
 
         balanceValueLabel.attributedText = balanceLabelAttributedText
@@ -419,10 +428,26 @@ extension HomeViewController: TransactionsTableViewDelegate {
             }
         }
     }
+
+    func onScrollTopHit(_ isAtTop: Bool) {
+        if isAtTop {
+            UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
+                guard let self = self else { return }
+                self.navigationBar.layer.shadowOpacity = 0
+                self.view.layoutIfNeeded()
+            }
+        } else {
+            UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
+                guard let self = self else { return }
+                self.navigationBar.layer.shadowOpacity = 0.1
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
 }
 
 // MARK: - Floating panel setup delegate methods
-extension HomeViewController {
+extension HomeViewController: FloatingPanelControllerDelegate {
     func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
         return HomeViewFloatingPanelLayout(navBarHeight: navBarHeight, initialFullScreen: isFirstIntroToWallet)
     }
@@ -485,7 +510,6 @@ extension HomeViewController {
         let y = floatingController.surfaceView.frame.origin.y
         let tipY = floatingController.originYOfSurface(for: .tip)
         let progress = CGFloat(max(0.0, min((tipY  - y) / navBarHeight, 1.0)))
-
         return progress
     }
 
@@ -510,8 +534,8 @@ extension HomeViewController {
         setupTopButtons()
         setupBalanceLabel()
         setupBalanceValueLabel()
-        setupNavigationBar()
         setupFloatingPanel()
+        setupNavigationBar()
         setupFadeView()
     }
 
@@ -579,6 +603,7 @@ extension HomeViewController {
         balanceContainer.addSubview(balanceValueLabel)
 
         balanceValueLabel.animationSpeed = .slow
+        balanceValueLabel.clipsToBounds = true
 
         balanceValueLabel.translatesAutoresizingMaskIntoConstraints = false
         balanceValueLabel.heightAnchor.constraint(equalToConstant: 47).isActive = true
@@ -595,6 +620,12 @@ extension HomeViewController {
         navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         navigationBar.heightAnchor.constraint(equalToConstant: navBarHeight).isActive = true
+
+        //Container view style
+        navigationBar.layer.shadowOpacity = 0
+        navigationBar.layer.shadowOffset = CGSize(width: 0, height: 5)
+        navigationBar.layer.shadowRadius = 10
+        navigationBar.layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
 
         navigationBarBottomConstraint = navigationBar.bottomAnchor.constraint(equalTo: view.topAnchor)
         navigationBarBottomConstraint?.isActive = true
@@ -614,10 +645,11 @@ extension HomeViewController {
         navigationBarContainer.addSubview(navigationBarTitle)
         navigationBarTitle.text = NSLocalizedString("Transactions", comment: "Transactions nav bar heading")
         navigationBarTitle.font = Theme.shared.fonts.navigationBarTitle
+        navigationBarTitle.textColor = Theme.shared.colors.transactionsListNavBar
 
         navigationBarTitle.translatesAutoresizingMaskIntoConstraints = false
         navigationBarTitle.centerXAnchor.constraint(equalTo: navigationBarContainer.centerXAnchor).isActive = true
-        navigationBarTitle.centerYAnchor.constraint(equalTo: navigationBarContainer.centerYAnchor).isActive = true
+        navigationBarTitle.bottomAnchor.constraint(equalTo: navigationBarContainer.bottomAnchor, constant: -20).isActive = true
 
         let xMarkButton = UIButton()
         xMarkButton.addTarget(self, action: #selector(closeButtonAction(_:)), for: .touchUpInside)
@@ -626,8 +658,8 @@ extension HomeViewController {
         navigationBarContainer.addSubview(xMarkButton)
 
         xMarkButton.translatesAutoresizingMaskIntoConstraints = false
-        xMarkButton.centerYAnchor.constraint(equalTo: navigationBarContainer.centerYAnchor).isActive = true
-        xMarkButton.leadingAnchor.constraint(equalTo: navigationBarContainer.leadingAnchor, constant: 20.0).isActive = true
+        xMarkButton.centerYAnchor.constraint(equalTo: navigationBarTitle.centerYAnchor).isActive = true
+        xMarkButton.leadingAnchor.constraint(equalTo: navigationBarContainer.leadingAnchor, constant: 14.0).isActive = true
         xMarkButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
         xMarkButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
     }
