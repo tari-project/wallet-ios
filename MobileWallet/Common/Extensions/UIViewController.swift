@@ -62,8 +62,8 @@ extension UIViewController {
         view.endEditing(true)
     }
 
-    var navBarHeight: CGFloat {
-        return UIApplication.shared.statusBarFrame.height +
+    @objc var navBarHeight: CGFloat {
+        return (UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0) +
             (self.navigationController?.navigationBar.frame.height ?? 0.0)
     }
 

@@ -220,14 +220,11 @@ class AnimatedBalanceLabel: UIView {
                 label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
                 leftAnc = labelsLeftLayoutGuide.rightAnchor
             } else {
-                if animation == .update {
-                    label.firstBaselineAnchor.constraint(equalTo: labels[i - 1].firstBaselineAnchor).isActive = true
-                } else {
-                    label.centerYAnchor.constraint(equalTo: labels[i - 1].centerYAnchor).isActive = true
-                }
+                label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
                 leftAnc = labels[i - 1].rightAnchor
             }
             label.leftAnchor.constraint(equalTo: leftAnc).isActive = true
+            label.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
         }
 
         labels.last?.rightAnchor.constraint(equalTo: labelsRightLayoutGuide.leftAnchor).isActive = true

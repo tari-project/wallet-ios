@@ -63,7 +63,7 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
     }
 
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
-        let topInset: CGFloat = navBarHeight - 2
+        let topInset: CGFloat = navBarHeight - 12
         let lowestHeight = UIScreen.main.bounds.height - 172
 
         switch position {
