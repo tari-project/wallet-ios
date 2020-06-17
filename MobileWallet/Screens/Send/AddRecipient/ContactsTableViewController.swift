@@ -107,20 +107,31 @@ class ContactsTableViewController: UITableViewController {
         tableView.dataSource = self
         tableView.delegate = self
 
-        do {
-            try loadContacts()
-        } catch {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to load contacts", comment: "Add recipient view"),
-                description: NSLocalizedString("Could not access wallet", comment: "Add recipient view"),
-                error: error
-            )
-        }
+        fetchContacts()
     }
 
     func getContact(publicKey: PublicKey?) -> Contact? {
         guard let publicKey = publicKey else { return nil }
         return contactList.filter { $0.publicKey.0?.emojis.0 == publicKey.emojis.0 }.first
+    }
+
+    private func fetchContacts() {
+        var waitingTime = 0.0
+        Timer.scheduledTimer(withTimeInterval: CATransaction.animationDuration(), repeats: true) { [weak self] (timer) in
+            if TariLib.shared.walletIsStopped == false || waitingTime >= 5.0 {
+                do {
+                    try self?.loadContacts()
+                } catch {
+                    UserFeedback.shared.error(
+                        title: NSLocalizedString("Failed to load contacts", comment: "Add recipient view"),
+                        description: NSLocalizedString("Could not access wallet", comment: "Add recipient view"),
+                        error: error
+                    )
+                }
+                timer.invalidate()
+            }
+            waitingTime += timer.timeInterval
+        }
     }
 
     private func loadContacts() throws {
