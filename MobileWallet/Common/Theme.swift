@@ -111,6 +111,7 @@ struct Colors: Loopable {
     let homeScreenTotalBalanceValueLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
     let floatingPanelGrabber = UIColor(named: "FloatingPanelGrabber")
     let qrButtonBackground = UIColor(named: "QRButtonBackground")
+    let transactionsListNavBar = UIColor(named: "TransactionsListNavBar")
 
     let auroraGradient1 = UIColor(named: "auroraGradient1")
     let auroraGradient2 = UIColor(named: "auroraGradient2")
@@ -234,7 +235,7 @@ struct Fonts: Loopable {
     //Home screen
     let homeScreenTotalBalanceLabel = UIFont(name: "Avenir-Roman", size: 14.0)
     let homeScreenTotalBalanceValueLabel = UIFont(name: "Avenir-Black", size: 39.0)
-    let homeScreenTotalBalanceValueLabelDecimals = UIFont(name: "Avenir-Black", size: 15.6)
+    let homeScreenTotalBalanceValueLabelDecimals = UIFont(name: "Avenir-Black", size: 16.0)
 
     //Transaction cell
     let transactionCellUsernameLabel = UIFont(name: "Avenir-Heavy", size: 15.0)
