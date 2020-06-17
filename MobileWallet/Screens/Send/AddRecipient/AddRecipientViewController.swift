@@ -398,11 +398,14 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
         let pasteboardString: String? = UIPasteboard.general.string
 
-        if let text = pasteboardString {
+        if var text = pasteboardString {
             //Try get a pubkey from clipboard text
             do {
-                let pubKeyFromDeeplink = try PublicKey(any: text)
-                clipboardEmojis = pubKeyFromDeeplink.emojis.0
+                if !text.hasPrefix("\(TariSettings.shared.deeplinkURI)://") {
+                    text = text.emojiString
+                }
+                let pubKey = try PublicKey(any: text)
+                clipboardEmojis = pubKey.emojis.0
                 return
             } catch {
                //No valid pubkey found
