@@ -60,13 +60,9 @@ class WalletCreationViewController: UIViewController {
 
     private var state: WalletCreationState = .createEmojiId
 
-    private var player: AVQueuePlayer!
-    private var playerLayer: AVPlayerLayer!
-    private var playerItem: AVPlayerItem!
-    private var playerLooper: AVPlayerLooper!
-    private var videoView = UIView()
+    private var loadingCircle = AnimationView()
 
-    private let stackView = UIStackView()
+    private var stackView = UIStackView()
     private var stackViewCenterYConstraint: NSLayoutConstraint?
 
     private var numpadImageView = UIImageView()
@@ -94,6 +90,7 @@ class WalletCreationViewController: UIViewController {
         super.viewDidLoad()
         setupView()
         prepareSubviews(for: .initial)
+        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -291,7 +288,7 @@ extension WalletCreationViewController {
 
     // MARK: - Show Initial
     private func showInitialScreen() {
-        setupVideoAnimation()
+        loadingCircle.alpha = 1.0
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             self?.firstLabel.showLabel()
             self?.secondLabel.showLabel()
@@ -305,7 +302,7 @@ extension WalletCreationViewController {
                         self?.showCreateYourEmojiIdScreen()
                     })
                     UIView.animate(withDuration: 0.5, animations: { [weak self] in
-                        self?.videoView.alpha = 0.0
+                        self?.loadingCircle.alpha = 0.0
                         self?.view.layoutIfNeeded()
                     })
                 }
@@ -531,7 +528,7 @@ extension WalletCreationViewController {
         setupTapToSeeFullEmojiButton()
         setupRadialGradientView()
         setupContinueButton()
-        setupConstraintsVideoView()
+        setupPendingAnimation()
 
         view.backgroundColor = Theme.shared.colors.creatingWalletBackground
     }
@@ -598,14 +595,18 @@ extension WalletCreationViewController {
         stackView.addArrangedSubview(thirdLabel)
     }
 
-    private func setupConstraintsVideoView() {
-        view.addSubview(videoView)
+    private func setupPendingAnimation() {
+        loadingCircle.backgroundBehavior = .pauseAndRestore
+        loadingCircle.animation = Animation.named(.pendingCircleAnimation)
 
-        videoView.translatesAutoresizingMaskIntoConstraints = false
-        videoView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        videoView.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        videoView.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        videoView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
+        view.addSubview(loadingCircle)
+        loadingCircle.translatesAutoresizingMaskIntoConstraints = false
+        loadingCircle.widthAnchor.constraint(equalToConstant: 45).isActive = true
+        loadingCircle.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        loadingCircle.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        loadingCircle.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -30).isActive = true
+
+        loadingCircle.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
     }
 
     private func updateConstraintsAnimationView(animation: LottieAnimation) {
@@ -717,27 +718,5 @@ extension WalletCreationViewController {
         arrow.widthAnchor.constraint(equalToConstant: 7).isActive = true
         arrow.heightAnchor.constraint(equalToConstant: 5).isActive = true
         arrow.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: 0).isActive = true
-    }
-
-    private func setupVideoAnimation() {
-        if let path = Bundle.main.path(forResource: "loader", ofType: "mp4") {
-            _ = try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default, options: .mixWithOthers)
-            let pathURL = URL(fileURLWithPath: path)
-            let duration = Int64( ( (Float64(CMTimeGetSeconds(AVAsset(url: pathURL).duration)) *  10.0) - 1) / 10.0 )
-
-            player = AVQueuePlayer()
-            playerLayer = AVPlayerLayer(player: player)
-            playerItem = AVPlayerItem(url: pathURL)
-            playerLooper = AVPlayerLooper(player: player,
-                                          templateItem: playerItem,
-                                          timeRange: CMTimeRange(start: CMTime.zero, end: CMTimeMake(value: duration, timescale: 1)))
-            playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
-            playerLayer.frame = videoView.layer.bounds
-            playerLayer.shouldRasterize = true
-            playerLayer.rasterizationScale = UIScreen.main.scale
-            player.play()
-            videoView.layer.insertSublayer(playerLayer, at: 0)
-            videoView.clipsToBounds = true
-        }
     }
 }
