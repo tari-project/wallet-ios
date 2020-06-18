@@ -41,7 +41,7 @@
 import UIKit
 
 class ErrorView: UIView {
-    private let PADDING: CGFloat = 14
+    private let padding: CGFloat = 14
     private let label = UILabel()
     var message = "" {
         didSet {
@@ -69,8 +69,11 @@ class ErrorView: UIView {
         label.textColor = Theme.shared.colors.warningBoxBorder
         label.font = Theme.shared.fonts.warningBoxTitleLabel
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
         addSubview(label)
-        label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        label.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        label.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
+        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
+        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
+        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
     }
 }

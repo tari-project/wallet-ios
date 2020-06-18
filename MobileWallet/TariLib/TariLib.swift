@@ -39,10 +39,8 @@
 */
 
 import Foundation
-import SwiftKeychainWrapper
 
 enum TariLibErrors: Error {
-    case privateKeyNotFound
     case saveToKeychain
     case failedToCreateCommsConfig
     case extensionHasLock
@@ -53,7 +51,6 @@ class TariLib {
     static let shared = TariLib()
 
     static let databaseName = "tari_wallet"
-    static let privatekeyStorageKey = "privateKey"
 
     static let logFilePrefix = "log"
 
@@ -92,24 +89,6 @@ class TariLib {
 
     var tariWallet: Wallet?
 
-    let sharedKeychainGroup = KeychainWrapper(
-        serviceName: "tari",
-        accessGroup: "\(TariSettings.shared.appleTeamID ?? "").com.tari.wallet.keychain"
-    )
-
-    var storedPrivateKey: String? {
-        get {
-            return sharedKeychainGroup.string(forKey: TariLib.privatekeyStorageKey)
-        }
-        set {
-            if let privateKeyHex = newValue {
-                sharedKeychainGroup.set(privateKeyHex, forKey: TariLib.privatekeyStorageKey, withAccessibility: .alwaysThisDeviceOnly)
-            } else {
-                TariLogger.warn("Cannot unset private key in keychain")
-            }
-        }
-    }
-
     var walletExists: Bool {
         do {
             let fileExists = try TariSettings.shared.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true).checkResourceIsReachable()
@@ -143,19 +122,12 @@ class TariLib {
         }
     }
 
-    private var commsConfig: CommsConfig? {
-        guard let privateKeyHex = storedPrivateKey else {
-            TariLogger.error("Midding private key. Failed to create comms config.", error: TariLibErrors.privateKeyNotFound)
-            return nil
-        }
-
+    var commsConfig: CommsConfig? {
         var config: CommsConfig?
 
         do {
-            let privateKey = try PrivateKey(hex: privateKeyHex)
             let transport = try transportType()
             config = try CommsConfig(
-               privateKey: privateKey,
                transport: transport,
                databasePath: databaseDirectory.path,
                databaseName: TariLib.databaseName,
@@ -289,7 +261,7 @@ class TariLib {
         }
     }
 
-    /// Starts an existing wallet service. Must only be called if an private key has been already generated and store in keychain
+    /// Starts an existing wallet service. Must only be called if wallet DB files already exist.
     /// - Parameter isBackgroundTask: isBackgroundTask Renames the log file for debugging tasks that happened in the background
     /// - Throws: Can fail to generate a comms config, wallet creation and adding a basenode
     func startWalletService(container: AppContainer = .main) throws {
@@ -312,6 +284,8 @@ class TariLib {
 
         TariLogger.verbose("Database path: \(databaseDirectory.path)")
 
+        Migrations.privateKeyKeychainToDB(config)
+
         tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
 
         TariEventBus.postToMainThread(.walletServiceStarted)
@@ -333,21 +307,6 @@ class TariLib {
 
     func createNewWallet() throws {
         try FileManager.default.createDirectory(at: databaseDirectory, withIntermediateDirectories: true, attributes: nil)
-
-        let privateKey = PrivateKey()
-
-        let (privateKeyHex, hexError) = privateKey.hex
-        if hexError != nil {
-            throw hexError!
-        }
-
-        //Save to keychain and then ensure it's there (If one exists already in the keychain this will overwrite it)
-        storedPrivateKey = privateKeyHex
-        guard storedPrivateKey != nil else {
-            TariLogger.error("Failed to save private key to keychain")
-            throw TariLibErrors.saveToKeychain
-        }
-
         try startWalletService()
     }
 

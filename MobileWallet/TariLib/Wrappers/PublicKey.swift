@@ -48,12 +48,13 @@ enum PublicKeyError: Error {
     case invalidDeepLinkNetwork //When a deep link is valid but for wring network
     case invalidDeepLinkType //If it doesn't contain "/eid/" or "/pubkey/"
     case cantDerivePublicKeyFromString
+    case invalidEmojiSet
 }
 
 class PublicKey {
     private var ptr: OpaquePointer
     private var cachedEmojiId: String?
-    private static let EMOJIS_IN_PUB_KEY = 33 //Used for some pre validation before hitting the FFI
+    private static let emojiCount = 33 //Used for some pre validation before hitting the FFI
 
     var pointer: OpaquePointer {
         return ptr
@@ -129,7 +130,7 @@ class PublicKey {
             .replacingOccurrences(of: "|", with: "")
             .replacingOccurrences(of: "`", with: "")
             .replacingOccurrences(of: " ", with: "")
-        if cleanEmojis.count < PublicKey.EMOJIS_IN_PUB_KEY {
+        if cleanEmojis.count < PublicKey.emojiCount {
             throw PublicKeyError.invalidEmojis
         }
 
@@ -216,12 +217,17 @@ class PublicKey {
             return
         } catch {}
 
+        let filteredEmojis = PublicKey.filterEmojis(any)
         //Attempt to strip out a valid emoji ID from the string and init again
-        if any.count >= PublicKey.EMOJIS_IN_PUB_KEY && PublicKey.containsEmojis(any) {
+        if filteredEmojis.count >= PublicKey.emojiCount {
             do {
-                try self.init(emojis: PublicKey.filterEmojis(any))
+                try self.init(emojis: filteredEmojis)
                 return
-            } catch {}
+            } catch {
+                if filteredEmojis.count == PublicKey.emojiCount {
+                    throw PublicKeyError.invalidEmojiSet
+                }
+            }
         }
 
         throw PublicKeyError.cantDerivePublicKeyFromString

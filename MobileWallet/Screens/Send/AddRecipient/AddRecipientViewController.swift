@@ -41,9 +41,9 @@
 import UIKit
 
 class AddRecipientViewController: UIViewController, UITextFieldDelegate, ContactsTableDelegate, ScanViewControllerDelegate {
-    private let SIDE_PADDING = Theme.shared.sizes.appSidePadding
-    private let INPUT_CORNER_RADIUS: CGFloat = 6
-    private let INPUT_CONTAINER_HEIGHT: CGFloat = 90
+    private let sidePadding = Theme.shared.sizes.appSidePadding
+    private let inputCornerRadius: CGFloat = 6
+    private let inputContainerHeight: CGFloat = 90
 
     private let navigationBar = NavigationBar()
     private var navigationBarHeightConstraint = NSLayoutConstraint()
@@ -69,7 +69,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         }
     }
 
-    let errorMessageView: ErrorView = ErrorView()
+    let errorMessageView = ErrorView()
 
     private var selectedRecipientPublicKey: PublicKey? {
         didSet {
@@ -97,7 +97,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
                 UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
                     guard let self = self else { return }
-                    self.continueButtonBottomConstraint = self.continueButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -self.SIDE_PADDING)
+                    self.continueButtonBottomConstraint = self.continueButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -self.sidePadding)
                     self.continueButtonBottomConstraint.isActive = true
                     self.inputContainerView.layer.shadowOpacity = 0.1
                     self.view.layoutIfNeeded()
@@ -215,7 +215,11 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                     selectedRecipientPublicKey = nil
                 }
 
-                errorMessageView.message = ""
+                if case PublicKeyError.invalidEmojiSet = error {
+                    errorMessageView.message = "Your recipient needs to upgrade to the latest version of Tari Aurora and copy their updated Emoji ID to transact with you"
+                } else {
+                    errorMessageView.message = ""
+                }
             }
         }
     }
@@ -236,10 +240,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         checkClipboard()
     }
 
-    func textField(_ textField: UITextField,
-                   shouldChangeCharactersIn range: NSRange,
-                   replacementString string: String) -> Bool {
-
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let text = textField.text ?? ""
         var textWithoutPiles = text.replacingOccurrences(of: "|", with: "")
         textWithoutPiles = textWithoutPiles.replacingOccurrences(of: " ", with: "")
@@ -292,7 +293,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputContainerView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
         inputContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         inputContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        inputContainerView.heightAnchor.constraint(equalToConstant: INPUT_CONTAINER_HEIGHT).isActive = true
+        inputContainerView.heightAnchor.constraint(equalToConstant: inputContainerHeight).isActive = true
         inputContainerView.backgroundColor = Theme.shared.colors.navigationBarBackground
 
         //Container view style
@@ -305,21 +306,21 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputBox.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(inputBox)
         inputBox.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor).isActive = true
-        inputBox.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        inputBox.trailingAnchor.constraint(equalTo: inputContainerView.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        inputBox.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: sidePadding).isActive = true
+        inputBox.trailingAnchor.constraint(equalTo: inputContainerView.trailingAnchor, constant: -sidePadding).isActive = true
         inputBox.heightAnchor.constraint(equalToConstant: emojiIdHeight).isActive = true
 
         //Input style
         inputBox.placeholder = NSLocalizedString("Enter Emoji ID or Contact Name", comment: "Add recipient view")
         inputBox.backgroundColor = Theme.shared.colors.appBackground
         inputBox.font = Theme.shared.fonts.searchContactsInputBoxText
-        inputBox.leftView = UIView(frame: CGRect(x: 0, y: 0, width: SIDE_PADDING / 2, height: inputBox.frame.height))
+        inputBox.leftView = UIView(frame: CGRect(x: 0, y: 0, width: sidePadding / 2, height: inputBox.frame.height))
         inputBox.leftViewMode = .always
 
-        inputBox.layer.cornerRadius = INPUT_CORNER_RADIUS
+        inputBox.layer.cornerRadius = inputCornerRadius
         inputBox.layer.shadowOpacity = 0.15
         inputBox.layer.shadowOffset = CGSize(width: 0, height: 0)
-        inputBox.layer.shadowRadius = INPUT_CORNER_RADIUS
+        inputBox.layer.shadowRadius = inputCornerRadius
         inputBox.layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
 
         //Scan button
@@ -344,8 +345,8 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         view.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
 
-        continueButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        continueButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        continueButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: sidePadding).isActive = true
+        continueButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -sidePadding).isActive = true
         continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200)
         continueButtonBottomConstraint.isActive = true
 
@@ -374,9 +375,9 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         view.addSubview(errorMessageView)
 
         errorMessageView.topAnchor.constraint(equalTo: inputContainerView.bottomAnchor).isActive = true
-        errorMessageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        errorMessageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
-        errorMessageView.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        errorMessageView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: sidePadding).isActive = true
+        errorMessageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -sidePadding).isActive = true
+        errorMessageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 35).isActive = true
     }
 
     private func setupDimView() {
