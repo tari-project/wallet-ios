@@ -311,6 +311,10 @@ class TariLib {
     }
 
     func restartWalletIfStopped() {
+        if !walletExists {
+            return
+        }
+
         guard walletIsStopped else {
             return
         }

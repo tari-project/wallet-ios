@@ -45,10 +45,24 @@ protocol NavigationBarProtocol: class {
 }
 
 class NavigationBar: UIView, NavigationBarProtocol {
+    enum VerticalPositioning: Equatable {
+        case standart
+        case center
+        case custom(_ value: CGFloat)
+    }
+
     var emoji: EmoticonView?
 
     let titleLabel = UILabel()
     let backButton = UIButton()
+    var backButtonAction: (() -> Void)?
+
+    let rightButton = UIButton()
+    var rightButtonAction: (() -> Void)? {
+        didSet {
+            rightButton.isHidden = false
+        }
+    }
 
     var title: String? {
         get {
@@ -59,12 +73,35 @@ class NavigationBar: UIView, NavigationBarProtocol {
         }
     }
 
+    var verticalPositioning: VerticalPositioning = .standart {
+        didSet {
+            switch verticalPositioning {
+            case .standart:
+                topPositioningConstraint?.constant = 16
+                centerPositioningConstraint?.isActive = false
+                topPositioningConstraint?.isActive = true
+            case .center:
+                topPositioningConstraint?.isActive = false
+                centerPositioningConstraint?.isActive = true
+            case .custom(let value):
+                topPositioningConstraint?.constant = value
+                centerPositioningConstraint?.isActive = false
+                topPositioningConstraint?.isActive = true
+            }
+            layoutIfNeeded()
+        }
+    }
+
+    private var topPositioningConstraint: NSLayoutConstraint?
+    private var centerPositioningConstraint: NSLayoutConstraint?
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         clipsToBounds = true
         backgroundColor = Theme.shared.colors.appBackground
         setupTitle()
         setupBackButton()
+        setupRightButton()
     }
 
     required init?(coder: NSCoder) {
@@ -74,7 +111,9 @@ class NavigationBar: UIView, NavigationBarProtocol {
     private func setupTitle() {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(titleLabel)
-        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16.0).isActive = true
+        centerPositioningConstraint = titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
+        topPositioningConstraint = titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16.0)
+        topPositioningConstraint?.isActive = true
         titleLabel.heightAnchor.constraint(equalToConstant: 22.0).isActive = true
         titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
 
@@ -103,6 +142,18 @@ class NavigationBar: UIView, NavigationBarProtocol {
         imageView.isUserInteractionEnabled = false
         //Style
         backButton.backgroundColor = .clear
+    }
+
+    private func setupRightButton() {
+        rightButton.isHidden = true
+        addSubview(rightButton)
+
+        rightButton.translatesAutoresizingMaskIntoConstraints = false
+        rightButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
+        rightButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15.0).isActive = true
+        rightButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        rightButton.widthAnchor.constraint(equalToConstant: 45).isActive = true
+        rightButton.addTarget(self, action: #selector(rightButtonAction(_sender:)), for: .touchUpInside)
     }
 
     func showEmoji(_ publicKey: PublicKey, animated: Bool = true) throws {
@@ -147,8 +198,16 @@ class NavigationBar: UIView, NavigationBarProtocol {
     }
 
     @objc public func backAction(_sender: UIButton) {
-        guard let navigationController = UIApplication.shared.topController() as? UINavigationController else { return }
-        navigationController.popViewController(animated: true)
-        hideEmoji(animated: false)
+        if backButtonAction != nil {
+            backButtonAction?()
+        } else {
+            guard let navigationController = UIApplication.shared.topController() as? UINavigationController else { return }
+            navigationController.popViewController(animated: true)
+            hideEmoji(animated: false)
+        }
+    }
+
+    @objc public func rightButtonAction(_sender: UIButton) {
+        rightButtonAction?()
     }
 }

@@ -68,7 +68,7 @@ import UIKit
         view.layer.shadowOpacity = thumbnailShadowRadius
         view.layer.shadowOffset = CGSize(width: 0, height: 0)
         view.layer.shadowRadius = SlideView.thumbnailMargin
-        view.layer.shadowColor = Theme.shared.colors.gradient2!.cgColor
+        view.layer.shadowColor = Theme.shared.colors.gradientEndColor!.cgColor
 
         view.image = Theme.shared.images.forwardArrow
         return view
@@ -125,14 +125,14 @@ import UIKit
                 textColor = Theme.shared.colors.actionButtonTitle!
                 thumnailImageView.image = thumnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonBackgroundSimple!)
                 thumnailImageView.layer.shadowOpacity = SlideView.thumbnailShadowRadius
-                ActionButton.applyGradient(sliderHolderView)
+                sliderHolderView.applyGradient()
             } else {
                 sliderBackgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled!
                 //slidingColor = Theme.shared.colors.actionButtonBackgroundDisabled!
                 textColor = Theme.shared.colors.actionButtonTitleDisabled!
                 thumnailImageView.image = thumnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonTitleDisabled!)
                 thumnailImageView.layer.shadowOpacity = 0
-                ActionButton.removeGradient(sliderHolderView)
+                sliderHolderView.removeGradient()
             }
         }
     }

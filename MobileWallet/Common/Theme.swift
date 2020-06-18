@@ -67,8 +67,8 @@ extension Loopable {
 }
 
 struct Colors: Loopable {
-    let gradient1 = UIColor(named: "Gradient1")
-    let gradient2 = UIColor(named: "Gradient2")
+    let gradientStartColor = UIColor(named: "GradientStartColor")
+    let gradientEndColor = UIColor(named: "GradientEndColor")
 
     let accessAnimationViewShadow = UIColor(named: "AccessAnimationViewShadow")
 
@@ -83,6 +83,9 @@ struct Colors: Loopable {
     let appBackground = UIColor(named: "AppBackground")
 
     let inputPlaceholder = UIColor(named: "Placeholder")
+    let appTableViewCellBackground = UIColor(named: "SystemMenuTableViewCellBackground")
+
+    let checkBoxBorderColor = UIColor(named: "CheckboxBorderColor")
 
     // Splash
     let splashTitle = UIColor(named: "SplashTitle")
@@ -100,10 +103,21 @@ struct Colors: Loopable {
 
     // Profile
     let profileTitleTextColor = UIColor(named: "ProfileTitleTextBlack")
-    let profileSeparatorView = UIColor(named: "ProfileSeparatorView")
     let profileMiddleLabel = UIColor(named: "ProfileMiddleLabel")
     let profileQRShadow = UIColor(named: "ProfileQRShadow")
     let profileBackground = UIColor(named: "ProfileBackground")
+
+    // Settings
+    let settingsTableStyleBackground = UIColor(named: "SettingsTableStyleBackground")
+    let settingsDoneButtonTitle = UIColor(named: "SettingsDoneButtonTitle")
+    let settingsNavBarSeparator = UIColor(named: "SettingsNavBarSeparator")
+    let settingsSeedPhraseDescription = UIColor(named: "SettingsBackupWalletDescription")
+    let cettingsSeedPhraseCellTitle = UIColor(named: "SettingsSeedPhraseCell")
+    let settingsSeedPhraseAgreement = UIColor(named: "SettingsSeedPhraseAgreement")
+    let settingsRecoveryPhraseWorldText = UIColor(named: "SettingsRecoveryPhraseWorldText")
+    let settingsRecoveryPhraseWorldBorder = UIColor(named: "SettingsRecoveryPhraseWorldBorder")
+    let settingsVerificationPhraseViewBackground = UIColor(named: "SettingsVerificationPhraseViewBackground")
+    let settingsFillablePhraseViewDescription = UIColor(named: "SettingsFillablePhraseViewDescription")
 
     //Home screen
     let homeScreenBackground = UIColor(named: "HomeScreenBackground")
@@ -202,6 +216,12 @@ struct Colors: Loopable {
     //Refresh view
     let refreshViewLabelLoading = UIColor(named: "RefreshViewLabelLoading")
     let refreshViewLabelSuccess = UIColor(named: "RefreshViewLabelSuccess")
+
+    //Restore pending view
+    let restorePendingViewTitle = UIColor(named: "RestorePendingViewTitle")
+    let restorePendingViewDescription = UIColor(named: "RestorePendingViewDescription")
+    let restorePendingViewProgressView = UIColor(named: "RestorePendingViewProgressView")
+
 }
 
 struct Fonts: Loopable {
@@ -225,12 +245,24 @@ struct Fonts: Loopable {
     let createWalletNotificationsSecondLabel = UIFont(name: "Avenir-Black", size: 18.0)
     let createWalletNotificationsThirdLabel = UIFont(name: "Avenir-Medium", size: 14.0)
     let tapToSeeFullEmojiLabel = UIFont(name: "Avenir-Heavy", size: 12)
+    let restoreWalletButton = UIFont(name: "Avenir-Medium", size: 13.0)
 
     //Profile
     let profileTitleLightLabel = UIFont(name: "Avenir-Light", size: 18.0)
     let profileTitleRegularLabel = UIFont(name: "Avenir-Black", size: 18.0)
-    let profileCopyEmojiButton = UIFont(name: "Avenir-Medium", size: 12)
     let profileMiddleLabel = UIFont(name: "Avenir-Medium", size: 14)
+
+    //Settings
+    let settingsDoneButton = UIFont(name: "Avenir-Medium", size: 16)
+    let settingsTableViewHeader = UIFont(name: "Avenir-Black", size: 17)
+
+    let settingsSeedPhraseCellTitle = UIFont(name: "Avenir-Heavy", size: 14)
+    let settingsSeedPhraseCellNumber = UIFont(name: "Avenir-Medium", size: 14)
+
+    let settingsSeedPhraseDescription = UIFont(name: "Avenir-Medium", size: 14)
+    let settingsSeedPhraseAgreement = UIFont(name: "Avenir-Medium", size: 12)
+    let settingsRecoveryPhraseWorld = UIFont(name: "Avenir-Heavy", size: 14)
+    let settingsFillablePhraseViewDescription = UIFont(name: "Avenir-Medium", size: 12)
 
     //Home screen
     let homeScreenTotalBalanceLabel = UIFont(name: "Avenir-Roman", size: 14.0)
@@ -294,6 +326,13 @@ struct Fonts: Loopable {
 
     //Refresh view
     let refreshViewLabel = UIFont(name: "Avenir-Heavy", size: 12.0)
+
+    //App table view
+    let appTableViewCell = UIFont(name: "Avenir-Medium", size: 15)
+
+    //Restore pending view
+    let restorePendingViewTitle = UIFont(name: "Avenir-Light", size: 18)
+    let restorePendingViewDescription = UIFont(name: "Avenir-Medium", size: 14)
 }
 
 struct Images: Loopable {
@@ -327,9 +366,15 @@ struct Images: Loopable {
     let storeModal = UIImage(named: "store-modal")
     let unknownUser = UIImage(named: "unknownUser")
     let handWave = UIImage(named: "HandWave")
+    let attentionIcon = UIImage(named: "AttentionIcon")
+    let successIcon = UIImage(named: "SuccessIcon")
+    let tariIcon = UIImage(named: "TariIcon")
 
     //Amount
     let delete = UIImage(named: "numpad-delete")
+
+    //profile
+    let settings = UIImage(named: "settings")
 }
 
 struct Sizes {

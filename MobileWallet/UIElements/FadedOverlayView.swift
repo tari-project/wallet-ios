@@ -41,25 +41,17 @@
 import UIKit
 
 class FadedOverlayView: UIView {
-    func applyFade(_ color: UIColor) {
+    func applyFade(_ color: UIColor, locations: [NSNumber] = [0, 1]) {
         backgroundColor = .clear
         let gradient: CAGradientLayer = CAGradientLayer()
         gradient.frame = bounds
         gradient.colors = [
-            color.cgColor,
-            color.withAlphaComponent(0.01).cgColor
+            color.withAlphaComponent(0).cgColor,
+            color.cgColor
         ]
-        gradient.locations = [-0.1, 1]
-
-        let gradientAngle: Double = 180.0
-        let x: Double! = gradientAngle / 360.0
-        let a = pow(sinf(Float(2 * Double.pi * ((x + 0.75) / 2.0))), 2.0)
-        let b = pow(sinf(Float(2 * Double.pi * ((x + 0.0) / 2))), 2)
-        let c = pow(sinf(Float(2 * Double.pi * ((x + 0.25) / 2))), 2)
-        let d = pow(sinf(Float(2 * Double.pi * ((x + 0.5) / 2))), 2)
-
-        gradient.endPoint = CGPoint(x: CGFloat(c), y: CGFloat(d))
-        gradient.startPoint = CGPoint(x: CGFloat(a), y: CGFloat(b))
+        gradient.locations = locations
+        gradient.startPoint = CGPoint(x: 0.5, y: 0)
+        gradient.endPoint = CGPoint(x: 0.5, y: 1)
 
         layer.insertSublayer(gradient, at: 0)
     }

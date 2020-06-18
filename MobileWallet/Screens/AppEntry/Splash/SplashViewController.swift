@@ -57,14 +57,15 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     var alreadyReplacedVideo: Bool = false
 
     // MARK: - Outlets
-    var videoView = UIView()
-    var versionLabel = UILabel()
-    var animationContainer = AnimationView()
-    var elementsContainer = UIView()
-    var createWalletButton = ActionButton()
-    var titleLabel = UILabel()
-    var gemImageView = UIImageView()
-    var disclaimerText = UITextView()
+    let videoView = UIView()
+    let versionLabel = UILabel()
+    let animationContainer = AnimationView()
+    let elementsContainer = UIView()
+    let createWalletButton = ActionButton()
+    let titleLabel = UILabel()
+    let gemImageView = UIImageView()
+    let disclaimerText = UITextView()
+    let restoreButton = UIButton()
 
     var distanceTitleSubtitle = NSLayoutConstraint()
     var animationContainerBottomAnchor: NSLayoutConstraint?
@@ -79,8 +80,12 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
         setupView()
         loadAnimation()
-
         handleWalletEvents()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        setupVideoAnimation()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -192,11 +197,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                     guard let self = self else { return }
                     self.navigateToHome()
                 }
-            } else {
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    self.navigateToHome()
-                }
             }
         } catch {
             UserFeedback.shared.error(
@@ -212,7 +212,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     private func checkExistingWallet() {
         if TariLib.shared.walletExists {
             //Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
-            authenticateUser {
+            localAuthenticationContext.authenticateUser {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
                     guard let self = self else { return }
                     self.startAnimation {
@@ -226,100 +226,25 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             }
 
         } else {
-            //No wallet exists, setup for welcome splash screen
-            setupVideoAnimation()
+            videoView.isHidden = false
             titleLabel.isHidden = false
-            //subtitleLabel.isHidden = false
             createWalletButton.isHidden = false
             disclaimerText.isHidden = false
-
+            restoreButton.isHidden = false
             Tracker.shared.track("/onboarding/introduction", "Onboarding - Introduction")
         }
     }
 
     @objc func onCreateWalletTap() {
         createWalletButton.variation = .loading
-        //TariLib.shared.startTor()
         onTorSuccess {
             self.createNewWallet()
         }
     }
 
-    private func authenticateUser(onSuccess: @escaping () -> Void) {
-        #if targetEnvironment(simulator)
-        //Skip auth on simulator, quicker for development
-        onSuccess()
-        return
-        #endif
-
-        switch localAuthenticationContext.biometricType {
-        case .faceID, .touchID, .pin:
-            let policy: LAPolicy = localAuthenticationContext.biometricType == .pin ? .deviceOwnerAuthentication : .deviceOwnerAuthenticationWithBiometrics
-            let reason = "Log in to your account"
-            localAuthenticationContext.evaluatePolicy(policy, localizedReason: reason) {
-                [weak self] success, error in
-
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    if success {
-                        if let _ = self.ticketTopLayoutConstraint {
-                            self.topAnimationAndRemoveVideoAnimation { [weak self] () in
-                                guard let _ = self else { return }
-                                onSuccess()
-                            }
-                        } else {
-                            DispatchQueue.main.async { [weak self] in
-                                guard let _ = self else { return }
-                                onSuccess()
-                            }
-                        }
-                    } else {
-                        let reason = error?.localizedDescription ?? NSLocalizedString("Failed to authenticate", comment: "Failed Face/Touch ID alert")
-                        TariLogger.error("Biometrics auth failed", error: error)
-                        DispatchQueue.main.async { [weak self] in
-                            guard let self = self else { return }
-                            self.authenticationFailedAlertOptions(reason: reason, onSuccess: onSuccess)
-                        }
-                    }
-                }
-            }
-        case .none:
-            let alert = UIAlertController(title: NSLocalizedString("Authentication Error", comment: "No biometric or passcode") ,
-                                          message: NSLocalizedString("Tari Aurora was not able to authenticate you. Do you still want to proceed?", comment: "No biometric or passcode"),
-                                          preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"),
-                                          style: .cancel,
-                                          handler: { [weak self] _ in
-                                            self?.authenticateUser(onSuccess: onSuccess)
-            }))
-
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Proceed", comment: "Proceed button"), style: .default, handler: { _ in
-                onSuccess()
-            }))
-
-            self.present(alert, animated: true, completion: nil)
-        }
-    }
-
-    private func authenticationFailedAlertOptions(reason: String, onSuccess: @escaping () -> Void) {
-        let alert = UIAlertController(title: NSLocalizedString("Authentication failed", comment: "Auth failed"), message: reason, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"), style: .default, handler: { [weak self] _ in
-            guard let self = self else { return }
-            self.authenticateUser(onSuccess: onSuccess)
-        }))
-
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Open settings", comment: "Open settings button"), style: .default, handler: { [weak self] _ in
-            guard let self = self else { return }
-            self.openAppSettings()
-        }))
-
-        self.present(alert, animated: true, completion: nil)
-    }
-
-    private func openAppSettings() {
-        if let appSettings = URL(string: UIApplication.openSettingsURLString) {
-            UIApplication.shared.open(appSettings)
-        }
+    @objc func onRestoreWalletTap() {
+        let restoreWalletViewController = RestoreWalletViewController()
+        navigationController?.pushViewController(restoreWalletViewController, animated: true)
     }
 
     func startAnimation(onComplete: @escaping () -> Void) {

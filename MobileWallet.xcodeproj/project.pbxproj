@@ -181,7 +181,6 @@
 		00A994332396434B007D9990 /* QRButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A994322396434B007D9990 /* QRButton.swift */; };
 		00A994342396434B007D9990 /* QRButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A994322396434B007D9990 /* QRButton.swift */; };
 		00A994352396434B007D9990 /* QRButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A994322396434B007D9990 /* QRButton.swift */; };
-		00B084BB249B7FE400F7B9BD /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
 		00B4D6B82416A50C00ED8318 /* MobileWalletUISnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6B72416A50C00ED8318 /* MobileWalletUISnapshots.swift */; };
 		00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6BA2417894800ED8318 /* SnapshotHelper.swift */; };
 		00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8A8237AA13500C02E44 /* Biometrics.m */; };
@@ -311,24 +310,56 @@
 		051D513ABDE5D812B4978FFC /* Pods_MobileWalletNotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39441F6A326A7475D12D0092 /* Pods_MobileWalletNotificationService.framework */; };
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
+		37049270247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */; };
+		37049271247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */; };
+		37049272247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */; };
+		37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37049273247EA9110034EE5D /* SystemMenuTableViewCell.swift */; };
+		37049275247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37049273247EA9110034EE5D /* SystemMenuTableViewCell.swift */; };
+		37049276247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37049273247EA9110034EE5D /* SystemMenuTableViewCell.swift */; };
+		3708D74A247FCF2300807D72 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D749247FCF2300807D72 /* SettingsViewController.swift */; };
+		3708D74B247FCF2300807D72 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D749247FCF2300807D72 /* SettingsViewController.swift */; };
+		3708D74C247FCF2300807D72 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D749247FCF2300807D72 /* SettingsViewController.swift */; };
+		3708D752247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D751247FF7D000807D72 /* BackupWalletSettingsViewController.swift */; };
+		3708D753247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D751247FF7D000807D72 /* BackupWalletSettingsViewController.swift */; };
+		3708D754247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D751247FF7D000807D72 /* BackupWalletSettingsViewController.swift */; };
+		3708D756247FF81900807D72 /* SettingsParentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D755247FF81900807D72 /* SettingsParentViewController.swift */; };
+		3708D757247FF81900807D72 /* SettingsParentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D755247FF81900807D72 /* SettingsParentViewController.swift */; };
+		3708D758247FF81900807D72 /* SettingsParentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D755247FF81900807D72 /* SettingsParentViewController.swift */; };
+		371189732488FF11004D0CE3 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371189722488FF11004D0CE3 /* CloudKit.framework */; };
 		371A0818247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
 		371A0819247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
 		371A081A247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
+		373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
+		373CCDBE2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
+		373CCDBF2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
+		373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */; };
+		373CCDC62490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */; };
+		373CCDC72490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */; };
 		37547D522460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */; };
 		37547D532460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */; };
 		37547D542460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */; };
 		37547D5624601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */; };
 		37547D5724601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */; };
 		37547D5824601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */; };
+		375894C524865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375894C424865A6A00B58816 /* VerifyPhraseViewController.swift */; };
+		375894C624865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375894C424865A6A00B58816 /* VerifyPhraseViewController.swift */; };
+		375894C724865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375894C424865A6A00B58816 /* VerifyPhraseViewController.swift */; };
 		375AFDCF2475387700C62CA1 /* WebBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375AFDCE2475387700C62CA1 /* WebBrowserViewController.swift */; };
 		375AFDD02475387700C62CA1 /* WebBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375AFDCE2475387700C62CA1 /* WebBrowserViewController.swift */; };
 		375AFDD12475387700C62CA1 /* WebBrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375AFDCE2475387700C62CA1 /* WebBrowserViewController.swift */; };
 		375DB1E0246E90D100B2BEF4 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */; };
 		375DB1E1246E90D100B2BEF4 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */; };
 		375DB1E2246E90D100B2BEF4 /* NavigationBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */; };
+		376B502324924BB700278ACC /* RestoreWalletPendingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376B502224924BB700278ACC /* RestoreWalletPendingView.swift */; };
+		376B502424924BB700278ACC /* RestoreWalletPendingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376B502224924BB700278ACC /* RestoreWalletPendingView.swift */; };
+		376B502524924BB700278ACC /* RestoreWalletPendingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376B502224924BB700278ACC /* RestoreWalletPendingView.swift */; };
 		376C62AE247574850091BB28 /* Animation+EnumInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C62AD247574850091BB28 /* Animation+EnumInit.swift */; };
 		376C62AF247574850091BB28 /* Animation+EnumInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C62AD247574850091BB28 /* Animation+EnumInit.swift */; };
 		376C62B0247574850091BB28 /* Animation+EnumInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C62AD247574850091BB28 /* Animation+EnumInit.swift */; };
+		378B4BC32498E5A000C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
+		378B4BC42498E5A000C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
+		378B4BC52498E5A100C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
+		378B4BD02498F83000C00CCF /* PendingCircleAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 378B4BCF2498F83000C00CCF /* PendingCircleAnimation.json */; };
 		379D27AF244EF25000F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
 		379D27BA244F091A00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
 		379D27BB244F091B00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
@@ -341,6 +372,12 @@
 		37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */; };
 		37AFE266245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */; };
 		37AFE267245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */; };
+		37B4449E24890F6200592D92 /* ICloudBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B4449D24890F6200592D92 /* ICloudBackup.swift */; };
+		37B4449F24890F6200592D92 /* ICloudBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B4449D24890F6200592D92 /* ICloudBackup.swift */; };
+		37B444A024890F6200592D92 /* ICloudBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B4449D24890F6200592D92 /* ICloudBackup.swift */; };
+		37B444A9248949B800592D92 /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B444A8248949B800592D92 /* Checkbox.swift */; };
+		37B444AA248949B800592D92 /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B444A8248949B800592D92 /* Checkbox.swift */; };
+		37B444AB248949B800592D92 /* Checkbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B444A8248949B800592D92 /* Checkbox.swift */; };
 		37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB696A245705D20013AC4D /* RadialGradientView.swift */; };
 		37BB696C245705E60013AC4D /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB696A245705D20013AC4D /* RadialGradientView.swift */; };
 		37BB696D245705E70013AC4D /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB696A245705D20013AC4D /* RadialGradientView.swift */; };
@@ -354,13 +391,27 @@
 		37C8BA47248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */; };
 		37C8BA48248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */; };
 		37C8BA49248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */; };
+		37C8BA4B24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */; };
+		37C8BA4C24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */; };
+		37C8BA4D24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */; };
+		37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */; };
+		37C8BA5024813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */; };
+		37C8BA5124813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */; };
 		37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
 		37CB9F8B2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
 		37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
 		37CB9F8E2451BC6C00C495F2 /* TransactionHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */; };
 		37CB9F8F2451C8CC00C495F2 /* TransactionHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */; };
 		37CB9F902451C8CD00C495F2 /* TransactionHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */; };
+		37CFAA76248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
+		37CFAA77248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
+		37CFAA78248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
 		37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
+		37EE027E248A4DCC00E25D69 /* CheckboxDeselectAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37EE027C248A4DCB00E25D69 /* CheckboxDeselectAnimation.json */; };
+		37EE027F248A4DCC00E25D69 /* CheckboxSelectAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */; };
+		37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EE28592485649800335EDC /* WordsFlexView.swift */; };
+		37EE285B2485649800335EDC /* WordsFlexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EE28592485649800335EDC /* WordsFlexView.swift */; };
+		37EE285C2485649800335EDC /* WordsFlexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EE28592485649800335EDC /* WordsFlexView.swift */; };
 		37F29D5824504B92008C046F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
 		37F29D5924504B92008C046F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
 		491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
@@ -414,14 +465,6 @@
 		BF0A77C52420DA3200861A3E /* TouchIdAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BF0A77C32420DA3200861A3E /* TouchIdAnimation.json */; };
 		BF0A77C62420DA3200861A3E /* TouchIdAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BF0A77C32420DA3200861A3E /* TouchIdAnimation.json */; };
 		BF0A77C72420DA3200861A3E /* TouchIdAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BF0A77C32420DA3200861A3E /* TouchIdAnimation.json */; };
-		BF162BFC241A40E800647740 /* LoadingButtonAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BF162BFB241A40E800647740 /* LoadingButtonAnimation.json */; };
-		BF162BFD241A42C100647740 /* LoadingButtonAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BF162BFB241A40E800647740 /* LoadingButtonAnimation.json */; };
-		BF162BFE241A42C200647740 /* LoadingButtonAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BF162BFB241A40E800647740 /* LoadingButtonAnimation.json */; };
-		BF162BFF241A42C200647740 /* LoadingButtonAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = BF162BFB241A40E800647740 /* LoadingButtonAnimation.json */; };
-		BF162C01241A510D00647740 /* loader.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BF162C00241A510C00647740 /* loader.mp4 */; };
-		BF162C02241A510D00647740 /* loader.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BF162C00241A510C00647740 /* loader.mp4 */; };
-		BF162C03241A510D00647740 /* loader.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BF162C00241A510C00647740 /* loader.mp4 */; };
-		BF162C04241A510D00647740 /* loader.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BF162C00241A510C00647740 /* loader.mp4 */; };
 		BF191A0D23E5A96700D33C85 /* EmojiWheel.json in Resources */ = {isa = PBXBuildFile; fileRef = BF191A0C23E5A96700D33C85 /* EmojiWheel.json */; };
 		BF191A0E23E5A96700D33C85 /* EmojiWheel.json in Resources */ = {isa = PBXBuildFile; fileRef = BF191A0C23E5A96700D33C85 /* EmojiWheel.json */; };
 		BF191A0F23E5A96700D33C85 /* EmojiWheel.json in Resources */ = {isa = PBXBuildFile; fileRef = BF191A0C23E5A96700D33C85 /* EmojiWheel.json */; };
@@ -651,23 +694,42 @@
 		1F70E71267BFB1C902D3FCFB /* Pods-MobileWalletNotificationService.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletNotificationService.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletNotificationService/Pods-MobileWalletNotificationService.debug.xcconfig"; sourceTree = "<group>"; };
 		28164FB1973A4277E7C47F6D /* Pods-MobileWalletUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.release.xcconfig"; sourceTree = "<group>"; };
 		2FF33C780E811D173D3284C3 /* Pods-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWalletUITests/Pods-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletViewController.swift; sourceTree = "<group>"; };
+		37049273247EA9110034EE5D /* SystemMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMenuTableViewCell.swift; sourceTree = "<group>"; };
+		3708D749247FCF2300807D72 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		3708D751247FF7D000807D72 /* BackupWalletSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupWalletSettingsViewController.swift; sourceTree = "<group>"; };
+		3708D755247FF81900807D72 /* SettingsParentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsParentViewController.swift; sourceTree = "<group>"; };
+		371189722488FF11004D0CE3 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		371A0817247290C000F97713 /* TransitionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionLabel.swift; sourceTree = "<group>"; };
+		373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
+		373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+SecureCopy.swift"; sourceTree = "<group>"; };
 		37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+KeyWindow.swift"; sourceTree = "<group>"; };
 		37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+GlobalFrame.swift"; sourceTree = "<group>"; };
+		375894C424865A6A00B58816 /* VerifyPhraseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyPhraseViewController.swift; sourceTree = "<group>"; };
 		375AFDCE2475387700C62CA1 /* WebBrowserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebBrowserViewController.swift; sourceTree = "<group>"; };
 		375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
+		376B502224924BB700278ACC /* RestoreWalletPendingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletPendingView.swift; sourceTree = "<group>"; };
 		376C62AD247574850091BB28 /* Animation+EnumInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Animation+EnumInit.swift"; sourceTree = "<group>"; };
+		378B4BCF2498F83000C00CCF /* PendingCircleAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PendingCircleAnimation.json; sourceTree = "<group>"; };
 		379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarWithSubtitle.swift; sourceTree = "<group>"; };
 		37ABB68F24781CE800F08163 /* UILabel+InterlineSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+InterlineSpacing.swift"; sourceTree = "<group>"; };
 		37ABB69324781F8600F08163 /* UILabelWithPadding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabelWithPadding.swift; sourceTree = "<group>"; };
 		37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlwaysPoppableNavigationController.swift; sourceTree = "<group>"; };
+		37B4449D24890F6200592D92 /* ICloudBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICloudBackup.swift; sourceTree = "<group>"; };
+		37B444A8248949B800592D92 /* Checkbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkbox.swift; sourceTree = "<group>"; };
 		37BB696A245705D20013AC4D /* RadialGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
 		37BB6973245726FB0013AC4D /* CopyableLabel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CopyableLabel.swift; sourceTree = "<group>"; };
 		37C8BA342480F59B005BBC05 /* WaveEmojiAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WaveEmojiAnimation.json; sourceTree = "<group>"; };
 		37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+RefreshControl.swift"; sourceTree = "<group>"; };
+		37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedPhraseViewController.swift; sourceTree = "<group>"; };
+		37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsParentTableViewController.swift; sourceTree = "<group>"; };
 		37CB9F892451A2AD00C495F2 /* String+Emoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Emoji.swift"; sourceTree = "<group>"; };
 		37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistoryContainer.swift; sourceTree = "<group>"; };
+		37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPointerArray+Extension.swift"; sourceTree = "<group>"; };
 		37E4B62A24501FB200FA302B /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		37EE027C248A4DCB00E25D69 /* CheckboxDeselectAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheckboxDeselectAnimation.json; sourceTree = "<group>"; };
+		37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheckboxSelectAnimation.json; sourceTree = "<group>"; };
+		37EE28592485649800335EDC /* WordsFlexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordsFlexView.swift; sourceTree = "<group>"; };
 		39441F6A326A7475D12D0092 /* Pods_MobileWalletNotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletNotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		491AB89F23F3FF4400372189 /* AddAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAmountViewController.swift; sourceTree = "<group>"; };
 		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
@@ -690,8 +752,6 @@
 		BF0A779B241F904D00861A3E /* faceId@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "faceId@2x.png"; sourceTree = "<group>"; };
 		BF0A77B42420CF1200861A3E /* NotificationAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = NotificationAnimation.json; sourceTree = "<group>"; };
 		BF0A77C32420DA3200861A3E /* TouchIdAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = TouchIdAnimation.json; sourceTree = "<group>"; };
-		BF162BFB241A40E800647740 /* LoadingButtonAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = LoadingButtonAnimation.json; sourceTree = "<group>"; };
-		BF162C00241A510C00647740 /* loader.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = loader.mp4; sourceTree = "<group>"; };
 		BF191A0C23E5A96700D33C85 /* EmojiWheel.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = EmojiWheel.json; sourceTree = "<group>"; };
 		BF191A1023E5AFA100D33C85 /* img_4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_4.png; sourceTree = "<group>"; };
 		BF191A1123E5AFA100D33C85 /* img_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = img_2.png; sourceTree = "<group>"; };
@@ -743,6 +803,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				371189732488FF11004D0CE3 /* CloudKit.framework in Frameworks */,
 				4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */,
 				00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */,
 				0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */,
@@ -780,10 +841,10 @@
 		0012562D2371D21E00A9C067 /* Splash */ = {
 			isa = PBXGroup;
 			children = (
+				378B4BC62498EC9400C00CCF /* PendingCircleAnimation */,
 				BF0A77AE2420CE5900861A3E /* TouchIdAnimation */,
 				BF0A77AD2420CE4300861A3E /* NotificationAnimation */,
 				BF0A7764241EE9E400861A3E /* FaceIdAnimation */,
-				BF162BFA241A40C900647740 /* LoadingButtonAnimation */,
 				BF191A3023E70D1700D33C85 /* NerdEmojiAnimation */,
 				BF191A2E23E5B07F00D33C85 /* SplashAnimation */,
 				BF191A2F23E5B09900D33C85 /* RotatingStarsAnimation */,
@@ -836,6 +897,8 @@
 				37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */,
 				37ABB68F24781CE800F08163 /* UILabel+InterlineSpacing.swift */,
 				37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */,
+				37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */,
+				373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1042,6 +1105,7 @@
 		00E2BCAF236B44CE00C2A105 /* UIElements */ = {
 			isa = PBXGroup;
 			children = (
+				37B444A72489436100592D92 /* Checkbox */,
 				371A081624728FCB00F97713 /* TransitionUILabel */,
 				375AFDCD2475380B00C62CA1 /* WebBrowserView */,
 				37BB6969245705D20013AC4D /* RadialGradientView */,
@@ -1054,6 +1118,8 @@
 				00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */,
 				379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */,
 				375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */,
+				37EE28592485649800335EDC /* WordsFlexView.swift */,
+				373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -1069,6 +1135,8 @@
 		00E2BCB5236B469C00C2A105 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				3708D748247FCF0700807D72 /* Settings */,
+				3704926E247EA0580034EE5D /* RestoreWallet */,
 				BFD758E423E98A9F00B0F1A5 /* Profile */,
 				00746195239901D200F00966 /* Send */,
 				00BBD7FA237C462400EBF5E6 /* AppEntry */,
@@ -1140,6 +1208,7 @@
 				001256432371EBAA00A9C067 /* Boards */,
 				00E2BCB5236B469C00C2A105 /* Screens */,
 				00E2BCAF236B44CE00C2A105 /* UIElements */,
+				37B4449C24890F3000592D92 /* Backup */,
 				00262EB2236F022000A6C8A0 /* Common */,
 				00262EB7236F35B200A6C8A0 /* Models */,
 			);
@@ -1175,6 +1244,7 @@
 		27F235021D9E2060A3CBB465 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				371189722488FF11004D0CE3 /* CloudKit.framework */,
 				00C520AE2469716E0077BF7F /* libc++.1.tbd */,
 				00BCE486240D5C4100B181F3 /* Tor.framework */,
 				4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */,
@@ -1189,6 +1259,37 @@
 				39441F6A326A7475D12D0092 /* Pods_MobileWalletNotificationService.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3704926E247EA0580034EE5D /* RestoreWallet */ = {
+			isa = PBXGroup;
+			children = (
+				3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */,
+				37049273247EA9110034EE5D /* SystemMenuTableViewCell.swift */,
+				376B502224924BB700278ACC /* RestoreWalletPendingView.swift */,
+			);
+			path = RestoreWallet;
+			sourceTree = "<group>";
+		};
+		3708D748247FCF0700807D72 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				3708D755247FF81900807D72 /* SettingsParentViewController.swift */,
+				37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */,
+				3708D749247FCF2300807D72 /* SettingsViewController.swift */,
+				3708D750247FF7AD00807D72 /* BackUpSettings */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		3708D750247FF7AD00807D72 /* BackUpSettings */ = {
+			isa = PBXGroup;
+			children = (
+				3708D751247FF7D000807D72 /* BackupWalletSettingsViewController.swift */,
+				37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */,
+				375894C424865A6A00B58816 /* VerifyPhraseViewController.swift */,
+			);
+			path = BackUpSettings;
 			sourceTree = "<group>";
 		};
 		371A081624728FCB00F97713 /* TransitionUILabel */ = {
@@ -1207,12 +1308,38 @@
 			path = WebBrowserView;
 			sourceTree = "<group>";
 		};
+		378B4BC62498EC9400C00CCF /* PendingCircleAnimation */ = {
+			isa = PBXGroup;
+			children = (
+				378B4BCF2498F83000C00CCF /* PendingCircleAnimation.json */,
+			);
+			path = PendingCircleAnimation;
+			sourceTree = "<group>";
+		};
 		37AFE263245193CA006EA270 /* AlwaysPoppableNavigationController */ = {
 			isa = PBXGroup;
 			children = (
 				37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */,
 			);
 			path = AlwaysPoppableNavigationController;
+			sourceTree = "<group>";
+		};
+		37B4449C24890F3000592D92 /* Backup */ = {
+			isa = PBXGroup;
+			children = (
+				37B4449D24890F6200592D92 /* ICloudBackup.swift */,
+			);
+			path = Backup;
+			sourceTree = "<group>";
+		};
+		37B444A72489436100592D92 /* Checkbox */ = {
+			isa = PBXGroup;
+			children = (
+				37EE027C248A4DCB00E25D69 /* CheckboxDeselectAnimation.json */,
+				37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */,
+				37B444A8248949B800592D92 /* Checkbox.swift */,
+			);
+			path = Checkbox;
 			sourceTree = "<group>";
 		};
 		37BB6969245705D20013AC4D /* RadialGradientView */ = {
@@ -1294,15 +1421,6 @@
 				BF0A77C32420DA3200861A3E /* TouchIdAnimation.json */,
 			);
 			path = TouchIdAnimation;
-			sourceTree = "<group>";
-		};
-		BF162BFA241A40C900647740 /* LoadingButtonAnimation */ = {
-			isa = PBXGroup;
-			children = (
-				BF162C00241A510C00647740 /* loader.mp4 */,
-				BF162BFB241A40E800647740 /* LoadingButtonAnimation.json */,
-			);
-			path = LoadingButtonAnimation;
 			sourceTree = "<group>";
 		};
 		BF191A2C23E5B02F00D33C85 /* EmojiWheelAnimation */ = {
@@ -1553,11 +1671,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF0A77A7241F904D00861A3E /* faceId@2x.png in Resources */,
-				BF162C04241A510D00647740 /* loader.mp4 in Resources */,
 				0048AF46245ADCA300E1A359 /* env.json in Resources */,
 				BF0A77B82420CF1200861A3E /* NotificationAnimation.json in Resources */,
 				BF0A7769241EEA0A00861A3E /* FaceID.json in Resources */,
-				BF162BFF241A42C200647740 /* LoadingButtonAnimation.json in Resources */,
 				BF0A77C72420DA3200861A3E /* TouchIdAnimation.json in Resources */,
 				BF0A77A3241F904D00861A3E /* faceId.png in Resources */,
 				BF0A779F241F904D00861A3E /* faceId@3x.png in Resources */,
@@ -1579,7 +1695,6 @@
 				00A66517243772A70046E730 /* pendingTx.json in Resources */,
 				BFF1EDA72408226200CC9EF6 /* sending-background.mp4 in Resources */,
 				00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */,
-				BF162C01241A510D00647740 /* loader.mp4 in Resources */,
 				BF5537B92412B9BB0071328C /* purple_orb.mp4 in Resources */,
 				00A6651F2437AD9A0046E730 /* SplashAnimation.json in Resources */,
 				BF0A779C241F904D00861A3E /* faceId@3x.png in Resources */,
@@ -1591,6 +1706,8 @@
 				BF0A7766241EEA0A00861A3E /* FaceID.json in Resources */,
 				BF0A77A4241F904D00861A3E /* faceId@2x.png in Resources */,
 				BF191A1D23E5AFA200D33C85 /* img_6.png in Resources */,
+				37EE027F248A4DCC00E25D69 /* CheckboxSelectAnimation.json in Resources */,
+				378B4BD02498F83000C00CCF /* PendingCircleAnimation.json in Resources */,
 				BF0A77A0241F904D00861A3E /* faceId.png in Resources */,
 				37C8BA352480F59B005BBC05 /* WaveEmojiAnimation.json in Resources */,
 				BF0A77C42420DA3200861A3E /* TouchIdAnimation.json in Resources */,
@@ -1600,8 +1717,8 @@
 				BF191A0D23E5A96700D33C85 /* EmojiWheel.json in Resources */,
 				BFF1EDA32408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
 				BF191A1A23E5AFA200D33C85 /* img_2.png in Resources */,
+				37EE027E248A4DCC00E25D69 /* CheckboxDeselectAnimation.json in Resources */,
 				BF191A2323E5AFA200D33C85 /* img_5.png in Resources */,
-				BF162BFC241A40E800647740 /* LoadingButtonAnimation.json in Resources */,
 				BF191A2623E5AFA200D33C85 /* img_3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1610,7 +1727,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF162C02241A510D00647740 /* loader.mp4 in Resources */,
 				BF191A2423E5AFA200D33C85 /* img_5.png in Resources */,
 				00230B052376C7F800F23E34 /* Assets.xcassets in Resources */,
 				37C8BA362480F59B005BBC05 /* WaveEmojiAnimation.json in Resources */,
@@ -1630,7 +1746,6 @@
 				BF0A77B62420CF1200861A3E /* NotificationAnimation.json in Resources */,
 				BFF1EDA42408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
 				0048AF44245ADCA300E1A359 /* env.json in Resources */,
-				BF162BFD241A42C100647740 /* LoadingButtonAnimation.json in Resources */,
 				BF191A2723E5AFA200D33C85 /* img_3.png in Resources */,
 				BF191A2A23E5AFA200D33C85 /* img_0.png in Resources */,
 				BF191A2123E5AFA200D33C85 /* img_1.png in Resources */,
@@ -1643,7 +1758,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF162C03241A510D00647740 /* loader.mp4 in Resources */,
 				BF191A2523E5AFA200D33C85 /* img_5.png in Resources */,
 				00230B062376C7F900F23E34 /* Assets.xcassets in Resources */,
 				37C8BA372480F59B005BBC05 /* WaveEmojiAnimation.json in Resources */,
@@ -1663,7 +1777,6 @@
 				BF0A77B72420CF1200861A3E /* NotificationAnimation.json in Resources */,
 				BFF1EDA52408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
 				0048AF45245ADCA300E1A359 /* env.json in Resources */,
-				BF162BFE241A42C200647740 /* LoadingButtonAnimation.json in Resources */,
 				BF191A2823E5AFA200D33C85 /* img_3.png in Resources */,
 				BF191A2B23E5AFA200D33C85 /* img_0.png in Resources */,
 				BF191A2223E5AFA200D33C85 /* img_1.png in Resources */,
@@ -1907,7 +2020,7 @@
 				00C520B2246971FC0077BF7F /* TariLib.swift in Sources */,
 				00C520B32469720A0077BF7F /* OnionConnector.swift in Sources */,
 				00434AA02477D0B000C0104F /* AppContainerLock.swift in Sources */,
-				00B084BB249B7FE400F7B9BD /* Migrations.swift in Sources */,
+				378B4BC52498E5A100C00CCF /* Migrations.swift in Sources */,
 				00C520CA246972180077BF7F /* CompletedTransaction.swift in Sources */,
 				00C520BE2469720F0077BF7F /* StorageCleanup.swift in Sources */,
 				00C520C2246972140077BF7F /* ByteVector.swift in Sources */,
@@ -1942,10 +2055,13 @@
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */,
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
+				37CFAA76248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */,
+				3708D74A247FCF2300807D72 /* SettingsViewController.swift in Sources */,
 				4CD20A362407967B007B64D8 /* TransportType.swift in Sources */,
 				00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */,
 				00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */,
 				375AFDCF2475387700C62CA1 /* WebBrowserViewController.swift in Sources */,
+				37B4449E24890F6200592D92 /* ICloudBackup.swift in Sources */,
 				37C8BA47248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
@@ -1955,11 +2071,13 @@
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				009DFCA72473E33F0061DBC9 /* DeepLinkParams.swift in Sources */,
+				373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				001F6CE02380198D00FA7002 /* Contacts.swift in Sources */,
 				0072BF24247E735700BD28FB /* ReminderNotifications.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TransactionTableViewCell.swift in Sources */,
+				3708D756247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
 				00230AFA2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
@@ -1976,17 +2094,21 @@
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				004277FF23E2F1D700AE7BD9 /* UIImage.swift in Sources */,
+				37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				0091D4AB23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
+				37049270247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
 				00947CC723D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				004277EF23E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
+				37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */,
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
 				00B4D6F8241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift in Sources */,
 				004277E723DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				00C185B9238943980096984E /* UIViewControllerDebugExtension.swift in Sources */,
 				37547D5624601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
+				375894C524865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */,
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
 				00434A9D2477D0B000C0104F /* AppContainerLock.swift in Sources */,
 				00BCE47F240D5A9700B181F3 /* OnionManager.swift in Sources */,
@@ -1996,6 +2118,7 @@
 				004997B72382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
 				37BB6974245726FC0013AC4D /* CopyableLabel.swift in Sources */,
+				37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
 				00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00947CC223CF090D00526DD5 /* TransactionProtocol.swift in Sources */,
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,
@@ -2004,13 +2127,17 @@
 				00A994332396434B007D9990 /* QRButton.swift in Sources */,
 				00A66523243B3E380046E730 /* ErrorView.swift in Sources */,
 				375DB1E0246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
+				3708D752247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
 				004277F723E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				00230B022376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
+				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
 				004997AB2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
+				37C8BA4B24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */,
 				0087A1AF23F4235400B89EE7 /* ContactCell.swift in Sources */,
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
 				491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
+				37B444A9248949B800592D92 /* Checkbox.swift in Sources */,
 				BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				00369D7D24221ACB00BAB95B /* DeepLinkManager.swift in Sources */,
 				001F6CEC2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
@@ -2027,6 +2154,7 @@
 				4C8707F62492C7D100CE2FD5 /* EmojiSet.swift in Sources */,
 				0087A1AC23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				6191948FA1B3F223B37A0D9B /* UTXO.swift in Sources */,
+				376B502324924BB700278ACC /* RestoreWalletPendingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2044,15 +2172,20 @@
 				001F6CE52380253B00FA7002 /* Contact.swift in Sources */,
 				00E491B62366E08F007B332D /* MobileWalletTests.swift in Sources */,
 				00A66524243B3E380046E730 /* ErrorView.swift in Sources */,
+				37C8BA4C24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */,
 				37547D532460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */,
 				0053873124065F6C00901A68 /* SlideView.swift in Sources */,
 				BFE61E4924226A7E003DC99D /* NotificationManager.swift in Sources */,
+				37049271247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
 				0091D4AC23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				00BCE483240D5A9700B181F3 /* OnionConnector.swift in Sources */,
+				3708D757247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
+				37049275247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
 				4CD20A372407967B007B64D8 /* TransportType.swift in Sources */,
 				BFD758E723E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				0072BF29247EB3A900BD28FB /* ReminderNotifications.swift in Sources */,
+				373CCDBE2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				0091D4A823ED879E004BF7F7 /* Signature.swift in Sources */,
 				009DFCA82473EBCB0061DBC9 /* DeepLinkParams.swift in Sources */,
@@ -2065,6 +2198,7 @@
 				4C8707F72492C7D100CE2FD5 /* EmojiSet.swift in Sources */,
 				00262EB5236F024400A6C8A0 /* Theme.swift in Sources */,
 				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
+				37CFAA77248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */,
 				00D7BD8A24349AE3009DD097 /* UIDevice.swift in Sources */,
 				00F53A6B24290FAE00448466 /* StorageCleanup.swift in Sources */,
 				37ABB69524781F8600F08163 /* UILabelWithPadding.swift in Sources */,
@@ -2082,6 +2216,7 @@
 				004277F023E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
 				00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
+				37B4449F24890F6200592D92 /* ICloudBackup.swift in Sources */,
 				00369D7E2422670300BAB95B /* DeepLinkManager.swift in Sources */,
 				37BB696C245705E60013AC4D /* RadialGradientView.swift in Sources */,
 				BFE1FC0923E3ACD900BA5EEC /* WalletCreationViewController.swift in Sources */,
@@ -2098,6 +2233,7 @@
 				37C8BA48248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
 				00A057B523D979DA0029C22A /* UserFeedback.swift in Sources */,
 				004997AC2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
+				3708D74B247FCF2300807D72 /* SettingsViewController.swift in Sources */,
 				37F29D5824504B92008C046F /* HomeViewController.swift in Sources */,
 				00DD160D241CCE5B00C955B4 /* TariSettings.swift in Sources */,
 				00A994342396434B007D9990 /* QRButton.swift in Sources */,
@@ -2107,6 +2243,7 @@
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				001F6CED2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				379D27BA244F091A00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
+				37EE285B2485649800335EDC /* WordsFlexView.swift in Sources */,
 				37AFE266245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */,
 				BFAB5D1223FDEA6A009E8563 /* EmoticonView.swift in Sources */,
@@ -2122,21 +2259,28 @@
 				375DB1E1246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				004997B42382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
 				001256302371D81500A9C067 /* SplashViewController.swift in Sources */,
+				375894C624865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */,
 				00C9F436242E08E70098E619 /* Tracker.swift in Sources */,
 				001F6CE92381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
+				378B4BC32498E5A000C00CCF /* Migrations.swift in Sources */,
 				0087A1B023F4235400B89EE7 /* ContactCell.swift in Sources */,
 				BF8316FE23EF7EAA00235403 /* LAContext.swift in Sources */,
 				00BBD81E237ECDAA00EBF5E6 /* TariLibWrapperTests.swift in Sources */,
+				3708D753247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
 				00230B032376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
 				00947CC823D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				004277DE23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */,
+				37C8BA5024813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				37ABB69124781CE800F08163 /* UILabel+InterlineSpacing.swift in Sources */,
+				373CCDC62490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
+				37B444AA248949B800592D92 /* Checkbox.swift in Sources */,
 				00BBD813237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				BFF1ED9E2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				37BB6975245726FC0013AC4D /* CopyableLabel.swift in Sources */,
 				001F6CE12380198D00FA7002 /* Contacts.swift in Sources */,
 				00369D84242618A900BAB95B /* TariLogger.swift in Sources */,
 				619197D2BB78CBBC06B0F87E /* UTXO.swift in Sources */,
+				376B502424924BB700278ACC /* RestoreWalletPendingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2150,7 +2294,10 @@
 				009DFCA92473ECCB0061DBC9 /* DeepLinkParams.swift in Sources */,
 				004277F923E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				001F6CE22380198D00FA7002 /* Contacts.swift in Sources */,
+				37C8BA5124813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				00BBD810237DA07400EBF5E6 /* ByteVector.swift in Sources */,
+				378B4BC42498E5A000C00CCF /* Migrations.swift in Sources */,
+				37B444AB248949B800592D92 /* Checkbox.swift in Sources */,
 				0087A1B123F4235400B89EE7 /* ContactCell.swift in Sources */,
 				004997B92382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				00C185C62390221A0096984E /* DevelopmentUI.swift in Sources */,
@@ -2160,6 +2307,8 @@
 				37ABB69224781CE800F08163 /* UILabel+InterlineSpacing.swift in Sources */,
 				00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */,
 				37AFE267245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
+				37C8BA4D24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */,
+				37049272247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
 				BFE1FC0A23E3ACDA00BA5EEC /* WalletCreationViewController.swift in Sources */,
 				004997AD2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
 				00A994352396434B007D9990 /* QRButton.swift in Sources */,
@@ -2168,13 +2317,16 @@
 				00BBD805237D746B00EBF5E6 /* OnboardingUITests.swift in Sources */,
 				00947CC923D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				0053873224065F6C00901A68 /* SlideView.swift in Sources */,
+				3708D754247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00D7BD8B24349AE3009DD097 /* UIDevice.swift in Sources */,
 				491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				BFAB5D1323FDEA6A009E8563 /* EmoticonView.swift in Sources */,
+				37EE285C2485649800335EDC /* WordsFlexView.swift in Sources */,
 				BFF1ED9F2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				379D27BB244F091B00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
+				376B502524924BB700278ACC /* RestoreWalletPendingView.swift in Sources */,
 				004997B12382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
 				4C8707F22492C7BE00CE2FD5 /* SeedWords.swift in Sources */,
 				4C8707F82492C7D100CE2FD5 /* EmojiSet.swift in Sources */,
@@ -2186,7 +2338,9 @@
 				0087A1B423F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
 				BF8316FF23EF7EAA00235403 /* LAContext.swift in Sources */,
 				00C185BB238943980096984E /* UIViewControllerDebugExtension.swift in Sources */,
+				37049276247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
 				00BBD814237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
+				3708D74C247FCF2300807D72 /* SettingsViewController.swift in Sources */,
 				BFE61E4A24226A7F003DC99D /* NotificationManager.swift in Sources */,
 				00BCE481240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				37547D542460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */,
@@ -2194,6 +2348,7 @@
 				00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00DD1611241CD42500C955B4 /* BaseNode.swift in Sources */,
+				373CCDBF2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				00D9886B2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
@@ -2226,10 +2381,13 @@
 				00A057B123D875840029C22A /* TariEventBus.swift in Sources */,
 				00BCE484240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				00262EBB236F35CD00A6C8A0 /* DummyTransaction.swift in Sources */,
+				37B444A024890F6200592D92 /* ICloudBackup.swift in Sources */,
 				00F53A6A24290F7100448466 /* StorageCleanup.swift in Sources */,
 				0091D4A923ED879E004BF7F7 /* Signature.swift in Sources */,
+				37CFAA78248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */,
 				00BBD807237D755600EBF5E6 /* HelperFunctions.swift in Sources */,
 				0042780523E8421200AE7BD9 /* String.swift in Sources */,
+				373CCDC72490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
 				371A081A247290C000F97713 /* TransitionLabel.swift in Sources */,
 				00A66525243B3E380046E730 /* ErrorView.swift in Sources */,
 				0072BF2A247EB3AA00BD28FB /* ReminderNotifications.swift in Sources */,
@@ -2238,7 +2396,9 @@
 				001F6CEA2381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				00434A9F2477D0B000C0104F /* AppContainerLock.swift in Sources */,
+				3708D758247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
 				37547D5824601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
+				375894C724865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */,
 				4CD20A382407967B007B64D8 /* TransportType.swift in Sources */,
 				001F6CEE2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				37C8BA49248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
@@ -2343,7 +2503,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 96;
+				CURRENT_PROJECT_VERSION = 92;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2360,7 +2520,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.2.0;
+				MARKETING_VERSION = 0.1.14;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet.MobileWalletNotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2380,7 +2540,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 96;
+				CURRENT_PROJECT_VERSION = 92;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2397,7 +2557,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.2.0;
+				MARKETING_VERSION = 0.1.14;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet.MobileWalletNotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2536,7 +2696,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 96;
+				CURRENT_PROJECT_VERSION = 92;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2552,7 +2712,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.2.0;
+				MARKETING_VERSION = 0.1.14;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2572,7 +2732,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 96;
+				CURRENT_PROJECT_VERSION = 92;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2588,7 +2748,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.2.0;
+				MARKETING_VERSION = 0.1.14;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

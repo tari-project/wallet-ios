@@ -126,5 +126,17 @@
 	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+    <key>NSUbiquitousContainers</key>
+    <dict>
+        <key>iCloud.com.tari.wallet</key>
+        <dict>
+            <key>NSUbiquitousContainerIsDocumentScopePublic</key>
+            <true/>
+            <key>NSUbiquitousContainerName</key>
+            <string>Tari Wallet</string>
+            <key>NSUbiquitousContainerSupportedFolderLevels</key>
+            <string>Any</string>
+        </dict>
+    </dict>
 </dict>
 </plist>
