@@ -106,6 +106,7 @@ class WalletCreationViewController: UIViewController {
         state = .localAuthentication
         prepareSubviews(for: .localAuthentication)
         showLocalAuthentication()
+        Tracker.shared.track("/local_auth", "Local Authentication")
     }
 
     // MARK: - Actions

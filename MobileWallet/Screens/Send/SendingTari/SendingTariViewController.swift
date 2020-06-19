@@ -181,6 +181,8 @@ class SendingTariViewController: UIViewController {
         progressBar1View.alpha = 0
         progressBar2View.alpha = 0
         progressBar3View.alpha = 0
+        
+        Tracker.shared.track("/home/send_tari/finalize", "Send Tari - Finalize")
     }
 
     override func viewDidLayoutSubviews() {
@@ -654,8 +656,7 @@ class SendingTariViewController: UIViewController {
                 self.sendPushNotificationToRecipient()
                 Tracker.shared.track(
                     eventWithCategory: "Transaction",
-                    action: "User's transaction sent synchronously",
-                    name: "Transaction Accepted - Synchronous"
+                    action: "Transaction Accepted - Synchronous"
                 )
                 TariEventBus.unregister(self)
                 // direct send successful
@@ -679,8 +680,7 @@ class SendingTariViewController: UIViewController {
                 self.sendPushNotificationToRecipient()
                 Tracker.shared.track(
                     eventWithCategory: "Transaction",
-                    action: "User's transaction is \("stored") after discovery times out",
-                    name: "Transaction Stored"
+                    action: "Transaction Stored"
                 )
                 TariEventBus.unregister(self)
                 // store and forward send successful
@@ -738,13 +738,13 @@ class SendingTariViewController: UIViewController {
         ) {
             [weak self] _ in
             // display error
-            self?.displayErrorFeedback()
+            self?.displayErrorFeedbackAndTrackEvent()
             // return to home
             self?.navigationController?.popToRootViewController(animated: false)
         }
     }
 
-    private func displayErrorFeedback() {
+    private func displayErrorFeedbackAndTrackEvent() {
         guard let completionStatus = completionStatus else { return }
         switch completionStatus {
         case .internetConnectionError:
@@ -758,6 +758,10 @@ class SendingTariViewController: UIViewController {
                     comment: "Internet connection error when sending a tx"
                 )
             )
+            Tracker.shared.track(
+                eventWithCategory: "Transaction",
+                action: "Transaction Failed - Tor Issue"
+            )
         case .networkConnectionTimeout, .sendError:
             UserFeedback.shared.error(
                 title: NSLocalizedString(
@@ -768,6 +772,10 @@ class SendingTariViewController: UIViewController {
                     "Looks like there's a connectivity issue on our end. Can you give us a few min, then come back and try again?",
                     comment: "Tari network connection error when sending a tx"
                 )
+            )
+            Tracker.shared.track(
+                eventWithCategory: "Transaction",
+                action: "Transaction Failed - Node Issue"
             )
         default:
             break
