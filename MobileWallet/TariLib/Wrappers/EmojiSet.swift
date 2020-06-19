@@ -81,6 +81,32 @@ class EmojiSet {
         return ByteVector(pointer: result!)
     }
 
+    var list: ([String], Error?) {
+        var result: [String] = []
+        let (count, countError) = self.count
+        guard countError == nil else {
+            return ([], countError)
+        }
+
+        if count > 0 {
+            for n in 0...count - 1 {
+                do {
+                    let bytes = try self.at(position: n)
+                    let (emoji, emojiError) = bytes.emoji
+                    guard emojiError == nil else {
+                        return ([], emojiError)
+                    }
+
+                    result.append(emoji!)
+                } catch {
+                    return ([], error)
+                }
+            }
+        }
+
+        return (result, nil)
+    }
+
     deinit {
         emoji_set_destroy(ptr)
     }

@@ -82,6 +82,27 @@ class ByteVector {
         return (data.map {String(format: "%02hhx", $0)}.joined(), nil)
     }
 
+    var emoji: (String?, Error?) {
+        var byteArray: [UInt8] = [UInt8]()
+
+        let (byteArrayLength, error) = self.count
+
+        if error != nil {
+            return ("", error)
+        }
+
+        for n in 0...byteArrayLength - 1 {
+            do {
+                let byte = try self.at(position: n)
+                byteArray.append(byte)
+            } catch {
+                return ("", error)
+            }
+        }
+
+        return (String.init(data: Data(byteArray), encoding: .utf8), nil)
+    }
+
     init(byteArray: [UInt8]) throws {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in

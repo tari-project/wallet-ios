@@ -151,10 +151,21 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertNoThrow(try PublicKey(any: "My emojis are \"🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊\""))
         XCTAssertNoThrow(try PublicKey(any: "🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹 bla bla bla 😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊"))
         XCTAssertNoThrow(try PublicKey(any: "My emojis 🎳🐍💸🐼🐷💍🍔💤💘 and here are the rest 🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇"))
+        XCTAssertNoThrow(try PublicKey(any: "Please send 1234 tXTR to 🎳🐍💸🐼🐷💍🍔💤💘 and here are the rest 🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇"))
         
-        //Test deprecated emoji sets
+        //Test old emoji sets
         do {
             _ = try PublicKey(any: "💨🎩😱😇🌂🐑😇🍭💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍🎳🐍💸🐼🐷💍🍔💤💘🔫🎁")
+        } catch {
+            if case PublicKeyError.invalidEmojiSet = error {
+                //Correct error
+            } else {
+                XCTFail("Invalid emoji set should throw error")
+            }
+        }
+        
+        do {
+            _ = try PublicKey(any: "send me 12 💨🎩😱😇🌂🐑😇🍭💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍🎳🐍💸🐼🐷💍🍔💤💘🔫🎁")
         } catch {
             if case PublicKeyError.invalidEmojiSet = error {
                 //Correct error

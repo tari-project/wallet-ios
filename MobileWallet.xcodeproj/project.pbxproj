@@ -424,12 +424,10 @@
 		4C8707F02492C7BE00CE2FD5 /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */; };
 		4C8707F12492C7BE00CE2FD5 /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */; };
 		4C8707F22492C7BE00CE2FD5 /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */; };
-		4C8707F32492C7BE00CE2FD5 /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */; };
 		4C8707F42492C7BE00CE2FD5 /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707EF2492C7BE00CE2FD5 /* SeedWords.swift */; };
 		4C8707F62492C7D100CE2FD5 /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */; };
 		4C8707F72492C7D100CE2FD5 /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */; };
 		4C8707F82492C7D100CE2FD5 /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */; };
-		4C8707F92492C7D100CE2FD5 /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */; };
 		4C8707FA2492C7D100CE2FD5 /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8707F52492C7D100CE2FD5 /* EmojiSet.swift */; };
 		4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
 		4CCF87EE23E8275800C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
@@ -1972,11 +1970,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				00B4D6B82416A50C00ED8318 /* MobileWalletUISnapshots.swift in Sources */,
-				4C8707F92492C7D100CE2FD5 /* EmojiSet.swift in Sources */,
 				37BB696E245705E70013AC4D /* RadialGradientView.swift in Sources */,
 				00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */,
 				BFCA0E6C242CA8780024FC0C /* TariLogger.swift in Sources */,
-				4C8707F32492C7BE00CE2FD5 /* SeedWords.swift in Sources */,
 				00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */,
 				00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */,
 			);
