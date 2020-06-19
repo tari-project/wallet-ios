@@ -178,7 +178,10 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
     func slideViewDidFinish(_ sender: SlideView) {
         dismissKeyboard()
 
-        Tracker.shared.track(eventWithCategory: "Transaction", action: "User completes \("Slide to Send") on Notes screen", name: "Transaction Initiated")
+        Tracker.shared.track(
+            eventWithCategory: "Transaction",
+            action: "Transaction Initiated"
+        )
 
         guard let wallet = TariLib.shared.tariWallet else {
             UserFeedback.shared.error(
