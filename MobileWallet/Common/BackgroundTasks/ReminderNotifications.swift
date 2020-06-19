@@ -52,17 +52,31 @@ class ReminderNotifications {
     static let shared = ReminderNotifications()
     static private let dateUserDefaultsKey = "should-schedule-reminders-updated-at"
 
+    static let titleString = String(
+        format: NSLocalizedString(
+            "You've been sent %@!",
+            comment: "Local reminder notifications"
+        ),
+        TariSettings.shared.network.currencyDisplayTicker
+    )
+
     static let recipientReminderNotifications: [ScheduledReminder] = [
         ScheduledReminder(
             identifier: "scheduled-reminders-recipient-1",
-            title: NSLocalizedString("You've been sent testnet Tari!", comment: "Local reminder notifications"),
+            title: ReminderNotifications.titleString,
             body: NSLocalizedString("Open Tari Aurora", comment: "Local reminder notifications"),
             deliverAfter: 60 * 60 * 24
         ),
         ScheduledReminder(
             identifier: "scheduled-reminders-recipient-2",
-            title: NSLocalizedString("You've been sent testnet Tari!", comment: "Local reminder notifications"),
-            body: NSLocalizedString("Someone sent you testnet Tari! Open Tari Aurora to receive it now or it will be returned to the sender.", comment: "Local reminder notifications"),
+            title: ReminderNotifications.titleString,
+            body: String(
+                format: NSLocalizedString(
+                    "Someone sent you %@! Open Tari Aurora to receive it now or it will be returned to the sender.",
+                    comment: "Local reminder notifications"
+                ),
+                TariSettings.shared.network.currencyDisplayTicker
+            ),
             deliverAfter: 60 * 60 * 48
         )
     ]
@@ -71,17 +85,9 @@ class ReminderNotifications {
 
     var shouldScheduleRemindersUpdatedAt: Date? {
         get {
-            guard TariSettings.shared.reminderNotificationsActive else {
-                return nil
-            }
-
             return userDefaults.object(forKey: ReminderNotifications.dateUserDefaultsKey) as? Date
         }
         set {
-            guard TariSettings.shared.reminderNotificationsActive else {
-                return
-            }
-
             if let newDate = newValue {
                 userDefaults.set(newDate, forKey: ReminderNotifications.dateUserDefaultsKey)
             } else {
