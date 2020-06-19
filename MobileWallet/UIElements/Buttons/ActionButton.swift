@@ -48,11 +48,10 @@ enum ActionButtonVariation {
 }
 
 class ActionButton: UIButton {
-    static let GRADIENT_LAYER_NAME = "GradientLayer"
     static let RADIUS_POINTS: CGFloat = 4.0
     static let HEIGHT: CGFloat = 53.0
-    static let GRADIENT_ANGLE: Double = 90
-    //private var isCompiled = false
+
+    private let gradientLayer = CAGradientLayer()
 
     var variation: ActionButtonVariation = .normal {
         didSet {
@@ -118,43 +117,8 @@ class ActionButton: UIButton {
     }
 
      private func removeStyle() {
-        ActionButton.removeGradient(self)
+        removeGradient()
         backgroundColor = Theme.shared.colors.actionButtonBackgroundSimple
-    }
-
-    //Static function so that SlideView can implement same affect
-    static func removeGradient(_ view: UIView) {
-        if let sublayers = view.layer.sublayers {
-            for layer in sublayers {
-                if layer.name == ActionButton.GRADIENT_LAYER_NAME {
-                     layer.removeFromSuperlayer()
-                }
-            }
-        }
-    }
-
-    //Static function so that SlideView can implement same affect
-    static func applyGradient(_ view: UIView) {
-        let gradient: CAGradientLayer = CAGradientLayer()
-        gradient.frame = view.bounds
-        gradient.colors = [
-            Theme.shared.colors.gradient1!.cgColor,
-            Theme.shared.colors.gradient2!.cgColor
-        ]
-        gradient.locations = [-0.8, 3]
-        gradient.cornerRadius = ActionButton.RADIUS_POINTS
-        gradient.name = ActionButton.GRADIENT_LAYER_NAME
-
-        let x: Double! = GRADIENT_ANGLE / 360.0
-        let a = pow(sinf(Float(2 * Double.pi * ((x + 0.75) / 2.0))), 2.0)
-        let b = pow(sinf(Float(2 * Double.pi * ((x + 0.0) / 2))), 2)
-        let c = pow(sinf(Float(2 * Double.pi * ((x + 0.25) / 2))), 2)
-        let d = pow(sinf(Float(2 * Double.pi * ((x + 0.5) / 2))), 2)
-
-        gradient.endPoint = CGPoint(x: CGFloat(c), y: CGFloat(d))
-        gradient.startPoint = CGPoint(x: CGFloat(a), y: CGFloat(b))
-
-        view.layer.insertSublayer(gradient, at: 0)
     }
 
     private func applyShadow() {
@@ -171,22 +135,23 @@ class ActionButton: UIButton {
         switch variation {
             case .normal:
                 isEnabled = true
-                ActionButton.applyGradient(self)
+                applyGradient()
                 return
             case .raised:
                 isEnabled = true
                 applyShadow()
-                ActionButton.applyGradient(self)
+                applyGradient()
                 return
             case .loading:
                 isEnabled = false
-                ActionButton.applyGradient(self)
+                applyGradient()
                 //TODO spinner
                 return
             case .disabled:
                 isEnabled = false
                 backgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled
                 return
+        default: break
         }
     }
 

@@ -51,7 +51,7 @@ class HomeViewController: UIViewController {
 
     private static let GRABBER_WIDTH: Double = 55.0
     private static let PANEL_BORDER_CORNER_RADIUS: CGFloat = 15.0
-    private static let INTRO_TO_WALLET_USER_DEFAULTS_KEY = "walletHasBeenIntroduced"
+    static let INTRO_TO_WALLET_USER_DEFAULTS_KEY = "walletHasBeenIntroduced"
 
     private let navigationBar = UIView()
     private var navigationBarBottomConstraint: NSLayoutConstraint?
@@ -391,8 +391,7 @@ class HomeViewController: UIViewController {
 // MARK: - Actions
 extension HomeViewController {
     @objc func onProfileShow(_ sender: Any) {
-        let vc = ProfileViewController()
-        self.present(vc, animated: true, completion: nil)
+        navigationController?.pushViewController(ProfileViewController(), animated: true)
     }
 
     @objc private func onStoreModalShow(_ sender: Any) {

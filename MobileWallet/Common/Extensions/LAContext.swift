@@ -37,7 +37,7 @@
 	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
+import UIKit
 import LocalAuthentication
 
 extension LAContext {
@@ -46,6 +46,18 @@ extension LAContext {
         case touchID
         case faceID
         case pin
+    }
+
+    enum AuthenticateUserReason {
+        case logIn
+        case userVerification
+
+        var rawValue: String {
+            switch self {
+            case .logIn: return NSLocalizedString("Log in to your account", comment: "Authentication")
+            case .userVerification: return NSLocalizedString("User Verification", comment: "Authentication")
+            }
+        }
     }
 
     var biometricType: BiometricType {
@@ -61,6 +73,76 @@ extension LAContext {
             return .pin
         } else {
             return .none
+        }
+    }
+
+    func authenticateUser(reason: AuthenticateUserReason = .logIn, onSuccess: @escaping () -> Void) {
+        #if targetEnvironment(simulator)
+        //Skip auth on simulator, quicker for development
+        onSuccess()
+        return
+        #endif
+
+        switch biometricType {
+        case .faceID, .touchID, .pin:
+            let policy: LAPolicy = biometricType == .pin ? .deviceOwnerAuthentication : .deviceOwnerAuthenticationWithBiometrics
+            let localizedReason = reason.rawValue
+            evaluatePolicy(policy, localizedReason: localizedReason) {
+                [weak self] success, error in
+
+                DispatchQueue.main.async { [weak self] in
+                    if success {
+                        onSuccess()
+                    } else {
+                        let localizedReason = error?.localizedDescription ?? NSLocalizedString("Failed to authenticate", comment: "Failed Face/Touch ID alert")
+                        TariLogger.error("Biometrics auth failed", error: error)
+                        DispatchQueue.main.async { [weak self] in
+                            guard let self = self else { return }
+                            self.authenticationFailedAlertOptions(reason: localizedReason, onSuccess: onSuccess)
+                        }
+                    }
+                }
+            }
+        case .none:
+            let alert = UIAlertController(title: NSLocalizedString("Authentication Error", comment: "No biometric or passcode") ,
+                                          message: NSLocalizedString("Tari Aurora was not able to authenticate you. Do you still want to proceed?", comment: "No biometric or passcode"),
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"),
+                                          style: .cancel,
+                                          handler: { [weak self] _ in
+                                            self?.authenticateUser(onSuccess: onSuccess)
+            }))
+
+            alert.addAction(UIAlertAction(title: NSLocalizedString("Proceed", comment: "Proceed button"), style: .default, handler: { _ in
+                onSuccess()
+            }))
+
+            if let topController = UIApplication.shared.topController() {
+                topController.present(alert, animated: true, completion: nil)
+            }
+        }
+    }
+
+    private func authenticationFailedAlertOptions(reason: String, onSuccess: @escaping () -> Void) {
+        let alert = UIAlertController(title: NSLocalizedString("Authentication failed", comment: "Auth failed"), message: reason, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"), style: .default, handler: { [weak self] _ in
+            guard let self = self else { return }
+            self.authenticateUser(onSuccess: onSuccess)
+        }))
+
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Open settings", comment: "Open settings button"), style: .default, handler: { [weak self] _ in
+            guard let self = self else { return }
+            self.openAppSettings()
+        }))
+
+        if let topController = UIApplication.shared.topController() {
+            topController.present(alert, animated: true, completion: nil)
+        }
+    }
+
+    private func openAppSettings() {
+        if let appSettings = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(appSettings)
         }
     }
 }

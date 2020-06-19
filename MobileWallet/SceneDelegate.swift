@@ -68,7 +68,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let _ = (scene as? UIWindowScene) else { return }
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            let navigationController = UINavigationController(rootViewController: SplashViewController())
+            let navigationController = AlwaysPoppableNavigationController(rootViewController: SplashViewController())
             navigationController.setNavigationBarHidden(true, animated: false)
             window.rootViewController = navigationController
             self.window = window

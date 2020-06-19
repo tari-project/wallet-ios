@@ -94,6 +94,7 @@ extension SplashViewController {
     }
 
     func setupVideoView() {
+        videoView.isHidden = true
         view.insertSubview(videoView, belowSubview: animationContainer)
         videoView.translatesAutoresizingMaskIntoConstraints = false
         if TariLib.shared.walletExists {
@@ -114,6 +115,7 @@ extension SplashViewController {
         setupTitleLabel()
         setupCreateWalletButton()
         setupDisclaimer()
+        setupRestoreButton()
         setupGemImageView()
 
         elementsContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -200,17 +202,34 @@ extension SplashViewController {
         disclaimerText.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         disclaimerText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         disclaimerText.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        disclaimerText.topAnchor.constraint(greaterThanOrEqualTo: createWalletButton.bottomAnchor, constant: 10).isActive = true
+        disclaimerText.topAnchor.constraint(greaterThanOrEqualTo: createWalletButton.bottomAnchor, constant: 0).isActive = true
         disclaimerText.topAnchor.constraint(lessThanOrEqualTo: createWalletButton.bottomAnchor, constant: 30).isActive = true
+    }
+
+    func setupRestoreButton() {
+        restoreButton.isHidden = true
+        restoreButton.backgroundColor = .clear
+        restoreButton.tintColor = .white
+        restoreButton.titleLabel?.font = Theme.shared.fonts.restoreWalletButton
+        restoreButton.addTarget(self, action: #selector(onRestoreWalletTap), for: .touchUpInside)
+        let title = NSLocalizedString("Restore an existing wallet", comment: "Restore button title")
+        restoreButton.setTitle(title, for: .normal)
+
+        elementsContainer.addSubview(restoreButton)
+        restoreButton.translatesAutoresizingMaskIntoConstraints = false
+        restoreButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        restoreButton.topAnchor.constraint(greaterThanOrEqualTo: disclaimerText.bottomAnchor, constant: 0).isActive = true
+        restoreButton.topAnchor.constraint(lessThanOrEqualTo: disclaimerText.bottomAnchor, constant: 10).isActive = true
+        restoreButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
     }
 
     func setupGemImageView() {
         elementsContainer.addSubview(gemImageView)
         gemImageView.image = UIImage(named: "Gem")
         gemImageView.translatesAutoresizingMaskIntoConstraints = false
-        gemImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        gemImageView.topAnchor.constraint(greaterThanOrEqualTo: disclaimerText.bottomAnchor, constant: 10).isActive = true
-        gemImageView.topAnchor.constraint(lessThanOrEqualTo: disclaimerText.bottomAnchor, constant: 30).isActive = true
+        gemImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        gemImageView.topAnchor.constraint(greaterThanOrEqualTo: restoreButton.bottomAnchor, constant: 0).isActive = true
+        gemImageView.topAnchor.constraint(lessThanOrEqualTo: restoreButton.bottomAnchor, constant: 30).isActive = true
         gemImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
         gemImageView.heightAnchor.constraint(equalToConstant: 24).isActive = true
     }
@@ -261,11 +280,7 @@ extension SplashViewController {
 
             UIView.animate(withDuration: 1.0, animations: { [weak self] in
                 guard let self = self else { return }
-                self.titleLabel.alpha = 0
-                //self.subtitleLabel.alpha = 0
-                self.createWalletButton.alpha = 0
-                self.disclaimerText.alpha = 0
-                self.gemImageView.alpha = 0
+                self.elementsContainer.alpha = 0
                 self.versionLabel.alpha = 0
                 self.view.layoutIfNeeded()
             }) { [weak self] (_) in

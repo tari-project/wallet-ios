@@ -42,34 +42,26 @@ import UIKit
 
 class ProfileViewController: UIViewController {
 
-    var closeButton = UIButton()
-    var titleLabel = UILabel()
-    var emojiView = EmoticonView()
-    var separatorView = UIView()
-    var middleLabel = UILabel()
-    var bottomView = UIView()
-    var qrContainer = UIView()
-    var qrImageView = UIImageView()
-
-    private var emojiViewContainer = UIView()
-
+    let emojiView = EmoticonView()
+    let middleLabel = UILabel()
+    let bottomView = UIView()
+    let qrContainer = UIView()
+    let qrImageView = UIImageView()
+    let navigationBar = NavigationBar()
     private var emojis: String?
 
     // MARK: - Override functions
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        setupCloseButton()
-        setupTitleLabel()
+        setupNavigationBar()
         setupEmojiView()
-        setupSeparatorView()
         setupMiddleLabel()
         setupQRContainer()
         setupQRImageView()
         generateQRCode()
         customizeViews()
 
-        view.bringSubviewToFront(emojiViewContainer)
+        view.bringSubviewToFront(emojiView)
 
         Tracker.shared.track("/home/profile", "Profile - Wallet Info")
     }
@@ -81,54 +73,34 @@ class ProfileViewController: UIViewController {
 
     // MARK: - Private functions
 
-    private func setupCloseButton() {
-        closeButton.setImage(Theme.shared.images.close!, for: .normal)
-        closeButton.addTarget(self, action: #selector(onDismissAction), for: .touchUpInside)
-        view.addSubview(closeButton)
-        closeButton.translatesAutoresizingMaskIntoConstraints = false
+    private func setupNavigationBar() {
+        navigationBar.title = NSLocalizedString("My Profile", comment: "ProfileViewController title")
+        navigationBar.backgroundColor =  Theme.shared.colors.profileBackground
 
-        closeButton.widthAnchor.constraint(equalToConstant: 40).isActive = true
-        closeButton.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        closeButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25).isActive = true
-        closeButton.topAnchor.constraint(equalTo: view.layoutMarginsGuide.topAnchor, constant: 20).isActive = true
-    }
+        navigationBar.rightButtonAction = { [weak self] in
+            let navigationController = AlwaysPoppableNavigationController(rootViewController: SettingsViewController())
+            navigationController.styleNavigatorBar(isHidden: true)
+            self?.present(navigationController, animated: true, completion: nil)
+        }
 
-    private func setupTitleLabel() {
-        titleLabel.numberOfLines = 0
-        titleLabel.textAlignment = .center
+        navigationBar.rightButton.setImage(Theme.shared.images.settings, for: .normal)
 
-        view.addSubview(titleLabel)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        titleLabel.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 20).isActive = true
+        view.addSubview(navigationBar)
+        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+
+        navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        navigationBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
 
     private func setupEmojiView() {
-        view.addSubview(emojiViewContainer)
-        emojiViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        emojiViewContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        emojiViewContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        emojiViewContainer.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 0).isActive = true
-
-        emojiViewContainer.addSubview(emojiView)
+        view.addSubview(emojiView)
         emojiView.translatesAutoresizingMaskIntoConstraints = false
-        emojiView.leadingAnchor.constraint(equalTo: emojiViewContainer.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        emojiView.trailingAnchor.constraint(equalTo: emojiViewContainer.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
+        emojiView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
+        emojiView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
         emojiView.heightAnchor.constraint(equalToConstant: 38).isActive = true
-        emojiView.topAnchor.constraint(equalTo: emojiViewContainer.topAnchor, constant: 15).isActive = true
-    }
-
-    private func setupSeparatorView() {
-        separatorView.backgroundColor = .white //TODO theme color
-        view.addSubview(separatorView)
-
-        separatorView.translatesAutoresizingMaskIntoConstraints = false
-        separatorView.leadingAnchor.constraint(equalTo: emojiView.leadingAnchor).isActive = true
-        separatorView.trailingAnchor.constraint(equalTo: emojiView.trailingAnchor).isActive = true
-        separatorView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        separatorView.topAnchor.constraint(equalTo: emojiView.bottomAnchor, constant: 15).isActive = true
-        separatorView.topAnchor.constraint(equalTo: emojiViewContainer.bottomAnchor).isActive = true
+        emojiView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 25).isActive = true
     }
 
     private func setupMiddleLabel() {
@@ -138,17 +110,17 @@ class ProfileViewController: UIViewController {
         middleLabel.translatesAutoresizingMaskIntoConstraints = false
         middleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         middleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        middleLabel.topAnchor.constraint(equalTo: emojiViewContainer.bottomAnchor, constant: 15).isActive = true
+        middleLabel.topAnchor.constraint(equalTo: emojiView.bottomAnchor, constant: 20).isActive = true
     }
 
     private func setupQRContainer() {
         qrContainer.backgroundColor = Theme.shared.colors.appBackground
         view.addSubview(qrContainer)
         qrContainer.translatesAutoresizingMaskIntoConstraints = false
-        qrContainer.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 50).isActive = true
+        qrContainer.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 25).isActive = true
         qrContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        qrContainer.trailingAnchor.constraint(greaterThanOrEqualTo: view.trailingAnchor, constant: -50).isActive = true
-        qrContainer.topAnchor.constraint(lessThanOrEqualTo: middleLabel.bottomAnchor, constant: 20).isActive = true
+        qrContainer.trailingAnchor.constraint(greaterThanOrEqualTo: view.trailingAnchor, constant: -25).isActive = true
+        qrContainer.topAnchor.constraint(lessThanOrEqualTo: middleLabel.bottomAnchor, constant: 25).isActive = true
         qrContainer.topAnchor.constraint(greaterThanOrEqualTo: middleLabel.bottomAnchor, constant: 10).isActive = true
         qrContainer.heightAnchor.constraint(equalTo: qrContainer.widthAnchor, multiplier: 1).isActive = true
         let bottomConstraint = qrContainer.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
@@ -159,35 +131,10 @@ class ProfileViewController: UIViewController {
     private func setupQRImageView() {
         qrContainer.addSubview(qrImageView)
         qrImageView.translatesAutoresizingMaskIntoConstraints = false
-        qrImageView.leadingAnchor.constraint(equalTo: qrContainer.leadingAnchor, constant: 20).isActive = true
-        qrImageView.trailingAnchor.constraint(equalTo: qrContainer.trailingAnchor, constant: -20).isActive = true
-        qrImageView.bottomAnchor.constraint(equalTo: qrContainer.bottomAnchor, constant: -20).isActive = true
-        qrImageView.topAnchor.constraint(equalTo: qrContainer.topAnchor, constant: 20).isActive = true
-    }
-
-    private func customizeTitleLabel() {
-        let shareYourEmojiString = String(
-            format: NSLocalizedString(
-                "Your Emoji ID is your wallet address. Share it with others to receive %@",
-                comment: "Profile title label"
-            ),
-            TariSettings.shared.network.currencyDisplayTicker
-        )
-        let toMakeBold = NSLocalizedString("Emoji ID", comment: "Profile title label")
-
-        let attributedString = NSMutableAttributedString(
-            string: shareYourEmojiString,
-            attributes: [
-                .font: Theme.shared.fonts.profileTitleLightLabel!,
-                .foregroundColor: Theme.shared.colors.profileTitleTextColor!,
-                .kern: -0.33
-        ])
-
-        if let startIndex = shareYourEmojiString.indexDistance(of: toMakeBold) {
-            attributedString.addAttribute(.font, value: Theme.shared.fonts.profileTitleRegularLabel!, range: NSRange(location: startIndex, length: toMakeBold.count))
-        }
-
-        titleLabel.attributedText = attributedString
+        qrImageView.leadingAnchor.constraint(equalTo: qrContainer.leadingAnchor, constant: 30).isActive = true
+        qrImageView.trailingAnchor.constraint(equalTo: qrContainer.trailingAnchor, constant: -30).isActive = true
+        qrImageView.bottomAnchor.constraint(equalTo: qrContainer.bottomAnchor, constant: -30).isActive = true
+        qrImageView.topAnchor.constraint(equalTo: qrContainer.topAnchor, constant: 30).isActive = true
     }
 
     private func setEmojiID() {
@@ -199,10 +146,6 @@ class ProfileViewController: UIViewController {
             emojiView.setUpView(pubKey: pubKey, type: .buttonView, textCentered: true, inViewController: self)
             emojiView.blackoutParent = view
         }
-    }
-
-    private func customizeSeparatorView() {
-        separatorView.backgroundColor = Theme.shared.colors.profileSeparatorView!
     }
 
     private func customizeMiddleLabel() {
@@ -249,9 +192,7 @@ class ProfileViewController: UIViewController {
 
     private func customizeViews() {
         view.backgroundColor = Theme.shared.colors.profileBackground!
-        customizeTitleLabel()
         setEmojiID()
-        customizeSeparatorView()
         customizeMiddleLabel()
     }
 
@@ -267,7 +208,7 @@ class ProfileViewController: UIViewController {
     }
 
     private func addShadowToQRView() {
-        qrContainer.layer.shadowOpacity = 0.5
+        qrContainer.layer.shadowOpacity = 0.0
         qrContainer.layer.shadowOffset = CGSize(width: 20, height: 20)
         qrContainer.layer.shadowRadius = 3.0
         qrContainer.layer.shadowColor = Theme.shared.colors.profileQRShadow?.cgColor
@@ -277,10 +218,9 @@ class ProfileViewController: UIViewController {
         qrContainer.layer.shouldRasterize = true
         qrContainer.layer.rasterizationScale = UIScreen.main.scale
         qrContainer.layer.masksToBounds = false
-    }
 
-    // MARK: - Actions
-    @objc func onDismissAction() {
-        self.dismiss(animated: true, completion: nil)
+        UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
+            self?.qrContainer.layer.shadowOpacity = 0.5
+        }
     }
 }
