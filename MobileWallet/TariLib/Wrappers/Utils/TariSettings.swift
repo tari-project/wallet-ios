@@ -134,10 +134,6 @@ struct TariSettings {
         return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
-    var reminderNotificationsActive: Bool {
-        return environment == .debug
-    }
-
     var environment: AppEnvironment {
         if isDebug {
             return .debug
