@@ -58,7 +58,7 @@ class UserFeedback {
         return attributes
     }
 
-    func error(title: String, description: String, error: Error? = nil) {
+    func error(title: String, description: String, error: Error? = nil, onClose: (() -> Void)? = nil) {
         let errorFeedbackView = FeedbackView()
 
         var descriptionText = description
@@ -66,10 +66,19 @@ class UserFeedback {
             descriptionText.append("\n\(e.localizedDescription)")
         }
 
-        errorFeedbackView.setupError(title: title, description: descriptionText)
+        if onClose == nil {
+            errorFeedbackView.setupError(title: title, description: descriptionText)
+        } else {
+            errorFeedbackView.setupError(title: title, description: descriptionText, onClose: {
+                SwiftEntryKit.dismiss()
+                onClose?()
+            })
+        }
+
         var attributes = defaultAttributes
-        attributes.displayDuration = 12
+        attributes.displayDuration = onClose == nil ? 12 : .infinity
         attributes.hapticFeedbackType = .error
+        attributes.screenInteraction =  onClose == nil ? .dismiss : .absorbTouches
 
         SwiftEntryKit.display(entry: errorFeedbackView, using: attributes)
         TariLogger.error("User feedback: title=\(title) description=\(description)", error: error)
@@ -84,6 +93,7 @@ class UserFeedback {
         var attributes = defaultAttributes
         attributes.displayDuration = .infinity
         attributes.hapticFeedbackType = .none
+        attributes.screenInteraction = .dismiss
         attributes.entranceAnimation = .init(translate: .init(duration: 0.25, anchorPosition: .bottom, spring: .init(damping: 1, initialVelocity: 0)))
 
         SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
@@ -116,6 +126,7 @@ class UserFeedback {
         var attributes = defaultAttributes
         attributes.displayDuration = .infinity
         attributes.hapticFeedbackType = .success
+        attributes.screenInteraction = .dismiss
 
         SwiftEntryKit.display(entry: ctaFeedbackView, using: attributes)
         TariLogger.verbose("User call to action: title=\(title) description=\(description)")
@@ -191,6 +202,7 @@ class UserFeedback {
 
         var attributes = defaultAttributes
         attributes.displayDuration = .infinity
+        attributes.screenInteraction = .dismiss
 
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         SwiftEntryKit.display(entry: containerView, using: attributes)
@@ -215,6 +227,7 @@ class UserFeedback {
         var attributes = defaultAttributes
         attributes.displayDuration = .infinity
         attributes.hapticFeedbackType = .none
+        attributes.screenInteraction = .dismiss
         attributes.entranceAnimation = .init(translate: .init(duration: 0.25, anchorPosition: .bottom, spring: .init(damping: 1, initialVelocity: 0)))
 
         SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)

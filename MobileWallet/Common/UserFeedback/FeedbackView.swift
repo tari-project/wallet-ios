@@ -176,7 +176,16 @@ class FeedbackView: UIView {
         setupDescription()
         setDescription(description)
         descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
-        descriptionLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+        descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+    }
+
+    func setupError(title: String, description: String, onClose: @escaping (() -> Void)) {
+        setupError(title: title, description: description)
+        setupCloseButton()
+        closeButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+
+        onCloseHandler = onClose
     }
 
     func setupInfo(title: String, description: String, onClose: @escaping () -> Void) {
