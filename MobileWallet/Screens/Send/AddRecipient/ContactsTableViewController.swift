@@ -53,25 +53,30 @@ class ContactsTableViewController: UITableViewController {
         didSet {
             if filter.isEmpty {
                 filteredRecentPublicKeyList =  recentContactList
-                filteredContactList = contactList
+                filteredContactList = contactList.sorted(by: { (contact1, contact2) -> Bool in
+                    if contact1.alias.0.isEmpty { return false }
+                    return contact1.alias.0.lowercased() < contact2.alias.0.lowercased()
+                })
             } else {
-
                 filteredRecentPublicKeyList = recentContactList.filter({ (publicKey) -> Bool in
-                    guard let wallet = TariLib.shared.tariWallet,
-                    let existContact = wallet.contacts.0?.list.0.filter({ $0.publicKey.0 == publicKey}).first
+                    guard
+                        let wallet = TariLib.shared.tariWallet,
+                        let existContact = wallet.contacts.0?.list.0.filter({ $0.publicKey.0 == publicKey}).first
                     else {
                         return publicKey.emojis.0.localizedCaseInsensitiveContains(filter.emojiString)
                     }
-
                     return existContact.alias.0.localizedCaseInsensitiveContains(filter)
                 })
-
+                
                 filteredContactList = contactList.filter {
                     ($0.publicKey.0?.emojis.0.localizedCaseInsensitiveContains(filter.emojiString))!
-                    || $0.alias.0.localizedCaseInsensitiveContains(filter)
-                }
+                        || $0.alias.0.localizedCaseInsensitiveContains(filter)
+                }.sorted(by: { (contact1, contact2) -> Bool in
+                    if contact1.alias.0.isEmpty { return false }
+                    return contact1.alias.0.lowercased() < contact2.alias.0.lowercased()
+                })
             }
-
+            
             tableView.reloadData()
         }
     }
