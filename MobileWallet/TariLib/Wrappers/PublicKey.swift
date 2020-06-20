@@ -263,8 +263,10 @@ class PublicKey {
     private static func filterEmojis(_ text: String) -> String {
         var emojis = ""
 
+        let fullEmojiSet = EmojiSet().list.0
+
         for scalar in text.unicodeScalars {
-            if scalar.properties.isEmoji {
+            if fullEmojiSet.contains(String(scalar)) {
                 emojis.append(Character(scalar))
             }
         }

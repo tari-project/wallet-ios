@@ -150,7 +150,7 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertNoThrow(try PublicKey(any: "copy this: 🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊 please"))
         XCTAssertNoThrow(try PublicKey(any: "My emojis are \"🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊\""))
         XCTAssertNoThrow(try PublicKey(any: "🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹 bla bla bla 😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊"))
-        XCTAssertNoThrow(try PublicKey(any: "My emojis 🎳🐍💸🐼🐷💍🍔💤💘 and here are the rest 🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇"))
+        XCTAssertNoThrow(try PublicKey(any: "Please send me 1234. My emojis are 🎳🐍💸🐼🐷💍🍔💤💘 and here are the rest 🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇"))
         
         //Test deprecated emoji sets
         do {

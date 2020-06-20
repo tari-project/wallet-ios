@@ -181,6 +181,14 @@
 		00A994332396434B007D9990 /* QRButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A994322396434B007D9990 /* QRButton.swift */; };
 		00A994342396434B007D9990 /* QRButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A994322396434B007D9990 /* QRButton.swift */; };
 		00A994352396434B007D9990 /* QRButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A994322396434B007D9990 /* QRButton.swift */; };
+		00B084C0249E471800F7B9BD /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084BF249E471800F7B9BD /* EmojiSet.swift */; };
+		00B084C1249E471800F7B9BD /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084BF249E471800F7B9BD /* EmojiSet.swift */; };
+		00B084C2249E471800F7B9BD /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084BF249E471800F7B9BD /* EmojiSet.swift */; };
+		00B084C3249E471800F7B9BD /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084BF249E471800F7B9BD /* EmojiSet.swift */; };
+		00B084C5249E4F6900F7B9BD /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084C4249E4F6900F7B9BD /* SeedWords.swift */; };
+		00B084C6249E4F6900F7B9BD /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084C4249E4F6900F7B9BD /* SeedWords.swift */; };
+		00B084C7249E4F6900F7B9BD /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084C4249E4F6900F7B9BD /* SeedWords.swift */; };
+		00B084C8249E4F6900F7B9BD /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084C4249E4F6900F7B9BD /* SeedWords.swift */; };
 		00B4D6B82416A50C00ED8318 /* MobileWalletUISnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6B72416A50C00ED8318 /* MobileWalletUISnapshots.swift */; };
 		00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6BA2417894800ED8318 /* SnapshotHelper.swift */; };
 		00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8A8237AA13500C02E44 /* Biometrics.m */; };
@@ -620,6 +628,8 @@
 		00A6779D23743696001A853E /* TransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		00A9190A242CDD7700B7F14D /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		00A994322396434B007D9990 /* QRButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRButton.swift; sourceTree = "<group>"; };
+		00B084BF249E471800F7B9BD /* EmojiSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiSet.swift; sourceTree = "<group>"; };
+		00B084C4249E4F6900F7B9BD /* SeedWords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWords.swift; sourceTree = "<group>"; };
 		00B4D6AB2416A32200ED8318 /* MobileWalletUISnapshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileWalletUISnapshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00B4D6AF2416A32200ED8318 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00B4D6B72416A50C00ED8318 /* MobileWalletUISnapshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileWalletUISnapshots.swift; sourceTree = "<group>"; };
@@ -1042,6 +1052,8 @@
 				001F6CDB238011CA00FA7002 /* PublicKey.swift */,
 				001F6CDF2380198D00FA7002 /* Contacts.swift */,
 				001F6CE32380253B00FA7002 /* Contact.swift */,
+				00B084BF249E471800F7B9BD /* EmojiSet.swift */,
+				00B084C4249E4F6900F7B9BD /* SeedWords.swift */,
 				001F6CEF2381A43800FA7002 /* Transactions */,
 			);
 			path = Wrappers;
@@ -1972,7 +1984,9 @@
 			files = (
 				00C520B72469720F0077BF7F /* MicroTari.swift in Sources */,
 				00C520BA2469720F0077BF7F /* ErrorDescriptions.swift in Sources */,
+				00B084C8249E4F6900F7B9BD /* SeedWords.swift in Sources */,
 				00C520C9246972140077BF7F /* Contact.swift in Sources */,
+				00B084C3249E471800F7B9BD /* EmojiSet.swift in Sources */,
 				00C520C7246972140077BF7F /* PublicKey.swift in Sources */,
 				00C520CC246972180077BF7F /* PendingOutboundTransaction.swift in Sources */,
 				00C520D12469721D0077BF7F /* TransactionsProtocol.swift in Sources */,
@@ -2074,6 +2088,7 @@
 				00BBD816237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
+				00B084C0249E471800F7B9BD /* EmojiSet.swift in Sources */,
 				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				004277FF23E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
@@ -2096,6 +2111,7 @@
 				00BCE47F240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				00A9190B242CDD7700B7F14D /* Tracker.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
+				00B084C5249E4F6900F7B9BD /* SeedWords.swift in Sources */,
 				004997B72382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
 				37BB6974245726FC0013AC4D /* CopyableLabel.swift in Sources */,
@@ -2209,6 +2225,7 @@
 				00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00434A9E2477D0B000C0104F /* AppContainerLock.swift in Sources */,
 				37C8BA48248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
+				00B084C6249E4F6900F7B9BD /* SeedWords.swift in Sources */,
 				00A057B523D979DA0029C22A /* UserFeedback.swift in Sources */,
 				004997AC2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
 				3708D74B247FCF2300807D72 /* SettingsViewController.swift in Sources */,
@@ -2259,6 +2276,7 @@
 				00369D84242618A900BAB95B /* TariLogger.swift in Sources */,
 				619197D2BB78CBBC06B0F87E /* UTXO.swift in Sources */,
 				376B502424924BB700278ACC /* RestoreWalletPendingView.swift in Sources */,
+				00B084C1249E471800F7B9BD /* EmojiSet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2325,6 +2343,7 @@
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00DD1611241CD42500C955B4 /* BaseNode.swift in Sources */,
 				373CCDBF2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
+				00B084C2249E471800F7B9BD /* EmojiSet.swift in Sources */,
 				00D9886B2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
@@ -2347,6 +2366,7 @@
 				00DD160C241CCE5B00C955B4 /* TariSettings.swift in Sources */,
 				00369D7F2422670400BAB95B /* DeepLinkManager.swift in Sources */,
 				004277F523E0407900AE7BD9 /* TextButton.swift in Sources */,
+				00B084C7249E4F6900F7B9BD /* SeedWords.swift in Sources */,
 				001F6CE62380253B00FA7002 /* Contact.swift in Sources */,
 				00C9F437242E08E80098E619 /* Tracker.swift in Sources */,
 				009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */,
@@ -2479,7 +2499,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 92;
+				CURRENT_PROJECT_VERSION = 93;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2516,7 +2536,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 92;
+				CURRENT_PROJECT_VERSION = 93;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2672,7 +2692,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 92;
+				CURRENT_PROJECT_VERSION = 93;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2708,7 +2728,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 92;
+				CURRENT_PROJECT_VERSION = 93;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

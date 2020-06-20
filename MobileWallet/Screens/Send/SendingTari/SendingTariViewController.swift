@@ -181,7 +181,7 @@ class SendingTariViewController: UIViewController {
         progressBar1View.alpha = 0
         progressBar2View.alpha = 0
         progressBar3View.alpha = 0
-        
+
         Tracker.shared.track("/home/send_tari/finalize", "Send Tari - Finalize")
     }
 

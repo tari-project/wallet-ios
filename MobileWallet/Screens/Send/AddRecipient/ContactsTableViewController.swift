@@ -67,7 +67,7 @@ class ContactsTableViewController: UITableViewController {
                     }
                     return existContact.alias.0.localizedCaseInsensitiveContains(filter)
                 })
-                
+
                 filteredContactList = contactList.filter {
                     ($0.publicKey.0?.emojis.0.localizedCaseInsensitiveContains(filter.emojiString))!
                         || $0.alias.0.localizedCaseInsensitiveContains(filter)
@@ -76,7 +76,7 @@ class ContactsTableViewController: UITableViewController {
                     return contact1.alias.0.lowercased() < contact2.alias.0.lowercased()
                 })
             }
-            
+
             tableView.reloadData()
         }
     }
