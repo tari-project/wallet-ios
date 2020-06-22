@@ -130,6 +130,7 @@ class PublicKey {
             .replacingOccurrences(of: "|", with: "")
             .replacingOccurrences(of: "`", with: "")
             .replacingOccurrences(of: " ", with: "")
+
         if cleanEmojis.count < PublicKey.emojiCount {
             throw PublicKeyError.invalidEmojis
         }
@@ -149,6 +150,7 @@ class PublicKey {
         guard errorCode == 0 else {
             throw PublicKeyError.generic(errorCode)
         }
+
         ptr = result!
     }
 
@@ -223,11 +225,12 @@ class PublicKey {
             do {
                 try self.init(emojis: filteredEmojis)
                 return
-            } catch {
-                if filteredEmojis.count == PublicKey.emojiCount {
-                    throw PublicKeyError.invalidEmojiSet
-                }
-            }
+            } catch {}
+        }
+
+        //User might have an emoji ID from an outdated set
+        if PublicKey.isOldEmojiSet(any) {
+            throw PublicKeyError.invalidEmojiSet
         }
 
         throw PublicKeyError.cantDerivePublicKeyFromString
@@ -250,16 +253,6 @@ class PublicKey {
         return strippedLink
     }
 
-    private static func containsEmojis(_ text: String) -> Bool {
-        for scalar in text.unicodeScalars {
-            if scalar.properties.isEmoji {
-                return true
-            }
-        }
-
-        return false
-    }
-
     private static func filterEmojis(_ text: String) -> String {
         var emojis = ""
 
@@ -272,6 +265,41 @@ class PublicKey {
         }
 
         return emojis
+    }
+
+    private static func isOldEmojiSet(_ text: String) -> Bool {
+        let oldEmojiSet = [
+            "😀", "😂", "🤣", "😉", "😊", "😎", "😍", "😘", "🤗", "🤩", "🤔", "🙄", "😮", "🤐", "😴", "😛", "🤤", "🙃", "🤑",
+            "😤", "😨", "🤯", "😬", "😱", "🤪", "😵", "😷", "🤢", "🤮", "🤠", "🤡", "🤫", "🤭", "🤓", "😈", "👻", "👽", "🤖",
+            "💩", "😺", "👶", "👩", "👨", "👮", "🤴", "👸", "🧜", "🙅", "🙋", "🤦", "🤷", "💇", "🏃", "💃", "🧗", "🛀", "🛌",
+            "👤", "🏄", "🚴", "🤹", "💏", "👪", "💪", "👈", "👍", "✋", "👊", "👐", "🙏", "🤝", "💅", "👂", "👀", "🧠", "👄",
+            "💔", "💖", "💙", "💌", "💤", "💣", "💥", "💦", "💨", "💫", "👔", "👕", "👖", "🧣", "🧤", "🧦", "👗", "👙", "👜",
+            "🎒", "👑", "🧢", "💍", "💎", "🐒", "🐶", "🦁", "🐴", "🦄", "🐮", "🐷", "🐑", "🐫", "🦒", "🐘", "🐭", "🐇", "🐔",
+            "🦆", "🐸", "🐍", "🐳", "🐚", "🦀", "🐌", "🦋", "🌸", "🌲", "🌵", "🍇", "🍉", "🍌", "🍎", "🍒", "🍓", "🥑", "🥕",
+            "🌽", "🍄", "🥜", "🍞", "🧀", "🍖", "🍔", "🍟", "🍕", "🍿", "🍦", "🍪", "🍰", "🍫", "🍬", "🍷", "🍺", "🍴", "🌍",
+            "🌋", "🏠", "⛺", "🎡", "🎢", "🎨", "🚂", "🚌", "🚑", "🚒", "🚔", "🚕", "🚜", "🚲", "⛽", "🚦", "🚧", "⛵", "🚢",
+            "🛫", "💺", "🚁", "🚀", "🛸", "🚪", "🚽", "🚿", "⌛", "⏰", "🕙", "🌛", "🌞", "⛅", "🌀", "🌈", "🌂", "🔥", "✨",
+            "🎈", "🎉", "🎀", "🎁", "🏆", "🏅", "⚽", "🏀", "🏈", "🎾", "🥊", "🎯", "⛳", "🎣", "🎮", "🎲", "🔈", "🔔", "🎶",
+            "🎤", "🎧", "📻", "🎸", "🎹", "🎺", "🎻", "🥁", "📱", "🔋", "💻", "📷", "🔍", "🔭", "📡", "💡", "🔦", "📖", "📚",
+            "📝", "📅", "📌", "📎", "🔒", "🔑", "🔨", "🏹", "🔧", "💉", "💊", "🏧", "⛔", "🚫", "✅", "❌", "❓", "❕", "💯",
+            "🆗", "🆘", "⬛", "🔶", "🔵", "🏁", "🚩", "🎌", "🏴"
+        ]
+
+        var cleanEmojis = ""
+
+        //Extract old emojis from string
+        for scalar in text.unicodeScalars {
+            if oldEmojiSet.contains(String(scalar)) {
+                cleanEmojis.append(Character(scalar))
+            }
+        }
+        print("cleanEmojis: ", cleanEmojis.count)
+
+        if cleanEmojis.count == PublicKey.emojiCount {
+            return true
+        }
+
+        return false
     }
 
     deinit {
