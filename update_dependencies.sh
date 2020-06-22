@@ -15,8 +15,9 @@ else
     FFI_FILE="libwallet-ios-$FFI_VERSION.tar.gz"
 fi
 
-curl -s "https://www.tari.com/binaries/$FFI_FILE" | tar xz - -C MobileWallet/TariLib/ --exclude wallet.h
-
+# curl -s "https://www.tari.com/binaries/$FFI_FILE" | tar xz - -C MobileWallet/TariLib/ --exclude wallet.h
+curl -s "https://tari-binaries.s3.amazonaws.com/libwallet/$FFI_FILE" | tar xz - --exclude wallet.h
+mv "libwallet-ios-$FFI_VERSION/libtari_wallet_ffi.a" MobileWallet/TariLib/
 
 # Check for cocoapods and install if missing.
 if hash pod 2>/dev/null; then
