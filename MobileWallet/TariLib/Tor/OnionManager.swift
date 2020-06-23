@@ -170,7 +170,7 @@ public class OnionManager: NSObject {
             self.torController = TorController(socketHost: OnionManager.CONTROL_ADDRESS, port: OnionManager.CONTROL_PORT)
         }
 
-        if ((self.torThread == nil) || (self.torThread?.isCancelled ?? true)) {
+        if (torThread == nil || torThread?.isCancelled == true) && TorThread.active?.isExecuting != true {
             self.torThread = nil
 
             let torConf = OnionManager.torBaseConf
@@ -183,7 +183,9 @@ public class OnionManager: NSObject {
             self.torThread = TorThread(configuration: torConf)
             needsReconfiguration = false
 
-            self.torThread?.start()
+            DispatchQueue.main.async { [weak self] in
+                self?.torThread?.start()
+            }
 
             TariLogger.tor("Starting Tor")
         } else {

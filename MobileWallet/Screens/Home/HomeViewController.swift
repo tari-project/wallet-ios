@@ -131,10 +131,10 @@ class HomeViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        refreshBalance()
+        safeRefreshBalance()
         TariEventBus.onMainThread(self, eventType: .balanceUpdate) { [weak self] (_) in
             guard let self = self else { return }
-            self.refreshBalance()
+            self.safeRefreshBalance()
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
@@ -231,6 +231,12 @@ class HomeViewController: UIViewController {
             } catch {
                 TariLogger.error("Failed to import 2nd UTXO", error: error)
             }
+        }
+    }
+
+    private func safeRefreshBalance() {
+        TariLib.shared.waitIfWalletIsRestarting { [weak self] (_) in
+            self?.refreshBalance()
         }
     }
 

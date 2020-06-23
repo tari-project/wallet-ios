@@ -128,7 +128,7 @@ class TransactionsTableViewController: UITableViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         if backgroundType != .intro {
-            self.refreshTable()
+            self.safeRefreshTable()
         }
     }
 
@@ -150,7 +150,7 @@ class TransactionsTableViewController: UITableViewController {
         //Event for table refreshing
         TariEventBus.onMainThread(self, eventType: .transactionListUpdate) { [weak self] (_) in
             guard let self = self else { return }
-            self.refreshTable()
+            self.safeRefreshTable()
         }
 
         beginRefreshing()
@@ -197,7 +197,7 @@ class TransactionsTableViewController: UITableViewController {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
             guard let self = self else { return }
             self.animatedRefresher.animateOut { [weak self] in
-                self?.refreshTable()
+                self?.safeRefreshTable()
                 self?.tableView.endRefreshing()
             }
         })
@@ -208,7 +208,13 @@ class TransactionsTableViewController: UITableViewController {
         beginRefreshing()
     }
 
-    func refreshTable() {
+    func safeRefreshTable() {
+        TariLib.shared.waitIfWalletIsRestarting { [weak self] _ in
+            self?.refreshTable()
+        }
+    }
+
+    private func refreshTable() {
         guard let wallet = TariLib.shared.tariWallet else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("Failed to access wallet", comment: "Home screen"),

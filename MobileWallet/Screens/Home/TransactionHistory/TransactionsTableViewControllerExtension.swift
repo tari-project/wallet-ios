@@ -226,7 +226,7 @@ extension TransactionsTableViewController {
         waveAnimation.play(fromProgress: 0, toProgress: 1, loopMode: .playOnce, completion: { [weak self] _ in
             self?.backgroundType = .none
             DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
-                self?.refreshTable()
+                self?.safeRefreshTable()
             }
         })
 
