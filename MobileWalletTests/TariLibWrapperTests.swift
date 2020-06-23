@@ -98,10 +98,10 @@ class TariLibWrapperTests: XCTestCase {
     func testPublicKey() {
         //Create pub key from hex, then create hex from that to test ByteVector toString()
         let originalPublicKeyHex = "6a493210f7499cd17fecb510ae0cea23a110e8d5b901f8acadd3095c73a3b919"
-        
+
         do {
             _ = try PublicKey(privateKey: PrivateKey())
-            
+
             let publicKey = try PublicKey(hex: originalPublicKeyHex)
             let (hex, hexError) = publicKey.hex
             if hexError != nil {
@@ -112,20 +112,20 @@ class TariLibWrapperTests: XCTestCase {
             if error != nil {
                 XCTFail(error!.localizedDescription)
             }
-            
+
             let emojiKey = try PublicKey(emojis: emojis)
             XCTAssertEqual(emojiKey.hex.0, publicKey.hex.0)
         } catch {
             XCTFail(error.localizedDescription)
         }
-        
+
         //Valid emoji ID
         XCTAssertNoThrow(try PublicKey(emojis: "🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇"))
         XCTAssertNoThrow(try PublicKey(emojis: "🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊"))
-        
+
         //Invalid emoji ID
         XCTAssertThrowsError(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽👽"))
-        
+
         //Valid deep links
         XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇")
         )
@@ -142,7 +142,7 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱"))
         XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/invalid"))
         XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://made-up-net/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
-        
+
         //Convenience init
         XCTAssertThrowsError(try PublicKey(any: "bla"))
         XCTAssertThrowsError(try PublicKey(any: "Hey use this emoji ID 🐒🐑🍔🔧❌👂🦒"))
@@ -151,13 +151,25 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertNoThrow(try PublicKey(any: "My emojis are \"🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊\""))
         XCTAssertNoThrow(try PublicKey(any: "🐘💉🔨🍆💈🏆💀🎩🍼🐍💀🎂🔱🐻🐑🔪🐖😹 bla bla bla 😻🚜🐭🎁🔔💩🚂🌠📡👅🏁🏭💔🎻🌊"))
         XCTAssertNoThrow(try PublicKey(any: "Please send me 1234. My emojis are 🎳🐍💸🐼🐷💍🍔💤💘 and here are the rest 🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇"))
-        
-        //Test deprecated emoji sets
+    }
+    
+    func testOldEmojiSet() {
         do {
-            _ = try PublicKey(any: "💨🎩😱😇🌂🐑😇🍭💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍🎳🐍💸🐼🐷💍🍔💤💘🔫🎁")
+            _ = try PublicKey(any: "⚽🧣👂🤝🏧🐳🦄🎣😛🎻🏄🚧⛺🧠🔔🧢🍄💉🕙🐔🚪🧤🍪🚒🍌👊🥜👶🤪📎🐚🦀🍎")
         } catch {
             if case PublicKeyError.invalidEmojiSet = error {
                 //Correct error
+            } else {
+                XCTFail("Invalid emoji set should throw error")
+            }
+        }
+        
+        do {
+            _ = try PublicKey(any: "send me 12 ⚽🧣👂🤝🏧🐳🦄🎣😛🎻🏄🚧⛺🧠🔔🧢🍄💉🕙🐔🚪🧤🍪🚒🍌👊🥜👶🤪📎🐚🦀🍎")
+        } catch {
+            if case PublicKeyError.invalidEmojiSet = error {
+                //Correct error
+
             } else {
                 XCTFail("Invalid emoji set should throw error")
             }
