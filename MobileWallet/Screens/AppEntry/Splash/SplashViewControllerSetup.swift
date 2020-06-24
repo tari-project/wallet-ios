@@ -129,7 +129,7 @@ extension SplashViewController {
 
     func setupTitleLabel() {
         titleLabel.isHidden = true
-        titleLabel.text = NSLocalizedString("The future of digital assets starts here", comment: "Title Label on the onboarding screen")
+        titleLabel.text = NSLocalizedString("splash.title", comment: "Splash view")
         titleLabel.interlineSpacing(spacingValue: 0)
         titleLabel.numberOfLines = 2
         titleLabel.adjustsFontSizeToFitWidth = true
@@ -148,7 +148,7 @@ extension SplashViewController {
 
     func setupCreateWalletButton() {
         createWalletButton.isHidden = true
-        createWalletButton.setTitle(NSLocalizedString("Create Your Wallet", comment: "Main action button on the onboarding screen"), for: .normal)
+        createWalletButton.setTitle(NSLocalizedString("splash.create_wallet", comment: "Splash view"), for: .normal)
         createWalletButton.addTarget(self, action: #selector(onCreateWalletTap), for: .touchUpInside)
         elementsContainer.addSubview(createWalletButton)
 
@@ -166,9 +166,12 @@ extension SplashViewController {
         disclaimerText.translatesAutoresizingMaskIntoConstraints = false
         disclaimerText.isEditable = false
 
-        let userAgreementLinkText = NSLocalizedString("User Agreement", comment: "Splash screen disclaimer")
-        let privacyPolicyLinkText = NSLocalizedString("Privacy Policy", comment: "Splash screen disclaimer")
-        let text = NSLocalizedString("By creating a wallet, you agree to the terms of the User Agreement and Privacy Policy", comment: "Splash screen disclaimer")
+        let userAgreementLinkText = NSLocalizedString("splash.disclaimer.param.user_agreement", comment: "Splash view")
+        let privacyPolicyLinkText = NSLocalizedString("splash.disclaimer.param.privacy_policy", comment: "Splash view")
+        let text = String(
+            format: NSLocalizedString("splash.disclaimer.with_params", comment: "Splash view"),
+            userAgreementLinkText,
+            privacyPolicyLinkText)
 
         let attributedText = NSMutableAttributedString(string: text)
 
@@ -212,7 +215,7 @@ extension SplashViewController {
         restoreButton.tintColor = .white
         restoreButton.titleLabel?.font = Theme.shared.fonts.restoreWalletButton
         restoreButton.addTarget(self, action: #selector(onRestoreWalletTap), for: .touchUpInside)
-        let title = NSLocalizedString("Restore an existing wallet", comment: "Restore button title")
+        let title = NSLocalizedString("splash.restore_wallet", comment: "Splash view")
         restoreButton.setTitle(title, for: .normal)
 
         elementsContainer.addSubview(restoreButton)

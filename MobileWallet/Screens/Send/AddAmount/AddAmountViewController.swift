@@ -102,8 +102,8 @@ class AddAmountViewController: UIViewController {
                 try navigationBar.showEmoji(pubKey, animated: true)
             } catch {
                 UserFeedback.shared.error(
-                    title: NSLocalizedString("Public key error", comment: "Add amount view"),
-                    description: NSLocalizedString("Failed to get Emoji ID from user's contact", comment: "Add amount view"),
+                    title: NSLocalizedString("navigation_bar.error.show_emoji.title", comment: "Navigation bar"),
+                    description: NSLocalizedString("navigation_bar.error.show_emoji.description", comment: "Navigation bar"),
                     error: error
                 )
             }
@@ -139,8 +139,8 @@ class AddAmountViewController: UIViewController {
         let (totalMicroTari, totalMicroTariError) = wallet.totalMicroTari
         guard totalMicroTariError == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Available Balance error", comment: "Amount screen"),
-                description: NSLocalizedString("Failed to get the available balance.", comment: "Amount screen"),
+                title: NSLocalizedString("add_amount.error.available_balance.title", comment: "Add amount view"),
+                description: NSLocalizedString("add_amount.error.available_balance.description", comment: "Add amount view"),
                 error: totalMicroTariError
             )
             return
@@ -177,7 +177,7 @@ class AddAmountViewController: UIViewController {
     //Shouldn't ever really be used but just in case
     private func showInvalidNumberError(_ error: Error?) {
         UserFeedback.shared.error(
-            title: NSLocalizedString("Invalid number", comment: "Add amount screen"),
+            title: NSLocalizedString("add_amount.error.invalid_number", comment: "Add amount view"),
             description: "",
             error: error
         )
@@ -304,8 +304,8 @@ class AddAmountViewController: UIViewController {
 
     @objc private func feeButtonPressed(_ sender: UIButton) {
         UserFeedback.shared.info(
-            title: NSLocalizedString("Where does the fee go?", comment: "Transaction detail view"),
-            description: NSLocalizedString("The transaction fee is distributed to the thousands of computers (also known as “miners”) who ensure that your Tari transactions are fast and secure.", comment: "Transaction detail view"))
+            title: NSLocalizedString("common.fee_info.title", comment: "Common"),
+            description: NSLocalizedString("common.fee_info.description", comment: "Common"))
     }
 
     private func showBalanceExceeded(balance: String) {
@@ -361,8 +361,8 @@ class AddAmountViewController: UIViewController {
         let (availableBalance, availableBalanceError) = wallet.availableBalance
         guard availableBalanceError == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Available balance error", comment: "Add amount view"),
-                description: NSLocalizedString("Could not get available balance from wallet", comment: "Add amount view"),
+                title: NSLocalizedString("add_amount.error.available_balance.title", comment: "Add amount view"),
+                description: NSLocalizedString("add_amount.error.available_balance.description", comment: "Add amount view"),
                 error: availableBalanceError
             )
             return
@@ -378,8 +378,8 @@ class AddAmountViewController: UIViewController {
         guard let amount = tariAmount else { return }
         if amount.rawValue + wallet.calculateTransactionFee(amount).rawValue  > availableBalance {
             UserFeedback.shared.info(
-                title: NSLocalizedString("Hold your horses! 🐴", comment: "Add amount view"),
-                description: NSLocalizedString("Sorry, you can’t send this much Tari until your previous transaction(s) are complete. Please wait for at least one transaction to complete and then try again.", comment: "Add amount view")
+                title: NSLocalizedString("add_amount.info.wait_completion_previous_tx.title", comment: "Add amount view"),
+                description: NSLocalizedString("add_amount.info.wait_completion_previous_tx.descrption", comment: "Add amount view")
             )
             return
         }
@@ -411,7 +411,7 @@ extension AddAmountViewController {
         continueButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 25).isActive = true
         continueButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -25).isActive = true
         continueButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
-        continueButton.setTitle(NSLocalizedString("Continue", comment: "Continue button on the amount screen"), for: .normal)
+        continueButton.setTitle(NSLocalizedString("common.continue", comment: "Common"), for: .normal)
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         continueButton.isEnabled = false
         setupKeypad()
@@ -478,7 +478,7 @@ extension AddAmountViewController {
         warningStackView.addArrangedSubview(warningLabel)
         warningLabel.font = Theme.shared.fonts.amountWarningLabel
         warningLabel.textColor = Theme.shared.colors.amountWarningLabel
-        warningLabel.text = NSLocalizedString("Not enough Tari in your available balance", comment: "Balance amount error")
+        warningLabel.text = NSLocalizedString("add_amount.warning.not_enough_tari", comment: "Add amount view")
         warningLabel.textAlignment = .center
         warningLabel.heightAnchor.constraint(equalToConstant: warningLabel.font.pointSize * 1.2).isActive = true
 
@@ -504,7 +504,7 @@ extension AddAmountViewController {
 
         let feeButton = TextButton()
         feeButton.translatesAutoresizingMaskIntoConstraints = false
-        feeButton.setTitle(NSLocalizedString("Transaction Fee", comment: "Transaction view screen"), for: .normal)
+        feeButton.setTitle(NSLocalizedString("common.fee", comment: "Common"), for: .normal)
         feeButton.setRightImage(Theme.shared.images.transactionFee!)
         feeButton.addTarget(self, action: #selector(feeButtonPressed), for: .touchUpInside)
         continueButton.variation = .disabled

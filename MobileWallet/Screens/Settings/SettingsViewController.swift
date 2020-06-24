@@ -53,8 +53,8 @@ class SettingsViewController: SettingsParentTableViewController {
 
         var rawValue: String {
             switch self {
-            case .securityHeader: return NSLocalizedString("Security", comment: "SettingsItemHeader")
-            case .moreHeader: return NSLocalizedString("More", comment: "SettingsItemHeader")
+            case .securityHeader: return NSLocalizedString("settings.item.header.security", comment: "Settings view")
+            case .moreHeader: return NSLocalizedString("settings.item.header.more", comment: "Settings view")
             }
         }
     }
@@ -70,13 +70,13 @@ class SettingsViewController: SettingsParentTableViewController {
 
         var rawValue: String {
             switch self {
-            case .backUpWallet: return NSLocalizedString("Back Up Wallet", comment: "SettingsItemTitle")
+            case .backUpWallet: return NSLocalizedString("settings.item.backup_wallet", comment: "Settings view")
 
-            case .visitTari: return NSLocalizedString("Visit Tari.com", comment: "SettingsItemTitle")
-            case .contributeToTariAurora: return NSLocalizedString("Contribute to Tari Aurora", comment: "SettingsItemTitle")
-            case .userAgreement: return NSLocalizedString("User Agreement", comment: "SettingsItemTitle")
-            case .privacyPolicy: return NSLocalizedString("Privacy Policy", comment: "SettingsItemTitle")
-            case .disclaimer: return NSLocalizedString("Disclaimer", comment: "SettingsItemTitle")
+            case .visitTari: return NSLocalizedString("settings.item.visit_tari", comment: "Settings view")
+            case .contributeToTariAurora: return NSLocalizedString("settings.item.contribute_to_tari", comment: "Settings view")
+            case .userAgreement: return NSLocalizedString("settings.item.user_agreement", comment: "Settings view")
+            case .privacyPolicy: return NSLocalizedString("Privacy Policy", comment: "Settings view")
+            case .disclaimer: return NSLocalizedString("settings.item.disclaimer", comment: "Settings view")
             }
         }
     }
@@ -205,7 +205,7 @@ extension SettingsViewController {
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }
 
-        let title = NSLocalizedString("Done", comment: "SettingsViewController Done button")
+        let title = NSLocalizedString("settings.done", comment: "Settings view")
         navigationBar.rightButton.setTitle(title, for: .normal)
         navigationBar.rightButton.setTitleColor(Theme.shared.colors.settingsDoneButtonTitle, for: .normal)
         navigationBar.rightButton.titleLabel?.font = Theme.shared.fonts.settingsDoneButton

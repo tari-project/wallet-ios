@@ -130,7 +130,7 @@ extension CopyableLabel {
         greenView.backgroundColor = Theme.shared.colors.transactionCellValuePositiveText?.withAlphaComponent(0.12)
 
         let copiedLabel = UILabel()
-        copiedLabel.text = NSLocalizedString("COPIED", comment: "Emoji ID copied")
+        copiedLabel.text = NSLocalizedString("emoji.copied", comment: "Emoji view")
         copiedLabel.font = Theme.shared.fonts.copiedLabel
         copiedLabel.textColor = Theme.shared.colors.textButtonSecondary
 

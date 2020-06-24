@@ -82,7 +82,7 @@ extension VerifyPhraseViewController {
 
     override func setupNavigationBar() {
         super.setupNavigationBar()
-        navigationBar.title = NSLocalizedString("Verify Seed Phrase", comment: "ConfirmPhraseViewController title")
+        navigationBar.title = NSLocalizedString("verify_phrase.title", comment: "VerifyPhrase view")
     }
 
     private func setupScrollView() {
@@ -114,7 +114,7 @@ extension VerifyPhraseViewController {
     private func setupHeaderLabel() {
         headerLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
         headerLabel.textColor = Theme.shared.colors.settingsSeedPhraseDescription
-        headerLabel.text = NSLocalizedString("Select the words in the correct order.", comment: "ConfirmPhraseViewController header title")
+        headerLabel.text = NSLocalizedString("verify_phrase.header", comment: "VerifyPhrase view")
 
         stackView.addArrangedSubview(headerLabel)
         stackView.setCustomSpacing(20, after: headerLabel)
@@ -150,7 +150,7 @@ extension VerifyPhraseViewController {
         fillablePhraseView.bottomAnchor.constraint(lessThanOrEqualTo: fillablePhraseContainer.bottomAnchor, constant: -20).isActive = true
 
         fillableContainerDescription.numberOfLines = 0
-        fillableContainerDescription.text = NSLocalizedString("Tap on the words above in the correct order", comment: "Fillable phrase container description")
+        fillableContainerDescription.text = NSLocalizedString("verify_phrase.container_description", comment: "VerifyPhrase view")
         fillableContainerDescription.font = Theme.shared.fonts.settingsFillablePhraseViewDescription
         fillableContainerDescription.textColor = Theme.shared.colors.settingsFillablePhraseViewDescription
         fillableContainerDescription.textAlignment = .center
@@ -197,7 +197,7 @@ extension VerifyPhraseViewController {
 
         warningLabel.textColor = Theme.shared.colors.warningBoxBorder
         warningLabel.font = Theme.shared.fonts.warningBoxTitleLabel
-        warningLabel.text = NSLocalizedString("Nope, that’s not right", comment: "VerifyPhraseViewController warning")
+        warningLabel.text = NSLocalizedString("verify_phrase.warning", comment: "VerifyPhrase view")
 
         warningLabel.translatesAutoresizingMaskIntoConstraints = false
         warningLabel.centerXAnchor.constraint(equalTo: warningView.centerXAnchor).isActive = true
@@ -219,7 +219,7 @@ extension VerifyPhraseViewController {
     }
 
     private func setupContinueButton() {
-        continueButton.setTitle(NSLocalizedString("Complete Verification", comment: "Recovery phrase continue button"), for: .normal)
+        continueButton.setTitle(NSLocalizedString("verify_phrase.complete", comment: "VerifyPhrase view"), for: .normal)
         continueButton.addTarget(self, action: #selector(continueButtonAction), for: .touchUpInside)
         continueButton.variation = .disabled
 

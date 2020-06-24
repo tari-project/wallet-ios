@@ -172,27 +172,27 @@ class HomeViewController: UIViewController {
             return
         }
 
-        let errorTitle = String(format: NSLocalizedString("Failed to claim %@", comment: "Home view airdrop"), TariSettings.shared.network.currencyDisplayTicker)
+        let errorTitle = String(format: NSLocalizedString("home.request_drop.error", comment: "Home view"), TariSettings.shared.network.currencyDisplayTicker)
 
         do {
             try keyServer.requestDrop(onSuccess: { () in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
                     guard let _ = self else { return }
 
-                    let title = String(format: NSLocalizedString("You just got some %@!", comment: "Home view airdrop"), TariSettings.shared.network.currencyDisplayTicker)
-                    let description = String(format: NSLocalizedString("Try sending a bit of %@ back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).", comment: "Home view airdrop"), TariSettings.shared.network.currencyDisplayTicker)
+                    let title = String(format: NSLocalizedString("home.request_drop.title.with_param", comment: "Home view"), TariSettings.shared.network.currencyDisplayTicker)
+                    let description = String(format: NSLocalizedString("home.request_drop.description.with_param", comment: "Home view"), TariSettings.shared.network.currencyDisplayTicker)
 
                     UserFeedback.shared.callToAction(
                         title: title,
                         description: description,
                         actionTitle: String(
                             format: NSLocalizedString(
-                                "Send %@",
-                                comment: "Home view airdrop"
+                                "common.send.with_param",
+                                comment: "Common"
                             ),
                             TariSettings.shared.network.currencyDisplayTicker
                         ),
-                        cancelTitle: NSLocalizedString("Try it later", comment: "Home view airdrop"),
+                        cancelTitle: NSLocalizedString("home.request_drop.try_later", comment: "Home view"),
                         onAction: { [weak self] in
                             guard let self = self else { return }
                             self.onSend()
@@ -242,14 +242,17 @@ class HomeViewController: UIViewController {
 
     private func refreshBalance() {
         guard let wallet = TariLib.shared.tariWallet else {
-            UserFeedback.shared.error(title: NSLocalizedString("Wallet not initialized", comment: "Home screen"), description: "")
+            UserFeedback.shared.error(
+                title: NSLocalizedString("wallet.error.title", comment: "Wallet error"),
+                description: NSLocalizedString("wallet.error.wallet_not_initialized", comment: "Wallet error")
+            )
             return
         }
 
         let (totalMicroTari, error) = wallet.totalMicroTari
         guard error == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Balance update failed", comment: "Home screen"),
+                title: NSLocalizedString("home.error.update_balance", comment: "Home view"),
                 description: "",
                 error: error
             )
@@ -572,7 +575,7 @@ extension HomeViewController {
     private func setupBalanceLabel() {
         view.addSubview(balanceLabel)
 
-        balanceLabel.text = NSLocalizedString("Available Balance", comment: "Home screen balance label")
+        balanceLabel.text = NSLocalizedString("home.available_balance", comment: "Home view")
         balanceLabel.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
         balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
 
@@ -648,7 +651,7 @@ extension HomeViewController {
 
         let navigationBarTitle = UILabel()
         navigationBarContainer.addSubview(navigationBarTitle)
-        navigationBarTitle.text = NSLocalizedString("Transactions", comment: "Transactions nav bar heading")
+        navigationBarTitle.text = NSLocalizedString("tx_list.title", comment: "Transactions list")
         navigationBarTitle.font = Theme.shared.fonts.navigationBarTitle
         navigationBarTitle.textColor = Theme.shared.colors.transactionsListNavBar
 
@@ -704,8 +707,8 @@ extension HomeViewController {
 
         let sendButton = ActionButton()
         view.addSubview(sendButton)
-        let title =  String(format: NSLocalizedString("Send %@",
-                                                      comment: "Floating send Tari button on home screen"),
+        let title =  String(format: NSLocalizedString("common.send.with_param",
+                                                      comment: "Common"),
                             TariSettings.shared.network.currencyDisplayTicker )
         sendButton.setTitle(title, for: .normal)
         sendButton.addTarget(self, action: #selector(onSendAction(_:)), for: .touchUpInside)

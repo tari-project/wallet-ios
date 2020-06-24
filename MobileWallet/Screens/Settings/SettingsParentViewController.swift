@@ -57,7 +57,7 @@ extension SettingsParentViewController {
     }
 
     @objc func setupNavigationBar() {
-        navigationBar.title = NSLocalizedString("Settings", comment: "SettingsViewController title")
+        navigationBar.title = NSLocalizedString("settings.title", comment: "Settings view")
         navigationBar.verticalPositioning = .custom(24)
 
         view.addSubview(navigationBar)

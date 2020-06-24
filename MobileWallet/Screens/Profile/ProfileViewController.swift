@@ -74,7 +74,7 @@ class ProfileViewController: UIViewController {
     // MARK: - Private functions
 
     private func setupNavigationBar() {
-        navigationBar.title = NSLocalizedString("My Profile", comment: "ProfileViewController title")
+        navigationBar.title = NSLocalizedString("profile_view.title", comment: "Profile view")
         navigationBar.backgroundColor =  Theme.shared.colors.profileBackground
 
         navigationBar.rightButtonAction = { [weak self] in
@@ -151,7 +151,7 @@ class ProfileViewController: UIViewController {
     private func customizeMiddleLabel() {
         let middleLabelText = String(
             format: NSLocalizedString(
-                "Transacting in person? Others can scan this QR code from the Tari Aurora App to send you %@.",
+                "profile_view.error.qr_code.description.with_param",
                 comment: "Profile view"
             ),
             TariSettings.shared.network.currencyDisplayTicker
@@ -201,7 +201,7 @@ class ProfileViewController: UIViewController {
             try genQRCode()
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to generate QR", comment: "Profile view"),
+                title: NSLocalizedString("profile_view.error.qr_code.title", comment: "Profile view"),
                 description: "",
                 error: error)
         }

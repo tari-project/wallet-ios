@@ -166,21 +166,21 @@ class UserFeedback {
             imageTop: imageTop,
             title: String(
                 format: NSLocalizedString(
-                    "Spend %@ on exclusive stuff",
+                    "store_modal.title.with_param",
                     comment: "Store modal"
                 ),
                 TariSettings.shared.network.currencyDisplayTicker
             ),
-            boldedTitle: NSLocalizedString("exclusive stuff", comment: "Store modal"),
+            boldedTitle: NSLocalizedString("store_modal.bold_title", comment: "Store modal"),
             description: String(
                 format: NSLocalizedString(
-                    "Check out The TTL Store to spend your “hard-earned” %@ on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!",
+                    "store_modal.description",
                     comment: "Store modal"
                 ),
                 TariSettings.shared.network.currencyDisplayTicker
             ),
-            cancelTitle: NSLocalizedString("I’ll check it out later", comment: "Store modal"),
-            actionTitle: NSLocalizedString("Visit The TTL Store", comment: "Store modal"),
+            cancelTitle: NSLocalizedString("store_modal.cancel", comment: "Store modal"),
+            actionTitle: NSLocalizedString("store_modal.action", comment: "Store modal"),
             actionIcon: Theme.shared.images.storeIcon!,
             onClose: {
                 SwiftEntryKit.dismiss()

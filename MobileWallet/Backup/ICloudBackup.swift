@@ -47,26 +47,23 @@ enum ICloudBackupWalletError: Error {
     case dbFileNotFound
     case iCloudContainerNotFound
     case unableCreateBackupFolder
-    case privateKeyError
 }
 
 extension ICloudBackupWalletError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .failedToCreateZip:
-            return NSLocalizedString("Failed to create wallet backup archive", comment: "backup archive error description")
+            return NSLocalizedString("iCloud_backup.error.zip", comment: "iCloudBackup error")
         case .noICloudBackupExists:
-            return NSLocalizedString("You don't have any wallets backed up with iCloud", comment: "'No any wallet backup' error description")
+            return NSLocalizedString("iCloud_backup.error.no_backup_exists", comment: "iCloudBackup error")
         case .unarchiveError:
-            return NSLocalizedString("Unable to unarchive wallet from iCloud backup", comment: "unarchive wallet error description")
+            return NSLocalizedString("iCloud_backup.error.unzip", comment: "iCloudBackup error")
         case .dbFileNotFound:
-            return NSLocalizedString("Unable to create wallet backup. File not found", comment: "sqlite file not found error description")
+            return NSLocalizedString("iCloud_backup.error.db_not_found", comment: "iCloudBackup error")
         case .iCloudContainerNotFound:
-            return NSLocalizedString("Can't connect to iCloud Drive services. Make sure that you are signed in with your Apple ID on this device and that iCloud is enabled.", comment: "iCloud container not found error description")
+            return NSLocalizedString("iCloud_backup.error.container_not_found", comment: "iCloudBackup error")
         case .unableCreateBackupFolder:
-            return NSLocalizedString("Unable to create backup folder", comment: "Unable to create backup folder error description")
-        case .privateKeyError:
-            return NSLocalizedString("Unable to restore wallet. Private key error", comment: "Unable to restore wallet private key error descroption")
+            return NSLocalizedString("iCloud_backup.error.unable_create_backup_folder", comment: "iCloudBackup error")
         }
     }
 }

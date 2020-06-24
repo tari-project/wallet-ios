@@ -77,7 +77,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                 guard pubKey.hex.0 != TariLib.shared.tariWallet?.publicKey.0?.hex.0 else {
                     errorMessageView.message = String(
                         format: NSLocalizedString(
-                            "Sorry, you cannot send %@ to yourself",
+                            "add_recipient.warning.can_not_send_yourself.with_param",
                             comment: "Add recipient view"
                         ),
                         TariSettings.shared.network.currencyDisplayTicker
@@ -135,8 +135,8 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                         self.setInputText(publicKey: pubKey)
                     } catch {
                         UserFeedback.shared.error(
-                            title: NSLocalizedString("Could not use Emoji ID", comment: "Add recipient screen"),
-                            description: "Failed to create a valid contact from the pasted Emoji ID",
+                            title: NSLocalizedString("add_recipient.error.invalid_emoji.title", comment: "Add recipient view"),
+                            description: NSLocalizedString("add_recipient.error.invalid_emoji.description", comment: "Add recipient view"),
                             error: error)
                     }
 
@@ -228,7 +228,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         if selectedRecipientPublicKey != nil && selectedRecipientPublicKey?.hex.0 != TariLib.shared.tariWallet?.publicKey.0?.hex.0 {
             onContinue()
         } else if contactsTableVC.isEmptyList() {
-            errorMessageView.message = NSLocalizedString("Invalid Emoji ID", comment: "Add recipient view")
+            errorMessageView.message = NSLocalizedString("add_recipient.inputbox.warning", comment: "Add recipient view")
         }
 
         dismissKeyboard()
@@ -273,7 +273,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     private func setupNavigationBar() {
-        navigationBar.title = NSLocalizedString("Send To", comment: "Navigation bar title on send view screen")
+        navigationBar.title = NSLocalizedString("add_recipient.title", comment: "Add recipient view")
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(navigationBar)
         navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -311,7 +311,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputBox.heightAnchor.constraint(equalToConstant: emojiIdHeight).isActive = true
 
         //Input style
-        inputBox.placeholder = NSLocalizedString("Enter Emoji ID or Contact Name", comment: "Add recipient view")
+        inputBox.placeholder = NSLocalizedString("add_recipient.inputbox.placeholder", comment: "Add recipient view")
         inputBox.backgroundColor = Theme.shared.colors.appBackground
         inputBox.font = Theme.shared.fonts.searchContactsInputBoxText
         inputBox.leftView = UIView(frame: CGRect(x: 0, y: 0, width: sidePadding / 2, height: inputBox.frame.height))
@@ -341,7 +341,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     private func setupContinueButton() {
-        continueButton.setTitle(NSLocalizedString("Continue", comment: "Add recipient view"), for: .normal)
+        continueButton.setTitle(NSLocalizedString("common.continue", comment: "Common"), for: .normal)
         view.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
 

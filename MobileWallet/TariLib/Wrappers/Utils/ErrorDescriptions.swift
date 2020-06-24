@@ -45,41 +45,41 @@ extension WalletErrors: LocalizedError {
         switch self {
         case .generic(let code):
             //TODO create a map of Tari errors from rust
-            return  "\(NSLocalizedString("Generic error code:", comment: "Wallet errors")) \(code)."
+            return  "\(NSLocalizedString("wallet.error.generic_code", comment: "Wallet error")) \(code)."
         case .insufficientFunds(let microTariSpendable):
-            return "\(NSLocalizedString("Insufficient funds. Available spendable Tari:", comment: "Wallet errors")) \(microTariSpendable.formatted)."
+            return "\(NSLocalizedString("wallet.error.insufficient_funds", comment: "Wallet error")) \(microTariSpendable.formatted)."
         case .addUpdateContact:
-            return NSLocalizedString("Failed to add/update contact.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.add_update_contact", comment: "Wallet error")
         case .removeContact:
-            return NSLocalizedString("Failed to remove contact.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.remove_contact", comment: "Wallet error")
         case .addOwnContact:
-            return NSLocalizedString("Cannot add your own public key as a contact.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.add_own_contact", comment: "Wallet error")
         case .invalidPublicKeyHex:
-            return NSLocalizedString("Invalid public key hex.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.invalid_public_key_hex", comment: "Wallet error")
         case .generateTestData:
-            return NSLocalizedString("Failed to generate test data.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.test_data", comment: "Wallet error")
         case .generateTestReceiveTransaction:
-            return NSLocalizedString("Failed to generate test receieve transaction.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.test_receieve_transaction", comment: "Wallet error")
         case .sendingTransaction:
-            return NSLocalizedString("Failed to send transaction.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.send_transaction", comment: "Wallet error")
         case .testTransactionBroadcast:
-            return NSLocalizedString("Failed to broadcast test transaction.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.broadcast", comment: "Wallet error")
         case .testTransactionMined:
-            return NSLocalizedString("Failed to mine test transaction.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.mine_transaction", comment: "Wallet error")
         case .testSendCompleteTransaction:
-            return NSLocalizedString("Failed to complete test transaction.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.test_transaction", comment: "Wallet error")
         case .completedTransactionById:
-            return NSLocalizedString("Failed to find completed transaction by ID.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.find_completed_transaction", comment: "Wallet error")
         case .cancelledTransactionById:
-            return NSLocalizedString("Failed to find cancelled transaction by ID.", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.find_canceled_transaction", comment: "Wallet error")
         case .walletNotInitialized:
-            return NSLocalizedString("Tari wallet not yet initialized", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.wallet_not_initialized", comment: "Wallet error")
         case .invalidSignatureAndNonceString:
-            return NSLocalizedString("Invalid signature created", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.invalid_signature", comment: "Wallet error")
         case .cancelNonPendingTransaction:
-            return NSLocalizedString("Cannot cancel a transaction that is not pending", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.cancel_non_pending_transaction", comment: "Wallet error")
         case .transactionsToCancel:
-            return NSLocalizedString("Could not fetch inbound or outbound transactions to cancel", comment: "Wallet errors")
+            return NSLocalizedString("wallet.error.fetch_transactions_to_cancel", comment: "Wallet error")
         }
     }
 }
@@ -92,17 +92,17 @@ extension KeyServerError: LocalizedError {
                 return message
             }
 
-            return NSLocalizedString("Tari faucet server error. Status code: \(statusCode).", comment: "Tari key server error")
+            return NSLocalizedString("key_server.error.server", comment: "Tari key server error") + " \(statusCode)."
         case .unknown:
-            return NSLocalizedString("Unknown Tari faucet error.", comment: "Tari key server error")
+            return NSLocalizedString("key_server.error.unknown", comment: "Tari key server error")
         case .invalidSignature:
-            return NSLocalizedString("Invalid signature sent to Tari key server.", comment: "Tari key server error")
-        case .allCoinsAllAllocated:
-            return NSLocalizedString("All coins are allocated.", comment: "Tari key server error")
+            return NSLocalizedString("key_server.error.invalid_signature", comment: "Tari key server error")
+        case .allCoinsAllocated:
+            return NSLocalizedString("key_server.error.all_coins_allocated", comment: "Tari key server error")
         case .missingResponse:
-            return NSLocalizedString("Missing response from Tari key server.", comment: "Tari key server error")
+            return NSLocalizedString("key_server.error.missing_response", comment: "Tari key server error")
         case .responseInvalid:
-            return NSLocalizedString("Invalid response from Tari key server.", comment: "Tari key server error")
+            return NSLocalizedString("key_server.error.response_invalid", comment: "Tari key server error")
         }
     }
 }

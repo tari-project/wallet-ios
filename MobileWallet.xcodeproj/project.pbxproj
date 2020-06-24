@@ -333,6 +333,7 @@
 		3708D756247FF81900807D72 /* SettingsParentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D755247FF81900807D72 /* SettingsParentViewController.swift */; };
 		3708D757247FF81900807D72 /* SettingsParentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D755247FF81900807D72 /* SettingsParentViewController.swift */; };
 		3708D758247FF81900807D72 /* SettingsParentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D755247FF81900807D72 /* SettingsParentViewController.swift */; };
+		37098043249CD48A0004ED2E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 37098045249CD48A0004ED2E /* Localizable.strings */; };
 		371189732488FF11004D0CE3 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371189722488FF11004D0CE3 /* CloudKit.framework */; };
 		371A0818247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
 		371A0819247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
@@ -702,6 +703,7 @@
 		3708D749247FCF2300807D72 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		3708D751247FF7D000807D72 /* BackupWalletSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupWalletSettingsViewController.swift; sourceTree = "<group>"; };
 		3708D755247FF81900807D72 /* SettingsParentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsParentViewController.swift; sourceTree = "<group>"; };
+		37098044249CD48A0004ED2E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		371189722488FF11004D0CE3 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		371A0817247290C000F97713 /* TransitionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionLabel.swift; sourceTree = "<group>"; };
 		373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
@@ -1214,6 +1216,7 @@
 				37B4449C24890F3000592D92 /* Backup */,
 				00262EB2236F022000A6C8A0 /* Common */,
 				00262EB7236F35B200A6C8A0 /* Models */,
+				37098045249CD48A0004ED2E /* Localizable.strings */,
 			);
 			path = MobileWallet;
 			sourceTree = "<group>";
@@ -1717,6 +1720,7 @@
 				BF191A2023E5AFA200D33C85 /* img_1.png in Resources */,
 				BF0A77B52420CF1200861A3E /* NotificationAnimation.json in Resources */,
 				BFE1FC0223E229FF00BA5EEC /* CheckMark.json in Resources */,
+				37098043249CD48A0004ED2E /* Localizable.strings in Resources */,
 				BF191A0D23E5A96700D33C85 /* EmojiWheel.json in Resources */,
 				BFF1EDA32408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
 				BF191A1A23E5AFA200D33C85 /* img_2.png in Resources */,
@@ -2449,6 +2453,14 @@
 				00E491AA2366E08F007B332D /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		37098045249CD48A0004ED2E /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				37098044249CD48A0004ED2E /* en */,
+			);
+			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

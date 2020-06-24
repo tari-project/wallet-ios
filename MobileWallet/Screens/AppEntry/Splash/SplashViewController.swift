@@ -135,8 +135,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             let error: Error? = result?.object as? Error
 
             UserFeedback.shared.error(
-                title: NSLocalizedString("Tor connection error", comment: "Splash screen"),
-                description: NSLocalizedString("Could not establish a connection to the network.", comment: "Splash screen"),
+                title: NSLocalizedString("tor.error.title", comment: "Tor error"),
+                description: NSLocalizedString("tor.error.description", comment: "Tor error"),
                 error: error
             )
         }
@@ -177,8 +177,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             } catch {
                 DispatchQueue.main.async {
                     UserFeedback.shared.error(
-                        title: NSLocalizedString("Wallet error", comment: "Splash screen"),
-                        description: NSLocalizedString("Error starting existing wallet", comment: "Splash screen"),
+                        title: NSLocalizedString("wallet.error.title", comment: "Wallet error"),
+                        description: NSLocalizedString("wallet.error.start_existing_wallet", comment: "Wallet error"),
                         error: error
                     )
                 }
@@ -200,8 +200,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             }
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Wallet error", comment: "Splash screen for new users"),
-                description: NSLocalizedString("Failed to create a new wallet", comment: "Splash screen for new users"),
+                title: NSLocalizedString("wallet.error.title", comment: "Wallet error"),
+                description: NSLocalizedString("wallet.error.create_new_wallet", comment: "Wallet error"),
                 error: error //TODO copy update
             )
 

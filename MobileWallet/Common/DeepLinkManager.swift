@@ -113,8 +113,8 @@ class DeeplinkNavigator {
                     homeVC.onSend(pubKey: pubKey, deepLinkParams: params)
                 } catch {
                     UserFeedback.shared.error(
-                        title: NSLocalizedString("Invalid link found", comment: "Deep link error"),
-                        description: NSLocalizedString("Could not get emoji ID from link", comment: "Deep link error"),
+                        title: NSLocalizedString("deep_link.error.title", comment: "Deep link error"),
+                        description: NSLocalizedString("deep_link.error.emoji_from_link", comment: "Deep link error"),
                         error: error
                     )
                 }
@@ -140,7 +140,7 @@ class ShortcutParser {
         let showQRShortcutItem = UIApplicationShortcutItem(
             type: ShortcutKey.showQR.rawValue,
             localizedTitle: NSLocalizedString(
-                "Show my QR",
+                "shortcut.show_my_qr",
                 comment: "Home screen shortcut"
             ),
             localizedSubtitle: nil,
@@ -152,8 +152,8 @@ class ShortcutParser {
             type: ShortcutKey.send.rawValue,
             localizedTitle: String(
                 format: NSLocalizedString(
-                    "Send %@",
-                    comment: "Home screen shortcut"
+                    "common.send.with_param",
+                    comment: "Common"
                 ),
                 TariSettings.shared.network.currencyDisplayTicker
             ),

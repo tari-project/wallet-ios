@@ -54,8 +54,8 @@ class RestoreWalletViewController: UIViewController {
 
         var rawValue: String {
             switch self {
-            case .iCloudRestore: return NSLocalizedString("Restore with iCloud", comment: "RestoreCellTitle")
-            case .phraseRestore: return NSLocalizedString("Restore with recovery phrase", comment: "RestoreCellTitle")
+            case .iCloudRestore: return NSLocalizedString("restore_wallet.item.iCloud_restore", comment: "RestoreWallet view")
+            case .phraseRestore: return NSLocalizedString("restore_wallet.item.phrase_restore", comment: "RestoreWallet view")
             }
         }
     }
@@ -103,7 +103,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
                 ICloudBackup.shared.restoreWallet(completion: { [weak self] error in
 
                     if error != nil {
-                        UserFeedback.shared.error(title: NSLocalizedString("Failed to restore wallet", comment: "Restore wallet failture"), description: error?.localizedDescription ?? "", error: nil) { [weak self] in
+                        UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.restore_wallet.title", comment: "RestoreWallet view"), description: error?.localizedDescription ?? "", error: nil) { [weak self] in
                             self?.pendingView.hidePendingView()
                         }
                         return
@@ -137,7 +137,7 @@ extension RestoreWalletViewController {
     }
 
     private func setupNavigationBar() {
-        navigationBar.title = NSLocalizedString("Restore Your Wallet", comment: "RestoreWalletViewController title")
+        navigationBar.title = NSLocalizedString("restore_wallet.title", comment: "RestoreWallet view")
 
         view.addSubview(navigationBar)
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
