@@ -396,7 +396,7 @@ class SendingTariViewController: UIViewController {
                 self.view.addSubview(self.debugLabel)
                 self.view.bringSubviewToFront(self.debugLabel)
                 self.debugLabel.textAlignment = .center
-                self.debugLabel.font = Theme.shared.fonts.sendingTariTitleLabelFirst!.withSize(12)
+                self.debugLabel.font = Theme.shared.fonts.sendingTariTitleLabelFirst.withSize(12)
                 self.debugLabel.translatesAutoresizingMaskIntoConstraints = false
                 self.debugLabel.leadingAnchor.constraint(
                     equalTo: self.view.safeAreaLayoutGuide.leadingAnchor,

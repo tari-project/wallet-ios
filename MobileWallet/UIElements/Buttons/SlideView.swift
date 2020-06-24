@@ -178,7 +178,7 @@ import UIKit
             sliderTextLabel.text = labelText
         }
     }
-    public var textFont: UIFont = Theme.shared.fonts.actionButton! {
+    public var textFont: UIFont = Theme.shared.fonts.actionButton {
         didSet {
             textLabel.font = textFont
             sliderTextLabel.font = textFont

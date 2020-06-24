@@ -131,7 +131,7 @@ extension CopyableLabel {
 
         let copiedLabel = UILabel()
         copiedLabel.text = NSLocalizedString("COPIED", comment: "Emoji ID copied")
-        copiedLabel.font = Theme.shared.fonts.copiedLabelFont
+        copiedLabel.font = Theme.shared.fonts.copiedLabel
         copiedLabel.textColor = Theme.shared.colors.textButtonSecondary
 
         self.addSubview(copiedView)

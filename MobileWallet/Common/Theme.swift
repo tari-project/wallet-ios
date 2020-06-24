@@ -66,6 +66,17 @@ extension Loopable {
     }
 }
 
+struct Theme {
+    static let shared = Theme()
+
+    //NOTE: Any new theme properties must be added to tests to ensure all assets are included before deployment
+    let fonts = Fonts()
+    let colors = Colors()
+    let images = Images()
+    let sizes = Sizes()
+    let transitions = Transitions()
+}
+
 struct Colors: Loopable {
     let gradientStartColor = UIColor(named: "GradientStartColor")
     let gradientEndColor = UIColor(named: "GradientEndColor")
@@ -83,7 +94,7 @@ struct Colors: Loopable {
     let appBackground = UIColor(named: "AppBackground")
 
     let inputPlaceholder = UIColor(named: "Placeholder")
-    let appTableViewCellBackground = UIColor(named: "SystemMenuTableViewCellBackground")
+    let systemTableViewCellBackground = UIColor(named: "SystemMenuTableViewCellBackground")
 
     let checkBoxBorderColor = UIColor(named: "CheckboxBorderColor")
 
@@ -224,117 +235,6 @@ struct Colors: Loopable {
 
 }
 
-struct Fonts: Loopable {
-    let splashVersionFooterLabel = UIFont(name: "Avenir-Heavy", size: 9.0)
-    let actionButton = UIFont(name: "Avenir-Heavy", size: 16.0)
-    let copiedLabelFont = UIFont(name: "Avenir-Black", size: 13.0)
-
-    //Splash
-    let splashTitleLabel = UIFont(name: "Avenir-Black", size: 30.0)
-    let splashSubtitleLabel = UIFont(name: "Avenir-Medium", size: 14.0)
-    let splashDisclaimerLabel = UIFont(name: "Avenir-Medium", size: 12.0)
-
-    //SplashCreatingWallet
-    let createWalletFirstLabel = UIFont(name: "Avenir-Black", size: 18.0)
-    let createWalletSecondLabelFirstText = UIFont(name: "Avenir-Black", size: 18.0)
-    let createWalletSecondLabelSecondText = UIFont(name: "Avenir-Roman", size: 18.0)
-    let createWalletThirdLabel = UIFont(name: "Avenir-Medium", size: 13.0)
-    let createWalletEmojiIDFirstText = UIFont(name: "Avenir-Light", size: 18.0)
-    let createWalletEmojiIDSecondText = UIFont(name: "Avenir-Black", size: 18.0)
-    let createWalletNotificationsFirstLabel = UIFont(name: "Avenir-Light", size: 18.0)
-    let createWalletNotificationsSecondLabel = UIFont(name: "Avenir-Black", size: 18.0)
-    let createWalletNotificationsThirdLabel = UIFont(name: "Avenir-Medium", size: 14.0)
-    let tapToSeeFullEmojiLabel = UIFont(name: "Avenir-Heavy", size: 12)
-    let restoreWalletButton = UIFont(name: "Avenir-Medium", size: 13.0)
-
-    //Profile
-    let profileTitleLightLabel = UIFont(name: "Avenir-Light", size: 18.0)
-    let profileTitleRegularLabel = UIFont(name: "Avenir-Black", size: 18.0)
-    let profileMiddleLabel = UIFont(name: "Avenir-Medium", size: 14)
-
-    //Settings
-    let settingsDoneButton = UIFont(name: "Avenir-Medium", size: 16)
-    let settingsTableViewHeader = UIFont(name: "Avenir-Black", size: 17)
-
-    let settingsSeedPhraseCellTitle = UIFont(name: "Avenir-Heavy", size: 14)
-    let settingsSeedPhraseCellNumber = UIFont(name: "Avenir-Medium", size: 14)
-
-    let settingsSeedPhraseDescription = UIFont(name: "Avenir-Medium", size: 14)
-    let settingsSeedPhraseAgreement = UIFont(name: "Avenir-Medium", size: 12)
-    let settingsRecoveryPhraseWorld = UIFont(name: "Avenir-Heavy", size: 14)
-    let settingsFillablePhraseViewDescription = UIFont(name: "Avenir-Medium", size: 12)
-
-    //Home screen
-    let homeScreenTotalBalanceLabel = UIFont(name: "Avenir-Roman", size: 14.0)
-    let homeScreenTotalBalanceValueLabel = UIFont(name: "Avenir-Black", size: 39.0)
-    let homeScreenTotalBalanceValueLabelDecimals = UIFont(name: "Avenir-Black", size: 16.0)
-
-    //Transaction cell
-    let transactionCellUsernameLabel = UIFont(name: "Avenir-Heavy", size: 15.0)
-    let transactionCellDescriptionLabel = UIFont(name: "Avenir-Roman", size: 14.0)
-    let transactionCellValueLabel = UIFont(name: "Avenir-Black", size: 12.0)
-    let transactionDateValueLabel = UIFont(name: "Avenir-Medium", size: 12.0)
-
-    //View transaction screen
-    let transactionScreenCurrencyValueLabel = UIFont(name: "Avenir-Black", size: 90.0)
-    let transactionScreenSubheadingLabel = UIFont(name: "Avenir-Medium", size: 13.0)
-    let transactionScreenTextLabel = UIFont(name: "Avenir-Roman", size: 14.0)
-    let transactionScreenTxIDLabel = UIFont(name: "Avenir-Roman", size: 13.0)
-    let transactionListEmptyTitleLabel = UIFont(name: "Avenir-Black", size: 33.0)
-    let transactionListEmptyMessageLabel = UIFont(name: "Avenir-Medium", size: 14.0)
-    let transactionFeeLabel = UIFont(name: "Avenir-Heavy", size: 14.0)
-    let transactionFeeButton = UIFont(name: "Avenir-Roman", size: 13.0)
-
-    // Sending tari screen
-    let sendingTariTitleLabelFirst = UIFont(name: "Avenir-Light", size: 18.0)
-    let sendingTariTitleLabelSecond = UIFont(name: "Avenir-Black", size: 18.0)
-
-    //Navigation bar
-    let navigationBarTitle = UIFont(name: "Avenir-Heavy", size: 16.0)
-
-    //Popup User feedback
-    let feedbackPopupTitle = UIFont(name: "Avenir-Light", size: 18)
-    let feedbackPopupHeavy = UIFont(name: "Avenir-Black", size: 18)
-    let feedbackPopupDescription = UIFont(name: "Avenir-Medium", size: 14)
-
-    //Simple text button
-    let textButton = UIFont(name: "Avenir-Medium", size: 14)
-    let copyButton = UIFont(name: "Avenir-Heavy", size: 14)
-    let textButtonCancel = UIFont(name: "Avenir-Medium", size: 12)
-
-    //Intro to wallet
-    let introTitleBold = UIFont(name: "Avenir-Black", size: 18)
-    let introTitle = UIFont(name: "Avenir-Light", size: 18)
-
-    //Add recipient view
-    let searchContactsInputBoxText = UIFont(name: "Avenir-Roman", size: 14.0)
-    let contactCellAlias = UIFont(name: "Avenir-Heavy", size: 15.0)
-    let contactCellAliasLetter = UIFont(name: "Avenir-Heavy", size: 24.0)
-
-    //Add amount screen
-    let keypadButton = UIFont(name: "Avenir-Heavy", size: 22.0)
-    let amountLabel = UIFont(name: "Avenir-Black", size: 80.0)
-    let warningBoxTitleLabel = UIFont(name: "Avenir-Heavy", size: 14.0)
-    let amountWarningLabel = UIFont(name: "Avenir-Roman", size: 13.0)
-
-    //Add note screen
-    let addNoteTitleLabel = UIFont(name: "Avenir-Heavy", size: 16.0)
-    let addNoteInputView = UIFont(name: "Avenir-Medium", size: 20.0)
-
-    //Add note screen
-    let scannerTitleLabel = UIFont(name: "Avenir-Heavy", size: 16.0)
-
-    //Refresh view
-    let refreshViewLabel = UIFont(name: "Avenir-Heavy", size: 12.0)
-
-    //App table view
-    let appTableViewCell = UIFont(name: "Avenir-Medium", size: 15)
-
-    //Restore pending view
-    let restorePendingViewTitle = UIFont(name: "Avenir-Light", size: 18)
-    let restorePendingViewDescription = UIFont(name: "Avenir-Medium", size: 14)
-}
-
 struct Images: Loopable {
     // Create Wallet
     let createWalletTouchID = UIImage(named: "fingerprint")
@@ -377,6 +277,118 @@ struct Images: Loopable {
     let settings = UIImage(named: "settings")
 }
 
+struct Fonts: Loopable {
+    let splashVersionFooterLabel = UIFont.Avenir.heavy.withSize(9.0)
+    let actionButton = UIFont.Avenir.heavy.withSize(16.0)
+    let copiedLabel = UIFont.Avenir.black.withSize(13.0)
+
+    //Splash
+    let splashTitleLabel = UIFont.Avenir.black.withSize(30.0)
+    let splashSubtitleLabel = UIFont.Avenir.medium.withSize(14.0)
+    let splashDisclaimerLabel = UIFont.Avenir.medium.withSize(12.0)
+
+    //SplashCreatingWallet
+    let createWalletFirstLabel = UIFont.Avenir.black.withSize(18.0)
+    let createWalletSecondLabelFirstText = UIFont.Avenir.black.withSize(18.0)
+    let createWalletSecondLabelSecondText = UIFont.Avenir.roman.withSize(18.0)
+    let createWalletThirdLabel = UIFont.Avenir.medium.withSize(13.0)
+    let createWalletEmojiIDFirstText = UIFont.Avenir.light.withSize(18.0)
+    let createWalletEmojiIDSecondText = UIFont.Avenir.black.withSize(18.0)
+    let createWalletNotificationsFirstLabel = UIFont.Avenir.light.withSize(18.0)
+    let createWalletNotificationsSecondLabel = UIFont.Avenir.black.withSize(18.0)
+    let createWalletNotificationsThirdLabel = UIFont.Avenir.medium.withSize(14.0)
+    let tapToSeeFullEmojiLabel = UIFont.Avenir.heavy.withSize(12.0)
+    let restoreWalletButton = UIFont.Avenir.medium.withSize(13.0)
+
+    //Profile
+    let profileTitleLightLabel = UIFont.Avenir.light.withSize(18.0)
+    let profileTitleRegularLabel = UIFont.Avenir.black.withSize(18.0)
+    let profileCopyEmojiButton = UIFont.Avenir.medium.withSize(12.0)
+    let profileMiddleLabel = UIFont.Avenir.medium.withSize(14.0)
+
+    //Home screen
+    let homeScreenTotalBalanceLabel = UIFont.Avenir.roman.withSize(14.0)
+    let homeScreenTotalBalanceValueLabel = UIFont.Avenir.black.withSize(39.0)
+    let homeScreenTotalBalanceValueLabelDecimals = UIFont.Avenir.black.withSize(16.0)
+
+    //Transaction cell
+    let transactionCellUsernameLabel = UIFont.Avenir.heavy.withSize(15.0)
+    let transactionCellDescriptionLabel = UIFont.Avenir.roman.withSize(14.0)
+    let transactionCellValueLabel = UIFont.Avenir.black.withSize(12.0)
+    let transactionDateValueLabel = UIFont.Avenir.medium.withSize(12.0)
+
+    //View transaction screen
+    let transactionScreenCurrencyValueLabel = UIFont.Avenir.black.withSize(90.0)
+    let transactionScreenSubheadingLabel = UIFont.Avenir.medium.withSize(13.0)
+    let transactionScreenTextLabel = UIFont.Avenir.roman.withSize(14.0)
+    let transactionScreenTxIDLabel = UIFont.Avenir.roman.withSize(13.0)
+    let transactionListEmptyTitleLabel = UIFont.Avenir.black.withSize(33.0)
+    let transactionListEmptyMessageLabel = UIFont.Avenir.medium.withSize(14.0)
+    let transactionFeeLabel = UIFont.Avenir.heavy.withSize(14.0)
+    let transactionFeeButton = UIFont.Avenir.roman.withSize(13.0)
+
+    // Sending tari screen
+    let sendingTariTitleLabelFirst = UIFont.Avenir.light.withSize(18.0)
+    let sendingTariTitleLabelSecond = UIFont.Avenir.black.withSize(18.0)
+
+    //Navigation bar
+    let navigationBarTitle = UIFont.Avenir.heavy.withSize(16.0)
+
+    //Popup User feedback
+    let feedbackPopupTitle = UIFont.Avenir.light.withSize(18.0)
+    let feedbackPopupHeavy = UIFont.Avenir.black.withSize(18.0)
+    let feedbackPopupDescription = UIFont.Avenir.medium.withSize(14.0)
+
+    //Simple text button
+    let textButton = UIFont.Avenir.medium.withSize(14.0)
+    let copyButton = UIFont.Avenir.heavy.withSize(14.0)
+    let textButtonCancel = UIFont.Avenir.medium.withSize(12.0)
+
+    //Intro to wallet
+    let introTitleBold = UIFont.Avenir.black.withSize(18.0)
+    let introTitle = UIFont.Avenir.light.withSize(18.0)
+
+    //Add recipient view
+    let searchContactsInputBoxText = UIFont.Avenir.roman.withSize(14.0)
+    let contactCellAlias = UIFont.Avenir.heavy.withSize(15.0)
+    let contactCellAliasLetter = UIFont.Avenir.heavy.withSize(24.0)
+
+    //Add amount screen
+    let keypadButton = UIFont.Avenir.heavy.withSize(22.0)
+    let amountLabel = UIFont.Avenir.black.withSize(80.0)
+    let warningBoxTitleLabel = UIFont.Avenir.heavy.withSize(14.0)
+    let amountWarningLabel = UIFont.Avenir.roman.withSize(13.0)
+
+    //Add note screen
+    let addNoteTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
+    let addNoteInputView = UIFont.Avenir.medium.withSize(20.0)
+
+    //Add note screen
+    let scannerTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
+
+    //Refresh view
+    let refreshViewLabel = UIFont.Avenir.heavy.withSize(12.0)
+
+    //App table view
+    let systemableViewCell = UIFont.Avenir.medium.withSize(15.0)
+
+    //Restore pending view
+    let restorePendingViewTitle = UIFont.Avenir.light.withSize(18.0)
+    let restorePendingViewDescription = UIFont.Avenir.medium.withSize(14.0)
+
+    //Settings
+    let settingsDoneButton = UIFont.Avenir.medium.withSize(16.0)
+    let settingsTableViewHeader = UIFont.Avenir.black.withSize(17.0)
+
+    let settingsSeedPhraseCellTitle = UIFont.Avenir.heavy.withSize(14.0)
+    let settingsSeedPhraseCellNumber = UIFont.Avenir.medium.withSize(14.0)
+
+    let settingsSeedPhraseDescription = UIFont.Avenir.medium.withSize(14.0)
+    let settingsSeedPhraseAgreement = UIFont.Avenir.medium.withSize(12.0)
+    let settingsRecoveryPhraseWorld = UIFont.Avenir.heavy.withSize(14.0)
+    let settingsFillablePhraseViewDescription = UIFont.Avenir.medium.withSize(12.0)
+}
+
 struct Sizes {
     let appSidePadding: CGFloat = 25 //TODO maybe adjust for smaller phones
     //TODO move other constants here
@@ -402,18 +414,4 @@ struct Transitions {
 
         return transition
     }
-}
-
-struct Theme {
-    static let shared = Theme()
-
-    //NOTE: Any new theme properties must be added to tests to ensure all assets are included before deployment
-
-    let colors = Colors()
-    let images = Images()
-    let fonts = Fonts()
-    let sizes = Sizes()
-    let transitions = Transitions()
-
-    let transactionIcons = Images() //FIXME delete this and change all references to it
 }

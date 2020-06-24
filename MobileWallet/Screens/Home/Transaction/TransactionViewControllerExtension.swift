@@ -74,7 +74,7 @@ extension TransactionViewController {
         valueCenterYAnchorConstraint = valueLabel.centerYAnchor.constraint(equalTo: valueContainerView.centerYAnchor)
         valueCenterYAnchorConstraint.isActive = true
         valueLabel.widthAnchor.constraint(lessThanOrEqualTo: valueContainerView.widthAnchor, constant: Theme.shared.sizes.appSidePadding * -4).isActive = true
-        valueLabel.heightAnchor.constraint(equalToConstant: Theme.shared.fonts.transactionScreenCurrencyValueLabel!.pointSize).isActive = true
+        valueLabel.heightAnchor.constraint(equalToConstant: Theme.shared.fonts.transactionScreenCurrencyValueLabel.pointSize).isActive = true
 
         let valueColor = Theme.shared.colors.transactionViewValueLabel
         valueLabel.minimumScaleFactor = 0.2
