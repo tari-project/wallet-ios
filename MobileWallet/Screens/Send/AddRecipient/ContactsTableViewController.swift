@@ -159,7 +159,10 @@ class ContactsTableViewController: UITableViewController {
         recentContactList = try wallet.recentPublicKeys(limit: 3)
 
         //Filtered lists are full lists by default
-        filteredContactList = contactList
+        filteredContactList = contactList.sorted(by: { (contact1, contact2) -> Bool in
+            if contact1.alias.0.isEmpty { return false }
+            return contact1.alias.0.lowercased() < contact2.alias.0.lowercased()
+        })
         filteredRecentPublicKeyList = recentContactList
 
         tableView.reloadData()
