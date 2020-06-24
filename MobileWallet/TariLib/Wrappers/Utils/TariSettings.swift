@@ -114,19 +114,19 @@ struct TariSettings {
     func getRandomBaseNode() -> String {
         return defaultBaseNodePool[Int.random(in: 0 ... (defaultBaseNodePool.count-1))]
     }
+    
+    let pushNotificationServer = "https://push.tari.com"
 
     #if DEBUG
     let torEnabled = true //If just working on UI updates, this can be made false
     //Used for showing a little extra detail in the UI to help debugging
     private let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
-    let pushNotificationServer = "https://9e69320ddd75.ngrok.io" // "https://push.tari.com"
     let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 1 //1 day
     #else
     let torEnabled = true
     private let isDebug = false
     let maxMbLogsStorage: UInt64 = 500 //500MB
-    let pushNotificationServer = "https://push.tari.com"
     let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 3 //3 days
     #endif
 
