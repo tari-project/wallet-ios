@@ -54,7 +54,6 @@ class ScheduleReminderNotificationsOperation: Operation {
             return
         }
 
-        //Any feature background logic here
         NotificationManager.shared.cancelAllFutureReminderNotifications()
 
         guard let firstReminder = ReminderNotifications.recipientReminderNotifications.first else {

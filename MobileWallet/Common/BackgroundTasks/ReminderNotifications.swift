@@ -65,7 +65,7 @@ class ReminderNotifications {
             identifier: "scheduled-reminders-recipient-1",
             title: ReminderNotifications.titleString,
             body: NSLocalizedString("Open Tari Aurora", comment: "Local reminder notifications"),
-            deliverAfter: 60 * 60 * 24
+            deliverAfter: TariSettings.shared.environment == .production ? 60 * 60 * 24 : 60 * 60 * 2 //24h for prod and 2h for debug/testflight
         ),
         ScheduledReminder(
             identifier: "scheduled-reminders-recipient-2",
@@ -77,7 +77,7 @@ class ReminderNotifications {
                 ),
                 TariSettings.shared.network.currencyDisplayTicker
             ),
-            deliverAfter: 60 * 60 * 48
+            deliverAfter: TariSettings.shared.environment == .production ? 60 * 60 * 48 : 60 * 60 * 4 //48h for prod and 4h for debug/testflight
         )
     ]
 

@@ -46,6 +46,7 @@ private struct TokenRegistrationServerRequest: Codable {
     let platform: String = "ios"
     let signature: String
     let public_nonce: String
+    let sandbox = TariSettings.shared.environment == .debug
 }
 
 private struct SendNotificationServerRequest: Codable {
@@ -162,9 +163,6 @@ class NotificationManager {
 
     /// After syncing with base node we can cancel all prreviosuly scheduled reminder notifications that were going to remind the user to open up the app
     func cancelAllFutureReminderNotifications() {
-        // TODO remove below
-        return
-
         ReminderNotifications.shared.shouldScheduleRemindersUpdatedAt = nil
 
         var identifiers: [String] = []
