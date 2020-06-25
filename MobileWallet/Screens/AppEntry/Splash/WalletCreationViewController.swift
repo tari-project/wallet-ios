@@ -599,6 +599,7 @@ extension WalletCreationViewController {
     private func setupPendingAnimation() {
         loadingCircle.backgroundBehavior = .pauseAndRestore
         loadingCircle.animation = Animation.named(.pendingCircleAnimation)
+        loadingCircle.alpha = 0.0
 
         view.addSubview(loadingCircle)
         loadingCircle.translatesAutoresizingMaskIntoConstraints = false
