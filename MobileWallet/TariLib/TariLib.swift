@@ -353,4 +353,17 @@ class TariLib {
         walletIsStopped = true
         TariEventBus.unregister(self)
     }
+
+    func waitIfWalletIsRestarting(completion: @escaping ((_ success: Bool?) -> Void)) {
+        if !walletExists { completion(false) }
+
+        var waitingTime = 0.0
+        Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] (timer) in
+            if self?.walletIsStopped == false || waitingTime >= 5.0 {
+                completion(self?.walletIsStopped)
+                timer.invalidate()
+            }
+            waitingTime += timer.timeInterval
+        }
+    }
 }

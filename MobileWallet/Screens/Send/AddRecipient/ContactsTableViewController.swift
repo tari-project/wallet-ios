@@ -121,21 +121,16 @@ class ContactsTableViewController: UITableViewController {
     }
 
     private func fetchContacts() {
-        var waitingTime = 0.0
-        Timer.scheduledTimer(withTimeInterval: CATransaction.animationDuration(), repeats: true) { [weak self] (timer) in
-            if TariLib.shared.walletIsStopped == false || waitingTime >= 5.0 {
-                do {
-                    try self?.loadContacts()
-                } catch {
-                    UserFeedback.shared.error(
-                        title: NSLocalizedString("Failed to load contacts", comment: "Add recipient view"),
-                        description: NSLocalizedString("Could not access wallet", comment: "Add recipient view"),
-                        error: error
-                    )
-                }
-                timer.invalidate()
+        TariLib.shared.waitIfWalletIsRestarting { [weak self] _ in
+            do {
+                try self?.loadContacts()
+            } catch {
+                UserFeedback.shared.error(
+                    title: NSLocalizedString("Failed to load contacts", comment: "Add recipient view"),
+                    description: NSLocalizedString("Could not access wallet", comment: "Add recipient view"),
+                    error: error
+                )
             }
-            waitingTime += timer.timeInterval
         }
     }
 
