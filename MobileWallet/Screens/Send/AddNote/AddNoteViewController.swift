@@ -273,7 +273,7 @@ extension AddNoteViewController {
     }
 
     fileprivate func setupNoteInput() {
-        let font = Theme.shared.fonts.addNoteInputView!
+        let font = Theme.shared.fonts.addNoteInputView
 
         noteInput.delegate = self
         noteInput.translatesAutoresizingMaskIntoConstraints = false

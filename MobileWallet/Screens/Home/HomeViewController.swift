@@ -260,7 +260,7 @@ class HomeViewController: UIViewController {
         let balanceLabelAttributedText = NSMutableAttributedString(
             string: balanceValueString,
             attributes: [
-                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel!,
+                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel,
                 NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
                 NSAttributedString.Key.kern: -1.43
             ]
@@ -269,9 +269,9 @@ class HomeViewController: UIViewController {
         let lastNumberOfDigitsToFormat = MicroTari.ROUNDED_FRACTION_DIGITS + 1
         balanceLabelAttributedText.addAttributes(
             [
-                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals!,
+                NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
                 NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
-                NSAttributedString.Key.baselineOffset: 5,
+                NSAttributedString.Key.baselineOffset: 6,
                 NSAttributedString.Key.kern: -0.57
             ],
             range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat)

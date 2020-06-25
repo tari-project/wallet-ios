@@ -68,7 +68,7 @@ class WordsFlexView: UIView {
     private var cornerRadius: CGFloat
     private var showBorder: Bool
 
-    private let font = Theme.shared.fonts.settingsRecoveryPhraseWorld!
+    private let font = Theme.shared.fonts.settingsRecoveryPhraseWorld
     private let textColor = Theme.shared.colors.settingsRecoveryPhraseWorldText!
     private let textBackgroundColor = UIColor.clear
     private let buttonBorderColor = Theme.shared.colors.settingsRecoveryPhraseWorldBorder!

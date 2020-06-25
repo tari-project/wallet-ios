@@ -189,7 +189,7 @@ extension TransactionsTableViewController {
 
         let attributedTitle = NSMutableAttributedString(
             string: titleText,
-            attributes: [NSAttributedString.Key.font: Theme.shared.fonts.introTitle!]
+            attributes: [NSAttributedString.Key.font: Theme.shared.fonts.introTitle]
         )
 
         titleLabel.attributedText = attributedTitle

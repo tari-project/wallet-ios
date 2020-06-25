@@ -414,6 +414,9 @@
 		37CFAA76248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
 		37CFAA77248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
 		37CFAA78248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
+		37E0B008249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */; };
+		37E0B009249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */; };
+		37E0B00A249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */; };
 		37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
 		37EE027E248A4DCC00E25D69 /* CheckboxDeselectAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37EE027C248A4DCB00E25D69 /* CheckboxDeselectAnimation.json */; };
 		37EE027F248A4DCC00E25D69 /* CheckboxSelectAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */; };
@@ -726,6 +729,7 @@
 		37CB9F892451A2AD00C495F2 /* String+Emoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Emoji.swift"; sourceTree = "<group>"; };
 		37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistoryContainer.swift; sourceTree = "<group>"; };
 		37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPointerArray+Extension.swift"; sourceTree = "<group>"; };
+		37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+FontStyle.swift"; sourceTree = "<group>"; };
 		37E4B62A24501FB200FA302B /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		37EE027C248A4DCB00E25D69 /* CheckboxDeselectAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheckboxDeselectAnimation.json; sourceTree = "<group>"; };
 		37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheckboxSelectAnimation.json; sourceTree = "<group>"; };
@@ -897,6 +901,7 @@
 				37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */,
 				37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */,
 				373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */,
+				37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2113,6 +2118,7 @@
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
 				00B084C5249E4F6900F7B9BD /* SeedWords.swift in Sources */,
 				004997B72382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
+				37E0B008249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
 				37BB6974245726FC0013AC4D /* CopyableLabel.swift in Sources */,
 				37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
@@ -2209,6 +2215,7 @@
 				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				371A0819247290C000F97713 /* TransitionLabel.swift in Sources */,
 				004277F023E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
+				37E0B009249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
 				00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
 				37B4449F24890F6200592D92 /* ICloudBackup.swift in Sources */,
@@ -2310,6 +2317,7 @@
 				00A994352396434B007D9990 /* QRButton.swift in Sources */,
 				00262EB6236F024400A6C8A0 /* Theme.swift in Sources */,
 				00BCE48B240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
+				37E0B00A249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
 				00BBD805237D746B00EBF5E6 /* OnboardingUITests.swift in Sources */,
 				00947CC923D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				0053873224065F6C00901A68 /* SlideView.swift in Sources */,

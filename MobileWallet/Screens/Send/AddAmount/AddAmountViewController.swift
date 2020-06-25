@@ -221,7 +221,7 @@ class AddAmountViewController: UIViewController {
         let amountAttributedText = NSMutableAttributedString(
             string: convertRawToFormattedString() ?? "0",
             attributes: [
-                NSAttributedString.Key.font: Theme.shared.fonts.amountLabel!,
+                NSAttributedString.Key.font: Theme.shared.fonts.amountLabel,
                 NSAttributedString.Key.foregroundColor: Theme.shared.colors.amountLabel!
             ]
         )

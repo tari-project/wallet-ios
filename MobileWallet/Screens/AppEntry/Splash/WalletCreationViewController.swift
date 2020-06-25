@@ -434,11 +434,11 @@ extension WalletCreationViewController {
     private func prepareForShowEmojiID() {
         let thisIsYourEmojiString = NSLocalizedString("This is your Emoji ID", comment: "Splash show your emoji ID")
         let attributedString = NSMutableAttributedString(string: thisIsYourEmojiString, attributes: [
-            .font: Theme.shared.fonts.createWalletEmojiIDFirstText!,
+            .font: Theme.shared.fonts.createWalletEmojiIDFirstText,
             .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
             .kern: -0.33
         ])
-        attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText!, range: NSRange(location: 13, length: 8))
+        attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText, range: NSRange(location: 13, length: 8))
         secondLabel.attributedText = attributedString
 
         let curency = TariSettings.shared.network.currencyDisplayTicker
@@ -473,7 +473,7 @@ extension WalletCreationViewController {
     private func prepareForLocalAuthentication() {
         let secondLabelString = NSLocalizedString("🔑 Let’s secure your wallet. 🔑", comment: "Splash face/touch ID")
         let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
-            .font: Theme.shared.fonts.createWalletEmojiIDSecondText!,
+            .font: Theme.shared.fonts.createWalletEmojiIDSecondText,
             .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
             .kern: -0.33
         ])
@@ -700,7 +700,7 @@ extension WalletCreationViewController {
         button.setTitle(NSLocalizedString("Tap to see full Emoji ID", comment: "Tap to see full Emoji ID in wallet creation"), for: .normal)
         button.addTarget(self, action: #selector(tapToSeeButtonAction(_ :)), for: .touchUpInside)
         button.setTitleColor(Theme.shared.colors.tapToSeeFullEmoji!, for: .normal)
-        button.titleLabel?.font = Theme.shared.fonts.tapToSeeFullEmojiLabel!
+        button.titleLabel?.font = Theme.shared.fonts.tapToSeeFullEmojiLabel
 
         tapToSeeButtonContainer.addSubview(button)
 

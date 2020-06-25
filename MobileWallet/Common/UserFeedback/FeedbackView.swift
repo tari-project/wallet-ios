@@ -269,14 +269,14 @@ class FeedbackView: UIView {
         let attributedTitle = NSMutableAttributedString(
             string: title,
             attributes: [
-                .font: Theme.shared.fonts.feedbackPopupTitle!,
+                .font: Theme.shared.fonts.feedbackPopupTitle,
                 .foregroundColor: Theme.shared.colors.feedbackPopupTitle!
             ]
         )
 
         if let startIndex = title.indexDistance(of: boldedTitle) {
             let range = NSRange(location: startIndex, length: boldedTitle.count)
-            attributedTitle.addAttribute(.font, value: Theme.shared.fonts.feedbackPopupHeavy!, range: range)
+            attributedTitle.addAttribute(.font, value: Theme.shared.fonts.feedbackPopupHeavy, range: range)
         }
 
         titleLabel.attributedText = attributedTitle

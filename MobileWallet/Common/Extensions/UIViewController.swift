@@ -79,14 +79,14 @@ extension UIViewController {
             let navBar = navController.navigationBar
 
             navBar.barTintColor = Theme.shared.colors.navigationBarBackground
-            navBar.titleTextAttributes = [NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle!]
+            navBar.titleTextAttributes = [NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle]
             navBar.setBackgroundImage(UIImage(color: Theme.shared.colors.navigationBarBackground!), for: .default)
             navBar.isTranslucent = true
             navBar.tintColor = Theme.shared.colors.navigationBarTint
 
             navBar.titleTextAttributes = [
                 NSAttributedString.Key.foregroundColor: Theme.shared.colors.navigationBarTint!,
-                NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle!
+                NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle
             ]
 
             //Remove border

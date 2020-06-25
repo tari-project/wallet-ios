@@ -131,7 +131,7 @@ class SystemMenuTableViewCell: UITableViewCell {
 // MARK: Setup views
 extension SystemMenuTableViewCell {
     private func setupView() {
-        contentView.backgroundColor = Theme.shared.colors.appTableViewCellBackground
+        contentView.backgroundColor = Theme.shared.colors.systemTableViewCellBackground
 
         setupArrow()
         setupMark()
@@ -183,7 +183,7 @@ extension SystemMenuTableViewCell {
     }
 
     private func setupTitle() {
-        titleLabel.font = Theme.shared.fonts.appTableViewCell
+        titleLabel.font = Theme.shared.fonts.systemableViewCell
         contentView.addSubview(titleLabel)
 
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
