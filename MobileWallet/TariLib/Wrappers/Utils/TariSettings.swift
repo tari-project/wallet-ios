@@ -114,7 +114,7 @@ struct TariSettings {
     func getRandomBaseNode() -> String {
         return defaultBaseNodePool[Int.random(in: 0 ... (defaultBaseNodePool.count-1))]
     }
-    
+
     let pushNotificationServer = "https://push.tari.com"
 
     #if DEBUG
