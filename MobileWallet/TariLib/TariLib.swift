@@ -224,7 +224,6 @@ class TariLib {
                     case .success(let urlSessionConfiguration):
                         TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(100))
                         TariEventBus.postToMainThread(.torConnected, sender: urlSessionConfiguration)
-                        try? self.tariWallet?.syncBaseNode()
                     case .failure(let error):
                         TariLogger.error("Tor connection failed to complete", error: error)
                         TariEventBus.postToMainThread(.torConnectionFailed, sender: error)
@@ -293,6 +292,8 @@ class TariLib {
         walletIsStopped = false
 
         try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
+
+        try? self.tariWallet?.syncBaseNode()
 
         TariLogger.fileLoggerCallback = { [weak self] (message) in
             self?.tariWallet?.logMessage(message)
