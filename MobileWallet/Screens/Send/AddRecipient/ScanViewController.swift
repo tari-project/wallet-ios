@@ -221,8 +221,8 @@ class ScanViewController: UIViewController {
     private func customizeViews() {
         self.titleLabel.text = String(
             format: NSLocalizedString(
-                "Scan a Tari QR code to send %@ to the recipient.",
-                comment: "Scan contact camera view"
+                "scan_view.scan_qr_to_send.with_param",
+                comment: "Scan view"
             ),
             TariSettings.shared.network.currencyDisplayTicker
         )
@@ -317,8 +317,8 @@ class ScanViewController: UIViewController {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Scanning error", comment: "Scanner view"),
-                description: NSLocalizedString("Failed to import user's public key", comment: "Scanner view"),
+                title: NSLocalizedString("scan_view.error.title", comment: "Scan view"),
+                description: NSLocalizedString("scan_view.error.description", comment: "Scan view"),
                 error: error
             )
         }

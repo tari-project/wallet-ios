@@ -106,7 +106,7 @@ class TransactionsTableViewController: UITableViewController {
         return animationContainer
     }()
 
-    let pendingLabelText = NSLocalizedString("In Progress", comment: "Home view table of transactions")
+    let pendingLabelText = NSLocalizedString("tx_list.in_progress", comment: "Transactions list")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -183,8 +183,8 @@ class TransactionsTableViewController: UITableViewController {
             }
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Base node error", comment: "Refreshing TX list view"),
-                description: NSLocalizedString("Could not sync to base node", comment: "Refreshing TX list view"),
+                title: NSLocalizedString("tx_list.error.sync_to_base_node.title", comment: "Transactions list"),
+                description: NSLocalizedString("tx_list.error.sync_to_base_node.description", comment: "Transactions list"),
                 error: error
             )
         }
@@ -217,7 +217,7 @@ class TransactionsTableViewController: UITableViewController {
     private func refreshTable() {
         guard let wallet = TariLib.shared.tariWallet else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to access wallet", comment: "Home screen"),
+                title: NSLocalizedString("wallet.error.failed_to_access", comment: "Wallet error"),
                 description: ""
             )
             return
@@ -227,8 +227,8 @@ class TransactionsTableViewController: UITableViewController {
         let (groupedTransactions, groupedTransactionsError) = wallet.groupedCompletedAndCancelledTransactions
         guard groupedTransactionsError == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
-                description: NSLocalizedString("Could not load grouped completed transactions", comment: "Home screen"),
+                title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
+                description: NSLocalizedString("tx_list.error.grouped_transactions.descritpion", comment: "Transactions list"),
                 error: groupedTransactionsError
             )
             return
@@ -238,8 +238,8 @@ class TransactionsTableViewController: UITableViewController {
         let (pendingInboundTxs, pendingInboundTxsError) = wallet.pendingInboundTransactions
         guard pendingInboundTxsError == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
-                description: NSLocalizedString("Could not load pending inbound transactions", comment: "Home screen"),
+                title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
+                description: NSLocalizedString("tx_list.error.pending_inbound_tx.description", comment: "Transactions list"),
                 error: pendingInboundTxsError
             )
             return
@@ -248,8 +248,8 @@ class TransactionsTableViewController: UITableViewController {
         let (pendingInboundTxsList, pendingInboundTxsListError) = pendingInboundTxs!.list
         guard pendingInboundTxsListError == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
-                description: NSLocalizedString("Could not load list of pending inbound transactions", comment: "Home screen"),
+                title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
+                description: NSLocalizedString("tx_list.error.pending_inbound_tx.title", comment: "Transactions list"),
                 error: pendingInboundTxsListError
             )
             return
@@ -259,8 +259,8 @@ class TransactionsTableViewController: UITableViewController {
         let (pendingOutboundTxs, pendingOutboundTxsError) = wallet.pendingOutboundTransactions
         guard pendingOutboundTxsError == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
-                description: NSLocalizedString("Could not load pending outbound transactions", comment: "Home screen"),
+                title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
+                description: NSLocalizedString("tx_list.error.pending_outbound_tx..description", comment: "Transactions list"),
                 error: pendingOutboundTxsError
             )
             return
@@ -269,8 +269,8 @@ class TransactionsTableViewController: UITableViewController {
         let (pendingOutboundTxsList, pendingOutboundTxsListError) = pendingOutboundTxs!.list
         guard pendingOutboundTxsListError == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Failed to load transactions", comment: "Home screen"),
-                description: NSLocalizedString("Could not load list of pending outbound transactions", comment: "Home screen"),
+                title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
+                description: NSLocalizedString("tx_list.error.pending_outbound_tx.title", comment: "Transactions list"),
                 error: pendingOutboundTxsListError
             )
             return

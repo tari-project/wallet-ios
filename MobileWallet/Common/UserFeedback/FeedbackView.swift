@@ -107,7 +107,7 @@ class FeedbackView: UIView {
         closeButton.setVariation(.secondary)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(closeButton)
-        closeButton.setTitle(NSLocalizedString("Close", comment: "User feedback bottom float"), for: .normal)
+        closeButton.setTitle(NSLocalizedString("feedback_view.close", comment: "Feedback view"), for: .normal)
         closeButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         closeButton.addTarget(self, action: #selector(onCloseButtonPressed), for: .touchUpInside)
     }

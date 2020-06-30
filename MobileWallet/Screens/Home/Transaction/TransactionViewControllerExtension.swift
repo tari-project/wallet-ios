@@ -111,7 +111,7 @@ extension TransactionViewController {
 
         feeButton.translatesAutoresizingMaskIntoConstraints = false
         valueContainerView.addSubview(feeButton)
-        feeButton.setTitle(NSLocalizedString("Transaction Fee", comment: "Transaction view screen"), for: .normal)
+        feeButton.setTitle(NSLocalizedString("common.fee", comment: "Common"), for: .normal)
         feeButton.titleLabel?.font = Theme.shared.fonts.transactionFeeButton
         feeButton.setRightImage(Theme.shared.images.transactionFee!)
 
@@ -151,7 +151,7 @@ extension TransactionViewController {
 
         addContactButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
         addContactButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        addContactButton.setTitle(NSLocalizedString("Add Contact Name", comment: "Transaction detail view"), for: .normal)
+        addContactButton.setTitle(NSLocalizedString("transaction_detail.add_contact_name", comment: "Transaction detail view"), for: .normal)
         addContactButton.setVariation(.secondary)
         addContactButton.addTarget(self, action: #selector(addContactButtonPressed), for: .touchUpInside)
     }
@@ -161,7 +161,7 @@ extension TransactionViewController {
         view.addSubview(contactNameHeadingLabel)
         contactNameHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         contactNameHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        contactNameHeadingLabel.text = NSLocalizedString("Contact Name", comment: "Transaction detail view")
+        contactNameHeadingLabel.text = NSLocalizedString("transaction_detail.contact_name", comment: "Transaction detail view")
         contactNameHeadingLabelTopAnchor = contactNameHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: headingLabelTopAnchorHeight)
         contactNameHeadingLabelTopAnchor.isActive = true
         contactNameHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
@@ -170,7 +170,7 @@ extension TransactionViewController {
         view.addSubview(contactNameTextField)
         contactNameTextField.textColor = Theme.shared.colors.transactionScreenTextLabel
         contactNameTextField.font = Theme.shared.fonts.transactionScreenTextLabel
-        contactNameTextField.placeholder = NSLocalizedString("Create a Contact Name", comment: "Transaction detail view")
+        contactNameTextField.placeholder = NSLocalizedString("transaction_detail.contect_name_placeholder", comment: "Transaction detail view")
         contactNameTextField.autocorrectionType = .no
         contactNameTextField.returnKeyType = .done
         contactNameTextField.delegate = self
@@ -183,7 +183,7 @@ extension TransactionViewController {
         view.addSubview(editContactNameButton)
         editContactNameButton.topAnchor.constraint(equalTo: contactNameHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
         editContactNameButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        editContactNameButton.setTitle(NSLocalizedString("Edit", comment: "Transaction detail view"), for: .normal)
+        editContactNameButton.setTitle(NSLocalizedString("transaction_detail.edit", comment: "Transaction detail view"), for: .normal)
         editContactNameButton.setVariation(.secondary)
         editContactNameButton.addTarget(self, action: #selector(editContactButtonPressed), for: .touchUpInside)
     }
@@ -204,7 +204,7 @@ extension TransactionViewController {
         view.addSubview(noteHeadingLabel)
         noteHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         noteHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        noteHeadingLabel.text = NSLocalizedString("Note", comment: "Transaction detail view")
+        noteHeadingLabel.text = NSLocalizedString("transaction_detail.note", comment: "Transaction detail view")
         noteHeadingLabelTopAnchorConstraintContactNameShowing = noteHeadingLabel.topAnchor.constraint(
             equalTo: dividerView.bottomAnchor,
             constant: Theme.shared.sizes.appSidePadding
@@ -252,7 +252,7 @@ extension TransactionViewController {
         cancelButton.topAnchor.constraint(equalTo: txStateView.bottomAnchor, constant: 0).isActive = true
         cancelButton.centerXAnchor.constraint(equalTo: navigationBar.centerXAnchor).isActive = true
 
-        cancelButton.setTitle(NSLocalizedString("Cancel Transaction", comment: "Tx detail view"), for: .normal)
+        cancelButton.setTitle(NSLocalizedString("transaction_detail.tx_cancellation.cancel", comment: "Transaction detail tx cancellation"), for: .normal)
         cancelButton.setVariation(.warning, font: Theme.shared.fonts.textButtonCancel)
         cancelButton.addTarget(self, action: #selector(onCancelTx), for: .touchUpInside)
     }

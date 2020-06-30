@@ -62,8 +62,8 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
         var rawValue: String {
             switch self {
-            case .backUpToiCloud: return NSLocalizedString("Back up to iCloud", comment: "BackupWalletSettingsItem")
-            case .backUpWithRecoveryPhrase: return NSLocalizedString("Back up with recovery phrase", comment: "BackupWalletSettingsItem")
+            case .backUpToiCloud: return NSLocalizedString("backup_wallet_settings.item.to_icloud", comment: "BackupWalletSettings view")
+            case .backUpWithRecoveryPhrase: return NSLocalizedString("backup_wallet_settings.item.with_recovery_phrase", comment: "BackupWalletSettings view")
             }
         }
     }
@@ -88,7 +88,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
                 try self?.iCloudBackup.createWalletBackup()
                 self?.iCloudBackupItem.mark = .progress
             } catch {
-                UserFeedback.shared.error(title: NSLocalizedString("Failed to create backup", comment: "Backup wallet settings"), description: "", error: error)
+                UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
                 self?.iCloudBackupItem.mark = .attention
             }
         }
@@ -112,7 +112,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 extension BackupWalletSettingsViewController: ICloudBackupObserver {
     func onUploadProgress(percent: Double, completed: Bool, error: Error?) {
         if error != nil {
-            UserFeedback.shared.error(title: NSLocalizedString("Failed to create backup", comment: "Backup wallet settings"), description: "", error: error)
+            UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
             iCloudBackupItem.mark = .attention
             return
         }
@@ -152,7 +152,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
 
         let label = UILabel()
         label.font = Theme.shared.fonts.settingsTableViewHeader
-        label.text = NSLocalizedString("Back Up Wallet", comment: "Back Up Waallet header")
+        label.text = NSLocalizedString("backup_wallet_settings.header.title", comment: "BackupWalletSettings view")
 
         header.addSubview(label)
 
@@ -164,7 +164,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
         desctiptionLabel.numberOfLines = 0
         desctiptionLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
         desctiptionLabel.textColor = Theme.shared.colors.settingsSeedPhraseDescription
-        desctiptionLabel.text = NSLocalizedString("By backing up your wallet, you’ll ensure that you don’t lose your tXTR if your phone is lost or broken.", comment: "Back Up Waallet header description")
+        desctiptionLabel.text = NSLocalizedString("backup_wallet_settings.header.description", comment: "BackupWalletSettings view")
 
         header.addSubview(desctiptionLabel)
 

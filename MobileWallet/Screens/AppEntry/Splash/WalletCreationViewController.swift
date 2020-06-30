@@ -233,46 +233,7 @@ class WalletCreationViewController: UIViewController {
 
     private func runAuth() {
         let context = LAContext()
-        let reason = firstLabel.text ?? ""
-
-        switch context.biometricType {
-        case .faceID, .touchID, .pin:
-            let policy: LAPolicy = context.biometricType == .pin ? .deviceOwnerAuthentication : .deviceOwnerAuthenticationWithBiometrics
-
-            context.evaluatePolicy(policy, localizedReason: reason) {
-                [weak self] success, _ in
-
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    if success {
-                        self.successAuth()
-                        Tracker.shared.track("/onboarding/enable_local_auth", "Onboarding - Enable Local Authentication")
-                    } else {
-                        let alert = UIAlertController(title: NSLocalizedString("There was an error", comment: "Auth failed"),
-                                                      message: "",
-                                                      preferredStyle: .alert)
-                        alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"),
-                                                      style: .default,
-                                                      handler: nil))
-
-                        self.present(alert, animated: true, completion: nil)
-                    }
-                }
-            }
-        case .none:
-            let alert = UIAlertController(title: NSLocalizedString("Authentication Error", comment: "No biometric or passcode"),
-                                          message: NSLocalizedString("Tari Aurora was not able to authenticate you. Do you still want to proceed?", comment: "No biometric or passcode"),
-                                          preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel button"),
-                                          style: .cancel,
-                                          handler: nil))
-
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Proceed", comment: "Proceed button"), style: .default, handler: { [weak self] _ in
-                self?.successAuth()
-            }))
-
-            self.present(alert, animated: true, completion: nil)
-        }
+        context.authenticateUser(onSuccess: successAuth)
     }
 
     private func successAuth() {
@@ -412,17 +373,17 @@ extension WalletCreationViewController {
 
     private func prepareForInitialState() {
         updateConstraintsAnimationView(animation: .none)
-        firstLabel.text = NSLocalizedString("Hold on a sec…", comment: "Second label on wallet creation Top")
-        secondLabel.text = NSLocalizedString("We’re creating your wallet.", comment: "Second label on wallet creation Bottom")
-        continueButton.setTitle(NSLocalizedString("Create Your Emoji ID", comment: "Create button on wallet creation"), for: .normal)
+        firstLabel.text = NSLocalizedString("wallet_creation.initial_state.first_label", comment: "WalletCreation view")
+        secondLabel.text = NSLocalizedString("wallet_creation.initial_state.second_label", comment: "WalletCreation view")
+        continueButton.setTitle(NSLocalizedString("wallet_creation.button.create", comment: "WalletCreation view"), for: .normal)
     }
 
     private func prepareForCreateEmojiId() {
-        firstLabel.text = NSLocalizedString("We’re off to a great start!", comment: "Second label on wallet creation Top")
-        secondLabel.text = NSLocalizedString("Now, let’s create your Emoji ID.", comment: "Second label on wallet creation Bottom")
+        firstLabel.text = NSLocalizedString("wallet_creation.create_emoji_state.first_label", comment: "WalletCreation view")
+        secondLabel.text = NSLocalizedString("wallet_creation.create_emoji_state.second_label", comment: "WalletCreation view")
         thirdLabel.text = String(
             format: NSLocalizedString(
-                "Your Emoji ID is your wallet address.\n It’s how your friends can find you and send you %@!",
+                "wallet_creation.create_emoji_state.description.with_param",
                 comment: "Third label on wallet creation"
             ),
             TariSettings.shared.network.currencyDisplayTicker
@@ -432,7 +393,7 @@ extension WalletCreationViewController {
     }
 
     private func prepareForShowEmojiID() {
-        let thisIsYourEmojiString = NSLocalizedString("This is your Emoji ID", comment: "Splash show your emoji ID")
+        let thisIsYourEmojiString = NSLocalizedString("wallet_creation.emoji_state.first_label", comment: "WalletCreation view")
         let attributedString = NSMutableAttributedString(string: thisIsYourEmojiString, attributes: [
             .font: Theme.shared.fonts.createWalletEmojiIDFirstText,
             .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
@@ -443,10 +404,10 @@ extension WalletCreationViewController {
 
         let curency = TariSettings.shared.network.currencyDisplayTicker
         thirdLabel.text = NSLocalizedString(
-            "Your Emoji ID is your wallet’s address, and how others can find you and send you \(curency)!", comment: "Emoji Id third label on wallet creation")
+            "wallet_creation.emoji_state.second_label", comment: "WalletCreation view") + " \(curency)!"
         stackView.setCustomSpacing(16, after: secondLabel)
 
-        continueButton.setTitle(NSLocalizedString("Continue", comment: "This is your emoji screen on wallet creation"), for: .normal)
+        continueButton.setTitle(NSLocalizedString("common.continue", comment: "Common"), for: .normal)
 
         if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
             userEmojiContainer.setUpView(
@@ -471,7 +432,7 @@ extension WalletCreationViewController {
     }
 
     private func prepareForLocalAuthentication() {
-        let secondLabelString = NSLocalizedString("🔑 Let’s secure your wallet. 🔑", comment: "Splash face/touch ID")
+        let secondLabelString = NSLocalizedString("wallet_creation.secure_your_wallet", comment: "WalletCreation view")
         let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
             .font: Theme.shared.fonts.createWalletEmojiIDSecondText,
             .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
@@ -481,8 +442,8 @@ extension WalletCreationViewController {
 
         self.thirdLabel.text = String(
             format: NSLocalizedString(
-                "Sleep well at night knowing you’ve taken precautions to keep your %@ wallet safe and sound.",
-                comment: "Face ID third label on wallet creation"
+                "wallet_creation.secure_your_wallet.description.with_param",
+                comment: "WalletCreation view"
             ),
             TariSettings.shared.network.currencyDisplayTicker
         )
@@ -494,27 +455,27 @@ extension WalletCreationViewController {
         switch currentType {
         case .faceID:
             stackView.setCustomSpacing(54, after: animationView)
-            self.continueButton.setTitle(NSLocalizedString("Secure with Face ID", comment: "Enable authentication on wallet creation"), for: .normal)
+            self.continueButton.setTitle(NSLocalizedString("wallet_creation.button.secure_face_id", comment: "WalletCreation view"), for: .normal)
         case .touchID:
             stackView.setCustomSpacing(58, after: animationView)
-            self.continueButton.setTitle(NSLocalizedString("Secure with Touch ID", comment: "Enable authentication on wallet creation"), for: .normal)
+            self.continueButton.setTitle(NSLocalizedString("wallet_creation.button.secure_touch_id", comment: "WalletCreation view"), for: .normal)
         case .pin, .none:
             stackView.setCustomSpacing(5, after: numpadImageView)
-            self.continueButton.setTitle(NSLocalizedString("Secure with Pin", comment: "Enable authentication on wallet creation"), for: .normal)
+            self.continueButton.setTitle(NSLocalizedString("wallet_creation.button.secure_pin", comment: "WalletCreation view"), for: .normal)
         }
     }
 
     private func prepareForEnableNotifications() {
-        let secondLabelStringTop = NSLocalizedString("Don’t miss out when people", comment: "Splash EnableNotifications")
-        let secondLabelStringBottom = NSLocalizedString("send you money.", comment: "Splash EnableNotifications")
+        let secondLabelStringTop = NSLocalizedString("wallet_creation.notifications.title", comment: "WalletCreation view")
+        let secondLabelStringBottom = NSLocalizedString("wallet_creation.notifications.subtitle", comment: "WalletCreation view")
         firstLabel.font = Theme.shared.fonts.createWalletNotificationsFirstLabel
         secondLabel.font = Theme.shared.fonts.createWalletNotificationsSecondLabel
         firstLabel.text = secondLabelStringTop
         secondLabel.text = secondLabelStringBottom
         thirdLabel.font = Theme.shared.fonts.createWalletNotificationsThirdLabel
-        thirdLabel.text = NSLocalizedString("Enable push notifications to keep tabs on your payments.", comment: "Create Wallet enable Notifications screen")
+        thirdLabel.text = NSLocalizedString("wallet_creation.notifications.description", comment: "WalletCreation view")
 
-        continueButton.setTitle(NSLocalizedString("Turn on Notifications", comment: "Create Wallet Turn on Notifications"), for: .normal)
+        continueButton.setTitle(NSLocalizedString("wallet_creation.button.turn_on_notifications", comment: "WalletCreation view"), for: .normal)
 
         stackViewCenterYConstraint?.constant = -90
         stackView.setCustomSpacing(16, after: secondLabel)
@@ -697,7 +658,7 @@ extension WalletCreationViewController {
         button.layer.cornerRadius = 4.0
         button.layer.masksToBounds = true
         button.backgroundColor = Theme.shared.colors.tapToSeeFullEmojiBackground!
-        button.setTitle(NSLocalizedString("Tap to see full Emoji ID", comment: "Tap to see full Emoji ID in wallet creation"), for: .normal)
+        button.setTitle(NSLocalizedString("wallet_creation.button.tap_to_see_full_emoji", comment: "WalletCreation view"), for: .normal)
         button.addTarget(self, action: #selector(tapToSeeButtonAction(_ :)), for: .touchUpInside)
         button.setTitleColor(Theme.shared.colors.tapToSeeFullEmoji!, for: .normal)
         button.titleLabel?.font = Theme.shared.fonts.tapToSeeFullEmojiLabel

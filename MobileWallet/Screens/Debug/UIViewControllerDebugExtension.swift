@@ -77,7 +77,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
                         UIPasteboard.general.string = ""
                     } catch {
                         UserFeedback.shared.error(
-                            title: NSLocalizedString("Base node error", comment: "Custom base node in clipboard call to action"),
+                            title: NSLocalizedString("Base node error", comment: "Add base node peer error"),
                             description: NSLocalizedString("Failed to set custom base node from clipboard", comment: "Custom base node in clipboard call to action"),
                             error: error
                         )

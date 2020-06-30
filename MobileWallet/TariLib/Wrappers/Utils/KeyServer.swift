@@ -43,7 +43,7 @@ import Foundation
 enum KeyServerError: Error {
     case server(_ statusCode: Int, message: String?)
     case invalidSignature
-    case allCoinsAllAllocated
+    case allCoinsAllocated
     case missingResponse
     case responseInvalid
     case unknown
@@ -58,15 +58,14 @@ class KeyServer {
     private let MESSAGE_PREFIX = "Hello Tari from"
     private let TARIBOT_MESSAGE1 = String(
         format: NSLocalizedString(
-            "💸 Here’s some %@!",
+            "taribot.message1.with_param",
             comment: "TariBot transaction"
         ),
         TariSettings.shared.network.currencyDisplayTicker
     )
     private let TARIBOT_MESSAGE2 = String(
         format: NSLocalizedString(
-            "Nice work! Here's more %@ to fill your coffers. Be sure to hit the store icon to see real, "
-            + "exclusive items you can redeem with your \"hard-earned\" %@.",
+            "taribot.message2.with_params",
             comment: "TariBot transaction"
         ),
         TariSettings.shared.network.currencyDisplayTicker,

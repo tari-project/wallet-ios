@@ -54,8 +54,8 @@ extension LAContext {
 
         var rawValue: String {
             switch self {
-            case .logIn: return NSLocalizedString("Log in to your account", comment: "Authentication")
-            case .userVerification: return NSLocalizedString("User Verification", comment: "Authentication")
+            case .logIn: return NSLocalizedString("authentication.reason.login", comment: "Authentication")
+            case .userVerification: return NSLocalizedString("authentication.reason.user_verification", comment: "Authentication")
             }
         }
     }
@@ -94,7 +94,7 @@ extension LAContext {
                     if success {
                         onSuccess()
                     } else {
-                        let localizedReason = error?.localizedDescription ?? NSLocalizedString("Failed to authenticate", comment: "Failed Face/Touch ID alert")
+                        let localizedReason = error?.localizedDescription ?? NSLocalizedString("authentication.fail.description", comment: "Authentication")
                         TariLogger.error("Biometrics auth failed", error: error)
                         DispatchQueue.main.async { [weak self] in
                             guard let self = self else { return }
@@ -104,16 +104,16 @@ extension LAContext {
                 }
             }
         case .none:
-            let alert = UIAlertController(title: NSLocalizedString("Authentication Error", comment: "No biometric or passcode") ,
-                                          message: NSLocalizedString("Tari Aurora was not able to authenticate you. Do you still want to proceed?", comment: "No biometric or passcode"),
+            let alert = UIAlertController(title: NSLocalizedString("authentication.error.title", comment: "Authentication") ,
+                                          message: NSLocalizedString("authentication.error.description", comment: "Authentication"),
                                           preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"),
+            alert.addAction(UIAlertAction(title: NSLocalizedString("authentication.try_again", comment: "Authentication"),
                                           style: .cancel,
                                           handler: { [weak self] _ in
                                             self?.authenticateUser(onSuccess: onSuccess)
             }))
 
-            alert.addAction(UIAlertAction(title: NSLocalizedString("Proceed", comment: "Proceed button"), style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: NSLocalizedString("authentication.proceed", comment: "Authentication"), style: .default, handler: { _ in
                 onSuccess()
             }))
 
@@ -124,13 +124,13 @@ extension LAContext {
     }
 
     private func authenticationFailedAlertOptions(reason: String, onSuccess: @escaping () -> Void) {
-        let alert = UIAlertController(title: NSLocalizedString("Authentication failed", comment: "Auth failed"), message: reason, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Try again button"), style: .default, handler: { [weak self] _ in
+        let alert = UIAlertController(title: NSLocalizedString("authentication.fail.title", comment: "Authentication"), message: reason, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Authentication"), style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
             self.authenticateUser(onSuccess: onSuccess)
         }))
 
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Open settings", comment: "Open settings button"), style: .default, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("authentication.action.open_settings", comment: "Authentication"), style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
             self.openAppSettings()
         }))

@@ -88,31 +88,31 @@ private class RefreshingInnerView: UIView {
         case .loading:
             emojiLabel.text = "⏳"
             spinner.startAnimating()
-            statusLabel.text = NSLocalizedString("Checking for Updates", comment: "Refresh view")
+            statusLabel.text = NSLocalizedString("refresh_view.checking", comment: "Refresh view")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .receiving:
             emojiLabel.text = "🤝"
             spinner.startAnimating()
-            statusLabel.text = NSLocalizedString("Receiving new transaction", comment: "Refresh view")
+            statusLabel.text = NSLocalizedString("refresh_view.receiving_new_transactions", comment: "Refresh view")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .success:
-            statusLabel.text = NSLocalizedString("You are up to date!", comment: "Refresh view")
+            statusLabel.text = NSLocalizedString("refresh_view.success", comment: "Refresh view")
             spinner.stopAnimating()
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelSuccess
         case .txWaitingForRecipient:
             emojiLabel.text = ""
             spinner.stopAnimating()
-            statusLabel.text = NSLocalizedString("Waiting for recipient to come online", comment: "Refresh view")
+            statusLabel.text = NSLocalizedString("refresh_view.waiting_for_recipient", comment: "Refresh view")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .txWaitingForSender:
             emojiLabel.text = ""
             spinner.stopAnimating()
-            statusLabel.text = NSLocalizedString("Waiting for sender to complete transaction", comment: "Refresh view")
+            statusLabel.text = NSLocalizedString("refresh_view.waiting_for_sender", comment: "Refresh view")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .txCompleted:
             emojiLabel.text = ""
             spinner.stopAnimating()
-            statusLabel.text = NSLocalizedString("Completing final processing…", comment: "Refresh view")
+            statusLabel.text = NSLocalizedString("refresh_view.final_processing", comment: "Refresh view")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         }
     }

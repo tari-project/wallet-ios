@@ -66,18 +66,18 @@ class SendingTariViewController: UIViewController {
                 return ("", "")
             case .connectionCheck:
                 return (
-                    NSLocalizedString("Connecting to the", comment: ""),
-                    NSLocalizedString("Tari Network...", comment: "")
+                    NSLocalizedString("sending_tari.connecting", comment: "SendingTari view"),
+                    NSLocalizedString("sending_tari.network", comment: "SendingTari view")
                 )
             case .discovery:
                 return (
-                    NSLocalizedString("Searching for the", comment: ""),
-                    NSLocalizedString("recipient on the Tari Network...", comment: "")
+                    NSLocalizedString("sending_tari.searching", comment: "SendingTari view"),
+                    NSLocalizedString("sending_tari.recipient", comment: "SendingTari view")
                 )
             case .sent:
                 return (
-                    NSLocalizedString("Good to go!", comment: ""),
-                    NSLocalizedString("Your transaction is on its way...", comment: "")
+                    NSLocalizedString("sending_tari.sent", comment: "SendingTari view"),
+                    NSLocalizedString("sending_tari.transaction_is_on_its_way", comment: "SendingTari view")
                 )
             }
         }
@@ -750,12 +750,12 @@ class SendingTariViewController: UIViewController {
         case .internetConnectionError:
             UserFeedback.shared.error(
                 title: NSLocalizedString(
-                    "Can't connect to the interwebs",
-                    comment: "Internet connection error when sending a tx"
+                    "sending_tari.error.interwebs_connection.title",
+                    comment: "SendingTari view"
                 ),
                 description: NSLocalizedString(
-                    "Your phone is either offline or has a poor connection at the moment. We'll wait here until you find some stronger signal.",
-                    comment: "Internet connection error when sending a tx"
+                    "sending_tari.error.interwebs_connection.description",
+                    comment: "SendingTari view"
                 )
             )
             Tracker.shared.track(
@@ -765,12 +765,12 @@ class SendingTariViewController: UIViewController {
         case .networkConnectionTimeout, .sendError:
             UserFeedback.shared.error(
                 title: NSLocalizedString(
-                    "It's not you, it's the network.",
-                    comment: "Tari network connection error when sending a tx"
+                    "sending_tari.error.no_connection.title",
+                    comment: "SendingTari view"
                 ),
                 description: NSLocalizedString(
-                    "Looks like there's a connectivity issue on our end. Can you give us a few min, then come back and try again?",
-                    comment: "Tari network connection error when sending a tx"
+                    "sending_tari.error.no_connection.description",
+                    comment: "SendingTari view"
                 )
             )
             Tracker.shared.track(

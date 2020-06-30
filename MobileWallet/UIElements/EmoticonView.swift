@@ -378,7 +378,7 @@ extension EmoticonView {
 
     private func showMenu() {
         emojiMenu.alpha = 0.0
-        emojiMenu.title = NSLocalizedString("Copy Emoji ID", comment: "")
+        emojiMenu.title = NSLocalizedString("emoji.copy", comment: "Emoji view")
 
         emojiMenu.completion = { [weak self] isLongPress in
             guard let self = self else { return }

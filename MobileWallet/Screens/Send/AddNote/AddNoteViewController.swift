@@ -90,8 +90,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
                 try navigationBar.showEmoji(pubKey, animated: true)
             } catch {
                 UserFeedback.shared.error(
-                    title: NSLocalizedString("Public key error", comment: "Add amount view"),
-                    description: NSLocalizedString("Failed to get Emoji ID from user's contact", comment: "Add amount view"),
+                    title: NSLocalizedString("navigation_bar.error.show_emoji.title", comment: "Navigation bar"),
+                    description: NSLocalizedString("navigation_bar.error.show_emoji.description", comment: "Navigation bar"),
                     error: error
                 )
             }
@@ -185,8 +185,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
         guard let wallet = TariLib.shared.tariWallet else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Wallet error", comment: "Add note view"),
-                description: NSLocalizedString("Wallet not initialized", comment: "Add note view")
+                title: NSLocalizedString("wallet.error.title", comment: "Wallet error"),
+                description: NSLocalizedString("wallet.error.wallet_not_initialized", comment: "Wallet error")
             )
             sender.resetStateWithAnimation(true)
             return
@@ -194,8 +194,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
         guard let recipientPublicKey = publicKey else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Missing public key", comment: "Add note view"),
-                description: NSLocalizedString("Recipient public key not set", comment: "Add note view")
+                title: NSLocalizedString("add_note.error.recipient_public_key.title", comment: "Add note view"),
+                description: NSLocalizedString("add_note.error.recipient_public_key.description", comment: "Add note view")
             )
             sender.resetStateWithAnimation(true)
             return
@@ -203,8 +203,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
         guard let recipientAmount = amount else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Missing amount", comment: "Add note view"),
-                description: NSLocalizedString("Recipient amount not set", comment: "Add note view")
+                title: NSLocalizedString("add_note.error.recipient_amount.title", comment: "Add note view"),
+                description: NSLocalizedString("add_note.error.recipient_amount.description", comment: "Add note view")
             )
             sender.resetStateWithAnimation(true)
             return
@@ -248,7 +248,7 @@ extension AddNoteViewController {
         titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: SIDE_PADDING).isActive = true
         titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -SIDE_PADDING).isActive = true
         titleLabel.heightAnchor.constraint(equalToConstant: titleLabel.font.pointSize * 1.1).isActive = true
-        titleLabel.text = NSLocalizedString("Transaction Note", comment: "Add note view")
+        titleLabel.text = NSLocalizedString("add_note.title", comment: "Add note view")
     }
 
     fileprivate func setupSendButton() {
@@ -262,7 +262,7 @@ extension AddNoteViewController {
         sendButtonBottomConstraint.isActive = true
 
         sendButton.showSliderText = true
-        sendButton.labelText = NSLocalizedString("Slide to Send", comment: "Add note view")
+        sendButton.labelText = NSLocalizedString("add_note.slide_to_send", comment: "Add note view")
         sendButton.delegate = self
 
         //If we're in testmode, the slide to send doesn't seem to work so allow it to be tapped in this case
@@ -304,7 +304,7 @@ extension AddNoteViewController {
         notePlaceholder.numberOfLines = 0
 
         notePlaceholder.attributedText = NSAttributedString(
-            string: NSLocalizedString("Let the recipient know what the payment is for", comment: "Add note view"),
+            string: NSLocalizedString("add_note.placeholder", comment: "Add note view"),
             attributes: [
                 NSAttributedString.Key.paragraphStyle: paragraphStyle,
                 NSAttributedString.Key.font: font,

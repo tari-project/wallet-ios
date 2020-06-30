@@ -197,8 +197,8 @@ class TransactionViewController: UIViewController {
             try setDetails()
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Transaction error", comment: "Transaction detail screen"),
-                description: NSLocalizedString("Failed to load transaction details", comment: "Transaction detail screen"),
+                title: NSLocalizedString("transaction_detail.error.load_transaction.title", comment: "Transaction detail view"),
+                description: NSLocalizedString("transaction_detail.error.load_transaction.description", comment: "Transaction detail view"),
                 error: error
             )
         }
@@ -239,8 +239,8 @@ class TransactionViewController: UIViewController {
 
     @objc func feeButtonPressed(_ sender: UIButton) {
         UserFeedback.shared.info(
-            title: NSLocalizedString("Where does the fee go?", comment: "Transaction detail view"),
-            description: NSLocalizedString("The transaction fee is distributed to the thousands of computers (also known as “miners”) who ensure that your Tari transactions are fast and secure.", comment: "Transaction detail view")
+            title: NSLocalizedString("common.fee_info.title", comment: "Common"),
+            description: NSLocalizedString("common.fee_info.description", comment: "Common")
         )
     }
 
@@ -404,13 +404,13 @@ class TransactionViewController: UIViewController {
             }
 
             if tx.direction == .inbound {
-                navigationBar.title = NSLocalizedString("Payment Received", comment: "Navigation bar title on transaction view screen")
-                fromHeadingLabel.text = NSLocalizedString("From", comment: "Transaction detail view")
+                navigationBar.title = NSLocalizedString("transaction_detail.payment_received", comment: "Transaction detail view")
+                fromHeadingLabel.text = NSLocalizedString("transaction_detail.from", comment: "Transaction detail view")
                 valueLabel.text = microTari!.formatted
                 contactPublicKey = tx.sourcePublicKey.0
             } else if tx.direction == .outbound {
-                navigationBar.title = NSLocalizedString("Payment Sent", comment: "Navigation bar title on transaction view screen")
-                fromHeadingLabel.text = NSLocalizedString("To", comment: "Transaction detail view")
+                navigationBar.title = NSLocalizedString("transaction_detail.payment_sent", comment: "Transaction detail view")
+                fromHeadingLabel.text = NSLocalizedString("transaction_detail.to", comment: "Transaction detail view")
                 valueLabel.text = microTari!.formatted
                 contactPublicKey = tx.destinationPublicKey.0
             }
@@ -463,7 +463,7 @@ class TransactionViewController: UIViewController {
                 throw idError!
             }
 
-            let txIdDisplay = NSLocalizedString("Transaction ID:", comment: "Transaction detail view") + " \(String(id))"
+            let txIdDisplay = NSLocalizedString("transaction_detail.transaction_id", comment: "Transaction detail view") + " \(String(id))"
 
             //Get the fee for outbound transactions only
             if let completedTx = tx as? CompletedTransaction {
@@ -485,9 +485,9 @@ class TransactionViewController: UIViewController {
             }
 
             if isCancelled {
-                navigationBar.title = NSLocalizedString("Payment cancelled", comment: "Navigation bar title on transaction view screen")
+                navigationBar.title = NSLocalizedString("transaction_detail.payment_cancelled", comment: "Transaction detail view")
             } else if tx.status.0 != .mined && tx.status.0 != .imported {
-                navigationBar.title = NSLocalizedString("Payment In Progress", comment: "Navigation bar title on transaction view screen")
+                navigationBar.title = NSLocalizedString("transaction_detail.payment_in_progress", comment: "Transaction detail view")
             }
 
             //Hopefully we can add this back some time
@@ -519,18 +519,18 @@ class TransactionViewController: UIViewController {
 
     @objc func onCancelTx() {
         let alert = UIAlertController(
-            title: NSLocalizedString("Are you sure?", comment: "TX details view"),
-            message: NSLocalizedString("You will have to start a new transaction if you change your mind.", comment: "TX details view"),
+            title: NSLocalizedString("transaction_detail.tx_cancellation.title", comment: "Transaction detail tx cancellation"),
+            message: NSLocalizedString("transaction_detail.tx_cancellation.message", comment: "Transaction detail tx cancellation"),
             preferredStyle: .alert
         )
 
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Yes, cancel", comment: "TX details view"), style: .destructive, handler: { [weak self] (_) in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("transaction_detail.tx_cancellation.yes", comment: "Transaction detail tx cancellation"), style: .destructive, handler: { [weak self] (_) in
             guard let self = self else { return }
             if let tx = self.transaction {
                 guard tx.status.0 == .pending && tx.direction == .outbound else {
                     UserFeedback.shared.error(
-                        title: NSLocalizedString("Failed to cancel transaction", comment: "Tx detail view"),
-                        description: NSLocalizedString("Transaction is no longer in a state where it can be cancelled.", comment: "Tx detail view")
+                        title: NSLocalizedString("transaction_detail.tx_cancellation.error.title", comment: "Transaction detail tx cancellation"),
+                        description: NSLocalizedString("transaction_detail.tx_cancellation.error.description", comment: "Transaction detail tx cancellation")
                     )
                     return
                 }
@@ -550,8 +550,8 @@ class TransactionViewController: UIViewController {
 //                                self.updateTxState()
 //                            } catch {
 //                                UserFeedback.shared.error(
-//                                    title: NSLocalizedString("Transaction error", comment: "Transaction detail screen"),
-//                                    description: NSLocalizedString("Failed to load transaction details", comment: "Transaction detail screen"),
+//                                    title: NSLocalizedString("transaction_detail.error.load_transaction.title", comment: "Transaction detail view"),
+//                                    description: NSLocalizedString("transaction_detail.error.load_transaction.description", comment: "Transaction detail view"),
 //                                    error: error
 //                                )
 //                            }
@@ -563,14 +563,14 @@ class TransactionViewController: UIViewController {
                     self.navigationController?.popViewController(animated: true)
                 } catch {
                     UserFeedback.shared.error(
-                        title: NSLocalizedString("Failed to cancel transaction", comment: "Tx detail view"),
+                        title: NSLocalizedString("transaction_detail.tx_cancellation.error.title", comment: "Transaction detail tx cancellation"),
                         description: "",
                         error: error
                     )
                 }
             }
         }))
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Not now", comment: "TX details view"), style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("transaction_detail.tx_cancellation.no", comment: "Transaction detail tx cancellation"), style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
 }
@@ -601,8 +601,8 @@ extension TransactionViewController: UITextFieldDelegate {
 
         guard contactPublicKey != nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
-                description: NSLocalizedString("Missing public key from transaction.", comment: "Transaction detail screen")
+                title: NSLocalizedString("transaction_detail.error.contact.title", comment: "Transaction detail view"),
+                description: NSLocalizedString("transaction_detail.error.contact.description", comment: "Transaction detail view")
             )
             return true
         }
@@ -616,8 +616,8 @@ extension TransactionViewController: UITextFieldDelegate {
             })
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("Contact error", comment: "Transaction detail screen"),
-                description: NSLocalizedString("Failed to save contact details.", comment: "Transaction detail screen"),
+                title: NSLocalizedString("transaction_detail.error.contact.title", comment: "Transaction detail view"),
+                description: NSLocalizedString("transaction_detail.error.save_contact.description", comment: "Transaction detail view"),
                 error: error
             )
         }

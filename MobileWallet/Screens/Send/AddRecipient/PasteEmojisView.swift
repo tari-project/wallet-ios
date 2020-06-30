@@ -67,7 +67,7 @@ class PasteEmojisView: UIView {
     }
 
     func setEmojis(emojis: String, onPress: @escaping () -> Void) {
-        textButton.setTitle(NSLocalizedString("Paste copied Emoji ID", comment: ""), for: .normal)
+        textButton.setTitle(NSLocalizedString("emoji.paste", comment: "Emoji view"), for: .normal)
         let first = "\(emojis.prefix(6))".insertSeparator(" | ", atEvery: 3)
         let last = "\(emojis.suffix(6))".insertSeparator(" | ", atEvery: 3)
         emojiLabel.text = "\(first)...\(last)"

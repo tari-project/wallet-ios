@@ -47,9 +47,9 @@ extension Date {
     */
     func relativeDayFromToday() -> String? {
         if Calendar.current.isDateInToday(self) {
-            return NSLocalizedString("Today", comment: "Transaction list section heading")
+            return NSLocalizedString("tx_list.today", comment: "Transaction list section heading")
         } else if Calendar.current.isDateInYesterday(self) {
-            return NSLocalizedString("Yesterday", comment: "Transaction list section heading")
+            return NSLocalizedString("tx_list.yesterday", comment: "Transaction list section heading")
         } else {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, yyyy", options: 0, locale: .current)

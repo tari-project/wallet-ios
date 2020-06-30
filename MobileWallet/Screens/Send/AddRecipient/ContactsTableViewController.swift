@@ -126,8 +126,8 @@ class ContactsTableViewController: UITableViewController {
                 try self?.loadContacts()
             } catch {
                 UserFeedback.shared.error(
-                    title: NSLocalizedString("Failed to load contacts", comment: "Add recipient view"),
-                    description: NSLocalizedString("Could not access wallet", comment: "Add recipient view"),
+                    title: NSLocalizedString("add_recipient.error.load_contacts.title", comment: "Add recipient view"),
+                    description: NSLocalizedString("add_recipient.error.load_contacts.description", comment: "Add recipient view"),
                     error: error
                 )
             }
@@ -223,10 +223,10 @@ class ContactsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
-            return NSLocalizedString("Recent Transactions", comment: "Add recipient view")
+            return NSLocalizedString("add_recipient.recent_transactions", comment: "Add recipient view")
         }
 
-        return NSLocalizedString("My Contacts", comment: "Add recipient view")
+        return NSLocalizedString("add_recipient.my_contacts", comment: "Add recipient view")
     }
 
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {

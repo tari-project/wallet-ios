@@ -158,7 +158,7 @@ extension TransactionsTableViewController {
         emptyView.addSubview(messageLabel)
 
         messageLabel.numberOfLines = 0
-        messageLabel.text = NSLocalizedString("We don’t see any transactions yet.\nHopefully something happens soon…🤞 ", comment: "Home view table when there are no transactions")
+        messageLabel.text = NSLocalizedString("tx_list.empty", comment: "Home view table when there are no transactions")
         messageLabel.textAlignment = .center
         messageLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
         messageLabel.font = Theme.shared.fonts.transactionListEmptyMessageLabel
@@ -185,7 +185,7 @@ extension TransactionsTableViewController {
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         introView.addSubview(titleLabel)
 
-        let titleText = NSLocalizedString("Your wallet setup is complete.", comment: "Home screen untro")
+        let titleText = NSLocalizedString("tx_list.intro", comment: "Home screen untro")
 
         let attributedTitle = NSMutableAttributedString(
             string: titleText,
@@ -203,7 +203,7 @@ extension TransactionsTableViewController {
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         introView.addSubview(messageLabel)
 
-        messageLabel.text = NSLocalizedString("You’re ready to start exploring", comment: "Home view table on introdution to wallet")
+        messageLabel.text = NSLocalizedString("tx_list.intro_message", comment: "Home view table on introdution to wallet")
         messageLabel.textAlignment = .center
         messageLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
         messageLabel.font = Theme.shared.fonts.transactionListEmptyMessageLabel

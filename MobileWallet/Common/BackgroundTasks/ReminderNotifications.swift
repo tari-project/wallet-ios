@@ -54,7 +54,7 @@ class ReminderNotifications {
 
     static let titleString = String(
         format: NSLocalizedString(
-            "You've been sent %@!",
+            "scheduled_reminder.title.with_param",
             comment: "Local reminder notifications"
         ),
         TariSettings.shared.network.currencyDisplayTicker
@@ -64,7 +64,7 @@ class ReminderNotifications {
         ScheduledReminder(
             identifier: "scheduled-reminders-recipient-1",
             title: ReminderNotifications.titleString,
-            body: NSLocalizedString("Open Tari Aurora", comment: "Local reminder notifications"),
+            body: NSLocalizedString("scheduled_reminder.body.short", comment: "Local reminder notifications"),
             deliverAfter: TariSettings.shared.environment == .production ? 60 * 60 * 24 : 60 * 60 * 2 //24h for prod and 2h for debug/testflight
         ),
         ScheduledReminder(
@@ -72,7 +72,7 @@ class ReminderNotifications {
             title: ReminderNotifications.titleString,
             body: String(
                 format: NSLocalizedString(
-                    "Someone sent you %@! Open Tari Aurora to receive it now or it will be returned to the sender.",
+                    "scheduled_reminder.body.long.with_param",
                     comment: "Local reminder notifications"
                 ),
                 TariSettings.shared.network.currencyDisplayTicker

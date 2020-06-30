@@ -111,7 +111,7 @@ class RestoreWalletPendingView: UIView {
     private func setupTitle() {
         let title = UILabel()
 
-        title.text = NSLocalizedString("Restoring your wallet", comment: "restore pending title")
+        title.text = NSLocalizedString("restore_pending_view.title", comment: "RestorePending view")
         title.font = Theme.shared.fonts.restorePendingViewTitle
         title.textColor = Theme.shared.colors.restorePendingViewTitle
 
@@ -124,7 +124,7 @@ class RestoreWalletPendingView: UIView {
         description.numberOfLines = 0
         description.textAlignment = .center
 
-        description.text = NSLocalizedString("This could take between 1 to 3 minutes.\nPlease keep the app open.", comment: "restore pending description")
+        description.text = NSLocalizedString("restore_pending_view.description", comment: "RestorePending view")
         description.font = Theme.shared.fonts.restorePendingViewDescription
         description.textColor = Theme.shared.colors.restorePendingViewDescription
 

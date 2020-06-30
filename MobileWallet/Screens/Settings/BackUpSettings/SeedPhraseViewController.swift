@@ -99,14 +99,14 @@ extension SeedPhraseViewController {
 
     override func setupNavigationBar() {
         super.setupNavigationBar()
-        navigationBar.title = NSLocalizedString("Back Up Wallet", comment: "RecoveryPhraseViewController title")
+        navigationBar.title = NSLocalizedString("seed_phrase.title", comment: "SeedPhrase view")
     }
 
     private func setupHeader() {
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
         descriptionLabel.textColor = Theme.shared.colors.settingsSeedPhraseDescription
-        descriptionLabel.text = NSLocalizedString("Carefully write these 24 words down in order, and keep the paper somewhere secure where others can’t access it.", comment: "SeedPhraseViewController header description")
+        descriptionLabel.text = NSLocalizedString("seed_phrase.header", comment: "SeedPhrase view")
 
         view.addSubview(descriptionLabel)
 
@@ -142,7 +142,7 @@ extension SeedPhraseViewController {
 
         agreementContainer.addSubview(agreementLabel)
 
-        agreementLabel.text = NSLocalizedString("I understand that if I lose my recovery seed phrase I will not be able to restore my wallet.", comment: "SeedPhraseViewController agreement")
+        agreementLabel.text = NSLocalizedString("seed_phrase.agreement", comment: "SeedPhrase view")
         agreementLabel.font = Theme.shared.fonts.settingsSeedPhraseAgreement
         agreementLabel.textColor = Theme.shared.colors.settingsSeedPhraseAgreement!
 
@@ -154,7 +154,7 @@ extension SeedPhraseViewController {
     }
 
     private func setupContinueButton() {
-        continueButton.setTitle(NSLocalizedString("Verify Seed Phrase", comment: "Recovery phrase continue button"), for: .normal)
+        continueButton.setTitle(NSLocalizedString("seed_phrase.verify_seed_phrase", comment: "SeedPhrase view"), for: .normal)
         continueButton.addTarget(self, action: #selector(continueButtonAction), for: .touchUpInside)
         continueButton.variation = .disabled
         view.addSubview(continueButton)
