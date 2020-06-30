@@ -47,6 +47,20 @@ class SettingsViewController: SettingsParentTableViewController {
         case more
     }
 
+    private enum BackupDescriptionTitle {
+        case upToDate
+        case outOfDate
+        case inProgress
+
+        var rawValue: String {
+            switch self {
+            case .upToDate: return NSLocalizedString("Up to date", comment: "Settings view")
+            case .outOfDate: return NSLocalizedString("Out of date", comment: "Settings view")
+            case .inProgress: return NSLocalizedString("In progress", comment: "Settings view")
+            }
+        }
+    }
+
     private enum SettingsHeaderTitle {
         case securityHeader
         case moreHeader
@@ -128,6 +142,8 @@ class SettingsViewController: SettingsParentTableViewController {
 
     @objc private func updateMarks() {
         backUpWalletItem.mark = ICloudBackup.shared.backupExists() ? .success : .attention
+        backUpWalletItem.markDescription = ICloudBackup.shared.backupExists() ? BackupDescriptionTitle.upToDate.rawValue : BackupDescriptionTitle.outOfDate.rawValue
+        tableView.reloadData()
     }
 }
 
@@ -162,7 +178,31 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = UIView()
         header.backgroundColor = .clear
-        header.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        let sec = Section(rawValue: section)
+
+        switch sec {
+        case .security:
+            header.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        case .more:
+            if let lastBackupString = ICloudBackup.shared.lastBackupString {
+                header.heightAnchor.constraint(equalToConstant: 85).isActive = true
+
+                let lastBackupLabel =  UILabel()
+                lastBackupLabel.font = Theme.shared.fonts.settingsTableViewLastBackupDate
+                lastBackupLabel.textColor =  Theme.shared.colors.settingsTableViewLastBackupDate
+
+                lastBackupLabel.text = NSLocalizedString("Last successful backup: \(lastBackupString)", comment: "Settings view")
+
+                header.addSubview(lastBackupLabel)
+
+                lastBackupLabel.translatesAutoresizingMaskIntoConstraints = false
+                lastBackupLabel.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 25).isActive = true
+                lastBackupLabel.bottomAnchor.constraint(equalTo: header.topAnchor, constant: 8).isActive = true
+            } else {
+                header.heightAnchor.constraint(equalToConstant: 70).isActive = true
+            }
+        default: break
+        }
 
         let label = UILabel()
         label.font = Theme.shared.fonts.settingsTableViewHeader

@@ -44,6 +44,7 @@ class SystemMenuTableViewCellItem: NSObject {
     let title: String
 
     @objc dynamic var mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none
+    @objc dynamic var markDescription: String = ""
     @objc dynamic var percent: Double = 0.0
 
     init(title: String, mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none) {
@@ -64,22 +65,42 @@ class SystemMenuTableViewCell: UITableViewCell {
 
     private let arrow = UIImageView()
     private let markImageView = UIImageView()
+    private let markDescriptionLabel = UILabel()
     private let titleLabel = UILabel()
     private let progressView = CircularProgressView()
 
     private var kvoPercentToken: NSKeyValueObservation?
     private var kvoMarkToken: NSKeyValueObservation?
+    private var kvoMarkDescriptionToken: NSKeyValueObservation?
 
-    var mark: SystemMenuTableViewCellMark = .none {
+    private var mark: SystemMenuTableViewCellMark = .none {
         didSet {
             if mark == oldValue { return }
             isUserInteractionEnabled = true
             switch mark {
-            case .none: markImageView.image = nil; progressView.isHidden = true
-            case .attention: markImageView.image = Theme.shared.images.attentionIcon!; progressView.isHidden = true
-            case .success: markImageView.image = Theme.shared.images.successIcon!; progressView.isHidden = true
-            case .progress: markImageView.image = nil; progressView.isHidden = false; isUserInteractionEnabled = false
+            case .none:
+                markImageView.image = nil
+                progressView.isHidden = true
+                markDescriptionLabel.textColor = .clear
+            case .attention:
+                markImageView.image = Theme.shared.images.attentionIcon!
+                progressView.isHidden = true
+                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionWarning
+            case .success:
+                markImageView.image = Theme.shared.images.successIcon!
+                progressView.isHidden = true
+                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionSuccess
+            case .progress:
+                markImageView.image = nil; progressView.isHidden = false
+                isUserInteractionEnabled = false
+                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionInProgress
             }
+        }
+    }
+
+    private var markDescription: String = "" {
+        didSet {
+            markDescriptionLabel.text = markDescription
         }
     }
 
@@ -109,6 +130,7 @@ class SystemMenuTableViewCell: UITableViewCell {
     func configure(_ item: SystemMenuTableViewCellItem) {
         titleLabel.text = item.title
         mark = item.mark
+        markDescription = item.markDescription
         observe(item: item)
     }
 
@@ -119,6 +141,10 @@ class SystemMenuTableViewCell: UITableViewCell {
 
         kvoMarkToken = item.observe(\.mark, options: .new) { [weak self] (item, _) in
             self?.mark = item.mark
+        }
+
+        kvoMarkDescriptionToken = item.observe(\.markDescription, options: .new) { [weak self] (item, _) in
+            self?.markDescription = item.markDescription
         }
     }
 
@@ -135,6 +161,7 @@ extension SystemMenuTableViewCell {
 
         setupArrow()
         setupMark()
+        setupMarkDescription()
         setupProgressView()
         setupTitle()
     }
@@ -183,12 +210,29 @@ extension SystemMenuTableViewCell {
     }
 
     private func setupTitle() {
-        titleLabel.font = Theme.shared.fonts.systemableViewCell
+        titleLabel.font = Theme.shared.fonts.systemTableViewCell
+        titleLabel.adjustsFontSizeToFitWidth = true
         contentView.addSubview(titleLabel)
 
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
         titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: markImageView.leadingAnchor, constant: -20).isActive = true
+        let trailingAnchor = titleLabel.trailingAnchor.constraint(greaterThanOrEqualTo: markDescriptionLabel.leadingAnchor, constant: -20)
+        trailingAnchor.isActive = true
+        trailingAnchor.priority = .defaultLow
+
+        titleLabel.setContentHuggingPriority(.required, for: .horizontal)
+    }
+
+    private func setupMarkDescription() {
+        markDescriptionLabel.font = Theme.shared.fonts.systemTableViewCellMarkDescription
+        markDescriptionLabel.textAlignment = .right
+        contentView.addSubview(markDescriptionLabel)
+
+        markDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        markDescriptionLabel.centerYAnchor.constraint(equalTo: markImageView.centerYAnchor).isActive = true
+        markDescriptionLabel.trailingAnchor.constraint(equalTo: markImageView.leadingAnchor, constant: -10).isActive = true
+
+        markDescriptionLabel.setContentHuggingPriority(.required, for: .horizontal)
     }
 }

@@ -83,6 +83,32 @@ class ICloudBackup: NSObject {
     var inProgress: Bool = false
     private(set) var progressValue: Double = 0.0
 
+    var lastBackupString: String? {
+        if let date = lastBackupDate {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "MMM dd yyy 'at' HH:mm a"
+            dateFormatter.timeZone = .current
+
+            let dateString = dateFormatter.string(from: date)
+            return dateString
+        }
+        return nil
+    }
+
+    var lastBackupDate: Date? {
+        do {
+            guard let backupFolder = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { return nil }
+            let iCloudFolderURL = try iCloudDirectory().appendingPathComponent(backupFolder)
+            if let last = try FileManager.default.contentsOfDirectory(atURL: iCloudFolderURL, sortedBy: .created, options: []).last {
+                guard let date = try last.resourceValues(forKeys: [.creationDateKey]).allValues.first?.value as? Date else { return nil }
+                return date
+            }
+            return nil
+        } catch {
+            return nil
+        }
+    }
+
     static let shared = ICloudBackup()
 
     override init() {
