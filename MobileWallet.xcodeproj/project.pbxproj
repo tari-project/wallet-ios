@@ -338,6 +338,7 @@
 		371A0818247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
 		371A0819247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
 		371A081A247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
+		3723A7A224AB57F4003382EB /* AESEncryptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7A124AB57F4003382EB /* AESEncryptionTests.swift */; };
 		373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
 		373CCDBE2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
 		373CCDBF2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
@@ -365,6 +366,9 @@
 		376C62AE247574850091BB28 /* Animation+EnumInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C62AD247574850091BB28 /* Animation+EnumInit.swift */; };
 		376C62AF247574850091BB28 /* Animation+EnumInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C62AD247574850091BB28 /* Animation+EnumInit.swift */; };
 		376C62B0247574850091BB28 /* Animation+EnumInit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 376C62AD247574850091BB28 /* Animation+EnumInit.swift */; };
+		37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37765D2524A35BA20091AE2A /* AESEncryption.swift */; };
+		37765D2724A35BA20091AE2A /* AESEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37765D2524A35BA20091AE2A /* AESEncryption.swift */; };
+		37765D2824A35BA20091AE2A /* AESEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37765D2524A35BA20091AE2A /* AESEncryption.swift */; };
 		378B4BC32498E5A000C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
 		378B4BC42498E5A000C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
 		378B4BC52498E5A100C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
@@ -706,6 +710,7 @@
 		37098044249CD48A0004ED2E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		371189722488FF11004D0CE3 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		371A0817247290C000F97713 /* TransitionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionLabel.swift; sourceTree = "<group>"; };
+		3723A7A124AB57F4003382EB /* AESEncryptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESEncryptionTests.swift; sourceTree = "<group>"; };
 		373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+SecureCopy.swift"; sourceTree = "<group>"; };
 		37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+KeyWindow.swift"; sourceTree = "<group>"; };
@@ -715,6 +720,7 @@
 		375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBar.swift; sourceTree = "<group>"; };
 		376B502224924BB700278ACC /* RestoreWalletPendingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletPendingView.swift; sourceTree = "<group>"; };
 		376C62AD247574850091BB28 /* Animation+EnumInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Animation+EnumInit.swift"; sourceTree = "<group>"; };
+		37765D2524A35BA20091AE2A /* AESEncryption.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AESEncryption.swift; sourceTree = "<group>"; };
 		378B4BCF2498F83000C00CCF /* PendingCircleAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PendingCircleAnimation.json; sourceTree = "<group>"; };
 		379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarWithSubtitle.swift; sourceTree = "<group>"; };
 		37ABB68F24781CE800F08163 /* UILabel+InterlineSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+InterlineSpacing.swift"; sourceTree = "<group>"; };
@@ -922,6 +928,7 @@
 				00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */,
 				00B4D6F9241B910200ED8318 /* NotificationManager.swift */,
 				00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */,
+				37765D2524A35BA20091AE2A /* AESEncryption.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1228,6 +1235,7 @@
 				00E491B52366E08F007B332D /* MobileWalletTests.swift */,
 				00BBD81D237ECDAA00EBF5E6 /* TariLibWrapperTests.swift */,
 				00E491B72366E08F007B332D /* Info.plist */,
+				3723A7A124AB57F4003382EB /* AESEncryptionTests.swift */,
 			);
 			path = MobileWalletTests;
 			sourceTree = "<group>";
@@ -2070,6 +2078,7 @@
 				37C8BA47248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
+				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */,
 				00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
@@ -2246,11 +2255,13 @@
 				00230B0A23770CEA00F23E34 /* CALayer.swift in Sources */,
 				0039B1B323FA925500F91E0F /* PasteEmojisView.swift in Sources */,
 				004997B82382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
+				37765D2724A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				001F6CED2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
 				379D27BA244F091A00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				37EE285B2485649800335EDC /* WordsFlexView.swift in Sources */,
 				37AFE266245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
+				3723A7A224AB57F4003382EB /* AESEncryptionTests.swift in Sources */,
 				491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */,
 				BFAB5D1223FDEA6A009E8563 /* EmoticonView.swift in Sources */,
 				00BCE480240D5A9700B181F3 /* OnionManager.swift in Sources */,
@@ -2328,6 +2339,7 @@
 				3708D754247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00D7BD8B24349AE3009DD097 /* UIDevice.swift in Sources */,
+				37765D2824A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				BFAB5D1323FDEA6A009E8563 /* EmoticonView.swift in Sources */,
 				37EE285C2485649800335EDC /* WordsFlexView.swift in Sources */,
