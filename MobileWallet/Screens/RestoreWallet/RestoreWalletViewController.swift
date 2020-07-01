@@ -113,6 +113,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
                         self?.pendingView.hidePendingView { [weak self] in
                             UserDefaults.standard.set(true, forKey: HomeViewController.INTRO_TO_WALLET_USER_DEFAULTS_KEY)
                             UserDefaults.standard.set(true, forKey: "authStepPassed")
+                            UserDefaults.standard.set(true, forKey: "iCloudBackupsSwitcherIsOn")
                             self?.returnToSplashScreen()
                         }
                     }

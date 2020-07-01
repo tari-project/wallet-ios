@@ -39,6 +39,7 @@
 */
 
 import UIKit
+import LocalAuthentication
 
 class SettingsViewController: SettingsParentTableViewController {
 
@@ -108,7 +109,10 @@ class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onBackupWalletAction() {
-        navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)
+        let localAuth = LAContext()
+        localAuth.authenticateUser(reason: .userVerification) { [weak self] in
+            self?.navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)
+        }
     }
 
     private func onLinkAction(indexPath: IndexPath) {

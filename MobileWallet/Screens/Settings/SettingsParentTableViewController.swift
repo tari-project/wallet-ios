@@ -82,16 +82,15 @@ class SettingsParentTableViewController: SettingsParentViewController {
 }
 
 extension SettingsParentTableViewController: ICloudBackupObserver {
+
     func onUploadProgress(percent: Double, completed: Bool, error: Error?) {
+        updateMarks()
+
         if error != nil {
             UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
-            backUpWalletItem?.mark = .attention
             return
         }
-        backUpWalletItem?.percent = percent
-
         if completed {
-            updateMarks()
             DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
                 self?.reloadTableViewWithAnimation()
             }

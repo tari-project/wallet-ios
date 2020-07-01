@@ -42,6 +42,12 @@ import Foundation
 import SwiftKeychainWrapper
 
 class Migrations {
+    private static let sharedKeychainGroup = KeychainWrapper(
+        serviceName: "tari",
+        accessGroup: "\(TariSettings.shared.appleTeamID ?? "").com.tari.wallet.keychain"
+    )
+    private static let passwordKey = "BackupPasswordKey"
+
     /// Needs to be called from AppDelegate didFinishLaunchingWithOptions
     static func handle() {
         TariLogger.verbose("Checking for migrations")
@@ -96,14 +102,21 @@ class Migrations {
         TariLogger.verbose("Migrated Tor cache to shared app group storage")
     }
 
+    static func setBackupPasswordToKeychain(password: String) {
+        sharedKeychainGroup.set(password, forKey: passwordKey)
+    }
+
+    static func loadBackupPasswordFromKeychain() -> String? {
+        return sharedKeychainGroup.string(forKey: passwordKey)
+    }
+
+    static func removeVackupPasswordFromKeychain() {
+        sharedKeychainGroup.removeObject(forKey: passwordKey)
+    }
+
     /// Needs to be called with the comms config that is about to be used to start the wallet
     /// - Parameter comms: Comms config used for wallet service
     static func privateKeyKeychainToDB(_ comms: CommsConfig) {
-        let sharedKeychainGroup = KeychainWrapper(
-            serviceName: "tari",
-            accessGroup: "\(TariSettings.shared.appleTeamID ?? "").com.tari.wallet.keychain"
-        )
-
         let forKey = "privateKey"
 
         guard let privateKeyHex = sharedKeychainGroup.string(forKey: forKey) else {

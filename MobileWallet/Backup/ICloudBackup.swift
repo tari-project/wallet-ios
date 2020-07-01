@@ -47,6 +47,8 @@ enum ICloudBackupWalletError: Error {
     case dbFileNotFound
     case iCloudContainerNotFound
     case unableCreateBackupFolder
+    case keychainPasswordFailture
+    case uploadToICloudFailture
 }
 
 enum ICloudBackupState {
@@ -78,6 +80,10 @@ extension ICloudBackupWalletError: LocalizedError {
             return NSLocalizedString("iCloud_backup.error.container_not_found", comment: "iCloudBackup error")
         case .unableCreateBackupFolder:
             return NSLocalizedString("iCloud_backup.error.unable_create_backup_folder", comment: "iCloudBackup error")
+        case .keychainPasswordFailture:
+            return NSLocalizedString("iCloud_backup.error.keychain_password_failture", comment: "iCloudBackup error")
+        case .uploadToICloudFailture:
+            return NSLocalizedString("iCloud_backup.error.upload_to_iCloud_failture", comment: "iCloudBackup error")
         }
     }
 }
@@ -96,6 +102,15 @@ class ICloudBackup: NSObject {
 
     private(set) var inProgress: Bool = false
     private(set) var progressValue: Double = 0.0
+
+    private var isLastBackupFailed: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: "isLastBackupFailed")
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: "isLastBackupFailed")
+        }
+    }
 
     var lastBackupString: String? {
         if let date = lastBackupDate {
@@ -135,7 +150,7 @@ class ICloudBackup: NSObject {
         query = NSMetadataQuery.init()
         query.operationQueue = .main
         query.searchScopes = [NSMetadataQueryUbiquitousDataScope]
-        query.predicate = NSPredicate(format: "%K LIKE '*.zip'", NSMetadataItemFSNameKey)
+        query.predicate = NSPredicate(format: "%K LIKE '\(fileName)*'", NSMetadataItemFSNameKey)
     }
 
     func addObserver(_ observer: ICloudBackupObserver) {
@@ -144,6 +159,7 @@ class ICloudBackup: NSObject {
 
     // returns true if backup of current wallet is exist
     func backupExists() -> Bool {
+        if isLastBackupFailed { return false }
         if inProgress { return false }
         let fileManager = FileManager.default
         guard let backupFolder = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { return false }
@@ -162,30 +178,41 @@ class ICloudBackup: NSObject {
     }
 
     func createWalletBackup() throws {
-        guard let backupFolder = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { throw ICloudBackupWalletError.iCloudContainerNotFound }
+        do {
+            guard let backupFolder = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { throw ICloudBackupWalletError.iCloudContainerNotFound }
 
-        let fileURL = try zipWalletDatabase()
-        let containerURL = try iCloudDirectory().appendingPathComponent(backupFolder)
+            let fileURL: URL
+            if Migrations.loadBackupPasswordFromKeychain() != nil {
+                fileURL = try encryptedZipWalletDatabase()
+            } else {
+                fileURL = try zipWalletDatabase()
+            }
 
-        if !FileManager.default.fileExists(atPath: containerURL.path) {
-            try FileManager.default.createDirectory(at: containerURL, withIntermediateDirectories: true, attributes: nil)
+            let containerURL = try iCloudDirectory().appendingPathComponent(backupFolder)
+
+            if !FileManager.default.fileExists(atPath: containerURL.path) {
+                try FileManager.default.createDirectory(at: containerURL, withIntermediateDirectories: true, attributes: nil)
+            }
+            let backupFileURL = containerURL.appendingPathComponent(fileURL.lastPathComponent)
+            if FileManager.default.fileExists(atPath: backupFileURL.path) {
+                try FileManager.default.removeItem(at: backupFileURL)
+                try FileManager.default.copyItem(at: fileURL, to: backupFileURL)
+            } else {
+                try FileManager.default.copyItem(at: fileURL, to: backupFileURL)
+            }
+            inProgress = true
+            progressValue = 0.0
+
+            query.operationQueue?.addOperation({ [weak self] in
+                _ = self?.query.start()
+                self?.inProgress = true
+                self?.progressValue = 0.0
+                self?.query.enableUpdates()
+            })
+        } catch {
+            isLastBackupFailed = true
+            throw error
         }
-        let backupFileURL = containerURL.appendingPathComponent(fileURL.lastPathComponent)
-        if FileManager.default.fileExists(atPath: backupFileURL.path) {
-            try FileManager.default.removeItem(at: backupFileURL)
-            try FileManager.default.copyItem(at: fileURL, to: backupFileURL)
-        } else {
-            try FileManager.default.copyItem(at: fileURL, to: backupFileURL)
-        }
-        inProgress = true
-        progressValue = 0.0
-
-        query.operationQueue?.addOperation({ [weak self] in
-            _ = self?.query.start()
-            self?.inProgress = true
-            self?.progressValue = 0.0
-            self?.query.enableUpdates()
-        })
     }
 
     func restoreWallet(completion: @escaping (_ error: Error?) -> Void) {
@@ -211,9 +238,27 @@ class ICloudBackup: NSObject {
 extension ICloudBackup {
     private func restoreBackup(walletFolder: String, to directory: URL, completion: @escaping ((_ error: Error?) -> Void)) {
         downloadBackup(walletFolder: walletFolder) { [weak self] (url, error) in
-            guard let zippedBackupURL = url, error == nil else {
+            guard let backupURL = url, error == nil else {
                 completion(error)
                 return
+            }
+
+            let isBackupEncrypted = backupURL.pathExtension.isEmpty
+
+            let zippedBackupURL: URL
+            if isBackupEncrypted {
+                do {
+                    guard let zippedURL = try self?.decryptedZipWalletDatabase(encryptedFileUrl: backupURL) else {
+                        completion(ICloudBackupWalletError.unarchiveError)
+                        return
+                    }
+                    zippedBackupURL = zippedURL
+                } catch {
+                    completion(error)
+                    return
+                }
+            } else {
+                zippedBackupURL = backupURL
             }
 
             do {
@@ -302,21 +347,30 @@ extension ICloudBackup {
             }
         }
 
-        let fileValues = try? fileURL!.resourceValues(forKeys: [URLResourceKey.ubiquitousItemIsUploadingKey])
-        if let fileUploaded = fileItem?.value(forAttribute: NSMetadataUbiquitousItemIsUploadedKey) as? Bool, fileUploaded == true, fileValues?.ubiquitousItemIsUploading == false {
-            progressValue = 0.0
-            inProgress = false
-            notifyObservers(percent: 100, completed: true, error: nil)
-            try? cleanTempDirectory()
-        } else if let error = fileValues?.ubiquitousItemUploadingError {
-            progressValue = 0.0
-            inProgress = false
-            notifyObservers(percent: 0, completed: false, error: error)
-        } else {
-            if let fileProgress = fileItem?.value(forAttribute: NSMetadataUbiquitousItemPercentUploadedKey) as? Double {
-                notifyObservers(percent: fileProgress, completed: false, error: nil)
-                progressValue = fileProgress
+        if fileURL == nil { return }
+
+        do {
+            let fileValues = try fileURL!.resourceValues(forKeys: [URLResourceKey.ubiquitousItemIsUploadingKey])
+            if let fileUploaded = fileItem?.value(forAttribute: NSMetadataUbiquitousItemIsUploadedKey) as? Bool, fileUploaded == true, fileValues.ubiquitousItemIsUploading == false {
+                progressValue = 0.0
+                inProgress = false
+                isLastBackupFailed = false
+                notifyObservers(percent: 100, completed: true, error: nil)
+                try cleanTempDirectory()
+            } else if let error = fileValues.ubiquitousItemUploadingError {
+                progressValue = 0.0
+                inProgress = false
+                isLastBackupFailed = true
+                notifyObservers(percent: 0, completed: false, error: error)
+            } else {
+                if let fileProgress = fileItem?.value(forAttribute: NSMetadataUbiquitousItemPercentUploadedKey) as? Double {
+                    notifyObservers(percent: fileProgress, completed: false, error: nil)
+                    progressValue = fileProgress
+                }
             }
+        } catch {
+            isLastBackupFailed = true
+            notifyObservers(percent: 0, completed: false, error: ICloudBackupWalletError.uploadToICloudFailture)
         }
     }
 
@@ -339,8 +393,8 @@ extension ICloudBackup {
     private func zipWalletDatabase() throws -> URL {
         let archiveName = fileName + ".zip"
 
-        let tempDirectory = try tempZipDirectory()
-        let archiveURL = tempDirectory.appendingPathComponent(archiveName)
+        let tmpDirectory = try tempDirectory()
+        let archiveURL = tmpDirectory.appendingPathComponent(archiveName)
 
         if FileManager.default.fileExists(atPath: archiveURL.path) {
             try FileManager.default.removeItem(atPath: archiveURL.path)
@@ -351,6 +405,34 @@ extension ICloudBackup {
         return archiveURL
     }
 
+    private func encryptedZipWalletDatabase() throws -> URL {
+        guard let password = Migrations.loadBackupPasswordFromKeychain() else { throw ICloudBackupWalletError.keychainPasswordFailture }
+
+        let zipURL = try zipWalletDatabase()
+        let data = try Data(contentsOf: zipURL)
+
+        let aes = try AESEncryption(keyString: password)
+
+        let encryptedData = try aes.encrypt(data)
+        let fileURL = try tempDirectory().appendingPathComponent(fileName)
+        try encryptedData.write(to: fileURL)
+
+        return fileURL
+    }
+
+    private func decryptedZipWalletDatabase(encryptedFileUrl: URL) throws -> URL {
+        guard let password = Migrations.loadBackupPasswordFromKeychain() else { throw ICloudBackupWalletError.keychainPasswordFailture }
+        let data = try Data(contentsOf: encryptedFileUrl)
+        let aes = try AESEncryption(keyString: password)
+
+        let decryptedZipUrl = try tempDirectory().appendingPathComponent(fileName + ".zip")
+
+        let decryptedData = try aes.decrypt(data)
+        try decryptedData.write(to: decryptedZipUrl)
+
+        return decryptedZipUrl
+    }
+
     private func iCloudDirectory() throws -> URL {
         guard let url = FileManager.default.url(forUbiquityContainerIdentifier: TariSettings.shared.iCloudContainerIdentifier)?.appendingPathComponent("Tari-Wallet-Backups") else {
             throw ICloudBackupWalletError.iCloudContainerNotFound
@@ -358,7 +440,7 @@ extension ICloudBackup {
         return url
     }
 
-    private func tempZipDirectory() throws -> URL {
+    private func tempDirectory() throws -> URL {
         if let tempZipDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Backups") {
 
             if !FileManager.default.fileExists(atPath: tempZipDirectory.path) {
@@ -370,7 +452,7 @@ extension ICloudBackup {
     }
 
     private func cleanTempDirectory() throws {
-        let directory = try tempZipDirectory()
+        let directory = try tempDirectory()
         try FileManager.default.removeItem(at: directory)
     }
 }

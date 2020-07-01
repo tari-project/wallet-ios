@@ -55,7 +55,6 @@ class SecureBackupViewController: SettingsParentViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        hideKeyboardWhenTappedAroundOrSwipedDown()
 
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardChangePosition), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardChangePosition), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -63,7 +62,19 @@ class SecureBackupViewController: SettingsParentViewController {
     }
 
     @objc private func continueButtonAction() {
+        view.endEditing(true)
+        guard let password = enterPasswordField.password else {
+            UserFeedback.shared.error(title: "iCloud_backup.error.set_password.title", description: "iCloudBackup error")
+            return
+        }
+        Migrations.setBackupPasswordToKeychain(password: password)
+        continueButton.variation = .disabled
 
+        do {
+            try ICloudBackup.shared.createWalletBackup()
+        } catch {
+            UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
+        }
     }
 }
 // MARK: Keyboard behavior
@@ -116,6 +127,7 @@ extension SecureBackupViewController {
     }
 
     private func setupEnterPasswordField() {
+        enterPasswordField.password = Migrations.loadBackupPasswordFromKeychain()
         enterPasswordField.delegate = self
         enterPasswordField.title = NSLocalizedString("secure_backup.enter_password_field.title", comment: "SecureBackup view")
         enterPasswordField.placeholder = NSLocalizedString("secure_backup.enter_password_field.placeholder", comment: "SecureBackup view")
@@ -126,6 +138,7 @@ extension SecureBackupViewController {
     }
 
     private func setupConfirmPasswordField() {
+        confirmPasswordField.password = Migrations.loadBackupPasswordFromKeychain()
         confirmPasswordField.delegate = self
         confirmPasswordField.title = NSLocalizedString("secure_backup.confirm_password_field.title", comment: "SecureBackup view")
         confirmPasswordField.placeholder = NSLocalizedString("secure_backup.confirm_password_field.placeholder", comment: "SecureBackup view")

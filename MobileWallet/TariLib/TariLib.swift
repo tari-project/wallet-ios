@@ -354,7 +354,8 @@ class TariLib {
     }
 
     func waitIfWalletIsRestarting(completion: @escaping ((_ success: Bool?) -> Void)) {
-        if !walletExists { completion(false) }
+        if !walletExists { completion(false); return }
+        if walletIsStopped == false { completion(true); return }
 
         var waitingTime = 0.0
         Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] (timer) in

@@ -47,7 +47,12 @@ protocol PasswordFieldDelegate: class {
 class PasswordField: UIView, UITextFieldDelegate {
 
     var password: String? {
-        return self.textField.text
+        get {
+            return self.textField.text
+        }
+        set {
+            self.textField.text = newValue
+        }
     }
 
     var placeholder: String? {

@@ -39,7 +39,6 @@
 */
 
 import UIKit
-import LocalAuthentication
 
 class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
@@ -54,7 +53,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     ]
 
     private let backupNowSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(title: BackupWalletSettingsItem.backUpNow.rawValue, mark: .attention)
+        SystemMenuTableViewCellItem(title: BackupWalletSettingsItem.backUpNow.rawValue)
     ]
 
     private var iCloudBackupsSwitcherIsOn: Bool {
@@ -93,15 +92,12 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     }
 
     private func onBackupNowAction() {
-        let localAuth = LAContext()
-        localAuth.authenticateUser(reason: .userVerification) { [weak self] in
-            do {
-                try self?.iCloudBackup.createWalletBackup()
-            } catch {
-                UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
-            }
-            self?.updateMarks()
+        do {
+            try iCloudBackup.createWalletBackup()
+        } catch {
+            UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
         }
+        updateMarks()
     }
 
     private func onChangePasswordAction() {
@@ -117,6 +113,16 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
         kvoiCloudBackupsToken = iCloudBackupsItem.observe(\.isSwitchIsOn, options: .new) { [weak self] (item, _) in
             TariLib.shared.waitIfWalletIsRestarting { [weak self] (_) in
                 self?.iCloudBackupsSwitcherIsOn = item.isSwitchIsOn
+
+                if item.isSwitchIsOn {
+                    do {
+                        try ICloudBackup.shared.createWalletBackup()
+                    } catch {
+                        UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
+                        iCloudBackupsItem.isSwitchIsOn = false
+                    }
+                }
+                self?.updateMarks()
                 self?.reloadTableViewWithAnimation()
             }
         }
