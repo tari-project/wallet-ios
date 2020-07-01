@@ -52,6 +52,10 @@ class TariLibWrapperTests: XCTestCase {
         return "\(storagePath)/\(dbName)"
     }
     
+    private func backupPath(_ storagePath: String) -> String {
+        return "\(storagePath)/\(dbName)_backup"
+    }
+    
     private func loggingTestPath(_ storagePath: String) -> String {
         return "\(storagePath)/log.txt"
     }
@@ -203,11 +207,13 @@ class TariLibWrapperTests: XCTestCase {
         let fileManager = FileManager.default
         let storagePath = newTestStoragePath
         let databasePath = databaseTestPath(storagePath)
+        let partialBackupPath = backupPath(storagePath)
         let loggingFilePath = loggingTestPath(storagePath)
         
         do {
             try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
             try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectory(atPath: partialBackupPath, withIntermediateDirectories: true, attributes: nil)
         } catch {
             XCTFail("Unable to create directory \(error.localizedDescription)")
         }
@@ -418,6 +424,11 @@ class TariLibWrapperTests: XCTestCase {
         //Test cancel function when a pending tx has aged for 2 seconds
         sleep(2)
         XCTAssertNoThrow(try wallet.cancelExpiredPendingTransactions(after: 1))
+        
+        //MARK: Partial backup
+        let backupFileName = "test_partial_backup"
+        XCTAssertNoThrow(try wallet.partialBackup(partialBackupPath, filename: backupFileName))
+        XCTAssertTrue(fileManager.fileExists(atPath: "\(partialBackupPath)\(backupFileName)"))
     }
     
     func testMicroTari() {

@@ -418,17 +418,6 @@ class Wallet {
         return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!, isCancelled: true)
     }
 
-    func isCompletedTransactionOutbound(tx: CompletedTransaction) throws -> Bool {
-        var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_is_completed_transaction_outbound(ptr, tx.pointer, error)})
-        guard errorCode == 0 else {
-            throw WalletErrors.generic(errorCode)
-        }
-
-        return result
-    }
-
     func signMessage(_ message: String) throws -> Signature {
         var errorCode: Int32 = -1
         let messagePointer = (message as NSString).utf8String
@@ -586,7 +575,7 @@ class Wallet {
         return publicKeys
     }
 
-    func coin_split(amount: UInt64, splitCount: UInt64, fee: UInt64, message: String, lockHeight: UInt64) throws -> UInt64 {
+    func coinSplit(amount: UInt64, splitCount: UInt64, fee: UInt64, message: String, lockHeight: UInt64) throws -> UInt64 {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             message.withCString({ cstr in
@@ -598,6 +587,19 @@ class Wallet {
             throw WalletErrors.generic(errorCode)
         }
         return result
+    }
+
+    func partialBackup(_ filePath: String, filename: String = "partial_backup.sqlite3") throws {
+        var errorCode: Int32 = -1
+        withUnsafeMutablePointer(to: &errorCode, { error in
+            "\(filePath)\(filename)".withCString({ cstr in
+                wallet_partial_backup(ptr, cstr, error)
+            })
+        })
+
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
     }
 
     deinit {
