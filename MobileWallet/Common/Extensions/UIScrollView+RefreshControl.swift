@@ -62,4 +62,13 @@ extension UIScrollView {
         guard let refreshControl = refreshControl else { return false }
         return refreshControl .isRefreshing
     }
+
+    func scrollsToBottom(animated: Bool) {
+        let bottomOffset = CGPoint(x: 0, y: contentSize.height - bounds.size.height)
+        setContentOffset(bottomOffset, animated: animated)
+    }
+
+    func scrollsToTop(animated: Bool) {
+        setContentOffset(.zero, animated: animated)
+    }
 }

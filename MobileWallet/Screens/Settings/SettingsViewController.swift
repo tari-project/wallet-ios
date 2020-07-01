@@ -177,7 +177,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         }
 
         let label = UILabel()
-        label.font = Theme.shared.fonts.settingsTableViewHeader
+        label.font = Theme.shared.fonts.settingsViewHeader
         label.text = headers[section].rawValue
 
         header.addSubview(label)

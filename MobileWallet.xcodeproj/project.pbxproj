@@ -339,6 +339,12 @@
 		371A0819247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
 		371A081A247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
 		3723A7A224AB57F4003382EB /* AESEncryptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7A124AB57F4003382EB /* AESEncryptionTests.swift */; };
+		3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7A524AC9389003382EB /* SecureBackupViewController.swift */; };
+		3723A7A724AC9389003382EB /* SecureBackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7A524AC9389003382EB /* SecureBackupViewController.swift */; };
+		3723A7A824AC9389003382EB /* SecureBackupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7A524AC9389003382EB /* SecureBackupViewController.swift */; };
+		3723A7AB24ACD03E003382EB /* PasswordField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7AA24ACD03E003382EB /* PasswordField.swift */; };
+		3723A7AC24ACD03E003382EB /* PasswordField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7AA24ACD03E003382EB /* PasswordField.swift */; };
+		3723A7AD24ACD03E003382EB /* PasswordField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7AA24ACD03E003382EB /* PasswordField.swift */; };
 		373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
 		373CCDBE2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
 		373CCDBF2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
@@ -711,6 +717,8 @@
 		371189722488FF11004D0CE3 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		371A0817247290C000F97713 /* TransitionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionLabel.swift; sourceTree = "<group>"; };
 		3723A7A124AB57F4003382EB /* AESEncryptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESEncryptionTests.swift; sourceTree = "<group>"; };
+		3723A7A524AC9389003382EB /* SecureBackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureBackupViewController.swift; sourceTree = "<group>"; };
+		3723A7AA24ACD03E003382EB /* PasswordField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordField.swift; sourceTree = "<group>"; };
 		373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+SecureCopy.swift"; sourceTree = "<group>"; };
 		37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+KeyWindow.swift"; sourceTree = "<group>"; };
@@ -1117,6 +1125,7 @@
 		00E2BCAF236B44CE00C2A105 /* UIElements */ = {
 			isa = PBXGroup;
 			children = (
+				3723A7A924ACD029003382EB /* PasswordField */,
 				37B444A72489436100592D92 /* Checkbox */,
 				371A081624728FCB00F97713 /* TransitionUILabel */,
 				375AFDCD2475380B00C62CA1 /* WebBrowserView */,
@@ -1302,6 +1311,7 @@
 				3708D751247FF7D000807D72 /* BackupWalletSettingsViewController.swift */,
 				37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */,
 				375894C424865A6A00B58816 /* VerifyPhraseViewController.swift */,
+				3723A7A524AC9389003382EB /* SecureBackupViewController.swift */,
 			);
 			path = BackUpSettings;
 			sourceTree = "<group>";
@@ -1312,6 +1322,14 @@
 				371A0817247290C000F97713 /* TransitionLabel.swift */,
 			);
 			path = TransitionUILabel;
+			sourceTree = "<group>";
+		};
+		3723A7A924ACD029003382EB /* PasswordField */ = {
+			isa = PBXGroup;
+			children = (
+				3723A7AA24ACD03E003382EB /* PasswordField.swift */,
+			);
+			path = PasswordField;
 			sourceTree = "<group>";
 		};
 		375AFDCD2475380B00C62CA1 /* WebBrowserView */ = {
@@ -2108,10 +2126,12 @@
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				00B084C0249E471800F7B9BD /* EmojiSet.swift in Sources */,
 				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
+				3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				004277FF23E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				0091D4AB23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */,
+				3723A7AB24ACD03E003382EB /* PasswordField.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
 				37049270247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
 				00947CC723D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
@@ -2194,6 +2214,7 @@
 				37049271247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
 				0091D4AC23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
+				3723A7AC24ACD03E003382EB /* PasswordField.swift in Sources */,
 				00BCE483240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				3708D757247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
 				37049275247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
@@ -2223,6 +2244,7 @@
 				491AB8A123F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				004277FC23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				00230AFB2376C6DE00F23E34 /* Sequence.swift in Sources */,
+				3723A7A724AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				00A057B023D875840029C22A /* TariEventBus.swift in Sources */,
 				004277F423E0407900AE7BD9 /* TextButton.swift in Sources */,
 				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
@@ -2368,10 +2390,12 @@
 				00DD1611241CD42500C955B4 /* BaseNode.swift in Sources */,
 				373CCDBF2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				00B084C2249E471800F7B9BD /* EmojiSet.swift in Sources */,
+				3723A7A824AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				00D9886B2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
 				37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
+				3723A7AD24ACD03E003382EB /* PasswordField.swift in Sources */,
 				37ABB69624781F8600F08163 /* UILabelWithPadding.swift in Sources */,
 				375DB1E2246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				376C62B0247574850091BB28 /* Animation+EnumInit.swift in Sources */,

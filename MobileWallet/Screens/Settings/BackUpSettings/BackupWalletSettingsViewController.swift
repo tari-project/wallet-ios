@@ -79,7 +79,6 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
             case .changePassword: return NSLocalizedString("backup_wallet_settings.item.change_password", comment: "BackupWalletSettings view")
             case .backUpNow: return NSLocalizedString("backup_wallet_settings.item.backup_now", comment: "BackupWalletSettings view")
             case .backUpWithRecoveryPhrase: return NSLocalizedString("backup_wallet_settings.item.with_recovery_phrase", comment: "BackupWalletSettings view")
-
             }
         }
     }
@@ -106,7 +105,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     }
 
     private func onChangePasswordAction() {
-
+        navigationController?.pushViewController(SecureBackupViewController(), animated: true)
     }
 
     private func onBackupWithRecoveryPhraseAction() {
@@ -125,6 +124,14 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
     deinit {
         kvoiCloudBackupsToken?.invalidate()
+    }
+}
+
+// MARK: Setup subviews
+extension BackupWalletSettingsViewController {
+    override func setupNavigationBar() {
+        super.setupNavigationBar()
+        navigationBar.title = NSLocalizedString("backup_wallet_settings.title", comment: "BackupWalletSettings view")
     }
 }
 
@@ -211,7 +218,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
         header.backgroundColor = .clear
 
         let label = UILabel()
-        label.font = Theme.shared.fonts.settingsTableViewHeader
+        label.font = Theme.shared.fonts.settingsViewHeader
         label.text = NSLocalizedString("backup_wallet_settings.header.title", comment: "BackupWalletSettings view")
 
         header.addSubview(label)
@@ -223,7 +230,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
         let desctiptionLabel = UILabel()
         desctiptionLabel.numberOfLines = 0
         desctiptionLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
-        desctiptionLabel.textColor = Theme.shared.colors.settingsSeedPhraseDescription
+        desctiptionLabel.textColor = Theme.shared.colors.settingsViewDescription
         desctiptionLabel.text = NSLocalizedString("backup_wallet_settings.header.description", comment: "BackupWalletSettings view")
 
         header.addSubview(desctiptionLabel)
