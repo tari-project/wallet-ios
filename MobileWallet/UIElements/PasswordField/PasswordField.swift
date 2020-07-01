@@ -41,8 +41,6 @@
 import UIKit
 
 protocol PasswordFieldDelegate: class {
-    func passwordFieldDidBeginEditing(_ passwordField: PasswordField)
-    func passwordFieldDidEndEditing(_ passwordField: PasswordField)
     func passwordFieldDidChange(_ passwordField: PasswordField)
 }
 
@@ -63,6 +61,8 @@ class PasswordField: UIView, UITextFieldDelegate {
             titleLabel.text = title
         }
     }
+
+    var isConfirmationField: Bool = false
 
     private let titleLabel = UILabel()
     private let warningLabel = UILabel()
@@ -88,7 +88,7 @@ class PasswordField: UIView, UITextFieldDelegate {
     }
 
     weak var delegate: PasswordFieldDelegate?
-    weak var comparedPasswordField: PasswordField?
+    weak var paredPasswordField: PasswordField?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -105,10 +105,10 @@ class PasswordField: UIView, UITextFieldDelegate {
 
     func didFinishEditingPassword() {
         guard
-            let confimationPasswordField = self.comparedPasswordField,
+            let paredPasswordField = self.paredPasswordField,
             let password = self.password
         else { return }
-        if confimationPasswordField.password != password && !password.isEmpty {
+        if paredPasswordField.password != password && !password.isEmpty && isConfirmationField {
             state = .warning
         } else {
             state = .normal
@@ -183,13 +183,13 @@ class PasswordField: UIView, UITextFieldDelegate {
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        delegate?.passwordFieldDidBeginEditing(self)
         didStartEditingPassword()
+        paredPasswordField?.didStartEditingPassword()
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {
-        delegate?.passwordFieldDidEndEditing(self)
         didFinishEditingPassword()
+        paredPasswordField?.didFinishEditingPassword()
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

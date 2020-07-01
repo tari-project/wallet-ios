@@ -119,6 +119,7 @@ extension SecureBackupViewController {
         enterPasswordField.delegate = self
         enterPasswordField.title = NSLocalizedString("secure_backup.enter_password_field.title", comment: "SecureBackup view")
         enterPasswordField.placeholder = NSLocalizedString("secure_backup.enter_password_field.placeholder", comment: "SecureBackup view")
+        enterPasswordField.paredPasswordField = confirmPasswordField
 
         stackView.addArrangedSubview(enterPasswordField)
         stackView.setCustomSpacing(25, after: enterPasswordField)
@@ -128,7 +129,8 @@ extension SecureBackupViewController {
         confirmPasswordField.delegate = self
         confirmPasswordField.title = NSLocalizedString("secure_backup.confirm_password_field.title", comment: "SecureBackup view")
         confirmPasswordField.placeholder = NSLocalizedString("secure_backup.confirm_password_field.placeholder", comment: "SecureBackup view")
-        confirmPasswordField.comparedPasswordField = enterPasswordField
+        confirmPasswordField.isConfirmationField = true
+        confirmPasswordField.paredPasswordField = enterPasswordField
         stackView.addArrangedSubview(confirmPasswordField)
         stackView.setCustomSpacing(25, after: confirmPasswordField)
     }
@@ -204,23 +206,6 @@ extension SecureBackupViewController: PasswordFieldDelegate {
     func passwordFieldDidChange(_ passwordField: PasswordField) {
         guard let password = passwordField.password else { return }
         continueButton.variation = (confirmPasswordField.password == enterPasswordField.password && !password.isEmpty) ? .normal : .disabled
-    }
-
-    func passwordFieldDidBeginEditing(_ passwordField: PasswordField) {
-        if passwordField == enterPasswordField {
-            confirmPasswordField.didStartEditingPassword()
-        } else {
-            enterPasswordField.didStartEditingPassword()
-        }
-        continueButton.variation = .disabled
-    }
-
-    func passwordFieldDidEndEditing(_ passwordField: PasswordField) {
-        if passwordField == enterPasswordField {
-            confirmPasswordField.didFinishEditingPassword()
-        } else {
-            enterPasswordField.didFinishEditingPassword()
-        }
     }
 }
 
