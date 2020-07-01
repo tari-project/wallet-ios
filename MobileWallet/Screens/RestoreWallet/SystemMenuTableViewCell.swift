@@ -47,9 +47,12 @@ class SystemMenuTableViewCellItem: NSObject {
     @objc dynamic var markDescription: String = ""
     @objc dynamic var percent: Double = 0.0
 
-    init(title: String, mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none) {
+    var disableCellInProgress = true
+
+    init(title: String, mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none, disableCellInProgress: Bool = true) {
         self.title = title
         self.mark = mark
+        self.disableCellInProgress = disableCellInProgress
         super.init()
     }
 }
@@ -68,6 +71,8 @@ class SystemMenuTableViewCell: UITableViewCell {
     private let markDescriptionLabel = UILabel()
     private let titleLabel = UILabel()
     private let progressView = CircularProgressView()
+
+    private var disableCellInProgress = true
 
     private var kvoPercentToken: NSKeyValueObservation?
     private var kvoMarkToken: NSKeyValueObservation?
@@ -92,7 +97,7 @@ class SystemMenuTableViewCell: UITableViewCell {
                 markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionSuccess
             case .progress:
                 markImageView.image = nil; progressView.isHidden = false
-                isUserInteractionEnabled = false
+                isUserInteractionEnabled = disableCellInProgress ? false : true
                 markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionInProgress
             }
         }
@@ -131,6 +136,7 @@ class SystemMenuTableViewCell: UITableViewCell {
         titleLabel.text = item.title
         mark = item.mark
         markDescription = item.markDescription
+        disableCellInProgress = item.disableCellInProgress
         observe(item: item)
     }
 

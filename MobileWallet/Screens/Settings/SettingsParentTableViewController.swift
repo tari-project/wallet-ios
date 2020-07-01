@@ -42,6 +42,66 @@ import UIKit
 
 class SettingsParentTableViewController: SettingsParentViewController {
     let tableView = UITableView(frame: .zero, style: .grouped)
+    lazy var iCloudBackup: ICloudBackup = {
+           let backup = ICloudBackup.shared
+           backup.addObserver(self)
+           return backup
+       }()
+
+    var backUpWalletItem: SystemMenuTableViewCellItem!
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        willEnterForeground()
+    }
+
+    @objc private func willEnterForeground() {
+        updateMarks()
+        tableView.reloadData()
+    }
+
+    func updateMarks() {
+        if iCloudBackup.inProgress {
+            backUpWalletItem.mark = .progress
+            backUpWalletItem.markDescription = ICloudBackupState.inProgress.rawValue
+            backUpWalletItem.percent = iCloudBackup.progressValue
+            return
+        }
+
+        backUpWalletItem.percent = 0.0
+        backUpWalletItem.mark = iCloudBackup.backupExists() ? .success : .attention
+        backUpWalletItem.markDescription = ICloudBackup.shared.backupExists() ? ICloudBackupState.upToDate.rawValue : ""
+    }
+}
+
+extension SettingsParentTableViewController: ICloudBackupObserver {
+    func onUploadProgress(percent: Double, completed: Bool, error: Error?) {
+        if error != nil {
+            UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
+            backUpWalletItem.mark = .attention
+            return
+        }
+        backUpWalletItem.percent = percent
+
+        if completed {
+            updateMarks()
+            DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
+                guard let self = self else { return }
+                UIView.transition(with: self.tableView,
+                                  duration: 1.0,
+                                  options: .transitionCrossDissolve,
+                                  animations: { [weak self] in
+                                    self?.tableView.reloadData()},
+                                  completion: nil)
+            }
+
+        }
+    }
 }
 
 extension SettingsParentTableViewController {

@@ -49,6 +49,20 @@ enum ICloudBackupWalletError: Error {
     case unableCreateBackupFolder
 }
 
+enum ICloudBackupState {
+    case upToDate
+    case outOfDate
+    case inProgress
+
+    var rawValue: String {
+        switch self {
+        case .upToDate: return NSLocalizedString("wallet_backup_state.up_to_date", comment: "Wallet backup state")
+        case .outOfDate: return NSLocalizedString("wallet_backup_state.out_to_date", comment: "Wallet backup state")
+        case .inProgress: return NSLocalizedString("wallet_backup_state.in_progress", comment: "Wallet backup state")
+        }
+    }
+}
+
 extension ICloudBackupWalletError: LocalizedError {
     public var errorDescription: String? {
         switch self {
@@ -80,7 +94,7 @@ class ICloudBackup: NSObject {
     private let fileName = "Tari-Aurora-Backup"
     private var observers = NSPointerArray.weakObjects()
 
-    var inProgress: Bool = false
+    private(set) var inProgress: Bool = false
     private(set) var progressValue: Double = 0.0
 
     var lastBackupString: String? {
@@ -130,6 +144,7 @@ class ICloudBackup: NSObject {
 
     // returns true if backup of current wallet is exist
     func backupExists() -> Bool {
+        if inProgress { return false }
         let fileManager = FileManager.default
         guard let backupFolder = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { return false }
 
@@ -162,8 +177,13 @@ class ICloudBackup: NSObject {
         } else {
             try FileManager.default.copyItem(at: fileURL, to: backupFileURL)
         }
+        inProgress = true
+        progressValue = 0.0
+
         query.operationQueue?.addOperation({ [weak self] in
             _ = self?.query.start()
+            self?.inProgress = true
+            self?.progressValue = 0.0
             self?.query.enableUpdates()
         })
     }
@@ -260,8 +280,6 @@ extension ICloudBackup {
     private func addNotificationObservers() {
         NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidStartGathering, object: query, queue: query.operationQueue) { [weak self] (_) in
             self?.notifyObservers(percent: 0, completed: false, error: nil)
-            self?.inProgress = true
-            self?.progressValue = 0.0
             self?.processCloudFiles()
         }
 
@@ -286,14 +304,14 @@ extension ICloudBackup {
 
         let fileValues = try? fileURL!.resourceValues(forKeys: [URLResourceKey.ubiquitousItemIsUploadingKey])
         if let fileUploaded = fileItem?.value(forAttribute: NSMetadataUbiquitousItemIsUploadedKey) as? Bool, fileUploaded == true, fileValues?.ubiquitousItemIsUploading == false {
-            notifyObservers(percent: 100, completed: true, error: nil)
             progressValue = 0.0
             inProgress = false
+            notifyObservers(percent: 100, completed: true, error: nil)
             try? cleanTempDirectory()
         } else if let error = fileValues?.ubiquitousItemUploadingError {
-            notifyObservers(percent: 0, completed: false, error: error)
             progressValue = 0.0
             inProgress = false
+            notifyObservers(percent: 0, completed: false, error: error)
         } else {
             if let fileProgress = fileItem?.value(forAttribute: NSMetadataUbiquitousItemPercentUploadedKey) as? Double {
                 notifyObservers(percent: fileProgress, completed: false, error: nil)
@@ -319,15 +337,14 @@ extension ICloudBackup {
     }
 
     private func zipWalletDatabase() throws -> URL {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-
-        let dateString = dateFormatter.string(from: Date())
-        let archiveName = "\(fileName)_\(dateString).zip"
+        let archiveName = fileName + ".zip"
 
         let tempDirectory = try tempZipDirectory()
         let archiveURL = tempDirectory.appendingPathComponent(archiveName)
+
+        if FileManager.default.fileExists(atPath: archiveURL.path) {
+            try FileManager.default.removeItem(atPath: archiveURL.path)
+        }
 
         let sqlite3File = TariLib.databaseName.appending(".sqlite3")
         try FileManager().zipItem(at: directory.appendingPathComponent(sqlite3File), to: archiveURL, compressionMethod: .deflate)

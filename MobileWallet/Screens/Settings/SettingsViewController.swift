@@ -42,23 +42,9 @@ import UIKit
 
 class SettingsViewController: SettingsParentTableViewController {
 
-    private enum Section: Int {
+    private enum Section: Int, CaseIterable {
         case security
         case more
-    }
-
-    private enum BackupDescriptionTitle {
-        case upToDate
-        case outOfDate
-        case inProgress
-
-        var rawValue: String {
-            switch self {
-            case .upToDate: return NSLocalizedString("Up to date", comment: "Settings view")
-            case .outOfDate: return NSLocalizedString("Out of date", comment: "Settings view")
-            case .inProgress: return NSLocalizedString("In progress", comment: "Settings view")
-            }
-        }
     }
 
     private enum SettingsHeaderTitle {
@@ -96,11 +82,7 @@ class SettingsViewController: SettingsParentTableViewController {
     }
 
     private let headers: [SettingsHeaderTitle] = [.securityHeader, .moreHeader]
-    private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(title: SettingsItemTitle.backUpWallet.rawValue, mark: .attention)]
-
-    private lazy var backUpWalletItem: SystemMenuTableViewCellItem = {
-        return self.securitySectionItems.first(where: { $0.title == SettingsItemTitle.backUpWallet.rawValue })!
-    }()
+    private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(title: SettingsItemTitle.backUpWallet.rawValue, mark: .attention, disableCellInProgress: false)]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: SettingsItemTitle.visitTari.rawValue),
@@ -118,15 +100,11 @@ class SettingsViewController: SettingsParentTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        guard let backupItem = securitySectionItems.first(where: { $0.title == SettingsItemTitle.backUpWallet.rawValue }) else { return }
+        backUpWalletItem = backupItem
         tableView.delegate = self
         tableView.dataSource = self
-
-        NotificationCenter.default.addObserver(self, selector: #selector(updateMarks), name: UIApplication.willEnterForegroundNotification, object: nil)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        updateMarks()
     }
 
     private func onBackupWalletAction() {
@@ -139,17 +117,11 @@ class SettingsViewController: SettingsParentTableViewController {
             UserFeedback.shared.openWebBrowser(url: url!)
         }
     }
-
-    @objc private func updateMarks() {
-        backUpWalletItem.mark = ICloudBackup.shared.backupExists() ? .success : .attention
-        backUpWalletItem.markDescription = ICloudBackup.shared.backupExists() ? BackupDescriptionTitle.upToDate.rawValue : BackupDescriptionTitle.outOfDate.rawValue
-        tableView.reloadData()
-    }
 }
 
 extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        2
+        return Section.allCases.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -184,8 +156,8 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         case .security:
             header.heightAnchor.constraint(equalToConstant: 70).isActive = true
         case .more:
-            if let lastBackupString = ICloudBackup.shared.lastBackupString {
-                header.heightAnchor.constraint(equalToConstant: 85).isActive = true
+            if iCloudBackup.backupExists(), let lastBackupString = ICloudBackup.shared.lastBackupString {
+                header.heightAnchor.constraint(equalToConstant: 101).isActive = true
 
                 let lastBackupLabel =  UILabel()
                 lastBackupLabel.font = Theme.shared.fonts.settingsTableViewLastBackupDate
@@ -197,7 +169,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
 
                 lastBackupLabel.translatesAutoresizingMaskIntoConstraints = false
                 lastBackupLabel.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 25).isActive = true
-                lastBackupLabel.bottomAnchor.constraint(equalTo: header.topAnchor, constant: 8).isActive = true
+                lastBackupLabel.topAnchor.constraint(equalTo: header.topAnchor, constant: 8).isActive = true
             } else {
                 header.heightAnchor.constraint(equalToConstant: 70).isActive = true
             }
@@ -218,11 +190,15 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        nil
+        return nil
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.0
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        65
+        return 65.0
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
