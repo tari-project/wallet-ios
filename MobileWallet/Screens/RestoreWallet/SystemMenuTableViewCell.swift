@@ -47,12 +47,22 @@ class SystemMenuTableViewCellItem: NSObject {
     @objc dynamic var markDescription: String = ""
     @objc dynamic var percent: Double = 0.0
 
-    var disableCellInProgress = true
+    @objc dynamic var isSwitchIsOn: Bool = false
 
-    init(title: String, mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none, disableCellInProgress: Bool = true) {
+    private(set) var disableCellInProgress = true
+    private(set) var addSwitch = false
+
+    init(title: String,
+         mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none,
+         disableCellInProgress: Bool = true,
+         addSwitch: Bool = false,
+         switchIsOn: Bool = false) {
+
         self.title = title
         self.mark = mark
         self.disableCellInProgress = disableCellInProgress
+        self.addSwitch = addSwitch
+        self.isSwitchIsOn = switchIsOn
         super.init()
     }
 }
@@ -66,11 +76,14 @@ class SystemMenuTableViewCell: UITableViewCell {
         case progress
     }
 
+    private weak var item: SystemMenuTableViewCellItem?
+
     private let arrow = UIImageView()
     private let markImageView = UIImageView()
     private let markDescriptionLabel = UILabel()
     private let titleLabel = UILabel()
     private let progressView = CircularProgressView()
+    private let switcher = UISwitch()
 
     private var disableCellInProgress = true
 
@@ -132,7 +145,16 @@ class SystemMenuTableViewCell: UITableViewCell {
         }
     }
 
+    @objc private func switchValueDidChange(_ sender: UISwitch) {
+        item?.isSwitchIsOn = sender.isOn
+    }
+
     func configure(_ item: SystemMenuTableViewCellItem) {
+        self.item = item
+
+        switcher.isOn = item.isSwitchIsOn
+        switcher.isHidden = !item.addSwitch
+        arrow.isHidden = item.addSwitch
         titleLabel.text = item.title
         mark = item.mark
         markDescription = item.markDescription
@@ -157,6 +179,7 @@ class SystemMenuTableViewCell: UITableViewCell {
     deinit {
         kvoPercentToken?.invalidate()
         kvoMarkToken?.invalidate()
+        kvoMarkDescriptionToken?.invalidate()
     }
 }
 
@@ -166,6 +189,7 @@ extension SystemMenuTableViewCell {
         contentView.backgroundColor = Theme.shared.colors.systemTableViewCellBackground
 
         setupArrow()
+        setupSwitch()
         setupMark()
         setupMarkDescription()
         setupProgressView()
@@ -213,6 +237,16 @@ extension SystemMenuTableViewCell {
         progressView.heightAnchor.constraint(equalToConstant: 25).isActive = true
         progressView.centerYAnchor.constraint(equalTo: markImageView.centerYAnchor).isActive = true
         progressView.centerXAnchor.constraint(equalTo: markImageView.centerXAnchor).isActive = true
+    }
+
+    private func setupSwitch() {
+        addSubview(switcher)
+        switcher.addTarget(self, action: #selector(switchValueDidChange(_:)), for: .valueChanged)
+        switcher.isOn = item?.isSwitchIsOn ?? false
+
+        switcher.translatesAutoresizingMaskIntoConstraints = false
+        switcher.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        switcher.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24).isActive = true
     }
 
     private func setupTitle() {

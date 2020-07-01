@@ -82,7 +82,7 @@ class SettingsViewController: SettingsParentTableViewController {
     }
 
     private let headers: [SettingsHeaderTitle] = [.securityHeader, .moreHeader]
-    private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(title: SettingsItemTitle.backUpWallet.rawValue, mark: .attention, disableCellInProgress: false)]
+    private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: SettingsItemTitle.visitTari.rawValue),

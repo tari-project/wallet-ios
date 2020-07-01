@@ -48,7 +48,7 @@ class SettingsParentTableViewController: SettingsParentViewController {
            return backup
        }()
 
-    var backUpWalletItem: SystemMenuTableViewCellItem!
+    var backUpWalletItem: SystemMenuTableViewCellItem?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,21 +61,23 @@ class SettingsParentTableViewController: SettingsParentViewController {
     }
 
     @objc private func willEnterForeground() {
-        updateMarks()
-        tableView.reloadData()
+        TariLib.shared.waitIfWalletIsRestarting { [weak self] _ in
+            self?.updateMarks()
+            self?.tableView.reloadData()
+        }
     }
 
     func updateMarks() {
         if iCloudBackup.inProgress {
-            backUpWalletItem.mark = .progress
-            backUpWalletItem.markDescription = ICloudBackupState.inProgress.rawValue
-            backUpWalletItem.percent = iCloudBackup.progressValue
+            backUpWalletItem?.mark = .progress
+            backUpWalletItem?.markDescription = ICloudBackupState.inProgress.rawValue
+            backUpWalletItem?.percent = iCloudBackup.progressValue
             return
         }
 
-        backUpWalletItem.percent = 0.0
-        backUpWalletItem.mark = iCloudBackup.backupExists() ? .success : .attention
-        backUpWalletItem.markDescription = ICloudBackup.shared.backupExists() ? ICloudBackupState.upToDate.rawValue : ""
+        backUpWalletItem?.percent = 0.0
+        backUpWalletItem?.mark = iCloudBackup.backupExists() ? .success : .attention
+        backUpWalletItem?.markDescription = ICloudBackup.shared.backupExists() ? ICloudBackupState.upToDate.rawValue : ""
     }
 }
 
@@ -83,24 +85,26 @@ extension SettingsParentTableViewController: ICloudBackupObserver {
     func onUploadProgress(percent: Double, completed: Bool, error: Error?) {
         if error != nil {
             UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
-            backUpWalletItem.mark = .attention
+            backUpWalletItem?.mark = .attention
             return
         }
-        backUpWalletItem.percent = percent
+        backUpWalletItem?.percent = percent
 
         if completed {
             updateMarks()
             DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
-                guard let self = self else { return }
-                UIView.transition(with: self.tableView,
-                                  duration: 1.0,
-                                  options: .transitionCrossDissolve,
-                                  animations: { [weak self] in
-                                    self?.tableView.reloadData()},
-                                  completion: nil)
+                self?.reloadTableViewWithAnimation()
             }
-
         }
+    }
+
+    func reloadTableViewWithAnimation() {
+        UIView.transition(with: tableView,
+                          duration: 0.5,
+                          options: .transitionCrossDissolve,
+                          animations: { [weak self] in
+                            self?.tableView.reloadData()},
+                          completion: nil)
     }
 }
 
