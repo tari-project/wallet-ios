@@ -304,7 +304,7 @@ extension ICloudBackup {
         let archiveURL = tempDirectory.appendingPathComponent(archiveName)
 
         let sqlite3File = TariLib.databaseName.appending(".sqlite3")
-        try FileManager().zipItem(at: directory.appendingPathComponent(sqlite3File), to: archiveURL)
+        try FileManager().zipItem(at: directory.appendingPathComponent(sqlite3File), to: archiveURL, compressionMethod: .deflate)
         return archiveURL
     }
 
