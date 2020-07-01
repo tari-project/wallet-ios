@@ -134,22 +134,18 @@ class CompletedTransaction: TransactionProtocol {
     }
 
     var direction: TransactionDirection {
-        var direction: TransactionDirection = .none
-
-        if let wallet = TariLib.shared.tariWallet {
-            do {
-                let isOutboud = try (wallet.isCompletedTransactionOutbound(tx: self))
-                if isOutboud {
-                    direction = .outbound
-                } else {
-                    direction = .inbound
-                }
-            } catch {
-                direction = .none
-            }
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            completed_transaction_is_outbound(ptr, error)})
+        guard errorCode == 0 else {
+            return .none
         }
 
-        return direction
+        if result {
+            return .outbound
+        }
+
+        return .inbound
     }
 
     var contact: (Contact?, Error?) {
