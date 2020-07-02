@@ -126,8 +126,6 @@ class Wallet {
             return (nil, pendingOutgoingBalanceError)
         }
 
-        TariLogger.verbose("\n🤑availableBalance: \(availableBalance)\n🤑pendingIncomingBalance: \(pendingIncomingBalance)\n🤑pendingOutgoingBalance: \(pendingOutgoingBalance)")
-
         return (MicroTari(availableBalance + pendingIncomingBalance), nil)
     }
 
