@@ -55,7 +55,7 @@ class SecureBackupViewController: SettingsParentViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        hideKeyboardWhenTappedAroundOrSwipedDown(view: scrollView)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardChangePosition), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardChangePosition), name: UIResponder.keyboardWillHideNotification, object: nil)
 

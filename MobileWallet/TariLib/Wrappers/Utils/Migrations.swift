@@ -110,7 +110,7 @@ class Migrations {
         return sharedKeychainGroup.string(forKey: passwordKey)
     }
 
-    static func removeVackupPasswordFromKeychain() {
+    static func removeBackupPasswordFromKeychain() {
         sharedKeychainGroup.removeObject(forKey: passwordKey)
     }
 

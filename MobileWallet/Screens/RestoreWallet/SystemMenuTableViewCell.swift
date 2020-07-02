@@ -90,6 +90,7 @@ class SystemMenuTableViewCell: UITableViewCell {
     private var kvoPercentToken: NSKeyValueObservation?
     private var kvoMarkToken: NSKeyValueObservation?
     private var kvoMarkDescriptionToken: NSKeyValueObservation?
+    private var kvoSwitchValueToken: NSKeyValueObservation?
 
     private var mark: SystemMenuTableViewCellMark = .none {
         didSet {
@@ -173,6 +174,11 @@ class SystemMenuTableViewCell: UITableViewCell {
 
         kvoMarkDescriptionToken = item.observe(\.markDescription, options: .new) { [weak self] (item, _) in
             self?.markDescription = item.markDescription
+        }
+
+        kvoSwitchValueToken = item.observe(\.isSwitchIsOn, options: .new) { [weak self] (item, change) in
+            if change.newValue == change.oldValue { return }
+            self?.switcher.setOn(item.isSwitchIsOn, animated: true)
         }
     }
 

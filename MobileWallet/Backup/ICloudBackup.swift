@@ -39,6 +39,7 @@
  */
 
 import Foundation
+import Reachability
 
 enum ICloudBackupWalletError: Error {
     case failedToCreateZip
@@ -94,6 +95,8 @@ protocol ICloudBackupObserver: AnyObject {
 
 class ICloudBackup: NSObject {
 
+    private var reachability: Reachability?
+
     private var query = NSMetadataQuery()
 
     private let directory = TariLib.shared.databaseDirectory
@@ -103,7 +106,7 @@ class ICloudBackup: NSObject {
     private(set) var inProgress: Bool = false
     private(set) var progressValue: Double = 0.0
 
-    private var isLastBackupFailed: Bool {
+    private(set) var isLastBackupFailed: Bool {
         get {
             return UserDefaults.standard.bool(forKey: "isLastBackupFailed")
         }
@@ -144,9 +147,10 @@ class ICloudBackup: NSObject {
         super.init()
         initialiseQuery()
         addNotificationObservers()
+        try? startObserveReachabilityChanges()
     }
 
-    func initialiseQuery() {
+    private func initialiseQuery() {
         query = NSMetadataQuery.init()
         query.operationQueue = .main
         query.searchScopes = [NSMetadataQueryUbiquitousDataScope]
@@ -194,22 +198,22 @@ class ICloudBackup: NSObject {
                 try FileManager.default.createDirectory(at: containerURL, withIntermediateDirectories: true, attributes: nil)
             }
             let backupFileURL = containerURL.appendingPathComponent(fileURL.lastPathComponent)
+
             if FileManager.default.fileExists(atPath: backupFileURL.path) {
-                try FileManager.default.removeItem(at: backupFileURL)
-                try FileManager.default.copyItem(at: fileURL, to: backupFileURL)
+                try FileManager.default.replaceItem(at: backupFileURL,
+                                                    withItemAt: fileURL,
+                                                    backupItemName: fileURL.lastPathComponent,
+                                                    options: .usingNewMetadataOnly,
+                                                    resultingItemURL: nil)
             } else {
                 try FileManager.default.copyItem(at: fileURL, to: backupFileURL)
             }
             inProgress = true
             progressValue = 0.0
 
-            query.operationQueue?.addOperation({ [weak self] in
-                _ = self?.query.start()
-                self?.inProgress = true
-                self?.progressValue = 0.0
-                self?.query.enableUpdates()
-            })
+            synchWithiCloud()
         } catch {
+            inProgress = false
             isLastBackupFailed = true
             throw error
         }
@@ -234,8 +238,45 @@ class ICloudBackup: NSObject {
     }
 }
 
+// MARK: Reachability
+extension ICloudBackup {
+    private func startObserveReachabilityChanges() throws {
+        reachability = try Reachability()
+        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: .reachabilityChanged, object: reachability)
+        try reachability?.startNotifier()
+    }
+
+    @objc private func reachabilityChanged(note: Notification) {
+        synchWithiCloud()
+    }
+    private func stopReachability() {
+        reachability?.stopNotifier()
+        NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: reachability)
+    }
+}
+
 // MARK: - private methods
 extension ICloudBackup {
+
+    private func synchWithiCloud() {
+        guard let reachability = self.reachability else { return }
+        switch reachability.connection {
+        case .wifi, .cellular:
+            query.operationQueue?.addOperation({ [weak self] in
+                _ = self?.query.start()
+                self?.query.enableUpdates()
+            })
+        case .unavailable, .none:
+            if !inProgress { return }
+            query.stop()
+            inProgress = false
+            if backupExists() {
+                isLastBackupFailed = false
+                notifyObservers(percent: 100, completed: true, error: ICloudBackupWalletError.uploadToICloudFailture)
+            }
+        }
+    }
+
     private func restoreBackup(walletFolder: String, to directory: URL, completion: @escaping ((_ error: Error?) -> Void)) {
         downloadBackup(walletFolder: walletFolder) { [weak self] (url, error) in
             guard let backupURL = url, error == nil else {
@@ -346,11 +387,9 @@ extension ICloudBackup {
                 fileURL = fileItemURL
             }
         }
-
-        if fileURL == nil { return }
-
+        guard let url = fileURL  else { return }
         do {
-            let fileValues = try fileURL!.resourceValues(forKeys: [URLResourceKey.ubiquitousItemIsUploadingKey])
+            let fileValues = try url.resourceValues(forKeys: [URLResourceKey.ubiquitousItemIsUploadingKey])
             if let fileUploaded = fileItem?.value(forAttribute: NSMetadataUbiquitousItemIsUploadedKey) as? Bool, fileUploaded == true, fileValues.ubiquitousItemIsUploading == false {
                 progressValue = 0.0
                 inProgress = false
@@ -364,12 +403,13 @@ extension ICloudBackup {
                 notifyObservers(percent: 0, completed: false, error: error)
             } else {
                 if let fileProgress = fileItem?.value(forAttribute: NSMetadataUbiquitousItemPercentUploadedKey) as? Double {
-                    notifyObservers(percent: fileProgress, completed: false, error: nil)
                     progressValue = fileProgress
+                    notifyObservers(percent: fileProgress, completed: false, error: nil)
                 }
             }
         } catch {
             isLastBackupFailed = true
+            inProgress = false
             notifyObservers(percent: 0, completed: false, error: ICloudBackupWalletError.uploadToICloudFailture)
         }
     }

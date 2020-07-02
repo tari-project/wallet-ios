@@ -62,8 +62,7 @@ class SettingsParentTableViewController: SettingsParentViewController {
 
     @objc private func willEnterForeground() {
         TariLib.shared.waitIfWalletIsRestarting { [weak self] _ in
-            self?.updateMarks()
-            self?.tableView.reloadData()
+            self?.reloadTableViewWithAnimation()
         }
     }
 
@@ -85,19 +84,20 @@ extension SettingsParentTableViewController: ICloudBackupObserver {
 
     func onUploadProgress(percent: Double, completed: Bool, error: Error?) {
         updateMarks()
-
-        if error != nil {
-            UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
-            return
-        }
         if completed {
-            DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
-                self?.reloadTableViewWithAnimation()
-            }
+            reloadTableViewWithAnimation()
+        }
+        if error != nil {
+            failedToCreateBackup(error: error!)
         }
     }
 
+    @objc func failedToCreateBackup(error: Error) {
+        UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
+    }
+
     func reloadTableViewWithAnimation() {
+        updateMarks()
         UIView.transition(with: tableView,
                           duration: 0.5,
                           options: .transitionCrossDissolve,

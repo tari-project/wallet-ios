@@ -64,6 +64,8 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
             UserDefaults.standard.set(newValue, forKey: "iCloudBackupsSwitcherIsOn")
         }
     }
+
+    private var iCloudBackupsItem: SystemMenuTableViewCellItem?
     private var kvoiCloudBackupsToken: NSKeyValueObservation?
 
     private enum BackupWalletSettingsItem: CaseIterable {
@@ -84,20 +86,16 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        guard let backupItem = backupNowSectionItems.first(where: { $0.title == BackupWalletSettingsItem.backUpNow.rawValue }) else { return }
-        backUpWalletItem = backupItem
+        backUpWalletItem = backupNowSectionItems.first(where: { $0.title == BackupWalletSettingsItem.backUpNow.rawValue })
+        iCloudBackupsItem = settingsSectionItems.first(where: { $0.title == BackupWalletSettingsItem.iCloudBackups.rawValue })
+
         tableView.delegate = self
         tableView.dataSource = self
         observeICloudBackupsSwitcher()
     }
 
     private func onBackupNowAction() {
-        do {
-            try iCloudBackup.createWalletBackup()
-        } catch {
-            UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
-        }
-        updateMarks()
+        createWalletBackup()
     }
 
     private func onChangePasswordAction() {
@@ -109,22 +107,34 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     }
 
     private func observeICloudBackupsSwitcher() {
-        guard let iCloudBackupsItem = settingsSectionItems.first(where: { $0.title == BackupWalletSettingsItem.iCloudBackups.rawValue }) else { return }
-        kvoiCloudBackupsToken = iCloudBackupsItem.observe(\.isSwitchIsOn, options: .new) { [weak self] (item, _) in
-            TariLib.shared.waitIfWalletIsRestarting { [weak self] (_) in
-                self?.iCloudBackupsSwitcherIsOn = item.isSwitchIsOn
-
-                if item.isSwitchIsOn {
-                    do {
-                        try ICloudBackup.shared.createWalletBackup()
-                    } catch {
-                        UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
-                        iCloudBackupsItem.isSwitchIsOn = false
-                    }
-                }
-                self?.updateMarks()
+        guard let iCloudBackupsItem = self.iCloudBackupsItem else { return }
+        kvoiCloudBackupsToken = iCloudBackupsItem.observe(\.isSwitchIsOn, options: .new) { [weak self] (item, change) in
+            if change.newValue == change.oldValue { return }
+            self?.iCloudBackupsSwitcherIsOn = item.isSwitchIsOn
+            if item.isSwitchIsOn {
+                self?.createWalletBackup()
+            } else {
+                Migrations.removeBackupPasswordFromKeychain()
                 self?.reloadTableViewWithAnimation()
             }
+        }
+    }
+
+    private func createWalletBackup() {
+        TariLib.shared.waitIfWalletIsRestarting { [weak self] (_) in
+            do {
+                try ICloudBackup.shared.createWalletBackup()
+            } catch {
+                self?.failedToCreateBackup(error: error)
+            }
+            self?.reloadTableViewWithAnimation()
+        }
+    }
+
+    override func failedToCreateBackup(error: Error) {
+        super.failedToCreateBackup(error: error)
+        if iCloudBackup.isLastBackupFailed && !iCloudBackup.backupExists() {
+            iCloudBackupsItem?.isSwitchIsOn = false
         }
     }
 
