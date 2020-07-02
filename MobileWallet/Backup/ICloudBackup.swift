@@ -193,13 +193,15 @@ class ICloudBackup: NSObject {
         return false
     }
 
-    func createWalletBackup() throws {
+    func createWalletBackup(password: String?) throws {
         do {
+            if inProgress { query.stop(); inProgress = false }
+            
             guard let backupFolder = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { throw ICloudBackupWalletError.iCloudContainerNotFound }
 
             let fileURL: URL
-            if Migrations.loadBackupPasswordFromKeychain() != nil {
-                fileURL = try encryptedZipWalletDatabase()
+            if let keyString = password {
+                fileURL = try encryptedZipWalletDatabase(keyString: keyString)
             } else {
                 fileURL = try zipWalletDatabase()
             }
@@ -463,13 +465,11 @@ extension ICloudBackup {
         return archiveURL
     }
 
-    private func encryptedZipWalletDatabase() throws -> URL {
-        guard let password = Migrations.loadBackupPasswordFromKeychain() else { throw ICloudBackupWalletError.keychainPasswordFailture }
-
+    private func encryptedZipWalletDatabase(keyString: String) throws -> URL {
         let zipURL = try zipWalletDatabase()
         let data = try Data(contentsOf: zipURL)
 
-        let aes = try AESEncryption(keyString: password)
+        let aes = try AESEncryption(keyString: keyString)
 
         let encryptedData = try aes.encrypt(data)
         let fileURL = try tempDirectory().appendingPathComponent(fileName)

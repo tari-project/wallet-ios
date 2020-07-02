@@ -42,7 +42,8 @@ import UIKit
 import LocalAuthentication
 
 class RestoreWalletViewController: UIViewController {
-    private let pendingView = RestoreWalletPendingView()
+    private let pendingView = PendingView(title: NSLocalizedString("restore_pending_view.title", comment: "RestorePending view"), definition: NSLocalizedString("restore_pending_view.description", comment: "RestorePending view"))
+
     private let tableView = UITableView()
     private let items: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue)]

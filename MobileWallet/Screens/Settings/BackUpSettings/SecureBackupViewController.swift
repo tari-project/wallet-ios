@@ -53,28 +53,51 @@ class SecureBackupViewController: SettingsParentViewController {
 
     private var secureButtonBottomConstraint: NSLayoutConstraint?
 
+    private let pendingView = PendingView(title: NSLocalizedString("backup_pending_view.title", comment: "BackupPending view"), definition: NSLocalizedString("backup_pending_view.description", comment: "BackupPending view"))
+    private var pendingViewTimer: Timer?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         hideKeyboardWhenTappedAroundOrSwipedDown(view: scrollView)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardChangePosition), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardChangePosition), name: UIResponder.keyboardWillHideNotification, object: nil)
-
     }
 
     @objc private func continueButtonAction() {
         view.endEditing(true)
-        guard let password = enterPasswordField.password else {
-            UserFeedback.shared.error(title: "iCloud_backup.error.title.set_password", description: "iCloudBackup error")
-            return
-        }
-        Migrations.setBackupPasswordToKeychain(password: password)
         continueButton.variation = .disabled
+        pendingView.showPendingView { [weak self] in
+            guard
+                let self = self,
+                let password = self.enterPasswordField.password
+                else { return }
+            self.isModalInPresentation = true
+            do {
+                try self.iCloudBackup.createWalletBackup(password: password)
 
-        do {
-            try ICloudBackup.shared.createWalletBackup()
-        } catch {
-            UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error"), description: "", error: error)
+                self.pendingViewTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { (_) in
+                    if !self.iCloudBackup.inProgress {
+                        self.finishPendingProcess()
+                    }
+                }
+                Migrations.setBackupPasswordToKeychain(password: password)
+            } catch {
+                self.failedToCreateBackup(error: error)
+            }
         }
+    }
+
+    override func failedToCreateBackup(error: Error) {
+        super.failedToCreateBackup(error: error)
+        finishPendingProcess()
+    }
+
+    private func finishPendingProcess() {
+        pendingViewTimer?.invalidate()
+        pendingView.hidePendingView(completion: { [weak self] in
+            self?.isModalInPresentation = false
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 // MARK: Keyboard behavior
@@ -111,6 +134,7 @@ extension SecureBackupViewController {
         setupDescriptionLabel()
         setupEnterPasswordField()
         setupConfirmPasswordField()
+        setupPendingView()
     }
 
     override func setupNavigationBar() {
@@ -212,6 +236,18 @@ extension SecureBackupViewController {
         secureButtonBottomConstraint = continueButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
         secureButtonBottomConstraint?.priority = UILayoutPriority(rawValue: 1000)
         secureButtonBottomConstraint?.isActive = true
+    }
+
+    private func setupPendingView() {
+        view.addSubview(pendingView)
+        pendingView.alpha = 0.0
+        pendingView.isHidden = true
+
+        pendingView.translatesAutoresizingMaskIntoConstraints = false
+        pendingView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        pendingView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        pendingView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        pendingView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
 }
 

@@ -123,7 +123,8 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     private func createWalletBackup() {
         TariLib.shared.waitIfWalletIsRestarting { [weak self] (_) in
             do {
-                try ICloudBackup.shared.createWalletBackup()
+                let password = Migrations.loadBackupPasswordFromKeychain()
+                try ICloudBackup.shared.createWalletBackup(password: password)
             } catch {
                 self?.failedToCreateBackup(error: error)
             }

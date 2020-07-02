@@ -42,11 +42,6 @@ import UIKit
 
 class SettingsParentTableViewController: SettingsParentViewController {
     let tableView = UITableView(frame: .zero, style: .grouped)
-    lazy var iCloudBackup: ICloudBackup = {
-           let backup = ICloudBackup.shared
-           backup.addObserver(self)
-           return backup
-       }()
 
     var backUpWalletItem: SystemMenuTableViewCellItem?
 
@@ -80,9 +75,8 @@ class SettingsParentTableViewController: SettingsParentViewController {
     }
 }
 
-extension SettingsParentTableViewController: ICloudBackupObserver {
-
-    func onUploadProgress(percent: Double, completed: Bool, error: Error?) {
+extension SettingsParentTableViewController {
+    override func onUploadProgress(percent: Double, completed: Bool, error: Error?) {
         updateMarks()
         if completed {
             reloadTableViewWithAnimation()
@@ -90,15 +84,6 @@ extension SettingsParentTableViewController: ICloudBackupObserver {
         if error != nil {
             failedToCreateBackup(error: error!)
         }
-    }
-
-    @objc func failedToCreateBackup(error: Error) {
-        var title = NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
-
-        if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
-           title = localizedError.failureReason!
-        }
-        UserFeedback.shared.error(title: title, description: "", error: error)
     }
 
     func reloadTableViewWithAnimation() {

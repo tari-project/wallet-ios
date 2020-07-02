@@ -41,12 +41,16 @@
 import UIKit
 import Lottie
 
-class RestoreWalletPendingView: UIView {
+class PendingView: UIView {
 
     private let containerStackView = UIStackView()
+    private let title: String?
+    private let definition: String?
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(title: String?, definition: String?) {
+        self.title = title
+        self.definition = definition
+        super.init(frame: .zero)
         setupSubviews()
     }
 
@@ -111,7 +115,7 @@ class RestoreWalletPendingView: UIView {
     private func setupTitle() {
         let title = UILabel()
 
-        title.text = NSLocalizedString("restore_pending_view.title", comment: "RestorePending view")
+        title.text = self.title
         title.font = Theme.shared.fonts.restorePendingViewTitle
         title.textColor = Theme.shared.colors.restorePendingViewTitle
 
@@ -124,7 +128,7 @@ class RestoreWalletPendingView: UIView {
         description.numberOfLines = 0
         description.textAlignment = .center
 
-        description.text = NSLocalizedString("restore_pending_view.description", comment: "RestorePending view")
+        description.text = self.definition
         description.font = Theme.shared.fonts.restorePendingViewDescription
         description.textColor = Theme.shared.colors.restorePendingViewDescription
 
