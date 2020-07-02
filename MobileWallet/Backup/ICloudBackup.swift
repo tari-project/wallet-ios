@@ -90,6 +90,15 @@ extension ICloudBackupWalletError: LocalizedError {
             return NSLocalizedString("iCloud_backup.error.no_internet_connection", comment: "iCloudBackup error")
         }
     }
+
+    public var failureReason: String? {
+        switch self {
+        case .uploadToICloudFailture:
+            return NSLocalizedString("iCloud_backup.error.title.iCloud_synch", comment: "iCloudBackup error")
+        default:
+            return NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
+        }
+    }
 }
 
 protocol ICloudBackupObserver: AnyObject {

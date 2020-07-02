@@ -64,7 +64,7 @@ class SecureBackupViewController: SettingsParentViewController {
     @objc private func continueButtonAction() {
         view.endEditing(true)
         guard let password = enterPasswordField.password else {
-            UserFeedback.shared.error(title: "iCloud_backup.error.set_password.title", description: "iCloudBackup error")
+            UserFeedback.shared.error(title: "iCloud_backup.error.title.set_password", description: "iCloudBackup error")
             return
         }
         Migrations.setBackupPasswordToKeychain(password: password)
@@ -73,7 +73,7 @@ class SecureBackupViewController: SettingsParentViewController {
         do {
             try ICloudBackup.shared.createWalletBackup()
         } catch {
-            UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
+            UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error"), description: "", error: error)
         }
     }
 }

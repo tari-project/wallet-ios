@@ -93,7 +93,12 @@ extension SettingsParentTableViewController: ICloudBackupObserver {
     }
 
     @objc func failedToCreateBackup(error: Error) {
-        UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title", comment: "iCloudBackup error"), description: "", error: error)
+        var title = NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
+
+        if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
+           title = localizedError.failureReason!
+        }
+        UserFeedback.shared.error(title: title, description: "", error: error)
     }
 
     func reloadTableViewWithAnimation() {
