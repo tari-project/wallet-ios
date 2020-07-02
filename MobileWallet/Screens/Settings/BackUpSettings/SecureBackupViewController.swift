@@ -151,7 +151,6 @@ extension SecureBackupViewController {
     }
 
     private func setupEnterPasswordField() {
-        enterPasswordField.password = Migrations.loadBackupPasswordFromKeychain()
         enterPasswordField.delegate = self
         enterPasswordField.title = NSLocalizedString("secure_backup.enter_password_field.title", comment: "SecureBackup view")
         enterPasswordField.placeholder = NSLocalizedString("secure_backup.enter_password_field.placeholder", comment: "SecureBackup view")
@@ -162,7 +161,6 @@ extension SecureBackupViewController {
     }
 
     private func setupConfirmPasswordField() {
-        confirmPasswordField.password = Migrations.loadBackupPasswordFromKeychain()
         confirmPasswordField.delegate = self
         confirmPasswordField.title = NSLocalizedString("secure_backup.confirm_password_field.title", comment: "SecureBackup view")
         confirmPasswordField.placeholder = NSLocalizedString("secure_backup.confirm_password_field.placeholder", comment: "SecureBackup view")

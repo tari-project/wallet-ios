@@ -86,7 +86,7 @@ extension SettingsParentTableViewController {
         }
     }
 
-    func reloadTableViewWithAnimation() {
+    @objc func reloadTableViewWithAnimation() {
         updateMarks()
         UIView.transition(with: tableView,
                           duration: 0.5,

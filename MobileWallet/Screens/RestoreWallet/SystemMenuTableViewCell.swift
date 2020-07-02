@@ -41,7 +41,7 @@
 import UIKit
 
 class SystemMenuTableViewCellItem: NSObject {
-    let title: String
+    var title: String
 
     @objc dynamic var mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none
     @objc dynamic var markDescription: String = ""
