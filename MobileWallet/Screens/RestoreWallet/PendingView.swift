@@ -59,7 +59,7 @@ class PendingView: UIView {
     }
 
     func showPendingView(completion: (() -> Void)? = nil) {
-        isHidden = false
+        setupOnKeyWindow()
         UIView.animate(withDuration: CATransaction.animationDuration(), animations: { [weak self] in
             self?.alpha = 1.0
         }) { (_) in
@@ -71,9 +71,26 @@ class PendingView: UIView {
         UIView.animate(withDuration: CATransaction.animationDuration(), animations: { [weak self] in
             self?.alpha = 0.0
         }) { [weak self] (_) in
-            self?.isHidden = true
+            self?.removeFromSuperview()
             completion?()
         }
+    }
+
+    private func setupOnKeyWindow() {
+        let view: UIView
+        if let keyWindow = UIApplication.shared.keyWindow {
+            view = keyWindow
+        } else if let topController = UIApplication.shared.topController() {
+            view = topController.view
+        } else { return }
+
+        view.addSubview(self)
+        alpha = 0.0
+        translatesAutoresizingMaskIntoConstraints = false
+        leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
 
     private func setupSubviews() {

@@ -135,7 +135,6 @@ extension RestoreWalletViewController {
         navigationBar.backgroundColor = Theme.shared.colors.settingsTableStyleBackground
         setupNavigationBar()
         setupTableView()
-        setupPendingView()
     }
 
     private func setupNavigationBar() {
@@ -165,18 +164,6 @@ extension RestoreWalletViewController {
         tableView.heightAnchor.constraint(equalToConstant: 128).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-    }
-
-    private func setupPendingView() {
-        view.addSubview(pendingView)
-        pendingView.alpha = 0.0
-        pendingView.isHidden = true
-
-        pendingView.translatesAutoresizingMaskIntoConstraints = false
-        pendingView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        pendingView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        pendingView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        pendingView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
 
     private func returnToSplashScreen() {

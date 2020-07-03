@@ -196,7 +196,7 @@ class ICloudBackup: NSObject {
     func createWalletBackup(password: String?) throws {
         do {
             if inProgress { query.stop(); inProgress = false }
-            
+
             guard let backupFolder = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { throw ICloudBackupWalletError.iCloudContainerNotFound }
 
             let fileURL: URL

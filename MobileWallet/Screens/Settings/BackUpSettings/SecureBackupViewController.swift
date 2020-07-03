@@ -134,7 +134,6 @@ extension SecureBackupViewController {
         setupDescriptionLabel()
         setupEnterPasswordField()
         setupConfirmPasswordField()
-        setupPendingView()
     }
 
     override func setupNavigationBar() {
@@ -234,18 +233,6 @@ extension SecureBackupViewController {
         secureButtonBottomConstraint = continueButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
         secureButtonBottomConstraint?.priority = UILayoutPriority(rawValue: 1000)
         secureButtonBottomConstraint?.isActive = true
-    }
-
-    private func setupPendingView() {
-        view.addSubview(pendingView)
-        pendingView.alpha = 0.0
-        pendingView.isHidden = true
-
-        pendingView.translatesAutoresizingMaskIntoConstraints = false
-        pendingView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        pendingView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        pendingView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        pendingView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     }
 }
 
