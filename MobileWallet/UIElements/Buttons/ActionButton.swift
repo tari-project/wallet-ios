@@ -156,7 +156,6 @@ class ActionButton: UIButton {
                 isEnabled = false
                 backgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled
                 return
-        default: break
         }
     }
 

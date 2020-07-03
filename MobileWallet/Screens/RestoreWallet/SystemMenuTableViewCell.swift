@@ -50,18 +50,21 @@ class SystemMenuTableViewCellItem: NSObject {
     @objc dynamic var isSwitchIsOn: Bool = false
 
     private(set) var disableCellInProgress = true
-    private(set) var addSwitch = false
+    private(set) var hasSwitch = false
+    private(set) var hasArrow = true
 
     init(title: String,
          mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none,
+         hasArrow: Bool = true,
          disableCellInProgress: Bool = true,
-         addSwitch: Bool = false,
+         hasSwitch: Bool = false,
          switchIsOn: Bool = false) {
 
         self.title = title
         self.mark = mark
+        self.hasArrow = hasArrow
         self.disableCellInProgress = disableCellInProgress
-        self.addSwitch = addSwitch
+        self.hasSwitch = hasSwitch
         self.isSwitchIsOn = switchIsOn
         super.init()
     }
@@ -79,7 +82,10 @@ class SystemMenuTableViewCell: UITableViewCell {
     private weak var item: SystemMenuTableViewCellItem?
 
     private let arrow = UIImageView()
+    private var arrowWidthConstraint: NSLayoutConstraint?
+
     private let markImageView = UIImageView()
+    private var markImageViewTrailingConstraint: NSLayoutConstraint?
     private let markDescriptionLabel = UILabel()
     private let titleLabel = UILabel()
     private let progressView = CircularProgressView()
@@ -96,11 +102,13 @@ class SystemMenuTableViewCell: UITableViewCell {
         didSet {
             if mark == oldValue { return }
             isUserInteractionEnabled = true
+            switcher.isHidden = true
             switch mark {
             case .none:
                 markImageView.image = nil
                 progressView.isHidden = true
                 markDescriptionLabel.textColor = .clear
+                switcher.isHidden = !(item?.hasSwitch ?? false)
             case .attention:
                 markImageView.image = Theme.shared.images.attentionIcon!
                 progressView.isHidden = true
@@ -153,9 +161,14 @@ class SystemMenuTableViewCell: UITableViewCell {
     func configure(_ item: SystemMenuTableViewCellItem) {
         self.item = item
 
+        if !item.hasArrow {
+            markImageViewTrailingConstraint?.constant = 0
+            arrowWidthConstraint?.constant = 0
+        }
+
         switcher.isOn = item.isSwitchIsOn
-        switcher.isHidden = !item.addSwitch
-        arrow.isHidden = item.addSwitch
+        switcher.isHidden = !item.hasSwitch
+        arrow.isHidden = item.hasSwitch
         titleLabel.text = item.title
         mark = item.mark
         markDescription = item.markDescription
@@ -206,6 +219,9 @@ extension SystemMenuTableViewCell {
         mark = .none
         titleLabel.text = nil
 
+        markImageViewTrailingConstraint?.constant = -12
+        arrowWidthConstraint?.constant = 8
+
         kvoPercentToken?.invalidate()
         kvoMarkToken?.invalidate()
     }
@@ -215,10 +231,11 @@ extension SystemMenuTableViewCell {
         arrow.image = Theme.shared.images.forwardArrow
 
         arrow.translatesAutoresizingMaskIntoConstraints = false
-        arrow.widthAnchor.constraint(equalToConstant: 8).isActive = true
+        arrowWidthConstraint = arrow.widthAnchor.constraint(equalToConstant: 8)
+        arrowWidthConstraint?.isActive = true
         arrow.heightAnchor.constraint(equalToConstant: 13).isActive = true
         arrow.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        arrow.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24).isActive = true
+        arrow.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25).isActive = true
     }
 
     private func setupMark() {
@@ -230,7 +247,8 @@ extension SystemMenuTableViewCell {
         markImageView.widthAnchor.constraint(equalToConstant: 21).isActive = true
         markImageView.heightAnchor.constraint(equalToConstant: 21).isActive = true
         markImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        markImageView.trailingAnchor.constraint(equalTo: arrow.leadingAnchor, constant: -12).isActive = true
+        markImageViewTrailingConstraint = markImageView.trailingAnchor.constraint(equalTo: arrow.leadingAnchor, constant: -12)
+        markImageViewTrailingConstraint?.isActive = true
     }
 
     private func setupProgressView() {
@@ -252,7 +270,7 @@ extension SystemMenuTableViewCell {
 
         switcher.translatesAutoresizingMaskIntoConstraints = false
         switcher.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        switcher.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24).isActive = true
+        switcher.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25).isActive = true
     }
 
     private func setupTitle() {
