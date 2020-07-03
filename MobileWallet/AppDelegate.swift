@@ -54,9 +54,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             if let sentryPublicDSN = TariSettings.shared.sentryPublicDSN {
                 SentrySDK.start(options: [
                     "dsn": sentryPublicDSN,
-                    "debug": true // Enabled debug when first installing is always helpful
+                    "debug": false
                 ])
                 TariLogger.info("Sentry crash reporting has been started.")
+
+                TariLogger.breadcrumbCallback = { (message, loggerLevel) in
+                    var sentryLevel: SentryLevel = .debug
+                    switch loggerLevel {
+                    case .error:
+                        sentryLevel = .error
+                    case .info:
+                        sentryLevel = .info
+                    case .warning:
+                        sentryLevel = .warning
+                    default:
+                        sentryLevel = .debug
+                    }
+
+                    let crumb = Breadcrumb(level: sentryLevel, category: "TariLogger \(loggerLevel.rawValue)")
+                    crumb.message = message
+                    return SentrySDK.addBreadcrumb(crumb: crumb)
+                }
             }
         }
 

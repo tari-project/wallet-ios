@@ -27,6 +27,9 @@ public class TariLogger {
         }
     }
 
+    /// Used for crash reporting
+    public static var breadcrumbCallback: ((String, Level) -> Void?)?
+
     public enum Level: String {
         case info = "INFO"
         case verbose = "DEBUG"
@@ -111,6 +114,10 @@ public class TariLogger {
         } else {
             //Cache logs to write them when the wallet service is made available
             TariLogger.cachedLogs.append("SWIFT CACHED (\(level.rawValue)): \(logMessage)")
+        }
+
+        if let breadcrumb = breadcrumbCallback {
+            breadcrumb(logMessage, level)
         }
 
         //xcode debugger gets flooded without this check

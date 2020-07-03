@@ -185,7 +185,7 @@ class TariLib {
                 socksPassword: ""
             )
         } else {
-            TariLogger.warn("Tor disabled. Update TariSettings.swift to enable it on a simulator.")
+            TariLogger.warn("Tor disabled. Update TariSettings.swift to enable it.")
             return TransportType() //In memory transport
         }
     }
@@ -280,8 +280,6 @@ class TariLib {
         if container != .main {
             loggingFilePath = loggingFilePath.replacingOccurrences(of: ".txt", with: "-\(container.rawValue).txt")
         }
-
-        TariLogger.verbose("Database path: \(databaseDirectory.path)")
 
         Migrations.privateKeyKeychainToDB(config)
 

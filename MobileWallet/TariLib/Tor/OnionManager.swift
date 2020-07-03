@@ -37,8 +37,7 @@ public class OnionManager: NSObject {
         if let cookieURL = OnionManager.torBaseConf.dataDirectory?.appendingPathComponent("control_auth_cookie") {
             let cookie = try Data(contentsOf: cookieURL)
 
-            TariLogger.tor("cookieURL=\(cookieURL)")
-            TariLogger.tor("cookie=\(cookie)")
+            TariLogger.tor("Using cookie for control auth")
 
             return cookie
         } else {
@@ -84,11 +83,12 @@ public class OnionManager: NSObject {
         #else
         let log_loc = "notice file /dev/null"
         #endif
-
-        var config_args = [
+        
+        configuration.arguments = [
             "--allow-missing-torrc",
             "--ignore-missing-torrc",
             "--clientonly", "1",
+            "--AvoidDiskWrites", "1",
             "--socksport", "39059",
             "--controlport", "\(OnionManager.CONTROL_ADDRESS):\(OnionManager.CONTROL_PORT)",
             "--log", log_loc,
@@ -97,8 +97,6 @@ public class OnionManager: NSObject {
             "--ClientTransportPlugin", "meek_lite socks5 127.0.0.1:47352",
             "--ClientOnionAuthDir", authDir.path
         ]
-
-        configuration.arguments = config_args
         return configuration
     }()
 
@@ -204,45 +202,49 @@ public class OnionManager: NSObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
             guard let self = self else { return }
 
-//            if OnionManager.isTorLogging {
-//                TORInstallTorLoggingCallback { severity, msg in
-//                    var type = ""
-//                    switch severity {
-//                    case .debug:
-//                        type = "debug"
-//                    case .error:
-//                        type = "error"
-//                    case .fault:
-//                        type = "fault"
-//                    case .info:
-//                        type = "info"
-//                    default:
-//                        type = "default"
-//                    }
-//
-//                    TariLogger.tor("[Tor \(type)] \(String(cString: msg))")
-//                }
-//
-//                TORInstallEventLoggingCallback { severity, msg in
-//                    //Logic here is duplicated from above. Moving to shared funcrtion causes error:
-//                    //"a C function pointer cannot be formed from a closure that captures context"
-//                    var type = ""
-//                    switch severity {
-//                    case .debug:
-//                        return // Ignore libevent debug messages. Just too many of typically no importance.
-//                    case .error:
-//                        type = "error"
-//                    case .fault:
-//                        type = "fault"
-//                    case .info:
-//                        type = "info"
-//                    default:
-//                        type = "default"
-//                    }
-//
-//                    TariLogger.tor("[Tor libevent \(type)] \(String(cString: msg))")
-//                }
-//            }
+            // README: We're only keeping error/fault messages as these are sent into Sentry breadcrumbs
+            // which seem to be kept in memory. Having other tor logging levels on causes memory warnings or
+            // forced termination of the app as there are too many messages.
+            
+            if OnionManager.isTorLogging {
+                TORInstallTorLoggingCallback { severity, msg in
+                    var type = ""
+                    switch severity {
+                    case .debug:
+                        return
+                    case .error:
+                        type = "error"
+                    case .fault:
+                        type = "fault"
+                    case .info:
+                        return
+                    default:
+                        return
+                    }
+
+                    TariLogger.tor("[Tor \(type)] \(String(cString: msg))")
+                }
+
+                TORInstallEventLoggingCallback { severity, msg in
+                    //Logic here is duplicated from above. Moving to shared funcrtion causes error:
+                    //"a C function pointer cannot be formed from a closure that captures context"
+                    var type = ""
+                    switch severity {
+                    case .debug:
+                        return // Ignore libevent debug messages. Just too many of typically no importance.
+                    case .error:
+                        type = "error"
+                    case .fault:
+                        type = "fault"
+                    case .info:
+                        type = "info"
+                    default:
+                        return
+                    }
+
+                    TariLogger.tor("[Tor libevent \(type)] \(String(cString: msg))")
+                }
+            }
 
             if !(self.torController?.isConnected ?? false) {
                 do {
