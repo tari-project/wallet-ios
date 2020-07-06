@@ -473,6 +473,10 @@ class Wallet {
         try syncBaseNode()
     }
 
+    func setRandomBaseNode() throws {
+        try addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
+    }
+
     func addBaseNodePeer(_ basenode: BaseNode) throws {
         var errorCode: Int32 = -1
         let addressPointer = (basenode.address as NSString).utf8String

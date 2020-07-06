@@ -48,11 +48,28 @@ enum BaseNodeErrors: Error {
 struct BaseNode {
     let publicKey: PublicKey
     let address: String
+    let isCustom: Bool
+
+    static let addressPattern = "\\/onion3\\/[a-z0-9]{56}:[0-9]{2,6}"
+    private static let hasCustomBaseNodeSetKey = "hasCustomBaseNodeSet"
+    /// If we have a custom base node set don't try set a random one when syncs fail
+    static var hasCustomBaseNodeSet: Bool {
+        get {
+            UserDefaults.standard.bool(forKey: BaseNode.hasCustomBaseNodeSetKey)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: BaseNode.hasCustomBaseNodeSetKey)
+        }
+    }
+
+    var peer: String {
+        return "\(publicKey.hex.0)::\(address)"
+    }
 
     //Expects format found in Tari code base for setting a peer: pubkey::/onion/key:port
     //Can be used to determine if the users clipboard contains a valid base node seed
-    init(_ peer: String) throws {
-        let regex = try NSRegularExpression(pattern: "[a-z0-9]{64}::\\/onion3\\/[a-z0-9]{56}:[0-9]{2,6}")
+    init(_ peer: String, isCustom: Bool = false) throws {
+        let regex = try NSRegularExpression(pattern: "[a-z0-9]{64}::\(BaseNode.addressPattern)")
         guard regex.matches(in: peer, options: [], range: NSRange(location: 0, length: peer.utf16.count)).count == 1 else {
             throw BaseNodeErrors.invalidPeerString
         }
@@ -64,7 +81,25 @@ struct BaseNode {
             throw BaseNodeErrors.invalidPeerString
         }
 
-        publicKey = try PublicKey(hex: splitPeerDetails[0])
-        address = splitPeerDetails[1]
+        self.publicKey = try PublicKey(hex: splitPeerDetails[0])
+        self.address = splitPeerDetails[1]
+        self.isCustom = isCustom
+    }
+
+    init(publicKey: PublicKey, address: String, isCustom: Bool = false) throws {
+        let regex = try NSRegularExpression(pattern: BaseNode.addressPattern)
+
+        guard regex.matches(in: address, options: [], range: NSRange(location: 0, length: address.utf16.count)).count == 1 else {
+            throw BaseNodeErrors.invalidPeerString
+        }
+
+        self.publicKey = publicKey
+        self.address = address
+        self.isCustom = isCustom
+    }
+
+    func set(_ wallet: Wallet) throws {
+        try wallet.addBaseNodePeer(self)
+        try? wallet.syncBaseNode()
     }
 }

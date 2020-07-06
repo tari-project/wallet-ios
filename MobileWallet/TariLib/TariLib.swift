@@ -261,7 +261,7 @@ class TariLib {
     }
 
     /// Starts an existing wallet service. Must only be called if wallet DB files already exist.
-    /// - Parameter isBackgroundTask: isBackgroundTask Renames the log file for debugging tasks that happened in the background
+    /// - Parameter container: container checks a lock file and renames the log file for debugging tasks that happened in the background
     /// - Throws: Can fail to generate a comms config, wallet creation and adding a basenode
     func startWalletService(container: AppContainer = .main) throws {
         if container == .main && AppContainerLock.shared.hasLock(.ext) {
@@ -284,14 +284,12 @@ class TariLib {
         Migrations.privateKeyKeychainToDB(config)
 
         tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
+        try tariWallet!.setRandomBaseNode()
+        try? tariWallet!.syncBaseNode()
 
         TariEventBus.postToMainThread(.walletServiceStarted)
 
         walletIsStopped = false
-
-        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
-
-        try? self.tariWallet?.syncBaseNode()
 
         TariLogger.fileLoggerCallback = { [weak self] (message) in
             self?.tariWallet?.logMessage(message)
