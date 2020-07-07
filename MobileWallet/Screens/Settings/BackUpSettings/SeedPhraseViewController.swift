@@ -105,7 +105,7 @@ extension SeedPhraseViewController {
     private func setupHeader() {
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
-        descriptionLabel.textColor = Theme.shared.colors.settingsSeedPhraseDescription
+        descriptionLabel.textColor = Theme.shared.colors.settingsViewDescription
         descriptionLabel.text = NSLocalizedString("seed_phrase.header", comment: "SeedPhrase view")
 
         view.addSubview(descriptionLabel)

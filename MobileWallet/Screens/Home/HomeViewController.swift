@@ -52,6 +52,7 @@ class HomeViewController: UIViewController {
     private static let GRABBER_WIDTH: Double = 55.0
     private static let PANEL_BORDER_CORNER_RADIUS: CGFloat = 15.0
     static let INTRO_TO_WALLET_USER_DEFAULTS_KEY = "walletHasBeenIntroduced"
+    static let AUTH_STEP_PASSED = "authStepPassed"
 
     private let navigationBar = UIView()
     private var navigationBarBottomConstraint: NSLayoutConstraint?

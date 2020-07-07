@@ -113,7 +113,7 @@ extension VerifyPhraseViewController {
 
     private func setupHeaderLabel() {
         headerLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
-        headerLabel.textColor = Theme.shared.colors.settingsSeedPhraseDescription
+        headerLabel.textColor = Theme.shared.colors.settingsViewDescription
         headerLabel.text = NSLocalizedString("verify_phrase.header", comment: "VerifyPhrase view")
 
         stackView.addArrangedSubview(headerLabel)

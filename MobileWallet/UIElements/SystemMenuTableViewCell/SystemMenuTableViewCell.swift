@@ -41,14 +41,31 @@
 import UIKit
 
 class SystemMenuTableViewCellItem: NSObject {
-    let title: String
+    var title: String
 
     @objc dynamic var mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none
+    @objc dynamic var markDescription: String = ""
     @objc dynamic var percent: Double = 0.0
 
-    init(title: String, mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none) {
+    @objc dynamic var isSwitchIsOn: Bool = false
+
+    private(set) var disableCellInProgress = true
+    private(set) var hasSwitch = false
+    private(set) var hasArrow = true
+
+    init(title: String,
+         mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none,
+         hasArrow: Bool = true,
+         disableCellInProgress: Bool = true,
+         hasSwitch: Bool = false,
+         switchIsOn: Bool = false) {
+
         self.title = title
         self.mark = mark
+        self.hasArrow = hasArrow
+        self.disableCellInProgress = disableCellInProgress
+        self.hasSwitch = hasSwitch
+        self.isSwitchIsOn = switchIsOn
         super.init()
     }
 }
@@ -62,24 +79,55 @@ class SystemMenuTableViewCell: UITableViewCell {
         case progress
     }
 
+    private weak var item: SystemMenuTableViewCellItem?
+
     private let arrow = UIImageView()
+    private var arrowWidthConstraint: NSLayoutConstraint?
+
     private let markImageView = UIImageView()
+    private var markImageViewTrailingConstraint: NSLayoutConstraint?
+    private let markDescriptionLabel = UILabel()
     private let titleLabel = UILabel()
     private let progressView = CircularProgressView()
+    private let switcher = UISwitch()
+
+    private var disableCellInProgress = true
 
     private var kvoPercentToken: NSKeyValueObservation?
     private var kvoMarkToken: NSKeyValueObservation?
+    private var kvoMarkDescriptionToken: NSKeyValueObservation?
+    private var kvoSwitchValueToken: NSKeyValueObservation?
 
-    var mark: SystemMenuTableViewCellMark = .none {
+    private var mark: SystemMenuTableViewCellMark = .none {
         didSet {
             if mark == oldValue { return }
             isUserInteractionEnabled = true
+            switcher.isHidden = true
             switch mark {
-            case .none: markImageView.image = nil; progressView.isHidden = true
-            case .attention: markImageView.image = Theme.shared.images.attentionIcon!; progressView.isHidden = true
-            case .success: markImageView.image = Theme.shared.images.successIcon!; progressView.isHidden = true
-            case .progress: markImageView.image = nil; progressView.isHidden = false; isUserInteractionEnabled = false
+            case .none:
+                markImageView.image = nil
+                progressView.isHidden = true
+                markDescriptionLabel.textColor = .clear
+                switcher.isHidden = !(item?.hasSwitch ?? false)
+            case .attention:
+                markImageView.image = Theme.shared.images.attentionIcon!
+                progressView.isHidden = true
+                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionWarning
+            case .success:
+                markImageView.image = Theme.shared.images.successIcon!
+                progressView.isHidden = true
+                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionSuccess
+            case .progress:
+                markImageView.image = nil; progressView.isHidden = false
+                isUserInteractionEnabled = disableCellInProgress ? false : true
+                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionInProgress
             }
+        }
+    }
+
+    private var markDescription: String = "" {
+        didSet {
+            markDescriptionLabel.text = markDescription
         }
     }
 
@@ -106,9 +154,25 @@ class SystemMenuTableViewCell: UITableViewCell {
         }
     }
 
+    @objc private func switchValueDidChange(_ sender: UISwitch) {
+        item?.isSwitchIsOn = sender.isOn
+    }
+
     func configure(_ item: SystemMenuTableViewCellItem) {
+        self.item = item
+
+        if !item.hasArrow {
+            markImageViewTrailingConstraint?.constant = 0
+            arrowWidthConstraint?.constant = 0
+        }
+
+        switcher.isOn = item.isSwitchIsOn
+        switcher.isHidden = !item.hasSwitch
+        arrow.isHidden = item.hasSwitch
         titleLabel.text = item.title
         mark = item.mark
+        markDescription = item.markDescription
+        disableCellInProgress = item.disableCellInProgress
         observe(item: item)
     }
 
@@ -120,11 +184,21 @@ class SystemMenuTableViewCell: UITableViewCell {
         kvoMarkToken = item.observe(\.mark, options: .new) { [weak self] (item, _) in
             self?.mark = item.mark
         }
+
+        kvoMarkDescriptionToken = item.observe(\.markDescription, options: .new) { [weak self] (item, _) in
+            self?.markDescription = item.markDescription
+        }
+
+        kvoSwitchValueToken = item.observe(\.isSwitchIsOn, options: .new) { [weak self] (item, change) in
+            if change.newValue == change.oldValue { return }
+            self?.switcher.setOn(item.isSwitchIsOn, animated: true)
+        }
     }
 
     deinit {
         kvoPercentToken?.invalidate()
         kvoMarkToken?.invalidate()
+        kvoMarkDescriptionToken?.invalidate()
     }
 }
 
@@ -134,7 +208,9 @@ extension SystemMenuTableViewCell {
         contentView.backgroundColor = Theme.shared.colors.systemTableViewCellBackground
 
         setupArrow()
+        setupSwitch()
         setupMark()
+        setupMarkDescription()
         setupProgressView()
         setupTitle()
     }
@@ -142,6 +218,9 @@ extension SystemMenuTableViewCell {
     override func prepareForReuse() {
         mark = .none
         titleLabel.text = nil
+
+        markImageViewTrailingConstraint?.constant = -12
+        arrowWidthConstraint?.constant = 8
 
         kvoPercentToken?.invalidate()
         kvoMarkToken?.invalidate()
@@ -152,10 +231,11 @@ extension SystemMenuTableViewCell {
         arrow.image = Theme.shared.images.forwardArrow
 
         arrow.translatesAutoresizingMaskIntoConstraints = false
-        arrow.widthAnchor.constraint(equalToConstant: 8).isActive = true
+        arrowWidthConstraint = arrow.widthAnchor.constraint(equalToConstant: 8)
+        arrowWidthConstraint?.isActive = true
         arrow.heightAnchor.constraint(equalToConstant: 13).isActive = true
         arrow.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        arrow.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -24).isActive = true
+        arrow.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25).isActive = true
     }
 
     private func setupMark() {
@@ -167,7 +247,8 @@ extension SystemMenuTableViewCell {
         markImageView.widthAnchor.constraint(equalToConstant: 21).isActive = true
         markImageView.heightAnchor.constraint(equalToConstant: 21).isActive = true
         markImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        markImageView.trailingAnchor.constraint(equalTo: arrow.leadingAnchor, constant: -12).isActive = true
+        markImageViewTrailingConstraint = markImageView.trailingAnchor.constraint(equalTo: arrow.leadingAnchor, constant: -12)
+        markImageViewTrailingConstraint?.isActive = true
     }
 
     private func setupProgressView() {
@@ -182,13 +263,40 @@ extension SystemMenuTableViewCell {
         progressView.centerXAnchor.constraint(equalTo: markImageView.centerXAnchor).isActive = true
     }
 
+    private func setupSwitch() {
+        addSubview(switcher)
+        switcher.addTarget(self, action: #selector(switchValueDidChange(_:)), for: .valueChanged)
+        switcher.isOn = item?.isSwitchIsOn ?? false
+
+        switcher.translatesAutoresizingMaskIntoConstraints = false
+        switcher.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        switcher.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25).isActive = true
+    }
+
     private func setupTitle() {
-        titleLabel.font = Theme.shared.fonts.systemableViewCell
+        titleLabel.font = Theme.shared.fonts.systemTableViewCell
+        titleLabel.adjustsFontSizeToFitWidth = true
         contentView.addSubview(titleLabel)
 
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
         titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: markImageView.leadingAnchor, constant: -20).isActive = true
+        let trailingAnchor = titleLabel.trailingAnchor.constraint(greaterThanOrEqualTo: markDescriptionLabel.leadingAnchor, constant: -20)
+        trailingAnchor.isActive = true
+        trailingAnchor.priority = .defaultLow
+
+        titleLabel.setContentHuggingPriority(.required, for: .horizontal)
+    }
+
+    private func setupMarkDescription() {
+        markDescriptionLabel.font = Theme.shared.fonts.systemTableViewCellMarkDescription
+        markDescriptionLabel.textAlignment = .right
+        contentView.addSubview(markDescriptionLabel)
+
+        markDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        markDescriptionLabel.centerYAnchor.constraint(equalTo: markImageView.centerYAnchor).isActive = true
+        markDescriptionLabel.trailingAnchor.constraint(equalTo: markImageView.leadingAnchor, constant: -10).isActive = true
+
+        markDescriptionLabel.setContentHuggingPriority(.required, for: .horizontal)
     }
 }

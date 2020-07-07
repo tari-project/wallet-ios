@@ -1,8 +1,8 @@
-//  UIScrollView+RefreshControl.swift
+//  BPKeychainWrapper.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 29.05.2020
+	Created by S.Shovkoplyas on 06.07.2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,38 +38,26 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Foundation
+import SwiftKeychainWrapper
 
-extension UIScrollView {
+class BPKeychainWrapper {
+    private static let sharedKeychainGroup = KeychainWrapper(
+        serviceName: "tari",
+        accessGroup: "\(TariSettings.shared.appleTeamID ?? "").com.tari.wallet.keychain"
+    )
 
-    func beginRefreshing() {
-        guard let refreshControl = refreshControl, !refreshControl.isRefreshing else { return }
-        let refreshControlHeight: CGFloat = 60.0 // static because if fast drag tableView refreshControl height will not correct
-        let contentOffset = CGPoint(x: 0, y: -refreshControlHeight - contentInset.top)
-        refreshControl.beginRefreshing()
-        refreshControl.sendActions(for: .valueChanged)
-        DispatchQueue.main.async {
-            self.setContentOffset(contentOffset, animated: !self.isDragging)
-        }
+    private static let passwordKey = "BackupPasswordKey"
 
+    static func setBackupPasswordToKeychain(password: String) {
+        sharedKeychainGroup.set(password, forKey: passwordKey)
     }
 
-    func endRefreshing() {
-        refreshControl?.endRefreshing()
+    static func loadBackupPasswordFromKeychain() -> String? {
+        return sharedKeychainGroup.string(forKey: passwordKey)
     }
 
-    func isRefreshing() -> Bool {
-        guard let refreshControl = refreshControl else { return false }
-        return refreshControl .isRefreshing
-    }
-
-    func scrollToBottom(animated: Bool) {
-        let yOffset = contentSize.height - bounds.size.height
-        let bottomOffset = CGPoint(x: 0, y: yOffset > 0 ? yOffset : 0)
-        setContentOffset(bottomOffset, animated: animated)
-    }
-
-    func scrollToTop(animated: Bool) {
-        setContentOffset(.zero, animated: animated)
+    static func removeBackupPasswordFromKeychain() {
+        sharedKeychainGroup.removeObject(forKey: passwordKey)
     }
 }
