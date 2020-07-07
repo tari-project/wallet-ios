@@ -49,6 +49,10 @@ var hasNotch: Bool {
 
 extension UIViewController {
     func hideKeyboardWhenTappedAroundOrSwipedDown() {
+        hideKeyboardWhenTappedAroundOrSwipedDown(view: view)
+    }
+
+    func hideKeyboardWhenTappedAroundOrSwipedDown(view: UIView) {
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
