@@ -237,7 +237,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func successAuth() {
-        UserDefaults.standard.set(true, forKey: "authStepPassed")
+        UserDefaults.Key.authStepPassed.set(true)
         hideSubviews { [weak self] in
             self?.prepareSubviews(for: .enableNotifications)
             self?.showEnableNotifications()

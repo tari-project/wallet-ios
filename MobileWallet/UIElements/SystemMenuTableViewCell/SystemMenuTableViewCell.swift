@@ -77,6 +77,7 @@ class SystemMenuTableViewCell: UITableViewCell {
         case attention
         case success
         case progress
+        case scheduled
     }
 
     private weak var item: SystemMenuTableViewCellItem?
@@ -117,7 +118,7 @@ class SystemMenuTableViewCell: UITableViewCell {
                 markImageView.image = Theme.shared.images.successIcon!
                 progressView.isHidden = true
                 markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionSuccess
-            case .progress:
+            case .progress, .scheduled:
                 markImageView.image = nil; progressView.isHidden = false
                 isUserInteractionEnabled = disableCellInProgress ? false : true
                 markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionInProgress
@@ -170,9 +171,9 @@ class SystemMenuTableViewCell: UITableViewCell {
         switcher.isHidden = !item.hasSwitch
         arrow.isHidden = item.hasSwitch
         titleLabel.text = item.title
+        disableCellInProgress = item.disableCellInProgress
         mark = item.mark
         markDescription = item.markDescription
-        disableCellInProgress = item.disableCellInProgress
         observe(item: item)
     }
 

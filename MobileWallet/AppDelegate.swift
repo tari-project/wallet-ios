@@ -88,6 +88,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func applicationWillTerminate(_ application: UIApplication) {
         AppContainerLock.shared.removeLock(.main)
+        if ICloudBackup.shared.inProgress || BackupScheduler.shared.isBackupScheduled {
+            UserDefaults.Key.backupOperationAborted.set(true)
+            ICloudBackup.shared.scheduleNotification()
+        }
     }
 
     // MARK: UISceneSession Lifecycle

@@ -70,8 +70,13 @@ class SettingsParentTableViewController: SettingsParentViewController {
         }
 
         backUpWalletItem?.percent = 0.0
-        backUpWalletItem?.mark = iCloudBackup.backupExists() ? .success : .attention
-        backUpWalletItem?.markDescription = ICloudBackup.shared.backupExists() ? ICloudBackupState.upToDate.rawValue : ""
+        if BackupScheduler.shared.isBackupScheduled {
+            backUpWalletItem?.mark = .scheduled
+            backUpWalletItem?.markDescription = ICloudBackupState.scheduled.rawValue
+        } else {
+            backUpWalletItem?.mark = iCloudBackup.backupExists() ? .success : .attention
+            backUpWalletItem?.markDescription = ICloudBackup.shared.backupExists() ? ICloudBackupState.upToDate.rawValue : ""
+        }
     }
 }
 
