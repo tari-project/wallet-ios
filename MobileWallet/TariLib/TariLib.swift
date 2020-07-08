@@ -89,6 +89,8 @@ class TariLib {
 
     var tariWallet: Wallet?
 
+    var walletPublicKeyHex: String? //We need a cache of this for function that run while tariWallet = nil
+
     var walletExists: Bool {
         do {
             let fileExists = try TariSettings.shared.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true).checkResourceIsReachable()
@@ -302,6 +304,8 @@ class TariLib {
         baseNodeSyncCheck() //TODO remove when no longer needed
 
         backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
+
+        walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
     }
 
     func createNewWallet() throws {

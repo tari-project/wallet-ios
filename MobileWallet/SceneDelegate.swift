@@ -125,6 +125,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         TariLib.shared.stopWallet()
         TariLib.shared.stopTor()
         AppContainerLock.shared.removeLock(.main)
+
+        BackgroundBackup.shared.backgroundBackupWallet()
     }
 
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
