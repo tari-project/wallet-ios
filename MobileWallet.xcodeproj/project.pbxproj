@@ -54,6 +54,9 @@
 		0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B323FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B423FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
+		003ED9C024B49A9C003F6283 /* AutomatedBackups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003ED9BF24B49A9C003F6283 /* AutomatedBackups.swift */; };
+		003ED9C124B49A9C003F6283 /* AutomatedBackups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003ED9BF24B49A9C003F6283 /* AutomatedBackups.swift */; };
+		003ED9C424B4CEDD003F6283 /* AutomatedBackups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003ED9BF24B49A9C003F6283 /* AutomatedBackups.swift */; };
 		004277DD23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
 		004277DE23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
 		004277DF23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
@@ -604,6 +607,7 @@
 		00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkManager.swift; sourceTree = "<group>"; };
 		00369D802426080D00BAB95B /* TariLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLogger.swift; sourceTree = "<group>"; };
 		0039B1B123FA925500F91E0F /* PasteEmojisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteEmojisView.swift; sourceTree = "<group>"; };
+		003ED9BF24B49A9C003F6283 /* AutomatedBackups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomatedBackups.swift; sourceTree = "<group>"; };
 		004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiButton.swift; sourceTree = "<group>"; };
 		004277E623DF4A5600AE7BD9 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		004277EE23E03E1600AE7BD9 /* TransactionViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewControllerExtension.swift; sourceTree = "<group>"; };
@@ -1370,6 +1374,7 @@
 			isa = PBXGroup;
 			children = (
 				37B4449D24890F6200592D92 /* ICloudBackup.swift */,
+				003ED9BF24B49A9C003F6283 /* AutomatedBackups.swift */,
 			);
 			path = Backup;
 			sourceTree = "<group>";
@@ -2123,6 +2128,7 @@
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				37CFAA76248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */,
 				3708D74A247FCF2300807D72 /* SettingsViewController.swift in Sources */,
+				003ED9C024B49A9C003F6283 /* AutomatedBackups.swift in Sources */,
 				4CD20A362407967B007B64D8 /* TransportType.swift in Sources */,
 				00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */,
 				00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */,
@@ -2288,6 +2294,7 @@
 				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				371A0819247290C000F97713 /* TransitionLabel.swift in Sources */,
 				004277F023E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
+				003ED9C124B49A9C003F6283 /* AutomatedBackups.swift in Sources */,
 				37E0B009249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
 				00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
@@ -2391,6 +2398,7 @@
 				BFE1FC0A23E3ACDA00BA5EEC /* WalletCreationViewController.swift in Sources */,
 				004997AD2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
 				00A994352396434B007D9990 /* QRButton.swift in Sources */,
+				003ED9C424B4CEDD003F6283 /* AutomatedBackups.swift in Sources */,
 				00262EB6236F024400A6C8A0 /* Theme.swift in Sources */,
 				00BCE48B240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				37E0B00A249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,

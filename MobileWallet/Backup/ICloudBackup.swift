@@ -189,7 +189,7 @@ class ICloudBackup: NSObject {
         if isLastBackupFailed { return false }
         if inProgress { return false }
         let fileManager = FileManager.default
-        guard let backupFolder = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { return false }
+        guard let backupFolder = TariLib.shared.walletPublicKeyHex else { return false }
 
         do {
             let iCloudFolderURL = try iCloudDirectory()
@@ -208,7 +208,7 @@ class ICloudBackup: NSObject {
         do {
             if inProgress { query.stop(); inProgress = false }
 
-            guard let backupFolder = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { throw ICloudBackupError.iCloudContainerNotFound }
+            guard let backupFolder = TariLib.shared.walletPublicKeyHex else { throw ICloudBackupError.iCloudContainerNotFound }
 
             let fileURL: URL
             if let password = password {
@@ -355,7 +355,6 @@ extension ICloudBackup {
 
 // MARK: - private methods
 extension ICloudBackup {
-
     private func syncWithICloud() {
         if isInternetConnected() {
             query.operationQueue?.addOperation({ [weak self] in
