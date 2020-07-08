@@ -206,20 +206,11 @@ class ICloudBackup: NSObject {
     func backupExists() -> Bool {
         if isLastBackupFailed { return false }
         if inProgress { return false }
-        let fileManager = FileManager.default
-        guard let backupFolder = TariLib.shared.walletPublicKeyHex else { return false }
-
         do {
-            let iCloudFolderURL = try iCloudDirectory()
-
-            if let urls = try? fileManager.contentsOfDirectory(at: iCloudFolderURL, includingPropertiesForKeys: nil, options: []) {
-                if let _ = urls.first(where: { $0.absoluteString.contains(backupFolder) }) { return true }
-            }
+            return try getLastWalletBackup().checkResourceIsReachable()
         } catch {
             return false
         }
-
-        return false
     }
 
     func createWalletBackup(password: String?) throws {
@@ -287,6 +278,14 @@ class ICloudBackup: NSObject {
             }
         } catch {
             completion(error)
+        }
+    }
+
+    func removeWalletBackup() {
+        do {
+            try FileManager.default.removeItem(at: getLastWalletBackup())
+        } catch {
+            TariLogger.error("Failed to remove wallet backup", error: error)
         }
     }
 }
@@ -492,7 +491,7 @@ extension ICloudBackup {
 
     private func downloadBackup(completion: @escaping ((_ url: URL?, _ error: Error?) -> Void)) {
         do {
-            let backupUrl = try getLastWalletBackup()
+            let backupUrl = try getLastWalletBackup(forCurrentWallet: false)
             var lastPathComponent = backupUrl.lastPathComponent
             let folderPath = backupUrl.deletingLastPathComponent().path
             // if the last path component contains the “.icloud” extension. If yes the file is not on the device else the file is already downloaded.
@@ -516,10 +515,13 @@ extension ICloudBackup {
         }
     }
 
-    private func getLastWalletBackup() throws -> URL {
+    private func getLastWalletBackup(forCurrentWallet: Bool = true) throws -> URL {
         let iCloudFolderURL = try iCloudDirectory()
         do {
             if let lastWalletFolder = try FileManager.default.contentsOfDirectory(atURL: iCloudFolderURL, sortedBy: .created, options: []).last {
+                if lastWalletFolder.lastPathComponent != TariLib.shared.walletPublicKeyHex && forCurrentWallet {
+                   throw ICloudBackupError.noICloudBackupExists
+                }
                 if let lastWalletBackup = try FileManager.default.contentsOfDirectory(atURL: lastWalletFolder, sortedBy: .created, options: []).last {
                     return lastWalletBackup
                 }
