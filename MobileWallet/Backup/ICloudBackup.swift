@@ -59,12 +59,14 @@ enum ICloudBackupState {
     case upToDate
     case outOfDate
     case inProgress
+    case scheduled
 
     var rawValue: String {
         switch self {
         case .upToDate: return NSLocalizedString("wallet_backup_state.up_to_date", comment: "Wallet backup state")
         case .outOfDate: return NSLocalizedString("wallet_backup_state.out_to_date", comment: "Wallet backup state")
         case .inProgress: return NSLocalizedString("wallet_backup_state.in_progress", comment: "Wallet backup state")
+        case .scheduled: return NSLocalizedString("wallet_backup_state.scheduled", comment: "Wallet backup state")
         }
     }
 }
@@ -112,8 +114,10 @@ protocol ICloudBackupObserver: AnyObject {
 class ICloudBackup: NSObject {
 
     private var reachability: Reachability?
-
     private var query = NSMetadataQuery()
+
+    private let pushTaskIdentifier = "background-backup-task"
+    private var backgroundTaskIdentifier: UIBackgroundTaskIdentifier?
 
     private let directory = TariLib.shared.databaseDirectory
     private let fileName = "Tari-Aurora-Backup"
@@ -124,10 +128,24 @@ class ICloudBackup: NSObject {
 
     private(set) var isLastBackupFailed: Bool {
         get {
-            return UserDefaults.standard.bool(forKey: "isLastBackupFailed")
+            return UserDefaults.Key.isLastBackupFailed.boolValue()
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "isLastBackupFailed")
+            UserDefaults.Key.isLastBackupFailed.set(newValue)
+        }
+    }
+
+    var iCloudBackupsIsOn: Bool {
+        get {
+            return UserDefaults.Key.iCloudBackupsIsOn.boolValue()
+        }
+        set {
+            UserDefaults.Key.iCloudBackupsIsOn.set(newValue)
+            if newValue {
+                BackupScheduler.shared.startObserveEvents()
+            } else {
+                BackupScheduler.shared.stopObserveEvents()
+            }
         }
     }
 
@@ -205,6 +223,7 @@ class ICloudBackup: NSObject {
     }
 
     func createWalletBackup(password: String?) throws {
+        UserDefaults.Key.backupOperationAborted.set(false)
         do {
             if inProgress { query.stop(); inProgress = false }
 
@@ -249,9 +268,9 @@ class ICloudBackup: NSObject {
                 if error == nil {
                     Migrations.handle()
 
-                    UserDefaults.standard.set(true, forKey: HomeViewController.INTRO_TO_WALLET_USER_DEFAULTS_KEY)
-                    UserDefaults.standard.set(true, forKey: HomeViewController.AUTH_STEP_PASSED)
-                    UserDefaults.standard.set(true, forKey: BackupWalletSettingsViewController.ICLOUD_BACKUPS_SWITCH_IS_ON)
+                    UserDefaults.Key.walletHasBeenIntroduced.set(true)
+                    UserDefaults.Key.authStepPassed.set(true)
+                    UserDefaults.Key.iCloudBackupsIsOn.set(true)
 
                     if password != nil {
                         BPKeychainWrapper.setBackupPasswordToKeychain(password: password!)
@@ -349,6 +368,55 @@ extension ICloudBackup {
             if let object = $0 as? ICloudBackupObserver {
                 object.onUploadProgress(percent: percent, completed: completed, error: error)
             }
+            if completed {
+                self.endBackgroundBackupTask()
+            }
+        }
+    }
+}
+
+// MARK: - background backup
+extension ICloudBackup {
+    func backgroundBackupWallet() {
+        if !inProgress && !BackupScheduler.shared.isBackupScheduled {
+            return
+        }
+
+        TariLogger.info("Starting iCloud backup in the background")
+
+        //Perform the task on a background queue.
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            // Request the task assertion and save the ID.
+            self.backgroundTaskIdentifier = UIApplication.shared.beginBackgroundTask(withName: "Finish Backup Task") {
+                // Expiration handler.
+                self.scheduleNotification()
+            }
+
+            let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+            do {
+                try self.createWalletBackup(password: password)
+            } catch {
+                TariLogger.error("Failed to create wallet backup", error: error)
+                self.endBackgroundBackupTask()
+            }
+        }
+    }
+
+    private func endBackgroundBackupTask() {
+        if let id = backgroundTaskIdentifier {
+            UIApplication.shared.endBackgroundTask(id)
+        }
+        self.backgroundTaskIdentifier = UIBackgroundTaskIdentifier.invalid
+    }
+
+    func scheduleNotification() {
+        let title = NSLocalizedString("backup_local_notification.title", comment: "Backup notification")
+        let body = NSLocalizedString("backup_local_notification.body", comment: "Backup notification")
+        NotificationManager.shared.scheduleNotification(title: title, body: body, identifier: pushTaskIdentifier) { (_) in
+            TariLogger.info("User reminded to open the app as a background backup did not complete.")
+            self.endBackgroundBackupTask()
+            BackupScheduler.shared.scheduleBackup(immediately: true)
         }
     }
 }

@@ -72,7 +72,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
     private let progressFeedbackView = FeedbackView()
     private lazy var authStepPassed: Bool = {
-        UserDefaults.standard.bool(forKey: "authStepPassed")
+        UserDefaults.Key.authStepPassed.boolValue()
     }()
 
     // MARK: - Override functions

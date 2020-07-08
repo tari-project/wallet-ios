@@ -54,9 +54,6 @@
 		0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B323FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B423FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
-		003ED9C024B49A9C003F6283 /* AutomatedBackups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003ED9BF24B49A9C003F6283 /* AutomatedBackups.swift */; };
-		003ED9C124B49A9C003F6283 /* AutomatedBackups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003ED9BF24B49A9C003F6283 /* AutomatedBackups.swift */; };
-		003ED9C424B4CEDD003F6283 /* AutomatedBackups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003ED9BF24B49A9C003F6283 /* AutomatedBackups.swift */; };
 		004277DD23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
 		004277DE23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
 		004277DF23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
@@ -348,6 +345,12 @@
 		3723A7AB24ACD03E003382EB /* PasswordField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7AA24ACD03E003382EB /* PasswordField.swift */; };
 		3723A7AC24ACD03E003382EB /* PasswordField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7AA24ACD03E003382EB /* PasswordField.swift */; };
 		3723A7AD24ACD03E003382EB /* PasswordField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3723A7AA24ACD03E003382EB /* PasswordField.swift */; };
+		372AECA724B496F0005CBA0F /* BackupScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372AECA624B496F0005CBA0F /* BackupScheduler.swift */; };
+		372AECA824B496F0005CBA0F /* BackupScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372AECA624B496F0005CBA0F /* BackupScheduler.swift */; };
+		372AECA924B496F0005CBA0F /* BackupScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372AECA624B496F0005CBA0F /* BackupScheduler.swift */; };
+		372AECAB24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */; };
+		372AECAC24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */; };
+		372AECAD24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */; };
 		373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
 		373CCDBE2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
 		373CCDBF2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
@@ -607,7 +610,6 @@
 		00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkManager.swift; sourceTree = "<group>"; };
 		00369D802426080D00BAB95B /* TariLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLogger.swift; sourceTree = "<group>"; };
 		0039B1B123FA925500F91E0F /* PasteEmojisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteEmojisView.swift; sourceTree = "<group>"; };
-		003ED9BF24B49A9C003F6283 /* AutomatedBackups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutomatedBackups.swift; sourceTree = "<group>"; };
 		004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiButton.swift; sourceTree = "<group>"; };
 		004277E623DF4A5600AE7BD9 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		004277EE23E03E1600AE7BD9 /* TransactionViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewControllerExtension.swift; sourceTree = "<group>"; };
@@ -729,6 +731,8 @@
 		3723A7A124AB57F4003382EB /* AESEncryptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESEncryptionTests.swift; sourceTree = "<group>"; };
 		3723A7A524AC9389003382EB /* SecureBackupViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecureBackupViewController.swift; sourceTree = "<group>"; };
 		3723A7AA24ACD03E003382EB /* PasswordField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordField.swift; sourceTree = "<group>"; };
+		372AECA624B496F0005CBA0F /* BackupScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupScheduler.swift; sourceTree = "<group>"; };
+		372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsWrapper.swift; sourceTree = "<group>"; };
 		373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+SecureCopy.swift"; sourceTree = "<group>"; };
 		37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+KeyWindow.swift"; sourceTree = "<group>"; };
@@ -950,6 +954,7 @@
 				00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */,
 				37765D2524A35BA20091AE2A /* AESEncryption.swift */,
 				37B48A8224B3968F00F8A8D2 /* BPKeychainWrapper.swift */,
+				372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1374,7 +1379,7 @@
 			isa = PBXGroup;
 			children = (
 				37B4449D24890F6200592D92 /* ICloudBackup.swift */,
-				003ED9BF24B49A9C003F6283 /* AutomatedBackups.swift */,
+				372AECA624B496F0005CBA0F /* BackupScheduler.swift */,
 			);
 			path = Backup;
 			sourceTree = "<group>";
@@ -2128,7 +2133,6 @@
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				37CFAA76248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */,
 				3708D74A247FCF2300807D72 /* SettingsViewController.swift in Sources */,
-				003ED9C024B49A9C003F6283 /* AutomatedBackups.swift in Sources */,
 				4CD20A362407967B007B64D8 /* TransportType.swift in Sources */,
 				00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */,
 				00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */,
@@ -2180,6 +2184,7 @@
 				004277EF23E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
 				37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */,
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
+				372AECAB24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */,
 				00B4D6F8241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift in Sources */,
 				004277E723DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				00C185B9238943980096984E /* UIViewControllerDebugExtension.swift in Sources */,
@@ -2215,6 +2220,7 @@
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
 				491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
+				372AECA724B496F0005CBA0F /* BackupScheduler.swift in Sources */,
 				37B444A9248949B800592D92 /* Checkbox.swift in Sources */,
 				BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				00369D7D24221ACB00BAB95B /* DeepLinkManager.swift in Sources */,
@@ -2283,6 +2289,7 @@
 				37B48A8424B3968F00F8A8D2 /* BPKeychainWrapper.swift in Sources */,
 				004277E823DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				37CB9F8B2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
+				372AECAC24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */,
 				0042780023E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				491AB8A123F3FF4400372189 /* AddAmountViewController.swift in Sources */,
@@ -2294,7 +2301,6 @@
 				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				371A0819247290C000F97713 /* TransitionLabel.swift in Sources */,
 				004277F023E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
-				003ED9C124B49A9C003F6283 /* AutomatedBackups.swift in Sources */,
 				37E0B009249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
 				00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				00A6779F23743696001A853E /* TransactionViewController.swift in Sources */,
@@ -2342,6 +2348,7 @@
 				00BBD80A237D80C800EBF5E6 /* Date.swift in Sources */,
 				375DB1E1246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				004997B42382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
+				372AECA824B496F0005CBA0F /* BackupScheduler.swift in Sources */,
 				001256302371D81500A9C067 /* SplashViewController.swift in Sources */,
 				375894C624865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */,
 				00C9F436242E08E70098E619 /* Tracker.swift in Sources */,
@@ -2398,7 +2405,6 @@
 				BFE1FC0A23E3ACDA00BA5EEC /* WalletCreationViewController.swift in Sources */,
 				004997AD2382E893000A0B7D /* PendingOutboundTransactions.swift in Sources */,
 				00A994352396434B007D9990 /* QRButton.swift in Sources */,
-				003ED9C424B4CEDD003F6283 /* AutomatedBackups.swift in Sources */,
 				00262EB6236F024400A6C8A0 /* Theme.swift in Sources */,
 				00BCE48B240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				37E0B00A249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
@@ -2450,6 +2456,7 @@
 				0087A1AE23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				37BB6976245726FC0013AC4D /* CopyableLabel.swift in Sources */,
 				00E2BC9D236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
+				372AECAD24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */,
 				37F29D5924504B92008C046F /* HomeViewController.swift in Sources */,
 				00E2BCAB236AB28200C2A105 /* TransactionTableViewCell.swift in Sources */,
 				004277F123E03E1600AE7BD9 /* TransactionViewControllerExtension.swift in Sources */,
@@ -2485,6 +2492,7 @@
 				0072BF2A247EB3AA00BD28FB /* ReminderNotifications.swift in Sources */,
 				00BBD80B237D80C800EBF5E6 /* Date.swift in Sources */,
 				0087A1AB23F4235400B89EE7 /* ScanViewController.swift in Sources */,
+				372AECA924B496F0005CBA0F /* BackupScheduler.swift in Sources */,
 				001F6CEA2381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				00434A9F2477D0B000C0104F /* AppContainerLock.swift in Sources */,

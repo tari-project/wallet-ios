@@ -41,6 +41,9 @@
 import Foundation
 
 public enum TariEventTypes: String {
+    //Wallet autobackup
+    case requiresBackup = "tari-event-requires-backup"
+
     //Wallet callbacks
     case receievedTransaction = "tari-event-receieved-transaction"
     case receievedTransactionReply = "tari-event-receieved-transaction-reply"

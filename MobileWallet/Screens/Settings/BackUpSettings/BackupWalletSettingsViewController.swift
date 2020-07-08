@@ -42,30 +42,19 @@ import UIKit
 
 class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
-    static let ICLOUD_BACKUPS_SWITCH_IS_ON = "iCloudBackupsSwitchIsOn"
-
     private enum Section: Int {
         case settings
         case backupNow
     }
 
     private lazy var settingsSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(title: BackupWalletSettingsItem.iCloudBackups.rawValue, hasArrow: false, hasSwitch: true, switchIsOn: iCloudBackupsSwitchIsOn),
+        SystemMenuTableViewCellItem(title: BackupWalletSettingsItem.iCloudBackups.rawValue, hasArrow: false, hasSwitch: true, switchIsOn: iCloudBackup.iCloudBackupsIsOn),
         SystemMenuTableViewCellItem(title: BackupWalletSettingsItem.setupPassword.rawValue)
     ]
 
     private let backupNowSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: BackupWalletSettingsItem.backupNow.rawValue, hasArrow: false)
     ]
-
-    private var iCloudBackupsSwitchIsOn: Bool {
-        get {
-            return UserDefaults.standard.bool(forKey: "iCloudBackupsSwitchIsOn")
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "iCloudBackupsSwitchIsOn")
-        }
-    }
 
     private var iCloudBackupsItem: SystemMenuTableViewCellItem?
     private var kvoiCloudBackupsToken: NSKeyValueObservation?
@@ -122,7 +111,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
         guard let iCloudBackupsItem = self.iCloudBackupsItem else { return }
         kvoiCloudBackupsToken = iCloudBackupsItem.observe(\.isSwitchIsOn, options: .new) { [weak self] (item, change) in
             if change.newValue == change.oldValue { return }
-            self?.iCloudBackupsSwitchIsOn = item.isSwitchIsOn
+            self?.iCloudBackup.iCloudBackupsIsOn = item.isSwitchIsOn
             if item.isSwitchIsOn {
                 self?.createWalletBackup()
             } else {
@@ -188,7 +177,8 @@ extension BackupWalletSettingsViewController {
 
 extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        if !iCloudBackup.backupExists() && iCloudBackupsSwitchIsOn && !iCloudBackup.inProgress {
+        if (!iCloudBackup.backupExists() && iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress) ||
+            (iCloudBackup.iCloudBackupsIsOn && BackupScheduler.shared.isBackupScheduled) {
             return 2
         } else {
             return 1
@@ -199,7 +189,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
         guard let section = Section(rawValue: section) else { return 0 }
         switch section {
         case .settings:
-            if iCloudBackupsSwitchIsOn && !iCloudBackup.inProgress {
+            if iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress && !BackupScheduler.shared.isBackupScheduled {
                 return settingsSectionItems.count
             } else {
                 return settingsSectionItems.count - 1
@@ -236,7 +226,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if tableView.numberOfSections - 1 != section || !iCloudBackupsSwitchIsOn {
+        if tableView.numberOfSections - 1 != section || !iCloudBackup.iCloudBackupsIsOn {
             return nil
         }
 
