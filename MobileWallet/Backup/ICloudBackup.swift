@@ -172,6 +172,18 @@ class ICloudBackup: NSObject {
 
     var isLastBackupEncrypted: Bool? {
         do {
+            if try getLastWalletBackup(forCurrentWallet: false).absoluteString.contains(".zip") {
+                return false
+            } else {
+                return true
+            }
+        } catch {
+            return nil
+        }
+    }
+
+    var isCurrentWalletBackupEncrypted: Bool? {
+        do {
             if try getLastWalletBackup().absoluteString.contains(".zip") {
                 return false
             } else {
