@@ -116,6 +116,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
                 self?.createWalletBackup()
             } else {
                 BPKeychainWrapper.removeBackupPasswordFromKeychain()
+                self?.iCloudBackup.removeWalletBackup()
                 self?.reloadTableViewWithAnimation()
             }
         }
