@@ -105,7 +105,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     private func oniCloudRestoreAction() {
         let locatAuth = LAContext()
         locatAuth.authenticateUser(reason: .userVerification) { [weak self] in
-            if self?.iCloudBackup.isLastBackupEncrypted == true {
+            if self?.iCloudBackup.lastBackup?.isEncrypted == true {
                 self?.navigationController?.pushViewController(PasswordVerificationViewController(variation: .restore, restoreWalletAction: self?.restoreWallet(password:)), animated: true)
             } else {
                 self?.restoreWallet(password: nil)
