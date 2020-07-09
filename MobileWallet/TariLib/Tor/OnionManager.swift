@@ -266,7 +266,9 @@ public class OnionManager: NSObject {
 
                         var completeObserver: Any?
                                                 
-                        completeObserver = self.torController?.addObserver(forCircuitEstablished: { established in
+                        completeObserver = self.torController?.addObserver(forCircuitEstablished: { [weak self] established in
+                            guard let self = self else { return }
+                            
                             if established || self.torController?.isConnected ?? false {
                                 self.state = .connected
                                 self.torController?.removeObserver(completeObserver)
