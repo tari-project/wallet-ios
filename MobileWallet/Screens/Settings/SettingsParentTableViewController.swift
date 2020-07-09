@@ -74,8 +74,8 @@ class SettingsParentTableViewController: SettingsParentViewController {
             backUpWalletItem?.mark = .scheduled
             backUpWalletItem?.markDescription = ICloudBackupState.scheduled.rawValue
         } else {
-            backUpWalletItem?.mark = iCloudBackup.backupExists() ? .success : .attention
-            backUpWalletItem?.markDescription = ICloudBackup.shared.backupExists() ? ICloudBackupState.upToDate.rawValue : ""
+            backUpWalletItem?.mark = iCloudBackup.isValidBackupExists() ? .success : .attention
+            backUpWalletItem?.markDescription = iCloudBackup.isValidBackupExists() ? ICloudBackupState.upToDate.rawValue : ""
         }
     }
 }

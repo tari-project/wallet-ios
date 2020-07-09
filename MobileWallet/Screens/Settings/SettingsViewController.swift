@@ -160,7 +160,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         case .security:
             header.heightAnchor.constraint(equalToConstant: 70).isActive = true
         case .more:
-            if iCloudBackup.backupExists(), let lastBackupString = ICloudBackup.shared.lastBackupDateString {
+            if iCloudBackup.isValidBackupExists(), let lastBackupString = ICloudBackup.shared.lastBackup?.dateCreationString {
                 header.heightAnchor.constraint(equalToConstant: 101).isActive = true
 
                 let lastBackupLabel =  UILabel()

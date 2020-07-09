@@ -476,6 +476,7 @@ class Wallet {
             throw WalletErrors.generic(errorCode)
         }
 
+        TariEventBus.postToMainThread(.requiresBackup)
         TariEventBus.postToMainThread(.balanceUpdate)
         TariEventBus.postToMainThread(.transactionListUpdate)
 

@@ -86,4 +86,8 @@ extension FileManager {
         }
         return true
     }
+
+    func removeBackup(_ backup: Backup) throws {
+        try removeItem(at: backup.url)
+    }
 }

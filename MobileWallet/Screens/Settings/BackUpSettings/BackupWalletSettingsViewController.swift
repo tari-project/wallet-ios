@@ -69,7 +69,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
             switch self {
             case .iCloudBackups: return NSLocalizedString("backup_wallet_settings.item.icloud_backups", comment: "BackupWalletSettings view")
             case .setupPassword:
-                if ICloudBackup.shared.isCurrentWalletBackupEncrypted == true {
+                if ICloudBackup.shared.lastBackup?.isEncrypted == true {
                     return NSLocalizedString("backup_wallet_settings.item.change_password", comment: "BackupWalletSettings view")
                 } else {
                     return NSLocalizedString("backup_wallet_settings.item.secure_your_backup", comment: "BackupWalletSettings view")
@@ -95,7 +95,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     }
 
     private func onChangePasswordAction() {
-        if iCloudBackup.isCurrentWalletBackupEncrypted == true {
+        if iCloudBackup.lastBackup?.isEncrypted == true {
             navigationController?.pushViewController(PasswordVerificationViewController(variation: .change), animated: true)
 
         } else {
@@ -136,7 +136,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
     override func failedToCreateBackup(error: Error) {
         super.failedToCreateBackup(error: error)
-        if iCloudBackup.isLastBackupFailed && !iCloudBackup.backupExists() {
+        if iCloudBackup.isLastBackupFailed && !iCloudBackup.isValidBackupExists() {
             iCloudBackupsItem?.isSwitchIsOn = false
         }
     }
@@ -178,7 +178,7 @@ extension BackupWalletSettingsViewController {
 
 extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        if (!iCloudBackup.backupExists() && iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress) ||
+        if (!iCloudBackup.isValidBackupExists() && iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress) ||
             (iCloudBackup.iCloudBackupsIsOn && BackupScheduler.shared.isBackupScheduled) {
             return 2
         } else {
@@ -219,7 +219,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if tableView.numberOfSections - 1 == section && iCloudBackup.backupExists() {
+        if tableView.numberOfSections - 1 == section && iCloudBackup.isValidBackupExists() {
             return 50.0
         } else {
             return 0
@@ -231,7 +231,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
             return nil
         }
 
-        if let lastBackupString = ICloudBackup.shared.lastBackupDateString {
+        if let lastBackupString = ICloudBackup.shared.lastBackup?.dateCreationString {
             let footer = UIView()
             footer.backgroundColor = .clear
 
