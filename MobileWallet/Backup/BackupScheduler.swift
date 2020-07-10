@@ -84,6 +84,10 @@ class BackupScheduler: NSObject {
         }
     }
 
+    func removeSchedule() {
+        isBackupScheduled = false
+    }
+
     private func createWalletBackup() {
         TariLib.shared.waitIfWalletIsRestarting { (_) in
             do {

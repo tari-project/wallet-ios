@@ -216,6 +216,7 @@ class ICloudBackup: NSObject {
 
             inProgress = true
             progressValue = 0.0
+            BackupScheduler.shared.removeSchedule()
 
             syncWithICloud()
         } catch {
@@ -452,6 +453,11 @@ extension ICloudBackup {
             }
 
             do {
+                let filePaths = try FileManager.default.contentsOfDirectory(atPath: directory.path)
+                for filePath in filePaths {
+                    try FileManager.default.removeItem(atPath: directory.appendingPathComponent(filePath).path)
+                }
+
                 try FileManager.default.unzipItem(at: zippedBackup.url, to: directory)
                 completion(nil)
             } catch {
@@ -565,7 +571,7 @@ extension ICloudBackup {
     }
 
     private func getTempDirectory() throws -> URL {
-        if let tempZipDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Backups") {
+        if let tempZipDirectory = FileManager.default.documentDirectory()?.appendingPathComponent("Backups") {
 
             if !FileManager.default.fileExists(atPath: tempZipDirectory.path) {
                 try FileManager.default.createDirectory(at: tempZipDirectory, withIntermediateDirectories: true, attributes: nil)
