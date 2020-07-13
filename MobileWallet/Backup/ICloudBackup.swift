@@ -193,7 +193,9 @@ class ICloudBackup: NSObject {
         do {
             if inProgress { query.stop(); inProgress = false }
 
-            guard let backupFolder = TariLib.shared.walletPublicKeyHex else { throw ICloudBackupError.unableCreateBackupFolder }
+            guard let backupFolder = TariLib.shared.walletPublicKeyHex else {
+                throw ICloudBackupError.unableCreateBackupFolder
+            }
 
             let fileURL: URL
             if let password = password {
@@ -402,7 +404,6 @@ extension ICloudBackup {
         NotificationManager.shared.scheduleNotification(title: title, body: body, identifier: pushTaskIdentifier) { (_) in
             TariLogger.info("User reminded to open the app as a background backup did not complete.")
             self.endBackgroundBackupTask()
-            BackupScheduler.shared.scheduleBackup(immediately: true)
         }
     }
 }
