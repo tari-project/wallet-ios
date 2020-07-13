@@ -120,7 +120,9 @@ class SystemMenuTableViewCell: UITableViewCell {
                 markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionSuccess
             case .progress, .scheduled:
                 markImageView.image = nil; progressView.isHidden = false
-                isUserInteractionEnabled = disableCellInProgress ? false : true
+                if mark == .progress {
+                    isUserInteractionEnabled = disableCellInProgress ? false : true
+                }
                 markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionInProgress
             }
         }

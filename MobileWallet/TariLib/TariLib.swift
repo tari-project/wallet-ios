@@ -289,6 +289,8 @@ class TariLib {
 
         TariEventBus.postToMainThread(.walletServiceStarted)
 
+        walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
+
         walletIsStopped = false
 
         try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
@@ -304,8 +306,6 @@ class TariLib {
         baseNodeSyncCheck() //TODO remove when no longer needed
 
         backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
-
-        walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
     }
 
     func createNewWallet() throws {

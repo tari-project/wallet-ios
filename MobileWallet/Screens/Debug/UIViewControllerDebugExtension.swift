@@ -158,7 +158,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         let dateString = dateFormatter.string(from: Date())
         let archiveName = "\(dateString)-bug-report.zip"
 
-        guard let archiveURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(archiveName) else {
+        guard let archiveURL = FileManager.default.documentDirectory()?.appendingPathComponent(archiveName) else {
             TariLogger.error("Failed to create archive URL")
             throw DebugErrors.zipURL
         }
