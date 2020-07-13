@@ -114,6 +114,12 @@ class SettingsViewController: SettingsParentTableViewController {
         super.viewWillAppear(animated)
         updateMarks()
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        checkClipboardForBaseNode()
+    }
 
     private func onBackupWalletAction() {
         navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)
@@ -209,5 +215,44 @@ extension SettingsViewController {
         navigationBar.rightButton.setTitle(title, for: .normal)
         navigationBar.rightButton.setTitleColor(Theme.shared.colors.settingsDoneButtonTitle, for: .normal)
         navigationBar.rightButton.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
+    }
+    
+    fileprivate func checkClipboardForBaseNode() {
+        let pasteboardString: String? = UIPasteboard.general.string
+        guard let clipboardText = pasteboardString else { return }
+
+        do {
+            let baseNode = try BaseNode(clipboardText)
+
+            UserFeedback.shared.callToAction(
+                title: NSLocalizedString("Set custom base node", comment: "Custom base node in clipboard call to action"),
+                description: String(
+                    format: NSLocalizedString(
+                        "We found a base node peer in your clipboard, would you like to use this instead of the default?\n\n%@",
+                        comment: "Custom base node in clipboard call to action"
+                    ),
+                    clipboardText
+                ),
+                actionTitle: NSLocalizedString("Set", comment: "Custom base node in clipboard call to action"),
+                cancelTitle: NSLocalizedString("Keep default", comment: "Custom base node in clipboard call to action"),
+                onAction: {
+                    do {
+                        try TariLib.shared.setBasenode(baseNode)
+                        UIPasteboard.general.string = ""
+                    } catch {
+                        UserFeedback.shared.error(
+                            title: NSLocalizedString("Base node error", comment: "Add base node peer error"),
+                            description: NSLocalizedString("Failed to set custom base node from clipboard", comment: "Custom base node in clipboard call to action"),
+                            error: error
+                        )
+                    }
+                },
+                onCancel: {
+                    UIPasteboard.general.string = ""
+                }
+            )
+        } catch {
+            //No valid peer string found in clipboard
+        }
     }
 }

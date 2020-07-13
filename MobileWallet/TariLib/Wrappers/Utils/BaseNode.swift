@@ -49,6 +49,10 @@ struct BaseNode {
     let publicKey: PublicKey
     let address: String
 
+    var peer: String {
+        return "\(publicKey.hex.0)::\(address)"
+    }
+
     //Expects format found in Tari code base for setting a peer: pubkey::/onion/key:port
     //Can be used to determine if the users clipboard contains a valid base node seed
     init(_ peer: String) throws {

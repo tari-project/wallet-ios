@@ -72,10 +72,23 @@ class ConnectionMonitorState {
         return synced ? "Synced  ✅" : "Sync failed ❌"
     }
 
+    var currentBaseNodeName: String {
+        var name = "unknown"
+        if let currentPeer = TariSettings.shared.groupUserDefaults.string(forKey: TariLib.currentBaseNodeUserDefaultsKey) {
+            if let currentPeerName = (TariSettings.shared.defaultBaseNodePool.filter { (_, val) -> Bool in val  == currentPeer}).first {
+                name = currentPeerName.key
+            } else {
+                name = "Custom"
+            }
+        }
+
+        return name
+    }
+
     var formattedDisplayItems: [String] {
         var entries: [String] = []
         entries.append("Reachability: \(reachability.rawValue)")
-        entries.append("Base node: \(baseNodeSyncedDisplay)")
+        entries.append("Base node (\(currentBaseNodeName)): \(baseNodeSyncedDisplay)")
         entries.append("Tor ports: \(torPortsOpenDisplay)")
         entries.append("Tor status: \(torStatus.rawValue)")
         entries.append("Tor bootstrap progress: \(torBootstrapProgress)%")
