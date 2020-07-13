@@ -158,6 +158,7 @@ class Wallet {
             let pendingInbound = PendingInboundTransaction(pendingInboundTransactionPointer: valuePointer!)
             TariEventBus.postToMainThread(.receievedTransaction, sender: pendingInbound)
             TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Receive transaction lib callback")
         }
@@ -167,6 +168,7 @@ class Wallet {
             let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
             TariEventBus.postToMainThread(.receievedTransactionReply, sender: completed)
             TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Receive transaction reply lib callback")
         }
@@ -175,6 +177,7 @@ class Wallet {
             valuePointer in
             let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
             TariEventBus.postToMainThread(.receivedFinalizedTransaction, sender: completed)
+            TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Receive finalized transaction lib callback")
@@ -184,6 +187,7 @@ class Wallet {
             valuePointer in
             let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
             TariEventBus.postToMainThread(.transactionBroadcast, sender: completed)
+            TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction broadcast lib callback")
@@ -193,6 +197,7 @@ class Wallet {
             valuePointer in
             let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
             TariEventBus.postToMainThread(.transactionMined, sender: completed)
+            TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.transactionListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction mined lib callback")
@@ -200,6 +205,7 @@ class Wallet {
 
         let directSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
             TariEventBus.postToMainThread(.directSend, sender: CallbackTxResult(id: txID, success: success))
+            TariEventBus.postToMainThread(.requiresBackup)
             let message = "Direct send lib callback. txID=\(txID)"
             if success {
                 TariLogger.verbose("\(message) ✅")
@@ -212,6 +218,7 @@ class Wallet {
 
         let storeAndForwardSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
             TariEventBus.postToMainThread(.storeAndForwardSend, sender: CallbackTxResult(id: txID, success: success))
+            TariEventBus.postToMainThread(.requiresBackup)
             let message = "Store and forward lib callback. txID=\(txID)"
             if success {
                 TariLogger.verbose("\(message) ✅")
@@ -225,6 +232,8 @@ class Wallet {
         let transactionCancellationCallback: (@convention(c) (OpaquePointer?) -> Void)? = { valuePointer in
             let cancelledTxId = CompletedTransaction(completedTransactionPointer: valuePointer!).id
             TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.transactionCancellation)
+            TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction cancelled callback. txID=\(cancelledTxId) ✅")
         }
@@ -467,6 +476,7 @@ class Wallet {
             throw WalletErrors.generic(errorCode)
         }
 
+        TariEventBus.postToMainThread(.requiresBackup)
         TariEventBus.postToMainThread(.balanceUpdate)
         TariEventBus.postToMainThread(.transactionListUpdate)
 

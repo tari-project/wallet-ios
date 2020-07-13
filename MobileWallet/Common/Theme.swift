@@ -122,13 +122,18 @@ struct Colors: Loopable {
     let settingsTableStyleBackground = UIColor(named: "SettingsTableStyleBackground")
     let settingsDoneButtonTitle = UIColor(named: "SettingsDoneButtonTitle")
     let settingsNavBarSeparator = UIColor(named: "SettingsNavBarSeparator")
-    let settingsSeedPhraseDescription = UIColor(named: "SettingsBackupWalletDescription")
+    let settingsViewDescription = UIColor(named: "SettingsViewDescription")
     let cettingsSeedPhraseCellTitle = UIColor(named: "SettingsSeedPhraseCell")
     let settingsSeedPhraseAgreement = UIColor(named: "SettingsSeedPhraseAgreement")
     let settingsRecoveryPhraseWorldText = UIColor(named: "SettingsRecoveryPhraseWorldText")
     let settingsRecoveryPhraseWorldBorder = UIColor(named: "SettingsRecoveryPhraseWorldBorder")
     let settingsVerificationPhraseViewBackground = UIColor(named: "SettingsVerificationPhraseViewBackground")
     let settingsFillablePhraseViewDescription = UIColor(named: "SettingsFillablePhraseViewDescription")
+    let settingsTableViewLastBackupDate = UIColor(named: "SettingsTableViewLastBackupDate")
+    let settingsTableViewMarkDescriptionSuccess = UIColor(named: "SettingsTableViewMarkDescriptionSuccess")
+    let settingsTableViewMarkDescriptionWarning = UIColor(named: "SettingsTableViewMarkDescriptionWarning")
+    let settingsTableViewMarkDescriptionInProgress = UIColor(named: "SettingsTableViewMarkDescriptionInProgress")
+    let settingsPasswordWarning = UIColor(named: "SettingsPasswordWarning")
 
     //Home screen
     let homeScreenBackground = UIColor(named: "HomeScreenBackground")
@@ -370,7 +375,8 @@ struct Fonts: Loopable {
     let refreshViewLabel = UIFont.Avenir.heavy.withSize(12.0)
 
     //App table view
-    let systemableViewCell = UIFont.Avenir.medium.withSize(15.0)
+    let systemTableViewCell = UIFont.Avenir.medium.withSize(15.0)
+    let systemTableViewCellMarkDescription = UIFont.Avenir.medium.withSize(14.0)
 
     //Restore pending view
     let restorePendingViewTitle = UIFont.Avenir.light.withSize(18.0)
@@ -378,7 +384,9 @@ struct Fonts: Loopable {
 
     //Settings
     let settingsDoneButton = UIFont.Avenir.medium.withSize(16.0)
-    let settingsTableViewHeader = UIFont.Avenir.black.withSize(17.0)
+    let settingsViewHeader = UIFont.Avenir.black.withSize(17.0)
+    let settingsViewHeaderDescription = UIFont.Avenir.medium.withSize(14.0)
+    let settingsTableViewLastBackupDate = UIFont.Avenir.medium.withSize(14.0)
 
     let settingsSeedPhraseCellTitle = UIFont.Avenir.heavy.withSize(14.0)
     let settingsSeedPhraseCellNumber = UIFont.Avenir.medium.withSize(14.0)
@@ -387,6 +395,10 @@ struct Fonts: Loopable {
     let settingsSeedPhraseAgreement = UIFont.Avenir.medium.withSize(12.0)
     let settingsRecoveryPhraseWorld = UIFont.Avenir.heavy.withSize(14.0)
     let settingsFillablePhraseViewDescription = UIFont.Avenir.medium.withSize(12.0)
+
+    let settingsPasswordTitle = UIFont.Avenir.medium.withSize(13.0)
+    let settingsPassword = UIFont.Avenir.roman.withSize(14.0)
+    let settingsPasswordWarning = UIFont.Avenir.heavy.withSize(13.0)
 }
 
 struct Sizes {

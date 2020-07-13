@@ -39,10 +39,11 @@
 */
 
 import UIKit
+import LocalAuthentication
 
 class SettingsViewController: SettingsParentTableViewController {
 
-    private enum Section: Int {
+    private enum Section: Int, CaseIterable {
         case security
         case more
     }
@@ -82,11 +83,7 @@ class SettingsViewController: SettingsParentTableViewController {
     }
 
     private let headers: [SettingsHeaderTitle] = [.securityHeader, .moreHeader]
-    private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(title: SettingsItemTitle.backUpWallet.rawValue, mark: .attention)]
-
-    private lazy var backUpWalletItem: SystemMenuTableViewCellItem = {
-        return self.securitySectionItems.first(where: { $0.title == SettingsItemTitle.backUpWallet.rawValue })!
-    }()
+    private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: SettingsItemTitle.visitTari.rawValue),
@@ -104,19 +101,18 @@ class SettingsViewController: SettingsParentTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        guard let backupItem = securitySectionItems.first(where: { $0.title == SettingsItemTitle.backUpWallet.rawValue }) else { return }
+        backUpWalletItem = backupItem
         tableView.delegate = self
         tableView.dataSource = self
-
-        NotificationCenter.default.addObserver(self, selector: #selector(updateMarks), name: UIApplication.willEnterForegroundNotification, object: nil)
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        updateMarks()
     }
 
     private func onBackupWalletAction() {
-        navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)
+        let localAuth = LAContext()
+        localAuth.authenticateUser(reason: .userVerification) { [weak self] in
+            self?.navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)
+        }
     }
 
     private func onLinkAction(indexPath: IndexPath) {
@@ -125,15 +121,11 @@ class SettingsViewController: SettingsParentTableViewController {
             UserFeedback.shared.openWebBrowser(url: url!)
         }
     }
-
-    @objc private func updateMarks() {
-        backUpWalletItem.mark = ICloudBackup.shared.backupExists() ? .success : .attention
-    }
 }
 
 extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        2
+        return Section.allCases.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -162,10 +154,34 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = UIView()
         header.backgroundColor = .clear
-        header.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        let sec = Section(rawValue: section)
+
+        switch sec {
+        case .security:
+            header.heightAnchor.constraint(equalToConstant: 70).isActive = true
+        case .more:
+            if iCloudBackup.isValidBackupExists(), let lastBackupString = ICloudBackup.shared.lastBackup?.dateCreationString {
+                header.heightAnchor.constraint(equalToConstant: 101).isActive = true
+
+                let lastBackupLabel =  UILabel()
+                lastBackupLabel.font = Theme.shared.fonts.settingsTableViewLastBackupDate
+                lastBackupLabel.textColor =  Theme.shared.colors.settingsTableViewLastBackupDate
+
+                lastBackupLabel.text = NSLocalizedString("Last successful backup: \(lastBackupString)", comment: "Settings view")
+
+                header.addSubview(lastBackupLabel)
+
+                lastBackupLabel.translatesAutoresizingMaskIntoConstraints = false
+                lastBackupLabel.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 25).isActive = true
+                lastBackupLabel.topAnchor.constraint(equalTo: header.topAnchor, constant: 8).isActive = true
+            } else {
+                header.heightAnchor.constraint(equalToConstant: 70).isActive = true
+            }
+        default: break
+        }
 
         let label = UILabel()
-        label.font = Theme.shared.fonts.settingsTableViewHeader
+        label.font = Theme.shared.fonts.settingsViewHeader
         label.text = headers[section].rawValue
 
         header.addSubview(label)
@@ -178,11 +194,15 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        nil
+        return nil
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0.0
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        65
+        return 65.0
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

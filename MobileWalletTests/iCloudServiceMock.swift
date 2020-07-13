@@ -1,8 +1,8 @@
-//  UIScrollView+RefreshControl.swift
-
+//  iCloudServiceMock.swift
+	
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 29.05.2020
+	Created by S.Shovkoplyas on 10.07.2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,38 +38,34 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Foundation
+import CloudKit
 
-extension UIScrollView {
-
-    func beginRefreshing() {
-        guard let refreshControl = refreshControl, !refreshControl.isRefreshing else { return }
-        let refreshControlHeight: CGFloat = 60.0 // static because if fast drag tableView refreshControl height will not correct
-        let contentOffset = CGPoint(x: 0, y: -refreshControlHeight - contentInset.top)
-        refreshControl.beginRefreshing()
-        refreshControl.sendActions(for: .valueChanged)
-        DispatchQueue.main.async {
-            self.setContentOffset(contentOffset, animated: !self.isDragging)
+class iCloudServiceMock {
+    private static let testICloudFolder = "test_icloud_folder"
+    private static let backupName = "Tari-Aurora-Backup"
+    
+    static func downloadBackup() throws -> Backup {
+        let directory = try getTestICloudDirectory()
+        let backupUrl = directory.appendingPathComponent(backupName + ".zip")
+        return try Backup(url: backupUrl)
+    }
+    
+    static func uploadBackup(_ backup: Backup) throws {
+        let directory = try getTestICloudDirectory()
+        if !FileManager.default.secureCopyItem(at: backup.url, to: directory.appendingPathComponent(backup.url.lastPathComponent)) {
+            throw ICloudBackupError.failedToCreateZip
         }
-
     }
-
-    func endRefreshing() {
-        refreshControl?.endRefreshing()
-    }
-
-    func isRefreshing() -> Bool {
-        guard let refreshControl = refreshControl else { return false }
-        return refreshControl .isRefreshing
-    }
-
-    func scrollToBottom(animated: Bool) {
-        let yOffset = contentSize.height - bounds.size.height
-        let bottomOffset = CGPoint(x: 0, y: yOffset > 0 ? yOffset : 0)
-        setContentOffset(bottomOffset, animated: animated)
-    }
-
-    func scrollToTop(animated: Bool) {
-        setContentOffset(.zero, animated: animated)
+    
+    private static func getTestICloudDirectory() throws -> URL {
+        if let iCloudDirectory = FileManager.default.documentDirectory()?.appendingPathComponent(testICloudFolder) {
+            
+            if !FileManager.default.fileExists(atPath: iCloudDirectory.path) {
+                try FileManager.default.createDirectory(at: iCloudDirectory, withIntermediateDirectories: true, attributes: nil)
+            }
+            
+            return iCloudDirectory
+        } else { throw ICloudBackupError.iCloudContainerNotFound }
     }
 }

@@ -1,8 +1,8 @@
-//  UIScrollView+RefreshControl.swift
+//  Backup.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 29.05.2020
+	Created by S.Shovkoplyas on 09.07.2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,38 +38,37 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Foundation
 
-extension UIScrollView {
+class Backup {
 
-    func beginRefreshing() {
-        guard let refreshControl = refreshControl, !refreshControl.isRefreshing else { return }
-        let refreshControlHeight: CGFloat = 60.0 // static because if fast drag tableView refreshControl height will not correct
-        let contentOffset = CGPoint(x: 0, y: -refreshControlHeight - contentInset.top)
-        refreshControl.beginRefreshing()
-        refreshControl.sendActions(for: .valueChanged)
-        DispatchQueue.main.async {
-            self.setContentOffset(contentOffset, animated: !self.isDragging)
+    let url: URL
+    let folderPath: String
+    let dateCreation: Date
+    let dateCreationString: String
+    let isEncrypted: Bool
+
+    var isValid: Bool {
+        return !ICloudBackup.shared.inProgress && !ICloudBackup.shared.isLastBackupFailed && !BackupScheduler.shared.isBackupScheduled
+    }
+
+    init(url: URL) throws {
+        if try !url.checkResourceIsReachable() {
+            throw ICloudBackupError.backupUrlNotValid
         }
 
-    }
+        self.url = url
+        folderPath = url.deletingLastPathComponent().path
+        isEncrypted = !url.absoluteString.contains(".zip")
 
-    func endRefreshing() {
-        refreshControl?.endRefreshing()
-    }
+        guard let date = try url.resourceValues(forKeys: [.creationDateKey]).allValues.first?.value as? Date else {
+            throw ICloudBackupError.unableToDetermineDateOfBackup
+        }
 
-    func isRefreshing() -> Bool {
-        guard let refreshControl = refreshControl else { return false }
-        return refreshControl .isRefreshing
-    }
-
-    func scrollToBottom(animated: Bool) {
-        let yOffset = contentSize.height - bounds.size.height
-        let bottomOffset = CGPoint(x: 0, y: yOffset > 0 ? yOffset : 0)
-        setContentOffset(bottomOffset, animated: animated)
-    }
-
-    func scrollToTop(animated: Bool) {
-        setContentOffset(.zero, animated: animated)
+        dateCreation = date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMM dd yyy 'at' HH:mm a"
+        dateFormatter.timeZone = .current
+        dateCreationString = dateFormatter.string(from: date)
     }
 }

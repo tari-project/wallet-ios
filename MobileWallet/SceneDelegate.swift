@@ -65,6 +65,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             deepLinker.handleShortcut(item: shortcutItem)
         }
 
+        if ICloudBackup.shared.iCloudBackupsIsOn {
+            BackupScheduler.shared.startObserveEvents()
+        }
+
         guard let _ = (scene as? UIWindowScene) else { return }
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
@@ -111,6 +115,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         ConnectionMonitor.shared.start()
         TariLib.shared.startTor()
         TariLib.shared.restartWalletIfStopped() //Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
+        if UserDefaults.Key.backupOperationAborted.boolValue() && ICloudBackup.shared.iCloudBackupsIsOn && !ICloudBackup.shared.inProgress {
+            BackupScheduler.shared.scheduleBackup(immediately: true)
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -125,6 +132,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         TariLib.shared.stopWallet()
         TariLib.shared.stopTor()
         AppContainerLock.shared.removeLock(.main)
+        ICloudBackup.shared.backgroundBackupWallet()
     }
 
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {

@@ -42,11 +42,17 @@ import XCTest
 
 class TariLibWrapperTests: XCTestCase {
     //Use a random DB path for each test
-    private var dbName = "test_db"
+    private let dbName = "test_db.sqlite3"
+    private let testFolderName = "test_tari_wallet"
+    private let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
         
-    private var newTestStoragePath: String {
-        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("test_\(UUID().uuidString)").path
-    }
+    private lazy var newTestStoragePath: String  = {
+        let folderPath = FileManager.default.documentDirectory()!.appendingPathComponent(testFolderName).path
+        if FileManager.default.fileExists(atPath: folderPath) {
+            try? FileManager.default.removeItem(atPath: folderPath)
+        }
+        return folderPath
+    }()
     
     private func databaseTestPath(_ storagePath: String) -> String {
         return "\(storagePath)/\(dbName)"
@@ -84,16 +90,14 @@ class TariLibWrapperTests: XCTestCase {
     
     func testPrivateKey() {
         //Create priv key from hex, then create hex from that to test ByteVector toString()
-        let originalPrivateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
-        
         do {
-            let privateKey = try PrivateKey(hex: originalPrivateKeyHex)
+            let privateKey = try PrivateKey(hex: privateKeyHex)
             let (hex, hexError) = privateKey.hex
             if hexError != nil {
                 XCTFail(hexError!.localizedDescription)
             }
             
-            XCTAssertEqual(hex, originalPrivateKeyHex)
+            XCTAssertEqual(hex, privateKeyHex)
         } catch {
             XCTFail(error.localizedDescription)
         }
@@ -217,9 +221,7 @@ class TariLibWrapperTests: XCTestCase {
         } catch {
             XCTFail("Unable to create directory \(error.localizedDescription)")
         }
-        
-        let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
-        
+                
         var commsConfig: CommsConfig?
         do {
             let transport = TransportType()
@@ -429,6 +431,21 @@ class TariLibWrapperTests: XCTestCase {
         let backupFileName = "test_partial_backup"
         XCTAssertNoThrow(try wallet.partialBackup(partialBackupPath, filename: backupFileName))
         XCTAssertTrue(fileManager.fileExists(atPath: "\(partialBackupPath)\(backupFileName)"))
+        
+        sleep(10)
+        TariLib.shared.walletPublicKeyHex = wallet.publicKey.0?.hex.0
+        createWalletBackup()
+        restoreWallet { backupWallet, error in
+            if error != nil {
+                XCTFail("Failed to restore wallet backup \(error!.localizedDescription)")
+            } else {
+                if backupWallet != nil {
+                    self.compareWallets(w1: wallet, w2: backupWallet!)
+                } else {
+                    XCTFail("Failed to restore wallet backup")
+                }
+            }
+        }
     }
     
     func testMicroTari() {
@@ -470,5 +487,54 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertNoThrow(try MicroTari(decimalValue: 2))
         XCTAssertNoThrow(try MicroTari(decimalValue: 1.1234))
         XCTAssertThrowsError(try MicroTari(decimalValue: 0.123456789))
+    }
+    
+    func createWalletBackup() {
+        do {
+            try ICloudBackup.shared.createWalletBackup(password: nil)
+        } catch {
+            XCTFail("Failed to create wallet backup \(error.localizedDescription)")
+        }
+    }
+    
+    func restoreWallet(completion: @escaping ((_ wallet: Wallet?, _ error: Error?) -> Void)) {
+        ICloudBackup.shared.restoreWallet(password: nil, completion: { error in
+            if let loggingFilePath = try? self.loggingTestPath(ICloudBackup.shared.getTestDataBaseUrl().deletingLastPathComponent().path) {
+                var commsConfig: CommsConfig?
+                do {
+                    let transport = TransportType()
+                    let address = transport.address.0
+                    commsConfig = try CommsConfig(
+                        transport: transport,
+                        databasePath: ICloudBackup.shared.getTestDataBaseUrl().path,
+                        databaseName: self.dbName,
+                        publicAddress: address,
+                        discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
+                    )
+                } catch {
+                    completion(nil, error)
+                    return
+                }
+                
+                do {
+                    let wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: loggingFilePath)
+                    completion(wallet, error)
+                } catch {
+                    completion(nil, error)
+                    return
+                }
+            }
+        })
+    }
+    
+    func compareWallets(w1: Wallet, w2: Wallet) {
+        XCTAssertEqual(w1.availableBalance.0, w2.availableBalance.0)
+        XCTAssertEqual(w1.pendingIncomingBalance.0, w2.pendingIncomingBalance.0)
+        XCTAssertEqual(w1.pendingOutgoingBalance.0, w2.pendingOutgoingBalance.0)
+
+        XCTAssertEqual(w1.completedTransactions.0?.count.0, w2.completedTransactions.0?.count.0)
+        XCTAssertEqual(w1.cancelledTransactions.0?.count.0, w2.cancelledTransactions.0?.count.0)
+        XCTAssertEqual(w1.pendingInboundTransactions.0?.count.0, w2.pendingInboundTransactions.0?.count.0)
+        XCTAssertEqual(w1.pendingOutboundTransactions.0?.count.0, w2.pendingOutboundTransactions.0?.count.0)
     }
 }

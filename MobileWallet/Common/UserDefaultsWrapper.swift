@@ -1,8 +1,8 @@
-//  UIScrollView+RefreshControl.swift
+//  UserDefaultsWrapper.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 29.05.2020
+	Created by S.Shovkoplyas on 07.07.2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -38,38 +38,29 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Foundation
 
-extension UIScrollView {
+extension UserDefaults {
+    enum Key: String {
+        case walletHasBeenIntroduced
+        case authStepPassed
 
-    func beginRefreshing() {
-        guard let refreshControl = refreshControl, !refreshControl.isRefreshing else { return }
-        let refreshControlHeight: CGFloat = 60.0 // static because if fast drag tableView refreshControl height will not correct
-        let contentOffset = CGPoint(x: 0, y: -refreshControlHeight - contentInset.top)
-        refreshControl.beginRefreshing()
-        refreshControl.sendActions(for: .valueChanged)
-        DispatchQueue.main.async {
-            self.setContentOffset(contentOffset, animated: !self.isDragging)
+        case iCloudBackupsIsOn
+        case isLastBackupFailed
+
+        case backupOperationAborted
+
+        func set<T>(_ value: T) {
+            UserDefaults.standard.set(value, forKey: rawValue)
         }
 
-    }
+        func get<T>(_ type: T.Type) -> T? {
+            guard let value = UserDefaults.standard.value(forKey: rawValue) as? T else { return nil }
+            return value
+        }
 
-    func endRefreshing() {
-        refreshControl?.endRefreshing()
-    }
-
-    func isRefreshing() -> Bool {
-        guard let refreshControl = refreshControl else { return false }
-        return refreshControl .isRefreshing
-    }
-
-    func scrollToBottom(animated: Bool) {
-        let yOffset = contentSize.height - bounds.size.height
-        let bottomOffset = CGPoint(x: 0, y: yOffset > 0 ? yOffset : 0)
-        setContentOffset(bottomOffset, animated: animated)
-    }
-
-    func scrollToTop(animated: Bool) {
-        setContentOffset(.zero, animated: animated)
+        func boolValue() -> Bool {
+            UserDefaults.standard.bool(forKey: rawValue)
+        }
     }
 }
