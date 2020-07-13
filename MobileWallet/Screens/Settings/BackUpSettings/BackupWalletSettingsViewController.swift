@@ -150,7 +150,8 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
     override func updateMarks() {
         super.updateMarks()
-        if tableView.numberOfSections == 1 {
+
+        if numberOfSections() == 1 {
             if iCloudBackup.inProgress {
                 iCloudBackupsItem?.mark = .progress
                 iCloudBackupsItem?.markDescription = ICloudBackupState.inProgress.rawValue
@@ -177,13 +178,17 @@ extension BackupWalletSettingsViewController {
 }
 
 extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
+    private func numberOfSections() -> Int {
         if (!iCloudBackup.isValidBackupExists() && iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress) ||
             (iCloudBackup.iCloudBackupsIsOn && BackupScheduler.shared.isBackupScheduled) {
             return 2
         } else {
             return 1
         }
+    }
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return numberOfSections()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

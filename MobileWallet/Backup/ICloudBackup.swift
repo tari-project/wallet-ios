@@ -202,6 +202,15 @@ class ICloudBackup: NSObject {
                 fileURL = try zipWalletDatabase()
             }
 
+            if TariSettings.shared.isUnitTesting {
+                try iCloudServiceMock.uploadBackup(Backup(url: fileURL))
+                progressValue = 0.0
+                inProgress = false
+                isLastBackupFailed = false
+                try cleanTempDirectory()
+                return
+            }
+
             let walletFolderURL = try iCloudDirectory().appendingPathComponent(backupFolder)
 
             if !FileManager.default.fileExists(atPath: walletFolderURL.path) {
@@ -216,6 +225,7 @@ class ICloudBackup: NSObject {
 
             inProgress = true
             progressValue = 0.0
+            BackupScheduler.shared.removeSchedule()
 
             syncWithICloud()
         } catch {
@@ -452,6 +462,11 @@ extension ICloudBackup {
             }
 
             do {
+                let filePaths = try FileManager.default.contentsOfDirectory(atPath: directory.path)
+                for filePath in filePaths {
+                    try FileManager.default.removeItem(atPath: directory.appendingPathComponent(filePath).path)
+                }
+
                 try FileManager.default.unzipItem(at: zippedBackup.url, to: directory)
                 completion(nil)
             } catch {
@@ -466,6 +481,15 @@ extension ICloudBackup {
     }
 
     private func downloadBackup(completion: @escaping ((_ backup: Backup?, _ error: Error?) -> Void)) {
+        if TariSettings.shared.isUnitTesting {
+            do {
+                let backup = try iCloudServiceMock.downloadBackup()
+                completion(backup, nil)
+            } catch {
+                completion(nil, error)
+            }
+            return
+        }
         do {
             let backup = try getLastWalletBackup()
             var lastPathComponent = backup.url.lastPathComponent
@@ -528,7 +552,9 @@ extension ICloudBackup {
         }
 
         let sqlite3File = TariLib.databaseName.appending(".sqlite3")
-        try FileManager().zipItem(at: directory.appendingPathComponent(sqlite3File), to: archiveURL, compressionMethod: .deflate)
+
+        let dbDirectory = TariSettings.shared.isUnitTesting ? try getTestDataBaseUrl() : directory.appendingPathComponent(sqlite3File)
+        try FileManager().zipItem(at: dbDirectory, to: archiveURL, compressionMethod: .deflate)
         return archiveURL
     }
 
@@ -565,7 +591,7 @@ extension ICloudBackup {
     }
 
     private func getTempDirectory() throws -> URL {
-        if let tempZipDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Backups") {
+        if let tempZipDirectory = FileManager.default.documentDirectory()?.appendingPathComponent("Backups") {
 
             if !FileManager.default.fileExists(atPath: tempZipDirectory.path) {
                 try FileManager.default.createDirectory(at: tempZipDirectory, withIntermediateDirectories: true, attributes: nil)
@@ -578,5 +604,15 @@ extension ICloudBackup {
     private func cleanTempDirectory() throws {
         let directory = try getTempDirectory()
         try FileManager.default.removeItem(at: directory)
+    }
+}
+
+// MARK: Tests
+extension ICloudBackup {
+    func getTestDataBaseUrl() throws -> URL {
+        guard let testDB = FileManager.default.documentDirectory()?.appendingPathComponent("test_tari_wallet").appendingPathComponent("test_db.sqlite3") else {
+            throw ICloudBackupError.dbFileNotFound
+        }
+        return testDB
     }
 }
