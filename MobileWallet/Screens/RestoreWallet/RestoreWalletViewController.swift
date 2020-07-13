@@ -123,7 +123,12 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
 
                 if error != nil {
                     UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title.restore_wallet", comment: "RestoreWallet view"), description: error?.localizedDescription ?? "", error: nil) { [weak self] in
-                        self?.pendingView.hidePendingView()
+                        self?.pendingView.hidePendingView { [weak self] in
+                            switch error! {
+                            case ICloudBackupError.noICloudBackupExists: self?.returnToSplashScreen()
+                            default: break
+                            }
+                        }
                     }
                     return
                 }
