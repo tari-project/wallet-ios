@@ -45,6 +45,8 @@ class TariLibWrapperTests: XCTestCase {
     private let dbName = "test_db.sqlite3"
     private let testFolderName = "test_tari_wallet"
     private let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
+    private let testWalletPublicKey = "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40"
+
         
     private lazy var newTestStoragePath: String  = {
         let folderPath = FileManager.default.documentDirectory()!.appendingPathComponent(testFolderName).path
@@ -205,58 +207,8 @@ class TariLibWrapperTests: XCTestCase {
     }
    
     func testWallet() {
-        //MARK: Create new wallet
-        var w: Wallet?
-        
-        let fileManager = FileManager.default
-        let storagePath = newTestStoragePath
-        let databasePath = databaseTestPath(storagePath)
-        let partialBackupPath = backupPath(storagePath)
-        let loggingFilePath = loggingTestPath(storagePath)
-        
-        do {
-            try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
-            try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
-            try fileManager.createDirectory(atPath: partialBackupPath, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            XCTFail("Unable to create directory \(error.localizedDescription)")
-        }
-                
-        var commsConfig: CommsConfig?
-        do {
-            let transport = TransportType()
-            let address = transport.address.0
-            commsConfig = try CommsConfig(
-                transport: transport,
-                databasePath: databasePath,
-                databaseName: dbName,
-                publicAddress: address,
-                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
-            )
+        let wallet = createWallet(privateHex: privateKeyHex)
             
-            let privateKey = try PrivateKey(hex: privateKeyHex)
-            try commsConfig?.setPrivateKey(privateKey)
-            
-            TariLogger.verbose("TariLib Logging path: \(loggingFilePath)")
-        } catch {
-            XCTFail("Unable to create comms config \(error.localizedDescription)")
-            return
-        }
-        
-        do {
-            w = try Wallet(commsConfig: commsConfig!, loggingFilePath: loggingFilePath)
-        } catch {
-            XCTFail("Unable to create wallet \(error.localizedDescription)")
-            return
-        }
-        
-        guard let wallet = w else {
-            XCTFail("Wallet not initialized")
-            return
-        }
-        
-        let testWalletPublicKey = "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40"
-        
         let (walletPublicKey, pubKeyError) = wallet.publicKey
         if pubKeyError != nil {
             XCTFail(pubKeyError!.localizedDescription)
@@ -282,13 +234,6 @@ class TariLibWrapperTests: XCTestCase {
             XCTFail(error.localizedDescription)
         }
         
-        //MARK: Test data
-        do {
-            try wallet.generateTestData()
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-        
         //MARK: Remove Alice contact
         let (contacts, contactsError) = wallet.contacts
         if contactsError != nil {
@@ -309,102 +254,9 @@ class TariLibWrapperTests: XCTestCase {
         } catch {
             XCTFail("Failed to add contact \(error.localizedDescription)")
         }
-
-        //MARK: Receive a test transaction
-        do {
-            try wallet.generateTestReceiveTransaction()
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-
-        //MARK: Finalize and broadcast received test transaction
-        var txId: UInt64?
-        do {
-            let (pendingInboundTransactions, pendingInboundTransactionsError) = wallet.pendingInboundTransactions
-            if pendingInboundTransactionsError != nil {
-                XCTFail(pendingInboundTransactionsError!.localizedDescription)
-            }
-            
-            let (pendingInboundTransactionsCount, pendingInboundTransactionsCountError) = pendingInboundTransactions!.count
-            if pendingInboundTransactionsCountError != nil {
-                XCTFail(pendingInboundTransactionsCountError!.localizedDescription)
-            }
-            
-            var currTx = 0
-            txId = 0
-            var pendingInboundTransaction: PendingInboundTransaction? = nil
-            while (currTx < pendingInboundTransactionsCount) {
-                pendingInboundTransaction = try pendingInboundTransactions!.at(position: UInt32(currTx))
-                let (pendingInboundTransactionId, pendingInboundTransactionIdError) = pendingInboundTransaction!.id
-                if pendingInboundTransactionIdError != nil {
-                    XCTFail(pendingInboundTransactionIdError!.localizedDescription)
-                }
-                txId = pendingInboundTransactionId
-                let (pendingInboundTransactionStatus, _) = pendingInboundTransaction!.status
-                if pendingInboundTransactionStatus == TransactionStatus.pending
-                {
-                    break;
-                }
-                currTx += 1
-            }
-            
-            try wallet.testFinalizedReceivedTransaction(pendingInboundTransaction: pendingInboundTransaction!)
-            try wallet.testTransactionBroadcast(txID: txId!)
-            try wallet.testTransactionMined(txID: txId!)
-            let completedTx = try wallet.findCompletedTransactionBy(id: txId!)
-            let (status, statusError) = completedTx.status
-            if statusError != nil {
-                XCTFail(statusError!.localizedDescription)
-            }
         
-            XCTAssertEqual(status, .mined)
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-
-        //MARK: Send transaction to bob
-        var sendTransactionId: UInt64?
-        do {
-            let (contacts, contactsError) = wallet.contacts
-            if contactsError != nil {
-                XCTFail(contactsError!.localizedDescription)
-            }
-            
-            let bob = try contacts!.at(position: 0)
-            let (bobPublicKey, bobPublicKeyError) = bob.publicKey
-            if bobPublicKeyError != nil {
-                XCTFail(bobPublicKeyError!.localizedDescription)
-            }
-            
-            _ = try wallet.sendTransaction(destination: bobPublicKey!, amount: MicroTari(1000), fee: MicroTari(101), message: "Oh hi bob")
-            let (pendingOutboundTransactions, pendingOutboundTransactionsError) = wallet.pendingOutboundTransactions
-            if pendingOutboundTransactionsError != nil {
-                XCTFail(pendingOutboundTransactionsError!.localizedDescription)
-            }
-            
-            let pendingOutboundTransaction = try pendingOutboundTransactions!.at(position: 0)
-            let (pendingOutboundTransactionId, pendingOutboundTransactionIdError) = pendingOutboundTransaction.id
-            if pendingOutboundTransactionIdError != nil {
-                XCTFail(pendingOutboundTransactionIdError!.localizedDescription)
-            }
-            
-            sendTransactionId = pendingOutboundTransactionId
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-
-        //MARK: Complete sent transaction to bob
-        do {
-            _ = try wallet.findPendingOutboundTransactionBy(id: sendTransactionId!)
-
-            do {
-                try wallet.testTransactionMined(txID: sendTransactionId!)
-            } catch {
-                XCTFail(error.localizedDescription)
-            }
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
+        receiveTestTransaction(wallet: wallet)
+        sendTransactionToBob(wallet: wallet)
 
         let (availableBalance, _) = wallet.availableBalance
         let (pendingIncomingBalance, _) = wallet.pendingIncomingBalance
@@ -429,12 +281,19 @@ class TariLibWrapperTests: XCTestCase {
         
         //MARK: Partial backup
         let backupFileName = "test_partial_backup"
+        let partialBackupPath = backupPath(newTestStoragePath)
         XCTAssertNoThrow(try wallet.partialBackup(partialBackupPath, filename: backupFileName))
-        XCTAssertTrue(fileManager.fileExists(atPath: "\(partialBackupPath)\(backupFileName)"))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: "\(partialBackupPath)\(backupFileName)"))
+    }
+    
+    func testBackupAndRestoreWallet() {
+        let wallet = createWallet(privateHex: nil)
+        receiveTestTransaction(wallet: wallet)
+        sendTransactionToBob(wallet: wallet)
         
-        sleep(10)
         TariLib.shared.walletPublicKeyHex = wallet.publicKey.0?.hex.0
-        createWalletBackup()
+        
+        XCTAssertNoThrow(try ICloudBackup.shared.createWalletBackup(password: nil))
         restoreWallet { backupWallet, error in
             if error != nil {
                 XCTFail("Failed to restore wallet backup \(error!.localizedDescription)")
@@ -489,14 +348,6 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertThrowsError(try MicroTari(decimalValue: 0.123456789))
     }
     
-    func createWalletBackup() {
-        do {
-            try ICloudBackup.shared.createWalletBackup(password: nil)
-        } catch {
-            XCTFail("Failed to create wallet backup \(error.localizedDescription)")
-        }
-    }
-    
     func restoreWallet(completion: @escaping ((_ wallet: Wallet?, _ error: Error?) -> Void)) {
         ICloudBackup.shared.restoreWallet(password: nil, completion: { error in
             if let loggingFilePath = try? self.loggingTestPath(ICloudBackup.shared.getTestDataBaseUrl().deletingLastPathComponent().path) {
@@ -536,5 +387,156 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertEqual(w1.cancelledTransactions.0?.count.0, w2.cancelledTransactions.0?.count.0)
         XCTAssertEqual(w1.pendingInboundTransactions.0?.count.0, w2.pendingInboundTransactions.0?.count.0)
         XCTAssertEqual(w1.pendingOutboundTransactions.0?.count.0, w2.pendingOutboundTransactions.0?.count.0)
+    }
+    
+    //MARK: Create new wallet
+    func createWallet(privateHex: String?) -> Wallet {
+        var wallet: Wallet?
+        
+        let fileManager = FileManager.default
+        let storagePath = newTestStoragePath
+        let databasePath = databaseTestPath(storagePath)
+        let partialBackupPath = backupPath(storagePath)
+        let loggingFilePath = loggingTestPath(storagePath)
+        
+        do {
+            try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
+            try fileManager.createDirectory(atPath: partialBackupPath, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+            XCTFail("Unable to create directory \(error.localizedDescription)")
+        }
+                
+        var commsConfig: CommsConfig?
+        do {
+            let transport = TransportType()
+            let address = transport.address.0
+            commsConfig = try CommsConfig(
+                transport: transport,
+                databasePath: databasePath,
+                databaseName: dbName,
+                publicAddress: address,
+                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
+            )
+            
+            if privateHex != nil {
+                let privateKey = try PrivateKey(hex: privateHex!)
+                try commsConfig?.setPrivateKey(privateKey)
+            }
+
+            TariLogger.verbose("TariLib Logging path: \(loggingFilePath)")
+        } catch {
+            XCTFail("Unable to create comms config \(error.localizedDescription)")
+        }
+        
+        do {
+            wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: loggingFilePath)
+        } catch {
+            XCTFail("Unable to create wallet \(error.localizedDescription)")
+        }
+        
+        XCTAssertNoThrow(try wallet!.generateTestData())
+        
+        return wallet!
+    }
+    
+    //MARK: Receive a test transaction
+    func receiveTestTransaction(wallet: Wallet) {
+        do {
+            try wallet.generateTestReceiveTransaction()
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+        
+        //MARK: Finalize and broadcast received test transaction
+        var txId: UInt64?
+        do {
+            let (pendingInboundTransactions, pendingInboundTransactionsError) = wallet.pendingInboundTransactions
+            if pendingInboundTransactionsError != nil {
+                XCTFail(pendingInboundTransactionsError!.localizedDescription)
+            }
+            
+            let (pendingInboundTransactionsCount, pendingInboundTransactionsCountError) = pendingInboundTransactions!.count
+            if pendingInboundTransactionsCountError != nil {
+                XCTFail(pendingInboundTransactionsCountError!.localizedDescription)
+            }
+            
+            var currTx = 0
+            txId = 0
+            var pendingInboundTransaction: PendingInboundTransaction? = nil
+            while (currTx < pendingInboundTransactionsCount) {
+                pendingInboundTransaction = try pendingInboundTransactions!.at(position: UInt32(currTx))
+                let (pendingInboundTransactionId, pendingInboundTransactionIdError) = pendingInboundTransaction!.id
+                if pendingInboundTransactionIdError != nil {
+                    XCTFail(pendingInboundTransactionIdError!.localizedDescription)
+                }
+                txId = pendingInboundTransactionId
+                let (pendingInboundTransactionStatus, _) = pendingInboundTransaction!.status
+                if pendingInboundTransactionStatus == TransactionStatus.pending
+                {
+                    break;
+                }
+                currTx += 1
+            }
+            
+            try wallet.testFinalizedReceivedTransaction(pendingInboundTransaction: pendingInboundTransaction!)
+            try wallet.testTransactionBroadcast(txID: txId!)
+            try wallet.testTransactionMined(txID: txId!)
+            let completedTx = try wallet.findCompletedTransactionBy(id: txId!)
+            let (status, statusError) = completedTx.status
+            if statusError != nil {
+                XCTFail(statusError!.localizedDescription)
+            }
+        
+            XCTAssertEqual(status, .mined)
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+    }
+    
+    //MARK: Send transaction to bob
+    func sendTransactionToBob(wallet: Wallet) {
+        var sendTransactionId: UInt64?
+        do {
+            let (contacts, contactsError) = wallet.contacts
+            if contactsError != nil {
+                XCTFail(contactsError!.localizedDescription)
+            }
+            
+            let bob = try contacts!.at(position: 0)
+            let (bobPublicKey, bobPublicKeyError) = bob.publicKey
+            if bobPublicKeyError != nil {
+                XCTFail(bobPublicKeyError!.localizedDescription)
+            }
+            
+            _ = try wallet.sendTransaction(destination: bobPublicKey!, amount: MicroTari(1000), fee: MicroTari(101), message: "Oh hi bob")
+            let (pendingOutboundTransactions, pendingOutboundTransactionsError) = wallet.pendingOutboundTransactions
+            if pendingOutboundTransactionsError != nil {
+                XCTFail(pendingOutboundTransactionsError!.localizedDescription)
+            }
+            
+            let pendingOutboundTransaction = try pendingOutboundTransactions!.at(position: 0)
+            let (pendingOutboundTransactionId, pendingOutboundTransactionIdError) = pendingOutboundTransaction.id
+            if pendingOutboundTransactionIdError != nil {
+                XCTFail(pendingOutboundTransactionIdError!.localizedDescription)
+            }
+            
+            sendTransactionId = pendingOutboundTransactionId
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
+        
+        //MARK: Complete sent transaction to bob
+        do {
+            _ = try wallet.findPendingOutboundTransactionBy(id: sendTransactionId!)
+
+            do {
+                try wallet.testTransactionMined(txID: sendTransactionId!)
+            } catch {
+                XCTFail(error.localizedDescription)
+            }
+        } catch {
+            XCTFail(error.localizedDescription)
+        }
     }
 }

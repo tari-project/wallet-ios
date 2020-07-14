@@ -110,10 +110,10 @@ class SettingsViewController: SettingsParentTableViewController {
         tableView.delegate = self
         tableView.dataSource = self
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
+
         checkClipboardForBaseNode()
     }
 
@@ -244,7 +244,7 @@ extension SettingsViewController {
         navigationBar.rightButton.setTitleColor(Theme.shared.colors.settingsDoneButtonTitle, for: .normal)
         navigationBar.rightButton.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
     }
-    
+
     fileprivate func checkClipboardForBaseNode() {
         let pasteboardString: String? = UIPasteboard.general.string
         guard let clipboardText = pasteboardString else { return }
