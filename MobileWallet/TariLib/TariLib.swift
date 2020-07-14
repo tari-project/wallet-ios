@@ -359,12 +359,12 @@ class TariLib {
 
     func waitIfWalletIsRestarting(completion: @escaping ((_ success: Bool?) -> Void)) {
         if !walletExists { completion(false); return }
-        if walletIsStopped == false { completion(true); return }
+        if tariWallet != nil { completion(true); return }
 
         var waitingTime = 0.0
         Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] (timer) in
             guard let self = self else { timer.invalidate(); return }
-            if self.walletIsStopped == false || waitingTime >= 5.0 {
+            if (self.tariWallet != nil && self.walletPublicKeyHex != nil) || waitingTime >= 5.0 {
                 completion(!self.walletIsStopped)
                 timer.invalidate()
             }
