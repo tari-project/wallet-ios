@@ -160,7 +160,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         return archiveURL
     }
 
-    private func onSendFeedback() {
+    func onSendFeedback() {
         if MFMailComposeViewController.canSendMail() {
             let mail = MFMailComposeViewController()
             mail.setSubject("Tari iOS bug report")

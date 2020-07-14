@@ -63,6 +63,7 @@ class SettingsViewController: SettingsParentTableViewController {
     private enum SettingsItemTitle: CaseIterable {
         case backUpWallet
 
+        case reportBug
         case visitTari
         case contributeToTariAurora
         case userAgreement
@@ -73,6 +74,7 @@ class SettingsViewController: SettingsParentTableViewController {
             switch self {
             case .backUpWallet: return NSLocalizedString("settings.item.backup_wallet", comment: "Settings view")
 
+            case .reportBug: return NSLocalizedString("settings.item.report_bug", comment: "Settings view")
             case .visitTari: return NSLocalizedString("settings.item.visit_tari", comment: "Settings view")
             case .contributeToTariAurora: return NSLocalizedString("settings.item.contribute_to_tari", comment: "Settings view")
             case .userAgreement: return NSLocalizedString("settings.item.user_agreement", comment: "Settings view")
@@ -86,6 +88,7 @@ class SettingsViewController: SettingsParentTableViewController {
     private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = [
+        SystemMenuTableViewCellItem(title: SettingsItemTitle.reportBug.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.visitTari.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.contributeToTariAurora.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.userAgreement.rawValue),
@@ -217,7 +220,12 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         guard let section = Section(rawValue: indexPath.section) else { return }
         switch section {
         case .security: onBackupWalletAction()
-        case .more: onLinkAction(indexPath: indexPath)
+        case .more:
+            if SettingsItemTitle.allCases[indexPath.row + indexPath.section] == .reportBug {
+                onSendFeedback()
+            } else {
+                onLinkAction(indexPath: indexPath)
+            }
         }
     }
 }
