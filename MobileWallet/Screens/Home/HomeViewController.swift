@@ -137,7 +137,6 @@ class HomeViewController: UIViewController {
             self.isShowingSendButton = self.isShowingSendButton == true
         })
 
-        checkClipboardForBaseNode()
         deepLinker.checkDeepLink()
 
         checkImportSecondUtxo()

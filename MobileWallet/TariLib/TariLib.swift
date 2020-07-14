@@ -115,7 +115,7 @@ class TariLib {
             if baseNodeConsecutiveFails > 5 {
                 do {
                     TariLogger.warn("Base node sync failed \(baseNodeConsecutiveFails) times. Setting another random peer.")
-                    try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
+                    try setBasenode(try BaseNode(TariSettings.shared.getRandomBaseNode())) //Override with random peer from default pool
                     baseNodeConsecutiveFails = 0
                 } catch {
                     TariLogger.error("Failed to add random base node peer")
@@ -146,6 +146,8 @@ class TariLib {
     //Used to determine whether or not to restart the wallet service when app moved to forground
     var walletIsStopped = false
 
+    static let currentBaseNodeUserDefaultsKey = "currentBaseNodeSet"
+
     private init() {}
 
     /*
@@ -164,6 +166,10 @@ class TariLib {
                     self.baseNodeConsecutiveFails = 0
                 } else {
                     self.baseNodeConsecutiveFails = self.baseNodeConsecutiveFails + 1
+
+                    TariLogger.error("Failing to sync with base node (\(ConnectionMonitor.shared.state.currentBaseNodeName))")
+
+                    try? self.tariWallet?.syncBaseNode()
                 }
             }
         }
@@ -263,7 +269,7 @@ class TariLib {
     }
 
     /// Starts an existing wallet service. Must only be called if wallet DB files already exist.
-    /// - Parameter isBackgroundTask: isBackgroundTask Renames the log file for debugging tasks that happened in the background
+    /// - Parameter container: container checks a lock file and renames the log file for debugging tasks that happened in the background
     /// - Throws: Can fail to generate a comms config, wallet creation and adding a basenode
     func startWalletService(container: AppContainer = .main) throws {
         if container == .main && AppContainerLock.shared.hasLock(.ext) {
@@ -286,16 +292,14 @@ class TariLib {
         Migrations.privateKeyKeychainToDB(config)
 
         tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
+        try setBasenode()
+        //try setBasenode(try BaseNode(TariSettings.shared.defaultBaseNodePool["t-tbn-seoul"]!))
 
         TariEventBus.postToMainThread(.walletServiceStarted)
 
         walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
 
         walletIsStopped = false
-
-        try tariWallet?.addBaseNodePeer(try BaseNode(TariSettings.shared.getRandomBaseNode()))
-
-        try? self.tariWallet?.syncBaseNode()
 
         TariLogger.fileLoggerCallback = { [weak self] (message) in
             self?.tariWallet?.logMessage(message)
@@ -306,6 +310,21 @@ class TariLib {
         baseNodeSyncCheck() //TODO remove when no longer needed
 
         backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
+    }
+
+    func setBasenode(_ overridePeer: BaseNode? = nil) throws {
+        var basenode: BaseNode!
+        if overridePeer != nil {
+            basenode = overridePeer!
+        } else if let currentBaseNodeString = TariSettings.shared.groupUserDefaults.string(forKey: TariLib.currentBaseNodeUserDefaultsKey) {
+            basenode = try BaseNode(currentBaseNodeString)
+        } else {
+            basenode = try BaseNode(TariSettings.shared.getRandomBaseNode())
+        }
+
+        try tariWallet?.addBaseNodePeer(basenode)
+        TariSettings.shared.groupUserDefaults.set(basenode.peer, forKey: TariLib.currentBaseNodeUserDefaultsKey)
+        try? tariWallet!.syncBaseNode()
     }
 
     func createNewWallet() throws {
@@ -359,12 +378,12 @@ class TariLib {
 
     func waitIfWalletIsRestarting(completion: @escaping ((_ success: Bool?) -> Void)) {
         if !walletExists { completion(false); return }
-        if walletIsStopped == false { completion(true); return }
+        if tariWallet != nil { completion(true); return }
 
         var waitingTime = 0.0
         Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] (timer) in
             guard let self = self else { timer.invalidate(); return }
-            if self.walletIsStopped == false || waitingTime >= 5.0 {
+            if (self.tariWallet != nil && self.walletPublicKeyHex != nil) || waitingTime >= 5.0 {
                 completion(!self.walletIsStopped)
                 timer.invalidate()
             }

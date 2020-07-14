@@ -63,6 +63,7 @@ class SettingsViewController: SettingsParentTableViewController {
     private enum SettingsItemTitle: CaseIterable {
         case backUpWallet
 
+        case reportBug
         case visitTari
         case contributeToTariAurora
         case userAgreement
@@ -73,6 +74,7 @@ class SettingsViewController: SettingsParentTableViewController {
             switch self {
             case .backUpWallet: return NSLocalizedString("settings.item.backup_wallet", comment: "Settings view")
 
+            case .reportBug: return NSLocalizedString("settings.item.report_bug", comment: "Settings view")
             case .visitTari: return NSLocalizedString("settings.item.visit_tari", comment: "Settings view")
             case .contributeToTariAurora: return NSLocalizedString("settings.item.contribute_to_tari", comment: "Settings view")
             case .userAgreement: return NSLocalizedString("settings.item.user_agreement", comment: "Settings view")
@@ -86,6 +88,7 @@ class SettingsViewController: SettingsParentTableViewController {
     private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = [
+        SystemMenuTableViewCellItem(title: SettingsItemTitle.reportBug.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.visitTari.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.contributeToTariAurora.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.userAgreement.rawValue),
@@ -106,6 +109,12 @@ class SettingsViewController: SettingsParentTableViewController {
         backUpWalletItem = backupItem
         tableView.delegate = self
         tableView.dataSource = self
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        checkClipboardForBaseNode()
     }
 
     func onBackupWalletAction() {
@@ -211,7 +220,12 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         guard let section = Section(rawValue: indexPath.section) else { return }
         switch section {
         case .security: onBackupWalletAction()
-        case .more: onLinkAction(indexPath: indexPath)
+        case .more:
+            if SettingsItemTitle.allCases[indexPath.row + indexPath.section] == .reportBug {
+                onSendFeedback()
+            } else {
+                onLinkAction(indexPath: indexPath)
+            }
         }
     }
 }
@@ -229,5 +243,44 @@ extension SettingsViewController {
         navigationBar.rightButton.setTitle(title, for: .normal)
         navigationBar.rightButton.setTitleColor(Theme.shared.colors.settingsDoneButtonTitle, for: .normal)
         navigationBar.rightButton.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
+    }
+    
+    fileprivate func checkClipboardForBaseNode() {
+        let pasteboardString: String? = UIPasteboard.general.string
+        guard let clipboardText = pasteboardString else { return }
+
+        do {
+            let baseNode = try BaseNode(clipboardText)
+
+            UserFeedback.shared.callToAction(
+                title: NSLocalizedString("Set custom base node", comment: "Custom base node in clipboard call to action"),
+                description: String(
+                    format: NSLocalizedString(
+                        "We found a base node peer in your clipboard, would you like to use this instead of the default?\n\n%@",
+                        comment: "Custom base node in clipboard call to action"
+                    ),
+                    clipboardText
+                ),
+                actionTitle: NSLocalizedString("Set", comment: "Custom base node in clipboard call to action"),
+                cancelTitle: NSLocalizedString("Keep default", comment: "Custom base node in clipboard call to action"),
+                onAction: {
+                    do {
+                        try TariLib.shared.setBasenode(baseNode)
+                        UIPasteboard.general.string = ""
+                    } catch {
+                        UserFeedback.shared.error(
+                            title: NSLocalizedString("Base node error", comment: "Add base node peer error"),
+                            description: NSLocalizedString("Failed to set custom base node from clipboard", comment: "Custom base node in clipboard call to action"),
+                            error: error
+                        )
+                    }
+                },
+                onCancel: {
+                    UIPasteboard.general.string = ""
+                }
+            )
+        } catch {
+            //No valid peer string found in clipboard
+        }
     }
 }
