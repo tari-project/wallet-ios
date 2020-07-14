@@ -45,8 +45,8 @@ enum MicroTariErrors: Error {
 }
 
 struct MicroTari {
-    private static let CONVERSION = 1000000
-    static let PRECISE_FRACTION_DIGITS = String(MicroTari.CONVERSION).count
+    private static let conversion = 1000000
+    static let PRECISE_FRACTION_DIGITS = String(MicroTari.conversion).count
     public static let ROUNDED_FRACTION_DIGITS = 2
 
     private static let defaultFormatter: NumberFormatter = {
@@ -107,7 +107,7 @@ struct MicroTari {
     var rawValue: UInt64
 
     var taris: Float {
-        return Float(self.rawValue) / Float(MicroTari.CONVERSION)
+        return Float(self.rawValue) / Float(MicroTari.conversion)
     }
 
     var formatted: String {
@@ -143,11 +143,15 @@ struct MicroTari {
             throw MicroTariErrors.invalidStringFormat
         }
 
-        self.rawValue = UInt64(tariNumber.floatValue * Float(MicroTari.CONVERSION))
+        self.rawValue = UInt64(tariNumber.floatValue * Float(MicroTari.conversion))
+    }
+
+    init(tariValue: UInt) {
+        self.rawValue = UInt64(tariValue * UInt(MicroTari.conversion))
     }
 
     init(decimalValue: Double) throws {
-        guard let rawVal = UInt64(exactly: decimalValue * Double(MicroTari.CONVERSION)) else {
+        guard let rawVal = UInt64(exactly: decimalValue * Double(MicroTari.conversion)) else {
             throw MicroTariErrors.invalidStringFormat //TODO
         }
 
@@ -155,7 +159,7 @@ struct MicroTari {
     }
 
     public static func toTariNumber(_ number: NSNumber) -> UInt64 {
-        return number.uint64Value * UInt64(CONVERSION)
+        return number.uint64Value * UInt64(conversion)
     }
 }
 
@@ -170,7 +174,7 @@ extension MicroTari {
     }
 
     public static func checkValue(_ value: NSNumber) -> Bool {
-        guard let _ = UInt64(exactly: value.floatValue * Float(MicroTari.CONVERSION)) else {
+        guard let _ = UInt64(exactly: value.floatValue * Float(MicroTari.conversion)) else {
             return false
         }
         return true

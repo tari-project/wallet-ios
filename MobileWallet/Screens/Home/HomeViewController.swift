@@ -142,6 +142,7 @@ class HomeViewController: UIViewController {
 
         checkImportSecondUtxo()
         bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
+        checkBackupPrompt(delay: 3)
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -281,6 +282,8 @@ class HomeViewController: UIViewController {
         )
 
         balanceValueLabel.attributedText = balanceLabelAttributedText
+
+        checkBackupPrompt(delay: 2)
     }
 
     private func grabberRect(width: Double) -> CGRect {

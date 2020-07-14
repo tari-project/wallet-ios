@@ -97,7 +97,6 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     private func onChangePasswordAction() {
         if iCloudBackup.lastBackup?.isEncrypted == true {
             navigationController?.pushViewController(PasswordVerificationViewController(variation: .change), animated: true)
-
         } else {
             navigationController?.pushViewController(SecureBackupViewController(), animated: true)
         }

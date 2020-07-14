@@ -116,12 +116,19 @@ class UserFeedback {
         TariLogger.verbose("User success feedback: title=\(title)")
     }
 
-    func callToAction(title: String, description: String, actionTitle: String, cancelTitle: String, onAction: @escaping () -> Void, onCancel: (() -> Void)? = nil) {
+    func callToAction(title: String, boldedTitle: String? = nil, description: String, actionTitle: String, cancelTitle: String, onAction: @escaping () -> Void, onCancel: (() -> Void)? = nil) {
         let ctaFeedbackView = FeedbackView()
-        ctaFeedbackView.setupCallToAction(title: title, description: description, cancelTitle: cancelTitle, actionTitle: actionTitle, onClose: {
-            SwiftEntryKit.dismiss()
-            onCancel?()
-        }, onAction: onAction)
+        ctaFeedbackView.setupCallToAction(
+            title: title,
+            boldedTitle: boldedTitle,
+            description: description,
+            cancelTitle: cancelTitle,
+            actionTitle: actionTitle,
+            onClose: {
+                SwiftEntryKit.dismiss()
+                onCancel?()
+            }, onAction: onAction
+        )
 
         var attributes = defaultAttributes
         attributes.displayDuration = .infinity

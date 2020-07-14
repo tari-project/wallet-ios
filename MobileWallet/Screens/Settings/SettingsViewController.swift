@@ -108,7 +108,7 @@ class SettingsViewController: SettingsParentTableViewController {
         tableView.dataSource = self
     }
 
-    private func onBackupWalletAction() {
+    func onBackupWalletAction() {
         let localAuth = LAContext()
         localAuth.authenticateUser(reason: .userVerification) { [weak self] in
             self?.navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)
