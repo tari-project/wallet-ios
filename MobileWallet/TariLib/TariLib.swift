@@ -232,6 +232,8 @@ class TariLib {
                     case .success(let urlSessionConfiguration):
                         TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(100))
                         TariEventBus.postToMainThread(.torConnected, sender: urlSessionConfiguration)
+
+                        try? self.tariWallet?.syncBaseNode()
                     case .failure(let error):
                         TariLogger.error("Tor connection failed to complete", error: error)
                         TariEventBus.postToMainThread(.torConnectionFailed, sender: error)
@@ -292,7 +294,7 @@ class TariLib {
         Migrations.privateKeyKeychainToDB(config)
 
         tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
-        try setBasenode()
+        try setBasenode(syncAfterSetting: false)
         //try setBasenode(try BaseNode(TariSettings.shared.defaultBaseNodePool["t-tbn-seoul"]!))
 
         TariEventBus.postToMainThread(.walletServiceStarted)
@@ -312,7 +314,7 @@ class TariLib {
         backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
     }
 
-    func setBasenode(_ overridePeer: BaseNode? = nil) throws {
+    func setBasenode(syncAfterSetting: Bool = true, _ overridePeer: BaseNode? = nil) throws {
         var basenode: BaseNode!
         if overridePeer != nil {
             basenode = overridePeer!
@@ -324,7 +326,10 @@ class TariLib {
 
         try tariWallet?.addBaseNodePeer(basenode)
         TariSettings.shared.groupUserDefaults.set(basenode.peer, forKey: TariLib.currentBaseNodeUserDefaultsKey)
-        try? tariWallet!.syncBaseNode()
+
+        if syncAfterSetting {
+            try? tariWallet?.syncBaseNode()
+        }
     }
 
     func createNewWallet() throws {
