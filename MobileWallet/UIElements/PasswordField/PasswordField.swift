@@ -46,6 +46,8 @@ protocol PasswordFieldDelegate: class {
 
 class PasswordField: UIView, UITextFieldDelegate {
 
+    private let minPasswordLength = 16
+
     var password: String? {
         return self.textField.text
     }
@@ -56,15 +58,15 @@ class PasswordField: UIView, UITextFieldDelegate {
         }
     }
 
-    var warning: String? {
-        didSet {
-            warningLabel.text = warning
-        }
-    }
-
     var title: String? {
         didSet {
             titleLabel.text = title
+        }
+    }
+
+    var isWarning: Bool {
+        get {
+            return !warningLabel.isHidden
         }
     }
 
@@ -76,20 +78,30 @@ class PasswordField: UIView, UITextFieldDelegate {
 
     enum PasswordFieldState {
         case normal
-        case warning
+        case passwordDoNotMatch
+        case passwordShortLength(leftCharacters: Int)
+        case wrongPassword
     }
 
     private(set) var state: PasswordFieldState = .normal {
         didSet {
-            warningLabel.isHidden = state != .warning
             switch state {
             case .normal:
                 titleLabel.textColor = .black
                 textField.textColor = .black
-            case .warning:
-                titleLabel.textColor = Theme.shared.colors.settingsPasswordWarning
-                textField.textColor = Theme.shared.colors.settingsPasswordWarning
+                warningLabel.isHidden = true
+                return
+            case .passwordShortLength(let characters):
+                warningLabel.text = String(format: NSLocalizedString("password_verification.warning.short_password.with_param", comment: "PasswordVerification view"), String(characters))
+            case .passwordDoNotMatch:
+                warningLabel.text = NSLocalizedString("password_verification.warning.password_do_not_match", comment: "PasswordVerification view")
+            case .wrongPassword:
+                warningLabel.text = NSLocalizedString("password_verification.warning.wrong_password", comment: "PasswordVerification view")
             }
+
+            warningLabel.isHidden = false
+            titleLabel.textColor = Theme.shared.colors.settingsPasswordWarning
+            textField.textColor = Theme.shared.colors.settingsPasswordWarning
         }
     }
 
@@ -111,19 +123,27 @@ class PasswordField: UIView, UITextFieldDelegate {
 
     func didFinishEditingPassword() {
         guard let paredPassword = self.paredPasswordField?.password else { return }
-        _ = comparePassword(paredPassword)
+        _ = checkPassword(paredPassword)
     }
 
-    func comparePassword(_ password: String) -> Bool {
+    func checkPassword(_ password: String) -> Bool {
         guard let fieldPassword = self.password
         else { return false }
-        if password != fieldPassword && !fieldPassword.isEmpty && isConfirmationField {
-            state = .warning
-            return false
-        } else {
-            state = .normal
-            return true
+        if !fieldPassword.isEmpty {
+            if fieldPassword.count < minPasswordLength && !isConfirmationField {
+                state = .passwordShortLength(leftCharacters: minPasswordLength - fieldPassword.count)
+                return false
+            } else if password != fieldPassword && isConfirmationField {
+                if paredPasswordField != nil {
+                    state = .passwordDoNotMatch
+                } else {
+                    state = .wrongPassword
+                }
+                return false
+            }
         }
+        state = .normal
+        return true
     }
 
     private func setupSubviews() {
@@ -194,7 +214,9 @@ class PasswordField: UIView, UITextFieldDelegate {
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
         didStartEditingPassword()
-        paredPasswordField?.didStartEditingPassword()
+        if !isConfirmationField {
+            paredPasswordField?.didStartEditingPassword()
+        }
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {

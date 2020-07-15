@@ -162,7 +162,6 @@ extension SecureBackupViewController {
 
     private func setupConfirmPasswordField() {
         confirmPasswordField.delegate = self
-        confirmPasswordField.warning = NSLocalizedString("secure_backup.password_field_warning", comment: "SecureBackup view")
         confirmPasswordField.title = NSLocalizedString("secure_backup.confirm_password_field.title", comment: "SecureBackup view")
         confirmPasswordField.placeholder = NSLocalizedString("secure_backup.confirm_password_field.placeholder", comment: "SecureBackup view")
         confirmPasswordField.isConfirmationField = true
@@ -241,6 +240,10 @@ extension SecureBackupViewController {
 extension SecureBackupViewController: PasswordFieldDelegate {
     func passwordFieldDidChange(_ passwordField: PasswordField) {
         guard let password = passwordField.password else { return }
+        if confirmPasswordField.isWarning || enterPasswordField.isWarning {
+            continueButton.variation = .disabled
+            return
+        }
         continueButton.variation = (confirmPasswordField.password == enterPasswordField.password && !password.isEmpty) ? .normal : .disabled
     }
 }
