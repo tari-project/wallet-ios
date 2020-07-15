@@ -179,7 +179,10 @@ class TransactionsTableViewController: UITableViewController {
 
         do {
             if let wallet = TariLib.shared.tariWallet {
-                try wallet.syncBaseNode()
+                //If we sync before tor is connected it will fail. A base node sync is triggered when tor does connect.
+                if TariLib.shared.isTorConnected {
+                    try wallet.syncBaseNode()
+                }
             }
         } catch {
             UserFeedback.shared.error(
