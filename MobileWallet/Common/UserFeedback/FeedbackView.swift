@@ -47,9 +47,9 @@ struct UserFeedbackFormInput {
 }
 
 class FeedbackView: UIView {
-    private let SIDE_PADDING: CGFloat = 30
-    private let ELEMENT_PADDING: CGFloat = 20
-    private let CORNER_RADIUS: CGFloat = 26
+    private let sidePadding: CGFloat = 30
+    private let elementPadding: CGFloat = 20
+    private let cornerRadius: CGFloat = 26
 
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
@@ -74,7 +74,7 @@ class FeedbackView: UIView {
     //common func to init our view
     private func setupView() {
         backgroundColor = Theme.shared.colors.appBackground
-        layer.cornerRadius = CORNER_RADIUS
+        layer.cornerRadius = cornerRadius
         heightAnchor.constraint(greaterThanOrEqualToConstant: 40).isActive = true
     }
 
@@ -86,8 +86,8 @@ class FeedbackView: UIView {
         titleLabel.numberOfLines = 0
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: sidePadding).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -sidePadding).isActive = true
     }
 
     private func setupDescription() {
@@ -98,8 +98,8 @@ class FeedbackView: UIView {
         descriptionLabel.numberOfLines = 0
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true
-        descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: sidePadding).isActive = true
+        descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -sidePadding).isActive = true
         descriptionLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: descriptionLabel.font.pointSize * 1.15).isActive = true
     }
 
@@ -171,19 +171,19 @@ class FeedbackView: UIView {
     func setupError(title: String, description: String) {
         setupTitle()
         titleLabel.text = title
-        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: SIDE_PADDING).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: sidePadding).isActive = true
 
         setupDescription()
         setDescription(description)
-        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
-        descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: elementPadding).isActive = true
+        descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -sidePadding).isActive = true
     }
 
     func setupError(title: String, description: String, onClose: @escaping (() -> Void)) {
         setupError(title: title, description: description)
         setupCloseButton()
-        closeButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
-        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+        closeButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: elementPadding).isActive = true
+        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -sidePadding).isActive = true
 
         onCloseHandler = onClose
     }
@@ -191,15 +191,15 @@ class FeedbackView: UIView {
     func setupInfo(title: String, description: String, onClose: @escaping () -> Void) {
         setupTitle()
         titleLabel.text = title
-        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: SIDE_PADDING).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: sidePadding).isActive = true
 
         setupDescription()
         setDescription(description)
-        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: elementPadding).isActive = true
 
         setupCloseButton()
-        closeButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
-        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+        closeButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: elementPadding).isActive = true
+        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -sidePadding).isActive = true
 
         onCloseHandler = onClose
     }
@@ -216,29 +216,49 @@ class FeedbackView: UIView {
 
     func setupCallToAction(
         title: String,
+        boldedTitle: String? = nil,
         description: String,
         cancelTitle: String,
         actionTitle: String,
         onClose: @escaping () -> Void,
         onAction: @escaping () -> Void) {
         setupTitle()
+
         titleLabel.text = title
-        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: SIDE_PADDING).isActive = true
+
+        if let boldText = boldedTitle {
+            if let startIndex = title.indexDistance(of: boldText) {
+                let attributedTitle = NSMutableAttributedString(
+                    string: title,
+                    attributes: [
+                        .font: Theme.shared.fonts.feedbackPopupTitle,
+                        .foregroundColor: Theme.shared.colors.feedbackPopupTitle!
+                    ]
+                )
+
+                let range = NSRange(location: startIndex, length: boldText.count)
+                attributedTitle.addAttribute(.font, value: Theme.shared.fonts.feedbackPopupHeavy, range: range)
+
+                titleLabel.attributedText = attributedTitle
+            }
+        }
+
+        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: sidePadding).isActive = true
 
         setupDescription()
         setDescription(description)
-        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: elementPadding).isActive = true
 
         setupCallToActionButton(#selector(onCallToActionButtonPressed))
         onCallToActionHandler = onAction
-        callToActionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        callToActionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: elementPadding).isActive = true
         callToActionButton.setTitle(actionTitle, for: .normal)
 
         setupCloseButton()
         onCloseHandler = onClose
         closeButton.setTitle(cancelTitle, for: .normal)
-        closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
-        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+        closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: elementPadding).isActive = true
+        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -sidePadding).isActive = true
     }
 
     func setupCallToActionDetailed(
@@ -280,15 +300,15 @@ class FeedbackView: UIView {
         }
 
         titleLabel.attributedText = attributedTitle
-        titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: elementPadding).isActive = true
 
         setupDescription()
         setDescription(description)
-        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+        descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: elementPadding).isActive = true
 
         setupCallToActionButton(#selector(onCallToActionButtonPressed))
         onCallToActionHandler = onAction
-        callToActionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: SIDE_PADDING).isActive = true
+        callToActionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: sidePadding).isActive = true
         callToActionButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 200).isActive = true
         callToActionButton.setTitle(actionTitle, for: .normal)
         callToActionButton.setImage(actionIcon, for: .normal)
@@ -296,16 +316,16 @@ class FeedbackView: UIView {
         setupCloseButton()
         onCloseHandler = onClose
         closeButton.setTitle(cancelTitle, for: .normal)
-        closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
-        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+        closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: elementPadding).isActive = true
+        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -sidePadding).isActive = true
     }
 
     private func setupInputField(_ inputField: UITextField) {
         inputField.translatesAutoresizingMaskIntoConstraints = false
         addSubview(inputField)
 
-        inputField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true
-        inputField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        inputField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: sidePadding).isActive = true
+        inputField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -sidePadding).isActive = true
         inputField.heightAnchor.constraint(equalToConstant: 40).isActive = true
 
         inputField.borderStyle = .roundedRect
@@ -320,7 +340,7 @@ class FeedbackView: UIView {
         onSubmit: @escaping ([String: String]) -> Void) {
         setupTitle()
         titleLabel.text = title
-        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: SIDE_PADDING).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: sidePadding).isActive = true
 
         setupCallToActionButton(#selector(onSubmitActionButtonPressed))
         onSubmitActionHandler = onSubmit
@@ -337,27 +357,27 @@ class FeedbackView: UIView {
             inputField.placeholder = input.placeholder
 
             if let previousInput = lastInput {
-                inputField.topAnchor.constraint(equalTo: previousInput.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+                inputField.topAnchor.constraint(equalTo: previousInput.bottomAnchor, constant: elementPadding).isActive = true
             } else {
                 //This is the first input
                 inputField.becomeFirstResponder()
-                inputField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+                inputField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: elementPadding).isActive = true
             }
 
             lastInput = inputField
         }
 
         if let bottomInput = lastInput {
-            callToActionButton.topAnchor.constraint(equalTo: bottomInput.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+            callToActionButton.topAnchor.constraint(equalTo: bottomInput.bottomAnchor, constant: elementPadding).isActive = true
         } else {
-            callToActionButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
+            callToActionButton.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: elementPadding).isActive = true
         }
         callToActionButton.setTitle(actionTitle, for: .normal)
 
         setupCloseButton()
         onCloseHandler = onClose
         closeButton.setTitle(cancelTitle, for: .normal)
-        closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: ELEMENT_PADDING).isActive = true
-        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -SIDE_PADDING).isActive = true
+        closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: elementPadding).isActive = true
+        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -sidePadding).isActive = true
     }
 }

@@ -117,7 +117,7 @@ class SettingsViewController: SettingsParentTableViewController {
         checkClipboardForBaseNode()
     }
 
-    private func onBackupWalletAction() {
+    func onBackupWalletAction() {
         let localAuth = LAContext()
         localAuth.authenticateUser(reason: .userVerification) { [weak self] in
             self?.navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)

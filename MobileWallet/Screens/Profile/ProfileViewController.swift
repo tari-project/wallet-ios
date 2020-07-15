@@ -48,6 +48,7 @@ class ProfileViewController: UIViewController {
     let qrContainer = UIView()
     let qrImageView = UIImageView()
     let navigationBar = NavigationBar()
+    var goStraightToBackup = false
     private var emojis: String?
 
     // MARK: - Override functions
@@ -78,9 +79,14 @@ class ProfileViewController: UIViewController {
         navigationBar.backgroundColor =  Theme.shared.colors.profileBackground
 
         navigationBar.rightButtonAction = { [weak self] in
-            let navigationController = AlwaysPoppableNavigationController(rootViewController: SettingsViewController())
+            let settingsVC = SettingsViewController()
+            let navigationController = AlwaysPoppableNavigationController(rootViewController: settingsVC)
             navigationController.styleNavigatorBar(isHidden: true)
-            self?.present(navigationController, animated: true, completion: nil)
+            self?.present(navigationController, animated: true, completion: { [weak self] in
+                if self?.goStraightToBackup == true {
+                    settingsVC.onBackupWalletAction()
+                }
+            })
         }
 
         navigationBar.rightButton.setImage(Theme.shared.images.settings, for: .normal)
