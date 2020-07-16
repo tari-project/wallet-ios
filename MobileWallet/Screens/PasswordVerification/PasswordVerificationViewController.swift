@@ -78,7 +78,7 @@ class PasswordVerificationViewController: SettingsParentViewController {
 
     private func changePasswordAction() {
         if let currentPassword = BPKeychainWrapper.loadBackupPasswordFromKeychain() {
-            if passwordField.comparePassword(currentPassword) {
+            if passwordField.checkPassword(currentPassword) {
                 navigationController?.pushViewController(SecureBackupViewController(), animated: true)
             }
         }
@@ -149,7 +149,6 @@ extension PasswordVerificationViewController {
     private func setupPasswordField() {
         passwordField.delegate = self
         passwordField.isConfirmationField = true
-        passwordField.warning = NSLocalizedString("password_verification.password_field_warning", comment: "PasswordVerification view")
         passwordField.title = NSLocalizedString("password_verification.password_field.title", comment: "PasswordVerification view")
         passwordField.placeholder = NSLocalizedString("password_verification.password_field.placeholder", comment: "PasswordVerification view")
 
