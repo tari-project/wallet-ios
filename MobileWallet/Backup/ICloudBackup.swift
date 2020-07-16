@@ -201,7 +201,7 @@ class ICloudBackup: NSObject {
             if let password = password {
                 fileURL = try getZippedAndEncryptedWalletDatabase(password: password)
             } else {
-                fileURL = try zipWalletDatabase()
+                fileURL = try zipWalletDatabase(encrypted: false)
             }
 
             if TariSettings.shared.isUnitTesting {
@@ -542,7 +542,7 @@ extension ICloudBackup {
         throw ICloudBackupError.noICloudBackupExists
     }
 
-    private func zipWalletDatabase() throws -> URL {
+    private func zipWalletDatabase(encrypted: Bool) throws -> URL {
         let archiveName = fileName + ".zip"
 
         let tmpDirectory = try getTempDirectory()
@@ -554,13 +554,24 @@ extension ICloudBackup {
 
         let sqlite3File = TariLib.databaseName.appending(".sqlite3")
 
-        let dbDirectory = TariSettings.shared.isUnitTesting ? try getTestDataBaseUrl() : directory.appendingPathComponent(sqlite3File)
+        let originalFileURL = directory.appendingPathComponent(sqlite3File)
+
+        var dbDirectory: URL
+        if TariSettings.shared.isUnitTesting {
+            dbDirectory = try getTestDataBaseUrl()
+        } else if encrypted {
+            dbDirectory = originalFileURL
+        } else {
+            try WalletBackups.partialBackup(orginalFilePath: originalFileURL.path, backupFilePathWithFilename: tmpDirectory.appendingPathComponent(sqlite3File).path)
+            dbDirectory = tmpDirectory.appendingPathComponent(sqlite3File)
+        }
+
         try FileManager().zipItem(at: dbDirectory, to: archiveURL, compressionMethod: .deflate)
         return archiveURL
     }
 
     private func getZippedAndEncryptedWalletDatabase(password: String) throws -> URL {
-        let zipURL = try zipWalletDatabase()
+        let zipURL = try zipWalletDatabase(encrypted: true)
         let data = try Data(contentsOf: zipURL)
 
         let aes = try AESEncryption(keyString: password)
