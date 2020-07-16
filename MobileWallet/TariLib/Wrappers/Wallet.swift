@@ -597,19 +597,6 @@ class Wallet {
         return result
     }
 
-    func partialBackup(_ filePath: String, filename: String = "partial_backup.sqlite3") throws {
-        var errorCode: Int32 = -1
-        withUnsafeMutablePointer(to: &errorCode, { error in
-            "\(filePath)\(filename)".withCString({ cstr in
-                wallet_partial_backup(ptr, cstr, error)
-            })
-        })
-
-        guard errorCode == 0 else {
-            throw WalletErrors.generic(errorCode)
-        }
-    }
-
     deinit {
         TariLogger.warn("Wallet destroy")
         wallet_destroy(ptr)
