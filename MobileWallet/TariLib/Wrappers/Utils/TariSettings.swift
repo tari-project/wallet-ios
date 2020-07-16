@@ -127,6 +127,14 @@ struct TariSettings {
         return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
+    let testStoragePath: String  = {
+        let folderPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("test_tari_wallet").appendingPathComponent("test_\(UUID().uuidString)").path
+        if FileManager.default.fileExists(atPath: folderPath) {
+            try? FileManager.default.removeItem(atPath: folderPath)
+        }
+        return folderPath
+    }()
+
     var environment: AppEnvironment {
         if isDebug {
             return .debug

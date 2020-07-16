@@ -43,18 +43,8 @@ import XCTest
 class TariLibWrapperTests: XCTestCase {
     //Use a random DB path for each test
     private let dbName = "test_db.sqlite3"
-    private let testFolderName = "test_tari_wallet"
     private let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
     private let testWalletPublicKey = "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40"
-
-        
-    private lazy var newTestStoragePath: String  = {
-        let folderPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("test_\(UUID().uuidString)").path
-        if FileManager.default.fileExists(atPath: folderPath) {
-            try? FileManager.default.removeItem(atPath: folderPath)
-        }
-        return folderPath
-    }()
     
     private func databaseTestPath(_ storagePath: String) -> String {
         return "\(storagePath)/\(dbName)"
@@ -281,31 +271,31 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     func testBackupAndRestoreWallet() {
-//        let (wallet, _) = createWallet(privateHex: nil)
-//        receiveTestTransaction(wallet: wallet)
-//        sendTransactionToBob(wallet: wallet)
-//
-//        TariLib.shared.walletPublicKeyHex = wallet.publicKey.0?.hex.0
-//
-//        XCTAssertNoThrow(try ICloudBackup.shared.createWalletBackup(password: nil))
-//        restoreWallet { backupWallet, error in
-//            if error != nil {
-//                XCTFail("Failed to restore wallet backup \(error!.localizedDescription)")
-//            } else {
-//                if backupWallet != nil {
-//                    self.compareWallets(w1: wallet, w2: backupWallet!)
-//                } else {
-//                    XCTFail("Failed to restore wallet backup")
-//                }
-//            }
-//        }
+        let (wallet, _) = createWallet(privateHex: nil)
+        receiveTestTransaction(wallet: wallet)
+        sendTransactionToBob(wallet: wallet)
+
+        TariLib.shared.walletPublicKeyHex = wallet.publicKey.0?.hex.0
+
+        XCTAssertNoThrow(try ICloudBackup.shared.createWalletBackup(password: nil))
+        restoreWallet { backupWallet, error in
+            if error != nil {
+                XCTFail("Failed to restore wallet backup \(error!.localizedDescription)")
+            } else {
+                if backupWallet != nil {
+                    self.compareWallets(w1: wallet, w2: backupWallet!)
+                } else {
+                    XCTFail("Failed to restore wallet backup")
+                }
+            }
+        }
     }
     
     func testPartialBackups() {
 //        let (_, orginalFilePath) = createWallet(privateHex: nil)
 //        //MARK: Partial backup
 //        let backupFileName = "test_partial_backup"
-//        let partialBackupPath = backupPath(newTestStoragePath)
+//        let partialBackupPath = backupPath(TariSettings.shared.testStoragePath)
 //        
 //        XCTAssertNoThrow(try WalletBackups.partialBackup(orginalFilePath: orginalFilePath, backupFilePathWithFilename: "\(orginalFilePath)/test"))
 //        XCTAssertTrue(FileManager.default.fileExists(atPath: "\(partialBackupPath)\(backupFileName)"))
@@ -398,7 +388,7 @@ class TariLibWrapperTests: XCTestCase {
         var wallet: Wallet?
         
         let fileManager = FileManager.default
-        let storagePath = newTestStoragePath
+        let storagePath = TariSettings.shared.testStoragePath
         let databasePath = databaseTestPath(storagePath)
         let partialBackupPath = backupPath(storagePath)
         let loggingFilePath = loggingTestPath(storagePath)
