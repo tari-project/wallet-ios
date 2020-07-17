@@ -203,6 +203,15 @@ class ProfileViewController: UIViewController {
     }
 
     private func generateQRCode() {
+        guard let _ = TariLib.shared.tariWallet else {
+            TariLib.shared.waitIfWalletIsRestarting { [weak self] (success) in
+                if success == true {
+                    self?.generateQRCode()
+                }
+            }
+            return
+        }
+
         do {
             try genQRCode()
         } catch {

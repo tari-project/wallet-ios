@@ -219,10 +219,11 @@ class TransactionsTableViewController: UITableViewController {
 
     private func refreshTable() {
         guard let wallet = TariLib.shared.tariWallet else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("wallet.error.failed_to_access", comment: "Wallet error"),
-                description: ""
-            )
+            TariLib.shared.waitIfWalletIsRestarting { [weak self] (success) in
+                if success == true {
+                    self?.refreshTable()
+                }
+            }
             return
         }
 
