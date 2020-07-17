@@ -622,9 +622,7 @@ extension ICloudBackup {
 // MARK: Tests
 extension ICloudBackup {
     func getTestDataBaseUrl() throws -> URL {
-        guard let testDB = FileManager.default.documentDirectory()?.appendingPathComponent("test_tari_wallet").appendingPathComponent("test_db.sqlite3") else {
-            throw ICloudBackupError.dbFileNotFound
-        }
-        return testDB
+        let dbURL = URL(fileURLWithPath: TariSettings.shared.testStoragePath).appendingPathComponent("test_db.sqlite3")
+        return dbURL
     }
 }
