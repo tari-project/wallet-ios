@@ -53,7 +53,7 @@ class AppContainerLock {
     private init() {}
 
     func hasLock(_ container: AppContainer) -> Bool {
-        let filePath = TariSettings.shared.storageDirectory.appendingPathComponent("\(container.rawValue).lock").path
+        let filePath = TariSettings.storageDirectory.appendingPathComponent("\(container.rawValue).lock").path
 
         let fileExists = FileManager.default.fileExists(atPath: filePath)
 
@@ -87,7 +87,7 @@ class AppContainerLock {
     }
 
     func setLock(_ container: AppContainer) {
-        let file = TariSettings.shared.storageDirectory.appendingPathComponent("\(container.rawValue).lock")
+        let file = TariSettings.storageDirectory.appendingPathComponent("\(container.rawValue).lock")
         try? "".write(to: file, atomically: false, encoding: String.Encoding.utf8)
     }
 
@@ -97,7 +97,7 @@ class AppContainerLock {
         }
 
         do {
-            try FileManager.default.removeItem(at: TariSettings.shared.storageDirectory.appendingPathComponent("\(container.rawValue).lock"))
+            try FileManager.default.removeItem(at: TariSettings.storageDirectory.appendingPathComponent("\(container.rawValue).lock"))
         } catch {
             TariLogger.error("Failed to delete lock", error: error)
         }

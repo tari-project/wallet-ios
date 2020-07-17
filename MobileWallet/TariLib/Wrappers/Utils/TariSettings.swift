@@ -127,8 +127,11 @@ struct TariSettings {
         return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
-    let testStoragePath: String  = {
-        let folderPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("test_tari_wallet").appendingPathComponent("test_\(UUID().uuidString)").path
+    static let groupIndentifier = "group.com.tari.wallet"
+    static let groupUserDefaults: UserDefaults = UserDefaults(suiteName: groupIndentifier)!
+    static let storageDirectory: URL = FileManager.default.containerURL( forSecurityApplicationGroupIdentifier: groupIndentifier)!
+    static let testStoragePath: String = {
+        let folderPath = storageDirectory.appendingPathComponent("test_tari_wallet").path
         if FileManager.default.fileExists(atPath: folderPath) {
             try? FileManager.default.removeItem(atPath: folderPath)
         }
@@ -143,18 +146,6 @@ struct TariSettings {
         }
 
         return .production
-    }
-
-    let groupIndentifier = "group.com.tari.wallet"
-
-    var groupUserDefaults: UserDefaults {
-         UserDefaults(suiteName: groupIndentifier)!
-    }
-
-    var storageDirectory: URL {
-        return FileManager.default.containerURL(
-          forSecurityApplicationGroupIdentifier: groupIndentifier
-        )! //Force unwrapping here because it should never run unless it can access this dir
     }
 
     private init() {

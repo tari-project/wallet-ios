@@ -80,7 +80,7 @@ class Migrations {
             return TariLogger.warn("Old tor cache directory not found")
         }
 
-        let newTorDirectory = TariSettings.shared.storageDirectory.appendingPathComponent("tor", isDirectory: true)
+        let newTorDirectory = TariSettings.storageDirectory.appendingPathComponent("tor", isDirectory: true)
 
         //Has old dir but not new one
         guard directoryExists(oldTorDirectory) && !directoryExists(newTorDirectory) else {

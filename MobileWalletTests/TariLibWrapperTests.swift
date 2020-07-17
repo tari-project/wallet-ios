@@ -42,16 +42,12 @@ import XCTest
 
 class TariLibWrapperTests: XCTestCase {
     //Use a random DB path for each test
-    private let dbName = "test_db.sqlite3"
+    private let dbName = "test_db"
     private let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
     private let testWalletPublicKey = "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40"
     
-    private func databaseTestPath(_ storagePath: String) -> String {
-        return "\(storagePath)/\(dbName)"
-    }
-    
     private func backupPath(_ storagePath: String) -> String {
-        return "\(storagePath)/\(dbName)_backup"
+        return "\(storagePath)/partial_backup_\(dbName).sqlite3"
     }
     
     private func loggingTestPath(_ storagePath: String) -> String {
@@ -292,13 +288,10 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     func testPartialBackups() {
-//        let (_, orginalFilePath) = createWallet(privateHex: nil)
-//        //MARK: Partial backup
-//        let backupFileName = "test_partial_backup"
-//        let partialBackupPath = backupPath(TariSettings.shared.testStoragePath)
-//        
-//        XCTAssertNoThrow(try WalletBackups.partialBackup(orginalFilePath: orginalFilePath, backupFilePathWithFilename: "\(orginalFilePath)/test"))
-//        XCTAssertTrue(FileManager.default.fileExists(atPath: "\(partialBackupPath)\(backupFileName)"))
+        let (_, dbURL) = createWallet(privateHex: nil)
+        let partialBackupPath = backupPath(TariSettings.testStoragePath)
+        XCTAssertNoThrow(try WalletBackups.partialBackup(orginalFilePath: dbURL.path, backupFilePathWithFilename: partialBackupPath))
+        XCTAssertTrue(FileManager.default.fileExists(atPath: partialBackupPath))
     }
     
     func testMicroTari() {
@@ -344,30 +337,28 @@ class TariLibWrapperTests: XCTestCase {
     
     func restoreWallet(completion: @escaping ((_ wallet: Wallet?, _ error: Error?) -> Void)) {
         ICloudBackup.shared.restoreWallet(password: nil, completion: { error in
-            if let loggingFilePath = try? self.loggingTestPath(ICloudBackup.shared.getTestDataBaseUrl().deletingLastPathComponent().path) {
-                var commsConfig: CommsConfig?
-                do {
-                    let transport = TransportType()
-                    let address = transport.address.0
-                    commsConfig = try CommsConfig(
-                        transport: transport,
-                        databasePath: ICloudBackup.shared.getTestDataBaseUrl().path,
-                        databaseName: self.dbName,
-                        publicAddress: address,
-                        discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
-                    )
-                } catch {
-                    completion(nil, error)
-                    return
-                }
-                
-                do {
-                    let wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: loggingFilePath)
-                    completion(wallet, error)
-                } catch {
-                    completion(nil, error)
-                    return
-                }
+            var commsConfig: CommsConfig?
+            do {
+                let transport = TransportType()
+                let address = transport.address.0
+                commsConfig = try CommsConfig(
+                    transport: transport,
+                    databaseFolderPath: TariSettings.testStoragePath,
+                    databaseName: self.dbName,
+                    publicAddress: address,
+                    discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
+                )
+            } catch {
+                completion(nil, error)
+                return
+            }
+            
+            do {
+                let wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: self.loggingTestPath(TariSettings.testStoragePath))
+                completion(wallet, error)
+            } catch {
+                completion(nil, error)
+                return
             }
         })
     }
@@ -384,19 +375,18 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     //MARK: Create new wallet
-    func createWallet(privateHex: String?) -> (Wallet, String) {
+    func createWallet(privateHex: String?) -> (Wallet, URL) {
         var wallet: Wallet?
         
         let fileManager = FileManager.default
-        let storagePath = TariSettings.shared.testStoragePath
-        let databasePath = databaseTestPath(storagePath)
-        let partialBackupPath = backupPath(storagePath)
-        let loggingFilePath = loggingTestPath(storagePath)
+        let databaseFolderPath = TariSettings.testStoragePath
+        let loggingFilePath = loggingTestPath(databaseFolderPath)
         
         do {
-            try fileManager.createDirectory(atPath: storagePath, withIntermediateDirectories: true, attributes: nil)
-            try fileManager.createDirectory(atPath: databasePath, withIntermediateDirectories: true, attributes: nil)
-            try fileManager.createDirectory(atPath: partialBackupPath, withIntermediateDirectories: true, attributes: nil)
+            if fileManager.fileExists(atPath: databaseFolderPath) {
+                try fileManager.removeItem(atPath: databaseFolderPath)
+            }
+            try fileManager.createDirectory(atPath: databaseFolderPath, withIntermediateDirectories: true, attributes: nil)
         } catch {
             XCTFail("Unable to create directory \(error.localizedDescription)")
         }
@@ -407,7 +397,7 @@ class TariLibWrapperTests: XCTestCase {
             let address = transport.address.0
             commsConfig = try CommsConfig(
                 transport: transport,
-                databasePath: databasePath,
+                databaseFolderPath: databaseFolderPath,
                 databaseName: dbName,
                 publicAddress: address,
                 discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
@@ -431,7 +421,7 @@ class TariLibWrapperTests: XCTestCase {
         
         XCTAssertNoThrow(try wallet!.generateTestData())
         
-        return (wallet!, databasePath)
+        return (wallet!, URL(fileURLWithPath: databaseFolderPath).appendingPathComponent(dbName + ".sqlite3"))
     }
     
     //MARK: Receive a test transaction
@@ -521,16 +511,7 @@ class TariLibWrapperTests: XCTestCase {
         }
         
         //MARK: Complete sent transaction to bob
-        do {
-            _ = try wallet.findPendingOutboundTransactionBy(id: sendTransactionId!)
-
-            do {
-                try wallet.testTransactionMined(txID: sendTransactionId!)
-            } catch {
-                XCTFail(error.localizedDescription)
-            }
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
+        XCTAssertNoThrow( _ = try wallet.findPendingOutboundTransactionBy(id: sendTransactionId!))
+        XCTAssertNoThrow(try wallet.testTransactionMined(txID: sendTransactionId!))
     }
 }

@@ -74,7 +74,7 @@ class ConnectionMonitorState {
 
     var currentBaseNodeName: String {
         var name = "unknown"
-        if let currentPeer = TariSettings.shared.groupUserDefaults.string(forKey: TariLib.currentBaseNodeUserDefaultsKey) {
+        if let currentPeer = TariSettings.groupUserDefaults.string(forKey: TariLib.currentBaseNodeUserDefaultsKey) {
             if let currentPeerName = (TariSettings.shared.defaultBaseNodePool.filter { (_, val) -> Bool in val  == currentPeer}).first {
                 name = currentPeerName.key
             } else {
