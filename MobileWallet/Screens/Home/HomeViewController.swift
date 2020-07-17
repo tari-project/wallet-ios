@@ -237,10 +237,11 @@ class HomeViewController: UIViewController {
 
     private func refreshBalance() {
         guard let wallet = TariLib.shared.tariWallet else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("wallet.error.title", comment: "Wallet error"),
-                description: NSLocalizedString("wallet.error.wallet_not_initialized", comment: "Wallet error")
-            )
+            TariLib.shared.waitIfWalletIsRestarting { [weak self] (success) in
+                if success == true {
+                    self?.refreshBalance()
+                }
+            }
             return
         }
 
