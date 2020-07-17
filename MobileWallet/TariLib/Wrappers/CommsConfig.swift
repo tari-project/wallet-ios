@@ -54,12 +54,12 @@ class CommsConfig {
     var dbPath: String
     var dbName: String
 
-    init(transport: TransportType, databasePath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64) throws {
-        dbPath = databasePath
+    init(transport: TransportType, databaseFolderPath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64) throws {
+        dbPath = databaseFolderPath
         dbName = databaseName
         var errorCode: Int32 = -1
         let result = databaseName.withCString({ db in
-            databasePath.withCString({ path in
+            databaseFolderPath.withCString({ path in
                 publicAddress.withCString({ address in
                      withUnsafeMutablePointer(to: &errorCode, { error in
                         comms_config_create(
