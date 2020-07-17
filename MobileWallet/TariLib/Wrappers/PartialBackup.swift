@@ -1,8 +1,8 @@
-//  CommsConfig.swift
+//  PartialBackup.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/15
+	Created by Jason van den Berg on 2020/07/16
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,57 +40,19 @@
 
 import Foundation
 
-enum CommsConfigError: Error {
-    case generic(_ errorCode: Int32)
-}
-
-class CommsConfig {
-    private var ptr: OpaquePointer
-
-    var pointer: OpaquePointer {
-        return ptr
-    }
-
-    var dbPath: String
-    var dbName: String
-
-    init(transport: TransportType, databaseFolderPath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64) throws {
-        dbPath = databaseFolderPath
-        dbName = databaseName
+class WalletBackups {
+    static func partialBackup(orginalFilePath: String, backupFilePathWithFilename: String) throws {
         var errorCode: Int32 = -1
-        let result = databaseName.withCString({ db in
-            databaseFolderPath.withCString({ path in
-                publicAddress.withCString({ address in
-                     withUnsafeMutablePointer(to: &errorCode, { error in
-                        comms_config_create(
-                            address,
-                            transport.pointer,
-                            db,
-                            path,
-                            discoveryTimeoutSec,
-                            error
-                        )
-                    })
+        withUnsafeMutablePointer(to: &errorCode, { error in
+            orginalFilePath.withCString({ orginalCstr in
+                backupFilePathWithFilename.withCString({ backupCstr in
+                    file_partial_backup(orginalCstr, backupCstr, error)
                 })
             })
         })
-    ptr = result!
-    guard errorCode == 0 else {
-         throw CommsConfigError.generic(errorCode)
-        }
-    }
 
-    func setPrivateKey(_ privateKey: PrivateKey) throws {
-        var errorCode: Int32 = -1
-        withUnsafeMutablePointer(to: &errorCode, { error in
-            comms_config_set_secret_key(pointer, privateKey.pointer, error)
-        })
         guard errorCode == 0 else {
-            throw CommsConfigError.generic(errorCode)
+            throw WalletErrors.generic(errorCode)
         }
-    }
-
-    deinit {
-        comms_config_destroy(ptr)
     }
 }

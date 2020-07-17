@@ -81,7 +81,7 @@ class ReminderNotifications {
         )
     ]
 
-    let userDefaults = UserDefaults(suiteName: TariSettings.shared.groupIndentifier)!
+    let userDefaults = UserDefaults(suiteName: TariSettings.groupIndentifier)!
 
     var shouldScheduleRemindersUpdatedAt: Date? {
         get {

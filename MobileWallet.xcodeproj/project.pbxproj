@@ -54,6 +54,10 @@
 		0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B323FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B423FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
+		003DF41624C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
+		003DF41724C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
+		003DF41824C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
+		003DF41924C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
 		004277DD23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
 		004277DE23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
 		004277DF23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
@@ -619,6 +623,7 @@
 		00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkManager.swift; sourceTree = "<group>"; };
 		00369D802426080D00BAB95B /* TariLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLogger.swift; sourceTree = "<group>"; };
 		0039B1B123FA925500F91E0F /* PasteEmojisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteEmojisView.swift; sourceTree = "<group>"; };
+		003DF41524C05EC900675A2C /* PartialBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialBackup.swift; sourceTree = "<group>"; };
 		004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiButton.swift; sourceTree = "<group>"; };
 		004277E623DF4A5600AE7BD9 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		004277EE23E03E1600AE7BD9 /* TransactionViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewControllerExtension.swift; sourceTree = "<group>"; };
@@ -1107,6 +1112,7 @@
 				00B084BF249E471800F7B9BD /* EmojiSet.swift */,
 				00B084C4249E4F6900F7B9BD /* SeedWords.swift */,
 				001F6CEF2381A43800FA7002 /* Transactions */,
+				003DF41524C05EC900675A2C /* PartialBackup.swift */,
 			);
 			path = Wrappers;
 			sourceTree = "<group>";
@@ -2077,6 +2083,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00C520B72469720F0077BF7F /* MicroTari.swift in Sources */,
+				003DF41924C05EC900675A2C /* PartialBackup.swift in Sources */,
 				00C520BA2469720F0077BF7F /* ErrorDescriptions.swift in Sources */,
 				00B084C8249E4F6900F7B9BD /* SeedWords.swift in Sources */,
 				00C520C9246972140077BF7F /* Contact.swift in Sources */,
@@ -2124,6 +2131,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				004277DD23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */,
+				003DF41624C05EC900675A2C /* PartialBackup.swift in Sources */,
 				0087A1A923F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				001F6CE82381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				001F6CE42380253B00FA7002 /* Contact.swift in Sources */,
@@ -2312,6 +2320,7 @@
 				0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				491AB8A123F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				004277FC23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
+				003DF41724C05EC900675A2C /* PartialBackup.swift in Sources */,
 				00230AFB2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				3723A7A724AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				00A057B023D875840029C22A /* TariEventBus.swift in Sources */,
@@ -2402,6 +2411,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00BBD81C237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
+				003DF41824C05EC900675A2C /* PartialBackup.swift in Sources */,
 				004277FD23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				00BBD818237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				009DFCA92473ECCB0061DBC9 /* DeepLinkParams.swift in Sources */,
@@ -2635,7 +2645,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 106;
+				CURRENT_PROJECT_VERSION = 108;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2672,7 +2682,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 106;
+				CURRENT_PROJECT_VERSION = 108;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2828,7 +2838,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 106;
+				CURRENT_PROJECT_VERSION = 108;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2864,7 +2874,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 106;
+				CURRENT_PROJECT_VERSION = 108;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

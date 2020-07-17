@@ -58,17 +58,17 @@ class TariLib {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
         let dateString = dateFormatter.string(from: Date())
-        return "\(TariSettings.shared.storageDirectory.path)/\(TariLib.logFilePrefix)-\(dateString).txt"
+        return "\(TariSettings.storageDirectory.path)/\(TariLib.logFilePrefix)-\(dateString).txt"
     }()
 
     lazy var databaseDirectory: URL = {
-        return TariSettings.shared.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true)
+        return TariSettings.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true)
     }()
 
     var allLogFiles: [URL] {
         do {
             let allLogFiles = try FileManager.default.contentsOfDirectory(
-                at: TariSettings.shared.storageDirectory,
+                at: TariSettings.storageDirectory,
                 includingPropertiesForKeys: nil
             ).filter({$0.lastPathComponent.contains(TariLib.logFilePrefix)}).sorted(by: { (a, b) -> Bool in
                 return a.path > b.path
@@ -93,7 +93,7 @@ class TariLib {
 
     var walletExists: Bool {
         do {
-            let fileExists = try TariSettings.shared.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true).checkResourceIsReachable()
+            let fileExists = try TariSettings.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true).checkResourceIsReachable()
             return fileExists
         } catch {
             TariLogger.warn("Database path not reachable. Assuming wallet doesn't exist.", error: error)
@@ -131,7 +131,7 @@ class TariLib {
             let transport = try transportType()
             config = try CommsConfig(
                transport: transport,
-               databasePath: databaseDirectory.path,
+               databaseFolderPath: databaseDirectory.path,
                databaseName: TariLib.databaseName,
                publicAddress: publicAddress,
                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
@@ -318,14 +318,14 @@ class TariLib {
         var basenode: BaseNode!
         if overridePeer != nil {
             basenode = overridePeer!
-        } else if let currentBaseNodeString = TariSettings.shared.groupUserDefaults.string(forKey: TariLib.currentBaseNodeUserDefaultsKey) {
+        } else if let currentBaseNodeString = TariSettings.groupUserDefaults.string(forKey: TariLib.currentBaseNodeUserDefaultsKey) {
             basenode = try BaseNode(currentBaseNodeString)
         } else {
             basenode = try BaseNode(TariSettings.shared.getRandomBaseNode())
         }
 
         try tariWallet?.addBaseNodePeer(basenode)
-        TariSettings.shared.groupUserDefaults.set(basenode.peer, forKey: TariLib.currentBaseNodeUserDefaultsKey)
+        TariSettings.groupUserDefaults.set(basenode.peer, forKey: TariLib.currentBaseNodeUserDefaultsKey)
 
         if syncAfterSetting {
             try? tariWallet?.syncBaseNode()
