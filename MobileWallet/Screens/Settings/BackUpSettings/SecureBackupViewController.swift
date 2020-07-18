@@ -71,7 +71,6 @@ class SecureBackupViewController: SettingsParentViewController {
                 let self = self,
                 let password = self.enterPasswordField.password
                 else { return }
-            self.isModalInPresentation = true
             do {
                 try self.iCloudBackup.createWalletBackup(password: password)
 
@@ -95,9 +94,18 @@ class SecureBackupViewController: SettingsParentViewController {
     private func finishPendingProcess() {
         pendingViewTimer?.invalidate()
         pendingView.hidePendingView(completion: { [weak self] in
-            self?.isModalInPresentation = false
-            self?.navigationController?.popViewController(animated: true)
+            self?.returnToBackupSettingsScreen()
         })
+    }
+
+    private func returnToBackupSettingsScreen() {
+        if let curentControllers = navigationController?.viewControllers {
+            curentControllers.forEach({
+                if let _ = $0 as? BackupWalletSettingsViewController {
+                    self.navigationController?.popToViewController($0, animated: true)
+                }
+            })
+        }
     }
 }
 

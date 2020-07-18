@@ -61,7 +61,7 @@ class SettingsParentViewController: UIViewController {
         if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
            title = localizedError.failureReason!
         }
-        UserFeedback.shared.error(title: title, description: "", error: error)
+        UserFeedback.shared.error(title: title, description: error.localizedDescription, error: nil)
     }
 }
 

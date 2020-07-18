@@ -67,7 +67,7 @@ class Backup {
 
         dateCreation = date
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM dd yyy 'at' HH:mm a"
+        dateFormatter.dateFormat = "MMM dd yyy 'at' h:mm a"
         dateFormatter.timeZone = .current
         dateCreationString = dateFormatter.string(from: date)
     }

@@ -100,7 +100,7 @@ extension SplashViewController {
         if TariLib.shared.walletExists {
             animationContainerBottomAnchor?.isActive = false
         } else {
-            animationContainerBottomAnchor = videoView.topAnchor.constraint(equalTo: animationContainer.bottomAnchor, constant: -10)
+            animationContainerBottomAnchor = videoView.topAnchor.constraint(equalTo: animationContainer.bottomAnchor)
             animationContainerBottomAnchor?.isActive = true
             videoView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
             videoView.heightAnchor.constraint(lessThanOrEqualTo: view.widthAnchor).isActive = true
@@ -114,8 +114,8 @@ extension SplashViewController {
 
         setupTitleLabel()
         setupCreateWalletButton()
-        setupDisclaimer()
         setupRestoreButton()
+        setupDisclaimer()
         setupGemImageView()
 
         elementsContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -123,7 +123,7 @@ extension SplashViewController {
         elementsContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         elementsContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         elementsContainer.topAnchor.constraint(equalTo: videoView.bottomAnchor, constant: -15).isActive = true
-        elementsContainer.bottomAnchor.constraint(equalTo: versionLabel.topAnchor, constant: -16).isActive = true
+        elementsContainer.bottomAnchor.constraint(equalTo: versionLabel.topAnchor, constant: -9).isActive = true
         elementsContainer.bottomAnchor.constraint(equalTo: gemImageView.bottomAnchor).isActive = true
     }
 
@@ -156,8 +156,25 @@ extension SplashViewController {
 
         createWalletButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         createWalletButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        createWalletButton.topAnchor.constraint(greaterThanOrEqualTo: titleLabel.bottomAnchor, constant: 10).isActive = true
-        createWalletButton.topAnchor.constraint(lessThanOrEqualTo: titleLabel.bottomAnchor, constant: 30).isActive = true
+        createWalletButton.topAnchor.constraint(greaterThanOrEqualTo: titleLabel.bottomAnchor, constant: 5).isActive = true
+        createWalletButton.topAnchor.constraint(lessThanOrEqualTo: titleLabel.bottomAnchor, constant: 25).isActive = true
+    }
+
+    func setupRestoreButton() {
+        restoreButton.isHidden = true
+        restoreButton.backgroundColor = .clear
+        restoreButton.tintColor = .white
+        restoreButton.titleLabel?.font = Theme.shared.fonts.restoreWalletButton
+        restoreButton.addTarget(self, action: #selector(onRestoreWalletTap), for: .touchUpInside)
+        let title = NSLocalizedString("splash.restore_wallet", comment: "Splash view")
+        restoreButton.setTitle(title, for: .normal)
+
+        elementsContainer.addSubview(restoreButton)
+        restoreButton.translatesAutoresizingMaskIntoConstraints = false
+        restoreButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        restoreButton.topAnchor.constraint(greaterThanOrEqualTo: createWalletButton.bottomAnchor, constant: 5).isActive = true
+        restoreButton.topAnchor.constraint(lessThanOrEqualTo: createWalletButton.bottomAnchor, constant: 22).isActive = true
+        restoreButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
     }
 
     func setupDisclaimer() {
@@ -205,25 +222,8 @@ extension SplashViewController {
         disclaimerText.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         disclaimerText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         disclaimerText.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        disclaimerText.topAnchor.constraint(greaterThanOrEqualTo: createWalletButton.bottomAnchor, constant: 0).isActive = true
-        disclaimerText.topAnchor.constraint(lessThanOrEqualTo: createWalletButton.bottomAnchor, constant: 30).isActive = true
-    }
-
-    func setupRestoreButton() {
-        restoreButton.isHidden = true
-        restoreButton.backgroundColor = .clear
-        restoreButton.tintColor = .white
-        restoreButton.titleLabel?.font = Theme.shared.fonts.restoreWalletButton
-        restoreButton.addTarget(self, action: #selector(onRestoreWalletTap), for: .touchUpInside)
-        let title = NSLocalizedString("splash.restore_wallet", comment: "Splash view")
-        restoreButton.setTitle(title, for: .normal)
-
-        elementsContainer.addSubview(restoreButton)
-        restoreButton.translatesAutoresizingMaskIntoConstraints = false
-        restoreButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        restoreButton.topAnchor.constraint(greaterThanOrEqualTo: disclaimerText.bottomAnchor, constant: 0).isActive = true
-        restoreButton.topAnchor.constraint(lessThanOrEqualTo: disclaimerText.bottomAnchor, constant: 10).isActive = true
-        restoreButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
+        disclaimerText.topAnchor.constraint(greaterThanOrEqualTo: restoreButton.bottomAnchor, constant: 0).isActive = true
+        disclaimerText.topAnchor.constraint(lessThanOrEqualTo: restoreButton.bottomAnchor, constant: 5).isActive = true
     }
 
     func setupGemImageView() {
@@ -231,8 +231,8 @@ extension SplashViewController {
         gemImageView.image = UIImage(named: "Gem")
         gemImageView.translatesAutoresizingMaskIntoConstraints = false
         gemImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        gemImageView.topAnchor.constraint(greaterThanOrEqualTo: restoreButton.bottomAnchor, constant: 0).isActive = true
-        gemImageView.topAnchor.constraint(lessThanOrEqualTo: restoreButton.bottomAnchor, constant: 30).isActive = true
+        gemImageView.topAnchor.constraint(greaterThanOrEqualTo: disclaimerText.bottomAnchor, constant: 0).isActive = true
+        gemImageView.topAnchor.constraint(lessThanOrEqualTo: disclaimerText.bottomAnchor, constant: 12).isActive = true
         gemImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
         gemImageView.heightAnchor.constraint(equalToConstant: 24).isActive = true
     }
@@ -260,7 +260,6 @@ extension SplashViewController {
         versionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
                                                 constant: -Theme.shared.sizes.appSidePadding).isActive = true
         versionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        versionLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: 16).isActive = true
     }
 
     func titleAnimation() {
