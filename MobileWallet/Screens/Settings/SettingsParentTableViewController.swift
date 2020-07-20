@@ -75,15 +75,19 @@ class SettingsParentTableViewController: SettingsParentViewController {
             backUpWalletItem?.markDescription = ICloudBackupState.scheduled.rawValue
         } else {
             backUpWalletItem?.mark = iCloudBackup.isValidBackupExists() ? .success : .attention
-            backUpWalletItem?.markDescription = iCloudBackup.isValidBackupExists() ? ICloudBackupState.upToDate.rawValue : ""
+            if iCloudBackup.isValidBackupExists() {
+                 backUpWalletItem?.markDescription = ICloudBackupState.upToDate.rawValue
+            } else {
+                backUpWalletItem?.markDescription = iCloudBackup.lastBackup != nil ? ICloudBackupState.outOfDate.rawValue : ""
+            }
         }
     }
 }
 
 extension SettingsParentTableViewController {
-    override func onUploadProgress(percent: Double, completed: Bool, error: Error?) {
+    override func onUploadProgress(percent: Double, started: Bool, completed: Bool, error: Error?) {
         updateMarks()
-        if completed {
+        if completed || started {
             reloadTableViewWithAnimation()
         }
         if error != nil {

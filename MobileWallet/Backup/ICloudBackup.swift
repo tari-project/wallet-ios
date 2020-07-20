@@ -114,7 +114,7 @@ extension ICloudBackupError: LocalizedError {
 }
 
 protocol ICloudBackupObserver: AnyObject {
-    func onUploadProgress(percent: Double, completed: Bool, error: Error?)
+    func onUploadProgress(percent: Double, started: Bool, completed: Bool, error: Error?)
 }
 
 class ICloudBackup: NSObject {
@@ -228,6 +228,7 @@ class ICloudBackup: NSObject {
             inProgress = true
             progressValue = 0.0
             BackupScheduler.shared.removeSchedule()
+            notifyObservers(percent: 0, started: true, completed: false, error: nil)
 
             syncWithICloud()
         } catch {
@@ -302,7 +303,6 @@ extension ICloudBackup {
 extension ICloudBackup {
     private func addNotificationObservers() {
         NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidStartGathering, object: query, queue: query.operationQueue) { [weak self] (_) in
-            self?.notifyObservers(percent: 0, completed: false, error: nil)
             self?.processCloudFiles()
         }
 
@@ -351,10 +351,10 @@ extension ICloudBackup {
         }
     }
 
-    private func notifyObservers(percent: Double, completed: Bool, error: Error?) {
+    private func notifyObservers(percent: Double, started: Bool = false, completed: Bool, error: Error?) {
         observers.allObjects.forEach {
             if let object = $0 as? ICloudBackupObserver {
-                object.onUploadProgress(percent: percent, completed: completed, error: error)
+                object.onUploadProgress(percent: percent, started: started, completed: completed, error: error)
             }
             if completed {
                 self.endBackgroundBackupTask()
