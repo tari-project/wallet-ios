@@ -85,7 +85,7 @@ extension LAContext {
 
         switch biometricType {
         case .faceID, .touchID, .pin:
-            let policy: LAPolicy = biometricType == .pin ? .deviceOwnerAuthentication : .deviceOwnerAuthenticationWithBiometrics
+            let policy: LAPolicy = .deviceOwnerAuthentication //it is not clear why but it works like that. If you specify with biometrics for some reason (system error, can't handle that) the window for entering the password code is not called
             let localizedReason = reason.rawValue
             evaluatePolicy(policy, localizedReason: localizedReason) {
                 [weak self] success, error in

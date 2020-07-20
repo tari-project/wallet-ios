@@ -176,7 +176,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 lastBackupLabel.font = Theme.shared.fonts.settingsTableViewLastBackupDate
                 lastBackupLabel.textColor =  Theme.shared.colors.settingsTableViewLastBackupDate
 
-                lastBackupLabel.text = NSLocalizedString("Last successful backup: \(lastBackupString)", comment: "Settings view")
+                lastBackupLabel.text = String(format: NSLocalizedString("settings.last_successful_backup.with_param", comment: "Settings view"), lastBackupString)
 
                 header.addSubview(lastBackupLabel)
 

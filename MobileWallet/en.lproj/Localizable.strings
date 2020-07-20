@@ -137,9 +137,9 @@
 "splash.disclaimer.param.privacy_policy" = "Privacy Policy";
 "splash.disclaimer.param.user_agreement" = "User Agreement";
 
-"splash.title" = "The future of digital assets starts here";
+"splash.title" = "Private by default. Useful by design.";
 "splash.create_wallet" = "Create Your Wallet";
-"splash.restore_wallet" = "Restore an existing wallet";
+"splash.restore_wallet" = "Restore an Existing wallet";
 
 /* iCloudBackup error */
 "iCloud_backup.error.title.set_password" = "Failed to set backup password";
