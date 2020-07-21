@@ -72,4 +72,24 @@ extension NSPointerArray {
 
         removePointer(at: index)
     }
+
+    func remove(_ object: AnyObject) {
+        // get pointer to the passed in object
+        let objPtr = Unmanaged.passUnretained(object).toOpaque()
+        var objIndex = -1
+        for i in 0..<count {
+            let ptr = pointer(at: i)
+
+            if ptr == objPtr {
+                // pointers equal, found our object!
+                objIndex = i
+                break
+            }
+        }
+
+        // make sure index is non-nil and not outside bounds
+        if objIndex >= 0 && objIndex < count {
+            removePointer(at: objIndex)
+        }
+    }
 }

@@ -45,6 +45,12 @@ enum AnimatedRefreshingViewState {
     case loading
     case receiving
     case success
+
+    //Backup states
+    case backupScheduled
+    case backupInProgress
+    case backupSuccess
+
     //TX view states
     case txWaitingForSender
     case txWaitingForRecipient
@@ -98,6 +104,21 @@ private class RefreshingInnerView: UIView {
         case .success:
             statusLabel.text = NSLocalizedString("refresh_view.success", comment: "Refresh view")
             spinner.stopAnimating()
+            statusLabel.textColor = Theme.shared.colors.refreshViewLabelSuccess
+        case .backupScheduled:
+            emojiLabel.text = "⏳"
+            spinner.stopAnimating()
+            statusLabel.text = NSLocalizedString("refresh_view.backup.scheduled", comment: "Refresh view")
+            statusLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionScheduled
+        case .backupInProgress:
+            emojiLabel.text = ""
+            spinner.startAnimating()
+            statusLabel.text = NSLocalizedString("refresh_view.backup.inProgress", comment: "Refresh view")
+            statusLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionScheduled
+        case .backupSuccess:
+            emojiLabel.text = ""
+            spinner.stopAnimating()
+            statusLabel.text = NSLocalizedString("refresh_view.backup.success", comment: "Refresh view")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelSuccess
         case .txWaitingForRecipient:
             emojiLabel.text = ""
