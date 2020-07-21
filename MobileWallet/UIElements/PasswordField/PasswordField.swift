@@ -65,7 +65,17 @@ class PasswordField: UIView, UITextFieldDelegate {
 
     var isWarning: Bool {
         get {
-            return !warningLabel.isHidden
+            if let password = self.password {
+                if !password.isEmpty {
+                    if password.count < minPasswordLength && !isConfirmationField {
+                        return true
+                    } else if password != paredPasswordField?.password && isConfirmationField {
+                        return true
+                    }
+                }
+                return false
+            }
+            return true
         }
     }
 
@@ -213,13 +223,13 @@ class PasswordField: UIView, UITextFieldDelegate {
 
     @objc func textFieldDidChange(_ textField: UITextField) {
         delegate?.passwordFieldDidChange(self)
+        if !isConfirmationField {
+            paredPasswordField?.didStartEditingPassword()
+        }
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
         didStartEditingPassword()
-        if !isConfirmationField {
-            paredPasswordField?.didStartEditingPassword()
-        }
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {

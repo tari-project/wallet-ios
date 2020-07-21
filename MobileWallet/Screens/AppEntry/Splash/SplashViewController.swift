@@ -171,9 +171,10 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         DispatchQueue.global().async {
             do {
                 try TariLib.shared.startWalletService()
-                    DispatchQueue.main.async {
-                        onComplete()
-                    }
+                self.createWalletBackup()
+                DispatchQueue.main.async {
+                    onComplete()
+                }
             } catch {
                 DispatchQueue.main.async {
                     UserFeedback.shared.error(
@@ -182,6 +183,22 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                         error: error
                     )
                 }
+            }
+        }
+    }
+
+    private func createWalletBackup() {
+        if ICloudBackup.shared.iCloudBackupsIsOn && !ICloudBackup.shared.isValidBackupExists() {
+            do {
+                let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+                try ICloudBackup.shared.createWalletBackup(password: password)
+            } catch {
+                var title = NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
+
+                if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
+                   title = localizedError.failureReason!
+                }
+                UserFeedback.shared.error(title: title, description: error.localizedDescription, error: nil)
             }
         }
     }
