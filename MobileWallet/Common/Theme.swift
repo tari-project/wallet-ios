@@ -133,6 +133,7 @@ struct Colors: Loopable {
     let settingsTableViewMarkDescriptionSuccess = UIColor(named: "SettingsTableViewMarkDescriptionSuccess")
     let settingsTableViewMarkDescriptionWarning = UIColor(named: "SettingsTableViewMarkDescriptionWarning")
     let settingsTableViewMarkDescriptionInProgress = UIColor(named: "SettingsTableViewMarkDescriptionInProgress")
+    let settingsTableViewMarkDescriptionScheduled = UIColor(named: "SettingsTableViewMarkDescriptionScheduled")
     let settingsPasswordWarning = UIColor(named: "SettingsPasswordWarning")
 
     //Home screen
@@ -272,6 +273,7 @@ struct Images: Loopable {
     let unknownUser = UIImage(named: "unknownUser")
     let handWave = UIImage(named: "HandWave")
     let attentionIcon = UIImage(named: "AttentionIcon")
+    let scheduledIcon = UIImage(named: "ScheduledIcon")
     let successIcon = UIImage(named: "SuccessIcon")
     let tariIcon = UIImage(named: "TariIcon")
 

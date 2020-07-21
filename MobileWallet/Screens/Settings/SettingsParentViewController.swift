@@ -66,7 +66,7 @@ class SettingsParentViewController: UIViewController {
 }
 
 extension SettingsParentViewController: ICloudBackupObserver {
-    @objc func onUploadProgress(percent: Double, completed: Bool, error: Error?) {
+    @objc func onUploadProgress(percent: Double, started: Bool, completed: Bool, error: Error?) {
         if error != nil {
             failedToCreateBackup(error: error!)
         }

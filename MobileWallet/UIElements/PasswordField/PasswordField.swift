@@ -65,7 +65,17 @@ class PasswordField: UIView, UITextFieldDelegate {
 
     var isWarning: Bool {
         get {
-            return !warningLabel.isHidden
+            if let password = self.password {
+                if !password.isEmpty {
+                    if password.count < minPasswordLength && !isConfirmationField {
+                        return true
+                    } else if password != paredPasswordField?.password && isConfirmationField {
+                        return true
+                    }
+                }
+                return false
+            }
+            return true
         }
     }
 
@@ -78,7 +88,7 @@ class PasswordField: UIView, UITextFieldDelegate {
     enum PasswordFieldState {
         case normal
         case passwordDoNotMatch
-        case passwordShortLength(leftCharacters: Int)
+        case passwordShortLength
         case wrongPassword
     }
 
@@ -90,8 +100,8 @@ class PasswordField: UIView, UITextFieldDelegate {
                 textField.textColor = .black
                 warningLabel.isHidden = true
                 return
-            case .passwordShortLength(let characters):
-                warningLabel.text = String(format: NSLocalizedString("password_verification.warning.short_password.with_param", comment: "PasswordVerification view"), String(characters))
+            case .passwordShortLength:
+                warningLabel.text = String(format: NSLocalizedString("password_verification.warning.short_password.with_param", comment: "PasswordVerification view"), String(minPasswordLength))
             case .passwordDoNotMatch:
                 warningLabel.text = NSLocalizedString("password_verification.warning.password_do_not_match", comment: "PasswordVerification view")
             case .wrongPassword:
@@ -130,11 +140,15 @@ class PasswordField: UIView, UITextFieldDelegate {
         else { return false }
         if !fieldPassword.isEmpty {
             if fieldPassword.count < minPasswordLength && !isConfirmationField {
-                state = .passwordShortLength(leftCharacters: minPasswordLength - fieldPassword.count)
+                state = .passwordShortLength
                 return false
             } else if password != fieldPassword && isConfirmationField {
                 if paredPasswordField != nil {
-                    state = .passwordDoNotMatch
+                    if paredPasswordField!.isWarning {
+                        state = .normal
+                    } else {
+                        state = .passwordDoNotMatch
+                    }
                 } else {
                     state = .wrongPassword
                 }
@@ -209,13 +223,13 @@ class PasswordField: UIView, UITextFieldDelegate {
 
     @objc func textFieldDidChange(_ textField: UITextField) {
         delegate?.passwordFieldDidChange(self)
+        if !isConfirmationField {
+            paredPasswordField?.didStartEditingPassword()
+        }
     }
 
     func textFieldDidBeginEditing(_ textField: UITextField) {
         didStartEditingPassword()
-        if !isConfirmationField {
-            paredPasswordField?.didStartEditingPassword()
-        }
     }
 
     func textFieldDidEndEditing(_ textField: UITextField) {

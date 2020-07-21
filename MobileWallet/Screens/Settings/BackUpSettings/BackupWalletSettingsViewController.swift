@@ -194,7 +194,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
         guard let section = Section(rawValue: section) else { return 0 }
         switch section {
         case .settings:
-            if iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress && !BackupScheduler.shared.isBackupScheduled {
+            if iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress {
                 return settingsSectionItems.count
             } else {
                 return settingsSectionItems.count - 1
@@ -223,7 +223,8 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if tableView.numberOfSections - 1 == section && iCloudBackup.isValidBackupExists() {
+        let lastSuccessful = iCloudBackup.lastBackup != nil && !iCloudBackup.inProgress && !iCloudBackup.isLastBackupFailed
+        if tableView.numberOfSections - 1 == section && lastSuccessful {
             return 50.0
         } else {
             return 0
