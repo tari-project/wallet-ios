@@ -118,12 +118,15 @@ class SystemMenuTableViewCell: UITableViewCell {
                 markImageView.image = Theme.shared.images.successIcon!
                 progressView.isHidden = true
                 markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionSuccess
-            case .progress, .scheduled:
-                markImageView.image = nil; progressView.isHidden = false
-                if mark == .progress {
-                    isUserInteractionEnabled = disableCellInProgress ? false : true
-                }
+            case .progress:
+                markImageView.image = nil
+                progressView.isHidden = false
+                isUserInteractionEnabled = disableCellInProgress ? false : true
                 markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionInProgress
+            case .scheduled:
+                markImageView.image = Theme.shared.images.scheduledIcon!
+                progressView.isHidden = true
+                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionScheduled
             }
         }
     }
