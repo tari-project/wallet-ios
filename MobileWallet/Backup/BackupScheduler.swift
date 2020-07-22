@@ -43,7 +43,7 @@ import Foundation
 class BackupScheduler: NSObject {
     private let autoBackupTimeInterval: TimeInterval = 60.0 // 1 min
 
-    private(set) var isBackupScheduled: Bool {
+    @objc dynamic private(set) var isBackupScheduled: Bool {
         get {
             timer.isValid
         }

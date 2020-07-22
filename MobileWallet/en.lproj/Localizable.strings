@@ -224,6 +224,9 @@
 "refresh_view.waiting_for_recipient" = "Waiting for recipient to come online";
 "refresh_view.waiting_for_sender" = "Waiting for sender to complete transaction";
 "refresh_view.success" = "You are up to date!";
+"refresh_view.backup.scheduled" = "Backup scheduled";
+"refresh_view.backup.inProgress" = "Backing up your wallet...";
+"refresh_view.backup.success" = "Backup successful!";
 
 /* Feedback view */
 "feedback_view.close" = "Close";

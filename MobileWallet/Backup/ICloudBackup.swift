@@ -170,6 +170,10 @@ class ICloudBackup: NSObject {
         initialiseQuery()
         addNotificationObservers()
         try? startObserveReachability()
+
+        if FileManager.default.ubiquityIdentityToken == nil {
+            iCloudBackupsIsOn = false
+        }
     }
 
     private func initialiseQuery() {
@@ -181,6 +185,10 @@ class ICloudBackup: NSObject {
 
     func addObserver(_ observer: ICloudBackupObserver) {
         observers.addObject(observer)
+    }
+
+    func removeObserver(_ observer: ICloudBackupObserver) {
+        observers.remove(observer)
     }
 
     // returns true if backup of current wallet is exist and is valid

@@ -78,6 +78,8 @@ class TransactionsTableViewController: UITableViewController {
     private var lastContentOffset: CGFloat = 0
     private var lastScrollDirection: ScrollDirection = .up
 
+    private var kvoBackupScheduleToken: NSKeyValueObservation?
+
     var groupedCompletedTransactions: [[CompletedTransaction]] = []
     var pendingInboundTransactions: [PendingInboundTransaction] = []
     var pendingOutboundTransactions: [PendingOutboundTransaction] = []
@@ -130,6 +132,16 @@ class TransactionsTableViewController: UITableViewController {
         if backgroundType != .intro {
             self.safeRefreshTable()
         }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        observeBackupState()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        stopObservationBackupState()
     }
 
     private func viewSetup() {
@@ -201,7 +213,9 @@ class TransactionsTableViewController: UITableViewController {
             guard let self = self else { return }
             self.animatedRefresher.animateOut { [weak self] in
                 self?.safeRefreshTable()
-                self?.tableView.endRefreshing()
+                if !ICloudBackup.shared.inProgress && !BackupScheduler.shared.isBackupScheduled {
+                    self?.tableView.endRefreshing()
+                }
             }
         })
     }
@@ -346,5 +360,55 @@ class TransactionsTableViewController: UITableViewController {
 
         let indexPath = NSIndexPath(item: 0, section: 0)
         tableView.scrollToRow(at: indexPath as IndexPath, at: .top, animated: true)
+    }
+}
+
+extension TransactionsTableViewController: ICloudBackupObserver {
+    func onUploadProgress(percent: Double, started: Bool, completed: Bool, error: Error?) {
+        if started || completed {
+            updateRefreshView()
+        }
+    }
+
+    private func observeBackupState() {
+        ICloudBackup.shared.addObserver(self)
+        updateRefreshView()
+        if kvoBackupScheduleToken != nil { return }
+        kvoBackupScheduleToken = BackupScheduler.shared.observe(\.isBackupScheduled, options: .new) { [weak self] (_, _) in
+            self?.updateRefreshView()
+        }
+    }
+
+    private func stopObservationBackupState() {
+        ICloudBackup.shared.removeObserver(self)
+        kvoBackupScheduleToken?.invalidate()
+        kvoBackupScheduleToken = nil
+    }
+
+    private func updateRefreshView() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            if  BackupScheduler.shared.isBackupScheduled || ICloudBackup.shared.inProgress {
+                self.tableView.beginRefreshing()
+                if BackupScheduler.shared.isBackupScheduled {
+                    self.animatedRefresher.updateState(.backupScheduled)
+                } else if ICloudBackup.shared.inProgress {
+                    self.animatedRefresher.updateState(.backupInProgress)
+                }
+                self.animatedRefresher.animateIn()
+            } else {
+                if !ICloudBackup.shared.isLastBackupFailed {
+                    self.animatedRefresher.updateState(.backupSuccess)
+                }
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+                    guard let self = self else { return }
+                    self.animatedRefresher.setupView(.loading)
+                    self.animatedRefresher.animateOut { [weak self] in
+                        self?.tableView.endRefreshing()
+                    }
+                }
+            }
+        }
     }
 }
