@@ -257,6 +257,7 @@ class Wallet {
             wallet_create(
             commsConfig.pointer,
             loggingFilePathPointer,
+            nil, //TODO use passphrase when ready to implement
             receivedTransactionCallback,
             receivedTransactionReplyCallback,
             receivedFinalizedTransactionCallback,
