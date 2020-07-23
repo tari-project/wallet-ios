@@ -57,7 +57,7 @@ private class BackupPrompts {
         let cancelButton: String
     }
 
-    enum PromptTypes: CaseIterable {
+    enum PromptType: CaseIterable {
         case first
         case second
         case third
@@ -138,7 +138,7 @@ private class BackupPrompts {
             return
         }
 
-        for type in PromptTypes.allCases {
+        for type in PromptType.allCases.reversed() {
             //If they have been shown this once, skip over this prompt
             guard UserDefaults.standard.bool(forKey: type.userDefaultsKey) == false else {
                 continue
@@ -163,7 +163,7 @@ private class BackupPrompts {
                 continue
             }
 
-            UserDefaults.standard.set(true, forKey: type.userDefaultsKey)
+            setAsShown(type)
             let content = type.content
             UserFeedback.shared.callToAction(
                 title: content.title,
@@ -184,10 +184,23 @@ private class BackupPrompts {
         }
     }
 
+    /// Sets all triggers as "shown" if it matches the passed trigger and/or is below the passed trigger. i.e. The second tigger will set the first and second as shown.
+    /// - Parameter type: Prompt type (first, second, third)
+    private func setAsShown(_ type: PromptType) {
+        var setAsShown: Bool = false
+        for t in PromptType.allCases.reversed() {
+            if t == type {
+                setAsShown = true
+            }
+
+            UserDefaults.standard.set(setAsShown, forKey: t.userDefaultsKey)
+        }
+    }
+
     /// For testing in debug only
     func resetTriggers() {
         guard TariSettings.shared.environment == .debug else {  return }
-        for type in PromptTypes.allCases {
+        for type in PromptType.allCases {
             UserDefaults.standard.set(false, forKey: type.userDefaultsKey)
         }
     }
@@ -195,6 +208,7 @@ private class BackupPrompts {
 
 extension UIViewController {
     func checkBackupPrompt(delay: TimeInterval) {
+//        return BackupPrompts.shared.resetTriggers()
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
             guard let self = self else { return }
             BackupPrompts.shared.check(self)
