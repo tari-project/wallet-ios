@@ -41,11 +41,14 @@
 import UIKit
 
 class TransactionTableViewCell: UITableViewCell {
-    private let BACKGROUND_COLOR = Theme.shared.colors.transactionTableBackground
-
-    private let icon = UIImageView()
-    private let userNameLabel = UILabel()
-    private let descriptionLabel = UILabel()
+    private let avatarContainer = UIView()
+    private let avatarLabel = UILabel()
+    private let titleLabel = UILabel()
+    private let timeLabel = UILabel()
+    private let statusLabel = UILabel()
+    private var statusLabelHeightHidden = NSLayoutConstraint()
+    private let noteLabel = UILabel()
+    private let valueContainer = UIView()
     private let valueLabel = UILabelWithPadding()
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
@@ -67,7 +70,7 @@ class TransactionTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setValue(microTari: MicroTari?, direction: TransactionDirection, isCancelled: Bool = false) {
+    private func setValue(microTari: MicroTari?, direction: TransactionDirection, isCancelled: Bool, isPending: Bool) {
         if let mt = microTari {
             if isCancelled {
                 valueLabel.text = mt.formatted
@@ -82,6 +85,11 @@ class TransactionTableViewCell: UITableViewCell {
                 valueLabel.backgroundColor = Theme.shared.colors.transactionCellValueNegativeBackground
                 valueLabel.textColor = Theme.shared.colors.transactionCellValueNegativeText
             }
+
+            if isPending {
+                valueLabel.backgroundColor = Theme.shared.colors.transactionCellValuePendingBackground
+                valueLabel.textColor = Theme.shared.colors.transactionCellValuePendingText
+            }
         } else {
             //Unlikely to happen scenario
             valueLabel.text = "0"
@@ -93,148 +101,236 @@ class TransactionTableViewCell: UITableViewCell {
     }
 
     private func setMessage(_ message: String) {
-        descriptionLabel.text = !message.isEmpty ? message : "*Missing message*"
-        descriptionLabel.sizeToFit()
+        noteLabel.text = !message.isEmpty ? message : ""
+        noteLabel.sizeToFit()
     }
 
-    private func setAlias(_ contact: Contact) {
-        let (alias, _) = contact.alias
-        if !alias.isEmpty {
-            //In contacts but alias is blank
-            userNameLabel.text = alias
-            userNameLabel.textColor = Theme.shared.colors.transactionCellAlias
-        } else {
-            if let pubKey = contact.publicKey.0 {
-                setEmojis(pubKey)
-            }
-        }
-    }
-
-    private func setEmojis(_ pubKey: PublicKey) {
+    private func setAvatar(_ pubKey: PublicKey) {
         let (emojis, _) = pubKey.emojis
-        let shortEmojisStr = "\(String(emojis.emojis.prefix(3)))•••\(String(emojis.emojis.suffix(3)))"
-        userNameLabel.text = shortEmojisStr
-        userNameLabel.textColor = Theme.shared.colors.emojisSeparator
+        avatarLabel.text = String(emojis.emojis.prefix(1))
     }
 
-    func setDetails(completedTransaction: CompletedTransaction) {
-        setMessage(completedTransaction.message.0)
-        setValue(microTari: completedTransaction.microTari.0, direction: completedTransaction.direction, isCancelled: completedTransaction.isCancelled)
-        if let contact = completedTransaction.contact.0 {
-            setAlias(contact)
-        } else {
-            if completedTransaction.direction == .inbound {
-                let (publicKey, _) = completedTransaction.sourcePublicKey
-                if let pubKey = publicKey {
-                    setEmojis(pubKey)
-                }
-            } else if completedTransaction.direction == .outbound {
-                let (publicKey, _) = completedTransaction.destinationPublicKey
-                if let pubKey = publicKey {
-                    setEmojis(pubKey)
-                }
-            }
-        }
-    }
+    func setDetails(_ tx: TransactionProtocol) {
+        var isCancelled = false
+        var isPending = false
 
-    func setDetails(pendingInboundTransaction: PendingInboundTransaction) {
-        setMessage(pendingInboundTransaction.message.0)
-        setValue(microTari: pendingInboundTransaction.microTari.0, direction: pendingInboundTransaction.direction)
-        if let contact = pendingInboundTransaction.contact.0 {
-            setAlias(contact)
-        } else {
-            let (publicKey, _) = pendingInboundTransaction.sourcePublicKey
-            if let pubKey = publicKey {
-                setEmojis(pubKey)
-            }
-        }
-    }
+        let (publicKey, _) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
+        guard let pubKey = publicKey else { return }
 
-    func setDetails(pendingOutboundTransaction: PendingOutboundTransaction) {
-        setMessage(pendingOutboundTransaction.message.0)
-        setValue(microTari: pendingOutboundTransaction.microTari.0, direction: pendingOutboundTransaction.direction)
-        if let contact = pendingOutboundTransaction.contact.0 {
-            setAlias(contact)
-        } else {
-            let (publicKey, _) = pendingOutboundTransaction.destinationPublicKey
-            if let pubKey = publicKey {
-                setEmojis(pubKey)
+        if let _ = tx as? PendingInboundTransaction {
+            isPending = true
+        }
+
+        if let _ = tx as? PendingOutboundTransaction {
+            isPending = true
+        }
+
+        setAvatar(pubKey)
+
+        var alias = ""
+        var aliasIsEmojis = false
+        if let contact = tx.contact.0 {
+            alias = contact.alias.0
+        }
+
+        if alias.isEmpty {
+            let (emojis, _) = pubKey.emojis
+            alias = "\(String(emojis.emojis.prefix(2)))•••\(String(emojis.emojis.suffix(2)))"
+            aliasIsEmojis = true
+        }
+
+        var titleText = ""
+        if tx.direction == .inbound {
+            if isPending {
+                titleText = String(
+                    format: NSLocalizedString("tx_list.inbound_pending_title", comment: "Transaction list"),
+                    alias
+                )
+            } else {
+                titleText =  String(
+                    format: NSLocalizedString("tx_list.inbound_title", comment: "Transaction list"),
+                    alias
+                )
+            }
+        } else if tx.direction == .outbound {
+            titleText =  String(
+                format: NSLocalizedString("tx_list.outbound_title", comment: "Transaction list"),
+                alias
+            )
+        }
+
+        //Getting the line breaks around the alias an not the other spaces in the copy
+        titleText = titleText
+            .replacingOccurrences(of: " ", with: "\u{00A0}")
+            .replacingOccurrences(of: alias, with: " \(alias) ")
+            .trimmingCharacters(in: .whitespaces)
+
+        if let startIndex = titleText.indexDistance(of: alias) {
+            let attributedTitle = NSMutableAttributedString(
+                string: titleText,
+                attributes: [
+                    .font: Theme.shared.fonts.transactionCellUsernameLabel,
+                    .foregroundColor: Theme.shared.colors.transactionCellAlias!
+                ]
+            )
+
+            let range = NSRange(location: startIndex, length: alias.count)
+            attributedTitle.addAttribute(.font, value: Theme.shared.fonts.transactionCellUsernameLabelHeavy, range: range)
+            if aliasIsEmojis {
+                //So the elippises between the emojis is lighter
+                attributedTitle.addAttribute(.foregroundColor, value: Theme.shared.colors.emojisSeparator!, range: range)
+            }
+
+            titleLabel.attributedText = attributedTitle
+        }
+
+        statusLabel.text = ""
+        statusLabelHeightHidden.isActive = true
+
+        var statusMessage = ""
+
+        //Cancelled tranaction
+        if let compledTx = tx as? CompletedTransaction {
+            if compledTx.isCancelled {
+                isCancelled = true
+                statusMessage = "Transaction Cancelled"
             }
         }
+
+        switch tx.status.0 {
+        case .pending:
+            if tx.direction == .inbound {
+                statusMessage = NSLocalizedString("refresh_view.waiting_for_sender", comment: "Refresh view")
+            } else if tx.direction == .outbound {
+                statusMessage = NSLocalizedString("refresh_view.waiting_for_recipient", comment: "Refresh view")
+            }
+        case .broadcast, .completed:
+            statusMessage = NSLocalizedString("refresh_view.final_processing", comment: "Refresh view")
+        default:
+            statusMessage = ""
+        }
+
+        if statusMessage.isEmpty {
+            statusLabel.text = ""
+            statusLabelHeightHidden.isActive = true
+        } else {
+            statusLabel.text = statusMessage
+            statusLabelHeightHidden.isActive = false
+        }
+
+        setValue(microTari: tx.microTari.0, direction: tx.direction, isCancelled: isCancelled, isPending: isPending)
+        setMessage(tx.message.0)
+        timeLabel.text = tx.date.0?.relativeDayFromToday() ?? ""
     }
 }
 
 // MARK: setup subviews
 extension TransactionTableViewCell {
     private func viewSetup() {
-        contentView.backgroundColor = BACKGROUND_COLOR
+        contentView.backgroundColor = Theme.shared.colors.transactionTableBackground
         selectionStyle = .none
 
-        setupIcon()
-        setupValueLabel()
+        setupAvatar()
         setupLabels()
     }
 
-    private func setupIcon() {
-        contentView.addSubview(icon)
+    private func setupAvatar() {
+        contentView.addSubview(avatarContainer)
 
-        icon.image = Theme.shared.images.transfer
+        avatarContainer.backgroundColor = Theme.shared.colors.transactionTableBackground
 
-        icon.translatesAutoresizingMaskIntoConstraints = false
+        avatarContainer.translatesAutoresizingMaskIntoConstraints = false
 
-        icon.widthAnchor.constraint(equalToConstant: 44).isActive = true
-        icon.heightAnchor.constraint(equalToConstant: 44).isActive = true
-        icon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25).isActive = true
-        icon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-    }
+        let size: CGFloat = 42
+        avatarContainer.widthAnchor.constraint(equalToConstant: size).isActive = true
+        avatarContainer.heightAnchor.constraint(equalToConstant: size).isActive = true
+        avatarContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        avatarContainer.layer.cornerRadius = size / 2
 
-    private func setupValueLabel() {
-        contentView.addSubview(valueLabel)
+        avatarContainer.layer.shadowOpacity = 0.13
+        avatarContainer.layer.shadowOffset = CGSize(width: 10, height: 10)
+        avatarContainer.layer.shadowRadius = 23
+        avatarContainer.layer.shadowColor = Theme.shared.colors.defaultShadow?.cgColor
 
-        valueLabel.font = Theme.shared.fonts.transactionCellValueLabel
-        valueLabel.layer.cornerRadius = 3
-        valueLabel.layer.masksToBounds = true
-
-        valueLabel.translatesAutoresizingMaskIntoConstraints = false
-        valueLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        valueLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25).isActive = true
-
-        valueLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 251), for: .vertical)
-        valueLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 252), for: .horizontal)
+        avatarLabel.translatesAutoresizingMaskIntoConstraints = false
+        avatarContainer.addSubview(avatarLabel)
+        avatarLabel.font = UIFont.systemFont(ofSize: size * 0.55)
+        avatarLabel.centerXAnchor.constraint(equalTo: avatarContainer.centerXAnchor).isActive = true
+        avatarLabel.centerYAnchor.constraint(equalTo: avatarContainer.centerYAnchor).isActive = true
     }
 
     private func setupLabels() {
-        let containerLabels = UIView()
-        containerLabels.backgroundColor = .clear
-        contentView.addSubview(containerLabels)
+        // MARK: - Label container
+        let labelsContainer = UIView()
+        labelsContainer.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(labelsContainer)
+        labelsContainer.addBottomBorder(with: Theme.shared.colors.transactionCellBorder, andWidth: 1)
+        labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4).isActive = true
+        labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25).isActive = true
+        labelsContainer.leadingAnchor.constraint(equalTo: avatarContainer.trailingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        labelsContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
-        containerLabels.translatesAutoresizingMaskIntoConstraints = false
-        containerLabels.heightAnchor.constraint(equalToConstant: 40).isActive = true
-        containerLabels.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        containerLabels.leadingAnchor.constraint(equalTo: icon.trailingAnchor, constant: 20).isActive = true
-        containerLabels.trailingAnchor.constraint(equalTo: valueLabel.leadingAnchor, constant: -8).isActive = true
+        // MARK: - Value
+        valueContainer.addSubview(valueLabel)
+        valueLabel.translatesAutoresizingMaskIntoConstraints = false
+        valueLabel.numberOfLines = 1
+        valueLabel.font = Theme.shared.fonts.transactionCellValueLabel
+        valueLabel.layer.cornerRadius = 3
+        valueLabel.layer.masksToBounds = true
+        valueLabel.centerYAnchor.constraint(equalTo: valueContainer.centerYAnchor).isActive = true
+        valueLabel.trailingAnchor.constraint(equalTo: valueContainer.trailingAnchor).isActive = true
 
-        contentView.addSubview(userNameLabel)
+        valueLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 251), for: .vertical)
+        valueLabel.setContentHuggingPriority(UILayoutPriority(rawValue: 251), for: .horizontal)
 
-        userNameLabel.font = Theme.shared.fonts.transactionCellUsernameLabel
-        userNameLabel.textColor = Theme.shared.colors.transactionCellAlias
-        userNameLabel.text = ""
-        userNameLabel.lineBreakMode = .byTruncatingMiddle
+        labelsContainer.addSubview(valueContainer)
+        valueContainer.translatesAutoresizingMaskIntoConstraints = false
+        valueContainer.topAnchor.constraint(equalTo: labelsContainer.topAnchor).isActive = true
+        valueContainer.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
+        valueContainer.heightAnchor.constraint(equalToConstant: 23).isActive = true
+        valueContainer.widthAnchor.constraint(greaterThanOrEqualToConstant: 70).isActive = true
 
-        userNameLabel.translatesAutoresizingMaskIntoConstraints = false
-        userNameLabel.topAnchor.constraint(equalTo: containerLabels.topAnchor).isActive = true
-        userNameLabel.leadingAnchor.constraint(equalTo: containerLabels.leadingAnchor).isActive = true
-        userNameLabel.trailingAnchor.constraint(equalTo: containerLabels.trailingAnchor).isActive = true
+        // MARK: - Title/alias
+        labelsContainer.addSubview(titleLabel)
+        titleLabel.text = ""
+        titleLabel.numberOfLines = 2
+        titleLabel.lineBreakMode = .byWordWrapping
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.topAnchor.constraint(equalTo: labelsContainer.topAnchor).isActive = true
+        titleLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: valueContainer.leadingAnchor, constant: -4).isActive = true
 
-        contentView.addSubview(descriptionLabel)
+        // MARK: - Time
+        labelsContainer.addSubview(timeLabel)
+        timeLabel.font = Theme.shared.fonts.transactionDateValueLabel
+        timeLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
+        timeLabel.translatesAutoresizingMaskIntoConstraints = false
+        timeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5).isActive = true
+        timeLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
+        timeLabel.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
 
-        descriptionLabel.font = Theme.shared.fonts.transactionCellDescriptionLabel
-        descriptionLabel.textColor = Theme.shared.colors.transactionCellDescription
-        descriptionLabel.lineBreakMode = .byTruncatingTail
+        // MARK: - Status
+        labelsContainer.addSubview(statusLabel)
+        statusLabel.font = Theme.shared.fonts.transactionCellStatusLabel
+        statusLabel.textColor = Theme.shared.colors.transactionCellStatusLabel
+        statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        statusLabel.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 5).isActive = true
+        statusLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
+        statusLabel.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
+        statusLabelHeightHidden = statusLabel.heightAnchor.constraint(equalToConstant: 0)
+        statusLabelHeightHidden.isActive = true
 
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        descriptionLabel.bottomAnchor.constraint(equalTo: containerLabels.bottomAnchor).isActive = true
-        descriptionLabel.leadingAnchor.constraint(equalTo: containerLabels.leadingAnchor).isActive = true
-        descriptionLabel.trailingAnchor.constraint(equalTo: containerLabels.trailingAnchor).isActive = true
+        // MARK: - TX note
+        labelsContainer.addSubview(noteLabel)
+        noteLabel.font = Theme.shared.fonts.transactionCellDescriptionLabel
+        noteLabel.textColor = Theme.shared.colors.transactionCellNote
+        noteLabel.lineBreakMode = .byWordWrapping
+        noteLabel.numberOfLines = 0
+        noteLabel.translatesAutoresizingMaskIntoConstraints = false
+        noteLabel.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 5).isActive = true
+        noteLabel.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -25).isActive = true
+        noteLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
+        noteLabel.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
     }
 }

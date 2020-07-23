@@ -43,39 +43,7 @@ import UIKit
 import Lottie
 
 extension TransactionsTableViewController {
-
     // MARK: - Table view data source
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionHeaderView = UIView()
-        let sectionHeaderLabel = UILabel()
-
-        sectionHeaderLabel.translatesAutoresizingMaskIntoConstraints = false
-        sectionHeaderView.addSubview(sectionHeaderLabel)
-
-        let labelText = self.tableView(tableView, titleForHeaderInSection: section)
-
-        sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
-        sectionHeaderLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
-        sectionHeaderLabel.text = labelText
-        sectionHeaderLabel.textAlignment = .left
-
-        sectionHeaderLabel.bottomAnchor.constraint(equalTo: sectionHeaderView.bottomAnchor).isActive = true
-        sectionHeaderLabel.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-
-        //Add lottie loader if this is the section header for in progress transactions
-        if labelText == pendingLabelText {
-            sectionHeaderView.addSubview(pendingAnimationContainer)
-            pendingAnimationContainer.translatesAutoresizingMaskIntoConstraints = false
-            pendingAnimationContainer.widthAnchor.constraint(equalToConstant: 40).isActive = true
-            pendingAnimationContainer.heightAnchor.constraint(equalToConstant: 5).isActive = true
-            pendingAnimationContainer.centerYAnchor.constraint(equalTo: sectionHeaderLabel.centerYAnchor).isActive = true
-            pendingAnimationContainer.trailingAnchor.constraint(equalTo: sectionHeaderView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-            pendingAnimationContainer.play()
-        }
-
-        return sectionHeaderView
-    }
-
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 && tableView.isRefreshing() {
             return 30
@@ -83,71 +51,23 @@ extension TransactionsTableViewController {
         return 16
     }
 
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 && showsPendingGroup {
-            return pendingLabelText
-        } else {
-            let index = showsPendingGroup ? section - 1 : section
-
-            guard let tx = groupedCompletedTransactions[index].first else {
-                return ""
-            }
-
-            let (date, _) = tx.date
-            if let displayDate = date {
-                return displayDate.relativeDayFromToday()
-            }
-        }
-
-        return ""
-    }
-
     override func numberOfSections(in tableView: UITableView) -> Int {
-        var count = groupedCompletedTransactions.count
-
-        if showsPendingGroup {
-            count += 1
-        }
-
-        if count == 0 {
+        if transactions.count == 0 {
             backgroundType = .empty
         } else {
             backgroundType = .none
         }
 
-        return count
+        return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //If it's the first group and we're showing the pending group
-        if section == 0 && showsPendingGroup {
-            return pendingInboundTransactions.count + pendingOutboundTransactions.count
-        }
-
-        let index = showsPendingGroup ? section - 1 : section
-
-        return groupedCompletedTransactions[index].count
+        return transactions.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TransactionTableViewCell
-
-        //If it's the first group and we're showing the pending group
-        if indexPath.section == 0 && showsPendingGroup {
-            if indexPath.row < pendingInboundTransactions.count {
-                let inboundTransaction = pendingInboundTransactions[indexPath.row]
-                cell.setDetails(pendingInboundTransaction: inboundTransaction)
-            } else {
-                let outboundTransaction = pendingOutboundTransactions[indexPath.row - pendingInboundTransactions.count]
-                cell.setDetails(pendingOutboundTransaction: outboundTransaction)
-            }
-        } else {
-            //Handle as a completed transaction
-            let index = showsPendingGroup ? indexPath.section - 1 : indexPath.section
-            let transaction = groupedCompletedTransactions[index][indexPath.row]
-            cell.setDetails(completedTransaction: transaction)
-        }
-
+        cell.setDetails(transactions[indexPath.row])
         return cell
     }
 
@@ -244,7 +164,7 @@ extension TransactionsTableViewController {
         refreshControl.addSubview(animatedRefresher)
 
         animatedRefresher.translatesAutoresizingMaskIntoConstraints = false
-        animatedRefresher.topAnchor.constraint(equalTo: refreshControl.topAnchor, constant: 3).isActive = true
+        animatedRefresher.topAnchor.constraint(equalTo: refreshControl.topAnchor, constant: 10).isActive = true
 
         let leading = animatedRefresher.leadingAnchor.constraint(equalTo: refreshControl.leadingAnchor, constant: Theme.shared.sizes.appSidePadding)
         leading.isActive = true

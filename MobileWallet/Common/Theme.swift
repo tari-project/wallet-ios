@@ -156,14 +156,18 @@ struct Colors: Loopable {
 
     //Transaction cell
     let transactionCellAlias = UIColor(named: "TableCellContactAlias")
-    let transactionCellDescription = UIColor(named: "TransactionCellDescription")
+    let transactionCellNote = UIColor(named: "TransactionCellNote")
     let transactionCellValueNegativeBackground = UIColor(named: "TransactionCellValueNegativeBackground")
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
     let transactionCellValueCancelledBackground = UIColor(named: "TransactionCellValueCancelledBackground")
+    let transactionCellValuePendingBackground = UIColor(named: "TransactionCellValuePendingBackground")
     let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
     let transactionCellValueCancelledText = UIColor(named: "TransactionCellValueCancelledText")
+    let transactionCellValuePendingText = UIColor(named: "TransactionCellValuePendingText")
     let transactionSmallSubheadingLabel = UIColor(named: "SmallSubheading")
+    let transactionCellStatusLabel = UIColor(named: "TransactionCellStatus")
+    let transactionCellBorder = UIColor(named: "TransactionCellBorder")
 
     // Sending Tari
     let sendingTariTitle = UIColor(named: "SendingTariTitleText")
@@ -249,14 +253,6 @@ struct Images: Loopable {
     let createWalletDownArrow = UIImage(named: "notch_down")
     let createWalletNumpad = UIImage(named: "numpad")
 
-    //Transaction icons
-    let food = UIImage(named: "food")
-    let game = UIImage(named: "game")
-    let thanks = UIImage(named: "thanks")
-    let transfer = UIImage(named: "transfer")
-    let drinks = UIImage(named: "drinks")
-    let services = UIImage(named: "services")
-
     //General icons
     let currencySymbol = UIImage(named: "Gem")
     let qrButton = UIImage(named: "QRButton")
@@ -319,10 +315,12 @@ struct Fonts: Loopable {
     let homeScreenTotalBalanceValueLabelDecimals = UIFont.Avenir.black.withSize(16.0)
 
     //Transaction cell
-    let transactionCellUsernameLabel = UIFont.Avenir.heavy.withSize(15.0)
+    let transactionCellUsernameLabel = UIFont.Avenir.light.withSize(14.0)
+    let transactionCellUsernameLabelHeavy = UIFont.Avenir.heavy.withSize(14.0)
     let transactionCellDescriptionLabel = UIFont.Avenir.roman.withSize(14.0)
     let transactionCellValueLabel = UIFont.Avenir.black.withSize(12.0)
-    let transactionDateValueLabel = UIFont.Avenir.medium.withSize(12.0)
+    let transactionDateValueLabel = UIFont.Avenir.medium.withSize(11.0)
+    let transactionCellStatusLabel = UIFont.Avenir.roman.withSize(12.0)
 
     //View transaction screen
     let transactionScreenCurrencyValueLabel = UIFont.Avenir.black.withSize(90.0)
@@ -404,7 +402,7 @@ struct Fonts: Loopable {
 }
 
 struct Sizes {
-    let appSidePadding: CGFloat = 25 //TODO maybe adjust for smaller phones
+    let appSidePadding: CGFloat = 22
     //TODO move other constants here
 }
 

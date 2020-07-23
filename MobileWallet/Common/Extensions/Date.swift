@@ -47,7 +47,21 @@ extension Date {
     */
     func relativeDayFromToday() -> String? {
         if Calendar.current.isDateInToday(self) {
-            return NSLocalizedString("tx_list.today", comment: "Transaction list section heading")
+            let components =  Calendar.current.dateComponents([.hour, .minute], from: self, to: Date())
+            guard let hours = components.hour else { return nil }
+
+            if hours == 0 {
+                guard let minutes = components.minute else { return nil }
+                return String(
+                    format: NSLocalizedString("tx_list.relative_minutes", comment: "Transaction list section heading"),
+                    "\(minutes)"
+                )
+            }
+
+            return String(
+                format: NSLocalizedString("tx_list.relative_hours", comment: "Transaction list section heading"),
+                "\(hours)"
+            )
         } else if Calendar.current.isDateInYesterday(self) {
             return NSLocalizedString("tx_list.yesterday", comment: "Transaction list section heading")
         } else {
