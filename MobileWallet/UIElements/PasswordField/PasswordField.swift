@@ -53,6 +53,10 @@ class PasswordField: UIView, UITextFieldDelegate {
 
     var placeholder: String? {
         didSet {
+            let attributes = [
+                NSAttributedString.Key.font: Theme.shared.fonts.settingsPasswordPlaceholder
+            ]
+            textField.attributedPlaceholder = NSAttributedString(string: placeholder ?? "", attributes: attributes)
             textField.placeholder = placeholder
         }
     }
