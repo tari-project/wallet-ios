@@ -72,7 +72,7 @@ class SettingsViewController: SettingsParentTableViewController {
 
         var rawValue: String {
             switch self {
-            case .backUpWallet: return NSLocalizedString("settings.item.backup_wallet", comment: "Settings view")
+            case .backUpWallet: return NSLocalizedString("settings.item.wallet_backups", comment: "Settings view")
 
             case .reportBug: return NSLocalizedString("settings.item.report_bug", comment: "Settings view")
             case .visitTari: return NSLocalizedString("settings.item.visit_tari", comment: "Settings view")

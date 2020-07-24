@@ -399,7 +399,7 @@ struct Fonts: Loopable {
     let settingsFillablePhraseViewDescription = UIFont.Avenir.medium.withSize(12.0)
 
     let settingsPasswordTitle = UIFont.Avenir.medium.withSize(13.0)
-    let settingsPassword = UIFont.Avenir.roman.withSize(14.0)
+    let settingsPasswordPlaceholder = UIFont.Avenir.roman.withSize(14.0)
     let settingsPasswordWarning = UIFont.Avenir.heavy.withSize(13.0)
 }
 
