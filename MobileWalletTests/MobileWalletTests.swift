@@ -85,9 +85,9 @@ class MobileWalletTests: XCTestCase {
         /*
          Today Date Test
         */
-        let dateValue = Date().relativeDayFromToday()
-        XCTAssertEqual(dateValue, "Today", "Test Failed. Value returned from Relative Day value should have been - Today")
-        
+        XCTAssertEqual(Date().addingTimeInterval(-120).relativeDayFromToday(), "2m ago")
+        XCTAssertEqual(Date().addingTimeInterval(-(60 * 60 * 2)).relativeDayFromToday(), "2h ago")
+
         /*
          Yesterday Date Test
          */

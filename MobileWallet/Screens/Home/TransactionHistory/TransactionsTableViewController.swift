@@ -72,7 +72,6 @@ class TransactionsTableViewController: UITableViewController {
     }
 
     let cellIdentifier = "TransactionTableViewCell"
-    let sectionHeaderHeight: CGFloat = 0
     weak var actionDelegate: TransactionsTableViewDelegate?
     let animatedRefresher = AnimatedRefreshingView()
     private var lastContentOffset: CGFloat = 0
@@ -80,13 +79,7 @@ class TransactionsTableViewController: UITableViewController {
 
     private var kvoBackupScheduleToken: NSKeyValueObservation?
 
-    var groupedCompletedTransactions: [[CompletedTransaction]] = []
-    var pendingInboundTransactions: [PendingInboundTransaction] = []
-    var pendingOutboundTransactions: [PendingOutboundTransaction] = []
-
-    var showsPendingGroup: Bool {
-        return pendingInboundTransactions.count > 0 || pendingOutboundTransactions.count > 0
-    }
+    var transactions: [TransactionProtocol] = []
 
     private var isScrolledToTop: Bool = true {
         willSet {
@@ -98,17 +91,6 @@ class TransactionsTableViewController: UITableViewController {
             }
         }
     }
-
-    lazy var pendingAnimationContainer: AnimationView = {
-        let animation = Animation.named("pendingTx")
-        var animationContainer = AnimationView()
-        animationContainer.animation = animation
-        animationContainer.loopMode = .loop
-        animationContainer.backgroundBehavior = .pauseAndRestore
-        return animationContainer
-    }()
-
-    let pendingLabelText = NSLocalizedString("tx_list.in_progress", comment: "Transactions list")
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -148,12 +130,9 @@ class TransactionsTableViewController: UITableViewController {
         setupRefreshControl()
 
         tableView.register(TransactionTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
-        tableView.estimatedSectionHeaderHeight = UITableView.automaticDimension
-
         tableView.separatorStyle = .none
-        tableView.rowHeight = 74
         tableView.contentInsetAdjustmentBehavior = .never
-        tableView.contentInset = UIEdgeInsets(top: 48, left: 0, bottom: 0, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 28, left: 0, bottom: 180, right: 0)
 
         view.backgroundColor = Theme.shared.colors.transactionTableBackground
     }
@@ -242,84 +221,24 @@ class TransactionsTableViewController: UITableViewController {
         }
 
         //All completed/cancelled txs
-        let (groupedTransactions, groupedTransactionsError) = wallet.groupedCompletedAndCancelledTransactions
-        guard groupedTransactionsError == nil else {
+        let (allTransactions, allTransactionsError) = wallet.allTransactions
+        guard allTransactionsError == nil else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
                 description: NSLocalizedString("tx_list.error.grouped_transactions.descritpion", comment: "Transactions list"),
-                error: groupedTransactionsError
+                error: allTransactionsError
             )
             return
         }
 
-        //All pending inbound
-        let (pendingInboundTxs, pendingInboundTxsError) = wallet.pendingInboundTransactions
-        guard pendingInboundTxsError == nil else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
-                description: NSLocalizedString("tx_list.error.pending_inbound_tx.description", comment: "Transactions list"),
-                error: pendingInboundTxsError
-            )
-            return
-        }
-
-        let (pendingInboundTxsList, pendingInboundTxsListError) = pendingInboundTxs!.list
-        guard pendingInboundTxsListError == nil else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
-                description: NSLocalizedString("tx_list.error.pending_inbound_tx.title", comment: "Transactions list"),
-                error: pendingInboundTxsListError
-            )
-            return
-        }
-
-        //All pending outbound
-        let (pendingOutboundTxs, pendingOutboundTxsError) = wallet.pendingOutboundTransactions
-        guard pendingOutboundTxsError == nil else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
-                description: NSLocalizedString("tx_list.error.pending_outbound_tx..description", comment: "Transactions list"),
-                error: pendingOutboundTxsError
-            )
-            return
-        }
-
-        let (pendingOutboundTxsList, pendingOutboundTxsListError) = pendingOutboundTxs!.list
-        guard pendingOutboundTxsListError == nil else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
-                description: NSLocalizedString("tx_list.error.pending_outbound_tx.title", comment: "Transactions list"),
-                error: pendingOutboundTxsListError
-            )
-            return
-        }
-
-        groupedCompletedTransactions = groupedTransactions
-        pendingInboundTransactions = pendingInboundTxsList
-        pendingOutboundTransactions = pendingOutboundTxsList
+        transactions = allTransactions
 
         tableView.reloadData()
     }
 
     //Transaction gets tapped
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
-        var transaction: Any?
-
-        //If it's the first group and we're showing the pending group
-        if indexPath.section == 0 && showsPendingGroup {
-            if indexPath.row < pendingInboundTransactions.count {
-                transaction = pendingInboundTransactions[indexPath.row]
-            } else {
-                transaction = pendingOutboundTransactions[indexPath.row - pendingInboundTransactions.count]
-            }
-        } else {
-            //Handle as a completed transaction
-            let index = showsPendingGroup ? indexPath.section - 1 : indexPath.section
-            transaction = groupedCompletedTransactions[index][indexPath.row]
-        }
-
-        actionDelegate?.onTransactionSelect(transaction!)
-
+        actionDelegate?.onTransactionSelect(transactions[indexPath.row])
         return nil
     }
 
@@ -354,7 +273,7 @@ class TransactionsTableViewController: UITableViewController {
     }
 
     func scrollToTop() {
-        if groupedCompletedTransactions.count < 1 {
+        if transactions.count < 1 {
             return
         }
 

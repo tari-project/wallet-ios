@@ -40,9 +40,13 @@
 "tx_list.in_progress" = "In Progress";
 "tx_list.intro" = "Your wallet setup is complete.";
 "tx_list.intro_message" = "You’re ready to start exploring";
-"tx_list.today" = "Today";
+"tx_list.relative_hours" = "%@h ago";
+"tx_list.relative_minutes" = "%@m ago";
 "tx_list.empty" = "We don’t see any transactions yet.\nHopefully something happens soon…🤞";
 "tx_list.yesterday" = "Yesterday";
+"tx_list.inbound_pending_title" = "%@sent a payment";
+"tx_list.inbound_title" = "%@paid you";
+"tx_list.outbound_title" = "You paid%@";
 
 "tx_list.error.sync_to_base_node.title" = "Base node error";
 "tx_list.error.sync_to_base_node.description" = "Could not sync to base node";
