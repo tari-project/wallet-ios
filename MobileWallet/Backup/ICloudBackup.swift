@@ -131,6 +131,7 @@ class ICloudBackup: NSObject {
 
     private(set) var inProgress: Bool = false
     private(set) var progressValue: Double = 0.0
+    private var uploadTimer: Timer?
 
     private(set) var isLastBackupFailed: Bool {
         get {
@@ -339,6 +340,8 @@ extension ICloudBackup {
                 progressValue = 0.0
                 inProgress = false
                 notifyObservers(percent: 100, completed: true, error: nil)
+                uploadTimer?.invalidate()
+                uploadTimer = nil
                 try cleanTempDirectory()
                 query.disableUpdates()
             } else if let error = fileValues.ubiquitousItemUploadingError {
@@ -357,6 +360,26 @@ extension ICloudBackup {
             isLastBackupFailed = true
             inProgress = false
             notifyObservers(percent: 0, completed: false, error: ICloudBackupError.noInternetConnection)
+        }
+    }
+
+    private func enableUploadTimeout() {
+        var previousUploadValue = 0.0
+        uploadTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] (timer) in
+            guard let self = self, previousUploadValue == self.progressValue else {
+                timer.invalidate()
+                return
+            }
+            if previousUploadValue == self.progressValue {
+                self.stopSyncWithConnectionError()
+                timer.invalidate()
+                self.uploadTimer = nil
+            }
+            if !self.inProgress {
+                timer.invalidate()
+                self.uploadTimer = nil
+            }
+            previousUploadValue = self.progressValue
         }
     }
 
@@ -429,15 +452,20 @@ extension ICloudBackup {
                 self.query.operationQueue?.addOperation({ [weak self] in
                     _ = self?.query.start()
                     self?.query.enableUpdates()
+                    self?.enableUploadTimeout()
                 })
             } else {
-                if !self.inProgress { return }
-                self.query.stop()
-                self.inProgress = false
-                self.isLastBackupFailed = true
-                self.notifyObservers(percent: 0, completed: false, error: ICloudBackupError.noInternetConnection)
+                self.stopSyncWithConnectionError()
             }
         }
+    }
+
+    private func stopSyncWithConnectionError() {
+        if !self.inProgress { return }
+        self.query.stop()
+        self.inProgress = false
+        self.isLastBackupFailed = true
+        self.notifyObservers(percent: 0, completed: false, error: ICloudBackupError.noInternetConnection)
     }
 
     private func checkNetworkConnection(completion: @escaping (_ connected: Bool) -> Void) {
