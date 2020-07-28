@@ -83,6 +83,8 @@ class WalletCreationViewController: UIViewController {
     private var continueButtonSecondShowConstraint: NSLayoutConstraint?
     private var continueButtonShowConstraint: NSLayoutConstraint?
 
+    private let localAuth = LAContext()
+
     private let radialGradient: RadialGradientView = RadialGradientView(insideColor: Theme.shared.colors.accessAnimationViewShadow!, outsideColor: Theme.shared.colors.creatingWalletBackground!)
 
     // MARK: - Override functions
@@ -212,14 +214,14 @@ class WalletCreationViewController: UIViewController {
             DispatchQueue.main.async {
                 Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
 
-                let newNavigationController = AlwaysPoppableNavigationController()
+                let nav = AlwaysPoppableNavigationController()
                 let homeViewController = HomeViewController()
-                newNavigationController.setViewControllers([homeViewController], animated: false)
+                nav.setViewControllers([homeViewController], animated: false)
 
-                if let window = UIApplication.shared.windows.first {
+                if let window = UIApplication.shared.keyWindow {
                     let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
                     homeViewController.view.addSubview(overlayView)
-                    window.rootViewController = newNavigationController
+                    window.rootViewController = nav
 
                     UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
                         overlayView.alpha = 0
@@ -232,8 +234,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func runAuth() {
-        let context = LAContext()
-        context.authenticateUser(onSuccess: successAuth)
+        localAuth.authenticateUser(onSuccess: successAuth)
     }
 
     private func successAuth() {

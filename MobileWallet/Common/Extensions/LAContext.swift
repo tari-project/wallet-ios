@@ -76,7 +76,7 @@ extension LAContext {
         }
     }
 
-    func authenticateUser(reason: AuthenticateUserReason = .logIn, onSuccess: @escaping () -> Void) {
+    func authenticateUser(reason: AuthenticateUserReason = .logIn, showFailedDialog: Bool = true, onSuccess: @escaping () -> Void) {
         #if targetEnvironment(simulator)
         //Skip auth on simulator, quicker for development
         onSuccess()
@@ -91,15 +91,14 @@ extension LAContext {
                 [weak self] success, error in
 
                 DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
                     if success {
                         onSuccess()
                     } else {
+                        if !showFailedDialog { return }
                         let localizedReason = error?.localizedDescription ?? NSLocalizedString("authentication.fail.description", comment: "Authentication")
                         TariLogger.error("Biometrics auth failed", error: error)
-                        DispatchQueue.main.async { [weak self] in
-                            guard let self = self else { return }
-                            self.authenticationFailedAlertOptions(reason: localizedReason, onSuccess: onSuccess)
-                        }
+                        self.authenticationFailedAlertOptions(reason: localizedReason, onSuccess: onSuccess)
                     }
                 }
             }
@@ -125,14 +124,16 @@ extension LAContext {
 
     private func authenticationFailedAlertOptions(reason: String, onSuccess: @escaping () -> Void) {
         let alert = UIAlertController(title: NSLocalizedString("authentication.fail.title", comment: "Authentication"), message: reason, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Try again", comment: "Authentication"), style: .default, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("authentication.try_again", comment: "Authentication"), style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
             self.authenticateUser(onSuccess: onSuccess)
         }))
 
         alert.addAction(UIAlertAction(title: NSLocalizedString("authentication.action.open_settings", comment: "Authentication"), style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
-            self.openAppSettings()
+            if self.openAppSettings() {
+                self.authenticationFailedAlertOptions(reason: reason, onSuccess: onSuccess)
+            }
         }))
 
         if let topController = UIApplication.shared.topController() {
@@ -140,9 +141,11 @@ extension LAContext {
         }
     }
 
-    private func openAppSettings() {
+    private func openAppSettings() -> Bool {
         if let appSettings = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(appSettings)
+            return true
         }
+        return false
     }
 }
