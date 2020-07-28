@@ -127,13 +127,16 @@ class UserFeedback {
             onClose: {
                 SwiftEntryKit.dismiss()
                 onCancel?()
-            }, onAction: onAction
+            }, onAction: {
+                SwiftEntryKit.dismiss()
+                onAction()
+            }
         )
 
         var attributes = defaultAttributes
         attributes.displayDuration = .infinity
         attributes.hapticFeedbackType = .success
-        attributes.screenInteraction = .dismiss
+        attributes.screenInteraction = .absorbTouches
 
         SwiftEntryKit.display(entry: ctaFeedbackView, using: attributes)
         TariLogger.verbose("User call to action: title=\(title) description=\(description)")

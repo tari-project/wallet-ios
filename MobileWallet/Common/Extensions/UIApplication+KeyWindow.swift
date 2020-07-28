@@ -42,16 +42,11 @@ import UIKit
 
 extension UIApplication {
     var keyWindow: UIWindow? {
-        return UIApplication.shared.connectedScenes
-        .filter({$0.activationState == .foregroundActive})
-        .map({$0 as? UIWindowScene})
-        .compactMap({$0})
-        .first?.windows
-        .filter({$0.isKeyWindow}).first
+        return UIApplication.shared.windows.filter({$0.isKeyWindow}).first
     }
 
     func topController() -> UIViewController? {
-        if var topController = UIApplication.shared.windows.filter({$0.isKeyWindow}).first?.rootViewController {
+        if var topController = keyWindow?.rootViewController {
             while let presentedViewController = topController.presentedViewController {
                 topController = presentedViewController
             }

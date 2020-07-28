@@ -42,6 +42,8 @@ import UIKit
 import LocalAuthentication
 
 class RestoreWalletViewController: SettingsParentTableViewController {
+    private let localAuth = LAContext()
+
     private let pendingView = PendingView(title: NSLocalizedString("restore_pending_view.title", comment: "RestorePending view"), definition: NSLocalizedString("restore_pending_view.description", comment: "RestorePending view"))
     private let items: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue)]
@@ -103,8 +105,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     private func oniCloudRestoreAction() {
-        let locatAuth = LAContext()
-        locatAuth.authenticateUser(reason: .userVerification) { [weak self] in
+        localAuth.authenticateUser(reason: .userVerification) { [weak self] in
             if self?.iCloudBackup.lastBackup?.isEncrypted == true {
                 self?.navigationController?.pushViewController(PasswordVerificationViewController(variation: .restore, restoreWalletAction: self?.restoreWallet(password:)), animated: true)
             } else {

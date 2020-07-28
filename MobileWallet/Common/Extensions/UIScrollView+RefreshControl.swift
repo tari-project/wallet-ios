@@ -44,7 +44,7 @@ extension UIScrollView {
 
     func beginRefreshing() {
         guard let refreshControl = refreshControl, !refreshControl.isRefreshing else { return }
-        let refreshControlHeight: CGFloat = 60.0 // static because if fast drag tableView refreshControl height will not correct
+        let refreshControlHeight: CGFloat = 70.0 // static because if fast drag tableView refreshControl height will not correct
         let contentOffset = CGPoint(x: 0, y: -refreshControlHeight - contentInset.top)
         refreshControl.beginRefreshing()
         refreshControl.sendActions(for: .valueChanged)

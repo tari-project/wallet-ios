@@ -118,6 +118,9 @@ class TransactionsTableViewController: UITableViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        if tableView.refreshControl?.isRefreshing == false {
+            animatedRefresher.stateType = .none
+        }
         observeBackupState()
     }
 
@@ -160,11 +163,14 @@ class TransactionsTableViewController: UITableViewController {
 
     @objc private func unregisterEvents() {
         animatedRefresher.animateOut()
+        animatedRefresher.stateType = .none
         TariEventBus.unregister(self)
     }
 
     private func beginRefreshing() {
         tableView.reloadData()
+        if animatedRefresher.stateType != .none { return }
+        animatedRefresher.stateType = .updateData
         animatedRefresher.updateState(.loading)
         animatedRefresher.animateIn()
 
@@ -185,16 +191,17 @@ class TransactionsTableViewController: UITableViewController {
     }
 
     private func endRefreshingWithSuccess() {
+        if animatedRefresher.stateType != .updateData { return }
         guard let refreshControl = tableView.refreshControl, refreshControl.isRefreshing else { return }
         animatedRefresher.updateState(.success)
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
             guard let self = self else { return }
             self.animatedRefresher.animateOut { [weak self] in
-                self?.safeRefreshTable()
-                if !ICloudBackup.shared.inProgress && !BackupScheduler.shared.isBackupScheduled {
+                self?.safeRefreshTable({ [weak self] in
+                    self?.animatedRefresher.stateType = .none
                     self?.tableView.endRefreshing()
-                }
+                })
             }
         })
     }
@@ -204,9 +211,10 @@ class TransactionsTableViewController: UITableViewController {
         beginRefreshing()
     }
 
-    func safeRefreshTable() {
+    func safeRefreshTable(_ completion:(() -> Void)? = nil) {
         TariLib.shared.waitIfWalletIsRestarting { [weak self] _ in
             self?.refreshTable()
+            completion?()
         }
     }
 
@@ -291,7 +299,7 @@ extension TransactionsTableViewController: ICloudBackupObserver {
 
     private func observeBackupState() {
         ICloudBackup.shared.addObserver(self)
-        updateRefreshView()
+        updateRefreshView(initialUpdate: true)
         if kvoBackupScheduleToken != nil { return }
         kvoBackupScheduleToken = BackupScheduler.shared.observe(\.isBackupScheduled, options: .new) { [weak self] (_, _) in
             self?.updateRefreshView()
@@ -304,30 +312,34 @@ extension TransactionsTableViewController: ICloudBackupObserver {
         kvoBackupScheduleToken = nil
     }
 
-    private func updateRefreshView() {
-        DispatchQueue.main.async { [weak self] in
+    private func updateRefreshView(initialUpdate: Bool = false) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
             guard let self = self else { return }
             if  BackupScheduler.shared.isBackupScheduled || ICloudBackup.shared.inProgress {
+                self.animatedRefresher.stateType = .backup
                 self.tableView.beginRefreshing()
                 if BackupScheduler.shared.isBackupScheduled {
                     self.animatedRefresher.updateState(.backupScheduled)
                 } else if ICloudBackup.shared.inProgress {
                     self.animatedRefresher.updateState(.backupInProgress)
                 }
-                self.animatedRefresher.animateIn()
             } else {
-                if !ICloudBackup.shared.isLastBackupFailed {
+                if !ICloudBackup.shared.isLastBackupFailed && !initialUpdate {
                     self.animatedRefresher.updateState(.backupSuccess)
                 }
 
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
                     guard let self = self else { return }
-                    self.animatedRefresher.setupView(.loading)
                     self.animatedRefresher.animateOut { [weak self] in
-                        self?.tableView.endRefreshing()
+                        self?.animatedRefresher.stateType = .none
+                        self?.safeRefreshTable({ [weak self] in
+                            self?.tableView.endRefreshing()
+                        })
                     }
                 }
             }
+            self.animatedRefresher.animateIn()
+            self.tableView.layoutSubviews()
         }
     }
 }

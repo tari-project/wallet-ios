@@ -71,6 +71,10 @@ private class RefreshingInnerView: UIView {
     }
 
     func setupView(_ type: AnimatedRefreshingViewState) {
+        emojiLabel.removeFromSuperview()
+        statusLabel.removeFromSuperview()
+        spinner.removeFromSuperview()
+
         emojiLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(emojiLabel)
         emojiLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
@@ -148,6 +152,15 @@ class AnimatedRefreshingView: UIView {
     private var currentInnerViewBottomAnchor = NSLayoutConstraint()
     private var currentState: AnimatedRefreshingViewState = .loading
 
+    enum StateType {
+        case none
+        case updateData
+        case backup
+        case txtView
+    }
+
+    var stateType: StateType = .none
+
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -180,6 +193,7 @@ class AnimatedRefreshingView: UIView {
     }
 
     func animateIn(delay: TimeInterval = 0.25, withDuration: TimeInterval = 0.5) {
+        if alpha == 1 { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: {
             UIView.animate(withDuration: withDuration, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
                 guard let self = self else { return }
@@ -190,6 +204,7 @@ class AnimatedRefreshingView: UIView {
     }
 
     func animateOut(_ onComplete: (() -> Void)? = nil) {
+        if alpha == 0 { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
                 guard let self = self else { return }

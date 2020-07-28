@@ -99,8 +99,13 @@
 "backup_wallet_settings.item.secure_your_backup"  = "Secure your iCloud backup";
 "backup_wallet_settings.item.backup_now" = "Back up now";
 "backup_wallet_settings.item.with_recovery_phrase" = "Back up with recovery phrase";
-"backup_wallet_settings.header.title" = "Back Up Wallet";
+"backup_wallet_settings.header.title" = "Wallet Backups";
 "backup_wallet_settings.header.description" = "By backing up your wallet, you’ll ensure that you don’t lose your tXTR if your phone is lost or broken.";
+
+"backup_wallet_settings.switch.warning.title" = "Your backup will be deleted";
+"backup_wallet_settings.switch.warning.description" = "Are you sure you want to proceed?";
+"backup_wallet_settings.switch.warning.cancel" = "Cancel";
+"backup_wallet_settings.switch.warning.confirm" = "Confirm";
 
 /* SecureBackup view */
 "secure_backup.title" = "Security";
@@ -147,7 +152,7 @@
 
 /* iCloudBackup error */
 "iCloud_backup.error.title.set_password" = "Failed to set backup password";
-"iCloud_backup.error.title.create_backup" = "Failed to create backup";
+"iCloud_backup.error.title.create_backup" = "Wallet Backup Incomplete";
 "iCloud_backup.error.title.iCloud_synch" = "Warning. Failed upload wallet backup to iCloud";
 "iCloud_backup.error.title.restore_wallet" = "Failed to restore wallet";
 
@@ -160,7 +165,7 @@
 "iCloud_backup.error.no_backup_exists" = "You don't have any wallets backed up with iCloud";
 "iCloud_backup.error.keychain_password_failure" = "Failed to load password from keychain. Please, try to set new password for backup";
 "iCloud_backup.error.upload_to_iCloud_failure" = "Your wallet backup was created locally but not synchronized with iCloud due to problems with internet connection. Data will synchronized automatically with internet connection.";
-"iCloud_backup.error.no_internet_connection" = "Internet connection problems";
+"iCloud_backup.error.no_internet_connection" = "Can't connect to iCloud Drive services. Please check your internet connection.";
 "iCloud_backup.error.unable_determine_backup_date" = "Unable to determine backup date";
 "iCloud_backup.error.backup_url_not_valid" = "Url of backup is not valid";
 

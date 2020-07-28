@@ -42,6 +42,7 @@ import UIKit
 import LocalAuthentication
 
 class SettingsViewController: SettingsParentTableViewController {
+    private let localAuth = LAContext()
 
     private enum Section: Int, CaseIterable {
         case security
@@ -118,8 +119,7 @@ class SettingsViewController: SettingsParentTableViewController {
     }
 
     func onBackupWalletAction() {
-        let localAuth = LAContext()
-        localAuth.authenticateUser(reason: .userVerification) { [weak self] in
+        localAuth.authenticateUser(reason: .userVerification, showFailedDialog: false) { [weak self] in
             self?.navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)
         }
     }
@@ -183,7 +183,9 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
 
                 lastBackupLabel.translatesAutoresizingMaskIntoConstraints = false
                 lastBackupLabel.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 25).isActive = true
+                lastBackupLabel.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -25).isActive = true
                 lastBackupLabel.topAnchor.constraint(equalTo: header.topAnchor, constant: 8).isActive = true
+                lastBackupLabel.lineBreakMode = .byTruncatingMiddle
             } else {
                 header.heightAnchor.constraint(equalToConstant: 70).isActive = true
             }

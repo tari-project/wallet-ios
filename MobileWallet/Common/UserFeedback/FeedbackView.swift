@@ -130,10 +130,6 @@ class FeedbackView: UIView {
         if let onAction = onCallToActionHandler {
             onAction()
         }
-
-        if let onClose = onCloseHandler {
-            onClose()
-        }
     }
 
     @objc private func onSubmitActionButtonPressed() {
