@@ -290,7 +290,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             let homeViewController = HomeViewController()
             nav.setViewControllers([homeViewController], animated: false)
 
-            if let window = UIApplication.shared.windows.first {
+            if let window = UIApplication.shared.keyWindow {
                 let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
                 homeViewController.view.addSubview(overlayView)
                 window.rootViewController = nav

@@ -232,7 +232,7 @@ class ICloudBackup: NSObject {
             }
 
             try FileManager.default.copyItem(at: fileURL, to: walletFolderURL.appendingPathComponent(fileURL.lastPathComponent))
-
+            isLastBackupFailed = false
             inProgress = true
             progressValue = 0.0
             BackupScheduler.shared.removeSchedule()
@@ -338,14 +338,15 @@ extension ICloudBackup {
             if let fileUploaded = fileItem?.value(forAttribute: NSMetadataUbiquitousItemIsUploadedKey) as? Bool, fileUploaded == true, fileValues.ubiquitousItemIsUploading == false {
                 progressValue = 0.0
                 inProgress = false
-                isLastBackupFailed = false
                 notifyObservers(percent: 100, completed: true, error: nil)
                 try cleanTempDirectory()
+                query.disableUpdates()
             } else if let error = fileValues.ubiquitousItemUploadingError {
                 progressValue = 0.0
                 inProgress = false
                 isLastBackupFailed = true
                 notifyObservers(percent: 0, completed: false, error: error)
+                query.disableUpdates()
             } else {
                 if let fileProgress = fileItem?.value(forAttribute: NSMetadataUbiquitousItemPercentUploadedKey) as? Double {
                     progressValue = fileProgress
@@ -355,17 +356,20 @@ extension ICloudBackup {
         } catch {
             isLastBackupFailed = true
             inProgress = false
-            notifyObservers(percent: 0, completed: false, error: ICloudBackupError.uploadToICloudFailure)
+            notifyObservers(percent: 0, completed: false, error: ICloudBackupError.noInternetConnection)
         }
     }
 
     private func notifyObservers(percent: Double, started: Bool = false, completed: Bool, error: Error?) {
-        observers.allObjects.forEach {
-            if let object = $0 as? ICloudBackupObserver {
-                object.onUploadProgress(percent: percent, started: started, completed: completed, error: error)
-            }
-            if completed {
-                self.endBackgroundBackupTask()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.observers.allObjects.forEach {
+                if let object = $0 as? ICloudBackupObserver {
+                    object.onUploadProgress(percent: percent, started: started, completed: completed, error: error)
+                }
+                if completed {
+                    self.endBackgroundBackupTask()
+                }
             }
         }
     }
@@ -419,28 +423,35 @@ extension ICloudBackup {
 // MARK: - private methods
 extension ICloudBackup {
     private func syncWithICloud() {
-        if isInternetConnected() {
-            query.operationQueue?.addOperation({ [weak self] in
-                _ = self?.query.start()
-                self?.query.enableUpdates()
-            })
-        } else {
-            if !inProgress { return }
-            query.stop()
-            inProgress = false
-            if isValidBackupExists() {
-                notifyObservers(percent: 100, completed: true, error: ICloudBackupError.uploadToICloudFailure)
+        checkNetworkConnection { [weak self] (connected) in
+            guard let self = self else { return }
+            if connected {
+                self.query.operationQueue?.addOperation({ [weak self] in
+                    _ = self?.query.start()
+                    self?.query.enableUpdates()
+                })
+            } else {
+                if !self.inProgress { return }
+                self.query.stop()
+                self.inProgress = false
+                self.isLastBackupFailed = true
+                self.notifyObservers(percent: 0, completed: false, error: ICloudBackupError.noInternetConnection)
             }
         }
     }
 
-    private func isInternetConnected() -> Bool {
-        guard let reachability = self.reachability else { return false }
-        switch reachability.connection {
-        case .wifi, .cellular:
-            return true
-        case .unavailable, .none:
-            return false
+    private func checkNetworkConnection(completion: @escaping (_ connected: Bool) -> Void) {
+        let speedTest = NetworkSpeedProvider()
+        speedTest.testSpeed { (_ speed: Float, _ error: Error?) in
+            if speed <= 0 || error != nil { completion(false) }
+
+            guard let reachability = self.reachability else { completion(false); return }
+            switch reachability.connection {
+            case .wifi, .cellular:
+                completion(true)
+            case .unavailable, .none:
+                completion(false)
+            }
         }
     }
 
@@ -505,20 +516,26 @@ extension ICloudBackup {
             let folderPath = backup.folderPath
             // if the last path component contains the “.icloud” extension. If yes the file is not on the device else the file is already downloaded.
             if lastPathComponent.contains(".icloud") {
-                if !isInternetConnected() { completion(nil, ICloudBackupError.noInternetConnection) }
+                checkNetworkConnection { (connected) in
+                    if !connected { completion(nil, ICloudBackupError.noInternetConnection) }
 
-                lastPathComponent.removeFirst()
-                let downloadedFilePath = folderPath + "/" + lastPathComponent.replacingOccurrences(of: ".icloud", with: "")
-                try FileManager.default.startDownloadingUbiquitousItem(at: backup.url)
+                    lastPathComponent.removeFirst()
+                    let downloadedFilePath = folderPath + "/" + lastPathComponent.replacingOccurrences(of: ".icloud", with: "")
+                    do {
+                        try FileManager.default.startDownloadingUbiquitousItem(at: backup.url)
+                    } catch {
+                        completion(nil, ICloudBackupError.noInternetConnection)
+                    }
 
-                Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer) in
-                    if FileManager.default.fileExists(atPath: downloadedFilePath) {
-                        timer.invalidate()
-                        do {
-                            let backup = try Backup(url: URL(fileURLWithPath: downloadedFilePath))
-                            completion(backup, nil)
-                        } catch {
-                            completion(nil, error)
+                    Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer) in
+                        if FileManager.default.fileExists(atPath: downloadedFilePath) {
+                            timer.invalidate()
+                            do {
+                                let backup = try Backup(url: URL(fileURLWithPath: downloadedFilePath))
+                                completion(backup, nil)
+                            } catch {
+                                completion(nil, error)
+                            }
                         }
                     }
                 }
