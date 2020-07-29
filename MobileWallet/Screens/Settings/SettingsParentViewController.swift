@@ -91,7 +91,23 @@ extension SettingsParentViewController {
         navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        navigationBar.heightAnchor.constraint(equalToConstant: 58).isActive = true
+
+        if modalPresentationStyle == .popover {
+            navigationBar.heightAnchor.constraint(equalToConstant: 58).isActive = true
+        } else {
+            navigationBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
+            navigationBar.verticalPositioning = .center
+        }
+
+        let stubView = UIView()
+        stubView.backgroundColor = navigationBar.backgroundColor
+        view.addSubview(stubView)
+        stubView.translatesAutoresizingMaskIntoConstraints = false
+
+        stubView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        stubView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        stubView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        stubView.bottomAnchor.constraint(equalTo: navigationBar.topAnchor).isActive = true
     }
 
     @objc func setupNavigationBarSeparator() {

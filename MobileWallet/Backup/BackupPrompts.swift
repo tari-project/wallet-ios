@@ -172,13 +172,8 @@ private class BackupPrompts {
                 actionTitle: content.ctaButton,
                 cancelTitle: content.cancelButton,
                 onAction: {
-                    let profileVC = ProfileViewController()
-                    profileVC.goStraightToBackup = true
-                    vc.navigationController?.pushViewController(profileVC, animated: true)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        profileVC.navigationBar.rightButtonAction?()
-                    }
-                }
+                    UIApplication.shared.menuTabBarController()?.setTab(.settings)
+            }
             )
             break
         }

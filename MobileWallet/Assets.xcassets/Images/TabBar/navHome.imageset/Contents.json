@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "Gem-Balance.png",
+      "filename" : "navHome.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "Gem-Balance@2x.png",
+      "filename" : "navHome@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "Gem-Balance@3x.png",
+      "filename" : "navHome@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

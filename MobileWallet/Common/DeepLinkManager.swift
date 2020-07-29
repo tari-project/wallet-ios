@@ -59,33 +59,14 @@ class DeepLinkManager {
             return
         }
 
-        guard let window = UIApplication.shared.keyWindow else {
-            return
-        }
+        if let tabBar = UIApplication.shared.menuTabBarController() {
+            //Slight delay so the home view finishes loading. Else next view ends up without a navbar
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                DeeplinkNavigator.shared.proceedToDeeplink(deeplinkType, tabBar: tabBar)
+            }
 
-        guard let rootVC = window.rootViewController else {
-            return
+            self.deeplinkType = nil
         }
-
-        var topVC = rootVC
-        while let presentedViewController = topVC.presentedViewController {
-            topVC = presentedViewController
-        }
-
-        guard let navController = topVC as? UINavigationController else {
-            return
-        }
-
-        guard let homeVC = navController.viewControllers[0] as? HomeViewController else {
-            return
-        }
-
-        //Slight delay so the home view finishes loading. Else next view ends up without a navbar
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            DeeplinkNavigator.shared.proceedToDeeplink(deeplinkType, homeVC: homeVC)
-        }
-
-        self.deeplinkType = nil
     }
 
     @discardableResult
@@ -103,7 +84,8 @@ class DeeplinkNavigator {
     static let shared = DeeplinkNavigator()
     private init() {}
 
-    func proceedToDeeplink(_ type: DeeplinkType, homeVC: HomeViewController) {
+    func proceedToDeeplink(_ type: DeeplinkType, tabBar: MenuTabBarController) {
+        let homeVC = tabBar.homeViewController
         switch type {
         case .send(deeplink: let link):
             if let deeplink = link {
@@ -122,7 +104,7 @@ class DeeplinkNavigator {
                 homeVC.onSend()
             }
         case .showQR:
-            homeVC.onProfileShow(self)
+            tabBar.setTab(.profile)
         }
     }
 }
