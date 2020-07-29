@@ -318,19 +318,19 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
         label.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 25).isActive = true
         label.topAnchor.constraint(equalTo: header.topAnchor, constant: 30).isActive = true
 
-        let desctiptionLabel = UILabel()
-        desctiptionLabel.numberOfLines = 0
-        desctiptionLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
-        desctiptionLabel.textColor = Theme.shared.colors.settingsViewDescription
-        desctiptionLabel.text = NSLocalizedString("backup_wallet_settings.header.description", comment: "BackupWalletSettings view")
+        let descriptionLabel = UILabel()
+        descriptionLabel.numberOfLines = 0
+        descriptionLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
+        descriptionLabel.textColor = Theme.shared.colors.settingsViewDescription
+        descriptionLabel.text = NSLocalizedString("backup_wallet_settings.header.description", comment: "BackupWalletSettings view")
 
-        header.addSubview(desctiptionLabel)
+        header.addSubview(descriptionLabel)
 
-        desctiptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        desctiptionLabel.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 25).isActive = true
-        desctiptionLabel.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 25).isActive = true
-        desctiptionLabel.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -25).isActive = true
-        desctiptionLabel.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -25).isActive = true
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 15).isActive = true
+        descriptionLabel.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 25).isActive = true
+        descriptionLabel.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -25).isActive = true
+        descriptionLabel.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -25).isActive = true
 
         return header
     }

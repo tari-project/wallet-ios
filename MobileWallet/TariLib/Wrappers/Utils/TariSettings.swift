@@ -56,7 +56,7 @@ enum TariNetwork: String {
     var networkDisplayName: String {
         switch self {
         case .rincewind:
-            return "rincewind"
+            return "testnet"
         default:
             return "mainnet"
         }
