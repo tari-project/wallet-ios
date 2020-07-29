@@ -245,8 +245,9 @@ extension SplashViewController {
     func setupContraintsVersionLabel() {
         versionLabel.font = Theme.shared.fonts.splashVersionFooterLabel
         versionLabel.textColor = Theme.shared.colors.splashVersionLabel
-        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String, let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-            versionLabel.text = "\(TariSettings.shared.network.networkDisplayName) V\(version) (\(build))".uppercased()
+        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+            let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+            versionLabel.text = "\(TariSettings.shared.network.networkDisplayName.uppercased()) v\(version) (\(build))"
         }
 
         view.addSubview(versionLabel)
@@ -254,12 +255,14 @@ extension SplashViewController {
         versionLabel.numberOfLines = 0
         versionLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        versionLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8).isActive = true
+        versionLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+                                             constant: -12).isActive = true
         versionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
+                                              constant: Theme.shared.sizes.appSidePadding).isActive = true
         versionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        versionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
+                                               constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        versionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+                                              constant: 0).isActive = true
     }
 
     func titleAnimation() {

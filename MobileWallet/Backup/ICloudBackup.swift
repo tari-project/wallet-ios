@@ -133,6 +133,8 @@ class ICloudBackup: NSObject {
     private(set) var progressValue: Double = 0.0
     private var uploadTimer: Timer?
 
+    private let uploadTimeoutSec = 20.0
+
     private(set) var isLastBackupFailed: Bool {
         get {
             return UserDefaults.Key.isLastBackupFailed.boolValue()
@@ -359,13 +361,16 @@ extension ICloudBackup {
         } catch {
             isLastBackupFailed = true
             inProgress = false
+            uploadTimer?.invalidate()
+            uploadTimer = nil
             notifyObservers(percent: 0, completed: false, error: ICloudBackupError.noInternetConnection)
         }
     }
 
     private func enableUploadTimeout() {
         var previousUploadValue = 0.0
-        uploadTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] (timer) in
+        uploadTimer = Timer.scheduledTimer(withTimeInterval: uploadTimeoutSec, repeats: true) {
+            [weak self] (timer) in
             guard let self = self, previousUploadValue == self.progressValue else {
                 timer.invalidate()
                 return
