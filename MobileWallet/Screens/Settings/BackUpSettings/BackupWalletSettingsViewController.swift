@@ -135,7 +135,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
                     onAction: { [weak self] in
                             BPKeychainWrapper.removeBackupPasswordFromKeychain()
                             self?.iCloudBackup.iCloudBackupsIsOn = false
-                            self?.iCloudBackup.removeWalletBackup()
+                            self?.iCloudBackup.removeCurrentWalletBackup()
                             self?.reloadTableViewWithAnimation()
                     },
                     onCancel: { [weak self] in

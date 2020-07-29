@@ -216,7 +216,7 @@ class ICloudBackup: NSObject {
             }
 
             if TariSettings.shared.isUnitTesting {
-                try iCloudServiceMock.uploadBackup(Backup(url: fileURL))
+                try ICloudServiceMock.uploadBackup(Backup(url: fileURL))
                 progressValue = 0.0
                 inProgress = false
                 isLastBackupFailed = false
@@ -282,11 +282,13 @@ class ICloudBackup: NSObject {
         }
     }
 
-    func removeWalletBackup() {
-        do {
-            try FileManager.default.removeBackup(getLastWalletBackup())
-        } catch {
-            TariLogger.error("Failed to remove wallet backup", error: error)
+    func removeCurrentWalletBackup() {
+        if TariLib.shared.walletPublicKeyHex != nil {
+            do {
+                try FileManager.default.removeBackup(getLastWalletBackup())
+            } catch {
+                TariLogger.error("Failed to remove wallet backup", error: error)
+            }
         }
     }
 }
@@ -335,6 +337,7 @@ extension ICloudBackup {
                 fileURL = fileItemURL
             }
         }
+        
         guard let url = fileURL  else { return }
         do {
             let fileValues = try url.resourceValues(forKeys: [URLResourceKey.ubiquitousItemIsUploadingKey])
@@ -536,7 +539,7 @@ extension ICloudBackup {
     private func downloadBackup(completion: @escaping ((_ backup: Backup?, _ error: Error?) -> Void)) {
         if TariSettings.shared.isUnitTesting {
             do {
-                let backup = try iCloudServiceMock.downloadBackup()
+                let backup = try ICloudServiceMock.downloadBackup()
                 completion(backup, nil)
             } catch {
                 completion(nil, error)
@@ -583,15 +586,20 @@ extension ICloudBackup {
     private func getLastWalletBackup() throws -> Backup {
         let iCloudFolderURL = try iCloudDirectory()
         do {
-            if let lastWalletFolder = try FileManager.default.contentsOfDirectory(atURL: iCloudFolderURL, sortedBy: .created, options: []).last {
-                // if walletKeyHex != nil we find last backup for current wallet
-                if let walletKeyHex = TariLib.shared.walletPublicKeyHex {
-                    if lastWalletFolder.lastPathComponent != walletKeyHex {
-                       throw ICloudBackupError.noICloudBackupExists
+            // if walletKeyHex != nil we find last backup for current wallet
+            if let walletKeyHex = TariLib.shared.walletPublicKeyHex {
+                if let lastWalletFolder = try FileManager.default.contentsOfDirectory(atURL: iCloudFolderURL, sortedBy: .created, options: []).last(where: { (url) -> Bool in
+                    url.lastPathComponent == walletKeyHex
+                }) {
+                    if let lastWalletBackup = try FileManager.default.contentsOfDirectory(atURL: lastWalletFolder, sortedBy: .created, options: []).last {
+                        return try Backup(url: lastWalletBackup)
                     }
                 }
-                if let lastWalletBackup = try FileManager.default.contentsOfDirectory(atURL: lastWalletFolder, sortedBy: .created, options: []).last {
-                    return try Backup(url: lastWalletBackup)
+            } else {
+                if let lastWalletFolder = try FileManager.default.contentsOfDirectory(atURL: iCloudFolderURL, sortedBy: .modified, options: []).last {
+                    if let lastWalletBackup = try FileManager.default.contentsOfDirectory(atURL: lastWalletFolder, sortedBy: .created, options: []).last {
+                        return try Backup(url: lastWalletBackup)
+                    }
                 }
             }
         } catch {

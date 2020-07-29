@@ -364,9 +364,9 @@
 		373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */; };
 		373CCDC62490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */; };
 		373CCDC72490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */; };
-		3745508A24B8886C006295C8 /* iCloudServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3745508924B8886C006295C8 /* iCloudServiceMock.swift */; };
-		3745508B24B8886C006295C8 /* iCloudServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3745508924B8886C006295C8 /* iCloudServiceMock.swift */; };
-		3745508C24B891D1006295C8 /* iCloudServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3745508924B8886C006295C8 /* iCloudServiceMock.swift */; };
+		3745508A24B8886C006295C8 /* ICloudServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3745508924B8886C006295C8 /* ICloudServiceMock.swift */; };
+		3745508B24B8886C006295C8 /* ICloudServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3745508924B8886C006295C8 /* ICloudServiceMock.swift */; };
+		3745508C24B891D1006295C8 /* ICloudServiceMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3745508924B8886C006295C8 /* ICloudServiceMock.swift */; };
 		37547D522460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */; };
 		37547D532460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */; };
 		37547D542460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */; };
@@ -753,7 +753,7 @@
 		372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsWrapper.swift; sourceTree = "<group>"; };
 		373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+SecureCopy.swift"; sourceTree = "<group>"; };
-		3745508924B8886C006295C8 /* iCloudServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudServiceMock.swift; sourceTree = "<group>"; };
+		3745508924B8886C006295C8 /* ICloudServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICloudServiceMock.swift; sourceTree = "<group>"; };
 		37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+KeyWindow.swift"; sourceTree = "<group>"; };
 		37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+GlobalFrame.swift"; sourceTree = "<group>"; };
 		375894C424865A6A00B58816 /* VerifyPhraseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyPhraseViewController.swift; sourceTree = "<group>"; };
@@ -1289,7 +1289,7 @@
 				00BBD81D237ECDAA00EBF5E6 /* TariLibWrapperTests.swift */,
 				00E491B72366E08F007B332D /* Info.plist */,
 				3723A7A124AB57F4003382EB /* AESEncryptionTests.swift */,
-				3745508924B8886C006295C8 /* iCloudServiceMock.swift */,
+				3745508924B8886C006295C8 /* ICloudServiceMock.swift */,
 			);
 			path = MobileWalletTests;
 			sourceTree = "<group>";
@@ -2193,7 +2193,7 @@
 				00F53A642428E44700448466 /* StorageCleanup.swift in Sources */,
 				004997B32382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
 				0087A1B223F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
-				3745508A24B8886C006295C8 /* iCloudServiceMock.swift in Sources */,
+				3745508A24B8886C006295C8 /* ICloudServiceMock.swift in Sources */,
 				0091D4A723ED879E004BF7F7 /* Signature.swift in Sources */,
 				0053873024065F6C00901A68 /* SlideView.swift in Sources */,
 				00BBD816237EA67600EBF5E6 /* Wallet.swift in Sources */,
@@ -2387,7 +2387,7 @@
 				001256302371D81500A9C067 /* SplashViewController.swift in Sources */,
 				375894C624865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */,
 				00C9F436242E08E70098E619 /* Tracker.swift in Sources */,
-				3745508B24B8886C006295C8 /* iCloudServiceMock.swift in Sources */,
+				3745508B24B8886C006295C8 /* ICloudServiceMock.swift in Sources */,
 				001F6CE92381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
 				378B4BC32498E5A000C00CCF /* Migrations.swift in Sources */,
 				0087A1B023F4235400B89EE7 /* ContactCell.swift in Sources */,
@@ -2475,7 +2475,7 @@
 				3708D74C247FCF2300807D72 /* SettingsViewController.swift in Sources */,
 				BFE61E4A24226A7F003DC99D /* NotificationManager.swift in Sources */,
 				00BCE481240D5A9700B181F3 /* OnionManager.swift in Sources */,
-				3745508C24B891D1006295C8 /* iCloudServiceMock.swift in Sources */,
+				3745508C24B891D1006295C8 /* ICloudServiceMock.swift in Sources */,
 				37547D542460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */,
 				00BBD803237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
