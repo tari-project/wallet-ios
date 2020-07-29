@@ -46,7 +46,8 @@ class PasteEmojisView: UIView {
     private let PADDING: CGFloat = 14
     private var onPressCallback: (() -> Void)?
 
-    override func draw(_ rect: CGRect) {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         backgroundColor = Theme.shared.colors.appBackground
 
         textButton.setVariation(.secondary)
@@ -64,6 +65,10 @@ class PasteEmojisView: UIView {
         emojiLabel.textAlignment = .center
         emojiLabel.textColor = Theme.shared.colors.emojisSeparatorExpanded
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (onTap(_:))))
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     func setEmojis(emojis: String, onPress: @escaping () -> Void) {

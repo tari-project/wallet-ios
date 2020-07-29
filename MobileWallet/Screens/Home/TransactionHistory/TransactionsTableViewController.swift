@@ -43,8 +43,6 @@ import Lottie
 
 protocol TransactionsTableViewDelegate: class {
     func onTransactionSelect(_: Any)
-    func onScrollDirectionChange(_: ScrollDirection)
-
     func onScrollTopHit(_: Bool)
 }
 
@@ -75,8 +73,6 @@ class TransactionsTableViewController: UITableViewController {
     weak var actionDelegate: TransactionsTableViewDelegate?
     let animatedRefresher = AnimatedRefreshingView()
     private var lastContentOffset: CGFloat = 0
-    private var lastScrollDirection: ScrollDirection = .up
-
     private var kvoBackupScheduleToken: NSKeyValueObservation?
 
     var transactions: [TransactionProtocol] = []
@@ -260,14 +256,6 @@ class TransactionsTableViewController: UITableViewController {
             isScrolledToTop = true
         } else {
             isScrolledToTop = false
-        }
-
-        if self.lastContentOffset + 25 < scrollView.contentOffset.y && lastScrollDirection != .down {
-            actionDelegate?.onScrollDirectionChange(.down)
-            lastScrollDirection = .down
-        } else if self.lastContentOffset - 25 > scrollView.contentOffset.y && lastScrollDirection != .up {
-            actionDelegate?.onScrollDirectionChange(.up)
-            lastScrollDirection = .up
         }
 
         if scrollView.contentOffset.y < -(80 + scrollView.contentInset.top) && !scrollView.isRefreshing() && scrollView.isDragging == true {

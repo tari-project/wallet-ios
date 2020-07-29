@@ -201,8 +201,16 @@ class NavigationBar: UIView, NavigationBarProtocol {
         if backButtonAction != nil {
             backButtonAction?()
         } else {
-            guard let navigationController = UIApplication.shared.topController() as? UINavigationController else { return }
-            navigationController.popViewController(animated: true)
+            let topController = UIApplication.shared.topController()
+            guard let navigationController = topController as? UINavigationController else {
+                topController?.dismiss(animated: true)
+                return
+            }
+            if navigationController.viewControllers.first == navigationController.topViewController {
+                navigationController.dismiss(animated: true)
+            } else {
+                navigationController.popViewController(animated: true)
+            }
             hideEmoji(animated: false)
         }
     }

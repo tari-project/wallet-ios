@@ -358,6 +358,9 @@
 		372AECAB24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */; };
 		372AECAC24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */; };
 		372AECAD24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */; };
+		3730E15124C884D500827DFA /* MenuTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3730E15024C884D500827DFA /* MenuTabBarController.swift */; };
+		3730E15224C884D500827DFA /* MenuTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3730E15024C884D500827DFA /* MenuTabBarController.swift */; };
+		3730E15324C884D500827DFA /* MenuTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3730E15024C884D500827DFA /* MenuTabBarController.swift */; };
 		373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
 		373CCDBE2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
 		373CCDBF2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */; };
@@ -751,6 +754,7 @@
 		3723A7AA24ACD03E003382EB /* PasswordField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordField.swift; sourceTree = "<group>"; };
 		372AECA624B496F0005CBA0F /* BackupScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupScheduler.swift; sourceTree = "<group>"; };
 		372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsWrapper.swift; sourceTree = "<group>"; };
+		3730E15024C884D500827DFA /* MenuTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTabBarController.swift; sourceTree = "<group>"; };
 		373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+SecureCopy.swift"; sourceTree = "<group>"; };
 		3745508924B8886C006295C8 /* iCloudServiceMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudServiceMock.swift; sourceTree = "<group>"; };
@@ -1166,6 +1170,7 @@
 		00E2BCAF236B44CE00C2A105 /* UIElements */ = {
 			isa = PBXGroup;
 			children = (
+				3730E14B24C8756100827DFA /* TabBar */,
 				37B48A7D24B31C2D00F8A8D2 /* SystemMenuTableViewCell */,
 				37B48A7B24B31AB300F8A8D2 /* PendingView */,
 				3723A7A924ACD029003382EB /* PasswordField */,
@@ -1373,6 +1378,14 @@
 				3723A7AA24ACD03E003382EB /* PasswordField.swift */,
 			);
 			path = PasswordField;
+			sourceTree = "<group>";
+		};
+		3730E14B24C8756100827DFA /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				3730E15024C884D500827DFA /* MenuTabBarController.swift */,
+			);
+			path = TabBar;
 			sourceTree = "<group>";
 		};
 		375AFDCD2475380B00C62CA1 /* WebBrowserView */ = {
@@ -2257,6 +2270,7 @@
 				00369D7D24221ACB00BAB95B /* DeepLinkManager.swift in Sources */,
 				37B5289424CB1E16008C80EB /* NetworkSpeedProvider.swift in Sources */,
 				001F6CEC2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
+				3730E15124C884D500827DFA /* MenuTabBarController.swift in Sources */,
 				371A0818247290C000F97713 /* TransitionLabel.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				37ABB69024781CE800F08163 /* UILabel+InterlineSpacing.swift in Sources */,
@@ -2395,6 +2409,7 @@
 				00BBD81E237ECDAA00EBF5E6 /* TariLibWrapperTests.swift in Sources */,
 				3708D753247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
 				00230B032376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
+				3730E15224C884D500827DFA /* MenuTabBarController.swift in Sources */,
 				00947CC823D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
 				004277DE23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */,
 				37C8BA5024813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
@@ -2539,6 +2554,7 @@
 				00434A9F2477D0B000C0104F /* AppContainerLock.swift in Sources */,
 				37B5289624CB1E16008C80EB /* NetworkSpeedProvider.swift in Sources */,
 				3708D758247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
+				3730E15324C884D500827DFA /* MenuTabBarController.swift in Sources */,
 				37547D5824601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				375894C724865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */,
 				4CD20A382407967B007B64D8 /* TransportType.swift in Sources */,

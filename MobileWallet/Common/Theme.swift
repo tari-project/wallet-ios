@@ -253,8 +253,16 @@ struct Images: Loopable {
     let createWalletDownArrow = UIImage(named: "notch_down")
     let createWalletNumpad = UIImage(named: "numpad")
 
+    //TabBar
+    let homeItem = UIImage(named: "navHome")
+    let ttlItem = UIImage(named: "navTtl")
+    let sendItem = UIImage(named: "navSend")?.withRenderingMode(.alwaysOriginal)
+    let profileItem = UIImage(named: "navProfile")
+    let settingsItem = UIImage(named: "navSettings")
+
     //General icons
     let currencySymbol = UIImage(named: "Gem")
+    let currencyBigSymbol = UIImage(named: "GemBig")
     let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
     let forwardArrow = UIImage(named: "ForwardArrow")
@@ -265,6 +273,7 @@ struct Images: Loopable {
     let profileIcon = UIImage(named: "profileIcon")
     let storeIcon = UIImage(named: "store-icon")
     let storeButton = UIImage(named: "store-button")
+    let giftButton = UIImage(named: "gift-button")
     let storeModal = UIImage(named: "store-modal")
     let unknownUser = UIImage(named: "unknownUser")
     let handWave = UIImage(named: "HandWave")
@@ -310,9 +319,9 @@ struct Fonts: Loopable {
     let profileMiddleLabel = UIFont.Avenir.medium.withSize(14.0)
 
     //Home screen
-    let homeScreenTotalBalanceLabel = UIFont.Avenir.roman.withSize(14.0)
-    let homeScreenTotalBalanceValueLabel = UIFont.Avenir.black.withSize(39.0)
-    let homeScreenTotalBalanceValueLabelDecimals = UIFont.Avenir.black.withSize(16.0)
+    let homeScreenTotalBalanceLabel = UIFont.Avenir.medium.withSize(12.0)
+    let homeScreenTotalBalanceValueLabel = UIFont.Avenir.black.withSize(30.0)
+    let homeScreenTotalBalanceValueLabelDecimals = UIFont.Avenir.heavy.withSize(12.0)
 
     //Transaction cell
     let transactionCellUsernameLabel = UIFont.Avenir.light.withSize(14.0)

@@ -55,9 +55,6 @@ class HomeViewController: UIViewController {
     private let navigationBar = UIView()
     private var navigationBarBottomConstraint: NSLayoutConstraint?
 
-    private let bottomFadeView = FadedOverlayView()
-    private var bottomFadeBottomConstraint: NSLayoutConstraint?
-
     private let balanceLabel = UILabel()
     private let balanceValueLabel = AnimatedBalanceLabel()
 
@@ -104,12 +101,6 @@ class HomeViewController: UIViewController {
         }
     }
 
-    private var isShowingSendButton: Bool = false {
-        didSet {
-            showHideSendButton()
-        }
-    }
-
     override var navBarHeight: CGFloat {
         return (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0.0) + 56
     }
@@ -132,15 +123,9 @@ class HomeViewController: UIViewController {
             self.safeRefreshBalance()
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
-            guard let self = self else { return }
-            self.isShowingSendButton = self.isShowingSendButton == true
-        })
-
         deepLinker.checkDeepLink()
 
         checkImportSecondUtxo()
-        bottomFadeView.applyFade(Theme.shared.colors.transactionTableBackground!)
         checkBackupPrompt(delay: 3)
     }
 
@@ -270,14 +255,14 @@ class HomeViewController: UIViewController {
             [
                 NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
                 NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
-                NSAttributedString.Key.baselineOffset: 6,
-                NSAttributedString.Key.kern: -0.57
+                NSAttributedString.Key.baselineOffset: 5,
+                NSAttributedString.Key.kern: -0.44
             ],
             range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat)
         )
 
         balanceLabelAttributedText.addAttributes(
-            [NSAttributedString.Key.kern: 1.5],
+            [NSAttributedString.Key.kern: 1.1],
             range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat - 1, length: 1)
         )
 
@@ -299,7 +284,6 @@ class HomeViewController: UIViewController {
         if isTransactionViewFullScreen {
             //Don't show header for first intro
             guard !isFirstIntroToWallet else {
-                self.isShowingSendButton = false
                 //Wait before auto pulling down
                 DispatchQueue.main.asyncAfter(
                     deadline: .now() + 3.0 + CATransaction.animationDuration(),
@@ -313,8 +297,6 @@ class HomeViewController: UIViewController {
                 })
                 return
             }
-
-            self.isShowingSendButton = false
             UIView.animate(withDuration: CATransaction.animationDuration(), delay: 0, options: .curveEaseIn, animations: {
                 self.floatingPanelController.surfaceView.cornerRadius = 0
                 self.grabberHandle.frame = self.grabberRect(width: 0)
@@ -335,29 +317,12 @@ class HomeViewController: UIViewController {
             }
 
             navigationController?.setNavigationBarHidden(true, animated: true)
-            self.isShowingSendButton = true
             self.navigationItem.title = ""
 
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
                 self.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
                 self.grabberHandle.frame = self.grabberRect(width: HomeViewController.GRABBER_WIDTH)
                 self.grabberHandle.alpha = 1
-                self.view.layoutIfNeeded()
-            })
-        }
-    }
-
-    private func showHideSendButton() {
-        if isShowingSendButton {
-            UIView.animate(withDuration: CATransaction.animationDuration(), delay: 0.1, options: .curveEaseIn, animations: {
-                self.bottomFadeView.backgroundColor?.withAlphaComponent(0.5)
-                self.bottomFadeBottomConstraint?.constant = 0
-                self.view.layoutIfNeeded()
-            })
-        } else {
-            UIView.animate(withDuration: CATransaction.animationDuration(), delay: 0.1, options: .curveEaseIn, animations: {
-                self.bottomFadeView.backgroundColor?.withAlphaComponent(0.0)
-                self.bottomFadeBottomConstraint?.constant = 120
                 self.view.layoutIfNeeded()
             })
         }
@@ -397,16 +362,8 @@ class HomeViewController: UIViewController {
 
 // MARK: - Actions
 extension HomeViewController {
-    @objc func onProfileShow(_ sender: Any) {
-        navigationController?.pushViewController(ProfileViewController(), animated: true)
-    }
+    @objc private func onGiftButtonAction(_ sender: Any) {
 
-    @objc private func onStoreModalShow(_ sender: Any) {
-        UserFeedback.shared.callToActionStore()
-    }
-
-    @objc private func onSendAction(_ sender: Any) {
-        onSend()
     }
 
     @objc private func closeButtonAction(_ sender: Any) {
@@ -423,16 +380,6 @@ extension HomeViewController: TransactionsTableViewDelegate {
         let transactionVC = TransactionViewController()
         transactionVC.transaction = selectedTransaction
         self.navigationController?.pushViewController(transactionVC, animated: true)
-    }
-
-    func onScrollDirectionChange(_ direction: ScrollDirection) {
-        if isTransactionViewFullScreen {
-            if direction == .up {
-                self.isShowingSendButton = true
-            } else if direction == .down {
-                self.isShowingSendButton = false
-            }
-        }
     }
 
     func onScrollTopHit(_ isAtTop: Bool) {
@@ -493,7 +440,6 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         self.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS - (HomeViewController.PANEL_BORDER_CORNER_RADIUS * progress)
 
         if floatingPanelController.position == .tip && !isTransactionViewFullScreen {
-            bottomFadeBottomConstraint?.constant = bottomFadeView.bounds.height * progress
             UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
                 self.view.layoutIfNeeded()
             })
@@ -536,38 +482,25 @@ extension HomeViewController: FloatingPanelControllerDelegate {
 extension HomeViewController {
     private func setup() {
         applyBackgroundGradient(duration: 2.5)
-
         setupTopButtons()
         setupBalanceLabel()
         setupBalanceValueLabel()
         setupFloatingPanel()
         setupNavigationBar()
-        setupFadeView()
     }
 
     private func setupTopButtons() {
         let iconSize: CGFloat = 30
 
-        let profileButton = UIButton(type: .custom)
-        profileButton.setImage(Theme.shared.images.profileIcon, for: .normal)
-        profileButton.translatesAutoresizingMaskIntoConstraints = false
-        view.insertSubview(profileButton, belowSubview: navigationBar)
-
-        profileButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        profileButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        profileButton.widthAnchor.constraint(equalToConstant: iconSize).isActive = true
-        profileButton.heightAnchor.constraint(equalToConstant: iconSize).isActive = true
-        profileButton.addTarget(self, action: #selector(onProfileShow), for: .touchUpInside)
-
-        let storeButton = UIButton(type: .custom)
-        storeButton.setImage(Theme.shared.images.storeButton, for: .normal)
-        storeButton.translatesAutoresizingMaskIntoConstraints = false
-        view.insertSubview(storeButton, belowSubview: navigationBar)
-        storeButton.topAnchor.constraint(equalTo: profileButton.topAnchor).isActive = true
-        storeButton.trailingAnchor.constraint(equalTo: profileButton.leadingAnchor, constant: -10).isActive = true
-        storeButton.widthAnchor.constraint(equalToConstant: iconSize).isActive = true
-        storeButton.heightAnchor.constraint(equalToConstant: iconSize).isActive = true
-        storeButton.addTarget(self, action: #selector(onStoreModalShow), for: .touchUpInside)
+        let giftButton = UIButton(type: .custom)
+        giftButton.setImage(Theme.shared.images.giftButton, for: .normal)
+        giftButton.translatesAutoresizingMaskIntoConstraints = false
+        view.insertSubview(giftButton, belowSubview: navigationBar)
+        giftButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        giftButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        giftButton.widthAnchor.constraint(equalToConstant: iconSize).isActive = true
+        giftButton.heightAnchor.constraint(equalToConstant: iconSize).isActive = true
+        giftButton.addTarget(self, action: #selector(onGiftButtonAction), for: .touchUpInside)
     }
 
     private func setupBalanceLabel() {
@@ -578,8 +511,8 @@ extension HomeViewController {
         balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
 
         balanceLabel.translatesAutoresizingMaskIntoConstraints = false
-        balanceLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40).isActive = true
-        balanceLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25).isActive = true
+        balanceLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15).isActive = true
+        balanceLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
         balanceLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 25).isActive = true
     }
 
@@ -590,9 +523,9 @@ extension HomeViewController {
         view.addSubview(balanceContainer)
 
         balanceContainer.translatesAutoresizingMaskIntoConstraints = false
-        balanceContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25).isActive = true
+        balanceContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
         balanceContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 25).isActive = true
-        balanceContainer.heightAnchor.constraint(equalToConstant: 54).isActive = true
+        balanceContainer.heightAnchor.constraint(equalToConstant: 35).isActive = true
         balanceContainer.topAnchor.constraint(equalTo: balanceLabel.bottomAnchor).isActive = true
 
         let valueIcon = UIImageView()
@@ -692,40 +625,7 @@ extension HomeViewController {
         floatingPanelController.surfaceView.grabberHandle.isHidden = true
         floatingPanelController.surfaceView.addSubview(grabberHandle)
     }
-
-    private func setupFadeView() {
-        view.addSubview(bottomFadeView)
-
-        bottomFadeView.translatesAutoresizingMaskIntoConstraints = false
-        bottomFadeView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        bottomFadeView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        bottomFadeView.heightAnchor.constraint(equalToConstant: 120).isActive = true
-        bottomFadeBottomConstraint = bottomFadeView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        bottomFadeBottomConstraint?.isActive = true
-
-        let sendButton = ActionButton()
-        view.addSubview(sendButton)
-        let title =  String(format: NSLocalizedString("common.send.with_param",
-                                                      comment: "Common"),
-                            TariSettings.shared.network.currencyDisplayTicker )
-        sendButton.setTitle(title, for: .normal)
-        sendButton.addTarget(self, action: #selector(onSendAction(_:)), for: .touchUpInside)
-
-        sendButton.translatesAutoresizingMaskIntoConstraints = false
-        sendButton.widthAnchor.constraint(equalToConstant: 163).isActive = true
-        sendButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        sendButton.bottomAnchor.constraint(equalTo: bottomFadeView.safeAreaLayoutGuide.bottomAnchor, constant: -16).isActive = true
-
-        bottomFadeView.alpha = 0.0
-        sendButton.alpha = 0.0
-
-        UIView.animate(withDuration: CATransaction.animationDuration(), delay: 0.5, options: .curveLinear, animations: { [weak self] in
-            self?.bottomFadeView.alpha = 1.0
-            sendButton.alpha = 1.0
-        })
-    }
 }
-
 // MARK: Background color behavior
 extension HomeViewController {
     private func applyBackgroundGradient(duration: TimeInterval) {

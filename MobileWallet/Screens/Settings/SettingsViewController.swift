@@ -238,8 +238,9 @@ extension SettingsViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
         navigationBar.backButton.isHidden = true
+        if modalPresentationStyle != .popover { return }
         navigationBar.rightButtonAction = { [weak self] in
-            self?.navigationController?.dismiss(animated: true, completion: nil)
+            self?.dismiss(animated: true, completion: nil)
         }
 
         let title = NSLocalizedString("settings.done", comment: "Settings view")
