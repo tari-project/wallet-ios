@@ -41,13 +41,13 @@
 import Foundation
 import CloudKit
 
-class iCloudServiceMock {
+class ICloudServiceMock {
     private static let testICloudFolder = "test_icloud_folder"
     private static let backupName = "Tari-Aurora-Backup"
     
     static func downloadBackup() throws -> Backup {
         let directory = try getTestICloudDirectory()
-        let backupUrl = directory.appendingPathComponent(backupName + ".zip")
+        let backupUrl = directory.appendingPathComponent(backupName)
         return try Backup(url: backupUrl)
     }
     
@@ -56,6 +56,10 @@ class iCloudServiceMock {
         if !FileManager.default.secureCopyItem(at: backup.url, to: directory.appendingPathComponent(backup.url.lastPathComponent)) {
             throw ICloudBackupError.failedToCreateZip
         }
+    }
+    
+    static func removeBackups() throws {
+        try FileManager.default.removeItem(atPath: getTestICloudDirectory().path)
     }
     
     private static func getTestICloudDirectory() throws -> URL {

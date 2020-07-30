@@ -43,6 +43,7 @@ import XCTest
 class TariLibWrapperTests: XCTestCase {
     //Use a random DB path for each test
     private let dbName = "test_db"
+    private let backupPassword = "coolpassword"
     private let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
     private let testWalletPublicKey = "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40"
     
@@ -267,13 +268,14 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     func testBackupAndRestoreWallet() {
+        XCTAssertNoThrow(try ICloudServiceMock.removeBackups())
         let (wallet, _) = createWallet(privateHex: nil)
         receiveTestTransaction(wallet: wallet)
         sendTransactionToBob(wallet: wallet)
 
         TariLib.shared.walletPublicKeyHex = wallet.publicKey.0?.hex.0
 
-        XCTAssertNoThrow(try ICloudBackup.shared.createWalletBackup(password: nil))
+        XCTAssertNoThrow(try ICloudBackup.shared.createWalletBackup(password: backupPassword))
         restoreWallet { backupWallet, error in
             if error != nil {
                 XCTFail("Failed to restore wallet backup \(error!.localizedDescription)")
@@ -336,7 +338,7 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     func restoreWallet(completion: @escaping ((_ wallet: Wallet?, _ error: Error?) -> Void)) {
-        ICloudBackup.shared.restoreWallet(password: nil, completion: { error in
+        ICloudBackup.shared.restoreWallet(password: backupPassword, completion: { error in
             var commsConfig: CommsConfig?
             do {
                 let transport = TransportType()
