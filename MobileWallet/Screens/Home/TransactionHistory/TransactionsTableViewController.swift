@@ -372,10 +372,14 @@ class TransactionsTableViewController: UITableViewController {
 }
 
 extension TransactionsTableViewController: ICloudBackupObserver {
-    func onUploadProgress(percent: Double, started: Bool, completed: Bool, error: Error?) {
+    func onUploadProgress(percent: Double, started: Bool, completed: Bool) {
         if started || completed {
             updateRefreshView()
         }
+    }
+
+    func failedToCreateBackup(error: Error) {
+        updateRefreshView()
     }
 
     private func observeBackupState() {

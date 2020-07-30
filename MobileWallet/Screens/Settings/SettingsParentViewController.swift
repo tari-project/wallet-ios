@@ -54,22 +54,15 @@ class SettingsParentViewController: UIViewController {
         styleNavigatorBar(isHidden: true)
         setupViews()
     }
-
-    @objc func failedToCreateBackup(error: Error) {
-        var title = NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
-
-        if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
-           title = localizedError.failureReason!
-        }
-        UserFeedback.shared.error(title: title, description: error.localizedDescription, error: nil)
-    }
 }
 
 extension SettingsParentViewController: ICloudBackupObserver {
-    @objc func onUploadProgress(percent: Double, started: Bool, completed: Bool, error: Error?) {
-        if error != nil {
-            failedToCreateBackup(error: error!)
-        }
+    @objc func onUploadProgress(percent: Double, started: Bool, completed: Bool) {
+
+    }
+
+    @objc func failedToCreateBackup(error: Error) {
+
     }
 }
 

@@ -85,8 +85,8 @@ class SettingsParentTableViewController: SettingsParentViewController {
 }
 
 extension SettingsParentTableViewController {
-    override func onUploadProgress(percent: Double, started: Bool, completed: Bool, error: Error?) {
-        super.onUploadProgress(percent: percent, started: started, completed: completed, error: error)
+    override func onUploadProgress(percent: Double, started: Bool, completed: Bool) {
+        super.onUploadProgress(percent: percent, started: started, completed: completed)
         updateMarks()
         if completed || started {
             reloadTableViewWithAnimation()

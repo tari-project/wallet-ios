@@ -205,12 +205,12 @@ class Wallet {
 
         let directSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
             TariEventBus.postToMainThread(.directSend, sender: CallbackTxResult(id: txID, success: success))
-            TariEventBus.postToMainThread(.requiresBackup)
             let message = "Direct send lib callback. txID=\(txID)"
             if success {
                 TariLogger.verbose("\(message) ✅")
                 TariEventBus.postToMainThread(.transactionListUpdate)
                 TariEventBus.postToMainThread(.balanceUpdate)
+                TariEventBus.postToMainThread(.requiresBackup)
             } else {
                 TariLogger.error("\(message) failure")
             }
@@ -218,12 +218,12 @@ class Wallet {
 
         let storeAndForwardSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
             TariEventBus.postToMainThread(.storeAndForwardSend, sender: CallbackTxResult(id: txID, success: success))
-            TariEventBus.postToMainThread(.requiresBackup)
             let message = "Store and forward lib callback. txID=\(txID)"
             if success {
                 TariLogger.verbose("\(message) ✅")
                 TariEventBus.postToMainThread(.transactionListUpdate)
                 TariEventBus.postToMainThread(.balanceUpdate)
+                TariEventBus.postToMainThread(.requiresBackup)
             } else {
                 TariLogger.error("\(message) failure")
             }

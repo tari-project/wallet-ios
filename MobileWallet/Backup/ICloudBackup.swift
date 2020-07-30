@@ -114,7 +114,8 @@ extension ICloudBackupError: LocalizedError {
 }
 
 protocol ICloudBackupObserver: AnyObject {
-    func onUploadProgress(percent: Double, started: Bool, completed: Bool, error: Error?)
+    func onUploadProgress(percent: Double, started: Bool, completed: Bool)
+    func failedToCreateBackup(error: Error)
 }
 
 class ICloudBackup: NSObject {
@@ -396,13 +397,26 @@ extension ICloudBackup {
             guard let self = self else { return }
             self.observers.allObjects.forEach {
                 if let object = $0 as? ICloudBackupObserver {
-                    object.onUploadProgress(percent: percent, started: started, completed: completed, error: error)
+                    object.onUploadProgress(percent: percent, started: started, completed: completed)
+                    if error != nil {
+                        object.failedToCreateBackup(error: error!)
+                        self.showError(error: error!)
+                    }
                 }
                 if completed {
                     self.endBackgroundBackupTask()
                 }
             }
         }
+    }
+
+    private func showError(error: Error) {
+        var title = NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
+
+        if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
+           title = localizedError.failureReason!
+        }
+        UserFeedback.shared.error(title: title, description: error.localizedDescription, error: nil)
     }
 }
 
