@@ -1,5 +1,6 @@
 {
 	"pushServerApiKey": "",
 	"sentryPublicDSN": "",
-	"appleTeamID": "8XGMD9X2H2"
+	"appleTeamID": "8XGMD9X2H2",
+	"giphyApiKey": ""
 }

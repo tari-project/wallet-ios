@@ -39,8 +39,12 @@
 */
 
 import UIKit
+import GiphyUISDK
+import GiphyCoreSDK
 
 class TransactionTableViewCell: UITableViewCell {
+    static var mediaCache: [String: GPHMedia] = [:]
+
     private let avatarContainer = UIView()
     private let avatarLabel = UILabel()
     private let titleLabel = UILabel()
@@ -50,6 +54,9 @@ class TransactionTableViewCell: UITableViewCell {
     private let noteLabel = UILabel()
     private let valueContainer = UIView()
     private let valueLabel = UILabelWithPadding()
+    private let attachmentViewContainer = GPHMediaView()
+    private let attachmentView = GPHMediaView()
+    private var attachmentViewHeightContraint = NSLayoutConstraint()
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
@@ -101,8 +108,60 @@ class TransactionTableViewCell: UITableViewCell {
     }
 
     private func setMessage(_ message: String) {
-        noteLabel.text = !message.isEmpty ? message : ""
+        //Extract the giphy link
+        let giphyLinkPrefix = "https://giphy.com/embed/"
+
+        if let endIndex = message.range(of: giphyLinkPrefix)?.lowerBound {
+            let messageExcludingLink = message[..<endIndex].trimmingCharacters(in: .whitespaces)
+            let link = message[endIndex...].trimmingCharacters(in: .whitespaces)
+            let giphyId = link.replacingOccurrences(of: giphyLinkPrefix, with: "")
+
+            noteLabel.text = messageExcludingLink
+
+            //Check cache first
+            if let cachedMedia = TransactionTableViewCell.mediaCache[giphyId] {
+                self.setMedia(cachedMedia)
+            } else {
+                GiphyCore.shared.gifByID(giphyId) { (response, error) in
+                    guard error == nil else {
+                        return TariLogger.error("Failed to load gif", error: error)
+                    }
+
+                    if let media = response?.data {
+                        DispatchQueue.main.sync { [weak self] in
+                            guard let self = self else { return }
+                            self.setMedia(media)
+                            TransactionTableViewCell.mediaCache[giphyId] = media
+                        }
+                    }
+                }
+            }
+
+        } else {
+            noteLabel.text = message
+            attachmentView.media = nil
+            setMediaVisible(aspectRatio: nil)
+        }
+
         noteLabel.sizeToFit()
+    }
+
+    private func setMedia(_ media: GPHMedia) {
+        attachmentView.media = media
+        setMediaVisible(aspectRatio: media.aspectRatio)
+    }
+
+    private func setMediaVisible(aspectRatio: CGFloat?) {
+        attachmentViewHeightContraint.isActive = false
+
+        if let ratio = aspectRatio {
+            //TODO when the height is set correctly then they layout constraints break
+//            attachmentViewHeightContraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: ratio - 1)
+            attachmentViewHeightContraint = attachmentViewContainer.heightAnchor.constraint(equalToConstant: 50)
+        } else {
+            attachmentViewHeightContraint = attachmentViewContainer.heightAnchor.constraint(equalToConstant: 0)
+        }
+        attachmentViewHeightContraint.isActive = true
     }
 
     private func setAvatar(_ pubKey: PublicKey) {
@@ -329,8 +388,27 @@ extension TransactionTableViewCell {
         noteLabel.numberOfLines = 0
         noteLabel.translatesAutoresizingMaskIntoConstraints = false
         noteLabel.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 5).isActive = true
-        noteLabel.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -25).isActive = true
         noteLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
         noteLabel.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
+
+        // MARK: - Media attachment
+        attachmentViewContainer.backgroundColor = .lightGray //TODO ask for a color
+        attachmentViewContainer.clipsToBounds = true
+        attachmentViewContainer.layer.cornerRadius = 4
+        labelsContainer.addSubview(attachmentViewContainer)
+        attachmentViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        attachmentViewContainer.topAnchor.constraint(equalTo: noteLabel.bottomAnchor, constant: 5).isActive = true
+        attachmentViewContainer.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -25).isActive = true
+        attachmentViewContainer.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
+        attachmentViewContainer.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
+        attachmentViewHeightContraint = attachmentViewContainer.heightAnchor.constraint(equalToConstant: 0)
+        attachmentViewHeightContraint.isActive = true
+
+        attachmentViewContainer.addSubview(attachmentView)
+        attachmentView.translatesAutoresizingMaskIntoConstraints = false
+        attachmentView.topAnchor.constraint(equalTo: attachmentViewContainer.topAnchor).isActive = true
+        attachmentView.bottomAnchor.constraint(equalTo: attachmentViewContainer.bottomAnchor).isActive = true
+        attachmentView.leadingAnchor.constraint(equalTo: attachmentViewContainer.leadingAnchor).isActive = true
+        attachmentView.trailingAnchor.constraint(equalTo: attachmentViewContainer.trailingAnchor).isActive = true
     }
 }

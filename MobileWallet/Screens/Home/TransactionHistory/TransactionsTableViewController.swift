@@ -132,6 +132,8 @@ class TransactionsTableViewController: UITableViewController {
         tableView.separatorStyle = .none
         tableView.contentInsetAdjustmentBehavior = .never
         tableView.contentInset = UIEdgeInsets(top: 28, left: 0, bottom: 180, right: 0)
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 600
 
         view.backgroundColor = Theme.shared.colors.transactionTableBackground
     }

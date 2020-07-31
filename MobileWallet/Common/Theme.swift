@@ -155,7 +155,7 @@ struct Colors: Loopable {
     let auroraGradient9 = UIColor(named: "auroraGradient9")
 
     //Transaction cell
-    let transactionCellAlias = UIColor(named: "TableCellContactAlias")
+    let transactionCellAlias = UIColor(named: "TransactionCellContactAlias")
     let transactionCellNote = UIColor(named: "TransactionCellNote")
     let transactionCellValueNegativeBackground = UIColor(named: "TransactionCellValueNegativeBackground")
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
@@ -223,6 +223,8 @@ struct Colors: Loopable {
     //Add note screen
     let addNoteTitleLabel = UIColor(named: "Heading")
     let addNoteInputView = UIColor(named: "InputText")
+    let searchGiphyButtonBackground = UIColor(named: "SearchGiphyButtonBackground")
+    let searchGiphyButtonTitle = UIColor(named: "SearchGiphyButtonTitle")
 
     //EmoticonView
     let emoticonBlackBackgroundAlpha = UIColor(named: "EmoticonBlackBackgroundAlpha")
@@ -376,6 +378,7 @@ struct Fonts: Loopable {
     //Add note screen
     let addNoteTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
     let addNoteInputView = UIFont.Avenir.medium.withSize(20.0)
+    let searchGiphyButtonTitle = UIFont.Avenir.black.withSize(9.0)
 
     //Add note screen
     let scannerTitleLabel = UIFont.Avenir.heavy.withSize(16.0)

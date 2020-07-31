@@ -102,6 +102,7 @@ struct TariSettings {
     var pushServerApiKey: String?
     var sentryPublicDSN: String?
     var appleTeamID: String?
+    var giphyApiKey: String?
 
     func getRandomBaseNode() -> String {
         let keys = defaultBaseNodePool.map { (entry) -> String in entry.key }
@@ -171,6 +172,12 @@ struct TariSettings {
                     self.sentryPublicDSN = sentryPublicDSN
                 } else {
                     TariLogger.warn("sentryPublicDSN not set in env.json. Crash reporting will not work.")
+                }
+
+                if let giphyApiKey = jsonResult["giphyApiKey"] as? String, !giphyApiKey.isEmpty {
+                    self.giphyApiKey = giphyApiKey
+                } else {
+                    TariLogger.warn("giphyApiKey not set in env.json. Appending gifs to transaction notes will not work.")
                 }
 
                 if let appleTeamID = jsonResult["appleTeamID"] as? String, !appleTeamID.isEmpty {

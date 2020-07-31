@@ -333,6 +333,7 @@
 "add_note.error.recipient_public_key.title" = "Missing public key";
 "add_note.error.recipient_public_key.description" = "Recipient public key not set";
 "add_note.slide_to_send" = "Slide to Send";
+"add_note.search_giphy_button" = "SEARCH GIPHY";
 
 /* TariBot transaction */
 "taribot.message1.with_param" = "💸 Here’s some %@!";

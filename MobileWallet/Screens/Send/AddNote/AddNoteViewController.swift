@@ -39,12 +39,14 @@
 */
 
 import UIKit
+import GiphyUISDK
+import GiphyCoreSDK
 
-class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDelegate {
+class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDelegate, GiphyDelegate, GPHGridDelegate {
     var publicKey: PublicKey?
     var amount: MicroTari?
     var deepLinkParams: DeepLinkParams?
-    private let SIDE_PADDING = Theme.shared.sizes.appSidePadding
+    private let sidePadding = Theme.shared.sizes.appSidePadding
     private let navigationBar = NavigationBar()
     fileprivate let sendButton = SlideView()
     fileprivate var sendButtonBottomConstraint = NSLayoutConstraint()
@@ -60,13 +62,38 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             }
         }
     }
+    private let giphyCaroursalContainerView = UIView()
+    private let giphyModal = GiphyViewController()
+    private let searchGiphyButton = UIButton()
+
+    var attachmentHeightLayoutConstraint = NSLayoutConstraint()
+    let attachmentContainer = UIView()
+    let attachmentView = GPHMediaView()
+    var attachment: GPHMedia? = nil {
+        didSet {
+            attachmentView.media = attachment
+            if let m = attachment {
+                let aspectRatio = m.aspectRatio
+
+                //Set aspect ratio
+                attachmentHeightLayoutConstraint.isActive = false
+                attachmentHeightLayoutConstraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: aspectRatio - 1)
+                attachmentHeightLayoutConstraint.isActive = true
+
+                giphyCaroursalContainerView.isHidden = true
+            } else {
+                giphyCaroursalContainerView.isHidden = false
+            }
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setup()
 
-        hideKeyboardWhenTappedAroundOrSwipedDown()
+        hideKeyboardWhenTappedAroundOrSwipedDown(view: noteInput)
+        hideKeyboardWhenTappedAroundOrSwipedDown(view: attachmentView)
 
         Tracker.shared.track("/home/send_tari/add_note", "Send Tari - Add Note")
     }
@@ -111,6 +138,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             noteInput.text = params.note
             textViewDidChangeSelection(noteInput)
         }
+
+        setupGiphy()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -126,6 +155,97 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         setupNoteTitle()
         setupSendButton()
         setupNoteInput()
+        setupMediaAttachment()
+    }
+
+    private func setupMediaAttachment() {
+        view.addSubview(attachmentView)
+        attachmentView.translatesAutoresizingMaskIntoConstraints = false
+        attachmentView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: sidePadding).isActive = true
+        attachmentView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -sidePadding).isActive = true
+        attachmentView.topAnchor.constraint(equalTo: view.topAnchor, constant: 200).isActive = true
+        attachmentView.layer.cornerRadius = 12.6
+        view.bringSubviewToFront(attachmentView)
+        view.bringSubviewToFront(sendButton)
+
+        //TODO delete button
+    }
+
+    private func setupGiphy() {
+        //Pre selected caurousal
+        let giffPadding: CGFloat = 7
+        let giphyVC = GiphyGridController()
+
+        giphyCaroursalContainerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(giphyCaroursalContainerView)
+        giphyCaroursalContainerView.leftAnchor.constraint(equalTo: view.safeLeftAnchor, constant: giffPadding).isActive = true
+        giphyCaroursalContainerView.rightAnchor.constraint(equalTo: view.safeRightAnchor, constant: -giffPadding).isActive = true
+        giphyCaroursalContainerView.bottomAnchor.constraint(equalTo: sendButton.topAnchor, constant: -(giffPadding * 2)).isActive = true
+
+        //Giphy settings
+        giphyVC.cellPadding = giffPadding
+        giphyVC.direction = .horizontal
+        giphyVC.numberOfTracks = 1
+        giphyVC.showCheckeredBackground = false
+        giphyVC.view.backgroundColor = .clear
+        giphyVC.imageType = .gif
+        giphyVC.layout = .carousel
+        giphyVC.rating = .ratedPG13
+        giphyVC.fixedSizeCells = true
+        giphyVC.theme = TariGiphyTheme()
+
+        giphyVC.delegate = self
+        addChild(giphyVC)
+        giphyCaroursalContainerView.addSubview(giphyVC.view)
+
+        giphyVC.view.translatesAutoresizingMaskIntoConstraints = false
+
+        giphyVC.view.leadingAnchor.constraint(equalTo: giphyCaroursalContainerView.leadingAnchor).isActive = true
+        giphyVC.view.trailingAnchor.constraint(equalTo: giphyCaroursalContainerView.trailingAnchor).isActive = true
+        giphyVC.view.bottomAnchor.constraint(equalTo: giphyCaroursalContainerView.bottomAnchor).isActive = true
+        giphyVC.view.heightAnchor.constraint(equalToConstant: 64).isActive = true
+
+        searchGiphyButton.backgroundColor = Theme.shared.colors.searchGiphyButtonBackground
+        searchGiphyButton.setTitleColor(Theme.shared.colors.searchGiphyButtonTitle, for: .normal)
+        searchGiphyButton.titleLabel?.font = Theme.shared.fonts.searchGiphyButtonTitle
+        searchGiphyButton.setTitle(NSLocalizedString("add_note.search_giphy_button", comment: "Add note view"), for: .normal)
+        searchGiphyButton.translatesAutoresizingMaskIntoConstraints = false
+        searchGiphyButton.layer.cornerRadius = 3
+        searchGiphyButton.contentEdgeInsets = .init(top: 12, left: 10, bottom: 10, right: 10)
+        giphyCaroursalContainerView.addSubview(searchGiphyButton)
+        searchGiphyButton.heightAnchor.constraint(equalToConstant: 18).isActive = true
+        searchGiphyButton.leadingAnchor.constraint(equalTo: giphyCaroursalContainerView.leadingAnchor).isActive = true
+        searchGiphyButton.bottomAnchor.constraint(equalTo: giphyVC.view.topAnchor, constant: -giffPadding).isActive = true
+        searchGiphyButton.topAnchor.constraint(equalTo: giphyCaroursalContainerView.topAnchor).isActive = true
+        searchGiphyButton.addTarget(self, action: #selector(showGiffyPanel), for: .touchUpInside)
+        searchGiphyButton.alpha = 0
+
+        giphyVC.content = GPHContent.search(withQuery: "Money", mediaType: .gif, language: .english)
+        giphyVC.update()
+    }
+
+    @objc private func showGiffyPanel() {
+        giphyModal.layout = .waterfall
+        giphyModal.mediaTypeConfig = [.gifs]
+        giphyModal.theme = TariGiphyTheme()
+        giphyModal.delegate = self
+        GiphyViewController.trayHeightMultiplier = 0.8
+        present(giphyModal, animated: true, completion: nil)
+    }
+
+    func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
+        giphyModal.dismiss(animated: true, completion: nil)
+        attachment = media
+    }
+
+    func didSelectMedia(media: GPHMedia, cell: UICollectionViewCell) {
+        attachment = media
+    }
+
+    func didDismiss(controller: GiphyViewController?) {}
+
+    func contentDidUpdate(resultCount: Int) {
+        searchGiphyButton.alpha = 1
     }
 
     func textViewDidChangeSelection(_ textView: UITextView) {
@@ -157,10 +277,11 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
             UIView.animate(withDuration: 0.5) { [weak self] in
                 guard let self = self else { return }
-                self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight - self.SIDE_PADDING)
+                self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
                 self.sendButtonBottomConstraint.isActive = true
                 self.view.layoutIfNeeded()
             }
+
         }
     }
 
@@ -170,7 +291,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         UIView.animate(withDuration: 0.5) { [weak self] in
             guard let self = self else { return }
 
-            self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -self.SIDE_PADDING)
+            self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
             self.sendButtonBottomConstraint.isActive = true
         }
     }
@@ -217,12 +338,16 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         )
     }
 
-    private func sendTransaction(_ wallet: Wallet,
-                                 recipientPublicKey: PublicKey,
-                                 amount: MicroTari) {
+    private func sendTransaction(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari) {
         //Init first so it starts listening for a callback right away
         let sendingVC = SendingTariViewController()
-        sendingVC.note = noteText
+
+        if let m = attachment {
+            sendingVC.note = "\(noteText) \(m.embedUrl ?? "")"
+        } else {
+            sendingVC.note = noteText
+        }
+
         sendingVC.recipientPubKey = recipientPublicKey
         sendingVC.amount = amount
         self.navigationController?.pushViewController(sendingVC, animated: false)
@@ -244,9 +369,9 @@ extension AddNoteViewController {
         view.addSubview(titleLabel)
         titleLabel.font = Theme.shared.fonts.addNoteTitleLabel
         titleLabel.textColor = Theme.shared.colors.addNoteTitleLabel
-        titleLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: SIDE_PADDING).isActive = true
-        titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        titleLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: sidePadding).isActive = true
+        titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: sidePadding).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -sidePadding).isActive = true
         titleLabel.heightAnchor.constraint(equalToConstant: titleLabel.font.pointSize * 1.1).isActive = true
         titleLabel.text = NSLocalizedString("add_note.title", comment: "Add note view")
     }
@@ -256,9 +381,9 @@ extension AddNoteViewController {
 
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(sendButton)
-        sendButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        sendButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -SIDE_PADDING).isActive = true
-        sendButtonBottomConstraint = sendButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -SIDE_PADDING)
+        sendButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        sendButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        sendButtonBottomConstraint = sendButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -sidePadding)
         sendButtonBottomConstraint.isActive = true
 
         sendButton.showSliderText = true
@@ -274,14 +399,14 @@ extension AddNoteViewController {
 
     fileprivate func setupNoteInput() {
         let font = Theme.shared.fonts.addNoteInputView
-
+//        noteInput.backgroundColor = .red
         noteInput.delegate = self
         noteInput.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(noteInput)
-        noteInput.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: SIDE_PADDING / 2).isActive = true
-        noteInput.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        noteInput.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -SIDE_PADDING).isActive = true
-        noteInput.bottomAnchor.constraint(equalTo: sendButton.topAnchor, constant: -SIDE_PADDING).isActive = true
+        noteInput.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: sidePadding / 2).isActive = true
+        noteInput.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: sidePadding).isActive = true
+        noteInput.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -sidePadding).isActive = true
+        noteInput.bottomAnchor.constraint(equalTo: sendButton.topAnchor, constant: -sidePadding).isActive = true
         noteInput.textContainerInset = .zero
         noteInput.textContainer.lineFragmentPadding = 0
 
@@ -299,8 +424,8 @@ extension AddNoteViewController {
         notePlaceholder.translatesAutoresizingMaskIntoConstraints = false
         noteInput.addSubview(notePlaceholder)
         notePlaceholder.topAnchor.constraint(equalTo: noteInput.topAnchor).isActive = true
-        notePlaceholder.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        notePlaceholder.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        notePlaceholder.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: sidePadding).isActive = true
+        notePlaceholder.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -sidePadding).isActive = true
         notePlaceholder.numberOfLines = 0
 
         notePlaceholder.attributedText = NSAttributedString(
@@ -313,4 +438,32 @@ extension AddNoteViewController {
         )
 
     }
+}
+
+public class TariGiphyTheme: GPHTheme {
+    public override init() {
+        super.init()
+        self.type = .light
+    }
+
+    public override var textFieldFont: UIFont? {
+        return Theme.shared.fonts.searchContactsInputBoxText
+    }
+
+//    public override var searchButtonColor: UIColor {
+//        return Theme.shared.colors.navigationBarTint!
+//    }
+//
+//    public override var textColor: UIColor {
+//        return .black
+//    }
+//
+//    public override var toolBarSwitchSelectedColor: UIColor { return .green }
+//    public override var placeholderTextColor: UIColor {
+//        return .red
+//    }
+//
+//    public override var backgroundColorForLoadingCells: UIColor {
+//        return .blue
+//    }
 }

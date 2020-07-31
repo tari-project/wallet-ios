@@ -44,13 +44,6 @@ import Lottie
 
 extension TransactionsTableViewController {
     // MARK: - Table view data source
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 0 && tableView.isRefreshing() {
-            return 30
-        }
-        return 16
-    }
-
     override func numberOfSections(in tableView: UITableView) -> Int {
         if transactions.count == 0 {
             backgroundType = .empty
