@@ -156,34 +156,35 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func startExistingWallet(onComplete: @escaping () -> Void) {
+        let startWallet = {
+            //Kick off wallet creation on a background thread
+            DispatchQueue.global().async {
+                do {
+                    try TariLib.shared.startWalletService()
+                    self.createWalletBackup()
+                    DispatchQueue.main.async {
+                        onComplete()
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        UserFeedback.shared.error(
+                            title: NSLocalizedString("wallet.error.title", comment: "Wallet error"),
+                            description: NSLocalizedString("wallet.error.start_existing_wallet", comment: "Wallet error"),
+                            error: error
+                        )
+                    }
+                }
+            }
+        }
         //If they closed the app before the biometrics authentication or animation then don't try start the wallet as tor will be stopped.
         //If they move the app back to the foreground, tor ports will open and this function can be retried
-        guard !TariLib.shared.walletIsStopped else {
+        if TariLib.shared.walletIsStopped || TariLib.shared.walletPublicKeyHex != nil {
             TariLogger.warn("Moved to background before wallet could start. Will wait for restart if it moves to the foreground.")
-            TariEventBus.onMainThread(self, eventType: .walletServiceStarted) { (_) in
+            TariLib.shared.waitIfWalletIsRestarting { (_) in
                 onComplete()
             }
-
-            return
-        }
-
-        //Kick off wallet creation on a background thread
-        DispatchQueue.global().async {
-            do {
-                try TariLib.shared.startWalletService()
-                self.createWalletBackup()
-                DispatchQueue.main.async {
-                    onComplete()
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    UserFeedback.shared.error(
-                        title: NSLocalizedString("wallet.error.title", comment: "Wallet error"),
-                        description: NSLocalizedString("wallet.error.start_existing_wallet", comment: "Wallet error"),
-                        error: error
-                    )
-                }
-            }
+        } else {
+            startWallet()
         }
     }
 
