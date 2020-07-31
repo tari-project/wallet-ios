@@ -50,6 +50,10 @@ class AlwaysPoppableNavigationController: UINavigationController {
         self.alwaysPoppableDelegate = AlwaysPoppableDelegate(navigationController: self, originalDelegate: self.interactivePopGestureRecognizer!.delegate!)
         self.interactivePopGestureRecognizer!.delegate = self.alwaysPoppableDelegate
     }
+
+    override var childForStatusBarStyle: UIViewController? {
+        return topViewController?.childForStatusBarStyle ?? topViewController
+    }
 }
 
 private class AlwaysPoppableDelegate: NSObject, UIGestureRecognizerDelegate {
