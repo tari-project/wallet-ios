@@ -71,6 +71,12 @@ enum PushNotificationServerError: Error {
 }
 
 class NotificationManager {
+    enum NotificationIdentifier: String {
+        case standard = "Local Notification"
+        case backgroundBackupTask = "background-backup-task"
+        case scheduledBackupFailure = "scheduled-backup-failure"
+    }
+
     static let shared = NotificationManager()
 
     let notificationCenter = UNUserNotificationCenter.current()
@@ -129,13 +135,15 @@ class NotificationManager {
     func handleForegroundNotification(_ notification: UNNotification, completionHandler: (UNNotificationPresentationOptions) -> Void) {
         ConnectionMonitor.shared.state.baseNodeSynced = nil
         try? TariLib.shared.tariWallet?.syncBaseNode()
-        //completionHandler([.alert, .badge, .sound])
+        if notification.request.identifier == NotificationIdentifier.scheduledBackupFailure.rawValue {
+            completionHandler([.alert, .badge, .sound])
+        }
     }
 
     func scheduleNotification(
         title: String,
         body: String,
-        identifier: String = "Local Notification",
+        identifier: String = NotificationIdentifier.standard.rawValue,
         timeInterval: TimeInterval = 1,
         onCompletion: ((Bool) -> Void)? = nil) {
         let content = UNMutableNotificationContent()
