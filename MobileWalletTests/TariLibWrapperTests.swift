@@ -366,6 +366,18 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     func compareWallets(w1: Wallet, w2: Wallet) {
+        let (walletPublicKey, pubKeyErrorW1) = w1.publicKey
+        let (backupWalletPublicKey, pubKeyErrorW2) = w2.publicKey
+        
+        if pubKeyErrorW1 != nil {
+            XCTFail(pubKeyErrorW1!.localizedDescription)
+        }
+        if pubKeyErrorW2 != nil {
+            XCTFail(pubKeyErrorW2!.localizedDescription)
+        }
+        
+        XCTAssertEqual(walletPublicKey, backupWalletPublicKey)
+
         XCTAssertEqual(w1.availableBalance.0, w2.availableBalance.0)
         XCTAssertEqual(w1.pendingIncomingBalance.0, w2.pendingIncomingBalance.0)
         XCTAssertEqual(w1.pendingOutgoingBalance.0, w2.pendingOutgoingBalance.0)
