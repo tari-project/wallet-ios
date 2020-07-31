@@ -153,14 +153,14 @@ class TransactionTableViewCell: UITableViewCell {
 
     private func setMediaVisible(aspectRatio: CGFloat?) {
         attachmentViewHeightContraint.isActive = false
-
-        if let ratio = aspectRatio {
+        if var ratio = aspectRatio {
+            ratio = ratio > 1 ? ratio - 1 : ratio
             //TODO when the height is set correctly then they layout constraints break
-//            attachmentViewHeightContraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: ratio - 1)
-            attachmentViewHeightContraint = attachmentViewContainer.heightAnchor.constraint(equalToConstant: 50)
+            attachmentViewHeightContraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: ratio)
         } else {
             attachmentViewHeightContraint = attachmentViewContainer.heightAnchor.constraint(equalToConstant: 0)
         }
+        attachmentViewHeightContraint.priority = .defaultHigh
         attachmentViewHeightContraint.isActive = true
     }
 
@@ -324,6 +324,7 @@ extension TransactionTableViewCell {
         let labelsContainer = UIView()
         labelsContainer.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(labelsContainer)
+
         labelsContainer.addBottomBorder(with: Theme.shared.colors.transactionCellBorder, andWidth: 1)
         labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4).isActive = true
         labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25).isActive = true

@@ -86,6 +86,10 @@ class MenuTabBarController: UITabBarController {
         }
     }
 
+    open override var childForStatusBarStyle: UIViewController? {
+        return selectedViewController?.childForStatusBarStyle ?? selectedViewController
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         styleNavigatorBar(isHidden: true)
@@ -101,7 +105,7 @@ extension MenuTabBarController: UITabBarControllerDelegate {
         if viewController.isKind(of: AddRecipientViewController.self) {
             let navigationController = AlwaysPoppableNavigationController(rootViewController: AddRecipientViewController())
             navigationController.setNavigationBarHidden(true, animated: false)
-            navigationController.modalPresentationStyle = .overFullScreen
+            navigationController.modalPresentationStyle = .fullScreen
             present(navigationController, animated: true)
             return false
         }
