@@ -123,7 +123,6 @@ class ICloudBackup: NSObject {
     private var reachability: Reachability?
     private var query = NSMetadataQuery()
 
-    private let pushTaskIdentifier = "background-backup-task"
     private var backgroundTaskIdentifier: UIBackgroundTaskIdentifier?
 
     private let directory = TariLib.shared.databaseDirectory
@@ -411,8 +410,9 @@ extension ICloudBackup {
     }
 
     private func showError(error: Error) {
+        if BackupScheduler.shared.scheduledBackupStarted { return } // check for scheduled backup for decide which notification use, "push" ot "modal view"
+        
         var title = NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
-
         if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
            title = localizedError.failureReason!
         }
@@ -458,7 +458,7 @@ extension ICloudBackup {
     func scheduleNotification() {
         let title = NSLocalizedString("backup_local_notification.title", comment: "Backup notification")
         let body = NSLocalizedString("backup_local_notification.body", comment: "Backup notification")
-        NotificationManager.shared.scheduleNotification(title: title, body: body, identifier: pushTaskIdentifier) { (_) in
+        NotificationManager.shared.scheduleNotification(title: title, body: body, identifier: NotificationManager.NotificationIdentifier.backgroundBackupTask.rawValue) { (_) in
             TariLogger.info("User reminded to open the app as a background backup did not complete.")
             self.endBackgroundBackupTask()
         }
