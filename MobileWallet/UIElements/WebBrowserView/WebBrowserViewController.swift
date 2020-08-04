@@ -61,6 +61,7 @@ class WebBrowserViewController: UIViewController {
         setupViews()
         openURL()
         updateButtons()
+        hideNavigationPanel()
     }
 
     private func openURL() {
@@ -139,6 +140,9 @@ extension WebBrowserViewController {
         navigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 32.0).isActive = true
 
         let xMarkButton = UIButton()
+        if modalPresentationStyle != .popover {
+            xMarkButton.isHidden = true
+        }
         xMarkButton.addTarget(self, action: #selector(xMarkAction), for: .touchUpInside)
         xMarkButton.setImage(Theme.shared.images.close, for: .normal)
 
@@ -222,6 +226,7 @@ extension WebBrowserViewController {
     }
 
     private func setupGrabber() {
+        if modalPresentationStyle != .popover { return }
         let grabber = UIView()
         grabber.backgroundColor = .lightGray
         grabber.layer.cornerRadius = 2.5

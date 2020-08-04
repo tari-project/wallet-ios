@@ -41,6 +41,8 @@
 import UIKit
 import CoreData
 import Sentry
+import GiphyUISDK
+import GiphyCoreSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
@@ -82,6 +84,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         BackgroundTaskManager.shared.registerScheduleReminderNotificationsTask()
         ShortcutParser.shared.registerShortcuts()
         Migrations.handle()
+
+        if let giphyApiKey = TariSettings.shared.giphyApiKey {
+            Giphy.configure(apiKey: giphyApiKey, verificationMode: true)
+        }
 
         return true
     }

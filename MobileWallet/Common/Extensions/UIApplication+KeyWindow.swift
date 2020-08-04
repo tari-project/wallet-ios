@@ -54,4 +54,20 @@ extension UIApplication {
         }
         return nil
     }
+
+    func menuTabBarController() -> MenuTabBarController? {
+        return findViewController(kindOf: MenuTabBarController.self)
+    }
+
+    func findViewController<T: UIViewController>(kindOf: T.Type? = nil) -> T? {
+        guard let window = keyWindow else { return nil }
+        if let vc = window.rootViewController as? T {
+            return vc
+        } else if let vc = window.rootViewController?.presentedViewController as? T {
+            return vc
+        } else if let vc = window.rootViewController?.children {
+            return vc.lazy.compactMap { $0 as? T }.first
+        }
+        return nil
+    }
 }

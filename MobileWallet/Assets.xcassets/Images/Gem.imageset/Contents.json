@@ -1,12 +1,23 @@
 {
   "images" : [
     {
+      "filename" : "Gem-Balance.png",
       "idiom" : "universal",
-      "filename" : "Gem-Big.pdf"
+      "scale" : "1x"
+    },
+    {
+      "filename" : "Gem-Balance@2x.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "Gem-Balance@3x.png",
+      "idiom" : "universal",
+      "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

@@ -126,4 +126,36 @@ extension Wallet {
 
         return (grouped, nil)
     }
+
+    var allTransactions: ([TransactionProtocol], Error?) {
+        let (completedTransactions, completedError) = self.completedTransactions
+        guard completedError == nil else {
+            return ([], completedError)
+        }
+
+        let (pendingInboundTransactions, pendingInboundError) = self.pendingInboundTransactions
+        guard pendingInboundError == nil else {
+            return ([], pendingInboundError)
+        }
+
+        let (pendingOutboundTransactions, pendingOutboundError) = self.pendingOutboundTransactions
+        guard pendingOutboundError == nil else {
+            return ([], pendingOutboundError)
+        }
+
+        var result: [TransactionProtocol] =
+            (pendingInboundTransactions!.list.0.map { $0 as TransactionProtocol })
+        result.append(contentsOf: pendingOutboundTransactions!.list.0.map { $0 as TransactionProtocol })
+
+        //Keep pending first but sorted
+        result.sort { (tx1, tx2) -> Bool in
+            let d1 = tx1.date.0 ?? Date()
+            let d2 = tx2.date.0 ?? Date()
+            return d1.compare(d2) == .orderedDescending
+        }
+
+        result.append(contentsOf: completedTransactions!.list.0)
+
+        return (result, nil)
+    }
 }

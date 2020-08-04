@@ -40,9 +40,14 @@
 "tx_list.in_progress" = "In Progress";
 "tx_list.intro" = "Your wallet setup is complete.";
 "tx_list.intro_message" = "You’re ready to start exploring";
-"tx_list.today" = "Today";
+"tx_list.relative_hours" = "%@h ago";
+"tx_list.relative_minutes" = "%@m ago";
+"tx_list.now" = "Now";
 "tx_list.empty" = "We don’t see any transactions yet.\nHopefully something happens soon…🤞";
 "tx_list.yesterday" = "Yesterday";
+"tx_list.inbound_pending_title" = "%@sent a payment";
+"tx_list.inbound_title" = "%@paid you";
+"tx_list.outbound_title" = "You paid%@";
 
 "tx_list.error.sync_to_base_node.title" = "Base node error";
 "tx_list.error.sync_to_base_node.description" = "Could not sync to base node";
@@ -329,6 +334,7 @@
 "add_note.error.recipient_public_key.title" = "Missing public key";
 "add_note.error.recipient_public_key.description" = "Recipient public key not set";
 "add_note.slide_to_send" = "Slide to Send";
+"add_note.search_giphy_button" = "SEARCH";
 
 /* TariBot transaction */
 "taribot.message1.with_param" = "💸 Here’s some %@!";
@@ -374,3 +380,7 @@
 "wallet_backup.prompt_3.description" = "Given the amount of money in your wallet, you should password-protect your backups so they're safe even if your iCloud is compromised.";
 "wallet_backup.prompt_3.cta_button" = "Secure Backups";
 "wallet_backup.prompt_3.cancel_button" = "Not now";
+
+/* Loading gif button */
+"loading_gif_button.title.loading" = "Loading GIF";
+"loading_gif_button.title.retry" = "Retry loading GIF";

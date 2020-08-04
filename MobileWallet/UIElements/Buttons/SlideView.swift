@@ -47,9 +47,10 @@ import UIKit
 }
 
 @objcMembers public class SlideView: UIView {
-    static private let thumbnailMargin: CGFloat = 5
+    static private let thumbnailMargin: CGFloat = 10
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     static private let thumbnailShadowRadius: Float = 0.5
+    static private let thumbnailCornerRadius: CGFloat = 0
 
     // MARK: All Views
     public let textLabel: UILabel = {
@@ -60,7 +61,7 @@ import UIKit
         let label = UILabel()
         return label
     }()
-    public let thumnailImageView: UIImageView = {
+    public let thumbnailImageView: UIImageView = {
         let view = SlideViewRoundImageView()
         view.isUserInteractionEnabled = true
         view.contentMode = .center
@@ -123,15 +124,15 @@ import UIKit
                 sliderBackgroundColor = .clear// Theme.shared.colors.actionButtonBackgroundSimple!
                 //slidingColor = Theme.shared.colors.actionButtonBackgroundSimple!
                 textColor = Theme.shared.colors.actionButtonTitle!
-                thumnailImageView.image = thumnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonBackgroundSimple!)
-                thumnailImageView.layer.shadowOpacity = SlideView.thumbnailShadowRadius
+                thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonBackgroundSimple!)
+                thumbnailImageView.layer.shadowOpacity = SlideView.thumbnailShadowRadius
                 sliderHolderView.applyGradient()
             } else {
                 sliderBackgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled!
                 //slidingColor = Theme.shared.colors.actionButtonBackgroundDisabled!
                 textColor = Theme.shared.colors.actionButtonTitleDisabled!
-                thumnailImageView.image = thumnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonTitleDisabled!)
-                thumnailImageView.layer.shadowOpacity = 0
+                thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonTitleDisabled!)
+                thumbnailImageView.layer.shadowOpacity = 0
                 sliderHolderView.removeGradient()
             }
         }
@@ -143,7 +144,7 @@ import UIKit
     }
     public var animationChangedEnabledBlock: ((Bool) -> Void)?
     // MARK: Default styles
-    public var sliderCornerRadius: CGFloat = ActionButton.RADIUS_POINTS {
+    public var sliderCornerRadius: CGFloat = 0 {
         didSet {
             sliderHolderView.layer.cornerRadius = sliderCornerRadius
             draggedView.layer.cornerRadius = sliderCornerRadius
@@ -169,7 +170,7 @@ import UIKit
     }
     public var thumbnailColor: UIColor = Theme.shared.colors.actionButtonTitle! {
         didSet {
-            thumnailImageView.backgroundColor = thumbnailColor
+            thumbnailImageView.backgroundColor = thumbnailColor
         }
     }
     public var labelText: String = "Slide" {
@@ -193,7 +194,7 @@ import UIKit
     private var xPositionInThumbnailView: CGFloat = 0
     private var xEndingPoint: CGFloat {
         get {
-            return (self.view.frame.maxX - thumnailImageView.bounds.width - thumbnailViewStartingDistance)
+            return (self.view.frame.maxX - thumbnailImageView.bounds.width - thumbnailViewStartingDistance)
         }
     }
     private var isFinished: Bool = false
@@ -211,25 +212,25 @@ import UIKit
 
     private func setupView() {
         self.addSubview(view)
-        view.addSubview(thumnailImageView)
+        view.addSubview(thumbnailImageView)
         view.addSubview(sliderHolderView)
         view.addSubview(draggedView)
         draggedView.addSubview(sliderTextLabel)
         sliderHolderView.addSubview(textLabel)
-        view.bringSubviewToFront(self.thumnailImageView)
+        view.bringSubviewToFront(self.thumbnailImageView)
         setupConstraint()
         setStyle()
         // Add pan gesture
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.handlePanGesture(_:)))
         panGestureRecognizer.minimumNumberOfTouches = 1
-        thumnailImageView.addGestureRecognizer(panGestureRecognizer)
+        thumbnailImageView.addGestureRecognizer(panGestureRecognizer)
 
         thumbnailViewStartingDistance = SlideView.thumbnailMargin
     }
 
     private func setupConstraint() {
         view.translatesAutoresizingMaskIntoConstraints = false
-        thumnailImageView.translatesAutoresizingMaskIntoConstraints = false
+        thumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
         sliderHolderView.translatesAutoresizingMaskIntoConstraints = false
         textLabel.translatesAutoresizingMaskIntoConstraints = false
         sliderTextLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -240,12 +241,12 @@ import UIKit
         view.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
         view.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
         // Setup for circle View
-        leadingThumbnailViewConstraint = thumnailImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+        leadingThumbnailViewConstraint = thumbnailImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         leadingThumbnailViewConstraint?.isActive = true
-        topThumbnailViewConstraint = thumnailImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: thumbnailViewTopDistance)
+        topThumbnailViewConstraint = thumbnailImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: thumbnailViewTopDistance)
         topThumbnailViewConstraint?.isActive = true
-        thumnailImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-        thumnailImageView.heightAnchor.constraint(equalTo: thumnailImageView.widthAnchor).isActive = true
+        thumbnailImageView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        thumbnailImageView.heightAnchor.constraint(equalTo: thumbnailImageView.widthAnchor).isActive = true
         // Setup for slider holder view
         topSliderConstraint = sliderHolderView.topAnchor.constraint(equalTo: view.topAnchor, constant: sliderViewTopDistance)
         topSliderConstraint?.isActive = true
@@ -267,14 +268,14 @@ import UIKit
         draggedView.leadingAnchor.constraint(equalTo: sliderHolderView.leadingAnchor).isActive = true
         draggedView.topAnchor.constraint(equalTo: sliderHolderView.topAnchor).isActive = true
         draggedView.centerYAnchor.constraint(equalTo: sliderHolderView.centerYAnchor).isActive = true
-        trailingDraggedViewConstraint = draggedView.trailingAnchor.constraint(equalTo: thumnailImageView.trailingAnchor, constant: thumbnailViewStartingDistance)
+        trailingDraggedViewConstraint = draggedView.trailingAnchor.constraint(equalTo: thumbnailImageView.trailingAnchor, constant: thumbnailViewStartingDistance)
         trailingDraggedViewConstraint?.isActive = true
 
-        heightAnchor.constraint(equalToConstant: ActionButton.HEIGHT).isActive = true
+        heightAnchor.constraint(equalToConstant: 60).isActive = true
     }
 
     private func setStyle() {
-        thumnailImageView.backgroundColor = thumbnailColor
+        thumbnailImageView.backgroundColor = thumbnailColor
         textLabel.text = labelText
         textLabel.font = textFont
         textLabel.textColor = textColor
@@ -295,7 +296,7 @@ import UIKit
     }
 
     private func isTapOnThumbnailViewWithPoint(_ point: CGPoint) -> Bool {
-        return self.thumnailImageView.frame.contains(point)
+        return self.thumbnailImageView.frame.contains(point)
     }
 
     private func updateThumbnailXPosition(_ x: CGFloat) {
@@ -327,7 +328,7 @@ import UIKit
             textLabel.alpha = (xEndingPoint - translatedPoint) / xEndingPoint
             break
         case .ended:
-            if translatedPoint >= xEndingPoint {
+            if translatedPoint >= xEndingPoint / 2 {
                 textLabel.alpha = 0
                 updateThumbnailXPosition(xEndingPoint)
                 // Finish action

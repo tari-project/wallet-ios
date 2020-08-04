@@ -86,6 +86,9 @@ struct Colors: Loopable {
     let actionButtonBackgroundSimple = UIColor(named: "ActionButtonBackgroundSimple")
     let actionButtonTitle = UIColor(named: "ActionButtonTitle")
 
+    let loadingGifButtonTitleLoadingState = UIColor(named: "LoadingGifButtonTitleLoadingState")
+    let loadingGifButtonTitleRetryState = UIColor(named: "LoadingGifButtonTitleRetryState")
+
     let actionButtonBackgroundDisabled = UIColor(named: "ActionButtonBackgroundDisabled")
     let actionButtonTitleDisabled = UIColor(named: "ActionButtonTitleDisabled")
 
@@ -155,15 +158,19 @@ struct Colors: Loopable {
     let auroraGradient9 = UIColor(named: "auroraGradient9")
 
     //Transaction cell
-    let transactionCellAlias = UIColor(named: "TableCellContactAlias")
-    let transactionCellDescription = UIColor(named: "TransactionCellDescription")
+    let transactionCellAlias = UIColor(named: "TransactionCellContactAlias")
+    let transactionCellNote = UIColor(named: "TransactionCellNote")
     let transactionCellValueNegativeBackground = UIColor(named: "TransactionCellValueNegativeBackground")
     let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
     let transactionCellValueCancelledBackground = UIColor(named: "TransactionCellValueCancelledBackground")
+    let transactionCellValuePendingBackground = UIColor(named: "TransactionCellValuePendingBackground")
     let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
     let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
     let transactionCellValueCancelledText = UIColor(named: "TransactionCellValueCancelledText")
+    let transactionCellValuePendingText = UIColor(named: "TransactionCellValuePendingText")
     let transactionSmallSubheadingLabel = UIColor(named: "SmallSubheading")
+    let transactionCellStatusLabel = UIColor(named: "TransactionCellStatus")
+    let transactionCellBorder = UIColor(named: "TransactionCellBorder")
 
     // Sending Tari
     let sendingTariTitle = UIColor(named: "SendingTariTitleText")
@@ -219,6 +226,8 @@ struct Colors: Loopable {
     //Add note screen
     let addNoteTitleLabel = UIColor(named: "Heading")
     let addNoteInputView = UIColor(named: "InputText")
+    let searchGiphyButtonBackground = UIColor(named: "SearchGiphyButtonBackground")
+    let searchGiphyButtonTitle = UIColor(named: "SearchGiphyButtonTitle")
 
     //EmoticonView
     let emoticonBlackBackgroundAlpha = UIColor(named: "EmoticonBlackBackgroundAlpha")
@@ -249,16 +258,16 @@ struct Images: Loopable {
     let createWalletDownArrow = UIImage(named: "notch_down")
     let createWalletNumpad = UIImage(named: "numpad")
 
-    //Transaction icons
-    let food = UIImage(named: "food")
-    let game = UIImage(named: "game")
-    let thanks = UIImage(named: "thanks")
-    let transfer = UIImage(named: "transfer")
-    let drinks = UIImage(named: "drinks")
-    let services = UIImage(named: "services")
+    //TabBar
+    let homeItem = UIImage(named: "navHome")
+    let ttlItem = UIImage(named: "navTtl")
+    let sendItem = UIImage(named: "navSend")?.withRenderingMode(.alwaysOriginal)
+    let profileItem = UIImage(named: "navProfile")
+    let settingsItem = UIImage(named: "navSettings")
 
     //General icons
     let currencySymbol = UIImage(named: "Gem")
+    let currencyBigSymbol = UIImage(named: "GemBig")
     let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
     let forwardArrow = UIImage(named: "ForwardArrow")
@@ -269,6 +278,7 @@ struct Images: Loopable {
     let profileIcon = UIImage(named: "profileIcon")
     let storeIcon = UIImage(named: "store-icon")
     let storeButton = UIImage(named: "store-button")
+    let giftButton = UIImage(named: "gift-button")
     let storeModal = UIImage(named: "store-modal")
     let unknownUser = UIImage(named: "unknownUser")
     let handWave = UIImage(named: "HandWave")
@@ -276,6 +286,9 @@ struct Images: Loopable {
     let scheduledIcon = UIImage(named: "ScheduledIcon")
     let successIcon = UIImage(named: "SuccessIcon")
     let tariIcon = UIImage(named: "TariIcon")
+    let cancelGiphy = UIImage(named: "cancelGiphy")
+    let poweredByGiphy = UIImage(named: "poweredByGiphy")
+    let searchIcon = UIImage(named: "SearchIcon")
 
     //Amount
     let delete = UIImage(named: "numpad-delete")
@@ -314,15 +327,20 @@ struct Fonts: Loopable {
     let profileMiddleLabel = UIFont.Avenir.medium.withSize(14.0)
 
     //Home screen
-    let homeScreenTotalBalanceLabel = UIFont.Avenir.roman.withSize(14.0)
-    let homeScreenTotalBalanceValueLabel = UIFont.Avenir.black.withSize(39.0)
-    let homeScreenTotalBalanceValueLabelDecimals = UIFont.Avenir.black.withSize(16.0)
+    let homeScreenTotalBalanceLabel = UIFont.Avenir.medium.withSize(12.0)
+    let homeScreenTotalBalanceValueLabel = UIFont.Avenir.black.withSize(30.0)
+    let homeScreenTotalBalanceValueLabelDecimals = UIFont.Avenir.heavy.withSize(12.0)
+
+    //Loadig gif button
+    let loadingGifButtonTitle = UIFont.Avenir.heavy.withSize(14.0)
 
     //Transaction cell
-    let transactionCellUsernameLabel = UIFont.Avenir.heavy.withSize(15.0)
+    let transactionCellUsernameLabel = UIFont.Avenir.light.withSize(14.0)
+    let transactionCellUsernameLabelHeavy = UIFont.Avenir.heavy.withSize(14.0)
     let transactionCellDescriptionLabel = UIFont.Avenir.roman.withSize(14.0)
     let transactionCellValueLabel = UIFont.Avenir.black.withSize(12.0)
-    let transactionDateValueLabel = UIFont.Avenir.medium.withSize(12.0)
+    let transactionDateValueLabel = UIFont.Avenir.medium.withSize(11.0)
+    let transactionCellStatusLabel = UIFont.Avenir.roman.withSize(12.0)
 
     //View transaction screen
     let transactionScreenCurrencyValueLabel = UIFont.Avenir.black.withSize(90.0)
@@ -369,6 +387,7 @@ struct Fonts: Loopable {
     //Add note screen
     let addNoteTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
     let addNoteInputView = UIFont.Avenir.medium.withSize(20.0)
+    let searchGiphyButtonTitle = UIFont.Avenir.black.withSize(9.0)
 
     //Add note screen
     let scannerTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
@@ -404,7 +423,7 @@ struct Fonts: Loopable {
 }
 
 struct Sizes {
-    let appSidePadding: CGFloat = 25 //TODO maybe adjust for smaller phones
+    let appSidePadding: CGFloat = 22
     //TODO move other constants here
 }
 

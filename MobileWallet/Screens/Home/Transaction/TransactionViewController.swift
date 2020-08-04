@@ -39,6 +39,8 @@
 */
 
 import UIKit
+import GiphyUISDK
+import GiphyCoreSDK
 
 class TransactionViewController: UIViewController {
     let bottomHeadingPadding: CGFloat = 11
@@ -72,6 +74,7 @@ class TransactionViewController: UIViewController {
     var navigationBarHeightAnchor = NSLayoutConstraint()
     let txStateView = AnimatedRefreshingView()
     let cancelButton = TextButton()
+    let attachmentView = GPHMediaView()
     var transaction: TransactionProtocol?
     private var isShowingStateView = false
     private var isShowingCancelButton = false
@@ -80,7 +83,6 @@ class TransactionViewController: UIViewController {
     let feeButton = TextButton()
     let feeButtonHeight: CGFloat = 37
     let headingLabelTopAnchorHeight: CGFloat = 40
-    let transactionIDLabel = UILabel()
 
     var isShowingContactAlias: Bool = true {
         didSet {
@@ -232,7 +234,7 @@ class TransactionViewController: UIViewController {
         setupEditContactButton()
         setupDivider()
         setupNote()
-        setupTransactionIDLabel()
+        setupGiphy()
         view.bringSubviewToFront(fromContainerView)
         updateTxState()
     }
@@ -456,14 +458,24 @@ class TransactionViewController: UIViewController {
                 throw messageError!
             }
 
-            setNoteText(message)
+            let (note, noteGiphyId) = TransactionViewController.splitNoteAndGiphyId(message)
 
-            let (id, idError) = tx.id
-            guard idError == nil else {
-                throw idError!
+            setNoteText(note)
+
+            if let giphyId = noteGiphyId {
+                GiphyCore.shared.gifByID(giphyId) { (response, error) in
+                    guard error == nil else {
+                        return TariLogger.error("Failed to load gif", error: error)
+                    }
+
+                    if let media = response?.data {
+                        DispatchQueue.main.sync { [weak self] in
+                            guard let self = self else { return }
+                            self.attachmentView.media = media
+                        }
+                    }
+                }
             }
-
-            let txIdDisplay = NSLocalizedString("transaction_detail.transaction_id", comment: "Transaction detail view") + " \(String(id))"
 
             //Get the fee for outbound transactions only
             if let completedTx = tx as? CompletedTransaction {
@@ -489,31 +501,6 @@ class TransactionViewController: UIViewController {
             } else if tx.status.0 != .mined && tx.status.0 != .imported {
                 navigationBar.title = NSLocalizedString("transaction_detail.payment_in_progress", comment: "Transaction detail view")
             }
-
-            //Hopefully we can add this back some time
-            var statusEmoji = ""
-
-            //If the app is in debug mode, show the status
-            if TariSettings.shared.environment == .debug {
-                switch tx.status.0 {
-                case .completed:
-                    statusEmoji = " ✔️"
-                case .broadcast:
-                    statusEmoji = " 📡"
-                case .mined:
-                    statusEmoji = " ⛏️"
-                case .imported:
-                    statusEmoji = " 🤖"
-                case .pending:
-                    statusEmoji = " ⏳"
-                case .transactionNullError:
-                    statusEmoji = " 🤔"
-                case .unknown:
-                    statusEmoji = " 🤷"
-                }
-            }
-
-            transactionIDLabel.text = "\(txIdDisplay)\(statusEmoji)"
         }
     }
 
@@ -639,5 +626,23 @@ extension TransactionViewController {
     @objc func keyboardWillHide(notification: NSNotification) {
         contactNameTextField.endEditing(true)
         contactNameTextField.text = contactAlias
+    }
+}
+
+// MARK: Giphy
+extension TransactionViewController {
+    static func splitNoteAndGiphyId(_ note: String) -> (String, String?) {
+        let giphyLinkPrefix = "https://giphy.com/embed/"
+
+        if let endIndex = note.range(of: giphyLinkPrefix)?.lowerBound {
+            let messageExcludingLink = note[..<endIndex].trimmingCharacters(in: .whitespaces)
+            let link = note[endIndex...].trimmingCharacters(in: .whitespaces)
+            let giphyId = link.replacingOccurrences(of: giphyLinkPrefix, with: "")
+
+            return (messageExcludingLink, giphyId)
+
+        } else {
+            return (note, nil)
+        }
     }
 }

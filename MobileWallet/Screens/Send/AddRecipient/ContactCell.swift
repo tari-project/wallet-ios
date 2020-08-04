@@ -41,7 +41,7 @@
 import UIKit
 
 class ContactCell: UITableViewCell {
-    private let SIDE_PADDING = Theme.shared.sizes.appSidePadding
+    private let sidePadding = Theme.shared.sizes.appSidePadding
     private let CONTACT_LETTER_VIEW_SIZE: CGFloat = 44
     private let CONTACT_LETTER_VIEW_RADIUS: CGFloat = 12
 
@@ -86,8 +86,8 @@ class ContactCell: UITableViewCell {
         addSubview(cellView)
         cellView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         cellView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        cellView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: SIDE_PADDING).isActive = true
-        cellView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -SIDE_PADDING).isActive = true
+        cellView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: sidePadding).isActive = true
+        cellView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -sidePadding).isActive = true
 
         //Contact "image"
         contactLetterView.translatesAutoresizingMaskIntoConstraints = false

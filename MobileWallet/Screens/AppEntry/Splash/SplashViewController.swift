@@ -288,12 +288,12 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             NotificationManager.shared.requestAuthorization()
 
             let nav = AlwaysPoppableNavigationController()
-            let homeViewController = HomeViewController()
-            nav.setViewControllers([homeViewController], animated: false)
+            let tabBarController = MenuTabBarController()
+            nav.setViewControllers([tabBarController], animated: false)
 
             if let window = UIApplication.shared.keyWindow {
                 let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
-                homeViewController.view.addSubview(overlayView)
+                tabBarController.view.addSubview(overlayView)
                 window.rootViewController = nav
 
                 UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
