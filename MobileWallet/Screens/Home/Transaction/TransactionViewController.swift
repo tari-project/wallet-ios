@@ -463,24 +463,18 @@ class TransactionViewController: UIViewController {
             setNoteText(note)
 
             if let giphyId = noteGiphyId {
-                if let cachedMedia = TransactionTableViewCell.mediaCache[giphyId] {
-                    attachmentView.media = cachedMedia
-                } else {
-                    GiphyCore.shared.gifByID(giphyId) { (response, error) in
-                        guard error == nil else {
-                            return TariLogger.error("Failed to load gif", error: error)
-                        }
+                GiphyCore.shared.gifByID(giphyId) { (response, error) in
+                    guard error == nil else {
+                        return TariLogger.error("Failed to load gif", error: error)
+                    }
 
-                        if let media = response?.data {
-                            DispatchQueue.main.sync { [weak self] in
-                                guard let self = self else { return }
-                                self.attachmentView.media = media
-                                TransactionTableViewCell.mediaCache[giphyId] = media
-                            }
+                    if let media = response?.data {
+                        DispatchQueue.main.sync { [weak self] in
+                            guard let self = self else { return }
+                            self.attachmentView.media = media
                         }
                     }
                 }
-
             }
 
             //Get the fee for outbound transactions only

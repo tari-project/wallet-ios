@@ -47,7 +47,7 @@ import UIKit
 }
 
 @objcMembers public class SlideView: UIView {
-    static private let thumbnailMargin: CGFloat = 9
+    static private let thumbnailMargin: CGFloat = 10
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     static private let thumbnailShadowRadius: Float = 0.5
     static private let thumbnailCornerRadius: CGFloat = 0
@@ -271,7 +271,7 @@ import UIKit
         trailingDraggedViewConstraint = draggedView.trailingAnchor.constraint(equalTo: thumbnailImageView.trailingAnchor, constant: thumbnailViewStartingDistance)
         trailingDraggedViewConstraint?.isActive = true
 
-        heightAnchor.constraint(equalToConstant: ActionButton.HEIGHT).isActive = true
+        heightAnchor.constraint(equalToConstant: 60).isActive = true
     }
 
     private func setStyle() {
@@ -328,7 +328,7 @@ import UIKit
             textLabel.alpha = (xEndingPoint - translatedPoint) / xEndingPoint
             break
         case .ended:
-            if translatedPoint >= xEndingPoint {
+            if translatedPoint >= xEndingPoint / 2 {
                 textLabel.alpha = 0
                 updateThumbnailXPosition(xEndingPoint)
                 // Finish action

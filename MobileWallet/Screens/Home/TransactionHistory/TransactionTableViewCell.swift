@@ -64,6 +64,8 @@ class TransactionTableViewCell: UITableViewCell {
     private var kvoGifFailure: NSKeyValueObservation?
     private var kvoStatus: NSKeyValueObservation?
 
+    private static let topCellPadding: CGFloat = 15
+
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
             self.contentView.alpha = 0.6
@@ -192,12 +194,12 @@ extension TransactionTableViewCell {
         avatarContainer.widthAnchor.constraint(equalToConstant: size).isActive = true
         avatarContainer.heightAnchor.constraint(equalToConstant: size).isActive = true
         avatarContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TransactionTableViewCell.topCellPadding).isActive = true
         avatarContainer.layer.cornerRadius = size / 2
 
         avatarContainer.layer.shadowOpacity = 0.13
         avatarContainer.layer.shadowOffset = CGSize(width: 10, height: 10)
-        avatarContainer.layer.shadowRadius = 23
+        avatarContainer.layer.shadowRadius = 10
         avatarContainer.layer.shadowColor = Theme.shared.colors.defaultShadow?.cgColor
 
         avatarLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -214,8 +216,8 @@ extension TransactionTableViewCell {
         contentView.addSubview(labelsContainer)
 
         labelsContainer.addBottomBorder(with: Theme.shared.colors.transactionCellBorder, andWidth: 1)
-        labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4).isActive = true
-        labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25).isActive = true
+        labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TransactionTableViewCell.topCellPadding).isActive = true
+        labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25 + TransactionTableViewCell.topCellPadding).isActive = true
         labelsContainer.leadingAnchor.constraint(equalTo: avatarContainer.trailingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         labelsContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 

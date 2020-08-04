@@ -484,7 +484,7 @@ extension AddNoteViewController {
 public class TariGiphyTheme: GPHTheme {
     public override init() {
         super.init()
-        self.type = .darkBlur
+        self.type = .light
     }
 
     public override var textFieldFont: UIFont? {
