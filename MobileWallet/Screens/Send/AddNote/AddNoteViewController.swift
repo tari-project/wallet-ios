@@ -77,7 +77,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
                 //Set aspect ratio
                 attachmentHeightLayoutConstraint.isActive = false
-                attachmentHeightLayoutConstraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: aspectRatio - 1)
+                attachmentHeightLayoutConstraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: 1 / aspectRatio)
                 attachmentHeightLayoutConstraint.isActive = true
 
                 giphyCaroursalContainerView.isHidden = true
