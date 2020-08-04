@@ -283,6 +283,9 @@ struct Images: Loopable {
     let scheduledIcon = UIImage(named: "ScheduledIcon")
     let successIcon = UIImage(named: "SuccessIcon")
     let tariIcon = UIImage(named: "TariIcon")
+    let cancelGiphy = UIImage(named: "cancelGiphy")
+    let poweredByGiphy = UIImage(named: "poweredByGiphy")
+    let searchIcon = UIImage(named: "SearchIcon")
 
     //Amount
     let delete = UIImage(named: "numpad-delete")

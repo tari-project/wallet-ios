@@ -52,6 +52,11 @@ extension Date {
 
             if hours == 0 {
                 guard let minutes = components.minute else { return nil }
+
+                guard minutes != 0 else {
+                    return NSLocalizedString("tx_list.now", comment: "Transaction list section heading")
+                }
+
                 return String(
                     format: NSLocalizedString("tx_list.relative_minutes", comment: "Transaction list section heading"),
                     "\(minutes)"

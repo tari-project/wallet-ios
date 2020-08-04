@@ -42,6 +42,7 @@
 "tx_list.intro_message" = "You’re ready to start exploring";
 "tx_list.relative_hours" = "%@h ago";
 "tx_list.relative_minutes" = "%@m ago";
+"tx_list.now" = "Now";
 "tx_list.empty" = "We don’t see any transactions yet.\nHopefully something happens soon…🤞";
 "tx_list.yesterday" = "Yesterday";
 "tx_list.inbound_pending_title" = "%@sent a payment";
@@ -333,7 +334,7 @@
 "add_note.error.recipient_public_key.title" = "Missing public key";
 "add_note.error.recipient_public_key.description" = "Recipient public key not set";
 "add_note.slide_to_send" = "Slide to Send";
-"add_note.search_giphy_button" = "SEARCH GIPHY";
+"add_note.search_giphy_button" = "SEARCH";
 
 /* TariBot transaction */
 "taribot.message1.with_param" = "💸 Here’s some %@!";

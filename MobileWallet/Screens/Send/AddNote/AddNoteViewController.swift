@@ -55,35 +55,28 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
     fileprivate let notePlaceholder = UILabel()
     fileprivate var noteText = "" {
         didSet {
-            if noteText.isEmpty {
-                sendButton.isEnabled = false
-            } else {
-                sendButton.isEnabled = true
-            }
+            setSendButtonState()
         }
     }
+    private let poweredByGiphyImageView = UIImageView(image: Theme.shared.images.poweredByGiphy)
     private let giphyCaroursalContainerView = UIView()
     private let giphyModal = GiphyViewController()
     private let searchGiphyButton = UIButton()
 
-    var attachmentHeightLayoutConstraint = NSLayoutConstraint()
     let attachmentContainer = UIView()
     let attachmentView = GPHMediaView()
     var attachment: GPHMedia? = nil {
         didSet {
             attachmentView.media = attachment
-            if let m = attachment {
-                let aspectRatio = m.aspectRatio
-
-                //Set aspect ratio
-                attachmentHeightLayoutConstraint.isActive = false
-                attachmentHeightLayoutConstraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: aspectRatio - 1)
-                attachmentHeightLayoutConstraint.isActive = true
-
+            if let _ = attachment {
+                attachmentContainer.isHidden = false
                 giphyCaroursalContainerView.isHidden = true
             } else {
                 giphyCaroursalContainerView.isHidden = false
+                attachmentContainer.isHidden = true
             }
+
+            setSendButtonState()
         }
     }
 
@@ -92,8 +85,8 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
         setup()
 
-        hideKeyboardWhenTappedAroundOrSwipedDown(view: noteInput)
-        hideKeyboardWhenTappedAroundOrSwipedDown(view: attachmentView)
+//        hideKeyboardWhenTappedAroundOrSwipedDown(view: noteInput)
+//        hideKeyboardWhenTappedAroundOrSwipedDown(view: attachmentContainer)
 
         Tracker.shared.track("/home/send_tari/add_note", "Send Tari - Add Note")
     }
@@ -148,6 +141,14 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
 
+    func setSendButtonState() {
+        if noteText.isEmpty && attachment == nil {
+            sendButton.isEnabled = false
+        } else {
+            sendButton.isEnabled = true
+        }
+    }
+
     private func setup() {
         view.backgroundColor = Theme.shared.colors.appBackground
 
@@ -159,16 +160,40 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
     }
 
     private func setupMediaAttachment() {
-        view.addSubview(attachmentView)
+        view.addSubview(attachmentContainer)
+        attachmentContainer.translatesAutoresizingMaskIntoConstraints = false
+        attachmentContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: sidePadding).isActive = true
+        attachmentContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -sidePadding).isActive = true
+        attachmentContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 200).isActive = true
+        attachmentContainer.layer.cornerRadius = 20
+        attachmentContainer.layer.masksToBounds = true
+
+        attachmentContainer.addSubview(attachmentView)
         attachmentView.translatesAutoresizingMaskIntoConstraints = false
-        attachmentView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: sidePadding).isActive = true
-        attachmentView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -sidePadding).isActive = true
-        attachmentView.topAnchor.constraint(equalTo: view.topAnchor, constant: 200).isActive = true
-        attachmentView.layer.cornerRadius = 12.6
-        view.bringSubviewToFront(attachmentView)
+        attachmentView.topAnchor.constraint(equalTo: attachmentContainer.topAnchor).isActive = true
+        attachmentView.bottomAnchor.constraint(equalTo: attachmentContainer.bottomAnchor).isActive = true
+        attachmentView.leadingAnchor.constraint(equalTo: attachmentContainer.leadingAnchor).isActive = true
+        attachmentView.trailingAnchor.constraint(equalTo: attachmentContainer.trailingAnchor).isActive = true
+
+        view.bringSubviewToFront(attachmentContainer)
         view.bringSubviewToFront(sendButton)
 
         //TODO delete button
+        let cancelView = UIView()
+        cancelView.translatesAutoresizingMaskIntoConstraints = false
+        attachmentContainer.addSubview(cancelView)
+        cancelView.topAnchor.constraint(equalTo: attachmentContainer.topAnchor).isActive = true
+        cancelView.trailingAnchor.constraint(equalTo: attachmentContainer.trailingAnchor).isActive = true
+        cancelView.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        cancelView.widthAnchor.constraint(equalToConstant: 50).isActive = true
+
+        let cancelImageView = UIImageView(image: Theme.shared.images.cancelGiphy)
+        cancelImageView.translatesAutoresizingMaskIntoConstraints = false
+        cancelView.addSubview(cancelImageView)
+        cancelImageView.centerXAnchor.constraint(equalTo: cancelView.centerXAnchor).isActive = true
+        cancelImageView.centerYAnchor.constraint(equalTo: cancelView.centerYAnchor).isActive = true
+
+        cancelView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (removeAttachment)))
     }
 
     private func setupGiphy() {
@@ -205,20 +230,32 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         giphyVC.view.bottomAnchor.constraint(equalTo: giphyCaroursalContainerView.bottomAnchor).isActive = true
         giphyVC.view.heightAnchor.constraint(equalToConstant: 64).isActive = true
 
+        let searchButtonWidth: CGFloat = 90
+        searchGiphyButton.setImage(Theme.shared.images.searchIcon, for: .normal)
+        searchGiphyButton.tintColor = Theme.shared.colors.searchGiphyButtonTitle
         searchGiphyButton.backgroundColor = Theme.shared.colors.searchGiphyButtonBackground
         searchGiphyButton.setTitleColor(Theme.shared.colors.searchGiphyButtonTitle, for: .normal)
         searchGiphyButton.titleLabel?.font = Theme.shared.fonts.searchGiphyButtonTitle
         searchGiphyButton.setTitle(NSLocalizedString("add_note.search_giphy_button", comment: "Add note view"), for: .normal)
         searchGiphyButton.translatesAutoresizingMaskIntoConstraints = false
         searchGiphyButton.layer.cornerRadius = 3
-        searchGiphyButton.contentEdgeInsets = .init(top: 12, left: 10, bottom: 10, right: 10)
+        searchGiphyButton.titleEdgeInsets = .init(top: 0, left: 5, bottom: 0, right: 0)
         giphyCaroursalContainerView.addSubview(searchGiphyButton)
         searchGiphyButton.heightAnchor.constraint(equalToConstant: 18).isActive = true
         searchGiphyButton.leadingAnchor.constraint(equalTo: giphyCaroursalContainerView.leadingAnchor).isActive = true
-        searchGiphyButton.bottomAnchor.constraint(equalTo: giphyVC.view.topAnchor, constant: -giffPadding).isActive = true
+        searchGiphyButton.widthAnchor.constraint(equalToConstant: searchButtonWidth).isActive = true
         searchGiphyButton.topAnchor.constraint(equalTo: giphyCaroursalContainerView.topAnchor).isActive = true
         searchGiphyButton.addTarget(self, action: #selector(showGiffyPanel), for: .touchUpInside)
-        searchGiphyButton.alpha = 0
+        searchGiphyButton.isHidden = true
+
+        poweredByGiphyImageView.translatesAutoresizingMaskIntoConstraints = false
+        giphyCaroursalContainerView.addSubview(poweredByGiphyImageView)
+        poweredByGiphyImageView.heightAnchor.constraint(equalToConstant: 9.9).isActive = true
+        poweredByGiphyImageView.widthAnchor.constraint(equalToConstant: searchButtonWidth).isActive = true
+        poweredByGiphyImageView.leadingAnchor.constraint(equalTo: giphyCaroursalContainerView.leadingAnchor).isActive = true
+        poweredByGiphyImageView.topAnchor.constraint(equalTo: searchGiphyButton.bottomAnchor, constant: giffPadding).isActive = true
+        poweredByGiphyImageView.bottomAnchor.constraint(equalTo: giphyVC.view.topAnchor, constant: -giffPadding).isActive = true
+        poweredByGiphyImageView.isHidden = true
 
         giphyVC.content = GPHContent.search(withQuery: "Money", mediaType: .gif, language: .english)
         giphyVC.update()
@@ -242,10 +279,15 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         attachment = media
     }
 
+    @objc func removeAttachment() {
+        attachment = nil
+    }
+
     func didDismiss(controller: GiphyViewController?) {}
 
     func contentDidUpdate(resultCount: Int) {
-        searchGiphyButton.alpha = 1
+        searchGiphyButton.isHidden = false
+        poweredByGiphyImageView.isHidden = false
     }
 
     func textViewDidChangeSelection(_ textView: UITextView) {
@@ -399,7 +441,6 @@ extension AddNoteViewController {
 
     fileprivate func setupNoteInput() {
         let font = Theme.shared.fonts.addNoteInputView
-//        noteInput.backgroundColor = .red
         noteInput.delegate = self
         noteInput.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(noteInput)
@@ -443,23 +484,15 @@ extension AddNoteViewController {
 public class TariGiphyTheme: GPHTheme {
     public override init() {
         super.init()
-        self.type = .light
+        self.type = .darkBlur
     }
 
     public override var textFieldFont: UIFont? {
         return Theme.shared.fonts.searchContactsInputBoxText
     }
 
-//    public override var searchButtonColor: UIColor {
-//        return Theme.shared.colors.navigationBarTint!
-//    }
-//
-//    public override var textColor: UIColor {
-//        return .black
-//    }
-//
 //    public override var toolBarSwitchSelectedColor: UIColor { return .green }
-//    public override var placeholderTextColor: UIColor {
+//    public override var placeholderColor: UIColor {
 //        return .red
 //    }
 //
