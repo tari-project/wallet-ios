@@ -43,8 +43,6 @@ import GiphyUISDK
 import GiphyCoreSDK
 
 class TransactionTableViewCell: UITableViewCell {
-    static var mediaCache: [String: GPHMedia] = [:]
-
     private let avatarContainer = UIView()
     private let avatarLabel = UILabel()
     private let titleLabel = UILabel()
@@ -54,9 +52,17 @@ class TransactionTableViewCell: UITableViewCell {
     private let noteLabel = UILabel()
     private let valueContainer = UIView()
     private let valueLabel = UILabelWithPadding()
-    private let attachmentViewContainer = GPHMediaView()
     private let attachmentView = GPHMediaView()
+    private let loadingGifButton = LoadingGIFButton()
     private var attachmentViewHeightContraint = NSLayoutConstraint()
+
+    var updateCell: (() -> Void)?
+    weak var model: TransactionTableViewModel?
+
+    private var kvoTime: NSKeyValueObservation?
+    private var kvoGif: NSKeyValueObservation?
+    private var kvoGifFailure: NSKeyValueObservation?
+    private var kvoStatus: NSKeyValueObservation?
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
@@ -68,13 +74,64 @@ class TransactionTableViewCell: UITableViewCell {
         }
     }
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    init(model: TransactionTableViewModel) {
+        super.init(style: .default, reuseIdentifier: "TransactionTableViewCell")
+        configure(with: model)
         viewSetup()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func configure(with model: TransactionTableViewModel) {
+        self.model = model
+        avatarLabel.text = model.avatar
+        noteLabel.text = model.message
+        titleLabel.attributedText = model.title
+        setStatus(model.status)
+
+        setValue(microTari: model.value.microTari, direction: model.value.direction, isCancelled: model.value.isCancelled, isPending: model.value.isPending)
+        timeLabel.text = model.time
+        setGif(media: model.gif)
+        observe(item: model)
+    }
+
+    private func observe(item: TransactionTableViewModel) {
+        kvoGif = item.observe(\.gif, options: .new) { [weak self] (_, _) in
+            self?.setGif(media: item.gif)
+            self?.updateCell?()
+        }
+
+        kvoGifFailure = item.observe(\.gifDownloadFailed, options: .new) { [weak self] (_, _) in
+            if item.gifDownloadFailed {
+                DispatchQueue.main.async { [weak self] in
+                    self?.loadingGifButton.isHidden = false
+                    self?.loadingGifButton.variation = .retry
+                }
+            }
+        }
+
+        kvoStatus = item.observe(\.status, options: .new) { [weak self] (_, _) in
+            self?.setStatus(item.status)
+        }
+
+        kvoTime = item.observe(\.time, options: .new) { [weak self] (_, _) in
+            self?.timeLabel.text = item.time
+        }
+    }
+
+    private func setGif(media: GPHMedia?) {
+        if model?.isGif == false || media != nil {
+            DispatchQueue.main.async { [weak self] in
+                self?.loadingGifButton.isHidden = true
+            }
+        }
+        self.attachmentView.media = media
+    }
+
+    private func setStatus(_ status: String) {
+        statusLabel.text = status
     }
 
     private func setValue(microTari: MicroTari?, direction: TransactionDirection, isCancelled: Bool, isPending: Bool) {
@@ -107,179 +164,10 @@ class TransactionTableViewCell: UITableViewCell {
         valueLabel.padding = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
     }
 
-    private func setMessage(_ message: String) {
-        //Extract the giphy link
-        let giphyLinkPrefix = "https://giphy.com/embed/"
-
-        if let endIndex = message.range(of: giphyLinkPrefix)?.lowerBound {
-            let messageExcludingLink = message[..<endIndex].trimmingCharacters(in: .whitespaces)
-            let link = message[endIndex...].trimmingCharacters(in: .whitespaces)
-            let giphyId = link.replacingOccurrences(of: giphyLinkPrefix, with: "")
-
-            noteLabel.text = messageExcludingLink
-
-            //Check cache first
-            if let cachedMedia = TransactionTableViewCell.mediaCache[giphyId] {
-                self.setMedia(cachedMedia)
-            } else {
-                GiphyCore.shared.gifByID(giphyId) { (response, error) in
-                    guard error == nil else {
-                        return TariLogger.error("Failed to load gif", error: error)
-                    }
-
-                    if let media = response?.data {
-                        DispatchQueue.main.sync { [weak self] in
-                            guard let self = self else { return }
-                            self.setMedia(media)
-                            TransactionTableViewCell.mediaCache[giphyId] = media
-                        }
-                    }
-                }
-            }
-
-        } else {
-            noteLabel.text = message
-            attachmentView.media = nil
-            setMediaVisible(aspectRatio: nil)
-        }
-
-        noteLabel.sizeToFit()
-    }
-
-    private func setMedia(_ media: GPHMedia) {
-        attachmentView.media = media
-        setMediaVisible(aspectRatio: media.aspectRatio)
-    }
-
-    private func setMediaVisible(aspectRatio: CGFloat?) {
-        attachmentViewHeightContraint.isActive = false
-        if var ratio = aspectRatio {
-            ratio = ratio > 1 ? ratio - 1 : ratio
-            //TODO when the height is set correctly then they layout constraints break
-            attachmentViewHeightContraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: ratio)
-        } else {
-            attachmentViewHeightContraint = attachmentViewContainer.heightAnchor.constraint(equalToConstant: 0)
-        }
-        attachmentViewHeightContraint.priority = .defaultHigh
-        attachmentViewHeightContraint.isActive = true
-    }
-
-    private func setAvatar(_ pubKey: PublicKey) {
-        let (emojis, _) = pubKey.emojis
-        avatarLabel.text = String(emojis.emojis.prefix(1))
-    }
-
-    func setDetails(_ tx: TransactionProtocol) {
-        var isCancelled = false
-        var isPending = false
-
-        let (publicKey, _) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
-        guard let pubKey = publicKey else { return }
-
-        if let _ = tx as? PendingInboundTransaction {
-            isPending = true
-        }
-
-        if let _ = tx as? PendingOutboundTransaction {
-            isPending = true
-        }
-
-        setAvatar(pubKey)
-
-        var alias = ""
-        var aliasIsEmojis = false
-        if let contact = tx.contact.0 {
-            alias = contact.alias.0
-        }
-
-        if alias.isEmpty {
-            let (emojis, _) = pubKey.emojis
-            alias = "\(String(emojis.emojis.prefix(2)))•••\(String(emojis.emojis.suffix(2)))"
-            aliasIsEmojis = true
-        }
-
-        var titleText = ""
-        if tx.direction == .inbound {
-            if isPending {
-                titleText = String(
-                    format: NSLocalizedString("tx_list.inbound_pending_title", comment: "Transaction list"),
-                    alias
-                )
-            } else {
-                titleText =  String(
-                    format: NSLocalizedString("tx_list.inbound_title", comment: "Transaction list"),
-                    alias
-                )
-            }
-        } else if tx.direction == .outbound {
-            titleText =  String(
-                format: NSLocalizedString("tx_list.outbound_title", comment: "Transaction list"),
-                alias
-            )
-        }
-
-        //Getting the line breaks around the alias an not the other spaces in the copy
-        titleText = titleText
-            .replacingOccurrences(of: " ", with: "\u{00A0}")
-            .replacingOccurrences(of: alias, with: " \(alias) ")
-            .trimmingCharacters(in: .whitespaces)
-
-        if let startIndex = titleText.indexDistance(of: alias) {
-            let attributedTitle = NSMutableAttributedString(
-                string: titleText,
-                attributes: [
-                    .font: Theme.shared.fonts.transactionCellUsernameLabel,
-                    .foregroundColor: Theme.shared.colors.transactionCellAlias!
-                ]
-            )
-
-            let range = NSRange(location: startIndex, length: alias.count)
-            attributedTitle.addAttribute(.font, value: Theme.shared.fonts.transactionCellUsernameLabelHeavy, range: range)
-            if aliasIsEmojis {
-                //So the elippises between the emojis is lighter
-                attributedTitle.addAttribute(.foregroundColor, value: Theme.shared.colors.emojisSeparator!, range: range)
-            }
-
-            titleLabel.attributedText = attributedTitle
-        }
-
-        statusLabel.text = ""
-        statusLabelHeightHidden.isActive = true
-
-        var statusMessage = ""
-
-        //Cancelled tranaction
-        if let compledTx = tx as? CompletedTransaction {
-            if compledTx.isCancelled {
-                isCancelled = true
-                statusMessage = "Transaction Cancelled"
-            }
-        }
-
-        switch tx.status.0 {
-        case .pending:
-            if tx.direction == .inbound {
-                statusMessage = NSLocalizedString("refresh_view.waiting_for_sender", comment: "Refresh view")
-            } else if tx.direction == .outbound {
-                statusMessage = NSLocalizedString("refresh_view.waiting_for_recipient", comment: "Refresh view")
-            }
-        case .broadcast, .completed:
-            statusMessage = NSLocalizedString("refresh_view.final_processing", comment: "Refresh view")
-        default:
-            statusMessage = ""
-        }
-
-        if statusMessage.isEmpty {
-            statusLabel.text = ""
-            statusLabelHeightHidden.isActive = true
-        } else {
-            statusLabel.text = statusMessage
-            statusLabelHeightHidden.isActive = false
-        }
-
-        setValue(microTari: tx.microTari.0, direction: tx.direction, isCancelled: isCancelled, isPending: isPending)
-        setMessage(tx.message.0)
-        timeLabel.text = tx.date.0?.relativeDayFromToday() ?? ""
+    deinit {
+        kvoGif?.invalidate()
+        kvoStatus?.invalidate()
+        kvoTime?.invalidate()
     }
 }
 
@@ -353,7 +241,6 @@ extension TransactionTableViewCell {
 
         // MARK: - Title/alias
         labelsContainer.addSubview(titleLabel)
-        titleLabel.text = ""
         titleLabel.numberOfLines = 2
         titleLabel.lineBreakMode = .byWordWrapping
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -379,7 +266,12 @@ extension TransactionTableViewCell {
         statusLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
         statusLabel.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
         statusLabelHeightHidden = statusLabel.heightAnchor.constraint(equalToConstant: 0)
-        statusLabelHeightHidden.isActive = true
+
+        if statusLabel.text?.isEmpty ?? true {
+            statusLabelHeightHidden.isActive = true
+        } else {
+            statusLabelHeightHidden.isActive = false
+        }
 
         // MARK: - TX note
         labelsContainer.addSubview(noteLabel)
@@ -392,24 +284,38 @@ extension TransactionTableViewCell {
         noteLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
         noteLabel.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
 
-        // MARK: - Media attachment
-        attachmentViewContainer.backgroundColor = .lightGray //TODO ask for a color
-        attachmentViewContainer.clipsToBounds = true
-        attachmentViewContainer.layer.cornerRadius = 4
-        labelsContainer.addSubview(attachmentViewContainer)
-        attachmentViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        attachmentViewContainer.topAnchor.constraint(equalTo: noteLabel.bottomAnchor, constant: 5).isActive = true
-        attachmentViewContainer.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -25).isActive = true
-        attachmentViewContainer.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
-        attachmentViewContainer.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
-        attachmentViewHeightContraint = attachmentViewContainer.heightAnchor.constraint(equalToConstant: 0)
+        // MARK: - attachmentView
+        attachmentView.backgroundColor = .lightGray //TODO ask for a color
+        attachmentView.clipsToBounds = true
+        attachmentView.layer.cornerRadius = 4
+        labelsContainer.addSubview(self.attachmentView)
+        attachmentView.translatesAutoresizingMaskIntoConstraints = false
+        attachmentView.topAnchor.constraint(equalTo: noteLabel.bottomAnchor, constant: 5).isActive = true
+        attachmentView.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -25).isActive = true
+        attachmentView.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
+        attachmentView.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
+        if attachmentView.media != nil {
+            attachmentViewHeightContraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: 1 / attachmentView.media!.aspectRatio)
+        } else {
+            attachmentViewHeightContraint = attachmentView.heightAnchor.constraint(equalToConstant: 0)
+        }
+
+        attachmentViewHeightContraint.priority = .defaultHigh
         attachmentViewHeightContraint.isActive = true
 
-        attachmentViewContainer.addSubview(attachmentView)
-        attachmentView.translatesAutoresizingMaskIntoConstraints = false
-        attachmentView.topAnchor.constraint(equalTo: attachmentViewContainer.topAnchor).isActive = true
-        attachmentView.bottomAnchor.constraint(equalTo: attachmentViewContainer.bottomAnchor).isActive = true
-        attachmentView.leadingAnchor.constraint(equalTo: attachmentViewContainer.leadingAnchor).isActive = true
-        attachmentView.trailingAnchor.constraint(equalTo: attachmentViewContainer.trailingAnchor).isActive = true
+        // MARK: - Loading gif button
+        loadingGifButton.variation = model?.gifDownloadFailed == true ? .retry : .loading
+        labelsContainer.addSubview(loadingGifButton)
+        loadingGifButton.addTarget(self, action: #selector(loadingGifButtonAction(_:)), for: .touchUpInside)
+        loadingGifButton.translatesAutoresizingMaskIntoConstraints = false
+        loadingGifButton.topAnchor.constraint(equalTo: attachmentView.topAnchor).isActive = true
+        loadingGifButton.leadingAnchor.constraint(equalTo: timeLabel.leadingAnchor).isActive = true
+        loadingGifButton.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
+    }
+
+    @objc private func loadingGifButtonAction(_ sender: UIButton) {
+        loadingGifButton.variation = .loading
+        loadingGifButton.isHidden = false
+        model?.retryDownloadGif()
     }
 }

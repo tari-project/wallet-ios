@@ -74,8 +74,16 @@ class TransactionsTableViewController: UITableViewController {
     let animatedRefresher = AnimatedRefreshingView()
     private var lastContentOffset: CGFloat = 0
     private var kvoBackupScheduleToken: NSKeyValueObservation?
-
-    var transactions: [TransactionProtocol] = []
+    var transactionModels = [TransactionTableViewModel]()
+    var transactions = [TransactionProtocol]() {
+        didSet {
+            transactionModels.removeAll()
+            transactions.forEach { (tx) in
+                let model = TransactionTableViewModel(tx: tx)
+                transactionModels.append(model)
+            }
+        }
+    }
 
     private var isScrolledToTop: Bool = true {
         willSet {
@@ -242,10 +250,8 @@ class TransactionsTableViewController: UITableViewController {
         tableView.reloadData()
     }
 
-    //Transaction gets tapped
-    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         actionDelegate?.onTransactionSelect(transactions[indexPath.row])
-        return nil
     }
 
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

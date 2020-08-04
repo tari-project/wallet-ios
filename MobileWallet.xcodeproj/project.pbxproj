@@ -397,6 +397,12 @@
 		37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37765D2524A35BA20091AE2A /* AESEncryption.swift */; };
 		37765D2724A35BA20091AE2A /* AESEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37765D2524A35BA20091AE2A /* AESEncryption.swift */; };
 		37765D2824A35BA20091AE2A /* AESEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37765D2524A35BA20091AE2A /* AESEncryption.swift */; };
+		37875E4424D85C4300C0595B /* LoadingGIFButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37875E4324D85C4300C0595B /* LoadingGIFButton.swift */; };
+		37875E4524D85C4300C0595B /* LoadingGIFButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37875E4324D85C4300C0595B /* LoadingGIFButton.swift */; };
+		37875E4624D85C4300C0595B /* LoadingGIFButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37875E4324D85C4300C0595B /* LoadingGIFButton.swift */; };
+		37875E4824D8787A00C0595B /* TransactionTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37875E4724D8787A00C0595B /* TransactionTableViewModel.swift */; };
+		37875E4924D8787A00C0595B /* TransactionTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37875E4724D8787A00C0595B /* TransactionTableViewModel.swift */; };
+		37875E4A24D8787A00C0595B /* TransactionTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37875E4724D8787A00C0595B /* TransactionTableViewModel.swift */; };
 		378B4BC32498E5A000C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
 		378B4BC42498E5A000C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
 		378B4BC52498E5A100C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
@@ -767,6 +773,8 @@
 		376C62AD247574850091BB28 /* Animation+EnumInit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Animation+EnumInit.swift"; sourceTree = "<group>"; };
 		3776080824B73500008167E8 /* Backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backup.swift; sourceTree = "<group>"; };
 		37765D2524A35BA20091AE2A /* AESEncryption.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AESEncryption.swift; sourceTree = "<group>"; };
+		37875E4324D85C4300C0595B /* LoadingGIFButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingGIFButton.swift; sourceTree = "<group>"; };
+		37875E4724D8787A00C0595B /* TransactionTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionTableViewModel.swift; sourceTree = "<group>"; };
 		378B4BCF2498F83000C00CCF /* PendingCircleAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PendingCircleAnimation.json; sourceTree = "<group>"; };
 		379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarWithSubtitle.swift; sourceTree = "<group>"; };
 		37ABB68F24781CE800F08163 /* UILabel+InterlineSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+InterlineSpacing.swift"; sourceTree = "<group>"; };
@@ -1163,6 +1171,7 @@
 				00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */,
 				00230B012376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift */,
 				37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */,
+				37875E4724D8787A00C0595B /* TransactionTableViewModel.swift */,
 			);
 			path = TransactionHistory;
 			sourceTree = "<group>";
@@ -1234,6 +1243,7 @@
 				004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */,
 				004277F223E0407900AE7BD9 /* TextButton.swift */,
 				0053872F24065F6C00901A68 /* SlideView.swift */,
+				37875E4324D85C4300C0595B /* LoadingGIFButton.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -2184,6 +2194,7 @@
 				00A057AF23D875840029C22A /* TariEventBus.swift in Sources */,
 				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
+				37875E4424D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */,
 				00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				37B48A7F24B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
@@ -2215,6 +2226,7 @@
 				00B084C0249E471800F7B9BD /* EmojiSet.swift in Sources */,
 				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */,
+				37875E4824D8787A00C0595B /* TransactionTableViewModel.swift in Sources */,
 				004277FF23E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				0091D4AB23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
@@ -2311,6 +2323,7 @@
 				0091D4AC23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				3723A7AC24ACD03E003382EB /* PasswordField.swift in Sources */,
+				37875E4924D8787A00C0595B /* TransactionTableViewModel.swift in Sources */,
 				00BCE483240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				3708D757247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
 				37049275247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
@@ -2320,6 +2333,7 @@
 				373CCDBE2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				00BBD802237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				0091D4A823ED879E004BF7F7 /* Signature.swift in Sources */,
+				37875E4524D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
 				009DFCA82473EBCB0061DBC9 /* DeepLinkParams.swift in Sources */,
 				00DD1610241CD42500C955B4 /* BaseNode.swift in Sources */,
 				37547D5724601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
@@ -2468,6 +2482,7 @@
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00D7BD8B24349AE3009DD097 /* UIDevice.swift in Sources */,
 				37765D2824A35BA20091AE2A /* AESEncryption.swift in Sources */,
+				37875E4624D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
 				491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				BFAB5D1323FDEA6A009E8563 /* EmoticonView.swift in Sources */,
 				37B48A8124B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
@@ -2499,6 +2514,7 @@
 				373CCDBF2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				00B084C2249E471800F7B9BD /* EmojiSet.swift in Sources */,
 				3723A7A824AC9389003382EB /* SecureBackupViewController.swift in Sources */,
+				37875E4A24D8787A00C0595B /* TransactionTableViewModel.swift in Sources */,
 				00D9886B2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00A677A023743696001A853E /* TransactionViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,

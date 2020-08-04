@@ -380,3 +380,7 @@
 "wallet_backup.prompt_3.description" = "Given the amount of money in your wallet, you should password-protect your backups so they're safe even if your iCloud is compromised.";
 "wallet_backup.prompt_3.cta_button" = "Secure Backups";
 "wallet_backup.prompt_3.cancel_button" = "Not now";
+
+/* Loading gif button */
+"loading_gif_button.title.loading" = "Loading GIF";
+"loading_gif_button.title.retry" = "Retry loading GIF";

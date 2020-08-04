@@ -86,6 +86,9 @@ struct Colors: Loopable {
     let actionButtonBackgroundSimple = UIColor(named: "ActionButtonBackgroundSimple")
     let actionButtonTitle = UIColor(named: "ActionButtonTitle")
 
+    let loadingGifButtonTitleLoadingState = UIColor(named: "LoadingGifButtonTitleLoadingState")
+    let loadingGifButtonTitleRetryState = UIColor(named: "LoadingGifButtonTitleRetryState")
+
     let actionButtonBackgroundDisabled = UIColor(named: "ActionButtonBackgroundDisabled")
     let actionButtonTitleDisabled = UIColor(named: "ActionButtonTitleDisabled")
 
@@ -327,6 +330,9 @@ struct Fonts: Loopable {
     let homeScreenTotalBalanceLabel = UIFont.Avenir.medium.withSize(12.0)
     let homeScreenTotalBalanceValueLabel = UIFont.Avenir.black.withSize(30.0)
     let homeScreenTotalBalanceValueLabelDecimals = UIFont.Avenir.heavy.withSize(12.0)
+
+    //Loadig gif button
+    let loadingGifButtonTitle = UIFont.Avenir.heavy.withSize(14.0)
 
     //Transaction cell
     let transactionCellUsernameLabel = UIFont.Avenir.light.withSize(14.0)
