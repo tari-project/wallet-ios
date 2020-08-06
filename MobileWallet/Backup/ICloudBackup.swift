@@ -170,13 +170,15 @@ class ICloudBackup: NSObject {
 
     override init() {
         super.init()
-        initialiseQuery()
-        addNotificationObservers()
-        try? startObserveReachability()
 
-        if FileManager.default.ubiquityIdentityToken == nil {
-            iCloudBackupsIsOn = false
-        }
+//        
+//        initialiseQuery()
+//        addNotificationObservers()
+//        try? startObserveReachability()
+//
+//        if FileManager.default.ubiquityIdentityToken == nil {
+//            iCloudBackupsIsOn = false
+//        }
     }
 
     private func initialiseQuery() {
@@ -337,7 +339,7 @@ extension ICloudBackup {
                 fileURL = fileItemURL
             }
         }
-        
+
         guard let url = fileURL  else { return }
         do {
             let fileValues = try url.resourceValues(forKeys: [URLResourceKey.ubiquitousItemIsUploadingKey])
@@ -411,7 +413,7 @@ extension ICloudBackup {
 
     private func showError(error: Error) {
         if BackupScheduler.shared.scheduledBackupStarted { return } // check for scheduled backup for decide which notification use, "push" ot "modal view"
-        
+
         var title = NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
         if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
            title = localizedError.failureReason!
