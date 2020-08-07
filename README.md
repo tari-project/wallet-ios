@@ -1,8 +1,17 @@
-Tari iOS wallet
-===========================
+<p align="center">
+	<img width="300" src="https://tari.com/assets/img/tari-logo.svg">
+</p>
+
 [![Build Status](https://travis-ci.com/tari-project/wallet-ios.svg?branch=development)](https://travis-ci.com/tari-project/wallet-ios)
 
-Mobile-based UI client that connects to a full node in the Tari network.
+## What is Aurora?
+Aurora is a reference-design mobile wallet app for the forthcoming [Tari](https://www.tari.com/) digital currency. The goal is for creators and developers to be able to use the open-source Aurora libraries and codebase as a starting point for developing their own Tari wallets and applications. Aurora also sets the bar for applications that use the Tari protocol. In its production-ready state, it will be a beautiful, easy to use Tari wallet focused on Tari as a default-private digital currency.
+
+Want to contribute to Aurora? Get started here in this repository for iOS or [here](https://github.com/tari-project/wallet-android) for Android.
+
+<a href="https://apps.apple.com/us/app/tari-aurora/id1503654828" target="_blank"><img width="100" src="https://aurora.tari.com/img/AppStoreButton_large.svg"></a>&nbsp;&nbsp;&nbsp;<a href="https://play.google.com/store/apps/details?id=com.tari.android.wallet" target="_blank"><img width="100" src="https://aurora.tari.com/img/PlayStoreButton_large.svg"></a>
+
+## Build Instructions
 
 ### Swift Style Guide
 
