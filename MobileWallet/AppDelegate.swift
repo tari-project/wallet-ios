@@ -86,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         Migrations.handle()
 
         if let giphyApiKey = TariSettings.shared.giphyApiKey {
-            Giphy.configure(apiKey: giphyApiKey, verificationMode: true)
+            Giphy.configure(apiKey: giphyApiKey)
         }
 
         return true

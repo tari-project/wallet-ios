@@ -26,6 +26,11 @@ Run tests on simulator
 fastlane ios push
 ```
 Just push a new beta build to App Store Connect
+### ios bump
+```
+fastlane ios bump
+```
+Build nunber bump
 ### ios qa
 ```
 fastlane ios qa

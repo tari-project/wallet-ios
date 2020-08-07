@@ -2685,7 +2685,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 114;
+				CURRENT_PROJECT_VERSION = 125;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2722,7 +2722,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 114;
+				CURRENT_PROJECT_VERSION = 125;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2878,7 +2878,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 114;
+				CURRENT_PROJECT_VERSION = 125;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2894,7 +2894,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.3.0;
+				MARKETING_VERSION = 0.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2914,7 +2914,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 114;
+				CURRENT_PROJECT_VERSION = 125;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2930,7 +2930,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.3.0;
+				MARKETING_VERSION = 0.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

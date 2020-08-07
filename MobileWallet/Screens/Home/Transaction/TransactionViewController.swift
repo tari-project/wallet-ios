@@ -52,7 +52,9 @@ class TransactionViewController: UIViewController {
     var contactPublicKey: PublicKey?
     var contactAlias: String = ""
     let navigationBar = NavigationBarWithSubtitle()
-    let valueContainerView = UIView()
+    let scrollView = UIScrollView()
+    let stackView = UIStackView()
+    var valueContainerView: UIView!
     var valueContainerViewHeightAnchor = NSLayoutConstraint()
 
     var valueCenterYAnchorConstraint = NSLayoutConstraint()
@@ -60,8 +62,9 @@ class TransactionViewController: UIViewController {
     let emojiButton = EmoticonView()
     let fromContainerView = UIView()
     let fromHeadingLabel = UILabel()
+    let contactNameContainer = UIView()
     let addContactButton = TextButton()
-    var fromContainerViewTopAnchor = NSLayoutConstraint()
+    var contactNameContainerViewHeightAnchor = NSLayoutConstraint()
     var contactNameHeadingLabelTopAnchor = NSLayoutConstraint()
     let contactNameHeadingLabel = UILabel()
     let contactNameTextField = UITextField()
@@ -69,11 +72,10 @@ class TransactionViewController: UIViewController {
     let dividerView = UIView()
     let noteHeadingLabel = UILabel()
     let noteLabel = UILabel()
-    var noteHeadingLabelTopAnchorConstraintContactNameShowing = NSLayoutConstraint()
-    var noteHeadingLabelTopAnchorConstraintContactNameMissing = NSLayoutConstraint()
     var navigationBarHeightAnchor = NSLayoutConstraint()
     let txStateView = AnimatedRefreshingView()
     let cancelButton = TextButton()
+    let attachmentSection = UIView()
     let attachmentView = GPHMediaView()
     var transaction: TransactionProtocol?
     private var isShowingStateView = false
@@ -87,24 +89,24 @@ class TransactionViewController: UIViewController {
     var isShowingContactAlias: Bool = true {
         didSet {
             if isShowingContactAlias {
-                noteHeadingLabelTopAnchorConstraintContactNameMissing.isActive = false
-                noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = true
                 addContactButton.isHidden = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.15, execute: { [ weak self] in
                     guard let self = self else { return }
-
                     self.contactNameTextField.isHidden = false
                     self.contactNameHeadingLabel.isHidden = false
                     self.dividerView.isHidden = false
+
+                    self.contactNameContainerViewHeightAnchor.constant = 94
+                    self.view.layoutIfNeeded()
                 })
             } else {
-                noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = false
-                noteHeadingLabelTopAnchorConstraintContactNameMissing.isActive = true
                 contactNameTextField.isHidden = true
                 addContactButton.isHidden = false
                 contactNameHeadingLabel.isHidden = true
                 dividerView.isHidden = true
                 editContactNameButton.isHidden = true
+                contactNameContainerViewHeightAnchor.constant = 0
+                view.layoutIfNeeded()
             }
         }
     }
@@ -127,8 +129,6 @@ class TransactionViewController: UIViewController {
                     )
                     self.valueContainerViewHeightAnchor.isActive = true
                     self.valueLabel.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-                    self.feeLabel.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-                    self.fromContainerViewTopAnchor.constant = 4
                     self.contactNameHeadingLabelTopAnchor.constant = 8
                     self.view.layoutIfNeeded()
                 })
@@ -147,8 +147,6 @@ class TransactionViewController: UIViewController {
                     )
                     self.valueContainerViewHeightAnchor.isActive = true
                     self.valueLabel.transform = CGAffineTransform(scaleX: 1, y: 1)
-                    self.feeLabel.transform = CGAffineTransform(scaleX: 1, y: 1)
-                    self.fromContainerViewTopAnchor.constant = Theme.shared.sizes.appSidePadding
                     self.contactNameHeadingLabelTopAnchor.constant = self.headingLabelTopAnchorHeight
                     self.view.layoutIfNeeded()
                 })
@@ -205,7 +203,7 @@ class TransactionViewController: UIViewController {
             )
         }
 
-        hideKeyboardWhenTappedAroundOrSwipedDown()
+        hideKeyboardWhenTappedAroundOrSwipedDown(view: stackView)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
 
         Tracker.shared.track("/home/tx_details", "Transaction Details")
@@ -227,6 +225,24 @@ class TransactionViewController: UIViewController {
         view.backgroundColor = Theme.shared.colors.appBackground
 
         setupNavigationBar()
+
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(scrollView)
+        scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
+        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+
+        scrollView.addSubview(stackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+
+        stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+        stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0).isActive = true
+        stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        stackView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+
         setupValueView()
         setupFromEmojis()
         setupAddContactButton()
@@ -235,7 +251,6 @@ class TransactionViewController: UIViewController {
         setupDivider()
         setupNote()
         setupGiphy()
-        view.bringSubviewToFront(fromContainerView)
         updateTxState()
     }
 
@@ -472,6 +487,7 @@ class TransactionViewController: UIViewController {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
                             self.attachmentView.media = media
+                            self.attachmentSection.heightAnchor.constraint(equalTo: self.attachmentView.widthAnchor, multiplier: 1 / media.aspectRatio).isActive = true
                         }
                     }
                 }

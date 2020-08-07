@@ -52,19 +52,15 @@ extension TransactionViewController {
     }
 
     func setupValueView() {
-        valueContainerView.backgroundColor = Theme.shared.colors.transactionViewValueContainer
+        valueContainerView = UIView()
         valueContainerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(valueContainerView)
-
-        //Constraints
-        valueContainerView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
-        valueContainerView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        valueContainerView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-
+        valueContainerView.backgroundColor = Theme.shared.colors.transactionViewValueContainer
+        stackView.addArrangedSubview(valueContainerView)
         valueContainerViewHeightAnchor = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierFull)
         valueContainerViewHeightAnchor.isActive = true
 
-        view.sendSubviewToBack(valueContainerView)
+        view.sendSubviewToBack(scrollView)
+        scrollView.sendSubviewToBack(valueContainerView)
 
         //Value label
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -98,7 +94,7 @@ extension TransactionViewController {
     }
 
     func setFeeLabel(_ feeText: String) {
-        valueCenterYAnchorConstraint.constant = -11
+        valueCenterYAnchorConstraint.constant = -20
 
         feeLabel.text = feeText
         feeLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -121,34 +117,27 @@ extension TransactionViewController {
     }
 
     func setupFromEmojis() {
-        fromContainerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(fromContainerView)
-        fromContainerView.backgroundColor = .clear
-        fromContainerViewTopAnchor = fromContainerView.topAnchor.constraint(equalTo: valueContainerView.bottomAnchor, constant: Theme.shared.sizes.appSidePadding)
-        fromContainerViewTopAnchor.isActive = true
-        fromContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        fromContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        fromContainerView.heightAnchor.constraint(equalToConstant: 61).isActive = true
+        stackView.addArrangedSubview(fromContainerView)
+        fromContainerView.heightAnchor.constraint(equalToConstant: 85).isActive = true
 
         fromHeadingLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(fromHeadingLabel)
+        fromContainerView.addSubview(fromHeadingLabel)
         fromHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         fromHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        fromHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.topAnchor).isActive = true
-        fromHeadingLabel.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor).isActive = true
+        fromHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.topAnchor, constant: 20).isActive = true
+        fromHeadingLabel.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
         emojiButton.translatesAutoresizingMaskIntoConstraints = false
         fromContainerView.addSubview(emojiButton)
         emojiButton.bottomAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: -16).isActive = true
-        emojiButton.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor).isActive = true
-        emojiButton.trailingAnchor.constraint(equalTo: fromContainerView.trailingAnchor).isActive = true
+        emojiButton.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        emojiButton.trailingAnchor.constraint(equalTo: fromContainerView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         emojiButton.cornerRadius = 12.0
     }
 
     func setupAddContactButton() {
         addContactButton.translatesAutoresizingMaskIntoConstraints = false
         fromContainerView.insertSubview(addContactButton, belowSubview: emojiButton)
-
         addContactButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
         addContactButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         addContactButton.setTitle(NSLocalizedString("transaction_detail.add_contact_name", comment: "Transaction detail view"), for: .normal)
@@ -157,17 +146,21 @@ extension TransactionViewController {
     }
 
     func setupContactName() {
+        stackView.addArrangedSubview(contactNameContainer)
+        contactNameContainerViewHeightAnchor = contactNameContainer.heightAnchor.constraint(equalToConstant: 0)
+        contactNameContainerViewHeightAnchor.isActive = true
+
         contactNameHeadingLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(contactNameHeadingLabel)
+        contactNameContainer.addSubview(contactNameHeadingLabel)
         contactNameHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         contactNameHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         contactNameHeadingLabel.text = NSLocalizedString("transaction_detail.contact_name", comment: "Transaction detail view")
-        contactNameHeadingLabelTopAnchor = contactNameHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: headingLabelTopAnchorHeight)
+        contactNameHeadingLabelTopAnchor = contactNameHeadingLabel.topAnchor.constraint(equalTo: contactNameContainer.topAnchor, constant: headingLabelTopAnchorHeight)
         contactNameHeadingLabelTopAnchor.isActive = true
-        contactNameHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        contactNameHeadingLabel.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
         contactNameTextField.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(contactNameTextField)
+        contactNameContainer.addSubview(contactNameTextField)
         contactNameTextField.textColor = Theme.shared.colors.transactionScreenTextLabel
         contactNameTextField.font = Theme.shared.fonts.transactionScreenTextLabel
         contactNameTextField.placeholder = NSLocalizedString("transaction_detail.contect_name_placeholder", comment: "Transaction detail view")
@@ -175,14 +168,15 @@ extension TransactionViewController {
         contactNameTextField.returnKeyType = .done
         contactNameTextField.delegate = self
         contactNameTextField.topAnchor.constraint(equalTo: contactNameHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
-        contactNameTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+//        contactNameTextField.bottomAnchor.constraint(equalTo: contactNameContainer.bottomAnchor, constant: -40).isActive = true
+        contactNameTextField.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
     }
 
     func setupEditContactButton() {
         editContactNameButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(editContactNameButton)
-        editContactNameButton.topAnchor.constraint(equalTo: contactNameHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
-        editContactNameButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        contactNameContainer.addSubview(editContactNameButton)
+        editContactNameButton.topAnchor.constraint(equalTo: contactNameHeadingLabel.bottomAnchor).isActive = true
+        editContactNameButton.trailingAnchor.constraint(equalTo: contactNameContainer.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         editContactNameButton.setTitle(NSLocalizedString("transaction_detail.edit", comment: "Transaction detail view"), for: .normal)
         editContactNameButton.setVariation(.secondary)
         editContactNameButton.addTarget(self, action: #selector(editContactButtonPressed), for: .touchUpInside)
@@ -190,38 +184,42 @@ extension TransactionViewController {
 
     func setupDivider() {
         dividerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(dividerView)
-        dividerView.topAnchor.constraint(equalTo: contactNameTextField.bottomAnchor, constant: 20.0).isActive = true
-        dividerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        dividerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        dividerView.heightAnchor.constraint(equalToConstant: 1).isActive = true
-        dividerView.layer.borderWidth = 1
-        dividerView.layer.borderColor = Theme.shared.colors.transactionScreenDivider!.cgColor
+        stackView.addArrangedSubview(dividerView)
+        dividerView.heightAnchor.constraint(equalToConstant: 20).isActive = true
+
+        let divider = UIView()
+        divider.translatesAutoresizingMaskIntoConstraints = false
+        dividerView.addSubview(divider)
+
+        divider.bottomAnchor.constraint(equalTo: dividerView.bottomAnchor).isActive = true
+        divider.leadingAnchor.constraint(equalTo: dividerView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        divider.trailingAnchor.constraint(equalTo: dividerView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        divider.heightAnchor.constraint(equalToConstant: 1).isActive = true
+        divider.layer.borderWidth = 1
+        divider.layer.borderColor = Theme.shared.colors.transactionScreenDivider!.cgColor
     }
 
     func setupNote() {
+        let noteContainer = UIView()
+        stackView.addArrangedSubview(noteContainer)
         noteHeadingLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(noteHeadingLabel)
+        noteContainer.addSubview(noteHeadingLabel)
         noteHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
         noteHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
         noteHeadingLabel.text = NSLocalizedString("transaction_detail.note", comment: "Transaction detail view")
-        noteHeadingLabelTopAnchorConstraintContactNameShowing = noteHeadingLabel.topAnchor.constraint(
-            equalTo: dividerView.bottomAnchor,
-            constant: Theme.shared.sizes.appSidePadding
-        )
-        noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = true
-        noteHeadingLabelTopAnchorConstraintContactNameMissing = noteHeadingLabel.topAnchor.constraint(equalTo: emojiButton.bottomAnchor, constant: headingLabelTopAnchorHeight)
-        noteHeadingLabelTopAnchorConstraintContactNameShowing.isActive = false
-        noteHeadingLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        noteHeadingLabel.topAnchor.constraint(equalTo: noteContainer.topAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        noteHeadingLabel.leadingAnchor.constraint(equalTo: noteContainer.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
         noteLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(noteLabel)
+        noteContainer.addSubview(noteLabel)
         noteLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
         noteLabel.font = Theme.shared.fonts.transactionScreenTextLabel
         noteLabel.numberOfLines = 0
         noteLabel.topAnchor.constraint(equalTo: noteHeadingLabel.bottomAnchor, constant: 10).isActive = true
-        noteLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        noteLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        noteLabel.bottomAnchor.constraint(equalTo: noteContainer.bottomAnchor, constant: -10).isActive = true
+
+        noteLabel.leadingAnchor.constraint(equalTo: noteContainer.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        noteLabel.trailingAnchor.constraint(equalTo: noteContainer.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         noteLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 100).isActive = true
     }
 
@@ -233,22 +231,26 @@ extension TransactionViewController {
     }
 
     func setupGiphy() {
-        let attachmentViewContainer = UIView()
-        attachmentViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        attachmentViewContainer.clipsToBounds = true
-        attachmentViewContainer.layer.cornerRadius = 20
-        view.addSubview(attachmentViewContainer)
-        attachmentViewContainer.topAnchor.constraint(equalTo: noteLabel.bottomAnchor, constant: 5).isActive = true
-        attachmentViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        attachmentViewContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        attachmentViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -5).isActive = true
+        attachmentSection.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addArrangedSubview(attachmentSection)
+
+        let attachmentViewBorder = UIView()
+        attachmentViewBorder.translatesAutoresizingMaskIntoConstraints = false
+        attachmentViewBorder.clipsToBounds = true
+        attachmentViewBorder.layer.cornerRadius = 20
+        attachmentSection.addSubview(attachmentViewBorder)
+
+        attachmentViewBorder.topAnchor.constraint(equalTo: attachmentSection.topAnchor).isActive = true
+        attachmentViewBorder.leadingAnchor.constraint(equalTo: attachmentSection.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        attachmentViewBorder.trailingAnchor.constraint(equalTo: attachmentSection.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        attachmentViewBorder.bottomAnchor.constraint(equalTo: attachmentSection.bottomAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
         attachmentView.translatesAutoresizingMaskIntoConstraints = false
-        attachmentViewContainer.addSubview(attachmentView)
-        attachmentView.topAnchor.constraint(equalTo: attachmentViewContainer.topAnchor).isActive = true
-        attachmentView.bottomAnchor.constraint(equalTo: attachmentViewContainer.bottomAnchor).isActive = true
-        attachmentView.leadingAnchor.constraint(equalTo: attachmentViewContainer.leadingAnchor).isActive = true
-        attachmentView.trailingAnchor.constraint(equalTo: attachmentViewContainer.trailingAnchor).isActive = true
+        attachmentViewBorder.addSubview(attachmentView)
+        attachmentView.topAnchor.constraint(equalTo: attachmentViewBorder.topAnchor).isActive = true
+        attachmentView.bottomAnchor.constraint(equalTo: attachmentViewBorder.bottomAnchor).isActive = true
+        attachmentView.leadingAnchor.constraint(equalTo: attachmentViewBorder.leadingAnchor).isActive = true
+        attachmentView.trailingAnchor.constraint(equalTo: attachmentViewBorder.trailingAnchor).isActive = true
     }
 
     func setupCancelButton() {
