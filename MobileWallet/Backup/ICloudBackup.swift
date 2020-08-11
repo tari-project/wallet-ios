@@ -171,14 +171,17 @@ class ICloudBackup: NSObject {
     override init() {
         super.init()
 
-//        
-//        initialiseQuery()
-//        addNotificationObservers()
-//        try? startObserveReachability()
-//
-//        if FileManager.default.ubiquityIdentityToken == nil {
-//            iCloudBackupsIsOn = false
-//        }
+        #if targetEnvironment(simulator)
+        return
+        #endif
+
+        initialiseQuery()
+        addNotificationObservers()
+        try? startObserveReachability()
+
+        if FileManager.default.ubiquityIdentityToken == nil {
+            iCloudBackupsIsOn = false
+        }
     }
 
     private func initialiseQuery() {

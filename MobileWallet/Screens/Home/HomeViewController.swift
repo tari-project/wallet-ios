@@ -490,6 +490,7 @@ extension HomeViewController {
     }
 
     private func setupTopButtons() {
+        return //TODO place back when active
         let iconSize: CGFloat = 30
 
         let giftButton = UIButton(type: .custom)
