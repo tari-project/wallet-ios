@@ -369,8 +369,8 @@
 "wallet_backup.prompt_1.cta_button" = "Back Up Wallet";
 "wallet_backup.prompt_1.cancel_button" = "I'll do it later";
 
-"wallet_backup.prompt_2.title" = "Want to back up your wallet?";
-"wallet_backup.prompt_2.title_bold" = "back up your wallet?";
+"wallet_backup.prompt_2.title" = "It’s time to back up your wallet";
+"wallet_backup.prompt_2.title_bold" = "back up your wallet";
 "wallet_backup.prompt_2.description" = "You have quite a bit of tXTR. You should back up your wallet now so that you don’t lose it all if your phone is lost or broken.";
 "wallet_backup.prompt_2.cta_button" = "Back Up Wallet";
 "wallet_backup.prompt_2.cancel_button" = "I'll do it later";
