@@ -56,7 +56,6 @@ class TransactionViewController: UIViewController {
     let stackView = UIStackView()
     var valueContainerView: UIView!
     var valueContainerViewHeightAnchor = NSLayoutConstraint()
-
     var valueCenterYAnchorConstraint = NSLayoutConstraint()
     let valueLabel = UILabel()
     let emojiButton = EmoticonView()
@@ -487,7 +486,7 @@ class TransactionViewController: UIViewController {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
                             self.attachmentView.media = media
-                            self.attachmentSection.heightAnchor.constraint(equalTo: self.attachmentView.widthAnchor, multiplier: 1 / media.aspectRatio).isActive = true
+                            self.attachmentView.heightAnchor.constraint(equalTo: self.attachmentView.widthAnchor, multiplier: 1 / media.aspectRatio).isActive = true
                         }
                     }
                 }

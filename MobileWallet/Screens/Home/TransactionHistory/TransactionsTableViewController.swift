@@ -139,7 +139,7 @@ class TransactionsTableViewController: UITableViewController {
         tableView.register(TransactionTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         tableView.separatorStyle = .none
         tableView.contentInsetAdjustmentBehavior = .never
-        tableView.contentInset = UIEdgeInsets(top: 28, left: 0, bottom: 180, right: 0)
+        tableView.contentInset = UIEdgeInsets(top: 28, left: 0, bottom: 80, right: 0)
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 600
 
