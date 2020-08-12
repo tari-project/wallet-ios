@@ -172,7 +172,7 @@ private class BackupPrompts {
                 actionTitle: content.ctaButton,
                 cancelTitle: content.cancelButton,
                 onAction: {
-                    UIApplication.shared.menuTabBarController()?.setTab(.settings)
+                    UIApplication.shared.menuTabBarController?.setTab(.settings)
             }
             )
             break

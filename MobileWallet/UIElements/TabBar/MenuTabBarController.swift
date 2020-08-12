@@ -41,7 +41,6 @@
 import UIKit
 
 class MenuTabBarController: UITabBarController {
-
     enum Tab: Int {
         case home
         case ttlStore
@@ -55,25 +54,17 @@ class MenuTabBarController: UITabBarController {
     var addRecipientViewController = AddRecipientViewController()
     var profileViewController = ProfileViewController()
     var settingsViewController = SettingsViewController()
+    let customTabBar = CustomTabBar(frame: .null)
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setValue(CustomTabBar(), forKey: "tabBar")
         self.delegate = self
-
-        tabBar.unselectedItemTintColor = .black
-        tabBar.tintColor = Theme.shared.colors.homeScreenBackground
-        tabBar.barTintColor = .white
-        tabBar.barStyle = .black
-
-        tabBar.layer.shadowColor = UIColor.black.cgColor
-        tabBar.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
-        tabBar.layer.shadowRadius = 8
-        tabBar.layer.shadowOpacity = 0.25
-        tabBar.layer.masksToBounds = false
 
         homeViewController.tabBarItem.image = Theme.shared.images.homeItem
         storeViewController.tabBarItem.image = Theme.shared.images.ttlItem
         addRecipientViewController.tabBarItem.image = Theme.shared.images.sendItem
+        addRecipientViewController.tabBarItem.tag = 1 //Using this to determine which icon to move upwards
         profileViewController.tabBarItem.image = Theme.shared.images.profileItem
         settingsViewController.tabBarItem.image = Theme.shared.images.settingsItem
 
@@ -82,7 +73,12 @@ class MenuTabBarController: UITabBarController {
         viewControllers = [homeViewController, storeViewController, addRecipientViewController, profileViewController, settingsViewController]
 
         for tabBarItem in tabBar.items! {
-            tabBarItem.imageInsets = UIEdgeInsets(top: 3, left: 0, bottom: -3, right: 0)
+            //For the send image we need to raise it higher than the others
+            if tabBarItem.tag == 1 {
+                tabBarItem.imageInsets = UIEdgeInsets(top: -16, left: 0, bottom: -12, right: 0)
+            } else if hasNotch { //On phones without notches the icons should stay vertically centered
+                tabBarItem.imageInsets = UIEdgeInsets(top: 13, left: 0, bottom: -13, right: 0)
+            }
         }
     }
 
@@ -130,7 +126,6 @@ private class Transition: NSObject, UIViewControllerAnimatedTransitioning {
     }
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-
         guard
             let fromVC = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from),
             let fromView = fromVC.view,

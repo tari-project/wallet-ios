@@ -364,8 +364,8 @@ extension EmoticonView {
             guard let gf = globalFrame else { return }
             blackoutView.frame = CGRect(x: -gf.origin.x, y: -gf.origin.y, width: blackoutView.bounds.width, height: blackoutView.bounds.height)
         }
-        UIApplication.shared.menuTabBarController()?.tabBar.alpha = 0.15
-        UIApplication.shared.menuTabBarController()?.tabBar.isUserInteractionEnabled = false
+        UIApplication.shared.menuTabBarController?.tabBar.alpha = 0.15
+        UIApplication.shared.menuTabBarController?.tabBar.isUserInteractionEnabled = false
         fadeView(view: blackoutView, fade: false, maxAlpha: 0.62)
         showMenu()
     }
@@ -374,8 +374,8 @@ extension EmoticonView {
         fadeView(view: blackoutView, fade: true) { [weak self] in
             self?.blackoutView.removeFromSuperview()
         }
-        UIApplication.shared.menuTabBarController()?.tabBar.alpha = 1
-        UIApplication.shared.menuTabBarController()?.tabBar.isUserInteractionEnabled = true
+        UIApplication.shared.menuTabBarController?.tabBar.alpha = 1
+        UIApplication.shared.menuTabBarController?.tabBar.isUserInteractionEnabled = true
         hideMenu()
     }
 

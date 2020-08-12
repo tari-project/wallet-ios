@@ -186,7 +186,6 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
     }
 
     @objc private func showGiffyPanel() {
-        giphyModal.layout = .waterfall
         giphyModal.mediaTypeConfig = [.gifs]
         giphyModal.theme = TariGiphyTheme()
         giphyModal.delegate = self
@@ -499,14 +498,12 @@ extension AddNoteViewController {
         giphyVC.cellPadding = giffPadding
         giphyVC.direction = .horizontal
         giphyVC.numberOfTracks = 1
-        giphyVC.showCheckeredBackground = false
         giphyVC.view.backgroundColor = .clear
         giphyVC.imageType = .gif
-        giphyVC.layout = .carousel
+        giphyVC.direction = .horizontal
         giphyVC.rating = .ratedPG13
         giphyVC.fixedSizeCells = true
         giphyVC.theme = TariGiphyTheme()
-
         giphyVC.delegate = self
         addChild(giphyVC)
         giphyCaroursalContainerView.addSubview(giphyVC.view)
