@@ -64,7 +64,8 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
 
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
         let topInset: CGFloat = navBarHeight - 12
-        let lowestHeight = UIScreen.main.bounds.height - 120
+        //Raising the lowest postion of the panel slightly for phones without the notch
+        let lowestHeight = UIScreen.main.bounds.height - 76 - (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0)
 
         switch position {
             case .full: return topInset // A top inset from safe area

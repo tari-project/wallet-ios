@@ -111,6 +111,9 @@
 		0053873024065F6C00901A68 /* SlideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0053872F24065F6C00901A68 /* SlideView.swift */; };
 		0053873124065F6C00901A68 /* SlideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0053872F24065F6C00901A68 /* SlideView.swift */; };
 		0053873224065F6C00901A68 /* SlideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0053872F24065F6C00901A68 /* SlideView.swift */; };
+		00665E7524E422C500030A13 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00665E7424E422C500030A13 /* CustomTabBar.swift */; };
+		00665E7624E422CC00030A13 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00665E7424E422C500030A13 /* CustomTabBar.swift */; };
+		00665E7724E422CC00030A13 /* CustomTabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00665E7424E422C500030A13 /* CustomTabBar.swift */; };
 		006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
 		006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
 		006D211F23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
@@ -653,6 +656,7 @@
 		004997BA2382F5ED000A0B7D /* WalletTestDataExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTestDataExtension.swift; sourceTree = "<group>"; };
 		005387232405136700901A68 /* AddNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddNoteViewController.swift; sourceTree = "<group>"; };
 		0053872F24065F6C00901A68 /* SlideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideView.swift; sourceTree = "<group>"; };
+		00665E7424E422C500030A13 /* CustomTabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBar.swift; sourceTree = "<group>"; };
 		006D211C23CEDF16007D1C10 /* MicroTari.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicroTari.swift; sourceTree = "<group>"; };
 		0070A7BB2379847100C25E1C /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		0072BF23247E735700BD28FB /* ReminderNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotifications.swift; sourceTree = "<group>"; };
@@ -1394,6 +1398,7 @@
 			isa = PBXGroup;
 			children = (
 				3730E15024C884D500827DFA /* MenuTabBarController.swift */,
+				00665E7424E422C500030A13 /* CustomTabBar.swift */,
 			);
 			path = TabBar;
 			sourceTree = "<group>";
@@ -2204,6 +2209,7 @@
 				373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				001F6CE02380198D00FA7002 /* Contacts.swift in Sources */,
 				0072BF24247E735700BD28FB /* ReminderNotifications.swift in Sources */,
+				00665E7524E422C500030A13 /* CustomTabBar.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TransactionTableViewCell.swift in Sources */,
@@ -2391,6 +2397,7 @@
 				00230B0A23770CEA00F23E34 /* CALayer.swift in Sources */,
 				0039B1B323FA925500F91E0F /* PasteEmojisView.swift in Sources */,
 				004997B82382ED79000A0B7D /* PendingInboundTransactions.swift in Sources */,
+				00665E7724E422CC00030A13 /* CustomTabBar.swift in Sources */,
 				37765D2724A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				00E2BC9C236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
 				001F6CED2381A39300FA7002 /* CompletedTransaction.swift in Sources */,
@@ -2492,6 +2499,7 @@
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
 				376B502524924BB700278ACC /* PendingView.swift in Sources */,
 				004997B12382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
+				00665E7624E422CC00030A13 /* CustomTabBar.swift in Sources */,
 				005387262405136700901A68 /* AddNoteViewController.swift in Sources */,
 				00230AFC2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				491AB89B23F1B36100372189 /* AnimatedBalanceLabel.swift in Sources */,

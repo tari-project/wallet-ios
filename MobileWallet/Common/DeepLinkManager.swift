@@ -59,7 +59,7 @@ class DeepLinkManager {
             return
         }
 
-        if let tabBar = UIApplication.shared.menuTabBarController() {
+        if let tabBar = UIApplication.shared.menuTabBarController {
             //Slight delay so the home view finishes loading. Else next view ends up without a navbar
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 DeeplinkNavigator.shared.proceedToDeeplink(deeplinkType, tabBar: tabBar)

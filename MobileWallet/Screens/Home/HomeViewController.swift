@@ -512,7 +512,7 @@ extension HomeViewController {
         balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
 
         balanceLabel.translatesAutoresizingMaskIntoConstraints = false
-        balanceLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 15).isActive = true
+        balanceLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 6).isActive = true
         balanceLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
         balanceLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 25).isActive = true
     }
@@ -527,7 +527,7 @@ extension HomeViewController {
         balanceContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 30).isActive = true
         balanceContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: 25).isActive = true
         balanceContainer.heightAnchor.constraint(equalToConstant: 35).isActive = true
-        balanceContainer.topAnchor.constraint(equalTo: balanceLabel.bottomAnchor).isActive = true
+        balanceContainer.topAnchor.constraint(equalTo: balanceLabel.bottomAnchor, constant: -1).isActive = true
 
         let valueIcon = UIImageView()
         valueIcon.image = Theme.shared.images.currencySymbol

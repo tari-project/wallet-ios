@@ -1,8 +1,8 @@
-//  UIApplication+keyWindow.swift
+//  CustomTabBar.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 04.05.2020
+	Created by Jason van den Berg on 2020/08/12
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,34 +40,35 @@
 
 import UIKit
 
-extension UIApplication {
-    var keyWindow: UIWindow? {
-        return UIApplication.shared.windows.filter({$0.isKeyWindow}).first
+class CustomTabBar: UITabBar {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setup()
     }
 
-    var menuTabBarController: MenuTabBarController? {
-        return findViewController(kindOf: MenuTabBarController.self)
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        setup()
     }
 
-    func topController() -> UIViewController? {
-        if var topController = keyWindow?.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
-            }
-            return topController
-        }
-        return nil
+    func setup() {
+        unselectedItemTintColor = .black
+        tintColor = Theme.shared.colors.homeScreenBackground
+        barTintColor = .white
+        barStyle = .black
+
+        layer.shadowColor = UIColor.black.cgColor
+        layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+        layer.shadowRadius = 8
+        layer.shadowOpacity = 0.25
+        layer.masksToBounds = false
     }
 
-    func findViewController<T: UIViewController>(kindOf: T.Type? = nil) -> T? {
-        guard let window = keyWindow else { return nil }
-        if let vc = window.rootViewController as? T {
-            return vc
-        } else if let vc = window.rootViewController?.presentedViewController as? T {
-            return vc
-        } else if let vc = window.rootViewController?.children {
-            return vc.lazy.compactMap { $0 as? T }.first
-        }
-        return nil
+    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+        super.sizeThatFits(size)
+        var sizeThatFits = super.sizeThatFits(size)
+        let bottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
+        sizeThatFits.height = 59 + bottomInset
+        return sizeThatFits
     }
 }

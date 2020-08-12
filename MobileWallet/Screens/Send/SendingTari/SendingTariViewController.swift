@@ -807,7 +807,7 @@ class SendingTariViewController: UIViewController {
             [weak self] _ in
             // return to home
             self?.navigationController?.dismiss(animated: true, completion: {
-                UIApplication.shared.menuTabBarController()?.setTab(.home)
+                UIApplication.shared.menuTabBarController?.setTab(.home)
             })
         }
     }
