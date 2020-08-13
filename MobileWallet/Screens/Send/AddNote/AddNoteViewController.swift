@@ -63,7 +63,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
     }
     private let poweredByGiphyImageView = UIImageView(image: Theme.shared.images.poweredByGiphy)
     private let giphyCaroursalContainerView = UIView()
-    private let giphyModal = GiphyViewController()
+    private var giphyModal = GiphyViewController()
     private let searchGiphyButton = UIButton()
 
     let attachmentContainer = UIView()
@@ -186,11 +186,16 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
     }
 
     @objc private func showGiffyPanel() {
-        giphyModal.mediaTypeConfig = [.gifs]
-        giphyModal.theme = TariGiphyTheme()
-        giphyModal.delegate = self
-        GiphyViewController.trayHeightMultiplier = 0.8
-        present(giphyModal, animated: true, completion: nil)
+        view.endEditing(true)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            guard let self = self else { return }
+            self.giphyModal = GiphyViewController()
+            self.giphyModal.mediaTypeConfig = [.gifs]
+            self.giphyModal.theme = TariGiphyTheme()
+            self.giphyModal.delegate = self
+            GiphyViewController.trayHeightMultiplier = 0.8
+            self.present(self.giphyModal, animated: true, completion: nil)
+        }
     }
 
     func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
@@ -455,9 +460,6 @@ extension AddNoteViewController {
         attachmentView.bottomAnchor.constraint(equalTo: attachmentContainer.bottomAnchor).isActive = true
         attachmentView.leadingAnchor.constraint(equalTo: attachmentContainer.leadingAnchor).isActive = true
         attachmentView.trailingAnchor.constraint(equalTo: attachmentContainer.trailingAnchor).isActive = true
-
-//        view.bringSubviewToFront(attachmentContainer)
-//        view.bringSubviewToFront(sendButton)
 
         attachmentCancelView.isHidden = true
         attachmentCancelView.translatesAutoresizingMaskIntoConstraints = false
