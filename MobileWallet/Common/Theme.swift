@@ -337,7 +337,7 @@ struct Fonts: Loopable {
     //Transaction cell
     let transactionCellUsernameLabel = UIFont.Avenir.light.withSize(14.0)
     let transactionCellUsernameLabelHeavy = UIFont.Avenir.heavy.withSize(14.0)
-    let transactionCellDescriptionLabel = UIFont.Avenir.roman.withSize(14.0)
+    let transactionCellDescriptionLabel = UIFont.Avenir.roman.withSize(15.0)
     let transactionCellValueLabel = UIFont.Avenir.black.withSize(12.0)
     let transactionDateValueLabel = UIFont.Avenir.medium.withSize(11.0)
     let transactionCellStatusLabel = UIFont.Avenir.roman.withSize(12.0)
