@@ -275,12 +275,6 @@ class Wallet {
         ptr = result!
     }
 
-    func logMessage(_ message: String) {
-        message.withCString({ cstr in
-            log_debug_message(cstr)
-        })
-    }
-
     func removeContact(_ contact: Contact) throws {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in

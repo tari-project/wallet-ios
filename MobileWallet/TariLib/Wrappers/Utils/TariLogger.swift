@@ -15,18 +15,6 @@ import Foundation
 
 //Called TariLogger because it should be included when TariLib is moved into its own pod
 public class TariLogger {
-    public static var cachedLogs: [String] = []
-    public static var fileLoggerCallback: ((String) -> Void?)? {
-        didSet {
-            //Catch up on missed entries
-            TariLogger.cachedLogs.forEach { (entry) in
-                fileLoggerCallback?(entry)
-            }
-
-            TariLogger.cachedLogs = []
-        }
-    }
-
     /// Used for crash reporting
     public static var breadcrumbCallback: ((String, Level) -> Void?)?
 
@@ -109,12 +97,7 @@ public class TariLogger {
     private static func log(level: Level = .info, message: Any, file: String = #file, function: String = #function, line: Int = #line) {
         let logMessage = "\(message) - (\(sourceFileName(filePath: file)).\(function):\(line))".trimmingCharacters(in: .whitespacesAndNewlines)
 
-        if let fileLogger = fileLoggerCallback {
-            fileLogger("SWIFT (\(level.rawValue)): \(logMessage)")
-        } else {
-            //Cache logs to write them when the wallet service is made available
-            TariLogger.cachedLogs.append("SWIFT CACHED (\(level.rawValue)): \(logMessage)")
-        }
+        TariLogger.logToFile("SWIFT (\(level.rawValue)): \(logMessage)")
 
         if let breadcrumb = breadcrumbCallback {
             breadcrumb(logMessage, level)
@@ -128,5 +111,11 @@ public class TariLogger {
         }
 
        print("\(time) \(level.emoji) \(logMessage)")
+    }
+
+    private static func logToFile(_ message: String) {
+        message.withCString({ cstr in
+            log_debug_message(cstr)
+        })
     }
 }
