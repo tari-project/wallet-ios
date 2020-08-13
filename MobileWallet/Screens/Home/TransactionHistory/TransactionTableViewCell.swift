@@ -55,6 +55,7 @@ class TransactionTableViewCell: UITableViewCell {
     private let attachmentView = GPHMediaView()
     private let loadingGifButton = LoadingGIFButton()
     private var attachmentViewHeightContraint = NSLayoutConstraint()
+    private var attachmentViewBottomContraint = NSLayoutConstraint()
 
     var updateCell: (() -> Void)?
     weak var model: TransactionTableViewModel?
@@ -63,8 +64,6 @@ class TransactionTableViewCell: UITableViewCell {
     private var kvoGif: NSKeyValueObservation?
     private var kvoGifFailure: NSKeyValueObservation?
     private var kvoStatus: NSKeyValueObservation?
-
-    private static let topCellPadding: CGFloat = 15
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
@@ -194,7 +193,7 @@ extension TransactionTableViewCell {
         avatarContainer.widthAnchor.constraint(equalToConstant: size).isActive = true
         avatarContainer.heightAnchor.constraint(equalToConstant: size).isActive = true
         avatarContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TransactionTableViewCell.topCellPadding).isActive = true
+        avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         avatarContainer.layer.cornerRadius = size / 2
 
         avatarContainer.layer.shadowOpacity = 0.13
@@ -216,8 +215,8 @@ extension TransactionTableViewCell {
         contentView.addSubview(labelsContainer)
 
         labelsContainer.addBottomBorder(with: Theme.shared.colors.transactionCellBorder, andWidth: 1)
-        labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TransactionTableViewCell.topCellPadding).isActive = true
-        labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25 + TransactionTableViewCell.topCellPadding).isActive = true
+        labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30).isActive = true
         labelsContainer.leadingAnchor.constraint(equalTo: avatarContainer.trailingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         labelsContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
@@ -287,23 +286,24 @@ extension TransactionTableViewCell {
         noteLabel.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
 
         // MARK: - attachmentView
-        attachmentView.backgroundColor = .lightGray //TODO ask for a color
         attachmentView.clipsToBounds = true
         attachmentView.layer.cornerRadius = 4
         labelsContainer.addSubview(self.attachmentView)
         attachmentView.translatesAutoresizingMaskIntoConstraints = false
         attachmentView.topAnchor.constraint(equalTo: noteLabel.bottomAnchor, constant: 5).isActive = true
-        attachmentView.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -25).isActive = true
         attachmentView.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
         attachmentView.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
         if attachmentView.media != nil {
             attachmentViewHeightContraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: 1 / attachmentView.media!.aspectRatio)
+            attachmentViewBottomContraint = attachmentView.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -40)
         } else {
             attachmentViewHeightContraint = attachmentView.heightAnchor.constraint(equalToConstant: 0)
+            attachmentViewBottomContraint = attachmentView.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -25)
         }
 
         attachmentViewHeightContraint.priority = .defaultHigh
         attachmentViewHeightContraint.isActive = true
+        attachmentViewBottomContraint.isActive = true
 
         // MARK: - Loading gif button
         loadingGifButton.variation = model?.gifDownloadFailed == true ? .retry : .loading
