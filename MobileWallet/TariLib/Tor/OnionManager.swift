@@ -46,6 +46,7 @@ public class OnionManager: NSObject {
     }
 
     private var reachability: Reachability?
+    private var lastConnectionStatus: Reachability.Connection?
     private var isListeningForNetworkChanges = false
     
     // Show Tor log in iOS' app log.
@@ -114,10 +115,26 @@ public class OnionManager: NSObject {
     private var customBridges: [String]?
     private var needsReconfiguration: Bool = false
 
-    @objc func networkChange() {
+    @objc func networkChange(notification: NSNotification) {
+        guard isListeningForNetworkChanges else {
+            // skip the first network change event that happens immediately after registering
+            isListeningForNetworkChanges = true
+            return
+        }
+        guard let newConnectionStatus = (notification.object as? Reachability)?.connection,
+            newConnectionStatus != lastConnectionStatus else {
+            return
+        }
         TariLogger.tor("Network change detected")
+        lastConnectionStatus = newConnectionStatus
+        switch newConnectionStatus {
+        case .unavailable, .none:
+            return // return if not connected
+        default:
+            break
+        }
+        
         var confs: [Dictionary<String, String>] = []
-
         confs.append(["key": "ClientPreferIPv6DirPort", "value": "auto"])
         confs.append(["key": "ClientPreferIPv6ORPort", "value": "auto"])
         confs.append(["key": "clientuseipv4", "value": "1"])
@@ -142,15 +159,19 @@ public class OnionManager: NSObject {
     }
     
     func reconnectOnNetworkChanges() {
-        guard !isListeningForNetworkChanges else {
-            return //Don't want to add 2 observers
+        guard reachability == nil else {
+            return
         }
-        
         do {
             reachability = try Reachability()
+            // add observer
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(self.networkChange),
+                name: NSNotification.Name.reachabilityChanged,
+                object: nil
+            )
             try reachability?.startNotifier()
-            NotificationCenter.default.addObserver(self, selector: #selector(self.networkChange), name: NSNotification.Name.reachabilityChanged, object: nil)
-            isListeningForNetworkChanges = true
             TariLogger.tor("Listening for reachability changes to reconnect tor")
         } catch {
             TariLogger.tor("Failed to init Reachability", error: error)
