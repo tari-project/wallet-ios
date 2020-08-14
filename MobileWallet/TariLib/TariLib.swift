@@ -303,10 +303,6 @@ class TariLib {
 
         walletIsStopped = false
 
-        TariLogger.fileLoggerCallback = { [weak self] (message) in
-            self?.tariWallet?.logMessage(message)
-        }
-
         expirePendingTransactionsAfterSync()
 
         baseNodeSyncCheck() //TODO remove when no longer needed
@@ -375,7 +371,6 @@ class TariLib {
     }
 
     func stopWallet() {
-        TariLogger.fileLoggerCallback = nil
         tariWallet = nil
         walletIsStopped = true
         TariEventBus.unregister(self)

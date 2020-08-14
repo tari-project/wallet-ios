@@ -55,7 +55,7 @@ func acceptPermissionsPromptIfRequired() {
 func wipeAppContents(_ app: XCUIApplication) {
     app.launchArguments = ["-wipe-app"]
     app.launch()
-    TariLogger.warn("Wiping app contents")
+    print("Wiping app contents")
     sleep(2)
     app.terminate()
     app.launchArguments = []
