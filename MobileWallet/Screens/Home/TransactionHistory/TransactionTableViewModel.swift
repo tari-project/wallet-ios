@@ -143,14 +143,6 @@ class TransactionTableViewModel: NSObject {
 
         var statusMessage = ""
 
-        //Cancelled tranaction
-        if let compledTx = tx as? CompletedTransaction {
-            if compledTx.isCancelled {
-                isCancelled = true
-                statusMessage = "Transaction Cancelled"
-            }
-        }
-
         switch tx.status.0 {
         case .pending:
             if tx.direction == .inbound {
@@ -162,6 +154,14 @@ class TransactionTableViewModel: NSObject {
             statusMessage = NSLocalizedString("refresh_view.final_processing", comment: "Refresh view")
         default:
             statusMessage = ""
+        }
+
+        //Cancelled tranaction
+        if let compledTx = tx as? CompletedTransaction {
+            if compledTx.isCancelled {
+                isCancelled = true
+                statusMessage = NSLocalizedString("transaction_detail.payment_cancelled", comment: "Transaction detail view")
+            }
         }
 
         if statusMessage.isEmpty {
