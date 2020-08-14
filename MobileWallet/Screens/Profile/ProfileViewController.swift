@@ -136,7 +136,7 @@ class ProfileViewController: UIViewController {
 
             self.emojis = emojis
 
-            emojiView.setUpView(pubKey: pubKey, type: .buttonView, textCentered: true, inViewController: self)
+            emojiView.setupView(pubKey: pubKey, textCentered: true, inViewController: self)
             emojiView.blackoutParent = view
         }
     }

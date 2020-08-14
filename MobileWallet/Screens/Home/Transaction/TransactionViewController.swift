@@ -432,9 +432,8 @@ class TransactionViewController: UIViewController {
             }
 
             if let pubKey = contactPublicKey {
-                emojiButton.setUpView(
+                emojiButton.setupView(
                     pubKey: pubKey,
-                    type: .buttonView,
                     textCentered: false,
                     inViewController: self
                 )

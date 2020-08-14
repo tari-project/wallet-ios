@@ -185,7 +185,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         setupMediaAttachment()
     }
 
-    @objc private func showGiffyPanel() {
+    @objc private func showGiphyPanel() {
         view.endEditing(true)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
             guard let self = self else { return }
@@ -532,7 +532,7 @@ extension AddNoteViewController {
         searchGiphyButton.widthAnchor.constraint(equalToConstant: 95).isActive = true
         searchGiphyButton.topAnchor.constraint(equalTo: giphyCaroursalContainerView.topAnchor).isActive = true
         searchGiphyButton.bottomAnchor.constraint(equalTo: giphyVC.view.topAnchor, constant: -giffPadding).isActive = true
-        searchGiphyButton.addTarget(self, action: #selector(showGiffyPanel), for: .touchUpInside)
+        searchGiphyButton.addTarget(self, action: #selector(showGiphyPanel), for: .touchUpInside)
         searchGiphyButton.isHidden = true
 
         poweredByGiphyImageView.translatesAutoresizingMaskIntoConstraints = false

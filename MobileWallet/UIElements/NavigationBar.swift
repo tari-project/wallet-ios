@@ -162,8 +162,7 @@ class NavigationBar: UIView, NavigationBarProtocol {
         if emoji == nil { emoji = EmoticonView() }
 
         if let emojiView = emoji {
-            emojiView.setUpView(pubKey: publicKey,
-                                type: .buttonView,
+            emojiView.setupView(pubKey: publicKey,
                                 textCentered: true)
 
             emojiView.tapToExpand = { expanded in
