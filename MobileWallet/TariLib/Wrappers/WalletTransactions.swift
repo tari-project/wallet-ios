@@ -90,7 +90,7 @@ extension Wallet {
         return (result, nil)
     }
 
-    var groupedCompletedAndCancelledTransactions: ([[CompletedTransaction]], Error?) {
+    var allTransactions: ([TransactionProtocol], Error?) {
         let (completedTransactions, completedError) = self.completedTransactions
         guard completedError == nil else {
             return ([], completedError)
@@ -99,38 +99,6 @@ extension Wallet {
         let (cancelledTransactions, cancelledError) = self.cancelledTransactions
         guard cancelledError == nil else {
             return ([], cancelledError)
-        }
-
-        let (completedList, completedListError) = completedTransactions!.list
-        if completedListError != nil {
-            return ([], completedListError)
-        }
-
-        let (cancelledList, cancelledListError) = cancelledTransactions!.list
-        if cancelledListError != nil {
-            return ([], cancelledListError)
-        }
-
-        var ungroupedTxs = completedList
-        ungroupedTxs.append(contentsOf: cancelledList)
-
-        let grouped = ungroupedTxs.groupSort { (tx) -> Date in
-            let (date, error) = tx.date
-            if error != nil {
-                //TOOD figure out a way to handle a missing timestamp error inside this callback
-                return Date()
-            }
-
-            return date!
-        }
-
-        return (grouped, nil)
-    }
-
-    var allTransactions: ([TransactionProtocol], Error?) {
-        let (completedTransactions, completedError) = self.completedTransactions
-        guard completedError == nil else {
-            return ([], completedError)
         }
 
         let (pendingInboundTransactions, pendingInboundError) = self.pendingInboundTransactions
@@ -154,7 +122,15 @@ extension Wallet {
             return d1.compare(d2) == .orderedDescending
         }
 
-        result.append(contentsOf: completedTransactions!.list.0)
+        var completedAndCancelled: [TransactionProtocol] = completedTransactions!.list.0
+        completedAndCancelled.append(contentsOf: cancelledTransactions!.list.0.map { $0 as TransactionProtocol })
+        completedAndCancelled.sort { (tx1, tx2) -> Bool in
+            let d1 = tx1.date.0 ?? Date()
+            let d2 = tx2.date.0 ?? Date()
+            return d1.compare(d2) == .orderedDescending
+        }
+
+        result.append(contentsOf: completedAndCancelled)
 
         return (result, nil)
     }

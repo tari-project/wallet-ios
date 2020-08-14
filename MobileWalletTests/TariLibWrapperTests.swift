@@ -253,18 +253,28 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertGreaterThan(pendingIncomingBalance, 0)
         XCTAssertGreaterThan(pendingOutgoingBalance, 0)
     
-        let (groupedTransactions, groupedTransactionsError) = wallet.groupedCompletedAndCancelledTransactions
-        guard groupedTransactionsError == nil else {
-            XCTFail("Failed to load grouped transactions: /(groupedTransactionsError!.localizedDescription)")
+        let (allTransactions, allTransactionsError) = wallet.allTransactions
+        guard allTransactionsError == nil else {
+            XCTFail("Failed to load all transactions: \(allTransactionsError!.localizedDescription)")
             return
         }
-                    
-        XCTAssertGreaterThan(groupedTransactions.count, 0)
-        XCTAssertGreaterThan(groupedTransactions[0].count, 0)
+        
+        let totalTransactionsBeforeCancelling = allTransactions.count
+        
+        XCTAssertEqual(totalTransactionsBeforeCancelling, 16)
         
         //Test cancel function when a pending tx has aged for 2 seconds
         sleep(2)
         XCTAssertNoThrow(try wallet.cancelExpiredPendingTransactions(after: 1))
+        
+        let (allTransactionsWithCancelled, allTransactionsWithCancelledError) = wallet.allTransactions
+        guard allTransactionsWithCancelledError == nil else {
+            XCTFail("Failed to load all (including cancelled) transactions: \(allTransactionsWithCancelledError!.localizedDescription)")
+            return
+        }
+        
+        //Cancelled transactions are still in the list
+        XCTAssertEqual(allTransactionsWithCancelled.count, totalTransactionsBeforeCancelling)
     }
     
     func testBackupAndRestoreWallet() {
