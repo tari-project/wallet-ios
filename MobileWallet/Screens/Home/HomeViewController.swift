@@ -245,8 +245,7 @@ class HomeViewController: UIViewController {
             string: balanceValueString,
             attributes: [
                 NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel,
-                NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
-                NSAttributedString.Key.kern: -1.43
+                NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!
             ]
         )
 
@@ -255,8 +254,7 @@ class HomeViewController: UIViewController {
             [
                 NSAttributedString.Key.font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
                 NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
-                NSAttributedString.Key.baselineOffset: 5,
-                NSAttributedString.Key.kern: -0.44
+                NSAttributedString.Key.baselineOffset: 5
             ],
             range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat)
         )

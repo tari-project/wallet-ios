@@ -228,7 +228,7 @@ extension SplashViewController {
 
     func setupGemImageView() {
         elementsContainer.addSubview(gemImageView)
-        gemImageView.image = Theme.shared.images.currencyBigSymbol
+        gemImageView.image = Theme.shared.images.currencySymbol
         gemImageView.translatesAutoresizingMaskIntoConstraints = false
         gemImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         gemImageView.topAnchor.constraint(greaterThanOrEqualTo: disclaimerText.bottomAnchor, constant: 0).isActive = true
