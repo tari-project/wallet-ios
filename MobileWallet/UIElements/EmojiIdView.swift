@@ -363,6 +363,11 @@ class EmojiIdView: UIView {
         }
         return super.hitTest(point, with: event)
     }
+
+    deinit {
+        UIApplication.shared.menuTabBarController?.tabBar.alpha = 1
+        UIApplication.shared.menuTabBarController?.tabBar.isUserInteractionEnabled = true
+    }
 }
 
 // MARK: blackout behavior

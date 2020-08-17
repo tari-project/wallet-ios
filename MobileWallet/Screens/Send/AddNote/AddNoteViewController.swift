@@ -62,7 +62,9 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         }
     }
     private let poweredByGiphyImageView = UIImageView(image: Theme.shared.images.poweredByGiphy)
-    private let giphyCaroursalContainerView = UIView()
+    private let giphyCarouselContainerView = UIView()
+    private var giphyCarouselBottomConstraint = NSLayoutConstraint()
+    private let giffPadding: CGFloat = 7
     private var giphyModal = GiphyViewController()
     private let searchGiphyButton = UIButton()
 
@@ -75,13 +77,13 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             attachmentView.media = attachment
             if let media = attachment {
                 attachmentContainer.isHidden = false
-                giphyCaroursalContainerView.isHidden = true
+                hideGiphyCarousel()
                 attachmentCancelView.isHidden = false
                 attachmentContainerHeightConstraint.isActive = false
                 attachmentContainerHeightConstraint = attachmentContainer.heightAnchor.constraint(equalTo: attachmentContainer.widthAnchor, multiplier: 1 / media.aspectRatio)
                 attachmentContainerHeightConstraint.isActive = true
             } else {
-                giphyCaroursalContainerView.isHidden = false
+                showGiphyCarousel()
                 attachmentContainer.isHidden = true
                 attachmentCancelView.isHidden = true
             }
@@ -112,8 +114,6 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             noteInput.text = params.note
             textViewDidChangeSelection(noteInput)
         }
-
-        setupGiphy()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -178,6 +178,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
         setupNoteTitle()
         setupSendButton()
+        setupGiphy()
         setupNoteInput()
         setupMediaAttachment()
     }
@@ -316,11 +317,21 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             return
         }
 
-        sendTransaction(
-            wallet,
-            recipientPublicKey: recipientPublicKey,
-            amount: recipientAmount
-        )
+        sendButton.variation = .loading
+        UIApplication.shared.keyWindow?.isUserInteractionEnabled = false
+        navigationBar.backButton.isHidden = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [weak self] in
+            guard let self = self else { return }
+            UIApplication.shared.keyWindow?.isUserInteractionEnabled = true
+            self.navigationBar.backButton.isHidden = false
+            self.sendTransaction(
+                wallet,
+                recipientPublicKey: recipientPublicKey,
+                amount: recipientAmount
+            )
+            self.sendButton.variation = .slide
+        }
     }
 
     private func sendTransaction(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari) {
@@ -484,14 +495,15 @@ extension AddNoteViewController {
 
     private func setupGiphy() {
         //Pre selected caurousal
-        let giffPadding: CGFloat = 7
         let giphyVC = GiphyGridController()
 
-        giphyCaroursalContainerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(giphyCaroursalContainerView)
-        giphyCaroursalContainerView.leftAnchor.constraint(equalTo: view.safeLeftAnchor, constant: giffPadding).isActive = true
-        giphyCaroursalContainerView.rightAnchor.constraint(equalTo: view.safeRightAnchor, constant: -giffPadding).isActive = true
-        giphyCaroursalContainerView.bottomAnchor.constraint(equalTo: sendButton.topAnchor, constant: -(giffPadding * 2)).isActive = true
+        giphyCarouselContainerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(giphyCarouselContainerView)
+        giphyCarouselContainerView.leftAnchor.constraint(equalTo: view.safeLeftAnchor, constant: giffPadding).isActive = true
+        giphyCarouselContainerView.rightAnchor.constraint(equalTo: view.safeRightAnchor, constant: -giffPadding).isActive = true
+        giphyCarouselBottomConstraint = giphyCarouselContainerView.bottomAnchor.constraint(equalTo: sendButton.topAnchor, constant: -(giffPadding * 2))
+        giphyCarouselBottomConstraint.isActive = true
+        view.bringSubviewToFront(sendButton)
 
         //Giphy settings
         giphyVC.cellPadding = giffPadding
@@ -505,13 +517,13 @@ extension AddNoteViewController {
         giphyVC.theme = TariGiphyTheme()
         giphyVC.delegate = self
         addChild(giphyVC)
-        giphyCaroursalContainerView.addSubview(giphyVC.view)
+        giphyCarouselContainerView.addSubview(giphyVC.view)
 
         giphyVC.view.translatesAutoresizingMaskIntoConstraints = false
 
-        giphyVC.view.leadingAnchor.constraint(equalTo: giphyCaroursalContainerView.leadingAnchor).isActive = true
-        giphyVC.view.trailingAnchor.constraint(equalTo: giphyCaroursalContainerView.trailingAnchor).isActive = true
-        giphyVC.view.bottomAnchor.constraint(equalTo: giphyCaroursalContainerView.bottomAnchor).isActive = true
+        giphyVC.view.leadingAnchor.constraint(equalTo: giphyCarouselContainerView.leadingAnchor).isActive = true
+        giphyVC.view.trailingAnchor.constraint(equalTo: giphyCarouselContainerView.trailingAnchor).isActive = true
+        giphyVC.view.bottomAnchor.constraint(equalTo: giphyCarouselContainerView.bottomAnchor).isActive = true
         giphyVC.view.heightAnchor.constraint(equalToConstant: 64).isActive = true
 
         searchGiphyButton.setImage(Theme.shared.images.searchIcon, for: .normal)
@@ -523,26 +535,46 @@ extension AddNoteViewController {
         searchGiphyButton.translatesAutoresizingMaskIntoConstraints = false
         searchGiphyButton.layer.cornerRadius = 3
         searchGiphyButton.titleEdgeInsets = .init(top: 0, left: 5, bottom: 0, right: 0)
-        giphyCaroursalContainerView.addSubview(searchGiphyButton)
+        giphyCarouselContainerView.addSubview(searchGiphyButton)
         searchGiphyButton.heightAnchor.constraint(equalToConstant: 18).isActive = true
-        searchGiphyButton.leadingAnchor.constraint(equalTo: giphyCaroursalContainerView.leadingAnchor).isActive = true
+        searchGiphyButton.leadingAnchor.constraint(equalTo: giphyCarouselContainerView.leadingAnchor).isActive = true
         searchGiphyButton.widthAnchor.constraint(equalToConstant: 95).isActive = true
-        searchGiphyButton.topAnchor.constraint(equalTo: giphyCaroursalContainerView.topAnchor).isActive = true
+        searchGiphyButton.topAnchor.constraint(equalTo: giphyCarouselContainerView.topAnchor).isActive = true
         searchGiphyButton.bottomAnchor.constraint(equalTo: giphyVC.view.topAnchor, constant: -giffPadding).isActive = true
         searchGiphyButton.addTarget(self, action: #selector(showGiphyPanel), for: .touchUpInside)
         searchGiphyButton.isHidden = true
 
         poweredByGiphyImageView.translatesAutoresizingMaskIntoConstraints = false
-        giphyCaroursalContainerView.addSubview(poweredByGiphyImageView)
+        giphyCarouselContainerView.addSubview(poweredByGiphyImageView)
         let poweredByWidth: CGFloat = 125
         poweredByGiphyImageView.heightAnchor.constraint(equalToConstant: poweredByWidth * 0.11).isActive = true
         poweredByGiphyImageView.widthAnchor.constraint(equalToConstant: poweredByWidth).isActive = true
-        poweredByGiphyImageView.trailingAnchor.constraint(equalTo: giphyCaroursalContainerView.trailingAnchor, constant: giffPadding).isActive = true
+        poweredByGiphyImageView.trailingAnchor.constraint(equalTo: giphyCarouselContainerView.trailingAnchor, constant: giffPadding).isActive = true
         poweredByGiphyImageView.bottomAnchor.constraint(equalTo: giphyVC.view.topAnchor, constant: -giffPadding).isActive = true
         poweredByGiphyImageView.isHidden = true
 
         giphyVC.content = GPHContent.search(withQuery: "Money", mediaType: .gif, language: .english)
         giphyVC.update()
+    }
+
+    private func showGiphyCarousel(animated: Bool = true) {
+        giphyCarouselBottomConstraint.constant = -(giffPadding * 2)
+        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+        UIView.animate(withDuration: animated ? CATransaction.animationDuration() * 2 : 0) { [weak self] in
+            self?.giphyCarouselContainerView.alpha = 1.0
+        }
+    }
+
+    private func hideGiphyCarousel(animated: Bool = true) {
+        giphyCarouselBottomConstraint.constant = giphyCarouselContainerView.frame.height
+        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0) { [weak self] in
+            self?.view.layoutIfNeeded()
+        }
+        UIView.animate(withDuration: animated ? CATransaction.animationDuration() / 2 : 0) { [weak self] in
+            self?.giphyCarouselContainerView.alpha = 0.0
+        }
     }
 }
 

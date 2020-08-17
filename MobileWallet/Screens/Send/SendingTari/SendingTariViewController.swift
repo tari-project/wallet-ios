@@ -625,17 +625,19 @@ class SendingTariViewController: UIViewController {
     }
 
     private func sendTransaction() {
-        let wallet = TariLib.shared.tariWallet!
-        do {
-            txId = try wallet.sendTransaction(
-                destination: recipientPubKey,
-                amount: amount,
-                fee: wallet.calculateTransactionFee(amount),
-                message: note
-            )
-            startListeningForWalletEvents()
-        } catch {
-            completionStatus = .sendError(error: error)
+        TariLib.shared.waitIfWalletIsRestarting { [weak self] (_) in
+            guard let self = self, let wallet = TariLib.shared.tariWallet else { return }
+            do {
+                self.txId = try wallet.sendTransaction(
+                    destination: self.recipientPubKey,
+                    amount: self.amount,
+                    fee: wallet.calculateTransactionFee(self.amount),
+                    message: self.note
+                )
+                self.startListeningForWalletEvents()
+            } catch {
+                self.completionStatus = .sendError(error: error)
+            }
         }
     }
 
