@@ -51,7 +51,7 @@ class NavigationBar: UIView, NavigationBarProtocol {
         case custom(_ value: CGFloat)
     }
 
-    var emoji: EmoticonView?
+    var emojiIdView: EmojiIdView! = EmojiIdView()
 
     let titleLabel = UILabel()
     let backButton = UIButton()
@@ -102,6 +102,7 @@ class NavigationBar: UIView, NavigationBarProtocol {
         setupTitle()
         setupBackButton()
         setupRightButton()
+        clipsToBounds = false
     }
 
     required init?(coder: NSCoder) {
@@ -156,43 +157,41 @@ class NavigationBar: UIView, NavigationBarProtocol {
         rightButton.addTarget(self, action: #selector(rightButtonAction(_sender:)), for: .touchUpInside)
     }
 
-    func showEmoji(_ publicKey: PublicKey, animated: Bool = true) throws {
+    func showEmojiId(_ publicKey: PublicKey, inViewController: UIViewController) throws {
         let ( _, emojisError) = publicKey.emojis
         guard emojisError == nil else { throw emojisError! }
-        if emoji == nil { emoji = EmoticonView() }
+        emojiIdView.setupView(pubKey: publicKey,
+                              textCentered: true,
+                              inViewController: inViewController)
 
-        if let emojiView = emoji {
-            emojiView.setupView(pubKey: publicKey,
-                                textCentered: true)
-
-            emojiView.tapToExpand = { expanded in
-                UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
-                    self?.backButton.alpha = expanded ? 0.0 : 1.0
-                }
+        emojiIdView.tapToExpand = { expanded in
+            UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
+                self?.backButton.alpha = expanded ? 0.0 : 1.0
             }
-
-            emojiView.alpha = 0.0
-            if let window = UIApplication.shared.keyWindow {
-                window.addSubview(emojiView)
-                emojiView.translatesAutoresizingMaskIntoConstraints = false
-                emojiView.topAnchor.constraint(equalTo: window.safeAreaLayoutGuide.topAnchor, constant: 27).isActive = true
-                emojiView.leadingAnchor.constraint(equalTo: window.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-                emojiView.trailingAnchor.constraint(equalTo: window.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-            }
-
-            UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, delay: CATransaction.animationDuration(), options: .curveLinear, animations: {
-                emojiView.alpha = 1.0
-            }, completion: nil)
         }
+        addSubview(emojiIdView)
+        emojiIdView.translatesAutoresizingMaskIntoConstraints = false
+        emojiIdView.topAnchor.constraint(
+            equalTo: safeAreaLayoutGuide.topAnchor,
+            constant: 27
+        ).isActive = true
+        emojiIdView.leadingAnchor.constraint(
+            equalTo: leadingAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        emojiIdView.trailingAnchor.constraint(
+            equalTo: trailingAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        ).isActive = true
     }
 
     func hideEmoji(animated: Bool = true) {
-        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, animations: { [weak self] in
-            self?.emoji?.alpha = 0.0
-
+        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, animations: {
+            [weak self] in
+            self?.emojiIdView.alpha = 0.0
         }) { [weak self] _ in
-            self?.emoji?.removeFromSuperview()
-            self?.emoji = nil
+            self?.emojiIdView.removeFromSuperview()
+            self?.emojiIdView = nil
         }
     }
 

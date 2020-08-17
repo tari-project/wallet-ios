@@ -63,6 +63,7 @@ class AddAmountViewController: UIViewController {
     }()
 
     var rawInput = ""
+    private var transactionFeeIsVisible = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -70,36 +71,41 @@ class AddAmountViewController: UIViewController {
         view.backgroundColor = Theme.shared.colors.appBackground
         overrideUserInterfaceStyle = .light
         setup()
+        displayAliasOrEmojiId()
         updateLabelText()
-
-        Tracker.shared.track("/home/send_tari/add_amount", "Send Tari - Add Amount")
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        guard let wallet = TariLib.shared.tariWallet, let pubKey = publicKey else {
-            return
-        }
 
         //Deep link value
         if let params = deepLinkParams {
             if params.amount.rawValue > 0 {
-                addCharacater(params.amount.formatted)
+                addCharacter(params.amount.formatted)
             }
+        }
+
+        Tracker.shared.track("/home/send_tari/add_amount", "Send Tari - Add Amount")
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        balanceCheckTimer?.invalidate()
+        balanceCheckTimer = nil
+    }
+
+    private func displayAliasOrEmojiId() {
+        guard let wallet = TariLib.shared.tariWallet, let pubKey = publicKey else {
+            return
         }
 
         do {
             guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
 
             if contact.alias.0.trimmingCharacters(in: .whitespaces).isEmpty {
-                try navigationBar.showEmoji(pubKey, animated: true)
+                try navigationBar.showEmojiId(pubKey, inViewController: self)
             } else {
                 navigationBar.title = contact.alias.0
             }
         } catch {
             do {
-                try navigationBar.showEmoji(pubKey, animated: true)
+                try navigationBar.showEmojiId(pubKey, inViewController: self)
             } catch {
                 UserFeedback.shared.error(
                     title: NSLocalizedString("navigation_bar.error.show_emoji.title", comment: "Navigation bar"),
@@ -108,17 +114,6 @@ class AddAmountViewController: UIViewController {
                 )
             }
         }
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        navigationBar.hideEmoji(animated: false)
-        balanceCheckTimer?.invalidate()
-        balanceCheckTimer = nil
-    }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
     }
 
     @objc private func checkAvailableBalance() {
@@ -168,7 +163,7 @@ class AddAmountViewController: UIViewController {
                 }
             }()
 
-            addCharacater(value)
+            addCharacter(value)
         } else {
             deleteCharacter()
         }
@@ -194,7 +189,7 @@ class AddAmountViewController: UIViewController {
         updateLabelText()
     }
 
-    private func addCharacater(_ value: String) {
+    private func addCharacter(_ value: String) {
         var updatedText = rawInput + value
 
         if rawInput.isEmpty && value == MicroTari.decimalSeparator {
@@ -231,7 +226,6 @@ class AddAmountViewController: UIViewController {
         amountLabel.attributedText = amountAttributedText
 
         hideBalanceExceeded()
-        hideTransactionFee()
 
         let isValidValue = isValidNumber(string: rawInput, finalNumber: true)
 
@@ -239,8 +233,15 @@ class AddAmountViewController: UIViewController {
             balanceCheckTimer?.invalidate()
         }
         if isValidValue == true {
-            balanceCheckTimer = Timer.scheduledTimer(timeInterval: 0.2, target: self, selector: #selector(checkAvailableBalance), userInfo: nil, repeats: false)
+            balanceCheckTimer = Timer.scheduledTimer(
+                timeInterval: 0.2,
+                target: self,
+                selector: #selector(checkAvailableBalance),
+                userInfo: nil,
+                repeats: false
+            )
         } else {
+            hideTransactionFee()
             continueButton.variation = .disabled
         }
     }
@@ -250,7 +251,9 @@ class AddAmountViewController: UIViewController {
             return true
         }
 
-        guard string == "0" || (string.first == "0" && String(string[string.index(string.startIndex, offsetBy: 1)]) == MicroTari.decimalSeparator) || string.first != "0" else {
+        guard string == "0"
+            || (string.first == "0" && String(string[string.index(string.startIndex, offsetBy: 1)]) == MicroTari.decimalSeparator)
+            || string.first != "0" else {
             return false
         }
 
@@ -336,8 +339,9 @@ class AddAmountViewController: UIViewController {
         guard let wallet = TariLib.shared.tariWallet else { return }
         let fee = wallet.calculateTransactionFee(amount)
 
-        transactionViewContainer.alpha = 0.0
         transactionFeeLabel.text = fee.formattedPreciseWithOperator
+        if transactionFeeIsVisible { return }
+        transactionViewContainer.alpha = 0.0
         let moveAnimation: CATransition = CATransition()
         moveAnimation.timingFunction = CAMediaTimingFunction(name:
                 CAMediaTimingFunctionName.easeIn)
@@ -349,10 +353,15 @@ class AddAmountViewController: UIViewController {
             self.transactionViewContainer.alpha = 1.0
             self.transactionViewContainer.layer.add(moveAnimation, forKey: CATransitionType.push.rawValue)
         }
+        self.transactionFeeIsVisible = true
     }
 
     private func hideTransactionFee() {
-        transactionViewContainer.alpha = 0.0
+        UIView.animate(withDuration: animationDuration) { [weak self] in
+            guard let self = self else {return}
+            self.transactionViewContainer.alpha = 0.0
+        }
+        self.transactionFeeIsVisible = false
     }
 
     @objc private func continueButtonTapped() {

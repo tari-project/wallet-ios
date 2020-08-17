@@ -58,7 +58,7 @@ class TransactionViewController: UIViewController {
     var valueContainerViewHeightAnchor = NSLayoutConstraint()
     var valueCenterYAnchorConstraint = NSLayoutConstraint()
     let valueLabel = UILabel()
-    let emojiButton = EmoticonView()
+    let emojiIdView = EmojiIdView()
     let fromContainerView = UIView()
     let fromHeadingLabel = UILabel()
     let contactNameContainer = UIView()
@@ -432,12 +432,12 @@ class TransactionViewController: UIViewController {
             }
 
             if let pubKey = contactPublicKey {
-                emojiButton.setupView(
+                emojiIdView.setupView(
                     pubKey: pubKey,
                     textCentered: false,
                     inViewController: self
                 )
-                emojiButton.blackoutParent = view
+                emojiIdView.blackoutParent = view
             }
 
             let (date, dateError) = tx.date

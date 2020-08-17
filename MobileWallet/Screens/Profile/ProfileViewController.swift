@@ -42,7 +42,7 @@ import UIKit
 
 class ProfileViewController: UIViewController {
 
-    let emojiView = EmoticonView()
+    let emojiIdView = EmojiIdView()
     let middleLabel = UILabel()
     let bottomView = UIView()
     let qrContainer = UIView()
@@ -54,14 +54,14 @@ class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
-        setupEmojiView()
+        setupEmojiIdView()
         setupMiddleLabel()
         setupQRContainer()
         setupQRImageView()
         generateQRCode()
         customizeViews()
 
-        view.bringSubviewToFront(emojiView)
+        view.bringSubviewToFront(emojiIdView)
 
         Tracker.shared.track("/home/profile", "Profile - Wallet Info")
     }
@@ -87,13 +87,13 @@ class ProfileViewController: UIViewController {
         navigationBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
     }
 
-    private func setupEmojiView() {
-        view.addSubview(emojiView)
-        emojiView.translatesAutoresizingMaskIntoConstraints = false
-        emojiView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
-        emojiView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
-        emojiView.heightAnchor.constraint(equalToConstant: 38).isActive = true
-        emojiView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 25).isActive = true
+    private func setupEmojiIdView() {
+        view.addSubview(emojiIdView)
+        emojiIdView.translatesAutoresizingMaskIntoConstraints = false
+        emojiIdView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20).isActive = true
+        emojiIdView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20).isActive = true
+        emojiIdView.heightAnchor.constraint(equalToConstant: 38).isActive = true
+        emojiIdView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 25).isActive = true
     }
 
     private func setupMiddleLabel() {
@@ -103,7 +103,7 @@ class ProfileViewController: UIViewController {
         middleLabel.translatesAutoresizingMaskIntoConstraints = false
         middleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         middleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        middleLabel.topAnchor.constraint(equalTo: emojiView.bottomAnchor, constant: 20).isActive = true
+        middleLabel.topAnchor.constraint(equalTo: emojiIdView.bottomAnchor, constant: 20).isActive = true
     }
 
     private func setupQRContainer() {
@@ -136,8 +136,8 @@ class ProfileViewController: UIViewController {
 
             self.emojis = emojis
 
-            emojiView.setupView(pubKey: pubKey, textCentered: true, inViewController: self)
-            emojiView.blackoutParent = view
+            emojiIdView.setupView(pubKey: pubKey, textCentered: true, inViewController: self)
+            emojiIdView.blackoutParent = view
         }
     }
 
