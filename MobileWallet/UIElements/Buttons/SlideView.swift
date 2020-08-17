@@ -41,9 +41,15 @@
 //Adapted from https://github.com/lemanhtien/MTSlideToOpen
 
 import UIKit
+import Lottie
 
 @objc public protocol SlideViewDelegate {
     func slideViewDidFinish(_ sender: SlideView)
+}
+
+enum SlideViewVariation {
+    case slide
+    case loading
 }
 
 @objcMembers public class SlideView: UIView {
@@ -51,6 +57,13 @@ import UIKit
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     static private let thumbnailShadowRadius: Float = 0.5
     static private let thumbnailCornerRadius: CGFloat = 0
+    private let pendingAnimationView = AnimationView()
+
+    var variation: SlideViewVariation = .slide {
+        didSet {
+            updateVariationStyle()
+        }
+    }
 
     // MARK: All Views
     public let textLabel: UILabel = {
@@ -119,22 +132,7 @@ import UIKit
     public var isEnabled: Bool = true {
         didSet {
             animationChangedEnabledBlock?(isEnabled)
-
-            if isEnabled {
-                sliderBackgroundColor = .clear// Theme.shared.colors.actionButtonBackgroundSimple!
-                //slidingColor = Theme.shared.colors.actionButtonBackgroundSimple!
-                textColor = Theme.shared.colors.actionButtonTitle!
-                thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonBackgroundSimple!)
-                thumbnailImageView.layer.shadowOpacity = SlideView.thumbnailShadowRadius
-                sliderHolderView.applyGradient()
-            } else {
-                sliderBackgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled!
-                //slidingColor = Theme.shared.colors.actionButtonBackgroundDisabled!
-                textColor = Theme.shared.colors.actionButtonTitleDisabled!
-                thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonTitleDisabled!)
-                thumbnailImageView.layer.shadowOpacity = 0
-                sliderHolderView.removeGradient()
-            }
+            updateIsEnabledStyle()
         }
     }
     public var showSliderText: Bool = true {
@@ -211,13 +209,14 @@ import UIKit
     }
 
     private func setupView() {
-        self.addSubview(view)
+        addSubview(view)
         view.addSubview(thumbnailImageView)
         view.addSubview(sliderHolderView)
         view.addSubview(draggedView)
         draggedView.addSubview(sliderTextLabel)
         sliderHolderView.addSubview(textLabel)
-        view.bringSubviewToFront(self.thumbnailImageView)
+        view.addSubview(pendingAnimationView)
+        view.bringSubviewToFront(thumbnailImageView)
         setupConstraint()
         setStyle()
         // Add pan gesture
@@ -272,6 +271,17 @@ import UIKit
         trailingDraggedViewConstraint?.isActive = true
 
         heightAnchor.constraint(equalToConstant: 60).isActive = true
+
+        pendingAnimationView.backgroundBehavior = .pauseAndRestore
+        pendingAnimationView.animation = Animation.named(.pendingCircleAnimation)
+
+        pendingAnimationView.translatesAutoresizingMaskIntoConstraints = false
+        pendingAnimationView.widthAnchor.constraint(equalToConstant: 45).isActive = true
+        pendingAnimationView.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        pendingAnimationView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        pendingAnimationView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+
+        pendingAnimationView.isHidden = true
     }
 
     private func setStyle() {
@@ -367,6 +377,43 @@ import UIKit
             }
         } else {
             action()
+        }
+    }
+
+    private func updateVariationStyle() {
+        switch variation {
+        case .loading:
+            pendingAnimationView.isHidden = false
+            textLabel.isHidden = true
+            sliderTextLabel.isHidden = true
+            thumbnailImageView.isHidden = true
+            sliderHolderView.applyGradient()
+            pendingAnimationView.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
+        case .slide:
+            pendingAnimationView.isHidden = true
+            textLabel.isHidden = false
+            sliderTextLabel.isHidden = false
+            thumbnailImageView.isHidden = false
+            pendingAnimationView.stop()
+            updateIsEnabledStyle()
+        }
+    }
+
+    private func updateIsEnabledStyle() {
+        if isEnabled {
+            sliderBackgroundColor = .clear// Theme.shared.colors.actionButtonBackgroundSimple!
+            //slidingColor = Theme.shared.colors.actionButtonBackgroundSimple!
+            textColor = Theme.shared.colors.actionButtonTitle!
+            thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonBackgroundSimple!)
+            thumbnailImageView.layer.shadowOpacity = SlideView.thumbnailShadowRadius
+            sliderHolderView.applyGradient()
+        } else {
+            sliderBackgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled!
+            //slidingColor = Theme.shared.colors.actionButtonBackgroundDisabled!
+            textColor = Theme.shared.colors.actionButtonTitleDisabled!
+            thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonTitleDisabled!)
+            thumbnailImageView.layer.shadowOpacity = 0
+            sliderHolderView.removeGradient()
         }
     }
 }
