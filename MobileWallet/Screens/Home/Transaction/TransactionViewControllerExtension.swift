@@ -130,8 +130,14 @@ extension TransactionViewController {
         emojiButton.translatesAutoresizingMaskIntoConstraints = false
         fromContainerView.addSubview(emojiButton)
         emojiButton.bottomAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: -16).isActive = true
-        emojiButton.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        emojiButton.trailingAnchor.constraint(equalTo: fromContainerView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        emojiButton.leadingAnchor.constraint(
+            equalTo: fromContainerView.leadingAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        emojiButton.trailingAnchor.constraint(
+            equalTo: fromContainerView.trailingAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        ).isActive = true
         emojiButton.cornerRadius = 12.0
     }
 

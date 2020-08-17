@@ -38,40 +38,29 @@
 
 import UIKit
 
-enum EmoticonViewType {
-    case normalView
-    case buttonView
-}
-
 class EmoticonView: UIView {
 
-    var containerView = UIView()
+    // var containerView = UIView()
     weak var blackoutParent: UIView?
     private lazy var blackoutView: UIView = {
         let view = UIView()
         view.backgroundColor = .black
         guard let bounds =  UIApplication.shared.keyWindow?.bounds else { return view }
-        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (onTap(_:))))
         view.frame = bounds
         view.alpha = 0.0
         return view
     }()
-    var scrollView = UIScrollView()
-    lazy var label = UILabelWithPadding(copiableViewParent: labelContainer)
-    var expanded: Bool = false
-    var type: EmoticonViewType = .normalView
-    var blackoutWhileExpanded = true
-    private var initialWidth: CGFloat = CGFloat(172)
-    var tapToExpand: ((_ expanded: Bool) -> Void)?
-    private var backgroundTop: NSLayoutConstraint?
-    private var backgroundLeft: NSLayoutConstraint?
-    private var backgroundRight: NSLayoutConstraint?
-    private var backgroundBottom: NSLayoutConstraint?
 
-    private var containerViewLeadingInitial: NSLayoutConstraint?
-    private var containerViewTrailingInitial: NSLayoutConstraint?
-    private var containerViewTopInitial: NSLayoutConstraint?
-    private var containerViewBottomInitial: NSLayoutConstraint?
+    var expanded: Bool = false
+    var blackoutWhileExpanded = true
+    var tapToExpand: ((_ expanded: Bool) -> Void)?
+    private var initialWidth: CGFloat = CGFloat(172)
+
+    private let condensedEmojiIdContainer = UIView()
+    private lazy var condensedEmojiIdLabel = UILabel()
+
+    private var expandedEmojiIdScrollView = UIScrollView()
+    private lazy var expandedEmojiIdLabel = UILabel()
 
     private var labelInitialWidth: NSLayoutConstraint?
     private var labelWidthConstraint: NSLayoutConstraint?
@@ -79,134 +68,124 @@ class EmoticonView: UIView {
 
     private let emojiMenu = EmojiMenuView()
 
-    private let labelContainer = UIView()
-
     private var emojiText: String!
     private var pubKeyHex: String!
+
+    private var tapActionIsDisabled = false
 
     var cornerRadius: CGFloat = 6.0 {
         didSet {
             self.layer.cornerRadius = cornerRadius
-            scrollView.layer.cornerRadius = cornerRadius
-            label.cornerRadius = cornerRadius
+            condensedEmojiIdLabel.layer.cornerRadius = cornerRadius
         }
     }
 
     private var superVc: UIViewController?
 
-    func setUpView(pubKey: PublicKey,
-                   type: EmoticonViewType,
+    func setupView(pubKey: PublicKey,
                    textCentered: Bool,
                    inViewController vc: UIViewController? = nil,
-                   initialWidth: CGFloat = CGFloat(172),
-                   initialHeight: CGFloat = CGFloat(38),
+                   initialWidth: CGFloat = CGFloat(189),
+                   initialHeight: CGFloat = CGFloat(40),
                    showContainerViewBlur: Bool = true,
                    cornerRadius: CGFloat = 6.0) {
-        label.font = UIFont.systemFont(ofSize: 14.0)
-        label.letterSpacing(value: 3.0)
+        self.backgroundColor = .clear
+        self.cornerRadius = cornerRadius
+        blackoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap(_:))))
         superVc = vc
-
+        superVc?.navigationController?.navigationBar.layer.zPosition = 0
         emojiText = pubKey.emojis.0
         pubKeyHex = pubKey.hex.0
-        self.backgroundColor = .clear
+        blackoutWhileExpanded = showContainerViewBlur
+        // tap gesture
+        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
+        prepareCondensedEmojiId(textCentered: textCentered,
+                                width: initialWidth,
+                                height: initialHeight)
+        prepareExpandedEmojiId(height: initialHeight)
+    }
 
-        label.copyText = emojiText
-
-        if type == .normalView {
-            label.numberOfLines = 0
-            addSubview(label)
-            layer.masksToBounds = true
-            label.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground!
-            label.textAlignment = .center
-            label.textColor = Theme.shared.colors.emojisSeparator!
-            label.text = emojiText.insertSeparator("|", atEvery: 3)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+    private func prepareCondensedEmojiId(textCentered: Bool,
+                                         width: CGFloat,
+                                         height: CGFloat) {
+        self.addSubview(condensedEmojiIdContainer)
+        condensedEmojiIdContainer.translatesAutoresizingMaskIntoConstraints = false
+        condensedEmojiIdContainer.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        if textCentered {
+            condensedEmojiIdContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        } else {
+            condensedEmojiIdContainer.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
         }
+        self.initialWidth = width
+        labelInitialWidth = condensedEmojiIdContainer.widthAnchor.constraint(equalToConstant: initialWidth)
+        labelInitialWidth?.isActive = true
+        condensedEmojiIdContainer.heightAnchor.constraint(equalToConstant: height).isActive = true
+        condensedEmojiIdContainer.layer.shadowColor = Theme.shared.colors.emojiButtonShadow!.cgColor
+        condensedEmojiIdContainer.layer.shadowOffset = .zero
+        condensedEmojiIdContainer.layer.shadowRadius = cornerRadius * 1.2
+        condensedEmojiIdContainer.layer.shadowOpacity = 1.0
+        condensedEmojiIdContainer.clipsToBounds = true
+        condensedEmojiIdContainer.layer.masksToBounds = false
+        condensedEmojiIdContainer.addSubview(condensedEmojiIdLabel)
 
-        if type == .buttonView {
-            containerView = UIView()
-            containerView.backgroundColor = Theme.shared.colors.emoticonBlackBackgroundAlpha!
-            containerView.alpha = 0.0
-            addSubview(containerView)
-            containerView.translatesAutoresizingMaskIntoConstraints = false
-            containerViewLeadingInitial = containerView.widthAnchor.constraint(equalToConstant: 0)
-            containerViewLeadingInitial?.isActive = true
-            containerViewTrailingInitial = containerView.heightAnchor.constraint(equalToConstant: 0)
-            containerViewTrailingInitial?.isActive = true
+        condensedEmojiIdLabel.layer.masksToBounds = true
+        condensedEmojiIdLabel.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
+        condensedEmojiIdLabel.textAlignment = .center
+        condensedEmojiIdLabel.textColor = Theme.shared.colors.emojisSeparator!
+        condensedEmojiIdLabel.text = getCondensedEmojiId() + " "
+        condensedEmojiIdLabel.letterSpacing(value: 2.0)
+        condensedEmojiIdLabel.translatesAutoresizingMaskIntoConstraints = false
 
-            containerViewTopInitial = containerView.centerXAnchor.constraint(equalTo: centerXAnchor)
-            containerViewTopInitial?.isActive = true
-            containerViewBottomInitial = containerView.centerYAnchor.constraint(equalTo: centerYAnchor)
-            containerViewBottomInitial?.isActive = true
+        condensedEmojiIdLabel.leadingAnchor.constraint(equalTo: condensedEmojiIdContainer.leadingAnchor).isActive = true
+        condensedEmojiIdLabel.trailingAnchor.constraint(equalTo: condensedEmojiIdContainer.trailingAnchor).isActive = true
+        condensedEmojiIdLabel.topAnchor.constraint(equalTo: condensedEmojiIdContainer.topAnchor).isActive = true
+        condensedEmojiIdLabel.bottomAnchor.constraint(equalTo: condensedEmojiIdContainer.bottomAnchor).isActive = true
+        condensedEmojiIdLabel.heightAnchor.constraint(equalToConstant: height).isActive = true
 
-            self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
+        labelCenterConstraint = condensedEmojiIdLabel.centerXAnchor.constraint(equalTo: condensedEmojiIdContainer.centerXAnchor)
+        labelCenterConstraint?.isActive = true
+    }
 
-            blackoutWhileExpanded = showContainerViewBlur
+    private func prepareExpandedEmojiId(height: CGFloat) {
+        // prepare expanded emoji id scroll view
+        expandedEmojiIdScrollView.backgroundColor = UIColor.white
+        expandedEmojiIdScrollView.layer.cornerRadius = cornerRadius * 1.2
+        expandedEmojiIdScrollView.clipsToBounds = true
+        expandedEmojiIdScrollView.layer.masksToBounds = true
+        expandedEmojiIdScrollView.showsHorizontalScrollIndicator = false
+        expandedEmojiIdScrollView.bounces = true
 
-            self.addSubview(labelContainer)
-            labelContainer.translatesAutoresizingMaskIntoConstraints = false
-
-            labelContainer.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-
-            if textCentered {
-                labelContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-            } else {
-                labelContainer.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-            }
-
-            self.initialWidth = initialWidth
-            labelInitialWidth = labelContainer.widthAnchor.constraint(equalToConstant: initialWidth)
-            labelInitialWidth?.isActive = true
-            labelContainer.heightAnchor.constraint(equalToConstant: initialHeight).isActive = true
-
-            labelContainer.layer.shadowColor = Theme.shared.colors.emojiButtonShadow!.cgColor
-            labelContainer.layer.shadowOffset = .zero
-            labelContainer.layer.shadowRadius = cornerRadius * 1.2
-            labelContainer.layer.shadowOpacity = 1.0
-            labelContainer.clipsToBounds = true
-            labelContainer.layer.masksToBounds = false
-
-            scrollView = UIScrollView()
-            scrollView.showsHorizontalScrollIndicator = false
-            labelContainer.addSubview(scrollView)
-            scrollView.translatesAutoresizingMaskIntoConstraints = false
-            scrollView.centerXAnchor.constraint(equalTo: labelContainer.centerXAnchor).isActive = true
-            scrollView.widthAnchor.constraint(equalTo: labelContainer.widthAnchor).isActive = true
-            scrollView.topAnchor.constraint(equalTo: labelContainer.topAnchor).isActive = true
-            scrollView.bottomAnchor.constraint(equalTo: labelContainer.bottomAnchor).isActive = true
-
-            scrollView.layer.masksToBounds = true
-
-            label.padding = UIEdgeInsets(top: 0, left: 14, bottom: 0, right: 14)
-            scrollView.addSubview(label)
-
-            label.layer.masksToBounds = true
-            label.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
-            label.textAlignment = .center
-            label.textColor = Theme.shared.colors.emojisSeparator!
-            determineEmojiLabelText(emojiText: emojiText)
-            label.translatesAutoresizingMaskIntoConstraints = false
-
-            label.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-            label.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-            label.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
-            label.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-            label.heightAnchor.constraint(equalToConstant: initialHeight).isActive = true
-
-            labelCenterConstraint = label.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor)
-            labelCenterConstraint?.isActive = true
-
-            self.cornerRadius = cornerRadius
-        }
-
-        superVc?.navigationController?.navigationBar.layer.zPosition = 0
+        // prepare expanded emoji id label
+        condensedEmojiIdLabel.font = UIFont.systemFont(ofSize: 14.0)
+        condensedEmojiIdLabel.adjustsFontSizeToFitWidth = false
+        // condensedEmojiIdLabel.copyText = emojiText
+        expandedEmojiIdLabel.numberOfLines = 0
+        expandedEmojiIdLabel.adjustsFontSizeToFitWidth = false
+        expandedEmojiIdLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
+        expandedEmojiIdLabel.isUserInteractionEnabled = true
+        expandedEmojiIdLabel.layer.masksToBounds = true
+        expandedEmojiIdLabel.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
+        expandedEmojiIdLabel.textAlignment = .center
+        expandedEmojiIdLabel.textColor = Theme.shared.colors.emojisSeparator!
+        expandedEmojiIdLabel.text = getExpandedEmojiId() + " "
+        expandedEmojiIdLabel.font = UIFont.systemFont(ofSize: 14.0)
+        expandedEmojiIdLabel.letterSpacing(value: 2.0)
+        expandedEmojiIdLabel.sizeToFit()
+        expandedEmojiIdLabel.frame = CGRect(
+            x: 14,
+            y: 0,
+            width: expandedEmojiIdLabel.frame.width,
+            height: height
+        )
+        expandedEmojiIdScrollView.contentSize = CGSize(
+            width: expandedEmojiIdLabel.frame.size.width + 14*2,
+            height: height
+        )
+        expandedEmojiIdScrollView.addSubview(expandedEmojiIdLabel)
     }
 
     @objc func tap(_ gestureRecognizer: UITapGestureRecognizer) {
+        if tapActionIsDisabled { return }
         if expanded {
             shrink(callTapCompletion: true)
         } else {
@@ -215,125 +194,159 @@ class EmoticonView: UIView {
     }
 
     func expand(completion: (() -> Void)? = nil, callTapCompletion: Bool = false, animated: Bool = true) {
+        guard let scrollViewFrame = condensedEmojiIdContainer.globalFrame else { return }
+        tapActionIsDisabled = true
         expanded = true
-        enableFullScreen(callTapCompletion: callTapCompletion, completion: completion, animated: animated)
+        //If they're typing somewhere, close the keyboard
+        superVc?.view.endEditing(true)
+        // fade out label container
+        // fade in blackout
+        fadeView(view: condensedEmojiIdContainer, fadeOut: true)
         if blackoutWhileExpanded {
-            showBlackoutView()
+            UIApplication.shared.keyWindow?.addSubview(blackoutView)
+            fadeView(view: blackoutView, fadeOut: false, maxAlpha: 0.65)
+            showCopyEmojiIdButton()
+        }
+        // add and show scroll view
+        let scrollViewTargetWidth = blackoutView.frame.width - Theme.shared.sizes.appSidePadding * 2
+        expandedEmojiIdScrollView.frame = scrollViewFrame
+        // animate scroll view frame
+        let scrollViewTargetFrame = CGRect(
+            x: Theme.shared.sizes.appSidePadding,
+            y: scrollViewFrame.origin.y,
+            width: scrollViewTargetWidth,
+            height: scrollViewFrame.height
+        )
+        UIApplication.shared.keyWindow?.addSubview(expandedEmojiIdScrollView)
+        if animated {
+            expandedEmojiIdScrollView.alpha = 0
+            expandedEmojiIdScrollView.setContentOffset(
+                CGPoint(x: expandedEmojiIdLabel.frame.width / 2, y: 0),
+                animated: false
+            )
+            fadeView(view: expandedEmojiIdScrollView, fadeOut: false)
+            UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0) {
+                [weak self] in
+                self?.expandedEmojiIdScrollView.frame = scrollViewTargetFrame
+            }
+            UIView.animate(withDuration: 0.5, animations: {
+                [weak self] in
+                self?.expandedEmojiIdScrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+            }) {
+                [weak self] (_) in
+                self?.tapActionIsDisabled = false
+            }
+        } else {
+            expandedEmojiIdScrollView.alpha = 1
+            expandedEmojiIdScrollView.frame = scrollViewTargetFrame
+            tapActionIsDisabled = false
+        }
+        if callTapCompletion == true {
+            tapToExpand?(true)
+        }
+    }
+
+    override var alpha: CGFloat {
+        get {
+            return super.alpha
+        }
+        set {
+            super.alpha = newValue
+            expandedEmojiIdScrollView.alpha = newValue
         }
     }
 
     func shrink(completion: (() -> Void)? = nil, callTapCompletion: Bool = false, animated: Bool = true) {
+        guard let scrollViewFrame = condensedEmojiIdContainer.globalFrame else { return }
+        tapActionIsDisabled = true
         expanded = false
+        let scrolled = expandedEmojiIdScrollView.contentOffset.x > 0
+        expandedEmojiIdScrollView.setContentOffset(
+            CGPoint(x: 0, y: 0),
+            animated: animated
+        )
+        // hide copy emoji id button
         if blackoutWhileExpanded {
-            hideBlackoutView()
-        }
-        disableFullScreen(callTapCompletion: callTapCompletion, completion: completion, animated: animated)
-    }
-
-    private func disableFullScreen(callTapCompletion: Bool, completion: (() -> Void)? = nil, animated: Bool = true) {
-        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, animations: { [weak self] in
-            guard let initialWidth = self?.initialWidth else { return }
-            self?.containerView.alpha = 0.0
-            self?.labelInitialWidth?.constant = initialWidth
-            self?.layoutIfNeeded()
-            }, completion: { [weak self] _ in
-
-                self?.backgroundLeft?.isActive = false
-                self?.backgroundRight?.isActive = false
-                self?.backgroundTop?.isActive = false
-                self?.backgroundBottom?.isActive = false
-
-                self?.containerViewLeadingInitial?.isActive = true
-                self?.containerViewTrailingInitial?.isActive = true
-                self?.containerViewBottomInitial?.isActive = true
-                self?.containerViewTopInitial?.isActive = true
-
-                self?.labelCenterConstraint?.isActive = true
-
-                guard let emojiText = self?.emojiText else { return }
-                self?.determineEmojiLabelText(emojiText: emojiText)
-
+            DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.35 : 0)) {
+                [weak self] in
+                self?.hideCopyEmojiIdButton {
+                    [weak self] in
+                    guard let self = self else { return }
+                    self.hideExpandedViews(
+                        animated: true,
+                        scrollViewFrame: scrollViewFrame,
+                        callTapCompletion: callTapCompletion
+                    )
+                    completion?()
+                }
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.35 : 0)) {
+                [weak self] in
+                self?.hideExpandedViews(
+                    animated: animated,
+                    scrollViewFrame: scrollViewFrame,
+                    callTapCompletion: callTapCompletion
+                )
                 completion?()
-
-                if callTapCompletion == true {
-                    self?.tapToExpand?(false)
-                }
-        })
-    }
-
-    private func enableFullScreen(callTapCompletion: Bool, completion:(() -> Void)? = nil, animated: Bool = true) {
-        determineEmojiLabelText(emojiText: emojiText)
-        runFullScreen(callTapCompletion: callTapCompletion, animated: animated)
-    }
-
-    private func runFullScreen(callTapCompletion: Bool, animated: Bool = true) {
-        if backgroundLeft == nil && backgroundRight == nil && backgroundBottom == nil && backgroundTop == nil {
-            if let superview = self.superview {
-                backgroundLeft = containerView.leadingAnchor.constraint(equalTo: superview.leadingAnchor)
-                backgroundRight = containerView.trailingAnchor.constraint(equalTo: superview.trailingAnchor)
-                backgroundTop = containerView.topAnchor.constraint(equalTo: superview.topAnchor)
-                backgroundBottom = containerView.bottomAnchor.constraint(equalTo: superview.bottomAnchor)
-            }
-        }
-
-        containerViewLeadingInitial?.isActive = false
-        containerViewTrailingInitial?.isActive = false
-        containerViewBottomInitial?.isActive = false
-        containerViewTopInitial?.isActive = false
-
-        backgroundLeft?.isActive = true
-        backgroundRight?.isActive = true
-        backgroundTop?.isActive = true
-        backgroundBottom?.isActive = true
-
-        labelCenterConstraint?.isActive = false
-
-        self.layoutIfNeeded()
-
-        self.labelInitialWidth?.constant = self.frame.width
-
-        //If they're typing somewhere, close the keyboard
-        superVc?.view.endEditing(true)
-
-        if callTapCompletion == true {
-            tapToExpand?(true)
-        }
-
-        scrollView.contentOffset = CGPoint(x: 30, y: 0)
-
-        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, animations: { [weak self] in
-            self?.scrollView.contentOffset = CGPoint(x: -30, y: 0)
-            self?.layoutIfNeeded()
-        }) { [weak self] (_) in
-            UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, animations: { [weak self] in
-                self?.scrollView.contentOffset = CGPoint(x: 30, y: 0)
-                self?.layoutIfNeeded()
-            }) { [weak self] (_) in
-                UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, animations: { [weak self] in
-                    self?.scrollView.contentOffset = CGPoint(x: -10, y: 0)
-                    self?.layoutIfNeeded()
-                }) { [weak self] (_) in
-                    self?.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
-                }
             }
         }
     }
 
-    private func determineEmojiLabelText(emojiText: String) {
+    private func hideExpandedViews(animated: Bool,
+                                   scrollViewFrame: CGRect,
+                                   callTapCompletion: Bool) {
+        if !animated {
+            if blackoutWhileExpanded {
+                blackoutView.removeFromSuperview()
+            }
+            expandedEmojiIdScrollView.removeFromSuperview()
+            condensedEmojiIdContainer.alpha = 1
+            if callTapCompletion == true {
+                tapToExpand?(false)
+            }
+            return
+        }
+        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0) {
+            [weak self] in
+            self?.expandedEmojiIdScrollView.frame = scrollViewFrame
+        }
+        if self.blackoutWhileExpanded {
+            self.fadeView(view: self.blackoutView, fadeOut: true) {
+                [weak self] in
+                self?.blackoutView.removeFromSuperview()
+            }
+        }
+        // fade out scroll view
+        self.fadeView(view: self.expandedEmojiIdScrollView, fadeOut: true) {
+            [weak self] in
+            self?.expandedEmojiIdScrollView.removeFromSuperview()
+        }
+        // fade in condensed emoji id
+        self.fadeView(view: self.condensedEmojiIdContainer, fadeOut: false) {
+            [weak self] in
+            self?.tapActionIsDisabled = false
+            if callTapCompletion == true {
+                self?.tapToExpand?(false)
+            }
+        }
+    }
+
+    private func getCondensedEmojiId() -> String {
         let firstThreeChar = emojiText.prefix(3)
         let lastThreeChar = emojiText.suffix(3)
+        return "\(firstThreeChar)•••\(lastThreeChar)"
+    }
 
-        let expandedString = emojiText.insertSeparator(" | ", atEvery: 3)
-        label.textColor = expanded ? Theme.shared.colors.emojisSeparatorExpanded! : Theme.shared.colors.emojisSeparator!
-        label.text = expanded ? expandedString : "\(firstThreeChar)•••\(lastThreeChar)"
-        label.copyText = emojiText
+    private func getExpandedEmojiId() -> String {
+        return emojiText.insertSeparator(" | ", atEvery: 3)
     }
 
     override func willMove(toWindow newWindow: UIWindow?) {
         super.willMove(toWindow: newWindow)
         if newWindow == nil {
             superVc?.navigationController?.navigationBar.layer.zPosition = 0
-            hideMenu()
+            hideCopyEmojiIdButton()
         }
     }
 
@@ -355,75 +368,66 @@ class EmoticonView: UIView {
 // MARK: blackout behavior
 
 extension EmoticonView {
-    private func showBlackoutView() {
-        if let parent = blackoutParent {
-            guard let sv = superview else { return }
-            parent.insertSubview(blackoutView, belowSubview: parent == sv ? self : sv)
-        } else {
-            insertSubview(blackoutView, belowSubview: containerView)
-            guard let gf = globalFrame else { return }
-            blackoutView.frame = CGRect(x: -gf.origin.x, y: -gf.origin.y, width: blackoutView.bounds.width, height: blackoutView.bounds.height)
-        }
-        UIApplication.shared.menuTabBarController?.tabBar.alpha = 0.15
-        UIApplication.shared.menuTabBarController?.tabBar.isUserInteractionEnabled = false
-        fadeView(view: blackoutView, fade: false, maxAlpha: 0.62)
-        showMenu()
-    }
 
-    private func hideBlackoutView() {
-        fadeView(view: blackoutView, fade: true) { [weak self] in
-            self?.blackoutView.removeFromSuperview()
-        }
-        UIApplication.shared.menuTabBarController?.tabBar.alpha = 1
-        UIApplication.shared.menuTabBarController?.tabBar.isUserInteractionEnabled = true
-        hideMenu()
-    }
-
-    private func showMenu() {
+    private func showCopyEmojiIdButton(completion: (() -> Void)? = nil) {
         emojiMenu.alpha = 0.0
         emojiMenu.title = NSLocalizedString("emoji.copy", comment: "Emoji view")
 
-        emojiMenu.completion = { [weak self] isLongPress in
+        emojiMenu.completion = {
+            [weak self] isLongPress in
             guard let self = self else { return }
+            self.tapActionIsDisabled = true
             if isLongPress {
-                self.label.copyText = self.pubKeyHex
+                self.copyToClipboard(string: self.pubKeyHex)
             } else {
-                self.label.copyText = self.emojiText
+                self.copyToClipboard(string: self.emojiText)
             }
-            self.label.copy(nil)
-            self.hideMenu()
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
+            self.hideCopyEmojiIdButton()
+            self.showCopiedView {
+                [weak self] in
                 self?.shrink(callTapCompletion: true)
-            })
+            }
         }
 
         UIApplication.shared.keyWindow?.addSubview(emojiMenu)
-        guard let globalFrame = labelContainer.globalFrame else { return }
+        guard let globalFrame = condensedEmojiIdContainer.globalFrame else { return }
         let emojiMenuSize = CGSize(width: 119, height: 37)
         let xPosition = (bounds.width / 2) - (emojiMenuSize.width / 2) + 25
         emojiMenu.alpha = 0.0
-        emojiMenu.frame = CGRect(x: xPosition, y: globalFrame.origin.y + globalFrame.height, width: emojiMenuSize.width, height: emojiMenuSize.height)
+        emojiMenu.frame = CGRect(
+            x: xPosition,
+            y: globalFrame.origin.y + globalFrame.height,
+            width: emojiMenuSize.width,
+            height: emojiMenuSize.height
+        )
+        emojiMenu.button.alpha = 1
 
-        UIView.animate(withDuration: 0.5, delay: 0.3, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: .curveEaseInOut, animations: { [weak self] in
+        UIView.animate(withDuration: 0.5,
+                       delay: 0.3,
+                       usingSpringWithDamping: 0.5,
+                       initialSpringVelocity: 5,
+                       options: .curveEaseInOut,
+                       animations: { [weak self] in
             self?.emojiMenu.alpha = 1.0
             self?.emojiMenu.frame = CGRect(x: xPosition, y: globalFrame.origin.y + 45, width: emojiMenuSize.width, height: emojiMenuSize.height)
-        })
+        }) {
+            (_) in
+            completion?()
+        }
 
-        fadeView(view: emojiMenu, fade: false)
+        fadeView(view: emojiMenu, fadeOut: false)
     }
-    private func hideMenu() {
-        fadeView(view: emojiMenu, fade: true) { [weak self] in
+
+    private func hideCopyEmojiIdButton(completion: (() -> Void)? = nil) {
+        fadeView(view: emojiMenu, fadeOut: true) { [weak self] in
             self?.emojiMenu.removeFromSuperview()
+            completion?()
         }
     }
 
-    @objc private func onTap(_ sender: Any?) {
-        shrink(callTapCompletion: true)
-    }
-
-    private func fadeView(view: UIView, fade: Bool, maxAlpha: CGFloat = 1.0, completion: (() -> Void)? = nil) {
-        UIView.animate(withDuration: CATransaction.animationDuration(), animations: {
-            view.alpha = fade ? 0.0 : maxAlpha
+    private func fadeView(view: UIView, fadeOut: Bool, maxAlpha: CGFloat = 1.0, completion: (() -> Void)? = nil) {
+        UIView.animate(withDuration: 0.35, animations: {
+            view.alpha = fadeOut ? 0.0 : maxAlpha
         }) { _ in
             completion?()
         }
@@ -432,7 +436,7 @@ extension EmoticonView {
 
 private class EmojiMenuView: UIView {
 
-    private let button = TextButton()
+    let button = TextButton()
     var completion: ((Bool) -> Void)?
 
     var title: String? {
@@ -499,4 +503,78 @@ private class EmojiMenuView: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+}
+
+// MARK: "COPIED" function & view
+
+extension EmoticonView {
+
+    func copyToClipboard(string: String) {
+        let board = UIPasteboard.general
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        board.string = string
+    }
+
+    private func showCopiedView(completion: (() -> Void)? = nil) {
+        // frames
+        let containerFrame = CGRect(
+            x: expandedEmojiIdScrollView.frame.origin.x,
+            y: expandedEmojiIdScrollView.frame.origin.y,
+            width: expandedEmojiIdScrollView.frame.size.width,
+            height: expandedEmojiIdScrollView.frame.size.height
+        )
+        let subviewFrame = CGRect(
+            x: 0,
+            y: 0,
+            width: expandedEmojiIdScrollView.frame.size.width,
+            height: expandedEmojiIdScrollView.frame.size.height
+        )
+        // container
+        let containerView = UIView()
+        containerView.isUserInteractionEnabled = true
+        containerView.alpha = 0.0
+        containerView.layer.borderWidth = 2
+        containerView.layer.borderColor = Theme.shared.colors.transactionCellValuePositiveText?.cgColor
+        containerView.backgroundColor = UIColor.white.withAlphaComponent(0.75)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        containerView.layer.cornerRadius = cornerRadius
+        containerView.frame = containerFrame
+        // green background
+        let greenView = UIView()
+        greenView.backgroundColor = Theme.shared.colors.transactionCellValuePositiveText?.withAlphaComponent(0.12)
+        greenView.translatesAutoresizingMaskIntoConstraints = false
+        greenView.frame = subviewFrame
+        // label
+        let copiedLabel = UILabel()
+        copiedLabel.text = NSLocalizedString("emoji.copied", comment: "Emoji view")
+        copiedLabel.font = Theme.shared.fonts.copiedLabel
+        copiedLabel.textColor = Theme.shared.colors.textButtonSecondary
+        // copiedLabel.translatesAutoresizingMaskIntoConstraints = false
+        copiedLabel.frame = subviewFrame
+        copiedLabel.textAlignment = .center
+        // add subviews
+        containerView.addSubview(greenView)
+        containerView.addSubview(copiedLabel)
+        UIApplication.shared.keyWindow?.addSubview(containerView)
+        UIApplication.shared.keyWindow?.bringSubviewToFront(containerView)
+
+        UIView.animate(withDuration: CATransaction.animationDuration(),
+                       animations: {
+            containerView.alpha = 1.0
+        }) {(_) in
+            UIView.animate(withDuration: CATransaction.animationDuration(),
+                           delay: 0.5,
+                           animations: {
+                containerView.alpha = 0.0
+            }) {
+                (_) in
+                containerView.removeFromSuperview()
+                greenView.removeFromSuperview()
+                copiedLabel.removeFromSuperview()
+                completion?()
+            }
+        }
+    }
+
 }

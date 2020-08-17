@@ -119,14 +119,16 @@ class WalletCreationViewController: UIViewController {
         firstLabel.hideLabel(duration: duration)
         secondLabel.hideLabel(duration: duration)
 
-        UIView.animate(withDuration: duration, animations: { [weak self] in
-            self?.thirdLabel.alpha = 0.0
-            self?.animationView.alpha = 0.0
-            self?.numpadImageView.alpha = 0.0
-            self?.userEmojiContainer.alpha = 0.0
-            self?.tapToSeeButtonContainer.alpha = 0.0
-            self?.view.layoutIfNeeded()
-            }, completion: { [weak self] _ in
+        UIView.animate(withDuration: duration, animations: {
+            [weak self] in
+            guard let self = self else { return }
+            self.thirdLabel.alpha = 0.0
+            self.animationView.alpha = 0.0
+            self.numpadImageView.alpha = 0.0
+            self.userEmojiContainer.alpha = 0.0
+            self.tapToSeeButtonContainer.alpha = 0.0
+            self.view.layoutIfNeeded()}, completion: {
+                [weak self] _ in
                 guard let self = self else { return }
                 self.animationView.stop()
                 self.stackView.setCustomSpacing(0, after: self.userEmojiContainer)
@@ -198,6 +200,7 @@ class WalletCreationViewController: UIViewController {
             }
         case .showEmojiId:
             hideSubviews { [weak self] in
+                self?.userEmojiContainer.shrink(animated: false)
                 self?.prepareSubviews(for: .localAuthentication)
                 self?.showLocalAuthentication()
             }
@@ -295,6 +298,17 @@ extension WalletCreationViewController {
         secondLabel.showLabel(duration: 1.0)
         userEmojiContainer.isHidden = false
         view.layoutIfNeeded()
+        userEmojiContainer.expand(animated: false)
+        userEmojiContainer.alpha = 0
+
+        self.userEmojiContainer.tapToExpand = { [weak self] expanded in
+            if self?.state == .showEmojiId {
+                self?.showContinueButton()
+                UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
+                    self?.tapToSeeButtonContainer.alpha = expanded ? 0.0 : 1.0
+                }
+            }
+        }
 
         UIView.animate(withDuration: 1, animations: { [weak self] in
             self?.thirdLabel.alpha = 1.0
@@ -400,33 +414,27 @@ extension WalletCreationViewController {
             .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
             .kern: -0.33
         ])
-        attributedString.addAttribute(.font, value: Theme.shared.fonts.createWalletEmojiIDSecondText, range: NSRange(location: 13, length: 8))
+        attributedString.addAttribute(
+            .font,
+            value: Theme.shared.fonts.createWalletEmojiIDSecondText,
+            range: NSRange(location: 13, length: 8)
+        )
         secondLabel.attributedText = attributedString
 
         let curency = TariSettings.shared.network.currencyDisplayTicker
-        thirdLabel.text = NSLocalizedString(
-            "wallet_creation.emoji_state.second_label", comment: "WalletCreation view") + " \(curency)!"
+        thirdLabel.text = NSLocalizedString("wallet_creation.emoji_state.second_label",
+                                            comment: "WalletCreation view") + " \(curency)!"
         stackView.setCustomSpacing(16, after: secondLabel)
 
         continueButton.setTitle(NSLocalizedString("common.continue", comment: "Common"), for: .normal)
 
         if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
-            userEmojiContainer.setUpView(
+            userEmojiContainer.setupView(
                 pubKey: pubKey,
-                type: .buttonView,
                 textCentered: true,
                 inViewController: self,
                 showContainerViewBlur: false
             )
-            self.userEmojiContainer.expand(animated: false)
-            self.userEmojiContainer.tapToExpand = { [weak self] expanded in
-                if self?.state == .showEmojiId {
-                    self?.showContinueButton()
-                    UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
-                        self?.tapToSeeButtonContainer.alpha = expanded ? 0.0 : 1.0
-                    }
-                }
-            }
         }
 
         stackView.setCustomSpacing(30, after: userEmojiContainer)
