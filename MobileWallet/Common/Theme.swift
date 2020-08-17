@@ -267,7 +267,6 @@ struct Images: Loopable {
 
     //General icons
     let currencySymbol = UIImage(named: "Gem")
-    let currencyBigSymbol = UIImage(named: "GemBig")
     let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
     let forwardArrow = UIImage(named: "ForwardArrow")

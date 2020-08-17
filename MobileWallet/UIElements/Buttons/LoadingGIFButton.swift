@@ -78,6 +78,7 @@ class LoadingGIFButton: UIButton {
         backgroundColor = .clear
         contentHorizontalAlignment = .left
         titleLabel?.font = Theme.shared.fonts.loadingGifButtonTitle
+        isEnabled = false
     }
 
     private func updateStyle() {

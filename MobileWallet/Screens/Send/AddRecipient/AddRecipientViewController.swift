@@ -226,7 +226,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if selectedRecipientPublicKey != nil && selectedRecipientPublicKey?.hex.0 != TariLib.shared.tariWallet?.publicKey.0?.hex.0 {
-            onContinue()
+            onContinue(selectedRecipientPublicKey!)
         } else if contactsTableVC.isEmptyList() {
             errorMessageView.message = NSLocalizedString("add_recipient.inputbox.warning", comment: "Add recipient view")
         }
@@ -350,7 +350,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 200)
         continueButtonBottomConstraint.isActive = true
 
-        continueButton.addTarget(self, action: #selector(onContinue), for: .touchUpInside)
+        continueButton.addTarget(self, action: #selector(onContinuePress), for: .touchUpInside)
     }
 
     private func setupPasteEmojisView() {
@@ -475,9 +475,15 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         }
     }
 
-    @objc private func onContinue() {
+    @objc private func onContinuePress() {
+        if let toPubKey = selectedRecipientPublicKey {
+            onContinue(toPubKey)
+        }
+    }
+
+    private func onContinue(_ toPubKey: PublicKey) {
         let amountVC = AddAmountViewController()
-        amountVC.publicKey = selectedRecipientPublicKey
+        amountVC.publicKey = toPubKey
         amountVC.deepLinkParams = deepLinkParams
         self.navigationController?.pushViewController(amountVC, animated: true)
     }
@@ -524,9 +530,8 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     func onSelect(publicKey: PublicKey) {
-        select(publicKey: publicKey)
         dismissKeyboard()
-        onContinue()
+        onContinue(publicKey)
     }
 
     //Used by the scanner and paste from clipboard
