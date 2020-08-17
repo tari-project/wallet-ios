@@ -92,38 +92,11 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         scrollView.delegate = self
         setup()
         hideKeyboardWhenTappedAroundOrSwipedDown(view: attachmentContainer)
+        displayAliasOrEmojiId()
         Tracker.shared.track("/home/send_tari/add_note", "Send Tari - Add Note")
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
-        guard let wallet = TariLib.shared.tariWallet, let pubKey = publicKey else {
-            return
-        }
-
-        do {
-            guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
-            if contact.alias.0.trimmingCharacters(in: .whitespaces).isEmpty {
-                try navigationBar.showEmoji(pubKey, animated: true)
-            } else {
-                navigationBar.title = contact.alias.0
-            }
-        } catch {
-            do {
-                try navigationBar.showEmoji(pubKey, animated: true)
-            } catch {
-                UserFeedback.shared.error(
-                    title: NSLocalizedString("navigation_bar.error.show_emoji.title", comment: "Navigation bar"),
-                    description: NSLocalizedString("navigation_bar.error.show_emoji.description", comment: "Navigation bar"),
-                    error: error
-                )
-            }
-        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -145,8 +118,32 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        navigationBar.hideEmoji(animated: false)
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
+    }
+
+    private func displayAliasOrEmojiId() {
+        guard let wallet = TariLib.shared.tariWallet, let pubKey = publicKey else {
+            return
+        }
+
+        do {
+            guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
+            if contact.alias.0.trimmingCharacters(in: .whitespaces).isEmpty {
+                try navigationBar.showEmojiId(pubKey, inViewController: self)
+            } else {
+                navigationBar.title = contact.alias.0
+            }
+        } catch {
+            do {
+                try navigationBar.showEmojiId(pubKey, inViewController: self)
+            } catch {
+                UserFeedback.shared.error(
+                    title: NSLocalizedString("navigation_bar.error.show_emoji.title", comment: "Navigation bar"),
+                    description: NSLocalizedString("navigation_bar.error.show_emoji.description", comment: "Navigation bar"),
+                    error: error
+                )
+            }
+        }
     }
 
     func setSendButtonState() {

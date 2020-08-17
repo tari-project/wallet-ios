@@ -38,7 +38,7 @@
 
 import UIKit
 
-class EmoticonView: UIView {
+class EmojiIdView: UIView {
 
     // var containerView = UIView()
     weak var blackoutParent: UIView?
@@ -80,7 +80,7 @@ class EmoticonView: UIView {
         }
     }
 
-    private var superVc: UIViewController?
+    private var superVC: UIViewController?
 
     func setupView(pubKey: PublicKey,
                    textCentered: Bool,
@@ -92,8 +92,8 @@ class EmoticonView: UIView {
         self.backgroundColor = .clear
         self.cornerRadius = cornerRadius
         blackoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap(_:))))
-        superVc = vc
-        superVc?.navigationController?.navigationBar.layer.zPosition = 0
+        superVC = vc
+        superVC?.navigationController?.navigationBar.layer.zPosition = 0
         emojiText = pubKey.emojis.0
         pubKeyHex = pubKey.hex.0
         blackoutWhileExpanded = showContainerViewBlur
@@ -198,7 +198,7 @@ class EmoticonView: UIView {
         tapActionIsDisabled = true
         expanded = true
         //If they're typing somewhere, close the keyboard
-        superVc?.view.endEditing(true)
+        superVC?.view.endEditing(true)
         // fade out label container
         // fade in blackout
         fadeView(view: condensedEmojiIdContainer, fadeOut: true)
@@ -345,7 +345,7 @@ class EmoticonView: UIView {
     override func willMove(toWindow newWindow: UIWindow?) {
         super.willMove(toWindow: newWindow)
         if newWindow == nil {
-            superVc?.navigationController?.navigationBar.layer.zPosition = 0
+            superVC?.navigationController?.navigationBar.layer.zPosition = 0
             hideCopyEmojiIdButton()
         }
     }
@@ -367,7 +367,7 @@ class EmoticonView: UIView {
 
 // MARK: blackout behavior
 
-extension EmoticonView {
+extension EmojiIdView {
 
     private func showCopyEmojiIdButton(completion: (() -> Void)? = nil) {
         emojiMenu.alpha = 0.0
@@ -508,7 +508,7 @@ private class EmojiMenuView: UIView {
 
 // MARK: "COPIED" function & view
 
-extension EmoticonView {
+extension EmojiIdView {
 
     func copyToClipboard(string: String) {
         let board = UIPasteboard.general

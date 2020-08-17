@@ -547,9 +547,9 @@
 		BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8316FC23EF7EAA00235403 /* LAContext.swift */; };
 		BF8316FE23EF7EAA00235403 /* LAContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8316FC23EF7EAA00235403 /* LAContext.swift */; };
 		BF8316FF23EF7EAA00235403 /* LAContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF8316FC23EF7EAA00235403 /* LAContext.swift */; };
-		BFAB5D1123FDEA69009E8563 /* EmoticonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */; };
-		BFAB5D1223FDEA6A009E8563 /* EmoticonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */; };
-		BFAB5D1323FDEA6A009E8563 /* EmoticonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */; };
+		BFAB5D1123FDEA69009E8563 /* EmojiIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB5D1023FDEA69009E8563 /* EmojiIdView.swift */; };
+		BFAB5D1223FDEA6A009E8563 /* EmojiIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB5D1023FDEA69009E8563 /* EmojiIdView.swift */; };
+		BFAB5D1323FDEA6A009E8563 /* EmojiIdView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAB5D1023FDEA69009E8563 /* EmojiIdView.swift */; };
 		BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 		BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
 		BFC5532723D9B8E4009130A8 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC5532423D9B8E4009130A8 /* UIView.swift */; };
@@ -829,7 +829,7 @@
 		BF191A3123E70D3200D33C85 /* NerdEmojiAnimation.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = NerdEmojiAnimation.json; sourceTree = "<group>"; };
 		BF5537B82412B9BB0071328C /* purple_orb.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = purple_orb.mp4; sourceTree = "<group>"; };
 		BF8316FC23EF7EAA00235403 /* LAContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LAContext.swift; sourceTree = "<group>"; };
-		BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmoticonView.swift; sourceTree = "<group>"; };
+		BFAB5D1023FDEA69009E8563 /* EmojiIdView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmojiIdView.swift; sourceTree = "<group>"; };
 		BFC5532423D9B8E4009130A8 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
 		BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletCreationViewController.swift; sourceTree = "<group>"; };
@@ -1190,7 +1190,7 @@
 				37ABB69324781F8600F08163 /* UILabelWithPadding.swift */,
 				00325EC9239E4A1000F76918 /* FadedOverlayView.swift */,
 				49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */,
-				BFAB5D1023FDEA69009E8563 /* EmoticonView.swift */,
+				BFAB5D1023FDEA69009E8563 /* EmojiIdView.swift */,
 				00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */,
 				379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */,
 				375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */,
@@ -2286,7 +2286,7 @@
 				37ABB69024781CE800F08163 /* UILabel.swift in Sources */,
 				379D27AF244EF25000F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				376C62AE247574850091BB28 /* Animation+EnumInit.swift in Sources */,
-				BFAB5D1123FDEA69009E8563 /* EmoticonView.swift in Sources */,
+				BFAB5D1123FDEA69009E8563 /* EmojiIdView.swift in Sources */,
 				37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */,
 				004277FB23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
@@ -2398,7 +2398,7 @@
 				37AFE266245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				3723A7A224AB57F4003382EB /* AESEncryptionTests.swift in Sources */,
 				491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */,
-				BFAB5D1223FDEA6A009E8563 /* EmoticonView.swift in Sources */,
+				BFAB5D1223FDEA6A009E8563 /* EmojiIdView.swift in Sources */,
 				00BCE480240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TransactionTableViewCell.swift in Sources */,
 				0087A1AA23F4235400B89EE7 /* ScanViewController.swift in Sources */,
@@ -2482,7 +2482,7 @@
 				37765D2824A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				37875E4624D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
 				491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */,
-				BFAB5D1323FDEA6A009E8563 /* EmoticonView.swift in Sources */,
+				BFAB5D1323FDEA6A009E8563 /* EmojiIdView.swift in Sources */,
 				37B48A8124B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
 				37EE285C2485649800335EDC /* WordsFlexView.swift in Sources */,
 				BFF1ED9F2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,

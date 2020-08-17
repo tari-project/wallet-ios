@@ -40,8 +40,6 @@
 
 import UIKit
 
-var navBarEmojis: EmoticonView?
-
 var hasNotch: Bool {
     let bottom = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
     return bottom > 0

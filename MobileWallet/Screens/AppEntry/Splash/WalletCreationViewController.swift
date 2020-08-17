@@ -70,7 +70,7 @@ class WalletCreationViewController: UIViewController {
     private var animationViewHeightConstraint: NSLayoutConstraint?
     private var animationViewWidthConstraint: NSLayoutConstraint?
 
-    private let userEmojiContainer = EmoticonView()
+    private let emojiIdView = EmojiIdView()
     private let tapToSeeButtonContainer = UIView()
 
     private let firstLabel = TransitionLabel()
@@ -125,19 +125,19 @@ class WalletCreationViewController: UIViewController {
             self.thirdLabel.alpha = 0.0
             self.animationView.alpha = 0.0
             self.numpadImageView.alpha = 0.0
-            self.userEmojiContainer.alpha = 0.0
+            self.emojiIdView.alpha = 0.0
             self.tapToSeeButtonContainer.alpha = 0.0
             self.view.layoutIfNeeded()}, completion: {
                 [weak self] _ in
                 guard let self = self else { return }
                 self.animationView.stop()
-                self.stackView.setCustomSpacing(0, after: self.userEmojiContainer)
+                self.stackView.setCustomSpacing(0, after: self.emojiIdView)
                 self.stackView.setCustomSpacing(0, after: self.secondLabel)
                 self.stackView.setCustomSpacing(0, after: self.animationView)
                 self.stackViewCenterYConstraint?.constant = 0.0
 
                 self.numpadImageView.isHidden = true
-                self.userEmojiContainer.isHidden = true
+                self.emojiIdView.isHidden = true
 
                 completion?()
         })
@@ -176,7 +176,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     @objc public func tapToSeeButtonAction(_ sender: UIButton) {
-        userEmojiContainer.expand()
+        emojiIdView.expand()
         tapToExpandAction()
     }
 
@@ -200,7 +200,7 @@ class WalletCreationViewController: UIViewController {
             }
         case .showEmojiId:
             hideSubviews { [weak self] in
-                self?.userEmojiContainer.shrink(animated: false)
+                self?.emojiIdView.shrink(animated: false)
                 self?.prepareSubviews(for: .localAuthentication)
                 self?.showLocalAuthentication()
             }
@@ -296,12 +296,12 @@ extension WalletCreationViewController {
     // MARK: - Show Emoji ID
     private func showYourEmoji() {
         secondLabel.showLabel(duration: 1.0)
-        userEmojiContainer.isHidden = false
+        emojiIdView.isHidden = false
         view.layoutIfNeeded()
-        userEmojiContainer.expand(animated: false)
-        userEmojiContainer.alpha = 0
+        emojiIdView.expand(animated: false)
+        emojiIdView.alpha = 0
 
-        self.userEmojiContainer.tapToExpand = { [weak self] expanded in
+        self.emojiIdView.tapToExpand = { [weak self] expanded in
             if self?.state == .showEmojiId {
                 self?.showContinueButton()
                 UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
@@ -312,10 +312,10 @@ extension WalletCreationViewController {
 
         UIView.animate(withDuration: 1, animations: { [weak self] in
             self?.thirdLabel.alpha = 1.0
-            self?.userEmojiContainer.alpha = 1.0
+            self?.emojiIdView.alpha = 1.0
         }) { [weak self] (_) in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self?.userEmojiContainer.shrink(completion: { [weak self] in
+                self?.emojiIdView.shrink(completion: { [weak self] in
                     self?.tapToSeeButtonContainer.alpha = 1.0
                 })
             }
@@ -429,7 +429,7 @@ extension WalletCreationViewController {
         continueButton.setTitle(NSLocalizedString("common.continue", comment: "Common"), for: .normal)
 
         if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
-            userEmojiContainer.setupView(
+            emojiIdView.setupView(
                 pubKey: pubKey,
                 textCentered: true,
                 inViewController: self,
@@ -437,7 +437,7 @@ extension WalletCreationViewController {
             )
         }
 
-        stackView.setCustomSpacing(30, after: userEmojiContainer)
+        stackView.setCustomSpacing(30, after: emojiIdView)
     }
 
     private func prepareForLocalAuthentication() {
@@ -527,12 +527,12 @@ extension WalletCreationViewController {
     }
 
     private func setupUserEmojiContainer() {
-        userEmojiContainer.alpha = 0.0
-        userEmojiContainer.isHidden = true
-        stackView.addArrangedSubview(userEmojiContainer)
-        stackView.setCustomSpacing(30, after: userEmojiContainer)
-        userEmojiContainer.heightAnchor.constraint(greaterThanOrEqualToConstant: 60).isActive = true
-        userEmojiContainer.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
+        emojiIdView.alpha = 0.0
+        emojiIdView.isHidden = true
+        stackView.addArrangedSubview(emojiIdView)
+        stackView.setCustomSpacing(30, after: emojiIdView)
+        emojiIdView.heightAnchor.constraint(greaterThanOrEqualToConstant: 60).isActive = true
+        emojiIdView.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
     }
 
     private func setupAnimationView() {
@@ -658,7 +658,7 @@ extension WalletCreationViewController {
         view.addSubview(tapToSeeButtonContainer)
 
         tapToSeeButtonContainer.translatesAutoresizingMaskIntoConstraints = false
-        tapToSeeButtonContainer.bottomAnchor.constraint(equalTo: userEmojiContainer.topAnchor, constant: 3).isActive = true
+        tapToSeeButtonContainer.bottomAnchor.constraint(equalTo: emojiIdView.topAnchor, constant: 3).isActive = true
         tapToSeeButtonContainer.widthAnchor.constraint(equalToConstant: 159).isActive = true
         tapToSeeButtonContainer.heightAnchor.constraint(equalToConstant: 38).isActive = true
         tapToSeeButtonContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true

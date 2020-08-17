@@ -127,23 +127,23 @@ extension TransactionViewController {
         fromHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.topAnchor, constant: 20).isActive = true
         fromHeadingLabel.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
-        emojiButton.translatesAutoresizingMaskIntoConstraints = false
-        fromContainerView.addSubview(emojiButton)
-        emojiButton.bottomAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: -16).isActive = true
-        emojiButton.leadingAnchor.constraint(
+        emojiIdView.translatesAutoresizingMaskIntoConstraints = false
+        fromContainerView.addSubview(emojiIdView)
+        emojiIdView.bottomAnchor.constraint(equalTo: fromContainerView.bottomAnchor, constant: -16).isActive = true
+        emojiIdView.leadingAnchor.constraint(
             equalTo: fromContainerView.leadingAnchor,
             constant: Theme.shared.sizes.appSidePadding
         ).isActive = true
-        emojiButton.trailingAnchor.constraint(
+        emojiIdView.trailingAnchor.constraint(
             equalTo: fromContainerView.trailingAnchor,
             constant: -Theme.shared.sizes.appSidePadding
         ).isActive = true
-        emojiButton.cornerRadius = 12.0
+        emojiIdView.cornerRadius = 12.0
     }
 
     func setupAddContactButton() {
         addContactButton.translatesAutoresizingMaskIntoConstraints = false
-        fromContainerView.insertSubview(addContactButton, belowSubview: emojiButton)
+        fromContainerView.insertSubview(addContactButton, belowSubview: emojiIdView)
         addContactButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
         addContactButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         addContactButton.setTitle(NSLocalizedString("transaction_detail.add_contact_name", comment: "Transaction detail view"), for: .normal)
