@@ -739,12 +739,12 @@ class SendingTariViewController: UIViewController {
             }
         ) {
             [weak self] _ in
-            // display error
-            self?.displayErrorFeedbackAndTrackEvent()
-            // return to home
             // return to home
             self?.navigationController?.dismiss(animated: true, completion: {
+                [weak self] in
                 UIApplication.shared.menuTabBarController?.setTab(.home)
+                // display error
+                self?.displayErrorFeedbackAndTrackEvent()
             })
         }
     }
