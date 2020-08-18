@@ -206,7 +206,7 @@ class TariLib {
 
             return try TransportType(
                 controlServerAddress: "/ip4/\(OnionManager.CONTROL_ADDRESS)/tcp/\(OnionManager.CONTROL_PORT)",
-                torPort: 39051,
+                torPort: 18101,
                 torIdentity: torIdentity,
                 torCookie: torCookie,
                 socksUsername: "",
