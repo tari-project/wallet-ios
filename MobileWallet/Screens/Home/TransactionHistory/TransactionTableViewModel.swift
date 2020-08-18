@@ -53,7 +53,7 @@ class TransactionTableViewModel: NSObject {
 
     private let gifID: String?
 
-    var isGif: Bool {
+    var hasGif: Bool {
         get {
             return gifID != nil
         }

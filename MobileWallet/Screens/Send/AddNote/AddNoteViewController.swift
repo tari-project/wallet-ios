@@ -253,13 +253,13 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             let keyboardHeight = keyboardSize.height
             sendButtonBottomConstraint.isActive = false
 
-            UIView.animate(withDuration: 0.5) { [weak self] in
+            UIView.animate(withDuration: 0.46, delay: 0.008, options: .curveEaseIn, animations: { [weak self] in
                 guard let self = self else { return }
                 self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
                 self.sendButtonBottomConstraint.isActive = true
                 self.spacerViewHeightConstraint.constant = keyboardHeight + 80
                 self.view.layoutIfNeeded()
-            }
+            })
         }
     }
 
@@ -268,7 +268,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
         UIView.animate(withDuration: 0.5) { [weak self] in
             guard let self = self else { return }
-            self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor)
+            self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.safeBottomAnchor)
             self.sendButtonBottomConstraint.isActive = true
             self.spacerViewHeightConstraint.constant = 100
             self.view.layoutIfNeeded()
@@ -384,7 +384,7 @@ extension AddNoteViewController {
         view.addSubview(sendButton)
         sendButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         sendButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        sendButtonBottomConstraint = sendButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -sidePadding)
+        sendButtonBottomConstraint = sendButton.bottomAnchor.constraint(equalTo: view.safeBottomAnchor)
         sendButtonBottomConstraint.isActive = true
 
         sendButton.showSliderText = true

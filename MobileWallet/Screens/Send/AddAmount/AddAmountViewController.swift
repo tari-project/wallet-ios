@@ -404,9 +404,7 @@ class AddAmountViewController: UIViewController {
 
 extension AddAmountViewController {
     private func setup() {
-
         // navigationBar
-
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(navigationBar)
         navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -417,9 +415,9 @@ extension AddAmountViewController {
         //contiue button
         view.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
-        continueButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 25).isActive = true
-        continueButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -25).isActive = true
-        continueButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
+        continueButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        continueButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        continueButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         continueButton.setTitle(NSLocalizedString("common.continue", comment: "Common"), for: .normal)
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         continueButton.isEnabled = false

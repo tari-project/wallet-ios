@@ -94,6 +94,12 @@ class TransactionTableViewCell: UITableViewCell {
 
         setValue(microTari: model.value.microTari, direction: model.value.direction, isCancelled: model.value.isCancelled, isPending: model.value.isPending)
         timeLabel.text = model.time
+
+        if model.hasGif {
+            loadingGifButton.isHidden = false
+        } else {
+            loadingGifButton.isHidden = true
+        }
         setGif(media: model.gif)
         observe(item: model)
     }
@@ -123,7 +129,7 @@ class TransactionTableViewCell: UITableViewCell {
     }
 
     private func setGif(media: GPHMedia?) {
-        if model?.isGif == false || media != nil {
+        if model?.hasGif == false || media != nil {
             DispatchQueue.main.async { [weak self] in
                 self?.loadingGifButton.isHidden = true
             }
