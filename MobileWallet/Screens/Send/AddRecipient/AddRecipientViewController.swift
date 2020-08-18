@@ -97,7 +97,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
                 UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
                     guard let self = self else { return }
-                    self.continueButtonBottomConstraint = self.continueButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -self.sidePadding)
+                    self.continueButtonBottomConstraint = self.continueButton.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.bottomAnchor, constant: -self.sidePadding)
                     self.continueButtonBottomConstraint.isActive = true
                     self.inputContainerView.layer.shadowOpacity = 0.1
                     self.view.layoutIfNeeded()
