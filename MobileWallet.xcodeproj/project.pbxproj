@@ -58,9 +58,6 @@
 		003DF41724C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
 		003DF41824C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
 		003DF41924C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
-		004277DD23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
-		004277DE23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
-		004277DF23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */; };
 		004277E723DF4A5600AE7BD9 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277E623DF4A5600AE7BD9 /* FeedbackView.swift */; };
 		004277E823DF4A5600AE7BD9 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277E623DF4A5600AE7BD9 /* FeedbackView.swift */; };
 		004277E923DF4A5600AE7BD9 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277E623DF4A5600AE7BD9 /* FeedbackView.swift */; };
@@ -167,9 +164,6 @@
 		00A057B423D979DA0029C22A /* UserFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057B323D979DA0029C22A /* UserFeedback.swift */; };
 		00A057B523D979DA0029C22A /* UserFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057B323D979DA0029C22A /* UserFeedback.swift */; };
 		00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057B323D979DA0029C22A /* UserFeedback.swift */; };
-		00A66517243772A70046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66516243772A70046E730 /* pendingTx.json */; };
-		00A66518243772A70046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66516243772A70046E730 /* pendingTx.json */; };
-		00A66519243772A70046E730 /* pendingTx.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A66516243772A70046E730 /* pendingTx.json */; };
 		00A6651F2437AD9A0046E730 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A6651E2437AD9A0046E730 /* SplashAnimation.json */; };
 		00A665202437AD9A0046E730 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A6651E2437AD9A0046E730 /* SplashAnimation.json */; };
 		00A665212437AD9A0046E730 /* SplashAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 00A6651E2437AD9A0046E730 /* SplashAnimation.json */; };
@@ -635,7 +629,6 @@
 		00369D802426080D00BAB95B /* TariLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLogger.swift; sourceTree = "<group>"; };
 		0039B1B123FA925500F91E0F /* PasteEmojisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteEmojisView.swift; sourceTree = "<group>"; };
 		003DF41524C05EC900675A2C /* PartialBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialBackup.swift; sourceTree = "<group>"; };
-		004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiButton.swift; sourceTree = "<group>"; };
 		004277E623DF4A5600AE7BD9 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		004277EE23E03E1600AE7BD9 /* TransactionViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewControllerExtension.swift; sourceTree = "<group>"; };
 		004277F223E0407900AE7BD9 /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
@@ -673,7 +666,6 @@
 		009DFCB024741F9B0061DBC9 /* WalletTransactions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactions.swift; sourceTree = "<group>"; };
 		00A057AE23D875840029C22A /* TariEventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariEventBus.swift; sourceTree = "<group>"; };
 		00A057B323D979DA0029C22A /* UserFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFeedback.swift; sourceTree = "<group>"; };
-		00A66516243772A70046E730 /* pendingTx.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = pendingTx.json; sourceTree = "<group>"; };
 		00A6651E2437AD9A0046E730 /* SplashAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SplashAnimation.json; sourceTree = "<group>"; };
 		00A66522243B3E380046E730 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		00A66526243C766D0046E730 /* ConnectionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionMonitor.swift; sourceTree = "<group>"; };
@@ -1164,7 +1156,6 @@
 		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
 			isa = PBXGroup;
 			children = (
-				00A66516243772A70046E730 /* pendingTx.json */,
 				00E2BCA7236AB28200C2A105 /* TransactionTableViewCell.swift */,
 				00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */,
 				00230B012376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift */,
@@ -1238,7 +1229,6 @@
 			children = (
 				00E2BCB9236B5BE800C2A105 /* ActionButton.swift */,
 				00A994322396434B007D9990 /* QRButton.swift */,
-				004277DC23DC2EAB00AE7BD9 /* EmojiButton.swift */,
 				004277F223E0407900AE7BD9 /* TextButton.swift */,
 				0053872F24065F6C00901A68 /* SlideView.swift */,
 				37875E4324D85C4300C0595B /* LoadingGIFButton.swift */,
@@ -1816,7 +1806,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00A66517243772A70046E730 /* pendingTx.json in Resources */,
 				BFF1EDA72408226200CC9EF6 /* sending-background.mp4 in Resources */,
 				00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */,
 				BF5537B92412B9BB0071328C /* purple_orb.mp4 in Resources */,
@@ -1865,7 +1854,6 @@
 				00A677982373DA58001A853E /* LaunchScreen.storyboard in Resources */,
 				BF0A77A5241F904D00861A3E /* faceId@2x.png in Resources */,
 				BF191A1E23E5AFA200D33C85 /* img_6.png in Resources */,
-				00A66518243772A70046E730 /* pendingTx.json in Resources */,
 				BF0A7767241EEA0A00861A3E /* FaceID.json in Resources */,
 				BF5537BA2412B9BB0071328C /* purple_orb.mp4 in Resources */,
 				BF0A77B62420CF1200861A3E /* NotificationAnimation.json in Resources */,
@@ -1896,7 +1884,6 @@
 				00A677992373DA59001A853E /* LaunchScreen.storyboard in Resources */,
 				BF0A77A6241F904D00861A3E /* faceId@2x.png in Resources */,
 				BF191A1F23E5AFA200D33C85 /* img_6.png in Resources */,
-				00A66519243772A70046E730 /* pendingTx.json in Resources */,
 				BF0A7768241EEA0A00861A3E /* FaceID.json in Resources */,
 				BF5537BB2412B9BB0071328C /* purple_orb.mp4 in Resources */,
 				BF0A77B72420CF1200861A3E /* NotificationAnimation.json in Resources */,
@@ -2156,7 +2143,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				004277DD23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */,
 				003DF41624C05EC900675A2C /* PartialBackup.swift in Sources */,
 				0087A1A923F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				001F6CE82381A22E00FA7002 /* CompletedTransactions.swift in Sources */,
@@ -2424,7 +2410,6 @@
 				00230B032376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
 				3730E15224C884D500827DFA /* MenuTabBarController.swift in Sources */,
 				00947CC823D1A35200526DD5 /* TransactionsProtocol.swift in Sources */,
-				004277DE23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */,
 				37C8BA5024813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				37ABB69124781CE800F08163 /* UILabel.swift in Sources */,
 				373CCDC62490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
@@ -2576,7 +2561,6 @@
 				37C8BA49248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
 				006D211F23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				001256312371D81500A9C067 /* SplashViewController.swift in Sources */,
-				004277DF23DC2EAB00AE7BD9 /* EmojiButton.swift in Sources */,
 				004997B52382ED68000A0B7D /* PendingInboundTransaction.swift in Sources */,
 				00230B042376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift in Sources */,
 				37BB696D245705E70013AC4D /* RadialGradientView.swift in Sources */,

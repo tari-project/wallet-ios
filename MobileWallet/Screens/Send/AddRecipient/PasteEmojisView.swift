@@ -42,8 +42,8 @@ import UIKit
 
 class PasteEmojisView: UIView {
     private let textButton = TextButton()
-    private let emojiLabel = UILabel()
-    private let PADDING: CGFloat = 14
+    private let scrollView = UIScrollView()
+    private let emojiLabel = UILabelWithPadding()
     private var onPressCallback: (() -> Void)?
 
     override init(frame: CGRect) {
@@ -55,16 +55,14 @@ class PasteEmojisView: UIView {
         textButton.isUserInteractionEnabled = false
         addSubview(textButton)
         textButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        textButton.topAnchor.constraint(equalTo: topAnchor, constant: PADDING).isActive = true
+        textButton.topAnchor.constraint(equalTo: topAnchor, constant: 8).isActive = true
 
-        emojiLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(emojiLabel)
-        emojiLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: PADDING).isActive = true
-        emojiLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -PADDING).isActive = true
-        emojiLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -PADDING).isActive = true
-        emojiLabel.textAlignment = .center
-        emojiLabel.textColor = Theme.shared.colors.emojisSeparatorExpanded
-        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (onTap(_:))))
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(scrollView)
+        scrollView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4).isActive = true
+        scrollView.heightAnchor.constraint(equalToConstant: CGFloat(30)).isActive = true
     }
 
     required init?(coder: NSCoder) {
@@ -73,12 +71,30 @@ class PasteEmojisView: UIView {
 
     func setEmojis(emojis: String, onPress: @escaping () -> Void) {
         textButton.setTitle(NSLocalizedString("emoji.paste", comment: "Emoji view"), for: .normal)
-        let first = "\(emojis.prefix(6))".insertSeparator(" | ", atEvery: 3)
-        let last = "\(emojis.suffix(6))".insertSeparator(" | ", atEvery: 3)
-        emojiLabel.text = "\(first)...\(last)"
-
         self.onPressCallback = onPress
         textButton.addTarget(self, action: #selector(onTap), for: .allTouchEvents)
+
+        let padding = CGFloat(14)
+        emojiLabel.padding = UIEdgeInsets(top: 0, left: padding, bottom: 0, right: padding)
+        emojiLabel.text = emojis.insertSeparator(" | ", atEvery: 3) + " "
+        emojiLabel.textAlignment = .center
+        emojiLabel.letterSpacing(value: 1.6)
+        emojiLabel.translatesAutoresizingMaskIntoConstraints = false
+        emojiLabel.textColor = Theme.shared.colors.emojisSeparatorExpanded
+        emojiLabel.sizeToFit()
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (onTap(_:))))
+        emojiLabel.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: emojiLabel.frame.size.width,
+            height: emojiLabel.frame.size.height
+        )
+        scrollView.addSubview(emojiLabel)
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.contentSize = CGSize(
+            width: emojiLabel.frame.size.width + padding * 2,
+            height: CGFloat(30)
+        )
     }
 
     @objc func onTap(_ sender: Any?) {

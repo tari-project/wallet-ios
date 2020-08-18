@@ -742,7 +742,10 @@ class SendingTariViewController: UIViewController {
             // display error
             self?.displayErrorFeedbackAndTrackEvent()
             // return to home
-            self?.navigationController?.popToRootViewController(animated: false)
+            // return to home
+            self?.navigationController?.dismiss(animated: true, completion: {
+                UIApplication.shared.menuTabBarController?.setTab(.home)
+            })
         }
     }
 
