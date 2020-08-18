@@ -85,7 +85,7 @@ class EmojiIdView: UIView {
     func setupView(pubKey: PublicKey,
                    textCentered: Bool,
                    inViewController vc: UIViewController? = nil,
-                   initialWidth: CGFloat = CGFloat(189),
+                   initialWidth: CGFloat = CGFloat(185),
                    initialHeight: CGFloat = CGFloat(40),
                    showContainerViewBlur: Bool = true,
                    cornerRadius: CGFloat = 6.0) {
@@ -133,7 +133,7 @@ class EmojiIdView: UIView {
         condensedEmojiIdLabel.textAlignment = .center
         condensedEmojiIdLabel.textColor = Theme.shared.colors.emojisSeparator!
         condensedEmojiIdLabel.text = getCondensedEmojiId() + " "
-        condensedEmojiIdLabel.letterSpacing(value: 2.0)
+        condensedEmojiIdLabel.letterSpacing(value: 1.6)
         condensedEmojiIdLabel.translatesAutoresizingMaskIntoConstraints = false
 
         condensedEmojiIdLabel.leadingAnchor.constraint(equalTo: condensedEmojiIdContainer.leadingAnchor).isActive = true
@@ -169,7 +169,7 @@ class EmojiIdView: UIView {
         expandedEmojiIdLabel.textColor = Theme.shared.colors.emojisSeparator!
         expandedEmojiIdLabel.text = getExpandedEmojiId() + " "
         expandedEmojiIdLabel.font = UIFont.systemFont(ofSize: 14.0)
-        expandedEmojiIdLabel.letterSpacing(value: 2.0)
+        expandedEmojiIdLabel.letterSpacing(value: 1.6)
         expandedEmojiIdLabel.sizeToFit()
         expandedEmojiIdLabel.frame = CGRect(
             x: 14,
@@ -267,21 +267,19 @@ class EmojiIdView: UIView {
         )
         // hide copy emoji id button
         if blackoutWhileExpanded {
-            DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.35 : 0)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.30 : 0)) {
                 [weak self] in
+                self?.hideExpandedViews(
+                    animated: true,
+                    scrollViewFrame: scrollViewFrame,
+                    callTapCompletion: callTapCompletion
+                )
                 self?.hideCopyEmojiIdButton {
-                    [weak self] in
-                    guard let self = self else { return }
-                    self.hideExpandedViews(
-                        animated: true,
-                        scrollViewFrame: scrollViewFrame,
-                        callTapCompletion: callTapCompletion
-                    )
                     completion?()
                 }
             }
         } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.35 : 0)) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.30 : 0)) {
                 [weak self] in
                 self?.hideExpandedViews(
                     animated: animated,
@@ -497,9 +495,9 @@ private class EmojiMenuView: UIView {
         addSubview(button)
 
         button.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        button.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
+        button.topAnchor.constraint(equalTo: topAnchor, constant: 3).isActive = true
         button.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        button.heightAnchor.constraint(equalTo: heightAnchor, constant: -5).isActive = true
+        button.heightAnchor.constraint(equalTo: heightAnchor, constant: -3).isActive = true
 
         button.addTarget(self, action: #selector(onTap(_:)), for: .touchUpInside)
         button.addGestureRecognizer(UILongPressGestureRecognizer(target: self, action: #selector(onLongPress)))

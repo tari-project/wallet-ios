@@ -108,15 +108,38 @@ class ProfileViewController: UIViewController {
 
     private func setupQRContainer() {
         qrContainer.backgroundColor = Theme.shared.colors.appBackground
+        let cornerRadius = CGFloat(10)
+        qrContainer.layer.cornerRadius = cornerRadius
         view.addSubview(qrContainer)
         qrContainer.translatesAutoresizingMaskIntoConstraints = false
-        qrContainer.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 25).isActive = true
-        qrContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
-        qrContainer.trailingAnchor.constraint(greaterThanOrEqualTo: view.trailingAnchor, constant: -25).isActive = true
-        qrContainer.topAnchor.constraint(lessThanOrEqualTo: middleLabel.bottomAnchor, constant: 25).isActive = true
-        qrContainer.topAnchor.constraint(greaterThanOrEqualTo: middleLabel.bottomAnchor, constant: 10).isActive = true
-        qrContainer.heightAnchor.constraint(equalTo: qrContainer.widthAnchor, multiplier: 1).isActive = true
-        let bottomConstraint = qrContainer.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
+        qrContainer.leadingAnchor.constraint(
+            greaterThanOrEqualTo: view.leadingAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        qrContainer.centerXAnchor.constraint(
+            equalTo: view.centerXAnchor,
+            constant: 0
+        ).isActive = true
+        qrContainer.trailingAnchor.constraint(
+            greaterThanOrEqualTo: view.trailingAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        qrContainer.topAnchor.constraint(
+            lessThanOrEqualTo: middleLabel.bottomAnchor,
+            constant: 25
+        ).isActive = true
+        qrContainer.topAnchor.constraint(
+            greaterThanOrEqualTo: middleLabel.bottomAnchor,
+            constant: 10
+        ).isActive = true
+        qrContainer.heightAnchor.constraint(
+            equalTo: qrContainer.widthAnchor,
+            multiplier: 1
+        ).isActive = true
+        let bottomConstraint = qrContainer.bottomAnchor.constraint(
+            lessThanOrEqualTo: view.bottomAnchor,
+            constant: -20
+        )
         bottomConstraint.isActive = true
         bottomConstraint.priority = UILayoutPriority(rawValue: 1)
     }
