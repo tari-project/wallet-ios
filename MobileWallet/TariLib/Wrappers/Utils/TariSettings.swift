@@ -39,6 +39,7 @@
 */
 
 import Foundation
+import SwiftKeychainWrapper
 
 enum TariNetwork: String {
     case mainnet = "mainnet"
@@ -101,7 +102,7 @@ struct TariSettings {
 
     var pushServerApiKey: String?
     var sentryPublicDSN: String?
-    var appleTeamID: String?
+    static var appleTeamID: String?
     var giphyApiKey: String?
 
     func getRandomBaseNode() -> String {
@@ -128,6 +129,10 @@ struct TariSettings {
         return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
+    static let sharedKeychainGroup = KeychainWrapper(
+        serviceName: "tari",
+        accessGroup: "\(appleTeamID ?? "").com.tari.wallet.keychain"
+    )
     static let groupIndentifier = "group.com.tari.wallet"
     static let groupUserDefaults: UserDefaults = UserDefaults(suiteName: groupIndentifier)!
     static let storageDirectory: URL = FileManager.default.containerURL( forSecurityApplicationGroupIdentifier: groupIndentifier)!
@@ -181,7 +186,7 @@ struct TariSettings {
                 }
 
                 if let appleTeamID = jsonResult["appleTeamID"] as? String, !appleTeamID.isEmpty {
-                    self.appleTeamID = appleTeamID
+                    TariSettings.appleTeamID = appleTeamID
                 } else {
                     fatalError("appleTeamID not set in env.json. Shared keychain will not work.")
                 }
