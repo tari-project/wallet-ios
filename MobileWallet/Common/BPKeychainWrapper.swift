@@ -39,25 +39,19 @@
 */
 
 import Foundation
-import SwiftKeychainWrapper
 
 class BPKeychainWrapper {
-    private static let sharedKeychainGroup = KeychainWrapper(
-        serviceName: "tari",
-        accessGroup: "\(TariSettings.shared.appleTeamID ?? "").com.tari.wallet.keychain"
-    )
-
     private static let passwordKey = "BackupPasswordKey"
 
     static func setBackupPasswordToKeychain(password: String) {
-        sharedKeychainGroup.set(password, forKey: passwordKey)
+        TariSettings.sharedKeychainGroup.set(password, forKey: passwordKey)
     }
 
     static func loadBackupPasswordFromKeychain() -> String? {
-        return sharedKeychainGroup.string(forKey: passwordKey)
+        return TariSettings.sharedKeychainGroup.string(forKey: passwordKey)
     }
 
     static func removeBackupPasswordFromKeychain() {
-        sharedKeychainGroup.removeObject(forKey: passwordKey)
+        TariSettings.sharedKeychainGroup.removeObject(forKey: passwordKey)
     }
 }

@@ -101,7 +101,7 @@ class Migrations {
     static func privateKeyKeychainToDB(_ comms: CommsConfig) {
         let sharedKeychainGroup = KeychainWrapper(
             serviceName: "tari",
-            accessGroup: "\(TariSettings.shared.appleTeamID ?? "").com.tari.wallet.keychain"
+            accessGroup: "\(TariSettings.appleTeamID ?? "").com.tari.wallet.keychain"
         )
 
         let forKey = "privateKey"

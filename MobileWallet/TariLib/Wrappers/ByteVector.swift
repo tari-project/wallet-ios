@@ -59,13 +59,13 @@ class ByteVector {
         return (result, errorCode != 0 ? ByteVectorError.generic(errorCode) : nil )
     }
 
-    var hexString: (String, Error?) {
+    var bytes: ([UInt8], Error?) {
         var byteArray: [UInt8] = [UInt8]()
 
         let (byteArrayLength, error) = self.count
 
         if error != nil {
-            return ("", error)
+            return ([], error)
         }
 
         for n in 0...byteArrayLength - 1 {
@@ -73,8 +73,18 @@ class ByteVector {
                 let byte = try self.at(position: n)
                 byteArray.append(byte)
             } catch {
-                return ("", error)
+                return ([], error)
             }
+        }
+
+        return (byteArray, nil)
+    }
+
+    var hexString: (String, Error?) {
+        let (byteArray, error) = self.bytes
+
+        if error != nil {
+            return ("", error)
         }
 
         let data = Data(byteArray)
@@ -83,21 +93,10 @@ class ByteVector {
     }
 
     var utf8: (String?, Error?) {
-        var byteArray: [UInt8] = [UInt8]()
-
-        let (byteArrayLength, error) = self.count
+       let (byteArray, error) = self.bytes
 
         if error != nil {
             return ("", error)
-        }
-
-        for n in 0...byteArrayLength - 1 {
-            do {
-                let byte = try self.at(position: n)
-                byteArray.append(byte)
-            } catch {
-                return ("", error)
-            }
         }
 
         return (String.init(data: Data(byteArray), encoding: .utf8), nil)
