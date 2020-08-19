@@ -44,6 +44,7 @@ import GiphyCoreSDK
 
 class TransactionTableViewCell: UITableViewCell {
     private let avatarContainer = UIView()
+    private let labelsContainer = UIView()
     private let avatarLabel = UILabel()
     private let titleLabel = UILabel()
     private let timeLabel = UILabel()
@@ -52,10 +53,8 @@ class TransactionTableViewCell: UITableViewCell {
     private let noteLabel = UILabel()
     private let valueContainer = UIView()
     private let valueLabel = UILabelWithPadding()
-    private let attachmentView = GPHMediaView()
+    private var attachmentView: GPHMediaView?
     private let loadingGifButton = LoadingGIFButton()
-    private var attachmentViewHeightContraint = NSLayoutConstraint()
-    private var attachmentViewBottomContraint = NSLayoutConstraint()
 
     var updateCell: (() -> Void)?
     weak var model: TransactionTableViewModel?
@@ -75,9 +74,8 @@ class TransactionTableViewCell: UITableViewCell {
         }
     }
 
-    init(model: TransactionTableViewModel) {
-        super.init(style: .default, reuseIdentifier: "TransactionTableViewCell")
-        configure(with: model)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         viewSetup()
     }
 
@@ -85,7 +83,14 @@ class TransactionTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        stopObservation()
+    }
+
     func configure(with model: TransactionTableViewModel) {
+        if model.id == self.model?.id { return }
+
         self.model = model
         avatarLabel.text = model.avatar
         noteLabel.text = model.message
@@ -106,7 +111,6 @@ class TransactionTableViewCell: UITableViewCell {
 
     private func observe(item: TransactionTableViewModel) {
         kvoGif = item.observe(\.gif, options: .new) { [weak self] (_, _) in
-            self?.setGif(media: item.gif)
             self?.updateCell?()
         }
 
@@ -128,13 +132,30 @@ class TransactionTableViewCell: UITableViewCell {
         }
     }
 
+    private func stopObservation() {
+        kvoGif?.invalidate()
+        kvoStatus?.invalidate()
+        kvoTime?.invalidate()
+        kvoGif = nil
+        kvoStatus = nil
+        kvoTime = nil
+    }
+
     private func setGif(media: GPHMedia?) {
         if model?.hasGif == false || media != nil {
             DispatchQueue.main.async { [weak self] in
                 self?.loadingGifButton.isHidden = true
             }
         }
-        self.attachmentView.media = media
+
+        if media != nil {
+            if media?.id == attachmentView?.media?.id { return }
+            setupAttachmentView()
+            attachmentView?.media = media
+        } else {
+            attachmentView?.removeFromSuperview()
+            attachmentView = nil
+        }
     }
 
     private func setStatus(_ status: String) {
@@ -172,9 +193,7 @@ class TransactionTableViewCell: UITableViewCell {
     }
 
     deinit {
-        kvoGif?.invalidate()
-        kvoStatus?.invalidate()
-        kvoTime?.invalidate()
+        stopObservation()
     }
 }
 
@@ -216,7 +235,6 @@ extension TransactionTableViewCell {
 
     private func setupLabels() {
         // MARK: - Label container
-        let labelsContainer = UIView()
         labelsContainer.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(labelsContainer)
 
@@ -290,35 +308,36 @@ extension TransactionTableViewCell {
         noteLabel.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 5).isActive = true
         noteLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
         noteLabel.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
-
-        // MARK: - attachmentView
-        attachmentView.clipsToBounds = true
-        attachmentView.layer.cornerRadius = 4
-        labelsContainer.addSubview(self.attachmentView)
-        attachmentView.translatesAutoresizingMaskIntoConstraints = false
-        attachmentView.topAnchor.constraint(equalTo: noteLabel.bottomAnchor, constant: 5).isActive = true
-        attachmentView.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
-        attachmentView.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
-        if attachmentView.media != nil {
-            attachmentViewHeightContraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: 1 / attachmentView.media!.aspectRatio)
-            attachmentViewBottomContraint = attachmentView.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -40)
-        } else {
-            attachmentViewHeightContraint = attachmentView.heightAnchor.constraint(equalToConstant: 0)
-            attachmentViewBottomContraint = attachmentView.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -25)
-        }
-
-        attachmentViewHeightContraint.priority = .defaultHigh
-        attachmentViewHeightContraint.isActive = true
-        attachmentViewBottomContraint.isActive = true
-
+        noteLabel.bottomAnchor.constraint(lessThanOrEqualTo: labelsContainer.bottomAnchor, constant: -25).isActive = true
         // MARK: - Loading gif button
         loadingGifButton.variation = model?.gifDownloadFailed == true ? .retry : .loading
         labelsContainer.addSubview(loadingGifButton)
         loadingGifButton.addTarget(self, action: #selector(loadingGifButtonAction(_:)), for: .touchUpInside)
         loadingGifButton.translatesAutoresizingMaskIntoConstraints = false
-        loadingGifButton.topAnchor.constraint(equalTo: attachmentView.topAnchor).isActive = true
+        loadingGifButton.topAnchor.constraint(equalTo: noteLabel.bottomAnchor, constant: 5).isActive = true
         loadingGifButton.leadingAnchor.constraint(equalTo: timeLabel.leadingAnchor).isActive = true
         loadingGifButton.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
+    }
+
+    private func setupAttachmentView() {
+        attachmentView?.removeFromSuperview()
+        attachmentView = GPHMediaView()
+
+        guard let attachmentView = self.attachmentView, let media = model?.gif else { return }
+
+        attachmentView.clipsToBounds = true
+        attachmentView.layer.cornerRadius = 4
+        labelsContainer.addSubview(attachmentView)
+        attachmentView.translatesAutoresizingMaskIntoConstraints = false
+        attachmentView.topAnchor.constraint(equalTo: noteLabel.bottomAnchor, constant: 5).isActive = true
+        attachmentView.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
+        attachmentView.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
+
+        let heightConstraint = attachmentView.heightAnchor.constraint(equalTo: attachmentView.widthAnchor, multiplier: 1 / media.aspectRatio)
+        attachmentView.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor, constant: -40).isActive = true
+
+        heightConstraint.priority = .defaultHigh
+        heightConstraint.isActive = true
     }
 
     @objc private func loadingGifButtonAction(_ sender: UIButton) {
