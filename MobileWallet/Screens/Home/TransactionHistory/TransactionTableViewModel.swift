@@ -46,6 +46,7 @@ class TransactionTableViewModel: NSObject {
     typealias Value = (microTari: MicroTari?, direction: TransactionDirection, isCancelled: Bool, isPending: Bool)
     private static var cachedMedia = [String: GPHMedia]()
 
+    let id: String = UUID().uuidString
     private(set) var title: NSAttributedString
     private(set) var avatar: String
     private(set) var message: String
@@ -59,10 +60,12 @@ class TransactionTableViewModel: NSObject {
         }
     }
 
+    var shouldUpdateCellSize: Bool = false
+
     @objc dynamic private(set) var gifDownloadFailed: Bool = false
     @objc dynamic private(set) var gif: GPHMedia?
     @objc dynamic private(set) var status: String
-    @objc dynamic let time: String
+    @objc dynamic private(set) var time: String
 
     required init(tx: TransactionProtocol) {
         var isCancelled = false
@@ -177,6 +180,11 @@ class TransactionTableViewModel: NSObject {
         gifID = giphyDd
 
         super.init()
+
+        Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] (_) in
+            self?.time = tx.date.0?.relativeDayFromToday() ?? ""
+        }
+
         if gifID != nil {
             if let media = TransactionTableViewModel.cachedMedia[gifID!] {
                 self.gif = media
@@ -207,6 +215,7 @@ class TransactionTableViewModel: NSObject {
             }
             let media = response?.data
             TransactionTableViewModel.cachedMedia[gifID] = media
+            self.shouldUpdateCellSize = true
             self.gif = media
         }
 

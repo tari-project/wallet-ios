@@ -59,7 +59,15 @@ extension TransactionsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = TransactionTableViewCell(model: transactionModels[indexPath.row])
+        let cell: TransactionTableViewCell
+
+        if transactionModels[indexPath.row].shouldUpdateCellSize {
+            transactionModels[indexPath.row].shouldUpdateCellSize = false
+            cell = TransactionTableViewCell(style: .default, reuseIdentifier: cellIdentifier)
+        } else {
+            cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TransactionTableViewCell
+        }
+        cell.configure(with: transactionModels[indexPath.row])
         cell.updateCell = {
             DispatchQueue.main.async {
                 tableView.reloadRows(at: [indexPath], with: .fade)
