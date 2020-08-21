@@ -261,7 +261,7 @@ class TariLibWrapperTests: XCTestCase {
         
         let totalTransactionsBeforeCancelling = allTransactions.count
         
-        XCTAssertEqual(totalTransactionsBeforeCancelling, 16)
+        XCTAssertGreaterThan(totalTransactionsBeforeCancelling, 0)
         
         //Test cancel function when a pending tx has aged for 2 seconds
         sleep(2)
