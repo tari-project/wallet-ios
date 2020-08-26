@@ -159,7 +159,9 @@ private class BackupPrompts {
             guard incomingTxs >= triggers.numberOfIncomingTransactions &&
             balance.rawValue >= triggers.totalBalance.rawValue &&
                 ICloudBackup.shared.isValidBackupExists() == triggers.hasConnectediCloud &&
-                (ICloudBackup.shared.lastBackup?.isEncrypted ?? false) == triggers.backupIsEncrypted else {
+                (ICloudBackup.shared.lastBackup?.isEncrypted ?? false) == triggers.backupIsEncrypted &&
+                !ICloudBackup.shared.iCloudBackupsIsOn
+            else {
                 continue
             }
 
