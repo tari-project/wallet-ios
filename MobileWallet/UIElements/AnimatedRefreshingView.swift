@@ -152,6 +152,8 @@ class AnimatedRefreshingView: UIView {
     private var currentInnerViewBottomAnchor = NSLayoutConstraint()
     private var currentState: AnimatedRefreshingViewState = .loading
 
+    private var isUpdatingState: Bool = false
+
     enum StateType {
         case none
         case updateData
@@ -223,10 +225,19 @@ class AnimatedRefreshingView: UIView {
         innerView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     }
 
-    func updateState(_ type: AnimatedRefreshingViewState) {
+    func updateState(_ type: AnimatedRefreshingViewState, animated: Bool = true) {
         guard currentState != type else {
             return
         }
+
+        if isUpdatingState {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5 + CATransaction.animationDuration()) { [weak self] in
+                self?.updateState(type)
+            }
+            return
+        }
+
+        isUpdatingState = true
 
         currentState = type
 
@@ -243,8 +254,8 @@ class AnimatedRefreshingView: UIView {
         newInnerViewBottomAnchor.isActive = true
 
         //Shift the new inner view from the bottom up, while moving the current one up and out
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + (animated ? CATransaction.animationDuration() : 0.0), execute: {
+            UIView.animate(withDuration: (animated ? 0.5 : 0.0), delay: 0, options: .curveEaseInOut, animations: { [weak self] in
                     guard let self = self else { return }
 
                     self.currentInnerView.alpha = 0
@@ -259,6 +270,7 @@ class AnimatedRefreshingView: UIView {
 
             }) { [weak self] (_) in
                 guard let self = self else { return }
+                self.isUpdatingState = false
 
                 self.currentInnerView.removeFromSuperview()
 

@@ -176,7 +176,7 @@ class TransactionsTableViewController: UITableViewController {
     private func beginRefreshing() {
         if animatedRefresher.stateType != .none { return }
         animatedRefresher.stateType = .updateData
-        animatedRefresher.updateState(.loading)
+        animatedRefresher.updateState(.loading, animated: false)
         animatedRefresher.animateIn()
 
         do {
