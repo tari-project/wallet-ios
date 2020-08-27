@@ -64,6 +64,7 @@ class TransactionTableViewCell: UITableViewCell {
     private var kvoGifFailure: NSKeyValueObservation?
     private var kvoStatus: NSKeyValueObservation?
 
+    private static let topCellPadding: CGFloat = 0
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         if highlighted {
             self.contentView.alpha = 0.6
@@ -151,7 +152,7 @@ class TransactionTableViewCell: UITableViewCell {
         if media != nil {
             if media?.id == attachmentView?.media?.id { return }
             setupAttachmentView()
-            attachmentView?.media = media
+            attachmentView?.setMedia(media!)
         } else {
             attachmentView?.removeFromSuperview()
             attachmentView = nil
@@ -160,6 +161,12 @@ class TransactionTableViewCell: UITableViewCell {
 
     private func setStatus(_ status: String) {
         statusLabel.text = status
+
+        if statusLabel.text?.isEmpty ?? true {
+            statusLabelHeightHidden.isActive = true
+        } else {
+            statusLabelHeightHidden.isActive = false
+        }
     }
 
     private func setValue(microTari: MicroTari?, direction: TransactionDirection, isCancelled: Bool, isPending: Bool) {
@@ -218,7 +225,7 @@ extension TransactionTableViewCell {
         avatarContainer.widthAnchor.constraint(equalToConstant: size).isActive = true
         avatarContainer.heightAnchor.constraint(equalToConstant: size).isActive = true
         avatarContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TransactionTableViewCell.topCellPadding).isActive = true
         avatarContainer.layer.cornerRadius = size / 2
 
         avatarContainer.layer.shadowOpacity = 0.13
@@ -239,8 +246,8 @@ extension TransactionTableViewCell {
         contentView.addSubview(labelsContainer)
 
         labelsContainer.addBottomBorder(with: Theme.shared.colors.transactionCellBorder, andWidth: 1)
-        labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30).isActive = true
+        labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TransactionTableViewCell.topCellPadding).isActive = true
+        labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25 + TransactionTableViewCell.topCellPadding).isActive = true
         labelsContainer.leadingAnchor.constraint(equalTo: avatarContainer.trailingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         labelsContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
@@ -291,12 +298,6 @@ extension TransactionTableViewCell {
         statusLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
         statusLabel.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor).isActive = true
         statusLabelHeightHidden = statusLabel.heightAnchor.constraint(equalToConstant: 0)
-
-        if statusLabel.text?.isEmpty ?? true {
-            statusLabelHeightHidden.isActive = true
-        } else {
-            statusLabelHeightHidden.isActive = false
-        }
 
         // MARK: - TX note
         labelsContainer.addSubview(noteLabel)
