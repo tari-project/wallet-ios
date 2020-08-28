@@ -130,7 +130,7 @@ extension WebBrowserViewController {
     }
 
     private func setupNavigationBar() {
-        navigationBar.backgroundColor = .clear
+        navigationBar.backgroundColor = .white
 
         view.addSubview(navigationBar)
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
@@ -138,6 +138,11 @@ extension WebBrowserViewController {
         navigationBar.heightAnchor.constraint(equalToConstant: 44.0).isActive = true
         navigationBar.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         navigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 32.0).isActive = true
+
+        navigationBar.layer.shadowOffset = CGSize(width: 0, height: 10)
+        navigationBar.layer.shadowRadius = 5
+        navigationBar.layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
+        navigationBar.layer.shadowOpacity = 0.1
 
         let xMarkButton = UIButton()
         if modalPresentationStyle != .popover {
@@ -217,6 +222,7 @@ extension WebBrowserViewController {
 
         webView.backgroundColor = Theme.shared.colors.appBackground
         view.addSubview(webView)
+        view.bringSubviewToFront(navigationBar)
 
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
