@@ -794,7 +794,12 @@ class SendingTariViewController: UIViewController {
             fromProgress: pauseLottieAnimationAt,
             toProgress: 1,
             loopMode: .playOnce
-        )
+        ) {
+            [weak self] _ in
+            // return to home
+            UIApplication.shared.menuTabBarController?.setTab(.home)
+            self?.dismiss(animated: true)
+        }
         // fade out title views and progress bars
         UIView.animate(
             withDuration: 1,
@@ -808,13 +813,7 @@ class SendingTariViewController: UIViewController {
                 self?.progressBar2View.alpha = 0
                 self?.progressBar3View.alpha = 0
             }
-        ) {
-            [weak self] _ in
-            // return to home
-            self?.navigationController?.dismiss(animated: true, completion: {
-                UIApplication.shared.menuTabBarController?.setTab(.home)
-            })
-        }
+        )
     }
 
 }
