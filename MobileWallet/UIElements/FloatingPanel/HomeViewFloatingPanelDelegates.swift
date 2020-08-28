@@ -42,12 +42,12 @@ import Foundation
 import FloatingPanel
 
 class HomeViewFloatingPanelLayout: FloatingPanelLayout {
-    let navBarHeight: CGFloat
-    let initialFullScreen: Bool
+    static let bottomHalfSurfaceViewInsets: UIEdgeInsets = UIEdgeInsets(top: 37, left: 0, bottom: 116 + UIApplication.shared.windows[0].safeAreaInsets.bottom, right: 0)
 
-    init(navBarHeight: CGFloat, initialFullScreen: Bool) {
+    let navBarHeight: CGFloat
+
+    init(navBarHeight: CGFloat) {
         self.navBarHeight = navBarHeight
-        self.initialFullScreen = initialFullScreen
     }
 
     var positionReference: FloatingPanelLayoutReference {
@@ -55,41 +55,22 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
     }
 
     public var initialPosition: FloatingPanelPosition {
-        return initialFullScreen ? .full : .tip
+        return .hidden
     }
 
     public var supportedPositions: Set<FloatingPanelPosition> {
-        return [.full, .tip]
+        return [.full, .half]
     }
 
     public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
-        let topInset: CGFloat = navBarHeight - 12
+        let topInset: CGFloat = navBarHeight
         //Raising the lowest postion of the panel slightly for phones without the notch
         let lowestHeight = UIScreen.main.bounds.height - 76 - (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0)
 
         switch position {
-            case .full: return topInset // A top inset from safe area
-            case .tip: return lowestHeight // A bottom inset from the safe area
+            case .full: return topInset - 37 // A top inset from safe area
+            case .half: return lowestHeight // A bottom inset from the safe area
             default: return nil // Or `case .hidden: return nil`
         }
-    }
-
-    func backdropAlphaFor(position: FloatingPanelPosition) -> CGFloat {
-        if position == .full {
-            //TODO refactor to allow for backdrop being set from HomeViewController
-            return 0.0
-        }
-
-        return 0.0
-    }
-}
-
-class HomeViewFloatingPanelBehavior: FloatingPanelBehavior {
-    func allowsRubberBanding(for edge: UIRectEdge) -> Bool {
-        return false
-    }
-
-    func shouldProjectMomentum(_ fpc: FloatingPanelController, for proposedTargetPosition: FloatingPanelPosition) -> Bool {
-        return false
     }
 }

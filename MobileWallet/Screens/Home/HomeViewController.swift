@@ -58,9 +58,9 @@ class HomeViewController: UIViewController {
     private let balanceLabel = UILabel()
     private let balanceValueLabel = AnimatedBalanceLabel()
 
-    private lazy var tableViewContainer = TransactionHistoryContainer(child: transactionTableVC)
     private lazy var transactionTableVC: TransactionsTableViewController = {
-        let transactionController = TransactionsTableViewController(style: .grouped)
+        let transactionController = TransactionsTableViewController(style: .plain)
+        transactionController.tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
         transactionController.backgroundType =  isFirstIntroToWallet ? .intro : .empty
         return transactionController
     }()
@@ -73,6 +73,8 @@ class HomeViewController: UIViewController {
 
     private var keyServer: KeyServer?
     private var selectedTransaction: TransactionProtocol?
+
+    private var lastFPCPosition: FloatingPanel.FloatingPanelPosition = .half
 
     private lazy var dimmingLayer: CALayer = {
         let layer = CALayer()
@@ -289,7 +291,7 @@ class HomeViewController: UIViewController {
                         [weak self] in
                         guard let self = self else { return }
                         if self.isTransactionViewFullScreen {
-                            self.floatingPanelController.move(to: .tip, animated: true)
+                            self.floatingPanelController.move(to: .half, animated: true)
 
                         }
                 })
@@ -326,22 +328,6 @@ class HomeViewController: UIViewController {
         }
     }
 
-    private func showFloatingPanel() {
-        view.addSubview(floatingPanelController.view)
-        floatingPanelController.view.frame = view.bounds
-        addChild(floatingPanelController)
-        DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration(), execute: { [weak self] in
-            guard let self = self else { return }
-            self.floatingPanelController.show(animated: true) {
-                self.didMove(toParent: self)
-            }
-        })
-    }
-
-    private func hideFloatingPanel() {
-        floatingPanelController.removePanelFromParent(animated: true)
-    }
-
     func onSend(pubKey: PublicKey? = nil, deepLinkParams: DeepLinkParams? = nil) {
         let sendVC = AddRecipientViewController()
 
@@ -365,9 +351,10 @@ extension HomeViewController {
     }
 
     @objc private func closeButtonAction(_ sender: Any) {
-        transactionTableVC.scrollToTop()
-        floatingPanelController.move(to: .tip, animated: true)
+        transactionTableVC.tableView.scrollToTop(animated: true)
+        floatingPanelController.move(to: .half, animated: true)
         animateNavBar(progress: 0.0, buttonAction: true)
+        updateTracking(progress: 0.0)
     }
 }
 
@@ -400,21 +387,24 @@ extension HomeViewController: TransactionsTableViewDelegate {
 // MARK: - Floating panel setup delegate methods
 extension HomeViewController: FloatingPanelControllerDelegate {
     func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
-        return HomeViewFloatingPanelLayout(navBarHeight: navBarHeight, initialFullScreen: isFirstIntroToWallet)
+        return HomeViewFloatingPanelLayout(navBarHeight: navBarHeight)
     }
 
     func floatingPanel(_ vc: FloatingPanelController, behaviorFor newCollection: UITraitCollection) -> FloatingPanelBehavior? {
-        return HomeViewFloatingPanelBehavior()
+        return FloatingPanelDefaultBehavior()
     }
 
     func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
+        lastFPCPosition = vc.position
+        transactionTableVC.tableView.lockScrollView()
         self.impactFeedbackGenerator.prepare()
     }
 
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
         if vc.position == .full {
             isTransactionViewFullScreen = true
-        } else if vc.position == .tip || vc.position == .half {
+        } else if vc.position == .half {
+            floatingPanelController.surfaceView.contentInsets = HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets
             if hapticEnabled {
                 self.impactFeedbackGenerator.impactOccurred()
             }
@@ -425,7 +415,8 @@ extension HomeViewController: FloatingPanelControllerDelegate {
 
     func floatingPanelDidMove(_ vc: FloatingPanelController) {
         let progress = getCurrentProgress(floatingController: vc)
-        animateNavBar(progress: progress)
+        animateNavBar(progress: max(progress, 0))
+        animateSurfaceViewBottomInset(progress: max(progress, 0))
 
         guard !isFirstIntroToWallet else {
             return
@@ -435,9 +426,9 @@ extension HomeViewController: FloatingPanelControllerDelegate {
             return
         }
 
-        self.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS - (HomeViewController.PANEL_BORDER_CORNER_RADIUS * progress)
+        self.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS - (HomeViewController.PANEL_BORDER_CORNER_RADIUS * max(progress, 0))
 
-        if floatingPanelController.position == .tip && !isTransactionViewFullScreen {
+        if floatingPanelController.position == .half && !isTransactionViewFullScreen {
             UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
                 self.view.layoutIfNeeded()
             })
@@ -451,27 +442,54 @@ extension HomeViewController: FloatingPanelControllerDelegate {
     }
 
     func  floatingPanelDidEndDragging(_ vc: FloatingPanelController, withVelocity velocity: CGPoint, targetPosition: FloatingPanelPosition) {
-        let progress: CGFloat = targetPosition == .tip ? 0.0 : 1.0
-        floatingPanelController.surfaceView.shadowColor = targetPosition == .tip ? .black : .clear
+        let progress: CGFloat = targetPosition == .half ? 0.0 : 1.0
+        floatingPanelController.surfaceView.shadowColor = targetPosition == .half ? .black : .clear
         animateNavBar(progress: progress)
+        animateSurfaceViewBottomInset(progress: progress)
+        if targetPosition == .half {
+            updateTracking(progress: progress)
+        }
+    }
+
+    func floatingPanelDidEndDecelerating(_ vc: FloatingPanelController) {
+        let progress: CGFloat = vc.position == .half ? 0.0 : 1.0
+        updateTracking(progress: progress)
     }
 
     private func getCurrentProgress(floatingController: FloatingPanelController) -> CGFloat {
         let y = floatingController.surfaceView.frame.origin.y
-        let tipY = floatingController.originYOfSurface(for: .tip)
-        let progress = CGFloat(max(0.0, min((tipY  - y) / navBarHeight, 1.0)))
+        let tipY = floatingController.originYOfSurface(for: .half)
+        let delta = abs(floatingController.originYOfSurface(for: .full) - floatingController.originYOfSurface(for: .half))
+        if y > tipY { return tipY - y }
+        let progress = CGFloat(max(0.0, min((tipY  - y) / delta, 1.0)))
         return progress
     }
 
     private func animateNavBar(progress: CGFloat, buttonAction: Bool = false) {
         if progress >= 0.0 && progress <= 1.0 {
             navigationBarBottomConstraint?.constant = navBarHeight * progress
-            let duration = buttonAction ? CATransaction.animationDuration() : 0.1
+            let duration = CATransaction.animationDuration()
 
             UIView.animate(withDuration: duration, delay: 0, options: .curveEaseIn, animations: { [weak self] in
                 self?.dimmingLayer.opacity = Float(progress / 1.5)
                 self?.view.layoutIfNeeded()
             })
+        }
+    }
+
+    private func animateSurfaceViewBottomInset(progress: CGFloat) {
+        let delta = abs(floatingPanelController.originYOfSurface(for: .full) - floatingPanelController.originYOfSurface(for: .half))
+        let bottomInset = HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets.bottom - (delta * progress)
+        floatingPanelController.surfaceView.contentInsets = UIEdgeInsets(top: HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets.top, left: 0, bottom: bottomInset, right: 0)
+    }
+
+    private func updateTracking(progress: CGFloat) {
+        if progress == 1 {
+            floatingPanelController.track(scrollView: transactionTableVC.tableView)
+            transactionTableVC.tableView.unlockScrollView()
+        } else if progress <= 0 {
+            floatingPanelController.track(scrollView: nil)
+            transactionTableVC.tableView.unlockScrollView()
         }
     }
 }
@@ -606,16 +624,25 @@ extension HomeViewController {
         floatingPanelController.delegate = self
         transactionTableVC.actionDelegate = self
 
-        floatingPanelController.set(contentViewController: tableViewContainer)
-
+        floatingPanelController.set(contentViewController: transactionTableVC)
         floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
         floatingPanelController.surfaceView.shadowColor = .black
         floatingPanelController.surfaceView.shadowRadius = 22
+        floatingPanelController.surfaceView.contentInsets = HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets
 
         setupGrabber(floatingPanelController)
         floatingPanelController.contentMode = .static
+        floatingPanelController.addPanel(toParent: self)
 
-        showFloatingPanel()
+        DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) {
+            self.floatingPanelController.move(to: self.isFirstIntroToWallet ? .full : .half, animated: true) {
+                if !self.isFirstIntroToWallet {
+                    DispatchQueue.main.async {
+                        self.transactionTableVC.tableView.beginRefreshing()
+                    }
+                }
+            }
+        }
     }
 
     private func setupGrabber(_ floatingPanelController: FloatingPanelController) {

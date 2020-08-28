@@ -450,9 +450,6 @@
 		37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
 		37CB9F8B2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
 		37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
-		37CB9F8E2451BC6C00C495F2 /* TransactionHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */; };
-		37CB9F8F2451C8CC00C495F2 /* TransactionHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */; };
-		37CB9F902451C8CD00C495F2 /* TransactionHistoryContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */; };
 		37CFAA76248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
 		37CFAA77248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
 		37CFAA78248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
@@ -783,7 +780,6 @@
 		37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedPhraseViewController.swift; sourceTree = "<group>"; };
 		37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsParentTableViewController.swift; sourceTree = "<group>"; };
 		37CB9F892451A2AD00C495F2 /* String+Emoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Emoji.swift"; sourceTree = "<group>"; };
-		37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistoryContainer.swift; sourceTree = "<group>"; };
 		37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPointerArray+Extension.swift"; sourceTree = "<group>"; };
 		37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+FontStyle.swift"; sourceTree = "<group>"; };
 		37E4B62A24501FB200FA302B /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -1159,7 +1155,6 @@
 				00E2BCA7236AB28200C2A105 /* TransactionTableViewCell.swift */,
 				00E2BC9A236AAFB100C2A105 /* TransactionsTableViewController.swift */,
 				00230B012376C75B00F23E34 /* TransactionsTableViewControllerExtension.swift */,
-				37CB9F8D2451BC6C00C495F2 /* TransactionHistoryContainer.swift */,
 				37875E4724D8787A00C0595B /* TransactionTableViewModel.swift */,
 			);
 			path = TransactionHistory;
@@ -2161,7 +2156,6 @@
 				009BF8AC237ABB4700C02E44 /* TariLib.swift in Sources */,
 				004997BB2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				00E2BC9B236AAFB100C2A105 /* TransactionsTableViewController.swift in Sources */,
-				37CB9F8E2451BC6C00C495F2 /* TransactionHistoryContainer.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */,
 				37B48A8324B3968F00F8A8D2 /* BPKeychainWrapper.swift in Sources */,
@@ -2289,7 +2283,6 @@
 			files = (
 				375AFDD02475387700C62CA1 /* WebBrowserViewController.swift in Sources */,
 				004997B02382E938000A0B7D /* PendingOutboundTransaction.swift in Sources */,
-				37CB9F8F2451C8CC00C495F2 /* TransactionHistoryContainer.swift in Sources */,
 				00C185BA238943980096984E /* UIViewControllerDebugExtension.swift in Sources */,
 				00BCE48A240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				0042780423E8421200AE7BD9 /* String.swift in Sources */,
@@ -2527,7 +2520,6 @@
 				001F6CE62380253B00FA7002 /* Contact.swift in Sources */,
 				00C9F437242E08E80098E619 /* Tracker.swift in Sources */,
 				009BF8AA237AA13500C02E44 /* Biometrics.m in Sources */,
-				37CB9F902451C8CD00C495F2 /* TransactionHistoryContainer.swift in Sources */,
 				0042780123E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				001F6CDE238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00947CC423CF090D00526DD5 /* TransactionProtocol.swift in Sources */,

@@ -43,24 +43,25 @@ import UIKit
 extension UIScrollView {
 
     func beginRefreshing() {
-        guard let refreshControl = refreshControl, !refreshControl.isRefreshing else { return }
-        let refreshControlHeight: CGFloat = 70.0 // static because if fast drag tableView refreshControl height will not correct
-        let contentOffset = CGPoint(x: 0, y: -refreshControlHeight - contentInset.top)
-        refreshControl.beginRefreshing()
-        refreshControl.sendActions(for: .valueChanged)
-        DispatchQueue.main.async {
-            self.setContentOffset(contentOffset, animated: !self.isDragging)
-        }
-
+        if isRefreshing() { return }
+        refreshControl?.programaticallyBeginRefreshing(in: self)
     }
 
     func endRefreshing() {
-        refreshControl?.endRefreshing()
+        if !isRefreshing() { return }
+        stopDecelerating()
+        // animated for fix blinking during end refresh
+        UIView.transition(with: self,
+                          duration: CATransaction.animationDuration(),
+                          options: .transitionCrossDissolve,
+                          animations: {
+                            self.refreshControl?.endRefreshing()
+        })
     }
 
     func isRefreshing() -> Bool {
         guard let refreshControl = refreshControl else { return false }
-        return refreshControl .isRefreshing
+        return refreshControl.isRefreshing
     }
 
     func scrollToBottom(animated: Bool) {
@@ -70,6 +71,37 @@ extension UIScrollView {
     }
 
     func scrollToTop(animated: Bool) {
-        setContentOffset(.zero, animated: animated)
+        let y = 0.0  - contentInset.top
+        setContentOffset(CGPoint(x: 0.0, y: y), animated: animated)
+    }
+
+    func lockScrollView() {
+        isDirectionalLockEnabled = true
+        bounces = false
+        showsVerticalScrollIndicator = false
+    }
+
+    func unlockScrollView() {
+        isDirectionalLockEnabled = false
+        bounces = true
+        showsVerticalScrollIndicator = true
+    }
+
+    func stopDecelerating() {
+         setContentOffset(contentOffset, animated: false)
+    }
+}
+
+extension UIRefreshControl {
+    func programaticallyBeginRefreshing(in scrollView: UIScrollView) {
+        beginRefreshing()
+        let yOffset = height()
+        let offsetPoint = CGPoint.init(x: 0, y: -yOffset)
+        scrollView.setContentOffset(offsetPoint, animated: true)
+        sendActions(for: .valueChanged)
+    }
+
+    func height() -> CGFloat {
+        return frame.size.height >= 80 ? frame.size.height : 80
     }
 }

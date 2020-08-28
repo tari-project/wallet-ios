@@ -163,19 +163,27 @@ extension TransactionsTableViewController {
         refreshControl.clipsToBounds = true
         refreshControl.backgroundColor = .clear
         refreshControl.tintColor = .clear
+        refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
         refreshControl.subviews.first?.alpha = 0
 
         tableView.refreshControl = refreshControl
-        refreshControl.addSubview(animatedRefresher)
+        tableView.addSubview(animatedRefresher)
+        tableView.bringSubviewToFront(animatedRefresher)
 
         animatedRefresher.translatesAutoresizingMaskIntoConstraints = false
-        animatedRefresher.topAnchor.constraint(equalTo: refreshControl.topAnchor, constant: 10).isActive = true
+        animatedRefresher.topAnchor.constraint(equalTo: refreshControl.topAnchor, constant: -5).isActive = true
 
-        let leading = animatedRefresher.leadingAnchor.constraint(equalTo: refreshControl.leadingAnchor, constant: Theme.shared.sizes.appSidePadding)
+        let leading = animatedRefresher.leadingAnchor.constraint(
+            equalTo: refreshControl.leadingAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        )
         leading.isActive = true
         leading.priority = .defaultHigh
 
-        let trailing = animatedRefresher.trailingAnchor.constraint(equalTo: refreshControl.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding)
+        let trailing = animatedRefresher.trailingAnchor.constraint(
+            equalTo: refreshControl.trailingAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        )
         trailing.isActive = true
         trailing.priority = .defaultHigh
 
