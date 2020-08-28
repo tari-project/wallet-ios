@@ -423,25 +423,25 @@ extension AddAmountViewController {
         continueButton.isEnabled = false
         setupKeypad()
 
+        //amount container
+        let amountContainer = UIView()
+        amountContainer.backgroundColor = .clear
+        view.addSubview(amountContainer)
+        amountContainer.translatesAutoresizingMaskIntoConstraints = false
+        amountContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        amountContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        amountContainer.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
+        amountContainer.bottomAnchor.constraint(equalTo: keypadContainerStackView.topAnchor).isActive = true
+
         //amount label
         view.addSubview(amountLabel)
         amountLabel.animation = .type
-        amountLabel.textAlignment = .center
+        amountLabel.textAlignment = .center(inset: -30)
         amountLabel.translatesAutoresizingMaskIntoConstraints = false
-        let amountTopLayoutGuide = UILayoutGuide()
-        view.addLayoutGuide(amountTopLayoutGuide)
-        amountTopLayoutGuide.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        amountTopLayoutGuide.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
-        let amountBottomLayoutGuide = UILayoutGuide()
-        view.addLayoutGuide(amountBottomLayoutGuide)
-        amountBottomLayoutGuide.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        amountBottomLayoutGuide.bottomAnchor.constraint(equalTo: keypadContainerStackView.topAnchor).isActive = true
-        amountBottomLayoutGuide.heightAnchor.constraint(equalTo: amountTopLayoutGuide.heightAnchor).isActive = true
-        amountLabel.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -8).isActive = true
-        amountLabel.topAnchor.constraint(equalTo: amountTopLayoutGuide.bottomAnchor).isActive = true
-        amountLabel.bottomAnchor.constraint(equalTo: amountBottomLayoutGuide.topAnchor).isActive = true
+        amountLabel.trailingAnchor.constraint(equalTo: amountContainer.trailingAnchor, constant: -25).isActive = true
+        amountLabel.leadingAnchor.constraint(equalTo: amountContainer.leadingAnchor, constant: 25).isActive = true
+        amountLabel.centerYAnchor.constraint(equalTo: amountContainer.centerYAnchor).isActive = true
         amountLabel.heightAnchor.constraint(equalToConstant: 75).isActive = true
-        amountLabel.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: 8).isActive = true
 
         //warning view
         view.addSubview(warningView)
@@ -449,7 +449,10 @@ extension AddAmountViewController {
         warningView.translatesAutoresizingMaskIntoConstraints = false
         warningView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -50).isActive = true
         warningView.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
-        warningView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 25).isActive = true
+        warningView.topAnchor.constraint(greaterThanOrEqualTo: navigationBar.bottomAnchor, constant: 5).isActive = true
+        warningView.topAnchor.constraint(lessThanOrEqualTo: navigationBar.bottomAnchor, constant: 20).isActive = true
+        warningView.bottomAnchor.constraint(lessThanOrEqualTo: amountLabel.topAnchor, constant: -5).isActive = true
+
         warningView.layer.cornerRadius = 12
         warningView.layer.masksToBounds = true
         warningView.layer.borderWidth = 1
@@ -462,8 +465,8 @@ extension AddAmountViewController {
         warningStackView.axis = .vertical
         warningStackView.spacing = 4
         warningStackView.translatesAutoresizingMaskIntoConstraints = false
-        warningStackView.widthAnchor.constraint(equalTo: warningView.widthAnchor, constant: -24).isActive = true
-        warningStackView.heightAnchor.constraint(equalTo: warningView.heightAnchor, constant: -24).isActive = true
+        warningStackView.widthAnchor.constraint(greaterThanOrEqualTo: warningView.widthAnchor, constant: -26).isActive = true
+        warningStackView.heightAnchor.constraint(equalTo: warningView.heightAnchor, constant: -26).isActive = true
         warningStackView.centerXAnchor.constraint(equalTo: warningView.centerXAnchor).isActive = true
         warningStackView.centerYAnchor.constraint(equalTo: warningView.centerYAnchor).isActive = true
 
@@ -525,9 +528,10 @@ extension AddAmountViewController {
         keypadContainerStackView.translatesAutoresizingMaskIntoConstraints = false
         keypadContainerStackView.axis = .vertical
         keypadContainerStackView.distribution = .equalSpacing
+        keypadContainerStackView.spacing = min(28, view.frame.height * 0.034)
         keypadContainerStackView.backgroundColor = .clear
         keypadContainerStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        keypadContainerStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -41).isActive = true
+        keypadContainerStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -30).isActive = true
         keypadContainerStackView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
         keypadContainerStackView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
 
@@ -546,7 +550,7 @@ extension AddAmountViewController {
             button.tintColor = Theme.shared.colors.keypadButton
             button.titleLabel?.font = Theme.shared.fonts.keypadButton
             rows[i / (rows.count - 1)].addArrangedSubview(button)
-            button.heightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.heightAnchor, multiplier: 0.1).isActive = true
+            button.heightAnchor.constraint(equalToConstant: 33).isActive = true
 
             if i < 9 {
                 button.setTitle("\(i + 1)", for: .normal)

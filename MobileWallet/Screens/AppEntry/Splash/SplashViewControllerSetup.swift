@@ -104,7 +104,7 @@ extension SplashViewController {
             animationContainerBottomAnchor?.isActive = true
             videoView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
             videoView.heightAnchor.constraint(lessThanOrEqualTo: view.widthAnchor).isActive = true
-            videoView.heightAnchor.constraint(greaterThanOrEqualTo: view.widthAnchor, multiplier: 0.75).isActive = true
+            videoView.heightAnchor.constraint(greaterThanOrEqualTo: view.widthAnchor, multiplier: 0.74).isActive = true
             videoView.widthAnchor.constraint(equalTo: videoView.heightAnchor).isActive = true
         }
     }

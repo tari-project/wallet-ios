@@ -43,6 +43,12 @@ import Foundation
 import UIKit
 
 class AnimatedBalanceLabel: UIView {
+    enum Alignment {
+        case left
+        case right
+        case center(inset: CGFloat = 0.0)
+    }
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -61,7 +67,7 @@ class AnimatedBalanceLabel: UIView {
         backgroundColor = .clear
     }
 
-    var textAlignment: NSTextAlignment = .left {
+    var textAlignment: Alignment = .left {
         didSet {
             adjustLabelTextAlignment()
         }
@@ -194,8 +200,9 @@ class AnimatedBalanceLabel: UIView {
         labelsRightLayoutGuide.heightAnchor.constraint(equalToConstant: 0).isActive = true
 
         switch textAlignment {
-        case .center:
+        case .center(let inset):
             labelsLeftLayoutGuide.widthAnchor.constraint(equalTo: labelsRightLayoutGuide.widthAnchor).isActive = true
+            labelsLeftLayoutGuide.leftAnchor.constraint(equalTo: leftAnchor, constant: inset).isActive = true
         case .right:
             labelsRightLayoutGuide.widthAnchor.constraint(equalToConstant: 0).isActive = true
         default:
