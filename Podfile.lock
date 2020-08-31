@@ -1,4 +1,7 @@
 PODS:
+  - Alamofire (5.4.2)
+  - AlamofireEasyLogger (1.6.0):
+    - Alamofire (>= 5.0)
   - DeepDiff (2.3.1)
   - FloatingPanel (1.7.5)
   - Giphy (2.0.0):
@@ -19,6 +22,7 @@ PODS:
   - MatomoTracker (7.4.1):
     - MatomoTracker/Core (= 7.4.1)
   - MatomoTracker/Core (7.4.1)
+  - ObjectMapper (4.2.0)
   - OpenSSL-Universal (1.1.1100)
   - PINCache (3.0.3):
     - PINCache/Arc-exception-safe (= 3.0.3)
@@ -40,11 +44,14 @@ PODS:
   - ZIPFoundation (0.9.12)
 
 DEPENDENCIES:
+  - Alamofire (~> 5.2)
+  - AlamofireEasyLogger
   - FloatingPanel (= 1.7.5)
   - Giphy (= 2.0.0)
   - IPtProxy (~> 0.1.0)
   - lottie-ios
   - MatomoTracker (~> 7.2)
+  - ObjectMapper (~> 4.2)
   - OpenSSL-Universal
   - ReachabilitySwift
   - Sentry (from `https://github.com/getsentry/sentry-cocoa.git`, tag `5.0.0`)
@@ -55,6 +62,8 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Alamofire
+    - AlamofireEasyLogger
     - DeepDiff
     - FloatingPanel
     - Giphy
@@ -62,6 +71,7 @@ SPEC REPOS:
     - libwebp
     - lottie-ios
     - MatomoTracker
+    - ObjectMapper
     - OpenSSL-Universal
     - PINCache
     - PINOperation
@@ -83,6 +93,8 @@ CHECKOUT OPTIONS:
     :tag: 5.0.0
 
 SPEC CHECKSUMS:
+  Alamofire: bfbc4c2fe5909b1d94fb4ef2277c6b3727ef5dae
+  AlamofireEasyLogger: f2fd10b57d973593a79a4b61f274c6a5cb3e1333
   DeepDiff: e5ae6c50d0321568e4508cec5930b9f10bb293fc
   FloatingPanel: bb17fd6fc7ae519f877f7bd30f4f6115a78acf07
   Giphy: 41adc93795979bd5a7e5a4ad27f52107d824fb1f
@@ -90,6 +102,7 @@ SPEC CHECKSUMS:
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   lottie-ios: 106e92eaf11fbed0a76590b4cdb9b5ec26123ff7
   MatomoTracker: 24a846c9d3aa76933183fe9d47fd62c9efa863fb
+  ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
   OpenSSL-Universal: ebc357f1e6bc71fa463ccb2fe676756aff50e88c
   PINCache: 7a8fc1a691173d21dbddbf86cd515de6efa55086
   PINOperation: 00c935935f1e8cf0d1e2d6b542e75b88fc3e5e20
@@ -101,6 +114,6 @@ SPEC CHECKSUMS:
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: 26db7f7c2f960a5949d03245404cbc089597a16b
+PODFILE CHECKSUM: 899506c002170a877ae91f894ba66f35971eed91
 
 COCOAPODS: 1.10.1

@@ -49,6 +49,7 @@ class ContactCell: UITableViewCell {
     private let contactLetterView = UIView()
     private let contactLetter = UILabel()
     private let aliasLabel = UILabel()
+    private let activityIndicator = UIActivityIndicatorView()
 
     private let unknownContactImageView = UIImageView()
 
@@ -132,19 +133,56 @@ class ContactCell: UITableViewCell {
         aliasLabel.leadingAnchor.constraint(equalTo: contactLetterView.trailingAnchor, constant: 10).isActive = true
         aliasLabel.trailingAnchor.constraint(equalTo: cellView.trailingAnchor).isActive = true
         aliasLabel.heightAnchor.constraint(equalToConstant: aliasLabel.font.pointSize * 1.15).isActive = true
+
+        // yat lookup activity indicator
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.hidesWhenStopped = true
+        activityIndicator.style = .medium
+        activityIndicator.color = .lightGray
+        cellView.addSubview(activityIndicator)
+        activityIndicator.stopAnimating()
+
+        activityIndicator.centerYAnchor.constraint(equalTo: cellView.centerYAnchor).isActive = true
+        activityIndicator.trailingAnchor.constraint(equalTo: cellView.trailingAnchor).isActive = true
     }
 
-    func setPublicKey(_ publicKey: PublicKey) {
-        guard let wallet = TariLib.shared.tariWallet else { return }
-        do {
-            guard let contact = try wallet.contacts.0?.find(publicKey: publicKey) else { return }
+    func setYat(_ yat: String, yatLookupIsInProgress: Bool) {
+        aliasLabel.textColor = Theme.shared.colors.contactCellAlias
+        aliasLabel.text = String.init(format: NSLocalizedString("add_recipient.send_to_yat.with_param", comment: ""), yat)
+        contactLetter.text = ""
+        unknownContactImageView.isHidden = false
+        if yatLookupIsInProgress {
+            activityIndicator.startAnimating()
+        } else {
+            activityIndicator.stopAnimating()
+        }
+    }
+
+    func setTx(_ tx: TxProtocol) {
+        if let contact = tx.contact.0 {
             setContact(contact)
-        } catch {
-            let emojis = publicKey.emojis.0
+        } else {
             aliasLabel.textColor = Theme.shared.colors.emojisSeparator!
-            aliasLabel.text = "\(emojis.prefix(3))•••\(emojis.suffix(3))"
             contactLetter.text = ""
             unknownContactImageView.isHidden = false
+            switch tx.direction {
+            case .inbound:
+                if let yat = tx.message.0.sourceYat {
+                    aliasLabel.text = yat
+                } else {
+                    let emojis = tx.sourcePublicKey.0!.emojis.0
+                    aliasLabel.text = "\(emojis.prefix(3))•••\(emojis.suffix(3))"
+                }
+            case .outbound:
+                if let yat = tx.message.0.destinationYat {
+                    aliasLabel.text = yat
+                } else {
+                    let emojis = tx.destinationPublicKey.0!.emojis.0
+                    aliasLabel.text = "\(emojis.prefix(3))•••\(emojis.suffix(3))"
+                }
+            case .none:
+                aliasLabel.text = ""
+            }
         }
 
     }
@@ -162,7 +200,7 @@ class ContactCell: UITableViewCell {
         aliasLabel.text = aliasDisplay
 
         if !alias.isEmpty {
-            contactLetter.text = String(alias.prefix(1))
+            contactLetter.text = String(alias.prefix(1)).uppercased()
             unknownContactImageView.isHidden = true
         } else {
             contactLetter.text = ""

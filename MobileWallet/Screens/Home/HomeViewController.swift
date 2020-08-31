@@ -465,7 +465,10 @@ class HomeViewController: UIViewController {
             ) { [weak self] in
                 guard let _ = self else { return }
                 sendVC.deepLinkParams = deepLinkParams
-                sendVC.onAdd(publicKey: publicKey)
+                sendVC.onAdd(
+                    publicKey: publicKey,
+                    yat: deepLinkParams?.yat
+                )
             }
         }
 

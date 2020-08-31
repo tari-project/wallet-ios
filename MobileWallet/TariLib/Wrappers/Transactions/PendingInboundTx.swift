@@ -77,17 +77,24 @@ class PendingInboundTx: TxProtocol {
         return (MicroTari(result), nil)
     }
 
-    var message: (String, Error?) {
+    var message: (TxMessagePayload, Error?) {
         var errorCode: Int32 = -1
-        let resultPtr = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_inbound_transaction_get_message(ptr, error)
-        })
-        let result = String(cString: resultPtr!)
-
+        let resultPtr = withUnsafeMutablePointer(
+            to: &errorCode, {
+                error in
+                pending_inbound_transaction_get_message(ptr, error)
+            }
+        )
+        let message = String(cString: resultPtr!)
         let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
         string_destroy(mutable)
-
-        return (result, errorCode != 0 ? PendingInboundTxError.generic(errorCode) : nil)
+        let payload: TxMessagePayload
+        if let messagePayload = TxMessagePayload(JSONString: message) {
+            payload = messagePayload
+        } else {
+            payload = TxMessagePayload(nonJSONMessage: message)
+        }
+        return (payload, errorCode != 0 ? PendingInboundTxError.generic(errorCode) : nil)
     }
 
     var timestamp: (UInt64, Error?) {

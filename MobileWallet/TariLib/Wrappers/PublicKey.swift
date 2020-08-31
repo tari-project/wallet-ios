@@ -293,8 +293,6 @@ class PublicKey {
                 cleanEmojis.append(Character(scalar))
             }
         }
-        print("cleanEmojis: ", cleanEmojis.count)
-
         if cleanEmojis.count == PublicKey.emojiCount {
             return true
         }

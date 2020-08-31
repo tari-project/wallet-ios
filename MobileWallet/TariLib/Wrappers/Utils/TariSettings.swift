@@ -39,7 +39,6 @@
 */
 
 import Foundation
-import SwiftKeychainWrapper
 
 enum TariNetwork: String {
     case mainnet = "mainnet"
@@ -94,8 +93,10 @@ struct TariSettings {
 
     var pushServerApiKey: String?
     var sentryPublicDSN: String?
-    static var appleTeamID: String?
+    var appleTeamID: String?
     var giphyApiKey: String?
+    var yatAPIBasicAuthUsername: String?
+    var yatAPIBasicAuthPassword: String?
 
     func getRandomBaseNode() -> String {
         let keys = defaultBaseNodePool.map { (entry) -> String in entry.key }
@@ -117,10 +118,6 @@ struct TariSettings {
         return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
     }
 
-    static let sharedKeychainGroup = KeychainWrapper(
-        serviceName: "tari",
-        accessGroup: "\(appleTeamID ?? "").com.tari.wallet.keychain"
-    )
     static let groupIndentifier = "group.com.tari.wallet"
     static let groupUserDefaults: UserDefaults = UserDefaults(suiteName: groupIndentifier)!
     static let storageDirectory: URL = FileManager.default.containerURL(
@@ -176,9 +173,20 @@ struct TariSettings {
                 }
 
                 if let appleTeamID = jsonResult["appleTeamID"] as? String, !appleTeamID.isEmpty {
-                    TariSettings.appleTeamID = appleTeamID
+                    self.appleTeamID = appleTeamID
                 } else {
                     fatalError("appleTeamID not set in env.json. Shared keychain will not work.")
+                }
+
+                if let yatAPIBasicAuthUsername = jsonResult["yatAPIBasicAuthUsername"] as? String, !yatAPIBasicAuthUsername.isEmpty {
+                    self.yatAPIBasicAuthUsername = yatAPIBasicAuthUsername
+                } else {
+                    fatalError("yatAPIBasicAuthUsername not set in env.json. Yat integration will not work.")
+                }
+                if let yatAPIBasicAuthPassword = jsonResult["yatAPIBasicAuthPassword"] as? String, !yatAPIBasicAuthPassword.isEmpty {
+                    self.yatAPIBasicAuthPassword = yatAPIBasicAuthPassword
+                } else {
+                    fatalError("yatAPIBasicAuthUsername not set in env.json. Yat integration will not work.")
                 }
             }
         } catch {

@@ -289,7 +289,7 @@ class ICloudBackup: NSObject {
                     BackupScheduler.shared.startObserveEvents()
 
                     if password != nil {
-                        BPKeychainWrapper.setBackupPasswordToKeychain(password: password!)
+                        TariKeychainWrapper.shared.backupPassword = password
                     }
                 } else {
                     do {
@@ -512,7 +512,7 @@ extension ICloudBackup {
                 self.scheduleNotification()
             }
 
-            let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+            let password = TariKeychainWrapper.shared.backupPassword
             do {
                 try self.createWalletBackup(password: password)
             } catch {

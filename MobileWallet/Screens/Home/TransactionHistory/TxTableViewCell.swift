@@ -99,6 +99,15 @@ class TxTableViewCell: UITableViewCell {
         avatarLabel.text = model.avatar
         noteLabel.text = model.message
         titleLabel.attributedText = model.title
+
+        setStatus(model.status)
+        setValue(
+            microTari: model.value.microTari,
+            direction: model.value.direction,
+            isCancelled: model.value.isCancelled,
+            isPending: model.value.isPending
+        )
+
         timeLabel.text = model.time
 
         if model.hasGif {
@@ -326,7 +335,8 @@ extension TxTableViewCell {
         noteLabel.font = Theme.shared.fonts.txCellDescriptionLabel
         noteLabel.textColor = Theme.shared.colors.txCellNote
         noteLabel.lineBreakMode = .byWordWrapping
-        noteLabel.numberOfLines = 0
+        noteLabel.numberOfLines = 2
+        noteLabel.lineBreakMode = .byTruncatingTail
         noteLabel.translatesAutoresizingMaskIntoConstraints = false
         noteLabel.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 5).isActive = true
         noteLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true

@@ -65,6 +65,7 @@ class KeyServer {
         TariSettings.shared.network.currencyDisplayTicker,
         TariSettings.shared.network.currencyDisplayTicker
     )
+    private let TARIBOT_YAT = "🤖💎"
     private let signature: Signature
     private let url: URL
     static var isRequestInProgress = false
@@ -137,7 +138,10 @@ class KeyServer {
             KeyServer.isRequestInProgress = false
         }
 
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+        let task = URLSession.shared.dataTask(with: request) {
+            [weak self]
+            data, response, error in
+            guard let self = self else { return }
             guard error == nil else {
                 onRequestError(error!)
                 return
@@ -210,10 +214,14 @@ class KeyServer {
             }
 
             do {
+                let messagePayload = TxMessagePayload()
+                messagePayload.text = self.TARIBOT_MESSAGE1
+                messagePayload.sourceYat = self.TARIBOT_YAT
+                messagePayload.destinationYat = UserDefaults.Key.yat.stringValue()
                 let utxo = UTXO(
                     privateKeyHex: key1,
                     value: value1,
-                    message: self.TARIBOT_MESSAGE1,
+                    message: messagePayload.toJSONString()!,
                     sourcePublicKeyHex: returnPubKeyHex
                 )
 
@@ -237,11 +245,15 @@ class KeyServer {
             }
 
             do {
+                let messagePayload = TxMessagePayload()
+                messagePayload.text = self.TARIBOT_MESSAGE2
+                messagePayload.sourceYat = self.TARIBOT_YAT
+                messagePayload.destinationYat = UserDefaults.Key.yat.stringValue()
                 try self.storeUtxo(
                     utxo: UTXO(
                         privateKeyHex: key2,
                         value: value2,
-                        message: self.TARIBOT_MESSAGE2,
+                        message: messagePayload.toJSONString()!,
                         sourcePublicKeyHex: returnPubKeyHex)
                 )
             } catch {

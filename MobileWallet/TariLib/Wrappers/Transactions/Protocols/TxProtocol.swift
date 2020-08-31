@@ -62,7 +62,7 @@ protocol TxProtocol {
     var id: (UInt64, Error?) { get }
     var microTari: (MicroTari?, Error?) { get }
     // var fee: (UInt64, Error?) { get }
-    var message: (String, Error?) { get }
+    var message: (TxMessagePayload, Error?) { get }
     var timestamp: (UInt64, Error?) { get }
     var sourcePublicKey: (PublicKey?, Error?) { get }
     var status: (TxStatus, Error?) { get }

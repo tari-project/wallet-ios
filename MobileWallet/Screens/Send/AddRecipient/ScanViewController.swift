@@ -44,11 +44,13 @@ import AVFoundation
 protocol ScanViewControllerDelegate: class {
     func onAdd(publicKey: PublicKey)
     func onAdd(string: String)
+    func onAdd(publicKey: PublicKey, yat: String?)
 }
 
 extension ScanViewControllerDelegate {
     func onAdd(publicKey: PublicKey) { }
     func onAdd(string: String) { }
+	func onAdd(publicKey: PublicKey, yat: String?) { }
 }
 
 class ScanViewController: UIViewController {
@@ -324,7 +326,11 @@ class ScanViewController: UIViewController {
     }
 
     private func failed() {
-        let ac = UIAlertController(title: "Scanning not supported", message: "Your device does not support scanning a code from an item. Please use a device with a camera.", preferredStyle: .alert)
+        let ac = UIAlertController(
+            title: "Scanning not supported",
+            message: "Your device does not support scanning a code from an item. Please use a device with a camera.",
+            preferredStyle: .alert
+        )
         ac.addAction(UIAlertAction(title: "OK", style: .default))
         present(ac, animated: true)
         captureSession = nil
@@ -333,12 +339,18 @@ class ScanViewController: UIViewController {
     private func foundQR(qrText: String) {
         switch scanResourceType {
         case .publicKey:
-            do {
-                let publicKey = try PublicKey(deeplink: qrText)
-
-                self.actionDelegate?.onAdd(publicKey: publicKey)
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
-            } catch {
+	        do {
+	            let publicKey = try PublicKey(deeplink: qrText)
+	            var params: DeepLinkParams?
+	            if qrText.contains("?") {
+	                params = try DeepLinkParams(deeplink: qrText)
+	            }
+	            self.actionDelegate?.onAdd(
+	                publicKey: publicKey,
+	                yat: params?.yat
+	            )
+	            UINotificationFeedbackGenerator().notificationOccurred(.success)
+	        } catch {
                 UserFeedback.shared.error(
                     title: localized("scan_view.error.title"),
                     description: localized("scan_view.error.public_key.description"),
@@ -355,7 +367,6 @@ class ScanViewController: UIViewController {
                     error: nil
                 )
             }
-
         }
 
         dismiss(animated: true)

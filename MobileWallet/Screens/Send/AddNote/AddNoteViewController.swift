@@ -50,6 +50,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
     var publicKey: PublicKey?
     var amount: MicroTari?
     var deepLinkParams: DeepLinkParams?
+	var messagePayload: TxMessagePayload!
 
     private let sidePadding = Theme.shared.sizes.appSidePadding
     private let navigationBar = NavigationBar()
@@ -139,13 +140,21 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
         do {
             guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
             if contact.alias.0.trimmingCharacters(in: .whitespaces).isEmpty {
-                try navigationBar.showEmojiId(pubKey, inViewController: self)
+                try navigationBar.showEmojiId(
+                    publicKey: pubKey,
+                    yat: messagePayload.destinationYat,
+                    inViewController: self
+                )
             } else {
                 navigationBar.title = contact.alias.0
             }
         } catch {
             do {
-                try navigationBar.showEmojiId(pubKey, inViewController: self)
+                try navigationBar.showEmojiId(
+                    publicKey: pubKey,
+                    yat: messagePayload.destinationYat,
+                    inViewController: self
+                )
             } catch {
                 UserFeedback.shared.error(
                     title: localized("navigation_bar.error.show_emoji.title"),
@@ -331,15 +340,13 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
     private func sendTx(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari) {
         // Init first so it starts listening for a callback right away
         let sendingVC = SendingTariViewController()
-
-        if let m = attachment {
-            sendingVC.note = "\(noteText) \(m.embedUrl ?? "")"
-        } else {
-            sendingVC.note = noteText
+        messagePayload.text = noteText
+        if let gif = attachment {
+            messagePayload.giphyURL = gif.embedUrl
         }
-
         sendingVC.recipientPubKey = recipientPublicKey
         sendingVC.amount = amount
+        sendingVC.messagePayload = messagePayload
         self.navigationController?.pushViewController(sendingVC, animated: false)
     }
 }

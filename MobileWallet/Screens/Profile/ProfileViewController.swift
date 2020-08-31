@@ -48,7 +48,6 @@ class ProfileViewController: UIViewController {
     let qrContainer = UIView()
     let qrImageView = UIImageView()
     let navigationBar = NavigationBar()
-    private var emojis: String?
 
     // MARK: - Override functions
     override func viewDidLoad() {
@@ -141,11 +140,12 @@ class ProfileViewController: UIViewController {
 
     private func setEmojiID() {
         if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
-            let (emojis, _) = pubKey.emojis
-
-            self.emojis = emojis
-
-            emojiIdView.setupView(pubKey: pubKey, textCentered: true, inViewController: self)
+            emojiIdView.setupView(
+                yat: UserDefaults.Key.yat.stringValue(),
+                pubKey: pubKey,
+                textCentered: true,
+                inViewController: self
+            )
             emojiIdView.blackoutParent = view
         }
     }
@@ -171,13 +171,18 @@ class ProfileViewController: UIViewController {
         guard let pubKey = walletPublicKey else {
             throw walletPublicKeyError!
         }
-
         let (deeplink, deeplinkError) = pubKey.hexDeeplink
         guard deeplinkError == nil else {
             throw deeplinkError!
         }
 
-        let deepLinkData = deeplink.data(using: .utf8)
+        let yatParameter: String
+        if let yat = UserDefaults.Key.yat.stringValue() {
+            yatParameter = "?yat=" + yat
+        } else {
+            yatParameter = ""
+        }
+        let deepLinkData = (deeplink + yatParameter).addingPercentEncoding(withAllowedCharacters: .urlFragmentAllowed)!.data(using: .utf8)
         let filter = CIFilter(name: "CIQRCodeGenerator")
         filter?.setValue(deepLinkData, forKey: "inputMessage")
         filter?.setValue("L", forKey: "inputCorrectionLevel")
@@ -247,4 +252,5 @@ class ProfileViewController: UIViewController {
             self?.qrContainer.layer.shadowOpacity = 0.5
         }
     }
+
 }

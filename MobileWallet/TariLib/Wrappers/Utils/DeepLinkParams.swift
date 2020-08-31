@@ -47,10 +47,12 @@ enum DeepLinkParamsError: Error {
 struct DeepLinkParams {
     let amount: MicroTari
     let note: String
+    let yat: String?
 
     init(deeplink: String) throws {
         var defaultNote = ""
         var defaultAmount = MicroTari(0)
+        var defaultYat: String?
 
         guard let url = URL(string: deeplink) else {
             throw DeepLinkParamsError.invalidURL
@@ -72,6 +74,8 @@ struct DeepLinkParams {
                             }
                         }
                       }
+                case "yat":
+                    defaultYat = item.value
                 default:
                     break
                 }
@@ -80,5 +84,6 @@ struct DeepLinkParams {
 
         note = defaultNote
         amount = defaultAmount
+        yat = defaultYat
     }
 }

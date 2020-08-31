@@ -51,6 +51,7 @@ extension UserDefaults {
         case backupOperationAborted
 
         case hasVerifiedSeedPhrase
+        case yat
 
         func set<T>(_ value: T) {
             UserDefaults.standard.set(value, forKey: rawValue)
@@ -63,6 +64,10 @@ extension UserDefaults {
 
         func boolValue() -> Bool {
             UserDefaults.standard.bool(forKey: rawValue)
+        }
+
+        func stringValue() -> String? {
+            UserDefaults.standard.string(forKey: rawValue)
         }
     }
 }

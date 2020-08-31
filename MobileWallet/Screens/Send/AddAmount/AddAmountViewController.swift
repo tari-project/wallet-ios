@@ -43,6 +43,7 @@ import UIKit
 class AddAmountViewController: UIViewController {
     var publicKey: PublicKey?
     var deepLinkParams: DeepLinkParams?
+    var messagePayload: TxMessagePayload!
     private var buttons = [UIButton]()
     private let navigationBar = NavigationBar()
     private let continueButton = ActionButton(frame: .zero)
@@ -81,6 +82,11 @@ class AddAmountViewController: UIViewController {
         updateLabelText()
         showAvailableBalance()
 
+        if messagePayload == nil {
+            messagePayload = TxMessagePayload()
+            messagePayload.sourceYat = UserDefaults.Key.yat.stringValue()
+        }
+
         // Deep link value
         if let params = deepLinkParams {
             if params.amount.rawValue > 0 {
@@ -106,13 +112,21 @@ class AddAmountViewController: UIViewController {
             guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
 
             if contact.alias.0.trimmingCharacters(in: .whitespaces).isEmpty {
-                try navigationBar.showEmojiId(pubKey, inViewController: self)
+                try navigationBar.showEmojiId(
+                    publicKey: pubKey,
+                    yat: messagePayload.destinationYat,
+                    inViewController: self
+                )
             } else {
                 navigationBar.title = contact.alias.0
             }
         } catch {
             do {
-                try navigationBar.showEmojiId(pubKey, inViewController: self)
+                try navigationBar.showEmojiId(
+                    publicKey: pubKey,
+                    yat: messagePayload.destinationYat,
+                    inViewController: self
+                )
             } catch {
                 UserFeedback.shared.error(
                     title: localized("navigation_bar.error.show_emoji.title"),
@@ -460,6 +474,7 @@ class AddAmountViewController: UIViewController {
         let noteVC = AddNoteViewController()
         noteVC.publicKey = publicKey
         noteVC.amount = tariAmount
+        noteVC.messagePayload = messagePayload
         noteVC.deepLinkParams = deepLinkParams
 
         navigationController?.pushViewController(noteVC, animated: true)

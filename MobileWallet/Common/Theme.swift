@@ -113,6 +113,8 @@ struct Colors: Loopable {
     let creatingWalletFirstLabel = UIColor(named: "CreatingWalletBlackLabel")
     let creatingWalletSecondLabel = UIColor(named: "CreatingWalletBlackLabel")
     let creatingWalletThirdLabel = UIColor(named: "CreatingWalletOtherLabel")
+    let createWalletGetDifferentYatButton = UIColor(named: "CreatingWalletTapToSeeFullEmoji")
+    let createWalletGetDifferentYatButtonDisabled = UIColor(named: "ActionButtonTitleDisabled")
     let creatingWalletBackground = UIColor(named: "CreatingWalletBackground")
     let creatingWalletEmojisLabelBackground = UIColor(named: "CreatingWalletEmojisLabel")
     let tapToSeeFullEmoji = UIColor(named: "CreatingWalletTapToSeeFullEmoji")
@@ -317,7 +319,8 @@ struct Fonts: Loopable {
     let createWalletFirstLabel = UIFont.Avenir.black.withSize(18.0)
     let createWalletSecondLabelFirstText = UIFont.Avenir.black.withSize(18.0)
     let createWalletSecondLabelSecondText = UIFont.Avenir.roman.withSize(18.0)
-    let createWalletThirdLabel = UIFont.Avenir.medium.withSize(13.0)
+    let createWalletThirdLabel = UIFont.Avenir.medium.withSize(14.0)
+    let createWalletGetDifferentYatButton = UIFont.Avenir.heavy.withSize(13.0)
     let createWalletEmojiIDFirstText = UIFont.Avenir.light.withSize(18.0)
     let createWalletEmojiIDSecondText = UIFont.Avenir.black.withSize(18.0)
     let createWalletNotificationsFirstLabel = UIFont.Avenir.light.withSize(18.0)
@@ -382,6 +385,7 @@ struct Fonts: Loopable {
 
     // Add recipient view
     let searchContactsInputBoxText = UIFont.Avenir.roman.withSize(14.0)
+    let contactTableViewSectionHeader = UIFont.Avenir.medium.withSize(12.0)
     let contactCellAlias = UIFont.Avenir.heavy.withSize(15.0)
     let contactCellAliasLetter = UIFont.Avenir.heavy.withSize(24.0)
 

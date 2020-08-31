@@ -93,16 +93,24 @@ class CompletedTx: TxProtocol {
         return (MicroTari(result), errorCode != 0 ? CompletedTxError.generic(errorCode) : nil)
     }
 
-    var message: (String, Error?) {
+    var message: (TxMessagePayload, Error?) {
         var errorCode: Int32 = -1
-        let resultPtr = withUnsafeMutablePointer(to: &errorCode, { error in
-            completed_transaction_get_message(ptr, error)})
-        let result = String(cString: resultPtr!)
-
+        let resultPtr = withUnsafeMutablePointer(
+            to: &errorCode, {
+                error in
+                completed_transaction_get_message(ptr, error)
+            }
+        )
+        let message = String(cString: resultPtr!)
         let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
         string_destroy(mutable)
-
-        return (result, errorCode != 0 ? CompletedTxError.generic(errorCode) : nil)
+        let payload: TxMessagePayload
+        if let messagePayload = TxMessagePayload(JSONString: message) {
+            payload = messagePayload
+        } else {
+            payload = TxMessagePayload(nonJSONMessage: message)
+        }
+        return (payload, errorCode != 0 ? CompletedTxError.generic(errorCode) : nil)
     }
 
     var timestamp: (UInt64, Error?) {

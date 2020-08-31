@@ -69,6 +69,29 @@ class PasteEmojisView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func setYat(yat: String, onPress: @escaping () -> Void) {
+        textButton.setTitle(NSLocalizedString("yat.paste", comment: "Emoji view"), for: .normal)
+        self.onPressCallback = onPress
+        textButton.addTarget(self, action: #selector(onTap), for: .allTouchEvents)
+
+        emojiLabel.text = yat + " "
+        emojiLabel.textAlignment = .center
+        emojiLabel.letterSpacing(value: 1.6)
+        emojiLabel.translatesAutoresizingMaskIntoConstraints = false
+        emojiLabel.textColor = Theme.shared.colors.emojisSeparatorExpanded
+        emojiLabel.sizeToFit()
+        addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (onTap(_:))))
+        scrollView.addSubview(emojiLabel)
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.isScrollEnabled = false
+        scrollView.contentInset = UIEdgeInsets(
+            top: 0,
+            left: scrollView.frame.size.width / 2 - emojiLabel.frame.size.width / 2,
+            bottom: 0,
+            right: 0
+        )
+    }
+
     func setEmojis(emojis: String, onPress: @escaping () -> Void) {
         textButton.setTitle(localized("emoji.paste"), for: .normal)
         self.onPressCallback = onPress
@@ -94,6 +117,13 @@ class PasteEmojisView: UIView {
         scrollView.contentSize = CGSize(
             width: emojiLabel.frame.size.width + padding * 2,
             height: CGFloat(30)
+        )
+        scrollView.isScrollEnabled = true
+        scrollView.contentInset = UIEdgeInsets(
+            top: 0,
+            left: 0,
+            bottom: 0,
+            right: 0
         )
     }
 

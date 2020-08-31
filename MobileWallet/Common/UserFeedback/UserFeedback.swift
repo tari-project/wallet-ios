@@ -158,6 +158,30 @@ class UserFeedback {
         TariLogger.verbose("User success feedback: title=\(title)")
     }
 
+    func callToActionSimple(title: String,
+                            description: String,
+                            actionTitle: String,
+                            onAction: @escaping () -> Void) {
+        let ctaFeedbackView = FeedbackView()
+        ctaFeedbackView.setupCallToAction(
+            title: title,
+            description: description,
+            actionTitle: actionTitle,
+            onAction: {
+                SwiftEntryKit.dismiss()
+                onAction()
+            }
+        )
+
+        var attributes = defaultAttributes
+        attributes.displayDuration = .infinity
+        attributes.hapticFeedbackType = .success
+        attributes.screenInteraction = .absorbTouches
+
+        SwiftEntryKit.display(entry: ctaFeedbackView, using: attributes)
+        TariLogger.verbose("User call to action: title=\(title) description=\(description)")
+    }
+
     func callToAction(title: String,
                       boldedTitle: String? = nil,
                       description: String,

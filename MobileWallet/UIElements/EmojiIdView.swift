@@ -73,6 +73,8 @@ class EmojiIdView: UIView {
 
     private let emojiMenu = EmojiMenuView()
 
+    private var isForOnboarding = false
+    private var yat: String?
     private var emojiText: String!
     private var pubKeyHex: String!
 
@@ -81,33 +83,69 @@ class EmojiIdView: UIView {
     var cornerRadius: CGFloat = 6.0 {
         didSet {
             self.layer.cornerRadius = cornerRadius
-            condensedEmojiIdLabel.layer.cornerRadius = cornerRadius
+            condensedEmojiIdContainer.layer.cornerRadius = cornerRadius
         }
     }
 
     private var superVC: UIViewController?
 
-    func setupView(pubKey: PublicKey,
+    func setupView(isForOnboarding: Bool = false,
+                   yat: String? = nil,
+                   pubKey: PublicKey,
                    textCentered: Bool,
                    inViewController vc: UIViewController? = nil,
-                   initialWidth: CGFloat = CGFloat(185),
-                   initialHeight: CGFloat = CGFloat(40),
                    showContainerViewBlur: Bool = true,
                    cornerRadius: CGFloat = 6.0) {
+        self.isForOnboarding = isForOnboarding
+
         self.backgroundColor = .clear
         self.cornerRadius = cornerRadius
         blackoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap(_:))))
         superVC = vc
         superVC?.navigationController?.navigationBar.layer.zPosition = 0
-        emojiText = pubKey.emojis.0
-        pubKeyHex = pubKey.hex.0
-        blackoutWhileExpanded = showContainerViewBlur
-        // tap gesture
-        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
-        prepareCondensedEmojiId(textCentered: textCentered,
-                                width: initialWidth,
-                                height: initialHeight)
+        if yat != nil {
+            self.yat = yat
+            pubKeyHex = pubKey.hex.0
+        } else {
+            emojiText = pubKey.emojis.0
+            pubKeyHex = pubKey.hex.0
+        }
+        blackoutWhileExpanded = !isForOnboarding && showContainerViewBlur
+        if !isForOnboarding {
+            self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
+        }
+        var initialWidth = CGFloat(210)
+        var initialHeight = CGFloat(40)
+        if isForOnboarding {
+            initialWidth = CGFloat(166)
+            initialHeight = CGFloat(54)
+        } else if let yat = yat {
+            switch yat.count {
+            case 5:
+                initialWidth = CGFloat(148)
+            case 4:
+                initialWidth = CGFloat(125)
+            case 3:
+                initialWidth = CGFloat(100)
+            case 2:
+                initialWidth = CGFloat(74)
+            case 1:
+                initialWidth = CGFloat(51)
+            default: // unreachable
+                break
+            }
+        }
+        prepareCondensedEmojiId(
+            textCentered: textCentered,
+            width: initialWidth,
+            height: initialHeight
+        )
         prepareExpandedEmojiId(height: initialHeight)
+    }
+
+    func changeYat(_ yat: String) {
+        self.yat = yat
+        condensedEmojiIdLabel.text = " " + getCondensedEmojiId() + " "
     }
 
     private func prepareCondensedEmojiId(textCentered: Bool,
@@ -125,30 +163,40 @@ class EmojiIdView: UIView {
         labelInitialWidth = condensedEmojiIdContainer.widthAnchor.constraint(equalToConstant: initialWidth)
         labelInitialWidth?.isActive = true
         condensedEmojiIdContainer.heightAnchor.constraint(equalToConstant: height).isActive = true
+        condensedEmojiIdContainer.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
         condensedEmojiIdContainer.layer.shadowColor = Theme.shared.colors.emojiButtonShadow!.cgColor
         condensedEmojiIdContainer.layer.shadowOffset = .zero
         condensedEmojiIdContainer.layer.shadowRadius = cornerRadius * 1.2
         condensedEmojiIdContainer.layer.shadowOpacity = 1.0
         condensedEmojiIdContainer.clipsToBounds = true
         condensedEmojiIdContainer.layer.masksToBounds = false
-        condensedEmojiIdContainer.addSubview(condensedEmojiIdLabel)
 
-        condensedEmojiIdLabel.layer.masksToBounds = true
-        condensedEmojiIdLabel.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
-        condensedEmojiIdLabel.textAlignment = .center
+        condensedEmojiIdContainer.addSubview(condensedEmojiIdLabel)
+        condensedEmojiIdLabel.backgroundColor = UIColor.clear
+        if isForOnboarding {
+            condensedEmojiIdLabel.font = UIFont.systemFont(ofSize: 21.0)
+        } else {
+            condensedEmojiIdLabel.font = UIFont.systemFont(ofSize: 17.0)
+        }
+        condensedEmojiIdLabel.adjustsFontSizeToFitWidth = false
         condensedEmojiIdLabel.textColor = Theme.shared.colors.emojisSeparator!
-        condensedEmojiIdLabel.text = getCondensedEmojiId() + " "
-        condensedEmojiIdLabel.letterSpacing(value: 1.6)
+        condensedEmojiIdLabel.text = getCondensedEmojiId()
+
+        if isForOnboarding {
+            condensedEmojiIdLabel.letterSpacing(value: 1.85)
+        } else {
+            condensedEmojiIdLabel.letterSpacing(value: 1.6)
+        }
         condensedEmojiIdLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        condensedEmojiIdLabel.leadingAnchor.constraint(equalTo: condensedEmojiIdContainer.leadingAnchor).isActive = true
-        condensedEmojiIdLabel.trailingAnchor.constraint(equalTo: condensedEmojiIdContainer.trailingAnchor).isActive = true
-        condensedEmojiIdLabel.topAnchor.constraint(equalTo: condensedEmojiIdContainer.topAnchor).isActive = true
-        condensedEmojiIdLabel.bottomAnchor.constraint(equalTo: condensedEmojiIdContainer.bottomAnchor).isActive = true
-        condensedEmojiIdLabel.heightAnchor.constraint(equalToConstant: height).isActive = true
-
-        labelCenterConstraint = condensedEmojiIdLabel.centerXAnchor.constraint(equalTo: condensedEmojiIdContainer.centerXAnchor)
+        labelCenterConstraint = condensedEmojiIdLabel.centerXAnchor.constraint(
+            equalTo: condensedEmojiIdContainer.centerXAnchor,
+            constant: CGFloat(1.5)
+        )
         labelCenterConstraint?.isActive = true
+        condensedEmojiIdLabel.centerYAnchor.constraint(
+            equalTo: condensedEmojiIdContainer.centerYAnchor
+        ).isActive = true
     }
 
     private func prepareExpandedEmojiId(height: CGFloat) {
@@ -161,9 +209,6 @@ class EmojiIdView: UIView {
         expandedEmojiIdScrollView.bounces = true
 
         // prepare expanded emoji id label
-        condensedEmojiIdLabel.font = UIFont.systemFont(ofSize: 14.0)
-        condensedEmojiIdLabel.adjustsFontSizeToFitWidth = false
-        // condensedEmojiIdLabel.copyText = emojiText
         expandedEmojiIdLabel.numberOfLines = 0
         expandedEmojiIdLabel.adjustsFontSizeToFitWidth = false
         expandedEmojiIdLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
@@ -172,18 +217,30 @@ class EmojiIdView: UIView {
         expandedEmojiIdLabel.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
         expandedEmojiIdLabel.textAlignment = .center
         expandedEmojiIdLabel.textColor = Theme.shared.colors.emojisSeparator!
-        expandedEmojiIdLabel.text = getExpandedEmojiId() + " "
-        expandedEmojiIdLabel.font = UIFont.systemFont(ofSize: 14.0)
-        expandedEmojiIdLabel.letterSpacing(value: 1.6)
+        expandedEmojiIdLabel.text = getExpandedEmojiId()
+        if isForOnboarding {
+            expandedEmojiIdLabel.font = UIFont.systemFont(ofSize: 21.0)
+            expandedEmojiIdLabel.letterSpacing(value: 1.85)
+        } else {
+            expandedEmojiIdLabel.font = UIFont.systemFont(ofSize: 17.0)
+            expandedEmojiIdLabel.letterSpacing(value: 1.6)
+        }
         expandedEmojiIdLabel.sizeToFit()
+        var xOffset = CGFloat(15.15)
+        if self.yat == nil {
+            expandedEmojiIdScrollView.isScrollEnabled = true
+        } else {
+            expandedEmojiIdScrollView.isScrollEnabled = false
+            xOffset = CGFloat(7)
+        }
         expandedEmojiIdLabel.frame = CGRect(
-            x: 14,
-            y: 0,
+            x: xOffset,
+            y: CGFloat(0),
             width: expandedEmojiIdLabel.frame.width,
             height: height
         )
         expandedEmojiIdScrollView.contentSize = CGSize(
-            width: expandedEmojiIdLabel.frame.size.width + 14*2,
+            width: expandedEmojiIdLabel.frame.size.width + xOffset * 2,
             height: height
         )
         expandedEmojiIdScrollView.addSubview(expandedEmojiIdLabel)
@@ -204,6 +261,7 @@ class EmojiIdView: UIView {
         expanded = true
         // If they're typing somewhere, close the keyboard
         superVC?.view.endEditing(true)
+
         // fade out label container
         // fade in blackout
         fadeView(view: condensedEmojiIdContainer, fadeOut: true)
@@ -225,7 +283,10 @@ class EmojiIdView: UIView {
             height: scrollViewFrame.height
         )
         UIApplication.shared.keyWindow?.addSubview(expandedEmojiIdScrollView)
-        if animated {
+        if self.yat != nil {
+            expandedEmojiIdScrollView.alpha = 1
+            tapActionIsDisabled = false
+        } else if animated {
             expandedEmojiIdScrollView.alpha = 0
             expandedEmojiIdScrollView.setContentOffset(
                 CGPoint(x: expandedEmojiIdLabel.frame.width / 2, y: 0),
@@ -324,13 +385,18 @@ class EmojiIdView: UIView {
             }
         }
         // fade out scroll view
-        self.fadeView(view: self.expandedEmojiIdScrollView, fadeOut: true) {
-            [weak self] in
-            self?.expandedEmojiIdScrollView.removeFromSuperview()
+        if self.yat == nil {
+            self.fadeView(view: self.expandedEmojiIdScrollView, fadeOut: true) {
+                [weak self] in
+                self?.expandedEmojiIdScrollView.removeFromSuperview()
+            }
         }
         // fade in condensed emoji id
         self.fadeView(view: self.condensedEmojiIdContainer, fadeOut: false) {
             [weak self] in
+            if self?.yat != nil {
+                self?.expandedEmojiIdScrollView.removeFromSuperview()
+            }
             self?.tapActionIsDisabled = false
             if callTapCompletion == true {
                 self?.tapToExpand?(false)
@@ -339,13 +405,19 @@ class EmojiIdView: UIView {
     }
 
     private func getCondensedEmojiId() -> String {
+        if let yat = self.yat {
+            return " " + yat + " "
+        }
         let firstThreeChar = emojiText.prefix(3)
         let lastThreeChar = emojiText.suffix(3)
-        return "\(firstThreeChar)•••\(lastThreeChar)"
+        return "\(firstThreeChar)•••\(lastThreeChar)" + " "
     }
 
     private func getExpandedEmojiId() -> String {
-        return emojiText.insertSeparator(" | ", atEvery: 3)
+        if let yat = self.yat {
+            return " " + yat + " "
+        }
+        return emojiText.insertSeparator(" | ", atEvery: 3) + " "
     }
 
     override func willMove(toWindow newWindow: UIWindow?) {
@@ -382,7 +454,11 @@ extension EmojiIdView {
 
     private func showCopyEmojiIdButton(completion: (() -> Void)? = nil) {
         emojiMenu.alpha = 0.0
-        emojiMenu.title = localized("emoji.copy")
+        if self.yat != nil {
+            emojiMenu.title = localized("yat.copy")
+        } else {
+            emojiMenu.title = localized("emoji.copy")
+        }
 
         emojiMenu.completion = {
             [weak self] isLongPress in
@@ -390,6 +466,8 @@ extension EmojiIdView {
             self.tapActionIsDisabled = true
             if isLongPress {
                 self.copyToClipboard(string: self.pubKeyHex)
+            } else if let yat = self.yat {
+                self.copyToClipboard(string: yat)
             } else {
                 self.copyToClipboard(string: self.emojiText)
             }
@@ -401,13 +479,20 @@ extension EmojiIdView {
         }
 
         UIApplication.shared.keyWindow?.addSubview(emojiMenu)
-        guard let globalFrame = condensedEmojiIdContainer.globalFrame else { return }
-        let emojiMenuSize = CGSize(width: 119, height: 37)
-        let xPosition = (bounds.width / 2) - (emojiMenuSize.width / 2) + 25
+        guard let condensedGlobalFrame = condensedEmojiIdLabel.globalFrame,
+            let globalFrame = globalFrame else { return }
+        let emojiMenuSize = (self.yat == nil) ? CGSize(width: 119, height: 37) : CGSize(width: 90, height: 37)
+        let globalFrameCenterX: CGFloat
+        if self.yat != nil {
+            globalFrameCenterX = condensedGlobalFrame.origin.x +  (condensedGlobalFrame.width / 2)
+        } else {
+            globalFrameCenterX = globalFrame.origin.x +  (globalFrame.width / 2)
+        }
+        let xPosition = globalFrameCenterX - (emojiMenuSize.width / 2)
         emojiMenu.alpha = 0.0
         emojiMenu.frame = CGRect(
             x: xPosition,
-            y: globalFrame.origin.y + globalFrame.height,
+            y: condensedGlobalFrame.origin.y + (condensedGlobalFrame.size.height / 2),
             width: emojiMenuSize.width,
             height: emojiMenuSize.height
         )
@@ -420,7 +505,12 @@ extension EmojiIdView {
                        options: .curveEaseInOut,
                        animations: { [weak self] in
             self?.emojiMenu.alpha = 1.0
-            self?.emojiMenu.frame = CGRect(x: xPosition, y: globalFrame.origin.y + 45, width: emojiMenuSize.width, height: emojiMenuSize.height)
+            self?.emojiMenu.frame = CGRect(
+                x: xPosition,
+                y: condensedGlobalFrame.origin.y + 45,
+                width: emojiMenuSize.width,
+                height: emojiMenuSize.height
+            )
         }) {
             (_) in
             completion?()
@@ -555,8 +645,16 @@ private class EmojiMenuView: UIView {
     }
 
     override func draw(_ rect: CGRect) {
-        let bubbleSpace = CGRect(x: self.bounds.origin.x, y: self.bounds.origin.y + 5, width: self.bounds.width, height: self.bounds.height - 5)
-        let bubblePath = UIBezierPath(roundedRect: bubbleSpace, cornerRadius: 4.0)
+        let bubbleSpace = CGRect(
+            x: self.bounds.origin.x,
+            y: self.bounds.origin.y + 5,
+            width: self.bounds.width,
+            height: self.bounds.height - 5
+        )
+        let bubblePath = UIBezierPath(
+            roundedRect: bubbleSpace,
+            cornerRadius: 4.0
+        )
 
         UIColor.white.setStroke()
         UIColor.white.setFill()

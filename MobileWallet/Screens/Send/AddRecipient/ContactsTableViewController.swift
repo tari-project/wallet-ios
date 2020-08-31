@@ -43,37 +43,36 @@ import UIKit
 protocol ContactsTableDelegate: class {
     func onScrollTopHit(_: Bool)
     func onSelect(contact: Contact)
-    func onSelect(publicKey: PublicKey)
+    func onSelect(tx: TxProtocol)
+    func onSendToYat(yat: String)
 }
 
 class ContactsTableViewController: UITableViewController {
+
     weak var actionDelegate: ContactsTableDelegate?
 
     var filter: String = "" {
         didSet {
             if filter.isEmpty {
-                filteredRecentPublicKeyList =  recentContactList
-                filteredContactList = contactList.sorted(by: { (contact1, contact2) -> Bool in
-                    if contact1.alias.0.isEmpty { return false }
-                    return contact1.alias.0.lowercased() < contact2.alias.0.lowercased()
-                })
+                filteredTxs.removeAll()
+                filteredTxs.append(contentsOf: recentTxs)
             } else {
-                filteredRecentPublicKeyList = recentContactList.filter({ (publicKey) -> Bool in
-                    guard
-                        let wallet = TariLib.shared.tariWallet,
-                        let existContact = wallet.contacts.0?.list.0.filter({ $0.publicKey.0 == publicKey}).first
-                    else {
-                        return publicKey.emojis.0.localizedCaseInsensitiveContains(filter.emojiString)
+                filteredTxs = recentTxs.filter({ (tx) -> Bool in
+                    // check if it's a contact
+                    if let alias = tx.contact.0?.alias.0, alias.localizedCaseInsensitiveContains(filter) {
+                        return true
                     }
-                    return existContact.alias.0.localizedCaseInsensitiveContains(filter)
-                })
-
-                filteredContactList = contactList.filter {
-                    ($0.publicKey.0?.emojis.0.localizedCaseInsensitiveContains(filter.emojiString))!
-                        || $0.alias.0.localizedCaseInsensitiveContains(filter)
-                }.sorted(by: { (contact1, contact2) -> Bool in
-                    if contact1.alias.0.isEmpty { return false }
-                    return contact1.alias.0.lowercased() < contact2.alias.0.lowercased()
+                    // check emoji id
+                    if let publicKey = (tx.direction == .inbound) ? tx.sourcePublicKey.0 : tx.destinationPublicKey.0,
+                        publicKey.emojis.0.localizedCaseInsensitiveContains(filter.emojiString) {
+                        return true
+                    }
+                    // check yat
+                    if let yat = (tx.direction == .inbound) ? tx.message.0.sourceYat : tx.message.0.destinationYat,
+                        yat.localizedCaseInsensitiveContains(filter.emojiString) {
+                        return true
+                    }
+                    return false
                 })
             }
 
@@ -81,14 +80,16 @@ class ContactsTableViewController: UITableViewController {
         }
     }
 
-    private var recentContactList: [PublicKey] = []
+    private var recentTxs: [TxProtocol] = []
+    private var filteredTxs: [TxProtocol] = []
     private var contactList: [Contact] = []
-    private var filteredRecentPublicKeyList: [PublicKey] = []
-    private var filteredContactList: [Contact] = []
 
+    private let HEADER_HEIGHT: CGFloat = 20
     private let CELL_IDENTIFIER = "CONTACT_CELL"
     private let CONTACT_CELL_HEIGHT: CGFloat = 70
     private let SIDE_PADDING = Theme.shared.sizes.appSidePadding
+
+    var yatLookupIsInProgress = false
 
     private var isScrolledToTop: Bool = true {
         willSet {
@@ -178,53 +179,76 @@ class ContactsTableViewController: UITableViewController {
         }
 
         contactList = list
-
-        recentContactList = try wallet.recentPublicKeys(limit: 3)
-
-        // Filtered lists are full lists by default
-        filteredContactList = contactList.sorted(by: { (contact1, contact2) -> Bool in
+        recentTxs = try wallet.recentTxs()
+        filteredTxs.removeAll()
+        filteredTxs.append(contentsOf: recentTxs)
+        contactList.sort(by: { (contact1, contact2) -> Bool in
             if contact1.alias.0.isEmpty { return false }
             return contact1.alias.0.lowercased() < contact2.alias.0.lowercased()
         })
-        filteredRecentPublicKeyList = recentContactList
-
         tableView.reloadData()
     }
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2 // dont' show 2 lists if both lists aren't populated
+        return 1 + ((filter.isEmpty && !contactList.isEmpty) ? 1 : 0)
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView,
+                            numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return filteredRecentPublicKeyList.count
+            if filter.isEmpty {
+                return min(filteredTxs.count, 3)
+            } else if filteredTxs.count == 0
+                && filter.containsOnlyEmoji
+                && filter.count <= YatAPI.defaultYatEmojiIdLength
+                // check if all emojis are from the Yat emoji set
+                && YatAPI.shared.textIsPossiblyYat(filter) {
+                return 1
+            }
+            return filteredTxs.count
+        } else {
+            return filter.isEmpty ? contactList.count : 0
         }
-
-        return filteredContactList.count
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView,
+                            heightForRowAt indexPath: IndexPath) -> CGFloat {
         return CONTACT_CELL_HEIGHT
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView,
+                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: CELL_IDENTIFIER, for: indexPath) as! ContactCell
-
         if indexPath.section == 0 {
-            cell.setPublicKey(filteredRecentPublicKeyList[indexPath.row])
+            if filteredTxs.count == 0 {
+                cell.setYat(filter, yatLookupIsInProgress: yatLookupIsInProgress)
+            } else {
+                cell.setTx(filteredTxs[indexPath.row])
+            }
         } else if indexPath.section == 1 {
-            cell.setContact(filteredContactList[indexPath.row])
+            cell.setContact(contactList[indexPath.row])
         }
-
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        // If there's no data in a section, don't show anything
-        if (section == 0 && filteredRecentPublicKeyList.count == 0) || (section == 1 && filteredContactList.count == 0) {
-            return UIView()
+    override func tableView(_ tableView: UITableView,
+                            heightForHeaderInSection section: Int) -> CGFloat {
+        if section == 0 && filteredTxs.count == 0 {
+            return 0
+        }
+        return HEADER_HEIGHT
+    }
+
+    override func tableView(_ tableView: UITableView,
+                            viewForHeaderInSection section: Int) -> UIView? {
+        // if there's no data in a section, don't show anything
+        if section == 0 && filteredTxs.count == 0 {
+            return nil
+        }
+        if section == 1 && !filter.isEmpty {
+            return nil
         }
 
         let sectionHeaderView = UIView()
@@ -233,37 +257,52 @@ class ContactsTableViewController: UITableViewController {
         sectionHeaderLabel.translatesAutoresizingMaskIntoConstraints = false
         sectionHeaderView.addSubview(sectionHeaderLabel)
 
-        sectionHeaderView.heightAnchor.constraint(equalToConstant: 35).isActive = true
+        sectionHeaderView.heightAnchor.constraint(equalToConstant: HEADER_HEIGHT).isActive = true
 
-        sectionHeaderLabel.font = Theme.shared.fonts.txDateValueLabel
+        sectionHeaderLabel.font = Theme.shared.fonts.contactTableViewSectionHeader
         sectionHeaderLabel.textColor = Theme.shared.colors.txSmallSubheadingLabel
         sectionHeaderLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
         sectionHeaderLabel.backgroundColor = .clear
-        sectionHeaderLabel.heightAnchor.constraint(equalToConstant: sectionHeaderLabel.font.pointSize * 1.3).isActive = true
+        sectionHeaderLabel.heightAnchor.constraint(
+            equalToConstant: sectionHeaderLabel.font.pointSize * 1.3
+        ).isActive = true
         sectionHeaderLabel.layer.cornerRadius = 4
         sectionHeaderLabel.layer.masksToBounds = true
         sectionHeaderLabel.sizeToFit()
-        sectionHeaderLabel.leadingAnchor.constraint(equalTo: sectionHeaderView.leadingAnchor, constant: SIDE_PADDING).isActive = true
-        sectionHeaderLabel.bottomAnchor.constraint(equalTo: sectionHeaderView.bottomAnchor, constant: 0).isActive = true
+        sectionHeaderLabel.leadingAnchor.constraint(
+            equalTo: sectionHeaderView.leadingAnchor,
+            constant: SIDE_PADDING
+        ).isActive = true
+        sectionHeaderLabel.bottomAnchor.constraint(
+            equalTo: sectionHeaderView.bottomAnchor,
+            constant: 0
+        ).isActive = true
 
         return sectionHeaderView
     }
 
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
+    override func tableView(_ tableView: UITableView,
+                            titleForHeaderInSection section: Int) -> String? {
+        if section == 0 && filteredTxs.count > 0 {
             return localized("add_recipient.recent_txs")
+        } else if section == 1 && filter.isEmpty {
+            return localized("add_recipient.my_contacts")
         }
-
-        return localized("add_recipient.my_contacts")
+        return nil
     }
 
-    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+    override func tableView(_ tableView: UITableView,
+                            willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.section == 0 {
-            actionDelegate?.onSelect(publicKey: filteredRecentPublicKeyList[indexPath.row])
+            if filteredTxs.count > 0 {
+                actionDelegate?.onSelect(tx: filteredTxs[indexPath.row])
+            } else {
+                if yatLookupIsInProgress { return nil }
+                actionDelegate?.onSendToYat(yat: filter)
+            }
         } else if indexPath.section == 1 {
-            actionDelegate?.onSelect(contact: filteredContactList[indexPath.row])
+            actionDelegate?.onSelect(contact: contactList[indexPath.row])
         }
-
         return nil
     }
 
@@ -277,6 +316,6 @@ class ContactsTableViewController: UITableViewController {
     }
 
     func isEmptyList() -> Bool {
-        return (filteredRecentPublicKeyList.count + filteredContactList.count) < 1
+        return (filteredTxs.count + contactList.count) < 1
     }
 }

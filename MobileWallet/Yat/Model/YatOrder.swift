@@ -1,8 +1,8 @@
-//  BPKeychainWrapper.swift
+//  YatOrder.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 06.07.2020
+	Created by The Tari Development Team on 17.09.2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -39,19 +39,67 @@
 */
 
 import Foundation
+import ObjectMapper
 
-class BPKeychainWrapper {
-    private static let passwordKey = "BackupPasswordKey"
+class YatOrder: Mappable {
 
-    static func setBackupPasswordToKeychain(password: String) {
-        TariSettings.sharedKeychainGroup.set(password, forKey: passwordKey)
+    var id = ""
+    var userId = ""
+    var status = ""
+    var orderNumber = ""
+    var user = YatUser()
+    var totalInCents = 0
+    var secondsUntilExpiry = 0
+    var eligibleForRefund = false
+    var items = [YatOrderItem]()
+
+    required init?(map: Map) {
+
     }
 
-    static func loadBackupPasswordFromKeychain() -> String? {
-        return TariSettings.sharedKeychainGroup.string(forKey: passwordKey)
+    func mapping(map: Map) {
+        id                  <- map["id"]
+        userId              <- map["user_id"]
+        status              <- map["status"]
+        orderNumber         <- map["order_number"]
+        user                <- map["user"]
+        totalInCents        <- map["total_in_cents"]
+        secondsUntilExpiry  <- map["seconds_until_expiry"]
+        eligibleForRefund   <- map["eligible_for_refund"]
+        items               <- map["order_items"]
     }
 
-    static func removeBackupPasswordFromKeychain() {
-        TariSettings.sharedKeychainGroup.removeObject(forKey: passwordKey)
+    public var emojiId: String? {
+        for item in items {
+            if item.itemType == "EmojiId" {
+                return item.emojiId
+            }
+        }
+        return nil
     }
+
+}
+
+class YatOrderItem: Mappable {
+
+    var id = ""
+    var orderId = ""
+    var parentId = ""
+    var emojiId = ""
+    var itemType = ""
+    var quantity = 0
+
+    required init?(map: Map) {
+
+    }
+
+    func mapping(map: Map) {
+        id          <- map["id"]
+        orderId     <- map["order_id"]
+        parentId    <- map["parent_id"]
+        emojiId     <- map["emoji_id"]
+        itemType    <- map["item_type"]
+        quantity    <- map["quantity"]
+    }
+
 }

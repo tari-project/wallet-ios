@@ -56,7 +56,9 @@ class WalletCreationViewController: UIViewController {
     }
 
     // MARK: - Variables and constants
-    var startFromLocalAuth: Bool = false
+    var walletNotCreated: Bool = false
+    var emojiIdNotCreated: Bool = false
+    var localAuthNotSetup: Bool = false
 
     private var state: WalletCreationState = .createEmojiId
 
@@ -76,6 +78,10 @@ class WalletCreationViewController: UIViewController {
     private let firstLabel = TransitionLabel()
     private let secondLabel = TransitionLabel()
     private let thirdLabel = UILabel()
+    private let getDifferentYatButton = UIButton()
+
+    private var yatSetupResult: Result<String, Error>!
+    private var yatInCart: String!
 
     private let continueButton = ActionButton()
 
@@ -97,11 +103,20 @@ class WalletCreationViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        if startFromLocalAuth {
-            startFromAuth()
-        } else {
+        if walletNotCreated {
             showInitialScreen()
+        } else if emojiIdNotCreated {
+            startFromCreateEmojiId()
+        } else if localAuthNotSetup {
+            startFromAuth()
         }
+    }
+
+    private func startFromCreateEmojiId() {
+        state = .createEmojiId
+        prepareSubviews(for: .createEmojiId)
+        showCreateYourEmojiIdScreen()
+        Tracker.shared.track("/local_auth", "Local Authentication")
     }
 
     private func startFromAuth() {
@@ -126,6 +141,7 @@ class WalletCreationViewController: UIViewController {
             self.animationView.alpha = 0.0
             self.numpadImageView.alpha = 0.0
             self.emojiIdView.alpha = 0.0
+            self.getDifferentYatButton.alpha = 0.0
             self.tapToSeeButtonContainer.alpha = 0.0
             self.view.layoutIfNeeded()}, completion: {
                 [weak self] _ in
@@ -133,6 +149,7 @@ class WalletCreationViewController: UIViewController {
                 self.animationView.stop()
                 self.stackView.setCustomSpacing(0, after: self.emojiIdView)
                 self.stackView.setCustomSpacing(0, after: self.secondLabel)
+                self.stackView.setCustomSpacing(0, after: self.thirdLabel)
                 self.stackView.setCustomSpacing(0, after: self.animationView)
                 self.stackViewCenterYConstraint?.constant = 0.0
 
@@ -141,6 +158,148 @@ class WalletCreationViewController: UIViewController {
 
                 completion?()
         })
+    }
+
+    private func initializeYatSetup() {
+        let publicKey = TariLib.shared.tariWallet!.publicKey.0!
+        YatAPI.shared.registerActivateAndAuthenticate(tariPublicKey: publicKey) {
+            [weak self]
+            (authResult) in
+            guard let self = self else { return }
+            switch authResult {
+            case .success:
+                // clean cart in case it got populated by a previous session
+                YatAPI.shared.clearCart {
+                    [weak self]
+                    (clearCartResult) in
+                    switch clearCartResult {
+                    case .success:
+                        YatAPI.shared.addRandomYatToCart(
+                            alternateId: publicKey.hex.0.uppercased()
+                        ) {
+                            [weak self]
+                            (cartResult) in
+                            guard let self = self else { return }
+                            self.yatSetupResult = cartResult
+                            switch cartResult {
+                            case .success(let yat):
+                                self.yatInCart = yat
+                                if self.animationView.currentProgress == 1 {
+                                    self.showEmojiId()
+                                }
+                            case .failure(let error):
+                                if self.animationView.currentProgress == 1 {
+                                    self.showEmojiIdErrorDialog(error: error)
+                                }
+                            }
+                        }
+                    case .failure(let error):
+                        self?.yatSetupResult = .failure(error)
+                        if self?.animationView.currentProgress == 1 {
+                            self?.showEmojiIdErrorDialog(error: error)
+                        }
+                    }
+                }
+            case .failure(let error):
+                self.yatSetupResult = .failure(error)
+                if self.animationView.currentProgress == 1 {
+                    self.showEmojiIdErrorDialog(error: error)
+                }
+            }
+        }
+    }
+
+    @objc private func getDifferentYat(_ sender: UIButton) {
+        let publicKey = TariLib.shared.tariWallet!.publicKey.0!
+        getDifferentYatButton.isEnabled = false
+        continueButton.variation = .loading
+        YatAPI.shared.clearCart {
+            [weak self]
+            (clearCartResult) in
+            switch clearCartResult {
+            case .success:
+                YatAPI.shared.addRandomYatToCart(
+                    alternateId: publicKey.hex.0.uppercased()
+                ) {
+                    [weak self]
+                    (cartResult) in
+                    switch cartResult {
+                    case .success(let yat):
+                        self?.yatInCart = yat
+                        self?.onGetDifferentYatSuccessful()
+                    case .failure(let error):
+                        self?.onGetDifferentYatFailure(error: error)
+                    }
+                }
+            case .failure(let error):
+                self?.onGetDifferentYatFailure(error: error)
+            }
+        }
+    }
+
+    private func completeYatSetup() {
+        getDifferentYatButton.isEnabled = false
+        continueButton.variation = .loading
+        YatAPI.shared.checkoutAndLinkPublicKeyToYat(
+            yatInCart,
+            tariPublicKey: TariLib.shared.tariWallet!.publicKey.0!) {
+                [weak self]
+                (result) in
+                switch result {
+                case .success:
+                    self?.hideSubviews {
+                        [weak self] in
+                        guard let self = self else { return }
+                        if self.localAuthNotSetup {
+                            self.emojiIdView.shrink(animated: false)
+                            self.prepareSubviews(for: .localAuthentication)
+                            self.showLocalAuthentication()
+                        } else {
+                            self.goToHomeScreen()
+                        }
+                    }
+                case .failure(let error):
+                    self?.onYatCheckoutFailure(error: error)
+                }
+        }
+    }
+
+    private func onGetDifferentYatSuccessful() {
+        getDifferentYatButton.isEnabled = true
+        continueButton.variation = .normal
+        emojiIdView.changeYat(yatInCart)
+    }
+
+    private func onGetDifferentYatFailure(error: Error) {
+        getDifferentYatButton.isEnabled = true
+        continueButton.variation = .normal
+        UserFeedback.shared.error(
+            title: NSLocalizedString(
+                "common.error",
+                comment: "Yat setup error title."
+            ),
+            description: NSLocalizedString(
+                "wallet_creation.yat_state.get_different_yat_error",
+                comment: "Yat setup error title."
+            ),
+            error: error
+        )
+    }
+
+    private func onYatCheckoutFailure(error: Error) {
+        getDifferentYatButton.isEnabled = true
+        continueButton.variation = .normal
+        UserFeedback.shared.error(
+            title: NSLocalizedString(
+                "common.error",
+                comment: "Yat setup error title."
+            ),
+            description: NSLocalizedString(
+                "wallet_creation.yat_state.yat_checkout_error",
+                comment: "Yat setup error title."
+            ),
+            error: error
+        )
     }
 
     private func showContinueButton() {
@@ -190,20 +349,34 @@ class WalletCreationViewController: UIViewController {
     @objc func onNavigateNext() {
         switch state {
         case .createEmojiId:
-            hideSubviews { [weak self] in
+            hideSubviews {
+                [weak self] in
+                DispatchQueue.global(qos: .background).async {
+                    [weak self] in
+                    self?.initializeYatSetup()
+                }
                 self?.prepareSubviews(for: .showEmojiId)
-                self?.playLottieAnimation(.emojiWheel, completion: { [weak self] _ in
-                    self?.updateConstraintsAnimationView(animation: .none)
-                    self?.showYourEmoji()
+                self?.playLottieAnimation(.emojiWheel, completion: {
+                    [weak self] _ in
+                    guard let self = self else { return }
+                    self.updateConstraintsAnimationView(animation: .none)
+                    if let yatSetupResult = self.yatSetupResult {
+                        switch yatSetupResult {
+                        case .success:
+                            self.showEmojiId()
+                        case .failure(let error):
+                            self.showEmojiIdProgress()
+                            self.showEmojiIdErrorDialog(delaySec: 1, error: error)
+                            break
+                        }
+                    } else {
+                        self.showEmojiIdProgress()
+                    }
                 })
                 Tracker.shared.track("/onboarding/create_emoji_id", "Onboarding - Create Emoji Id")
             }
         case .showEmojiId:
-            hideSubviews { [weak self] in
-                self?.emojiIdView.shrink(animated: false)
-                self?.prepareSubviews(for: .localAuthentication)
-                self?.showLocalAuthentication()
-            }
+            completeYatSetup()
         case .localAuthentication:
             runAuth()
         case .enableNotifications:
@@ -213,26 +386,31 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func runNotificationRequest() {
-        NotificationManager.shared.requestAuthorization {_ in
+        Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
+        NotificationManager.shared.requestAuthorization {
+            _ in
             DispatchQueue.main.async {
-                Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
-
-                let nav = AlwaysPoppableNavigationController()
-                let tabBarController = MenuTabBarController()
-                nav.setViewControllers([tabBarController], animated: false)
-
-                if let window = UIApplication.shared.keyWindow {
-                    let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
-                    tabBarController.view.addSubview(overlayView)
-                    window.rootViewController = nav
-
-                    UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
-                        overlayView.alpha = 0
-                    }, completion: { _ in
-                        overlayView.removeFromSuperview()
-                    })
-                }
+                [weak self] in
+                self?.goToHomeScreen()
             }
+        }
+    }
+
+    private func goToHomeScreen() {
+        let nav = AlwaysPoppableNavigationController()
+        let tabBarController = MenuTabBarController()
+        nav.setViewControllers([tabBarController], animated: false)
+
+        if let window = UIApplication.shared.keyWindow {
+            let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
+            tabBarController.view.addSubview(overlayView)
+            window.rootViewController = nav
+
+            UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
+                overlayView.alpha = 0
+            }, completion: { _ in
+                overlayView.removeFromSuperview()
+            })
         }
     }
 
@@ -293,32 +471,60 @@ extension WalletCreationViewController {
         })
     }
 
+    private func showEmojiIdErrorDialog(delaySec: Int = 0,
+                                        error: Error) {
+        hideContinueButton()
+        UserFeedback.shared.callToActionSimple(
+            title: NSLocalizedString(
+                "common.error",
+                comment: "Yat setup error title."),
+            description: NSLocalizedString(
+                "wallet_creation.yat_state.yat_setup_error",
+                comment: "Yat setup error description."
+            ),
+            actionTitle: NSLocalizedString(
+                "common.retry",
+                comment: "Yat setup error retry."
+            )
+        ) {
+                [weak self] in
+                self?.showEmojiIdProgress()
+                DispatchQueue.global(qos: .background).async {
+                    [weak self ] in
+                    self?.initializeYatSetup()
+                }
+        }
+    }
+
+    private func showEmojiIdProgress() {
+        showContinueButton()
+        continueButton.variation = .loading
+    }
+
     // MARK: - Show Emoji ID
-    private func showYourEmoji() {
-        secondLabel.showLabel(duration: 1.0)
+    private func showEmojiId() {
+        emojiIdView.setupView(
+            isForOnboarding: true,
+            yat: yatInCart,
+            pubKey: TariLib.shared.tariWallet!.publicKey.0!,
+            textCentered: true,
+            inViewController: self,
+            showContainerViewBlur: false
+        )
+        // show continue button
+        showContinueButton()
+        continueButton.variation = .normal
+        // show text
+        secondLabel.showLabel(duration: 1)
         emojiIdView.isHidden = false
         view.layoutIfNeeded()
-        emojiIdView.expand(animated: false)
+        getDifferentYatButton.alpha = 0
         emojiIdView.alpha = 0
-
-        self.emojiIdView.tapToExpand = { [weak self] expanded in
-            if self?.state == .showEmojiId {
-                self?.showContinueButton()
-                UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
-                    self?.tapToSeeButtonContainer.alpha = expanded ? 0.0 : 1.0
-                }
-            }
-        }
-
         UIView.animate(withDuration: 1, animations: { [weak self] in
-            self?.thirdLabel.alpha = 1.0
-            self?.emojiIdView.alpha = 1.0
+            self?.thirdLabel.alpha = 1
+            self?.emojiIdView.alpha = 1
+            self?.getDifferentYatButton.alpha = 1
         }) { [weak self] (_) in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self?.emojiIdView.shrink(completion: { [weak self] in
-                    self?.tapToSeeButtonContainer.alpha = 1.0
-                })
-            }
             self?.state = .showEmojiId
         }
     }
@@ -402,34 +608,47 @@ extension WalletCreationViewController {
     }
 
     private func prepareForShowEmojiID() {
-        let thisIsYourEmojiString = localized("wallet_creation.emoji_state.first_label")
-        let attributedString = NSMutableAttributedString(string: thisIsYourEmojiString, attributes: [
-            .font: Theme.shared.fonts.createWalletEmojiIDFirstText,
-            .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
-            .kern: -0.33
+        let thisIsYourYatString = NSLocalizedString(
+            "wallet_creation.yat_state.first_label",
+            comment: "WalletCreation view"
+        )
+        let thisIsYourYatStringBoldPart = NSLocalizedString(
+            "wallet_creation.yat_state.first_label_bold_part",
+            comment: "WalletCreation view"
+        )
+        let attributedString = NSMutableAttributedString(
+            string: thisIsYourYatString,
+            attributes: [
+                .font: Theme.shared.fonts.createWalletEmojiIDFirstText,
+                .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
+                .kern: -0.33
         ])
+        let boldRange = (thisIsYourYatString as NSString).range(of: thisIsYourYatStringBoldPart)
         attributedString.addAttribute(
             .font,
             value: Theme.shared.fonts.createWalletEmojiIDSecondText,
-            range: NSRange(location: 13, length: 8)
+            range: boldRange
         )
         secondLabel.attributedText = attributedString
 
-        let curency = TariSettings.shared.network.currencyDisplayTicker
-        thirdLabel.text = localized("wallet_creation.emoji_state.second_label") + " \(curency)!"
+        continueButton.setTitle(
+            NSLocalizedString(
+                "common.continue",
+                comment: "WalletCreation view"
+            ),
+            for: .normal
+        )
+
+        thirdLabel.text = String.init(
+            format: NSLocalizedString(
+                "wallet_creation.yat_state.second_label",
+                comment: "WalletCreation view"
+            ),
+            TariSettings.shared.network.currencyDisplayTicker
+        )
+
+        stackView.setCustomSpacing(16, after: thirdLabel)
         stackView.setCustomSpacing(16, after: secondLabel)
-
-        continueButton.setTitle(localized("common.continue"), for: .normal)
-
-        if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
-            emojiIdView.setupView(
-                pubKey: pubKey,
-                textCentered: true,
-                inViewController: self,
-                showContainerViewBlur: false
-            )
-        }
-
         stackView.setCustomSpacing(30, after: emojiIdView)
     }
 
@@ -449,6 +668,8 @@ extension WalletCreationViewController {
         stackView.setCustomSpacing(16, after: secondLabel)
         stackViewCenterYConstraint?.constant = -85
         view.layoutIfNeeded()
+
+        continueButton.variation = .normal
 
         let currentType = LAContext().biometricType
         switch currentType {
@@ -514,6 +735,7 @@ extension WalletCreationViewController {
         setupFirstLabel()
         setupSecondLabel()
         setupThirdLabel()
+        setupGetDifferentYatButton()
     }
 
     private func setupUserEmojiContainer() {
@@ -554,6 +776,31 @@ extension WalletCreationViewController {
         thirdLabel.textAlignment = .center
         thirdLabel.numberOfLines = 0
         stackView.addArrangedSubview(thirdLabel)
+    }
+
+    private func setupGetDifferentYatButton() {
+        let title = NSLocalizedString(
+            "wallet_creation.yat_state.get_a_different_yat",
+            comment: "Get a different Yat."
+        )
+        getDifferentYatButton.setTitle(title, for: .normal)
+        getDifferentYatButton.alpha = 0.0
+        getDifferentYatButton.setTitleColor(
+            Theme.shared.colors.createWalletGetDifferentYatButton,
+            for: .normal
+        )
+        getDifferentYatButton.setTitleColor(
+            Theme.shared.colors.createWalletGetDifferentYatButtonDisabled,
+            for: .disabled
+        )
+        getDifferentYatButton.titleLabel?.font = Theme.shared.fonts.createWalletGetDifferentYatButton
+        getDifferentYatButton.backgroundColor = UIColor.clear
+        getDifferentYatButton.addTarget(
+            self,
+            action: #selector(getDifferentYat(_ :)),
+            for: .touchUpInside
+        )
+        stackView.addArrangedSubview(getDifferentYatButton)
     }
 
     private func setupPendingAnimation() {
@@ -603,21 +850,30 @@ extension WalletCreationViewController {
         continueButton.alpha = 0.0
         view.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
-
-        continueButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                                                constant: Theme.shared.sizes.appSidePadding).isActive = true
-        continueButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                                                 constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        continueButton.centerXAnchor.constraint(equalTo: view.centerXAnchor,
-                                                constant: 0).isActive = true
-
-        continueButtonConstraint = continueButton.topAnchor.constraint(equalTo: view.bottomAnchor)
-        continueButtonShowConstraint = continueButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        continueButton.leadingAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        continueButton.trailingAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        continueButton.centerXAnchor.constraint(
+            equalTo: view.centerXAnchor,
+            constant: 0
+        ).isActive = true
+        continueButtonConstraint = continueButton.topAnchor.constraint(
+            equalTo: view.bottomAnchor
+        )
+        continueButtonShowConstraint = continueButton.bottomAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.bottomAnchor
+        )
         continueButtonShowConstraint?.priority = UILayoutPriority(rawValue: 999)
-
-        continueButtonSecondShowConstraint = continueButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
+        continueButtonSecondShowConstraint = continueButton.bottomAnchor.constraint(
+            lessThanOrEqualTo: view.bottomAnchor,
+            constant: -20
+        )
         continueButtonSecondShowConstraint?.priority = UILayoutPriority(rawValue: 1000)
-
         continueButtonConstraint?.isActive = true
     }
 

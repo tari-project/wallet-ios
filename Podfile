@@ -18,7 +18,10 @@ target 'MobileWallet' do
   pod 'Giphy', '2.0.0'
   pod 'IPtProxy', '~> 0.1.0'
   pod 'OpenSSL-Universal'
-
+  pod 'Alamofire', '~> 5.2'
+  pod 'ObjectMapper', '~> 4.2'
+  pod 'AlamofireEasyLogger'
+  
   target 'MobileWalletTests' do
     inherit! :search_paths
     # Pods for testing

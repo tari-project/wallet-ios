@@ -1,6 +1,8 @@
 /* Common */
 "common.continue" = "Continue";
 "common.send.with_param" = "Send %@";
+"common.error" = "Error";
+"common.retry" = "Retry";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -45,9 +47,9 @@
 "tx_list.now" = "Now";
 "tx_list.empty" = "We don’t see any transactions yet.\nHopefully something happens soon…🤞";
 "tx_list.yesterday" = "Yesterday";
-"tx_list.inbound_pending_title" = "%@sent a payment";
-"tx_list.inbound_title" = "%@paid you";
-"tx_list.outbound_title" = "You paid%@";
+"tx_list.inbound_pending_title" = "%@ sent a payment";
+"tx_list.inbound_title" = "%@ paid you";
+"tx_list.outbound_title" = "You paid %@";
 
 "tx_list.error.sync_to_base_node.title" = "Base node error";
 "tx_list.error.sync_to_base_node.description" = "Could not sync to base node";
@@ -260,23 +262,28 @@
 /* Emoji view */
 "emoji.copied" = "COPIED";
 "emoji.copy" = "Copy Emoji ID";
+"yat.copy" = "Copy Yat";
 "emoji.paste" = "Paste copied Emoji ID";
 "emoji.hex_tip" = "ℹ️ You can long-press the Copy Emoji ID button to copy the address in hexadecimal format.";
+"yat.paste" = "Paste copied Yat";
 
 /* Add recipient view */
 "add_recipient.recent_txs" = "Recent Transactions";
 "add_recipient.error.load_contacts.title" = "Failed to load contacts";
 "add_recipient.error.load_contacts.description" = "Could not access wallet";
-"add_recipient.inputbox.placeholder" = "Enter Emoji ID or Contact Name";
+"add_recipient.inputbox.placeholder" = "Enter Yat, Emoji ID or Contact Name";
 "add_recipient.inputbox.warning" = "Invalid Emoji ID";
 "add_recipient.warning.can_not_send_yourself.with_param" = "Sorry, you cannot send %@ to yourself";
 "add_recipient.my_contacts" = "My Contacts";
 "add_recipient.title" = "Send To";
 "add_recipient.error.invalid_emoji.title" = "Could not use Emoji ID";
 "add_recipient.error.invalid_emoji.description" = "Failed to create a valid contact from the pasted Emoji ID";
+"add_recipient.send_to_yat.with_param" = "Send to %@";
+"add_recipient.send_to_yat.error.no_tari_wallet_for_yat.with_param" = "There is no Tari wallet for %@";
+"add_recipient.failed_to_lookup_yat.with_param" = "Failed to lookup %@. Please check your internet connection and try again.";
 
 /* WalletCreation view */
-"wallet_creation.button.create" = "Create Your Emoji ID";
+"wallet_creation.button.create" = "Create Your Yat";
 "wallet_creation.button.tap_to_see_full_emoji" = "Tap to see full Emoji ID";
 "wallet_creation.button.secure_pin" = "Secure with Pin";
 "wallet_creation.button.secure_face_id" = "Secure with Face ID";
@@ -287,14 +294,19 @@
 "wallet_creation.initial_state.second_label" = "We’re creating your wallet.";
 
 "wallet_creation.create_emoji_state.first_label" = "We’re off to a great start!";
-"wallet_creation.create_emoji_state.second_label" = "Now, let’s create your Emoji ID.";
-"wallet_creation.create_emoji_state.description.with_param" = "Your Emoji ID is your wallet address.\n It’s how your friends can find you and send you %@!";
+"wallet_creation.create_emoji_state.second_label" = "Now, let’s create your Yat.";
+"wallet_creation.create_emoji_state.description.with_param" = "Your Yat is your wallet address.\n It’s how your friends can find you and send you %@!";
 
 "wallet_creation.secure_your_wallet" = "🔑 Let’s secure your wallet. 🔑";
 "wallet_creation.secure_your_wallet.description.with_param" = "Sleep well at night knowing you’ve taken precautions to keep your %@ wallet safe and sound.";
 
-"wallet_creation.emoji_state.first_label" = "This is your Emoji ID";
-"wallet_creation.emoji_state.second_label" = "Your Emoji ID is your wallet’s address, and how others can find you and send you";
+"wallet_creation.yat_state.first_label" = "This is your Yat";
+"wallet_creation.yat_state.first_label_bold_part" = "Yat";
+"wallet_creation.yat_state.second_label" = "This set of emojis is your wallet address.\nIt’s how your friends can find you and send you %@.";
+"wallet_creation.yat_state.get_a_different_yat" = "Get a different Yat";
+"wallet_creation.yat_state.yat_setup_error"="There was an error while setting up your Yat. Please check your internet connection and try again.";
+"wallet_creation.yat_state.get_different_yat_error"="There was an error while getting a new Yat.";
+"wallet_creation.yat_state.yat_checkout_error"="There was an error while setting up your Yat.";
 
 "wallet_creation.notifications.title" = "Don’t miss out when people";
 "wallet_creation.notifications.subtitle" = "send you money.";

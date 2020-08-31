@@ -122,7 +122,7 @@ class SendingTariViewController: UIViewController {
     // should be set by previous view controller
     var recipientPubKey: PublicKey!
     var amount: MicroTari!
-    var note: String!
+    var messagePayload: TxMessagePayload!
 
     // will be set when tx is sent
     var txId: UInt64!
@@ -628,30 +628,20 @@ class SendingTariViewController: UIViewController {
                 switch walletState {
                 case .started:
                     TariEventBus.unregister(self, eventType: .walletStateChanged)
-                    guard let wallet = TariLib.shared.tariWallet else { return }
-                    do {
-                        self.txId = try wallet.sendTx(
-                            destination: self.recipientPubKey,
-                            amount: self.amount,
-                            feePerGram: Wallet.defaultFeePerGram,
-                            message: self.note
-                        )
-                        self.startListeningForWalletEvents()
-                    } catch {
-                        self.completionStatus = .sendError(error: error)
-                    }
+                    self.sendTx()
                 default:
                     break
                 }
             }
         } else {
             guard let wallet = TariLib.shared.tariWallet else { return }
+            let jsonPayload = messagePayload.toJSONString() ?? ""
             do {
                 self.txId = try wallet.sendTx(
                     destination: self.recipientPubKey,
                     amount: self.amount,
-                    feePerGram: Wallet.defaultFeePerGram,
-                    message: self.note
+					feePerGram: Wallet.defaultFeePerGram,
+					message: jsonPayload
                 )
                 self.startListeningForWalletEvents()
             } catch {

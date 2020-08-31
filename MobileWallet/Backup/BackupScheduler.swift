@@ -117,7 +117,7 @@ class BackupScheduler: NSObject {
         }
         scheduledBackupStarted = true
         do {
-            let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+            let password = TariKeychainWrapper.shared.backupPassword
             try ICloudBackup.shared.createWalletBackup(password: password)
         } catch {
             self.failedToCreateBackup(error: error)

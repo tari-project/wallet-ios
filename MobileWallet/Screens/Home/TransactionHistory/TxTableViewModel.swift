@@ -50,6 +50,7 @@ class TxTableViewModel: NSObject {
     private(set) var title = NSAttributedString()
     private(set) var avatar: String = ""
     private(set) var message: String
+    private(set) var yat: String?
     private(set) var value: Value
 
     private let gifID: String?
@@ -71,12 +72,27 @@ class TxTableViewModel: NSObject {
         self.tx = tx
         self.id = tx.id.0
 
-        value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.isPending)
-        let (msg, giphyDd) = TxTableViewModel.extractNote(from: tx.message.0)
-        message = msg
-        time = tx.date.0?.relativeDayFromToday() ?? ""
-        gifID = giphyDd
+        value = (
+            microTari: tx.microTari.0,
+            direction: tx.direction,
+            isCancelled: tx.isCancelled,
+            isPending: tx.isPending
+        )
 
+        let txMessage = tx.message
+
+        if txMessage.1 == nil {
+            let payload = txMessage.0
+            message = payload.text ?? ""
+            yat = (tx.direction == .inbound) ? payload.sourceYat : payload.destinationYat
+            gifID = payload.giphyId
+        } else {
+            message = ""
+            yat = nil
+            gifID = nil
+        }
+
+        time = tx.date.0?.relativeDayFromToday() ?? ""
         super.init()
 
         updateTitleAndAvatar()
@@ -119,18 +135,18 @@ class TxTableViewModel: NSObject {
         let (publicKey, _) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
         guard let pubKey = publicKey else { fatalError() }
 
-        let (emojis, _) = pubKey.emojis
-        avatar = String(emojis.emojis.prefix(1))
-
         var alias = ""
         var aliasIsEmojis = false
         if let contact = tx.contact.0 {
             alias = contact.alias.0
         }
 
+        let (emojis, _) = pubKey.emojis
+        avatar = String((yat?.emojis ?? emojis.emojis).prefix(1))
+
         if alias.isEmpty {
             let (emojis, _) = pubKey.emojis
-            alias = "\(String(emojis.emojis.prefix(2)))•••\(String(emojis.emojis.suffix(2)))"
+            alias = yat ?? "\(String(emojis.emojis.prefix(2)))•••\(String(emojis.emojis.suffix(2)))" + " "
             aliasIsEmojis = true
         }
 
@@ -154,32 +170,30 @@ class TxTableViewModel: NSObject {
             )
         }
 
-        // Getting the line breaks around the alias an not the other spaces in the copy
-        titleText = titleText
-            .replacingOccurrences(of: " ", with: "\u{00A0}")
-            .replacingOccurrences(of: alias, with: " \(alias) ")
-            .trimmingCharacters(in: .whitespaces)
+        let attributedTitle = NSMutableAttributedString(
+            string: titleText,
+            attributes: [
+                .font: Theme.shared.fonts.txCellUsernameLabel,
+                .foregroundColor: Theme.shared.colors.txCellAlias!
+            ]
+        )
 
-        if let startIndex = titleText.indexDistance(of: alias) {
-            let attributedTitle = NSMutableAttributedString(
-                string: titleText,
-                attributes: [
-                    .font: Theme.shared.fonts.txCellUsernameLabel,
-                    .foregroundColor: Theme.shared.colors.txCellAlias!
-                ]
-            )
-
+        if aliasIsEmojis {
+            if let range: Range<String.Index> = titleText.range(of: "•••") {
+                let nsRange = NSRange(range, in: titleText)
+                attributedTitle.addAttribute(
+                    .foregroundColor,
+                    value: Theme.shared.colors.emojisSeparator!,
+                    range: nsRange
+                )
+            }
+        } else if let startIndex = titleText.indexDistance(of: alias) {
             let range = NSRange(location: startIndex, length: alias.count)
             attributedTitle.addAttribute(.font, value: Theme.shared.fonts.txCellUsernameLabelHeavy, range: range)
-            if aliasIsEmojis {
-                // So the elippises between the emojis is lighter
-                attributedTitle.addAttribute(.foregroundColor, value: Theme.shared.colors.emojisSeparator!, range: range)
-            }
-
-            title = attributedTitle
-        } else {
-            title = NSAttributedString()
         }
+
+        title = attributedTitle
+
     }
 
     private func updateStatus() {

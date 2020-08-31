@@ -54,7 +54,7 @@ class TransitionLabel: UIView {
             layoutIfNeeded()
         }
     }
-    private let label = UILabel()
+    let label = UILabel()
     private var topConstraint: NSLayoutConstraint?
     private var bottomConstraint: NSLayoutConstraint?
     private var showConstraint: NSLayoutConstraint?

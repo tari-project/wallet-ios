@@ -226,7 +226,6 @@ extension TxViewController {
 
         noteLabel.leadingAnchor.constraint(equalTo: noteContainer.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         noteLabel.trailingAnchor.constraint(equalTo: noteContainer.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        noteLabel.heightAnchor.constraint(lessThanOrEqualToConstant: 100).isActive = true
     }
 
     func setNoteText(_ text: String) {

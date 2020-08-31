@@ -43,14 +43,23 @@ import CoreData
 import Sentry
 import GiphyUISDK
 import GiphyCoreSDK
+import AlamofireEasyLogger
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+
+    let alamofireLogger = FancyAppAlamofireLogger(
+        prettyPrint: true,
+        logFunction: {
+            print($0)
+        }
+    )
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+		YatAPI.shared.getAndCacheEmojiSet()
         // Override point for customization after application launch.
         handleCommandLineArgs()
         setupSentryCrashReporting()
@@ -71,6 +80,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
               let sentryPublicDSN = TariSettings.shared.sentryPublicDSN else {
             return
         }
+
         SentrySDK.start(options: [
             "dsn": sentryPublicDSN,
             "debug": false

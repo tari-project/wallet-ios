@@ -228,10 +228,10 @@ class FeedbackView: UIView {
         boldedTitle: String? = nil,
         description: String,
         descriptionBoldParts: [String]? = nil,
-        cancelTitle: String,
+        cancelTitle: String? = nil,
         actionTitle: String,
         isDestructive: Bool = false,
-        onClose: @escaping () -> Void,
+        onClose: (() -> Void)? = nil,
         onAction: @escaping () -> Void) {
         setupTitle()
         if let boldText = boldedTitle {
@@ -264,14 +264,21 @@ class FeedbackView: UIView {
         callToActionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: elementPadding).isActive = true
         callToActionButton.setTitle(actionTitle, for: .normal)
 
-        setupCloseButton()
-        if isDestructive {
-            closeButton.setVariation(.primary)
+        if onClose != nil && cancelTitle != nil {
+            setupCloseButton()
+            if isDestructive {
+                closeButton.setVariation(.primary)
+            }
+            onCloseHandler = onClose
+            closeButton.setTitle(cancelTitle, for: .normal)
+            closeButton.topAnchor.constraint(
+                equalTo: callToActionButton.bottomAnchor,
+                constant: elementPadding
+            ).isActive = true
+            closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -sidePadding).isActive = true
+        } else {
+            callToActionButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -sidePadding).isActive = true
         }
-        onCloseHandler = onClose
-        closeButton.setTitle(cancelTitle, for: .normal)
-        closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: elementPadding).isActive = true
-        closeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -sidePadding).isActive = true
     }
 
     func setupCallToActionDetailed(

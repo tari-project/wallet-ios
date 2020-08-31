@@ -111,8 +111,7 @@ extension Wallet {
             return ([], pendingOutboundError)
         }
 
-        var result: [TxProtocol] =
-            (pendingInboundTxs!.list.0.map { $0 as TxProtocol })
+        var result: [TxProtocol] = (pendingInboundTxs!.list.0.map { $0 as TxProtocol })
         result.append(contentsOf: pendingOutboundTxs!.list.0.map { $0 as TxProtocol })
         let minedUnconfirmedTxs = completedTxs!.list.0.filter { (completedTx) -> Bool in
             let (status, error) = completedTx.status
@@ -150,4 +149,5 @@ extension Wallet {
 
         return (result, nil)
     }
+
 }

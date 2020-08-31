@@ -58,6 +58,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     private let dimView = UIView()
     private var currentTextInputContent = "" // Used to check if something actually changed to avoid unnecessary ffi calls
     var deepLinkParams: DeepLinkParams?
+    private var tariEmojiSet: [String]!
 
     private var isEditingSearchBox: Bool = false {
         didSet {
@@ -81,7 +82,6 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                     )
                     return
                 }
-
                 errorMessageView.message = ""
 
                 inputBox.textAlignment = .center
@@ -123,21 +123,30 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
             if clipboardEmojis.isEmpty {
                 pasteEmojisView.isHidden = true
             } else {
-                pasteEmojisView.setEmojis(emojis: clipboardEmojis) { [weak self] in
-                    guard let self = self else { return }
-
-                    do {
-                        let pubKey = try PublicKey(emojis: self.clipboardEmojis)
-                        self.onAdd(publicKey: pubKey)
-                        self.setInputText(publicKey: pubKey)
-                    } catch {
-                        UserFeedback.shared.error(
-                            title: localized("add_recipient.error.invalid_emoji.title"),
-                            description: localized("add_recipient.error.invalid_emoji.description"),
-                            error: error)
+                if clipboardEmojis.count <= YatAPI.defaultYatEmojiIdLength {
+                    pasteEmojisView.setYat(yat: clipboardEmojis) { [weak self] in
+                        guard let self = self else { return }
+                        self.inputBox.text = self.clipboardEmojis
+                        self.contactsTableVC.filter = self.clipboardEmojis
+                        self.isEditingSearchBox = false
                     }
+                } else {
+                    pasteEmojisView.setEmojis(emojis: clipboardEmojis) { [weak self] in
+                        guard let self = self else { return }
+                        do {
+                            let pubKey = try PublicKey(emojis: self.clipboardEmojis)
+                            self.onAdd(publicKey: pubKey, yat: nil)
+                            self.setInputText(publicKey: pubKey)
+                        } catch {
+                            UserFeedback.shared.error(
+                                title: localized("add_recipient.error.invalid_emoji.title"),
+                                description: localized("add_recipient.error.invalid_emoji.description"),
+                                error: error
+							)
+                        }
 
-                    self.isEditingSearchBox = false
+                        self.isEditingSearchBox = false
+                    }
                 }
                 pasteEmojisView.isHidden = false
             }
@@ -146,11 +155,17 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // get and cache Yat emoji set in case it failed
+        // at app startup
+        YatAPI.shared.getAndCacheEmojiSet()
 
+        tariEmojiSet = EmojiSet.init().list.0
         contactsTableVC.actionDelegate = self
         setup()
-
-        Tracker.shared.track("/home/send_tari/add_recipient", "Send Tari - Add Recipient")
+        Tracker.shared.track(
+            "/home/send_tari/add_recipient",
+            "Send Tari - Add Recipient"
+        )
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -194,8 +209,9 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         present(scanViewController, animated: true, completion: nil)
     }
 
-    func textFieldDidChangeSelection(_ textField: UITextField) {
+    @objc func textFieldDidChange(_ textField: UITextField) {
         if let text = textField.text {
+            contactsTableVC.tableView.isHidden = false
             if text.isEmpty {
                 inputBox.rightView = scanButton
             }
@@ -255,7 +271,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         if textWithoutPiles.containsOnlyEmoji && (string.containsOnlyEmoji || string.count == 0) {
             textField.textColor = Theme.shared.colors.emojisSeparatorExpanded
         } else {
-            if textWithoutPiles.containsOnlyEmoji && textWithoutPiles.count > 3 && !string.containsEmoji {
+            if textWithoutPiles.containsOnlyEmoji && textWithoutPiles.count >= 7 && !string.containsEmoji {
                 return false
             }
             textField.textColor = nil
@@ -316,6 +332,8 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputBox.leadingAnchor.constraint(equalTo: inputContainerView.leadingAnchor, constant: sidePadding).isActive = true
         inputBox.trailingAnchor.constraint(equalTo: inputContainerView.trailingAnchor, constant: -sidePadding).isActive = true
         inputBox.heightAnchor.constraint(equalToConstant: emojiIdHeight).isActive = true
+
+        inputBox.addTarget(self, action: #selector(textFieldDidChange(_:)), for: .editingChanged)
 
         // Input style
         inputBox.placeholder = localized("add_recipient.inputbox.placeholder")
@@ -409,12 +427,16 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         if let text = pasteboardString {
             // Try get a pubkey from clipboard text
             do {
-                let pubKeyFromDeeplink = try PublicKey(any: text)
-                clipboardEmojis = pubKeyFromDeeplink.emojis.0
+                let publibKeyFromClipboard = try PublicKey(any: text)
+                clipboardEmojis = publibKeyFromClipboard.emojis.0
                 return
             } catch {
-               // No valid pubkey found
-               clipboardEmojis = ""
+                // No valid pubkey found, check for a yat
+                if YatAPI.shared.textIsPossiblyYat(text) {
+                    clipboardEmojis = text
+                } else {
+                    clipboardEmojis = ""
+                }
             }
         }
     }
@@ -454,7 +476,10 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         UIView.animate(withDuration: 0.25, animations: { [weak self] in
             guard let self = self else { return }
             self.pasteEmojisViewBottomAnchorConstraint.isActive = false
-            self.pasteEmojisViewBottomAnchorConstraint = self.pasteEmojisView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: 100)
+            self.pasteEmojisViewBottomAnchorConstraint = self.pasteEmojisView.bottomAnchor.constraint(
+                equalTo: self.view.bottomAnchor,
+                constant: 100
+            )
             self.pasteEmojisViewBottomAnchorConstraint.isActive = true
             self.navigationBarHeightConstraint.constant = 44
             self.dimView.backgroundColor = UIColor.black.withAlphaComponent(0)
@@ -488,10 +513,15 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         }
     }
 
-    private func onContinue(_ toPubKey: PublicKey) {
+    private func onContinue(_ toPubKey: PublicKey,
+                            destinationYat: String? = nil) {
+        let messagePayload = TxMessagePayload()
+        messagePayload.sourceYat = UserDefaults.Key.yat.stringValue()
+        messagePayload.destinationYat = destinationYat
         let amountVC = AddAmountViewController()
         amountVC.publicKey = toPubKey
         amountVC.deepLinkParams = deepLinkParams
+        amountVC.messagePayload = messagePayload
         self.navigationController?.pushViewController(amountVC, animated: true)
     }
 
@@ -507,13 +537,20 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     private func updateSeparatorsIfNeeded() {
-        guard var textWithoutPiles = inputBox.text?.replacingOccurrences(of: "|", with: "") else { return }
-        textWithoutPiles = textWithoutPiles.replacingOccurrences(of: " ", with: "")
-
-        if textWithoutPiles.containsOnlyEmoji {
+        guard var textWithoutPipes = inputBox.text?.replacingOccurrences(of: "|", with: "") else { return }
+        textWithoutPipes = textWithoutPipes.replacingOccurrences(of: " ", with: "")
+        if textWithoutPipes.containsOnlyEmoji
+            // add pipes only if all emojis are from the Tari emoji set
+            && !textWithoutPipes.map({ tariEmojiSet.contains("\($0)") }).contains(false) {
             inputBox.delegate = nil
-            inputBox.text = textWithoutPiles.insertSeparator(" | ", atEvery: 3)
+            if textWithoutPipes.count >= 7 {
+                inputBox.text = textWithoutPipes.insertSeparator(" | ", atEvery: 3)
+            } else {
+                inputBox.text = textWithoutPipes
+            }
             inputBox.delegate = self
+        } else {
+            inputBox.text = textWithoutPipes
         }
     }
 
@@ -530,22 +567,140 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     func onSelect(contact: Contact) {
         let (publicKey, publicKeyError) = contact.publicKey
-        guard publicKeyError == nil else {
+        guard let contactPublicKey = publicKey, publicKeyError == nil else {
             return
         }
-        onSelect(publicKey: publicKey!)
+        onContinue(contactPublicKey)
     }
 
-    func onSelect(publicKey: PublicKey) {
+    func onSelect(tx: TxProtocol) {
         dismissKeyboard()
-        onContinue(publicKey)
+        switch tx.direction {
+        case .inbound:
+            if let sourcePublicKey = tx.sourcePublicKey.0 {
+                onContinue(
+                    sourcePublicKey,
+                    destinationYat: tx.message.0.sourceYat
+                )
+            }
+        case .outbound:
+            if let destinationPublicKey = tx.destinationPublicKey.0 {
+                onContinue(
+                    destinationPublicKey,
+                    destinationYat: tx.message.0.destinationYat
+                )
+            }
+        default:
+            break
+        }
+
     }
 
     // Used by the scanner and paste from clipboard
-    func onAdd(publicKey: PublicKey) {
-        contactsTableVC.filter = publicKey.emojis.0
-        select(publicKey: publicKey)
-        setInputText(publicKey: publicKey)
-        dismissKeyboard()
+    func onAdd(publicKey: PublicKey,
+               yat: String?) {
+        if let destinationYat = yat {
+            contactsTableVC.filter = destinationYat
+            inputBox.text = destinationYat
+            dismissKeyboard()
+        } else {
+            contactsTableVC.filter = publicKey.emojis.0
+            select(publicKey: publicKey)
+            setInputText(publicKey: publicKey)
+            dismissKeyboard()
+        }
     }
+
+    func onSendToYat(yat: String) {
+        view.endEditing(true)
+        inputBox.isEnabled = false
+        lookupYat(yat)
+    }
+
+    private func lookupYat(_ yat: String) {
+        contactsTableVC.yatLookupIsInProgress = true
+        contactsTableVC.tableView.reloadData()
+        YatAPI.shared.lookupYat(yat) {
+            [weak self]
+            (result) in
+            switch result {
+            case .success(let response):
+                self?.onYatLookupSuccessful(yat: yat, response: response)
+            case .failure(let error):
+                self?.onYatLookupFailure(yat: yat, error: error)
+            }
+        }
+    }
+
+    private func onYatLookupSuccessful(yat: String, response: YatLookupResponse) {
+        contactsTableVC.yatLookupIsInProgress = false
+        inputBox.isEnabled = true
+        contactsTableVC.tableView.reloadData()
+        if let publicKey = validateYatLookupResponse(yat: yat, response: response) {
+            onContinue(
+                publicKey,
+                destinationYat: yat
+            )
+        }
+    }
+
+    private func onYatLookupFailure(yat: String, error: Error) {
+        contactsTableVC.yatLookupIsInProgress = false
+        inputBox.isEnabled = true
+        contactsTableVC.tableView.reloadData()
+        if let afError = error.asAFError,
+            let statusCode = afError.responseCode,
+            statusCode == 404 {
+            onNoWalletForYat(yat)
+            return
+        }
+        UserFeedback.shared.error(
+            title: NSLocalizedString("common.error", comment: "Failed to lookup Yat."),
+            description: String.init(
+                format: NSLocalizedString("add_recipient.failed_to_lookup_yat.with_param", comment: "Failed to lookup Yat."),
+                yat
+            )
+        )
+    }
+
+    private func onNoWalletForYat(_ yat: String) {
+        contactsTableVC.tableView.isHidden = true
+        errorMessageView.message = String.init(
+            format: NSLocalizedString(
+                "add_recipient.send_to_yat.error.no_tari_wallet_for_yat.with_param",
+                comment: "No wallet for yat."
+            ),
+            yat
+        )
+    }
+
+    private func validateYatLookupResponse(yat: String, response: YatLookupResponse) -> PublicKey? {
+        for record in response.records {
+            switch record.type {
+            case .TariPublicKey:
+                // successful - check public key
+                do {
+                    let publicKey = try PublicKey(hex: record.value)
+                    if publicKey.hex.0 == TariLib.shared.tariWallet?.publicKey.0?.hex.0 {
+                        contactsTableVC.tableView.isHidden = true
+                        errorMessageView.message = String(
+                            format: NSLocalizedString(
+                                "add_recipient.warning.can_not_send_yourself.with_param",
+                                comment: "Add recipient view"
+                            ),
+                            TariSettings.shared.network.currencyDisplayTicker
+                        )
+                        return nil
+                    }
+                    return publicKey
+                } catch {
+                    onNoWalletForYat(yat)
+                    return nil
+                }
+            }
+        }
+        onNoWalletForYat(yat)
+        return nil
+    }
+
 }

@@ -197,13 +197,13 @@ class ActionButton: UIButton {
         })
     }
 
-    func hideButtonWithAlpha(comletion: (() -> Void)? = nil) {
+    func hideButtonWithAlpha(completion: (() -> Void)? = nil) {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
             UIView.animate(withDuration: 0.5, animations: { [weak self] in
                 self?.alpha = 0.0
                 self?.layoutIfNeeded()
             }) { _ in
-                comletion?()
+                completion?()
             }
         })
     }

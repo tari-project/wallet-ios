@@ -461,6 +461,7 @@ class Wallet {
         if !result {
             throw WalletErrors.removeContact
         }
+        TariEventBus.postToMainThread(.txListUpdate)
     }
 
     func addUpdateContact(alias: String, publicKeyHex: String) throws {
@@ -788,37 +789,41 @@ class Wallet {
         }
     }
 
-    func recentPublicKeys(limit: Int) throws -> [PublicKey] {
-        let completedPublicKeys = try txsPublicKeys(completedTxs, limit: limit)
-        let pendingInboundPublicKeys = try txsPublicKeys(pendingInboundTxs, limit: limit)
-        let pendingOutboundPublicKeys = try txsPublicKeys(pendingOutboundTxs, limit: limit)
-
-        return completedPublicKeys.union(pendingInboundPublicKeys).union(pendingOutboundPublicKeys).suffix(limit)
-    }
-
-    private func txsPublicKeys<Txs: TxsProtocol>(_ transactions: (txs: Txs?, txsError: Error?), limit: Int) throws -> Set<PublicKey> {
-        guard let txs = transactions.txs else { throw transactions.txsError! }
-
-        let (txsCount, txsCountError) = txs.count
-        guard txsCountError == nil else { throw txsCountError! }
-
-        var publicKeys: Set<PublicKey> = []
-
-        if txsCount > 0 {
-            for n in 0...txsCount - 1 {
-                if publicKeys.count >= limit {
-                    return publicKeys
+    func recentTxs() throws -> [TxProtocol] {
+        let extractedCompletedTxs = try extractTxs(completedTxs)
+        let extractedPendingInboundTxs = try extractTxs(pendingInboundTxs)
+        let extractedPendingOutboundTxs = try extractTxs(pendingOutboundTxs)
+        var unfilteredTxs = extractedCompletedTxs + extractedPendingInboundTxs + extractedPendingOutboundTxs
+        // sort txs
+        unfilteredTxs.sort { (firstTx, secondTx) -> Bool in
+            firstTx.timestamp.0 > secondTx.timestamp.0
+        }
+        var filteredTxs = [TxProtocol]()
+        // limit
+        var publicKeys = Set<PublicKey>()
+        for tx in unfilteredTxs {
+            if let publicKey = (tx.direction == .inbound) ? tx.sourcePublicKey.0 : tx.destinationPublicKey.0 {
+                if !publicKeys.contains(publicKey) {
+                    filteredTxs.append(tx)
+                    publicKeys.insert(publicKey)
                 }
-                let tx = try txs.at(position: UInt32(n))
-                let (publicKey, pubKeyError) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
-                guard let pubKey = publicKey, pubKeyError == nil else {
-                    throw pubKeyError!
-                }
-                publicKeys.insert(pubKey)
             }
         }
+        return filteredTxs
+    }
 
-        return publicKeys
+    private func extractTxs<Txs: TxsProtocol>(_ transactions: (txs: Txs?, txsError: Error?)) throws -> [TxProtocol] {
+        guard let txs = transactions.txs else { throw transactions.txsError! }
+        let (txsCount, txsCountError) = txs.count
+        guard txsCountError == nil else { throw txsCountError! }
+        var result = [TxProtocol]()
+        if txsCount > 0 {
+            for n in 0..<txsCount {
+                let tx = try txs.at(position: UInt32(n))
+                result.append(tx)
+            }
+        }
+        return result
     }
 
     func coinSplit(amount: UInt64, splitCount: UInt64, fee: UInt64, message: String, lockHeight: UInt64) throws -> UInt64 {

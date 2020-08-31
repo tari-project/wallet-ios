@@ -446,16 +446,24 @@ class TxViewController: UIViewController {
                 valueLabel.text = microTari!.formattedPrecise
                 contactPublicKey = tx.destinationPublicKey.0
             }
-
             if let pubKey = contactPublicKey {
-                emojiIdView.setupView(
-                    pubKey: pubKey,
-                    textCentered: false,
-                    inViewController: self
-                )
+                if tx.message.1 == nil,
+                    let yat = (tx.direction == .inbound) ? tx.message.0.sourceYat : tx.message.0.destinationYat {
+                    emojiIdView.setupView(
+                        yat: yat,
+                        pubKey: pubKey,
+                        textCentered: false,
+                        inViewController: self
+                    )
+                } else {
+                    emojiIdView.setupView(
+                        pubKey: pubKey,
+                        textCentered: false,
+                        inViewController: self
+                    )
+                }
                 emojiIdView.blackoutParent = view
             }
-
             let (date, dateError) = tx.date
             guard dateError == nil else {
                 throw dateError!
@@ -482,16 +490,14 @@ class TxViewController: UIViewController {
                 isShowingContactAlias = false
             }
 
-            let (message, messageError) = tx.message
+            let (payload, messageError) = tx.message
             guard messageError == nil else {
                 throw messageError!
             }
 
-            let (note, noteGiphyId) = TxViewController.splitNoteAndGiphyId(message)
+            setNoteText(payload.text ?? "")
 
-            setNoteText(note)
-
-            if let giphyId = noteGiphyId {
+            if let giphyId = payload.giphyId {
                 GiphyCore.shared.gifByID(giphyId) { (response, error) in
                     guard error == nil else {
                         return TariLogger.error("Failed to load gif", error: error)
@@ -625,7 +631,7 @@ extension TxViewController: UITextFieldDelegate {
     }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard let newAlias = textField.text else {
+        guard let newAlias = textField.text?.trimmingCharacters(in: CharacterSet.whitespaces) else {
             return true
         }
 
@@ -643,7 +649,13 @@ extension TxViewController: UITextFieldDelegate {
 
         do {
             guard let wallet = TariLib.shared.tariWallet, let publicKey = contactPublicKey else { return true }
-            try wallet.addUpdateContact(alias: newAlias, publicKey: publicKey)
+            if newAlias.isEmpty {
+                if let contact = transaction?.contact.0 {
+                    try wallet.removeContact(contact)
+                }
+            } else {
+                try wallet.addUpdateContact(alias: newAlias, publicKey: publicKey)
+            }
             contactAlias = newAlias
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
@@ -677,23 +689,5 @@ extension TxViewController {
     @objc func keyboardWillHide(notification: NSNotification) {
         contactNameTextField.endEditing(true)
         contactNameTextField.text = contactAlias
-    }
-}
-
-// MARK: Giphy
-extension TxViewController {
-    static func splitNoteAndGiphyId(_ note: String) -> (String, String?) {
-        let giphyLinkPrefix = "https://giphy.com/embed/"
-
-        if let endIndex = note.range(of: giphyLinkPrefix)?.lowerBound {
-            let messageExcludingLink = note[..<endIndex].trimmingCharacters(in: .whitespaces)
-            let link = note[endIndex...].trimmingCharacters(in: .whitespaces)
-            let giphyId = link.replacingOccurrences(of: giphyLinkPrefix, with: "")
-
-            return (messageExcludingLink, giphyId)
-
-        } else {
-            return (note, nil)
-        }
     }
 }

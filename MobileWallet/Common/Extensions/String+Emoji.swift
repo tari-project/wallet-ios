@@ -51,6 +51,12 @@ extension Character {
     var isCombinedIntoEmoji: Bool { unicodeScalars.count > 1 && unicodeScalars.first?.properties.isEmoji ?? false }
 
     var isEmoji: Bool { isSimpleEmoji || isCombinedIntoEmoji }
+
+    var toStringWithoutEmojiVariationSelector: String {
+        var scalars = unicodeScalars.map { $0 }
+        scalars.removeAll(where: { $0.value == 0xFE0F })
+        return scalars.map {"\($0)"}.joined(separator: "")
+    }
 }
 
 extension String {
@@ -65,4 +71,11 @@ extension String {
     var emojis: [Character] { filter { $0.isEmoji } }
 
     var emojiScalars: [UnicodeScalar] { filter { $0.isEmoji }.flatMap { $0.unicodeScalars } }
+
+    var withoutEmojiVariationSelector: String {
+        var scalars = unicodeScalars.map { $0 }
+        scalars.removeAll(where: { $0.value == 0xFE0F })
+        return scalars.map {"\($0)"}.joined(separator: "")
+    }
+
 }

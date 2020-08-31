@@ -186,10 +186,13 @@ class NavigationBar: UIView, NavigationBarProtocol {
         progressView.heightAnchor.constraint(equalToConstant: 4.0).isActive = true
     }
 
-    func showEmojiId(_ publicKey: PublicKey, inViewController: UIViewController) throws {
+    func showEmojiId(publicKey: PublicKey,
+                     yat: String?,
+                     inViewController: UIViewController) throws {
         let ( _, emojisError) = publicKey.emojis
         guard emojisError == nil else { throw emojisError! }
-        emojiIdView.setupView(pubKey: publicKey,
+        emojiIdView.setupView(yat: yat,
+                              pubKey: publicKey,
                               textCentered: true,
                               inViewController: inViewController)
 

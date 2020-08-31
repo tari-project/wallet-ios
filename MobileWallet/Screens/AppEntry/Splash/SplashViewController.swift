@@ -72,6 +72,9 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     var animationContainerBottomAnchor: NSLayoutConstraint?
     var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
     private let progressFeedbackView = FeedbackView()
+    private lazy var emojiIdCreated: Bool = {
+        UserDefaults.Key.yat.stringValue() != nil
+    }()
     private lazy var authStepPassed: Bool = {
         UserDefaults.Key.authStepPassed.boolValue()
     }()
@@ -182,7 +185,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 )
             }
         } else {
-            BPKeychainWrapper.removeBackupPasswordFromKeychain()
+            TariKeychainWrapper.shared.clear()
             videoView.isHidden = false
             titleLabel.isHidden = false
             createWalletButton.isHidden = false
@@ -218,7 +221,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     private func createWalletBackup() {
         if ICloudBackup.shared.iCloudBackupsIsOn && !ICloudBackup.shared.isValidBackupExists() {
             do {
-                let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+                let password = TariKeychainWrapper.shared.backupPassword
                 try ICloudBackup.shared.createWalletBackup(password: password)
             } catch {
                 var title = localized("iCloud_backup.error.title.create_backup")
@@ -292,7 +295,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func navigateToHome() {
-        if walletExistsInitially && authStepPassed {
+        if walletExistsInitially && authStepPassed && emojiIdCreated {
             // Calling this here in case they did not succesfully register the token in the onboarding
             NotificationManager.shared.requestAuthorization()
 
@@ -313,7 +316,9 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             }
         } else {
             let vc = WalletCreationViewController()
-            vc.startFromLocalAuth = !authStepPassed && walletExistsInitially
+            vc.walletNotCreated = !walletExistsInitially
+            vc.emojiIdNotCreated = !emojiIdCreated
+            vc.localAuthNotSetup = !authStepPassed
             if let window = view.window {
                 let transition: CATransition = CATransition()
                 transition.duration = 0.5
