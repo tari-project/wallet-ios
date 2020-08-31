@@ -41,6 +41,10 @@
 import WebKit
 
 class WebBrowserViewController: UIViewController {
+    private enum UniversalLinkAppPrefix: String, CaseIterable {
+        case telegram = "https://t.me"
+    }
+
     private let webView = WKWebView()
     private let navigationBar = UIView()
     private let navigationPanel = UIView()
@@ -110,6 +114,26 @@ extension WebBrowserViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         titleLabel.text = webView.title
         updateButtons()
+    }
+
+    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if let url = navigationAction.request.url {
+            if UniversalLinkAppPrefix.allCases.first(where: { prefix -> Bool in
+                return url.absoluteString.hasPrefix(prefix.rawValue)
+            }) != nil {
+                openCustomApp(url: url)
+                decisionHandler(.cancel)
+                return
+            }
+        }
+        decisionHandler(.allow)
+    }
+
+    private func openCustomApp(url: URL) {
+        let application = UIApplication.shared
+        if application.canOpenURL(url) {
+            application.open(url, options: [:], completionHandler: nil)
+        }
     }
 
     private func updateButtons() {
