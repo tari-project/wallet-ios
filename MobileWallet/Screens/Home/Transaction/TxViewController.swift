@@ -1,4 +1,4 @@
-//  TransactionViewController.swift
+//  TxViewController.swift
 
 /*
 	Package MobileWallet
@@ -42,7 +42,7 @@ import UIKit
 import GiphyUISDK
 import GiphyCoreSDK
 
-class TransactionViewController: UIViewController {
+class TxViewController: UIViewController {
     let bottomHeadingPadding: CGFloat = 11
     let valueViewHeightMultiplierFull: CGFloat = 0.2536
     var valueViewHeightMultiplierShortened: CGFloat {
@@ -76,7 +76,7 @@ class TransactionViewController: UIViewController {
     let cancelButton = TextButton()
     let attachmentSection = UIView()
     let attachmentView = GPHMediaView()
-    var transaction: TransactionProtocol?
+    var transaction: TxProtocol?
     private var isShowingStateView = false
     private var isShowingCancelButton = false
     private var txStateViewBottomAnchor = NSLayoutConstraint()
@@ -167,7 +167,7 @@ class TransactionViewController: UIViewController {
         }
 
         switch tx.status.0 {
-        case .mined, .imported, .transactionNullError, .unknown:
+        case .mined, .imported, .txNullError, .unknown:
             return defaultNavBarHeight
         case .pending:
             if tx.direction == .outbound {
@@ -181,7 +181,7 @@ class TransactionViewController: UIViewController {
     }
 
     var isCancelled: Bool {
-        if let completedTx = transaction as? CompletedTransaction {
+        if let completedTx = transaction as? CompletedTx {
             return completedTx.isCancelled
         }
 
@@ -196,8 +196,8 @@ class TransactionViewController: UIViewController {
             try setDetails()
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("transaction_detail.error.load_transaction.title", comment: "Transaction detail view"),
-                description: NSLocalizedString("transaction_detail.error.load_transaction.description", comment: "Transaction detail view"),
+                title: NSLocalizedString("tx_detail.error.load_tx.title", comment: "Transaction detail view"),
+                description: NSLocalizedString("tx_detail.error.load_tx.description", comment: "Transaction detail view"),
                 error: error
             )
         }
@@ -271,16 +271,16 @@ class TransactionViewController: UIViewController {
 
     private func registerEvents() {
         let eventTypes: [TariEventTypes] = [
-            .receievedTransactionReply,
-            .receivedFinalizedTransaction,
-            .transactionBroadcast,
-            .transactionMined
+            .receievedTxReply,
+            .receivedFinalizedTx,
+            .txBroadcast,
+            .txMined
         ]
 
         eventTypes.forEach { (eventType) in
             TariEventBus.onMainThread(self, eventType: eventType) { [weak self] (result) in
                 guard let self = self else { return }
-                self.didRecieveUpdatedTx(updatedTx: result?.object as? TransactionProtocol)
+                self.didRecieveUpdatedTx(updatedTx: result?.object as? TxProtocol)
             }
         }
     }
@@ -289,7 +289,7 @@ class TransactionViewController: UIViewController {
         TariEventBus.unregister(self)
     }
 
-    func didRecieveUpdatedTx(updatedTx: TransactionProtocol?) {
+    func didRecieveUpdatedTx(updatedTx: TxProtocol?) {
         guard let currentTx = transaction else {
             return
         }
@@ -420,13 +420,13 @@ class TransactionViewController: UIViewController {
             }
 
             if tx.direction == .inbound {
-                navigationBar.title = NSLocalizedString("transaction_detail.payment_received", comment: "Transaction detail view")
-                fromHeadingLabel.text = NSLocalizedString("transaction_detail.from", comment: "Transaction detail view")
+                navigationBar.title = NSLocalizedString("tx_detail.payment_received", comment: "Transaction detail view")
+                fromHeadingLabel.text = NSLocalizedString("tx_detail.from", comment: "Transaction detail view")
                 valueLabel.text = microTari!.formatted
                 contactPublicKey = tx.sourcePublicKey.0
             } else if tx.direction == .outbound {
-                navigationBar.title = NSLocalizedString("transaction_detail.payment_sent", comment: "Transaction detail view")
-                fromHeadingLabel.text = NSLocalizedString("transaction_detail.to", comment: "Transaction detail view")
+                navigationBar.title = NSLocalizedString("tx_detail.payment_sent", comment: "Transaction detail view")
+                fromHeadingLabel.text = NSLocalizedString("tx_detail.to", comment: "Transaction detail view")
                 valueLabel.text = microTari!.formatted
                 contactPublicKey = tx.destinationPublicKey.0
             }
@@ -471,7 +471,7 @@ class TransactionViewController: UIViewController {
                 throw messageError!
             }
 
-            let (note, noteGiphyId) = TransactionViewController.splitNoteAndGiphyId(message)
+            let (note, noteGiphyId) = TxViewController.splitNoteAndGiphyId(message)
 
             setNoteText(note)
 
@@ -492,7 +492,7 @@ class TransactionViewController: UIViewController {
             }
 
             //Get the fee for outbound transactions only
-            if let completedTx = tx as? CompletedTransaction {
+            if let completedTx = tx as? CompletedTx {
                 if completedTx.direction == .outbound {
                     let (fee, feeError) = completedTx.fee
                     guard feeError == nil else {
@@ -501,7 +501,7 @@ class TransactionViewController: UIViewController {
 
                     setFeeLabel(fee!.formattedPreciseWithOperator)
                 }
-            } else if let pendingOutboundTx = tx as? PendingOutboundTransaction {
+            } else if let pendingOutboundTx = tx as? PendingOutboundTx {
                 let (fee, feeError) = pendingOutboundTx.fee
                 guard feeError == nil else {
                     throw feeError!
@@ -511,48 +511,48 @@ class TransactionViewController: UIViewController {
             }
 
             if isCancelled {
-                navigationBar.title = NSLocalizedString("transaction_detail.payment_cancelled", comment: "Transaction detail view")
+                navigationBar.title = NSLocalizedString("tx_detail.payment_cancelled", comment: "Transaction detail view")
             } else if tx.status.0 != .mined && tx.status.0 != .imported {
-                navigationBar.title = NSLocalizedString("transaction_detail.payment_in_progress", comment: "Transaction detail view")
+                navigationBar.title = NSLocalizedString("tx_detail.payment_in_progress", comment: "Transaction detail view")
             }
         }
     }
 
     @objc func onCancelTx() {
         let alert = UIAlertController(
-            title: NSLocalizedString("transaction_detail.tx_cancellation.title", comment: "Transaction detail tx cancellation"),
-            message: NSLocalizedString("transaction_detail.tx_cancellation.message", comment: "Transaction detail tx cancellation"),
+            title: NSLocalizedString("tx_detail.tx_cancellation.title", comment: "Transaction detail tx cancellation"),
+            message: NSLocalizedString("tx_detail.tx_cancellation.message", comment: "Transaction detail tx cancellation"),
             preferredStyle: .alert
         )
 
-        alert.addAction(UIAlertAction(title: NSLocalizedString("transaction_detail.tx_cancellation.yes", comment: "Transaction detail tx cancellation"), style: .destructive, handler: { [weak self] (_) in
+        alert.addAction(UIAlertAction(title: NSLocalizedString("tx_detail.tx_cancellation.yes", comment: "Transaction detail tx cancellation"), style: .destructive, handler: { [weak self] (_) in
             guard let self = self else { return }
             if let tx = self.transaction {
                 guard tx.status.0 == .pending && tx.direction == .outbound else {
                     UserFeedback.shared.error(
-                        title: NSLocalizedString("transaction_detail.tx_cancellation.error.title", comment: "Transaction detail tx cancellation"),
-                        description: NSLocalizedString("transaction_detail.tx_cancellation.error.description", comment: "Transaction detail tx cancellation")
+                        title: NSLocalizedString("tx_detail.tx_cancellation.error.title", comment: "Transaction detail tx cancellation"),
+                        description: NSLocalizedString("tx_detail.tx_cancellation.error.description", comment: "Transaction detail tx cancellation")
                     )
                     return
                 }
 
                 do {
-                    try TariLib.shared.tariWallet?.cancelPendingTransaction(tx)
+                    try TariLib.shared.tariWallet?.cancelPendingTx(tx)
 
                     UINotificationFeedbackGenerator().notificationOccurred(.success)
 
                     //Attempt to get the newly cancelled tx and reset the UI
-                    //TODO uncomment the below when the findCancelledTransactionBy is returning correct direction
+                    //TODO uncomment the below when the findCancelledTxBy is returning correct direction
 //                    if let id = self.transaction?.id.0 {
-//                        if let cancelledTX = try? TariLib.shared.tariWallet?.findCancelledTransactionBy(id: id) {
+//                        if let cancelledTX = try? TariLib.shared.tariWallet?.findCancelledTxBy(id: id) {
 //                            self.transaction = cancelledTX
 //                            do {
 //                                try self.setDetails()
 //                                self.updateTxState()
 //                            } catch {
 //                                UserFeedback.shared.error(
-//                                    title: NSLocalizedString("transaction_detail.error.load_transaction.title", comment: "Transaction detail view"),
-//                                    description: NSLocalizedString("transaction_detail.error.load_transaction.description", comment: "Transaction detail view"),
+//                                    title: NSLocalizedString("tx_detail.error.load_tx.title", comment: "Transaction detail view"),
+//                                    description: NSLocalizedString("tx_detail.error.load_tx.description", comment: "Transaction detail view"),
 //                                    error: error
 //                                )
 //                            }
@@ -564,19 +564,19 @@ class TransactionViewController: UIViewController {
                     self.navigationController?.popViewController(animated: true)
                 } catch {
                     UserFeedback.shared.error(
-                        title: NSLocalizedString("transaction_detail.tx_cancellation.error.title", comment: "Transaction detail tx cancellation"),
+                        title: NSLocalizedString("tx_detail.tx_cancellation.error.title", comment: "Transaction detail tx cancellation"),
                         description: "",
                         error: error
                     )
                 }
             }
         }))
-        alert.addAction(UIAlertAction(title: NSLocalizedString("transaction_detail.tx_cancellation.no", comment: "Transaction detail tx cancellation"), style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("tx_detail.tx_cancellation.no", comment: "Transaction detail tx cancellation"), style: .cancel, handler: nil))
         present(alert, animated: true, completion: nil)
     }
 }
 
-extension TransactionViewController: UITextFieldDelegate {
+extension TxViewController: UITextFieldDelegate {
     func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         return isEditingContactName
     }
@@ -602,8 +602,8 @@ extension TransactionViewController: UITextFieldDelegate {
 
         guard contactPublicKey != nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("transaction_detail.error.contact.title", comment: "Transaction detail view"),
-                description: NSLocalizedString("transaction_detail.error.contact.description", comment: "Transaction detail view")
+                title: NSLocalizedString("tx_detail.error.contact.title", comment: "Transaction detail view"),
+                description: NSLocalizedString("tx_detail.error.contact.description", comment: "Transaction detail view")
             )
             return true
         }
@@ -617,8 +617,8 @@ extension TransactionViewController: UITextFieldDelegate {
             })
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("transaction_detail.error.contact.title", comment: "Transaction detail view"),
-                description: NSLocalizedString("transaction_detail.error.save_contact.description", comment: "Transaction detail view"),
+                title: NSLocalizedString("tx_detail.error.contact.title", comment: "Transaction detail view"),
+                description: NSLocalizedString("tx_detail.error.save_contact.description", comment: "Transaction detail view"),
                 error: error
             )
         }
@@ -636,7 +636,7 @@ extension TransactionViewController: UITextFieldDelegate {
 }
 
 // MARK: Keyboard behavior
-extension TransactionViewController {
+extension TxViewController {
     @objc func keyboardWillHide(notification: NSNotification) {
         contactNameTextField.endEditing(true)
         contactNameTextField.text = contactAlias
@@ -644,7 +644,7 @@ extension TransactionViewController {
 }
 
 // MARK: Giphy
-extension TransactionViewController {
+extension TxViewController {
     static func splitNoteAndGiphyId(_ note: String) -> (String, String?) {
         let giphyLinkPrefix = "https://giphy.com/embed/"
 

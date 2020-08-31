@@ -1,4 +1,4 @@
-//  TransactionProtocol.swift
+//  TxProtocol.swift
 
 /*
 	Package MobileWallet
@@ -40,14 +40,14 @@
 
 import Foundation
 
-enum TransactionDirection {
+enum TxDirection {
     case inbound
     case outbound
     case none
 }
 
-enum TransactionStatus: Error {
-    case transactionNullError
+enum TxStatus: Error {
+    case txNullError
     case completed
     case broadcast
     case mined
@@ -56,7 +56,7 @@ enum TransactionStatus: Error {
     case unknown
 }
 
-protocol TransactionProtocol {
+protocol TxProtocol {
     var pointer: OpaquePointer { get }
     var id: (UInt64, Error?) { get }
     var microTari: (MicroTari?, Error?) { get }
@@ -64,13 +64,13 @@ protocol TransactionProtocol {
     var message: (String, Error?) { get }
     var timestamp: (UInt64, Error?) { get }
     var sourcePublicKey: (PublicKey?, Error?) { get }
-    var status: (TransactionStatus, Error?) { get }
+    var status: (TxStatus, Error?) { get }
     var destinationPublicKey: (PublicKey?, Error?) { get }
-    var direction: TransactionDirection { get }
+    var direction: TxDirection { get }
     var contact: (Contact?, Error?) { get }
 }
 
-extension TransactionProtocol {
+extension TxProtocol {
     var date: (Date?, Error?) {
         let (timestamp, error) = self.timestamp
         if error != nil {
@@ -80,10 +80,10 @@ extension TransactionProtocol {
         return (Date(timeIntervalSince1970: Double(timestamp)), nil)
     }
 
-    func statusFrom(code: Int32) -> TransactionStatus {
+    func statusFrom(code: Int32) -> TxStatus {
         switch code {
             case -1:
-                return .transactionNullError
+                return .txNullError
             case 0:
                 return .completed
             case 1:

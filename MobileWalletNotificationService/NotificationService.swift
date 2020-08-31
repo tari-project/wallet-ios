@@ -110,7 +110,7 @@ class NotificationService: UNNotificationServiceExtension {
     }
     
     private func listenForReceivedTransaction() {
-        TariEventBus.onMainThread(self, eventType: .receievedTransaction) { [weak self] (result) in
+        TariEventBus.onMainThread(self, eventType: .receievedTx) { [weak self] (result) in
             guard let self = self else { return }
             self.safetyTimeoutCallBack = nil
             

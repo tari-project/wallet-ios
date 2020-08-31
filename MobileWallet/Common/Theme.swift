@@ -92,7 +92,7 @@ struct Colors: Loopable {
     let actionButtonBackgroundDisabled = UIColor(named: "ActionButtonBackgroundDisabled")
     let actionButtonTitleDisabled = UIColor(named: "ActionButtonTitleDisabled")
 
-    let transactionTableBackground = UIColor(named: "TransactionTableBackground")
+    let txTableBackground = UIColor(named: "TxTableBackground")
     let splashBackground = UIColor(named: "SplashBackground")
     let appBackground = UIColor(named: "AppBackground")
 
@@ -145,7 +145,7 @@ struct Colors: Loopable {
     let homeScreenTotalBalanceValueLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
     let floatingPanelGrabber = UIColor(named: "FloatingPanelGrabber")
     let qrButtonBackground = UIColor(named: "QRButtonBackground")
-    let transactionsListNavBar = UIColor(named: "TransactionsListNavBar")
+    let txListNavBar = UIColor(named: "TxsListNavBar")
 
     let auroraGradient1 = UIColor(named: "auroraGradient1")
     let auroraGradient2 = UIColor(named: "auroraGradient2")
@@ -157,20 +157,20 @@ struct Colors: Loopable {
     let auroraGradient8 = UIColor(named: "auroraGradient8")
     let auroraGradient9 = UIColor(named: "auroraGradient9")
 
-    //Transaction cell
-    let transactionCellAlias = UIColor(named: "TransactionCellContactAlias")
-    let transactionCellNote = UIColor(named: "TransactionCellNote")
-    let transactionCellValueNegativeBackground = UIColor(named: "TransactionCellValueNegativeBackground")
-    let transactionCellValuePositiveBackground = UIColor(named: "TransactionCellValuePositiveBackground")
-    let transactionCellValueCancelledBackground = UIColor(named: "TransactionCellValueCancelledBackground")
-    let transactionCellValuePendingBackground = UIColor(named: "TransactionCellValuePendingBackground")
-    let transactionCellValueNegativeText = UIColor(named: "TransactionCellValueNegativeText")
-    let transactionCellValuePositiveText = UIColor(named: "TransactionCellValuePositiveText")
-    let transactionCellValueCancelledText = UIColor(named: "TransactionCellValueCancelledText")
-    let transactionCellValuePendingText = UIColor(named: "TransactionCellValuePendingText")
-    let transactionSmallSubheadingLabel = UIColor(named: "SmallSubheading")
-    let transactionCellStatusLabel = UIColor(named: "TransactionCellStatus")
-    let transactionCellBorder = UIColor(named: "TransactionCellBorder")
+    //Tx cell
+    let txCellAlias = UIColor(named: "TxCellContactAlias")
+    let txCellNote = UIColor(named: "TxCellNote")
+    let txCellValueNegativeBackground = UIColor(named: "TxCellValueNegativeBackground")
+    let txCellValuePositiveBackground = UIColor(named: "TxCellValuePositiveBackground")
+    let txCellValueCancelledBackground = UIColor(named: "TxCellValueCancelledBackground")
+    let txCellValuePendingBackground = UIColor(named: "TxCellValuePendingBackground")
+    let txCellValueNegativeText = UIColor(named: "TxCellValueNegativeText")
+    let txCellValuePositiveText = UIColor(named: "TxCellValuePositiveText")
+    let txCellValueCancelledText = UIColor(named: "TxCellValueCancelledText")
+    let txCellValuePendingText = UIColor(named: "TxCellValuePendingText")
+    let txSmallSubheadingLabel = UIColor(named: "SmallSubheading")
+    let txCellStatusLabel = UIColor(named: "TxCellStatus")
+    let txCellBorder = UIColor(named: "TxCellBorder")
 
     // Sending Tari
     let sendingTariTitle = UIColor(named: "SendingTariTitleText")
@@ -183,13 +183,13 @@ struct Colors: Loopable {
     let navigationBarTint = UIColor(named: "Heading")
     let navigationBarBackground = UIColor(named: "NavBarBackground")
 
-    //Transaction view
-    let transactionViewValueLabel = UIColor(named: "Heading")
-    let transactionViewValueContainer = UIColor(named: "TransactionViewValueBackground")
-    let transactionScreenDivider = UIColor(named: "DividerColor")
-    let transactionScreenSubheadingLabel = UIColor(named: "SmallSubheading")
-    let transactionScreenTextLabel = UIColor(named: "SmallText")
-    let transactionScreenEmptyTitleLabel = UIColor(named: "Heading")
+    //Tx view
+    let txViewValueLabel = UIColor(named: "Heading")
+    let txViewValueContainer = UIColor(named: "TxViewValueBackground")
+    let txScreenDivider = UIColor(named: "DividerColor")
+    let txScreenSubheadingLabel = UIColor(named: "SmallSubheading")
+    let txScreenTextLabel = UIColor(named: "SmallText")
+    let txScreenEmptyTitleLabel = UIColor(named: "Heading")
 
     //Shadows
     let actionButtonShadow = UIColor(named: "ActionButtonShadow")
@@ -273,7 +273,7 @@ struct Images: Loopable {
     let downArrow = UIImage(named: "DownArrow")
     let close = UIImage(named: "Close")
     let share = UIImage(named: "share")
-    let transactionFee = UIImage(named: "TransactionFee")
+    let txFee = UIImage(named: "TxFee")
     let profileIcon = UIImage(named: "profileIcon")
     let storeIcon = UIImage(named: "store-icon")
     let storeButton = UIImage(named: "store-button")
@@ -333,23 +333,23 @@ struct Fonts: Loopable {
     //Loadig gif button
     let loadingGifButtonTitle = UIFont.Avenir.heavy.withSize(14.0)
 
-    //Transaction cell
-    let transactionCellUsernameLabel = UIFont.Avenir.light.withSize(14.0)
-    let transactionCellUsernameLabelHeavy = UIFont.Avenir.heavy.withSize(14.0)
-    let transactionCellDescriptionLabel = UIFont.Avenir.roman.withSize(15.0)
-    let transactionCellValueLabel = UIFont.Avenir.black.withSize(12.0)
-    let transactionDateValueLabel = UIFont.Avenir.medium.withSize(11.0)
-    let transactionCellStatusLabel = UIFont.Avenir.roman.withSize(12.0)
+    //Tx cell
+    let txCellUsernameLabel = UIFont.Avenir.light.withSize(14.0)
+    let txCellUsernameLabelHeavy = UIFont.Avenir.heavy.withSize(14.0)
+    let txCellDescriptionLabel = UIFont.Avenir.roman.withSize(15.0)
+    let txCellValueLabel = UIFont.Avenir.black.withSize(12.0)
+    let txDateValueLabel = UIFont.Avenir.medium.withSize(11.0)
+    let txCellStatusLabel = UIFont.Avenir.roman.withSize(12.0)
 
-    //View transaction screen
-    let transactionScreenCurrencyValueLabel = UIFont.Avenir.black.withSize(90.0)
-    let transactionScreenSubheadingLabel = UIFont.Avenir.medium.withSize(13.0)
-    let transactionScreenTextLabel = UIFont.Avenir.roman.withSize(14.0)
-    let transactionScreenTxIDLabel = UIFont.Avenir.roman.withSize(13.0)
-    let transactionListEmptyTitleLabel = UIFont.Avenir.black.withSize(33.0)
-    let transactionListEmptyMessageLabel = UIFont.Avenir.medium.withSize(14.0)
-    let transactionFeeLabel = UIFont.Avenir.heavy.withSize(14.0)
-    let transactionFeeButton = UIFont.Avenir.roman.withSize(13.0)
+    //View tx screen
+    let txScreenCurrencyValueLabel = UIFont.Avenir.black.withSize(90.0)
+    let txScreenSubheadingLabel = UIFont.Avenir.medium.withSize(13.0)
+    let txScreenTextLabel = UIFont.Avenir.roman.withSize(14.0)
+    let txScreenTxIDLabel = UIFont.Avenir.roman.withSize(13.0)
+    let txListEmptyTitleLabel = UIFont.Avenir.black.withSize(33.0)
+    let txListEmptyMessageLabel = UIFont.Avenir.medium.withSize(14.0)
+    let txFeeLabel = UIFont.Avenir.heavy.withSize(14.0)
+    let txFeeButton = UIFont.Avenir.roman.withSize(13.0)
 
     // Sending tari screen
     let sendingTariTitleLabelFirst = UIFont.Avenir.light.withSize(18.0)

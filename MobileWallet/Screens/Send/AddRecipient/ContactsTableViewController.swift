@@ -207,8 +207,8 @@ class ContactsTableViewController: UITableViewController {
 
         sectionHeaderView.heightAnchor.constraint(equalToConstant: 35).isActive = true
 
-        sectionHeaderLabel.font = Theme.shared.fonts.transactionDateValueLabel
-        sectionHeaderLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
+        sectionHeaderLabel.font = Theme.shared.fonts.txDateValueLabel
+        sectionHeaderLabel.textColor = Theme.shared.colors.txSmallSubheadingLabel
         sectionHeaderLabel.text = self.tableView(tableView, titleForHeaderInSection: section)
         sectionHeaderLabel.backgroundColor = .clear
         sectionHeaderLabel.heightAnchor.constraint(equalToConstant: sectionHeaderLabel.font.pointSize * 1.3).isActive = true
@@ -223,7 +223,7 @@ class ContactsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
-            return NSLocalizedString("add_recipient.recent_transactions", comment: "Add recipient view")
+            return NSLocalizedString("add_recipient.recent_txs", comment: "Add recipient view")
         }
 
         return NSLocalizedString("add_recipient.my_contacts", comment: "Add recipient view")

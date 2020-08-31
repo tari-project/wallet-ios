@@ -103,7 +103,7 @@ private class RefreshingInnerView: UIView {
         case .receiving:
             emojiLabel.text = "🤝"
             spinner.startAnimating()
-            statusLabel.text = NSLocalizedString("refresh_view.receiving_new_transactions", comment: "Refresh view")
+            statusLabel.text = NSLocalizedString("refresh_view.receiving_new_txs", comment: "Refresh view")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .success:
             statusLabel.text = NSLocalizedString("refresh_view.success", comment: "Refresh view")
@@ -128,17 +128,17 @@ private class RefreshingInnerView: UIView {
             emojiLabel.text = ""
             spinner.stopAnimating()
             statusLabel.text = NSLocalizedString("refresh_view.waiting_for_recipient", comment: "Refresh view")
-            statusLabel.textColor = Theme.shared.colors.transactionCellStatusLabel
+            statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         case .txWaitingForSender:
             emojiLabel.text = ""
             spinner.stopAnimating()
             statusLabel.text = NSLocalizedString("refresh_view.waiting_for_sender", comment: "Refresh view")
-            statusLabel.textColor = Theme.shared.colors.transactionCellStatusLabel
+            statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         case .txCompleted:
             emojiLabel.text = ""
             spinner.stopAnimating()
             statusLabel.text = NSLocalizedString("refresh_view.final_processing", comment: "Refresh view")
-            statusLabel.textColor = Theme.shared.colors.transactionCellStatusLabel
+            statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         }
     }
 }

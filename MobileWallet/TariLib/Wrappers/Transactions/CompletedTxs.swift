@@ -1,8 +1,8 @@
-//  PendingInboundTransactions.swift
+//  CompletedTx.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/18
+	Created by Jason van den Berg on 2019/11/17
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,15 +40,16 @@
 
 import Foundation
 
-enum PendingInboundTransactionsErrors: Error {
-    case pendingInboundTransactionNotFound
+enum CompletedTxsErrors: Error {
+    case completedTxNotFound
     case generic(_ errorCode: Int32)
 }
 
-class PendingInboundTransactions: TransactionsProtocol {
-    typealias Tx = PendingInboundTransaction
+class CompletedTxs: TxsProtocol {
+    typealias Tx = CompletedTx
 
     private var ptr: OpaquePointer
+    private let isCancelled: Bool
 
     var pointer: OpaquePointer {
         return ptr
@@ -56,23 +57,21 @@ class PendingInboundTransactions: TransactionsProtocol {
 
     var count: (UInt32, Error?) {
         var errorCode: Int32 = -1
+
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_inbound_transactions_get_length(ptr, error)})
+             completed_transactions_get_length(ptr, error)
+        })
 
-        return (result, errorCode != 0 ? PendingInboundTransactionsErrors.generic(errorCode) : nil)
+        return (result, errorCode != 0 ? CompletedTxsErrors.generic(errorCode) : nil)
     }
 
-    init(pendingInboundTransactionsPointer: OpaquePointer) {
-        ptr = pendingInboundTransactionsPointer
-    }
-
-    var list: ([PendingInboundTransaction], Error?) {
+    var list: ([CompletedTx], Error?) {
         let (count, countError) = self.count
         guard countError == nil else {
             return ([], countError)
         }
 
-        var list: [PendingInboundTransaction] = []
+        var list: [CompletedTx] = []
 
         if count > 0 {
             for n in 0...count - 1 {
@@ -90,22 +89,29 @@ class PendingInboundTransactions: TransactionsProtocol {
         return (sortedList, nil)
     }
 
-    func at(position: UInt32) throws -> PendingInboundTransaction {
+    init(completedTxsPointer: OpaquePointer, isCancelled: Bool = false) {
+        ptr = completedTxsPointer
+        self.isCancelled = isCancelled
+    }
+
+    func at(position: UInt32) throws -> CompletedTx {
         var errorCode: Int32 = -1
-        let pendingInboundTransactionPointer = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_inbound_transactions_get_at(ptr, position, error)})
+        let completedTxPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+            completed_transactions_get_at(ptr, position, error)
+
+        })
         guard errorCode == 0 else {
-            throw PendingInboundTransactionsErrors.generic(errorCode)
+            throw CompletedTxsErrors.generic(errorCode)
         }
 
-        if pendingInboundTransactionPointer == nil {
-            throw PendingInboundTransactionsErrors.pendingInboundTransactionNotFound
+        if completedTxPointer == nil {
+            throw CompletedTxsErrors.completedTxNotFound
         }
 
-        return PendingInboundTransaction(pendingInboundTransactionPointer: pendingInboundTransactionPointer!)
+        return CompletedTx(completedTxPointer: completedTxPointer!, isCancelled: isCancelled)
     }
 
     deinit {
-        pending_inbound_transactions_destroy(ptr)
+        completed_transactions_destroy(ptr)
     }
 }

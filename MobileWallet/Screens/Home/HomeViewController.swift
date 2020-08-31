@@ -58,11 +58,11 @@ class HomeViewController: UIViewController {
     private let balanceLabel = UILabel()
     private let balanceValueLabel = AnimatedBalanceLabel()
 
-    private lazy var transactionTableVC: TransactionsTableViewController = {
-        let transactionController = TransactionsTableViewController(style: .plain)
-        transactionController.tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
-        transactionController.backgroundType =  isFirstIntroToWallet ? .intro : .empty
-        return transactionController
+    private lazy var txsTableVC: TxsTableViewController = {
+        let txController = TxsTableViewController(style: .plain)
+        txController.tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
+        txController.backgroundType =  isFirstIntroToWallet ? .intro : .empty
+        return txController
     }()
 
     private let floatingPanelController = FloatingPanelController()
@@ -72,7 +72,7 @@ class HomeViewController: UIViewController {
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
 
     private var keyServer: KeyServer?
-    private var selectedTransaction: TransactionProtocol?
+    private var selectedTx: TxProtocol?
 
     private var lastFPCPosition: FloatingPanel.FloatingPanelPosition = .half
 
@@ -96,7 +96,7 @@ class HomeViewController: UIViewController {
         return !UserDefaults.Key.walletHasBeenIntroduced.boolValue()
     }
 
-    private var isTransactionViewFullScreen: Bool = false {
+    private var isTxViewFullScreen: Bool = false {
         didSet {
             showHideFullScreen()
             setNeedsStatusBarAppearanceUpdate()
@@ -137,7 +137,7 @@ class HomeViewController: UIViewController {
     }
 
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return isTransactionViewFullScreen ? .darkContent : .lightContent
+        return isTxViewFullScreen ? .darkContent : .lightContent
     }
 
     private func setupKeyServer() {
@@ -281,7 +281,7 @@ class HomeViewController: UIViewController {
     }
 
     private func showHideFullScreen() {
-        if isTransactionViewFullScreen {
+        if isTxViewFullScreen {
             //Don't show header for first intro
             guard !isFirstIntroToWallet else {
                 //Wait before auto pulling down
@@ -290,7 +290,7 @@ class HomeViewController: UIViewController {
                     execute: {
                         [weak self] in
                         guard let self = self else { return }
-                        if self.isTransactionViewFullScreen {
+                        if self.isTxViewFullScreen {
                             self.floatingPanelController.move(to: .half, animated: true)
 
                         }
@@ -351,20 +351,20 @@ extension HomeViewController {
     }
 
     @objc private func closeButtonAction(_ sender: Any) {
-        transactionTableVC.tableView.scrollToTop(animated: true)
+        txsTableVC.tableView.scrollToTop(animated: true)
         floatingPanelController.move(to: .half, animated: true)
         animateNavBar(progress: 0.0, buttonAction: true)
         updateTracking(progress: 0.0)
     }
 }
 
-// MARK: - TransactionTableDelegateMethods
-extension HomeViewController: TransactionsTableViewDelegate {
-    func onTransactionSelect(_ transaction: Any) {
-        selectedTransaction = transaction as? TransactionProtocol
-        let transactionVC = TransactionViewController()
-        transactionVC.transaction = selectedTransaction
-        self.navigationController?.pushViewController(transactionVC, animated: true)
+// MARK: - TxTableDelegateMethods
+extension HomeViewController: TxsTableViewDelegate {
+    func onTxSelect(_ tx: Any) {
+        selectedTx = tx as? TxProtocol
+        let txVC = TxViewController()
+        txVC.transaction = selectedTx
+        self.navigationController?.pushViewController(txVC, animated: true)
     }
 
     func onScrollTopHit(_ isAtTop: Bool) {
@@ -396,20 +396,20 @@ extension HomeViewController: FloatingPanelControllerDelegate {
 
     func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
         lastFPCPosition = vc.position
-        transactionTableVC.tableView.lockScrollView()
+        txsTableVC.tableView.lockScrollView()
         self.impactFeedbackGenerator.prepare()
     }
 
     func floatingPanelDidChangePosition(_ vc: FloatingPanelController) {
         if vc.position == .full {
-            isTransactionViewFullScreen = true
+            isTxViewFullScreen = true
         } else if vc.position == .half {
             floatingPanelController.surfaceView.contentInsets = HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets
             if hapticEnabled {
                 self.impactFeedbackGenerator.impactOccurred()
             }
             hapticEnabled = true
-            isTransactionViewFullScreen = false
+            isTxViewFullScreen = false
         }
     }
 
@@ -428,7 +428,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
 
         self.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS - (HomeViewController.PANEL_BORDER_CORNER_RADIUS * max(progress, 0))
 
-        if floatingPanelController.position == .half && !isTransactionViewFullScreen {
+        if floatingPanelController.position == .half && !isTxViewFullScreen {
             UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
                 self.view.layoutIfNeeded()
             })
@@ -485,11 +485,11 @@ extension HomeViewController: FloatingPanelControllerDelegate {
 
     private func updateTracking(progress: CGFloat) {
         if progress == 1 {
-            floatingPanelController.track(scrollView: transactionTableVC.tableView)
-            transactionTableVC.tableView.unlockScrollView()
+            floatingPanelController.track(scrollView: txsTableVC.tableView)
+            txsTableVC.tableView.unlockScrollView()
         } else if progress <= 0 {
             floatingPanelController.track(scrollView: nil)
-            transactionTableVC.tableView.unlockScrollView()
+            txsTableVC.tableView.unlockScrollView()
         }
     }
 }
@@ -601,7 +601,7 @@ extension HomeViewController {
         navigationBarContainer.addSubview(navigationBarTitle)
         navigationBarTitle.text = NSLocalizedString("tx_list.title", comment: "Transactions list")
         navigationBarTitle.font = Theme.shared.fonts.navigationBarTitle
-        navigationBarTitle.textColor = Theme.shared.colors.transactionsListNavBar
+        navigationBarTitle.textColor = Theme.shared.colors.txListNavBar
 
         navigationBarTitle.translatesAutoresizingMaskIntoConstraints = false
         navigationBarTitle.centerXAnchor.constraint(equalTo: navigationBarContainer.centerXAnchor).isActive = true
@@ -622,9 +622,9 @@ extension HomeViewController {
 
     private func setupFloatingPanel() {
         floatingPanelController.delegate = self
-        transactionTableVC.actionDelegate = self
+        txsTableVC.actionDelegate = self
 
-        floatingPanelController.set(contentViewController: transactionTableVC)
+        floatingPanelController.set(contentViewController: txsTableVC)
         floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
         floatingPanelController.surfaceView.shadowColor = .black
         floatingPanelController.surfaceView.shadowRadius = 22
@@ -638,7 +638,7 @@ extension HomeViewController {
             self.floatingPanelController.move(to: self.isFirstIntroToWallet ? .full : .half, animated: true) {
                 if !self.isFirstIntroToWallet {
                     DispatchQueue.main.async {
-                        self.transactionTableVC.tableView.beginRefreshing()
+                        self.txsTableVC.tableView.beginRefreshing()
                     }
                 }
             }

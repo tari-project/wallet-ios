@@ -274,13 +274,13 @@ class TariLib {
         OnionConnector.shared.stop()
     }
 
-    private func expirePendingTransactionsAfterSync() {
+    private func cancelAllExpiredPendingTxAfterSync() {
         TariEventBus.onBackgroundThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
             guard let self = self else { return }
             if let success: Bool = result?.object as? Bool {
                 if success {
                     do {
-                        try self.tariWallet?.cancelExpiredPendingTransactions()
+                        try self.tariWallet?.cancelAllExpiredPendingTx()
                         TariLogger.verbose("Checked for expired pending transactions")
                     } catch {
                         TariLogger.error("Failed to cancel expired pending transactions", error: error)
@@ -323,7 +323,7 @@ class TariLib {
 
         walletIsStopped = false
 
-        expirePendingTransactionsAfterSync()
+        cancelAllExpiredPendingTxAfterSync()
 
         baseNodeSyncCheck() //TODO remove when no longer needed
 
@@ -389,7 +389,7 @@ class TariLib {
                 }
             }
 
-            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
         }
     }

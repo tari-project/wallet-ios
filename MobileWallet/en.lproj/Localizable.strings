@@ -22,8 +22,8 @@
 "transaction_detail.note" = "Note";
 "transaction_detail.error.contact.title" = "Contact error";
 "transaction_detail.error.contact.description" = "Missing public key from transaction.";
-"transaction_detail.error.load_transaction.title" = "Transaction error";
-"transaction_detail.error.load_transaction.description" = "Failed to load transaction details";
+"transaction_detail.error.load_tx.title" = "Transaction error";
+"transaction_detail.error.load_tx.description" = "Failed to load transaction details";
 "transaction_detail.error.save_contact.description" = "Failed to save contact details.";
 
 /* Transaction detail tx cancellation */
@@ -51,8 +51,8 @@
 
 "tx_list.error.sync_to_base_node.title" = "Base node error";
 "tx_list.error.sync_to_base_node.description" = "Could not sync to base node";
-"tx_list.error.grouped_transactions.title" = "Failed to load transactions";
-"tx_list.error.grouped_transactions.descritpion" = "Could not load grouped completed transactions";
+"tx_list.error.grouped_txs.title" = "Failed to load transactions";
+"tx_list.error.grouped_txs.descritpion" = "Could not load grouped completed transactions";
 "tx_list.error.pending_inbound_tx.title" = "Could not load list of pending inbound transactions";
 "tx_list.error.pending_inbound_tx.description" = "Could not load pending inbound transactions";
 "tx_list.error.pending_outbound_tx.title" = "Could not load list of pending outbound transactions";
@@ -202,18 +202,18 @@
 "wallet.error.failed_to_access" = "Failed to access wallet";
 
 "wallet.error.add_own_contact" = "Cannot add your own public key as a contact.";
-"wallet.error.cancel_non_pending_transaction" = "Cannot cancel a transaction that is not pending";
-"wallet.error.fetch_transactions_to_cancel" = "Could not fetch inbound or outbound transactions to cancel";
+"wallet.error.cancel_non_pending_tx" = "Cannot cancel a transaction that is not pending";
+"wallet.error.fetch_txs_to_cancel" = "Could not fetch inbound or outbound transactions to cancel";
 "wallet.error.add_update_contact" = "Failed to add/update contact.";
 "wallet.error.broadcast" = "Failed to broadcast test transaction.";
-"wallet.error.test_transaction" = "Failed to complete test transaction.";
-"wallet.error.find_canceled_transaction" = "Failed to find cancelled transaction by ID.";
-"wallet.error.find_completed_transaction" = "Failed to find completed transaction by ID.";
+"wallet.error.test_tx" = "Failed to complete test transaction.";
+"wallet.error.find_canceled_tx" = "Failed to find cancelled transaction by ID.";
+"wallet.error.find_completed_tx" = "Failed to find completed transaction by ID.";
 "wallet.error.test_data" = "Failed to generate test data.";
-"wallet.error.test_receieve_transaction" = "Failed to generate test receieve transaction.";
-"wallet.error.mine_transaction" = "Failed to mine test transaction.";
+"wallet.error.test_receieve_tx" = "Failed to generate test receieve transaction.";
+"wallet.error.mine_tx" = "Failed to mine test transaction.";
 "wallet.error.remove_contact" = "Failed to remove contact.";
-"wallet.error.send_transaction" = "Failed to send transaction.";
+"wallet.error.send_tx" = "Failed to send transaction.";
 "wallet.error.generic_code" = "Generic error code:";
 "wallet.error.insufficient_funds" = "Insufficient funds. Available spendable Tari:";
 "wallet.error.invalid_public_key_hex" = "Invalid public key hex.";
@@ -230,7 +230,7 @@
 /* Refresh view */
 "refresh_view.checking" = "Checking for Updates";
 "refresh_view.final_processing" = "Completing final processing…";
-"refresh_view.receiving_new_transactions" = "Receiving new transaction";
+"refresh_view.receiving_new_txs" = "Receiving new transaction";
 "refresh_view.waiting_for_recipient" = "Waiting for recipient to come online";
 "refresh_view.waiting_for_sender" = "Waiting for sender to complete transaction";
 "refresh_view.success" = "You are up to date!";
@@ -254,7 +254,7 @@
 "emoji.paste" = "Paste copied Emoji ID";
 
 /* Add recipient view */
-"add_recipient.recent_transactions" = "Recent Transactions";
+"add_recipient.recent_txs" = "Recent Transactions";
 "add_recipient.error.load_contacts.title" = "Failed to load contacts";
 "add_recipient.error.load_contacts.description" = "Could not access wallet";
 "add_recipient.inputbox.placeholder" = "Enter Emoji ID or Contact Name";

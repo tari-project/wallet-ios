@@ -325,7 +325,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
             guard let self = self else { return }
             UIApplication.shared.keyWindow?.isUserInteractionEnabled = true
             self.navigationBar.backButton.isHidden = false
-            self.sendTransaction(
+            self.sendTx(
                 wallet,
                 recipientPublicKey: recipientPublicKey,
                 amount: recipientAmount
@@ -334,7 +334,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         }
     }
 
-    private func sendTransaction(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari) {
+    private func sendTx(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari) {
         //Init first so it starts listening for a callback right away
         let sendingVC = SendingTariViewController()
 

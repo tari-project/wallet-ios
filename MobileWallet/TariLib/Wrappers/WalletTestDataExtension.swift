@@ -58,22 +58,22 @@ extension Wallet {
         }
     }
 
-    func generateTestReceiveTransaction() throws {
+    func generateTestReceiveTx() throws {
         var errorCode: Int32 = -1
-        let didCreateTestReceiveTransaction = withUnsafeMutablePointer(to: &errorCode, { error in
+        let didCreateTestReceiveTx = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_test_receive_transaction(self.pointer, error)
         })
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
-        if !didCreateTestReceiveTransaction {
-            throw WalletErrors.generateTestReceiveTransaction
+        if !didCreateTestReceiveTx {
+            throw WalletErrors.generateTestReceiveTx
         }
     }
 
-    func testTransactionBroadcast(txID: UInt64) throws {
+    func testTxBroadcast(txID: UInt64) throws {
         var errorCode: Int32 = -1
-        let didTestTransactionBroadcast = withUnsafeMutablePointer(to: &errorCode, { error in
+        let didtestTxBroadcast = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_test_broadcast_transaction(
             self.pointer,
             txID,
@@ -83,14 +83,14 @@ extension Wallet {
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
-        if !didTestTransactionBroadcast {
-            throw WalletErrors.testTransactionBroadcast
+        if !didtestTxBroadcast {
+            throw WalletErrors.testTxBroadcast
         }
     }
 
-    func testTransactionMined(txID: UInt64) throws {
+    func testTxMined(txID: UInt64) throws {
         var errorCode: Int32 = -1
-        let didCompleteTransaction = withUnsafeMutablePointer(to: &errorCode, { error in
+        let didCompleteTx = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_test_mine_transaction(
             self.pointer,
             txID,
@@ -99,40 +99,40 @@ extension Wallet {
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
-        if !didCompleteTransaction {
-            throw WalletErrors.testTransactionMined
+        if !didCompleteTx {
+            throw WalletErrors.testTxMined
         }
     }
 
-    func testCompleteSend(pendingOutboundTransaction: PendingOutboundTransaction) throws {
+    func testCompleteSend(pendingOutboundTx: PendingOutboundTx) throws {
         var errorCode: Int32 = -1
-        let didCompleteTransaction = withUnsafeMutablePointer(to: &errorCode, { error in
+        let didCompleteTx = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_test_complete_sent_transaction(
             self.pointer,
-            pendingOutboundTransaction.pointer,
+            pendingOutboundTx.pointer,
             error)}
         )
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
-        if !didCompleteTransaction {
-            throw WalletErrors.testSendCompleteTransaction
+        if !didCompleteTx {
+            throw WalletErrors.testSendCompleteTx
         }
     }
 
-    func testFinalizedReceivedTransaction(pendingInboundTransaction: PendingInboundTransaction) throws {
+    func testFinalizedReceivedTx(pendingInboundTx: PendingInboundTx) throws {
         var errorCode: Int32 = -1
-        let didCompleteTransaction = withUnsafeMutablePointer(to: &errorCode, { error in
+        let didCompleteTx = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_test_finalize_received_transaction(
             self.pointer,
-            pendingInboundTransaction.pointer,
+            pendingInboundTx.pointer,
             error)}
         )
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
-        if !didCompleteTransaction {
-            throw WalletErrors.testSendCompleteTransaction
+        if !didCompleteTx {
+            throw WalletErrors.testSendCompleteTx
         }
     }
 }

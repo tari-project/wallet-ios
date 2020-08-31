@@ -1,4 +1,4 @@
-//  TransactionsTableViewController.swift
+//  TxsTableViewController.swift
 
 /*
     Package MobileWallet
@@ -41,12 +41,12 @@
 import UIKit
 import Lottie
 
-protocol TransactionsTableViewDelegate: class {
-    func onTransactionSelect(_: Any)
+protocol TxsTableViewDelegate: class {
+    func onTxSelect(_: Any)
     func onScrollTopHit(_: Bool)
 }
 
-class TransactionsTableViewController: UITableViewController {
+class TxsTableViewController: UITableViewController {
 
     enum BackgroundViewType: Equatable {
         case none
@@ -69,17 +69,17 @@ class TransactionsTableViewController: UITableViewController {
         }
     }
 
-    let cellIdentifier = "TransactionTableViewCell"
-    weak var actionDelegate: TransactionsTableViewDelegate?
+    let cellIdentifier = "TxTableViewCell"
+    weak var actionDelegate: TxsTableViewDelegate?
     let animatedRefresher = AnimatedRefreshingView()
     private var lastContentOffset: CGFloat = 0
     private var kvoBackupScheduleToken: NSKeyValueObservation?
-    var transactionModels = [TransactionTableViewModel]()
-    var transactions = [TransactionProtocol]() {
+    var transactionModels = [TxTableViewModel]()
+    var transactions = [TxProtocol]() {
         didSet {
             transactionModels.removeAll()
             transactions.forEach { (tx) in
-                let model = TransactionTableViewModel(tx: tx)
+                let model = TxTableViewModel(tx: tx)
                 transactionModels.append(model)
             }
         }
@@ -127,17 +127,17 @@ class TransactionsTableViewController: UITableViewController {
 
     private func viewSetup() {
         setupRefreshControl()
-        tableView.register(TransactionTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
+        tableView.register(TxTableViewCell.self, forCellReuseIdentifier: cellIdentifier)
         tableView.contentInsetAdjustmentBehavior = .never
         tableView.estimatedRowHeight = 300
         tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorStyle = .none
-        view.backgroundColor = Theme.shared.colors.transactionTableBackground
+        view.backgroundColor = Theme.shared.colors.txTableBackground
     }
 
     @objc private func registerEvents() {
         //Event for table refreshing
-        TariEventBus.onMainThread(self, eventType: .transactionListUpdate) { [weak self] (_) in
+        TariEventBus.onMainThread(self, eventType: .txListUpdate) { [weak self] (_) in
             guard let self = self else { return }
             self.safeRefreshTable()
         }
@@ -214,24 +214,24 @@ class TransactionsTableViewController: UITableViewController {
 
     private func refreshTable() {
         //All completed/cancelled txs
-        let (allTransactions, allTransactionsError) = TariLib.shared.tariWallet!.allTransactions
-        guard allTransactionsError == nil else {
+        let (allTxs, allTxsError) = TariLib.shared.tariWallet!.allTxs
+        guard allTxsError == nil else {
             UserFeedback.shared.error(
                 title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
                 description: NSLocalizedString("tx_list.error.grouped_transactions.descritpion", comment: "Transactions list"),
-                error: allTransactionsError
+                error: allTxsError
             )
             return
         }
 
-        transactions = allTransactions
+        transactions = allTxs
 
         tableView.reloadData()
         tableView.endRefreshing()
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        actionDelegate?.onTransactionSelect(transactions[indexPath.row])
+        actionDelegate?.onTxSelect(transactions[indexPath.row])
     }
 
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

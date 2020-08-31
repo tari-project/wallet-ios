@@ -109,20 +109,20 @@ class KeyServer {
 
         KeyServer.isRequestInProgress = true
 
-        let (completedTransactions, completedTransactionsError) = wallet.completedTransactions
-        guard let completedTxs = completedTransactions else {
+        let (completedTxs, completedTxsError) = wallet.completedTxs
+        guard completedTxs != nil else {
             KeyServer.isRequestInProgress = false
-            throw completedTransactionsError!
+            throw completedTxsError!
         }
 
-        let (completedTransactionsCount, completedTransactionsCountError) = completedTxs.count
-        guard completedTransactionsCountError == nil else {
+        let (completedTxsCount, completedTxsCountError) = completedTxs!.count
+        guard completedTxsCountError == nil else {
             KeyServer.isRequestInProgress = false
-            throw completedTransactionsCountError!
+            throw completedTxsCountError!
         }
 
         //If the user has a completed, just ignore this request as it's not a fresh install
-        guard completedTransactionsCount == 0 else {
+        guard completedTxsCount == 0 else {
             KeyServer.isRequestInProgress = false
             return
         }
@@ -253,33 +253,33 @@ class KeyServer {
         task.resume()
     }
 
-    private func hasSentATransaction() -> Bool {
+    private func hasSentATx() -> Bool {
         guard let wallet = TariLib.shared.tariWallet else {
             return false
         }
 
-        guard let (pendingOutboundTransactions) = wallet.pendingOutboundTransactions.0 else {
-            TariLogger.error("Failed to load pendingOutboundTransactions")
+        guard let (pendingOutboundTxs) = wallet.pendingOutboundTxs.0 else {
+            TariLogger.error("Failed to load pendingOutboundTxs")
             return false
         }
 
-        if pendingOutboundTransactions.count.0 > 0 {
+        if pendingOutboundTxs.count.0 > 0 {
             return true
         }
 
-        guard let (completedTransactions) = wallet.completedTransactions.0 else {
-            TariLogger.error("Failed to load completedTransactions")
+        guard let (completedTxs) = wallet.completedTxs.0 else {
+            TariLogger.error("Failed to load completedTxs")
             return false
         }
 
-        let completedCount = completedTransactions.count.0
+        let completedCount = completedTxs.count.0
         guard completedCount > 0 else {
             return false
         }
 
         for n in 0...completedCount - 1 {
             do {
-                let tx = try completedTransactions.at(position: n)
+                let tx = try completedTxs.at(position: n)
                 if tx.direction == .outbound {
                     return true
                 }
@@ -297,7 +297,7 @@ class KeyServer {
         }
 
         if let data = UserDefaults.standard.value(forKey: KeyServer.secondUtxoStorageKey) as? Data {
-            guard hasSentATransaction() else {
+            guard hasSentATx() else {
                 return
             }
 

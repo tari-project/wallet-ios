@@ -77,7 +77,7 @@ class SendingTariViewController: UIViewController {
             case .sent:
                 return (
                     NSLocalizedString("sending_tari.sent", comment: "SendingTari view"),
-                    NSLocalizedString("sending_tari.transaction_is_on_its_way", comment: "SendingTari view")
+                    NSLocalizedString("sending_tari.tx_is_on_its_way", comment: "SendingTari view")
                 )
             }
         }
@@ -463,7 +463,7 @@ class SendingTariViewController: UIViewController {
                         [weak self] in
                         self?.animateCurrentStep()
                     }
-                    self.sendTransaction()
+                    self.sendTx()
                 }
             } else {
                 animateCurrentStep()
@@ -624,14 +624,14 @@ class SendingTariViewController: UIViewController {
         }
     }
 
-    private func sendTransaction() {
+    private func sendTx() {
         TariLib.shared.waitIfWalletIsRestarting { [weak self] (_) in
             guard let self = self, let wallet = TariLib.shared.tariWallet else { return }
             do {
-                self.txId = try wallet.sendTransaction(
+                self.txId = try wallet.sendTx(
                     destination: self.recipientPubKey,
                     amount: self.amount,
-                    fee: wallet.calculateTransactionFee(self.amount),
+                    fee: wallet.calculateTxFee(self.amount),
                     message: self.note
                 )
                 self.startListeningForWalletEvents()
