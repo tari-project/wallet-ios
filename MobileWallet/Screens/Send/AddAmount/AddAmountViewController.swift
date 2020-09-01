@@ -51,10 +51,10 @@ class AddAmountViewController: UIViewController {
     private let warningView = UIView()
     private let warningLabel = UILabel()
     private let warningBalanceLabel = UILabel()
-    private let transactionViewContainer = UIView()
+    private let txViewContainer = UIView()
     private let animationDuration = 0.2
     private var balanceCheckTimer: Timer?
-    private let transactionFeeLabel = UILabel()
+    private let txFeeLabel = UILabel()
     private let gemImageString: NSAttributedString = {
         let gemAttachment = NSTextAttachment()
         gemAttachment.image = Theme.shared.images.currencySymbol?.withTintColor(Theme.shared.colors.amountLabel!)
@@ -63,7 +63,7 @@ class AddAmountViewController: UIViewController {
     }()
 
     var rawInput = ""
-    private var transactionFeeIsVisible = false
+    private var txFeeIsVisible = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -148,7 +148,7 @@ class AddAmountViewController: UIViewController {
             continueButton.variation = .normal
         }
 
-        showTransactionFee(microTariAmount)
+        showTxFee(microTariAmount)
     }
 
     @objc private func keypadButtonTapped(_ sender: UIButton) {
@@ -241,7 +241,7 @@ class AddAmountViewController: UIViewController {
                 repeats: false
             )
         } else {
-            hideTransactionFee()
+            hideTxFee()
             continueButton.variation = .disabled
         }
     }
@@ -335,13 +335,13 @@ class AddAmountViewController: UIViewController {
         warningView.isHidden = true
     }
 
-    private func showTransactionFee(_ amount: MicroTari) {
+    private func showTxFee(_ amount: MicroTari) {
         guard let wallet = TariLib.shared.tariWallet else { return }
-        let fee = wallet.calculateTransactionFee(amount)
+        let fee = wallet.calculateTxFee(amount)
 
-        transactionFeeLabel.text = fee.formattedPreciseWithOperator
-        if transactionFeeIsVisible { return }
-        transactionViewContainer.alpha = 0.0
+        txFeeLabel.text = fee.formattedPreciseWithOperator
+        if txFeeIsVisible { return }
+        txViewContainer.alpha = 0.0
         let moveAnimation: CATransition = CATransition()
         moveAnimation.timingFunction = CAMediaTimingFunction(name:
                 CAMediaTimingFunctionName.easeIn)
@@ -350,18 +350,18 @@ class AddAmountViewController: UIViewController {
         moveAnimation.duration = animationDuration
         UIView.animate(withDuration: animationDuration) { [weak self] in
             guard let self = self else {return}
-            self.transactionViewContainer.alpha = 1.0
-            self.transactionViewContainer.layer.add(moveAnimation, forKey: CATransitionType.push.rawValue)
+            self.txViewContainer.alpha = 1.0
+            self.txViewContainer.layer.add(moveAnimation, forKey: CATransitionType.push.rawValue)
         }
-        self.transactionFeeIsVisible = true
+        self.txFeeIsVisible = true
     }
 
-    private func hideTransactionFee() {
+    private func hideTxFee() {
         UIView.animate(withDuration: animationDuration) { [weak self] in
             guard let self = self else {return}
-            self.transactionViewContainer.alpha = 0.0
+            self.txViewContainer.alpha = 0.0
         }
-        self.transactionFeeIsVisible = false
+        self.txFeeIsVisible = false
     }
 
     @objc private func continueButtonTapped() {
@@ -385,7 +385,7 @@ class AddAmountViewController: UIViewController {
         }
 
         guard let amount = tariAmount else { return }
-        if amount.rawValue + wallet.calculateTransactionFee(amount).rawValue  > availableBalance {
+        if amount.rawValue + wallet.calculateTxFee(amount).rawValue  > availableBalance {
             UserFeedback.shared.info(
                 title: NSLocalizedString("add_amount.info.wait_completion_previous_tx.title", comment: "Add amount view"),
                 description: NSLocalizedString("add_amount.info.wait_completion_previous_tx.descrption", comment: "Add amount view")
@@ -492,35 +492,35 @@ extension AddAmountViewController {
         warningLabel.textAlignment = .center
         warningLabel.heightAnchor.constraint(equalToConstant: warningLabel.font.pointSize * 1.2).isActive = true
 
-        //transaction fee
-        transactionViewContainer.alpha = 0.0
-        view.addSubview(transactionViewContainer)
-        transactionViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        transactionViewContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        transactionViewContainer.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 12).isActive = true
-        let transactionStackView = UIStackView()
-        transactionStackView.translatesAutoresizingMaskIntoConstraints = false
-        transactionViewContainer.addSubview(transactionStackView)
-        transactionStackView.leftAnchor.constraint(equalTo: transactionViewContainer.leftAnchor).isActive = true
-        transactionStackView.rightAnchor.constraint(equalTo: transactionViewContainer.rightAnchor).isActive = true
-        transactionStackView.topAnchor.constraint(equalTo: transactionViewContainer.topAnchor).isActive = true
-        transactionStackView.bottomAnchor.constraint(equalTo: transactionViewContainer.bottomAnchor).isActive = true
-        transactionStackView.alignment = .center
-        transactionStackView.axis = .vertical
+        //tx fee
+        txViewContainer.alpha = 0.0
+        view.addSubview(txViewContainer)
+        txViewContainer.translatesAutoresizingMaskIntoConstraints = false
+        txViewContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        txViewContainer.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 12).isActive = true
+        let txStackView = UIStackView()
+        txStackView.translatesAutoresizingMaskIntoConstraints = false
+        txViewContainer.addSubview(txStackView)
+        txStackView.leftAnchor.constraint(equalTo: txViewContainer.leftAnchor).isActive = true
+        txStackView.rightAnchor.constraint(equalTo: txViewContainer.rightAnchor).isActive = true
+        txStackView.topAnchor.constraint(equalTo: txViewContainer.topAnchor).isActive = true
+        txStackView.bottomAnchor.constraint(equalTo: txViewContainer.bottomAnchor).isActive = true
+        txStackView.alignment = .center
+        txStackView.axis = .vertical
 
-        transactionFeeLabel.translatesAutoresizingMaskIntoConstraints = false
-        transactionFeeLabel.font = Theme.shared.fonts.transactionFeeLabel
-        transactionFeeLabel.textColor = Theme.shared.colors.transactionViewValueLabel
+        txFeeLabel.translatesAutoresizingMaskIntoConstraints = false
+        txFeeLabel.font = Theme.shared.fonts.txFeeLabel
+        txFeeLabel.textColor = Theme.shared.colors.txViewValueLabel
 
         let feeButton = TextButton()
         feeButton.translatesAutoresizingMaskIntoConstraints = false
         feeButton.setTitle(NSLocalizedString("common.fee", comment: "Common"), for: .normal)
-        feeButton.setRightImage(Theme.shared.images.transactionFee!)
+        feeButton.setRightImage(Theme.shared.images.txFee!)
         feeButton.addTarget(self, action: #selector(feeButtonPressed), for: .touchUpInside)
         continueButton.variation = .disabled
 
-        transactionStackView.addArrangedSubview(transactionFeeLabel)
-        transactionStackView.addArrangedSubview(feeButton)
+        txStackView.addArrangedSubview(txFeeLabel)
+        txStackView.addArrangedSubview(feeButton)
     }
 
     private func setupKeypad() {

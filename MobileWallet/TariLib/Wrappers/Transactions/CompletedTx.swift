@@ -1,4 +1,4 @@
-//  CompletedTransaction2.swift
+//  CompletedTx.swift
 
 /*
 	Package MobileWallet
@@ -40,11 +40,11 @@
 
 import Foundation
 
-enum CompletedTransactionError: Error {
+enum CompletedTxError: Error {
     case generic(_ errorCode: Int32)
 }
 
-class CompletedTransaction: TransactionProtocol {
+class CompletedTx: TxProtocol {
     private var ptr: OpaquePointer
     private var cachedContact: Contact?
     let isCancelled: Bool
@@ -57,7 +57,7 @@ class CompletedTransaction: TransactionProtocol {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             completed_transaction_get_transaction_id(ptr, error)})
-        return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
+        return (result, errorCode != 0 ? CompletedTxError.generic(errorCode) : nil)
     }
 
     var microTari: (MicroTari?, Error?) {
@@ -66,7 +66,7 @@ class CompletedTransaction: TransactionProtocol {
             completed_transaction_get_amount(ptr, error)})
 
         guard errorCode == 0 else {
-            return (nil, CompletedTransactionError.generic(errorCode))
+            return (nil, CompletedTxError.generic(errorCode))
         }
 
         return (MicroTari(result), nil)
@@ -76,7 +76,7 @@ class CompletedTransaction: TransactionProtocol {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             completed_transaction_get_fee(ptr, error)})
-        return (MicroTari(result), errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
+        return (MicroTari(result), errorCode != 0 ? CompletedTxError.generic(errorCode) : nil)
     }
 
     var message: (String, Error?) {
@@ -88,14 +88,14 @@ class CompletedTransaction: TransactionProtocol {
         let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
         string_destroy(mutable)
 
-        return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
+        return (result, errorCode != 0 ? CompletedTxError.generic(errorCode) : nil)
     }
 
     var timestamp: (UInt64, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             completed_transaction_get_timestamp(ptr, error)})
-        return (result, errorCode != 0 ? CompletedTransactionError.generic(errorCode) : nil)
+        return (result, errorCode != 0 ? CompletedTxError.generic(errorCode) : nil)
     }
 
     var sourcePublicKey: (PublicKey?, Error?) {
@@ -104,7 +104,7 @@ class CompletedTransaction: TransactionProtocol {
             completed_transaction_get_source_public_key(ptr, error)
         })
         guard errorCode == 0 else {
-            return (nil, CompletedTransactionError.generic(errorCode))
+            return (nil, CompletedTxError.generic(errorCode))
         }
 
         return (PublicKey(pointer: resultPointer!), nil)
@@ -116,24 +116,24 @@ class CompletedTransaction: TransactionProtocol {
             completed_transaction_get_destination_public_key(ptr, error)
         })
         guard errorCode == 0 else {
-            return (nil, CompletedTransactionError.generic(errorCode))
+            return (nil, CompletedTxError.generic(errorCode))
         }
 
         return (PublicKey(pointer: resultPointer!), nil)
     }
 
-    var status: (TransactionStatus, Error?) {
+    var status: (TxStatus, Error?) {
         var errorCode: Int32 = -1
         let statusCode: Int32 = withUnsafeMutablePointer(to: &errorCode, { error in
             completed_transaction_get_status(ptr, error)})
         guard errorCode == 0 else {
-            return (.unknown, CompletedTransactionError.generic(errorCode))
+            return (.unknown, CompletedTxError.generic(errorCode))
         }
 
         return (statusFrom(code: statusCode), nil)
     }
 
-    var direction: TransactionDirection {
+    var direction: TxDirection {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             completed_transaction_is_outbound(ptr, error)})
@@ -162,7 +162,7 @@ class CompletedTransaction: TransactionProtocol {
             return (nil, contactsError)
         }
 
-        let (pubKey, pubKeyError) = self.direction == TransactionDirection.inbound ? self.sourcePublicKey : self.destinationPublicKey
+        let (pubKey, pubKeyError) = self.direction == TxDirection.inbound ? self.sourcePublicKey : self.destinationPublicKey
         guard pubKeyError == nil else {
             return (nil, pubKeyError)
         }
@@ -175,8 +175,8 @@ class CompletedTransaction: TransactionProtocol {
         }
     }
 
-    init(completedTransactionPointer: OpaquePointer, isCancelled: Bool = false) {
-        ptr = completedTransactionPointer
+    init(completedTxPointer: OpaquePointer, isCancelled: Bool = false) {
+        ptr = completedTxPointer
         self.isCancelled = isCancelled
     }
 

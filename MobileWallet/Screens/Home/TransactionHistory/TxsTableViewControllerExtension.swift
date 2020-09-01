@@ -1,4 +1,4 @@
-//  TransactionsTableViewController.TableView.swift
+//  TxsTableViewController.TableView.swift
 
 /*
     Package MobileWallet
@@ -42,7 +42,7 @@ import Foundation
 import UIKit
 import Lottie
 
-extension TransactionsTableViewController {
+extension TxsTableViewController {
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         if transactions.count == 0 {
@@ -59,13 +59,13 @@ extension TransactionsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: TransactionTableViewCell
+        let cell: TxTableViewCell
 
         if transactionModels[indexPath.row].shouldUpdateCellSize {
             transactionModels[indexPath.row].shouldUpdateCellSize = false
-            cell = TransactionTableViewCell(style: .default, reuseIdentifier: cellIdentifier)
+            cell = TxTableViewCell(style: .default, reuseIdentifier: cellIdentifier)
         } else {
-            cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TransactionTableViewCell
+            cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TxTableViewCell
         }
         cell.configure(with: transactionModels[indexPath.row])
         cell.updateCell = {
@@ -85,8 +85,8 @@ extension TransactionsTableViewController {
         messageLabel.numberOfLines = 0
         messageLabel.text = NSLocalizedString("tx_list.empty", comment: "Home view table when there are no transactions")
         messageLabel.textAlignment = .center
-        messageLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
-        messageLabel.font = Theme.shared.fonts.transactionListEmptyMessageLabel
+        messageLabel.textColor = Theme.shared.colors.txSmallSubheadingLabel
+        messageLabel.font = Theme.shared.fonts.txListEmptyMessageLabel
 
         messageLabel.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: -20).isActive = true
         messageLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
@@ -130,8 +130,8 @@ extension TransactionsTableViewController {
 
         messageLabel.text = NSLocalizedString("tx_list.intro_message", comment: "Home view table on introdution to wallet")
         messageLabel.textAlignment = .center
-        messageLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
-        messageLabel.font = Theme.shared.fonts.transactionListEmptyMessageLabel
+        messageLabel.textColor = Theme.shared.colors.txSmallSubheadingLabel
+        messageLabel.font = Theme.shared.fonts.txListEmptyMessageLabel
 
         messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15).isActive = true
         messageLabel.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true

@@ -1,4 +1,4 @@
-//  TransactionsProtocol.swift
+//  TxsProtocol.swift
 
 /*
 	Package MobileWallet
@@ -40,15 +40,11 @@
 
 import Foundation
 
-protocol TransactionsProtocol {
-    associatedtype Tx: TransactionProtocol
+protocol TxsProtocol {
+    associatedtype Tx: TxProtocol
 
     var pointer: OpaquePointer { get }
     var count: (UInt32, Error?) { get }
     var list: ([Tx], Error?) { get }
     func at(position: UInt32) throws -> Tx
-}
-
-extension TransactionsProtocol {
-
 }

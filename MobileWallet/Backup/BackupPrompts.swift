@@ -43,7 +43,7 @@ import LocalAuthentication
 
 private class BackupPrompts {
     struct TriggerRequirements {
-        let numberOfIncomingTransactions: Int
+        let numberOfIncomingTxs: Int
         let totalBalance: MicroTari
         let hasConnectediCloud: Bool
         let backupIsEncrypted: Bool
@@ -66,21 +66,21 @@ private class BackupPrompts {
             switch self {
             case .first:
                 return TriggerRequirements(
-                    numberOfIncomingTransactions: 3,
+                    numberOfIncomingTxs: 3,
                     totalBalance: MicroTari(0),
                     hasConnectediCloud: false,
                     backupIsEncrypted: false
                 )
             case .second:
                 return TriggerRequirements(
-                    numberOfIncomingTransactions: 4,
+                    numberOfIncomingTxs: 4,
                     totalBalance: MicroTari(tariValue: 8000),
                     hasConnectediCloud: false,
                     backupIsEncrypted: false
                 )
             case .third:
                 return TriggerRequirements(
-                    numberOfIncomingTransactions: 5,
+                    numberOfIncomingTxs: 5,
                     totalBalance: MicroTari(tariValue: 25000),
                     hasConnectediCloud: true,
                     backupIsEncrypted: false
@@ -144,8 +144,8 @@ private class BackupPrompts {
                 continue
             }
 
-            var incomingTxs = wallet.pendingInboundTransactions.0?.count.0 ?? 0
-            let completedTxs: [CompletedTransaction] = (wallet.completedTransactions.0?.list.0 ?? [])
+            var incomingTxs = wallet.pendingInboundTxs.0?.count.0 ?? 0
+            let completedTxs: [CompletedTx] = (wallet.completedTxs.0?.list.0 ?? [])
             completedTxs.forEach { (tx) in
                 if tx.direction == .inbound {
                     incomingTxs += 1
@@ -156,7 +156,7 @@ private class BackupPrompts {
 
             let triggers = type.triggers
 
-            guard incomingTxs >= triggers.numberOfIncomingTransactions &&
+            guard incomingTxs >= triggers.numberOfIncomingTxs &&
             balance.rawValue >= triggers.totalBalance.rawValue &&
                 ICloudBackup.shared.isValidBackupExists() == triggers.hasConnectediCloud &&
                 (ICloudBackup.shared.lastBackup?.isEncrypted ?? false) == triggers.backupIsEncrypted &&

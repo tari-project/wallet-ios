@@ -58,28 +58,28 @@ extension WalletErrors: LocalizedError {
             return NSLocalizedString("wallet.error.invalid_public_key_hex", comment: "Wallet error")
         case .generateTestData:
             return NSLocalizedString("wallet.error.test_data", comment: "Wallet error")
-        case .generateTestReceiveTransaction:
-            return NSLocalizedString("wallet.error.test_receieve_transaction", comment: "Wallet error")
-        case .sendingTransaction:
-            return NSLocalizedString("wallet.error.send_transaction", comment: "Wallet error")
-        case .testTransactionBroadcast:
+        case .generateTestReceiveTx:
+            return NSLocalizedString("wallet.error.test_receieve_tx", comment: "Wallet error")
+        case .sendingTx:
+            return NSLocalizedString("wallet.error.send_tx", comment: "Wallet error")
+        case .testTxBroadcast:
             return NSLocalizedString("wallet.error.broadcast", comment: "Wallet error")
-        case .testTransactionMined:
-            return NSLocalizedString("wallet.error.mine_transaction", comment: "Wallet error")
-        case .testSendCompleteTransaction:
-            return NSLocalizedString("wallet.error.test_transaction", comment: "Wallet error")
-        case .completedTransactionById:
-            return NSLocalizedString("wallet.error.find_completed_transaction", comment: "Wallet error")
-        case .cancelledTransactionById:
-            return NSLocalizedString("wallet.error.find_canceled_transaction", comment: "Wallet error")
+        case .testTxMined:
+            return NSLocalizedString("wallet.error.mine_tx", comment: "Wallet error")
+        case .testSendCompleteTx:
+            return NSLocalizedString("wallet.error.test_tx", comment: "Wallet error")
+        case .completedTxById:
+            return NSLocalizedString("wallet.error.find_completed_tx", comment: "Wallet error")
+        case .cancelledTxById:
+            return NSLocalizedString("wallet.error.find_canceled_tx", comment: "Wallet error")
         case .walletNotInitialized:
             return NSLocalizedString("wallet.error.wallet_not_initialized", comment: "Wallet error")
         case .invalidSignatureAndNonceString:
             return NSLocalizedString("wallet.error.invalid_signature", comment: "Wallet error")
-        case .cancelNonPendingTransaction:
-            return NSLocalizedString("wallet.error.cancel_non_pending_transaction", comment: "Wallet error")
-        case .transactionsToCancel:
-            return NSLocalizedString("wallet.error.fetch_transactions_to_cancel", comment: "Wallet error")
+        case .cancelNonPendingTx:
+            return NSLocalizedString("wallet.error.cancel_non_pending_tx", comment: "Wallet error")
+        case .txToCancel:
+            return NSLocalizedString("wallet.error.fetch_txs_to_cancel", comment: "Wallet error")
         }
     }
 }

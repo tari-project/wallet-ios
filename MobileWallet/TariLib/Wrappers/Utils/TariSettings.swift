@@ -117,12 +117,12 @@ struct TariSettings {
     //Used for showing a little extra detail in the UI to help debugging
     private let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
-    let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 1 //1 day
+    let txTimeToExpire: TimeInterval = 60 * 60 * 24 * 1 //1 day
     #else
     let torEnabled = true
     private let isDebug = false
     let maxMbLogsStorage: UInt64 = 500 //500MB
-    let expirePendingTransactionsAfter: TimeInterval = 60 * 60 * 24 * 3 //3 days
+    let txTimeToExpire: TimeInterval = 60 * 60 * 24 * 3 //3 days
     #endif
 
     var isUnitTesting: Bool {

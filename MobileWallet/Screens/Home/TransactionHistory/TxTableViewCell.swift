@@ -1,4 +1,4 @@
-//  TransactionTableTableViewCell.swift
+//  TxTableViewCell.swift
 
 /*
 	Package MobileWallet
@@ -42,7 +42,7 @@ import UIKit
 import GiphyUISDK
 import GiphyCoreSDK
 
-class TransactionTableViewCell: UITableViewCell {
+class TxTableViewCell: UITableViewCell {
     private let avatarContainer = UIView()
     private let labelsContainer = UIView()
     private let avatarLabel = UILabel()
@@ -57,7 +57,7 @@ class TransactionTableViewCell: UITableViewCell {
     private let loadingGifButton = LoadingGIFButton()
 
     var updateCell: (() -> Void)?
-    weak var model: TransactionTableViewModel?
+    weak var model: TxTableViewModel?
 
     private var kvoTime: NSKeyValueObservation?
     private var kvoGif: NSKeyValueObservation?
@@ -89,7 +89,7 @@ class TransactionTableViewCell: UITableViewCell {
         stopObservation()
     }
 
-    func configure(with model: TransactionTableViewModel) {
+    func configure(with model: TxTableViewModel) {
         if model.id == self.model?.id { return }
 
         self.model = model
@@ -110,7 +110,7 @@ class TransactionTableViewCell: UITableViewCell {
         observe(item: model)
     }
 
-    private func observe(item: TransactionTableViewModel) {
+    private func observe(item: TxTableViewModel) {
         kvoGif = item.observe(\.gif, options: .new) { [weak self] (_, _) in
             self?.updateCell?()
         }
@@ -169,31 +169,31 @@ class TransactionTableViewCell: UITableViewCell {
         }
     }
 
-    private func setValue(microTari: MicroTari?, direction: TransactionDirection, isCancelled: Bool, isPending: Bool) {
+    private func setValue(microTari: MicroTari?, direction: TxDirection, isCancelled: Bool, isPending: Bool) {
         if let mt = microTari {
             if isCancelled {
                 valueLabel.text = mt.formatted
-                valueLabel.backgroundColor = Theme.shared.colors.transactionCellValueCancelledBackground
-                valueLabel.textColor = Theme.shared.colors.transactionCellValueCancelledText
+                valueLabel.backgroundColor = Theme.shared.colors.txCellValueCancelledBackground
+                valueLabel.textColor = Theme.shared.colors.txCellValueCancelledText
             } else if direction == .inbound {
                 valueLabel.text = mt.formattedWithOperator
-                valueLabel.backgroundColor = Theme.shared.colors.transactionCellValuePositiveBackground
-                valueLabel.textColor = Theme.shared.colors.transactionCellValuePositiveText
+                valueLabel.backgroundColor = Theme.shared.colors.txCellValuePositiveBackground
+                valueLabel.textColor = Theme.shared.colors.txCellValuePositiveText
             } else if direction == .outbound {
                 valueLabel.text = mt.formattedWithNegativeOperator
-                valueLabel.backgroundColor = Theme.shared.colors.transactionCellValueNegativeBackground
-                valueLabel.textColor = Theme.shared.colors.transactionCellValueNegativeText
+                valueLabel.backgroundColor = Theme.shared.colors.txCellValueNegativeBackground
+                valueLabel.textColor = Theme.shared.colors.txCellValueNegativeText
             }
 
             if isPending {
-                valueLabel.backgroundColor = Theme.shared.colors.transactionCellValuePendingBackground
-                valueLabel.textColor = Theme.shared.colors.transactionCellValuePendingText
+                valueLabel.backgroundColor = Theme.shared.colors.txCellValuePendingBackground
+                valueLabel.textColor = Theme.shared.colors.txCellValuePendingText
             }
         } else {
             //Unlikely to happen scenario
             valueLabel.text = "0"
-            valueLabel.backgroundColor = Theme.shared.colors.transactionTableBackground
-            valueLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
+            valueLabel.backgroundColor = Theme.shared.colors.txTableBackground
+            valueLabel.textColor = Theme.shared.colors.txScreenTextLabel
         }
 
         valueLabel.padding = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
@@ -205,9 +205,9 @@ class TransactionTableViewCell: UITableViewCell {
 }
 
 // MARK: setup subviews
-extension TransactionTableViewCell {
+extension TxTableViewCell {
     private func viewSetup() {
-        contentView.backgroundColor = Theme.shared.colors.transactionTableBackground
+        contentView.backgroundColor = Theme.shared.colors.txTableBackground
         selectionStyle = .none
 
         setupAvatar()
@@ -217,7 +217,7 @@ extension TransactionTableViewCell {
     private func setupAvatar() {
         contentView.addSubview(avatarContainer)
 
-        avatarContainer.backgroundColor = Theme.shared.colors.transactionTableBackground
+        avatarContainer.backgroundColor = Theme.shared.colors.txTableBackground
 
         avatarContainer.translatesAutoresizingMaskIntoConstraints = false
 
@@ -225,7 +225,7 @@ extension TransactionTableViewCell {
         avatarContainer.widthAnchor.constraint(equalToConstant: size).isActive = true
         avatarContainer.heightAnchor.constraint(equalToConstant: size).isActive = true
         avatarContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TransactionTableViewCell.topCellPadding).isActive = true
+        avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TxTableViewCell.topCellPadding).isActive = true
         avatarContainer.layer.cornerRadius = size / 2
 
         avatarContainer.layer.shadowOpacity = 0.13
@@ -245,9 +245,9 @@ extension TransactionTableViewCell {
         labelsContainer.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(labelsContainer)
 
-        labelsContainer.addBottomBorder(with: Theme.shared.colors.transactionCellBorder, andWidth: 1)
-        labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TransactionTableViewCell.topCellPadding).isActive = true
-        labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25 + TransactionTableViewCell.topCellPadding).isActive = true
+        labelsContainer.addBottomBorder(with: Theme.shared.colors.txCellBorder, andWidth: 1)
+        labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TxTableViewCell.topCellPadding).isActive = true
+        labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25 + TxTableViewCell.topCellPadding).isActive = true
         labelsContainer.leadingAnchor.constraint(equalTo: avatarContainer.trailingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         labelsContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
@@ -255,7 +255,7 @@ extension TransactionTableViewCell {
         valueContainer.addSubview(valueLabel)
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
         valueLabel.numberOfLines = 1
-        valueLabel.font = Theme.shared.fonts.transactionCellValueLabel
+        valueLabel.font = Theme.shared.fonts.txCellValueLabel
         valueLabel.layer.cornerRadius = 3
         valueLabel.layer.masksToBounds = true
         valueLabel.centerYAnchor.constraint(equalTo: valueContainer.centerYAnchor).isActive = true
@@ -282,8 +282,8 @@ extension TransactionTableViewCell {
 
         // MARK: - Time
         labelsContainer.addSubview(timeLabel)
-        timeLabel.font = Theme.shared.fonts.transactionDateValueLabel
-        timeLabel.textColor = Theme.shared.colors.transactionSmallSubheadingLabel
+        timeLabel.font = Theme.shared.fonts.txDateValueLabel
+        timeLabel.textColor = Theme.shared.colors.txSmallSubheadingLabel
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
         timeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5).isActive = true
         timeLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
@@ -291,8 +291,8 @@ extension TransactionTableViewCell {
 
         // MARK: - Status
         labelsContainer.addSubview(statusLabel)
-        statusLabel.font = Theme.shared.fonts.transactionCellStatusLabel
-        statusLabel.textColor = Theme.shared.colors.transactionCellStatusLabel
+        statusLabel.font = Theme.shared.fonts.txCellStatusLabel
+        statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         statusLabel.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 5).isActive = true
         statusLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
@@ -301,8 +301,8 @@ extension TransactionTableViewCell {
 
         // MARK: - TX note
         labelsContainer.addSubview(noteLabel)
-        noteLabel.font = Theme.shared.fonts.transactionCellDescriptionLabel
-        noteLabel.textColor = Theme.shared.colors.transactionCellNote
+        noteLabel.font = Theme.shared.fonts.txCellDescriptionLabel
+        noteLabel.textColor = Theme.shared.colors.txCellNote
         noteLabel.lineBreakMode = .byWordWrapping
         noteLabel.numberOfLines = 0
         noteLabel.translatesAutoresizingMaskIntoConstraints = false

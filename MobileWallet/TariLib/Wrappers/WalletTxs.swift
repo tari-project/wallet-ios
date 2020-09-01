@@ -1,4 +1,4 @@
-//  WalletTransactions.swift
+//  WalletTxs.swift
 
 /*
     Package MobileWallet
@@ -41,10 +41,10 @@
 import Foundation
 
 extension Wallet {
-    var completedTransactions: (CompletedTransactions?, Error?) {
+    var completedTxs: (CompletedTxs?, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            CompletedTransactions(completedTransactionsPointer: wallet_get_completed_transactions(pointer, error))
+            CompletedTxs(completedTxsPointer: wallet_get_completed_transactions(pointer, error))
 
         })
         guard errorCode == 0 else {
@@ -53,10 +53,10 @@ extension Wallet {
         return (result, nil)
     }
 
-    var cancelledTransactions: (CompletedTransactions?, Error?) {
+    var cancelledTxs: (CompletedTxs?, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            CompletedTransactions(completedTransactionsPointer: wallet_get_cancelled_transactions(pointer, error), isCancelled: true)
+            CompletedTxs(completedTxsPointer: wallet_get_cancelled_transactions(pointer, error), isCancelled: true)
         })
         guard errorCode == 0 else {
             return (nil, WalletErrors.generic(errorCode))
@@ -64,24 +64,11 @@ extension Wallet {
         return (result, nil)
     }
 
-    var pendingOutboundTransactions: (PendingOutboundTransactions?, Error?) {
+    var pendingOutboundTxs: (PendingOutboundTxs?, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            PendingOutboundTransactions(
-            pendingOutboundTransactionsPointer: wallet_get_pending_outbound_transactions(pointer, error))
-
-        })
-        guard errorCode == 0 else {
-            return (nil, WalletErrors.generic(errorCode))
-        }
-        return (result, nil)
-    }
-
-    var pendingInboundTransactions: (PendingInboundTransactions?, Error?) {
-        var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            PendingInboundTransactions(
-            pendingInboundTransactionsPointer: wallet_get_pending_inbound_transactions(pointer, error))
+            PendingOutboundTxs(
+            pendingOutboundTxsPointer: wallet_get_pending_outbound_transactions(pointer, error))
 
         })
         guard errorCode == 0 else {
@@ -90,30 +77,43 @@ extension Wallet {
         return (result, nil)
     }
 
-    var allTransactions: ([TransactionProtocol], Error?) {
-        let (completedTransactions, completedError) = self.completedTransactions
+    var pendingInboundTxs: (PendingInboundTxs?, Error?) {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            PendingInboundTxs(
+            pendingInboundTxsPointer: wallet_get_pending_inbound_transactions(pointer, error))
+
+        })
+        guard errorCode == 0 else {
+            return (nil, WalletErrors.generic(errorCode))
+        }
+        return (result, nil)
+    }
+
+    var allTxs: ([TxProtocol], Error?) {
+        let (completedTxs, completedError) = self.completedTxs
         guard completedError == nil else {
             return ([], completedError)
         }
 
-        let (cancelledTransactions, cancelledError) = self.cancelledTransactions
+        let (cancelledTxs, cancelledError) = self.cancelledTxs
         guard cancelledError == nil else {
             return ([], cancelledError)
         }
 
-        let (pendingInboundTransactions, pendingInboundError) = self.pendingInboundTransactions
+        let (pendingInboundTxs, pendingInboundError) = self.pendingInboundTxs
         guard pendingInboundError == nil else {
             return ([], pendingInboundError)
         }
 
-        let (pendingOutboundTransactions, pendingOutboundError) = self.pendingOutboundTransactions
+        let (pendingOutboundTxs, pendingOutboundError) = self.pendingOutboundTxs
         guard pendingOutboundError == nil else {
             return ([], pendingOutboundError)
         }
 
-        var result: [TransactionProtocol] =
-            (pendingInboundTransactions!.list.0.map { $0 as TransactionProtocol })
-        result.append(contentsOf: pendingOutboundTransactions!.list.0.map { $0 as TransactionProtocol })
+        var result: [TxProtocol] =
+            (pendingInboundTxs!.list.0.map { $0 as TxProtocol })
+        result.append(contentsOf: pendingOutboundTxs!.list.0.map { $0 as TxProtocol })
 
         //Keep pending first but sorted
         result.sort { (tx1, tx2) -> Bool in
@@ -122,8 +122,8 @@ extension Wallet {
             return d1.compare(d2) == .orderedDescending
         }
 
-        var completedAndCancelled: [TransactionProtocol] = completedTransactions!.list.0
-        completedAndCancelled.append(contentsOf: cancelledTransactions!.list.0.map { $0 as TransactionProtocol })
+        var completedAndCancelled: [TxProtocol] = completedTxs!.list.0
+        completedAndCancelled.append(contentsOf: cancelledTxs!.list.0.map { $0 as TxProtocol })
         completedAndCancelled.sort { (tx1, tx2) -> Bool in
             let d1 = tx1.date.0 ?? Date()
             let d2 = tx2.date.0 ?? Date()

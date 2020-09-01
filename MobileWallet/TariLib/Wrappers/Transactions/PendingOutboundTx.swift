@@ -1,4 +1,4 @@
-//  PendingInboundTransaction.swift
+//  PendingOutboundTx.swift
 
 /*
 	Package MobileWallet
@@ -40,18 +40,18 @@
 
 import Foundation
 
-enum PendingInboundTransactionError: Error {
-    case generic(_ errorCode: Int32)
+enum PendingOutboundTxError: Error {
+   case generic(_ errorCode: Int32)
 }
 
-class PendingInboundTransaction: TransactionProtocol {
+class PendingOutboundTx: TxProtocol {
     var cachedContact: Contact?
 
-    var destinationPublicKey: (PublicKey?, Error?)
+    var sourcePublicKey: (PublicKey?, Error?)
 
     private var ptr: OpaquePointer
 
-    var direction: TransactionDirection = .inbound
+    var direction: TxDirection = .outbound
 
     var pointer: OpaquePointer {
         return ptr
@@ -60,63 +60,73 @@ class PendingInboundTransaction: TransactionProtocol {
     var id: (UInt64, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_inbound_transaction_get_transaction_id(ptr, error)
+            pending_outbound_transaction_get_transaction_id(ptr, error)
         })
-        return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
+        return (result, errorCode != 0 ? PendingOutboundTxError.generic(errorCode) : nil)
     }
 
     var microTari: (MicroTari?, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_inbound_transaction_get_amount(ptr, error) })
+            pending_outbound_transaction_get_amount(ptr, error)
+        })
 
         guard errorCode == 0 else {
-            return (nil, CompletedTransactionError.generic(errorCode))
+            return (nil, CompletedTxError.generic(errorCode))
         }
 
         return (MicroTari(result), nil)
     }
 
+    var fee: (MicroTari?, Error?) {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            pending_outbound_transaction_get_fee(ptr, error)
+        })
+        return (MicroTari(result), errorCode != 0 ? CompletedTxError.generic(errorCode) : nil)
+    }
+
     var message: (String, Error?) {
         var errorCode: Int32 = -1
         let resultPtr = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_inbound_transaction_get_message(ptr, error)
+            pending_outbound_transaction_get_message(ptr, error)
         })
         let result = String(cString: resultPtr!)
 
         let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
         string_destroy(mutable)
 
-        return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
+        return (result, errorCode != 0 ? PendingOutboundTxError.generic(errorCode) : nil)
     }
 
     var timestamp: (UInt64, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_inbound_transaction_get_timestamp(ptr, error)
+            pending_outbound_transaction_get_timestamp(ptr, error)
         })
-        return (result, errorCode != 0 ? PendingInboundTransactionError.generic(errorCode) : nil)
+        return (result, errorCode != 0 ? PendingOutboundTxError.generic(errorCode) : nil)
     }
 
-    var sourcePublicKey: (PublicKey?, Error?) {
+    var destinationPublicKey: (PublicKey?, Error?) {
         var errorCode: Int32 = -1
         let resultPointer = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_inbound_transaction_get_source_public_key(ptr, error)
+            pending_outbound_transaction_get_destination_public_key(ptr, error)
         })
         guard errorCode == 0 else {
-            return (nil, PendingInboundTransactionError.generic(errorCode))
+            return (nil, PendingOutboundTxError.generic(errorCode))
         }
 
         return (PublicKey(pointer: resultPointer!), nil)
     }
 
-    var status: (TransactionStatus, Error?) {
+    var status: (TxStatus, Error?) {
         var errorCode: Int32 = -1
         let statusCode: Int32 = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_inbound_transaction_get_status(ptr, error)
+            pending_outbound_transaction_get_status(ptr, error)
+
         })
         guard errorCode == 0 else {
-            return (.unknown, PendingInboundTransactionError.generic(errorCode))
+            return (.unknown, PendingOutboundTxError.generic(errorCode))
         }
 
         return (statusFrom(code: statusCode), nil)
@@ -136,7 +146,7 @@ class PendingInboundTransaction: TransactionProtocol {
             return (nil, contactsError)
         }
 
-        let (pubKey, pubKeyError) = sourcePublicKey
+        let (pubKey, pubKeyError) = destinationPublicKey
         guard pubKeyError == nil else {
             return (nil, pubKeyError)
         }
@@ -149,11 +159,11 @@ class PendingInboundTransaction: TransactionProtocol {
         }
     }
 
-    init(pendingInboundTransactionPointer: OpaquePointer) {
-        ptr = pendingInboundTransactionPointer
+    init(pendingOutboundTxPointer: OpaquePointer) {
+        ptr = pendingOutboundTxPointer
     }
 
     deinit {
-        pending_inbound_transaction_destroy(ptr)
+        pending_outbound_transaction_destroy(ptr)
     }
 }

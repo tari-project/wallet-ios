@@ -88,8 +88,8 @@ class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleProtoco
 
         //Style
         subtitleLabel.textAlignment = .center
-        subtitleLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
-        subtitleLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
+        subtitleLabel.font = Theme.shared.fonts.txScreenSubheadingLabel
+        subtitleLabel.textColor = Theme.shared.colors.txScreenSubheadingLabel
     }
 
     private func setupBackButton() {

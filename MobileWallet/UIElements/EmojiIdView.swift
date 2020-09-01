@@ -538,14 +538,14 @@ extension EmojiIdView {
         containerView.isUserInteractionEnabled = true
         containerView.alpha = 0.0
         containerView.layer.borderWidth = 2
-        containerView.layer.borderColor = Theme.shared.colors.transactionCellValuePositiveText?.cgColor
+        containerView.layer.borderColor = Theme.shared.colors.txCellValuePositiveText?.cgColor
         containerView.backgroundColor = UIColor.white.withAlphaComponent(0.75)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.layer.cornerRadius = cornerRadius
         containerView.frame = containerFrame
         // green background
         let greenView = UIView()
-        greenView.backgroundColor = Theme.shared.colors.transactionCellValuePositiveText?.withAlphaComponent(0.12)
+        greenView.backgroundColor = Theme.shared.colors.txCellValuePositiveText?.withAlphaComponent(0.12)
         greenView.translatesAutoresizingMaskIntoConstraints = false
         greenView.frame = subviewFrame
         // label

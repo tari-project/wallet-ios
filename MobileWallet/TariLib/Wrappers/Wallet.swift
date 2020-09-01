@@ -48,17 +48,17 @@ enum WalletErrors: Error {
     case addOwnContact
     case invalidPublicKeyHex
     case generateTestData
-    case generateTestReceiveTransaction
-    case sendingTransaction
-    case testTransactionBroadcast
-    case testTransactionMined
-    case testSendCompleteTransaction
-    case completedTransactionById
-    case cancelledTransactionById
+    case generateTestReceiveTx
+    case sendingTx
+    case testTxBroadcast
+    case testTxMined
+    case testSendCompleteTx
+    case completedTxById
+    case cancelledTxById
     case walletNotInitialized
     case invalidSignatureAndNonceString
-    case cancelNonPendingTransaction
-    case transactionsToCancel
+    case cancelNonPendingTx
+    case txToCancel
 }
 
 struct CallbackTxResult {
@@ -153,52 +153,52 @@ class Wallet {
     init(commsConfig: CommsConfig, loggingFilePath: String) throws {
         let loggingFilePathPointer = UnsafeMutablePointer<Int8>(mutating: (loggingFilePath as NSString).utf8String)!
 
-        let receivedTransactionCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
+        let receivedTxCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
-            let pendingInbound = PendingInboundTransaction(pendingInboundTransactionPointer: valuePointer!)
-            TariEventBus.postToMainThread(.receievedTransaction, sender: pendingInbound)
-            TariEventBus.postToMainThread(.transactionListUpdate)
+            let pendingInbound = PendingInboundTx(pendingInboundTxPointer: valuePointer!)
+            TariEventBus.postToMainThread(.receievedTx, sender: pendingInbound)
+            TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Receive transaction lib callback")
         }
 
-        let receivedTransactionReplyCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
+        let receivedTxReplyCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
-            let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
-            TariEventBus.postToMainThread(.receievedTransactionReply, sender: completed)
-            TariEventBus.postToMainThread(.transactionListUpdate)
+            let completed = CompletedTx(completedTxPointer: valuePointer!)
+            TariEventBus.postToMainThread(.receievedTxReply, sender: completed)
+            TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Receive transaction reply lib callback")
         }
 
-        let receivedFinalizedTransactionCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
+        let receivedFinalizedTxCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
-            let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
-            TariEventBus.postToMainThread(.receivedFinalizedTransaction, sender: completed)
+            let completed = CompletedTx(completedTxPointer: valuePointer!)
+            TariEventBus.postToMainThread(.receivedFinalizedTx, sender: completed)
             TariEventBus.postToMainThread(.requiresBackup)
-            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Receive finalized transaction lib callback")
         }
 
-        let transactionBroadcastCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
+        let txBroadcastCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
-            let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
-            TariEventBus.postToMainThread(.transactionBroadcast, sender: completed)
+            let completed = CompletedTx(completedTxPointer: valuePointer!)
+            TariEventBus.postToMainThread(.txBroadcast, sender: completed)
             TariEventBus.postToMainThread(.requiresBackup)
-            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction broadcast lib callback")
         }
 
-        let transactionMinedCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
+        let txMinedCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
-            let completed = CompletedTransaction(completedTransactionPointer: valuePointer!)
-            TariEventBus.postToMainThread(.transactionMined, sender: completed)
+            let completed = CompletedTx(completedTxPointer: valuePointer!)
+            TariEventBus.postToMainThread(.txMined, sender: completed)
             TariEventBus.postToMainThread(.requiresBackup)
-            TariEventBus.postToMainThread(.transactionListUpdate)
+            TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction mined lib callback")
         }
@@ -208,7 +208,7 @@ class Wallet {
             let message = "Direct send lib callback. txID=\(txID)"
             if success {
                 TariLogger.verbose("\(message) ✅")
-                TariEventBus.postToMainThread(.transactionListUpdate)
+                TariEventBus.postToMainThread(.txListUpdate)
                 TariEventBus.postToMainThread(.balanceUpdate)
                 TariEventBus.postToMainThread(.requiresBackup)
             } else {
@@ -221,7 +221,7 @@ class Wallet {
             let message = "Store and forward lib callback. txID=\(txID)"
             if success {
                 TariLogger.verbose("\(message) ✅")
-                TariEventBus.postToMainThread(.transactionListUpdate)
+                TariEventBus.postToMainThread(.txListUpdate)
                 TariEventBus.postToMainThread(.balanceUpdate)
                 TariEventBus.postToMainThread(.requiresBackup)
             } else {
@@ -229,10 +229,10 @@ class Wallet {
             }
         }
 
-        let transactionCancellationCallback: (@convention(c) (OpaquePointer?) -> Void)? = { valuePointer in
-            let cancelledTxId = CompletedTransaction(completedTransactionPointer: valuePointer!).id
-            TariEventBus.postToMainThread(.transactionListUpdate)
-            TariEventBus.postToMainThread(.transactionCancellation)
+        let txCancellationCallback: (@convention(c) (OpaquePointer?) -> Void)? = { valuePointer in
+            let cancelledTxId = CompletedTx(completedTxPointer: valuePointer!).id
+            TariEventBus.postToMainThread(.txListUpdate)
+            TariEventBus.postToMainThread(.txCancellation)
             TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction cancelled callback. txID=\(cancelledTxId) ✅")
@@ -260,14 +260,14 @@ class Wallet {
             0, //num_rolling_log_files
             0, //size_per_log_file_bytes
             nil, //TODO use passphrase when ready to implement
-            receivedTransactionCallback,
-            receivedTransactionReplyCallback,
-            receivedFinalizedTransactionCallback,
-            transactionBroadcastCallback,
-            transactionMinedCallback,
+            receivedTxCallback,
+            receivedTxReplyCallback,
+            receivedFinalizedTxCallback,
+            txBroadcastCallback,
+            txMinedCallback,
             directSendResultCallback,
             storeAndForwardSendResultCallback,
-            transactionCancellationCallback,
+            txCancellationCallback,
             baseNodeSyncCompleteCallback,
             error)}
         )
@@ -323,10 +323,10 @@ class Wallet {
             throw WalletErrors.addUpdateContact
         }
 
-        TariEventBus.postToMainThread(.transactionListUpdate)
+        TariEventBus.postToMainThread(.txListUpdate)
     }
 
-    func calculateTransactionFee(_ amount: MicroTari) -> MicroTari {
+    func calculateTxFee(_ amount: MicroTari) -> MicroTari {
         //TODO when preflight function is ready, use that instead of assuming inputs and outputs
 
         let baseCost: UInt64 = 500
@@ -339,7 +339,7 @@ class Wallet {
         return MicroTari(fee)
     }
 
-    func sendTransaction(destination: PublicKey, amount: MicroTari, fee: MicroTari, message: String) throws -> UInt64 {
+    func sendTx(destination: PublicKey, amount: MicroTari, fee: MicroTari, message: String) throws -> UInt64 {
         let total = fee.rawValue + amount.rawValue
         let (availableBalance, error) = self.availableBalance
         if error != nil {
@@ -360,66 +360,66 @@ class Wallet {
         }
 
         if txId == 0 {
-            throw WalletErrors.sendingTransaction
+            throw WalletErrors.sendingTx
         }
 
         return txId
     }
 
-    func findPendingOutboundTransactionBy(id: UInt64) throws -> PendingOutboundTransaction? {
+    func findPendingOutboundTxBy(id: UInt64) throws -> PendingOutboundTx? {
         var errorCode: Int32 = -1
-        let pendingOutboundTransactionPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+        let pendingOutboundTxPointer = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_get_pending_outbound_transaction_by_id(ptr, id, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
-        if let txPointer = pendingOutboundTransactionPointer {
-            return PendingOutboundTransaction(pendingOutboundTransactionPointer: txPointer)
+        if let txPointer = pendingOutboundTxPointer {
+            return PendingOutboundTx(pendingOutboundTxPointer: txPointer)
         }
         return nil
     }
 
-    func findPendingInboundTransactionBy(id: UInt64) throws -> PendingInboundTransaction? {
+    func findPendingInboundTxBy(id: UInt64) throws -> PendingInboundTx? {
          var errorCode: Int32 = -1
-         let pendingInboundTransactionPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+         let pendingInboundTxPointer = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_get_pending_inbound_transaction_by_id(ptr, id, error)})
          guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
          }
-         if let txPointer = pendingInboundTransactionPointer {
-             return PendingInboundTransaction(pendingInboundTransactionPointer: txPointer)
+         if let txPointer = pendingInboundTxPointer {
+             return PendingInboundTx(pendingInboundTxPointer: txPointer)
          }
          return nil
      }
 
-    func findCompletedTransactionBy(id: UInt64) throws -> CompletedTransaction {
+    func findCompletedTxBy(id: UInt64) throws -> CompletedTx {
         var errorCode: Int32 = -1
-        let completedTransactionPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+        let completedTxPointer = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_get_completed_transaction_by_id(ptr, id, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
 
-        guard completedTransactionPointer != nil else {
-            throw WalletErrors.completedTransactionById
+        guard completedTxPointer != nil else {
+            throw WalletErrors.completedTxById
         }
 
-        return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!)
+        return CompletedTx(completedTxPointer: completedTxPointer!)
     }
 
-    func findCancelledTransactionBy(id: UInt64) throws -> CompletedTransaction {
+    func findCancelledTxBy(id: UInt64) throws -> CompletedTx {
         var errorCode: Int32 = -1
-        let completedTransactionPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+        let completedTxPointer = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_get_cancelled_transaction_by_id(ptr, id, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
 
-        guard completedTransactionPointer != nil else {
-            throw WalletErrors.cancelledTransactionById
+        guard completedTxPointer != nil else {
+            throw WalletErrors.cancelledTxById
         }
 
-        return CompletedTransaction(completedTransactionPointer: completedTransactionPointer!, isCancelled: true)
+        return CompletedTx(completedTxPointer: completedTxPointer!, isCancelled: true)
     }
 
     func signMessage(_ message: String) throws -> Signature {
@@ -475,7 +475,7 @@ class Wallet {
 
         TariEventBus.postToMainThread(.requiresBackup)
         TariEventBus.postToMainThread(.balanceUpdate)
-        TariEventBus.postToMainThread(.transactionListUpdate)
+        TariEventBus.postToMainThread(.txListUpdate)
 
         try syncBaseNode()
     }
@@ -504,12 +504,12 @@ class Wallet {
 
     /// Cancel all pending transactions after a certain amount of time has passed.
     /// - Parameter after: Amount of time after a transaction was created
-    func cancelExpiredPendingTransactions(after: TimeInterval = TariSettings.shared.expirePendingTransactionsAfter) throws {
-        guard let outboundList = pendingOutboundTransactions.0?.list.0, let inboundList = pendingInboundTransactions.0?.list.0 else {
-            throw WalletErrors.transactionsToCancel
+    func cancelAllExpiredPendingTx(after: TimeInterval = TariSettings.shared.txTimeToExpire) throws {
+        guard let outboundList = pendingOutboundTxs.0?.list.0, let inboundList = pendingInboundTxs.0?.list.0 else {
+            throw WalletErrors.txToCancel
         }
 
-        let list: [TransactionProtocol] = outboundList + inboundList
+        let list: [TxProtocol] = outboundList + inboundList
 
         try list.forEach({ (tx) in
             guard tx.status.0 == .pending, let date = tx.date.0 else {
@@ -517,7 +517,7 @@ class Wallet {
             }
 
             if date.distance(to: Date()) > after {
-                try cancelPendingTransaction(tx)
+                try cancelPendingTx(tx)
             }
         })
     }
@@ -525,18 +525,18 @@ class Wallet {
     /// Cancels a transaction that's currently pending.
     /// Helpful for expiring transactions where the other party has failed to sign their part after a certain amount of time.
     /// - Parameter tx: Pending transaction to be cancelled
-    func cancelPendingTransaction(_ tx: TransactionProtocol) throws {
+    func cancelPendingTx(_ tx: TxProtocol) throws {
         guard tx.status.0 == .pending else {
-            throw WalletErrors.cancelNonPendingTransaction
+            throw WalletErrors.cancelNonPendingTx
         }
 
-        try cancelPendingTransaction(tx.id.0)
+        try cancelPendingTx(tx.id.0)
     }
 
     /// Cancels a transaction that's currently pending.
     /// Helpful for expiring transactions where the other party has failed to sign their part after a certain amount of time.
     /// - Parameter txId: ID of pending incoming or outgoing transaction
-    private func cancelPendingTransaction(_ txId: UInt64) throws {
+    private func cancelPendingTx(_ txId: UInt64) throws {
         var errorCode: Int32 = -1
         _ = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_cancel_pending_transaction(ptr, txId, error)
@@ -548,14 +548,14 @@ class Wallet {
     }
 
     func recentPublicKeys(limit: Int) throws -> [PublicKey] {
-        let completedPublicKeys = try transactionsPublicKeys(completedTransactions, limit: limit)
-        let pendingInboundPublicKeys = try transactionsPublicKeys(pendingInboundTransactions, limit: limit)
-        let pendingOutboundPublicKeys = try transactionsPublicKeys(pendingOutboundTransactions, limit: limit)
+        let completedPublicKeys = try txsPublicKeys(completedTxs, limit: limit)
+        let pendingInboundPublicKeys = try txsPublicKeys(pendingInboundTxs, limit: limit)
+        let pendingOutboundPublicKeys = try txsPublicKeys(pendingOutboundTxs, limit: limit)
 
         return completedPublicKeys.union(pendingInboundPublicKeys).union(pendingOutboundPublicKeys).suffix(limit)
     }
 
-    private func transactionsPublicKeys<Transactions: TransactionsProtocol>(_ transactions: (txs: Transactions?, txsError: Error?), limit: Int) throws -> Set<PublicKey> {
+    private func txsPublicKeys<Txs: TxsProtocol>(_ transactions: (txs: Txs?, txsError: Error?), limit: Int) throws -> Set<PublicKey> {
         guard let txs = transactions.txs else { throw transactions.txsError! }
 
         let (txsCount, txsCountError) = txs.count

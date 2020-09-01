@@ -242,8 +242,8 @@ class TariLibWrapperTests: XCTestCase {
             XCTFail("Failed to add contact \(error.localizedDescription)")
         }
         
-        receiveTestTransaction(wallet: wallet)
-        sendTransactionToBob(wallet: wallet)
+        receiveTestTx(wallet: wallet)
+        sendTxToBob(wallet: wallet)
 
         let (availableBalance, _) = wallet.availableBalance
         let (pendingIncomingBalance, _) = wallet.pendingIncomingBalance
@@ -253,35 +253,35 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertGreaterThan(pendingIncomingBalance, 0)
         XCTAssertGreaterThan(pendingOutgoingBalance, 0)
     
-        let (allTransactions, allTransactionsError) = wallet.allTransactions
-        guard allTransactionsError == nil else {
-            XCTFail("Failed to load all transactions: \(allTransactionsError!.localizedDescription)")
+        let (allTxs, allTxsError) = wallet.allTxs
+        guard allTxsError == nil else {
+            XCTFail("Failed to load all transactions: \(allTxsError!.localizedDescription)")
             return
         }
         
-        let totalTransactionsBeforeCancelling = allTransactions.count
+        let totalTxsBeforeCancelling = allTxs.count
         
-        XCTAssertGreaterThan(totalTransactionsBeforeCancelling, 0)
+        XCTAssertGreaterThan(totalTxsBeforeCancelling, 0)
         
         //Test cancel function when a pending tx has aged for 2 seconds
         sleep(2)
-        XCTAssertNoThrow(try wallet.cancelExpiredPendingTransactions(after: 1))
+        XCTAssertNoThrow(try wallet.cancelAllExpiredPendingTx(after: 1))
         
-        let (allTransactionsWithCancelled, allTransactionsWithCancelledError) = wallet.allTransactions
-        guard allTransactionsWithCancelledError == nil else {
-            XCTFail("Failed to load all (including cancelled) transactions: \(allTransactionsWithCancelledError!.localizedDescription)")
+        let (allTxsWithCancelled, allTxsWithCancelledError) = wallet.allTxs
+        guard allTxsWithCancelledError == nil else {
+            XCTFail("Failed to load all (including cancelled) transactions: \(allTxsWithCancelledError!.localizedDescription)")
             return
         }
         
         //Cancelled transactions are still in the list
-        XCTAssertEqual(allTransactionsWithCancelled.count, totalTransactionsBeforeCancelling)
+        XCTAssertEqual(allTxsWithCancelled.count, totalTxsBeforeCancelling)
     }
     
     func testBackupAndRestoreWallet() {
         XCTAssertNoThrow(try ICloudServiceMock.removeBackups())
         let (wallet, _) = createWallet(privateHex: nil)
-        receiveTestTransaction(wallet: wallet)
-        sendTransactionToBob(wallet: wallet)
+        receiveTestTx(wallet: wallet)
+        sendTxToBob(wallet: wallet)
 
         TariLib.shared.walletPublicKeyHex = wallet.publicKey.0?.hex.0
 
@@ -392,10 +392,10 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertEqual(w1.pendingIncomingBalance.0, w2.pendingIncomingBalance.0)
         XCTAssertEqual(w1.pendingOutgoingBalance.0, w2.pendingOutgoingBalance.0)
 
-        XCTAssertEqual(w1.completedTransactions.0?.count.0, w2.completedTransactions.0?.count.0)
-        XCTAssertEqual(w1.cancelledTransactions.0?.count.0, w2.cancelledTransactions.0?.count.0)
-        XCTAssertEqual(w1.pendingInboundTransactions.0?.count.0, w2.pendingInboundTransactions.0?.count.0)
-        XCTAssertEqual(w1.pendingOutboundTransactions.0?.count.0, w2.pendingOutboundTransactions.0?.count.0)
+        XCTAssertEqual(w1.completedTxs.0?.count.0, w2.completedTxs.0?.count.0)
+        XCTAssertEqual(w1.cancelledTxs.0?.count.0, w2.cancelledTxs.0?.count.0)
+        XCTAssertEqual(w1.pendingInboundTxs.0?.count.0, w2.pendingInboundTxs.0?.count.0)
+        XCTAssertEqual(w1.pendingOutboundTxs.0?.count.0, w2.pendingOutboundTxs.0?.count.0)
     }
     
     //MARK: Create new wallet
@@ -449,9 +449,9 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     //MARK: Receive a test transaction
-    func receiveTestTransaction(wallet: Wallet) {
+    func receiveTestTx(wallet: Wallet) {
         do {
-            try wallet.generateTestReceiveTransaction()
+            try wallet.generateTestReceiveTx()
         } catch {
             XCTFail(error.localizedDescription)
         }
@@ -459,38 +459,38 @@ class TariLibWrapperTests: XCTestCase {
         //MARK: Finalize and broadcast received test transaction
         var txId: UInt64?
         do {
-            let (pendingInboundTransactions, pendingInboundTransactionsError) = wallet.pendingInboundTransactions
-            if pendingInboundTransactionsError != nil {
-                XCTFail(pendingInboundTransactionsError!.localizedDescription)
+            let (pendingInboundTxs, pendingInboundTxsError) = wallet.pendingInboundTxs
+            if pendingInboundTxsError != nil {
+                XCTFail(pendingInboundTxsError!.localizedDescription)
             }
             
-            let (pendingInboundTransactionsCount, pendingInboundTransactionsCountError) = pendingInboundTransactions!.count
-            if pendingInboundTransactionsCountError != nil {
-                XCTFail(pendingInboundTransactionsCountError!.localizedDescription)
+            let (pendingInboundTxsCount, pendingInboundTxsCountError) = pendingInboundTxs!.count
+            if pendingInboundTxsCountError != nil {
+                XCTFail(pendingInboundTxsCountError!.localizedDescription)
             }
             
             var currTx = 0
             txId = 0
-            var pendingInboundTransaction: PendingInboundTransaction? = nil
-            while (currTx < pendingInboundTransactionsCount) {
-                pendingInboundTransaction = try pendingInboundTransactions!.at(position: UInt32(currTx))
-                let (pendingInboundTransactionId, pendingInboundTransactionIdError) = pendingInboundTransaction!.id
-                if pendingInboundTransactionIdError != nil {
-                    XCTFail(pendingInboundTransactionIdError!.localizedDescription)
+            var pendingInboundTx: PendingInboundTx? = nil
+            while (currTx < pendingInboundTxsCount) {
+                pendingInboundTx = try pendingInboundTxs!.at(position: UInt32(currTx))
+                let (pendingInboundTxId, pendingInboundTxIdError) = pendingInboundTx!.id
+                if pendingInboundTxIdError != nil {
+                    XCTFail(pendingInboundTxIdError!.localizedDescription)
                 }
-                txId = pendingInboundTransactionId
-                let (pendingInboundTransactionStatus, _) = pendingInboundTransaction!.status
-                if pendingInboundTransactionStatus == TransactionStatus.pending
+                txId = pendingInboundTxId
+                let (pendingInboundTxStatus, _) = pendingInboundTx!.status
+                if pendingInboundTxStatus == TxStatus.pending
                 {
                     break;
                 }
                 currTx += 1
             }
             
-            try wallet.testFinalizedReceivedTransaction(pendingInboundTransaction: pendingInboundTransaction!)
-            try wallet.testTransactionBroadcast(txID: txId!)
-            try wallet.testTransactionMined(txID: txId!)
-            let completedTx = try wallet.findCompletedTransactionBy(id: txId!)
+            try wallet.testFinalizedReceivedTx(pendingInboundTx: pendingInboundTx!)
+            try wallet.testTxBroadcast(txID: txId!)
+            try wallet.testTxMined(txID: txId!)
+            let completedTx = try wallet.findCompletedTxBy(id: txId!)
             let (status, statusError) = completedTx.status
             if statusError != nil {
                 XCTFail(statusError!.localizedDescription)
@@ -503,7 +503,7 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     //MARK: Send transaction to bob
-    func sendTransactionToBob(wallet: Wallet) {
+    func sendTxToBob(wallet: Wallet) {
         var sendTransactionId: UInt64?
         do {
             let (contacts, contactsError) = wallet.contacts
@@ -517,25 +517,25 @@ class TariLibWrapperTests: XCTestCase {
                 XCTFail(bobPublicKeyError!.localizedDescription)
             }
             
-            _ = try wallet.sendTransaction(destination: bobPublicKey!, amount: MicroTari(1000), fee: MicroTari(101), message: "Oh hi bob")
-            let (pendingOutboundTransactions, pendingOutboundTransactionsError) = wallet.pendingOutboundTransactions
-            if pendingOutboundTransactionsError != nil {
-                XCTFail(pendingOutboundTransactionsError!.localizedDescription)
+            _ = try wallet.sendTx(destination: bobPublicKey!, amount: MicroTari(1000), fee: MicroTari(101), message: "Oh hi bob")
+            let (pendingOutboundTxs, pendingOutboundTxsError) = wallet.pendingOutboundTxs
+            if pendingOutboundTxsError != nil {
+                XCTFail(pendingOutboundTxsError!.localizedDescription)
             }
             
-            let pendingOutboundTransaction = try pendingOutboundTransactions!.at(position: 0)
-            let (pendingOutboundTransactionId, pendingOutboundTransactionIdError) = pendingOutboundTransaction.id
-            if pendingOutboundTransactionIdError != nil {
-                XCTFail(pendingOutboundTransactionIdError!.localizedDescription)
+            let pendingOutboundTx = try pendingOutboundTxs!.at(position: 0)
+            let (pendingOutboundTxId, pendingOutboundTxIdError) = pendingOutboundTx.id
+            if pendingOutboundTxIdError != nil {
+                XCTFail(pendingOutboundTxIdError!.localizedDescription)
             }
             
-            sendTransactionId = pendingOutboundTransactionId
+            sendTransactionId = pendingOutboundTxId
         } catch {
             XCTFail(error.localizedDescription)
         }
         
         //MARK: Complete sent transaction to bob
-        XCTAssertNoThrow( _ = try wallet.findPendingOutboundTransactionBy(id: sendTransactionId!))
-        XCTAssertNoThrow(try wallet.testTransactionMined(txID: sendTransactionId!))
+        XCTAssertNoThrow( _ = try wallet.findPendingOutboundTxBy(id: sendTransactionId!))
+        XCTAssertNoThrow(try wallet.testTxMined(txID: sendTransactionId!))
     }
 }

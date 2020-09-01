@@ -1,4 +1,4 @@
-//  PendingOutboundTransactions.swift
+//  PendingInboundTxs.swift
 
 /*
 	Package MobileWallet
@@ -40,13 +40,13 @@
 
 import Foundation
 
-enum PendingOutboundTransactionsErrors: Error {
-    case pendingOutboundTransactionNotFound
+enum PendingInboundTxsErrors: Error {
+    case pendingInboundTxNotFound
     case generic(_ errorCode: Int32)
 }
 
-class PendingOutboundTransactions: TransactionsProtocol {
-    typealias Tx = PendingOutboundTransaction
+class PendingInboundTxs: TxsProtocol {
+    typealias Tx = PendingInboundTx
 
     private var ptr: OpaquePointer
 
@@ -57,18 +57,22 @@ class PendingOutboundTransactions: TransactionsProtocol {
     var count: (UInt32, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_outbound_transactions_get_length(ptr, error)
-        })
-        return (result, errorCode != 0 ? PendingOutboundTransactionsErrors.generic(errorCode) : nil)
+            pending_inbound_transactions_get_length(ptr, error)})
+
+        return (result, errorCode != 0 ? PendingInboundTxsErrors.generic(errorCode) : nil)
     }
 
-    var list: ([PendingOutboundTransaction], Error?) {
+    init(pendingInboundTxsPointer: OpaquePointer) {
+        ptr = pendingInboundTxsPointer
+    }
+
+    var list: ([PendingInboundTx], Error?) {
         let (count, countError) = self.count
         guard countError == nil else {
             return ([], countError)
         }
 
-        var list: [PendingOutboundTransaction] = []
+        var list: [PendingInboundTx] = []
 
         if count > 0 {
             for n in 0...count - 1 {
@@ -86,27 +90,22 @@ class PendingOutboundTransactions: TransactionsProtocol {
         return (sortedList, nil)
     }
 
-    init(pendingOutboundTransactionsPointer: OpaquePointer) {
-        ptr = pendingOutboundTransactionsPointer
-    }
-
-    func at(position: UInt32) throws -> PendingOutboundTransaction {
+    func at(position: UInt32) throws -> PendingInboundTx {
         var errorCode: Int32 = -1
-        let pendingOutboundTransactionPointer = withUnsafeMutablePointer(to: &errorCode, { error in
-            pending_outbound_transactions_get_at(ptr, position, error)
-        })
+        let pendingInboundTxPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+            pending_inbound_transactions_get_at(ptr, position, error)})
         guard errorCode == 0 else {
-            throw PendingOutboundTransactionsErrors.generic(errorCode)
+            throw PendingInboundTxsErrors.generic(errorCode)
         }
 
-        if pendingOutboundTransactionPointer == nil {
-            throw PendingOutboundTransactionsErrors.pendingOutboundTransactionNotFound
+        if pendingInboundTxPointer == nil {
+            throw PendingInboundTxsErrors.pendingInboundTxNotFound
         }
 
-        return PendingOutboundTransaction(pendingOutboundTransactionPointer: pendingOutboundTransactionPointer!)
+        return PendingInboundTx(pendingInboundTxPointer: pendingInboundTxPointer!)
     }
 
     deinit {
-        pending_outbound_transactions_destroy(ptr)
+        pending_inbound_transactions_destroy(ptr)
     }
 }

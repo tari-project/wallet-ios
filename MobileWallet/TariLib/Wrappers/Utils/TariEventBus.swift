@@ -45,18 +45,18 @@ public enum TariEventTypes: String {
     case requiresBackup = "tari-event-requires-backup"
 
     //Wallet callbacks
-    case receievedTransaction = "tari-event-receieved-transaction"
-    case receievedTransactionReply = "tari-event-receieved-transaction-reply"
-    case receivedFinalizedTransaction = "tari-event-received-finalized-transaction"
-    case transactionBroadcast = "tari-event-transaction-broadcase"
-    case transactionMined = "tari-event-transaction-mined"
+    case receievedTx = "tari-event-receieved-tx"
+    case receievedTxReply = "tari-event-receieved-tx-reply"
+    case receivedFinalizedTx = "tari-event-received-finalized-tx"
+    case txBroadcast = "tari-event-tx-broadcase"
+    case txMined = "tari-event-tx-mined"
     case directSend = "tari-event-direct-send"
     case storeAndForwardSend = "tari-event-store-and-forward-send"
-    case transactionCancellation = "tari-event-transaction-cancellation"
+    case txCancellation = "tari-event-tx-cancellation"
     case baseNodeSyncComplete = "tari-event-base-node-synce-complete"
 
     //Common UI updates
-    case transactionListUpdate = "tari-event-transaction-list-update"
+    case txListUpdate = "tari-event-tx-list-update"
     case balanceUpdate = "tari-event-balance-update"
 
     //Tor instantiation statuses

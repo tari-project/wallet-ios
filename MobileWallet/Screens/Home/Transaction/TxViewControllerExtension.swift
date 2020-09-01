@@ -1,4 +1,4 @@
-//  TransactionViewControllerExtension.swift
+//  TxViewControllerExtension.swift
 
 /*
 	Package MobileWallet
@@ -40,7 +40,7 @@
 
 import UIKit
 
-extension TransactionViewController {
+extension TxViewController {
     func setupNavigationBar() {
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(navigationBar)
@@ -54,7 +54,7 @@ extension TransactionViewController {
     func setupValueView() {
         valueContainerView = UIView()
         valueContainerView.translatesAutoresizingMaskIntoConstraints = false
-        valueContainerView.backgroundColor = Theme.shared.colors.transactionViewValueContainer
+        valueContainerView.backgroundColor = Theme.shared.colors.txViewValueContainer
         stackView.addArrangedSubview(valueContainerView)
         valueContainerViewHeightAnchor = valueContainerView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: valueViewHeightMultiplierFull)
         valueContainerViewHeightAnchor.isActive = true
@@ -70,11 +70,11 @@ extension TransactionViewController {
         valueCenterYAnchorConstraint = valueLabel.centerYAnchor.constraint(equalTo: valueContainerView.centerYAnchor)
         valueCenterYAnchorConstraint.isActive = true
         valueLabel.widthAnchor.constraint(lessThanOrEqualTo: valueContainerView.widthAnchor, constant: Theme.shared.sizes.appSidePadding * -4).isActive = true
-        valueLabel.heightAnchor.constraint(equalToConstant: Theme.shared.fonts.transactionScreenCurrencyValueLabel.pointSize).isActive = true
+        valueLabel.heightAnchor.constraint(equalToConstant: Theme.shared.fonts.txScreenCurrencyValueLabel.pointSize).isActive = true
 
-        let valueColor = Theme.shared.colors.transactionViewValueLabel
+        let valueColor = Theme.shared.colors.txViewValueLabel
         valueLabel.minimumScaleFactor = 0.2
-        valueLabel.font = Theme.shared.fonts.transactionScreenCurrencyValueLabel
+        valueLabel.font = Theme.shared.fonts.txScreenCurrencyValueLabel
         valueLabel.textColor = valueColor
         valueLabel.adjustsFontSizeToFitWidth = true
         valueLabel.textAlignment = .center
@@ -102,14 +102,14 @@ extension TransactionViewController {
 
         feeLabel.centerXAnchor.constraint(equalTo: valueContainerView.centerXAnchor).isActive = true
         feeLabel.topAnchor.constraint(equalTo: valueLabel.bottomAnchor).isActive = true
-        feeLabel.font = Theme.shared.fonts.transactionFeeLabel
-        feeLabel.textColor = Theme.shared.colors.transactionViewValueLabel
+        feeLabel.font = Theme.shared.fonts.txFeeLabel
+        feeLabel.textColor = Theme.shared.colors.txViewValueLabel
 
         feeButton.translatesAutoresizingMaskIntoConstraints = false
         valueContainerView.addSubview(feeButton)
         feeButton.setTitle(NSLocalizedString("common.fee", comment: "Common"), for: .normal)
-        feeButton.titleLabel?.font = Theme.shared.fonts.transactionFeeButton
-        feeButton.setRightImage(Theme.shared.images.transactionFee!)
+        feeButton.titleLabel?.font = Theme.shared.fonts.txFeeButton
+        feeButton.setRightImage(Theme.shared.images.txFee!)
 
         feeButton.topAnchor.constraint(equalTo: feeLabel.bottomAnchor, constant: 0).isActive = true
         feeButton.centerXAnchor.constraint(equalTo: valueContainerView.centerXAnchor).isActive = true
@@ -122,8 +122,8 @@ extension TransactionViewController {
 
         fromHeadingLabel.translatesAutoresizingMaskIntoConstraints = false
         fromContainerView.addSubview(fromHeadingLabel)
-        fromHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
-        fromHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
+        fromHeadingLabel.textColor = Theme.shared.colors.txScreenSubheadingLabel
+        fromHeadingLabel.font = Theme.shared.fonts.txScreenSubheadingLabel
         fromHeadingLabel.topAnchor.constraint(equalTo: fromContainerView.topAnchor, constant: 20).isActive = true
         fromHeadingLabel.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
@@ -158,8 +158,8 @@ extension TransactionViewController {
 
         contactNameHeadingLabel.translatesAutoresizingMaskIntoConstraints = false
         contactNameContainer.addSubview(contactNameHeadingLabel)
-        contactNameHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
-        contactNameHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
+        contactNameHeadingLabel.textColor = Theme.shared.colors.txScreenSubheadingLabel
+        contactNameHeadingLabel.font = Theme.shared.fonts.txScreenSubheadingLabel
         contactNameHeadingLabel.text = NSLocalizedString("transaction_detail.contact_name", comment: "Transaction detail view")
         contactNameHeadingLabelTopAnchor = contactNameHeadingLabel.topAnchor.constraint(equalTo: contactNameContainer.topAnchor, constant: headingLabelTopAnchorHeight)
         contactNameHeadingLabelTopAnchor.isActive = true
@@ -167,8 +167,8 @@ extension TransactionViewController {
 
         contactNameTextField.translatesAutoresizingMaskIntoConstraints = false
         contactNameContainer.addSubview(contactNameTextField)
-        contactNameTextField.textColor = Theme.shared.colors.transactionScreenTextLabel
-        contactNameTextField.font = Theme.shared.fonts.transactionScreenTextLabel
+        contactNameTextField.textColor = Theme.shared.colors.txScreenTextLabel
+        contactNameTextField.font = Theme.shared.fonts.txScreenTextLabel
         contactNameTextField.placeholder = NSLocalizedString("transaction_detail.contect_name_placeholder", comment: "Transaction detail view")
         contactNameTextField.autocorrectionType = .no
         contactNameTextField.returnKeyType = .done
@@ -202,7 +202,7 @@ extension TransactionViewController {
         divider.trailingAnchor.constraint(equalTo: dividerView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         divider.heightAnchor.constraint(equalToConstant: 1).isActive = true
         divider.layer.borderWidth = 1
-        divider.layer.borderColor = Theme.shared.colors.transactionScreenDivider!.cgColor
+        divider.layer.borderColor = Theme.shared.colors.txScreenDivider!.cgColor
     }
 
     func setupNote() {
@@ -210,16 +210,16 @@ extension TransactionViewController {
         stackView.addArrangedSubview(noteContainer)
         noteHeadingLabel.translatesAutoresizingMaskIntoConstraints = false
         noteContainer.addSubview(noteHeadingLabel)
-        noteHeadingLabel.textColor = Theme.shared.colors.transactionScreenSubheadingLabel
-        noteHeadingLabel.font = Theme.shared.fonts.transactionScreenSubheadingLabel
+        noteHeadingLabel.textColor = Theme.shared.colors.txScreenSubheadingLabel
+        noteHeadingLabel.font = Theme.shared.fonts.txScreenSubheadingLabel
         noteHeadingLabel.text = NSLocalizedString("transaction_detail.note", comment: "Transaction detail view")
         noteHeadingLabel.topAnchor.constraint(equalTo: noteContainer.topAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         noteHeadingLabel.leadingAnchor.constraint(equalTo: noteContainer.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
         noteLabel.translatesAutoresizingMaskIntoConstraints = false
         noteContainer.addSubview(noteLabel)
-        noteLabel.textColor = Theme.shared.colors.transactionScreenTextLabel
-        noteLabel.font = Theme.shared.fonts.transactionScreenTextLabel
+        noteLabel.textColor = Theme.shared.colors.txScreenTextLabel
+        noteLabel.font = Theme.shared.fonts.txScreenTextLabel
         noteLabel.numberOfLines = 0
         noteLabel.topAnchor.constraint(equalTo: noteHeadingLabel.bottomAnchor, constant: 10).isActive = true
         noteLabel.bottomAnchor.constraint(equalTo: noteContainer.bottomAnchor, constant: -10).isActive = true

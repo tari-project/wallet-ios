@@ -1,4 +1,4 @@
-//  TransactionTableViewModel.swift
+//  TxTableViewModel.swift
 
 /*
 	Package MobileWallet
@@ -42,8 +42,8 @@ import Foundation
 import GiphyUISDK
 import GiphyCoreSDK
 
-class TransactionTableViewModel: NSObject {
-    typealias Value = (microTari: MicroTari?, direction: TransactionDirection, isCancelled: Bool, isPending: Bool)
+class TxTableViewModel: NSObject {
+    typealias Value = (microTari: MicroTari?, direction: TxDirection, isCancelled: Bool, isPending: Bool)
     private static var cachedMedia = [String: GPHMedia]()
 
     let id: String = UUID().uuidString
@@ -67,18 +67,18 @@ class TransactionTableViewModel: NSObject {
     @objc dynamic private(set) var status: String
     @objc dynamic private(set) var time: String
 
-    required init(tx: TransactionProtocol) {
+    required init(tx: TxProtocol) {
         var isCancelled = false
         var isPending = false
 
         let (publicKey, _) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
         guard let pubKey = publicKey else { fatalError() }
 
-        if let _ = tx as? PendingInboundTransaction {
+        if let _ = tx as? PendingInboundTx {
             isPending = true
         }
 
-        if let _ = tx as? PendingOutboundTransaction {
+        if let _ = tx as? PendingOutboundTx {
             isPending = true
         }
 
@@ -127,13 +127,13 @@ class TransactionTableViewModel: NSObject {
             let attributedTitle = NSMutableAttributedString(
                 string: titleText,
                 attributes: [
-                    .font: Theme.shared.fonts.transactionCellUsernameLabel,
-                    .foregroundColor: Theme.shared.colors.transactionCellAlias!
+                    .font: Theme.shared.fonts.txCellUsernameLabel,
+                    .foregroundColor: Theme.shared.colors.txCellAlias!
                 ]
             )
 
             let range = NSRange(location: startIndex, length: alias.count)
-            attributedTitle.addAttribute(.font, value: Theme.shared.fonts.transactionCellUsernameLabelHeavy, range: range)
+            attributedTitle.addAttribute(.font, value: Theme.shared.fonts.txCellUsernameLabelHeavy, range: range)
             if aliasIsEmojis {
                 //So the elippises between the emojis is lighter
                 attributedTitle.addAttribute(.foregroundColor, value: Theme.shared.colors.emojisSeparator!, range: range)
@@ -160,7 +160,7 @@ class TransactionTableViewModel: NSObject {
         }
 
         //Cancelled tranaction
-        if let compledTx = tx as? CompletedTransaction {
+        if let compledTx = tx as? CompletedTx {
             if compledTx.isCancelled {
                 isCancelled = true
                 statusMessage = NSLocalizedString("transaction_detail.payment_cancelled", comment: "Transaction detail view")
@@ -174,7 +174,7 @@ class TransactionTableViewModel: NSObject {
         }
 
         value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: isCancelled, isPending: isPending)
-        let (msg, giphyDd) = TransactionTableViewModel.extractNote(from: tx.message.0)
+        let (msg, giphyDd) = TxTableViewModel.extractNote(from: tx.message.0)
         message = msg
         time = tx.date.0?.relativeDayFromToday() ?? ""
         gifID = giphyDd
@@ -186,7 +186,7 @@ class TransactionTableViewModel: NSObject {
         }
 
         if gifID != nil {
-            if let media = TransactionTableViewModel.cachedMedia[gifID!] {
+            if let media = TxTableViewModel.cachedMedia[gifID!] {
                 self.gif = media
             } else {
                 downloadGif(gifID: gifID!)
@@ -214,7 +214,7 @@ class TransactionTableViewModel: NSObject {
                 return TariLogger.error("Failed to load gif", error: error)
             }
             let media = response?.data
-            TransactionTableViewModel.cachedMedia[gifID] = media
+            TxTableViewModel.cachedMedia[gifID] = media
             self.shouldUpdateCellSize = true
             self.gif = media
         }
