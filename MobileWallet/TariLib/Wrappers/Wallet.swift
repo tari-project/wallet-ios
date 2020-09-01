@@ -248,6 +248,11 @@ class Wallet {
             }
         }
 
+        let storedMessagesReceivedCallback: (@convention(c) () -> Void)? = {
+            TariEventBus.postToMainThread(.storedMessagesReceived, sender: nil)
+            TariLogger.verbose("Stored messages receieved ✅")
+        }
+
         dbPath = commsConfig.dbPath
         dbName = commsConfig.dbName
         logPath = loggingFilePath
@@ -269,6 +274,7 @@ class Wallet {
             storeAndForwardSendResultCallback,
             txCancellationCallback,
             baseNodeSyncCompleteCallback,
+            storedMessagesReceivedCallback,
             error)}
         )
         guard errorCode == 0 else {
