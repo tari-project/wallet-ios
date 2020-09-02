@@ -30,7 +30,7 @@ Just push a new beta build to App Store Connect
 ```
 fastlane ios bump
 ```
-Build nunber bump
+Build number bump
 ### ios qa
 ```
 fastlane ios qa
