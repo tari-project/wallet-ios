@@ -54,6 +54,7 @@ public enum TariEventTypes: String {
     case storeAndForwardSend = "tari-event-store-and-forward-send"
     case txCancellation = "tari-event-tx-cancellation"
     case baseNodeSyncComplete = "tari-event-base-node-synce-complete"
+    case storedMessagesReceived = "tari-event-stored-messages-received"
 
     //Common UI updates
     case txListUpdate = "tari-event-tx-list-update"

@@ -101,7 +101,7 @@ class NotificationService: UNNotificationServiceExtension {
                 try TariLib.shared.startWalletService(container: .ext)
                 try! TariLib.shared.tariWallet!.syncBaseNode()
                 self.listenForReceivedTransaction()
-                self.listenForBaseNodeSync()
+                self.listenForStoredMessages()
             } catch {
                 TariLogger.error("Did not start wallet", error: error)
                 self.completeHandler(success: false, debugMessage: "Wallet did not start")
@@ -122,15 +122,15 @@ class NotificationService: UNNotificationServiceExtension {
         }
     }
     
-    private func listenForBaseNodeSync() {
-        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
+    private func listenForStoredMessages() {
+        TariEventBus.onMainThread(self, eventType: .storedMessagesReceived) { [weak self] (result) in
             guard let self = self else { return }
             self.safetyTimeoutCallBack = nil
 
-            //If receievedTransaction isn't triggered after a base node sync assume nothing is coming
+            //If receievedTransaction isn't triggered after a stored messages are received assume nothing is coming
             DispatchQueue.global().asyncAfter(deadline: .now() + 5) { [weak self] in
                 guard let self = self else { return }
-                self.completeHandler(success: false, debugMessage: "Base node synced but no incoming transaction")
+                self.completeHandler(success: false, debugMessage: "Stored messages received but no incoming transaction")
             }
         }
     }
