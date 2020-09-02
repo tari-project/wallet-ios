@@ -26,7 +26,7 @@ platform :ios do
     build_app(workspace: "MobileWallet.xcworkspace", scheme: "MobileWallet")
     upload_to_testflight
   end
-  desc "Build nunber bump"
+  desc "Build number bump"
   lane :bump do
     increment_build_number(xcodeproj: "MobileWallet.xcodeproj")
   end
