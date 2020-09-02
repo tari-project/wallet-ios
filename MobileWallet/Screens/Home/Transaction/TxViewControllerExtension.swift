@@ -146,7 +146,7 @@ extension TxViewController {
         fromContainerView.insertSubview(addContactButton, belowSubview: emojiIdView)
         addContactButton.topAnchor.constraint(equalTo: fromHeadingLabel.bottomAnchor, constant: bottomHeadingPadding).isActive = true
         addContactButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        addContactButton.setTitle(NSLocalizedString("transaction_detail.add_contact_name", comment: "Transaction detail view"), for: .normal)
+        addContactButton.setTitle(NSLocalizedString("tx_detail.add_contact_name", comment: "Transaction detail view"), for: .normal)
         addContactButton.setVariation(.secondary)
         addContactButton.addTarget(self, action: #selector(addContactButtonPressed), for: .touchUpInside)
     }
@@ -160,7 +160,7 @@ extension TxViewController {
         contactNameContainer.addSubview(contactNameHeadingLabel)
         contactNameHeadingLabel.textColor = Theme.shared.colors.txScreenSubheadingLabel
         contactNameHeadingLabel.font = Theme.shared.fonts.txScreenSubheadingLabel
-        contactNameHeadingLabel.text = NSLocalizedString("transaction_detail.contact_name", comment: "Transaction detail view")
+        contactNameHeadingLabel.text = NSLocalizedString("tx_detail.contact_name", comment: "Transaction detail view")
         contactNameHeadingLabelTopAnchor = contactNameHeadingLabel.topAnchor.constraint(equalTo: contactNameContainer.topAnchor, constant: headingLabelTopAnchorHeight)
         contactNameHeadingLabelTopAnchor.isActive = true
         contactNameHeadingLabel.leadingAnchor.constraint(equalTo: fromContainerView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
@@ -169,7 +169,7 @@ extension TxViewController {
         contactNameContainer.addSubview(contactNameTextField)
         contactNameTextField.textColor = Theme.shared.colors.txScreenTextLabel
         contactNameTextField.font = Theme.shared.fonts.txScreenTextLabel
-        contactNameTextField.placeholder = NSLocalizedString("transaction_detail.contect_name_placeholder", comment: "Transaction detail view")
+        contactNameTextField.placeholder = NSLocalizedString("tx_detail.contect_name_placeholder", comment: "Transaction detail view")
         contactNameTextField.autocorrectionType = .no
         contactNameTextField.returnKeyType = .done
         contactNameTextField.delegate = self
@@ -183,7 +183,7 @@ extension TxViewController {
         contactNameContainer.addSubview(editContactNameButton)
         editContactNameButton.topAnchor.constraint(equalTo: contactNameHeadingLabel.bottomAnchor).isActive = true
         editContactNameButton.trailingAnchor.constraint(equalTo: contactNameContainer.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        editContactNameButton.setTitle(NSLocalizedString("transaction_detail.edit", comment: "Transaction detail view"), for: .normal)
+        editContactNameButton.setTitle(NSLocalizedString("tx_detail.edit", comment: "Transaction detail view"), for: .normal)
         editContactNameButton.setVariation(.secondary)
         editContactNameButton.addTarget(self, action: #selector(editContactButtonPressed), for: .touchUpInside)
     }
@@ -212,7 +212,7 @@ extension TxViewController {
         noteContainer.addSubview(noteHeadingLabel)
         noteHeadingLabel.textColor = Theme.shared.colors.txScreenSubheadingLabel
         noteHeadingLabel.font = Theme.shared.fonts.txScreenSubheadingLabel
-        noteHeadingLabel.text = NSLocalizedString("transaction_detail.note", comment: "Transaction detail view")
+        noteHeadingLabel.text = NSLocalizedString("tx_detail.note", comment: "Transaction detail view")
         noteHeadingLabel.topAnchor.constraint(equalTo: noteContainer.topAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         noteHeadingLabel.leadingAnchor.constraint(equalTo: noteContainer.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
 
@@ -266,7 +266,7 @@ extension TxViewController {
         cancelButton.topAnchor.constraint(equalTo: txStateView.bottomAnchor, constant: 0).isActive = true
         cancelButton.centerXAnchor.constraint(equalTo: navigationBar.centerXAnchor).isActive = true
 
-        cancelButton.setTitle(NSLocalizedString("transaction_detail.tx_cancellation.cancel", comment: "Transaction detail tx cancellation"), for: .normal)
+        cancelButton.setTitle(NSLocalizedString("tx_detail.tx_cancellation.cancel", comment: "Transaction detail tx cancellation"), for: .normal)
         cancelButton.setVariation(.warning, font: Theme.shared.fonts.textButtonCancel)
         cancelButton.addTarget(self, action: #selector(onCancelTx), for: .touchUpInside)
     }

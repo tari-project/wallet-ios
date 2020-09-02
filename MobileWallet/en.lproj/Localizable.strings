@@ -7,33 +7,32 @@
 "common.fee_info.description" = "The transaction fee is distributed to the thousands of computers (also known as “miners”) who ensure that your Tari transactions are fast and secure.";
 
 /* Transaction detail view */
-"transaction_detail.payment_cancelled" = "Payment cancelled";
-"transaction_detail.payment_in_progress" = "Payment In Progress";
-"transaction_detail.payment_received" = "Payment Received";
-"transaction_detail.payment_sent" = "Payment Sent";
+"tx_detail.payment_cancelled" = "Payment cancelled";
+"tx_detail.payment_in_progress" = "Payment In Progress";
+"tx_detail.payment_received" = "Payment Received";
+"tx_detail.payment_sent" = "Payment Sent";
 
-"transaction_detail.add_contact_name" = "Add Contact Name";
-"transaction_detail.contact_name" = "Contact Name";
-"transaction_detail.contect_name_placeholder" = "Create a Contact Name";
-"transaction_detail.transaction_id" = "Transaction ID:";
-"transaction_detail.edit" = "Edit";
-"transaction_detail.from" = "From";
-"transaction_detail.to" = "To";
-"transaction_detail.note" = "Note";
-"transaction_detail.error.contact.title" = "Contact error";
-"transaction_detail.error.contact.description" = "Missing public key from transaction.";
-"transaction_detail.error.load_tx.title" = "Transaction error";
-"transaction_detail.error.load_tx.description" = "Failed to load transaction details";
-"transaction_detail.error.save_contact.description" = "Failed to save contact details.";
+"tx_detail.add_contact_name" = "Add Contact Name";
+"tx_detail.contact_name" = "Contact Name";
+"tx_detail.contect_name_placeholder" = "Create a Contact Name";
+"tx_detail.edit" = "Edit";
+"tx_detail.from" = "From";
+"tx_detail.to" = "To";
+"tx_detail.note" = "Note";
+"tx_detail.error.contact.title" = "Contact error";
+"tx_detail.error.contact.description" = "Missing public key from transaction.";
+"tx_detail.error.load_tx.title" = "Transaction error";
+"tx_detail.error.load_tx.description" = "Failed to load transaction details";
+"tx_detail.error.save_contact.description" = "Failed to save contact details.";
 
 /* Transaction detail tx cancellation */
-"transaction_detail.tx_cancellation.title" = "Are you sure?";
-"transaction_detail.tx_cancellation.message" = "You will have to start a new transaction if you change your mind.";
-"transaction_detail.tx_cancellation.yes" = "Yes, cancel";
-"transaction_detail.tx_cancellation.no" = "Not now";
-"transaction_detail.tx_cancellation.cancel" = "Cancel Transaction";
-"transaction_detail.tx_cancellation.error.title" = "Failed to cancel transaction";
-"transaction_detail.tx_cancellation.error.description" = "Transaction is no longer in a state where it can be cancelled.";
+"tx_detail.tx_cancellation.title" = "Are you sure?";
+"tx_detail.tx_cancellation.message" = "You will have to start a new transaction if you change your mind.";
+"tx_detail.tx_cancellation.yes" = "Yes, cancel";
+"tx_detail.tx_cancellation.no" = "Not now";
+"tx_detail.tx_cancellation.cancel" = "Cancel Transaction";
+"tx_detail.tx_cancellation.error.title" = "Failed to cancel transaction";
+"tx_detail.tx_cancellation.error.description" = "Transaction is no longer in a state where it can be cancelled.";
 
 /* Transactions list */
 "tx_list.title" = "Transactions";
@@ -185,7 +184,7 @@
 "sending_tari.recipient" = "recipient on the Tari Network...";
 "sending_tari.searching" = "Searching for the";
 "sending_tari.network" = "Tari Network...";
-"sending_tari.transaction_is_on_its_way" = "Your transaction is on its way...";
+"sending_tari.tx_is_on_its_way" = "Your transaction is on its way...";
 
 /* Deep link error */
 "deep_link.error.title" = "Invalid link found";

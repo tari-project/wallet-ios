@@ -163,7 +163,7 @@ class TxTableViewModel: NSObject {
         if let compledTx = tx as? CompletedTx {
             if compledTx.isCancelled {
                 isCancelled = true
-                statusMessage = NSLocalizedString("transaction_detail.payment_cancelled", comment: "Transaction detail view")
+                statusMessage = NSLocalizedString("tx_detail.payment_cancelled", comment: "Transaction detail view")
             }
         }
 
