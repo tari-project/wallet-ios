@@ -191,7 +191,6 @@ class AnimatedBalanceLabel: UIView {
 
         addLayoutGuide(labelsLeftLayoutGuide)
         labelsLeftLayoutGuide.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        labelsLeftLayoutGuide.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         labelsLeftLayoutGuide.heightAnchor.constraint(equalToConstant: 0).isActive = true
 
         addLayoutGuide(labelsRightLayoutGuide)
@@ -205,8 +204,11 @@ class AnimatedBalanceLabel: UIView {
             labelsLeftLayoutGuide.leftAnchor.constraint(equalTo: leftAnchor, constant: inset).isActive = true
         case .right:
             labelsRightLayoutGuide.widthAnchor.constraint(equalToConstant: 0).isActive = true
+            labelsLeftLayoutGuide.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
+
         default:
             labelsLeftLayoutGuide.widthAnchor.constraint(equalToConstant: 0).isActive = true
+            labelsLeftLayoutGuide.leftAnchor.constraint(equalTo: leftAnchor).isActive = true
         }
 
         if let firstLabel = labels.first, let lastLabel = labels.last, firstLabel.superview === labelsLeftLayoutGuide.owningView, lastLabel.superview === labelsRightLayoutGuide.owningView {

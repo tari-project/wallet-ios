@@ -417,7 +417,15 @@ extension AddAmountViewController {
         continueButton.translatesAutoresizingMaskIntoConstraints = false
         continueButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         continueButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        continueButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+
+        let continueButtonConstraint = continueButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+        continueButtonConstraint.priority = UILayoutPriority(rawValue: 999)
+        continueButtonConstraint.isActive = true
+
+        let continueButtonSecondConstraint = continueButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -Theme.shared.sizes.appSidePadding)
+        continueButtonSecondConstraint.priority = UILayoutPriority(rawValue: 1000)
+        continueButtonSecondConstraint.isActive = true
+
         continueButton.setTitle(NSLocalizedString("common.continue", comment: "Common"), for: .normal)
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         continueButton.isEnabled = false
@@ -484,6 +492,7 @@ extension AddAmountViewController {
         warningBalanceStackView.addArrangedSubview(warningBalanceLabel)
         warningBalanceLabel.font = Theme.shared.fonts.warningBoxTitleLabel
         warningBalanceLabel.textColor = Theme.shared.colors.warningBoxBorder
+        warningBalanceLabel.text = "0.0"
 
         warningStackView.addArrangedSubview(warningLabel)
         warningLabel.font = Theme.shared.fonts.amountWarningLabel
@@ -528,12 +537,20 @@ extension AddAmountViewController {
         keypadContainerStackView.translatesAutoresizingMaskIntoConstraints = false
         keypadContainerStackView.axis = .vertical
         keypadContainerStackView.distribution = .equalSpacing
-        keypadContainerStackView.spacing = min(28, view.frame.height * 0.034)
+        keypadContainerStackView.spacing = min(26, view.frame.height * 0.032)
         keypadContainerStackView.backgroundColor = .clear
         keypadContainerStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        keypadContainerStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -30).isActive = true
-        keypadContainerStackView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-        keypadContainerStackView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
+
+        let keypadContainerStackViewConstraint = keypadContainerStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -10)
+        keypadContainerStackViewConstraint.priority = UILayoutPriority(rawValue: 249)
+        keypadContainerStackViewConstraint.isActive = true
+
+        let keypadContainerStackViewSecondConstraint = keypadContainerStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -40)
+        keypadContainerStackViewSecondConstraint.priority = UILayoutPriority(rawValue: 250)
+        keypadContainerStackViewSecondConstraint.isActive = true
+
+        keypadContainerStackView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        keypadContainerStackView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
         let rows = [UIStackView(), UIStackView(), UIStackView(), UIStackView()]
         rows.forEach({
@@ -550,7 +567,7 @@ extension AddAmountViewController {
             button.tintColor = Theme.shared.colors.keypadButton
             button.titleLabel?.font = Theme.shared.fonts.keypadButton
             rows[i / (rows.count - 1)].addArrangedSubview(button)
-            button.heightAnchor.constraint(equalToConstant: 33).isActive = true
+            button.heightAnchor.constraint(equalToConstant: 35).isActive = true
 
             if i < 9 {
                 button.setTitle("\(i + 1)", for: .normal)
