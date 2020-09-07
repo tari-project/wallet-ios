@@ -745,6 +745,7 @@ class SendingTariViewController: UIViewController {
                 UIApplication.shared.menuTabBarController?.setTab(.home)
                 // display error
                 self?.displayErrorFeedbackAndTrackEvent()
+                self?.dismiss(animated: true)
             })
         }
     }
