@@ -74,16 +74,7 @@ class TxsTableViewController: UITableViewController {
     let animatedRefresher = AnimatedRefreshingView()
     private var lastContentOffset: CGFloat = 0
     private var kvoBackupScheduleToken: NSKeyValueObservation?
-    var transactionModels = [TxTableViewModel]()
-    var transactions = [TxProtocol]() {
-        didSet {
-            transactionModels.removeAll()
-            transactions.forEach { (tx) in
-                let model = TxTableViewModel(tx: tx)
-                transactionModels.append(model)
-            }
-        }
-    }
+    var txModels = OrderedSet<TxTableViewModel>()
 
     private var isScrolledToTop: Bool = true {
         willSet {
@@ -98,6 +89,7 @@ class TxsTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.prefetchDataSource = self
         viewSetup()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 + CATransaction.animationDuration()) {
             self.registerEvents()
@@ -224,14 +216,18 @@ class TxsTableViewController: UITableViewController {
             return
         }
 
-        transactions = allTxs
+        txModels.removeAll()
+        allTxs.forEach { (tx) in
+            let model = TxTableViewModel(tx: tx)
+            txModels.append(model)
+        }
 
         tableView.reloadData()
         tableView.endRefreshing()
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        actionDelegate?.onTxSelect(transactions[indexPath.row])
+        actionDelegate?.onTxSelect(txModels[indexPath.row].tx)
     }
 
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {

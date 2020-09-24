@@ -44,9 +44,9 @@ import GiphyCoreSDK
 
 class TxTableViewModel: NSObject {
     typealias Value = (microTari: MicroTari?, direction: TxDirection, isCancelled: Bool, isPending: Bool)
-    private static var cachedMedia = [String: GPHMedia]()
 
-    let id: String = UUID().uuidString
+    let id: UInt64
+    private(set) var tx: TxProtocol
     private(set) var title: NSAttributedString
     private(set) var avatar: String
     private(set) var message: String
@@ -62,12 +62,15 @@ class TxTableViewModel: NSObject {
 
     var shouldUpdateCellSize: Bool = false
 
-    @objc dynamic private(set) var gifDownloadFailed: Bool = false
+    @objc dynamic private(set) var gifDownloadFailed: Bool = true
     @objc dynamic private(set) var gif: GPHMedia?
     @objc dynamic private(set) var status: String
     @objc dynamic private(set) var time: String
 
     required init(tx: TxProtocol) {
+        self.tx = tx
+        self.id = tx.id.0
+
         var isCancelled = false
         var isPending = false
 
@@ -185,12 +188,9 @@ class TxTableViewModel: NSObject {
             self?.time = tx.date.0?.relativeDayFromToday() ?? ""
         }
 
-        if gifID != nil {
-            if let media = TxTableViewModel.cachedMedia[gifID!] {
-                self.gif = media
-            } else {
-                downloadGif(gifID: gifID!)
-            }
+        if gifID != nil, let media = TxGifManager.shared.getGifFromCache(gifID: gifID!) {
+            gif = media
+            gifDownloadFailed = false
         }
     }
 
@@ -207,29 +207,24 @@ class TxTableViewModel: NSObject {
         }
     }
 
-    private func downloadGif(gifID: String) {
+    func downloadGif() {
+        if gifID == nil || gif != nil { return }
         gifDownloadFailed = false
-        let downloadOperation = GiphyCore.shared.gifByID(gifID) { (response, error) in
-            guard error == nil else {
-                return TariLogger.error("Failed to load gif", error: error)
+        TxGifManager.shared.downloadGif(gifID: gifID!) { [weak self] (result) in
+            switch result {
+            case .success(let media): self?.gif = media
+            case .failure: self?.gifDownloadFailed = true
             }
-            let media = response?.data
-            TxTableViewModel.cachedMedia[gifID] = media
-            self.shouldUpdateCellSize = true
-            self.gif = media
-        }
-
-        Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { (timer) in
-            timer.invalidate()
-            if self.gif != nil { return }
-            downloadOperation.cancel()
-            self.gifDownloadFailed = true
         }
     }
 
-    func retryDownloadGif() {
-        if gifID != nil {
-            downloadGif(gifID: gifID!)
-        }
+    func cancelDowloadGif() {
+        if gifID == nil || gif != nil { return }
+        TxGifManager.shared.cancelDownloadGif(gifID: gifID!)
+    }
+
+    override func isEqual(_ object: Any?) -> Bool {
+        guard let object = object as? TxTableViewModel else { return false }
+        return object.id == id
     }
 }
