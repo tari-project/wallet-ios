@@ -103,6 +103,11 @@ class NavigationBar: UIView, NavigationBarProtocol {
         setupBackButton()
         setupRightButton()
         clipsToBounds = false
+
+        layer.shadowOpacity = 0
+        layer.shadowOffset = CGSize(width: 0, height: 5)
+        layer.shadowRadius = 10
+        layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
     }
 
     required init?(coder: NSCoder) {
@@ -192,6 +197,20 @@ class NavigationBar: UIView, NavigationBarProtocol {
         }) { [weak self] _ in
             self?.emojiIdView.removeFromSuperview()
             self?.emojiIdView = nil
+        }
+    }
+
+    func showShadow(animated: Bool = true) {
+        UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
+            guard let self = self else { return }
+            self.layer.shadowOpacity = 0.1
+        }
+    }
+
+    func hideShadow(animated: Bool = true) {
+        UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
+            guard let self = self else { return }
+            self.layer.shadowOpacity = 0.0
         }
     }
 

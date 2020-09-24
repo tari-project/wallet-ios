@@ -225,6 +225,7 @@ struct Colors: Loopable {
 
     //Add note screen
     let addNoteTitleLabel = UIColor(named: "Heading")
+    let addNoteTitleLabelGray = UIColor(named: "SmallSubheading")
     let addNoteInputView = UIColor(named: "InputText")
     let searchGiphyButtonBackground = UIColor(named: "SearchGiphyButtonBackground")
     let searchGiphyButtonTitle = UIColor(named: "SearchGiphyButtonTitle")
