@@ -42,7 +42,7 @@ import UIKit
 import GiphyUISDK
 import GiphyCoreSDK
 
-class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDelegate, GiphyDelegate, GPHGridDelegate, UIScrollViewDelegate {
+class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate, GPHGridDelegate, UIScrollViewDelegate {
     var publicKey: PublicKey?
     var amount: MicroTari?
     var deepLinkParams: DeepLinkParams?
@@ -52,15 +52,15 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
     fileprivate let stackView = UIStackView()
     fileprivate let sendButton = SlideView()
     fileprivate var sendButtonBottomConstraint = NSLayoutConstraint()
-    fileprivate var spacerViewHeightConstraint = NSLayoutConstraint() //For adding extar space to the stack view so it can be scrolled up with the keyboard open
     fileprivate let titleLabel = UILabel()
     fileprivate let noteInput = UITextView()
-    fileprivate let notePlaceholder = UILabel()
     fileprivate var noteText = "" {
         didSet {
-            setSendButtonState()
+            updateTitleColorAndSetSendButtonState()
         }
     }
+    private let notePlaceholder = NSLocalizedString("add_note.placeholder", comment: "Add note view")
+
     private let poweredByGiphyImageView = UIImageView(image: Theme.shared.images.poweredByGiphy)
     private let giphyCarouselContainerView = UIView()
     private var giphyCarouselBottomConstraint = NSLayoutConstraint()
@@ -84,11 +84,14 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
                 attachmentContainerHeightConstraint.isActive = true
             } else {
                 showGiphyCarousel()
+                attachmentContainerHeightConstraint.isActive = false
+                attachmentContainerHeightConstraint = attachmentContainer.heightAnchor.constraint(equalToConstant: 0.0)
+                attachmentContainerHeightConstraint.isActive = true
                 attachmentContainer.isHidden = true
                 attachmentCancelView.isHidden = true
             }
 
-            setSendButtonState()
+            updateTitleColorAndSetSendButtonState()
         }
     }
 
@@ -108,6 +111,7 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         NotificationCenter.default.addObserver(self, selector: #selector(moveSendButtonDown), name: UIResponder.keyboardWillHideNotification, object: nil)
 
         noteInput.becomeFirstResponder()
+
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 
         if let params = deepLinkParams {
@@ -146,41 +150,43 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         }
     }
 
-    func setSendButtonState() {
+    func updateTitleColorAndSetSendButtonState() {
         if noteText.isEmpty && attachment == nil {
             sendButton.isEnabled = false
+            titleLabel.textColor = Theme.shared.colors.addNoteTitleLabel
         } else {
             sendButton.isEnabled = true
+            titleLabel.textColor = Theme.shared.colors.addNoteTitleLabelGray
         }
     }
 
     private func setup() {
-        view.backgroundColor = Theme.shared.colors.appBackground
-
         setupNavigationBar()
+        view.backgroundColor = Theme.shared.colors.appBackground
+        setupSendButton()
+        setupGiphy()
 
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
         scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        scrollView.bottomAnchor.constraint(equalTo: giphyCarouselContainerView.topAnchor).isActive = true
 
         scrollView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
 
-        stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-        stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-        stackView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: sidePadding).isActive = true
+        stackView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+        stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -sidePadding).isActive = true
+        stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -sidePadding).isActive = true
+        stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -sidePadding * 2).isActive = true
 
         setupNoteTitle()
-        setupSendButton()
-        setupGiphy()
         setupNoteInput()
         setupMediaAttachment()
+        view.bringSubviewToFront(navigationBar)
     }
 
     @objc private func showGiphyPanel() {
@@ -216,48 +222,16 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         poweredByGiphyImageView.isHidden = false
     }
 
-    func textViewDidChangeSelection(_ textView: UITextView) {
-        var trimmedText = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        if trimmedText.isEmpty {
-            titleLabel.textColor = Theme.shared.colors.addNoteTitleLabel
-            notePlaceholder.isHidden = false
-        } else {
-            titleLabel.textColor = Theme.shared.colors.inputPlaceholder
-            notePlaceholder.isHidden = true
-        }
-
-        //Limit to the size of a tx note
-        let charLimit = 280
-        if trimmedText.count > charLimit {
-            TariLogger.warn("Limitting tx note to \(charLimit) chars")
-            trimmedText = String(trimmedText.prefix(charLimit))
-            textView.text = trimmedText
-        }
-
-        noteText = trimmedText
-    }
-
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        //Stop new line chars, instead close the keyboard on return key
-        if text.components(separatedBy: CharacterSet.newlines).count > 1 {
-            view.endEditing(true)
-            return false
-        }
-
-        return true
-    }
-
     @objc private func moveSendButtonUp(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             let keyboardHeight = keyboardSize.height
             sendButtonBottomConstraint.isActive = false
+            showGiphyCarousel()
 
             UIView.animate(withDuration: 0.46, delay: 0.008, options: .curveEaseIn, animations: { [weak self] in
                 guard let self = self else { return }
                 self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
                 self.sendButtonBottomConstraint.isActive = true
-                self.spacerViewHeightConstraint.constant = keyboardHeight + 80
                 self.view.layoutIfNeeded()
             })
         }
@@ -265,12 +239,12 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
 
     @objc private func moveSendButtonDown() {
         sendButtonBottomConstraint.isActive = false
+        hideGiphyCarousel()
 
         UIView.animate(withDuration: 0.5) { [weak self] in
             guard let self = self else { return }
             self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.safeBottomAnchor)
             self.sendButtonBottomConstraint.isActive = true
-            self.spacerViewHeightConstraint.constant = 100
             self.view.layoutIfNeeded()
         }
     }
@@ -279,6 +253,20 @@ class AddNoteViewController: UIViewController, UITextViewDelegate, SlideViewDele
         //Assume the user is trying to swipe the keyboard down
         if scrollView.contentOffset.y < -60 {
             view.endEditing(true)
+        }
+
+        if scrollView.contentOffset.y <= 0 {
+            onScrollTopHit(true)
+        } else {
+            onScrollTopHit(false)
+        }
+    }
+
+    private func onScrollTopHit(_ isAtTop: Bool) {
+        if isAtTop {
+            navigationBar.hideShadow()
+        } else {
+            navigationBar.showShadow()
         }
     }
 
@@ -357,24 +345,27 @@ extension AddNoteViewController {
         navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        navigationBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        navigationBar.heightAnchor.constraint(equalToConstant: 56).isActive = true
+
+        let stubView = UIView()
+        stubView.backgroundColor = navigationBar.backgroundColor
+        navigationBar.insertSubview(stubView, at: 0)
+        stubView.translatesAutoresizingMaskIntoConstraints = false
+
+        stubView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        stubView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        stubView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        stubView.bottomAnchor.constraint(equalTo: navigationBar.topAnchor).isActive = true
     }
 
     fileprivate func setupNoteTitle() {
-        let titleView = UIView()
-        titleView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(titleView)
-
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleView.addSubview(titleLabel)
+        stackView.addArrangedSubview(titleLabel)
         titleLabel.font = Theme.shared.fonts.addNoteTitleLabel
         titleLabel.textColor = Theme.shared.colors.addNoteTitleLabel
-        titleLabel.bottomAnchor.constraint(equalTo: titleView.bottomAnchor).isActive = true
-        titleLabel.leadingAnchor.constraint(equalTo: titleView.leadingAnchor, constant: sidePadding).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: titleView.trailingAnchor, constant: -sidePadding).isActive = true
         titleLabel.text = NSLocalizedString("add_note.title", comment: "Add note view")
 
-        titleView.heightAnchor.constraint(equalToConstant: sidePadding + titleLabel.font.pointSize).isActive = true
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.heightAnchor.constraint(equalToConstant: sidePadding + titleLabel.font.pointSize).isActive = true
     }
 
     fileprivate func setupSendButton() {
@@ -399,65 +390,24 @@ extension AddNoteViewController {
     }
 
     fileprivate func setupNoteInput() {
-        let noteView = UIView()
-        noteView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(noteView)
-        noteView.heightAnchor.constraint(greaterThanOrEqualToConstant: 86).isActive = true
-
-        let font = Theme.shared.fonts.addNoteInputView
+        stackView.addArrangedSubview(noteInput)
+        stackView.setCustomSpacing(20.0, after: noteInput)
         noteInput.delegate = self
         noteInput.isScrollEnabled = false
-        noteInput.translatesAutoresizingMaskIntoConstraints = false
-        noteView.addSubview(noteInput)
-        noteInput.topAnchor.constraint(equalTo: noteView.topAnchor, constant: sidePadding / 2).isActive = true
-        noteInput.leadingAnchor.constraint(equalTo: noteView.leadingAnchor, constant: sidePadding).isActive = true
-        noteInput.trailingAnchor.constraint(equalTo: noteView.trailingAnchor, constant: -sidePadding).isActive = true
-        noteInput.bottomAnchor.constraint(equalTo: noteView.bottomAnchor, constant: -sidePadding).isActive = true
+        noteInput.font = Theme.shared.fonts.addNoteInputView
         noteInput.textContainerInset = .zero
         noteInput.returnKeyType = .done
         noteInput.textContainer.lineFragmentPadding = 0
-        noteInput.sizeToFit()
+        noteInput.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
 
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.minimumLineHeight = font.pointSize * 1.25
-        noteInput.attributedText = NSAttributedString(
-            string: " ", //Needs to have at least one char to take affect
-            attributes: [
-                NSAttributedString.Key.paragraphStyle: paragraphStyle,
-                NSAttributedString.Key.font: font
-            ]
-        )
-        noteInput.text = ""
-
-        notePlaceholder.translatesAutoresizingMaskIntoConstraints = false
-        noteInput.addSubview(notePlaceholder)
-        notePlaceholder.topAnchor.constraint(equalTo: noteInput.topAnchor).isActive = true
-        notePlaceholder.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: sidePadding).isActive = true
-        notePlaceholder.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -sidePadding).isActive = true
-        notePlaceholder.numberOfLines = 0
-
-        notePlaceholder.attributedText = NSAttributedString(
-            string: NSLocalizedString("add_note.placeholder", comment: "Add note view"),
-            attributes: [
-                NSAttributedString.Key.paragraphStyle: paragraphStyle,
-                NSAttributedString.Key.font: font,
-                NSAttributedString.Key.foregroundColor: Theme.shared.colors.inputPlaceholder!
-            ]
-        )
+        noteInput.text = notePlaceholder
+        noteInput.textColor = .lightGray
     }
 
     private func setupMediaAttachment() {
-        let attachmentSection = UIView()
-        attachmentSection.translatesAutoresizingMaskIntoConstraints = false
-        stackView.addArrangedSubview(attachmentSection)
-
-        attachmentSection.addSubview(attachmentContainer)
+        stackView.addArrangedSubview(attachmentContainer)
         attachmentContainer.translatesAutoresizingMaskIntoConstraints = false
-        attachmentContainer.leadingAnchor.constraint(equalTo: attachmentSection.leadingAnchor, constant: sidePadding).isActive = true
-        attachmentContainer.trailingAnchor.constraint(equalTo: attachmentSection.trailingAnchor, constant: -sidePadding).isActive = true
-        attachmentContainer.topAnchor.constraint(equalTo: attachmentSection.topAnchor).isActive = true
-        attachmentContainer.bottomAnchor.constraint(equalTo: attachmentSection.bottomAnchor).isActive = true
-        attachmentContainerHeightConstraint = attachmentContainer.heightAnchor.constraint(equalTo: attachmentContainer.widthAnchor, multiplier: 1)
+        attachmentContainerHeightConstraint = attachmentContainer.heightAnchor.constraint(equalToConstant: 0.0)
         attachmentContainerHeightConstraint.isActive = true
         attachmentContainer.layer.cornerRadius = 20
         attachmentContainer.layer.masksToBounds = true
@@ -489,8 +439,7 @@ extension AddNoteViewController {
         let spacerKeyboardView = UIView()
         spacerKeyboardView.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(spacerKeyboardView)
-        spacerViewHeightConstraint = spacerKeyboardView.heightAnchor.constraint(equalToConstant: 0)
-        spacerViewHeightConstraint.isActive = true
+        spacerKeyboardView.heightAnchor.constraint(equalToConstant: 20).isActive = true
     }
 
     private func setupGiphy() {
@@ -499,8 +448,8 @@ extension AddNoteViewController {
 
         giphyCarouselContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(giphyCarouselContainerView)
-        giphyCarouselContainerView.leftAnchor.constraint(equalTo: view.safeLeftAnchor, constant: giffPadding).isActive = true
-        giphyCarouselContainerView.rightAnchor.constraint(equalTo: view.safeRightAnchor, constant: -giffPadding).isActive = true
+        giphyCarouselContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: giffPadding).isActive = true
+        giphyCarouselContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -giffPadding).isActive = true
         giphyCarouselBottomConstraint = giphyCarouselContainerView.bottomAnchor.constraint(equalTo: sendButton.topAnchor, constant: -(giffPadding * 2))
         giphyCarouselBottomConstraint.isActive = true
         view.bringSubviewToFront(sendButton)
@@ -578,6 +527,65 @@ extension AddNoteViewController {
     }
 }
 
+extension AddNoteViewController: UITextViewDelegate {
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        var trimmedText = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        //Limit to the size of a tx note
+        let charLimit = 280
+        if trimmedText.count > charLimit {
+            TariLogger.warn("Limitting tx note to \(charLimit) chars")
+            trimmedText = String(trimmedText.prefix(charLimit))
+            textView.text = trimmedText
+        }
+
+        noteText = trimmedText.replacingOccurrences(of: notePlaceholder, with: "")
+    }
+
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        if textView.text.count == 1 && text.isEmpty {
+            textView.textColor = .lightGray
+            textView.text = notePlaceholder
+            let newPosition = textView.beginningOfDocument
+            textView.selectedTextRange = textView.textRange(from: newPosition, to: newPosition)
+            return false
+        } else if textView.text == notePlaceholder {
+            if text == "\n" {
+                textView.resignFirstResponder()
+                return false
+            }
+            if text.isEmpty {
+                return false
+            }
+            textView.textColor = .black
+            textView.text = ""
+            return true
+        }
+
+        //Stop new line chars, instead close the keyboard on return key
+        if text.components(separatedBy: CharacterSet.newlines).count > 1 {
+            view.endEditing(true)
+            return false
+        }
+        return true
+    }
+
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.text == notePlaceholder {
+            DispatchQueue.main.async {
+                let newPosition = textView.beginningOfDocument
+                textView.selectedTextRange = textView.textRange(from: newPosition, to: newPosition)
+            }
+        }
+    }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = notePlaceholder
+            textView.textColor = .lightGray
+        }
+    }
+}
+
 public class TariGiphyTheme: GPHTheme {
     public override init() {
         super.init()
@@ -587,13 +595,4 @@ public class TariGiphyTheme: GPHTheme {
     public override var textFieldFont: UIFont? {
         return Theme.shared.fonts.searchContactsInputBoxText
     }
-
-//    public override var toolBarSwitchSelectedColor: UIColor { return .green }
-//    public override var placeholderColor: UIColor {
-//        return .red
-//    }
-//
-//    public override var backgroundColorForLoadingCells: UIColor {
-//        return .blue
-//    }
 }
