@@ -90,15 +90,15 @@ class TxTableViewCell: UITableViewCell {
     }
 
     func configure(with model: TxTableViewModel) {
+        setStatus(model.status)
+        setValue(microTari: model.value.microTari, direction: model.value.direction, isCancelled: model.value.isCancelled, isPending: model.value.isPending)
+
         if model.id == self.model?.id { return }
 
         self.model = model
         avatarLabel.text = model.avatar
         noteLabel.text = model.message
         titleLabel.attributedText = model.title
-        setStatus(model.status)
-
-        setValue(microTari: model.value.microTari, direction: model.value.direction, isCancelled: model.value.isCancelled, isPending: model.value.isPending)
         timeLabel.text = model.time
 
         if model.hasGif {
@@ -344,6 +344,6 @@ extension TxTableViewCell {
     @objc private func loadingGifButtonAction(_ sender: UIButton) {
         loadingGifButton.variation = .loading
         loadingGifButton.isHidden = false
-        model?.retryDownloadGif()
+        model?.downloadGif()
     }
 }

@@ -45,7 +45,7 @@ import Lottie
 extension TxsTableViewController {
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
-        if transactions.count == 0 {
+        if txModels.count == 0 {
             backgroundType = .empty
         } else {
             backgroundType = .none
@@ -55,19 +55,21 @@ extension TxsTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return transactions.count
+        return txModels.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: TxTableViewCell
 
-        if transactionModels[indexPath.row].shouldUpdateCellSize {
-            transactionModels[indexPath.row].shouldUpdateCellSize = false
+        if txModels[indexPath.row].shouldUpdateCellSize {
+            txModels[indexPath.row].shouldUpdateCellSize = false
             cell = TxTableViewCell(style: .default, reuseIdentifier: cellIdentifier)
         } else {
             cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! TxTableViewCell
         }
-        cell.configure(with: transactionModels[indexPath.row])
+        cell.configure(with: txModels[indexPath.row])
+        txModels[indexPath.row].downloadGif()
+
         cell.updateCell = {
             DispatchQueue.main.async {
                 tableView.reloadRows(at: [indexPath], with: .fade)
@@ -189,5 +191,17 @@ extension TxsTableViewController {
 
         animatedRefresher.heightAnchor.constraint(equalToConstant: 48).isActive = true
         animatedRefresher.setupView(.loading)
+    }
+}
+
+extension TxsTableViewController: UITableViewDataSourcePrefetching {
+    func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        indexPaths.forEach { (indexPath) in
+            txModels[indexPath.row].downloadGif()
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        txModels[indexPath.row].cancelDowloadGif()
     }
 }
