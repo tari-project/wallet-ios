@@ -98,4 +98,11 @@ extension TxProtocol {
                 return .unknown
         }
     }
+
+    var isCancelled: Bool {
+        if let completedTx = self as? CompletedTx {
+            return completedTx.isCancelled
+        }
+        return false
+    }
 }

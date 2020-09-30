@@ -53,10 +53,14 @@ extension UIScrollView {
         // animated for fix blinking during end refresh
         UIView.transition(with: self,
                           duration: CATransaction.animationDuration(),
-                          options: .transitionCrossDissolve,
+                          options: .layoutSubviews,
                           animations: {
                             self.refreshControl?.endRefreshing()
-        })
+                          },
+                          completion: { (_) in
+                            if self.contentOffset.y < 0 {
+                                self.scrollToTop(animated: true)
+                            }})
     }
 
     func isRefreshing() -> Bool {

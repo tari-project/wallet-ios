@@ -58,9 +58,8 @@ class HomeViewController: UIViewController {
     private let balanceLabel = UILabel()
     private let balanceValueLabel = AnimatedBalanceLabel()
 
-    private lazy var txsTableVC: TxsTableViewController = {
-        let txController = TxsTableViewController(style: .plain)
-        txController.tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
+    private lazy var txsTableVC: TxsListViewController = {
+        let txController = TxsListViewController()
         txController.backgroundType =  isFirstIntroToWallet ? .intro : .empty
         return txController
     }()
@@ -369,12 +368,14 @@ extension HomeViewController: TxsTableViewDelegate {
 
     func onScrollTopHit(_ isAtTop: Bool) {
         if isAtTop {
+            if self.navigationBar.layer.shadowOpacity == 0.0 { return }
             UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
                 guard let self = self else { return }
                 self.navigationBar.layer.shadowOpacity = 0
                 self.view.layoutIfNeeded()
             }
         } else {
+            if self.navigationBar.layer.shadowOpacity == 0.1 { return }
             UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
                 guard let self = self else { return }
                 self.navigationBar.layer.shadowOpacity = 0.1
