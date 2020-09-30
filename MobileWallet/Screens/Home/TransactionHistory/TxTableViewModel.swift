@@ -47,8 +47,8 @@ class TxTableViewModel: NSObject {
 
     let id: UInt64
     private(set) var tx: TxProtocol
-    private(set) var title: NSAttributedString
-    private(set) var avatar: String
+    private(set) var title = NSAttributedString()
+    private(set) var avatar: String = ""
     private(set) var message: String
     private(set) var value: Value
 
@@ -64,26 +64,55 @@ class TxTableViewModel: NSObject {
 
     @objc dynamic private(set) var gifDownloadFailed: Bool = true
     @objc dynamic private(set) var gif: GPHMedia?
-    @objc dynamic private(set) var status: String
+    @objc dynamic private(set) var status: String = ""
     @objc dynamic private(set) var time: String
 
     required init(tx: TxProtocol) {
         self.tx = tx
         self.id = tx.id.0
 
-        var isCancelled = false
-        var isPending = false
+        value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.status.0 == .pending)
+        let (msg, giphyDd) = TxTableViewModel.extractNote(from: tx.message.0)
+        message = msg
+        time = tx.date.0?.relativeDayFromToday() ?? ""
+        gifID = giphyDd
 
+        super.init()
+
+        updateTitleAndAvatar()
+        updateStatus()
+        updateMedia()
+
+        Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] (_) in
+            self?.time = tx.date.0?.relativeDayFromToday() ?? ""
+        }
+    }
+
+    private static func extractNote(from message: String) -> (message: String, gifID: String?) {
+        //Extract the giphy link
+        let giphyLinkPrefix = "https://giphy.com/embed/"
+        if let endIndex = message.range(of: giphyLinkPrefix)?.lowerBound {
+            let messageExcludingLink = message[..<endIndex].trimmingCharacters(in: .whitespaces)
+            let link = message[endIndex...].trimmingCharacters(in: .whitespaces)
+            let giphyId = link.replacingOccurrences(of: giphyLinkPrefix, with: "")
+            return (messageExcludingLink, giphyId)
+        } else {
+            return (message, nil)
+        }
+    }
+
+    func update(tx: TxProtocol) {
+        if tx.id.0 != self.tx.id.0 { fatalError() }
+        self.tx = tx
+        self.value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.status.0 == .pending)
+        updateTitleAndAvatar()
+        updateStatus()
+        updateMedia()
+    }
+
+    private func updateTitleAndAvatar() {
         let (publicKey, _) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
         guard let pubKey = publicKey else { fatalError() }
-
-        if let _ = tx as? PendingInboundTx {
-            isPending = true
-        }
-
-        if let _ = tx as? PendingOutboundTx {
-            isPending = true
-        }
 
         let (emojis, _) = pubKey.emojis
         avatar = String(emojis.emojis.prefix(1))
@@ -102,7 +131,7 @@ class TxTableViewModel: NSObject {
 
         var titleText = ""
         if tx.direction == .inbound {
-            if isPending {
+            if tx.status.0 == .pending {
                 titleText = String(
                     format: NSLocalizedString("tx_list.inbound_pending_title", comment: "Transaction list"),
                     alias
@@ -146,7 +175,9 @@ class TxTableViewModel: NSObject {
         } else {
             title = NSAttributedString()
         }
+    }
 
+    private func updateStatus() {
         var statusMessage = ""
 
         switch tx.status.0 {
@@ -158,52 +189,20 @@ class TxTableViewModel: NSObject {
             }
         case .broadcast, .completed:
             statusMessage = NSLocalizedString("refresh_view.final_processing", comment: "Refresh view")
-        default:
-            statusMessage = ""
+        default: break
         }
 
-        //Cancelled tranaction
-        if let compledTx = tx as? CompletedTx {
-            if compledTx.isCancelled {
-                isCancelled = true
-                statusMessage = NSLocalizedString("tx_detail.payment_cancelled", comment: "Transaction detail view")
-            }
+        if tx.isCancelled {
+            statusMessage = NSLocalizedString("tx_detail.payment_cancelled", comment: "Transaction detail view")
         }
 
-        if statusMessage.isEmpty {
-            status = ""
-        } else {
-            status = statusMessage
-        }
-
-        value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: isCancelled, isPending: isPending)
-        let (msg, giphyDd) = TxTableViewModel.extractNote(from: tx.message.0)
-        message = msg
-        time = tx.date.0?.relativeDayFromToday() ?? ""
-        gifID = giphyDd
-
-        super.init()
-
-        Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] (_) in
-            self?.time = tx.date.0?.relativeDayFromToday() ?? ""
-        }
-
-        if gifID != nil, let media = TxGifManager.shared.getGifFromCache(gifID: gifID!) {
-            gif = media
-            gifDownloadFailed = false
-        }
+        status = statusMessage
     }
 
-    private static func extractNote(from message: String) -> (message: String, gifID: String?) {
-        //Extract the giphy link
-        let giphyLinkPrefix = "https://giphy.com/embed/"
-        if let endIndex = message.range(of: giphyLinkPrefix)?.lowerBound {
-            let messageExcludingLink = message[..<endIndex].trimmingCharacters(in: .whitespaces)
-            let link = message[endIndex...].trimmingCharacters(in: .whitespaces)
-            let giphyId = link.replacingOccurrences(of: giphyLinkPrefix, with: "")
-            return (messageExcludingLink, giphyId)
-        } else {
-            return (message, nil)
+    private func updateMedia() {
+        if gifID != nil, gif == nil, let media = TxGifManager.shared.getGifFromCache(gifID: gifID!) {
+            gif = media
+            gifDownloadFailed = false
         }
     }
 

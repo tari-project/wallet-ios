@@ -54,10 +54,14 @@ public struct OrderedSet<E: Hashable>: Equatable, Collection {
     ///
     /// - returns: True if the item was inserted.
     @discardableResult
-    public mutating func append(_ newElement: Element) -> Bool {
+    public mutating func append(_ newElement: Element, at i: Int? = nil) -> Bool {
         let inserted = set.insert(newElement).inserted
         if inserted {
-            array.append(newElement)
+            if let index = i {
+                array.insert(newElement, at: index)
+            } else {
+                array.append(newElement)
+            }
         }
         return inserted
     }

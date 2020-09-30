@@ -125,7 +125,9 @@ class TxTableViewCell: UITableViewCell {
         }
 
         kvoStatus = item.observe(\.status, options: .new) { [weak self] (_, _) in
-            self?.setStatus(item.status)
+            guard let self = self, let model = self.model else { return }
+            self.setStatus(item.status)
+            self.setValue(microTari: model.value.microTari, direction: model.tx.direction, isCancelled: model.value.isCancelled, isPending: model.value.isPending)
         }
 
         kvoTime = item.observe(\.time, options: .new) { [weak self] (_, _) in
@@ -185,7 +187,7 @@ class TxTableViewCell: UITableViewCell {
                 valueLabel.textColor = Theme.shared.colors.txCellValueNegativeText
             }
 
-            if isPending {
+            if isPending && !isCancelled {
                 valueLabel.backgroundColor = Theme.shared.colors.txCellValuePendingBackground
                 valueLabel.textColor = Theme.shared.colors.txCellValuePendingText
             }
