@@ -247,7 +247,7 @@ class UserFeedback {
         guard let topController = UIApplication.shared.topController() else { return }
         let webBrowserViewController = WebBrowserViewController()
         webBrowserViewController.url = url
-        webBrowserViewController.modalPresentationStyle = .popover
+        webBrowserViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
         topController.present(webBrowserViewController, animated: true)
     }
 }
