@@ -71,7 +71,7 @@ class TxTableViewModel: NSObject {
         self.tx = tx
         self.id = tx.id.0
 
-        value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.status.0 == .pending)
+        value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.isPending)
         let (msg, giphyDd) = TxTableViewModel.extractNote(from: tx.message.0)
         message = msg
         time = tx.date.0?.relativeDayFromToday() ?? ""
@@ -104,7 +104,7 @@ class TxTableViewModel: NSObject {
     func update(tx: TxProtocol) {
         if tx.id.0 != self.tx.id.0 { fatalError() }
         self.tx = tx
-        self.value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.status.0 == .pending)
+        self.value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.isPending)
         updateTitleAndAvatar()
         updateStatus()
         updateMedia()

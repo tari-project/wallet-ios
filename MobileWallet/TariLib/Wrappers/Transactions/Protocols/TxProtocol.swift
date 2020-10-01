@@ -105,4 +105,15 @@ extension TxProtocol {
         }
         return false
     }
+    
+    var isPending: Bool {
+        if let _ = self as? PendingInboundTx {
+            return true
+        }
+        
+        if let _ = self as? PendingOutboundTx {
+            return true
+        }
+        return false
+    }
 }
