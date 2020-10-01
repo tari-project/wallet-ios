@@ -62,15 +62,16 @@ class TxsListViewController: UIViewController {
 
     var backgroundType: BackgroundViewType = .none {
         didSet {
-            if oldValue == backgroundType && tableView.backgroundView != nil { return }
-            switch backgroundType {
-            case .empty:
-                if oldValue == .intro { backgroundType = .intro; return }
-                setEmptyView()
-            case .intro:
-                setIntroView()
-            default:
-                removeBackgroundView()
+            if oldValue == backgroundType { return }
+            removeBackgroundView { [weak self] in
+                guard let `self` = self else { return }
+                switch self.backgroundType {
+                case .empty:
+                    self.setEmptyView()
+                case .intro:
+                    self.setIntroView()
+                default: break
+                }
             }
         }
     }
@@ -180,10 +181,12 @@ extension TxsListViewController {
 // MARK: UITableViewDelegate & UITableViewDataSource
 extension TxsListViewController: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        if txModels.count == 0 {
-            backgroundType = .empty
-        } else {
-            backgroundType = .none
+        if backgroundType != .intro {
+            if txModels.count == 0 {
+                backgroundType = .empty
+            } else {
+                backgroundType = .none
+            }
         }
 
         return 1
@@ -321,11 +324,17 @@ extension TxsListViewController {
         tableView.backgroundView = emptyView
     }
 
-    private func removeBackgroundView() {
+    private func removeBackgroundView(completion:(() -> Void)? = nil) {
+        if tableView.backgroundView == nil {
+            completion?()
+            return
+        }
+
         UIView.animate(withDuration: CATransaction.animationDuration(), animations: { [weak self] in
             self?.tableView.backgroundView?.alpha = 0.0
         }) { [weak self] (_) in
             self?.tableView.backgroundView = nil
+            completion?()
         }
     }
 
