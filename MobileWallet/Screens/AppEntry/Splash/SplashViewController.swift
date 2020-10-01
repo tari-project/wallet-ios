@@ -57,6 +57,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     var alreadyReplacedVideo: Bool = false
 
     // MARK: - Outlets
+    let generalContainer = UIView()
     let videoView = UIView()
     let versionLabel = UILabel()
     let animationContainer = AnimationView()
@@ -267,10 +268,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     func startAnimation(onComplete: @escaping () -> Void) {
-        #if targetEnvironment(simulator)
-          //animationContainer.animationSpeed = 5
-        #endif
-
         animationContainer.play(
             fromProgress: 0,
             toProgress: 1,

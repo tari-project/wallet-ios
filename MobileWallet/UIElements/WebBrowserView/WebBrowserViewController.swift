@@ -95,9 +95,16 @@ extension WebBrowserViewController {
         dismiss(animated: true, completion: nil)
     }
 
-    @objc private func shareAction() {
+    @objc private func shareAction(sender: AnyObject) {
         guard let currentUrl = webView.url else { return }
         let activityViewController = UIActivityViewController(activityItems: [currentUrl], applicationActivities: nil)
+
+        if let popoverController = activityViewController.popoverPresentationController {
+            popoverController.sourceRect = CGRect(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2, width: 0, height: 0)
+            popoverController.sourceView = self.view
+            popoverController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+        }
+
         present(activityViewController, animated: true)
     }
 
@@ -184,7 +191,7 @@ extension WebBrowserViewController {
         xMarkButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
 
         let shareButton = UIButton()
-        shareButton.addTarget(self, action: #selector(shareAction), for: .touchUpInside)
+        shareButton.addTarget(self, action: #selector(shareAction(sender:)), for: .touchUpInside)
         shareButton.setImage(Theme.shared.images.share, for: .normal)
 
         navigationBar.addSubview(shareButton)

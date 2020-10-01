@@ -208,11 +208,12 @@ class EmojiIdView: UIView {
             showCopyEmojiIdButton()
         }
         // add and show scroll view
-        let scrollViewTargetWidth = blackoutView.frame.width - Theme.shared.sizes.appSidePadding * 2
+        let padding = UIDevice.current.userInterfaceIdiom == .pad ? 60 : Theme.shared.sizes.appSidePadding
+        let scrollViewTargetWidth = blackoutView.frame.width - padding * 2
         expandedEmojiIdScrollView.frame = scrollViewFrame
         // animate scroll view frame
         let scrollViewTargetFrame = CGRect(
-            x: Theme.shared.sizes.appSidePadding,
+            x: padding,
             y: scrollViewFrame.origin.y,
             width: scrollViewTargetWidth,
             height: scrollViewFrame.height

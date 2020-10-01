@@ -304,6 +304,11 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
                         UIViewController.debugMenuAlert = nil
             }))
 
+        if let popoverController = alert.popoverPresentationController {
+            popoverController.sourceView = self.view
+            popoverController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+        }
+
         present(alert, animated: true, completion: nil)
     }
 }

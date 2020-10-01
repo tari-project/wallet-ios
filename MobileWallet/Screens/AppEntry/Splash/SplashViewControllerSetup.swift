@@ -44,6 +44,21 @@ import Lottie
 
 extension SplashViewController {
     func setupView() {
+        view.addSubview(generalContainer)
+        generalContainer.translatesAutoresizingMaskIntoConstraints = false
+
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            generalContainer.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.85).isActive = true
+            generalContainer.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.85).isActive = true
+            generalContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+            generalContainer.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        } else {
+            generalContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+            generalContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+            generalContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+            generalContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        }
+
         setupAnimationContainer()
         setupVideoView()
         setupContraintsVersionLabel()
@@ -77,17 +92,17 @@ extension SplashViewController {
     }
 
     func setupAnimationContainer() {
-        view.addSubview(animationContainer)
+        generalContainer.addSubview(animationContainer)
         animationContainer.translatesAutoresizingMaskIntoConstraints = false
         animationContainer.widthAnchor.constraint(equalToConstant: 145).isActive = true
         animationContainer.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        animationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        animationContainer.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor).isActive = true
 
         if TariLib.shared.walletExists {
-            animationContainer.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+            animationContainer.centerYAnchor.constraint(equalTo: generalContainer.centerYAnchor).isActive = true
             walletExistsInitially = true
         } else {
-            ticketTopLayoutConstraint = animationContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 19)
+            ticketTopLayoutConstraint = animationContainer.topAnchor.constraint(equalTo: generalContainer.topAnchor, constant: 19)
             ticketTopLayoutConstraint?.isActive = true
             walletExistsInitially = false
         }
@@ -95,22 +110,23 @@ extension SplashViewController {
 
     func setupVideoView() {
         videoView.isHidden = true
-        view.insertSubview(videoView, belowSubview: animationContainer)
+        generalContainer.insertSubview(videoView, belowSubview: animationContainer)
         videoView.translatesAutoresizingMaskIntoConstraints = false
         if TariLib.shared.walletExists {
             animationContainerBottomAnchor?.isActive = false
         } else {
+            videoView.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor).isActive = true
             animationContainerBottomAnchor = videoView.topAnchor.constraint(equalTo: animationContainer.bottomAnchor)
             animationContainerBottomAnchor?.isActive = true
-            videoView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-            videoView.heightAnchor.constraint(lessThanOrEqualTo: view.widthAnchor).isActive = true
-            videoView.heightAnchor.constraint(greaterThanOrEqualTo: view.widthAnchor, multiplier: 0.74).isActive = true
+
+            videoView.heightAnchor.constraint(lessThanOrEqualTo: generalContainer.widthAnchor).isActive = true
+            videoView.heightAnchor.constraint(greaterThanOrEqualTo: generalContainer.widthAnchor, multiplier: 0.74).isActive = true
             videoView.widthAnchor.constraint(equalTo: videoView.heightAnchor).isActive = true
         }
     }
 
     func setupElementsContainer() {
-        view.addSubview(elementsContainer)
+        generalContainer.addSubview(elementsContainer)
 
         setupTitleLabel()
         setupCreateWalletButton()
@@ -120,8 +136,8 @@ extension SplashViewController {
 
         elementsContainer.translatesAutoresizingMaskIntoConstraints = false
 
-        elementsContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        elementsContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        elementsContainer.widthAnchor.constraint(equalTo: generalContainer.widthAnchor).isActive = true
+        elementsContainer.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor).isActive = true
         elementsContainer.topAnchor.constraint(equalTo: videoView.bottomAnchor, constant: -15).isActive = true
         elementsContainer.bottomAnchor.constraint(equalTo: versionLabel.topAnchor, constant: -9).isActive = true
         elementsContainer.bottomAnchor.constraint(equalTo: gemImageView.bottomAnchor).isActive = true
@@ -141,8 +157,8 @@ extension SplashViewController {
 
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        titleLabel.leadingAnchor.constraint(equalTo: generalContainer.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        titleLabel.trailingAnchor.constraint(equalTo: generalContainer.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         titleLabel.topAnchor.constraint(equalTo: elementsContainer.topAnchor).isActive = true
     }
 
@@ -154,8 +170,8 @@ extension SplashViewController {
 
         createWalletButton.translatesAutoresizingMaskIntoConstraints = false
 
-        createWalletButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        createWalletButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        createWalletButton.leadingAnchor.constraint(equalTo: generalContainer.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        createWalletButton.trailingAnchor.constraint(equalTo: generalContainer.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         createWalletButton.topAnchor.constraint(greaterThanOrEqualTo: titleLabel.bottomAnchor, constant: 5).isActive = true
         createWalletButton.topAnchor.constraint(lessThanOrEqualTo: titleLabel.bottomAnchor, constant: 25).isActive = true
     }
@@ -171,7 +187,7 @@ extension SplashViewController {
 
         elementsContainer.addSubview(restoreButton)
         restoreButton.translatesAutoresizingMaskIntoConstraints = false
-        restoreButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        restoreButton.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor).isActive = true
         restoreButton.topAnchor.constraint(greaterThanOrEqualTo: createWalletButton.bottomAnchor, constant: 5).isActive = true
         restoreButton.topAnchor.constraint(lessThanOrEqualTo: createWalletButton.bottomAnchor, constant: 22).isActive = true
         restoreButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
@@ -219,9 +235,9 @@ extension SplashViewController {
         disclaimerText.textAlignment = .center
         disclaimerText.isScrollEnabled = false
 
-        disclaimerText.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        disclaimerText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        disclaimerText.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        disclaimerText.leadingAnchor.constraint(equalTo: generalContainer.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        disclaimerText.trailingAnchor.constraint(equalTo: generalContainer.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        disclaimerText.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor).isActive = true
         disclaimerText.topAnchor.constraint(greaterThanOrEqualTo: restoreButton.bottomAnchor, constant: 0).isActive = true
         disclaimerText.topAnchor.constraint(lessThanOrEqualTo: restoreButton.bottomAnchor, constant: 5).isActive = true
     }
@@ -230,7 +246,7 @@ extension SplashViewController {
         elementsContainer.addSubview(gemImageView)
         gemImageView.image = Theme.shared.images.currencySymbol
         gemImageView.translatesAutoresizingMaskIntoConstraints = false
-        gemImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        gemImageView.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor).isActive = true
         gemImageView.topAnchor.constraint(greaterThanOrEqualTo: disclaimerText.bottomAnchor, constant: 0).isActive = true
         gemImageView.topAnchor.constraint(lessThanOrEqualTo: disclaimerText.bottomAnchor, constant: 12).isActive = true
         gemImageView.widthAnchor.constraint(equalToConstant: 24).isActive = true
@@ -250,18 +266,18 @@ extension SplashViewController {
             versionLabel.text = "\(TariSettings.shared.network.networkDisplayName.uppercased()) v\(version) (\(build))"
         }
 
-        view.addSubview(versionLabel)
+        generalContainer.addSubview(versionLabel)
         versionLabel.textAlignment = .center
         versionLabel.numberOfLines = 0
         versionLabel.translatesAutoresizingMaskIntoConstraints = false
 
-        versionLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+        versionLabel.bottomAnchor.constraint(equalTo: generalContainer.bottomAnchor,
                                              constant: -12).isActive = true
-        versionLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+        versionLabel.leadingAnchor.constraint(equalTo: generalContainer.leadingAnchor,
                                               constant: Theme.shared.sizes.appSidePadding).isActive = true
-        versionLabel.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+        versionLabel.trailingAnchor.constraint(equalTo: generalContainer.trailingAnchor,
                                                constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        versionLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor,
+        versionLabel.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor,
                                               constant: 0).isActive = true
     }
 
@@ -281,7 +297,7 @@ extension SplashViewController {
             self.animationContainerBottomAnchorToVideo?.isActive = false
             self.ticketBottom?.isActive = false
             self.videoView.isHidden = true
-            self.animationContainer.bottomAnchor.constraint(equalTo: self.titleLabel.topAnchor, constant: 0).isActive = true
+            self.animationContainer.bottomAnchor.constraint(equalTo: self.generalContainer.centerYAnchor).isActive = true
 
             UIView.animate(withDuration: 1.0, animations: { [weak self] in
                 guard let self = self else { return }
