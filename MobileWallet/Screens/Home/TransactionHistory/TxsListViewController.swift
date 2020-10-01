@@ -377,7 +377,7 @@ extension TxsListViewController {
         waveAnimation.play(fromProgress: 0, toProgress: 1, loopMode: .playOnce, completion: { [weak self] _ in
             self?.backgroundType = .none
             DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
-                self?.safeRefreshTable()
+                self?.tableView.reloadData()
             }
         })
 
