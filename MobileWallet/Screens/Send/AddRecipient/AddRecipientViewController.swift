@@ -183,7 +183,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     @objc private func openScanner() {
         let vc = ScanViewController()
         vc.actionDelegate = self as ScanViewControllerDelegate
-        vc.modalPresentationStyle = .popover
+        vc.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
         present(vc, animated: true, completion: nil)
     }
 
