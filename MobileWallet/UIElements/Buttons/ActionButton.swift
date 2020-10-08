@@ -116,6 +116,11 @@ class ActionButton: UIButton {
             self.alpha = 1
             self.transform = CGAffineTransform(scaleX: 1, y: 1)
         })
+
+        isUserInteractionEnabled = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            self?.isUserInteractionEnabled = true
+        }
     }
 
      private func removeStyle() {
