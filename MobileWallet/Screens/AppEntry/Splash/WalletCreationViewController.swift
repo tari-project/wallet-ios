@@ -347,9 +347,8 @@ extension WalletCreationViewController {
             self?.radialGradient.alpha = 0.2
             self?.thirdLabel.alpha = 1.0
             self?.view.layoutIfNeeded()
-        }) { [weak self] (_) in
-            self?.state = .localAuthentication
-        }
+        })
+        state = .localAuthentication
     }
 
     // MARK: - Show Enable Notifications
@@ -365,10 +364,8 @@ extension WalletCreationViewController {
             guard let self = self else { return }
             self.thirdLabel.alpha = 1.0
             self.view.layoutIfNeeded()
-        }) { [weak self] (_) in
-            guard let self = self else { return }
-            self.state = .enableNotifications
-        }
+        })
+        state = .enableNotifications
     }
 
 }
