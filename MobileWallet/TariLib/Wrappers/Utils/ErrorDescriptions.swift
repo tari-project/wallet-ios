@@ -97,8 +97,8 @@ extension KeyServerError: LocalizedError {
             return NSLocalizedString("key_server.error.unknown", comment: "Tari key server error")
         case .invalidSignature:
             return NSLocalizedString("key_server.error.invalid_signature", comment: "Tari key server error")
-        case .allCoinsAllocated:
-            return NSLocalizedString("key_server.error.all_coins_allocated", comment: "Tari key server error")
+        case .tooManyAllocationRequests:
+            return NSLocalizedString("key_server.error.too_many_allocation_requests", comment: "Tari key server error")
         case .missingResponse:
             return NSLocalizedString("key_server.error.missing_response", comment: "Tari key server error")
         case .responseInvalid:

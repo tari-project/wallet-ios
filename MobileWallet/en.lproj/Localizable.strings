@@ -58,7 +58,7 @@
 "tx_list.error.pending_outbound_tx..description" = "Could not load pending outbound transactions";
 
 /* Tari key server error */
-"key_server.error.all_coins_allocated" = "All coins are allocated.";
+"key_server.error.too_many_allocation_requests" = "You have made too many free tXTR requests.";
 "key_server.error.response_invalid" = "Invalid response from Tari key server.";
 "key_server.error.invalid_signature" = "Invalid signature sent to Tari key server.";
 "key_server.error.missing_response" = "Missing response from Tari key server.";

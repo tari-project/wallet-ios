@@ -43,7 +43,7 @@ import Foundation
 enum KeyServerError: Error {
     case server(_ statusCode: Int, message: String?)
     case invalidSignature
-    case allCoinsAllocated
+    case tooManyAllocationRequests
     case missingResponse
     case responseInvalid
     case unknown
@@ -154,6 +154,15 @@ class KeyServer {
                 return
             }
 
+            // too many faucet requests
+            if let responseBody = String(data: data, encoding: .utf8),
+                response.statusCode == 403,
+                responseBody.lowercased().contains("too many allocation attempts") {
+                onRequestError(KeyServerError.tooManyAllocationRequests)
+                return
+            }
+
+            // signature error
             guard response.statusCode != 403 else {
                 onRequestError(KeyServerError.invalidSignature)
                 return
