@@ -53,7 +53,7 @@ extension UIScrollView {
         // animated for fix blinking during end refresh
         UIView.transition(with: self,
                           duration: CATransaction.animationDuration(),
-                          options: .layoutSubviews,
+                          options: .transitionCrossDissolve,
                           animations: {
                             self.refreshControl?.endRefreshing()
                           },

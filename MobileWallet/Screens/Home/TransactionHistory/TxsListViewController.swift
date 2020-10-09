@@ -79,8 +79,6 @@ class TxsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewSetup()
-        safeRefreshTable()
-
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 + CATransaction.animationDuration()) {
             self.registerEvents()
         }
@@ -88,8 +86,8 @@ class TxsListViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        if backgroundType != .intro && !tableView.isRefreshing() {
-            self.safeRefreshTable()
+        if backgroundType != .intro {
+            safeRefreshTable()
         }
     }
 
@@ -107,7 +105,6 @@ class TxsListViewController: UIViewController {
                     self?.tableView.reloadData()
                 }
             }
-            self?.tableView.endRefreshing()
             completion?()
         }
     }
@@ -166,15 +163,16 @@ extension TxsListViewController {
 
     private func endRefreshingWithSuccess() {
         if animatedRefresher.stateType != .updateData { return }
-        animatedRefresher.updateState(.success)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
-            guard let self = self else { return }
-            self.animatedRefresher.animateOut { [weak self] in
-                self?.safeRefreshTable()
-                self?.animatedRefresher.stateType = .none
-            }
-        })
+        safeRefreshTable { [weak self] in
+            self?.animatedRefresher.updateState(.success)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
+                guard let self = self else { return }
+                self.animatedRefresher.animateOut { [weak self] in
+                    self?.animatedRefresher.stateType = .none
+                    self?.tableView.endRefreshing()
+                }
+            })
+        }
     }
 }
 
@@ -244,7 +242,11 @@ extension TxsListViewController {
         //Event for table refreshing
         TariEventBus.onMainThread(self, eventType: .txListUpdate) { [weak self] (_) in
             guard let self = self else { return }
-            self.safeRefreshTable()
+            if self.animatedRefresher.stateType == .updateData {
+                self.endRefreshingWithSuccess()
+            } else {
+                self.safeRefreshTable()
+            }
         }
 
         TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) {(result) in
@@ -254,9 +256,9 @@ extension TxsListViewController {
                     NotificationManager.shared.cancelAllFutureReminderNotifications()
                 } else {
                     self.animatedRefresher.animateOut { [weak self] in
+                        self?.animatedRefresher.stateType = .none
                         self?.tableView.endRefreshing()
                     }
-                    self.animatedRefresher.stateType = .none
                 }
             }
         }
