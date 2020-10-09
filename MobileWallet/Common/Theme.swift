@@ -182,6 +182,7 @@ struct Colors: Loopable {
     //Navigation bar
     let navigationBarTint = UIColor(named: "Heading")
     let navigationBarBackground = UIColor(named: "NavBarBackground")
+    let navigationBarPurple = UIColor(named: "NavigationBarPurple")
 
     //Tx view
     let txViewValueLabel = UIColor(named: "Heading")

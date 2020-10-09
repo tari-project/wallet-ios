@@ -40,54 +40,109 @@
 
 import Foundation
 
+protocol OnionConnectorObserver: OnionManagerDelegate {
+    func onTorConnDifficulties()
+}
+extension OnionConnectorObserver {
+    func onTorConnProgress(_ progress: Int) { }
+    func onTorConnFinished(_ configuration: BridgesConfuguration) { }
+    func onTorConnDifficulties() { }
+    func onTorConnDifficulties(error: OnionError) { }
+    func onTorPortsOpened() { }
+}
+
 public final class OnionConnector {
     public static let shared = OnionConnector()
-
-    public enum OnionError: Error {
-        case connectionError
-    }
+    private var torObservers = NSPointerArray.weakObjects()
 
     var connectionState: OnionManager.TorState {
         return OnionManager.shared.state
     }
 
-    private var onProgress: ((Int) -> Void)?
-    private var onPortsOpen: (() -> Void)?
-    private var onCompletion: ((Result<URLSessionConfiguration, OnionError>) -> Void)?
+    var bridgesConfiguration: BridgesConfuguration {
+        get {
+            OnionSettings.currentlyUsedBridgesConfiguration
+        }
+
+        set {
+            OnionSettings.backupBridgesConfiguration = bridgesConfiguration
+            OnionManager.shared.setBridgeConfiguration(bridgesType: newValue.bridgesType, customBridges: newValue.customBridges)
+            OnionManager.shared.stopTor {
+                OnionManager.shared.startTor(delegate: self)
+            }
+        }
+    }
 
     private init() {}
 
-    public func start(
-            onProgress: ((Int) -> Void)?,
-            onPortsOpen: (() -> Void)?,
-            onCompletion: @escaping (Result<URLSessionConfiguration, OnionError>) -> Void
-    ) {
-        self.onProgress = onProgress
-        self.onPortsOpen = onPortsOpen
-        self.onCompletion = onCompletion
+    public func start() {
         OnionManager.shared.startTor(delegate: self)
+    }
+
+    public func restoreBridgeConfiguration() {
+        bridgesConfiguration = OnionSettings.backupBridgesConfiguration
     }
 
     public func stop() {
         OnionManager.shared.stopTor()
     }
+
+    func addObserver(_ observer: OnionConnectorObserver) {
+        torObservers.addObject(observer)
+    }
+
+    func removeObserver(_ observer: OnionConnectorObserver) {
+        torObservers.remove(observer)
+    }
 }
 
 extension OnionConnector: OnionManagerDelegate {
-    func torConnProgress(_ progress: Int) {
-        onProgress?(progress)
+
+    func onTorConnProgress(_ progress: Int) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.torObservers.allObjects.forEach {
+                if let object = $0 as? OnionConnectorObserver {
+                    object.onTorConnProgress(progress)
+                }
+            }
+        }
     }
 
-    func torPortsOpened() {
-        onPortsOpen?()
+    func onTorConnFinished(_ configuration: BridgesConfuguration) {
+        OnionSettings.backupBridgesConfiguration = configuration
+        OnionSettings.currentlyUsedBridgesConfiguration = configuration
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.torObservers.allObjects.forEach {
+                if let object = $0 as? OnionConnectorObserver {
+                    object.onTorConnFinished(configuration)
+                }
+            }
+        }
     }
 
-    func torConnFinished(configuration: URLSessionConfiguration) {
-        onCompletion?(.success(configuration))
+    func onTorConnDifficulties(error: OnionError) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.torObservers.allObjects.forEach {
+                if let object = $0 as? OnionConnectorObserver {
+                    object.onTorConnDifficulties(error: error)
+                    object.onTorConnDifficulties()
+                }
+            }
+        }
     }
 
-    func torConnError() {
-        TariLogger.error("Tor connection error", error: OnionError.connectionError)
-        onCompletion?(.failure(.connectionError))
+    func onTorPortsOpened() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.torObservers.allObjects.forEach {
+                if let object = $0 as? OnionConnectorObserver {
+                    object.onTorPortsOpened()
+                }
+            }
+        }
     }
 }
