@@ -430,8 +430,7 @@ class SendingTariViewController: UIViewController {
         if let completionStatus = completionStatus {
             switch completionStatus {
             case .internetConnectionError, .networkConnectionTimeout, .sendError:
-                DispatchQueue.main.async {
-                    [weak self] in
+                DispatchQueue.main.async { [weak self] in
                     self?.fail()
                 }
                 return
@@ -452,15 +451,13 @@ class SendingTariViewController: UIViewController {
             }
         case .connectionCheck:
             if checkConnection {
-                hideTitleLabels {
-                    [weak self] in
+                hideTitleLabels { [weak self] in
                     guard let self = self else { return }
                     self.currentStep = .discovery
                     self.progressBar2View.backgroundColor = self.activeProgressBarBackgroundColor
                     self.currentStepAnimRepeatCount = 0
                     self.currentProgressBarWidthConstraint = self.progress2WidthConstraint
-                    self.displayCurrentStep {
-                        [weak self] in
+                    self.displayCurrentStep { [weak self] in
                         self?.animateCurrentStep()
                     }
                     self.sendTx()
@@ -472,15 +469,13 @@ class SendingTariViewController: UIViewController {
             if let completionStatus = completionStatus {
                 switch completionStatus {
                 case .storeAndForwardSendSuccessful, .directSendSuccessful:
-                    hideTitleLabels {
-                        [weak self] in
+                    hideTitleLabels { [weak self] in
                         guard let self = self else { return }
                         self.currentStep = .sent
                         self.progressBar3View.backgroundColor = self.activeProgressBarBackgroundColor
                         self.currentStepAnimRepeatCount = 0
                         self.currentProgressBarWidthConstraint = self.progress3WidthConstraint
-                        self.displayCurrentStep {
-                            [weak self] in
+                        self.displayCurrentStep { [weak self] in
                             self?.animateCurrentStep()
                         }
                     }
@@ -491,8 +486,7 @@ class SendingTariViewController: UIViewController {
                 animateCurrentStep()
             }
         case .sent:
-            DispatchQueue.main.async {
-                [weak self] in
+            DispatchQueue.main.async { [weak self] in
                 self?.complete()
             }
         }
@@ -737,15 +731,12 @@ class SendingTariViewController: UIViewController {
                 self?.progressBar2View.alpha = 0
                 self?.progressBar3View.alpha = 0
             }
-        ) {
-            [weak self] _ in
+        ) { [weak self] _ in
             // return to home
-            self?.navigationController?.dismiss(animated: true, completion: {
-                [weak self] in
+            self?.navigationController?.dismiss(animated: true, completion: { [weak self] in
                 UIApplication.shared.menuTabBarController?.setTab(.home)
                 // display error
                 self?.displayErrorFeedbackAndTrackEvent()
-                self?.dismiss(animated: true)
             })
         }
     }
@@ -795,11 +786,10 @@ class SendingTariViewController: UIViewController {
             fromProgress: pauseLottieAnimationAt,
             toProgress: 1,
             loopMode: .playOnce
-        ) {
-            [weak self] _ in
-            // return to home
-            UIApplication.shared.menuTabBarController?.setTab(.home)
-            self?.dismiss(animated: true)
+        ) { [weak self] _ in
+            self?.navigationController?.dismiss(animated: true, completion: {
+                UIApplication.shared.menuTabBarController?.setTab(.home)
+            })
         }
         // fade out title views and progress bars
         UIView.animate(
