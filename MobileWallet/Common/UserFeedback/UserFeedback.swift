@@ -58,6 +58,15 @@ class UserFeedback {
         return attributes
     }
 
+    private func closeKeyboard() {
+        UIApplication.shared.sendAction(
+            #selector(UIApplication.resignFirstResponder),
+            to: nil,
+            from: nil,
+            for: nil
+        )
+    }
+
     func error(title: String, description: String, error: Error? = nil, onClose: (() -> Void)? = nil) {
         let errorFeedbackView = FeedbackView()
 
@@ -81,6 +90,7 @@ class UserFeedback {
         attributes.screenInteraction =  onClose == nil ? .dismiss : .absorbTouches
 
         SwiftEntryKit.display(entry: errorFeedbackView, using: attributes)
+        closeKeyboard()
         TariLogger.error("User feedback: title=\(title) description=\(description)", error: error)
     }
 
@@ -97,6 +107,7 @@ class UserFeedback {
         attributes.entranceAnimation = .init(translate: .init(duration: 0.25, anchorPosition: .bottom, spring: .init(damping: 1, initialVelocity: 0)))
 
         SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
+        closeKeyboard()
         TariLogger.verbose("User feedback: title=\(title) description=\(description)")
     }
 
@@ -113,6 +124,7 @@ class UserFeedback {
         attributes.screenInteraction = .forward
 
         SwiftEntryKit.display(entry: successFeedbackView, using: attributes)
+        closeKeyboard()
         TariLogger.verbose("User success feedback: title=\(title)")
     }
 
@@ -139,6 +151,7 @@ class UserFeedback {
         attributes.screenInteraction = .absorbTouches
 
         SwiftEntryKit.display(entry: ctaFeedbackView, using: attributes)
+        closeKeyboard()
         TariLogger.verbose("User call to action: title=\(title) description=\(description)")
     }
 
@@ -162,6 +175,7 @@ class UserFeedback {
         attributes.entryInteraction = .absorbTouches
 
         SwiftEntryKit.display(entry: successFeedbackView, using: attributes)
+        closeKeyboard()
         TariLogger.verbose("User call accept user input: title=\(title)")
     }
 
@@ -216,6 +230,7 @@ class UserFeedback {
 
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         SwiftEntryKit.display(entry: containerView, using: attributes)
+        closeKeyboard()
         TariLogger.verbose("User call to action store")
     }
 
@@ -241,6 +256,7 @@ class UserFeedback {
         attributes.entranceAnimation = .init(translate: .init(duration: 0.25, anchorPosition: .bottom, spring: .init(damping: 1, initialVelocity: 0)))
 
         SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
+        closeKeyboard()
     }
 
     func openWebBrowser(url: URL) {

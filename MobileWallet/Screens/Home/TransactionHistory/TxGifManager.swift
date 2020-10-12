@@ -48,7 +48,7 @@ class TxGifManager {
     enum TxGifManagerError: Error {
         case downloadTimeout
     }
-    
+
     static let shared = TxGifManager()
 
     private var cachedMedia = NSCache<NSString, GPHMedia>()
