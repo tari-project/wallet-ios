@@ -339,7 +339,10 @@ class HomeViewController: UIViewController {
             })
         }
 
-        self.navigationController?.pushViewController(sendVC, animated: true)
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: sendVC)
+        navigationController.setNavigationBarHidden(true, animated: false)
+        navigationController.modalPresentationStyle = .fullScreen
+        UIApplication.shared.menuTabBarController?.present(navigationController, animated: true)
     }
 }
 
