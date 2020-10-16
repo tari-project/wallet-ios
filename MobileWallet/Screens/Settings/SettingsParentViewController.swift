@@ -88,7 +88,7 @@ extension SettingsParentViewController {
         if modalPresentationStyle == .popover {
             navigationBar.heightAnchor.constraint(equalToConstant: 58).isActive = true
         } else {
-            navigationBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
+            navigationBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
             navigationBar.verticalPositioning = .center
         }
 

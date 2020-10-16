@@ -181,10 +181,10 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     @objc private func openScanner() {
-        let vc = ScanViewController()
-        vc.actionDelegate = self as ScanViewControllerDelegate
-        vc.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
-        present(vc, animated: true, completion: nil)
+        let scanViewController = ScanViewController(scanResourceType: .publicKey)
+        scanViewController.actionDelegate = self
+        scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
+        present(scanViewController, animated: true, completion: nil)
     }
 
     func textFieldDidChangeSelection(_ textField: UITextField) {

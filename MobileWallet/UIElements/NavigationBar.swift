@@ -58,6 +58,7 @@ class NavigationBar: UIView, NavigationBarProtocol {
     var backButtonAction: (() -> Void)?
 
     let rightButton = UIButton()
+    let progressView = UIProgressView()
     var rightButtonAction: (() -> Void)? {
         didSet {
             rightButton.isHidden = false
@@ -102,6 +103,7 @@ class NavigationBar: UIView, NavigationBarProtocol {
         setupTitle()
         setupBackButton()
         setupRightButton()
+        setupProgressView()
         clipsToBounds = false
 
         layer.shadowOpacity = 0
@@ -112,6 +114,10 @@ class NavigationBar: UIView, NavigationBarProtocol {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func setProgress(_ progress: Float) {
+        self.progressView.setProgress(progress, animated: true)
     }
 
     private func setupTitle() {
@@ -152,14 +158,32 @@ class NavigationBar: UIView, NavigationBarProtocol {
 
     private func setupRightButton() {
         rightButton.isHidden = true
+        rightButton.titleLabel?.adjustsFontSizeToFitWidth = true
+
         addSubview(rightButton)
 
         rightButton.translatesAutoresizingMaskIntoConstraints = false
         rightButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
-        rightButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15.0).isActive = true
+        let trailing = rightButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15.0)
+        trailing.isActive = true
+        trailing.priority = .defaultLow
         rightButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
-        rightButton.widthAnchor.constraint(equalToConstant: 45).isActive = true
+        rightButton.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 15).isActive = true
         rightButton.addTarget(self, action: #selector(rightButtonAction(_sender:)), for: .touchUpInside)
+    }
+
+    private func setupProgressView() {
+        progressView.progressTintColor = Theme.shared.colors.navigationBarPurple
+        progressView.progress = 0.5
+        progressView.isHidden = true
+
+        addSubview(progressView)
+        progressView.translatesAutoresizingMaskIntoConstraints = false
+
+        progressView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        progressView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        progressView.topAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        progressView.heightAnchor.constraint(equalToConstant: 4.0).isActive = true
     }
 
     func showEmojiId(_ publicKey: PublicKey, inViewController: UIViewController) throws {

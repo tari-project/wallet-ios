@@ -138,5 +138,7 @@
 	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Tari needs permission to write media to photo library</string>
 </dict>
 </plist>

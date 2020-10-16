@@ -43,20 +43,27 @@ import AVFoundation
 
 protocol ScanViewControllerDelegate: class {
     func onAdd(publicKey: PublicKey)
+    func onAdd(string: String)
 }
 
-enum ScannerErrors: Error {
-    case invalidQR
-    case missingPublicKey
+extension ScanViewControllerDelegate {
+    func onAdd(publicKey: PublicKey) { }
+    func onAdd(string: String) { }
 }
 
 class ScanViewController: UIViewController {
+
+    enum ScanResourceType {
+        case publicKey
+        case bridges
+    }
 
     // MARK: - Variables and constants
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
     weak var actionDelegate: ScanViewControllerDelegate?
     private let darkenFillLayer = CAShapeLayer()
+    private let scanResourceType: ScanResourceType
 
     let widthRectanglePath: CGFloat = CGFloat(276)
     let heightRectanglePath: CGFloat = CGFloat(259)
@@ -72,6 +79,15 @@ class ScanViewController: UIViewController {
     var bottomLeftWhiteView: UIView!
     var bottomRightWhiteView: UIView!
 
+    init(scanResourceType: ScanResourceType) {
+        self.scanResourceType = scanResourceType
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     // MARK: - Override functions
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -84,7 +100,9 @@ class ScanViewController: UIViewController {
         updateConstraintsBottomRightView()
         setupScanner()
 
-        Tracker.shared.track("/home/send_tari/add_recipient/qr_scan", "Send Tari - Add Recipient - Scan QR Code")
+        if scanResourceType == .publicKey {
+            Tracker.shared.track("/home/send_tari/add_recipient/qr_scan", "Send Tari - Add Recipient - Scan QR Code")
+        }
     }
 
     private func updateConstraintsBackButton() {
@@ -219,13 +237,16 @@ class ScanViewController: UIViewController {
 
     // MARK: - Private functions
     private func customizeViews() {
-        self.titleLabel.text = String(
-            format: NSLocalizedString(
-                "scan_view.scan_qr_to_send.with_param",
-                comment: "Scan view"
-            ),
-            TariSettings.shared.network.currencyDisplayTicker
-        )
+        var title: String
+
+        switch scanResourceType {
+        case .publicKey:
+            title = String(format: NSLocalizedString("scan_view.scan_qr_to_send.with_param", comment: "Scan view"),
+                TariSettings.shared.network.currencyDisplayTicker)
+        case .bridges:
+            title = NSLocalizedString("scan_view.scan_qr_to_set_bridges", comment: "Scan view")
+        }
+        self.titleLabel.text = title
         self.titleLabel.textColor = Theme.shared.colors.scannerTitle
         self.titleLabel.font = Theme.shared.fonts.scannerTitleLabel
         topLeftWhiteView.addTopBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
@@ -310,17 +331,31 @@ class ScanViewController: UIViewController {
     }
 
     private func foundQR(qrText: String) {
-        do {
-            let publicKey = try PublicKey(deeplink: qrText)
+        switch scanResourceType {
+        case .publicKey:
+            do {
+                let publicKey = try PublicKey(deeplink: qrText)
 
-            self.actionDelegate?.onAdd(publicKey: publicKey)
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-        } catch {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("scan_view.error.title", comment: "Scan view"),
-                description: NSLocalizedString("scan_view.error.description", comment: "Scan view"),
-                error: error
-            )
+                self.actionDelegate?.onAdd(publicKey: publicKey)
+                UINotificationFeedbackGenerator().notificationOccurred(.success)
+            } catch {
+                UserFeedback.shared.error(
+                    title: NSLocalizedString("scan_view.error.title", comment: "Scan view"),
+                    description: NSLocalizedString("scan_view.error.public_key.description", comment: "Scan view"),
+                    error: error
+                )
+            }
+        case .bridges:
+            if let bridges = qrText.findBridges() {
+                actionDelegate?.onAdd(string: bridges)
+            } else {
+                UserFeedback.shared.error(
+                    title: NSLocalizedString("scan_view.error.title", comment: "Scan view"),
+                    description: NSLocalizedString("scan_view.error.bridges.description", comment: "Scan view"),
+                    error: nil
+                )
+            }
+
         }
 
         dismiss(animated: true)
@@ -341,7 +376,6 @@ extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
         if let metadataObject = metadataObjects.first {
             guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
             guard let stringValue = readableObject.stringValue else { return }
-            //AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             foundQR(qrText: stringValue)
         }
     }

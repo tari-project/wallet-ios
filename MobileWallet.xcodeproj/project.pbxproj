@@ -329,6 +329,27 @@
 		3708D757247FF81900807D72 /* SettingsParentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D755247FF81900807D72 /* SettingsParentViewController.swift */; };
 		3708D758247FF81900807D72 /* SettingsParentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D755247FF81900807D72 /* SettingsParentViewController.swift */; };
 		37098043249CD48A0004ED2E /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 37098045249CD48A0004ED2E /* Localizable.strings */; };
+		370E886124FE7AE800576F61 /* BridgesConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886024FE7AE800576F61 /* BridgesConfigurationViewController.swift */; };
+		370E886324FE974100576F61 /* OnionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886224FE974100576F61 /* OnionSettings.swift */; };
+		370E886424FE97E100576F61 /* OnionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886224FE974100576F61 /* OnionSettings.swift */; };
+		370E886524FE97E100576F61 /* OnionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886224FE974100576F61 /* OnionSettings.swift */; };
+		370E886624FE97E200576F61 /* OnionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886224FE974100576F61 /* OnionSettings.swift */; };
+		370E887224FEA32600576F61 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E887124FEA32600576F61 /* Ipv6Tester.swift */; };
+		370E887324FEA32600576F61 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E887124FEA32600576F61 /* Ipv6Tester.swift */; };
+		370E887424FEA32600576F61 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E887124FEA32600576F61 /* Ipv6Tester.swift */; };
+		370E887824FEA54100576F61 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887724FEA54100576F61 /* NetworkTools.m */; };
+		370E887924FEA54100576F61 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887724FEA54100576F61 /* NetworkTools.m */; };
+		370E887A24FEA54100576F61 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887724FEA54100576F61 /* NetworkTools.m */; };
+		370E887F24FEB91300576F61 /* IObfs4ProxyThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887E24FEB91300576F61 /* IObfs4ProxyThread.m */; };
+		370E888024FEB91300576F61 /* IObfs4ProxyThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887E24FEB91300576F61 /* IObfs4ProxyThread.m */; };
+		370E888124FEB91300576F61 /* IObfs4ProxyThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887E24FEB91300576F61 /* IObfs4ProxyThread.m */; };
+		370E888224FEB91300576F61 /* IObfs4ProxyThread.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887E24FEB91300576F61 /* IObfs4ProxyThread.m */; };
+		370E888424FEB92E00576F61 /* Iobfs4proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 370E888324FEB92E00576F61 /* Iobfs4proxy.framework */; };
+		370E888524FEB92E00576F61 /* Iobfs4proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 370E888324FEB92E00576F61 /* Iobfs4proxy.framework */; };
+		370E888624FEB92E00576F61 /* Iobfs4proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 370E888324FEB92E00576F61 /* Iobfs4proxy.framework */; };
+		370E888724FEB92E00576F61 /* Iobfs4proxy.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 370E888324FEB92E00576F61 /* Iobfs4proxy.framework */; };
+		370E888824FEC16F00576F61 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E887124FEA32600576F61 /* Ipv6Tester.swift */; };
+		370E888924FEC1D700576F61 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887724FEA54100576F61 /* NetworkTools.m */; };
 		371189732488FF11004D0CE3 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371189722488FF11004D0CE3 /* CloudKit.framework */; };
 		371A0818247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
 		371A0819247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
@@ -388,6 +409,7 @@
 		377C951E2522213800CC1696 /* TxsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C951D2522213800CC1696 /* TxsListViewController.swift */; };
 		377C951F2522213800CC1696 /* TxsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C951D2522213800CC1696 /* TxsListViewController.swift */; };
 		377C95202522213800CC1696 /* TxsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C951D2522213800CC1696 /* TxsListViewController.swift */; };
+		377A872E2506820800DC6C3F /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
 		37875E4424D85C4300C0595B /* LoadingGIFButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37875E4324D85C4300C0595B /* LoadingGIFButton.swift */; };
 		37875E4524D85C4300C0595B /* LoadingGIFButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37875E4324D85C4300C0595B /* LoadingGIFButton.swift */; };
 		37875E4624D85C4300C0595B /* LoadingGIFButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37875E4324D85C4300C0595B /* LoadingGIFButton.swift */; };
@@ -398,6 +420,7 @@
 		378B4BC42498E5A000C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
 		378B4BC52498E5A100C00CCF /* Migrations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00CD8FFA246D5CD80001E43C /* Migrations.swift */; };
 		378B4BD02498F83000C00CCF /* PendingCircleAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 378B4BCF2498F83000C00CCF /* PendingCircleAnimation.json */; };
+		378EE9A3250126BE009615B5 /* CustomBridgesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 378EE9A2250126BE009615B5 /* CustomBridgesViewController.swift */; };
 		379D27AF244EF25000F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
 		379D27BA244F091A00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
 		379D27BB244F091B00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
@@ -445,6 +468,10 @@
 		37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */; };
 		37C8BA5024813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */; };
 		37C8BA5124813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */; };
+		37C9B6F92507D57A0004647A /* BridgesConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886024FE7AE800576F61 /* BridgesConfigurationViewController.swift */; };
+		37C9B6FA2507D57B0004647A /* BridgesConfigurationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886024FE7AE800576F61 /* BridgesConfigurationViewController.swift */; };
+		37C9B6FB2507D57F0004647A /* CustomBridgesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 378EE9A2250126BE009615B5 /* CustomBridgesViewController.swift */; };
+		37C9B6FC2507D57F0004647A /* CustomBridgesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 378EE9A2250126BE009615B5 /* CustomBridgesViewController.swift */; };
 		37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
 		37CB9F8B2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
 		37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
@@ -741,6 +768,14 @@
 		3708D751247FF7D000807D72 /* BackupWalletSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupWalletSettingsViewController.swift; sourceTree = "<group>"; };
 		3708D755247FF81900807D72 /* SettingsParentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsParentViewController.swift; sourceTree = "<group>"; };
 		37098044249CD48A0004ED2E /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		370E886024FE7AE800576F61 /* BridgesConfigurationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgesConfigurationViewController.swift; sourceTree = "<group>"; };
+		370E886224FE974100576F61 /* OnionSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnionSettings.swift; sourceTree = "<group>"; };
+		370E887124FEA32600576F61 /* Ipv6Tester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ipv6Tester.swift; sourceTree = "<group>"; };
+		370E887624FEA54100576F61 /* NetworkTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NetworkTools.h; sourceTree = "<group>"; };
+		370E887724FEA54100576F61 /* NetworkTools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NetworkTools.m; sourceTree = "<group>"; };
+		370E887D24FEB91300576F61 /* IObfs4ProxyThread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IObfs4ProxyThread.h; sourceTree = "<group>"; };
+		370E887E24FEB91300576F61 /* IObfs4ProxyThread.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IObfs4ProxyThread.m; sourceTree = "<group>"; };
+		370E888324FEB92E00576F61 /* Iobfs4proxy.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Iobfs4proxy.framework; sourceTree = "<group>"; };
 		371189722488FF11004D0CE3 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		371A0817247290C000F97713 /* TransitionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionLabel.swift; sourceTree = "<group>"; };
 		3723A7A124AB57F4003382EB /* AESEncryptionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AESEncryptionTests.swift; sourceTree = "<group>"; };
@@ -765,6 +800,7 @@
 		37875E4324D85C4300C0595B /* LoadingGIFButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingGIFButton.swift; sourceTree = "<group>"; };
 		37875E4724D8787A00C0595B /* TxTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxTableViewModel.swift; sourceTree = "<group>"; };
 		378B4BCF2498F83000C00CCF /* PendingCircleAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PendingCircleAnimation.json; sourceTree = "<group>"; };
+		378EE9A2250126BE009615B5 /* CustomBridgesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBridgesViewController.swift; sourceTree = "<group>"; };
 		379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarWithSubtitle.swift; sourceTree = "<group>"; };
 		37ABB68F24781CE800F08163 /* UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
 		37ABB69324781F8600F08163 /* UILabelWithPadding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabelWithPadding.swift; sourceTree = "<group>"; };
@@ -848,6 +884,7 @@
 			files = (
 				00C520B1246971CA0077BF7F /* Tor.framework in Frameworks */,
 				00C520B0246971B30077BF7F /* libtari_wallet_ffi.a in Frameworks */,
+				370E888724FEB92E00576F61 /* Iobfs4proxy.framework in Frameworks */,
 				00C520AF2469716E0077BF7F /* libc++.1.tbd in Frameworks */,
 				00C520AD246971620077BF7F /* libsqlite3.tbd in Frameworks */,
 				051D513ABDE5D812B4978FFC /* Pods_MobileWalletNotificationService.framework in Frameworks */,
@@ -860,6 +897,7 @@
 			files = (
 				371189732488FF11004D0CE3 /* CloudKit.framework in Frameworks */,
 				4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */,
+				370E888424FEB92E00576F61 /* Iobfs4proxy.framework in Frameworks */,
 				00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */,
 				0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */,
 				4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */,
@@ -876,6 +914,7 @@
 				00DC2E242385559C00036DDC /* libsqlite3.tbd in Frameworks */,
 				00BCE48C240F9FA000B181F3 /* Tor.framework in Frameworks */,
 				83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */,
+				370E888524FEB92E00576F61 /* Iobfs4proxy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -887,6 +926,7 @@
 				00DC2E25238555A200036DDC /* libsqlite3.tbd in Frameworks */,
 				00BCE48D240F9FA100B181F3 /* Tor.framework in Frameworks */,
 				1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */,
+				370E888624FEB92E00576F61 /* Iobfs4proxy.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1117,8 +1157,11 @@
 		00BCE485240D5A9E00B181F3 /* Tor */ = {
 			isa = PBXGroup;
 			children = (
+				370E886A24FE9FF800576F61 /* Helpers */,
 				00BCE47E240D5A9700B181F3 /* OnionConnector.swift */,
 				00BCE47D240D5A9700B181F3 /* OnionManager.swift */,
+				370E886224FE974100576F61 /* OnionSettings.swift */,
+				370E886724FE9DDE00576F61 /* Resources */,
 			);
 			path = Tor;
 			sourceTree = "<group>";
@@ -1126,6 +1169,7 @@
 		00C185BC238953B40096984E /* Debug */ = {
 			isa = PBXGroup;
 			children = (
+				370E885D24FE6E9A00576F61 /* AdvancedSettings */,
 				00C185B8238943980096984E /* UIViewControllerDebugExtension.swift */,
 				00C185BD238953F60096984E /* DebugLogsTableViewController.swift */,
 			);
@@ -1303,6 +1347,7 @@
 		27F235021D9E2060A3CBB465 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				370E888324FEB92E00576F61 /* Iobfs4proxy.framework */,
 				371189722488FF11004D0CE3 /* CloudKit.framework */,
 				00C520AE2469716E0077BF7F /* libc++.1.tbd */,
 				00BCE486240D5C4100B181F3 /* Tor.framework */,
@@ -1348,6 +1393,34 @@
 				3723A7A524AC9389003382EB /* SecureBackupViewController.swift */,
 			);
 			path = BackUpSettings;
+			sourceTree = "<group>";
+		};
+		370E885D24FE6E9A00576F61 /* AdvancedSettings */ = {
+			isa = PBXGroup;
+			children = (
+				370E886024FE7AE800576F61 /* BridgesConfigurationViewController.swift */,
+				378EE9A2250126BE009615B5 /* CustomBridgesViewController.swift */,
+			);
+			path = AdvancedSettings;
+			sourceTree = "<group>";
+		};
+		370E886724FE9DDE00576F61 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		370E886A24FE9FF800576F61 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				370E887124FEA32600576F61 /* Ipv6Tester.swift */,
+				370E887D24FEB91300576F61 /* IObfs4ProxyThread.h */,
+				370E887E24FEB91300576F61 /* IObfs4ProxyThread.m */,
+				370E887624FEA54100576F61 /* NetworkTools.h */,
+				370E887724FEA54100576F61 /* NetworkTools.m */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		371A081624728FCB00F97713 /* TransitionUILabel */ = {
@@ -2095,10 +2168,12 @@
 				00C520C1246972140077BF7F /* TransportType.swift in Sources */,
 				00C520B52469720F0077BF7F /* TariSettings.swift in Sources */,
 				00C520BB2469720F0077BF7F /* Signature.swift in Sources */,
+				370E888924FEC1D700576F61 /* NetworkTools.m in Sources */,
 				00C520C4246972140077BF7F /* CommsConfig.swift in Sources */,
 				0072BF28247EB3A600BD28FB /* ReminderNotifications.swift in Sources */,
 				00C520C6246972140077BF7F /* WalletTestDataExtension.swift in Sources */,
 				00C520C8246972140077BF7F /* Contacts.swift in Sources */,
+				370E888224FEB91300576F61 /* IObfs4ProxyThread.m in Sources */,
 				00C520B82469720F0077BF7F /* Sequence.swift in Sources */,
 				00C520D02469721D0077BF7F /* TxProtocol.swift in Sources */,
 				009DFCB424741F9B0061DBC9 /* WalletTxs.swift in Sources */,
@@ -2110,6 +2185,7 @@
 				00C520BF2469720F0077BF7F /* UTXO.swift in Sources */,
 				00C520B62469720F0077BF7F /* TariLogger.swift in Sources */,
 				00C520CE246972180077BF7F /* PendingInboundTx.swift in Sources */,
+				370E888824FEC16F00576F61 /* Ipv6Tester.swift in Sources */,
 				00C520C3246972140077BF7F /* PrivateKey.swift in Sources */,
 				00C520BC2469720F0077BF7F /* KeyServer.swift in Sources */,
 				00C520B92469720F0077BF7F /* TariEventBus.swift in Sources */,
@@ -2122,8 +2198,10 @@
 				378B4BC52498E5A100C00CCF /* Migrations.swift in Sources */,
 				00C520CA246972180077BF7F /* CompletedTx.swift in Sources */,
 				00C520BE2469720F0077BF7F /* StorageCleanup.swift in Sources */,
+				370E886624FE97E200576F61 /* OnionSettings.swift in Sources */,
 				00C520C2246972140077BF7F /* ByteVector.swift in Sources */,
 				00C520CB246972180077BF7F /* CompletedTxs.swift in Sources */,
+				377A872E2506820800DC6C3F /* NSPointerArray+Extension.swift in Sources */,
 				00C520B42469720A0077BF7F /* OnionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2141,6 +2219,7 @@
 				00A6779E23743696001A853E /* TxViewController.swift in Sources */,
 				00BCE482240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				00D7BD8924349AE3009DD097 /* UIDevice.swift in Sources */,
+				370E887824FEA54100576F61 /* NetworkTools.m in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTx.swift in Sources */,
 				BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */,
 				37ABB69424781F8600F08163 /* UILabelWithPadding.swift in Sources */,
@@ -2169,6 +2248,7 @@
 				00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				37B48A7F24B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
+				370E887F24FEB91300576F61 /* IObfs4ProxyThread.m in Sources */,
 				00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				009DFCA72473E33F0061DBC9 /* DeepLinkParams.swift in Sources */,
 				373CCDBD2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
@@ -2187,7 +2267,9 @@
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00F53A642428E44700448466 /* StorageCleanup.swift in Sources */,
 				004997B32382ED68000A0B7D /* PendingInboundTx.swift in Sources */,
+				370E886324FE974100576F61 /* OnionSettings.swift in Sources */,
 				0087A1B223F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
+				378EE9A3250126BE009615B5 /* CustomBridgesViewController.swift in Sources */,
 				3745508A24B8886C006295C8 /* ICloudServiceMock.swift in Sources */,
 				0091D4A723ED879E004BF7F7 /* Signature.swift in Sources */,
 				0053873024065F6C00901A68 /* SlideView.swift in Sources */,
@@ -2212,6 +2294,7 @@
 				37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */,
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
 				372AECAB24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */,
+				370E886124FE7AE800576F61 /* BridgesConfigurationViewController.swift in Sources */,
 				00B4D6F8241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift in Sources */,
 				37D3D4ED251C970F00D24149 /* TxGifManager.swift in Sources */,
 				004277E723DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
@@ -2244,6 +2327,7 @@
 				004997AB2382E893000A0B7D /* PendingOutboundTxs.swift in Sources */,
 				37C8BA4B24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */,
 				0087A1AF23F4235400B89EE7 /* ContactCell.swift in Sources */,
+				370E887224FEA32600576F61 /* Ipv6Tester.swift in Sources */,
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
 				491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
@@ -2291,8 +2375,10 @@
 				BFE61E4924226A7E003DC99D /* NotificationManager.swift in Sources */,
 				37049271247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
 				37B5289524CB1E16008C80EB /* NetworkSpeedProvider.swift in Sources */,
+				37C9B6F92507D57A0004647A /* BridgesConfigurationViewController.swift in Sources */,
 				0091D4AC23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
+				370E888024FEB91300576F61 /* IObfs4ProxyThread.m in Sources */,
 				3723A7AC24ACD03E003382EB /* PasswordField.swift in Sources */,
 				37875E4924D8787A00C0595B /* TxTableViewModel.swift in Sources */,
 				00BCE483240D5A9700B181F3 /* OnionConnector.swift in Sources */,
@@ -2332,6 +2418,7 @@
 				3723A7A724AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				00A057B023D875840029C22A /* TariEventBus.swift in Sources */,
 				004277F423E0407900AE7BD9 /* TextButton.swift in Sources */,
+				37C9B6FB2507D57F0004647A /* CustomBridgesViewController.swift in Sources */,
 				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				371A0819247290C000F97713 /* TransitionLabel.swift in Sources */,
 				004277F023E03E1600AE7BD9 /* TxViewControllerExtension.swift in Sources */,
@@ -2347,6 +2434,7 @@
 				0087A1AD23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				376C62AF247574850091BB28 /* Animation+EnumInit.swift in Sources */,
 				00D9886A2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
+				370E887324FEA32600576F61 /* Ipv6Tester.swift in Sources */,
 				001F6CDD238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00BBD80F237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00FB43D924BC937D0031D53E /* BackupPrompts.swift in Sources */,
@@ -2372,6 +2460,7 @@
 				37AFE266245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				3723A7A224AB57F4003382EB /* AESEncryptionTests.swift in Sources */,
 				491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */,
+				370E886424FE97E100576F61 /* OnionSettings.swift in Sources */,
 				BFAB5D1223FDEA6A009E8563 /* EmojiIdView.swift in Sources */,
 				00BCE480240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TxTableViewCell.swift in Sources */,
@@ -2407,6 +2496,7 @@
 				00369D84242618A900BAB95B /* TariLogger.swift in Sources */,
 				619197D2BB78CBBC06B0F87E /* UTXO.swift in Sources */,
 				3776080A24B75900008167E8 /* Backup.swift in Sources */,
+				370E887924FEA54100576F61 /* NetworkTools.m in Sources */,
 				376B502424924BB700278ACC /* PendingView.swift in Sources */,
 				00B084C1249E471800F7B9BD /* EmojiSet.swift in Sources */,
 			);
@@ -2418,6 +2508,7 @@
 			files = (
 				00BBD81C237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				003DF41824C05EC900675A2C /* PartialBackup.swift in Sources */,
+				37C9B6FA2507D57B0004647A /* BridgesConfigurationViewController.swift in Sources */,
 				004277FD23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				00BBD818237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				009DFCA92473ECCB0061DBC9 /* DeepLinkParams.swift in Sources */,
@@ -2458,6 +2549,8 @@
 				37B48A8124B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
 				37EE285C2485649800335EDC /* WordsFlexView.swift in Sources */,
 				BFF1ED9F2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
+				370E886524FE97E100576F61 /* OnionSettings.swift in Sources */,
+				370E888124FEB91300576F61 /* IObfs4ProxyThread.m in Sources */,
 				379D27BB244F091B00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
 				376B502524924BB700278ACC /* PendingView.swift in Sources */,
@@ -2491,6 +2584,7 @@
 				00D9886B2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00A677A023743696001A853E /* TxViewController.swift in Sources */,
 				00230B0B23770CEA00F23E34 /* CALayer.swift in Sources */,
+				370E887A24FEA54100576F61 /* NetworkTools.m in Sources */,
 				37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
 				3723A7AD24ACD03E003382EB /* PasswordField.swift in Sources */,
 				37ABB69624781F8600F08163 /* UILabelWithPadding.swift in Sources */,
@@ -2508,6 +2602,7 @@
 				009DFCB324741F9B0061DBC9 /* WalletTxs.swift in Sources */,
 				004277E923DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				375AFDD12475387700C62CA1 /* WebBrowserViewController.swift in Sources */,
+				370E887424FEA32600576F61 /* Ipv6Tester.swift in Sources */,
 				00DD160C241CCE5B00C955B4 /* TariSettings.swift in Sources */,
 				00369D7F2422670400BAB95B /* DeepLinkManager.swift in Sources */,
 				004277F523E0407900AE7BD9 /* TextButton.swift in Sources */,
@@ -2522,6 +2617,7 @@
 				00A057B123D875840029C22A /* TariEventBus.swift in Sources */,
 				00BCE484240D5A9700B181F3 /* OnionConnector.swift in Sources */,
 				37B444A024890F6200592D92 /* ICloudBackup.swift in Sources */,
+				37C9B6FC2507D57F0004647A /* CustomBridgesViewController.swift in Sources */,
 				00F53A6A24290F7100448466 /* StorageCleanup.swift in Sources */,
 				0091D4A923ED879E004BF7F7 /* Signature.swift in Sources */,
 				37CFAA78248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */,
@@ -2659,6 +2755,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWalletNotificationService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2696,6 +2793,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWalletNotificationService/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2852,6 +2950,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2888,6 +2987,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWallet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2920,6 +3020,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
@@ -2954,6 +3055,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWalletTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
@@ -2986,6 +3088,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -3018,6 +3121,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWalletUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

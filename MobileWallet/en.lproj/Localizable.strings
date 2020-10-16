@@ -129,11 +129,14 @@
 
 "settings.done" = "Done";
 "settings.item.header.more" = "More";
+"settings.item.header.advanced_settings" = "Advanced Settings";
 "settings.item.header.security" = "Security";
 
 "settings.last_successful_backup.with_param" = "Last successful backup: %@";
 
 "settings.item.wallet_backups" = "Wallet Backups";
+"settings.item.bridge_configuration" = "Bridge Configuration";
+
 "settings.item.contribute_to_tari" = "Contribute to Tari Aurora";
 "settings.item.disclaimer" = "Disclaimer";
 "settings.item.privacy_policy" = "Privacy Policy";
@@ -299,9 +302,11 @@
 "navigation_bar.error.show_emoji.description" = "Failed to get Emoji ID from user's contact";
 
 /* Scan view */
+"scan_view.scan_qr_to_set_bridges" = "Scan a QR code to set custom bridges";
 "scan_view.scan_qr_to_send.with_param" = "Scan a Tari QR code to send %@ to the recipient.";
 "scan_view.error.title" = "Scanning error";
-"scan_view.error.description" = "Failed to import user's public key";
+"scan_view.error.public_key.description" = "Failed to import user's public key";
+"scan_view.error.bridges.description" = "Bridges from QR Code could not be decoded";
 
 /* RestoreWallet view */
 "restore_wallet.title" = "Restore Your Wallet";
@@ -383,3 +388,40 @@
 /* Loading gif button */
 "loading_gif_button.title.loading" = "Loading GIF";
 "loading_gif_button.title.retry" = "Retry loading GIF";
+
+/* AdvancedSettings view */
+"advanced_settings.title" = "Advanced Settings";
+"advanced_settings.item.base_node_adress_and_public_key" = "Base node address & public key";
+"advanced_settings.item.bridge_configuration" = "Bridge Configuration";
+
+"advanced_settings.item.header.baseNode" = "Wallet base node";
+"advanced_settings.item.header.torNode" = "Tor node";
+
+/* BridgesConfiguration view */
+"bridges_configuration.title" = "Bridges Configuration";
+
+"bridges_configuration.item.noBridges" = "No Bridges";
+"bridges_configuration.item.custom" = "Custom Bridges";
+
+"bridges_configuration.description.bridges" = "If you are in a country or using a connection that censors Tor, you might need to use bridges.";
+
+"bridges_configuration.connect" = "Connect";
+
+/* CustomBridges view */
+"custom_bridges.title" = "Custom Bridges";
+"custom_bridges.connect" = "Connect";
+
+"custom_bridges.item.paste_bridges" = "Paste Bridges";
+
+"custom_bridges.item.request_bridges_from_torproject" = "Request Bridges from torproject.org";
+"custom_bridges.item.scan_QR_code" = "Scan QR Code";
+"custom_bridges.item.upload_QR_code" = "Upload QR Code";
+
+"custom_bridges.error.image_decode.title" = "QR code decode error";
+"custom_bridges.error.image_decode.description" = "Failed to decode QR Code from image";
+
+/* Onion error */
+"Onion_Error.error.missing_cookie_file" = "Tor connection error. Missing cookie file";
+"Onion_Error.error.connectionError" = "Tor connection error. Please, check your network connection";
+"Onion_Error.error.invalid_bridges" = "Invalid Bridges. Returning to previous bridges configuration ...";
+"Onion_Error.error.title.onionError" = "Onion Error";

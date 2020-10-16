@@ -49,6 +49,15 @@ extension String {
     mutating func insertedSeparator(_ separatorString: String, atEvery n: Int) {
         self = insertSeparator(separatorString, atEvery: n)
     }
+
+    func findBridges() -> String? {
+        if let data = replacingOccurrences(of: "'", with: "\"").data(using: .utf8),
+            let newBridges = try? JSONSerialization.jsonObject(with: data, options: []) as? [String] {
+            return newBridges.joined(separator: "\n")
+        } else {
+            return nil
+        }
+    }
 }
 
 extension StringProtocol {

@@ -126,3 +126,29 @@ extension SettingsParentTableViewController {
         tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
     }
 }
+
+extension SettingsParentTableViewController: OnionConnectorObserver {
+    func onTorConnProgress(_ progress: Int) {
+        navigationBar.setProgress(Float(progress) / 100.0)
+    }
+
+    func onTorConnDifficulties(error: OnionError) {
+        UserFeedback.shared.error(title: error.failureReason ?? "Onion Error", description: error.localizedDescription, error: nil)
+    }
+
+    @objc func onTorConnFinished(_ configuration: BridgesConfuguration) {
+        OnionConnector.shared.removeObserver(self)
+        navigationBar.setProgress(1.0)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.navigationBar.progressView.isHidden = true
+            self.view.isUserInteractionEnabled = true
+            self.tableView.reloadData()
+        }
+    }
+
+    @objc func onTorConnDifficulties() {
+        OnionConnector.shared.removeObserver(self)
+        navigationBar.progressView.isHidden = true
+        view.isUserInteractionEnabled = true
+    }
+}
