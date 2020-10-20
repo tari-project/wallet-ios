@@ -5,6 +5,7 @@ PODS:
     - DeepDiff
     - libwebp
     - PINCache
+  - IPtProxy (0.1.0)
   - libwebp (1.1.0):
     - libwebp/demux (= 1.1.0)
     - libwebp/mux (= 1.1.0)
@@ -33,6 +34,7 @@ PODS:
 DEPENDENCIES:
   - FloatingPanel
   - Giphy
+  - IPtProxy (~> 0.1)
   - lottie-ios
   - MatomoTracker (~> 7.2)
   - ReachabilitySwift
@@ -47,6 +49,7 @@ SPEC REPOS:
     - DeepDiff
     - FloatingPanel
     - Giphy
+    - IPtProxy
     - libwebp
     - lottie-ios
     - MatomoTracker
@@ -72,6 +75,7 @@ SPEC CHECKSUMS:
   DeepDiff: e5ae6c50d0321568e4508cec5930b9f10bb293fc
   FloatingPanel: bb17fd6fc7ae519f877f7bd30f4f6115a78acf07
   Giphy: 41adc93795979bd5a7e5a4ad27f52107d824fb1f
+  IPtProxy: 15e1c3b6d828bc4e7dadaaeedc7ddf1377a48ca8
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
   MatomoTracker: 246b6b0693cf39b356134dec7561f719d3538b96
@@ -84,6 +88,6 @@ SPEC CHECKSUMS:
   SwiftLint: 4154893c73a4c52d6240195507eb7a3e3c64087e
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 64a9adfe5c1b44618fd68ee7d55c8b61a038cc99
+PODFILE CHECKSUM: f0f3b804cc4d16c604ff1657bba941797496adf7
 
 COCOAPODS: 1.9.2

@@ -16,6 +16,7 @@ target 'MobileWallet' do
   pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '5.0.0'
   pod 'SwiftKeychainWrapper'
   pod 'Giphy'
+  pod 'IPtProxy', '~> 0.1'
   
   target 'MobileWalletTests' do
     inherit! :search_paths

@@ -9,6 +9,7 @@
 import Foundation
 import Reachability
 import Tor
+import IPtProxy
 
 enum OnionError: Error {
     case connectionError
@@ -127,7 +128,6 @@ class OnionManager: NSObject {
     
     var state = TorState.none
     private var torController: TorController?
-    private let iObfs4ProxyThread = IObfs4ProxyThread()
     private var torThread: TorThread?
     private var initRetry: DispatchWorkItem?
     private var bridgesType = OnionSettings.currentlyUsedBridgesConfiguration.bridgesType
@@ -171,14 +171,7 @@ class OnionManager: NSObject {
     }
     
     func startIObfs4Proxy() {
-        if !iObfs4ProxyThread.isExecuting && !iObfs4ProxyThread.isCancelled && !iObfs4ProxyThread.isFinished {
-            // Set the needed environment variables, so ObfsProxy can be used stand-alone.
-            setenv("TOR_PT_MANAGED_TRANSPORT_VER", "1", 0)
-            setenv("TOR_PT_CLIENT_TRANSPORTS", "obfs4,meek_lite,obfs2,obfs3,scramblesuit", 0)
-            setenv("TOR_PT_STATE_LOCATION", FileManager.default.temporaryDirectory.appendingPathComponent("pt_state").path, 0)
-
-            iObfs4ProxyThread.start()
-        }
+        IPtProxyStartObfs4Proxy()
     }
 
     func startTor(delegate: OnionManagerDelegate?) {
