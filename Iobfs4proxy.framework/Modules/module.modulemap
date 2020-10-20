@@ -1,8 +1,0 @@
-framework module "Iobfs4proxy" {
-	header "ref.h"
-    header "GoIobfs4proxy.h"
-    header "GoUniverse.h"
-    header "Iobfs4proxy.h"
-
-    export *
-}
