@@ -180,7 +180,7 @@ class ICloudBackup: NSObject {
         try? startObserveReachability()
 
         if FileManager.default.ubiquityIdentityToken == nil {
-            iCloudBackupsIsOn = false
+            UserDefaults.Key.iCloudBackupsIsOn.set(false)
         }
     }
 

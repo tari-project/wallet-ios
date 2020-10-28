@@ -347,6 +347,22 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertThrowsError(try MicroTari(decimalValue: 0.123456789))
     }
     
+    func testKeyValueStorage() {
+        TariLogger.info("TEST KEY VALUE STORAGE")
+        let (wallet, _) = createWallet(privateHex: nil)
+        // random key
+        let key = "7SXVVFERUP"
+        let value = "DQORS7M0EO_⚽🧣👂🤝🏧_X6IZFL5OG3"
+        // store value
+        XCTAssert(try wallet.setKeyValue(key: key, value: value))
+        // get value
+        XCTAssertEqual(value, try wallet.getKeyValue(key: key))
+        // clear value
+        XCTAssert(try wallet.removeKeyValue(key: key))
+        // value cleared, "get" should throw error
+        XCTAssertThrowsError(try wallet.getKeyValue(key: key))
+    }
+    
     func restoreWallet(completion: @escaping ((_ wallet: Wallet?, _ error: Error?) -> Void)) {
         ICloudBackup.shared.restoreWallet(password: backupPassword, completion: { error in
             var commsConfig: CommsConfig?
