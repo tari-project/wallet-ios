@@ -85,8 +85,17 @@ class MobileWalletTests: XCTestCase {
         /*
          Today Date Test
         */
-        XCTAssertEqual(Date().addingTimeInterval(-120).relativeDayFromToday(), "2m ago")
-        XCTAssertEqual(Date().addingTimeInterval(-(60 * 60 * 2)).relativeDayFromToday(), "2h ago")
+        let calendar = NSCalendar.autoupdatingCurrent
+        let twoMinutesAgo = Date().addingTimeInterval(-120)
+        XCTAssertEqual(
+            twoMinutesAgo.relativeDayFromToday(),
+            calendar.isDateInYesterday(twoMinutesAgo) ? "Yesterday" : "2m ago"
+        )
+        let twoHoursAgo = Date().addingTimeInterval(-(60 * 60 * 2))
+        XCTAssertEqual(
+            twoHoursAgo.relativeDayFromToday(),
+            calendar.isDateInYesterday(twoHoursAgo) ? "Yesterday" : "2h ago"
+        )
 
         /*
          Yesterday Date Test

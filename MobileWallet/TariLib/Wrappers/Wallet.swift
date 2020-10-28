@@ -600,6 +600,53 @@ class Wallet {
         return result
     }
 
+    func setKeyValue(key: String, value: String) throws -> Bool {
+        var errorCode: Int32 = -1
+        let keyPointer = (key as NSString).utf8String
+        let valuePointer = (value as NSString).utf8String
+
+        let result = withUnsafeMutablePointer(to: &errorCode) {
+            error in
+            wallet_set_key_value(ptr, keyPointer, valuePointer, error)
+        }
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+        return result
+    }
+
+    func getKeyValue(key: String) throws -> String {
+        var errorCode: Int32 = -1
+        let keyPointer = (key as NSString).utf8String
+        let resultPtr = withUnsafeMutablePointer(to: &errorCode) {
+            error in
+            wallet_get_value(ptr, keyPointer, error)
+        }
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+
+        let result = String(cString: resultPtr!)
+        let mutable = UnsafeMutablePointer<Int8>(mutating: resultPtr!)
+        string_destroy(mutable)
+
+        return result
+    }
+
+    func removeKeyValue(key: String) throws -> Bool {
+        var errorCode: Int32 = -1
+        let keyPointer = (key as NSString).utf8String
+
+        let result = withUnsafeMutablePointer(to: &errorCode) {
+            error in
+            wallet_clear_value(ptr, keyPointer, error)
+        }
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+        return result
+    }
+
     deinit {
         TariLogger.warn("Wallet destroy")
         wallet_destroy(ptr)

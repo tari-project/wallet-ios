@@ -289,7 +289,6 @@ class TariLib {
 
         tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
         try setBasenode(syncAfterSetting: false)
-        //try setBasenode(try BaseNode(TariSettings.shared.defaultBaseNodePool["t-tbn-seoul"]!))
 
         TariEventBus.postToMainThread(.walletServiceStarted)
 
