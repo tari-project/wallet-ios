@@ -34,13 +34,15 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>139</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Tari needs access to the camera to scan the QR</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Enable Face ID to protect your wallet</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Tari needs permission to write media to photo library</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.com.tari.wallet</key>
@@ -138,7 +140,5 @@
 	<string>Light</string>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Tari needs permission to write media to photo library</string>
 </dict>
 </plist>
