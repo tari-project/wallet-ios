@@ -502,6 +502,9 @@
 		619197D2BB78CBBC06B0F87E /* UTXO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619190C6EBD050DC647D1D7B /* UTXO.swift */; };
 		619198F3E20DFABEB23F63FE /* UTXO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619190C6EBD050DC647D1D7B /* UTXO.swift */; };
 		83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */; };
+		A0779C612552C1AF00614EF3 /* DeleteWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */; };
+		A0779C672552C1BB00614EF3 /* DeleteWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */; };
+		A0779C6D2552C1BC00614EF3 /* DeleteWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */; };
 		BF0A7766241EEA0A00861A3E /* FaceID.json in Resources */ = {isa = PBXBuildFile; fileRef = BF0A7765241EEA0A00861A3E /* FaceID.json */; };
 		BF0A7767241EEA0A00861A3E /* FaceID.json in Resources */ = {isa = PBXBuildFile; fileRef = BF0A7765241EEA0A00861A3E /* FaceID.json */; };
 		BF0A7768241EEA0A00861A3E /* FaceID.json in Resources */ = {isa = PBXBuildFile; fileRef = BF0A7765241EEA0A00861A3E /* FaceID.json */; };
@@ -826,6 +829,7 @@
 		619190C6EBD050DC647D1D7B /* UTXO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UTXO.swift; sourceTree = "<group>"; };
 		867662CACBB1C47B665EBA55 /* Pods-MobileWalletTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWalletTests.release.xcconfig"; path = "Target Support Files/Pods-MobileWalletTests/Pods-MobileWalletTests.release.xcconfig"; sourceTree = "<group>"; };
 		9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteWalletViewController.swift; sourceTree = "<group>"; };
 		BF0A7765241EEA0A00861A3E /* FaceID.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = FaceID.json; sourceTree = "<group>"; };
 		BF0A7799241F904D00861A3E /* faceId@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "faceId@3x.png"; sourceTree = "<group>"; };
 		BF0A779A241F904D00861A3E /* faceId.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = faceId.png; sourceTree = "<group>"; };
@@ -1360,6 +1364,7 @@
 		3708D748247FCF0700807D72 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				A0779C5F2552C19500614EF3 /* AdvancedSettings */,
 				3708D755247FF81900807D72 /* SettingsParentViewController.swift */,
 				37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */,
 				3708D749247FCF2300807D72 /* SettingsViewController.swift */,
@@ -1553,6 +1558,14 @@
 				FDF69D90CBECD134CF2006E4 /* Pods-MobileWalletNotificationService.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		A0779C5F2552C19500614EF3 /* AdvancedSettings */ = {
+			isa = PBXGroup;
+			children = (
+				A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */,
+			);
+			path = AdvancedSettings;
 			sourceTree = "<group>";
 		};
 		BF0A7764241EE9E400861A3E /* FaceIdAnimation */ = {
@@ -2271,6 +2284,7 @@
 				37049270247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
 				00947CC723D1A35200526DD5 /* TxsProtocol.swift in Sources */,
 				004277EF23E03E1600AE7BD9 /* TxViewControllerExtension.swift in Sources */,
+				A0779C612552C1AF00614EF3 /* DeleteWalletViewController.swift in Sources */,
 				37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */,
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
 				372AECAB24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */,
@@ -2443,6 +2457,7 @@
 				BFAB5D1223FDEA6A009E8563 /* EmojiIdView.swift in Sources */,
 				00BCE480240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				00E2BCAA236AB28200C2A105 /* TxTableViewCell.swift in Sources */,
+				A0779C672552C1BB00614EF3 /* DeleteWalletViewController.swift in Sources */,
 				0087A1AA23F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				005387252405136700901A68 /* AddNoteViewController.swift in Sources */,
 				009BF8AD237ABB4700C02E44 /* TariLib.swift in Sources */,
@@ -2565,6 +2580,7 @@
 				370E887A24FEA54100576F61 /* NetworkTools.m in Sources */,
 				37CB9F8C2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
 				3723A7AD24ACD03E003382EB /* PasswordField.swift in Sources */,
+				A0779C6D2552C1BC00614EF3 /* DeleteWalletViewController.swift in Sources */,
 				37ABB69624781F8600F08163 /* UILabelWithPadding.swift in Sources */,
 				375DB1E2246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				376C62B0247574850091BB28 /* Animation+EnumInit.swift in Sources */,
@@ -2727,7 +2743,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 152;
+				CURRENT_PROJECT_VERSION = 153;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2765,7 +2781,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 152;
+				CURRENT_PROJECT_VERSION = 153;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2922,7 +2938,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 152;
+				CURRENT_PROJECT_VERSION = 153;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2959,7 +2975,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWallet/Tari.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 152;
+				CURRENT_PROJECT_VERSION = 153;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (

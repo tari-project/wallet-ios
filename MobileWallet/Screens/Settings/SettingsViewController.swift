@@ -46,28 +46,26 @@ class SettingsViewController: SettingsParentTableViewController {
 
     private enum Section: Int, CaseIterable {
         case security
-        case advancedSettings
         case more
+        case advancedSettings
     }
 
     private enum SettingsHeaderTitle: CaseIterable {
         case securityHeader
-        case advancedSettingsHeader
         case moreHeader
+        case advancedSettingsHeader
 
         var rawValue: String {
             switch self {
             case .securityHeader: return NSLocalizedString("settings.item.header.security", comment: "Settings view")
-            case .advancedSettingsHeader: return NSLocalizedString("settings.item.header.advanced_settings", comment: "Settings view")
             case .moreHeader: return NSLocalizedString("settings.item.header.more", comment: "Settings view")
+            case .advancedSettingsHeader: return NSLocalizedString("settings.item.header.advanced_settings", comment: "Settings view")
             }
         }
     }
 
     private enum SettingsItemTitle: CaseIterable {
         case backUpWallet
-
-        case advancedSettings
 
         case reportBug
         case visitTari
@@ -76,11 +74,15 @@ class SettingsViewController: SettingsParentTableViewController {
         case privacyPolicy
         case disclaimer
 
+        case torBridgeConfiguration
+        case deleteWallet
+
         var rawValue: String {
             switch self {
             case .backUpWallet: return NSLocalizedString("settings.item.wallet_backups", comment: "Settings view")
 
-            case .advancedSettings:return NSLocalizedString("settings.item.bridge_configuration", comment: "Settings view")
+            case .torBridgeConfiguration: return NSLocalizedString("settings.item.bridge_configuration", comment: "Settings view")
+            case .deleteWallet: return NSLocalizedString("settings.item.delete_wallet", comment: "Settings view")
 
             case .reportBug: return NSLocalizedString("settings.item.report_bug", comment: "Settings view")
             case .visitTari: return NSLocalizedString("settings.item.visit_tari", comment: "Settings view")
@@ -95,7 +97,12 @@ class SettingsViewController: SettingsParentTableViewController {
     private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)]
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.advancedSettings.rawValue)]
+        SystemMenuTableViewCellItem(title: SettingsItemTitle.torBridgeConfiguration.rawValue),
+        SystemMenuTableViewCellItem(
+            title: SettingsItemTitle.deleteWallet.rawValue,
+            isDestructive: true
+        )
+    ]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: SettingsItemTitle.reportBug.rawValue),
@@ -127,15 +134,20 @@ class SettingsViewController: SettingsParentTableViewController {
         checkClipboardForBaseNode()
     }
 
-    func onBackupWalletAction() {
+    private func onBackupWalletAction() {
         localAuth.authenticateUser(reason: .userVerification, showFailedDialog: false) { [weak self] in
             self?.navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)
         }
     }
 
-    func onBridgeConfigurationAction() {
+    private func onBridgeConfigurationAction() {
         let bridgesConfigurationViewController = BridgesConfigurationViewController()
         navigationController?.pushViewController(bridgesConfigurationViewController, animated: true)
+    }
+
+    private func onDeleteWalletAction() {
+        let deleteWalletViewController = DeleteWalletViewController()
+        navigationController?.pushViewController(deleteWalletViewController, animated: true)
     }
 
     private func onLinkAction(indexPath: IndexPath) {
@@ -155,18 +167,22 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         guard let section = Section(rawValue: section) else { return 0 }
         switch section {
         case .security: return securitySectionItems.count
-        case .advancedSettings: return advancedSettingsSectionItems.count
         case .more: return moreSectionItems.count
+        case .advancedSettings: return advancedSettingsSectionItems.count
         }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SystemMenuTableViewCell.self), for: indexPath) as! SystemMenuTableViewCell
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: SystemMenuTableViewCell.self),
+            for: indexPath
+        ) as! SystemMenuTableViewCell
 
         guard let section = Section(rawValue: indexPath.section) else { return cell }
         switch section {
         case .security: cell.configure(securitySectionItems[indexPath.row])
-        case .advancedSettings: cell.configure(advancedSettingsSectionItems[indexPath.row])
+        case .advancedSettings:
+            cell.configure(advancedSettingsSectionItems[indexPath.row])
         case .more: cell.configure(moreSectionItems[indexPath.row])
         }
 
@@ -182,9 +198,9 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         let sec = Section(rawValue: section)
 
         switch sec {
-        case .security, .more:
+        case .security, .advancedSettings:
             header.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        case .advancedSettings:
+        case .more:
             let lastSuccessful = iCloudBackup.lastBackup != nil && !iCloudBackup.inProgress && !iCloudBackup.isLastBackupFailed
             if lastSuccessful, let lastBackupString = ICloudBackup.shared.lastBackup?.dateCreationString {
                 header.heightAnchor.constraint(equalToConstant: 101).isActive = true
@@ -233,13 +249,16 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         return 65.0
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-
-        guard let section = Section(rawValue: indexPath.section) else { return }
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        guard let section = Section(rawValue: indexPath.section) else { return nil }
         switch section {
         case .security: onBackupWalletAction()
-        case .advancedSettings: onBridgeConfigurationAction()
+        case .advancedSettings:
+            if indexPath.row == 0 {
+                onBridgeConfigurationAction()
+            } else if indexPath.row == 1 {
+                onDeleteWalletAction()
+            }
         case .more:
             if SettingsItemTitle.allCases[indexPath.row + indexPath.section] == .reportBug {
                 onSendFeedback()
@@ -247,6 +266,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 onLinkAction(indexPath: indexPath)
             }
         }
+        return nil
     }
 }
 

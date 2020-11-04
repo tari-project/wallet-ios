@@ -42,7 +42,7 @@ import UIKit
 
 class AlwaysPoppableNavigationController: UINavigationController {
 
-    private weak var alwaysPoppableDelegate: AlwaysPoppableDelegate!
+    private weak var alwaysPoppableDelegate: AlwaysPoppableDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,6 +53,10 @@ class AlwaysPoppableNavigationController: UINavigationController {
 
     override var childForStatusBarStyle: UIViewController? {
         return topViewController?.childForStatusBarStyle ?? topViewController
+    }
+
+    deinit {
+        alwaysPoppableDelegate = nil
     }
 }
 

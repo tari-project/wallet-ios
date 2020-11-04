@@ -54,6 +54,10 @@ class TariLib {
 
     static let logFilePrefix = "log"
 
+    enum KeyValueStorageKeys: String {
+        case network = "SU7FM2O6Q3BU4XVN7HDD"
+    }
+
     lazy var logFilePath: String = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
@@ -93,7 +97,10 @@ class TariLib {
 
     var walletExists: Bool {
         do {
-            let fileExists = try TariSettings.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true).checkResourceIsReachable()
+            let fileExists = try TariSettings.storageDirectory.appendingPathComponent(
+                TariLib.databaseName,
+                isDirectory: true
+            ).checkResourceIsReachable()
             return fileExists
         } catch {
             TariLogger.warn("Database path not reachable. Assuming wallet doesn't exist.", error: error)
@@ -326,8 +333,17 @@ class TariLib {
     }
 
     func createNewWallet() throws {
-        try FileManager.default.createDirectory(at: databaseDirectory, withIntermediateDirectories: true, attributes: nil)
+        try FileManager.default.createDirectory(
+            at: databaseDirectory,
+            withIntermediateDirectories: true,
+            attributes: nil
+        )
         try startWalletService()
+        // persist network
+        try _ = TariLib.shared.tariWallet?.setKeyValue(
+            key: KeyValueStorageKeys.network.rawValue,
+            value: TariSettings.shared.network.rawValue
+        )
     }
 
     func restartWalletIfStopped() {
@@ -371,6 +387,24 @@ class TariLib {
         tariWallet = nil
         walletIsStopped = true
         TariEventBus.unregister(self)
+    }
+
+    func deleteWallet() {
+        stopWallet()
+        do {
+            // delete database files
+            try FileManager.default.removeItem(at: databaseDirectory)
+            // delete log files
+            for logFile in allLogFiles {
+                try FileManager.default.removeItem(at: logFile)
+            }
+            // remove all user defaults
+            let domain = Bundle.main.bundleIdentifier!
+            UserDefaults.standard.removePersistentDomain(forName: domain)
+            UserDefaults.standard.synchronize()
+        } catch {
+            fatalError()
+        }
     }
 
     func waitIfWalletIsRestarting(completion: @escaping ((_ success: Bool?) -> Void)) {

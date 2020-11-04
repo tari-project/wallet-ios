@@ -128,14 +128,24 @@ class UserFeedback {
         TariLogger.verbose("User success feedback: title=\(title)")
     }
 
-    func callToAction(title: String, boldedTitle: String? = nil, description: String, actionTitle: String, cancelTitle: String, onAction: @escaping () -> Void, onCancel: (() -> Void)? = nil) {
+    func callToAction(title: String,
+                      boldedTitle: String? = nil,
+                      description: String,
+                      descriptionBoldParts: [String]? = nil,
+                      actionTitle: String,
+                      cancelTitle: String,
+                      isDestructive: Bool = false,
+                      onAction: @escaping () -> Void,
+                      onCancel: (() -> Void)? = nil) {
         let ctaFeedbackView = FeedbackView()
         ctaFeedbackView.setupCallToAction(
             title: title,
             boldedTitle: boldedTitle,
             description: description,
+            descriptionBoldParts: descriptionBoldParts,
             cancelTitle: cancelTitle,
             actionTitle: actionTitle,
+            isDestructive: isDestructive,
             onClose: {
                 SwiftEntryKit.dismiss()
                 onCancel?()
@@ -148,7 +158,7 @@ class UserFeedback {
         var attributes = defaultAttributes
         attributes.displayDuration = .infinity
         attributes.hapticFeedbackType = .success
-        attributes.screenInteraction = .absorbTouches
+        attributes.screenInteraction = isDestructive ? .dismiss : .absorbTouches
 
         SwiftEntryKit.display(entry: ctaFeedbackView, using: attributes)
         closeKeyboard()

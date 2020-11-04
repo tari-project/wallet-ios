@@ -47,7 +47,12 @@ class SettingsParentTableViewController: SettingsParentViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: UIApplication.willEnterForegroundNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(willEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -112,7 +117,10 @@ extension SettingsParentTableViewController {
     }
 
     func setupTableView() {
-        tableView.register(SystemMenuTableViewCell.self, forCellReuseIdentifier: String(describing: SystemMenuTableViewCell.self))
+        tableView.register(
+            SystemMenuTableViewCell.self,
+            forCellReuseIdentifier: String(describing: SystemMenuTableViewCell.self)
+        )
         tableView.backgroundColor = .clear
         tableView.showsVerticalScrollIndicator = false
         tableView.separatorColor = Theme.shared.colors.settingsTableStyleBackground

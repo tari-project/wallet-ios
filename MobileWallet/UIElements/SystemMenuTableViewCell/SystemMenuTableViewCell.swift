@@ -52,13 +52,15 @@ class SystemMenuTableViewCellItem: NSObject {
     private(set) var disableCellInProgress = true
     private(set) var hasSwitch = false
     private(set) var hasArrow = true
+    private(set) var isDestructive = false
 
     init(title: String,
          mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none,
          hasArrow: Bool = true,
          disableCellInProgress: Bool = true,
          hasSwitch: Bool = false,
-         switchIsOn: Bool = false) {
+         switchIsOn: Bool = false,
+         isDestructive: Bool = false) {
 
         self.title = title
         self.mark = mark
@@ -66,6 +68,7 @@ class SystemMenuTableViewCellItem: NSObject {
         self.disableCellInProgress = disableCellInProgress
         self.hasSwitch = hasSwitch
         self.isSwitchIsOn = switchIsOn
+        self.isDestructive = isDestructive
         super.init()
     }
 }
@@ -164,7 +167,7 @@ class SystemMenuTableViewCell: UITableViewCell {
         item?.isSwitchIsOn = sender.isOn
     }
 
-    func configure(_ item: SystemMenuTableViewCellItem) {
+    func configure(_ item: SystemMenuTableViewCellItem, isDestructive: Bool = false) {
         self.item = item
 
         if !item.hasArrow {
@@ -176,6 +179,10 @@ class SystemMenuTableViewCell: UITableViewCell {
         switcher.isHidden = !item.hasSwitch
         arrow.isHidden = item.hasSwitch
         titleLabel.text = item.title
+        if item.isDestructive {
+            titleLabel.textColor = Theme.shared.colors.warning
+            arrow.image = Theme.shared.images.forwardArrowRed
+        }
         disableCellInProgress = item.disableCellInProgress
         mark = item.mark
         markDescription = item.markDescription
