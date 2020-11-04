@@ -128,6 +128,53 @@ class HomeViewController: UIViewController {
 
         checkImportSecondUtxo()
         checkBackupPrompt(delay: 3)
+        checkIncompatibleNetwork()
+    }
+
+    private func checkIncompatibleNetwork() {
+        do {
+            let persistedNetwork = try TariLib.shared.tariWallet?.getKeyValue(
+                key: TariLib.KeyValueStorageKeys.network.rawValue
+            )
+            if TariNetwork(rawValue: persistedNetwork ?? "") != TariSettings.shared.network {
+                // incompatible network
+                displayIncompatibleNetworkDialog()
+            }
+        } catch { // value not persisted - a pre-0.5.0 installation
+            displayIncompatibleNetworkDialog()
+        }
+    }
+
+    private func displayIncompatibleNetworkDialog() {
+        UserFeedback.shared.callToAction(
+            title: NSLocalizedString("incompatible_network.title", comment: ""),
+            description: NSLocalizedString("incompatible_network.description", comment: ""),
+            descriptionBoldParts: [
+                NSLocalizedString("incompatible_network.description.bold_part_1", comment: ""),
+                NSLocalizedString("incompatible_network.description.bold_part_2", comment: "")
+            ],
+            actionTitle: NSLocalizedString("incompatible_network.confirm", comment: ""),
+            cancelTitle: NSLocalizedString("incompatible_network.cancel", comment: ""),
+            onAction: {
+                [weak self] in
+                self?.deleteWallet()
+            }
+        )
+    }
+
+    private func deleteWallet() {
+        TariLib.shared.deleteWallet()
+        BackupScheduler.shared.stopObserveEvents()
+        // go back to splash screen
+        let navigationController = AlwaysPoppableNavigationController(
+            rootViewController: SplashViewController()
+        )
+        navigationController.setNavigationBarHidden(
+            true,
+            animated: false
+        )
+        UIApplication.shared.windows.first?.rootViewController = navigationController
+        UIApplication.shared.windows.first?.makeKeyAndVisible()
     }
 
     override func viewDidDisappear(_ animated: Bool) {

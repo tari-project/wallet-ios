@@ -63,21 +63,6 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         self.navigationController?.pushViewController(logsVC, animated: false)
     }
 
-    private func deleteWallet() {
-        let alert = UIAlertController(title: "Delete wallet", message: "This will erase all data and close the app.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Erase", style: .destructive, handler: { (_)in
-            wipeApp()
-
-            UIControl().sendAction(#selector(NSXPCConnection.suspend), to: UIApplication.shared, for: nil)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                exit(0)
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-
-        present(alert, animated: true, completion: nil)
-    }
-
     private func getEmailFooter() -> String {
         var phoneDetails: [(key: String, value: String)] = []
 
@@ -246,7 +231,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
         else { return }
 
-        let title = "\(TariSettings.shared.network.networkDisplayName.uppercased()) v\(version) (\(build))"
+        let title = "\(TariSettings.shared.network.rawValue.uppercased()) v\(version) (b\(build))"
 
         UIViewController.debugMenuAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         guard let alert = UIViewController.debugMenuAlert else {
@@ -282,18 +267,6 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
                     UIViewController.debugMenuAlert = nil
                     UserFeedback.shared.showDebugConnectionStatus()
             }))
-
-        if TariSettings.shared.environment == .debug {
-            alert.addAction(
-                UIAlertAction(
-                    title: "Delete wallet",
-                    style: .destructive,
-                    handler: {
-                        (_) in
-                        UIViewController.debugMenuAlert = nil
-                        self.deleteWallet()
-                }))
-        }
 
         alert.addAction(
             UIAlertAction(

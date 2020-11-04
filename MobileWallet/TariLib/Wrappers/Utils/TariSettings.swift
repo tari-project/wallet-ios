@@ -44,6 +44,7 @@ import SwiftKeychainWrapper
 enum TariNetwork: String {
     case mainnet = "mainnet"
     case rincewind = "rincewind"
+    case ridcully = "ridcully"
 
     var currencyDisplayTicker: String {
         switch self {
@@ -51,15 +52,6 @@ enum TariNetwork: String {
             return "tXTR"
         default:
             return "XTR"
-        }
-    }
-
-    var networkDisplayName: String {
-        switch self {
-        case .rincewind:
-            return "testnet"
-        default:
-            return "mainnet"
         }
     }
 }
@@ -73,7 +65,7 @@ enum AppEnvironment {
 struct TariSettings {
     static let shared = TariSettings()
 
-    let network: TariNetwork = .rincewind //TODO this will come from a build config
+    let network: TariNetwork = .ridcully //TODO this will come from a build config
     let discoveryTimeoutSec: UInt64 = 20
     let deeplinkURI = "tari"
 
@@ -131,7 +123,9 @@ struct TariSettings {
     )
     static let groupIndentifier = "group.com.tari.wallet"
     static let groupUserDefaults: UserDefaults = UserDefaults(suiteName: groupIndentifier)!
-    static let storageDirectory: URL = FileManager.default.containerURL( forSecurityApplicationGroupIdentifier: groupIndentifier)!
+    static let storageDirectory: URL = FileManager.default.containerURL(
+        forSecurityApplicationGroupIdentifier: groupIndentifier
+    )!
     static let testStoragePath: String = {
         let folderPath = storageDirectory.appendingPathComponent("test_tari_wallet").path
         if FileManager.default.fileExists(atPath: folderPath) {

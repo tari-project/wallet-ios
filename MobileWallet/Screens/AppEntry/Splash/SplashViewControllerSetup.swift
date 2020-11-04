@@ -263,7 +263,7 @@ extension SplashViewController {
         versionLabel.textColor = Theme.shared.colors.splashVersionLabel
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
             let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-            versionLabel.text = "\(TariSettings.shared.network.networkDisplayName.uppercased()) v\(version) (\(build))"
+            versionLabel.text = "\(TariSettings.shared.network.rawValue.uppercased()) v\(version) (b\(build))"
         }
 
         generalContainer.addSubview(versionLabel)

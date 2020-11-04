@@ -43,6 +43,7 @@ import Lottie
 
 enum ActionButtonVariation {
     case normal
+    case destructive
     case raised //Like normal but with a shadow
     case loading
     case disabled
@@ -142,25 +143,24 @@ class ActionButton: UIButton {
     private func updateStyle() {
         removeStyle()
         switch variation {
-            case .normal:
-                isEnabled = true
-                applyGradient()
-                return
-            case .raised:
-                isEnabled = true
-                applyShadow()
-                applyGradient()
-                return
-            case .loading:
-                isEnabled = false
-                titleLabel?.isHidden = true
-                applyGradient()
-                setupPendingAnimation()
-                return
-            case .disabled:
-                isEnabled = false
-                backgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled
-                return
+        case .normal:
+            isEnabled = true
+            applyGradient()
+        case .destructive:
+            isEnabled = true
+            backgroundColor = Theme.shared.colors.warning
+        case .raised:
+            isEnabled = true
+            applyShadow()
+            applyGradient()
+        case .loading:
+            isEnabled = false
+            titleLabel?.isHidden = true
+            applyGradient()
+            setupPendingAnimation()
+        case .disabled:
+            isEnabled = false
+            backgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled
         }
     }
 

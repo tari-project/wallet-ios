@@ -50,13 +50,3 @@ func acceptPermissionsPromptIfRequired() {
         permissionsOkayButton.tap()
     }
 }
-
-//AppDelegate accepts the argument and deletes everything
-func wipeAppContents(_ app: XCUIApplication) {
-    app.launchArguments = ["-wipe-app"]
-    app.launch()
-    print("Wiping app contents")
-    sleep(2)
-    app.terminate()
-    app.launchArguments = []
-}

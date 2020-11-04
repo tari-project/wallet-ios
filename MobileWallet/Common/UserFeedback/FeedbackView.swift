@@ -112,8 +112,10 @@ class FeedbackView: UIView {
         closeButton.addTarget(self, action: #selector(onCloseButtonPressed), for: .touchUpInside)
     }
 
-    private func setupCallToActionButton(_ action: Selector) {
+    private func setupCallToActionButton(isDestructive: Bool = false,
+                                         _ action: Selector) {
         callToActionButton.translatesAutoresizingMaskIntoConstraints = false
+        if isDestructive { callToActionButton.variation = .destructive }
         addSubview(callToActionButton)
         callToActionButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         callToActionButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 160).isActive = true
@@ -151,7 +153,8 @@ class FeedbackView: UIView {
         }
     }
 
-    private func setDescription(_ description: String) {
+    private func setDescription(_ description: String,
+                                boldParts: [String]? = nil) {
         let attributedDescription = NSMutableAttributedString(string: description)
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .center
@@ -160,7 +163,17 @@ class FeedbackView: UIView {
             value: paragraphStyle,
             range: NSRange(location: 0, length: attributedDescription.length)
         )
-
+        // add bold parts if any
+        for boldPart in boldParts ?? [] {
+            if let startIndex = description.indexDistance(of: boldPart) {
+                let range = NSRange(location: startIndex, length: boldPart.count)
+                attributedDescription.addAttribute(
+                    .font,
+                    value: Theme.shared.fonts.feedbackPopupDescriptionBold,
+                    range: range
+                )
+            }
+        }
         descriptionLabel.attributedText = attributedDescription
     }
 
@@ -214,14 +227,13 @@ class FeedbackView: UIView {
         title: String,
         boldedTitle: String? = nil,
         description: String,
+        descriptionBoldParts: [String]? = nil,
         cancelTitle: String,
         actionTitle: String,
+        isDestructive: Bool = false,
         onClose: @escaping () -> Void,
         onAction: @escaping () -> Void) {
         setupTitle()
-
-        titleLabel.text = title
-
         if let boldText = boldedTitle {
             if let startIndex = title.indexDistance(of: boldText) {
                 let attributedTitle = NSMutableAttributedString(
@@ -237,20 +249,25 @@ class FeedbackView: UIView {
 
                 titleLabel.attributedText = attributedTitle
             }
+        } else {
+            titleLabel.text = title
         }
 
         titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: sidePadding).isActive = true
 
         setupDescription()
-        setDescription(description)
+        setDescription(description, boldParts: descriptionBoldParts)
         descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: elementPadding).isActive = true
 
-        setupCallToActionButton(#selector(onCallToActionButtonPressed))
+        setupCallToActionButton(isDestructive: isDestructive, #selector(onCallToActionButtonPressed))
         onCallToActionHandler = onAction
         callToActionButton.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: elementPadding).isActive = true
         callToActionButton.setTitle(actionTitle, for: .normal)
 
         setupCloseButton()
+        if isDestructive {
+            closeButton.setVariation(.primary)
+        }
         onCloseHandler = onClose
         closeButton.setTitle(cancelTitle, for: .normal)
         closeButton.topAnchor.constraint(equalTo: callToActionButton.bottomAnchor, constant: elementPadding).isActive = true

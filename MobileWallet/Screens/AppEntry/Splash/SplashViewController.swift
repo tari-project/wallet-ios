@@ -209,7 +209,10 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         do {
             try TariLib.shared.createNewWallet()
 
-            Tracker.shared.track("/onboarding/create_wallet", "Onboarding - Create Wallet")
+            Tracker.shared.track(
+                "/onboarding/create_wallet",
+                "Onboarding - Create Wallet"
+            )
 
             if let _ = self.ticketTopLayoutConstraint {
                 self.topAnimationAndRemoveVideoAnimation { [weak self] () in

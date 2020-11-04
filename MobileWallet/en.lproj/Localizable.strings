@@ -136,6 +136,7 @@
 
 "settings.item.wallet_backups" = "Wallet Backups";
 "settings.item.bridge_configuration" = "Bridge Configuration";
+"settings.item.delete_wallet" = "Delete Your Wallet";
 
 "settings.item.contribute_to_tari" = "Contribute to Tari Aurora";
 "settings.item.disclaimer" = "Disclaimer";
@@ -425,3 +426,17 @@
 "Onion_Error.error.connectionError" = "Tor connection error. Please, check your network connection";
 "Onion_Error.error.invalid_bridges" = "Invalid Bridges. Returning to previous bridges configuration ...";
 "Onion_Error.error.title.onionError" = "Onion Error";
+
+/* Delete wallet */
+"delete_wallet.title"="You're about to lose everything!";
+"delete_wallet.warning"="Please double-check that your wallet is backed up before deleting it from this device. If you proceed, you will LOSE ALL YOUR FUNDS, your contact data and your transaction history. If this is definitely what you want, go ahead.";
+"delete_wallet.dialog.title"="You wallet will be deleted";
+"delete_wallet.dialog.description"="Last chance! We're about to delete your wallet from this device. You will irreversibly lose your entire balance. Are you 100% sure we should do this?";
+
+/* Incompatible network */
+"incompatible_network.title"="Time to move on";
+"incompatible_network.description"="Good news: The Tari testnet has been reset, bringing a whole host of new features and upgrades.\n\nBad news: Your old tXTR is no longer good here, and the network will reset your balance to zero soon. But on the bright side, this is a great opportunity to start afresh with a spanking new wallet! What do you say?";
+"incompatible_network.description.bold_part_1"="Good news:";
+"incompatible_network.description.bold_part_2"="Bad news:";
+"incompatible_network.confirm"="Start over, I say!";
+"incompatible_network.cancel"="I'll do it later";

@@ -121,7 +121,7 @@ class Wallet {
             return (nil, pendingIncomingBalanceError)
         }
 
-        let (pendingOutgoingBalance, pendingOutgoingBalanceError) = self.pendingOutgoingBalance
+        let (_, pendingOutgoingBalanceError) = self.pendingOutgoingBalance
         if pendingOutgoingBalanceError != nil {
             return (nil, pendingOutgoingBalanceError)
         }

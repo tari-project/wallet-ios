@@ -78,6 +78,9 @@ struct Theme {
 }
 
 struct Colors: Loopable {
+    // common
+    let warning = UIColor(named: "Warning")
+
     let gradientStartColor = UIColor(named: "GradientStartColor")
     let gradientEndColor = UIColor(named: "GradientEndColor")
 
@@ -272,6 +275,7 @@ struct Images: Loopable {
     let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
     let forwardArrow = UIImage(named: "ForwardArrow")
+    let forwardArrowRed = UIImage(named: "ForwardArrowRed")
     let downArrow = UIImage(named: "DownArrow")
     let close = UIImage(named: "Close")
     let share = UIImage(named: "share")
@@ -364,6 +368,7 @@ struct Fonts: Loopable {
     let feedbackPopupTitle = UIFont.Avenir.light.withSize(18.0)
     let feedbackPopupHeavy = UIFont.Avenir.black.withSize(18.0)
     let feedbackPopupDescription = UIFont.Avenir.medium.withSize(14.0)
+    let feedbackPopupDescriptionBold = UIFont.Avenir.black.withSize(14.0)
 
     //Simple text button
     let textButton = UIFont.Avenir.medium.withSize(14.0)

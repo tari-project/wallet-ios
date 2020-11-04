@@ -41,59 +41,10 @@
 import UIKit
 
 /*
- Delete all app content and settings. Used only for UITesting on a simulator.
-*/
-func wipeApp() {
-    TariLogger.warn("Wiping app")
-
-    let fileManager = FileManager.default
-    if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
-        do {
-            let directoryContents = try fileManager.contentsOfDirectory(atPath: documentsDirectory.path)
-
-            for path in directoryContents {
-                let pathToDelete = documentsDirectory.appendingPathComponent(path).path
-                if fileManager.fileExists(atPath: pathToDelete, isDirectory: nil) {
-                    do {
-                        try fileManager.removeItem(at: URL(fileURLWithPath: pathToDelete))
-                    } catch {
-                        TariLogger.error("Failed to delete documents directory", error: error)
-                        fatalError()
-                    }
-                }
-            }
-        } catch {
-            TariLogger.error("Failed to read documents directory", error: error)
-            fatalError()
-        }
-    }
-
-    //Remove all user defaults
-    let domain = Bundle.main.bundleIdentifier!
-    UserDefaults.standard.removePersistentDomain(forName: domain)
-    UserDefaults.standard.synchronize()
-
-    TariLogger.warn("Wipe complete")
-}
-
-/*
- Disable animations which is useful for UI tests in simulator.
-*/
-func disableAnimations() {
-    UIView.setAnimationsEnabled(false)
-}
-
-/*
  Needs to be called in AppDelegate.swift with didFinishLaunchingWithOptions
 */
 func handleCommandLineArgs() {
-    if CommandLine.arguments.contains("-wipe-app") {
-        #if targetEnvironment(simulator)
-            wipeApp()
-        #endif
-    }
-
     if CommandLine.arguments.contains("-disable-animations") {
-        disableAnimations()
+        UIView.setAnimationsEnabled(false)
     }
 }
