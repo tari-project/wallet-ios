@@ -120,20 +120,27 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
 
     private func restoreWallet(password: String?) {
         pendingView.showPendingView { [weak self] in
-            ICloudBackup.shared.restoreWallet(password: password, completion: { [weak self] error in
-
+            ICloudBackup.shared.restoreWallet(password: password, completion: {
+                [weak self] error in
                 if error != nil {
-                    UserFeedback.shared.error(title: NSLocalizedString("iCloud_backup.error.title.restore_wallet", comment: "RestoreWallet view"), description: error?.localizedDescription ?? "", error: nil) { [weak self] in
+                    UserFeedback.shared.error(
+                        title: NSLocalizedString("iCloud_backup.error.title.restore_wallet",
+                                                 comment: "RestoreWallet view"),
+                        description: error?.localizedDescription ?? "",
+                        error: nil
+                    ) {
+                        [weak self] in
                         self?.pendingView.hidePendingView { [weak self] in
                             switch error! {
-                            case ICloudBackupError.noICloudBackupExists: self?.returnToSplashScreen()
-                            default: break
+                            case ICloudBackupError.noICloudBackupExists:
+                                self?.returnToSplashScreen()
+                            default:
+                                break
                             }
                         }
                     }
                     return
                 }
-
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
                     self?.pendingView.hidePendingView { [weak self] in
                         self?.returnToSplashScreen()
@@ -144,20 +151,15 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     private func returnToSplashScreen() {
-        if let curentControllers = navigationController?.viewControllers {
-            var newStack = [UIViewController]()
-            curentControllers.forEach({
-                if let _ = $0 as? SplashViewController {
-                    newStack.append(SplashViewController())
-                } else {
-                    newStack.append($0)
-                }
-            })
-            DispatchQueue.main.async { [weak self] in
-                self?.navigationController?.viewControllers = newStack
-                self?.navigationController?.popToRootViewController(animated: true)
-            }
-        }
+        let navigationController = AlwaysPoppableNavigationController(
+            rootViewController: SplashViewController()
+        )
+        navigationController.setNavigationBarHidden(
+            true,
+            animated: false
+        )
+        UIApplication.shared.windows.first?.rootViewController = navigationController
+        UIApplication.shared.windows.first?.makeKeyAndVisible()
     }
 }
 

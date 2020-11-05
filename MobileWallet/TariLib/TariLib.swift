@@ -394,6 +394,10 @@ class TariLib {
         do {
             // delete database files
             try FileManager.default.removeItem(at: databaseDirectory)
+            // delete cached value
+            walletPublicKeyHex = nil
+            // this value also needs to be unset, it implies existence of a wallet
+            walletIsStopped = false
             // delete log files
             for logFile in allLogFiles {
                 try FileManager.default.removeItem(at: logFile)
