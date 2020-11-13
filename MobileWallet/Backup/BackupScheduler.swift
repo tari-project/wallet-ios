@@ -49,10 +49,15 @@ class BackupScheduler: NSObject {
         }
         set {
             if newValue {
-                timer = Timer.scheduledTimer(withTimeInterval: autoBackupTimeInterval, repeats: false, block: { [weak self] (timer) in
-                    timer.invalidate()
-                    self?.createWalletBackup()
-                })
+                timer = Timer.scheduledTimer(
+                    withTimeInterval: autoBackupTimeInterval,
+                    repeats: false,
+                    block: {
+                        [weak self] (timer) in
+                        timer.invalidate()
+                        self?.createWalletBackup()
+                    }
+                )
             } else {
                 timer.invalidate()
             }
@@ -69,7 +74,8 @@ class BackupScheduler: NSObject {
     }
 
     func startObserveEvents() {
-        TariEventBus.onMainThread(self, eventType: .requiresBackup) { [weak self] (_) in
+        TariEventBus.onMainThread(self, eventType: .requiresBackup) {
+            [weak self] (_) in
             self?.scheduleBackup()
         }
     }
@@ -107,6 +113,7 @@ class BackupScheduler: NSObject {
 }
 
 extension BackupScheduler: ICloudBackupObserver {
+
     @objc func onUploadProgress(percent: Double, started: Bool, completed: Bool) {
         if completed {
             scheduledBackupStarted = false
@@ -115,15 +122,20 @@ extension BackupScheduler: ICloudBackupObserver {
 
     func failedToCreateBackup(error: Error) {
         if !scheduledBackupStarted { return }
-        var title = NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
-
+        var title = localized("iCloud_backup.error.title.create_backup")
         if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
             title = localizedError.failureReason!
         }
 
-        NotificationManager.shared.scheduleNotification(title: title, body: error.localizedDescription, identifier: NotificationManager.NotificationIdentifier.scheduledBackupFailure.rawValue) { (_) in
-            TariLogger.info("scheduled backup failed")
+        NotificationManager.shared.scheduleNotification(
+            title: title,
+            body: error.localizedDescription,
+            identifier: NotificationManager.NotificationIdentifier.scheduledBackupFailure.rawValue
+        ) {
+            (_) in
+            TariLogger.info("Scheduled backup has failed.")
             self.scheduledBackupStarted = false
         }
     }
+
 }

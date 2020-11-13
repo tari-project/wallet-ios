@@ -132,7 +132,10 @@ class NotificationManager {
         }
     }
 
-    func handleForegroundNotification(_ notification: UNNotification, completionHandler: (UNNotificationPresentationOptions) -> Void) {
+    func handleForegroundNotification(
+        _ notification: UNNotification,
+        completionHandler: (UNNotificationPresentationOptions) -> Void
+    ) {
         ConnectionMonitor.shared.state.baseNodeSynced = nil
         try? TariLib.shared.tariWallet?.syncBaseNode()
         if notification.request.identifier == NotificationIdentifier.scheduledBackupFailure.rawValue {

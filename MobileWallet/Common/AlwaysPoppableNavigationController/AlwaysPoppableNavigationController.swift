@@ -42,12 +42,15 @@ import UIKit
 
 class AlwaysPoppableNavigationController: UINavigationController {
 
-    private weak var alwaysPoppableDelegate: AlwaysPoppableDelegate?
+    private weak var alwaysPoppableDelegate: AlwaysPoppableDelegate!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.alwaysPoppableDelegate = AlwaysPoppableDelegate(navigationController: self, originalDelegate: self.interactivePopGestureRecognizer!.delegate!)
+        self.alwaysPoppableDelegate = AlwaysPoppableDelegate(
+            navigationController: self,
+            originalDelegate: self.interactivePopGestureRecognizer!.delegate!
+        )
         self.interactivePopGestureRecognizer!.delegate = self.alwaysPoppableDelegate
     }
 

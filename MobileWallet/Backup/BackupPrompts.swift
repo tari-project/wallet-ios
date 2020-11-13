@@ -103,27 +103,27 @@ private class BackupPrompts {
             switch self {
             case .first:
                 return ModalContent(
-                    title: NSLocalizedString("wallet_backup.prompt_1.title", comment: "Wallet backup prompts"),
-                    boldTitle: NSLocalizedString("wallet_backup.prompt_1.title_bold", comment: "Wallet backup prompts"),
-                    description: NSLocalizedString("wallet_backup.prompt_1.description", comment: "Wallet backup prompts"),
-                    ctaButton: NSLocalizedString("wallet_backup.prompt_1.cta_button", comment: "Wallet backup prompts"),
-                    cancelButton: NSLocalizedString("wallet_backup.prompt_1.cancel_button", comment: "Wallet backup prompts")
+                    title: localized("wallet_backup.prompt_1.title"),
+                    boldTitle: localized("wallet_backup.prompt_1.title_bold"),
+                    description: localized("wallet_backup.prompt_1.description"),
+                    ctaButton: localized("wallet_backup.prompt_1.cta_button"),
+                    cancelButton: localized("wallet_backup.prompt_1.cancel_button")
                 )
             case .second:
                 return ModalContent(
-                    title: NSLocalizedString("wallet_backup.prompt_2.title", comment: "Wallet backup prompts"),
-                    boldTitle: NSLocalizedString("wallet_backup.prompt_2.title_bold", comment: "Wallet backup prompts"),
-                    description: NSLocalizedString("wallet_backup.prompt_2.description", comment: "Wallet backup prompts"),
-                    ctaButton: NSLocalizedString("wallet_backup.prompt_2.cta_button", comment: "Wallet backup prompts"),
-                    cancelButton: NSLocalizedString("wallet_backup.prompt_2.cancel_button", comment: "Wallet backup prompts")
+                    title: localized("wallet_backup.prompt_2.title"),
+                    boldTitle: localized("wallet_backup.prompt_2.title_bold"),
+                    description: localized("wallet_backup.prompt_2.description"),
+                    ctaButton: localized("wallet_backup.prompt_2.cta_button"),
+                    cancelButton: localized("wallet_backup.prompt_2.cancel_button")
                 )
             case .third:
                 return ModalContent(
-                    title: NSLocalizedString("wallet_backup.prompt_3.title", comment: "Wallet backup prompts"),
-                    boldTitle: NSLocalizedString("wallet_backup.prompt_3.title_bold", comment: "Wallet backup prompts"),
-                    description: NSLocalizedString("wallet_backup.prompt_3.description", comment: "Wallet backup prompts"),
-                    ctaButton: NSLocalizedString("wallet_backup.prompt_3.cta_button", comment: "Wallet backup prompts"),
-                    cancelButton: NSLocalizedString("wallet_backup.prompt_3.cancel_button", comment: "Wallet backup prompts")
+                    title: localized("wallet_backup.prompt_3.title"),
+                    boldTitle: localized("wallet_backup.prompt_3.title_bold"),
+                    description: localized("wallet_backup.prompt_3.description"),
+                    ctaButton: localized("wallet_backup.prompt_3.cta_button"),
+                    cancelButton: localized("wallet_backup.prompt_3.cancel_button")
                 )
             }
         }

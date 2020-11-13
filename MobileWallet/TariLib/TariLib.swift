@@ -292,8 +292,6 @@ class TariLib {
             loggingFilePath = loggingFilePath.replacingOccurrences(of: ".txt", with: "-\(container.rawValue).txt")
         }
 
-        Migrations.privateKeyKeychainToDB(config)
-
         tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
         try setBasenode(syncAfterSetting: false)
 

@@ -95,8 +95,8 @@ class DeeplinkNavigator {
                     homeVC.onSend(pubKey: pubKey, deepLinkParams: params)
                 } catch {
                     UserFeedback.shared.error(
-                        title: NSLocalizedString("deep_link.error.title", comment: "Deep link error"),
-                        description: NSLocalizedString("deep_link.error.emoji_from_link", comment: "Deep link error"),
+                        title: localized("deep_link.error.title"),
+                        description: localized("deep_link.error.emoji_from_link"),
                         error: error
                     )
                 }

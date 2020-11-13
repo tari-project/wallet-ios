@@ -65,10 +65,10 @@ enum ICloudBackupState {
 
     var rawValue: String {
         switch self {
-        case .upToDate: return NSLocalizedString("wallet_backup_state.up_to_date", comment: "Wallet backup state")
-        case .outOfDate: return NSLocalizedString("wallet_backup_state.out_to_date", comment: "Wallet backup state")
-        case .inProgress: return NSLocalizedString("wallet_backup_state.in_progress", comment: "Wallet backup state")
-        case .scheduled: return NSLocalizedString("wallet_backup_state.scheduled", comment: "Wallet backup state")
+        case .upToDate: return localized("wallet_backup_state.up_to_date")
+        case .outOfDate: return localized("wallet_backup_state.out_to_date")
+        case .inProgress: return localized("wallet_backup_state.in_progress")
+        case .scheduled: return localized("wallet_backup_state.scheduled")
         }
     }
 }
@@ -77,38 +77,38 @@ extension ICloudBackupError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .failedToCreateZip:
-            return NSLocalizedString("iCloud_backup.error.zip", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.zip")
         case .noICloudBackupExists:
-            return NSLocalizedString("iCloud_backup.error.no_backup_exists", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.no_backup_exists")
         case .unarchiveError:
-            return NSLocalizedString("iCloud_backup.error.unzip", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.unzip")
         case .invalidPassword:
-            return NSLocalizedString("iCloud_backup.error.invalid_password", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.invalid_password")
         case .dbFileNotFound:
-            return NSLocalizedString("iCloud_backup.error.db_not_found", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.db_not_found")
         case .iCloudContainerNotFound:
-            return NSLocalizedString("iCloud_backup.error.container_not_found", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.container_not_found")
         case .unableCreateBackupFolder:
-            return NSLocalizedString("iCloud_backup.error.unable_create_backup_folder", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.unable_create_backup_folder")
         case .keychainPasswordFailure:
-            return NSLocalizedString("iCloud_backup.error.keychain_password_failure", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.keychain_password_failure")
         case .uploadToICloudFailure:
-            return NSLocalizedString("iCloud_backup.error.upload_to_iCloud_failure", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.upload_to_iCloud_failure")
         case .noInternetConnection:
-            return NSLocalizedString("iCloud_backup.error.no_internet_connection", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.no_internet_connection")
         case .unableToDetermineDateOfBackup:
-            return NSLocalizedString("iCloud_backup.error.unable_determine_backup_date", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.unable_determine_backup_date")
         case .backupUrlNotValid:
-            return NSLocalizedString("iCloud_backup.error.backup_url_not_valid", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.backup_url_not_valid")
         }
     }
 
     public var failureReason: String? {
         switch self {
         case .uploadToICloudFailure:
-            return NSLocalizedString("iCloud_backup.error.title.iCloud_synch", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.title.iCloud_synch")
         default:
-            return NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
+            return localized("iCloud_backup.error.title.create_backup")
         }
     }
 }
@@ -188,7 +188,10 @@ class ICloudBackup: NSObject {
         query = NSMetadataQuery.init()
         query.operationQueue = .main
         query.searchScopes = [NSMetadataQueryUbiquitousDataScope]
-        query.predicate = NSPredicate(format: "%K LIKE '\(fileName)*'", NSMetadataItemFSNameKey)
+        query.predicate = NSPredicate(
+            format: "%K LIKE '\(fileName)*'",
+            NSMetadataItemFSNameKey
+        )
     }
 
     func addObserver(_ observer: ICloudBackupObserver) {
@@ -232,19 +235,34 @@ class ICloudBackup: NSObject {
             let walletFolderURL = try iCloudDirectory().appendingPathComponent(backupFolder)
 
             if !FileManager.default.fileExists(atPath: walletFolderURL.path) {
-                try FileManager.default.createDirectory(at: walletFolderURL, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(
+                    at: walletFolderURL,
+                    withIntermediateDirectories: true,
+                    attributes: nil
+                )
             }
 
-            if let previousBackupURL = try FileManager.default.contentsOfDirectory(atURL: walletFolderURL, sortedBy: .created).last {
+            if let previousBackupURL = try FileManager.default.contentsOfDirectory(
+                atURL: walletFolderURL,
+                sortedBy: .created
+            ).last {
                 try FileManager.default.removeItem(at: previousBackupURL)
             }
 
-            try FileManager.default.copyItem(at: fileURL, to: walletFolderURL.appendingPathComponent(fileURL.lastPathComponent))
+            try FileManager.default.copyItem(
+                at: fileURL,
+                to: walletFolderURL.appendingPathComponent(fileURL.lastPathComponent)
+            )
             isLastBackupFailed = false
             inProgress = true
             progressValue = 0.0
             BackupScheduler.shared.removeSchedule()
-            notifyObservers(percent: 0, started: true, completed: false, error: nil)
+            notifyObservers(
+                percent: 0,
+                started: true,
+                completed: false,
+                error: nil
+            )
 
             syncWithICloud()
         } catch {
@@ -256,13 +274,14 @@ class ICloudBackup: NSObject {
 
     func restoreWallet(password: String?, completion: @escaping (_ error: Error?) -> Void) {
         let dbDirectory = TariLib.shared.databaseDirectory
-
         do {
-            try FileManager.default.createDirectory(at: dbDirectory, withIntermediateDirectories: true, attributes: nil)
+            try FileManager.default.createDirectory(
+                at: dbDirectory,
+                withIntermediateDirectories: true,
+                attributes: nil
+            )
             restoreBackup(password: password, to: dbDirectory) { error in
                 if error == nil {
-                    Migrations.handle()
-
                     UserDefaults.Key.walletHasBeenIntroduced.set(true)
                     UserDefaults.Key.authStepPassed.set(true)
                     UserDefaults.Key.iCloudBackupsIsOn.set(true)
@@ -302,7 +321,12 @@ class ICloudBackup: NSObject {
 extension ICloudBackup {
     private func startObserveReachability() throws {
         reachability = try Reachability()
-        NotificationCenter.default.addObserver(self, selector: #selector(reachabilityChanged(note:)), name: .reachabilityChanged, object: reachability)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(reachabilityChanged(note:)),
+            name: .reachabilityChanged,
+            object: reachability
+        )
         try reachability?.startNotifier()
     }
 
@@ -312,7 +336,11 @@ extension ICloudBackup {
 
     private func stopObserveReachability() {
         reachability?.stopNotifier()
-        NotificationCenter.default.removeObserver(self, name: .reachabilityChanged, object: reachability)
+        NotificationCenter.default.removeObserver(
+            self,
+            name: .reachabilityChanged,
+            object: reachability
+        )
     }
 }
 
@@ -320,11 +348,21 @@ extension ICloudBackup {
 
 extension ICloudBackup {
     private func addNotificationObservers() {
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidStartGathering, object: query, queue: query.operationQueue) { [weak self] (_) in
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.NSMetadataQueryDidStartGathering,
+            object: query,
+            queue: query.operationQueue
+        ) {
+            [weak self] (_) in
             self?.processCloudFiles()
         }
 
-        NotificationCenter.default.addObserver(forName: NSNotification.Name.NSMetadataQueryDidUpdate, object: query, queue: query.operationQueue) { [weak self] (_) in
+        NotificationCenter.default.addObserver(
+            forName: NSNotification.Name.NSMetadataQueryDidUpdate,
+            object: query,
+            queue: query.operationQueue
+        ) {
+            [weak self] (_) in
             self?.processCloudFiles()
         }
     }
@@ -336,7 +374,9 @@ extension ICloudBackup {
 
         for item in query.results {
             guard let item = item as? NSMetadataItem else { continue }
-            guard let fileItemURL = item.value(forAttribute: NSMetadataItemURLKey) as? URL else { continue }
+            guard let fileItemURL = item.value(
+                    forAttribute: NSMetadataItemURLKey
+            ) as? URL else { continue }
             if fileItemURL.lastPathComponent.contains(fileName) {
                 fileItem = item
                 fileURL = fileItemURL
@@ -345,8 +385,12 @@ extension ICloudBackup {
 
         guard let url = fileURL  else { return }
         do {
-            let fileValues = try url.resourceValues(forKeys: [URLResourceKey.ubiquitousItemIsUploadingKey])
-            if let fileUploaded = fileItem?.value(forAttribute: NSMetadataUbiquitousItemIsUploadedKey) as? Bool, fileUploaded == true, fileValues.ubiquitousItemIsUploading == false {
+            let fileValues = try url.resourceValues(
+                forKeys: [URLResourceKey.ubiquitousItemIsUploadingKey]
+            )
+            if let fileUploaded = fileItem?.value(forAttribute: NSMetadataUbiquitousItemIsUploadedKey) as? Bool,
+               fileUploaded == true,
+               fileValues.ubiquitousItemIsUploading == false {
                 progressValue = 0.0
                 inProgress = false
                 notifyObservers(percent: 100, completed: true, error: nil)
@@ -361,7 +405,9 @@ extension ICloudBackup {
                 notifyObservers(percent: 0, completed: false, error: error)
                 query.disableUpdates()
             } else {
-                if let fileProgress = fileItem?.value(forAttribute: NSMetadataUbiquitousItemPercentUploadedKey) as? Double {
+                if let fileProgress = fileItem?.value(
+                    forAttribute: NSMetadataUbiquitousItemPercentUploadedKey
+                ) as? Double {
                     progressValue = fileProgress
                     notifyObservers(percent: fileProgress, completed: false, error: nil)
                 }
@@ -371,13 +417,20 @@ extension ICloudBackup {
             inProgress = false
             uploadTimer?.invalidate()
             uploadTimer = nil
-            notifyObservers(percent: 0, completed: false, error: ICloudBackupError.noInternetConnection)
+            notifyObservers(
+                percent: 0,
+                completed: false,
+                error: ICloudBackupError.noInternetConnection
+            )
         }
     }
 
     private func enableUploadTimeout() {
         var previousUploadValue = 0.0
-        uploadTimer = Timer.scheduledTimer(withTimeInterval: uploadTimeoutSec, repeats: true) {
+        uploadTimer = Timer.scheduledTimer(
+            withTimeInterval: uploadTimeoutSec,
+            repeats: true
+        ) {
             [weak self] (timer) in
             guard let self = self, previousUploadValue == self.progressValue else {
                 timer.invalidate()
@@ -396,12 +449,21 @@ extension ICloudBackup {
         }
     }
 
-    private func notifyObservers(percent: Double, started: Bool = false, completed: Bool, error: Error?) {
+    private func notifyObservers(
+        percent: Double,
+        started: Bool = false,
+        completed: Bool,
+        error: Error?
+    ) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.observers.allObjects.forEach {
                 if let object = $0 as? ICloudBackupObserver {
-                    object.onUploadProgress(percent: percent, started: started, completed: completed)
+                    object.onUploadProgress(
+                        percent: percent,
+                        started: started,
+                        completed: completed
+                    )
                     if error != nil {
                         object.failedToCreateBackup(error: error!)
                         self.showError(error: error!)
@@ -415,13 +477,20 @@ extension ICloudBackup {
     }
 
     private func showError(error: Error) {
-        if BackupScheduler.shared.scheduledBackupStarted { return } // check for scheduled backup for decide which notification use, "push" ot "modal view"
+        // check for scheduled backup for decide which notification use,
+        // "push" ot "modal view"
+        if BackupScheduler.shared.scheduledBackupStarted { return }
 
-        var title = NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
-        if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
+        var title = localized("iCloud_backup.error.title.create_backup")
+        if let localizedError = error as? LocalizedError,
+           localizedError.failureReason != nil {
            title = localizedError.failureReason!
         }
-        UserFeedback.shared.error(title: title, description: error.localizedDescription, error: nil)
+        UserFeedback.shared.error(
+            title: title,
+            description: error.localizedDescription,
+            error: nil
+        )
     }
 }
 
@@ -461,9 +530,13 @@ extension ICloudBackup {
     }
 
     func scheduleNotification() {
-        let title = NSLocalizedString("backup_local_notification.title", comment: "Backup notification")
-        let body = NSLocalizedString("backup_local_notification.body", comment: "Backup notification")
-        NotificationManager.shared.scheduleNotification(title: title, body: body, identifier: NotificationManager.NotificationIdentifier.backgroundBackupTask.rawValue) { (_) in
+        let title = localized("backup_local_notification.title")
+        let body = localized("backup_local_notification.body")
+        NotificationManager.shared.scheduleNotification(
+            title: title,
+            body: body,
+            identifier: NotificationManager.NotificationIdentifier.backgroundBackupTask.rawValue
+        ) { (_) in
             TariLogger.info("User reminded to open the app as a background backup did not complete.")
             self.endBackgroundBackupTask()
         }
@@ -472,15 +545,18 @@ extension ICloudBackup {
 
 // MARK: - private methods
 extension ICloudBackup {
+
     private func syncWithICloud() {
-        checkNetworkConnection { [weak self] (connected) in
+        checkNetworkConnection {
+            [weak self] (connected) in
             guard let self = self else { return }
             if connected {
-                self.query.operationQueue?.addOperation({ [weak self] in
+                self.query.operationQueue?.addOperation {
+                    [weak self] in
                     _ = self?.query.start()
                     self?.query.enableUpdates()
                     self?.enableUploadTimeout()
-                })
+                }
             } else {
                 self.stopSyncWithConnectionError()
             }
@@ -492,7 +568,11 @@ extension ICloudBackup {
         self.query.stop()
         self.inProgress = false
         self.isLastBackupFailed = true
-        self.notifyObservers(percent: 0, completed: false, error: ICloudBackupError.noInternetConnection)
+        self.notifyObservers(
+            percent: 0,
+            completed: false,
+            error: ICloudBackupError.noInternetConnection
+        )
     }
 
     private func checkNetworkConnection(completion: @escaping (_ connected: Bool) -> Void) {
@@ -500,7 +580,9 @@ extension ICloudBackup {
         speedTest.testSpeed { (_ speed: Float, _ error: Error?) in
             if speed <= 0 || error != nil { completion(false) }
 
-            guard let reachability = self.reachability else { completion(false); return }
+            guard let reachability = self.reachability else {
+                completion(false); return
+            }
             switch reachability.connection {
             case .wifi, .cellular:
                 completion(true)
@@ -510,8 +592,13 @@ extension ICloudBackup {
         }
     }
 
-    private func restoreBackup(password: String?, to directory: URL, completion: @escaping ((_ error: Error?) -> Void)) {
-        downloadBackup { [weak self] (backup, error) in
+    private func restoreBackup(
+        password: String?,
+        to directory: URL,
+        completion: @escaping ((_ error: Error?) -> Void)
+    ) {
+        downloadBackup {
+            [weak self] (backup, error) in
             guard let backup = backup, error == nil else {
                 completion(error)
                 return
@@ -522,7 +609,10 @@ extension ICloudBackup {
                 do {
                     guard
                         let password = password,
-                        let zippedDecryptedBackup = try self?.decryptBackup(password: password, encryptedBackup: backup)
+                        let zippedDecryptedBackup = try self?.decryptBackup(
+                            password: password,
+                            encryptedBackup: backup
+                        )
                     else {
                         completion(ICloudBackupError.unarchiveError)
                         return
@@ -539,10 +629,15 @@ extension ICloudBackup {
             do {
                 let filePaths = try FileManager.default.contentsOfDirectory(atPath: directory.path)
                 for filePath in filePaths {
-                    try FileManager.default.removeItem(atPath: directory.appendingPathComponent(filePath).path)
+                    try FileManager.default.removeItem(
+                        atPath: directory.appendingPathComponent(filePath).path
+                    )
                 }
 
-                try FileManager.default.unzipItem(at: zippedBackup.url, to: directory)
+                try FileManager.default.unzipItem(
+                    at: zippedBackup.url,
+                    to: directory
+                )
                 completion(nil)
             } catch {
                 switch error {
@@ -555,7 +650,9 @@ extension ICloudBackup {
         }
     }
 
-    private func downloadBackup(completion: @escaping ((_ backup: Backup?, _ error: Error?) -> Void)) {
+    private func downloadBackup(
+        completion: @escaping ((_ backup: Backup?, _ error: Error?) -> Void)
+    ) {
         if TariSettings.shared.isUnitTesting {
             do {
                 let backup = try ICloudServiceMock.downloadBackup()
@@ -569,24 +666,31 @@ extension ICloudBackup {
             let backup = try getLastWalletBackup()
             var lastPathComponent = backup.url.lastPathComponent
             let folderPath = backup.folderPath
-            // if the last path component contains the “.icloud” extension. If yes the file is not on the device else the file is already downloaded.
+            // if the last path component contains the “.icloud” extension.
+            // If yes the file is not on the device else the file is already downloaded.
             if lastPathComponent.contains(".icloud") {
                 checkNetworkConnection { (connected) in
                     if !connected { completion(nil, ICloudBackupError.noInternetConnection) }
 
                     lastPathComponent.removeFirst()
-                    let downloadedFilePath = folderPath + "/" + lastPathComponent.replacingOccurrences(of: ".icloud", with: "")
+                    let downloadedFilePath =
+                        folderPath
+                        + "/"
+                        + lastPathComponent.replacingOccurrences(of: ".icloud", with: "")
                     do {
                         try FileManager.default.startDownloadingUbiquitousItem(at: backup.url)
                     } catch {
                         completion(nil, ICloudBackupError.noInternetConnection)
                     }
 
-                    Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { (timer) in
+                    Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {
+                        (timer) in
                         if FileManager.default.fileExists(atPath: downloadedFilePath) {
                             timer.invalidate()
                             do {
-                                let backup = try Backup(url: URL(fileURLWithPath: downloadedFilePath))
+                                let backup = try Backup(
+                                    url: URL(fileURLWithPath: downloadedFilePath)
+                                )
                                 completion(backup, nil)
                             } catch {
                                 completion(nil, error)
@@ -607,16 +711,32 @@ extension ICloudBackup {
         do {
             // if walletKeyHex != nil we find last backup for current wallet
             if let walletKeyHex = TariLib.shared.walletPublicKeyHex {
-                if let lastWalletFolder = try FileManager.default.contentsOfDirectory(atURL: iCloudFolderURL, sortedBy: .created, options: []).last(where: { (url) -> Bool in
+                if let lastWalletFolder = try FileManager.default.contentsOfDirectory(
+                    atURL: iCloudFolderURL,
+                    sortedBy: .created,
+                    options: []
+                ).last(where: { (url) -> Bool in
                     url.lastPathComponent == walletKeyHex
                 }) {
-                    if let lastWalletBackup = try FileManager.default.contentsOfDirectory(atURL: lastWalletFolder, sortedBy: .created, options: []).last {
+                    if let lastWalletBackup = try FileManager.default.contentsOfDirectory(
+                        atURL: lastWalletFolder,
+                        sortedBy: .created,
+                        options: []
+                    ).last {
                         return try Backup(url: lastWalletBackup)
                     }
                 }
             } else {
-                if let lastWalletFolder = try FileManager.default.contentsOfDirectory(atURL: iCloudFolderURL, sortedBy: .modified, options: []).last {
-                    if let lastWalletBackup = try FileManager.default.contentsOfDirectory(atURL: lastWalletFolder, sortedBy: .created, options: []).last {
+                if let lastWalletFolder = try FileManager.default.contentsOfDirectory(
+                    atURL: iCloudFolderURL,
+                    sortedBy: .modified,
+                    options: []
+                ).last {
+                    if let lastWalletBackup = try FileManager.default.contentsOfDirectory(
+                        atURL: lastWalletFolder,
+                        sortedBy: .created,
+                        options: []
+                    ).last {
                         return try Backup(url: lastWalletBackup)
                     }
                 }
@@ -647,11 +767,18 @@ extension ICloudBackup {
         } else if encrypted {
             dbDirectory = originalFileURL
         } else {
-            try WalletBackups.partialBackup(orginalFilePath: originalFileURL.path, backupFilePathWithFilename: tmpDirectory.appendingPathComponent(sqlite3File).path)
+            try WalletBackups.partialBackup(
+                orginalFilePath: originalFileURL.path,
+                backupFilePathWithFilename: tmpDirectory.appendingPathComponent(sqlite3File).path
+            )
             dbDirectory = tmpDirectory.appendingPathComponent(sqlite3File)
         }
 
-        try FileManager().zipItem(at: dbDirectory, to: archiveURL, compressionMethod: .deflate)
+        try FileManager().zipItem(
+            at: dbDirectory,
+            to: archiveURL,
+            compressionMethod: .deflate
+        )
         return archiveURL
     }
 
@@ -681,7 +808,9 @@ extension ICloudBackup {
     }
 
     private func iCloudDirectory() throws -> URL {
-        guard let url = FileManager.default.url(forUbiquityContainerIdentifier: TariSettings.shared.iCloudContainerIdentifier)?.appendingPathComponent("Tari-Wallet-Backups") else {
+        guard let url = FileManager.default.url(
+                forUbiquityContainerIdentifier: TariSettings.shared.iCloudContainerIdentifier
+        )?.appendingPathComponent("Tari-Wallet-Backups") else {
             throw ICloudBackupError.iCloudContainerNotFound
         }
         return url
@@ -689,11 +818,13 @@ extension ICloudBackup {
 
     private func getTempDirectory() throws -> URL {
         if let tempZipDirectory = FileManager.default.documentDirectory()?.appendingPathComponent("Backups") {
-
             if !FileManager.default.fileExists(atPath: tempZipDirectory.path) {
-                try FileManager.default.createDirectory(at: tempZipDirectory, withIntermediateDirectories: true, attributes: nil)
+                try FileManager.default.createDirectory(
+                    at: tempZipDirectory,
+                    withIntermediateDirectories: true,
+                    attributes: nil
+                )
             }
-
             return tempZipDirectory
         } else { throw ICloudBackupError.failedToCreateZip }
     }
@@ -707,7 +838,9 @@ extension ICloudBackup {
 // MARK: Tests
 extension ICloudBackup {
     func getTestDataBaseUrl() throws -> URL {
-        let dbURL = URL(fileURLWithPath: TariSettings.testStoragePath).appendingPathComponent("test_db.sqlite3")
+        let dbURL = URL(
+            fileURLWithPath: TariSettings.testStoragePath
+        ).appendingPathComponent("test_db.sqlite3")
         return dbURL
     }
 }

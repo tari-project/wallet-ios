@@ -60,19 +60,19 @@ extension AESError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .generic(let description):
-            return NSLocalizedString("AES Error. \(description)", comment: "AES Error")
+            return localized("AES Error. \(description)")
         case .invalidKeySize:
-            return NSLocalizedString("Too short key string to encrypt file.", comment: "AES Error")
+            return localized("Too short key string to encrypt file.")
         case .invalidInputData:
-            return NSLocalizedString("Failed to read bytes from data.", comment: "AES Error")
+            return localized("Failed to read bytes from data.")
         case .randomDataFailed:
-            return NSLocalizedString("Failed to generate random data", comment: "AES Error")
+            return localized("Failed to generate random data")
         case .keyGeneration(let statusCode):
-            return NSLocalizedString("Failed to generate key. Error: \(statusCode))", comment: "AES Error")
+            return localized("Failed to generate key. Error: \(statusCode))")
         case .encryptionFailed(let statusCode):
-            return NSLocalizedString("Something went wrong. Failed to encrypt data. Error: \(statusCode)", comment: "AES Error")
+            return localized("Something went wrong. Failed to encrypt data. Error: \(statusCode)")
         case .decryptionFailed(let statusCode):
-            return NSLocalizedString("Something went wrong. Failed to decrypt data. Error: \(statusCode)", comment: "AES Error")
+            return localized("Something went wrong. Failed to decrypt data. Error: \(statusCode)")
         }
     }
 }

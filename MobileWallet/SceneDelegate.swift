@@ -44,7 +44,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    func scene(_ scene: UIScene,
+               willConnectTo session: UISceneSession,
+               options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
@@ -72,7 +74,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let _ = (scene as? UIWindowScene) else { return }
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
-            let navigationController = AlwaysPoppableNavigationController(rootViewController: SplashViewController())
+            let navigationController = AlwaysPoppableNavigationController(
+                rootViewController: SplashViewController()
+            )
             navigationController.setNavigationBarHidden(true, animated: false)
             window.rootViewController = navigationController
             self.window = window
@@ -82,7 +86,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         if let url = URLContexts.first?.url {
-            deepLinker.handleShortcut(type: .send(deeplink: NSString(string: url.absoluteString) as String))
+            deepLinker.handleShortcut(
+                type: .send(
+                    deeplink: NSString(string: url.absoluteString) as String
+                )
+            )
         }
     }
 
@@ -135,7 +143,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         ICloudBackup.shared.backgroundBackupWallet()
     }
 
-    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+    func windowScene(_ windowScene: UIWindowScene,
+                     performActionFor shortcutItem: UIApplicationShortcutItem,
+                     completionHandler: @escaping (Bool) -> Void) {
         completionHandler(deepLinker.handleShortcut(item: shortcutItem))
     }
 }

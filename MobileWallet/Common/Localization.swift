@@ -1,8 +1,8 @@
-//  Backup.swift
+//  Localization.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 09.07.2020
+	Created by kutsal kaan bilgin on 13.11.2020
 	Using Swift 5.0
 	Running on macOS 10.15
 
@@ -40,36 +40,6 @@
 
 import Foundation
 
-class Backup {
-
-    let url: URL
-    let folderPath: String
-    let dateCreation: Date
-    let dateCreationString: String
-    let isEncrypted: Bool
-
-    var isValid: Bool {
-        return !ICloudBackup.shared.inProgress && !ICloudBackup.shared.isLastBackupFailed && !BackupScheduler.shared.isBackupScheduled
-    }
-
-    init(url: URL) throws {
-        if try !url.checkResourceIsReachable() {
-            throw ICloudBackupError.backupUrlNotValid
-        }
-
-        self.url = url
-        folderPath = url.deletingLastPathComponent().path
-        isEncrypted = !url.absoluteString.contains(".zip")
-
-        guard let date = try url.resourceValues(forKeys: [.creationDateKey]).allValues.first?.value as? Date else {
-            throw ICloudBackupError.unableToDetermineDateOfBackup
-        }
-
-        dateCreation = date
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM dd yyy 'at' h:mm a"
-        dateFormatter.timeZone = .current
-        dateCreationString = dateFormatter.string(from: date)
-    }
-
+func localized(_ key: String) -> String {
+    return NSLocalizedString(key, comment: "")
 }
