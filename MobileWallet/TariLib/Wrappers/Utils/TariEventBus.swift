@@ -45,10 +45,10 @@ public enum TariEventTypes: String {
     case requiresBackup = "tari-event-requires-backup"
 
     //Wallet callbacks
-    case receievedTx = "tari-event-receieved-tx"
+    case receivedTx = "tari-event-received-tx"
     case receievedTxReply = "tari-event-receieved-tx-reply"
     case receivedFinalizedTx = "tari-event-received-finalized-tx"
-    case txBroadcast = "tari-event-tx-broadcase"
+    case txBroadcast = "tari-event-tx-broadcast"
     case txMined = "tari-event-tx-mined"
     case directSend = "tari-event-direct-send"
     case storeAndForwardSend = "tari-event-store-and-forward-send"
@@ -86,18 +86,35 @@ open class TariEventBus {
 
     // MARK: Publish
 
-    open class func postToMainThread(_ eventType: TariEventTypes, sender: Any? = nil) {
+    open class func postToMainThread(
+        _ eventType: TariEventTypes,
+        sender: Any? = nil
+    ) {
         DispatchQueue.main.async {
-            NotificationCenter.default.post(name: Notification.Name(rawValue: eventType.rawValue), object: sender)
+            NotificationCenter.default.post(
+                name: Notification.Name(rawValue: eventType.rawValue),
+                object: sender
+            )
         }
     }
 
     // MARK: Subscribe
 
     @discardableResult
-    open class func on(_ target: AnyObject, eventType: TariEventTypes, sender: Any? = nil, queue: OperationQueue?, handler: @escaping ((Notification?) -> Void)) -> NSObjectProtocol {
+    open class func on(
+        _ target: AnyObject,
+        eventType: TariEventTypes,
+        sender: Any? = nil,
+        queue: OperationQueue?,
+        handler: @escaping ((Notification?) -> Void)
+    ) -> NSObjectProtocol {
         let id = UInt(bitPattern: ObjectIdentifier(target))
-        let observer = NotificationCenter.default.addObserver(forName: NSNotification.Name(rawValue: eventType.rawValue), object: sender, queue: queue, using: handler)
+        let observer = NotificationCenter.default.addObserver(
+            forName: NSNotification.Name(rawValue: eventType.rawValue),
+            object: sender,
+            queue: queue,
+            using: handler
+        )
         let namedObserver = NamedObserver(observer: observer, eventType: eventType)
 
         TariEventBus.queue.sync {
@@ -112,13 +129,35 @@ open class TariEventBus {
     }
 
     @discardableResult
-    open class func onMainThread(_ target: AnyObject, eventType: TariEventTypes, sender: Any? = nil, handler: @escaping ((Notification?) -> Void)) -> NSObjectProtocol {
-        return TariEventBus.on(target, eventType: eventType, sender: sender, queue: OperationQueue.main, handler: handler)
+    open class func onMainThread(
+        _ target: AnyObject,
+        eventType: TariEventTypes,
+        sender: Any? = nil,
+        handler: @escaping ((Notification?) -> Void)
+    ) -> NSObjectProtocol {
+        return TariEventBus.on(
+            target,
+            eventType: eventType,
+            sender: sender,
+            queue: OperationQueue.main,
+            handler: handler
+        )
     }
 
     @discardableResult
-    open class func onBackgroundThread(_ target: AnyObject, eventType: TariEventTypes, sender: Any? = nil, handler: @escaping ((Notification?) -> Void)) -> NSObjectProtocol {
-        return TariEventBus.on(target, eventType: eventType, sender: sender, queue: OperationQueue(), handler: handler)
+    open class func onBackgroundThread(
+        _ target: AnyObject,
+        eventType: TariEventTypes,
+        sender: Any? = nil,
+        handler: @escaping ((Notification?) -> Void)
+    ) -> NSObjectProtocol {
+        return TariEventBus.on(
+            target,
+            eventType: eventType,
+            sender: sender,
+            queue: OperationQueue(),
+            handler: handler
+        )
     }
 
     // MARK: Unregister
@@ -142,14 +181,16 @@ open class TariEventBus {
 
         TariEventBus.queue.sync {
             if let namedObservers = TariEventBus.shared.cache[id] {
-                TariEventBus.shared.cache[id] = namedObservers.filter({ (namedObserver: NamedObserver) -> Bool in
-                    if namedObserver.eventType == eventType {
-                        center.removeObserver(namedObserver.observer)
-                        return false
-                    } else {
-                        return true
+                TariEventBus.shared.cache[id] = namedObservers.filter({
+                        (namedObserver: NamedObserver) -> Bool in
+                        if namedObserver.eventType == eventType {
+                            center.removeObserver(namedObserver.observer)
+                            return false
+                        } else {
+                            return true
+                        }
                     }
-                })
+                )
             }
         }
     }

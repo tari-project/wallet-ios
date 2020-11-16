@@ -105,11 +105,11 @@ class PasswordField: UIView, UITextFieldDelegate {
                 warningLabel.isHidden = true
                 return
             case .passwordShortLength:
-                warningLabel.text = String(format: NSLocalizedString("password_verification.warning.short_password.with_param", comment: "PasswordVerification view"), String(minPasswordLength))
+                warningLabel.text = String(format: localized("password_verification.warning.short_password.with_param"), String(minPasswordLength))
             case .passwordDoNotMatch:
-                warningLabel.text = NSLocalizedString("password_verification.warning.password_do_not_match", comment: "PasswordVerification view")
+                warningLabel.text = localized("password_verification.warning.password_do_not_match")
             case .wrongPassword:
-                warningLabel.text = NSLocalizedString("password_verification.warning.wrong_password", comment: "PasswordVerification view")
+                warningLabel.text = localized("password_verification.warning.wrong_password")
             }
 
             warningLabel.isHidden = false

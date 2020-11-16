@@ -121,10 +121,7 @@ class ShortcutParser {
     func registerShortcuts() {
         let showQRShortcutItem = UIApplicationShortcutItem(
             type: ShortcutKey.showQR.rawValue,
-            localizedTitle: NSLocalizedString(
-                "shortcut.show_my_qr",
-                comment: "Home screen shortcut"
-            ),
+            localizedTitle: localized("shortcut.show_my_qr"),
             localizedSubtitle: nil,
             icon: UIApplicationShortcutIcon(templateImageName: "qr"),
             userInfo: nil
@@ -133,10 +130,7 @@ class ShortcutParser {
         let sendShortcutItem = UIApplicationShortcutItem(
             type: ShortcutKey.send.rawValue,
             localizedTitle: String(
-                format: NSLocalizedString(
-                    "common.send.with_param",
-                    comment: "Common"
-                ),
+                format: localized("common.send.with_param"),
                 TariSettings.shared.network.currencyDisplayTicker
             ),
             localizedSubtitle: nil,

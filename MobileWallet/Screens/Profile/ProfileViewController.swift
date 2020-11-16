@@ -76,7 +76,7 @@ class ProfileViewController: UIViewController {
     private func setupNavigationBar() {
         navigationBar.backButton.isHidden = true
         navigationBar.verticalPositioning = .center
-        navigationBar.title = NSLocalizedString("profile_view.title", comment: "Profile view")
+        navigationBar.title = localized("profile_view.title")
         navigationBar.backgroundColor =  Theme.shared.colors.profileBackground
         view.addSubview(navigationBar)
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
@@ -152,9 +152,8 @@ class ProfileViewController: UIViewController {
 
     private func customizeMiddleLabel() {
         let middleLabelText = String(
-            format: NSLocalizedString(
-                "profile_view.error.qr_code.description.with_param",
-                comment: "Profile view"
+            format: localized(
+                "profile_view.error.qr_code.description.with_param"
             ),
             TariSettings.shared.network.currencyDisplayTicker
         )
@@ -212,7 +211,7 @@ class ProfileViewController: UIViewController {
             try genQRCode()
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("profile_view.error.qr_code.title", comment: "Profile view"),
+                title: localized("profile_view.error.qr_code.title"),
                 description: "",
                 error: error)
         }

@@ -498,6 +498,7 @@
 		619197D2BB78CBBC06B0F87E /* UTXO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619190C6EBD050DC647D1D7B /* UTXO.swift */; };
 		619198F3E20DFABEB23F63FE /* UTXO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619190C6EBD050DC647D1D7B /* UTXO.swift */; };
 		83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */; };
+		A01BBED62562B9DB007F551F /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
 		A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
 		A01F54A9255EAB7E00F49AFA /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
 		A01F54AA255EAB7E00F49AFA /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
@@ -2178,6 +2179,7 @@
 				00C520B92469720F0077BF7F /* TariEventBus.swift in Sources */,
 				00C520C02469720F0077BF7F /* ConnectionMonitor.swift in Sources */,
 				00C520A2246965260077BF7F /* NotificationService.swift in Sources */,
+				A01BBED62562B9DB007F551F /* Localization.swift in Sources */,
 				00C520C5246972140077BF7F /* Wallet.swift in Sources */,
 				00C520B2246971FC0077BF7F /* TariLib.swift in Sources */,
 				00C520B32469720A0077BF7F /* OnionConnector.swift in Sources */,

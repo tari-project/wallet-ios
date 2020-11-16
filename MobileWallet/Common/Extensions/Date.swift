@@ -54,21 +54,21 @@ extension Date {
                 guard let minutes = components.minute else { return nil }
 
                 guard minutes != 0 else {
-                    return NSLocalizedString("tx_list.now", comment: "Transaction list section heading")
+                    return localized("tx_list.now")
                 }
 
                 return String(
-                    format: NSLocalizedString("tx_list.relative_minutes", comment: "Transaction list section heading"),
+                    format: localized("tx_list.relative_minutes"),
                     "\(minutes)"
                 )
             }
 
             return String(
-                format: NSLocalizedString("tx_list.relative_hours", comment: "Transaction list section heading"),
+                format: localized("tx_list.relative_hours"),
                 "\(hours)"
             )
         } else if Calendar.current.isDateInYesterday(self) {
-            return NSLocalizedString("tx_list.yesterday", comment: "Transaction list section heading")
+            return localized("tx_list.yesterday")
         } else {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, yyyy", options: 0, locale: .current)

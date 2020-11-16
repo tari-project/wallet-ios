@@ -124,14 +124,27 @@ class TxTableViewCell: UITableViewCell {
             }
         }
 
-        kvoStatus = item.observe(\.status, options: .new) { [weak self] (_, _) in
-            guard let self = self, let model = self.model else { return }
-            self.setStatus(item.status)
-            self.setValue(microTari: model.value.microTari, direction: model.tx.direction, isCancelled: model.value.isCancelled, isPending: model.value.isPending)
+        kvoStatus = item.observe(\.status, options: .new) {
+            (_, _) in
+            DispatchQueue.main.async {
+                [weak self] in
+                guard let self = self, let model = self.model else { return }
+                self.setStatus(item.status)
+                self.setValue(
+                    microTari: model.value.microTari,
+                    direction: model.tx.direction,
+                    isCancelled: model.value.isCancelled,
+                    isPending: model.value.isPending
+                )
+            }
         }
 
-        kvoTime = item.observe(\.time, options: .new) { [weak self] (_, _) in
-            self?.timeLabel.text = item.time
+        kvoTime = item.observe(\.time, options: .new) {
+            (_, _) in
+            DispatchQueue.main.async {
+                [weak self] in
+                self?.timeLabel.text = item.time
+            }
         }
     }
 
@@ -146,9 +159,7 @@ class TxTableViewCell: UITableViewCell {
 
     private func setGif(media: GPHMedia?) {
         if model?.hasGif == false || media != nil {
-            DispatchQueue.main.async { [weak self] in
-                self?.loadingGifButton.isHidden = true
-            }
+            loadingGifButton.isHidden = true
         }
 
         if media != nil {

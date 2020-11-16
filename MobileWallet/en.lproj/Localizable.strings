@@ -233,7 +233,9 @@
 /* Refresh view */
 "refresh_view.checking" = "Checking for Updates";
 "refresh_view.final_processing" = "Completing final processing…";
-"refresh_view.receiving_new_txs" = "Receiving new transaction";
+"refresh_view.receiving_new_txs" = "Receiving new transactions";
+"refresh_view.completing_txs" = "Completing your transactions";
+"refresh_view.updating_txs" = "Updating your transactions";
 "refresh_view.waiting_for_recipient" = "Waiting for recipient to come online";
 "refresh_view.waiting_for_sender" = "Waiting for sender to complete transaction";
 "refresh_view.success" = "You are up to date!";

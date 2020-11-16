@@ -375,7 +375,7 @@ extension EmojiIdView {
 
     private func showCopyEmojiIdButton(completion: (() -> Void)? = nil) {
         emojiMenu.alpha = 0.0
-        emojiMenu.title = NSLocalizedString("emoji.copy", comment: "Emoji view")
+        emojiMenu.title = localized("emoji.copy")
 
         emojiMenu.completion = {
             [weak self] isLongPress in
@@ -445,7 +445,7 @@ private class EmojiMenuView: UIView {
 
     var title: String? {
         didSet {
-            button.setTitle(NSLocalizedString(title ?? "", comment: ""), for: .normal)
+            button.setTitle(localized(title ?? ""), for: .normal)
             button.titleLabel?.font = Theme.shared.fonts.copyButton
         }
     }
@@ -551,7 +551,7 @@ extension EmojiIdView {
         greenView.frame = subviewFrame
         // label
         let copiedLabel = UILabel()
-        copiedLabel.text = NSLocalizedString("emoji.copied", comment: "Emoji view")
+        copiedLabel.text = localized("emoji.copied")
         copiedLabel.font = Theme.shared.fonts.copiedLabel
         copiedLabel.textColor = Theme.shared.colors.textButtonSecondary
         // copiedLabel.translatesAutoresizingMaskIntoConstraints = false

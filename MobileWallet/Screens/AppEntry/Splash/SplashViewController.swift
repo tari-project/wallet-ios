@@ -136,8 +136,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             let error: Error? = result?.object as? Error
 
             UserFeedback.shared.error(
-                title: NSLocalizedString("tor.error.title", comment: "Tor error"),
-                description: NSLocalizedString("tor.error.description", comment: "Tor error"),
+                title: localized("tor.error.title"),
+                description: localized("tor.error.description"),
                 error: error
             )
         }
@@ -169,8 +169,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 } catch {
                     DispatchQueue.main.async {
                         UserFeedback.shared.error(
-                            title: NSLocalizedString("wallet.error.title", comment: "Wallet error"),
-                            description: NSLocalizedString("wallet.error.start_existing_wallet", comment: "Wallet error"),
+                            title: localized("wallet.error.title"),
+                            description: localized("wallet.error.start_existing_wallet"),
                             error: error
                         )
                     }
@@ -195,7 +195,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
                 try ICloudBackup.shared.createWalletBackup(password: password)
             } catch {
-                var title = NSLocalizedString("iCloud_backup.error.title.create_backup", comment: "iCloudBackup error")
+                var title = localized("iCloud_backup.error.title.create_backup")
 
                 if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
                    title = localizedError.failureReason!
@@ -222,8 +222,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             }
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("wallet.error.title", comment: "Wallet error"),
-                description: NSLocalizedString("wallet.error.create_new_wallet", comment: "Wallet error"),
+                title: localized("wallet.error.title"),
+                description: localized("wallet.error.create_new_wallet"),
                 error: error //TODO copy update
             )
 

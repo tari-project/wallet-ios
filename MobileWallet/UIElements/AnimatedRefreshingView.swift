@@ -41,17 +41,15 @@
 import UIKit
 
 enum AnimatedRefreshingViewState {
-    //Home view states
-    case loading
-    case receiving
+    // home view states
+    case loading // sync.ing with base node
+    case receiving // txs have been received or mined while syncing
+    case completing // txs have been broadcast while syncing
+    case updating // txs have been cancelled while syncing
     case success
+    // post-base-node-sync update sequence
 
-    //Backup states
-    case backupScheduled
-    case backupInProgress
-    case backupSuccess
-
-    //TX view states
+    // tx view states
     case txWaitingForSender
     case txWaitingForRecipient
     case txCompleted
@@ -98,46 +96,41 @@ private class RefreshingInnerView: UIView {
         case .loading:
             emojiLabel.text = "⏳"
             spinner.startAnimating()
-            statusLabel.text = NSLocalizedString("refresh_view.checking", comment: "Refresh view")
+            statusLabel.text = localized("refresh_view.checking")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .receiving:
             emojiLabel.text = "🤝"
             spinner.startAnimating()
-            statusLabel.text = NSLocalizedString("refresh_view.receiving_new_txs", comment: "Refresh view")
+            statusLabel.text = localized("refresh_view.receiving_new_txs")
+            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
+        case .completing:
+            emojiLabel.text = "🤝"
+            spinner.startAnimating()
+            statusLabel.text = localized("refresh_view.completing_txs")
+            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
+        case .updating:
+            emojiLabel.text = "🤝"
+            spinner.startAnimating()
+            statusLabel.text = localized("refresh_view.updating_txs")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .success:
-            statusLabel.text = NSLocalizedString("refresh_view.success", comment: "Refresh view")
+            statusLabel.text = localized("refresh_view.success")
             spinner.stopAnimating()
-            statusLabel.textColor = Theme.shared.colors.refreshViewLabelSuccess
-        case .backupScheduled:
-            emojiLabel.text = "⏳"
-            spinner.stopAnimating()
-            statusLabel.text = NSLocalizedString("refresh_view.backup.scheduled", comment: "Refresh view")
-            statusLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionScheduled
-        case .backupInProgress:
-            emojiLabel.text = ""
-            spinner.startAnimating()
-            statusLabel.text = NSLocalizedString("refresh_view.backup.inProgress", comment: "Refresh view")
-            statusLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionScheduled
-        case .backupSuccess:
-            emojiLabel.text = ""
-            spinner.stopAnimating()
-            statusLabel.text = NSLocalizedString("refresh_view.backup.success", comment: "Refresh view")
             statusLabel.textColor = Theme.shared.colors.refreshViewLabelSuccess
         case .txWaitingForRecipient:
             emojiLabel.text = ""
             spinner.stopAnimating()
-            statusLabel.text = NSLocalizedString("refresh_view.waiting_for_recipient", comment: "Refresh view")
+            statusLabel.text = localized("refresh_view.waiting_for_recipient")
             statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         case .txWaitingForSender:
             emojiLabel.text = ""
             spinner.stopAnimating()
-            statusLabel.text = NSLocalizedString("refresh_view.waiting_for_sender", comment: "Refresh view")
+            statusLabel.text = localized("refresh_view.waiting_for_sender")
             statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         case .txCompleted:
             emojiLabel.text = ""
             spinner.stopAnimating()
-            statusLabel.text = NSLocalizedString("refresh_view.final_processing", comment: "Refresh view")
+            statusLabel.text = localized("refresh_view.final_processing")
             statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         }
     }
@@ -157,7 +150,6 @@ class AnimatedRefreshingView: UIView {
     enum StateType {
         case none
         case updateData
-        case backup
         case txtView
     }
 
@@ -171,7 +163,8 @@ class AnimatedRefreshingView: UIView {
         super.init(coder: aDecoder)
     }
 
-    func setupView(_ type: AnimatedRefreshingViewState, visible: Bool = false) {
+    func setupView(_ type: AnimatedRefreshingViewState,
+                   visible: Bool = false) {
         currentState = type
         backgroundColor = Theme.shared.colors.appBackground
 
@@ -194,28 +187,45 @@ class AnimatedRefreshingView: UIView {
         }
     }
 
-    func animateIn(delay: TimeInterval = 0.25, withDuration: TimeInterval = 0.5) {
+    func animateIn(delay: TimeInterval = 0.25,
+                   withDuration: TimeInterval = 0.5) {
         if alpha == 1 { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: {
-            UIView.animate(withDuration: withDuration, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
-                guard let self = self else { return }
-                self.alpha = 1
-                self.layoutIfNeeded()
-            })
-        })
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + delay
+        ) {
+            UIView.animate(
+                withDuration: withDuration,
+                delay: 0,
+                options: .curveEaseInOut,
+                animations: {
+                    [weak self] in
+                    guard let self = self else { return }
+                    self.alpha = 1
+                    self.layoutIfNeeded()
+                }
+            )
+        }
     }
 
     func animateOut(_ onComplete: (() -> Void)? = nil) {
         if alpha == 0 { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
-                guard let self = self else { return }
-                self.alpha = 0
-                self.layoutIfNeeded()
-            }) { (_) in
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + 0.1
+        ) {
+            UIView.animate(
+                withDuration: 0.5,
+                delay: 0,
+                options: .curveEaseInOut,
+                animations: {
+                    [weak self] in
+                    guard let self = self else { return }
+                    self.alpha = 0
+                    self.layoutIfNeeded()
+                }
+            ) { (_) in
                 onComplete?()
             }
-        })
+        }
     }
 
     private func setupInnerView(_ innerView: RefreshingInnerView) {
@@ -225,20 +235,108 @@ class AnimatedRefreshingView: UIView {
         innerView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     }
 
-    func updateState(_ type: AnimatedRefreshingViewState, animated: Bool = true) {
+    func playUpdateSequence(hasReceivedTx: Bool,
+                            hasMinedTx: Bool,
+                            hasBroadcastTx: Bool,
+                            hasCancelledTx: Bool,
+                            completion: @escaping () -> Void) {
+        showReceivingTxsState(
+            hasReceivedTx: hasReceivedTx,
+            hasMinedTx: hasMinedTx,
+            hasBroadcastTx: hasBroadcastTx,
+            hasCancelledTx: hasCancelledTx,
+            completion: completion
+        )
+    }
+
+    private func showReceivingTxsState(hasReceivedTx: Bool,
+                                       hasMinedTx: Bool,
+                                       hasBroadcastTx: Bool,
+                                       hasCancelledTx: Bool,
+                                       completion: @escaping () -> Void) {
+        if hasReceivedTx || hasMinedTx {
+            updateState(.receiving) {
+                [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) {
+                    [weak self] in
+                    self?.showCompletingTxsState(
+                        hasBroadcastTx: hasBroadcastTx,
+                        hasCancelledTx: hasCancelledTx,
+                        completion: completion
+                    )
+                }
+            }
+        } else {
+            showCompletingTxsState(
+                hasBroadcastTx: hasBroadcastTx,
+                hasCancelledTx: hasCancelledTx,
+                completion: completion
+            )
+        }
+    }
+
+    private func showCompletingTxsState(hasBroadcastTx: Bool,
+                                        hasCancelledTx: Bool,
+                                        completion: @escaping () -> Void) {
+        if hasBroadcastTx {
+            updateState(.completing) {
+                [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) {
+                    [weak self] in
+                    self?.showUpdatingTxsState(
+                        hasCancelledTx: hasCancelledTx,
+                        completion: completion
+                    )
+                }
+            }
+        } else {
+            showUpdatingTxsState(
+                hasCancelledTx: hasCancelledTx,
+                completion: completion
+            )
+        }
+    }
+
+    private func showUpdatingTxsState(hasCancelledTx: Bool,
+                                      completion: @escaping () -> Void) {
+        if hasCancelledTx {
+            updateState(.updating) {
+                [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) {
+                    [weak self] in
+                    self?.showSuccessState(completion: completion)
+                }
+            }
+        } else {
+            showSuccessState(completion: completion)
+        }
+    }
+
+    private func showSuccessState(completion: @escaping () -> Void) {
+        updateState(.success) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                completion()
+            }
+        }
+    }
+
+    func updateState(_ type: AnimatedRefreshingViewState,
+                     animated: Bool = true,
+                     completion: (() -> Void)? = nil) {
         guard currentState != type else {
             return
         }
-
         if isUpdatingState {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5 + CATransaction.animationDuration()) { [weak self] in
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + 0.5 + CATransaction.animationDuration()
+            ) {
+                [weak self] in
                 self?.updateState(type)
             }
             return
         }
 
         isUpdatingState = true
-
         currentState = type
 
         let shiftUpPoints: CGFloat = 20
@@ -248,46 +346,52 @@ class AnimatedRefreshingView: UIView {
         newInnerView.alpha = 0
         setupInnerView(newInnerView)
 
-        let newInnerViewTopAnchor = newInnerView.topAnchor.constraint(equalTo: topAnchor, constant: shiftUpPoints)
+        let newInnerViewTopAnchor = newInnerView.topAnchor.constraint(
+            equalTo: topAnchor,
+            constant: shiftUpPoints
+        )
         newInnerViewTopAnchor.isActive = true
-        let newInnerViewBottomAnchor = newInnerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: shiftUpPoints)
+        let newInnerViewBottomAnchor = newInnerView.bottomAnchor.constraint(
+            equalTo: bottomAnchor,
+            constant: shiftUpPoints
+        )
         newInnerViewBottomAnchor.isActive = true
 
         //Shift the new inner view from the bottom up, while moving the current one up and out
-        DispatchQueue.main.asyncAfter(deadline: .now() + (animated ? CATransaction.animationDuration() : 0.0), execute: {
-            UIView.animate(withDuration: (animated ? 0.5 : 0.0), delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + (animated ? CATransaction.animationDuration() : 0.0)
+        ) {
+            UIView.animate(
+                withDuration: (animated ? 0.5 : 0.0),
+                delay: 0,
+                options: .curveEaseInOut,
+                animations: {
+                    [weak self] in
                     guard let self = self else { return }
-
                     self.currentInnerView.alpha = 0
                     newInnerView.alpha = 1
-
                     newInnerViewTopAnchor.constant = 0
                     newInnerViewBottomAnchor.constant = 0
-
                     self.currentInnerViewTopAnchor.constant = -shiftUpPoints
                     self.currentInnerViewBottomAnchor.constant = -shiftUpPoints
                     self.layoutIfNeeded()
-
-            }) { [weak self] (_) in
+                }
+            ) {
+                [weak self] (_) in
                 guard let self = self else { return }
                 self.isUpdatingState = false
-
                 self.currentInnerView.removeFromSuperview()
-
                 self.currentInnerView = newInnerView
-
                 self.currentInnerViewTopAnchor.isActive = false
                 self.currentInnerViewBottomAnchor.isActive = false
-
                 newInnerViewTopAnchor.isActive = false
                 newInnerViewBottomAnchor.isActive = false
-
                 self.currentInnerViewTopAnchor = newInnerViewTopAnchor
                 self.currentInnerViewBottomAnchor = newInnerViewBottomAnchor
-
                 self.currentInnerViewTopAnchor.isActive = true
                 self.currentInnerViewBottomAnchor.isActive = true
+                completion?()
             }
-        })
+        }
     }
 }

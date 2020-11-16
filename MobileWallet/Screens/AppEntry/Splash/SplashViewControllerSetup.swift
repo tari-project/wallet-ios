@@ -145,7 +145,7 @@ extension SplashViewController {
 
     func setupTitleLabel() {
         titleLabel.isHidden = true
-        titleLabel.text = NSLocalizedString("splash.title", comment: "Splash view")
+        titleLabel.text = localized("splash.title")
         titleLabel.interlineSpacing(spacingValue: 0)
         titleLabel.numberOfLines = 2
         titleLabel.adjustsFontSizeToFitWidth = true
@@ -164,7 +164,7 @@ extension SplashViewController {
 
     func setupCreateWalletButton() {
         createWalletButton.isHidden = true
-        createWalletButton.setTitle(NSLocalizedString("splash.create_wallet", comment: "Splash view"), for: .normal)
+        createWalletButton.setTitle(localized("splash.create_wallet"), for: .normal)
         createWalletButton.addTarget(self, action: #selector(onCreateWalletTap), for: .touchUpInside)
         elementsContainer.addSubview(createWalletButton)
 
@@ -182,7 +182,7 @@ extension SplashViewController {
         restoreButton.tintColor = .white
         restoreButton.titleLabel?.font = Theme.shared.fonts.restoreWalletButton
         restoreButton.addTarget(self, action: #selector(onRestoreWalletTap), for: .touchUpInside)
-        let title = NSLocalizedString("splash.restore_wallet", comment: "Splash view")
+        let title = localized("splash.restore_wallet")
         restoreButton.setTitle(title, for: .normal)
 
         elementsContainer.addSubview(restoreButton)
@@ -199,10 +199,10 @@ extension SplashViewController {
         disclaimerText.translatesAutoresizingMaskIntoConstraints = false
         disclaimerText.isEditable = false
 
-        let userAgreementLinkText = NSLocalizedString("splash.disclaimer.param.user_agreement", comment: "Splash view")
-        let privacyPolicyLinkText = NSLocalizedString("splash.disclaimer.param.privacy_policy", comment: "Splash view")
+        let userAgreementLinkText = localized("splash.disclaimer.param.user_agreement")
+        let privacyPolicyLinkText = localized("splash.disclaimer.param.privacy_policy")
         let text = String(
-            format: NSLocalizedString("splash.disclaimer.with_params", comment: "Splash view"),
+            format: localized("splash.disclaimer.with_params"),
             userAgreementLinkText,
             privacyPolicyLinkText)
 

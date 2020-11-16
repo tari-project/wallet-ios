@@ -57,17 +57,11 @@ struct KeyServerRequest: Codable {
 class KeyServer {
     private let MESSAGE_PREFIX = "Hello Tari from"
     private let TARIBOT_MESSAGE1 = String(
-        format: NSLocalizedString(
-            "taribot.message1.with_param",
-            comment: "TariBot transaction"
-        ),
+        format: localized("taribot.message1.with_param"),
         TariSettings.shared.network.currencyDisplayTicker
     )
     private let TARIBOT_MESSAGE2 = String(
-        format: NSLocalizedString(
-            "taribot.message2.with_params",
-            comment: "TariBot transaction"
-        ),
+        format: localized("taribot.message2.with_params"),
         TariSettings.shared.network.currencyDisplayTicker,
         TariSettings.shared.network.currencyDisplayTicker
     )

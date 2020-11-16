@@ -48,9 +48,14 @@ class UserFeedback {
 
     private var defaultAttributes: EKAttributes {
         var attributes = EKAttributes.bottomFloat
-        attributes.screenBackground = .color(color: EKColor(Theme.shared.colors.feedbackPopupBackground!))
+        attributes.screenBackground = .color(
+            color: EKColor(Theme.shared.colors.feedbackPopupBackground!)
+        )
         attributes.entryBackground = .clear
-        attributes.positionConstraints.size = .init(width: .offset(value: SIDE_OFFSET), height: .intrinsic)
+        attributes.positionConstraints.size = .init(
+            width: .offset(value: SIDE_OFFSET),
+            height: .intrinsic
+        )
         attributes.positionConstraints.verticalOffset = VERTICAL_OFFSET
         attributes.screenInteraction = .dismiss
         attributes.entryInteraction = .forward
@@ -67,7 +72,10 @@ class UserFeedback {
         )
     }
 
-    func error(title: String, description: String, error: Error? = nil, onClose: (() -> Void)? = nil) {
+    func error(title: String,
+               description: String,
+               error: Error? = nil,
+               onClose: (() -> Void)? = nil) {
         let errorFeedbackView = FeedbackView()
 
         var descriptionText = description
@@ -76,12 +84,19 @@ class UserFeedback {
         }
 
         if onClose == nil {
-            errorFeedbackView.setupError(title: title, description: descriptionText)
+            errorFeedbackView.setupError(
+                title: title,
+                description: descriptionText
+            )
         } else {
-            errorFeedbackView.setupError(title: title, description: descriptionText, onClose: {
-                SwiftEntryKit.dismiss()
-                onClose?()
-            })
+            errorFeedbackView.setupError(
+                title: title,
+                description: descriptionText,
+                onClose: {
+                    SwiftEntryKit.dismiss()
+                    onClose?()
+                }
+            )
         }
 
         var attributes = defaultAttributes
@@ -104,7 +119,13 @@ class UserFeedback {
         attributes.displayDuration = .infinity
         attributes.hapticFeedbackType = .none
         attributes.screenInteraction = .dismiss
-        attributes.entranceAnimation = .init(translate: .init(duration: 0.25, anchorPosition: .bottom, spring: .init(damping: 1, initialVelocity: 0)))
+        attributes.entranceAnimation = .init(
+            translate: .init(
+                duration: 0.25,
+                anchorPosition: .bottom,
+                spring: .init(damping: 1, initialVelocity: 0)
+            )
+        )
 
         SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
         closeKeyboard()
@@ -116,9 +137,18 @@ class UserFeedback {
         successFeedbackView.setupSuccess(title: title)
         var attributes = EKAttributes.topToast
 
-        attributes.entryBackground = .color(color: EKColor(Theme.shared.colors.successFeedbackPopupBackground!))
+        attributes.entryBackground = .color(
+            color: EKColor(Theme.shared.colors.successFeedbackPopupBackground!)
+        )
         attributes.screenBackground = .clear
-        attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
+        attributes.shadow = .active(
+            with: .init(
+                color: EKColor(Theme.shared.colors.feedbackPopupBackground!),
+                opacity: 0.35,
+                radius: 10,
+                offset: .zero
+            )
+        )
         attributes.displayDuration = 2
         attributes.hapticFeedbackType = .success
         attributes.screenInteraction = .forward
@@ -165,7 +195,11 @@ class UserFeedback {
         TariLogger.verbose("User call to action: title=\(title) description=\(description)")
     }
 
-    func acceptUserInput(title: String, cancelTitle: String, actionTitle: String, inputs: [UserFeedbackFormInput], onSubmit: @escaping ([String: String]) -> Void) {
+    func acceptUserInput(title: String,
+                         cancelTitle: String,
+                         actionTitle: String,
+                         inputs: [UserFeedbackFormInput],
+                         onSubmit: @escaping ([String: String]) -> Void) {
         let successFeedbackView = FeedbackView()
         successFeedbackView.setupForm(
             title: title,
@@ -179,7 +213,14 @@ class UserFeedback {
         var attributes = EKAttributes.float
 
         attributes.screenBackground = .visualEffect(style: .dark)
-        attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
+        attributes.shadow = .active(
+            with: .init(
+                color: EKColor(Theme.shared.colors.feedbackPopupBackground!),
+                opacity: 0.35,
+                radius: 10,
+                offset: .zero
+            )
+        )
         attributes.displayDuration = .infinity
         attributes.screenInteraction = .absorbTouches
         attributes.entryInteraction = .absorbTouches
@@ -199,22 +240,16 @@ class UserFeedback {
             image: Theme.shared.images.storeModal!,
             imageTop: imageTop,
             title: String(
-                format: NSLocalizedString(
-                    "store_modal.title.with_param",
-                    comment: "Store modal"
-                ),
+                format: localized("store_modal.title.with_param"),
                 TariSettings.shared.network.currencyDisplayTicker
             ),
-            boldedTitle: NSLocalizedString("store_modal.bold_title", comment: "Store modal"),
+            boldedTitle: localized("store_modal.bold_title"),
             description: String(
-                format: NSLocalizedString(
-                    "store_modal.description",
-                    comment: "Store modal"
-                ),
+                format: localized("store_modal.description"),
                 TariSettings.shared.network.currencyDisplayTicker
             ),
-            cancelTitle: NSLocalizedString("store_modal.cancel", comment: "Store modal"),
-            actionTitle: NSLocalizedString("store_modal.action", comment: "Store modal"),
+            cancelTitle: localized("store_modal.cancel"),
+            actionTitle: localized("store_modal.action"),
             actionIcon: Theme.shared.images.storeIcon!,
             onClose: {
                 SwiftEntryKit.dismiss()
@@ -229,10 +264,19 @@ class UserFeedback {
 
         ctaFeedbackView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(ctaFeedbackView)
-        ctaFeedbackView.topAnchor.constraint(equalTo: containerView.topAnchor, constant: imageTop).isActive = true
-        ctaFeedbackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor).isActive = true
-        ctaFeedbackView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor).isActive = true
-        ctaFeedbackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor).isActive = true
+        ctaFeedbackView.topAnchor.constraint(
+            equalTo: containerView.topAnchor,
+            constant: imageTop
+        ).isActive = true
+        ctaFeedbackView.bottomAnchor.constraint(
+            equalTo: containerView.bottomAnchor
+        ).isActive = true
+        ctaFeedbackView.leadingAnchor.constraint(
+            equalTo: containerView.leadingAnchor
+        ).isActive = true
+        ctaFeedbackView.trailingAnchor.constraint(
+            equalTo: containerView.trailingAnchor
+        ).isActive = true
 
         var attributes = defaultAttributes
         attributes.displayDuration = .infinity
@@ -263,8 +307,13 @@ class UserFeedback {
         attributes.displayDuration = .infinity
         attributes.hapticFeedbackType = .none
         attributes.screenInteraction = .dismiss
-        attributes.entranceAnimation = .init(translate: .init(duration: 0.25, anchorPosition: .bottom, spring: .init(damping: 1, initialVelocity: 0)))
-
+        attributes.entranceAnimation = .init(
+            translate: .init(
+                duration: 0.25,
+                anchorPosition: .bottom,
+                spring: .init(damping: 1, initialVelocity: 0)
+            )
+        )
         SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
         closeKeyboard()
     }
@@ -273,7 +322,8 @@ class UserFeedback {
         guard let topController = UIApplication.shared.topController() else { return }
         let webBrowserViewController = WebBrowserViewController()
         webBrowserViewController.url = url
-        webBrowserViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
+        webBrowserViewController.modalPresentationStyle =
+            UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
         topController.present(webBrowserViewController, animated: true)
     }
 }

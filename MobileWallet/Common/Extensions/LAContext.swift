@@ -54,8 +54,8 @@ extension LAContext {
 
         var rawValue: String {
             switch self {
-            case .logIn: return NSLocalizedString("authentication.reason.login", comment: "Authentication")
-            case .userVerification: return NSLocalizedString("authentication.reason.user_verification", comment: "Authentication")
+            case .logIn: return localized("authentication.reason.login")
+            case .userVerification: return localized("authentication.reason.user_verification")
             }
         }
     }
@@ -96,23 +96,23 @@ extension LAContext {
                         onSuccess()
                     } else {
                         if !showFailedDialog { return }
-                        let localizedReason = error?.localizedDescription ?? NSLocalizedString("authentication.fail.description", comment: "Authentication")
+                        let localizedReason = error?.localizedDescription ?? localized("authentication.fail.description")
                         TariLogger.error("Biometrics auth failed", error: error)
                         self.authenticationFailedAlertOptions(reason: localizedReason, onSuccess: onSuccess)
                     }
                 }
             }
         case .none:
-            let alert = UIAlertController(title: NSLocalizedString("authentication.error.title", comment: "Authentication") ,
-                                          message: NSLocalizedString("authentication.error.description", comment: "Authentication"),
+            let alert = UIAlertController(title: localized("authentication.error.title"),
+                                          message: localized("authentication.error.description"),
                                           preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: NSLocalizedString("authentication.try_again", comment: "Authentication"),
+            alert.addAction(UIAlertAction(title: localized("authentication.try_again"),
                                           style: .cancel,
                                           handler: { [weak self] _ in
                                             self?.authenticateUser(onSuccess: onSuccess)
             }))
 
-            alert.addAction(UIAlertAction(title: NSLocalizedString("authentication.proceed", comment: "Authentication"), style: .default, handler: { _ in
+            alert.addAction(UIAlertAction(title: localized("authentication.proceed"), style: .default, handler: { _ in
                 onSuccess()
             }))
 
@@ -123,13 +123,13 @@ extension LAContext {
     }
 
     private func authenticationFailedAlertOptions(reason: String, onSuccess: @escaping () -> Void) {
-        let alert = UIAlertController(title: NSLocalizedString("authentication.fail.title", comment: "Authentication"), message: reason, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("authentication.try_again", comment: "Authentication"), style: .default, handler: { [weak self] _ in
+        let alert = UIAlertController(title: localized("authentication.fail.title"), message: reason, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: localized("authentication.try_again"), style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
             self.authenticateUser(onSuccess: onSuccess)
         }))
 
-        alert.addAction(UIAlertAction(title: NSLocalizedString("authentication.action.open_settings", comment: "Authentication"), style: .default, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: localized("authentication.action.open_settings"), style: .default, handler: { [weak self] _ in
             guard let self = self else { return }
             if self.openAppSettings() {
                 self.authenticationFailedAlertOptions(reason: reason, onSuccess: onSuccess)

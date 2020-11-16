@@ -133,18 +133,18 @@ class TxTableViewModel: NSObject {
         if tx.direction == .inbound {
             if tx.status.0 == .pending {
                 titleText = String(
-                    format: NSLocalizedString("tx_list.inbound_pending_title", comment: "Transaction list"),
+                    format: localized("tx_list.inbound_pending_title"),
                     alias
                 )
             } else {
                 titleText =  String(
-                    format: NSLocalizedString("tx_list.inbound_title", comment: "Transaction list"),
+                    format: localized("tx_list.inbound_title"),
                     alias
                 )
             }
         } else if tx.direction == .outbound {
             titleText =  String(
-                format: NSLocalizedString("tx_list.outbound_title", comment: "Transaction list"),
+                format: localized("tx_list.outbound_title"),
                 alias
             )
         }
@@ -183,17 +183,17 @@ class TxTableViewModel: NSObject {
         switch tx.status.0 {
         case .pending:
             if tx.direction == .inbound {
-                statusMessage = NSLocalizedString("refresh_view.waiting_for_sender", comment: "Refresh view")
+                statusMessage = localized("refresh_view.waiting_for_sender")
             } else if tx.direction == .outbound {
-                statusMessage = NSLocalizedString("refresh_view.waiting_for_recipient", comment: "Refresh view")
+                statusMessage = localized("refresh_view.waiting_for_recipient")
             }
         case .broadcast, .completed:
-            statusMessage = NSLocalizedString("refresh_view.final_processing", comment: "Refresh view")
+            statusMessage = localized("refresh_view.final_processing")
         default: break
         }
 
         if tx.isCancelled {
-            statusMessage = NSLocalizedString("tx_detail.payment_cancelled", comment: "Transaction detail view")
+            statusMessage = localized("tx_detail.payment_cancelled")
         }
 
         status = statusMessage

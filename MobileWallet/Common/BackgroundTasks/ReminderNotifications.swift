@@ -53,10 +53,7 @@ class ReminderNotifications {
     static private let dateUserDefaultsKey = "should-schedule-reminders-updated-at"
 
     static let titleString = String(
-        format: NSLocalizedString(
-            "scheduled_reminder.title.with_param",
-            comment: "Local reminder notifications"
-        ),
+        format: localized("scheduled_reminder.title.with_param"),
         TariSettings.shared.network.currencyDisplayTicker
     )
 
@@ -64,17 +61,14 @@ class ReminderNotifications {
         ScheduledReminder(
             identifier: "scheduled-reminders-recipient-1",
             title: ReminderNotifications.titleString,
-            body: NSLocalizedString("scheduled_reminder.body.short", comment: "Local reminder notifications"),
+            body: localized("scheduled_reminder.body.short"),
             deliverAfter: TariSettings.shared.environment == .production ? 60 * 60 * 24 : 60 * 60 * 2 //24h for prod and 2h for debug/testflight
         ),
         ScheduledReminder(
             identifier: "scheduled-reminders-recipient-2",
             title: ReminderNotifications.titleString,
             body: String(
-                format: NSLocalizedString(
-                    "scheduled_reminder.body.long.with_param",
-                    comment: "Local reminder notifications"
-                ),
+                format: localized("scheduled_reminder.body.long.with_param"),
                 TariSettings.shared.network.currencyDisplayTicker
             ),
             deliverAfter: TariSettings.shared.environment == .production ? 60 * 60 * 48 : 60 * 60 * 4 //48h for prod and 4h for debug/testflight

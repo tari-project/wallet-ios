@@ -156,7 +156,7 @@ class Wallet {
         let receivedTxCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
             valuePointer in
             let pendingInbound = PendingInboundTx(pendingInboundTxPointer: valuePointer!)
-            TariEventBus.postToMainThread(.receievedTx, sender: pendingInbound)
+            TariEventBus.postToMainThread(.receivedTx, sender: pendingInbound)
             TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.balanceUpdate)
@@ -238,9 +238,11 @@ class Wallet {
             TariLogger.verbose("Transaction cancelled callback. txID=\(cancelledTxId) ✅")
         }
 
-        let baseNodeSyncCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { requestID, success in
-            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: success)
-            let message = "Base node sync lib callback. requestID=\(requestID)"
+        let baseNodeSyncCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = {
+            requestId, success in
+            let result: [String: Any] = ["requestId": requestId, "success": success]
+            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
+            let message = "Base node sync lib callback. requestID=\(requestId)"
             if success {
                 TariLogger.verbose("\(message) ✅")
             } else {
@@ -498,14 +500,18 @@ class Wallet {
         }
     }
 
-    func syncBaseNode() throws {
+    func syncBaseNode() throws -> UInt64 {
         var errorCode: Int32 = -1
-        _ = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_sync_with_base_node(ptr, error)})
-
+        let requestId = withUnsafeMutablePointer(
+            to: &errorCode
+        ) {
+            error in
+            wallet_sync_with_base_node(ptr, error)
+        }
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
+        return requestId
     }
 
     /// Cancel all pending transactions after a certain amount of time has passed.

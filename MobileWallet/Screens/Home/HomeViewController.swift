@@ -147,14 +147,14 @@ class HomeViewController: UIViewController {
 
     private func displayIncompatibleNetworkDialog() {
         UserFeedback.shared.callToAction(
-            title: NSLocalizedString("incompatible_network.title", comment: ""),
-            description: NSLocalizedString("incompatible_network.description", comment: ""),
+            title: localized("incompatible_network.title"),
+            description: localized("incompatible_network.description"),
             descriptionBoldParts: [
-                NSLocalizedString("incompatible_network.description.bold_part_1", comment: ""),
-                NSLocalizedString("incompatible_network.description.bold_part_2", comment: "")
+                localized("incompatible_network.description.bold_part_1"),
+                localized("incompatible_network.description.bold_part_2")
             ],
-            actionTitle: NSLocalizedString("incompatible_network.confirm", comment: ""),
-            cancelTitle: NSLocalizedString("incompatible_network.cancel", comment: ""),
+            actionTitle: localized("incompatible_network.confirm"),
+            cancelTitle: localized("incompatible_network.cancel"),
             onAction: {
                 [weak self] in
                 self?.deleteWallet()
@@ -200,27 +200,33 @@ class HomeViewController: UIViewController {
             return
         }
 
-        let errorTitle = String(format: NSLocalizedString("home.request_drop.error", comment: "Home view"), TariSettings.shared.network.currencyDisplayTicker)
+        let errorTitle = String(
+            format: localized("home.request_drop.error"),
+            TariSettings.shared.network.currencyDisplayTicker
+        )
 
         do {
             try keyServer.requestDrop(onSuccess: { () in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
                     guard let _ = self else { return }
 
-                    let title = String(format: NSLocalizedString("home.request_drop.title.with_param", comment: "Home view"), TariSettings.shared.network.currencyDisplayTicker)
-                    let description = String(format: NSLocalizedString("home.request_drop.description.with_param", comment: "Home view"), TariSettings.shared.network.currencyDisplayTicker)
+                    let title = String(
+                        format: localized("home.request_drop.title.with_param"),
+                        TariSettings.shared.network.currencyDisplayTicker
+                    )
+                    let description = String(
+                        format: localized("home.request_drop.description.with_param"),
+                        TariSettings.shared.network.currencyDisplayTicker
+                    )
 
                     UserFeedback.shared.callToAction(
                         title: title,
                         description: description,
                         actionTitle: String(
-                            format: NSLocalizedString(
-                                "common.send.with_param",
-                                comment: "Common"
-                            ),
+                            format: localized("common.send.with_param"),
                             TariSettings.shared.network.currencyDisplayTicker
                         ),
-                        cancelTitle: NSLocalizedString("home.request_drop.try_later", comment: "Home view"),
+                        cancelTitle: localized("home.request_drop.try_later"),
                         onAction: { [weak self] in
                             guard let self = self else { return }
                             self.onSend()
@@ -234,11 +240,19 @@ class HomeViewController: UIViewController {
                 }
             }) { (error) in
                 DispatchQueue.main.async {
-                    UserFeedback.shared.error(title: errorTitle, description: "", error: error)
+                    UserFeedback.shared.error(
+                        title: errorTitle,
+                        description: "",
+                        error: error
+                    )
                 }
             }
         } catch {
-            UserFeedback.shared.error(title: errorTitle, description: "Could not setup key server.", error: error)
+            UserFeedback.shared.error(
+                title: errorTitle,
+                description: "Could not setup key server.",
+                error: error
+            )
         }
     }
 
@@ -263,14 +277,16 @@ class HomeViewController: UIViewController {
     }
 
     private func safeRefreshBalance() {
-        TariLib.shared.waitIfWalletIsRestarting { [weak self] (_) in
+        TariLib.shared.waitIfWalletIsRestarting {
+            [weak self] (_) in
             self?.refreshBalance()
         }
     }
 
     private func refreshBalance() {
         guard let wallet = TariLib.shared.tariWallet else {
-            TariLib.shared.waitIfWalletIsRestarting { [weak self] (success) in
+            TariLib.shared.waitIfWalletIsRestarting {
+                [weak self] (success) in
                 if success == true {
                     self?.refreshBalance()
                 }
@@ -281,7 +297,7 @@ class HomeViewController: UIViewController {
         let (totalMicroTari, error) = wallet.totalMicroTari
         guard error == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("home.error.update_balance", comment: "Home view"),
+                title: localized("home.error.update_balance"),
                 description: "",
                 error: error
             )
@@ -304,12 +320,18 @@ class HomeViewController: UIViewController {
                 NSAttributedString.Key.foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
                 NSAttributedString.Key.baselineOffset: 5
             ],
-            range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat)
+            range: NSRange(
+                location: balanceValueString.count - lastNumberOfDigitsToFormat,
+                length: lastNumberOfDigitsToFormat
+            )
         )
 
         balanceLabelAttributedText.addAttributes(
             [NSAttributedString.Key.kern: 1.1],
-            range: NSRange(location: balanceValueString.count - lastNumberOfDigitsToFormat - 1, length: 1)
+            range: NSRange(
+                location: balanceValueString.count - lastNumberOfDigitsToFormat - 1,
+                length: 1
+            )
         )
 
         balanceValueLabel.attributedText = balanceLabelAttributedText
@@ -332,30 +354,38 @@ class HomeViewController: UIViewController {
             guard !isFirstIntroToWallet else {
                 //Wait before auto pulling down
                 DispatchQueue.main.asyncAfter(
-                    deadline: .now() + 3.0 + CATransaction.animationDuration(),
-                    execute: {
-                        [weak self] in
-                        guard let self = self else { return }
-                        if self.isTxViewFullScreen {
-                            self.floatingPanelController.move(to: .half, animated: true)
+                    deadline: .now() + 3.0 + CATransaction.animationDuration()
+                ) {
+                    [weak self] in
+                    guard let self = self else { return }
+                    if self.isTxViewFullScreen {
+                        self.floatingPanelController.move(to: .half, animated: true)
 
-                        }
-                })
+                    }
+                }
                 return
             }
-            UIView.animate(withDuration: CATransaction.animationDuration(), delay: 0, options: .curveEaseIn, animations: {
-                self.floatingPanelController.surfaceView.cornerRadius = 0
-                self.grabberHandle.frame = self.grabberRect(width: 0)
-                self.grabberHandle.alpha = 0
-                self.view.layoutIfNeeded()
-            })
+            UIView.animate(
+                withDuration: CATransaction.animationDuration(),
+                delay: 0,
+                options: .curveEaseIn,
+                animations: {
+                    [weak self] in
+                    guard let self = self else { return }
+                    self.floatingPanelController.surfaceView.cornerRadius = 0
+                    self.grabberHandle.frame = self.grabberRect(width: 0)
+                    self.grabberHandle.alpha = 0
+                    self.view.layoutIfNeeded()
+                }
+            )
         } else {
-
             let delayRequest = isFirstIntroToWallet ? 2.75 : 0.0
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + delayRequest, execute: { [weak self] in
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + delayRequest
+            ) { [weak self] in
                 self?.requestKeyServerTokens()
-            })
+            }
 
             //User swipes down for the first time
             if isFirstIntroToWallet {
@@ -365,12 +395,19 @@ class HomeViewController: UIViewController {
             navigationController?.setNavigationBarHidden(true, animated: true)
             self.navigationItem.title = ""
 
-            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseIn, animations: {
-                self.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
-                self.grabberHandle.frame = self.grabberRect(width: HomeViewController.GRABBER_WIDTH)
-                self.grabberHandle.alpha = 1
-                self.view.layoutIfNeeded()
-            })
+            UIView.animate(
+                withDuration: 0.5,
+                delay: 0,
+                options: .curveEaseIn,
+                animations: {
+                    [weak self] in
+                    guard let self = self else { return }
+                    self.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
+                    self.grabberHandle.frame = self.grabberRect(width: HomeViewController.GRABBER_WIDTH)
+                    self.grabberHandle.alpha = 1
+                    self.view.layoutIfNeeded()
+                }
+            )
         }
     }
 
@@ -379,11 +416,13 @@ class HomeViewController: UIViewController {
 
         //This is used by the deep link manager
         if let publicKey = pubKey {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75, execute: { [weak self] in
+            DispatchQueue.main.asyncAfter(
+                deadline: .now() + 0.75
+            ) { [weak self] in
                 guard let _ = self else { return }
                 sendVC.deepLinkParams = deepLinkParams
                 sendVC.onAdd(publicKey: publicKey)
-            })
+            }
         }
 
         let navigationController = AlwaysPoppableNavigationController(rootViewController: sendVC)
@@ -419,29 +458,43 @@ extension HomeViewController: TxsTableViewDelegate {
     func onScrollTopHit(_ isAtTop: Bool) {
         if isAtTop {
             if self.navigationBar.layer.shadowOpacity == 0.0 { return }
-            UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
-                guard let self = self else { return }
-                self.navigationBar.layer.shadowOpacity = 0
-                self.view.layoutIfNeeded()
-            }
+            UIView.animate(
+                withDuration: CATransaction.animationDuration(),
+                animations: {
+                    [weak self] in
+                    guard let self = self else { return }
+                    self.navigationBar.layer.shadowOpacity = 0
+                    self.view.layoutIfNeeded()
+                }
+            )
         } else {
             if self.navigationBar.layer.shadowOpacity == 0.1 { return }
-            UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
-                guard let self = self else { return }
-                self.navigationBar.layer.shadowOpacity = 0.1
-                self.view.layoutIfNeeded()
-            }
+            UIView.animate(
+                withDuration: CATransaction.animationDuration(),
+                animations: {
+                    [weak self] in
+                    guard let self = self else { return }
+                    self.navigationBar.layer.shadowOpacity = 0.1
+                    self.view.layoutIfNeeded()
+                }
+            )
         }
     }
 }
 
 // MARK: - Floating panel setup delegate methods
 extension HomeViewController: FloatingPanelControllerDelegate {
-    func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
+    func floatingPanel(
+        _ vc: FloatingPanelController,
+        layoutFor newCollection: UITraitCollection
+    ) -> FloatingPanelLayout? {
         return HomeViewFloatingPanelLayout(navBarHeight: navBarHeight)
     }
 
-    func floatingPanel(_ vc: FloatingPanelController, behaviorFor newCollection: UITraitCollection) -> FloatingPanelBehavior? {
+    func floatingPanel(
+        _ vc: FloatingPanelController,
+        behaviorFor newCollection: UITraitCollection
+    ) -> FloatingPanelBehavior? {
         return FloatingPanelDefaultBehavior()
     }
 
@@ -477,12 +530,21 @@ extension HomeViewController: FloatingPanelControllerDelegate {
             return
         }
 
-        self.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS - (HomeViewController.PANEL_BORDER_CORNER_RADIUS * max(progress, 0))
+        self.floatingPanelController.surfaceView.cornerRadius =
+            HomeViewController.PANEL_BORDER_CORNER_RADIUS
+                - (HomeViewController.PANEL_BORDER_CORNER_RADIUS * max(progress, 0))
 
         if floatingPanelController.position == .half && !isTxViewFullScreen {
-            UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-                self.view.layoutIfNeeded()
-            })
+            UIView.animate(
+                withDuration: 0.1,
+                delay: 0,
+                options: .curveEaseIn,
+                animations: {
+                    [weak self] in
+                    guard let self = self else { return }
+                    self.view.layoutIfNeeded()
+                }
+            )
         }
 
         if progress > 0.5 {
@@ -492,7 +554,11 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         }
     }
 
-    func  floatingPanelDidEndDragging(_ vc: FloatingPanelController, withVelocity velocity: CGPoint, targetPosition: FloatingPanelPosition) {
+    func  floatingPanelDidEndDragging(
+        _ vc: FloatingPanelController,
+        withVelocity velocity: CGPoint,
+        targetPosition: FloatingPanelPosition
+    ) {
         let progress: CGFloat = targetPosition == .half ? 0.0 : 1.0
         floatingPanelController.surfaceView.shadowColor = targetPosition == .half ? .black : .clear
         animateNavBar(progress: progress)
@@ -510,7 +576,10 @@ extension HomeViewController: FloatingPanelControllerDelegate {
     private func getCurrentProgress(floatingController: FloatingPanelController) -> CGFloat {
         let y = floatingController.surfaceView.frame.origin.y
         let tipY = floatingController.originYOfSurface(for: .half)
-        let delta = abs(floatingController.originYOfSurface(for: .full) - floatingController.originYOfSurface(for: .half))
+        let delta = abs(
+            floatingController.originYOfSurface(for: .full)
+                - floatingController.originYOfSurface(for: .half)
+        )
         if y > tipY { return tipY - y }
         let progress = CGFloat(max(0.0, min((tipY  - y) / delta, 1.0)))
         return progress
@@ -519,19 +588,31 @@ extension HomeViewController: FloatingPanelControllerDelegate {
     private func animateNavBar(progress: CGFloat, buttonAction: Bool = false) {
         if progress >= 0.0 && progress <= 1.0 {
             navigationBarBottomConstraint?.constant = navBarHeight * progress
-            let duration = CATransaction.animationDuration()
-
-            UIView.animate(withDuration: duration, delay: 0, options: .curveEaseIn, animations: { [weak self] in
-                self?.dimmingLayer.opacity = Float(progress / 1.5)
-                self?.view.layoutIfNeeded()
-            })
+            UIView.animate(
+                withDuration: CATransaction.animationDuration(),
+                delay: 0,
+                options: .curveEaseIn,
+                animations: {
+                    [weak self] in
+                    self?.dimmingLayer.opacity = Float(progress / 1.5)
+                    self?.view.layoutIfNeeded()
+                }
+            )
         }
     }
 
     private func animateSurfaceViewBottomInset(progress: CGFloat) {
-        let delta = abs(floatingPanelController.originYOfSurface(for: .full) - floatingPanelController.originYOfSurface(for: .half))
+        let delta = abs(
+            floatingPanelController.originYOfSurface(for: .full)
+                - floatingPanelController.originYOfSurface(for: .half)
+        )
         let bottomInset = HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets.bottom - (delta * progress)
-        floatingPanelController.surfaceView.contentInsets = UIEdgeInsets(top: HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets.top, left: 0, bottom: bottomInset, right: 0)
+        floatingPanelController.surfaceView.contentInsets = UIEdgeInsets(
+            top: HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets.top,
+            left: 0,
+            bottom: bottomInset,
+            right: 0
+        )
     }
 
     private func updateTracking(progress: CGFloat) {
@@ -719,12 +800,17 @@ extension HomeViewController {
                                   Theme.shared.colors.auroraGradient8!.cgColor,
                                   Theme.shared.colors.auroraGradient9!.cgColor]
 
-        animateBackgroundColors(fromColors: gradientLayer.colors as? [CGColor], toColors: backgroundGradient, duration: duration)
+        animateBackgroundColors(
+            fromColors: gradientLayer.colors as? [CGColor],
+            toColors: backgroundGradient,
+            duration: duration
+        )
     }
 
-    private func animateBackgroundColors(fromColors: [CGColor]?, toColors: [CGColor]?, duration: TimeInterval) {
+    private func animateBackgroundColors(fromColors: [CGColor]?,
+                                         toColors: [CGColor]?,
+                                         duration: TimeInterval) {
         let animation: CABasicAnimation = CABasicAnimation(keyPath: "colors")
-
         animation.fromValue = fromColors
         animation.toValue = toColors
         animation.duration = duration

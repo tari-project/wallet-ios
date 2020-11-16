@@ -59,6 +59,13 @@ class TxsListViewController: UIViewController {
         attributes: .concurrent
     )
 
+    private var hasReceivedTxWhileUpdating = false
+    private var hasMinedTxWhileUpdating = false
+    private var hasBroadcastTxWhileUpdating = false
+    private var hasCancelledTxWhileUpdating = false
+
+    private var baseNodeSyncRequestId: UInt64 = 0
+
     enum BackgroundViewType: Equatable {
         case none
         case intro
@@ -84,7 +91,9 @@ class TxsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewSetup()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 + CATransaction.animationDuration()) {
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + 1.0 + CATransaction.animationDuration()
+        ) {
             self.registerEvents()
         }
     }
@@ -154,6 +163,7 @@ class TxsListViewController: UIViewController {
 
 // MARK: AnimatedRefreshingView behavior
 extension TxsListViewController {
+
     private func beginRefreshing() {
         if animatedRefresher.stateType != .none { return }
         animatedRefresher.stateType = .updateData
@@ -164,13 +174,17 @@ extension TxsListViewController {
             if let wallet = TariLib.shared.tariWallet {
                 //If we sync before tor is connected it will fail. A base node sync is triggered when tor does connect.
                 if TariLib.shared.isTorConnected {
-                    try wallet.syncBaseNode()
+                    baseNodeSyncRequestId = try wallet.syncBaseNode()
+                    hasReceivedTxWhileUpdating = false
+                    hasBroadcastTxWhileUpdating = false
+                    hasMinedTxWhileUpdating = false
+                    hasCancelledTxWhileUpdating = false
                 }
             }
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("tx_list.error.sync_to_base_node.title", comment: "Transactions list"),
-                description: NSLocalizedString("tx_list.error.sync_to_base_node.description", comment: "Transactions list"),
+                title: localized("tx_list.error.sync_to_base_node.title"),
+                description: localized("tx_list.error.sync_to_base_node.description"),
                 error: error
             )
         }
@@ -178,17 +192,23 @@ extension TxsListViewController {
 
     private func endRefreshingWithSuccess() {
         if animatedRefresher.stateType != .updateData { return }
-        safeRefreshTable { [weak self] in
-            self?.animatedRefresher.updateState(.success)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
-                guard let self = self else { return }
-                self.animatedRefresher.animateOut { [weak self] in
-                    self?.animatedRefresher.stateType = .none
-                    self?.tableView.endRefreshing()
-                }
-            })
+        // play animations
+
+        safeRefreshTable {
+            [weak self] in
+            self?.animatedRefresher.animateOut {
+                [weak self] in
+                self?.animatedRefresher.stateType = .none
+                self?.hasReceivedTxWhileUpdating = false
+                self?.hasMinedTxWhileUpdating = false
+                self?.hasBroadcastTxWhileUpdating = false
+                self?.hasCancelledTxWhileUpdating = false
+
+                self?.tableView.endRefreshing()
+            }
         }
     }
+
 }
 
 // MARK: UITableViewDelegate & UITableViewDataSource
@@ -212,7 +232,10 @@ extension TxsListViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: TxTableViewCell
 
-        cell = tableView.dequeueReusableCell(withIdentifier: String(describing: TxTableViewCell.self), for: indexPath) as! TxTableViewCell
+        cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: TxTableViewCell.self),
+            for: indexPath
+        ) as! TxTableViewCell
         cell.configure(with: txModels[indexPath.row])
         txModels[indexPath.row].downloadGif()
 
@@ -251,23 +274,80 @@ extension TxsListViewController: UIScrollViewDelegate {
 
 // MARK: TariBus events observation
 extension TxsListViewController {
+
     @objc private func registerEvents() {
-        NotificationCenter.default.addObserver(self, selector: #selector(registerEvents), name: UIApplication.willEnterForegroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(unregisterEvents), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        //Event for table refreshing
-        TariEventBus.onMainThread(self, eventType: .txListUpdate) { [weak self] (_) in
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(registerEvents),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(unregisterEvents),
+            name: UIApplication.didEnterBackgroundNotification,
+            object: nil
+        )
+        // Event for table refreshing
+        TariEventBus.onMainThread(self, eventType: .txListUpdate) {
+            [weak self] (_) in
             guard let self = self else { return }
-            if self.animatedRefresher.stateType == .updateData {
-                self.endRefreshingWithSuccess()
-            } else {
+            if self.animatedRefresher.stateType != .updateData {
                 self.safeRefreshTable()
             }
         }
 
-        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) {(result) in
-            if let success: Bool = result?.object as? Bool {
-                if success {
-                    self.endRefreshingWithSuccess()
+        TariEventBus.onBackgroundThread(self, eventType: .receivedTx) {
+            [weak self] (_) in
+            guard let self = self else { return }
+            if self.animatedRefresher.stateType == .updateData {
+                self.hasReceivedTxWhileUpdating = true
+            }
+        }
+
+        TariEventBus.onBackgroundThread(self, eventType: .txBroadcast) {
+            [weak self] (_) in
+            guard let self = self else { return }
+            if self.animatedRefresher.stateType == .updateData {
+                self.hasBroadcastTxWhileUpdating = true
+            }
+        }
+
+        TariEventBus.onBackgroundThread(self, eventType: .txMined) {
+            [weak self] (_) in
+            guard let self = self else { return }
+            if self.animatedRefresher.stateType == .updateData {
+                self.hasMinedTxWhileUpdating = true
+            }
+        }
+
+        TariEventBus.onBackgroundThread(self, eventType: .txCancellation) {
+            [weak self] (_) in
+            guard let self = self else { return }
+            if self.animatedRefresher.stateType == .updateData {
+                self.hasCancelledTxWhileUpdating = true
+            }
+        }
+
+        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) {
+            [weak self]
+            (result) in
+            guard let self = self else { return }
+            if let result: [String: Any] = result?.object as? [String: Any] {
+                let success = (result["success"] as? Bool) ?? false
+                let requestId = result["requestId"] as? UInt64 ?? UInt64(0)
+                if success && self.baseNodeSyncRequestId == requestId {
+                    if self.animatedRefresher.stateType != .none {
+                        self.animatedRefresher.playUpdateSequence(
+                            hasReceivedTx: self.hasReceivedTxWhileUpdating,
+                            hasMinedTx: self.hasMinedTxWhileUpdating,
+                            hasBroadcastTx: self.hasBroadcastTxWhileUpdating,
+                            hasCancelledTx: self.hasCancelledTxWhileUpdating
+                        ) {
+                            [weak self] in
+                            self?.endRefreshingWithSuccess()
+                        }
+                    }
                     NotificationManager.shared.cancelAllFutureReminderNotifications()
                 } else {
                     self.animatedRefresher.animateOut { [weak self] in
@@ -307,7 +387,10 @@ extension TxsListViewController {
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
 
-        tableView.register(TxTableViewCell.self, forCellReuseIdentifier: String(describing: TxTableViewCell.self))
+        tableView.register(
+            TxTableViewCell.self,
+            forCellReuseIdentifier: String(describing: TxTableViewCell.self)
+        )
         tableView.estimatedRowHeight = 300
         tableView.rowHeight = UITableView.automaticDimension
         tableView.separatorStyle = .none
@@ -329,7 +412,7 @@ extension TxsListViewController {
         emptyView.addSubview(messageLabel)
 
         messageLabel.numberOfLines = 0
-        messageLabel.text = NSLocalizedString("tx_list.empty", comment: "Home view table when there are no transactions")
+        messageLabel.text = localized("tx_list.empty")
         messageLabel.textAlignment = .center
         messageLabel.textColor = Theme.shared.colors.txSmallSubheadingLabel
         messageLabel.font = Theme.shared.fonts.txListEmptyMessageLabel
@@ -347,22 +430,34 @@ extension TxsListViewController {
             return
         }
 
-        UIView.animate(withDuration: CATransaction.animationDuration(), animations: { [weak self] in
-            self?.tableView.backgroundView?.alpha = 0.0
-        }) { [weak self] (_) in
+        UIView.animate(
+            withDuration: CATransaction.animationDuration(),
+            animations: {
+                [weak self] in
+                self?.tableView.backgroundView?.alpha = 0.0
+            }
+        ) {
+            [weak self] (_) in
             self?.tableView.backgroundView = nil
             completion?()
         }
     }
 
     private func setIntroView() {
-        let introView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
+        let introView = UIView(
+            frame: CGRect(
+                x: tableView.center.x,
+                y: tableView.center.y,
+                width: tableView.bounds.size.width,
+                height: tableView.bounds.size.height
+            )
+        )
 
         let titleLabel = UILabel()
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         introView.addSubview(titleLabel)
 
-        let titleText = NSLocalizedString("tx_list.intro", comment: "Home screen untro")
+        let titleText = localized("tx_list.intro")
 
         let attributedTitle = NSMutableAttributedString(
             string: titleText,
@@ -371,16 +466,22 @@ extension TxsListViewController {
 
         titleLabel.attributedText = attributedTitle
         titleLabel.textAlignment = .center
-        titleLabel.centerYAnchor.constraint(equalTo: introView.centerYAnchor).isActive = true
-        titleLabel.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
+        titleLabel.centerYAnchor.constraint(
+            equalTo: introView.centerYAnchor
+        ).isActive = true
+        titleLabel.centerXAnchor.constraint(
+            equalTo: introView.centerXAnchor
+        ).isActive = true
 
-        titleLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: titleLabel.font.pointSize * 1.2).isActive = true
+        titleLabel.heightAnchor.constraint(
+            greaterThanOrEqualToConstant: titleLabel.font.pointSize * 1.2
+        ).isActive = true
 
         let messageLabel = UILabel()
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         introView.addSubview(messageLabel)
 
-        messageLabel.text = NSLocalizedString("tx_list.intro_message", comment: "Home view table on introdution to wallet")
+        messageLabel.text = localized("tx_list.intro_message")
         messageLabel.textAlignment = .center
         messageLabel.textColor = Theme.shared.colors.txSmallSubheadingLabel
         messageLabel.font = Theme.shared.fonts.txListEmptyMessageLabel
@@ -400,12 +501,21 @@ extension TxsListViewController {
         waveAnimation.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
         waveAnimation.bottomAnchor.constraint(equalTo: titleLabel.topAnchor).isActive = true
 
-        waveAnimation.play(fromProgress: 0, toProgress: 1, loopMode: .playOnce, completion: { [weak self] _ in
-            self?.backgroundType = .none
-            DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
-                self?.tableView.reloadData()
+        waveAnimation.play(
+            fromProgress: 0,
+            toProgress: 1,
+            loopMode: .playOnce,
+            completion: {
+                [weak self] _ in
+                self?.backgroundType = .none
+                DispatchQueue.main.asyncAfter(
+                    deadline: .now() + CATransaction.animationDuration()
+                ) {
+                    [weak self] in
+                    self?.tableView.reloadData()
+                }
             }
-        })
+        )
 
         tableView.backgroundView = introView
     }
@@ -415,7 +525,11 @@ extension TxsListViewController {
         refreshControl.clipsToBounds = true
         refreshControl.backgroundColor = .clear
         refreshControl.tintColor = .clear
-        refreshControl.addTarget(self, action: #selector(self.refresh(_:)), for: .valueChanged)
+        refreshControl.addTarget(
+            self,
+            action: #selector(self.refresh(_:)),
+            for: .valueChanged
+        )
         refreshControl.subviews.first?.alpha = 0
 
         tableView.refreshControl = refreshControl
@@ -423,7 +537,10 @@ extension TxsListViewController {
         tableView.bringSubviewToFront(animatedRefresher)
 
         animatedRefresher.translatesAutoresizingMaskIntoConstraints = false
-        animatedRefresher.topAnchor.constraint(equalTo: view.topAnchor, constant: 5).isActive = true
+        animatedRefresher.topAnchor.constraint(
+            equalTo: view.topAnchor,
+            constant: 5
+        ).isActive = true
 
         let leading = animatedRefresher.leadingAnchor.constraint(
             equalTo: refreshControl.leadingAnchor,

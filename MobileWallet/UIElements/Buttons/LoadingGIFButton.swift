@@ -69,8 +69,8 @@ class LoadingGIFButton: UIButton {
     private func commonSetup() {
         setTitleColor(Theme.shared.colors.loadingGifButtonTitleRetryState, for: .normal)
         setTitleColor(Theme.shared.colors.loadingGifButtonTitleLoadingState, for: .disabled)
-        let loadingTitile = NSLocalizedString("loading_gif_button.title.loading", comment: "Loading gif button")
-        let retryTitle = NSLocalizedString("loading_gif_button.title.retry", comment: "Loading gif button")
+        let loadingTitile = localized("loading_gif_button.title.loading")
+        let retryTitle = localized("loading_gif_button.title.retry")
         setTitle(loadingTitile, for: .disabled)
         setTitle(retryTitle, for: .normal)
         bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: ActionButton.HEIGHT)

@@ -59,7 +59,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
             updateTitleColorAndSetSendButtonState()
         }
     }
-    private let notePlaceholder = NSLocalizedString("add_note.placeholder", comment: "Add note view")
+    private let notePlaceholder = localized("add_note.placeholder")
 
     private let poweredByGiphyImageView = UIImageView(image: Theme.shared.images.poweredByGiphy)
     private let giphyCarouselContainerView = UIView()
@@ -142,8 +142,8 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
                 try navigationBar.showEmojiId(pubKey, inViewController: self)
             } catch {
                 UserFeedback.shared.error(
-                    title: NSLocalizedString("navigation_bar.error.show_emoji.title", comment: "Navigation bar"),
-                    description: NSLocalizedString("navigation_bar.error.show_emoji.description", comment: "Navigation bar"),
+                    title: localized("navigation_bar.error.show_emoji.title"),
+                    description: localized("navigation_bar.error.show_emoji.description"),
                     error: error
                 )
             }
@@ -280,8 +280,8 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
 
         guard let wallet = TariLib.shared.tariWallet else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("wallet.error.title", comment: "Wallet error"),
-                description: NSLocalizedString("wallet.error.wallet_not_initialized", comment: "Wallet error")
+                title: localized("wallet.error.title"),
+                description: localized("wallet.error.wallet_not_initialized")
             )
             sender.resetStateWithAnimation(true)
             return
@@ -289,8 +289,8 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
 
         guard let recipientPublicKey = publicKey else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("add_note.error.recipient_public_key.title", comment: "Add note view"),
-                description: NSLocalizedString("add_note.error.recipient_public_key.description", comment: "Add note view")
+                title: localized("add_note.error.recipient_public_key.title"),
+                description: localized("add_note.error.recipient_public_key.description")
             )
             sender.resetStateWithAnimation(true)
             return
@@ -298,8 +298,8 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
 
         guard let recipientAmount = amount else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("add_note.error.recipient_amount.title", comment: "Add note view"),
-                description: NSLocalizedString("add_note.error.recipient_amount.description", comment: "Add note view")
+                title: localized("add_note.error.recipient_amount.title"),
+                description: localized("add_note.error.recipient_amount.description")
             )
             sender.resetStateWithAnimation(true)
             return
@@ -362,7 +362,7 @@ extension AddNoteViewController {
         stackView.addArrangedSubview(titleLabel)
         titleLabel.font = Theme.shared.fonts.addNoteTitleLabel
         titleLabel.textColor = Theme.shared.colors.addNoteTitleLabel
-        titleLabel.text = NSLocalizedString("add_note.title", comment: "Add note view")
+        titleLabel.text = localized("add_note.title")
 
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.heightAnchor.constraint(equalToConstant: sidePadding + titleLabel.font.pointSize).isActive = true
@@ -379,7 +379,7 @@ extension AddNoteViewController {
         sendButtonBottomConstraint.isActive = true
 
         sendButton.showSliderText = true
-        sendButton.labelText = NSLocalizedString("add_note.slide_to_send", comment: "Add note view")
+        sendButton.labelText = localized("add_note.slide_to_send")
         sendButton.delegate = self
 
         //If we're in testmode, the slide to send doesn't seem to work so allow it to be tapped in this case
@@ -480,7 +480,7 @@ extension AddNoteViewController {
         searchGiphyButton.backgroundColor = Theme.shared.colors.searchGiphyButtonBackground
         searchGiphyButton.setTitleColor(Theme.shared.colors.searchGiphyButtonTitle, for: .normal)
         searchGiphyButton.titleLabel?.font = Theme.shared.fonts.searchGiphyButtonTitle
-        searchGiphyButton.setTitle(NSLocalizedString("add_note.search_giphy_button", comment: "Add note view"), for: .normal)
+        searchGiphyButton.setTitle(localized("add_note.search_giphy_button"), for: .normal)
         searchGiphyButton.translatesAutoresizingMaskIntoConstraints = false
         searchGiphyButton.layer.cornerRadius = 3
         searchGiphyButton.titleEdgeInsets = .init(top: 0, left: 5, bottom: 0, right: 0)
