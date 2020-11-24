@@ -54,6 +54,11 @@ class TxsListViewController: UIViewController {
 
     private var txModels = OrderedSet<TxTableViewModel>()
 
+    private let txDataUpdateQueue = DispatchQueue(
+        label: "com.tari.wallet.tx_list.data_update_queue",
+        attributes: .concurrent
+    )
+
     enum BackgroundViewType: Equatable {
         case none
         case intro
@@ -99,38 +104,48 @@ class TxsListViewController: UIViewController {
     }
 
     func safeRefreshTable(_ completion:(() -> Void)? = nil) {
-        TariLib.shared.waitIfWalletIsRestarting { [weak self] (success) in
-            if success == true {
-                if self?.fetchTx() == true {
-                    self?.tableView.reloadData()
-                }
-            }
-            completion?()
-        }
-    }
+         TariLib.shared.waitIfWalletIsRestarting {
+             [weak self] (success) in
+             if success == true {
+                 self?.txDataUpdateQueue.async(flags: .barrier) {
+                    if self?.fetchTx() == true {
+                        DispatchQueue.main.async {
+                            [weak self] in
+                            self?.tableView.reloadData()
+                        }
+                    }
+                    DispatchQueue.main.async { completion?() }
+                 }
+             } else {
+                 completion?()
+             }
+         }
+     }
 
     @discardableResult
     private func fetchTx() -> Bool {
-        var newTxFetched = false
         //All completed/cancelled txs
         let (allTxs, allTxsError) = TariLib.shared.tariWallet!.allTxs
 
         guard allTxsError == nil else {
-            UserFeedback.shared.error(
-                title: NSLocalizedString("tx_list.error.grouped_transactions.title", comment: "Transactions list"),
-                description: NSLocalizedString("tx_list.error.grouped_transactions.descritpion", comment: "Transactions list"),
-                error: allTxsError
-            )
-            return newTxFetched
+            DispatchQueue.main.async {
+                UserFeedback.shared.error(
+                    title: localized("tx_list.error.grouped_transactions.title"),
+                    description: localized("tx_list.error.grouped_transactions.descritpion"),
+                    error: allTxsError
+                )
+            }
+            return false
         }
 
-        allTxs.forEach { (tx) in
+        var newTxFetched = false
+        for (i, tx) in allTxs.enumerated() {
             if let model = txModels.first(where: { $0.id == tx.id.0 }) {
                 model.update(tx: tx)
             } else {
                 newTxFetched = true
                 let model = TxTableViewModel(tx: tx)
-                txModels.append(model, at: allTxs.firstIndex(where: { $0.id.0 == tx.id.0 }))
+                txModels.append(model, at: i)
             }
         }
         return newTxFetched
