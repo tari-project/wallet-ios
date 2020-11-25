@@ -52,7 +52,7 @@ class TxsListViewController: UIViewController {
     let tableView = UITableView(frame: .zero, style: .plain)
     private let animatedRefresher = AnimatedRefreshingView()
 
-    private var txModels = OrderedSet<TxTableViewModel>()
+    private var txModels = [TxTableViewModel]()
 
     private let txDataUpdateQueue = DispatchQueue(
         label: "com.tari.wallet.tx_list.data_update_queue",
@@ -154,7 +154,9 @@ class TxsListViewController: UIViewController {
             } else {
                 newTxFetched = true
                 let model = TxTableViewModel(tx: tx)
-                txModels.append(model, at: i)
+                if !txModels.contains(model) && i <= txModels.count {
+                    txModels.insert(model, at: i)
+                }
             }
         }
         return newTxFetched

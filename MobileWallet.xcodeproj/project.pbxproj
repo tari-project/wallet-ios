@@ -440,10 +440,6 @@
 		37BB696C245705E60013AC4D /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB696A245705D20013AC4D /* RadialGradientView.swift */; };
 		37BB696D245705E70013AC4D /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB696A245705D20013AC4D /* RadialGradientView.swift */; };
 		37BB696E245705E70013AC4D /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB696A245705D20013AC4D /* RadialGradientView.swift */; };
-		37BC7EB82518FE7C0062B987 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BC7EB72518FE7C0062B987 /* OrderedSet.swift */; };
-		37BC7EB92518FE7C0062B987 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BC7EB72518FE7C0062B987 /* OrderedSet.swift */; };
-		37BC7EBA2518FE7C0062B987 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BC7EB72518FE7C0062B987 /* OrderedSet.swift */; };
-		37BC7EBB2518FE7C0062B987 /* OrderedSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BC7EB72518FE7C0062B987 /* OrderedSet.swift */; };
 		37C8BA352480F59B005BBC05 /* WaveEmojiAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37C8BA342480F59B005BBC05 /* WaveEmojiAnimation.json */; };
 		37C8BA362480F59B005BBC05 /* WaveEmojiAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37C8BA342480F59B005BBC05 /* WaveEmojiAnimation.json */; };
 		37C8BA372480F59B005BBC05 /* WaveEmojiAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37C8BA342480F59B005BBC05 /* WaveEmojiAnimation.json */; };
@@ -803,7 +799,6 @@
 		37B48A8224B3968F00F8A8D2 /* BPKeychainWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPKeychainWrapper.swift; sourceTree = "<group>"; };
 		37B5289324CB1E16008C80EB /* NetworkSpeedProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSpeedProvider.swift; sourceTree = "<group>"; };
 		37BB696A245705D20013AC4D /* RadialGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
-		37BC7EB72518FE7C0062B987 /* OrderedSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedSet.swift; sourceTree = "<group>"; };
 		37C8BA342480F59B005BBC05 /* WaveEmojiAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WaveEmojiAnimation.json; sourceTree = "<group>"; };
 		37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+RefreshControl.swift"; sourceTree = "<group>"; };
 		37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedPhraseViewController.swift; sourceTree = "<group>"; };
@@ -973,7 +968,6 @@
 				373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */,
 				BF8316FC23EF7EAA00235403 /* LAContext.swift */,
 				37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */,
-				37BC7EB72518FE7C0062B987 /* OrderedSet.swift */,
 				0042780223E8421100AE7BD9 /* String.swift */,
 				37CB9F892451A2AD00C495F2 /* String+Emoji.swift */,
 				37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */,
@@ -2151,7 +2145,6 @@
 				00C520C9246972140077BF7F /* Contact.swift in Sources */,
 				00B084C3249E471800F7B9BD /* EmojiSet.swift in Sources */,
 				00C520C7246972140077BF7F /* PublicKey.swift in Sources */,
-				37BC7EBB2518FE7C0062B987 /* OrderedSet.swift in Sources */,
 				00C520CC246972180077BF7F /* PendingOutboundTx.swift in Sources */,
 				00C520D12469721D0077BF7F /* TxsProtocol.swift in Sources */,
 				00C520C1246972140077BF7F /* TransportType.swift in Sources */,
@@ -2259,7 +2252,6 @@
 				3745508A24B8886C006295C8 /* ICloudServiceMock.swift in Sources */,
 				0091D4A723ED879E004BF7F7 /* Signature.swift in Sources */,
 				0053873024065F6C00901A68 /* SlideView.swift in Sources */,
-				37BC7EB82518FE7C0062B987 /* OrderedSet.swift in Sources */,
 				00BBD816237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
@@ -2476,7 +2468,6 @@
 				37C8BA5024813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				37ABB69124781CE800F08163 /* UILabel.swift in Sources */,
 				373CCDC62490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
-				37BC7EB92518FE7C0062B987 /* OrderedSet.swift in Sources */,
 				37B444AA248949B800592D92 /* Checkbox.swift in Sources */,
 				00BBD813237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
 				BFF1ED9E2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
@@ -2555,7 +2546,6 @@
 				3708D74C247FCF2300807D72 /* SettingsViewController.swift in Sources */,
 				BFE61E4A24226A7F003DC99D /* NotificationManager.swift in Sources */,
 				00BCE481240D5A9700B181F3 /* OnionManager.swift in Sources */,
-				37BC7EBA2518FE7C0062B987 /* OrderedSet.swift in Sources */,
 				3745508C24B891D1006295C8 /* ICloudServiceMock.swift in Sources */,
 				37547D542460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */,
 				00BBD803237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
@@ -2737,7 +2727,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 154;
+				CURRENT_PROJECT_VERSION = 155;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2755,7 +2745,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.5.0;
+				MARKETING_VERSION = 0.5.1;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet.MobileWalletNotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2775,7 +2765,7 @@
 				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 154;
+				CURRENT_PROJECT_VERSION = 155;
 				DEVELOPMENT_TEAM = 8XGMD9X2H2;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -2793,7 +2783,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.5.0;
+				MARKETING_VERSION = 0.5.1;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet.MobileWalletNotificationService;
 				PRODUCT_NAME = "$(TARGET_NAME)";
