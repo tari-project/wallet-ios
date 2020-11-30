@@ -19,6 +19,7 @@ PODS:
   - MatomoTracker (7.2.1):
     - MatomoTracker/Core (= 7.2.1)
   - MatomoTracker/Core (7.2.1)
+  - OpenSSL-Universal (1.1.171)
   - PINCache (2.3)
   - QuickLayout (3.0.0)
   - ReachabilitySwift (5.0.0)
@@ -37,6 +38,7 @@ DEPENDENCIES:
   - IPtProxy (~> 0.1)
   - lottie-ios
   - MatomoTracker (~> 7.2)
+  - OpenSSL-Universal
   - ReachabilitySwift
   - Sentry (from `https://github.com/getsentry/sentry-cocoa.git`, tag `5.0.0`)
   - SwiftEntryKit (= 1.2.3)
@@ -53,6 +55,7 @@ SPEC REPOS:
     - libwebp
     - lottie-ios
     - MatomoTracker
+    - OpenSSL-Universal
     - PINCache
     - QuickLayout
     - ReachabilitySwift
@@ -79,6 +82,7 @@ SPEC CHECKSUMS:
   libwebp: 946cb3063cea9236285f7e9a8505d806d30e07f3
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
   MatomoTracker: 246b6b0693cf39b356134dec7561f719d3538b96
+  OpenSSL-Universal: 6fc0e5cc2841bc677bcf168c278b3c4682a9ab26
   PINCache: ce36ed282031b92fc7733ffe831f474ff80fddc2
   QuickLayout: 07b45a72b10083fee3f095990cfed1c1e7b27f0a
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
@@ -88,6 +92,6 @@ SPEC CHECKSUMS:
   SwiftLint: 4154893c73a4c52d6240195507eb7a3e3c64087e
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: f0f3b804cc4d16c604ff1657bba941797496adf7
+PODFILE CHECKSUM: 1d8b530df72830568ee520400ae2718415b051cf
 
-COCOAPODS: 1.9.2
+COCOAPODS: 1.9.1
