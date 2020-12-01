@@ -17,12 +17,13 @@ target 'MobileWallet' do
   pod 'SwiftKeychainWrapper'
   pod 'Giphy'
   pod 'IPtProxy', '~> 0.1'
-  
+  pod 'OpenSSL-Universal'
+
   target 'MobileWalletTests' do
     inherit! :search_paths
     # Pods for testing
   end
-  
+
   target 'MobileWalletNotificationService' do
     inherit! :search_paths
   end
