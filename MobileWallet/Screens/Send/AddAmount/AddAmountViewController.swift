@@ -337,7 +337,12 @@ class AddAmountViewController: UIViewController {
 
     private func showTxFee(_ amount: MicroTari) {
         guard let wallet = TariLib.shared.tariWallet else { return }
-        let fee = wallet.calculateTxFee(amount)
+        var fee = MicroTari(0)
+        do {
+            fee = try wallet.estimateTxFee(amount: amount, gramFee: MicroTari(100), kernelCount: 1, outputCount: 1)
+        } catch {
+            return
+        }
 
         txFeeLabel.text = fee.formattedPreciseWithOperator
         if txFeeIsVisible { return }
@@ -385,7 +390,15 @@ class AddAmountViewController: UIViewController {
         }
 
         guard let amount = tariAmount else { return }
-        if amount.rawValue + wallet.calculateTxFee(amount).rawValue  > availableBalance {
+
+        var fee = MicroTari(0)
+        do {
+            fee = try wallet.estimateTxFee(amount: amount, gramFee: MicroTari(100), kernelCount: 1, outputCount: 1)
+        } catch {
+            return
+        }
+
+        if amount.rawValue + fee.rawValue  > availableBalance {
             UserFeedback.shared.info(
                 title: NSLocalizedString("add_amount.info.wait_completion_previous_tx.title", comment: "Add amount view"),
                 description: NSLocalizedString("add_amount.info.wait_completion_previous_tx.descrption", comment: "Add amount view")

@@ -334,28 +334,15 @@ class Wallet {
         TariEventBus.postToMainThread(.txListUpdate)
     }
 
-    func calculateTxFee(_ amount: MicroTari) -> MicroTari {
-        //TODO when preflight function is ready, use that instead of assuming inputs and outputs, see estimateTxFee method
-
-        let baseCost: UInt64 = 500
-        let numInputs: UInt64 = 3
-        let numOutputs: UInt64 = 2
-        let r: UInt64 = 250
-
-        let fee = baseCost + (numInputs + 4 * numOutputs) * r
-
-        return MicroTari(fee)
-    }
-    
-    func estimateTxFee(amount: MicroTari, gramFee: MicroTari, kernelCount: UInt64, outputCount:UInt64) throws -> MicroTari {
+    func estimateTxFee(amount: MicroTari, gramFee: MicroTari, kernelCount: UInt64, outputCount: UInt64) throws -> MicroTari {
         var errorCode: Int32 = -1
-        
+
         let fee = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_get_fee_estimate(ptr, amount.rawValue, gramFee.rawValue, kernelCount, outputCount, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
-        
+
         return MicroTari(fee)
     }
 
