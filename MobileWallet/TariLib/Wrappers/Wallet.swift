@@ -59,6 +59,7 @@ enum WalletErrors: Error {
     case invalidSignatureAndNonceString
     case cancelNonPendingTx
     case txToCancel
+    case notEnoughFunds
 }
 
 struct CallbackTxResult {
@@ -72,6 +73,10 @@ class Wallet {
     var dbPath: String
     var dbName: String
     var logPath: String
+
+    static let defaultGramFee = MicroTari(100)
+    static let defaultKernelCount = UInt64(1)
+    static let defaultOutputCount = UInt64(2)
 
     var pointer: OpaquePointer {
         return ptr
@@ -340,6 +345,9 @@ class Wallet {
         let fee = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_get_fee_estimate(ptr, amount.rawValue, gramFee.rawValue, kernelCount, outputCount, error)})
         guard errorCode == 0 else {
+            if errorCode == 101 {
+                throw WalletErrors.notEnoughFunds
+            }
             throw WalletErrors.generic(errorCode)
         }
 

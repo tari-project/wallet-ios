@@ -80,6 +80,8 @@ extension WalletErrors: LocalizedError {
             return NSLocalizedString("wallet.error.cancel_non_pending_tx", comment: "Wallet error")
         case .txToCancel:
             return NSLocalizedString("wallet.error.fetch_txs_to_cancel", comment: "Wallet error")
+        case .notEnoughFunds:
+            return nil
         }
     }
 }

@@ -141,14 +141,34 @@ class AddAmountViewController: UIViewController {
             return
         }
 
-        if totalMicroTari!.rawValue < microTariAmount.rawValue {
+        var fee: MicroTari
+        do {
+            fee = try wallet.estimateTxFee(
+                amount: microTariAmount,
+                gramFee: Wallet.defaultGramFee,
+                kernelCount: Wallet.defaultKernelCount,
+                outputCount: Wallet.defaultOutputCount
+            )
+        } catch {
+            switch error {
+            case WalletErrors.notEnoughFunds:
+                showBalanceExceeded(balance: totalMicroTari!.formatted)
+                continueButton.variation = .disabled
+                hideTxFee()
+            default:
+                break
+            }
+            return
+        }
+
+        if totalMicroTari!.rawValue < (microTariAmount.rawValue + fee.rawValue) {
             showBalanceExceeded(balance: totalMicroTari!.formatted)
             continueButton.variation = .disabled
         } else {
             continueButton.variation = .normal
         }
 
-        showTxFee(microTariAmount)
+        showTxFee(fee)
     }
 
     @objc private func keypadButtonTapped(_ sender: UIButton) {
@@ -335,15 +355,7 @@ class AddAmountViewController: UIViewController {
         warningView.isHidden = true
     }
 
-    private func showTxFee(_ amount: MicroTari) {
-        guard let wallet = TariLib.shared.tariWallet else { return }
-        var fee = MicroTari(0)
-        do {
-            fee = try wallet.estimateTxFee(amount: amount, gramFee: MicroTari(100), kernelCount: 1, outputCount: 1)
-        } catch {
-            return
-        }
-
+    private func showTxFee(_ fee: MicroTari) {
         txFeeLabel.text = fee.formattedPreciseWithOperator
         if txFeeIsVisible { return }
         txViewContainer.alpha = 0.0
@@ -393,7 +405,12 @@ class AddAmountViewController: UIViewController {
 
         var fee = MicroTari(0)
         do {
-            fee = try wallet.estimateTxFee(amount: amount, gramFee: MicroTari(100), kernelCount: 1, outputCount: 1)
+            fee = try wallet.estimateTxFee(
+                amount: amount,
+                gramFee: Wallet.defaultGramFee,
+                kernelCount: Wallet.defaultKernelCount,
+                outputCount: Wallet.defaultOutputCount
+            )
         } catch {
             return
         }
