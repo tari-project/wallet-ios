@@ -59,6 +59,7 @@ enum WalletErrors: Error {
     case invalidSignatureAndNonceString
     case cancelNonPendingTx
     case txToCancel
+    case notEnoughFunds
 }
 
 struct CallbackTxResult {
@@ -72,6 +73,10 @@ class Wallet {
     var dbPath: String
     var dbName: String
     var logPath: String
+
+    static let defaultGramFee = MicroTari(100)
+    static let defaultKernelCount = UInt64(1)
+    static let defaultOutputCount = UInt64(2)
 
     var pointer: OpaquePointer {
         return ptr
@@ -334,15 +339,17 @@ class Wallet {
         TariEventBus.postToMainThread(.txListUpdate)
     }
 
-    func calculateTxFee(_ amount: MicroTari) -> MicroTari {
-        //TODO when preflight function is ready, use that instead of assuming inputs and outputs
+    func estimateTxFee(amount: MicroTari, gramFee: MicroTari, kernelCount: UInt64, outputCount: UInt64) throws -> MicroTari {
+        var errorCode: Int32 = -1
 
-        let baseCost: UInt64 = 500
-        let numInputs: UInt64 = 3
-        let numOutputs: UInt64 = 2
-        let r: UInt64 = 250
-
-        let fee = baseCost + (numInputs + 4 * numOutputs) * r
+        let fee = withUnsafeMutablePointer(to: &errorCode, { error in
+            wallet_get_fee_estimate(ptr, amount.rawValue, gramFee.rawValue, kernelCount, outputCount, error)})
+        guard errorCode == 0 else {
+            if errorCode == 101 {
+                throw WalletErrors.notEnoughFunds
+            }
+            throw WalletErrors.generic(errorCode)
+        }
 
         return MicroTari(fee)
     }

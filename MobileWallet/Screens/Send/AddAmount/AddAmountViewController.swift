@@ -141,14 +141,34 @@ class AddAmountViewController: UIViewController {
             return
         }
 
-        if totalMicroTari!.rawValue < microTariAmount.rawValue {
+        var fee: MicroTari
+        do {
+            fee = try wallet.estimateTxFee(
+                amount: microTariAmount,
+                gramFee: Wallet.defaultGramFee,
+                kernelCount: Wallet.defaultKernelCount,
+                outputCount: Wallet.defaultOutputCount
+            )
+        } catch {
+            switch error {
+            case WalletErrors.notEnoughFunds:
+                showBalanceExceeded(balance: totalMicroTari!.formatted)
+                continueButton.variation = .disabled
+                hideTxFee()
+            default:
+                break
+            }
+            return
+        }
+
+        if totalMicroTari!.rawValue < (microTariAmount.rawValue + fee.rawValue) {
             showBalanceExceeded(balance: totalMicroTari!.formatted)
             continueButton.variation = .disabled
         } else {
             continueButton.variation = .normal
         }
 
-        showTxFee(microTariAmount)
+        showTxFee(fee)
     }
 
     @objc private func keypadButtonTapped(_ sender: UIButton) {
@@ -335,10 +355,7 @@ class AddAmountViewController: UIViewController {
         warningView.isHidden = true
     }
 
-    private func showTxFee(_ amount: MicroTari) {
-        guard let wallet = TariLib.shared.tariWallet else { return }
-        let fee = wallet.calculateTxFee(amount)
-
+    private func showTxFee(_ fee: MicroTari) {
         txFeeLabel.text = fee.formattedPreciseWithOperator
         if txFeeIsVisible { return }
         txViewContainer.alpha = 0.0
@@ -385,7 +402,20 @@ class AddAmountViewController: UIViewController {
         }
 
         guard let amount = tariAmount else { return }
-        if amount.rawValue + wallet.calculateTxFee(amount).rawValue  > availableBalance {
+
+        var fee = MicroTari(0)
+        do {
+            fee = try wallet.estimateTxFee(
+                amount: amount,
+                gramFee: Wallet.defaultGramFee,
+                kernelCount: Wallet.defaultKernelCount,
+                outputCount: Wallet.defaultOutputCount
+            )
+        } catch {
+            return
+        }
+
+        if amount.rawValue + fee.rawValue  > availableBalance {
             UserFeedback.shared.info(
                 title: NSLocalizedString("add_amount.info.wait_completion_previous_tx.title", comment: "Add amount view"),
                 description: NSLocalizedString("add_amount.info.wait_completion_previous_tx.descrption", comment: "Add amount view")
