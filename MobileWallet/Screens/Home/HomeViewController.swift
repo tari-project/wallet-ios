@@ -127,8 +127,12 @@ class HomeViewController: UIViewController {
         deepLinker.checkDeepLink()
 
         checkImportSecondUtxo()
-        checkBackupPrompt(delay: 3)
-        checkIncompatibleNetwork()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            [weak self] in
+            guard let self = self else { return }
+            self.checkIncompatibleNetwork()
+
+        }
     }
 
     private func checkIncompatibleNetwork() {
@@ -139,8 +143,10 @@ class HomeViewController: UIViewController {
             if TariNetwork(rawValue: persistedNetwork ?? "") != TariSettings.shared.network {
                 // incompatible network
                 displayIncompatibleNetworkDialog()
+            } else {
+                checkBackupPrompt(delay: 0)
             }
-        } catch { // value not persisted - a pre-0.5.0 installation
+        } catch {
             displayIncompatibleNetworkDialog()
         }
     }
@@ -158,6 +164,15 @@ class HomeViewController: UIViewController {
             onAction: {
                 [weak self] in
                 self?.deleteWallet()
+            },
+            onCancel: {
+                [weak self] in
+                do {
+                    try TariLib.shared.setCurrentNetworkKeyValue()
+                } catch {
+                    // ignore error
+                }
+                self?.checkBackupPrompt(delay: 2)
             }
         )
     }

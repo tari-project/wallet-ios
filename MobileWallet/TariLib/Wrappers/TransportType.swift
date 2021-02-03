@@ -76,14 +76,27 @@ class TransportType {
         ptr = result!
     }
 
-    init(controlServerAddress: String, torPort: Int, torIdentity: ByteVector?, torCookie: ByteVector, socksUsername: String = "", socksPassword: String = "") throws {
+    init(
+        controlServerAddress: String,
+        torPort: Int,
+        torCookie: ByteVector,
+        socksUsername: String = "",
+        socksPassword: String = ""
+    ) throws {
         var errorCode: Int32 = -1
 
         let result = controlServerAddress.withCString({control in
             socksUsername.withCString({ user in
                 socksPassword.withCString({ pass in
                     withUnsafeMutablePointer(to: &errorCode, { error in
-                        transport_tor_create(controlServerAddress.count > 0 ? control : nil, torCookie.pointer, torIdentity?.pointer, UInt16(torPort), socksUsername.count > 0 ? user : nil, socksPassword.count > 0 ? pass : nil, error)
+                        transport_tor_create(
+                            controlServerAddress.count > 0 ? control : nil,
+                            torCookie.pointer,
+                            UInt16(torPort),
+                            socksUsername.count > 0 ? user : nil,
+                            socksPassword.count > 0 ? pass : nil,
+                            error
+                        )
                     })
                 })
             })

@@ -184,39 +184,14 @@ class TariLib {
         }
     }
 
-    private static let torIdentityKeychainKey = "torIdentityKey"
-
-    private func getPersistedTorIdentity() throws -> ByteVector? {
-        if let base64EncodedTorIdentity = TariSettings.sharedKeychainGroup.string(forKey: TariLib.torIdentityKeychainKey) {
-            if let data = Data(base64Encoded: base64EncodedTorIdentity) {
-                TariLogger.verbose("Using persisted tor identity")
-                return try ByteVector(byteArray: [UInt8](data))
-            }
-        }
-
-        return nil
-    }
-
-    private func persistTorIdentity(_ identity: ByteVector) {
-        let identityBytes = identity.bytes.0
-        guard identityBytes.count > 0 else {
-            return
-        }
-
-        TariSettings.sharedKeychainGroup.set(Data(identityBytes).base64EncodedString(), forKey: TariLib.torIdentityKeychainKey)
-        TariLogger.verbose("Saved tor identity to keychain")
-    }
-
     private func transportType() throws -> TransportType {
         if TariSettings.shared.torEnabled {
-            let torIdentity = try getPersistedTorIdentity()
             let torCookieBytes = [UInt8](try OnionManager.getCookie())
             let torCookie = try ByteVector(byteArray: torCookieBytes)
 
             return try TransportType(
                 controlServerAddress: "/ip4/\(OnionManager.CONTROL_ADDRESS)/tcp/\(OnionManager.CONTROL_PORT)",
                 torPort: 18101,
-                torIdentity: torIdentity,
                 torCookie: torCookie,
                 socksUsername: "",
                 socksPassword: ""
@@ -305,10 +280,6 @@ class TariLib {
 
         baseNodeSyncCheck() //TODO remove when no longer needed
 
-        if let torIdentity = tariWallet?.torPrivateKey.0 {
-            persistTorIdentity(torIdentity)
-        }
-
         backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
     }
 
@@ -338,7 +309,11 @@ class TariLib {
         )
         try startWalletService()
         // persist network
-        try _ = TariLib.shared.tariWallet?.setKeyValue(
+        try setCurrentNetworkKeyValue()
+    }
+
+    func setCurrentNetworkKeyValue() throws {
+        _ = try TariLib.shared.tariWallet?.setKeyValue(
             key: KeyValueStorageKeys.network.rawValue,
             value: TariSettings.shared.network.rawValue
         )

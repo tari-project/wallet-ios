@@ -9,16 +9,11 @@ fi
 
 echo "\n\n***Pulling latest Tari lib build***"
 source dependencies.env
-if [[ -z "$FFI_VERSION" ]]; then
-    FFI_FILE="${1:-$(curl -s --compressed "https://www.tari.com/downloads/" | egrep -o  'libtari_wallet_ffi-ios-[0-9\.]+.tar.gz' | sort -V  | tail -1)}"
-else
-    FFI_FILE="libwallet-ios-$FFI_VERSION.tar.gz"
-fi
-
-# curl -s "https://www.tari.com/binaries/$FFI_FILE" | tar xz - -C MobileWallet/TariLib/ --exclude wallet.h
+FFI_FILE="libwallet-ios-$FFI_VERSION.tar.gz"
 curl -s "https://tari-binaries.s3.amazonaws.com/libwallet/$FFI_FILE" | tar xz
 mv "libwallet-ios-$FFI_VERSION/libtari_wallet_ffi.a" MobileWallet/TariLib/
 mv "libwallet-ios-$FFI_VERSION/wallet.h" MobileWallet/TariLib/
+rm -rf "libwallet-ios-$FFI_VERSION"
 
 # Check for cocoapods and install if missing.
 if hash pod 2>/dev/null; then

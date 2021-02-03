@@ -205,7 +205,6 @@ private class BackupPrompts {
 
 extension UIViewController {
     func checkBackupPrompt(delay: TimeInterval) {
-//        return BackupPrompts.shared.resetTriggers()
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
             guard let self = self else { return }
             BackupPrompts.shared.check(self)
