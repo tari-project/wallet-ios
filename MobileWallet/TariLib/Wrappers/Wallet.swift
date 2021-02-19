@@ -659,6 +659,27 @@ class Wallet {
         }
         return result
     }
+    
+    func getConfirmations() throws -> UInt64 {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+                 wallet_get_num_confirmations_required(ptr, error)
+            })
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+        return result
+    }
+    
+    func setConfirmations(number: UInt64) throws {
+        var errorCode: Int32 = -1
+        withUnsafeMutablePointer(to: &errorCode, { error in
+                wallet_set_num_confirmations_required(ptr, number, error)
+        })
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+    }
 
     deinit {
         TariLogger.warn("Wallet destroy")
