@@ -114,15 +114,31 @@ extension Wallet {
         var result: [TxProtocol] =
             (pendingInboundTxs!.list.0.map { $0 as TxProtocol })
         result.append(contentsOf: pendingOutboundTxs!.list.0.map { $0 as TxProtocol })
+        let minedUnconfirmedTxs = completedTxs!.list.0.filter { (completedTx) -> Bool in
+            let (status, error) = completedTx.status
+            guard error == nil else {
+                fatalError()
+            }
+            return status == .minedUnconfirmed
+        }
+        let nonMinedUnconfirmedCompletedTxs = completedTxs!.list.0.filter { (completedTx) -> Bool in
+            let (status, error) = completedTx.status
+            guard error == nil else {
+                fatalError()
+            }
+            return status != .minedUnconfirmed
+        }
 
         //Keep pending first but sorted
+        result.append(contentsOf: minedUnconfirmedTxs)
         result.sort { (tx1, tx2) -> Bool in
             let d1 = tx1.date.0 ?? Date()
             let d2 = tx2.date.0 ?? Date()
             return d1.compare(d2) == .orderedDescending
         }
 
-        var completedAndCancelled: [TxProtocol] = completedTxs!.list.0
+        var completedAndCancelled: [TxProtocol] = []
+        completedAndCancelled.append(contentsOf: nonMinedUnconfirmedCompletedTxs)
         completedAndCancelled.append(contentsOf: cancelledTxs!.list.0.map { $0 as TxProtocol })
         completedAndCancelled.sort { (tx1, tx2) -> Bool in
             let d1 = tx1.date.0 ?? Date()

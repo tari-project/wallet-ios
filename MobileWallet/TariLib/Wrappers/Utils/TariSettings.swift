@@ -104,13 +104,11 @@ struct TariSettings {
     let pushNotificationServer = "https://push.tari.com"
 
     #if DEBUG
-    let torEnabled = true //If just working on UI updates, this can be made false
     //Used for showing a little extra detail in the UI to help debugging
     private let isDebug = true
     let maxMbLogsStorage: UInt64 = 5000 //5GB
     let txTimeToExpire: TimeInterval = 60 * 60 * 24 * 1 //1 day
     #else
-    let torEnabled = true
     private let isDebug = false
     let maxMbLogsStorage: UInt64 = 500 //500MB
     let txTimeToExpire: TimeInterval = 60 * 60 * 24 * 3 //3 days

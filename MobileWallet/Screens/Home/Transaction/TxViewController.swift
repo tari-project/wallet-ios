@@ -167,9 +167,9 @@ class TxViewController: UIViewController {
         }
 
         switch tx.status.0 {
-        case .mined, .imported, .txNullError, .unknown:
+        case .minedConfirmed, .imported, .txNullError, .unknown:
             return defaultNavBarHeight
-        case .pending:
+        case .pending, .minedUnconfirmed:
             if tx.direction == .outbound {
                 return defaultNavBarHeight + navBarStatusHeight + navBarCancelButtonHeight
             }
@@ -395,7 +395,7 @@ class TxViewController: UIViewController {
             } else if tx.direction == .outbound {
                 newState = .txWaitingForRecipient
             }
-        case .broadcast, .completed:
+        case .broadcast, .completed, .minedUnconfirmed:
             newState = .txCompleted
         default:
             newState = nil
@@ -512,7 +512,7 @@ class TxViewController: UIViewController {
 
             if isCancelled {
                 navigationBar.title = NSLocalizedString("tx_detail.payment_cancelled", comment: "Transaction detail view")
-            } else if tx.status.0 != .mined && tx.status.0 != .imported {
+            } else if tx.status.0 != .minedConfirmed && tx.status.0 != .imported {
                 navigationBar.title = NSLocalizedString("tx_detail.payment_in_progress", comment: "Transaction detail view")
             }
         }

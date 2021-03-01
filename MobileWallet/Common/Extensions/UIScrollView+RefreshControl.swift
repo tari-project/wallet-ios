@@ -44,7 +44,7 @@ extension UIScrollView {
 
     func beginRefreshing() {
         if isRefreshing() { return }
-        refreshControl?.programaticallyBeginRefreshing(in: self)
+        refreshControl?.programmaticallyBeginRefreshing(in: self)
     }
 
     func endRefreshing() {
@@ -97,7 +97,7 @@ extension UIScrollView {
 }
 
 extension UIRefreshControl {
-    func programaticallyBeginRefreshing(in scrollView: UIScrollView) {
+    func programmaticallyBeginRefreshing(in scrollView: UIScrollView) {
         beginRefreshing()
         let yOffset = height()
         let offsetPoint = CGPoint.init(x: 0, y: -yOffset)

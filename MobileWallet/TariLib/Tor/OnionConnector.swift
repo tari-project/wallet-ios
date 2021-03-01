@@ -40,10 +40,10 @@
 
 import Foundation
 
-protocol OnionConnectorObserver: OnionManagerDelegate {
+protocol OnionConnectorDelegate: OnionManagerDelegate {
     func onTorConnDifficulties()
 }
-extension OnionConnectorObserver {
+extension OnionConnectorDelegate {
     func onTorConnProgress(_ progress: Int) { }
     func onTorConnFinished(_ configuration: BridgesConfuguration) { }
     func onTorConnDifficulties() { }
@@ -87,11 +87,11 @@ public final class OnionConnector {
         OnionManager.shared.stopTor()
     }
 
-    func addObserver(_ observer: OnionConnectorObserver) {
+    func addObserver(_ observer: OnionConnectorDelegate) {
         torObservers.addObject(observer)
     }
 
-    func removeObserver(_ observer: OnionConnectorObserver) {
+    func removeObserver(_ observer: OnionConnectorDelegate) {
         torObservers.remove(observer)
     }
 }
@@ -102,7 +102,7 @@ extension OnionConnector: OnionManagerDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.torObservers.allObjects.forEach {
-                if let object = $0 as? OnionConnectorObserver {
+                if let object = $0 as? OnionConnectorDelegate {
                     object.onTorConnProgress(progress)
                 }
             }
@@ -116,7 +116,7 @@ extension OnionConnector: OnionManagerDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.torObservers.allObjects.forEach {
-                if let object = $0 as? OnionConnectorObserver {
+                if let object = $0 as? OnionConnectorDelegate {
                     object.onTorConnFinished(configuration)
                 }
             }
@@ -127,9 +127,9 @@ extension OnionConnector: OnionManagerDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.torObservers.allObjects.forEach {
-                if let object = $0 as? OnionConnectorObserver {
-                    object.onTorConnDifficulties(error: error)
-                    object.onTorConnDifficulties()
+                if let observer = $0 as? OnionConnectorDelegate {
+                    observer.onTorConnDifficulties(error: error)
+                    observer.onTorConnDifficulties()
                 }
             }
         }
@@ -139,8 +139,8 @@ extension OnionConnector: OnionManagerDelegate {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             self.torObservers.allObjects.forEach {
-                if let object = $0 as? OnionConnectorObserver {
-                    object.onTorPortsOpened()
+                if let observer = $0 as? OnionConnectorDelegate {
+                    observer.onTorPortsOpened()
                 }
             }
         }

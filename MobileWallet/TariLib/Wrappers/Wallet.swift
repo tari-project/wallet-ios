@@ -62,6 +62,20 @@ enum WalletErrors: Error {
     case notEnoughFunds
 }
 
+enum BaseNodeValidationType: String {
+    case utxo
+    case stxo
+    case invalidTxo
+    case tx
+}
+
+enum BaseNodeValidationResult: UInt8 {
+    case success = 0
+    case aborted = 1
+    case failure = 2
+    case baseNodeNotInSync = 3
+}
+
 struct CallbackTxResult {
     let id: UInt64
     let success: Bool
@@ -74,9 +88,11 @@ class Wallet {
     var dbName: String
     var logPath: String
 
-    static let defaultGramFee = MicroTari(100)
+    static let defaultFeePerGram = MicroTari(100)
     static let defaultKernelCount = UInt64(1)
     static let defaultOutputCount = UInt64(2)
+
+    private static var baseNodeValidationStatusMap: [BaseNodeValidationType: (UInt64, BaseNodeValidationResult?)] = [:]
 
     var pointer: OpaquePointer {
         return ptr
@@ -145,14 +161,81 @@ class Wallet {
         return (result, nil)
     }
 
-    var torPrivateKey: (ByteVector?, Error?) {
-        var errorCode: Int32 = -1
-        let resultPtr = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_tor_identity(ptr, error)})
-        guard errorCode == 0 else {
-            return (nil, WalletErrors.generic(errorCode))
+    static func checkValidationResult(type: BaseNodeValidationType,
+                               responseId: UInt64,
+                               result: BaseNodeValidationResult) {
+        guard let currentStatus = baseNodeValidationStatusMap[type] else {
+            TariLogger.info(
+                "\(type.rawValue) validation [\(responseId)] complete. Result: \(result)."
+                    + " Current status is null, means we're not expecting a callback. Ignoring."
+            )
+            return
         }
-        return (ByteVector(pointer: resultPtr!), nil)
+        if currentStatus.0 != responseId {
+            TariLogger.info(
+                "\(type.rawValue) validation [\(responseId)] complete. Result: \(result)."
+                    + " Request id [\(currentStatus.0)] mismatch. Ignoring."
+            )
+            return
+        }
+        TariLogger.info("\(type.rawValue) validation [\(responseId)] complete. Result: \(result).")
+        baseNodeValidationStatusMap[type] = (currentStatus.0, result)
+        Wallet.checkBaseNodeSyncCompletion()
+    }
+
+    static func checkBaseNodeSyncCompletion() {
+        // make a copy of the status map for concurrency protection
+        let validationStatusMap = baseNodeValidationStatusMap
+        // if base node not in sync, then switch to the next base node
+        let baseNodeNotInSync = validationStatusMap.filter {
+            (element) -> Bool in
+            element.value.1 != nil && element.value.1 == .baseNodeNotInSync
+        }.count > 0
+        if baseNodeNotInSync {
+            baseNodeValidationStatusMap.removeAll()
+            let result: [String: Any] = ["result": BaseNodeValidationResult.baseNodeNotInSync]
+            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
+            return
+        }
+        // check if any is aborted
+        let aborted = validationStatusMap.filter {
+            (element) -> Bool in
+            element.value.1 != nil && element.value.1 == .aborted
+        }.count > 0
+        if aborted {
+            baseNodeValidationStatusMap.removeAll()
+            let result: [String: Any] = ["result": BaseNodeValidationResult.aborted]
+            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
+            return
+        }
+        // check if any has failed
+        let failed = validationStatusMap.filter {
+            (element) -> Bool in
+            element.value.1 != nil && element.value.1 == .failure
+        }.count > 0
+        if failed {
+            baseNodeValidationStatusMap.removeAll()
+            // TODO set next base node
+            let result: [String: Any] = ["result": BaseNodeValidationResult.failure]
+            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
+            return
+        }
+        // if any of the results is null, we're still waiting for all callbacks to happen
+        let inProgress = validationStatusMap.filter {
+            (element) -> Bool in
+            element.value.1 == nil
+        }.count > 0
+        if inProgress { return }
+        // check if it's successful
+        let successful = validationStatusMap.filter {
+            (element) -> Bool in
+            element.value.1 != nil && element.value.1 != .success
+        }.isEmpty
+        if successful {
+            baseNodeValidationStatusMap.removeAll()
+            let result: [String: Any] = ["result": BaseNodeValidationResult.success]
+            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
+        }
     }
 
     init(commsConfig: CommsConfig, loggingFilePath: String) throws {
@@ -208,6 +291,16 @@ class Wallet {
             TariLogger.verbose("Transaction mined lib callback")
         }
 
+        let txMinedUnconfirmedCallback: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = {
+            valuePointer, confirmationCount in
+            let completed = CompletedTx(completedTxPointer: valuePointer!)
+            TariEventBus.postToMainThread(.txMinedUnconfirmed, sender: completed)
+            TariEventBus.postToMainThread(.requiresBackup)
+            TariEventBus.postToMainThread(.txListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+            TariLogger.verbose("Transaction mined unconfirmed lib callback - \(confirmationCount) confirmations")
+        }
+
         let directSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
             TariEventBus.postToMainThread(.directSend, sender: CallbackTxResult(id: txID, success: success))
             let message = "Direct send lib callback. txID=\(txID)"
@@ -234,6 +327,8 @@ class Wallet {
             }
         }
 
+        // check
+
         let txCancellationCallback: (@convention(c) (OpaquePointer?) -> Void)? = { valuePointer in
             let cancelledTxId = CompletedTx(completedTxPointer: valuePointer!).id
             TariEventBus.postToMainThread(.txListUpdate)
@@ -243,21 +338,48 @@ class Wallet {
             TariLogger.verbose("Transaction cancelled callback. txID=\(cancelledTxId) ✅")
         }
 
-        let baseNodeSyncCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = {
-            requestId, success in
-            let result: [String: Any] = ["requestId": requestId, "success": success]
-            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
-            let message = "Base node sync lib callback. requestID=\(requestId)"
-            if success {
-                TariLogger.verbose("\(message) ✅")
-            } else {
-                TariLogger.error("\(message) failure")
+        let utxoValidationCompleteCallback: (@convention(c) (UInt64, UInt8) -> Void)? = {
+            responseId, result in
+            Wallet.checkValidationResult(
+                type: .utxo,
+                responseId: responseId,
+                result: BaseNodeValidationResult(rawValue: result)!
+            )
+        }
+
+        let stxoValidationCompleteCallback: (@convention(c) (UInt64, UInt8) -> Void)? = {
+            responseId, result in
+            Wallet.checkValidationResult(
+                type: .stxo,
+                responseId: responseId,
+                result: BaseNodeValidationResult(rawValue: result)!
+            )
+        }
+
+        let invalidTXOValidationCompleteCallback: (@convention(c) (UInt64, UInt8) -> Void)? = {
+            responseId, result in
+            Wallet.checkValidationResult(
+                type: .invalidTxo,
+                responseId: responseId,
+                result: BaseNodeValidationResult(rawValue: result)!
+            )
+        }
+
+        let txValidationCompleteCallback: (@convention(c) (UInt64, UInt8) -> Void)? = {
+            responseId, result in
+            let validationResult = BaseNodeValidationResult(rawValue: result)!
+            Wallet.checkValidationResult(
+                type: .tx,
+                responseId: responseId,
+                result: validationResult
+            )
+            if validationResult == .success {
+                TariEventBus.postToMainThread(.txValidationSuccessful)
             }
         }
 
         let storedMessagesReceivedCallback: (@convention(c) () -> Void)? = {
-            TariEventBus.postToMainThread(.storedMessagesReceived, sender: nil)
-            TariLogger.verbose("Stored messages receieved ✅")
+            TariLogger.verbose("Stored messages received ✅")
         }
 
         dbPath = commsConfig.dbPath
@@ -269,18 +391,22 @@ class Wallet {
             wallet_create(
             commsConfig.pointer,
             loggingFilePathPointer,
-            0, //num_rolling_log_files
-            0, //size_per_log_file_bytes
+            2, // number of rolling log files
+            10 * 1024 * 1024, // rolling log file max size in bytes
             nil, //TODO use passphrase when ready to implement
             receivedTxCallback,
             receivedTxReplyCallback,
             receivedFinalizedTxCallback,
             txBroadcastCallback,
             txMinedCallback,
+            txMinedUnconfirmedCallback,
             directSendResultCallback,
             storeAndForwardSendResultCallback,
             txCancellationCallback,
-            baseNodeSyncCompleteCallback,
+            utxoValidationCompleteCallback,
+            stxoValidationCompleteCallback,
+            invalidTXOValidationCompleteCallback,
+            txValidationCompleteCallback,
             storedMessagesReceivedCallback,
             error)}
         )
@@ -339,11 +465,11 @@ class Wallet {
         TariEventBus.postToMainThread(.txListUpdate)
     }
 
-    func estimateTxFee(amount: MicroTari, gramFee: MicroTari, kernelCount: UInt64, outputCount: UInt64) throws -> MicroTari {
+    func estimateTxFee(amount: MicroTari, feePerGram: MicroTari, kernelCount: UInt64, outputCount: UInt64) throws -> MicroTari {
         var errorCode: Int32 = -1
 
         let fee = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_fee_estimate(ptr, amount.rawValue, gramFee.rawValue, kernelCount, outputCount, error)})
+            wallet_get_fee_estimate(ptr, amount.rawValue, feePerGram.rawValue, kernelCount, outputCount, error)})
         guard errorCode == 0 else {
             if errorCode == 101 {
                 throw WalletErrors.notEnoughFunds
@@ -354,7 +480,18 @@ class Wallet {
         return MicroTari(fee)
     }
 
-    func sendTx(destination: PublicKey, amount: MicroTari, fee: MicroTari, message: String) throws -> UInt64 {
+    func sendTx(destination: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String) throws -> UInt64 {
+        var fee = MicroTari(0)
+        do {
+            fee = try estimateTxFee(
+                amount: amount,
+                feePerGram: Wallet.defaultFeePerGram,
+                kernelCount: Wallet.defaultKernelCount,
+                outputCount: Wallet.defaultOutputCount
+            )
+        } catch {
+            throw error
+        }
         let total = fee.rawValue + amount.rawValue
         let (availableBalance, error) = self.availableBalance
         if error != nil {
@@ -369,7 +506,14 @@ class Wallet {
         var errorCode: Int32 = -1
 
         let txId = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_send_transaction(ptr, destination.pointer, amount.rawValue, fee.rawValue, messagePointer, error)})
+            wallet_send_transaction(
+                ptr,
+                destination.pointer,
+                amount.rawValue,
+                feePerGram.rawValue,
+                messagePointer, error
+            )
+        })
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
@@ -491,8 +635,6 @@ class Wallet {
         TariEventBus.postToMainThread(.requiresBackup)
         TariEventBus.postToMainThread(.balanceUpdate)
         TariEventBus.postToMainThread(.txListUpdate)
-
-        try syncBaseNode()
     }
 
     func addBaseNodePeer(_ basenode: BaseNode) throws {
@@ -507,18 +649,62 @@ class Wallet {
         }
     }
 
-    func syncBaseNode() throws -> UInt64 {
+    func syncBaseNode() throws {
+        Wallet.baseNodeValidationStatusMap.removeAll()
         var errorCode: Int32 = -1
-        let requestId = withUnsafeMutablePointer(
+        // utxo validation
+        let utxoValidationRequestId = withUnsafeMutablePointer(
             to: &errorCode
         ) {
             error in
-            wallet_sync_with_base_node(ptr, error)
+            wallet_start_utxo_validation(ptr, error)
         }
         guard errorCode == 0 else {
+            Wallet.baseNodeValidationStatusMap.removeAll()
             throw WalletErrors.generic(errorCode)
         }
-        return requestId
+        Wallet.baseNodeValidationStatusMap[.utxo] = (utxoValidationRequestId, nil)
+        TariLogger.info("utxo validation started with request id \(utxoValidationRequestId).")
+        // stxo validation
+        let stxoValidationRequestId = withUnsafeMutablePointer(
+            to: &errorCode
+        ) {
+            error in
+            wallet_start_stxo_validation(ptr, error)
+        }
+        guard errorCode == 0 else {
+            Wallet.baseNodeValidationStatusMap.removeAll()
+            throw WalletErrors.generic(errorCode)
+        }
+        Wallet.baseNodeValidationStatusMap[.stxo] = (stxoValidationRequestId, nil)
+        TariLogger.info("stxo validation started with request id \(stxoValidationRequestId).")
+        // invalid txo validation
+        let invalidTXOValidationRequestId = withUnsafeMutablePointer(
+            to: &errorCode
+        ) {
+            error in
+            wallet_start_invalid_txo_validation(ptr, error)
+        }
+        guard errorCode == 0 else {
+            Wallet.baseNodeValidationStatusMap.removeAll()
+            throw WalletErrors.generic(errorCode)
+        }
+        Wallet.baseNodeValidationStatusMap[.invalidTxo] = (invalidTXOValidationRequestId, nil)
+        TariLogger.info("invalidTxo validation started with request id \(invalidTXOValidationRequestId).")
+        // tx validation
+        let txValidationRequestId = withUnsafeMutablePointer(
+            to: &errorCode
+        ) {
+            error in
+            wallet_start_transaction_validation(ptr, error)
+        }
+        guard errorCode == 0 else {
+            Wallet.baseNodeValidationStatusMap.removeAll()
+            throw WalletErrors.generic(errorCode)
+        }
+        Wallet.baseNodeValidationStatusMap[.tx] = (txValidationRequestId, nil)
+        TariLogger.info("tx validation started with request id \(txValidationRequestId).")
+        TariEventBus.postToMainThread(.baseNodeSyncStarted, sender: nil)
     }
 
     /// Cancel all pending transactions after a certain amount of time has passed.
@@ -659,7 +845,7 @@ class Wallet {
         }
         return result
     }
-    
+
     func getConfirmations() throws -> UInt64 {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
@@ -670,7 +856,7 @@ class Wallet {
         }
         return result
     }
-    
+
     func setConfirmations(number: UInt64) throws {
         var errorCode: Int32 = -1
         withUnsafeMutablePointer(to: &errorCode, { error in
@@ -679,6 +865,18 @@ class Wallet {
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
+    }
+
+    func restartTxBroadcast() throws -> Bool {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode) {
+            error in
+            wallet_restart_transaction_broadcast(ptr, error)
+        }
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+        return result
     }
 
     deinit {

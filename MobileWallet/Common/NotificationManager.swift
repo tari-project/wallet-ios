@@ -136,7 +136,6 @@ class NotificationManager {
         _ notification: UNNotification,
         completionHandler: (UNNotificationPresentationOptions) -> Void
     ) {
-        ConnectionMonitor.shared.state.baseNodeSynced = nil
         try? TariLib.shared.tariWallet?.syncBaseNode()
         if notification.request.identifier == NotificationIdentifier.scheduledBackupFailure.rawValue {
             completionHandler([.alert, .badge, .sound])

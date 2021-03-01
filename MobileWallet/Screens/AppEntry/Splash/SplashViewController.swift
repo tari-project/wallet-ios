@@ -106,7 +106,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
     private func handleWalletEvents() {
         //Handle tor progress
-        TariEventBus.onMainThread(self, eventType: .torConnectionProgress) { [weak self] (result) in
+        TariEventBus.onMainThread(self, eventType: .torConnectionProgress) {
+            [weak self] (result) in
             guard let self = self else { return }
 
             if let progress: Int = result?.object as? Int {
@@ -114,11 +115,17 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                     var attributes = EKAttributes.topToast
                     attributes.entryBackground = .color(color: EKColor(Theme.shared.colors.successFeedbackPopupBackground!))
                     attributes.screenBackground = .clear
-                    attributes.shadow = .active(with: .init(color: EKColor(Theme.shared.colors.feedbackPopupBackground!), opacity: 0.35, radius: 10, offset: .zero))
+                    attributes.shadow = .active(
+                        with: .init(
+                            color: EKColor(Theme.shared.colors.feedbackPopupBackground!),
+                            opacity: 0.35,
+                            radius: 10,
+                            offset: .zero
+                        )
+                    )
                     attributes.displayDuration = .infinity
                     attributes.screenInteraction = .forward
                 }
-
                 self.progressFeedbackView.setupSuccess(title: "Tor bootstrapping: \(progress)%")
             }
         }
@@ -126,7 +133,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         //Handle on tor connected
         TariEventBus.onMainThread(self, eventType: .torConnected) { [weak self] (_) in
             guard let self = self else { return }
-
             self.progressFeedbackView.setupSuccess(title: "Tor connection established")
         }
 
@@ -149,7 +155,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             return
         }
 
-        //Handle if tor ports opened later
+        // Handle if tor ports opened later
         TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
             guard let _ = self else { return }
             onComplete()

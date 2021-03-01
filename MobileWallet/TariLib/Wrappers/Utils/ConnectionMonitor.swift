@@ -55,6 +55,13 @@ enum ConnectionMonitorStateTor: String {
     case unknown = "Unknown ❓"
 }
 
+enum ConnectionMonitorStateBaseNode: String {
+    case notInited = "Not initialized"
+    case pending = "Pending sync ⌛"
+    case failure = "Sync failed ❌"
+    case success = "Synced ✅"
+}
+
 class ConnectionMonitorState {
     var reachability: ConnectionMonitorStateReachability = .unknown { didSet { onUpdate() } }
     var torBootstrapProgress: Int = 0 { didSet { onUpdate() } }
@@ -63,14 +70,7 @@ class ConnectionMonitorState {
         return torPortsOpen ? "Open ✅" : "Closed ❌"
     }
     var torStatus: ConnectionMonitorStateTor = .unknown { didSet { onUpdate() } }
-    var baseNodeSynced: Bool? { didSet { onUpdate() } }
-    var baseNodeSyncedDisplay: String {
-        guard let synced = baseNodeSynced else {
-            return "Pending first sync ⌛"
-        }
-
-        return synced ? "Synced  ✅" : "Sync failed ❌"
-    }
+    var baseNodeSyncStatus: ConnectionMonitorStateBaseNode = ConnectionMonitorStateBaseNode.notInited { didSet { onUpdate() } }
 
     var currentBaseNodeName: String {
         var name = "unknown"
@@ -88,7 +88,7 @@ class ConnectionMonitorState {
     var formattedDisplayItems: [String] {
         var entries: [String] = []
         entries.append("Reachability: \(reachability.rawValue)")
-        entries.append("Base node (\(currentBaseNodeName)): \(baseNodeSyncedDisplay)")
+        entries.append("Base node (\(currentBaseNodeName)): \(baseNodeSyncStatus.rawValue)")
         entries.append("Tor ports: \(torPortsOpenDisplay)")
         entries.append("Tor status: \(torStatus.rawValue)")
         entries.append("Tor bootstrap progress: \(torBootstrapProgress)%")
@@ -178,7 +178,9 @@ class ConnectionMonitor {
             self.state.torStatus = .failed
         }
 
-        TariEventBus.onMainThread(self, eventType: .torConnectionProgress) { [weak self] (result) in
+        TariEventBus.onMainThread(self, eventType: .torConnectionProgress) {
+            [weak self]
+            (result) in
             guard let self = self else { return }
             if let progress: Int = result?.object as? Int {
                 self.state.torBootstrapProgress = progress
@@ -188,11 +190,28 @@ class ConnectionMonitor {
     }
 
     private func startMonitoringBaseNodeSync() {
-        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
+        TariEventBus.onMainThread(self, eventType: .baseNodeSyncStarted) {
+            [weak self]
+            (_) in
             guard let self = self else { return }
-
-            if let success: Bool = result?.object as? Bool {
-                self.state.baseNodeSynced = success
+            self.state.baseNodeSyncStatus = .pending
+        }
+        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) {
+            [weak self]
+            (result) in
+            guard let self = self else { return }
+            if let result: [String: Any] = result?.object as? [String: Any] {
+                let result = result["result"] as! BaseNodeValidationResult
+                switch result {
+                case .success:
+                    self.state.baseNodeSyncStatus = .success
+                case .aborted:
+                    fallthrough
+                case .baseNodeNotInSync:
+                    fallthrough
+                case .failure:
+                    self.state.baseNodeSyncStatus = .failure
+                }
             }
         }
     }

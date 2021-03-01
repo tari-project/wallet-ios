@@ -50,9 +50,10 @@ enum TxStatus: Error {
     case txNullError
     case completed
     case broadcast
-    case mined
+    case minedUnconfirmed
     case imported
     case pending
+    case minedConfirmed
     case unknown
 }
 
@@ -89,11 +90,13 @@ extension TxProtocol {
             case 1:
                 return .broadcast
             case 2:
-                return .mined
+                return .minedUnconfirmed
             case 3:
                  return .imported
             case 4:
                  return .pending
+            case 6:
+             return .minedConfirmed
             default:
                 return .unknown
         }
@@ -114,6 +117,8 @@ extension TxProtocol {
         if let _ = self as? PendingOutboundTx {
             return true
         }
-        return false
+        let (status, error) = self.status
+        if error != nil { fatalError() }
+        return status == .minedUnconfirmed
     }
 }

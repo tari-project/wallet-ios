@@ -145,7 +145,7 @@ class AddAmountViewController: UIViewController {
         do {
             fee = try wallet.estimateTxFee(
                 amount: microTariAmount,
-                gramFee: Wallet.defaultGramFee,
+                feePerGram: Wallet.defaultFeePerGram,
                 kernelCount: Wallet.defaultKernelCount,
                 outputCount: Wallet.defaultOutputCount
             )
@@ -407,7 +407,7 @@ class AddAmountViewController: UIViewController {
         do {
             fee = try wallet.estimateTxFee(
                 amount: amount,
-                gramFee: Wallet.defaultGramFee,
+                feePerGram: Wallet.defaultFeePerGram,
                 kernelCount: Wallet.defaultKernelCount,
                 outputCount: Wallet.defaultOutputCount
             )

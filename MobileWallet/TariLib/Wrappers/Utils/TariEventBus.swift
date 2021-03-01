@@ -50,24 +50,26 @@ public enum TariEventTypes: String {
     case receivedFinalizedTx = "tari-event-received-finalized-tx"
     case txBroadcast = "tari-event-tx-broadcast"
     case txMined = "tari-event-tx-mined"
+    case txMinedUnconfirmed = "tari-event-tx-mined-unconfirmed"
     case directSend = "tari-event-direct-send"
     case storeAndForwardSend = "tari-event-store-and-forward-send"
     case txCancellation = "tari-event-tx-cancellation"
-    case baseNodeSyncComplete = "tari-event-base-node-synce-complete"
-    case storedMessagesReceived = "tari-event-stored-messages-received"
+    case baseNodeSyncStarted = "tari-event-base-node-sync-started"
+    case baseNodeSyncComplete = "tari-event-base-node-sync-complete"
+    case txValidationSuccessful = "tari-event-tx-validation-successful"
 
     //Common UI updates
     case txListUpdate = "tari-event-tx-list-update"
     case balanceUpdate = "tari-event-balance-update"
 
-    //Tor instantiation statuses
+    // Tor statuses
     case torPortsOpened = "tari-event-tor-ports-opened"
     case torConnectionProgress = "tari-event-tor-connection-progress"
     case torConnected = "tari-event-tor-connected"
     case torConnectionFailed = "tari-event-tor-connection-failed"
     case walletServiceStarted = "tari-wallet-service-started"
 
-    //Connection monitor
+    // connection monitor
     case connectionMonitorStatusChanged = "connection-monitor-status-changed"
 }
 

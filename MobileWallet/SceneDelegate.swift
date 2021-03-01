@@ -53,7 +53,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         //If the user opens the app from a notification when the app is closed
         if let notification = connectionOptions.notificationResponse {
-            let content = notification.notification.request.content.userInfo
+            _ = notification.notification.request.content.userInfo
             //TODO handle notification content here
         }
 
@@ -123,7 +123,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         ConnectionMonitor.shared.start()
         TariLib.shared.startTor()
         TariLib.shared.restartWalletIfStopped() //Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
-        if UserDefaults.Key.backupOperationAborted.boolValue() && ICloudBackup.shared.iCloudBackupsIsOn && !ICloudBackup.shared.inProgress {
+        if UserDefaults.Key.backupOperationAborted.boolValue()
+            && ICloudBackup.shared.iCloudBackupsIsOn
+            && !ICloudBackup.shared.inProgress {
             BackupScheduler.shared.scheduleBackup(immediately: true)
         }
     }

@@ -104,7 +104,12 @@ class TxTableViewModel: NSObject {
     func update(tx: TxProtocol) {
         if tx.id.0 != self.tx.id.0 { fatalError() }
         self.tx = tx
-        self.value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.isPending)
+        self.value = (
+            microTari: tx.microTari.0,
+            direction: tx.direction,
+            isCancelled: tx.isCancelled,
+            isPending: tx.isPending
+        )
         updateTitleAndAvatar()
         updateStatus()
         updateMedia()
@@ -187,9 +192,10 @@ class TxTableViewModel: NSObject {
             } else if tx.direction == .outbound {
                 statusMessage = localized("refresh_view.waiting_for_recipient")
             }
-        case .broadcast, .completed:
+        case .broadcast, .completed, .minedUnconfirmed:
             statusMessage = localized("refresh_view.final_processing")
-        default: break
+        default:
+            break
         }
 
         if tx.isCancelled {

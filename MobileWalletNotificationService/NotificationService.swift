@@ -43,7 +43,7 @@ import UserNotifications
 class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNMutableNotificationContent?
-    private var safetyTimeoutCallBack: (() -> Void)?
+    
     private static var isInProgress = false {
         didSet {
             if isInProgress {
@@ -74,21 +74,15 @@ class NotificationService: UNNotificationServiceExtension {
         NotificationService.isInProgress = true
         
         self.listenForTorConnection()
-        
-        safetyTimeoutCallBack = { [weak self] in
-            self?.completeHandler(success: false, debugMessage: "Extension took longer than 60 seconds")
-        }
-
-        //If nothing happens in a minute kill it
-        DispatchQueue.global().asyncAfter(deadline: .now() + 60) { [weak self] in
-            self?.safetyTimeoutCallBack?()
-        }
     }
     
     override func serviceExtensionTimeWillExpire() {
         // Called just before the extension will be terminated by the system.
         // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.
-        completeHandler(success: false, debugMessage: "Service expired. \n\(ConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n"))")
+        completeHandler(
+            success: false,
+            debugMessage: "Service expired. \n\(ConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n"))"
+        )
     }
     
     private func listenForTorConnection() {
@@ -100,37 +94,9 @@ class NotificationService: UNNotificationServiceExtension {
             do {
                 try TariLib.shared.startWalletService(container: .ext)
                 try! TariLib.shared.tariWallet!.syncBaseNode()
-                self.listenForReceivedTransaction()
-                self.listenForStoredMessages()
             } catch {
                 TariLogger.error("Did not start wallet", error: error)
                 self.completeHandler(success: false, debugMessage: "Wallet did not start")
-            }
-        }
-    }
-    
-    private func listenForReceivedTransaction() {
-        TariEventBus.onMainThread(self, eventType: .receivedTx) { [weak self] (result) in
-            guard let self = self else { return }
-            self.safetyTimeoutCallBack = nil
-            
-            //TX receieved, giving it some more time to send reply
-            DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
-                guard let self = self else { return }
-                self.completeHandler(success: true, debugMessage: "Received transaction successfully")
-            }
-        }
-    }
-    
-    private func listenForStoredMessages() {
-        TariEventBus.onMainThread(self, eventType: .storedMessagesReceived) { [weak self] (result) in
-            guard let self = self else { return }
-            self.safetyTimeoutCallBack = nil
-
-            //If receievedTransaction isn't triggered after a stored messages are received assume nothing is coming
-            DispatchQueue.global().asyncAfter(deadline: .now() + 5) { [weak self] in
-                guard let self = self else { return }
-                self.completeHandler(success: false, debugMessage: "Stored messages received but no incoming transaction")
             }
         }
     }
@@ -139,7 +105,7 @@ class NotificationService: UNNotificationServiceExtension {
         //A background operation will use this flag to set scheduled reminder notifications for users to open up the app if this extension failed to receieve the TX
         if !success {
             ReminderNotifications.shared.setShouldScheduleReminder()
-            TariLogger.info("Setting flag for scheduling reminder notificaions in main app background operation")
+            TariLogger.info("Setting flag for scheduling reminder notifications in main app background operation")
         }
         
         if !debugMessage.isEmpty {
@@ -161,7 +127,5 @@ class NotificationService: UNNotificationServiceExtension {
         }
         
         NotificationService.isInProgress = false
-        
-        safetyTimeoutCallBack = nil
     }
 }

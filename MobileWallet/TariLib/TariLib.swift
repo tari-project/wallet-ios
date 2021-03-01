@@ -49,10 +49,9 @@ enum TariLibErrors: Error {
 
 class TariLib {
     static let shared = TariLib()
-
     static let databaseName = "tari_wallet"
-
     static let logFilePrefix = "log"
+    var torPortsOpened = false
 
     enum KeyValueStorageKeys: String {
         case network = "SU7FM2O6Q3BU4XVN7HDD"
@@ -108,29 +107,6 @@ class TariLib {
         }
     }
 
-    var isTorConnected: Bool {
-        //If we're not using tor (for a simulator) or if tor is actually connected
-        return !TariSettings.shared.torEnabled || OnionConnector.shared.connectionState == .connected
-    }
-
-    //If we're not using tor at all, assume the ports start as open
-    var torPortsOpened = !TariSettings.shared.torEnabled
-
-    //TODO remove this when no longer required. Temp solution until this logic is added to the lib
-    private var baseNodeConsecutiveFails = 0 {
-        didSet {
-            if baseNodeConsecutiveFails > 5 {
-                do {
-                    TariLogger.warn("Base node sync failed \(baseNodeConsecutiveFails) times. Setting another random peer.")
-                    try setBasenode(try BaseNode(TariSettings.shared.getRandomBaseNode())) //Override with random peer from default pool
-                    baseNodeConsecutiveFails = 0
-                } catch {
-                    TariLogger.error("Failed to add random base node peer")
-                }
-            }
-        }
-    }
-
     var commsConfig: CommsConfig? {
         var config: CommsConfig?
 
@@ -150,7 +126,7 @@ class TariLib {
         return config
     }
 
-    //Used to determine whether or not to restart the wallet service when app moved to forground
+    // Used to determine whether or not to restart the wallet service when app moved to forground
     var walletIsStopped = false
 
     static let currentBaseNodeUserDefaultsKey = "currentBaseNodeSet"
@@ -159,47 +135,21 @@ class TariLib {
         OnionConnector.shared.addObserver(self)
     }
 
-    /*
-     Called automatically, just before instance deallocation takes place
-     */
-    deinit {}
+    deinit {
 
-    //Temp solution until this logic is added to the lib
-    private func baseNodeSyncCheck() {
-        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
-            guard let self = self else { return }
-            guard self.isTorConnected else { return }
-
-            if let success: Bool = result?.object as? Bool {
-                if success {
-                    self.baseNodeConsecutiveFails = 0
-                } else {
-                    self.baseNodeConsecutiveFails = self.baseNodeConsecutiveFails + 1
-
-                    TariLogger.error("Failing to sync with base node (\(ConnectionMonitor.shared.state.currentBaseNodeName))")
-
-                    try? self.tariWallet?.syncBaseNode()
-                }
-            }
-        }
     }
 
     private func transportType() throws -> TransportType {
-        if TariSettings.shared.torEnabled {
-            let torCookieBytes = [UInt8](try OnionManager.getCookie())
-            let torCookie = try ByteVector(byteArray: torCookieBytes)
+        let torCookieBytes = [UInt8](try OnionManager.getCookie())
+        let torCookie = try ByteVector(byteArray: torCookieBytes)
 
-            return try TransportType(
-                controlServerAddress: "/ip4/\(OnionManager.CONTROL_ADDRESS)/tcp/\(OnionManager.CONTROL_PORT)",
-                torPort: 18101,
-                torCookie: torCookie,
-                socksUsername: "",
-                socksPassword: ""
-            )
-        } else {
-            TariLogger.warn("Tor disabled. Update TariSettings.swift to enable it.")
-            return TransportType() //In memory transport
-        }
+        return try TransportType(
+            controlServerAddress: "/ip4/\(OnionManager.CONTROL_ADDRESS)/tcp/\(OnionManager.CONTROL_PORT)",
+            torPort: 18101,
+            torCookie: torCookie,
+            socksUsername: "",
+            socksPassword: ""
+        )
     }
 
     func startTor() {
@@ -207,18 +157,12 @@ class TariLib {
             TariLogger.verbose("Ignoring tor start for unit tests")
             return
         }
-
-        guard OnionConnector.shared.connectionState != .connected && OnionConnector.shared.connectionState != .started else {
+        guard OnionConnector.shared.connectionState != .started
+                && OnionConnector.shared.connectionState != .connected else {
             return
         }
-
-        guard TariSettings.shared.torEnabled else {
-            TariEventBus.postToMainThread(.torConnected, sender: URLSessionConfiguration.default)
-            return
-        }
-
-        TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(0))
         OnionConnector.shared.start()
+        TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(0))
     }
 
     func stopTor() {
@@ -226,21 +170,26 @@ class TariLib {
             TariLogger.verbose("Ignoring tor stop for unit tests")
             return
         }
-
         OnionConnector.shared.stop()
     }
 
-    private func cancelAllExpiredPendingTxAfterSync() {
-        TariEventBus.onBackgroundThread(self, eventType: .baseNodeSyncComplete) { [weak self] (result) in
+    private func startListeningToBaseNodeSync() {
+        TariEventBus.onBackgroundThread(self, eventType: .baseNodeSyncComplete) {
+            [weak self]
+            (result) in
             guard let self = self else { return }
-            if let success: Bool = result?.object as? Bool {
-                if success {
+            if let result: [String: Any] = result?.object as? [String: Any] {
+                let result = result["result"] as! BaseNodeValidationResult
+                switch result {
+                case .success:
                     do {
                         try self.tariWallet?.cancelAllExpiredPendingTx()
                         TariLogger.verbose("Checked for expired pending transactions")
                     } catch {
                         TariLogger.error("Failed to cancel expired pending transactions", error: error)
                     }
+                default:
+                    break
                 }
             }
         }
@@ -276,9 +225,7 @@ class TariLib {
 
         walletIsStopped = false
 
-        cancelAllExpiredPendingTxAfterSync()
-
-        baseNodeSyncCheck() //TODO remove when no longer needed
+        startListeningToBaseNodeSync()
 
         backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
     }
@@ -401,7 +348,7 @@ class TariLib {
     }
 }
 
-extension TariLib: OnionConnectorObserver {
+extension TariLib: OnionConnectorDelegate {
 
     func onTorConnProgress(_ progress: Int) {
         TariEventBus.postToMainThread(.torConnectionProgress, sender: progress)
@@ -416,19 +363,15 @@ extension TariLib: OnionConnectorObserver {
         TariLogger.error("Tor connection failed to complete", error: error)
         TariEventBus.postToMainThread(.torConnectionFailed, sender: error)
 
-        //Might as well keep trying
-
+        // might as well keep trying
         if error == .invalidBridges {
             OnionConnector.shared.restoreBridgeConfiguration()
-        } else {
-            self.startTor()
         }
+        self.startTor()
     }
 
     func onTorConnFinished(_ configuration: BridgesConfuguration) {
         TariEventBus.postToMainThread(.torConnectionProgress, sender: Int(100))
         TariEventBus.postToMainThread(.torConnected, sender: nil)
-
-        try? self.tariWallet?.syncBaseNode()
     }
 }

@@ -51,13 +51,12 @@ class BackupScheduler: NSObject {
             if newValue {
                 timer = Timer.scheduledTimer(
                     withTimeInterval: autoBackupTimeInterval,
-                    repeats: false,
-                    block: {
-                        [weak self] (timer) in
-                        timer.invalidate()
-                        self?.createWalletBackup()
-                    }
-                )
+                    repeats: false
+                ) {
+                    [weak self] (timer) in
+                    timer.invalidate()
+                    self?.createWalletBackup()
+                }
             } else {
                 timer.invalidate()
             }

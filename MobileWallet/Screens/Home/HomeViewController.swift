@@ -114,6 +114,17 @@ class HomeViewController: UIViewController {
         refreshBalance()
         setupKeyServer()
         Tracker.shared.track("/home", "Home - Transaction List")
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(appMovedToForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+    }
+
+    @objc func appMovedToForeground() {
+        txsTableVC.tableView.beginRefreshing()
     }
 
     override func viewDidAppear(_ animated: Bool) {

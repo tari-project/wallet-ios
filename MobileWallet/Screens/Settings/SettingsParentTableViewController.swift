@@ -135,7 +135,7 @@ extension SettingsParentTableViewController {
     }
 }
 
-extension SettingsParentTableViewController: OnionConnectorObserver {
+extension SettingsParentTableViewController: OnionConnectorDelegate {
     func onTorConnProgress(_ progress: Int) {
         navigationBar.setProgress(Float(progress) / 100.0)
     }

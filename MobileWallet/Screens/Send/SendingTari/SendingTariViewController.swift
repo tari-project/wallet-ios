@@ -625,12 +625,7 @@ class SendingTariViewController: UIViewController {
                 self.txId = try wallet.sendTx(
                     destination: self.recipientPubKey,
                     amount: self.amount,
-                    fee: wallet.estimateTxFee(
-                        amount: self.amount,
-                        gramFee: Wallet.defaultGramFee,
-                        kernelCount: Wallet.defaultKernelCount,
-                        outputCount: Wallet.defaultOutputCount
-                    ),
+                    feePerGram: Wallet.defaultFeePerGram,
                     message: self.note
                 )
                 self.startListeningForWalletEvents()
