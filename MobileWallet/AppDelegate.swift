@@ -132,6 +132,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _ application: UIApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
+        let hexString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        TariLogger.info("Registed for push notifications with token \(hexString).")
         NotificationManager.shared.registerDeviceToken(deviceToken)
     }
 

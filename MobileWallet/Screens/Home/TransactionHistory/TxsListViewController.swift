@@ -344,9 +344,14 @@ extension TxsListViewController {
         TariEventBus.onMainThread(self, eventType: .txListUpdate) {
             [weak self] (_) in
             guard let self = self else { return }
+            /*
             if self.animatedRefresher.stateType != .updateData {
                 self.safeRefreshTable()
             }
+             */
+            // temporary :: display all changes immediately
+            // regardless of refresh status
+            self.safeRefreshTable()
         }
 
         TariEventBus.onBackgroundThread(self, eventType: .receivedTx) {

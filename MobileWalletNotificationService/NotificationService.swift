@@ -56,7 +56,13 @@ class NotificationService: UNNotificationServiceExtension {
         }
     }
     
-    override func didReceive(_ request: UNNotificationRequest, withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void) {
+    override func didReceive(
+        _ request: UNNotificationRequest,
+        withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
+    ) {
+        // temporary :: disable the push notification extension
+        // due to the background transaction reception problems it's causing
+        /*
         guard !AppContainerLock.shared.hasLock(.main) else {
             TariLogger.warn("Cannot run while main app is in foreground")
             self.completeHandler(success: false, debugMessage: "Main app has lock")
@@ -74,6 +80,7 @@ class NotificationService: UNNotificationServiceExtension {
         NotificationService.isInProgress = true
         
         self.listenForTorConnection()
+         */
     }
     
     override func serviceExtensionTimeWillExpire() {
