@@ -374,7 +374,8 @@ class TariLibWrapperTests: XCTestCase {
                     databaseFolderPath: TariSettings.testStoragePath,
                     databaseName: self.dbName,
                     publicAddress: address,
-                    discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
+                    discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
+                    safMessageDurationSec: TariSettings.shared.safMessageDurationSec
                 )
             } catch {
                 completion(nil, error)
@@ -440,7 +441,8 @@ class TariLibWrapperTests: XCTestCase {
                 databaseFolderPath: databaseFolderPath,
                 databaseName: dbName,
                 publicAddress: address,
-                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
+                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
+                safMessageDurationSec: TariSettings.shared.safMessageDurationSec
             )
             
             if privateHex != nil {
@@ -512,7 +514,7 @@ class TariLibWrapperTests: XCTestCase {
                 XCTFail(statusError!.localizedDescription)
             }
         
-            XCTAssertEqual(status, .mined)
+            XCTAssertEqual(status, .minedConfirmed)
         } catch {
             XCTFail(error.localizedDescription)
         }

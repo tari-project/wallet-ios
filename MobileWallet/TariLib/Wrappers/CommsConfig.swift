@@ -54,7 +54,7 @@ class CommsConfig {
     var dbPath: String
     var dbName: String
 
-    init(transport: TransportType, databaseFolderPath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64) throws {
+    init(transport: TransportType, databaseFolderPath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64, safMessageDurationSec: UInt64) throws {
         dbPath = databaseFolderPath
         dbName = databaseName
         var errorCode: Int32 = -1
@@ -68,6 +68,7 @@ class CommsConfig {
                             db,
                             path,
                             discoveryTimeoutSec,
+                            safMessageDurationSec,
                             error
                         )
                     })
