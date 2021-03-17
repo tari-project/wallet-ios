@@ -98,7 +98,7 @@
 "backup_wallet_settings.item.change_password" = "Change your secure password";
 "backup_wallet_settings.item.secure_your_backup"  = "Secure your iCloud backup";
 "backup_wallet_settings.item.backup_now" = "Back up now";
-"backup_wallet_settings.item.with_recovery_phrase" = "Back up with recovery phrase";
+"backup_wallet_settings.item.with_recovery_phrase" = "Write Down Seed Phrase";
 "backup_wallet_settings.header.title" = "Wallet Backups";
 "backup_wallet_settings.header.description" = "By backing up your wallet, you’ll ensure that you don’t lose your tXTR if your phone is lost or broken.";
 
@@ -119,10 +119,12 @@
 "secure_backup.confirm_password_field.placeholder" = "Let’s see it again";
 
 /* SeedPhrase view */
-"seed_phrase.title" = "Back Up Wallet";
-"seed_phrase.header" = "Carefully write these 24 words down in order, and keep the paper somewhere secure where others can’t access it.";
+"seed_phrase.title" = "Back Up With Seed Phrase";
+"seed_phrase.header" = "Carefully write these 24 words down in order, and keep the paper somewhere secure where others can’t access it. Do not take a screenshot.";
 "seed_phrase.agreement" = "I understand that if I lose my recovery seed phrase I will not be able to restore my wallet.";
 "seed_phrase.verify_seed_phrase" = "Verify Seed Phrase";
+"seed_phrase.error.title"="Error";
+"seed_phrase.error.description"="Error while getting the wallet seed phrase. Please try again later.";
 
 /* Settings view */
 "settings.title" = "Settings";
@@ -249,7 +251,7 @@
 /* VerifyPhrase view */
 "verify_phrase.complete" = "Complete Verification";
 "verify_phrase.warning" = "Nope, that’s not right";
-"verify_phrase.container_description" = "Tap on the words above in the correct order";
+"verify_phrase.container_description" = "Tap on the words below in the correct order";
 "verify_phrase.header" = "Select the words in the correct order.";
 "verify_phrase.title" = "Verify Seed Phrase";
 

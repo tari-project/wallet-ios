@@ -55,10 +55,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
     private var backupSender: BackupSender = .none
 
-    private lazy var settingsSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(title: BackupWalletSettingsItem.iCloudBackups.rawValue, hasArrow: false, hasSwitch: true, switchIsOn: iCloudBackup.iCloudBackupsIsOn),
-        SystemMenuTableViewCellItem(title: BackupWalletSettingsItem.setupPassword.rawValue)
-    ]
+    private var settingsSectionItems: [SystemMenuTableViewCellItem] = []
 
     private let backupNowSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: BackupWalletSettingsItem.backupNow.rawValue, hasArrow: false)
@@ -73,27 +70,38 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
         case iCloudBackups
         case setupPassword
         case backupNow
-        case backUpWithRecoveryPhrase
+        case writeDownSeedPhrase
 
         var rawValue: String {
             switch self {
-            case .iCloudBackups: return NSLocalizedString("backup_wallet_settings.item.icloud_backups", comment: "BackupWalletSettings view")
+            case .iCloudBackups:
+                return localized("backup_wallet_settings.item.icloud_backups")
             case .setupPassword:
                 if ICloudBackup.shared.lastBackup?.isEncrypted == true {
-                    return NSLocalizedString("backup_wallet_settings.item.change_password", comment: "BackupWalletSettings view")
+                    return localized("backup_wallet_settings.item.change_password")
                 } else {
-                    return NSLocalizedString("backup_wallet_settings.item.secure_your_backup", comment: "BackupWalletSettings view")
+                    return localized("backup_wallet_settings.item.secure_your_backup")
                 }
-            case .backupNow: return NSLocalizedString("backup_wallet_settings.item.backup_now", comment: "BackupWalletSettings view")
-            case .backUpWithRecoveryPhrase: return NSLocalizedString("backup_wallet_settings.item.with_recovery_phrase", comment: "BackupWalletSettings view")
+            case .backupNow:
+                return localized("backup_wallet_settings.item.backup_now")
+            case .writeDownSeedPhrase:
+                return localized("backup_wallet_settings.item.with_recovery_phrase")
             }
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        backUpWalletItem = backupNowSectionItems.first(where: { $0.title == BackupWalletSettingsItem.backupNow.rawValue })
-        iCloudBackupsItem = settingsSectionItems.first(where: { $0.title == BackupWalletSettingsItem.iCloudBackups.rawValue })
+        backUpWalletItem = backupNowSectionItems.first(
+            where: {
+                $0.title == BackupWalletSettingsItem.backupNow.rawValue
+            }
+        )
+        iCloudBackupsItem = settingsSectionItems.first(
+            where: {
+                $0.title == BackupWalletSettingsItem.iCloudBackups.rawValue
+            }
+        )
 
         tableView.delegate = self
         tableView.dataSource = self
@@ -107,19 +115,30 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
     private func onChangePasswordAction() {
         if iCloudBackup.lastBackup?.isEncrypted == true {
-            navigationController?.pushViewController(PasswordVerificationViewController(variation: .change), animated: true)
+            navigationController?.pushViewController(
+                PasswordVerificationViewController(variation: .change),
+                animated: true
+            )
         } else {
-            navigationController?.pushViewController(SecureBackupViewController(), animated: true)
+            navigationController?.pushViewController(
+                SecureBackupViewController(),
+                animated: true
+            )
         }
     }
 
     private func onBackupWithRecoveryPhraseAction() {
-        navigationController?.pushViewController(SeedPhraseViewController(), animated: true)
+        navigationController?.pushViewController(
+            SeedPhraseViewController(),
+            animated: true
+        )
     }
 
     private func observeICloudBackupsSwitch() {
         guard let iCloudBackupsItem = self.iCloudBackupsItem else { return }
-        kvoiCloudBackupsToken = iCloudBackupsItem.observe(\.isSwitchIsOn, options: .new) { [weak self] (item, change) in
+        kvoiCloudBackupsToken = iCloudBackupsItem.observe(\.isSwitchIsOn, options: .new) {
+            [weak self]
+            (item, change) in
             if change.newValue == change.oldValue { return }
             if item.isSwitchIsOn {
                 self?.backupSender = .uiSwitch
@@ -127,11 +146,11 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
                 self?.createWalletBackup()
             } else {
                 UserFeedback.shared.callToAction(
-                    title: NSLocalizedString("backup_wallet_settings.switch.warning.title", comment: "BackupWalletSettings view"),
+                    title: localized("backup_wallet_settings.switch.warning.title"),
                     boldedTitle: nil,
-                    description: NSLocalizedString("backup_wallet_settings.switch.warning.description", comment: "BackupWalletSettings view"),
-                    actionTitle: NSLocalizedString("backup_wallet_settings.switch.warning.confirm", comment: "BackupWalletSettings view"),
-                    cancelTitle: NSLocalizedString("backup_wallet_settings.switch.warning.cancel", comment: "BackupWalletSettings view"),
+                    description: localized("backup_wallet_settings.switch.warning.description"),
+                    actionTitle: localized("backup_wallet_settings.switch.warning.confirm"),
+                    cancelTitle: localized("backup_wallet_settings.switch.warning.cancel"),
                     onAction: { [weak self] in
                             BPKeychainWrapper.removeBackupPasswordFromKeychain()
                             self?.iCloudBackup.iCloudBackupsIsOn = false
@@ -163,7 +182,9 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
     override func failedToCreateBackup(error: Error) {
         super.failedToCreateBackup(error: error)
-        if iCloudBackup.isLastBackupFailed && !iCloudBackup.isValidBackupExists() && backupSender == .uiSwitch {
+        if iCloudBackup.isLastBackupFailed
+            && !iCloudBackup.isValidBackupExists()
+            && backupSender == .uiSwitch {
             iCloudBackup.iCloudBackupsIsOn = false
             kvoiCloudBackupsToken?.invalidate()
             kvoiCloudBackupsToken = nil
@@ -174,10 +195,32 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     }
 
     override func reloadTableViewWithAnimation() {
-        super.reloadTableViewWithAnimation()
-        if let securePasswordItem = settingsSectionItems.last {
-            securePasswordItem.title = BackupWalletSettingsItem.setupPassword.rawValue
+        var writeDownSeedPhraseMark: SystemMenuTableViewCell.SystemMenuTableViewCellMark!
+        if UserDefaults.Key.hasVerifiedSeedPhrase.boolValue() {
+            writeDownSeedPhraseMark = .success
+        } else {
+            writeDownSeedPhraseMark = .attention
         }
+        settingsSectionItems = [
+            SystemMenuTableViewCellItem(
+                title: BackupWalletSettingsItem.iCloudBackups.rawValue,
+                hasArrow: false,
+                hasSwitch: true,
+                switchIsOn: iCloudBackup.iCloudBackupsIsOn
+            ),
+            SystemMenuTableViewCellItem(
+                title: BackupWalletSettingsItem.writeDownSeedPhrase.rawValue,
+                mark: writeDownSeedPhraseMark
+            )
+        ]
+        if iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress {
+            settingsSectionItems.insert(
+                SystemMenuTableViewCellItem(title: BackupWalletSettingsItem.setupPassword.rawValue),
+                at: 1
+            )
+        }
+
+        super.reloadTableViewWithAnimation()
     }
 
     override func updateMarks() {
@@ -197,7 +240,11 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     }
 
     override func onUploadProgress(percent: Double, started: Bool, completed: Bool) {
-        super.onUploadProgress(percent: percent, started: started, completed: completed)
+        super.onUploadProgress(
+            percent: percent,
+            started: started,
+            completed: completed
+        )
         if completed { backupSender = .none }
     }
 
@@ -210,14 +257,15 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 extension BackupWalletSettingsViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
-        navigationBar.title = NSLocalizedString("backup_wallet_settings.title", comment: "BackupWalletSettings view")
+        navigationBar.title = localized("backup_wallet_settings.title")
     }
 }
 
 extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDataSource {
+
     private func numberOfSections() -> Int {
-        if (!iCloudBackup.isValidBackupExists() && iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress) ||
-            (iCloudBackup.iCloudBackupsIsOn && BackupScheduler.shared.isBackupScheduled) {
+        if (!iCloudBackup.isValidBackupExists() && iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress)
+            || (iCloudBackup.iCloudBackupsIsOn && BackupScheduler.shared.isBackupScheduled) {
             return 2
         } else {
             return 1
@@ -232,22 +280,26 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
         guard let section = Section(rawValue: section) else { return 0 }
         switch section {
         case .settings:
-            if iCloudBackup.iCloudBackupsIsOn && !iCloudBackup.inProgress {
-                return settingsSectionItems.count
-            } else {
-                return settingsSectionItems.count - 1
-            }
-        case .backupNow: return backupNowSectionItems.count
+            return settingsSectionItems.count
+        case .backupNow:
+            return backupNowSectionItems.count
         }
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SystemMenuTableViewCell.self), for: indexPath) as! SystemMenuTableViewCell
+    func tableView(_ tableView: UITableView,
+                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: SystemMenuTableViewCell.self),
+            for: indexPath
+        ) as! SystemMenuTableViewCell
         guard let section = Section(rawValue: indexPath.section) else { return cell }
 
         switch section {
-        case .settings: cell.configure(settingsSectionItems[indexPath.row])
-        case .backupNow: cell.configure(backupNowSectionItems[indexPath.row])
+        case .settings:
+            let item = settingsSectionItems[indexPath.row]
+            cell.configure(settingsSectionItems[indexPath.row])
+        case .backupNow:
+            cell.configure(backupNowSectionItems[indexPath.row])
         }
 
         cell.preservesSuperviewLayoutMargins = false
@@ -261,7 +313,8 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let lastSuccessful = iCloudBackup.lastBackup != nil && !iCloudBackup.inProgress && !iCloudBackup.isLastBackupFailed
+        let lastSuccessful = iCloudBackup.lastBackup != nil
+            && !iCloudBackup.inProgress && !iCloudBackup.isLastBackupFailed
         if tableView.numberOfSections - 1 == section && lastSuccessful {
             return 50.0
         } else {
@@ -335,15 +388,19 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
         return header
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-        guard let section = Section(rawValue: indexPath.section) else { return }
-
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        guard let section = Section(rawValue: indexPath.section) else { return nil }
         switch section {
         case .settings:
-            let item = BackupWalletSettingsItem.allCases[indexPath.row]
-            if item == .setupPassword {
-                onChangePasswordAction()
+            let numberOfRows = tableView.numberOfRows(inSection: section.rawValue)
+            if indexPath.row == 1 {
+                if numberOfRows == 2 {
+                    onBackupWithRecoveryPhraseAction()
+                } else if numberOfRows == 3 {
+                    onChangePasswordAction()
+                }
+            } else if indexPath.row == 2 {
+                onBackupWithRecoveryPhraseAction()
             }
         case .backupNow:
             let item = BackupWalletSettingsItem.allCases[indexPath.row + settingsSectionItems.count]
@@ -351,5 +408,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
                 onBackupNowAction()
             }
         }
+        return nil
     }
+
 }

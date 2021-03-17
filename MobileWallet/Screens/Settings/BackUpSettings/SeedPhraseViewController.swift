@@ -51,27 +51,66 @@ class SeedPhraseViewController: SettingsParentViewController {
 
     private let cellIdentifier = "SeedPhraseCell"
 
-    private let words = ["Aurora", "Fluffy", "Tari", "Gems", "Digital", "Emojis", "Collect", "Animo", "Aurora", "Fluffy", "Tari", "Gems", "Digital", "Emojis", "Collect", "Animo", "Aurora", "Fluffy", "Tari", "Gems", "Digital", "Emojis", "Collect", "Animo"]
+    private var seedWords = [String]()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if let walletSeedWords = TariLib.shared.tariWallet?.seedWords.0 {
+            seedWords.removeAll()
+            seedWords.append(contentsOf: walletSeedWords)
+            collectionView?.reloadData()
+        } else {
+            UserFeedback.shared.error(
+                title: localized("seed_phrase.error.title"),
+                description: localized("seed_phrase.error.description"),
+                error: nil
+            ) {
+                [weak self] in
+                self?.navigationController?.popViewController(animated: true)
+            }
+        }
+    }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        fadeOverlayView.applyFade(Theme.shared.colors.appBackground!, locations: [0.3, 1])
+        fadeOverlayView.applyFade(
+            Theme.shared.colors.appBackground!,
+            locations: [0.3, 1]
+        )
     }
+
 }
 
-extension SeedPhraseViewController: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath as IndexPath) as? SeedPhraseCell else { return UICollectionViewCell() }
-        let word = words[indexPath.row]
-        cell.configure(number: "\(indexPath.row + 1)", word: word)
+extension SeedPhraseViewController: UICollectionViewDataSource,
+    UICollectionViewDelegate,
+    UICollectionViewDelegateFlowLayout {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+
+        guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: cellIdentifier,
+                for: indexPath as IndexPath
+        ) as? SeedPhraseCell else {
+            return UICollectionViewCell()
+        }
+        var actualIndex = indexPath.row / 2
+        if indexPath.row % 2 != 0 {
+            actualIndex = actualIndex + seedWords.count / 2
+        }
+        let seedWord = seedWords[actualIndex]
+        cell.configure(number: "\(actualIndex + 1)", word: seedWord)
         return cell
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 24
+    func collectionView(_ collectionView: UICollectionView,
+                        numberOfItemsInSection section: Int) -> Int {
+        return seedWords.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let layout = collectionViewLayout as? UICollectionViewFlowLayout else { return .zero }
         let width = collectionView.bounds.width - layout.sectionInset.left - layout.sectionInset.right - layout.minimumLineSpacing
         return CGSize(width: width/2, height: 20)
@@ -154,24 +193,35 @@ extension SeedPhraseViewController {
     }
 
     private func setupContinueButton() {
-        continueButton.setTitle(NSLocalizedString("seed_phrase.verify_seed_phrase", comment: "SeedPhrase view"), for: .normal)
+        continueButton.setTitle(localized("seed_phrase.verify_seed_phrase"), for: .normal)
         continueButton.addTarget(self, action: #selector(continueButtonAction), for: .touchUpInside)
         continueButton.variation = .disabled
         view.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
 
-        continueButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
-                                                constant: Theme.shared.sizes.appSidePadding).isActive = true
-        continueButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor,
-                                                 constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        continueButton.centerXAnchor.constraint(equalTo: view.centerXAnchor,
-                                                constant: 0).isActive = true
+        continueButton.leadingAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.leadingAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        continueButton.trailingAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.trailingAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        continueButton.centerXAnchor.constraint(
+            equalTo: view.centerXAnchor,
+            constant: 0
+        ).isActive = true
 
-        let continueButtonConstraint = continueButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        let continueButtonConstraint = continueButton.bottomAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.bottomAnchor
+        )
         continueButtonConstraint.priority = UILayoutPriority(rawValue: 999)
         continueButtonConstraint.isActive = true
 
-        let continueButtonSecondConstraint = continueButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -20)
+        let continueButtonSecondConstraint = continueButton.bottomAnchor.constraint(
+            lessThanOrEqualTo: view.bottomAnchor,
+            constant: -20
+        )
         continueButtonSecondConstraint.priority = UILayoutPriority(rawValue: 1000)
         continueButtonSecondConstraint.isActive = true
     }
@@ -204,11 +254,9 @@ extension SeedPhraseViewController {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 25
         layout.minimumInteritemSpacing = 25
-        layout.sectionInset = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        layout.sectionInset = UIEdgeInsets(top: 30, left: 30, bottom: 30, right: 30)
 
         collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
-        collectionView?.delegate = self
-        collectionView?.dataSource = self
 
         collectionView?.register(SeedPhraseCell.self, forCellWithReuseIdentifier: cellIdentifier)
         collectionView?.backgroundColor = .clear
@@ -220,6 +268,9 @@ extension SeedPhraseViewController {
         collectionView?.trailingAnchor.constraint(equalTo: phraseContainer.trailingAnchor).isActive = true
         collectionView?.bottomAnchor.constraint(equalTo: phraseContainer.bottomAnchor).isActive = true
         collectionView?.topAnchor.constraint(equalTo: phraseContainer.topAnchor).isActive = true
+
+        collectionView?.delegate = self
+        collectionView?.dataSource = self
     }
 
     @objc private func checkBoxAction(_ sender: CheckBox) {
@@ -227,7 +278,12 @@ extension SeedPhraseViewController {
     }
 
     @objc private func continueButtonAction() {
-        navigationController?.pushViewController(VerifyPhraseViewController(), animated: true)
+        let verifyPhraseViewController = VerifyPhraseViewController()
+        verifyPhraseViewController.seedWords = seedWords
+        navigationController?.pushViewController(
+            verifyPhraseViewController,
+            animated: true
+        )
     }
 }
 

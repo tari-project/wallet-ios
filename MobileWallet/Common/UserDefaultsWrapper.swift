@@ -50,6 +50,8 @@ extension UserDefaults {
 
         case backupOperationAborted
 
+        case hasVerifiedSeedPhrase
+
         func set<T>(_ value: T) {
             UserDefaults.standard.set(value, forKey: rawValue)
         }

@@ -88,7 +88,7 @@ class Wallet {
     var dbName: String
     var logPath: String
 
-    static let defaultFeePerGram = MicroTari(100)
+    static let defaultFeePerGram = MicroTari(10)
     static let defaultKernelCount = UInt64(1)
     static let defaultOutputCount = UInt64(2)
 
@@ -102,12 +102,38 @@ class Wallet {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             Contacts(contactsPointer: wallet_get_contacts(ptr, error))
-
         })
         guard errorCode == 0 else {
             return (nil, WalletErrors.generic(errorCode))
         }
         return (result, nil)
+    }
+
+    var seedWords: ([String]?, Error?) {
+        var errorCode: Int32 = -1
+        let seedWords = withUnsafeMutablePointer(to: &errorCode, { error in
+            SeedWords(pointer: wallet_get_seed_words(ptr, error))
+        })
+        guard errorCode == 0 else {
+            return (nil, WalletErrors.generic(errorCode))
+        }
+        let countResult = seedWords.count
+        if let error = countResult.1 {
+            return (nil, error)
+        }
+        do {
+            var result = [String]()
+            for i in 0..<countResult.0 {
+                let seedWord = try seedWords.at(position: i)
+                if let error = seedWord.1 {
+                    return (nil, error)
+                }
+                result.append(seedWord.0)
+            }
+            return (result, nil)
+        } catch {
+            return (nil, error)
+        }
     }
 
     var availableBalance: (UInt64, Error?) {
@@ -389,27 +415,28 @@ class Wallet {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_create(
-            commsConfig.pointer,
-            loggingFilePathPointer,
-            2, // number of rolling log files
-            10 * 1024 * 1024, // rolling log file max size in bytes
-            nil, //TODO use passphrase when ready to implement
-            receivedTxCallback,
-            receivedTxReplyCallback,
-            receivedFinalizedTxCallback,
-            txBroadcastCallback,
-            txMinedCallback,
-            txMinedUnconfirmedCallback,
-            directSendResultCallback,
-            storeAndForwardSendResultCallback,
-            txCancellationCallback,
-            utxoValidationCompleteCallback,
-            stxoValidationCompleteCallback,
-            invalidTXOValidationCompleteCallback,
-            txValidationCompleteCallback,
-            storedMessagesReceivedCallback,
-            error)}
-        )
+                commsConfig.pointer,
+                loggingFilePathPointer,
+                2, // number of rolling log files
+                10 * 1024 * 1024, // rolling log file max size in bytes
+                nil, //TODO use passphrase when ready to implement
+                receivedTxCallback,
+                receivedTxReplyCallback,
+                receivedFinalizedTxCallback,
+                txBroadcastCallback,
+                txMinedCallback,
+                txMinedUnconfirmedCallback,
+                directSendResultCallback,
+                storeAndForwardSendResultCallback,
+                txCancellationCallback,
+                utxoValidationCompleteCallback,
+                stxoValidationCompleteCallback,
+                invalidTXOValidationCompleteCallback,
+                txValidationCompleteCallback,
+                storedMessagesReceivedCallback,
+                error
+            )
+        })
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
@@ -883,4 +910,5 @@ class Wallet {
         TariLogger.warn("Wallet destroy")
         wallet_destroy(ptr)
     }
+
 }

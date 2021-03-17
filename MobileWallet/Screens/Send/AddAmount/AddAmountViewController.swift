@@ -222,7 +222,7 @@ class AddAmountViewController: UIViewController {
             return
         }
 
-        if numberOfDecimals(in: updatedText) > MicroTari.ROUNDED_FRACTION_DIGITS {
+        if numberOfDecimals(in: updatedText) > MicroTari.MAX_FRACTION_DIGITS {
             return
         }
 
@@ -281,7 +281,7 @@ class AddAmountViewController: UIViewController {
             return false
         }
 
-        guard numberOfDecimals(in: string) <= MicroTari.ROUNDED_FRACTION_DIGITS else {
+        guard numberOfDecimals(in: string) <= MicroTari.MAX_FRACTION_DIGITS else {
             return false
         }
 
@@ -356,7 +356,7 @@ class AddAmountViewController: UIViewController {
     }
 
     private func showTxFee(_ fee: MicroTari) {
-        txFeeLabel.text = fee.formattedPreciseWithOperator
+        txFeeLabel.text = fee.formattedWithOperator
         if txFeeIsVisible { return }
         txViewContainer.alpha = 0.0
         let moveAnimation: CATransition = CATransition()

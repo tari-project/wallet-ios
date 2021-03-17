@@ -338,9 +338,17 @@ class TxViewController: UIViewController {
         let bottomPadding = Theme.shared.sizes.appSidePadding + (allowCancelling ? Theme.shared.sizes.appSidePadding : 0)
         self.txStateViewBottomAnchor = self.txStateView.bottomAnchor.constraint(equalTo: self.navigationBar.bottomAnchor, constant: -bottomPadding)
         self.txStateViewBottomAnchor.isActive = true
-        self.txStateView.leadingAnchor.constraint(equalTo: self.navigationBar.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        self.txStateView.trailingAnchor.constraint(equalTo: self.navigationBar.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
-        self.txStateView.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        self.txStateView.leadingAnchor.constraint(
+            equalTo: self.navigationBar.leadingAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        self.txStateView.trailingAnchor.constraint(
+            equalTo: self.navigationBar.trailingAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        self.txStateView.heightAnchor.constraint(
+            equalToConstant: 48
+        ).isActive = true
 
         self.txStateView.setupView(defaultState, visible: true)
 
@@ -420,14 +428,14 @@ class TxViewController: UIViewController {
             }
 
             if tx.direction == .inbound {
-                navigationBar.title = NSLocalizedString("tx_detail.payment_received", comment: "Transaction detail view")
-                fromHeadingLabel.text = NSLocalizedString("tx_detail.from", comment: "Transaction detail view")
-                valueLabel.text = microTari!.formatted
+                navigationBar.title = localized("tx_detail.payment_received")
+                fromHeadingLabel.text = localized("tx_detail.from")
+                valueLabel.text = microTari!.formattedPrecise
                 contactPublicKey = tx.sourcePublicKey.0
             } else if tx.direction == .outbound {
-                navigationBar.title = NSLocalizedString("tx_detail.payment_sent", comment: "Transaction detail view")
-                fromHeadingLabel.text = NSLocalizedString("tx_detail.to", comment: "Transaction detail view")
-                valueLabel.text = microTari!.formatted
+                navigationBar.title = localized("tx_detail.payment_sent")
+                fromHeadingLabel.text = localized("tx_detail.to")
+                valueLabel.text = microTari!.formattedPrecise
                 contactPublicKey = tx.destinationPublicKey.0
             }
 
@@ -485,7 +493,10 @@ class TxViewController: UIViewController {
                         DispatchQueue.main.sync { [weak self] in
                             guard let self = self else { return }
                             self.attachmentView.media = media
-                            self.attachmentView.heightAnchor.constraint(equalTo: self.attachmentView.widthAnchor, multiplier: 1 / media.aspectRatio).isActive = true
+                            self.attachmentView.heightAnchor.constraint(
+                                equalTo: self.attachmentView.widthAnchor,
+                                multiplier: 1 / media.aspectRatio
+                            ).isActive = true
                         }
                     }
                 }
@@ -499,7 +510,7 @@ class TxViewController: UIViewController {
                         throw feeError!
                     }
 
-                    setFeeLabel(fee!.formattedPreciseWithOperator)
+                    setFeeLabel(fee!.formattedWithOperator)
                 }
             } else if let pendingOutboundTx = tx as? PendingOutboundTx {
                 let (fee, feeError) = pendingOutboundTx.fee
@@ -507,7 +518,7 @@ class TxViewController: UIViewController {
                     throw feeError!
                 }
 
-                setFeeLabel(fee!.formattedPreciseWithOperator)
+                setFeeLabel(fee!.formattedWithOperator)
             }
 
             if isCancelled {

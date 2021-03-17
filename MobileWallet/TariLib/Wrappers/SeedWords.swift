@@ -45,6 +45,7 @@ enum SeedWordsError: Error {
 }
 
 class SeedWords {
+
     private var ptr: OpaquePointer
 
     var pointer: OpaquePointer {
@@ -79,4 +80,5 @@ class SeedWords {
     deinit {
         seed_words_destroy(ptr)
     }
+
 }

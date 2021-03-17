@@ -100,12 +100,16 @@ extension SettingsParentTableViewController {
 
     @objc func reloadTableViewWithAnimation() {
         updateMarks()
-        UIView.transition(with: tableView,
-                          duration: 0.5,
-                          options: .transitionCrossDissolve,
-                          animations: { [weak self] in
-                            self?.tableView.reloadData()},
-                          completion: nil)
+        UIView.transition(
+            with: tableView,
+            duration: 0.5,
+            options: .transitionCrossDissolve,
+            animations: {
+                [weak self] in
+                self?.tableView.reloadData()
+            },
+            completion: nil
+        )
     }
 }
 

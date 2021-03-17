@@ -185,7 +185,7 @@ class TxTableViewCell: UITableViewCell {
     private func setValue(microTari: MicroTari?, direction: TxDirection, isCancelled: Bool, isPending: Bool) {
         if let mt = microTari {
             if isCancelled {
-                valueLabel.text = mt.formatted
+                valueLabel.text = mt.formattedPrecise
                 valueLabel.backgroundColor = Theme.shared.colors.txCellValueCancelledBackground
                 valueLabel.textColor = Theme.shared.colors.txCellValueCancelledText
             } else if direction == .inbound {
