@@ -75,6 +75,10 @@ class HomeViewController: UIViewController {
 
     private var lastFPCPosition: FloatingPanel.FloatingPanelPosition = .half
 
+    private var balanceRefreshIsWaitingForWallet = false
+    private var tableDataReloadIsWaitingForWallet = false
+    private var networkCompatibilityCheckIsWaitingForWallet = false
+
     private lazy var dimmingLayer: CALayer = {
         let layer = CALayer()
         layer.frame = view.bounds
@@ -111,10 +115,12 @@ class HomeViewController: UIViewController {
         styleNavigatorBar(isHidden: true)
         overrideUserInterfaceStyle = .light
         setup()
-        refreshBalance()
         setupKeyServer()
         Tracker.shared.track("/home", "Home - Transaction List")
-
+        TariEventBus.onMainThread(self, eventType: .balanceUpdate) {
+            [weak self] (_) in
+            self?.safeRefreshBalance()
+        }
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(appMovedToForeground),
@@ -124,29 +130,50 @@ class HomeViewController: UIViewController {
     }
 
     @objc func appMovedToForeground() {
-        txsTableVC.tableView.beginRefreshing()
+        if TariLib.shared.walletState != .started {
+            tableDataReloadIsWaitingForWallet = true
+        } else {
+            txsTableVC.tableView.beginRefreshing()
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
+            [weak self]
+            (sender) in
+            let walletState = sender!.object as! TariLib.WalletState
+            guard let self = self else { return }
+
+            switch walletState {
+            case .started:
+                if self.balanceRefreshIsWaitingForWallet {
+                    self.balanceRefreshIsWaitingForWallet = false
+                    self.safeRefreshBalance()
+                }
+                if self.tableDataReloadIsWaitingForWallet {
+                    self.tableDataReloadIsWaitingForWallet = false
+                    self.txsTableVC.tableView.beginRefreshing()
+                }
+                if self.networkCompatibilityCheckIsWaitingForWallet {
+                    self.networkCompatibilityCheckIsWaitingForWallet = false
+                    self.safeCheckIncompatibleNetwork()
+                }
+            default:
+                break
+            }
+        }
         safeRefreshBalance()
-        TariEventBus.onMainThread(self, eventType: .balanceUpdate) { [weak self] (_) in
-            guard let self = self else { return }
-            self.safeRefreshBalance()
-        }
-
         deepLinker.checkDeepLink()
-
         checkImportSecondUtxo()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            [weak self] in
-            guard let self = self else { return }
-            self.checkIncompatibleNetwork()
-
-        }
+        safeCheckIncompatibleNetwork()
     }
 
-    private func checkIncompatibleNetwork() {
+    private func safeCheckIncompatibleNetwork() {
+        if TariLib.shared.walletState != .started {
+            networkCompatibilityCheckIsWaitingForWallet = true
+            return
+        }
         do {
             let persistedNetwork = try TariLib.shared.tariWallet?.getKeyValue(
                 key: TariLib.KeyValueStorageKeys.network.rawValue
@@ -158,7 +185,7 @@ class HomeViewController: UIViewController {
                 checkBackupPrompt(delay: 0)
             }
         } catch {
-            displayIncompatibleNetworkDialog()
+            // no-op
         }
     }
 
@@ -303,24 +330,15 @@ class HomeViewController: UIViewController {
     }
 
     private func safeRefreshBalance() {
-        TariLib.shared.waitIfWalletIsRestarting {
-            [weak self] (_) in
-            self?.refreshBalance()
+        if TariLib.shared.walletState != .started {
+            balanceRefreshIsWaitingForWallet = true
+        } else {
+            refreshBalance()
         }
     }
 
     private func refreshBalance() {
-        guard let wallet = TariLib.shared.tariWallet else {
-            TariLib.shared.waitIfWalletIsRestarting {
-                [weak self] (success) in
-                if success == true {
-                    self?.refreshBalance()
-                }
-            }
-            return
-        }
-
-        let (totalMicroTari, error) = wallet.totalMicroTari
+        let (totalMicroTari, error) = TariLib.shared.tariWallet!.totalMicroTari
         guard error == nil else {
             UserFeedback.shared.error(
                 title: localized("home.error.update_balance"),
@@ -681,7 +699,7 @@ extension HomeViewController {
     private func setupBalanceLabel() {
         view.addSubview(balanceLabel)
 
-        balanceLabel.text = NSLocalizedString("home.available_balance", comment: "Home view")
+        balanceLabel.text = localized("home.available_balance")
         balanceLabel.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
         balanceLabel.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
 
@@ -757,7 +775,7 @@ extension HomeViewController {
 
         let navigationBarTitle = UILabel()
         navigationBarContainer.addSubview(navigationBarTitle)
-        navigationBarTitle.text = NSLocalizedString("tx_list.title", comment: "Transactions list")
+        navigationBarTitle.text = localized("tx_list.title")
         navigationBarTitle.font = Theme.shared.fonts.navigationBarTitle
         navigationBarTitle.textColor = Theme.shared.colors.txListNavBar
 

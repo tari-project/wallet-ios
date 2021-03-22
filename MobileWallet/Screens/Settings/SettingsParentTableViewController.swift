@@ -61,8 +61,24 @@ class SettingsParentTableViewController: SettingsParentViewController {
     }
 
     @objc private func willEnterForeground() {
-        TariLib.shared.waitIfWalletIsRestarting { [weak self] _ in
-            self?.reloadTableViewWithAnimation()
+        if TariLib.shared.walletState != .started {
+            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
+                [weak self]
+                (sender) in
+                guard let self = self else { return }
+                let walletState = sender!.object as! TariLib.WalletState
+                switch walletState {
+                case .started:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    self.reloadTableViewWithAnimation()
+                case .startFailed:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                default:
+                    break
+                }
+            }
+        } else {
+            reloadTableViewWithAnimation()
         }
     }
 

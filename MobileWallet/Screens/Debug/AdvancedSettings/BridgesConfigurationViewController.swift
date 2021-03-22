@@ -59,10 +59,10 @@ class BridgesConfigurationViewController: SettingsParentTableViewController {
 
         var rawValue: String {
             switch self {
-            case .requestBridgesFromTorproject: return NSLocalizedString("bridges_configuration.item.request_bridges_from_torproject", comment: "BridgesConfiguration view")
+            case .requestBridgesFromTorproject: return localized("bridges_configuration.item.request_bridges_from_torproject")
 
-            case .noBridges: return NSLocalizedString("bridges_configuration.item.noBridges", comment: "BridgesConfiguration view")
-            case .custom: return NSLocalizedString("bridges_configuration.item.custom", comment: "BridgesConfiguration view")
+            case .noBridges: return localized("bridges_configuration.item.noBridges")
+            case .custom: return localized("bridges_configuration.item.custom")
             }
         }
     }
@@ -94,7 +94,7 @@ class BridgesConfigurationViewController: SettingsParentTableViewController {
 extension BridgesConfigurationViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
-        navigationBar.title = NSLocalizedString("bridges_configuration.title", comment: "BridgesConfiguration view")
+        navigationBar.title = localized("bridges_configuration.title")
         navigationBar.rightButton.isEnabled = false
         navigationBar.rightButtonAction = { [weak self] in
             guard let self = self else { return }
@@ -106,7 +106,7 @@ extension BridgesConfigurationViewController {
             OnionConnector.shared.bridgesConfiguration = self.bridgesConfiguration
         }
 
-        let title = NSLocalizedString("bridges_configuration.connect", comment: "BridgesConfiguration view")
+        let title = localized("bridges_configuration.connect")
         navigationBar.rightButton.setTitle(title, for: .normal)
         navigationBar.rightButton.setTitleColor(Theme.shared.colors.navigationBarPurple, for: .normal)
         navigationBar.rightButton.setTitleColor(Theme.shared.colors.navigationBarPurple?.withAlphaComponent(0.5), for: .highlighted)
@@ -164,7 +164,7 @@ extension BridgesConfigurationViewController: UITableViewDelegate, UITableViewDa
         bridgesDescriptionLabel.font = Theme.shared.fonts.settingsTableViewLastBackupDate
         bridgesDescriptionLabel.textColor =  Theme.shared.colors.settingsTableViewLastBackupDate
 
-        bridgesDescriptionLabel.text = NSLocalizedString("bridges_configuration.description.bridges", comment: "BridgesConfiguration view")
+        bridgesDescriptionLabel.text = localized("bridges_configuration.description.bridges")
         bridgesDescriptionLabel.numberOfLines = 0
         footer.addSubview(bridgesDescriptionLabel)
 

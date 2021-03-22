@@ -121,13 +121,41 @@ class ContactsTableViewController: UITableViewController {
     }
 
     private func fetchContacts() {
-        TariLib.shared.waitIfWalletIsRestarting { [weak self] _ in
+        if TariLib.shared.walletState != .started {
+            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
+                [weak self]
+                (sender) in
+                guard let self = self else { return }
+                let walletState = sender!.object as! TariLib.WalletState
+                switch walletState {
+                case .started:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    do {
+                        try self.loadContacts()
+                    } catch {
+                        UserFeedback.shared.error(
+                            title: localized("add_recipient.error.load_contacts.title"),
+                            description: localized("add_recipient.error.load_contacts.description"),
+                            error: error
+                        )
+                    }
+                case .startFailed:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    UserFeedback.shared.error(
+                        title: localized("add_recipient.error.load_contacts.title"),
+                        description: localized("add_recipient.error.load_contacts.description")
+                    )
+                default:
+                    break
+                }
+            }
+        } else {
             do {
-                try self?.loadContacts()
+                try loadContacts()
             } catch {
                 UserFeedback.shared.error(
-                    title: NSLocalizedString("add_recipient.error.load_contacts.title", comment: "Add recipient view"),
-                    description: NSLocalizedString("add_recipient.error.load_contacts.description", comment: "Add recipient view"),
+                    title: localized("add_recipient.error.load_contacts.title"),
+                    description: localized("add_recipient.error.load_contacts.description"),
                     error: error
                 )
             }
@@ -223,10 +251,10 @@ class ContactsTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
-            return NSLocalizedString("add_recipient.recent_txs", comment: "Add recipient view")
+            return localized("add_recipient.recent_txs")
         }
 
-        return NSLocalizedString("add_recipient.my_contacts", comment: "Add recipient view")
+        return localized("add_recipient.my_contacts")
     }
 
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {

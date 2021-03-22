@@ -217,6 +217,7 @@ class ConnectionMonitor {
     }
 
     func stop() {
+        reachability?.stopNotifier()
         TariEventBus.unregister(self)
         TariLogger.verbose("Stopped monitoring network connections")
     }

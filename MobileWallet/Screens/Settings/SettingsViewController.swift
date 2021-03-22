@@ -57,9 +57,9 @@ class SettingsViewController: SettingsParentTableViewController {
 
         var rawValue: String {
             switch self {
-            case .securityHeader: return NSLocalizedString("settings.item.header.security", comment: "Settings view")
-            case .moreHeader: return NSLocalizedString("settings.item.header.more", comment: "Settings view")
-            case .advancedSettingsHeader: return NSLocalizedString("settings.item.header.advanced_settings", comment: "Settings view")
+            case .securityHeader: return localized("settings.item.header.security")
+            case .moreHeader: return localized("settings.item.header.more")
+            case .advancedSettingsHeader: return localized("settings.item.header.advanced_settings")
             }
         }
     }
@@ -79,17 +79,17 @@ class SettingsViewController: SettingsParentTableViewController {
 
         var rawValue: String {
             switch self {
-            case .backUpWallet: return NSLocalizedString("settings.item.wallet_backups", comment: "Settings view")
+            case .backUpWallet: return localized("settings.item.wallet_backups")
 
-            case .torBridgeConfiguration: return NSLocalizedString("settings.item.bridge_configuration", comment: "Settings view")
-            case .deleteWallet: return NSLocalizedString("settings.item.delete_wallet", comment: "Settings view")
+            case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
+            case .deleteWallet: return localized("settings.item.delete_wallet")
 
-            case .reportBug: return NSLocalizedString("settings.item.report_bug", comment: "Settings view")
-            case .visitTari: return NSLocalizedString("settings.item.visit_tari", comment: "Settings view")
-            case .contributeToTariAurora: return NSLocalizedString("settings.item.contribute_to_tari", comment: "Settings view")
-            case .userAgreement: return NSLocalizedString("settings.item.user_agreement", comment: "Settings view")
-            case .privacyPolicy: return NSLocalizedString("Privacy Policy", comment: "Settings view")
-            case .disclaimer: return NSLocalizedString("settings.item.disclaimer", comment: "Settings view")
+            case .reportBug: return localized("settings.item.report_bug")
+            case .visitTari: return localized("settings.item.visit_tari")
+            case .contributeToTariAurora: return localized("settings.item.contribute_to_tari")
+            case .userAgreement: return localized("settings.item.user_agreement")
+            case .privacyPolicy: return localized("settings.item.privacy_policy")
+            case .disclaimer: return localized("settings.item.disclaimer")
             }
         }
     }
@@ -209,7 +209,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 lastBackupLabel.font = Theme.shared.fonts.settingsTableViewLastBackupDate
                 lastBackupLabel.textColor =  Theme.shared.colors.settingsTableViewLastBackupDate
 
-                lastBackupLabel.text = String(format: NSLocalizedString("settings.last_successful_backup.with_param", comment: "Settings view"), lastBackupString)
+                lastBackupLabel.text = String(format: localized("settings.last_successful_backup.with_param"), lastBackupString)
 
                 header.addSubview(lastBackupLabel)
 
@@ -280,7 +280,7 @@ extension SettingsViewController {
             self?.dismiss(animated: true, completion: nil)
         }
 
-        let title = NSLocalizedString("settings.done", comment: "Settings view")
+        let title = localized("settings.done")
         navigationBar.rightButton.setTitle(title, for: .normal)
         navigationBar.rightButton.setTitleColor(Theme.shared.colors.settingsDoneButtonTitle, for: .normal)
         navigationBar.rightButton.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
@@ -294,24 +294,21 @@ extension SettingsViewController {
             let baseNode = try BaseNode(clipboardText)
 
             UserFeedback.shared.callToAction(
-                title: NSLocalizedString("Set custom base node", comment: "Custom base node in clipboard call to action"),
+                title: localized("Set custom base node"),
                 description: String(
-                    format: NSLocalizedString(
-                        "We found a base node peer in your clipboard, would you like to use this instead of the default?\n\n%@",
-                        comment: "Custom base node in clipboard call to action"
-                    ),
+                    format: localized("We found a base node peer in your clipboard, would you like to use this instead of the default?\n\n%@"),
                     clipboardText
                 ),
-                actionTitle: NSLocalizedString("Set", comment: "Custom base node in clipboard call to action"),
-                cancelTitle: NSLocalizedString("Keep default", comment: "Custom base node in clipboard call to action"),
+                actionTitle: localized("Set"),
+                cancelTitle: localized("Keep default"),
                 onAction: {
                     do {
                         try TariLib.shared.setBasenode(baseNode)
                         UIPasteboard.general.string = ""
                     } catch {
                         UserFeedback.shared.error(
-                            title: NSLocalizedString("Base node error", comment: "Add base node peer error"),
-                            description: NSLocalizedString("Failed to set custom base node from clipboard", comment: "Custom base node in clipboard call to action"),
+                            title: localized("Base node error"),
+                            description: localized("Failed to set custom base node from clipboard"),
                             error: error
                         )
                     }

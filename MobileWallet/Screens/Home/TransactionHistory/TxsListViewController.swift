@@ -95,7 +95,21 @@ class TxsListViewController: UIViewController {
         DispatchQueue.main.asyncAfter(
             deadline: .now() + 1.0 + CATransaction.animationDuration()
         ) {
+            [weak self] in
+            guard let self = self else { return }
             self.registerEvents()
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(self.registerEvents),
+                name: UIApplication.willEnterForegroundNotification,
+                object: nil
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(self.unregisterEvents),
+                name: UIApplication.didEnterBackgroundNotification,
+                object: nil
+            )
         }
     }
 
@@ -114,28 +128,46 @@ class TxsListViewController: UIViewController {
     }
 
     func safeRefreshTable(_ completion:(() -> Void)? = nil) {
-         TariLib.shared.waitIfWalletIsRestarting {
-             [weak self] (success) in
-             if success == true {
-                 self?.txDataUpdateQueue.async(flags: .barrier) {
-                    if self?.fetchTx() == true {
-                        DispatchQueue.main.async {
-                            [weak self] in
-                            self?.tableView.reloadData()
-                        }
-                    }
-                    DispatchQueue.main.async { completion?() }
-                 }
-             } else {
-                 completion?()
-             }
-         }
+        if TariLib.shared.walletState == .started {
+            refreshTable(completion)
+        } else {
+            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
+                [weak self]
+                (sender) in
+                guard let self = self else { return }
+                let walletState = sender!.object as! TariLib.WalletState
+                switch walletState {
+                case .started:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    self.refreshTable(completion)
+                case .startFailed:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                default:
+                    break
+                }
+            }
+        }
      }
+
+    private func refreshTable(_ completion:(() -> Void)?) {
+        txDataUpdateQueue.async(flags: .barrier) {
+            if self.fetchTx() == true {
+               DispatchQueue.main.async {
+                   [weak self] in
+                   self?.tableView.reloadData()
+               }
+           }
+           DispatchQueue.main.async { completion?() }
+        }
+    }
 
     @discardableResult
     private func fetchTx() -> Bool {
+        guard let wallet = TariLib.shared.tariWallet else {
+            return false
+        }
         //All completed/cancelled txs
-        let (allTxs, allTxsError) = TariLib.shared.tariWallet!.allTxs
+        let (allTxs, allTxsError) = wallet.allTxs
 
         guard allTxsError == nil else {
             DispatchQueue.main.async {
@@ -328,18 +360,6 @@ extension TxsListViewController: UIScrollViewDelegate {
 extension TxsListViewController {
 
     @objc private func registerEvents() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(registerEvents),
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(unregisterEvents),
-            name: UIApplication.didEnterBackgroundNotification,
-            object: nil
-        )
         // Event for table refreshing
         TariEventBus.onMainThread(self, eventType: .txListUpdate) {
             [weak self] (_) in

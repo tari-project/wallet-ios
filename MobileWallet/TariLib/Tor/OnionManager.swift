@@ -21,18 +21,18 @@ extension OnionError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .missingCookieFile:
-            return NSLocalizedString("Onion_Error.error.missing_cookie_file", comment: "Onion error")
+            return localized("Onion_Error.error.missing_cookie_file")
         case .invalidBridges:
-            return NSLocalizedString("Onion_Error.error.invalid_bridges", comment: "Onion error")
+            return localized("Onion_Error.error.invalid_bridges")
         case .connectionError:
-            return NSLocalizedString("Onion_Error.error.connectionError", comment: "Onion error")
+            return localized("Onion_Error.error.connectionError")
         }
     }
 
     public var failureReason: String? {
         switch self {
         case .connectionError, .invalidBridges, .missingCookieFile:
-            return NSLocalizedString("Onion_Error.error.title.onionError", comment: "Onion error")
+            return localized("Onion_Error.error.title.onionError")
         }
     }
 }
@@ -68,9 +68,7 @@ class OnionManager: NSObject {
     static func getCookie() throws -> Data {
         if let cookieURL = OnionManager.torBaseConf().dataDirectory?.appendingPathComponent("control_auth_cookie") {
             let cookie = try Data(contentsOf: cookieURL)
-
             TariLogger.tor("Using cookie for control auth")
-
             return cookie
         } else {
             throw OnionError.missingCookieFile
@@ -87,14 +85,26 @@ class OnionManager: NSObject {
 
         // Create tor data directory if it does not yet exist
         do {
-            try FileManager.default.createDirectory(atPath: dataDir.path, withIntermediateDirectories: true, attributes: nil)
+            if !FileManager.default.fileExists(atPath: dataDir.path) {
+                try FileManager.default.createDirectory(
+                    atPath: dataDir.path,
+                    withIntermediateDirectories: true,
+                    attributes: nil
+                )
+            }
         } catch let error as NSError {
             TariLogger.tor("Failed to create tor directory", error: error)
         }
         // Create tor v3 auth directory if it does not yet exist
         let authDir = URL(fileURLWithPath: dataDir.path, isDirectory: true).appendingPathComponent("auth", isDirectory: true)
         do {
-            try FileManager.default.createDirectory(atPath: authDir.path, withIntermediateDirectories: true, attributes: nil)
+            if !FileManager.default.fileExists(atPath: authDir.path) {
+                try FileManager.default.createDirectory(
+                    atPath: authDir.path,
+                    withIntermediateDirectories: true,
+                    attributes: nil
+                )
+            }
         } catch let error as NSError {
             TariLogger.tor("Failed to create tor auth directory", error: error)
         }

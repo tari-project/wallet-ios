@@ -150,48 +150,68 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func onTorSuccess(_ onComplete: @escaping () -> Void) {
-        if TariLib.shared.torPortsOpened {
-            onComplete()
-            return
-        }
-
         // Handle if tor ports opened later
         TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
-            guard let _ = self else { return }
+            guard let self = self else { return }
+            TariEventBus.unregister(self, eventType: .torPortsOpened)
+            onComplete()
+        }
+        if TariLib.shared.torPortsOpened {
+            TariEventBus.unregister(self, eventType: .torPortsOpened)
             onComplete()
         }
     }
 
-    private func startExistingWallet(onComplete: @escaping () -> Void) {
-        let startWallet = {
-            //Kick off wallet creation on a background thread
-            DispatchQueue.global().async {
-                do {
-                    try TariLib.shared.startWalletService()
-                    self.createWalletBackup()
-                    DispatchQueue.main.async {
-                        onComplete()
+    private func checkExistingWallet() {
+        if TariLib.shared.walletExists {
+            //Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
+            localAuthenticationContext.authenticateUser {
+                DispatchQueue.main.asyncAfter(
+                    deadline: .now() + 1,
+                    execute: {
+                        [weak self] in
+                        guard let self = self else { return }
+                        self.startAnimation {
+                            self.onTorSuccess {
+                                self.waitForWalletStart {
+                                    self.navigateToHome()
+                                }
+                            }
+                        }
                     }
-                } catch {
-                    DispatchQueue.main.async {
-                        UserFeedback.shared.error(
-                            title: localized("wallet.error.title"),
-                            description: localized("wallet.error.start_existing_wallet"),
-                            error: error
-                        )
-                    }
-                }
-            }
-        }
-        //If they closed the app before the biometrics authentication or animation then don't try start the wallet as tor will be stopped.
-        //If they move the app back to the foreground, tor ports will open and this function can be retried
-        if TariLib.shared.walletIsStopped || TariLib.shared.walletPublicKeyHex != nil {
-            TariLogger.warn("Moved to background before wallet could start. Will wait for restart if it moves to the foreground.")
-            TariLib.shared.waitIfWalletIsRestarting { (_) in
-                onComplete()
+                )
             }
         } else {
-            startWallet()
+            BPKeychainWrapper.removeBackupPasswordFromKeychain()
+            videoView.isHidden = false
+            titleLabel.isHidden = false
+            createWalletButton.isHidden = false
+            disclaimerText.isHidden = false
+            restoreButton.isHidden = false
+            Tracker.shared.track("/onboarding/introduction", "Onboarding - Introduction")
+        }
+    }
+
+    private func waitForWalletStart(onComplete: @escaping () -> Void, onError: (() -> Void)? = nil) {
+        if TariLib.shared.walletState != .started {
+            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
+                [weak self]
+                (sender) in
+                guard let self = self else { return }
+                let walletState = sender!.object as! TariLib.WalletState
+                switch walletState {
+                case .started:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    onComplete()
+                case .startFailed:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    onError?()
+                default:
+                    break
+                }
+            }
+        } else {
+            onComplete()
         }
     }
 
@@ -213,54 +233,37 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
     private func createNewWallet() {
         do {
-            try TariLib.shared.createNewWallet()
-
-            Tracker.shared.track(
-                "/onboarding/create_wallet",
-                "Onboarding - Create Wallet"
-            )
-
-            if let _ = self.ticketTopLayoutConstraint {
-                self.topAnimationAndRemoveVideoAnimation { [weak self] () in
-                    guard let self = self else { return }
-                    self.navigateToHome()
+            waitForWalletStart {
+                [weak self] in
+                guard let self = self else { return }
+                Tracker.shared.track(
+                    "/onboarding/create_wallet",
+                    "Onboarding - Create Wallet"
+                )
+                if let _ = self.ticketTopLayoutConstraint {
+                    self.topAnimationAndRemoveVideoAnimation { [weak self] () in
+                        guard let self = self else { return }
+                        self.navigateToHome()
+                    }
                 }
+            } onError: {
+                [weak self] in
+                guard let self = self else { return }
+                UserFeedback.shared.error(
+                    title: localized("wallet.error.title"),
+                    description: localized("wallet.error.create_new_wallet")
+                )
+                self.createWalletButton.variation = .normal
             }
+            try TariLib.shared.createNewWallet()
         } catch {
+            TariEventBus.unregister(self, eventType: .walletStateChanged)
             UserFeedback.shared.error(
                 title: localized("wallet.error.title"),
                 description: localized("wallet.error.create_new_wallet"),
-                error: error //TODO copy update
+                error: error
             )
-
             createWalletButton.variation = .normal
-        }
-    }
-
-    private func checkExistingWallet() {
-        if TariLib.shared.walletExists {
-            //Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
-            localAuthenticationContext.authenticateUser {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: { [weak self] in
-                    guard let self = self else { return }
-                    self.startAnimation {
-                        self.onTorSuccess {
-                            self.startExistingWallet {
-                                self.navigateToHome()
-                            }
-                        }
-                    }
-                })
-            }
-
-        } else {
-            BPKeychainWrapper.removeBackupPasswordFromKeychain()
-            videoView.isHidden = false
-            titleLabel.isHidden = false
-            createWalletButton.isHidden = false
-            disclaimerText.isHidden = false
-            restoreButton.isHidden = false
-            Tracker.shared.track("/onboarding/introduction", "Onboarding - Introduction")
         }
     }
 
@@ -326,4 +329,5 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
         TariEventBus.unregister(self)
     }
+
 }

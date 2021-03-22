@@ -74,7 +74,7 @@ extension SettingsParentViewController {
     }
 
     @objc func setupNavigationBar() {
-        navigationBar.title = NSLocalizedString("settings.title", comment: "Settings view")
+        navigationBar.title = localized("settings.title")
         navigationBar.verticalPositioning = .custom(24)
         navigationBar.backgroundColor = Theme.shared.colors.navigationBarBackground
 

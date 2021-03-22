@@ -51,6 +51,7 @@ class AddAmountViewController: UIViewController {
     private let warningView = UIView()
     private let warningLabel = UILabel()
     private let warningBalanceLabel = UILabel()
+    private let warningBalanceStackView = UIStackView()
     private let txViewContainer = UIView()
     private let animationDuration = 0.2
     private var balanceCheckTimer: Timer?
@@ -108,8 +109,8 @@ class AddAmountViewController: UIViewController {
                 try navigationBar.showEmojiId(pubKey, inViewController: self)
             } catch {
                 UserFeedback.shared.error(
-                    title: NSLocalizedString("navigation_bar.error.show_emoji.title", comment: "Navigation bar"),
-                    description: NSLocalizedString("navigation_bar.error.show_emoji.description", comment: "Navigation bar"),
+                    title: localized("navigation_bar.error.show_emoji.title"),
+                    description: localized("navigation_bar.error.show_emoji.description"),
                     error: error
                 )
             }
@@ -134,8 +135,8 @@ class AddAmountViewController: UIViewController {
         let (totalMicroTari, totalMicroTariError) = wallet.totalMicroTari
         guard totalMicroTariError == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("add_amount.error.available_balance.title", comment: "Add amount view"),
-                description: NSLocalizedString("add_amount.error.available_balance.description", comment: "Add amount view"),
+                title: localized("add_amount.error.available_balance.title"),
+                description: localized("add_amount.error.available_balance.description"),
                 error: totalMicroTariError
             )
             return
@@ -152,7 +153,19 @@ class AddAmountViewController: UIViewController {
         } catch {
             switch error {
             case WalletErrors.notEnoughFunds:
-                showBalanceExceeded(balance: totalMicroTari!.formatted)
+                showBalanceExceeded(
+                    warning: localized("add_amount.warning.not_enough_tari"),
+                    balance: totalMicroTari!.formatted
+                )
+                warningBalanceStackView.isHidden = false
+                continueButton.variation = .disabled
+                hideTxFee()
+            case WalletErrors.fundsPending:
+                showBalanceExceeded(
+                    warning: localized("add_amount.info.wait_completion_previous_tx.description"),
+                    balance: totalMicroTari!.formatted
+                )
+                warningBalanceStackView.isHidden = true
                 continueButton.variation = .disabled
                 hideTxFee()
             default:
@@ -162,12 +175,15 @@ class AddAmountViewController: UIViewController {
         }
 
         if totalMicroTari!.rawValue < (microTariAmount.rawValue + fee.rawValue) {
-            showBalanceExceeded(balance: totalMicroTari!.formatted)
+            showBalanceExceeded(
+                warning: localized("add_amount.warning.not_enough_tari"),
+                balance: totalMicroTari!.formatted
+            )
+            warningBalanceStackView.isHidden = false
             continueButton.variation = .disabled
         } else {
             continueButton.variation = .normal
         }
-
         showTxFee(fee)
     }
 
@@ -192,7 +208,7 @@ class AddAmountViewController: UIViewController {
     //Shouldn't ever really be used but just in case
     private func showInvalidNumberError(_ error: Error?) {
         UserFeedback.shared.error(
-            title: NSLocalizedString("add_amount.error.invalid_number", comment: "Add amount view"),
+            title: localized("add_amount.error.invalid_number"),
             description: "",
             error: error
         )
@@ -310,7 +326,10 @@ class AddAmountViewController: UIViewController {
             return nil
         }
 
-        guard let formattedNumberString = MicroTari.convertToString(number, minimumFractionDigits: numberOfDecimals(in: decimalRemovedIfAtEndRawInput)) else {
+        guard let formattedNumberString = MicroTari.convertToString(
+                number,
+                minimumFractionDigits: numberOfDecimals(in: decimalRemovedIfAtEndRawInput)
+        ) else {
             return nil
         }
 
@@ -327,14 +346,17 @@ class AddAmountViewController: UIViewController {
 
     @objc private func feeButtonPressed(_ sender: UIButton) {
         UserFeedback.shared.info(
-            title: NSLocalizedString("common.fee_info.title", comment: "Common"),
-            description: NSLocalizedString("common.fee_info.description", comment: "Common"))
+            title: localized("common.fee_info.title"),
+            description: localized("common.fee_info.description")
+        )
     }
 
-    private func showBalanceExceeded(balance: String) {
+    private func showBalanceExceeded(warning: String, balance: String) {
         UINotificationFeedbackGenerator().notificationOccurred(.error)
 
         warningBalanceLabel.text = balance
+        warningLabel.text = warning
+        warningLabel.sizeToFit()
         warningView.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
         UIView.animate(withDuration: animationDuration, animations: { [weak self] in
             guard let self = self else {return}
@@ -387,8 +409,8 @@ class AddAmountViewController: UIViewController {
         let (availableBalance, availableBalanceError) = wallet.availableBalance
         guard availableBalanceError == nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("add_amount.error.available_balance.title", comment: "Add amount view"),
-                description: NSLocalizedString("add_amount.error.available_balance.description", comment: "Add amount view"),
+                title: localized("add_amount.error.available_balance.title"),
+                description: localized("add_amount.error.available_balance.description"),
                 error: availableBalanceError
             )
             return
@@ -417,8 +439,8 @@ class AddAmountViewController: UIViewController {
 
         if amount.rawValue + fee.rawValue  > availableBalance {
             UserFeedback.shared.info(
-                title: NSLocalizedString("add_amount.info.wait_completion_previous_tx.title", comment: "Add amount view"),
-                description: NSLocalizedString("add_amount.info.wait_completion_previous_tx.descrption", comment: "Add amount view")
+                title: localized("add_amount.info.wait_completion_previous_tx.title"),
+                description: localized("add_amount.info.wait_completion_previous_tx.description")
             )
             return
         }
@@ -445,18 +467,30 @@ extension AddAmountViewController {
         //contiue button
         view.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
-        continueButton.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        continueButton.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        continueButton.leftAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.leftAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        continueButton.rightAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.rightAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        ).isActive = true
 
-        let continueButtonConstraint = continueButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10)
+        let continueButtonConstraint = continueButton.bottomAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.bottomAnchor,
+            constant: -10
+        )
         continueButtonConstraint.priority = UILayoutPriority(rawValue: 999)
         continueButtonConstraint.isActive = true
 
-        let continueButtonSecondConstraint = continueButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor, constant: -Theme.shared.sizes.appSidePadding)
+        let continueButtonSecondConstraint = continueButton.bottomAnchor.constraint(
+            lessThanOrEqualTo: view.bottomAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        )
         continueButtonSecondConstraint.priority = UILayoutPriority(rawValue: 1000)
         continueButtonSecondConstraint.isActive = true
 
-        continueButton.setTitle(NSLocalizedString("common.continue", comment: "Common"), for: .normal)
+        continueButton.setTitle(localized("common.continue"), for: .normal)
         continueButton.addTarget(self, action: #selector(continueButtonTapped), for: .touchUpInside)
         continueButton.isEnabled = false
         setupKeypad()
@@ -503,12 +537,11 @@ extension AddAmountViewController {
         warningStackView.axis = .vertical
         warningStackView.spacing = 4
         warningStackView.translatesAutoresizingMaskIntoConstraints = false
-        warningStackView.widthAnchor.constraint(greaterThanOrEqualTo: warningView.widthAnchor, constant: -26).isActive = true
+        warningStackView.widthAnchor.constraint(greaterThanOrEqualTo: warningView.widthAnchor, constant: -16).isActive = true
         warningStackView.heightAnchor.constraint(equalTo: warningView.heightAnchor, constant: -26).isActive = true
         warningStackView.centerXAnchor.constraint(equalTo: warningView.centerXAnchor).isActive = true
         warningStackView.centerYAnchor.constraint(equalTo: warningView.centerYAnchor).isActive = true
 
-        let warningBalanceStackView = UIStackView()
         warningBalanceStackView.alignment = .center
         warningStackView.addArrangedSubview(warningBalanceStackView)
         warningBalanceStackView.spacing = 4
@@ -524,12 +557,31 @@ extension AddAmountViewController {
         warningBalanceLabel.textColor = Theme.shared.colors.warningBoxBorder
         warningBalanceLabel.text = "0.0"
 
-        warningStackView.addArrangedSubview(warningLabel)
+        let warningLabelContainerView = UIView()
+        warningLabelContainerView.translatesAutoresizingMaskIntoConstraints = false
+        warningStackView.addArrangedSubview(warningLabelContainerView)
+        warningLabelContainerView.addSubview(warningLabel)
         warningLabel.font = Theme.shared.fonts.amountWarningLabel
         warningLabel.textColor = Theme.shared.colors.amountWarningLabel
-        warningLabel.text = NSLocalizedString("add_amount.warning.not_enough_tari", comment: "Add amount view")
+        warningLabel.text = localized("add_amount.warning.not_enough_tari")
+        warningLabel.numberOfLines = 0
         warningLabel.textAlignment = .center
-        warningLabel.heightAnchor.constraint(equalToConstant: warningLabel.font.pointSize * 1.2).isActive = true
+        warningLabel.lineBreakMode = .byWordWrapping
+        warningLabel.topAnchor.constraint(
+            equalTo: warningLabelContainerView.topAnchor
+        ).isActive = true
+        warningLabel.widthAnchor.constraint(
+            equalTo: warningLabelContainerView.widthAnchor,
+            constant: 0
+        ).isActive = true
+        warningLabel.centerXAnchor.constraint(
+            equalTo: warningLabelContainerView.centerXAnchor,
+            constant: 0
+        ).isActive = true
+        warningLabel.sizeToFit()
+        warningLabelContainerView.bottomAnchor.constraint(
+            equalTo: warningLabel.bottomAnchor
+        ).isActive = true
 
         //tx fee
         txViewContainer.alpha = 0.0
@@ -553,7 +605,7 @@ extension AddAmountViewController {
 
         let feeButton = TextButton()
         feeButton.translatesAutoresizingMaskIntoConstraints = false
-        feeButton.setTitle(NSLocalizedString("common.fee", comment: "Common"), for: .normal)
+        feeButton.setTitle(localized("common.fee"), for: .normal)
         feeButton.setRightImage(Theme.shared.images.txFee!)
         feeButton.addTarget(self, action: #selector(feeButtonPressed), for: .touchUpInside)
         continueButton.variation = .disabled
@@ -571,16 +623,28 @@ extension AddAmountViewController {
         keypadContainerStackView.backgroundColor = .clear
         keypadContainerStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
 
-        let keypadContainerStackViewConstraint = keypadContainerStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -10)
+        let keypadContainerStackViewConstraint = keypadContainerStackView.bottomAnchor.constraint(
+            equalTo: continueButton.topAnchor,
+            constant: -10
+        )
         keypadContainerStackViewConstraint.priority = UILayoutPriority(rawValue: 249)
         keypadContainerStackViewConstraint.isActive = true
 
-        let keypadContainerStackViewSecondConstraint = keypadContainerStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -40)
+        let keypadContainerStackViewSecondConstraint = keypadContainerStackView.bottomAnchor.constraint(
+            equalTo: continueButton.topAnchor,
+            constant: -40
+        )
         keypadContainerStackViewSecondConstraint.priority = UILayoutPriority(rawValue: 250)
         keypadContainerStackViewSecondConstraint.isActive = true
 
-        keypadContainerStackView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        keypadContainerStackView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
+        keypadContainerStackView.leftAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.leftAnchor,
+            constant: Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        keypadContainerStackView.rightAnchor.constraint(
+            equalTo: view.safeAreaLayoutGuide.rightAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        ).isActive = true
 
         let rows = [UIStackView(), UIStackView(), UIStackView(), UIStackView()]
         rows.forEach({

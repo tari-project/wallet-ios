@@ -42,9 +42,6 @@ import Foundation
 
 enum TariLibErrors: Error {
     case saveToKeychain
-    case failedToCreateCommsConfig
-    case extensionHasLock
-    case mainAppHasLock
 }
 
 class TariLib {
@@ -52,9 +49,17 @@ class TariLib {
     static let databaseName = "tari_wallet"
     static let logFilePrefix = "log"
     var torPortsOpened = false
+    public private(set) var walletState = WalletState.notReady
 
     enum KeyValueStorageKeys: String {
         case network = "SU7FM2O6Q3BU4XVN7HDD"
+    }
+
+    enum WalletState {
+        case notReady
+        case starting
+        case startFailed
+        case started
     }
 
     lazy var logFilePath: String = {
@@ -92,7 +97,7 @@ class TariLib {
 
     var tariWallet: Wallet?
 
-    var walletPublicKeyHex: String? //We need a cache of this for function that run while tariWallet = nil
+    var walletPublicKeyHex: String? // we need a cache of this for function that run while tariWallet = nil
 
     var walletExists: Bool {
         do {
@@ -109,7 +114,6 @@ class TariLib {
 
     var commsConfig: CommsConfig? {
         var config: CommsConfig?
-
         do {
             let transport = try transportType()
             config = try CommsConfig(
@@ -123,12 +127,8 @@ class TariLib {
         } catch {
             TariLogger.error("Failed to create comms config", error: error)
         }
-
         return config
     }
-
-    // Used to determine whether or not to restart the wallet service when app moved to forground
-    var walletIsStopped = false
 
     static let currentBaseNodeUserDefaultsKey = "currentBaseNodeSet"
 
@@ -172,6 +172,7 @@ class TariLib {
             return
         }
         OnionConnector.shared.stop()
+        torPortsOpened = false
     }
 
     private func startListeningToBaseNodeSync() {
@@ -197,38 +198,40 @@ class TariLib {
     }
 
     /// Starts an existing wallet service. Must only be called if wallet DB files already exist.
-    /// - Parameter container: container checks a lock file and renames the log file for debugging tasks that happened in the background
     /// - Throws: Can fail to generate a comms config, wallet creation and adding a basenode
-    func startWalletService(container: AppContainer = .main) throws {
-        if container == .main && AppContainerLock.shared.hasLock(.ext) {
-            throw TariLibErrors.extensionHasLock
-        }
-
-        if container == .ext && AppContainerLock.shared.hasLock(.main) {
-            throw TariLibErrors.mainAppHasLock
-        }
-
+    func startWallet() {
+        walletState = .starting
+        TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
         guard let config = commsConfig else {
-            throw TariLibErrors.failedToCreateCommsConfig
+            walletState = .startFailed
+            TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
+            return
         }
-
-        var loggingFilePath = TariLib.shared.logFilePath
-        if container != .main {
-            loggingFilePath = loggingFilePath.replacingOccurrences(of: ".txt", with: "-\(container.rawValue).txt")
+        let loggingFilePath = TariLib.shared.logFilePath
+        do {
+            tariWallet = try Wallet(
+                commsConfig: config,
+                loggingFilePath: loggingFilePath
+            )
+            walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
+            walletState = .started
+            TariEventBus.postToMainThread(
+                .walletStateChanged,
+                sender: walletState
+            )
+        } catch {
+            walletState = .startFailed
+            TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
+            return
         }
-
-        tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath)
-        try setBasenode(syncAfterSetting: false)
-
-        TariEventBus.postToMainThread(.walletServiceStarted)
-
-        walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
-
-        walletIsStopped = false
-
+        do {
+            try setBasenode(syncAfterSetting: false)
+        } catch {
+            // no-op for now
+        }
         startListeningToBaseNodeSync()
-
-        backgroundStorageCleanup(logFilesMaxMB: TariSettings.shared.maxMbLogsStorage)
+        backgroundStorageCleanup()
+        walletState = .started
     }
 
     func setBasenode(syncAfterSetting: Bool = true, _ overridePeer: BaseNode? = nil) throws {
@@ -255,58 +258,40 @@ class TariLib {
             withIntermediateDirectories: true,
             attributes: nil
         )
-        try startWalletService()
-        // persist network
-        try setCurrentNetworkKeyValue()
+        // start listening to wallet events first
+        TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
+            [weak self]
+            (sender) in
+            guard let self = self else { return }
+            let walletState = sender!.object as! WalletState
+            switch walletState {
+            case .started:
+                do {
+                    try self.setCurrentNetworkKeyValue()
+                } catch {
+                    // no-op for now
+                }
+                TariEventBus.unregister(self, eventType: .walletStateChanged)
+            case .startFailed:
+                TariEventBus.unregister(self, eventType: .walletStateChanged)
+            default:
+                break
+            }
+        }
+        // then start wallet
+        startWallet()
     }
 
     func setCurrentNetworkKeyValue() throws {
-        _ = try TariLib.shared.tariWallet?.setKeyValue(
+        _ = try tariWallet?.setKeyValue(
             key: KeyValueStorageKeys.network.rawValue,
             value: TariSettings.shared.network.rawValue
         )
     }
 
-    func restartWalletIfStopped() {
-        if !walletExists {
-            return
-        }
-
-        guard walletIsStopped else {
-            return
-        }
-
-        TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
-            guard let self = self else { return }
-
-            TariLogger.verbose("Restarting stopped wallet")
-
-            //Crash if we can't restart
-            do {
-                try self.startWalletService()
-            } catch {
-                TariLogger.error("Failed to restart wallet on first try", error: error)
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-                    guard let self = self else { return }
-                    guard self.walletIsStopped else { return }
-
-                    do {
-                        try self.startWalletService()
-                    } catch {
-                        TariLogger.error("Failed to restart wallet on second try", error: error)
-                    }
-                }
-            }
-
-            TariEventBus.postToMainThread(.txListUpdate)
-            TariEventBus.postToMainThread(.balanceUpdate)
-        }
-    }
-
     func stopWallet() {
+        walletState = WalletState.notReady
         tariWallet = nil
-        walletIsStopped = true
         TariEventBus.unregister(self)
     }
 
@@ -317,8 +302,6 @@ class TariLib {
             try FileManager.default.removeItem(at: databaseDirectory)
             // delete cached value
             walletPublicKeyHex = nil
-            // this value also needs to be unset, it implies existence of a wallet
-            walletIsStopped = false
             // delete log files
             for logFile in allLogFiles {
                 try FileManager.default.removeItem(at: logFile)
@@ -330,21 +313,6 @@ class TariLib {
             UserDefaults.standard.synchronize()
         } catch {
             fatalError()
-        }
-    }
-
-    func waitIfWalletIsRestarting(completion: @escaping ((_ success: Bool?) -> Void)) {
-        if !walletExists { completion(false); return }
-        if tariWallet != nil { completion(true); return }
-
-        var waitingTime = 0.0
-        Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] (timer) in
-            guard let self = self else { timer.invalidate(); return }
-            if (self.tariWallet != nil && self.walletPublicKeyHex != nil) || waitingTime >= 5.0 {
-                completion(!self.walletIsStopped)
-                timer.invalidate()
-            }
-            waitingTime += timer.timeInterval
         }
     }
 }

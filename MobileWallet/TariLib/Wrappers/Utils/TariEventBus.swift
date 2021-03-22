@@ -67,7 +67,9 @@ public enum TariEventTypes: String {
     case torConnectionProgress = "tari-event-tor-connection-progress"
     case torConnected = "tari-event-tor-connected"
     case torConnectionFailed = "tari-event-tor-connection-failed"
-    case walletServiceStarted = "tari-wallet-service-started"
+
+    // wallet
+    case walletStateChanged = "tari-event-wallet-state-changed"
 
     // connection monitor
     case connectionMonitorStatusChanged = "connection-monitor-status-changed"

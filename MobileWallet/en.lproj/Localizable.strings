@@ -88,9 +88,9 @@
 "add_amount.error.available_balance.title" = "Available Balance error";
 "add_amount.error.available_balance.description" = "Could not get available balance from wallet";
 "add_amount.info.wait_completion_previous_tx.title" = "Hold your horses! 🐴";
-"add_amount.info.wait_completion_previous_tx.descrption" = "Sorry, you can’t send this much Tari until your previous transaction(s) are complete. Please wait for at least one transaction to complete and then try again.";
+"add_amount.info.wait_completion_previous_tx.description" = "Sorry, you can’t send this much tXTR until your previous transaction(s) are complete. Please wait for at least one transaction to complete and then try again.";
 "add_amount.error.invalid_number" = "Invalid number";
-"add_amount.warning.not_enough_tari" = "Not enough Tari in your available balance";
+"add_amount.warning.not_enough_tari" = "Not enough tXTR in your available balance";
 
 /* BackupWalletSettings view */
 "backup_wallet_settings.title" = "Security";

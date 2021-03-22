@@ -198,22 +198,36 @@ class ProfileViewController: UIViewController {
     }
 
     private func generateQRCode() {
-        guard let _ = TariLib.shared.tariWallet else {
-            TariLib.shared.waitIfWalletIsRestarting { [weak self] (success) in
-                if success == true {
-                    self?.generateQRCode()
+        guard TariLib.shared.walletState == .started else {
+            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
+                [weak self]
+                (sender) in
+                guard let self = self else { return }
+                let walletState = sender!.object as! TariLib.WalletState
+                switch walletState {
+                case .started:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    self.generateQRCode()
+                case .startFailed:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    UserFeedback.shared.error(
+                        title: localized("profile_view.error.qr_code.title"),
+                        description: localized("wallet.error.failed_to_access")
+                    )
+                default:
+                    break
                 }
             }
             return
         }
-
         do {
             try genQRCode()
         } catch {
             UserFeedback.shared.error(
                 title: localized("profile_view.error.qr_code.title"),
                 description: "",
-                error: error)
+                error: error
+            )
         }
     }
 

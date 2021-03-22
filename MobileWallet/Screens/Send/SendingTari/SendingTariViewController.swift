@@ -66,18 +66,18 @@ class SendingTariViewController: UIViewController {
                 return ("", "")
             case .connectionCheck:
                 return (
-                    NSLocalizedString("sending_tari.connecting", comment: "SendingTari view"),
-                    NSLocalizedString("sending_tari.network", comment: "SendingTari view")
+                    localized("sending_tari.connecting"),
+                    localized("sending_tari.network")
                 )
             case .discovery:
                 return (
-                    NSLocalizedString("sending_tari.searching", comment: "SendingTari view"),
-                    NSLocalizedString("sending_tari.recipient", comment: "SendingTari view")
+                    localized("sending_tari.searching"),
+                    localized("sending_tari.recipient")
                 )
             case .sent:
                 return (
-                    NSLocalizedString("sending_tari.sent", comment: "SendingTari view"),
-                    NSLocalizedString("sending_tari.tx_is_on_its_way", comment: "SendingTari view")
+                    localized("sending_tari.sent"),
+                    localized("sending_tari.tx_is_on_its_way")
                 )
             }
         }
@@ -619,8 +619,33 @@ class SendingTariViewController: UIViewController {
     }
 
     private func sendTx() {
-        TariLib.shared.waitIfWalletIsRestarting { [weak self] (_) in
-            guard let self = self, let wallet = TariLib.shared.tariWallet else { return }
+        if TariLib.shared.walletState != .started {
+            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
+                [weak self]
+                (sender) in
+                guard let self = self else { return }
+                let walletState = sender!.object as! TariLib.WalletState
+                switch walletState {
+                case .started:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    guard let wallet = TariLib.shared.tariWallet else { return }
+                    do {
+                        self.txId = try wallet.sendTx(
+                            destination: self.recipientPubKey,
+                            amount: self.amount,
+                            feePerGram: Wallet.defaultFeePerGram,
+                            message: self.note
+                        )
+                        self.startListeningForWalletEvents()
+                    } catch {
+                        self.completionStatus = .sendError(error: error)
+                    }
+                default:
+                    break
+                }
+            }
+        } else {
+            guard let wallet = TariLib.shared.tariWallet else { return }
             do {
                 self.txId = try wallet.sendTx(
                     destination: self.recipientPubKey,
@@ -746,14 +771,8 @@ class SendingTariViewController: UIViewController {
         switch completionStatus {
         case .internetConnectionError:
             UserFeedback.shared.error(
-                title: NSLocalizedString(
-                    "sending_tari.error.interwebs_connection.title",
-                    comment: "SendingTari view"
-                ),
-                description: NSLocalizedString(
-                    "sending_tari.error.interwebs_connection.description",
-                    comment: "SendingTari view"
-                )
+                title: localized("sending_tari.error.interwebs_connection.title"),
+                description: localized("sending_tari.error.interwebs_connection.description")
             )
             Tracker.shared.track(
                 eventWithCategory: "Transaction",
@@ -761,14 +780,8 @@ class SendingTariViewController: UIViewController {
             )
         case .networkConnectionTimeout, .sendError:
             UserFeedback.shared.error(
-                title: NSLocalizedString(
-                    "sending_tari.error.no_connection.title",
-                    comment: "SendingTari view"
-                ),
-                description: NSLocalizedString(
-                    "sending_tari.error.no_connection.description",
-                    comment: "SendingTari view"
-                )
+                title: localized("sending_tari.error.no_connection.title"),
+                description: localized("sending_tari.error.no_connection.description")
             )
             Tracker.shared.track(
                 eventWithCategory: "Transaction",

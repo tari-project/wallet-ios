@@ -84,7 +84,7 @@ extension VerifyPhraseViewController {
 
     override func setupNavigationBar() {
         super.setupNavigationBar()
-        navigationBar.title = NSLocalizedString("verify_phrase.title", comment: "VerifyPhrase view")
+        navigationBar.title = localized("verify_phrase.title")
     }
 
     private func setupScrollView() {
@@ -116,7 +116,7 @@ extension VerifyPhraseViewController {
     private func setupHeaderLabel() {
         headerLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
         headerLabel.textColor = Theme.shared.colors.settingsViewDescription
-        headerLabel.text = NSLocalizedString("verify_phrase.header", comment: "VerifyPhrase view")
+        headerLabel.text = localized("verify_phrase.header")
 
         stackView.addArrangedSubview(headerLabel)
         stackView.setCustomSpacing(20, after: headerLabel)
@@ -164,7 +164,7 @@ extension VerifyPhraseViewController {
         ).isActive = true
 
         fillableContainerDescription.numberOfLines = 0
-        fillableContainerDescription.text = NSLocalizedString("verify_phrase.container_description", comment: "VerifyPhrase view")
+        fillableContainerDescription.text = localized("verify_phrase.container_description")
         fillableContainerDescription.font = Theme.shared.fonts.settingsFillablePhraseViewDescription
         fillableContainerDescription.textColor = Theme.shared.colors.settingsFillablePhraseViewDescription
         fillableContainerDescription.textAlignment = .center
@@ -222,7 +222,7 @@ extension VerifyPhraseViewController {
 
         warningLabel.textColor = Theme.shared.colors.warningBoxBorder
         warningLabel.font = Theme.shared.fonts.warningBoxTitleLabel
-        warningLabel.text = NSLocalizedString("verify_phrase.warning", comment: "VerifyPhrase view")
+        warningLabel.text = localized("verify_phrase.warning")
 
         warningLabel.translatesAutoresizingMaskIntoConstraints = false
         warningLabel.centerXAnchor.constraint(equalTo: warningView.centerXAnchor).isActive = true
@@ -244,7 +244,7 @@ extension VerifyPhraseViewController {
     }
 
     private func setupContinueButton() {
-        continueButton.setTitle(NSLocalizedString("verify_phrase.complete", comment: "VerifyPhrase view"), for: .normal)
+        continueButton.setTitle(localized("verify_phrase.complete"), for: .normal)
         continueButton.addTarget(self, action: #selector(continueButtonAction), for: .touchUpInside)
         continueButton.variation = .disabled
 

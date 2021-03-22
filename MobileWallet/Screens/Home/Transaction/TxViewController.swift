@@ -196,8 +196,8 @@ class TxViewController: UIViewController {
             try setDetails()
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("tx_detail.error.load_tx.title", comment: "Transaction detail view"),
-                description: NSLocalizedString("tx_detail.error.load_tx.description", comment: "Transaction detail view"),
+                title: localized("tx_detail.error.load_tx.title"),
+                description: localized("tx_detail.error.load_tx.description"),
                 error: error
             )
         }
@@ -255,8 +255,8 @@ class TxViewController: UIViewController {
 
     @objc func feeButtonPressed(_ sender: UIButton) {
         UserFeedback.shared.info(
-            title: NSLocalizedString("common.fee_info.title", comment: "Common"),
-            description: NSLocalizedString("common.fee_info.description", comment: "Common")
+            title: localized("common.fee_info.title"),
+            description: localized("common.fee_info.description")
         )
     }
 
@@ -522,67 +522,81 @@ class TxViewController: UIViewController {
             }
 
             if isCancelled {
-                navigationBar.title = NSLocalizedString("tx_detail.payment_cancelled", comment: "Transaction detail view")
+                navigationBar.title = localized("tx_detail.payment_cancelled")
             } else if tx.status.0 != .minedConfirmed && tx.status.0 != .imported {
-                navigationBar.title = NSLocalizedString("tx_detail.payment_in_progress", comment: "Transaction detail view")
+                navigationBar.title = localized("tx_detail.payment_in_progress")
             }
         }
     }
 
     @objc func onCancelTx() {
         let alert = UIAlertController(
-            title: NSLocalizedString("tx_detail.tx_cancellation.title", comment: "Transaction detail tx cancellation"),
-            message: NSLocalizedString("tx_detail.tx_cancellation.message", comment: "Transaction detail tx cancellation"),
+            title: localized("tx_detail.tx_cancellation.title"),
+            message: localized("tx_detail.tx_cancellation.message"),
             preferredStyle: .alert
         )
 
-        alert.addAction(UIAlertAction(title: NSLocalizedString("tx_detail.tx_cancellation.yes", comment: "Transaction detail tx cancellation"), style: .destructive, handler: { [weak self] (_) in
-            guard let self = self else { return }
-            if let tx = self.transaction {
-                guard tx.status.0 == .pending && tx.direction == .outbound else {
-                    UserFeedback.shared.error(
-                        title: NSLocalizedString("tx_detail.tx_cancellation.error.title", comment: "Transaction detail tx cancellation"),
-                        description: NSLocalizedString("tx_detail.tx_cancellation.error.description", comment: "Transaction detail tx cancellation")
-                    )
-                    return
+        alert.addAction(
+            UIAlertAction(
+                title: localized("tx_detail.tx_cancellation.yes"),
+                style: .destructive,
+                handler: {
+                    [weak self] (_) in
+                    guard let self = self else { return }
+                    if let tx = self.transaction {
+                        guard tx.status.0 == .pending && tx.direction == .outbound else {
+                            UserFeedback.shared.error(
+                                title: localized("tx_detail.tx_cancellation.error.title"),
+                                description: localized("tx_detail.tx_cancellation.error.description")
+                            )
+                            return
+                        }
+                        do {
+                            try TariLib.shared.tariWallet?.cancelPendingTx(tx)
+
+                            UINotificationFeedbackGenerator().notificationOccurred(.success)
+
+                            //Attempt to get the newly cancelled tx and reset the UI
+                            //TODO uncomment the below when the findCancelledTxBy is returning correct direction
+                            /*
+                            if let id = self.transaction?.id.0 {
+                                if let cancelledTX = try? TariLib.shared.tariWallet?.findCancelledTxBy(id: id) {
+                                    self.transaction = cancelledTX
+                                    do {
+                                        try self.setDetails()
+                                        self.updateTxState()
+                                    } catch {
+                                        UserFeedback.shared.error(
+                                            title: localized("tx_detail.error.load_tx.title"),
+                                            description: localized("tx_detail.error.load_tx.description"),
+                                            error: error
+                                        )
+                                    }
+                                    return
+                                }
+                            }
+                             */
+
+                            //If cancelled tx not found just go back to home view
+                            self.navigationController?.popViewController(animated: true)
+                        } catch {
+                            UserFeedback.shared.error(
+                                title: localized("tx_detail.tx_cancellation.error.title"),
+                                description: "",
+                                error: error
+                            )
+                        }
+                    }
                 }
-
-                do {
-                    try TariLib.shared.tariWallet?.cancelPendingTx(tx)
-
-                    UINotificationFeedbackGenerator().notificationOccurred(.success)
-
-                    //Attempt to get the newly cancelled tx and reset the UI
-                    //TODO uncomment the below when the findCancelledTxBy is returning correct direction
-//                    if let id = self.transaction?.id.0 {
-//                        if let cancelledTX = try? TariLib.shared.tariWallet?.findCancelledTxBy(id: id) {
-//                            self.transaction = cancelledTX
-//                            do {
-//                                try self.setDetails()
-//                                self.updateTxState()
-//                            } catch {
-//                                UserFeedback.shared.error(
-//                                    title: NSLocalizedString("tx_detail.error.load_tx.title", comment: "Transaction detail view"),
-//                                    description: NSLocalizedString("tx_detail.error.load_tx.description", comment: "Transaction detail view"),
-//                                    error: error
-//                                )
-//                            }
-//                            return
-//                        }
-//                    }
-
-                    //If cancelled tx not found just go back to home view
-                    self.navigationController?.popViewController(animated: true)
-                } catch {
-                    UserFeedback.shared.error(
-                        title: NSLocalizedString("tx_detail.tx_cancellation.error.title", comment: "Transaction detail tx cancellation"),
-                        description: "",
-                        error: error
-                    )
-                }
-            }
-        }))
-        alert.addAction(UIAlertAction(title: NSLocalizedString("tx_detail.tx_cancellation.no", comment: "Transaction detail tx cancellation"), style: .cancel, handler: nil))
+            )
+        )
+        alert.addAction(
+            UIAlertAction(
+                title: localized("tx_detail.tx_cancellation.no"),
+                style: .cancel,
+                handler: nil
+            )
+        )
         present(alert, animated: true, completion: nil)
     }
 }
@@ -613,8 +627,8 @@ extension TxViewController: UITextFieldDelegate {
 
         guard contactPublicKey != nil else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("tx_detail.error.contact.title", comment: "Transaction detail view"),
-                description: NSLocalizedString("tx_detail.error.contact.description", comment: "Transaction detail view")
+                title: localized("tx_detail.error.contact.title"),
+                description: localized("tx_detail.error.contact.description")
             )
             return true
         }
@@ -628,8 +642,8 @@ extension TxViewController: UITextFieldDelegate {
             })
         } catch {
             UserFeedback.shared.error(
-                title: NSLocalizedString("tx_detail.error.contact.title", comment: "Transaction detail view"),
-                description: NSLocalizedString("tx_detail.error.save_contact.description", comment: "Transaction detail view"),
+                title: localized("tx_detail.error.contact.title"),
+                description: localized("tx_detail.error.save_contact.description"),
                 error: error
             )
         }
@@ -638,7 +652,11 @@ extension TxViewController: UITextFieldDelegate {
         return true
     }
 
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+    func textField(
+        _ textField: UITextField,
+        shouldChangeCharactersIn range: NSRange,
+        replacementString string: String
+    ) -> Bool {
         let maxLength = 40
         guard let currentString = textField.text as NSString? else { return false }
         let newString: NSString = currentString.replacingCharacters(in: range, with: string) as NSString

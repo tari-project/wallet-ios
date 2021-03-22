@@ -51,7 +51,6 @@
 		003DF41624C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
 		003DF41724C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
 		003DF41824C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
-		003DF41924C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
 		004277E723DF4A5600AE7BD9 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277E623DF4A5600AE7BD9 /* FeedbackView.swift */; };
 		004277E823DF4A5600AE7BD9 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277E623DF4A5600AE7BD9 /* FeedbackView.swift */; };
 		004277E923DF4A5600AE7BD9 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277E623DF4A5600AE7BD9 /* FeedbackView.swift */; };
@@ -73,10 +72,6 @@
 		0042780323E8421200AE7BD9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0042780223E8421100AE7BD9 /* String.swift */; };
 		0042780423E8421200AE7BD9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0042780223E8421100AE7BD9 /* String.swift */; };
 		0042780523E8421200AE7BD9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0042780223E8421100AE7BD9 /* String.swift */; };
-		00434A9D2477D0B000C0104F /* AppContainerLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00434A9C2477D0AF00C0104F /* AppContainerLock.swift */; };
-		00434A9E2477D0B000C0104F /* AppContainerLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00434A9C2477D0AF00C0104F /* AppContainerLock.swift */; };
-		00434A9F2477D0B000C0104F /* AppContainerLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00434A9C2477D0AF00C0104F /* AppContainerLock.swift */; };
-		00434AA02477D0B000C0104F /* AppContainerLock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00434A9C2477D0AF00C0104F /* AppContainerLock.swift */; };
 		0048AF43245ADCA300E1A359 /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
 		0048AF44245ADCA300E1A359 /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
 		0048AF45245ADCA300E1A359 /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
@@ -110,7 +105,6 @@
 		006D211F23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
 		0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0070A7BB2379847100C25E1C /* LocalAuthentication.framework */; };
 		0072BF24247E735700BD28FB /* ReminderNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0072BF23247E735700BD28FB /* ReminderNotifications.swift */; };
-		0072BF28247EB3A600BD28FB /* ReminderNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0072BF23247E735700BD28FB /* ReminderNotifications.swift */; };
 		0072BF29247EB3A900BD28FB /* ReminderNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0072BF23247E735700BD28FB /* ReminderNotifications.swift */; };
 		0072BF2A247EB3AA00BD28FB /* ReminderNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0072BF23247E735700BD28FB /* ReminderNotifications.swift */; };
 		0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
@@ -147,11 +141,9 @@
 		009DFCA72473E33F0061DBC9 /* DeepLinkParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009DFCA62473E33F0061DBC9 /* DeepLinkParams.swift */; };
 		009DFCA82473EBCB0061DBC9 /* DeepLinkParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009DFCA62473E33F0061DBC9 /* DeepLinkParams.swift */; };
 		009DFCA92473ECCB0061DBC9 /* DeepLinkParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009DFCA62473E33F0061DBC9 /* DeepLinkParams.swift */; };
-		009DFCAA2473ECCB0061DBC9 /* DeepLinkParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009DFCA62473E33F0061DBC9 /* DeepLinkParams.swift */; };
 		009DFCB124741F9B0061DBC9 /* WalletTxs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009DFCB024741F9B0061DBC9 /* WalletTxs.swift */; };
 		009DFCB224741F9B0061DBC9 /* WalletTxs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009DFCB024741F9B0061DBC9 /* WalletTxs.swift */; };
 		009DFCB324741F9B0061DBC9 /* WalletTxs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009DFCB024741F9B0061DBC9 /* WalletTxs.swift */; };
-		009DFCB424741F9B0061DBC9 /* WalletTxs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009DFCB024741F9B0061DBC9 /* WalletTxs.swift */; };
 		00A057AF23D875840029C22A /* TariEventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057AE23D875840029C22A /* TariEventBus.swift */; };
 		00A057B023D875840029C22A /* TariEventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057AE23D875840029C22A /* TariEventBus.swift */; };
 		00A057B123D875840029C22A /* TariEventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057AE23D875840029C22A /* TariEventBus.swift */; };
@@ -179,11 +171,9 @@
 		00B084C0249E471800F7B9BD /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084BF249E471800F7B9BD /* EmojiSet.swift */; };
 		00B084C1249E471800F7B9BD /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084BF249E471800F7B9BD /* EmojiSet.swift */; };
 		00B084C2249E471800F7B9BD /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084BF249E471800F7B9BD /* EmojiSet.swift */; };
-		00B084C3249E471800F7B9BD /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084BF249E471800F7B9BD /* EmojiSet.swift */; };
 		00B084C5249E4F6900F7B9BD /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084C4249E4F6900F7B9BD /* SeedWords.swift */; };
 		00B084C6249E4F6900F7B9BD /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084C4249E4F6900F7B9BD /* SeedWords.swift */; };
 		00B084C7249E4F6900F7B9BD /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084C4249E4F6900F7B9BD /* SeedWords.swift */; };
-		00B084C8249E4F6900F7B9BD /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084C4249E4F6900F7B9BD /* SeedWords.swift */; };
 		00B4D6B82416A50C00ED8318 /* MobileWalletUISnapshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6B72416A50C00ED8318 /* MobileWalletUISnapshots.swift */; };
 		00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6BA2417894800ED8318 /* SnapshotHelper.swift */; };
 		00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8A8237AA13500C02E44 /* Biometrics.m */; };
@@ -231,45 +221,6 @@
 		00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185BD238953F60096984E /* DebugLogsTableViewController.swift */; };
 		00C185C0238953F60096984E /* DebugLogsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185BD238953F60096984E /* DebugLogsTableViewController.swift */; };
 		00C185C62390221A0096984E /* DevelopmentUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185C52390221A0096984E /* DevelopmentUI.swift */; };
-		00C520A2246965260077BF7F /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C520A1246965260077BF7F /* NotificationService.swift */; };
-		00C520A6246965260077BF7F /* MobileWalletNotificationService.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 00C5209F246965260077BF7F /* MobileWalletNotificationService.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		00C520AD246971620077BF7F /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E21238554FD00036DDC /* libsqlite3.tbd */; };
-		00C520AF2469716E0077BF7F /* libc++.1.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C520AE2469716E0077BF7F /* libc++.1.tbd */; };
-		00C520B0246971B30077BF7F /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
-		00C520B1246971CA0077BF7F /* Tor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BCE486240D5C4100B181F3 /* Tor.framework */; };
-		00C520B2246971FC0077BF7F /* TariLib.swift in Sources */ = {isa = PBXBuildFile; fileRef = 009BF8AB237ABB4700C02E44 /* TariLib.swift */; };
-		00C520B32469720A0077BF7F /* OnionConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE47E240D5A9700B181F3 /* OnionConnector.swift */; };
-		00C520B42469720A0077BF7F /* OnionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE47D240D5A9700B181F3 /* OnionManager.swift */; };
-		00C520B52469720F0077BF7F /* TariSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160A241CCE0600C955B4 /* TariSettings.swift */; };
-		00C520B62469720F0077BF7F /* TariLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00369D802426080D00BAB95B /* TariLogger.swift */; };
-		00C520B72469720F0077BF7F /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
-		00C520B82469720F0077BF7F /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230AF92376C6DD00F23E34 /* Sequence.swift */; };
-		00C520B92469720F0077BF7F /* TariEventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A057AE23D875840029C22A /* TariEventBus.swift */; };
-		00C520BA2469720F0077BF7F /* ErrorDescriptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277FA23E1A61F00AE7BD9 /* ErrorDescriptions.swift */; };
-		00C520BB2469720F0077BF7F /* Signature.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4A623ED879E004BF7F7 /* Signature.swift */; };
-		00C520BC2469720F0077BF7F /* KeyServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0091D4AA23ED87BE004BF7F7 /* KeyServer.swift */; };
-		00C520BD2469720F0077BF7F /* BaseNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160E241CD41D00C955B4 /* BaseNode.swift */; };
-		00C520BE2469720F0077BF7F /* StorageCleanup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F53A632428E44700448466 /* StorageCleanup.swift */; };
-		00C520BF2469720F0077BF7F /* UTXO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619190C6EBD050DC647D1D7B /* UTXO.swift */; };
-		00C520C02469720F0077BF7F /* ConnectionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66526243C766D0046E730 /* ConnectionMonitor.swift */; };
-		00C520C1246972140077BF7F /* TransportType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportType.swift */; };
-		00C520C2246972140077BF7F /* ByteVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD80D237DA07400EBF5E6 /* ByteVector.swift */; };
-		00C520C3246972140077BF7F /* PrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD811237E9EE200EBF5E6 /* PrivateKey.swift */; };
-		00C520C4246972140077BF7F /* CommsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* CommsConfig.swift */; };
-		00C520C5246972140077BF7F /* Wallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD815237EA67600EBF5E6 /* Wallet.swift */; };
-		00C520C6246972140077BF7F /* WalletTestDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997BA2382F5ED000A0B7D /* WalletTestDataExtension.swift */; };
-		00C520C7246972140077BF7F /* PublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CDB238011CA00FA7002 /* PublicKey.swift */; };
-		00C520C8246972140077BF7F /* Contacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CDF2380198D00FA7002 /* Contacts.swift */; };
-		00C520C9246972140077BF7F /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CE32380253B00FA7002 /* Contact.swift */; };
-		00C520CA246972180077BF7F /* CompletedTx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CEB2381A39300FA7002 /* CompletedTx.swift */; };
-		00C520CB246972180077BF7F /* CompletedTxs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CE72381A22E00FA7002 /* CompletedTxs.swift */; };
-		00C520CC246972180077BF7F /* PendingOutboundTx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997AE2382E938000A0B7D /* PendingOutboundTx.swift */; };
-		00C520CD246972180077BF7F /* PendingOutboundTxs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997AA2382E893000A0B7D /* PendingOutboundTxs.swift */; };
-		00C520CE246972180077BF7F /* PendingInboundTx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997B22382ED68000A0B7D /* PendingInboundTx.swift */; };
-		00C520CF246972180077BF7F /* PendingInboundTxs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997B62382ED79000A0B7D /* PendingInboundTxs.swift */; };
-		00C520D02469721D0077BF7F /* TxProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC123CF090D00526DD5 /* TxProtocol.swift */; };
-		00C520D12469721D0077BF7F /* TxsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00947CC623D1A35200526DD5 /* TxsProtocol.swift */; };
-		00C520D5246978F50077BF7F /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
 		00C9F436242E08E70098E619 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A9190A242CDD7700B7F14D /* Tracker.swift */; };
 		00C9F437242E08E80098E619 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A9190A242CDD7700B7F14D /* Tracker.swift */; };
 		00D7BD8924349AE3009DD097 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7BD8824349AE3009DD097 /* UIDevice.swift */; };
@@ -309,7 +260,6 @@
 		00FB43D824BC937D0031D53E /* BackupPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FB43D724BC937D0031D53E /* BackupPrompts.swift */; };
 		00FB43D924BC937D0031D53E /* BackupPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FB43D724BC937D0031D53E /* BackupPrompts.swift */; };
 		00FB43DA24BC937D0031D53E /* BackupPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FB43D724BC937D0031D53E /* BackupPrompts.swift */; };
-		051D513ABDE5D812B4978FFC /* Pods_MobileWalletNotificationService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 39441F6A326A7475D12D0092 /* Pods_MobileWalletNotificationService.framework */; };
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		1C2D151A197172FD352B6717 /* Pods_MobileWallet_MobileWalletUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 153952A60E3931ABC327A007 /* Pods_MobileWallet_MobileWalletUITests.framework */; };
 		37049270247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */; };
@@ -332,15 +282,12 @@
 		370E886324FE974100576F61 /* OnionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886224FE974100576F61 /* OnionSettings.swift */; };
 		370E886424FE97E100576F61 /* OnionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886224FE974100576F61 /* OnionSettings.swift */; };
 		370E886524FE97E100576F61 /* OnionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886224FE974100576F61 /* OnionSettings.swift */; };
-		370E886624FE97E200576F61 /* OnionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E886224FE974100576F61 /* OnionSettings.swift */; };
 		370E887224FEA32600576F61 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E887124FEA32600576F61 /* Ipv6Tester.swift */; };
 		370E887324FEA32600576F61 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E887124FEA32600576F61 /* Ipv6Tester.swift */; };
 		370E887424FEA32600576F61 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E887124FEA32600576F61 /* Ipv6Tester.swift */; };
 		370E887824FEA54100576F61 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887724FEA54100576F61 /* NetworkTools.m */; };
 		370E887924FEA54100576F61 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887724FEA54100576F61 /* NetworkTools.m */; };
 		370E887A24FEA54100576F61 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887724FEA54100576F61 /* NetworkTools.m */; };
-		370E888824FEC16F00576F61 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 370E887124FEA32600576F61 /* Ipv6Tester.swift */; };
-		370E888924FEC1D700576F61 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 370E887724FEA54100576F61 /* NetworkTools.m */; };
 		371189732488FF11004D0CE3 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 371189722488FF11004D0CE3 /* CloudKit.framework */; };
 		371A0818247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
 		371A0819247290C000F97713 /* TransitionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 371A0817247290C000F97713 /* TransitionLabel.swift */; };
@@ -397,7 +344,6 @@
 		37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37765D2524A35BA20091AE2A /* AESEncryption.swift */; };
 		37765D2724A35BA20091AE2A /* AESEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37765D2524A35BA20091AE2A /* AESEncryption.swift */; };
 		37765D2824A35BA20091AE2A /* AESEncryption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37765D2524A35BA20091AE2A /* AESEncryption.swift */; };
-		377A872E2506820800DC6C3F /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
 		377C951E2522213800CC1696 /* TxsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C951D2522213800CC1696 /* TxsListViewController.swift */; };
 		377C951F2522213800CC1696 /* TxsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C951D2522213800CC1696 /* TxsListViewController.swift */; };
 		377C95202522213800CC1696 /* TxsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377C951D2522213800CC1696 /* TxsListViewController.swift */; };
@@ -465,7 +411,6 @@
 		37D3D4ED251C970F00D24149 /* TxGifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D3D4EC251C970F00D24149 /* TxGifManager.swift */; };
 		37D3D4EE251C970F00D24149 /* TxGifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D3D4EC251C970F00D24149 /* TxGifManager.swift */; };
 		37D3D4EF251C970F00D24149 /* TxGifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D3D4EC251C970F00D24149 /* TxGifManager.swift */; };
-		37D3D4F0251C970F00D24149 /* TxGifManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37D3D4EC251C970F00D24149 /* TxGifManager.swift */; };
 		37E0B008249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */; };
 		37E0B009249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */; };
 		37E0B00A249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */; };
@@ -486,7 +431,6 @@
 		4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C6237962CB005058AB /* libc++.tbd */; };
 		4C363B552574F11E00D99868 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C363B372574EFE500D99868 /* OpenSSL.xcframework */; };
 		4C363B602574F12C00D99868 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C363B372574EFE500D99868 /* OpenSSL.xcframework */; };
-		4C363B6B2574F13600D99868 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C363B372574EFE500D99868 /* OpenSSL.xcframework */; };
 		4C363B762574F15E00D99868 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C363B372574EFE500D99868 /* OpenSSL.xcframework */; };
 		4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
 		4CCF87EE23E8275800C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
@@ -498,7 +442,6 @@
 		619197D2BB78CBBC06B0F87E /* UTXO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619190C6EBD050DC647D1D7B /* UTXO.swift */; };
 		619198F3E20DFABEB23F63FE /* UTXO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619190C6EBD050DC647D1D7B /* UTXO.swift */; };
 		83EF1C05BE3D003F97626E60 /* Pods_MobileWalletTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9926F406D47AD1335698D7E1 /* Pods_MobileWalletTests.framework */; };
-		A01BBED62562B9DB007F551F /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
 		A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
 		A01F54A9255EAB7E00F49AFA /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
 		A01F54AA255EAB7E00F49AFA /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
@@ -597,13 +540,6 @@
 			remoteGlobalIDString = 00E491952366E08B007B332D;
 			remoteInfo = MobileWallet;
 		};
-		00C520A4246965260077BF7F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 00E4918E2366E08B007B332D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 00C5209E246965260077BF7F;
-			remoteInfo = MobileWalletNotificationService;
-		};
 		00E491B22366E08F007B332D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 00E4918E2366E08B007B332D /* Project object */;
@@ -627,7 +563,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				00C520A6246965260077BF7F /* MobileWalletNotificationService.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -656,7 +591,6 @@
 		004277FA23E1A61F00AE7BD9 /* ErrorDescriptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDescriptions.swift; sourceTree = "<group>"; };
 		004277FE23E2F1D700AE7BD9 /* UIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImage.swift; sourceTree = "<group>"; };
 		0042780223E8421100AE7BD9 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
-		00434A9C2477D0AF00C0104F /* AppContainerLock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainerLock.swift; sourceTree = "<group>"; };
 		0048AF42245ADCA300E1A359 /* env.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = env.json; sourceTree = SOURCE_ROOT; };
 		004997AA2382E893000A0B7D /* PendingOutboundTxs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOutboundTxs.swift; sourceTree = "<group>"; };
 		004997AE2382E938000A0B7D /* PendingOutboundTx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOutboundTx.swift; sourceTree = "<group>"; };
@@ -721,12 +655,7 @@
 		00C185B8238943980096984E /* UIViewControllerDebugExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerDebugExtension.swift; sourceTree = "<group>"; };
 		00C185BD238953F60096984E /* DebugLogsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogsTableViewController.swift; sourceTree = "<group>"; };
 		00C185C52390221A0096984E /* DevelopmentUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevelopmentUI.swift; sourceTree = "<group>"; };
-		00C5209F246965260077BF7F /* MobileWalletNotificationService.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MobileWalletNotificationService.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		00C520A1246965260077BF7F /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
-		00C520A3246965260077BF7F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00C520AB246965350077BF7F /* MobileWalletNotificationService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MobileWalletNotificationService.entitlements; sourceTree = "<group>"; };
 		00C520AE2469716E0077BF7F /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "usr/lib/libc++.1.tbd"; sourceTree = SDKROOT; };
-		00C520D2246972480077BF7F /* MobileWalletNotificationService-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWalletNotificationService-Bridging-Header.h"; sourceTree = "<group>"; };
 		00D7BD8824349AE3009DD097 /* UIDevice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDevice.swift; sourceTree = "<group>"; };
 		00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedRefreshingView.swift; sourceTree = "<group>"; };
 		00DC2E21238554FD00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -872,19 +801,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		00C5209C246965260077BF7F /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4C363B6B2574F13600D99868 /* OpenSSL.xcframework in Frameworks */,
-				00C520B1246971CA0077BF7F /* Tor.framework in Frameworks */,
-				00C520B0246971B30077BF7F /* libtari_wallet_ffi.a in Frameworks */,
-				00C520AF2469716E0077BF7F /* libc++.1.tbd in Frameworks */,
-				00C520AD246971620077BF7F /* libsqlite3.tbd in Frameworks */,
-				051D513ABDE5D812B4978FFC /* Pods_MobileWalletNotificationService.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		00E491932366E08B007B332D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1026,7 +942,6 @@
 		006D211B23CEDEEE007D1C10 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				00434A9C2477D0AF00C0104F /* AppContainerLock.swift */,
 				00DD160E241CD41D00C955B4 /* BaseNode.swift */,
 				00A66526243C766D0046E730 /* ConnectionMonitor.swift */,
 				009DFCA62473E33F0061DBC9 /* DeepLinkParams.swift */,
@@ -1168,17 +1083,6 @@
 			path = Debug;
 			sourceTree = "<group>";
 		};
-		00C520A0246965260077BF7F /* MobileWalletNotificationService */ = {
-			isa = PBXGroup;
-			children = (
-				00C520AB246965350077BF7F /* MobileWalletNotificationService.entitlements */,
-				00C520D2246972480077BF7F /* MobileWalletNotificationService-Bridging-Header.h */,
-				00C520A3246965260077BF7F /* Info.plist */,
-				00C520A1246965260077BF7F /* NotificationService.swift */,
-			);
-			path = MobileWalletNotificationService;
-			sourceTree = "<group>";
-		};
 		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
 			isa = PBXGroup;
 			children = (
@@ -1268,7 +1172,6 @@
 				00E491B42366E08F007B332D /* MobileWalletTests */,
 				00E491BF2366E08F007B332D /* MobileWalletUITests */,
 				00B4D6AC2416A32200ED8318 /* MobileWalletUISnapshots */,
-				00C520A0246965260077BF7F /* MobileWalletNotificationService */,
 				00E491972366E08B007B332D /* Products */,
 				71F4BDBF8B1AF18134115485 /* Pods */,
 				27F235021D9E2060A3CBB465 /* Frameworks */,
@@ -1282,7 +1185,6 @@
 				00E491B12366E08F007B332D /* MobileWalletTests.xctest */,
 				00E491BC2366E08F007B332D /* MobileWalletUITests.xctest */,
 				00B4D6AB2416A32200ED8318 /* MobileWalletUISnapshots.xctest */,
-				00C5209F246965260077BF7F /* MobileWalletNotificationService.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1694,30 +1596,11 @@
 			productReference = 00B4D6AB2416A32200ED8318 /* MobileWalletUISnapshots.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		00C5209E246965260077BF7F /* MobileWalletNotificationService */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 00C520AA246965260077BF7F /* Build configuration list for PBXNativeTarget "MobileWalletNotificationService" */;
-			buildPhases = (
-				51085FFBD80F3006BC8A5940 /* [CP] Check Pods Manifest.lock */,
-				00C5209B246965260077BF7F /* Sources */,
-				00C5209C246965260077BF7F /* Frameworks */,
-				00C5209D246965260077BF7F /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = MobileWalletNotificationService;
-			productName = MobileWalletNotificationService;
-			productReference = 00C5209F246965260077BF7F /* MobileWalletNotificationService.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		00E491952366E08B007B332D /* MobileWallet */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E491C52366E08F007B332D /* Build configuration list for PBXNativeTarget "MobileWallet" */;
 			buildPhases = (
 				8C27C48421F9037D76C87980 /* [CP] Check Pods Manifest.lock */,
-				D2C915699E1DCD8A968FC9E0 /* [CP] Prepare Artifacts */,
 				00E491922366E08B007B332D /* Sources */,
 				00E491932366E08B007B332D /* Frameworks */,
 				00E491942366E08B007B332D /* Resources */,
@@ -1728,7 +1611,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				00C520A5246965260077BF7F /* PBXTargetDependency */,
 			);
 			name = MobileWallet;
 			productName = MobileWallet;
@@ -1760,7 +1642,6 @@
 			buildConfigurationList = 00E491CB2366E08F007B332D /* Build configuration list for PBXNativeTarget "MobileWalletUITests" */;
 			buildPhases = (
 				36B3E0ADF9A7C4C9B3F1415A /* [CP] Check Pods Manifest.lock */,
-				2EDD3D2F348B8D55275C8638 /* [CP] Prepare Artifacts */,
 				00E491B82366E08F007B332D /* Sources */,
 				00E491B92366E08F007B332D /* Frameworks */,
 				00E491BA2366E08F007B332D /* Resources */,
@@ -1791,10 +1672,6 @@
 						CreatedOnToolsVersion = 11.3.1;
 						LastSwiftMigration = 1130;
 						TestTargetID = 00E491952366E08B007B332D;
-					};
-					00C5209E246965260077BF7F = {
-						CreatedOnToolsVersion = 11.4.1;
-						LastSwiftMigration = 1140;
 					};
 					00E491952366E08B007B332D = {
 						CreatedOnToolsVersion = 11.1;
@@ -1828,7 +1705,6 @@
 				00E491B02366E08F007B332D /* MobileWalletTests */,
 				00E491BB2366E08F007B332D /* MobileWalletUITests */,
 				00B4D6AA2416A32200ED8318 /* MobileWalletUISnapshots */,
-				00C5209E246965260077BF7F /* MobileWalletNotificationService */,
 			);
 		};
 /* End PBXProject section */
@@ -1845,14 +1721,6 @@
 				BF0A77C72420DA3200861A3E /* TouchIdAnimation.json in Resources */,
 				BF0A77A3241F904D00861A3E /* faceId.png in Resources */,
 				BF0A779F241F904D00861A3E /* faceId@3x.png in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		00C5209D246965260077BF7F /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00C520D5246978F50077BF7F /* env.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2025,23 +1893,6 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MobileWallet/Pods-MobileWallet-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		2EDD3D2F348B8D55275C8638 /* [CP] Prepare Artifacts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests-artifacts-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Prepare Artifacts";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests-artifacts-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests-artifacts.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		36B3E0ADF9A7C4C9B3F1415A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2058,28 +1909,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-MobileWallet-MobileWalletUITests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		51085FFBD80F3006BC8A5940 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MobileWalletNotificationService-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -2130,23 +1959,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D2C915699E1DCD8A968FC9E0 /* [CP] Prepare Artifacts */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MobileWallet/Pods-MobileWallet-artifacts-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Prepare Artifacts";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MobileWallet/Pods-MobileWallet-artifacts-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MobileWallet/Pods-MobileWallet-artifacts.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		D547E6E3A0F51CA88BB64A82 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2177,59 +1989,6 @@
 				00B4D6BD24178DE300ED8318 /* HelperFunctions.swift in Sources */,
 				00B4D6BC24178CBD00ED8318 /* Biometrics.m in Sources */,
 				00B4D6BB2417894800ED8318 /* SnapshotHelper.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		00C5209B246965260077BF7F /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				00C520B72469720F0077BF7F /* MicroTari.swift in Sources */,
-				003DF41924C05EC900675A2C /* PartialBackup.swift in Sources */,
-				00C520BA2469720F0077BF7F /* ErrorDescriptions.swift in Sources */,
-				00B084C8249E4F6900F7B9BD /* SeedWords.swift in Sources */,
-				00C520C9246972140077BF7F /* Contact.swift in Sources */,
-				00B084C3249E471800F7B9BD /* EmojiSet.swift in Sources */,
-				00C520C7246972140077BF7F /* PublicKey.swift in Sources */,
-				00C520CC246972180077BF7F /* PendingOutboundTx.swift in Sources */,
-				00C520D12469721D0077BF7F /* TxsProtocol.swift in Sources */,
-				00C520C1246972140077BF7F /* TransportType.swift in Sources */,
-				00C520B52469720F0077BF7F /* TariSettings.swift in Sources */,
-				00C520BB2469720F0077BF7F /* Signature.swift in Sources */,
-				370E888924FEC1D700576F61 /* NetworkTools.m in Sources */,
-				00C520C4246972140077BF7F /* CommsConfig.swift in Sources */,
-				0072BF28247EB3A600BD28FB /* ReminderNotifications.swift in Sources */,
-				00C520C6246972140077BF7F /* WalletTestDataExtension.swift in Sources */,
-				00C520C8246972140077BF7F /* Contacts.swift in Sources */,
-				00C520B82469720F0077BF7F /* Sequence.swift in Sources */,
-				00C520D02469721D0077BF7F /* TxProtocol.swift in Sources */,
-				009DFCB424741F9B0061DBC9 /* WalletTxs.swift in Sources */,
-				00C520BD2469720F0077BF7F /* BaseNode.swift in Sources */,
-				009DFCAA2473ECCB0061DBC9 /* DeepLinkParams.swift in Sources */,
-				00C520CD246972180077BF7F /* PendingOutboundTxs.swift in Sources */,
-				00C520CF246972180077BF7F /* PendingInboundTxs.swift in Sources */,
-				37D3D4F0251C970F00D24149 /* TxGifManager.swift in Sources */,
-				00C520BF2469720F0077BF7F /* UTXO.swift in Sources */,
-				00C520B62469720F0077BF7F /* TariLogger.swift in Sources */,
-				00C520CE246972180077BF7F /* PendingInboundTx.swift in Sources */,
-				370E888824FEC16F00576F61 /* Ipv6Tester.swift in Sources */,
-				00C520C3246972140077BF7F /* PrivateKey.swift in Sources */,
-				00C520BC2469720F0077BF7F /* KeyServer.swift in Sources */,
-				00C520B92469720F0077BF7F /* TariEventBus.swift in Sources */,
-				00C520C02469720F0077BF7F /* ConnectionMonitor.swift in Sources */,
-				00C520A2246965260077BF7F /* NotificationService.swift in Sources */,
-				A01BBED62562B9DB007F551F /* Localization.swift in Sources */,
-				00C520C5246972140077BF7F /* Wallet.swift in Sources */,
-				00C520B2246971FC0077BF7F /* TariLib.swift in Sources */,
-				00C520B32469720A0077BF7F /* OnionConnector.swift in Sources */,
-				00434AA02477D0B000C0104F /* AppContainerLock.swift in Sources */,
-				00C520CA246972180077BF7F /* CompletedTx.swift in Sources */,
-				00C520BE2469720F0077BF7F /* StorageCleanup.swift in Sources */,
-				370E886624FE97E200576F61 /* OnionSettings.swift in Sources */,
-				00C520C2246972140077BF7F /* ByteVector.swift in Sources */,
-				00C520CB246972180077BF7F /* CompletedTxs.swift in Sources */,
-				377A872E2506820800DC6C3F /* NSPointerArray+Extension.swift in Sources */,
-				00C520B42469720A0077BF7F /* OnionManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2328,7 +2087,6 @@
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
 				375894C524865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */,
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
-				00434A9D2477D0B000C0104F /* AppContainerLock.swift in Sources */,
 				00BCE47F240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				00A9190B242CDD7700B7F14D /* Tracker.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
@@ -2464,7 +2222,6 @@
 				00BBD80F237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00FB43D924BC937D0031D53E /* BackupPrompts.swift in Sources */,
 				00325ECB239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
-				00434A9E2477D0B000C0104F /* AppContainerLock.swift in Sources */,
 				37C8BA48248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
 				00B084C6249E4F6900F7B9BD /* SeedWords.swift in Sources */,
 				00A057B523D979DA0029C22A /* UserFeedback.swift in Sources */,
@@ -2656,7 +2413,6 @@
 				001F6CEA2381A22E00FA7002 /* CompletedTxs.swift in Sources */,
 				0074619D239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				3776080B24B75900008167E8 /* Backup.swift in Sources */,
-				00434A9F2477D0B000C0104F /* AppContainerLock.swift in Sources */,
 				37B5289624CB1E16008C80EB /* NetworkSpeedProvider.swift in Sources */,
 				3708D758247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
 				3730E15324C884D500827DFA /* MenuTabBarController.swift in Sources */,
@@ -2682,11 +2438,6 @@
 			isa = PBXTargetDependency;
 			target = 00E491952366E08B007B332D /* MobileWallet */;
 			targetProxy = 00B4D6B02416A32200ED8318 /* PBXContainerItemProxy */;
-		};
-		00C520A5246965260077BF7F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 00C5209E246965260077BF7F /* MobileWalletNotificationService */;
-			targetProxy = 00C520A4246965260077BF7F /* PBXContainerItemProxy */;
 		};
 		00E491B32366E08F007B332D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2762,81 +2513,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = MobileWallet;
-			};
-			name = Release;
-		};
-		00C520A8246965260077BF7F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1F70E71267BFB1C902D3FCFB /* Pods-MobileWalletNotificationService.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 166;
-				DEVELOPMENT_TEAM = 8XGMD9X2H2;
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)",
-				);
-				INFOPLIST_FILE = MobileWalletNotificationService/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/MobileWallet/TariLib",
-				);
-				MARKETING_VERSION = 0.6.2;
-				NEW_SETTING = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet.MobileWalletNotificationService;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "MobileWalletNotificationService/MobileWalletNotificationService-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		00C520A9246965260077BF7F /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = FDF69D90CBECD134CF2006E4 /* Pods-MobileWalletNotificationService.release.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = MobileWalletNotificationService/MobileWalletNotificationService.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 166;
-				DEVELOPMENT_TEAM = 8XGMD9X2H2;
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)",
-				);
-				INFOPLIST_FILE = MobileWalletNotificationService/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/MobileWallet/TariLib",
-				);
-				MARKETING_VERSION = 0.6.2;
-				NEW_SETTING = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet.MobileWalletNotificationService;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "MobileWalletNotificationService/MobileWalletNotificationService-Bridging-Header.h";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -3174,15 +2850,6 @@
 			buildConfigurations = (
 				00B4D6B22416A32200ED8318 /* Debug */,
 				00B4D6B32416A32200ED8318 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		00C520AA246965260077BF7F /* Build configuration list for PBXNativeTarget "MobileWalletNotificationService" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				00C520A8246965260077BF7F /* Debug */,
-				00C520A9246965260077BF7F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

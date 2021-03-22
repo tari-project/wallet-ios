@@ -113,16 +113,33 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This may occur due to temporary interruptions (ex. an incoming phone call).
     }
 
+    private func onTorSuccess(_ onComplete: @escaping () -> Void) {
+        // Handle if tor ports opened later
+        TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
+            guard let self = self else { return }
+            TariEventBus.unregister(self, eventType: .torPortsOpened)
+            onComplete()
+        }
+        if TariLib.shared.torPortsOpened {
+            TariEventBus.unregister(self, eventType: .torPortsOpened)
+            onComplete()
+        }
+    }
+
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
 
-        //Remove badges from push notifications
+        // Remove badges from push notifications
         UIApplication.shared.applicationIconBadgeNumber = 0
-        AppContainerLock.shared.setLock(.main)
         ConnectionMonitor.shared.start()
         TariLib.shared.startTor()
-        TariLib.shared.restartWalletIfStopped() //Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
+        // Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
+        if TariLib.shared.walletExists {
+            onTorSuccess {
+                TariLib.shared.startWallet()
+            }
+        }
         if UserDefaults.Key.backupOperationAborted.boolValue()
             && ICloudBackup.shared.iCloudBackupsIsOn
             && !ICloudBackup.shared.inProgress {
@@ -138,10 +155,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
         ConnectionMonitor.shared.stop()
-
         TariLib.shared.stopWallet()
         TariLib.shared.stopTor()
-        AppContainerLock.shared.removeLock(.main)
         ICloudBackup.shared.backgroundBackupWallet()
     }
 

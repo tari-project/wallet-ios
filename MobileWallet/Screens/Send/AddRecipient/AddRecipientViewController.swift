@@ -76,10 +76,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
             if let pubKey = selectedRecipientPublicKey {
                 guard pubKey.hex.0 != TariLib.shared.tariWallet?.publicKey.0?.hex.0 else {
                     errorMessageView.message = String(
-                        format: NSLocalizedString(
-                            "add_recipient.warning.can_not_send_yourself.with_param",
-                            comment: "Add recipient view"
-                        ),
+                        format: localized("add_recipient.warning.can_not_send_yourself.with_param"),
                         TariSettings.shared.network.currencyDisplayTicker
                     )
                     return
@@ -135,8 +132,8 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                         self.setInputText(publicKey: pubKey)
                     } catch {
                         UserFeedback.shared.error(
-                            title: NSLocalizedString("add_recipient.error.invalid_emoji.title", comment: "Add recipient view"),
-                            description: NSLocalizedString("add_recipient.error.invalid_emoji.description", comment: "Add recipient view"),
+                            title: localized("add_recipient.error.invalid_emoji.title"),
+                            description: localized("add_recipient.error.invalid_emoji.description"),
                             error: error)
                     }
 
@@ -158,8 +155,18 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(self, selector: #selector(showClipboardEmojis), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(hideClipboardEmojis), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(showClipboardEmojis),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(hideClipboardEmojis),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
 
         contactsTableVC.filter = ""
         inputBox.textAlignment = .left
@@ -228,7 +235,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         if selectedRecipientPublicKey != nil && selectedRecipientPublicKey?.hex.0 != TariLib.shared.tariWallet?.publicKey.0?.hex.0 {
             onContinue(selectedRecipientPublicKey!)
         } else if contactsTableVC.isEmptyList() {
-            errorMessageView.message = NSLocalizedString("add_recipient.inputbox.warning", comment: "Add recipient view")
+            errorMessageView.message = localized("add_recipient.inputbox.warning")
         }
 
         dismissKeyboard()
@@ -273,7 +280,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     private func setupNavigationBar() {
-        navigationBar.title = NSLocalizedString("add_recipient.title", comment: "Add recipient view")
+        navigationBar.title = localized("add_recipient.title")
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(navigationBar)
         navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
@@ -311,7 +318,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputBox.heightAnchor.constraint(equalToConstant: emojiIdHeight).isActive = true
 
         //Input style
-        inputBox.placeholder = NSLocalizedString("add_recipient.inputbox.placeholder", comment: "Add recipient view")
+        inputBox.placeholder = localized("add_recipient.inputbox.placeholder")
         inputBox.backgroundColor = Theme.shared.colors.appBackground
         inputBox.font = Theme.shared.fonts.searchContactsInputBoxText
         inputBox.leftView = UIView(frame: CGRect(x: 0, y: 0, width: sidePadding / 2, height: inputBox.frame.height))
@@ -341,7 +348,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     private func setupContinueButton() {
-        continueButton.setTitle(NSLocalizedString("common.continue", comment: "Common"), for: .normal)
+        continueButton.setTitle(localized("common.continue"), for: .normal)
         view.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
 

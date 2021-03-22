@@ -138,14 +138,14 @@ extension SeedPhraseViewController {
 
     override func setupNavigationBar() {
         super.setupNavigationBar()
-        navigationBar.title = NSLocalizedString("seed_phrase.title", comment: "SeedPhrase view")
+        navigationBar.title = localized("seed_phrase.title")
     }
 
     private func setupHeader() {
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
         descriptionLabel.textColor = Theme.shared.colors.settingsViewDescription
-        descriptionLabel.text = NSLocalizedString("seed_phrase.header", comment: "SeedPhrase view")
+        descriptionLabel.text = localized("seed_phrase.header")
 
         view.addSubview(descriptionLabel)
 
@@ -181,7 +181,7 @@ extension SeedPhraseViewController {
 
         agreementContainer.addSubview(agreementLabel)
 
-        agreementLabel.text = NSLocalizedString("seed_phrase.agreement", comment: "SeedPhrase view")
+        agreementLabel.text = localized("seed_phrase.agreement")
         agreementLabel.font = Theme.shared.fonts.settingsSeedPhraseAgreement
         agreementLabel.textColor = Theme.shared.colors.settingsSeedPhraseAgreement!
 

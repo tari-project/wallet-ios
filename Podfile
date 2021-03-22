@@ -24,10 +24,6 @@ target 'MobileWallet' do
     # Pods for testing
   end
 
-  target 'MobileWalletNotificationService' do
-    inherit! :search_paths
-  end
-
   target 'MobileWalletUITests' do
     # Pods for testing
   end

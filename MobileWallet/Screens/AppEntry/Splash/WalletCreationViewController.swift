@@ -385,19 +385,16 @@ extension WalletCreationViewController {
 
     private func prepareForInitialState() {
         updateConstraintsAnimationView(animation: .none)
-        firstLabel.text = NSLocalizedString("wallet_creation.initial_state.first_label", comment: "WalletCreation view")
-        secondLabel.text = NSLocalizedString("wallet_creation.initial_state.second_label", comment: "WalletCreation view")
-        continueButton.setTitle(NSLocalizedString("wallet_creation.button.create", comment: "WalletCreation view"), for: .normal)
+        firstLabel.text = localized("wallet_creation.initial_state.first_label")
+        secondLabel.text = localized("wallet_creation.initial_state.second_label")
+        continueButton.setTitle(localized("wallet_creation.button.create"), for: .normal)
     }
 
     private func prepareForCreateEmojiId() {
-        firstLabel.text = NSLocalizedString("wallet_creation.create_emoji_state.first_label", comment: "WalletCreation view")
-        secondLabel.text = NSLocalizedString("wallet_creation.create_emoji_state.second_label", comment: "WalletCreation view")
+        firstLabel.text = localized("wallet_creation.create_emoji_state.first_label")
+        secondLabel.text = localized("wallet_creation.create_emoji_state.second_label")
         thirdLabel.text = String(
-            format: NSLocalizedString(
-                "wallet_creation.create_emoji_state.description.with_param",
-                comment: "Third label on wallet creation"
-            ),
+            format: localized("wallet_creation.create_emoji_state.description.with_param"),
             TariSettings.shared.network.currencyDisplayTicker
         )
 
@@ -405,7 +402,7 @@ extension WalletCreationViewController {
     }
 
     private func prepareForShowEmojiID() {
-        let thisIsYourEmojiString = NSLocalizedString("wallet_creation.emoji_state.first_label", comment: "WalletCreation view")
+        let thisIsYourEmojiString = localized("wallet_creation.emoji_state.first_label")
         let attributedString = NSMutableAttributedString(string: thisIsYourEmojiString, attributes: [
             .font: Theme.shared.fonts.createWalletEmojiIDFirstText,
             .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
@@ -419,11 +416,10 @@ extension WalletCreationViewController {
         secondLabel.attributedText = attributedString
 
         let curency = TariSettings.shared.network.currencyDisplayTicker
-        thirdLabel.text = NSLocalizedString("wallet_creation.emoji_state.second_label",
-                                            comment: "WalletCreation view") + " \(curency)!"
+        thirdLabel.text = localized("wallet_creation.emoji_state.second_label") + " \(curency)!"
         stackView.setCustomSpacing(16, after: secondLabel)
 
-        continueButton.setTitle(NSLocalizedString("common.continue", comment: "Common"), for: .normal)
+        continueButton.setTitle(localized("common.continue"), for: .normal)
 
         if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
             emojiIdView.setupView(
@@ -438,7 +434,7 @@ extension WalletCreationViewController {
     }
 
     private func prepareForLocalAuthentication() {
-        let secondLabelString = NSLocalizedString("wallet_creation.secure_your_wallet", comment: "WalletCreation view")
+        let secondLabelString = localized("wallet_creation.secure_your_wallet")
         let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
             .font: Theme.shared.fonts.createWalletEmojiIDSecondText,
             .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
@@ -447,10 +443,7 @@ extension WalletCreationViewController {
         self.secondLabel.attributedText = attributedString
 
         self.thirdLabel.text = String(
-            format: NSLocalizedString(
-                "wallet_creation.secure_your_wallet.description.with_param",
-                comment: "WalletCreation view"
-            ),
+            format: localized("wallet_creation.secure_your_wallet.description.with_param"),
             TariSettings.shared.network.currencyDisplayTicker
         )
         stackView.setCustomSpacing(16, after: secondLabel)
@@ -461,27 +454,27 @@ extension WalletCreationViewController {
         switch currentType {
         case .faceID:
             stackView.setCustomSpacing(54, after: animationView)
-            self.continueButton.setTitle(NSLocalizedString("wallet_creation.button.secure_face_id", comment: "WalletCreation view"), for: .normal)
+            self.continueButton.setTitle(localized("wallet_creation.button.secure_face_id"), for: .normal)
         case .touchID:
             stackView.setCustomSpacing(58, after: animationView)
-            self.continueButton.setTitle(NSLocalizedString("wallet_creation.button.secure_touch_id", comment: "WalletCreation view"), for: .normal)
+            self.continueButton.setTitle(localized("wallet_creation.button.secure_touch_id"), for: .normal)
         case .pin, .none:
             stackView.setCustomSpacing(5, after: numpadImageView)
-            self.continueButton.setTitle(NSLocalizedString("wallet_creation.button.secure_pin", comment: "WalletCreation view"), for: .normal)
+            self.continueButton.setTitle(localized("wallet_creation.button.secure_pin"), for: .normal)
         }
     }
 
     private func prepareForEnableNotifications() {
-        let secondLabelStringTop = NSLocalizedString("wallet_creation.notifications.title", comment: "WalletCreation view")
-        let secondLabelStringBottom = NSLocalizedString("wallet_creation.notifications.subtitle", comment: "WalletCreation view")
+        let secondLabelStringTop = localized("wallet_creation.notifications.title")
+        let secondLabelStringBottom = localized("wallet_creation.notifications.subtitle")
         firstLabel.font = Theme.shared.fonts.createWalletNotificationsFirstLabel
         secondLabel.font = Theme.shared.fonts.createWalletNotificationsSecondLabel
         firstLabel.text = secondLabelStringTop
         secondLabel.text = secondLabelStringBottom
         thirdLabel.font = Theme.shared.fonts.createWalletNotificationsThirdLabel
-        thirdLabel.text = NSLocalizedString("wallet_creation.notifications.description", comment: "WalletCreation view")
+        thirdLabel.text = localized("wallet_creation.notifications.description")
 
-        continueButton.setTitle(NSLocalizedString("wallet_creation.button.turn_on_notifications", comment: "WalletCreation view"), for: .normal)
+        continueButton.setTitle(localized("wallet_creation.button.turn_on_notifications"), for: .normal)
 
         stackViewCenterYConstraint?.constant = -90
         stackView.setCustomSpacing(16, after: secondLabel)
@@ -664,7 +657,7 @@ extension WalletCreationViewController {
         button.layer.cornerRadius = 4.0
         button.layer.masksToBounds = true
         button.backgroundColor = Theme.shared.colors.tapToSeeFullEmojiBackground!
-        button.setTitle(NSLocalizedString("wallet_creation.button.tap_to_see_full_emoji", comment: "WalletCreation view"), for: .normal)
+        button.setTitle(localized("wallet_creation.button.tap_to_see_full_emoji"), for: .normal)
         button.addTarget(self, action: #selector(tapToSeeButtonAction(_ :)), for: .touchUpInside)
         button.setTitleColor(Theme.shared.colors.tapToSeeFullEmoji!, for: .normal)
         button.titleLabel?.font = Theme.shared.fonts.tapToSeeFullEmojiLabel

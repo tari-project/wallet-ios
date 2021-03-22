@@ -241,10 +241,10 @@ class ScanViewController: UIViewController {
 
         switch scanResourceType {
         case .publicKey:
-            title = String(format: NSLocalizedString("scan_view.scan_qr_to_send.with_param", comment: "Scan view"),
+            title = String(format: localized("scan_view.scan_qr_to_send.with_param"),
                 TariSettings.shared.network.currencyDisplayTicker)
         case .bridges:
-            title = NSLocalizedString("scan_view.scan_qr_to_set_bridges", comment: "Scan view")
+            title = localized("scan_view.scan_qr_to_set_bridges")
         }
         self.titleLabel.text = title
         self.titleLabel.textColor = Theme.shared.colors.scannerTitle
@@ -340,8 +340,8 @@ class ScanViewController: UIViewController {
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
                 UserFeedback.shared.error(
-                    title: NSLocalizedString("scan_view.error.title", comment: "Scan view"),
-                    description: NSLocalizedString("scan_view.error.public_key.description", comment: "Scan view"),
+                    title: localized("scan_view.error.title"),
+                    description: localized("scan_view.error.public_key.description"),
                     error: error
                 )
             }
@@ -350,8 +350,8 @@ class ScanViewController: UIViewController {
                 actionDelegate?.onAdd(string: bridges)
             } else {
                 UserFeedback.shared.error(
-                    title: NSLocalizedString("scan_view.error.title", comment: "Scan view"),
-                    description: NSLocalizedString("scan_view.error.bridges.description", comment: "Scan view"),
+                    title: localized("scan_view.error.title"),
+                    description: localized("scan_view.error.bridges.description"),
                     error: nil
                 )
             }

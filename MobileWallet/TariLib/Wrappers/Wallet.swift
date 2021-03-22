@@ -60,6 +60,7 @@ enum WalletErrors: Error {
     case cancelNonPendingTx
     case txToCancel
     case notEnoughFunds
+    case fundsPending
 }
 
 enum BaseNodeValidationType: String {
@@ -241,7 +242,11 @@ class Wallet {
         }.count > 0
         if failed {
             baseNodeValidationStatusMap.removeAll()
-            // TODO set next base node
+            do {
+                try TariLib.shared.setBasenode(syncAfterSetting: false)
+            } catch {
+                // no-op
+            }
             let result: [String: Any] = ["result": BaseNodeValidationResult.failure]
             TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
             return
@@ -500,6 +505,8 @@ class Wallet {
         guard errorCode == 0 else {
             if errorCode == 101 {
                 throw WalletErrors.notEnoughFunds
+            } else if errorCode == 115 {
+                throw WalletErrors.fundsPending
             }
             throw WalletErrors.generic(errorCode)
         }

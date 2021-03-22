@@ -99,16 +99,31 @@ class BackupScheduler: NSObject {
     }
 
     private func createWalletBackup() {
-        TariLib.shared.waitIfWalletIsRestarting { (_) in
-            self.scheduledBackupStarted = true
-            do {
-                let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
-                try ICloudBackup.shared.createWalletBackup(password: password)
-            } catch {
-                self.failedToCreateBackup(error: error)
+        guard TariLib.shared.walletState == .started else {
+            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
+                [weak self]
+                (sender) in
+                guard let self = self else { return }
+                let walletState = sender!.object as! TariLib.WalletState
+                switch walletState {
+                case .started:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    self.createWalletBackup()
+                default:
+                    break
+                }
             }
+            return
+        }
+        scheduledBackupStarted = true
+        do {
+            let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+            try ICloudBackup.shared.createWalletBackup(password: password)
+        } catch {
+            self.failedToCreateBackup(error: error)
         }
     }
+
 }
 
 extension BackupScheduler: ICloudBackupObserver {

@@ -54,9 +54,9 @@ class CustomBridgesViewController: SettingsParentTableViewController {
 
         var rawValue: String {
             switch self {
-            case .requestBridgesFromTorproject: return NSLocalizedString("custom_bridges.item.request_bridges_from_torproject", comment: "CustomBridges view")
-            case .scanQRCode: return NSLocalizedString("custom_bridges.item.scan_QR_code", comment: "CustomBridges view")
-            case .uploadQRCode: return NSLocalizedString("custom_bridges.item.upload_QR_code", comment: "CustomBridges view")
+            case .requestBridgesFromTorproject: return localized("custom_bridges.item.request_bridges_from_torproject")
+            case .scanQRCode: return localized("custom_bridges.item.scan_QR_code")
+            case .uploadQRCode: return localized("custom_bridges.item.upload_QR_code")
             }
         }
     }
@@ -95,10 +95,10 @@ class CustomBridgesViewController: SettingsParentTableViewController {
 extension CustomBridgesViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
-        navigationBar.title = NSLocalizedString("custom_bridges.title", comment: "CustomBridges view")
+        navigationBar.title = localized("custom_bridges.title")
         navigationBar.rightButton.isEnabled = false
         navigationBar.rightButtonAction = connectAction
-        let title = NSLocalizedString("custom_bridges.connect", comment: "CustomBridges view")
+        let title = localized("custom_bridges.connect")
         navigationBar.rightButton.setTitle(title, for: .normal)
         navigationBar.rightButton.setTitleColor(Theme.shared.colors.navigationBarPurple, for: .normal)
         navigationBar.rightButton.setTitleColor(Theme.shared.colors.navigationBarPurple?.withAlphaComponent(0.5), for: .highlighted)
@@ -180,8 +180,8 @@ extension CustomBridgesViewController: UIImagePickerControllerDelegate, UINaviga
             onAdd(string: bridges)
         } else {
             UserFeedback.shared.error(
-                title: NSLocalizedString("custom_bridges.error.image_decode.title", comment: "Scan view"),
-                description: NSLocalizedString("custom_bridges.error.image_decode.description", comment: "Scan view"),
+                title: localized("custom_bridges.error.image_decode.title"),
+                description: localized("custom_bridges.error.image_decode.description"),
                 error: nil
             )
         }
@@ -241,7 +241,7 @@ extension CustomBridgesViewController: UITableViewDelegate, UITableViewDataSourc
         let title =  UILabel()
         title.font = Theme.shared.fonts.settingsTableViewLastBackupDate
 
-        title.text = NSLocalizedString("custom_bridges.item.paste_bridges", comment: "CustomBridges view")
+        title.text = localized("custom_bridges.item.paste_bridges")
         header.addSubview(title)
 
         title.translatesAutoresizingMaskIntoConstraints = false

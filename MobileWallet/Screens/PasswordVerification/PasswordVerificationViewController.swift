@@ -106,16 +106,16 @@ extension PasswordVerificationViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
         navigationBar.backgroundColor = .clear
-        navigationBar.title = NSLocalizedString("password_verification.title", comment: "PasswordVerification view")
+        navigationBar.title = localized("password_verification.title")
     }
 
     private func setupHeaderLabel() {
         headerLabel.font = Theme.shared.fonts.settingsViewHeader
         switch variation {
         case .change:
-            headerLabel.text = NSLocalizedString("password_verification.header.enter_current_password", comment: "PasswordVerification view")
+            headerLabel.text = localized("password_verification.header.enter_current_password")
         case .restore:
-            headerLabel.text = NSLocalizedString("password_verification.header.enter_backup_password", comment: "PasswordVerification view")
+            headerLabel.text = localized("password_verification.header.enter_backup_password")
         }
         stackView.addArrangedSubview(headerLabel)
         stackView.setCustomSpacing(15, after: headerLabel)
@@ -126,14 +126,25 @@ extension PasswordVerificationViewController {
 
         switch variation {
         case .change:
-            attributedString = NSMutableAttributedString(string: NSLocalizedString("password_verification.description.enter_current_password", comment: "PasswordVerification view"))
-            attributedString.addAttributes([NSAttributedString.Key.foregroundColor: Theme.shared.colors.settingsViewDescription!], range: NSRange(location: 0, length: attributedString.length))
+            attributedString = NSMutableAttributedString(
+                string: localized("password_verification.description.enter_current_password")
+            )
+            attributedString.addAttributes(
+                [NSAttributedString.Key.foregroundColor: Theme.shared.colors.settingsViewDescription!],
+                range: NSRange(location: 0, length: attributedString.length)
+            )
         case .restore:
-            let atttributedPart1 = NSLocalizedString("password_verification.description.enter_backup_password.part1", comment: "PasswordVerification view")
-            let atttributedPart2 = NSLocalizedString("password_verification.description.enter_backup_password.part2", comment: "PasswordVerification view")
+            let atttributedPart1 = localized("password_verification.description.enter_backup_password.part1")
+            let atttributedPart2 = localized("password_verification.description.enter_backup_password.part2")
             attributedString = NSMutableAttributedString(string: atttributedPart1 + atttributedPart2)
-            attributedString.addAttributes([NSAttributedString.Key.foregroundColor: Theme.shared.colors.settingsViewDescription!], range: NSRange(location: 0, length: atttributedPart1.count))
-            attributedString.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], range: NSRange(location: atttributedPart1.count, length: atttributedPart2.count))
+            attributedString.addAttributes(
+                [NSAttributedString.Key.foregroundColor: Theme.shared.colors.settingsViewDescription!],
+                range: NSRange(location: 0, length: atttributedPart1.count)
+            )
+            attributedString.addAttributes(
+                [NSAttributedString.Key.foregroundColor: UIColor.black],
+                range: NSRange(location: atttributedPart1.count, length: atttributedPart2.count)
+            )
         }
 
         attributedString.addAttributes([NSAttributedString.Key.kern: -0.26], range: NSRange(location: 0, length: attributedString.length))
@@ -149,8 +160,8 @@ extension PasswordVerificationViewController {
     private func setupPasswordField() {
         passwordField.delegate = self
         passwordField.isConfirmationField = true
-        passwordField.title = NSLocalizedString("password_verification.password_field.title", comment: "PasswordVerification view")
-        passwordField.placeholder = NSLocalizedString("password_verification.password_field.placeholder", comment: "PasswordVerification view")
+        passwordField.title = localized("password_verification.password_field.title")
+        passwordField.placeholder = localized("password_verification.password_field.placeholder")
 
         stackView.addArrangedSubview(passwordField)
         stackView.setCustomSpacing(25, after: passwordField)
@@ -184,9 +195,9 @@ extension PasswordVerificationViewController {
     private func setupContinueButton() {
         switch variation {
         case .restore:
-            continueButton.setTitle(NSLocalizedString("password_verification.restore_wallet", comment: "PasswordVerification view"), for: .normal)
+            continueButton.setTitle(localized("password_verification.restore_wallet"), for: .normal)
         case .change:
-            continueButton.setTitle(NSLocalizedString("password_verification.change_password", comment: "PasswordVerification view"), for: .normal)
+            continueButton.setTitle(localized("password_verification.change_password"), for: .normal)
         }
 
         continueButton.addTarget(self, action: #selector(continueButtonAction), for: .touchUpInside)

@@ -46,10 +46,7 @@ class DeleteWalletViewController: UIViewController {
     let navigationBar = NavigationBar()
     let tableView = UITableView(frame: .zero, style: .grouped)
     let menuItem = SystemMenuTableViewCellItem(
-        title: NSLocalizedString(
-            "settings.item.delete_wallet",
-            comment: "Settings view"
-        ),
+        title: localized("settings.item.delete_wallet"),
         hasArrow: false,
         isDestructive: true
     )
@@ -67,10 +64,7 @@ class DeleteWalletViewController: UIViewController {
     }
 
     private func setupNavigationBar() {
-        navigationBar.title = NSLocalizedString(
-            "delete_wallet.title",
-            comment: "Settings view"
-        )
+        navigationBar.title = localized("delete_wallet.title")
         navigationBar.verticalPositioning = .custom(24)
         navigationBar.backgroundColor = Theme.shared.colors.navigationBarBackground
 
@@ -157,11 +151,11 @@ class DeleteWalletViewController: UIViewController {
 
     private func displayWarningDialog() {
         UserFeedback.shared.callToAction(
-            title: NSLocalizedString("delete_wallet.dialog.title", comment: "Settings - Delete Wallet"),
+            title: localized("delete_wallet.dialog.title"),
             boldedTitle: nil,
-            description: NSLocalizedString("delete_wallet.dialog.description", comment: "Settings - Delete Wallet"),
-            actionTitle: NSLocalizedString("backup_wallet_settings.switch.warning.confirm", comment: "Settings - Delete Wallet"),
-            cancelTitle: NSLocalizedString("backup_wallet_settings.switch.warning.cancel", comment: "Settings - Delete Wallet"),
+            description: localized("delete_wallet.dialog.description"),
+            actionTitle: localized("backup_wallet_settings.switch.warning.confirm"),
+            cancelTitle: localized("backup_wallet_settings.switch.warning.cancel"),
             isDestructive: true,
             onAction: {
                 [weak self] in
@@ -219,10 +213,7 @@ extension DeleteWalletViewController: UITableViewDelegate, UITableViewDataSource
 
         warningLabel.font = Theme.shared.fonts.settingsTableViewLastBackupDate
         warningLabel.textColor = Theme.shared.colors.settingsViewDescription
-        warningLabel.text = NSLocalizedString(
-            "delete_wallet.warning",
-            comment: "Settings view"
-        )
+        warningLabel.text = localized("delete_wallet.warning")
         header.addSubview(warningLabel)
         warningLabel.translatesAutoresizingMaskIntoConstraints = false
         warningLabel.leadingAnchor.constraint(

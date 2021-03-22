@@ -44,7 +44,8 @@ import LocalAuthentication
 class RestoreWalletViewController: SettingsParentTableViewController {
     private let localAuth = LAContext()
 
-    private let pendingView = PendingView(title: NSLocalizedString("restore_pending_view.title", comment: "RestorePending view"), definition: NSLocalizedString("restore_pending_view.description", comment: "RestorePending view"))
+    private let pendingView = PendingView(title: localized("restore_pending_view.title"),
+                                          definition: localized("restore_pending_view.description"))
     private let items: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue)]
     // SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue)]
@@ -55,8 +56,8 @@ class RestoreWalletViewController: SettingsParentTableViewController {
 
         var rawValue: String {
             switch self {
-            case .iCloudRestore: return NSLocalizedString("restore_wallet.item.iCloud_restore", comment: "RestoreWallet view")
-            case .phraseRestore: return NSLocalizedString("restore_wallet.item.phrase_restore", comment: "RestoreWallet view")
+            case .iCloudRestore: return localized("restore_wallet.item.iCloud_restore")
+            case .phraseRestore: return localized("restore_wallet.item.phrase_restore")
             }
         }
     }
@@ -74,7 +75,10 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SystemMenuTableViewCell.self), for: indexPath) as! SystemMenuTableViewCell
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: String(describing: SystemMenuTableViewCell.self),
+            for: indexPath
+        ) as! SystemMenuTableViewCell
         let item = items[indexPath.row]
         cell.configure(item)
         cell.preservesSuperviewLayoutMargins = false
@@ -107,7 +111,13 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     private func oniCloudRestoreAction() {
         localAuth.authenticateUser(reason: .userVerification) { [weak self] in
             if self?.iCloudBackup.lastBackup?.isEncrypted == true {
-                self?.navigationController?.pushViewController(PasswordVerificationViewController(variation: .restore, restoreWalletAction: self?.restoreWallet(password:)), animated: true)
+                self?.navigationController?.pushViewController(
+                    PasswordVerificationViewController(
+                        variation: .restore,
+                        restoreWalletAction: self?.restoreWallet(password:)
+                    ),
+                    animated: true
+                )
             } else {
                 self?.restoreWallet(password: nil)
             }
@@ -124,8 +134,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
                 [weak self] error in
                 if error != nil {
                     UserFeedback.shared.error(
-                        title: NSLocalizedString("iCloud_backup.error.title.restore_wallet",
-                                                 comment: "RestoreWallet view"),
+                        title: localized("iCloud_backup.error.title.restore_wallet"),
                         description: error?.localizedDescription ?? "",
                         error: nil
                     ) {
@@ -168,7 +177,7 @@ extension RestoreWalletViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
         navigationBar.backgroundColor = .clear
-        navigationBar.title = NSLocalizedString("restore_wallet.title", comment: "RestoreWallet view")
+        navigationBar.title = localized("restore_wallet.title")
     }
 
     override func setupNavigationBarSeparator() {

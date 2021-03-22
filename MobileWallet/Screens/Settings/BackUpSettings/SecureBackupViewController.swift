@@ -53,14 +53,25 @@ class SecureBackupViewController: SettingsParentViewController {
 
     private var secureButtonBottomConstraint: NSLayoutConstraint?
 
-    private let pendingView = PendingView(title: NSLocalizedString("backup_pending_view.title", comment: "BackupPending view"), definition: NSLocalizedString("backup_pending_view.description", comment: "BackupPending view"))
+    private let pendingView = PendingView(title: localized("backup_pending_view.title"),
+                                          definition: localized("backup_pending_view.description"))
     private var pendingViewTimer: Timer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         hideKeyboardWhenTappedAroundOrSwipedDown(view: scrollView)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardChangePosition), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardChangePosition), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardChangePosition),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardChangePosition),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
 
     @objc private func continueButtonAction() {
@@ -74,7 +85,10 @@ class SecureBackupViewController: SettingsParentViewController {
             do {
                 try self.iCloudBackup.createWalletBackup(password: password)
 
-                self.pendingViewTimer = Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { (_) in
+                self.pendingViewTimer = Timer.scheduledTimer(
+                    withTimeInterval: 3.0,
+                    repeats: true
+                ) { (_) in
                     if !self.iCloudBackup.inProgress {
                         self.finishPendingProcess()
                     }
@@ -147,12 +161,12 @@ extension SecureBackupViewController {
 
     override func setupNavigationBar() {
         super.setupNavigationBar()
-        navigationBar.title = NSLocalizedString("secure_backup.title", comment: "SecureBackup view")
+        navigationBar.title = localized("secure_backup.title")
     }
 
     private func setupHeaderLabel() {
         headerLabel.font = Theme.shared.fonts.settingsViewHeader
-        headerLabel.text = NSLocalizedString("secure_backup.header", comment: "SecureBackup view")
+        headerLabel.text = localized("secure_backup.header")
 
         stackView.addArrangedSubview(headerLabel)
         stackView.setCustomSpacing(15, after: headerLabel)
@@ -160,8 +174,8 @@ extension SecureBackupViewController {
 
     private func setupEnterPasswordField() {
         enterPasswordField.delegate = self
-        enterPasswordField.title = NSLocalizedString("secure_backup.enter_password_field.title", comment: "SecureBackup view")
-        enterPasswordField.placeholder = NSLocalizedString("secure_backup.enter_password_field.placeholder", comment: "SecureBackup view")
+        enterPasswordField.title = localized("secure_backup.enter_password_field.title")
+        enterPasswordField.placeholder = localized("secure_backup.enter_password_field.placeholder")
         enterPasswordField.paredPasswordField = confirmPasswordField
 
         stackView.addArrangedSubview(enterPasswordField)
@@ -170,8 +184,8 @@ extension SecureBackupViewController {
 
     private func setupConfirmPasswordField() {
         confirmPasswordField.delegate = self
-        confirmPasswordField.title = NSLocalizedString("secure_backup.confirm_password_field.title", comment: "SecureBackup view")
-        confirmPasswordField.placeholder = NSLocalizedString("secure_backup.confirm_password_field.placeholder", comment: "SecureBackup view")
+        confirmPasswordField.title = localized("secure_backup.confirm_password_field.title")
+        confirmPasswordField.placeholder = localized("secure_backup.confirm_password_field.placeholder")
         confirmPasswordField.isConfirmationField = true
         confirmPasswordField.paredPasswordField = enterPasswordField
         stackView.addArrangedSubview(confirmPasswordField)
@@ -179,8 +193,8 @@ extension SecureBackupViewController {
     }
 
     private func setupDescriptionLabel() {
-        let atttributedPart1 = NSLocalizedString("secure_backup.header_description_part1", comment: "SecureBackup view")
-        let atttributedPart2 = NSLocalizedString("secure_backup.header_description_part2", comment: "SecureBackup view")
+        let atttributedPart1 = localized("secure_backup.header_description_part1")
+        let atttributedPart2 = localized("secure_backup.header_description_part2")
 
         let attributedString = NSMutableAttributedString(string: atttributedPart1 + atttributedPart2)
 
@@ -221,7 +235,7 @@ extension SecureBackupViewController {
     }
 
     private func setupContinueButton() {
-        continueButton.setTitle(NSLocalizedString("secure_backup.secure_your_backup", comment: "SecureBackup view"), for: .normal)
+        continueButton.setTitle(localized("secure_backup.secure_your_backup"), for: .normal)
         continueButton.addTarget(self, action: #selector(continueButtonAction), for: .touchUpInside)
         continueButton.variation = .disabled
 

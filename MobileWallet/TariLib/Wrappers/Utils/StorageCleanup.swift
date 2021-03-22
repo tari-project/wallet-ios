@@ -56,50 +56,6 @@ private func totalBytes(files: [URL]) -> UInt64 {
     return total
 }
 
-private func getUnusedLogFiles() -> [URL] {
-    var allLogFiles: [URL] = []
-
-    //Exclude current log file being written to
-    TariLib.shared.allLogFiles.forEach { (file) in
-        guard !TariLib.shared.logFilePath.contains(file.lastPathComponent) else {
-            return
-        }
-
-        allLogFiles.append(file)
-    }
-
-    return allLogFiles
-}
-
-private func logCleanup(maxMB: UInt64) {
-    let maxBytes = maxMB * 1000000
-
-    let fileManager = FileManager.default
-
-    var loopIterationsFailsafe = 0
-    while totalBytes(files: getUnusedLogFiles()) > maxBytes && loopIterationsFailsafe < 10 {
-        loopIterationsFailsafe = loopIterationsFailsafe + 1
-
-        guard let oldestFile = getUnusedLogFiles().last else {
-            TariLogger.error("Failed to get oldest log file")
-            break
-        }
-
-        guard fileManager.fileExists(atPath: oldestFile.path) else {
-            TariLogger.error("Oldest log file does not exist")
-            break
-        }
-
-        do {
-            try fileManager.removeItem(at: oldestFile)
-            TariLogger.info("Deleting log file: \(oldestFile.lastPathComponent)")
-        } catch {
-            TariLogger.error("Failed to delete log file", error: error)
-            break
-        }
-    }
-}
-
 private func bugReportZipFilesCleanup() {
     let maximumHours: Double = 24
     let minimumDate = Date().addingTimeInterval(-maximumHours*60*60)
@@ -122,9 +78,8 @@ private func bugReportZipFilesCleanup() {
     }
 }
 
-func backgroundStorageCleanup(logFilesMaxMB: UInt64) {
+func backgroundStorageCleanup() {
     DispatchQueue.global().async {
-        logCleanup(maxMB: logFilesMaxMB)
         bugReportZipFilesCleanup()
     }
 }

@@ -70,7 +70,7 @@ class PasteEmojisView: UIView {
     }
 
     func setEmojis(emojis: String, onPress: @escaping () -> Void) {
-        textButton.setTitle(NSLocalizedString("emoji.paste", comment: "Emoji view"), for: .normal)
+        textButton.setTitle(localized("emoji.paste"), for: .normal)
         self.onPressCallback = onPress
         textButton.addTarget(self, action: #selector(onTap), for: .allTouchEvents)
 

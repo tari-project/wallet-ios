@@ -169,14 +169,36 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     }
 
     private func createWalletBackup() {
-        TariLib.shared.waitIfWalletIsRestarting { [weak self] (_) in
+        if TariLib.shared.walletState != .started {
+            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
+                [weak self]
+                (sender) in
+                guard let self = self else { return }
+                let walletState = sender!.object as! TariLib.WalletState
+                switch walletState {
+                case .started:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                    do {
+                        let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+                        try ICloudBackup.shared.createWalletBackup(password: password)
+                    } catch {
+                        self.failedToCreateBackup(error: error)
+                    }
+                    self.reloadTableViewWithAnimation()
+                case .startFailed:
+                    TariEventBus.unregister(self, eventType: .walletStateChanged)
+                default:
+                    break
+                }
+            }
+        } else {
             do {
                 let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
                 try ICloudBackup.shared.createWalletBackup(password: password)
             } catch {
-                self?.failedToCreateBackup(error: error)
+                failedToCreateBackup(error: error)
             }
-            self?.reloadTableViewWithAnimation()
+            reloadTableViewWithAnimation()
         }
     }
 
@@ -296,7 +318,6 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
 
         switch section {
         case .settings:
-            let item = settingsSectionItems[indexPath.row]
             cell.configure(settingsSectionItems[indexPath.row])
         case .backupNow:
             cell.configure(backupNowSectionItems[indexPath.row])
@@ -335,7 +356,10 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
             lastBackupLabel.font = Theme.shared.fonts.settingsTableViewLastBackupDate
             lastBackupLabel.textColor =  Theme.shared.colors.settingsTableViewLastBackupDate
 
-            lastBackupLabel.text = String(format: NSLocalizedString("settings.last_successful_backup.with_param", comment: "Settings view"), lastBackupString)
+            lastBackupLabel.text = String(
+                format: localized("settings.last_successful_backup.with_param"),
+                lastBackupString
+            )
 
             footer.addSubview(lastBackupLabel)
 
@@ -363,7 +387,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
 
         let label = UILabel()
         label.font = Theme.shared.fonts.settingsViewHeader
-        label.text = NSLocalizedString("backup_wallet_settings.header.title", comment: "BackupWalletSettings view")
+        label.text = localized("backup_wallet_settings.header.title")
 
         header.addSubview(label)
 
@@ -375,7 +399,7 @@ extension BackupWalletSettingsViewController: UITableViewDelegate, UITableViewDa
         descriptionLabel.numberOfLines = 0
         descriptionLabel.font = Theme.shared.fonts.settingsSeedPhraseDescription
         descriptionLabel.textColor = Theme.shared.colors.settingsViewDescription
-        descriptionLabel.text = NSLocalizedString("backup_wallet_settings.header.description", comment: "BackupWalletSettings view")
+        descriptionLabel.text = localized("backup_wallet_settings.header.description")
 
         header.addSubview(descriptionLabel)
 
