@@ -97,8 +97,8 @@ struct MicroTari {
 
     var rawValue: UInt64
 
-    var taris: Float {
-        return Float(self.rawValue) / Float(MicroTari.conversion)
+    var taris: Double {
+        return Double(self.rawValue) / Double(MicroTari.conversion)
     }
 
     var formatted: String {
