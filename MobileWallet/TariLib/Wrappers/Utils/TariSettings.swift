@@ -68,6 +68,7 @@ struct TariSettings {
 
     let network: TariNetwork = .stibbons //TODO this will come from a build config
     let discoveryTimeoutSec: UInt64 = 20
+    let safMessageDurationSec: UInt64 = 10800
     let deeplinkURI = "tari"
 
     let faucetServer = "https://faucet.tari.com"

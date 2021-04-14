@@ -117,7 +117,8 @@ class TariLib {
                databaseFolderPath: databaseDirectory.path,
                databaseName: TariLib.databaseName,
                publicAddress: publicAddress,
-               discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec
+               discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
+               safMessageDurationSec: TariSettings.shared.safMessageDurationSec
             )
         } catch {
             TariLogger.error("Failed to create comms config", error: error)
