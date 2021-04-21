@@ -115,7 +115,7 @@ class KeyServer {
             throw completedTxsCountError!
         }
 
-        //If the user has a completed, just ignore this request as it's not a fresh install
+        // If the user has a completed, just ignore this request as it's not a fresh install
         guard completedTxsCount == 0 else {
             KeyServer.isRequestInProgress = false
             return
@@ -217,7 +217,7 @@ class KeyServer {
                     sourcePublicKeyHex: returnPubKeyHex
                 )
 
-                //Add TariBot as a contact
+                // Add TariBot as a contact
                 try wallet.addUpdateContact(alias: "TariBot", publicKeyHex: utxo.sourcePublicKeyHex)
                 try wallet.importUtxo(utxo)
 

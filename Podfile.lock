@@ -36,7 +36,7 @@ PODS:
   - SwiftEntryKit (1.2.3):
     - QuickLayout (= 3.0.0)
   - SwiftKeychainWrapper (3.4.0)
-  - SwiftLint (0.40.0)
+  - SwiftLint (0.43.1)
   - ZIPFoundation (0.9.12)
 
 DEPENDENCIES:
@@ -50,7 +50,7 @@ DEPENDENCIES:
   - Sentry (from `https://github.com/getsentry/sentry-cocoa.git`, tag `5.0.0`)
   - SwiftEntryKit (= 1.2.3)
   - SwiftKeychainWrapper (= 3.4.0)
-  - SwiftLint (= 0.40.0)
+  - SwiftLint
   - ZIPFoundation (~> 0.9)
 
 SPEC REPOS:
@@ -98,9 +98,9 @@ SPEC CHECKSUMS:
   Sentry: 1279f37a5691c19b1b761f7e260bba5dab7c2311
   SwiftEntryKit: 340713c2e4a6662c5149629990bf1088bf5f0389
   SwiftKeychainWrapper: 6fc49fbf7d4a6b0772917acb0e53a1639f6078d6
-  SwiftLint: 4154893c73a4c52d6240195507eb7a3e3c64087e
+  SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: 793988f7cc80b772a31d5c72341f42fd33a6558f
+PODFILE CHECKSUM: 26db7f7c2f960a5949d03245404cbc089597a16b
 
 COCOAPODS: 1.10.1

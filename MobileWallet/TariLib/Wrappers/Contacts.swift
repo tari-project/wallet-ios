@@ -98,7 +98,7 @@ class Contacts {
         return Contact(contactPointer: contactPointer!)
     }
 
-    //TODO this might be more better to be searched by in the lib instead of iterating though them here
+    // TODO this might be more better to be searched by in the lib instead of iterating though them here
     func find(publicKey: PublicKey) throws -> Contact {
         let (searchHex, seachHexError) = publicKey.hex
         guard seachHexError == nil else {

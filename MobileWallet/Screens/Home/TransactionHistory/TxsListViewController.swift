@@ -166,7 +166,7 @@ class TxsListViewController: UIViewController {
         guard let wallet = TariLib.shared.tariWallet else {
             return false
         }
-        //All completed/cancelled txs
+        // All completed/cancelled txs
         let (allTxs, allTxsError) = wallet.allTxs
 
         guard allTxsError == nil else {

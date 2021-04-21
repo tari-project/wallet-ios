@@ -300,7 +300,7 @@ class TxViewController: UIViewController {
         }
 
         guard currentTx.id.0 == newTx.id.0 else {
-            //Received a tx update but it was for another tx
+            // Received a tx update but it was for another tx
             return
         }
 
@@ -318,7 +318,7 @@ class TxViewController: UIViewController {
         let allowCancelling = defaultState == .txWaitingForRecipient
 
         guard !isShowingStateView else {
-            //If there's currently a cancel button and they can no longer cancel
+            // If there's currently a cancel button and they can no longer cancel
             if !allowCancelling && isShowingCancelButton {
                 self.txStateViewBottomAnchor.isActive = false
                 self.txStateViewBottomAnchor = self.txStateView.bottomAnchor.constraint(equalTo: self.navigationBar.bottomAnchor, constant: -Theme.shared.sizes.appSidePadding)
@@ -334,7 +334,7 @@ class TxViewController: UIViewController {
         self.txStateView.translatesAutoresizingMaskIntoConstraints = false
         self.navigationBar.addSubview(self.txStateView)
 
-        //Make space for cancel button if needed
+        // Make space for cancel button if needed
         let bottomPadding = Theme.shared.sizes.appSidePadding + (allowCancelling ? Theme.shared.sizes.appSidePadding : 0)
         self.txStateViewBottomAnchor = self.txStateView.bottomAnchor.constraint(equalTo: self.navigationBar.bottomAnchor, constant: -bottomPadding)
         self.txStateViewBottomAnchor.isActive = true
@@ -410,7 +410,7 @@ class TxViewController: UIViewController {
         }
 
         if let state = newState {
-            //Attempt to show it if it's not showing yet, else just update the state
+            // Attempt to show it if it's not showing yet, else just update the state
             showStateView(defaultState: state) { [weak self] in
                 guard let self = self else { return }
                 self.txStateView.updateState(state)
@@ -462,7 +462,7 @@ class TxViewController: UIViewController {
                     throw aliasError!
                 }
 
-                //Got a contact but the alias is blank
+                // Got a contact but the alias is blank
                 if !alias.isEmpty {
                     contactAlias = alias
                     contactNameTextField.text = contactAlias
@@ -502,7 +502,7 @@ class TxViewController: UIViewController {
                 }
             }
 
-            //Get the fee for outbound transactions only
+            // Get the fee for outbound transactions only
             if let completedTx = tx as? CompletedTx {
                 if completedTx.direction == .outbound {
                     let (fee, feeError) = completedTx.fee
@@ -556,8 +556,8 @@ class TxViewController: UIViewController {
 
                             UINotificationFeedbackGenerator().notificationOccurred(.success)
 
-                            //Attempt to get the newly cancelled tx and reset the UI
-                            //TODO uncomment the below when the findCancelledTxBy is returning correct direction
+                            // Attempt to get the newly cancelled tx and reset the UI
+                            // TODO uncomment the below when the findCancelledTxBy is returning correct direction
                             /*
                             if let id = self.transaction?.id.0 {
                                 if let cancelledTX = try? TariLib.shared.tariWallet?.findCancelledTxBy(id: id) {
@@ -577,7 +577,7 @@ class TxViewController: UIViewController {
                             }
                              */
 
-                            //If cancelled tx not found just go back to home view
+                            // If cancelled tx not found just go back to home view
                             self.navigationController?.popViewController(animated: true)
                         } catch {
                             UserFeedback.shared.error(

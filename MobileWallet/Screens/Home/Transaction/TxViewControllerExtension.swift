@@ -62,7 +62,7 @@ extension TxViewController {
         view.sendSubviewToBack(scrollView)
         scrollView.sendSubviewToBack(valueContainerView)
 
-        //Value label
+        // Value label
         valueLabel.translatesAutoresizingMaskIntoConstraints = false
         valueContainerView.addSubview(valueLabel)
 
@@ -80,7 +80,7 @@ extension TxViewController {
         valueLabel.textAlignment = .center
         valueLabel.baselineAdjustment = .alignCenters
 
-        //Currency image
+        // Currency image
         let valueImage = UIImageView()
         valueImage.image = Theme.shared.images.currencySymbol?.withTintColor(valueColor!)
         valueImage.translatesAutoresizingMaskIntoConstraints = false

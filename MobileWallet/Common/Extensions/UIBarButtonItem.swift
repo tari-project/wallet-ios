@@ -43,7 +43,7 @@ import UIKit
 extension UIBarButtonItem {
     static func customNavBarItem(target: Any?, image: UIImage, action: Selector) -> UIBarButtonItem {
         let menuBtn = UIButton(type: .custom)
-        menuBtn.setImage(image, for: .normal)//setBackgroundImage(image, for: .normal)
+        menuBtn.setImage(image, for: .normal)// setBackgroundImage(image, for: .normal)
         menuBtn.addTarget(target, action: action, for: .touchUpInside)
 
         let menuBarItem = UIBarButtonItem(customView: menuBtn)

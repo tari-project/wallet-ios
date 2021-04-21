@@ -45,8 +45,8 @@ enum PublicKeyError: Error {
     case invalidEmojis
     case invalidHex
     case invalidDeepLink
-    case invalidDeepLinkNetwork //When a deep link is valid but for wring network
-    case invalidDeepLinkType //If it doesn't contain "/eid/" or "/pubkey/"
+    case invalidDeepLinkNetwork // When a deep link is valid but for wring network
+    case invalidDeepLinkType // If it doesn't contain "/eid/" or "/pubkey/"
     case cantDerivePublicKeyFromString
     case invalidEmojiSet
 }
@@ -54,7 +54,7 @@ enum PublicKeyError: Error {
 class PublicKey {
     private var ptr: OpaquePointer
     private var cachedEmojiId: String?
-    private static let emojiCount = 33 //Used for some pre validation before hitting the FFI
+    private static let emojiCount = 33 // Used for some pre validation before hitting the FFI
 
     var pointer: OpaquePointer {
         return ptr
@@ -112,7 +112,7 @@ class PublicKey {
         return ("\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/\(hexPubkey)", nil)
     }
 
-    //TODO setup attributed string version with dots in the middle for shortened version in Common dir.
+    // TODO setup attributed string version with dots in the middle for shortened version in Common dir.
     //https://stackoverflow.com/questions/19318421/how-to-embed-small-icon-in-uilabel
 
     init(privateKey: PrivateKey) throws {
@@ -170,9 +170,9 @@ class PublicKey {
         ptr = result!
     }
 
-    //Accepts deep links using either emoji ID or hex. i.e:
-    //tari://rincewind/eid/🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦
-    //tari://rincewind/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=2.3note=hi%20there
+    // Accepts deep links using either emoji ID or hex. i.e:
+    // tari://rincewind/eid/🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦
+    // tari://rincewind/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=2.3note=hi%20there
     convenience init(deeplink: String) throws {
         guard deeplink.hasPrefix("\(TariSettings.shared.deeplinkURI)://") else {
             throw PublicKeyError.invalidDeepLink
@@ -180,7 +180,7 @@ class PublicKey {
 
         let deeplinkPrefix = "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)"
 
-        //Link is for a different network
+        // Link is for a different network
         guard deeplink.hasPrefix(deeplinkPrefix) else {
             throw PublicKeyError.invalidDeepLinkNetwork
         }
@@ -202,7 +202,7 @@ class PublicKey {
         throw PublicKeyError.invalidDeepLinkType
     }
 
-    //Attempts to derive a pubkey from a emoji deeplink, or hex string (In order of most likely)
+    // Attempts to derive a pubkey from a emoji deeplink, or hex string (In order of most likely)
     convenience init(any: String) throws {
         do {
             try self.init(emojis: any)
@@ -220,7 +220,7 @@ class PublicKey {
         } catch {}
 
         let filteredEmojis = PublicKey.filterEmojis(any)
-        //Attempt to strip out a valid emoji ID from the string and init again
+        // Attempt to strip out a valid emoji ID from the string and init again
         if filteredEmojis.count >= PublicKey.emojiCount {
             do {
                 try self.init(emojis: filteredEmojis)
@@ -228,7 +228,7 @@ class PublicKey {
             } catch {}
         }
 
-        //User might have an emoji ID from an outdated set
+        // User might have an emoji ID from an outdated set
         if PublicKey.isOldEmojiSet(any) {
             throw PublicKeyError.invalidEmojiSet
         }
@@ -287,7 +287,7 @@ class PublicKey {
 
         var cleanEmojis = ""
 
-        //Extract old emojis from string
+        // Extract old emojis from string
         for scalar in text.unicodeScalars {
             if oldEmojiSet.contains(String(scalar)) {
                 cleanEmojis.append(Character(scalar))

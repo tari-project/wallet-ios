@@ -89,7 +89,7 @@ class TxTableViewModel: NSObject {
     }
 
     private static func extractNote(from message: String) -> (message: String, gifID: String?) {
-        //Extract the giphy link
+        // Extract the giphy link
         let giphyLinkPrefix = "https://giphy.com/embed/"
         if let endIndex = message.range(of: giphyLinkPrefix)?.lowerBound {
             let messageExcludingLink = message[..<endIndex].trimmingCharacters(in: .whitespaces)
@@ -154,7 +154,7 @@ class TxTableViewModel: NSObject {
             )
         }
 
-        //Getting the line breaks around the alias an not the other spaces in the copy
+        // Getting the line breaks around the alias an not the other spaces in the copy
         titleText = titleText
             .replacingOccurrences(of: " ", with: "\u{00A0}")
             .replacingOccurrences(of: alias, with: " \(alias) ")
@@ -172,7 +172,7 @@ class TxTableViewModel: NSObject {
             let range = NSRange(location: startIndex, length: alias.count)
             attributedTitle.addAttribute(.font, value: Theme.shared.fonts.txCellUsernameLabelHeavy, range: range)
             if aliasIsEmojis {
-                //So the elippises between the emojis is lighter
+                // So the elippises between the emojis is lighter
                 attributedTitle.addAttribute(.foregroundColor, value: Theme.shared.colors.emojisSeparator!, range: range)
             }
 

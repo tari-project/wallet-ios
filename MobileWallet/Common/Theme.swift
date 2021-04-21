@@ -69,7 +69,7 @@ extension Loopable {
 struct Theme {
     static let shared = Theme()
 
-    //NOTE: Any new theme properties must be added to tests to ensure all assets are included before deployment
+    // NOTE: Any new theme properties must be added to tests to ensure all assets are included before deployment
     let fonts = Fonts()
     let colors = Colors()
     let images = Images()
@@ -109,7 +109,7 @@ struct Colors: Loopable {
     let splashSubtitle = UIColor(named: "SplashSubtitle")
     let splashVersionLabel = UIColor(named: "SplashVersionLabel")
 
-    //SplashCreatingWallet
+    // SplashCreatingWallet
     let creatingWalletFirstLabel = UIColor(named: "CreatingWalletBlackLabel")
     let creatingWalletSecondLabel = UIColor(named: "CreatingWalletBlackLabel")
     let creatingWalletThirdLabel = UIColor(named: "CreatingWalletOtherLabel")
@@ -142,7 +142,7 @@ struct Colors: Loopable {
     let settingsTableViewMarkDescriptionScheduled = UIColor(named: "SettingsTableViewMarkDescriptionScheduled")
     let settingsPasswordWarning = UIColor(named: "SettingsPasswordWarning")
 
-    //Home screen
+    // Home screen
     let homeScreenBackground = UIColor(named: "HomeScreenBackground")
     let homeScreenTotalBalanceLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
     let homeScreenTotalBalanceValueLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
@@ -160,7 +160,7 @@ struct Colors: Loopable {
     let auroraGradient8 = UIColor(named: "auroraGradient8")
     let auroraGradient9 = UIColor(named: "auroraGradient9")
 
-    //Tx cell
+    // Tx cell
     let txCellAlias = UIColor(named: "TxCellContactAlias")
     let txCellNote = UIColor(named: "TxCellNote")
     let txCellValueNegativeBackground = UIColor(named: "TxCellValueNegativeBackground")
@@ -182,12 +182,12 @@ struct Colors: Loopable {
     let sendingTariActiveProgressBackground = UIColor(named: "SendingTariActiveProgressBackground")
     let sendingTariProgress = UIColor(named: "SendingTariProgress")
 
-    //Navigation bar
+    // Navigation bar
     let navigationBarTint = UIColor(named: "Heading")
     let navigationBarBackground = UIColor(named: "NavBarBackground")
     let navigationBarPurple = UIColor(named: "NavigationBarPurple")
 
-    //Tx view
+    // Tx view
     let txViewValueLabel = UIColor(named: "Heading")
     let txViewValueContainer = UIColor(named: "TxViewValueBackground")
     let txScreenDivider = UIColor(named: "DividerColor")
@@ -195,60 +195,60 @@ struct Colors: Loopable {
     let txScreenTextLabel = UIColor(named: "SmallText")
     let txScreenEmptyTitleLabel = UIColor(named: "Heading")
 
-    //Shadows
+    // Shadows
     let actionButtonShadow = UIColor(named: "ActionButtonShadow")
     let defaultShadow = UIColor(named: "DefaultShadow")
 
-    //Feedback
+    // Feedback
     let feedbackPopupBackground = UIColor(named: "FeedbackScreenBackground")
     let feedbackPopupTitle = UIColor(named: "Heading")
     let feedbackPopupDescription = UIColor(named: "SmallSubheading")
     let successFeedbackPopupBackground = UIColor(named: "SuccessFeedbackBackground")
     let successFeedbackPopupTitle = UIColor(named: "SuccessFeedbackText")
 
-    //Emoji button
+    // Emoji button
     let emojiButtonShadow = UIColor(named: "EmojiButtonShadow")
     let emojiButtonBackground = UIColor(named: "AppBackground")
     let emojiButtonClip = UIColor(named: "EmojiClip")
 
-    //Simple text button
+    // Simple text button
     let textButton = UIColor(named: "TextButton")
     let textButtonSecondary = UIColor(named: "TextButtonSecondary")
     let warningButtonTitle = UIColor(named: "Warning")
 
-    //Add recipient view
+    // Add recipient view
     let contactCellAlias = UIColor(named: "TableCellContactAlias")
     let contactCellImageBackground = UIColor(named: "TableCellContactImageBackground")
     let contactCellImage = UIColor(named: "TableCellContactImage")
 
-    //Amount screen
+    // Amount screen
     let keypadButton = UIColor(named: "KeypadButton")
     let warningBoxBorder = UIColor(named: "Warning")
     let amountWarningLabel = UIColor(named: "AmountWarningLabel")
     let amountLabel = UIColor(named: "InputText")
 
-    //Add note screen
+    // Add note screen
     let addNoteTitleLabel = UIColor(named: "Heading")
     let addNoteTitleLabelGray = UIColor(named: "SmallSubheading")
     let addNoteInputView = UIColor(named: "InputText")
     let searchGiphyButtonBackground = UIColor(named: "SearchGiphyButtonBackground")
     let searchGiphyButtonTitle = UIColor(named: "SearchGiphyButtonTitle")
 
-    //EmoticonView
+    // EmoticonView
     let emoticonBlackBackgroundAlpha = UIColor(named: "EmoticonBlackBackgroundAlpha")
 
-    //ScannerView
+    // ScannerView
     let scannerTitle = UIColor(named: "ScannerTitle")
 
     // EmoticonView
     let emojisSeparator = UIColor(named: "CreatingWalletEmojiSeparator")
     let emojisSeparatorExpanded = UIColor(named: "CreatingWalletEmojiSeparatorExpanded")
 
-    //Refresh view
+    // Refresh view
     let refreshViewLabelLoading = UIColor(named: "RefreshViewLabelLoading")
     let refreshViewLabelSuccess = UIColor(named: "RefreshViewLabelSuccess")
 
-    //Restore pending view
+    // Restore pending view
     let restorePendingViewTitle = UIColor(named: "RestorePendingViewTitle")
     let restorePendingViewDescription = UIColor(named: "RestorePendingViewDescription")
     let restorePendingViewProgressView = UIColor(named: "RestorePendingViewProgressView")
@@ -263,14 +263,14 @@ struct Images: Loopable {
     let createWalletDownArrow = UIImage(named: "notch_down")
     let createWalletNumpad = UIImage(named: "numpad")
 
-    //TabBar
+    // TabBar
     let homeItem = UIImage(named: "navHome")
     let ttlItem = UIImage(named: "navTtl")
     let sendItem = UIImage(named: "navSend")?.withRenderingMode(.alwaysOriginal)
     let profileItem = UIImage(named: "navProfile")
     let settingsItem = UIImage(named: "navSettings")
 
-    //General icons
+    // General icons
     let currencySymbol = UIImage(named: "Gem")
     let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
@@ -295,10 +295,10 @@ struct Images: Loopable {
     let poweredByGiphy = UIImage(named: "poweredByGiphy")
     let searchIcon = UIImage(named: "SearchIcon")
 
-    //Amount
+    // Amount
     let delete = UIImage(named: "numpad-delete")
 
-    //profile
+    // profile
     let settings = UIImage(named: "settings")
 }
 
@@ -307,12 +307,12 @@ struct Fonts: Loopable {
     let actionButton = UIFont.Avenir.heavy.withSize(16.0)
     let copiedLabel = UIFont.Avenir.black.withSize(13.0)
 
-    //Splash
+    // Splash
     let splashTitleLabel = UIFont.Avenir.black.withSize(30.0)
     let splashSubtitleLabel = UIFont.Avenir.medium.withSize(14.0)
     let splashDisclaimerLabel = UIFont.Avenir.medium.withSize(12.0)
 
-    //SplashCreatingWallet
+    // SplashCreatingWallet
     let createWalletFirstLabel = UIFont.Avenir.black.withSize(18.0)
     let createWalletSecondLabelFirstText = UIFont.Avenir.black.withSize(18.0)
     let createWalletSecondLabelSecondText = UIFont.Avenir.roman.withSize(18.0)
@@ -325,21 +325,21 @@ struct Fonts: Loopable {
     let tapToSeeFullEmojiLabel = UIFont.Avenir.heavy.withSize(12.0)
     let restoreWalletButton = UIFont.Avenir.medium.withSize(13.0)
 
-    //Profile
+    // Profile
     let profileTitleLightLabel = UIFont.Avenir.light.withSize(18.0)
     let profileTitleRegularLabel = UIFont.Avenir.black.withSize(18.0)
     let profileCopyEmojiButton = UIFont.Avenir.medium.withSize(12.0)
     let profileMiddleLabel = UIFont.Avenir.medium.withSize(14.0)
 
-    //Home screen
+    // Home screen
     let homeScreenTotalBalanceLabel = UIFont.Avenir.medium.withSize(12.0)
     let homeScreenTotalBalanceValueLabel = UIFont.Avenir.black.withSize(30.0)
     let homeScreenTotalBalanceValueLabelDecimals = UIFont.Avenir.heavy.withSize(12.0)
 
-    //Loadig gif button
+    // Loadig gif button
     let loadingGifButtonTitle = UIFont.Avenir.heavy.withSize(14.0)
 
-    //Tx cell
+    // Tx cell
     let txCellUsernameLabel = UIFont.Avenir.light.withSize(14.0)
     let txCellUsernameLabelHeavy = UIFont.Avenir.heavy.withSize(14.0)
     let txCellDescriptionLabel = UIFont.Avenir.roman.withSize(15.0)
@@ -347,7 +347,7 @@ struct Fonts: Loopable {
     let txDateValueLabel = UIFont.Avenir.medium.withSize(11.0)
     let txCellStatusLabel = UIFont.Avenir.roman.withSize(12.0)
 
-    //View tx screen
+    // View tx screen
     let txScreenCurrencyValueLabel = UIFont.Avenir.black.withSize(90.0)
     let txScreenSubheadingLabel = UIFont.Avenir.medium.withSize(13.0)
     let txScreenTextLabel = UIFont.Avenir.roman.withSize(14.0)
@@ -361,55 +361,55 @@ struct Fonts: Loopable {
     let sendingTariTitleLabelFirst = UIFont.Avenir.light.withSize(18.0)
     let sendingTariTitleLabelSecond = UIFont.Avenir.black.withSize(18.0)
 
-    //Navigation bar
+    // Navigation bar
     let navigationBarTitle = UIFont.Avenir.heavy.withSize(16.0)
 
-    //Popup User feedback
+    // Popup User feedback
     let feedbackPopupTitle = UIFont.Avenir.light.withSize(18.0)
     let feedbackPopupHeavy = UIFont.Avenir.black.withSize(18.0)
     let feedbackPopupDescription = UIFont.Avenir.medium.withSize(14.0)
     let feedbackPopupDescriptionBold = UIFont.Avenir.black.withSize(14.0)
 
-    //Simple text button
+    // Simple text button
     let textButton = UIFont.Avenir.medium.withSize(14.0)
     let copyButton = UIFont.Avenir.heavy.withSize(14.0)
     let textButtonCancel = UIFont.Avenir.medium.withSize(12.0)
 
-    //Intro to wallet
+    // Intro to wallet
     let introTitleBold = UIFont.Avenir.black.withSize(18.0)
     let introTitle = UIFont.Avenir.light.withSize(18.0)
 
-    //Add recipient view
+    // Add recipient view
     let searchContactsInputBoxText = UIFont.Avenir.roman.withSize(14.0)
     let contactCellAlias = UIFont.Avenir.heavy.withSize(15.0)
     let contactCellAliasLetter = UIFont.Avenir.heavy.withSize(24.0)
 
-    //Add amount screen
+    // Add amount screen
     let keypadButton = UIFont.Avenir.heavy.withSize(36.0)
     let amountLabel = UIFont.Avenir.black.withSize(90.0)
     let warningBoxTitleLabel = UIFont.Avenir.heavy.withSize(14.0)
     let amountWarningLabel = UIFont.Avenir.roman.withSize(13.0)
 
-    //Add note screen
+    // Add note screen
     let addNoteTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
     let addNoteInputView = UIFont.Avenir.medium.withSize(20.0)
     let searchGiphyButtonTitle = UIFont.Avenir.black.withSize(9.0)
 
-    //Add note screen
+    // Add note screen
     let scannerTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
 
-    //Refresh view
+    // Refresh view
     let refreshViewLabel = UIFont.Avenir.heavy.withSize(12.0)
 
-    //App table view
+    // App table view
     let systemTableViewCell = UIFont.Avenir.medium.withSize(15.0)
     let systemTableViewCellMarkDescription = UIFont.Avenir.medium.withSize(14.0)
 
-    //Restore pending view
+    // Restore pending view
     let restorePendingViewTitle = UIFont.Avenir.light.withSize(18.0)
     let restorePendingViewDescription = UIFont.Avenir.medium.withSize(14.0)
 
-    //Settings
+    // Settings
     let settingsDoneButton = UIFont.Avenir.medium.withSize(16.0)
     let settingsViewHeader = UIFont.Avenir.black.withSize(17.0)
     let settingsViewHeaderDescription = UIFont.Avenir.medium.withSize(14.0)
@@ -430,7 +430,7 @@ struct Fonts: Loopable {
 
 struct Sizes {
     let appSidePadding: CGFloat = 22
-    //TODO move other constants here
+    // TODO move other constants here
 }
 
 struct Transitions {

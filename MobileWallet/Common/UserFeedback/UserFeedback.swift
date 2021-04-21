@@ -232,7 +232,7 @@ class UserFeedback {
 
     // MARK: - Custom pop ups
     func callToActionStore() {
-        let imageTop: CGFloat = 55 //Distance image should stick out by
+        let imageTop: CGFloat = 55 // Distance image should stick out by
         let containerView = UIView()
         let ctaFeedbackView = FeedbackView()
         ctaFeedbackView.setupCallToActionDetailed(

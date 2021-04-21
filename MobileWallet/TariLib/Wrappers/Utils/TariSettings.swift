@@ -66,7 +66,7 @@ enum AppEnvironment {
 struct TariSettings {
     static let shared = TariSettings()
 
-    let network: TariNetwork = .stibbons //TODO this will come from a build config
+    let network: TariNetwork = .stibbons // TODO this will come from a build config
     let discoveryTimeoutSec: UInt64 = 20
     let safMessageDurationSec: UInt64 = 10800
     let deeplinkURI = "tari"
@@ -105,12 +105,12 @@ struct TariSettings {
     let pushNotificationServer = "https://push.tari.com"
 
     #if DEBUG
-    //Used for showing a little extra detail in the UI to help debugging
+    // Used for showing a little extra detail in the UI to help debugging
     private let isDebug = true
-    let txTimeToExpire: TimeInterval = 60 * 60 * 24 * 1 //1 day
+    let txTimeToExpire: TimeInterval = 60 * 60 * 24 * 1 // 1 day
     #else
     private let isDebug = false
-    let txTimeToExpire: TimeInterval = 60 * 60 * 24 * 3 //3 days
+    let txTimeToExpire: TimeInterval = 60 * 60 * 24 * 3 // 3 days
     #endif
 
     var isUnitTesting: Bool {

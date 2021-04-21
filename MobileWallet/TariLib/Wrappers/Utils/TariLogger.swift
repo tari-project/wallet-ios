@@ -13,7 +13,7 @@
 
 import Foundation
 
-//Called TariLogger because it should be included when TariLib is moved into its own pod
+// Called TariLogger because it should be included when TariLib is moved into its own pod
 public class TariLogger {
     /// Used for crash reporting
     public static var breadcrumbCallback: ((String, Level) -> Void?)?
@@ -103,7 +103,7 @@ public class TariLogger {
             breadcrumb(logMessage, level)
         }
 
-        //xcode debugger gets flooded without this check
+        // xcode debugger gets flooded without this check
         if let msg = message as? String {
             guard !msg.contains("[Tor") else {
                 return

@@ -357,7 +357,7 @@ class AnimatedRefreshingView: UIView {
         )
         newInnerViewBottomAnchor.isActive = true
 
-        //Shift the new inner view from the bottom up, while moving the current one up and out
+        // Shift the new inner view from the bottom up, while moving the current one up and out
         DispatchQueue.main.asyncAfter(
             deadline: .now() + (animated ? CATransaction.animationDuration() : 0.0)
         ) {

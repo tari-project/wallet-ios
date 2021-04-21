@@ -64,7 +64,7 @@ class MenuTabBarController: UITabBarController {
         homeViewController.tabBarItem.image = Theme.shared.images.homeItem
         storeViewController.tabBarItem.image = Theme.shared.images.ttlItem
         addRecipientViewController.tabBarItem.image = Theme.shared.images.sendItem
-        addRecipientViewController.tabBarItem.tag = 1 //Using this to determine which icon to move upwards
+        addRecipientViewController.tabBarItem.tag = 1 // Using this to determine which icon to move upwards
         profileViewController.tabBarItem.image = Theme.shared.images.profileItem
         settingsViewController.tabBarItem.image = Theme.shared.images.settingsItem
 
@@ -73,10 +73,10 @@ class MenuTabBarController: UITabBarController {
         viewControllers = [homeViewController, storeViewController, addRecipientViewController, profileViewController, settingsViewController]
 
         for tabBarItem in tabBar.items! {
-            //For the send image we need to raise it higher than the others
+            // For the send image we need to raise it higher than the others
             if tabBarItem.tag == 1 {
                 tabBarItem.imageInsets = UIEdgeInsets(top: -16, left: 0, bottom: -12, right: 0)
-            } else if hasNotch { //On phones without notches the icons should stay vertically centered
+            } else if hasNotch { // On phones without notches the icons should stay vertically centered
                 tabBarItem.imageInsets = UIEdgeInsets(top: 13, left: 0, bottom: -13, right: 0)
             }
         }

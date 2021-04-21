@@ -424,7 +424,7 @@ class Wallet {
                 loggingFilePathPointer,
                 2, // number of rolling log files
                 10 * 1024 * 1024, // rolling log file max size in bytes
-                nil, //TODO use passphrase when ready to implement
+                nil, // TODO use passphrase when ready to implement
                 receivedTxCallback,
                 receivedTxReplyCallback,
                 receivedFinalizedTxCallback,

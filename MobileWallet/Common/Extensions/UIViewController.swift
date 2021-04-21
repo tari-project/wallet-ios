@@ -91,10 +91,10 @@ extension UIViewController {
                 NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle
             ]
 
-            //Remove border
+            // Remove border
             navBar.shadowImage = UIImage()
 
-            //TODO fix size
+            // TODO fix size
             navBar.backIndicatorImage = Theme.shared.images.backArrow
             navBar.backIndicatorTransitionMaskImage = Theme.shared.images.backArrow
 

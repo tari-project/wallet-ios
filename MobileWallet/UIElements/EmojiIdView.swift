@@ -197,7 +197,7 @@ class EmojiIdView: UIView {
         guard let scrollViewFrame = condensedEmojiIdContainer.globalFrame else { return }
         tapActionIsDisabled = true
         expanded = true
-        //If they're typing somewhere, close the keyboard
+        // If they're typing somewhere, close the keyboard
         superVC?.view.endEditing(true)
         // fade out label container
         // fade in blackout

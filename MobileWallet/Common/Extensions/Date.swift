@@ -72,7 +72,7 @@ extension Date {
         } else {
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "MMM d, yyyy", options: 0, locale: .current)
-            //dateFormatter.timeZone = TimeZone.current
+            // dateFormatter.timeZone = TimeZone.current
 
             return dateFormatter.string(from: self)
         }

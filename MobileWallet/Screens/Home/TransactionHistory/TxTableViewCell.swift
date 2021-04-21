@@ -203,7 +203,7 @@ class TxTableViewCell: UITableViewCell {
                 valueLabel.textColor = Theme.shared.colors.txCellValuePendingText
             }
         } else {
-            //Unlikely to happen scenario
+            // Unlikely to happen scenario
             valueLabel.text = "0"
             valueLabel.backgroundColor = Theme.shared.colors.txTableBackground
             valueLabel.textColor = Theme.shared.colors.txScreenTextLabel

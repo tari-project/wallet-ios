@@ -75,7 +75,7 @@ class AddAmountViewController: UIViewController {
         displayAliasOrEmojiId()
         updateLabelText()
 
-        //Deep link value
+        // Deep link value
         if let params = deepLinkParams {
             if params.amount.rawValue > 0 {
                 addCharacter(params.amount.formatted)
@@ -205,7 +205,7 @@ class AddAmountViewController: UIViewController {
         }
     }
 
-    //Shouldn't ever really be used but just in case
+    // Shouldn't ever really be used but just in case
     private func showInvalidNumberError(_ error: Error?) {
         UserFeedback.shared.error(
             title: localized("add_amount.error.invalid_number"),
@@ -404,7 +404,7 @@ class AddAmountViewController: UIViewController {
     }
 
     @objc private func continueButtonTapped() {
-        //Check the actual available balance first, to see if we have enough mined transactions
+        // Check the actual available balance first, to see if we have enough mined transactions
         guard let wallet = TariLib.shared.tariWallet else { return }
         let (availableBalance, availableBalanceError) = wallet.availableBalance
         guard availableBalanceError == nil else {
@@ -464,7 +464,7 @@ extension AddAmountViewController {
         navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         navigationBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
 
-        //contiue button
+        // contiue button
         view.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
         continueButton.leftAnchor.constraint(
@@ -495,7 +495,7 @@ extension AddAmountViewController {
         continueButton.isEnabled = false
         setupKeypad()
 
-        //amount container
+        // amount container
         let amountContainer = UIView()
         amountContainer.backgroundColor = .clear
         view.addSubview(amountContainer)
@@ -505,7 +505,7 @@ extension AddAmountViewController {
         amountContainer.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
         amountContainer.bottomAnchor.constraint(equalTo: keypadContainerStackView.topAnchor).isActive = true
 
-        //amount label
+        // amount label
         view.addSubview(amountLabel)
         amountLabel.animation = .type
         amountLabel.textAlignment = .center(inset: -30)
@@ -515,7 +515,7 @@ extension AddAmountViewController {
         amountLabel.centerYAnchor.constraint(equalTo: amountContainer.centerYAnchor).isActive = true
         amountLabel.heightAnchor.constraint(equalToConstant: 75).isActive = true
 
-        //warning view
+        // warning view
         view.addSubview(warningView)
         warningView.isHidden = true
         warningView.translatesAutoresizingMaskIntoConstraints = false
@@ -583,7 +583,7 @@ extension AddAmountViewController {
             equalTo: warningLabel.bottomAnchor
         ).isActive = true
 
-        //tx fee
+        // tx fee
         txViewContainer.alpha = 0.0
         view.addSubview(txViewContainer)
         txViewContainer.translatesAutoresizingMaskIntoConstraints = false

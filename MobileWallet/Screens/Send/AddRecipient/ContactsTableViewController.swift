@@ -92,7 +92,7 @@ class ContactsTableViewController: UITableViewController {
 
     private var isScrolledToTop: Bool = true {
         willSet {
-            //Only hit the delegate method if value actually changed
+            // Only hit the delegate method if value actually changed
             if newValue && !isScrolledToTop {
                 actionDelegate?.onScrollTopHit(true)
             } else if !newValue && isScrolledToTop {
@@ -181,7 +181,7 @@ class ContactsTableViewController: UITableViewController {
 
         recentContactList = try wallet.recentPublicKeys(limit: 3)
 
-        //Filtered lists are full lists by default
+        // Filtered lists are full lists by default
         filteredContactList = contactList.sorted(by: { (contact1, contact2) -> Bool in
             if contact1.alias.0.isEmpty { return false }
             return contact1.alias.0.lowercased() < contact2.alias.0.lowercased()
@@ -194,7 +194,7 @@ class ContactsTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2 //dont' show 2 lists if both lists aren't populated
+        return 2 // dont' show 2 lists if both lists aren't populated
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -222,7 +222,7 @@ class ContactsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        //If there's no data in a section, don't show anything
+        // If there's no data in a section, don't show anything
         if (section == 0 && filteredRecentPublicKeyList.count == 0) || (section == 1 && filteredContactList.count == 0) {
             return UIView()
         }
@@ -267,7 +267,7 @@ class ContactsTableViewController: UITableViewController {
         return nil
     }
 
-    //Parent component needs to know which direction they're scrolling
+    // Parent component needs to know which direction they're scrolling
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y <= 20 {
             isScrolledToTop = true

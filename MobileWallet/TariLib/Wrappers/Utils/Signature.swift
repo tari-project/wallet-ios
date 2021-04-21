@@ -47,7 +47,7 @@ struct Signature {
     let publicKey: PublicKey
 
     func isValid(wallet: Wallet) throws -> Bool {
-        //TODO don't join with pipe
+        // TODO don't join with pipe
         return try wallet.verifyMessageSignature(publicKey: publicKey, signature: hex, nonce: nonce, message: message)
     }
 }

@@ -129,7 +129,7 @@ extension Wallet {
             return status != .minedUnconfirmed
         }
 
-        //Keep pending first but sorted
+        // Keep pending first but sorted
         result.append(contentsOf: minedUnconfirmedTxs)
         result.sort { (tx1, tx2) -> Bool in
             let d1 = tx1.date.0 ?? Date()

@@ -56,7 +56,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     private let pasteEmojisView = PasteEmojisView()
     private var pasteEmojisViewBottomAnchorConstraint = NSLayoutConstraint()
     private let dimView = UIView()
-    private var currentTextInputContent = "" //Used to check if something actually changed to avoid unnecessary ffi calls
+    private var currentTextInputContent = "" // Used to check if something actually changed to avoid unnecessary ffi calls
     var deepLinkParams: DeepLinkParams?
 
     private var isEditingSearchBox: Bool = false {
@@ -107,7 +107,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                 continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: 100)
                 continueButtonBottomConstraint.isActive = true
 
-                inputBox.textColor = nil //default color
+                inputBox.textColor = nil // default color
 
                 UIView.animate(withDuration: 0.5) { [weak self] in
                     guard let self = self else { return }
@@ -199,7 +199,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
             if text.isEmpty {
                 inputBox.rightView = scanButton
             }
-            //Check if something actually changed to avoid unnecessary ffi calls and checks
+            // Check if something actually changed to avoid unnecessary ffi calls and checks
             guard currentTextInputContent != text else {
                 return
             }
@@ -210,7 +210,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
             do {
                 let pubKey = try PublicKey(any: text)
 
-                //Only if they never had this set, dimiss the keyboard
+                // Only if they never had this set, dimiss the keyboard
                 if selectedRecipientPublicKey == nil {
                     dismissKeyboard()
                 }
@@ -296,20 +296,20 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputContainerView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(inputContainerView)
 
-        //Container view layout
+        // Container view layout
         inputContainerView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
         inputContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         inputContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         inputContainerView.heightAnchor.constraint(equalToConstant: inputContainerHeight).isActive = true
         inputContainerView.backgroundColor = Theme.shared.colors.navigationBarBackground
 
-        //Container view style
+        // Container view style
         inputContainerView.layer.shadowOpacity = 0
         inputContainerView.layer.shadowOffset = CGSize(width: 0, height: 5)
         inputContainerView.layer.shadowRadius = 10
         inputContainerView.layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
 
-        //Input layout
+        // Input layout
         inputBox.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(inputBox)
         inputBox.centerYAnchor.constraint(equalTo: inputContainerView.centerYAnchor).isActive = true
@@ -317,7 +317,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputBox.trailingAnchor.constraint(equalTo: inputContainerView.trailingAnchor, constant: -sidePadding).isActive = true
         inputBox.heightAnchor.constraint(equalToConstant: emojiIdHeight).isActive = true
 
-        //Input style
+        // Input style
         inputBox.placeholder = localized("add_recipient.inputbox.placeholder")
         inputBox.backgroundColor = Theme.shared.colors.appBackground
         inputBox.font = Theme.shared.fonts.searchContactsInputBoxText
@@ -330,7 +330,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         inputBox.layer.shadowRadius = inputCornerRadius
         inputBox.layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
 
-        //Scan button
+        // Scan button
         inputBox.rightView = scanButton
         inputBox.rightViewMode = .always
         scanButton.addTarget(self, action: #selector(openScanner), for: .touchUpInside)
@@ -399,7 +399,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     private func checkClipboard() {
-        //If they're going back a view, don't check the clipboard if they already have text in it
+        // If they're going back a view, don't check the clipboard if they already have text in it
         guard inputBox.text?.isEmpty == true else {
             return
         }
@@ -407,13 +407,13 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         let pasteboardString: String? = UIPasteboard.general.string
 
         if let text = pasteboardString {
-            //Try get a pubkey from clipboard text
+            // Try get a pubkey from clipboard text
             do {
                 let pubKeyFromDeeplink = try PublicKey(any: text)
                 clipboardEmojis = pubKeyFromDeeplink.emojis.0
                 return
             } catch {
-               //No valid pubkey found
+               // No valid pubkey found
                clipboardEmojis = ""
             }
         }
@@ -424,7 +424,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
             return
         }
 
-        //If it's already selected, no need to show this option as well
+        // If it's already selected, no need to show this option as well
         guard clipboardEmojis != selectedRecipientPublicKey?.emojis.0 else {
             return
         }
@@ -518,13 +518,13 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
     }
 
     private func select(publicKey: PublicKey) {
-        //This can be triggered by the paste emoji function as well as the input box, this stops everything for triggering multipe times
+        // This can be triggered by the paste emoji function as well as the input box, this stops everything for triggering multipe times
         guard selectedRecipientPublicKey?.hex.0 != publicKey.hex.0 else {
             return
         }
         TariLogger.verbose("Public key set")
 
-        //Hide table and show continue button
+        // Hide table and show continue button
         selectedRecipientPublicKey = publicKey
     }
 
@@ -541,7 +541,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
         onContinue(publicKey)
     }
 
-    //Used by the scanner and paste from clipboard
+    // Used by the scanner and paste from clipboard
     func onAdd(publicKey: PublicKey) {
         contactsTableVC.filter = publicKey.emojis.0
         select(publicKey: publicKey)

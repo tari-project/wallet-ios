@@ -223,7 +223,7 @@ class NotificationManager {
         pushServerRequest(path: "/send/\(toPublicKey.hex.0)", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
     }
 
-    //TODO remove this is local push notifications work better
+    // TODO remove this is local push notifications work better
     func cancelReminders(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
         let signature = try signRequestMessage("cancel-reminders")
 
@@ -257,7 +257,7 @@ class NotificationManager {
             throw PushNotificationServerError.missingApiKey
         }
 
-        //TODO add apiKey when new push server redeployed
+        // TODO add apiKey when new push server redeployed
         return try wallet.signMessage("\(apiKey)\(pubKeyHex)\(message)")
     }
 
@@ -301,7 +301,7 @@ class NotificationManager {
                 return onError(PushNotificationServerError.server(response.statusCode, message: message))
             }
 
-            //TODO remove the "success" field when server has been updated
+            // TODO remove the "success" field when server has been updated
             guard responseDict?["success"] as? Bool == true || responseDict?["registered"] as? Bool == true  else {
                 return onError(PushNotificationServerError.responseInvalid)
             }

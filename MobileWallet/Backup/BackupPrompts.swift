@@ -139,7 +139,7 @@ private class BackupPrompts {
         }
 
         for type in PromptType.allCases.reversed() {
-            //If they have been shown this once, skip over this prompt
+            // If they have been shown this once, skip over this prompt
             guard UserDefaults.standard.bool(forKey: type.userDefaultsKey) == false else {
                 continue
             }

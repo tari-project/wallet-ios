@@ -81,7 +81,7 @@ class ContactCell: UITableViewCell {
     private func setup() {
         backgroundColor = .clear
 
-        //Container view
+        // Container view
         cellView.translatesAutoresizingMaskIntoConstraints = false
         addSubview(cellView)
         cellView.topAnchor.constraint(equalTo: topAnchor).isActive = true
@@ -89,7 +89,7 @@ class ContactCell: UITableViewCell {
         cellView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: sidePadding).isActive = true
         cellView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -sidePadding).isActive = true
 
-        //Contact "image"
+        // Contact "image"
         contactLetterView.translatesAutoresizingMaskIntoConstraints = false
         cellView.addSubview(contactLetterView)
         contactLetterView.backgroundColor = Theme.shared.colors.contactCellImageBackground
@@ -100,7 +100,7 @@ class ContactCell: UITableViewCell {
         contactLetterView.layer.cornerRadius = CONTACT_LETTER_VIEW_RADIUS
         contactLetterView.clipsToBounds = true
 
-        //Label inside contact image
+        // Label inside contact image
         contactLetter.translatesAutoresizingMaskIntoConstraints = false
         contactLetter.text = ""
         contactLetter.textColor = Theme.shared.colors.contactCellImage
@@ -109,7 +109,7 @@ class ContactCell: UITableViewCell {
         contactLetter.centerXAnchor.constraint(equalTo: contactLetterView.centerXAnchor).isActive = true
         contactLetter.centerYAnchor.constraint(equalTo: contactLetterView.centerYAnchor).isActive = true
 
-        //Unknow "image"
+        // Unknow "image"
         unknownContactImageView.isHidden = true
         unknownContactImageView.contentMode = .center
         unknownContactImageView.image = Theme.shared.images.unknownUser
@@ -122,7 +122,7 @@ class ContactCell: UITableViewCell {
         unknownContactImageView.centerYAnchor.constraint(equalTo: contactLetterView.centerYAnchor).isActive = true
         unknownContactImageView.centerXAnchor.constraint(equalTo: contactLetterView.centerXAnchor).isActive = true
 
-        //Alias label
+        // Alias label
         aliasLabel.textColor = Theme.shared.colors.contactCellAlias
         aliasLabel.font = Theme.shared.fonts.contactCellAlias
         aliasLabel.translatesAutoresizingMaskIntoConstraints = false

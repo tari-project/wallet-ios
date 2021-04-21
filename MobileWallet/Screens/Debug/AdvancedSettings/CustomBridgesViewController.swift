@@ -339,7 +339,7 @@ extension CustomBridgesViewController: UITextViewDelegate {
             textView.text = ""
         }
         textView.textColor = .black
-        textView.becomeFirstResponder() //Optional
+        textView.becomeFirstResponder() // Optional
     }
 
     func textViewDidEndEditing(_ textView: UITextView) {

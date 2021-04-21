@@ -129,7 +129,7 @@ class NavigationBar: UIView, NavigationBarProtocol {
         titleLabel.heightAnchor.constraint(equalToConstant: 22.0).isActive = true
         titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
 
-        //Style
+        // Style
         titleLabel.font = Theme.shared.fonts.navigationBarTitle
         titleLabel.textColor = Theme.shared.colors.navigationBarTint
         titleLabel.textAlignment = .center
@@ -152,7 +152,7 @@ class NavigationBar: UIView, NavigationBarProtocol {
         imageView.widthAnchor.constraint(equalToConstant: 8).isActive = true
         imageView.centerYAnchor.constraint(equalTo: backButton.centerYAnchor).isActive = true
         imageView.isUserInteractionEnabled = false
-        //Style
+        // Style
         backButton.backgroundColor = .clear
     }
 

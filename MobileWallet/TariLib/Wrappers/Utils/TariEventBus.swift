@@ -41,10 +41,10 @@
 import Foundation
 
 public enum TariEventTypes: String {
-    //Wallet autobackup
+    // Wallet autobackup
     case requiresBackup = "tari-event-requires-backup"
 
-    //Wallet callbacks
+    // Wallet callbacks
     case receivedTx = "tari-event-received-tx"
     case receievedTxReply = "tari-event-receieved-tx-reply"
     case receivedFinalizedTx = "tari-event-received-finalized-tx"
@@ -58,7 +58,7 @@ public enum TariEventTypes: String {
     case baseNodeSyncComplete = "tari-event-base-node-sync-complete"
     case txValidationSuccessful = "tari-event-tx-validation-successful"
 
-    //Common UI updates
+    // Common UI updates
     case txListUpdate = "tari-event-tx-list-update"
     case balanceUpdate = "tari-event-balance-update"
 

@@ -387,7 +387,7 @@ class SendingTariViewController: UIViewController {
         }
     }
 
-    //Small label at the bottom of the view, only visible when app is running in debug mode
+    // Small label at the bottom of the view, only visible when app is running in debug mode
     private func setupDebugLabel() {
         if TariSettings.shared.environment == .debug {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
@@ -660,7 +660,7 @@ class SendingTariViewController: UIViewController {
         }
     }
 
-    //Start listening for when store and forward completes so we know when to finish this send animation
+    // Start listening for when store and forward completes so we know when to finish this send animation
     private func startListeningForWalletEvents() {
         TariLogger.info("Waiting for wallet events.")
         TariEventBus.onMainThread(self, eventType: .directSend) {

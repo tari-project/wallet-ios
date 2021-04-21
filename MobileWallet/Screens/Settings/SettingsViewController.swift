@@ -318,7 +318,7 @@ extension SettingsViewController {
                 }
             )
         } catch {
-            //No valid peer string found in clipboard
+            // No valid peer string found in clipboard
         }
     }
 }

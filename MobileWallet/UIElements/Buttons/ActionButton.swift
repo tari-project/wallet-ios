@@ -44,7 +44,7 @@ import Lottie
 enum ActionButtonVariation {
     case normal
     case destructive
-    case raised //Like normal but with a shadow
+    case raised // Like normal but with a shadow
     case loading
     case disabled
 }
@@ -181,7 +181,7 @@ class ActionButton: UIButton {
     }
 
     func animateOut() {
-        //Wait till after pulse affect
+        // Wait till after pulse affect
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: {
             UIView.animate(
                 withDuration: 0.2,

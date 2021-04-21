@@ -89,8 +89,8 @@ class AnimatedBalanceLabel: UIView {
     var slideAnimationDuration = 0.08
 
     enum AnimationSpeeds {
-        case slow //Slower for displaying balances that update
-        case fast //Responsive for entering values
+        case slow // Slower for displaying balances that update
+        case fast // Responsive for entering values
     }
 
     var animationSpeed: AnimationSpeeds = .fast {

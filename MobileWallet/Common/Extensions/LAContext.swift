@@ -78,14 +78,14 @@ extension LAContext {
 
     func authenticateUser(reason: AuthenticateUserReason = .logIn, showFailedDialog: Bool = true, onSuccess: @escaping () -> Void) {
         #if targetEnvironment(simulator)
-        //Skip auth on simulator, quicker for development
+        // Skip auth on simulator, quicker for development
         onSuccess()
         return
         #endif
 
         switch biometricType {
         case .faceID, .touchID, .pin:
-            let policy: LAPolicy = .deviceOwnerAuthentication //it is not clear why but it works like that. If you specify with biometrics for some reason (system error, can't handle that) the window for entering the password code is not called
+            let policy: LAPolicy = .deviceOwnerAuthentication // it is not clear why but it works like that. If you specify with biometrics for some reason (system error, can't handle that) the window for entering the password code is not called
             let localizedReason = reason.rawValue
             evaluatePolicy(policy, localizedReason: localizedReason) {
                 [weak self] success, error in

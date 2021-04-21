@@ -45,8 +45,8 @@ struct BackgroundTaskManager {
     static let shared = BackgroundTaskManager()
 
     static let appBackgroundTaskScheduleReminderNotifications = "com.tari.wallet.scheduleReminderNotifications"
-    //For testing using the debugger, pause, paste below command in and unpause
-    //e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.tari.wallet.scheduleReminderNotifications"]
+    // For testing using the debugger, pause, paste below command in and unpause
+    // e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.tari.wallet.scheduleReminderNotifications"]
 
     private init() {}
 
@@ -65,7 +65,7 @@ struct BackgroundTaskManager {
 
     func scheduleBackgroundCheckForReminderNotifications() {
         let taskRequest = BGAppRefreshTaskRequest(identifier: BackgroundTaskManager.appBackgroundTaskScheduleReminderNotifications)
-        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 15) //15min
+        taskRequest.earliestBeginDate = Date(timeIntervalSinceNow: 60 * 15) // 15min
 
         do {
             try BGTaskScheduler.shared.submit(taskRequest)

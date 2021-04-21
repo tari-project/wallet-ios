@@ -6,7 +6,7 @@ target 'MobileWallet' do
   use_frameworks!
 
   # Pods for MobileWallet
-  pod 'SwiftLint', '0.40.0'
+  pod 'SwiftLint'
   pod 'FloatingPanel', '1.7.5'
   pod 'lottie-ios'
   pod 'SwiftEntryKit', '1.2.3'

@@ -250,7 +250,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        //Assume the user is trying to swipe the keyboard down
+        // Assume the user is trying to swipe the keyboard down
         if scrollView.contentOffset.y < -60 {
             view.endEditing(true)
         }
@@ -323,7 +323,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
     }
 
     private func sendTx(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari) {
-        //Init first so it starts listening for a callback right away
+        // Init first so it starts listening for a callback right away
         let sendingVC = SendingTariViewController()
 
         if let m = attachment {
@@ -382,7 +382,7 @@ extension AddNoteViewController {
         sendButton.labelText = localized("add_note.slide_to_send")
         sendButton.delegate = self
 
-        //If we're in testmode, the slide to send doesn't seem to work so allow it to be tapped in this case
+        // If we're in testmode, the slide to send doesn't seem to work so allow it to be tapped in this case
         if ProcessInfo.processInfo.arguments.contains("ui-test-mode") {
             let tapButtonGesture = UITapGestureRecognizer(target: self, action: #selector (self.slideViewDidFinish (_:)))
             sendButton.addGestureRecognizer(tapButtonGesture)
@@ -435,7 +435,7 @@ extension AddNoteViewController {
 
         attachmentCancelView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (removeAttachment)))
 
-        //Adding extra space so if the gif goes under the slide button it can be scrolled up
+        // Adding extra space so if the gif goes under the slide button it can be scrolled up
         let spacerKeyboardView = UIView()
         spacerKeyboardView.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(spacerKeyboardView)
@@ -443,7 +443,7 @@ extension AddNoteViewController {
     }
 
     private func setupGiphy() {
-        //Pre selected caurousal
+        // Pre selected caurousal
         let giphyVC = GiphyGridController()
 
         giphyCarouselContainerView.translatesAutoresizingMaskIntoConstraints = false
@@ -454,7 +454,7 @@ extension AddNoteViewController {
         giphyCarouselBottomConstraint.isActive = true
         view.bringSubviewToFront(sendButton)
 
-        //Giphy settings
+        // Giphy settings
         giphyVC.cellPadding = giffPadding
         giphyVC.direction = .horizontal
         giphyVC.numberOfTracks = 1
@@ -530,7 +530,7 @@ extension AddNoteViewController {
 extension AddNoteViewController: UITextViewDelegate {
     func textViewDidChangeSelection(_ textView: UITextView) {
         var trimmedText = textView.text.trimmingCharacters(in: .whitespacesAndNewlines)
-        //Limit to the size of a tx note
+        // Limit to the size of a tx note
         let charLimit = 280
         if trimmedText.count > charLimit {
             TariLogger.warn("Limitting tx note to \(charLimit) chars")
@@ -561,7 +561,7 @@ extension AddNoteViewController: UITextViewDelegate {
             return true
         }
 
-        //Stop new line chars, instead close the keyboard on return key
+        // Stop new line chars, instead close the keyboard on return key
         if text.components(separatedBy: CharacterSet.newlines).count > 1 {
             view.endEditing(true)
             return false

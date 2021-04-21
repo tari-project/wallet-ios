@@ -53,8 +53,8 @@ struct BaseNode {
         return "\(publicKey.hex.0)::\(address)"
     }
 
-    //Expects format found in Tari code base for setting a peer: pubkey::/onion/key:port
-    //Can be used to determine if the users clipboard contains a valid base node seed
+    // Expects format found in Tari code base for setting a peer: pubkey::/onion/key:port
+    // Can be used to determine if the users clipboard contains a valid base node seed
     init(_ peer: String) throws {
         let regex = try NSRegularExpression(pattern: "[a-z0-9]{64}::\\/onion3\\/[a-z0-9]{56}:[0-9]{2,6}")
         guard regex.matches(in: peer, options: [], range: NSRange(location: 0, length: peer.utf16.count)).count == 1 else {
@@ -63,7 +63,7 @@ struct BaseNode {
 
         let splitPeerDetails = peer.components(separatedBy: "::")
 
-        //Sanity check. This would actually get caught by the regex above
+        // Sanity check. This would actually get caught by the regex above
         guard splitPeerDetails.count == 2 else {
             throw BaseNodeErrors.invalidPeerString
         }

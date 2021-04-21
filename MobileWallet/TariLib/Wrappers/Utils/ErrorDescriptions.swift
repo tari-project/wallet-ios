@@ -44,7 +44,7 @@ extension WalletErrors: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .generic(let code):
-            //TODO create a map of Tari errors from rust
+            // TODO create a map of Tari errors from rust
             return  "\(localized("wallet.error.generic_code")) \(code)."
         case .insufficientFunds(let microTariSpendable):
             return "\(localized("wallet.error.insufficient_funds")) \(microTariSpendable.formatted)."
@@ -111,4 +111,4 @@ extension KeyServerError: LocalizedError {
     }
 }
 
-//TODO add the other error enums
+// TODO add the other error enums

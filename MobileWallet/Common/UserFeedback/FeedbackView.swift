@@ -43,7 +43,7 @@ import UIKit
 struct UserFeedbackFormInput {
     let key: String
     let placeholder: String
-    //Possibly add keyboard type
+    // Possibly add keyboard type
 }
 
 class FeedbackView: UIView {
@@ -56,7 +56,7 @@ class FeedbackView: UIView {
     private var onCloseHandler: (() -> Void)?
     private var onCallToActionHandler: (() -> Void)?
     private var onSubmitActionHandler: (([String: String]) -> Void)?
-    //private var formInputResults: [String: String]?
+    // private var formInputResults: [String: String]?
     private var formInputs: [String: UITextField] = [:]
     private let callToActionButton = ActionButton()
     private let closeButton = TextButton()
@@ -71,7 +71,7 @@ class FeedbackView: UIView {
         setupView()
     }
 
-    //common func to init our view
+    // common func to init our view
     private func setupView() {
         backgroundColor = Theme.shared.colors.appBackground
         layer.cornerRadius = cornerRadius
@@ -372,7 +372,7 @@ class FeedbackView: UIView {
             if let previousInput = lastInput {
                 inputField.topAnchor.constraint(equalTo: previousInput.bottomAnchor, constant: elementPadding).isActive = true
             } else {
-                //This is the first input
+                // This is the first input
                 inputField.becomeFirstResponder()
                 inputField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: elementPadding).isActive = true
             }

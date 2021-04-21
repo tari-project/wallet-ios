@@ -503,7 +503,7 @@ extension ICloudBackup {
 
         TariLogger.info("Starting iCloud backup in the background")
 
-        //Perform the task on a background queue.
+        // Perform the task on a background queue.
         DispatchQueue.global().async { [weak self] in
             guard let self = self else { return }
             // Request the task assertion and save the ID.

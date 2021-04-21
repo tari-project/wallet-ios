@@ -309,7 +309,7 @@ class HomeViewController: UIViewController {
         }
     }
 
-    //If we have a second stored utxo, import it
+    // If we have a second stored utxo, import it
     private func checkImportSecondUtxo() {
         guard let keyServer = keyServer else {
             TariLogger.error("No KeyServer initialised")
@@ -394,9 +394,9 @@ class HomeViewController: UIViewController {
 
     private func showHideFullScreen() {
         if isTxViewFullScreen {
-            //Don't show header for first intro
+            // Don't show header for first intro
             guard !isFirstIntroToWallet else {
-                //Wait before auto pulling down
+                // Wait before auto pulling down
                 DispatchQueue.main.asyncAfter(
                     deadline: .now() + 3.0 + CATransaction.animationDuration()
                 ) {
@@ -431,7 +431,7 @@ class HomeViewController: UIViewController {
                 self?.requestKeyServerTokens()
             }
 
-            //User swipes down for the first time
+            // User swipes down for the first time
             if isFirstIntroToWallet {
                 UserDefaults.Key.walletHasBeenIntroduced.set(true)
             }
@@ -458,7 +458,7 @@ class HomeViewController: UIViewController {
     func onSend(pubKey: PublicKey? = nil, deepLinkParams: DeepLinkParams? = nil) {
         let sendVC = AddRecipientViewController()
 
-        //This is used by the deep link manager
+        // This is used by the deep link manager
         if let publicKey = pubKey {
             DispatchQueue.main.asyncAfter(
                 deadline: .now() + 0.75
@@ -682,7 +682,7 @@ extension HomeViewController {
     }
 
     private func setupTopButtons() {
-        return //TODO place back when active
+        return // TODO place back when active
         let iconSize: CGFloat = 30
 
         let giftButton = UIButton(type: .custom)
@@ -753,7 +753,7 @@ extension HomeViewController {
         navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         navigationBar.heightAnchor.constraint(equalToConstant: navBarHeight).isActive = true
 
-        //Container view style
+        // Container view style
         navigationBar.layer.shadowOpacity = 0
         navigationBar.layer.shadowOffset = CGSize(width: 0, height: 5)
         navigationBar.layer.shadowRadius = 10

@@ -122,7 +122,7 @@ class DebugLogsTableViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        //If it's a log file scroll to the bottom to view newest lines
+        // If it's a log file scroll to the bottom to view newest lines
         guard logLines.count > 0 else { return }
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }

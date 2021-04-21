@@ -61,7 +61,7 @@ class ScheduleReminderNotificationsOperation: Operation {
             return
         }
 
-        //Make sure this task scheduling the reminder isn't happening too late
+        // Make sure this task scheduling the reminder isn't happening too late
         let intervalOffset = Date().timeIntervalSince(setAt)
 
         guard intervalOffset < firstReminder.deliverAfter else {
@@ -77,7 +77,7 @@ class ScheduleReminderNotificationsOperation: Operation {
                 identifier: reminderDetails.identifier,
                 timeInterval: reminderDetails.deliverAfter - intervalOffset) { [weak self] (_) in
                     numberOfSetNotifications = numberOfSetNotifications + 1
-                    //Know for certain all notifications have been scheduled
+                    // Know for certain all notifications have been scheduled
                     if numberOfSetNotifications >= ReminderNotifications.recipientReminderNotifications.count {
                         self?.onComplete(true)
                     }

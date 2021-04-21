@@ -66,8 +66,8 @@ class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleProtoco
         clipsToBounds = true
         layer.masksToBounds = false
 
-        //The shadow seems to be mistakenly added to all subviews briefly after loading.
-        //TODO figure out why this is happening so we can remove this delay
+        // The shadow seems to be mistakenly added to all subviews briefly after loading.
+        // TODO figure out why this is happening so we can remove this delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
             guard let self = self else { return }
             let animation = CABasicAnimation(keyPath: "shadowOpacity")
@@ -86,7 +86,7 @@ class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleProtoco
         subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 9.0).isActive = true
         subtitleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
 
-        //Style
+        // Style
         subtitleLabel.textAlignment = .center
         subtitleLabel.font = Theme.shared.fonts.txScreenSubheadingLabel
         subtitleLabel.textColor = Theme.shared.colors.txScreenSubheadingLabel
@@ -109,7 +109,7 @@ class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleProtoco
         imageView.widthAnchor.constraint(equalToConstant: 8).isActive = true
         imageView.centerYAnchor.constraint(equalTo: backButton.centerYAnchor).isActive = true
         imageView.isUserInteractionEnabled = false
-        //Style
+        // Style
         backButton.backgroundColor = .clear
     }
 }

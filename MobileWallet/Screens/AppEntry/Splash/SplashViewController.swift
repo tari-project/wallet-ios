@@ -105,7 +105,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func handleWalletEvents() {
-        //Handle tor progress
+        // Handle tor progress
         TariEventBus.onMainThread(self, eventType: .torConnectionProgress) {
             [weak self] (result) in
             guard let self = self else { return }
@@ -130,7 +130,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             }
         }
 
-        //Handle on tor connected
+        // Handle on tor connected
         TariEventBus.onMainThread(self, eventType: .torConnected) { [weak self] (_) in
             guard let self = self else { return }
             self.progressFeedbackView.setupSuccess(title: "Tor connection established")
@@ -164,7 +164,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
     private func checkExistingWallet() {
         if TariLib.shared.walletExists {
-            //Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
+            // Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
             localAuthenticationContext.authenticateUser {
                 DispatchQueue.main.asyncAfter(
                     deadline: .now() + 1,
@@ -293,7 +293,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
     private func navigateToHome() {
         if walletExistsInitially && authStepPassed {
-            //Calling this here in case they did not succesfully register the token in the onboarding
+            // Calling this here in case they did not succesfully register the token in the onboarding
             NotificationManager.shared.requestAuthorization()
 
             let nav = AlwaysPoppableNavigationController()

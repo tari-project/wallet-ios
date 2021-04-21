@@ -320,7 +320,7 @@ class ScanViewController: UIViewController {
         darkenFillLayer.fillRule = .evenOdd
         darkenFillLayer.fillColor = UIColor.black.cgColor
         view.layer.insertSublayer(darkenFillLayer, below: backButton.layer)
-        darkenFillLayer.opacity = 0 //TODO change back to 0.7 if it can be faded in
+        darkenFillLayer.opacity = 0 // TODO change back to 0.7 if it can be faded in
     }
 
     private func failed() {

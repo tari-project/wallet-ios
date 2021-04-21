@@ -96,7 +96,7 @@ class ConnectionMonitorState {
         return entries
     }
 
-    //ALlow other components to subscribe to connection state changes from one place
+    // ALlow other components to subscribe to connection state changes from one place
     private func onUpdate() {
         TariEventBus.postToMainThread(.connectionMonitorStatusChanged, sender: self)
     }
@@ -117,7 +117,7 @@ class ConnectionMonitor {
     }
 
     func start() {
-        state = ConnectionMonitorState() //Reset state to defaults
+        state = ConnectionMonitorState() // Reset state to defaults
         startMonitoringNetwork()
         startMonitoringTor()
         startMonitoringBaseNodeSync()
@@ -169,7 +169,7 @@ class ConnectionMonitor {
         TariEventBus.onMainThread(self, eventType: .torConnected) { [weak self] (_) in
             guard let self = self else { return }
 
-            //TODO check torController.isConnected as well
+            // TODO check torController.isConnected as well
             self.state.torStatus = .connected
         }
 

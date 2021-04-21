@@ -76,7 +76,7 @@ extension NetworkSpeedProvider: URLSessionDataDelegate, URLSessionDelegate {
     }
 
     func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        let elapsed = (stopTime - startTime) //as? CFAbsoluteTime
+        let elapsed = (stopTime - startTime) // as? CFAbsoluteTime
         let speed: Float = elapsed != 0 ? bytesReceived / (Float(CFAbsoluteTimeGetCurrent() - startTime)) / 1024.0 / 1024.0 : -1.0
         // treat timeout as no error (as we're testing speed, not worried about whether we got entire resource or not
         if error == nil || ((((error as NSError?)?.domain) == NSURLErrorDomain) && (error as NSError?)?.code == NSURLErrorTimedOut) {

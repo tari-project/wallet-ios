@@ -38,7 +38,7 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-//Adapted from https://github.com/lemanhtien/MTSlideToOpen
+// Adapted from https://github.com/lemanhtien/MTSlideToOpen
 
 import UIKit
 import Lottie
@@ -402,14 +402,14 @@ enum SlideViewVariation {
     private func updateIsEnabledStyle() {
         if isEnabled {
             sliderBackgroundColor = .clear// Theme.shared.colors.actionButtonBackgroundSimple!
-            //slidingColor = Theme.shared.colors.actionButtonBackgroundSimple!
+            // slidingColor = Theme.shared.colors.actionButtonBackgroundSimple!
             textColor = Theme.shared.colors.actionButtonTitle!
             thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonBackgroundSimple!)
             thumbnailImageView.layer.shadowOpacity = SlideView.thumbnailShadowRadius
             sliderHolderView.applyGradient()
         } else {
             sliderBackgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled!
-            //slidingColor = Theme.shared.colors.actionButtonBackgroundDisabled!
+            // slidingColor = Theme.shared.colors.actionButtonBackgroundDisabled!
             textColor = Theme.shared.colors.actionButtonTitleDisabled!
             thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonTitleDisabled!)
             thumbnailImageView.layer.shadowOpacity = 0
@@ -421,7 +421,7 @@ enum SlideViewVariation {
 class SlideViewRoundImageView: UIImageView {
     override func layoutSubviews() {
         super.layoutSubviews()
-        //let radius: CGFloat = self.bounds.size.width / 2.0
+        // let radius: CGFloat = self.bounds.size.width / 2.0
         self.layer.cornerRadius = ActionButton.RADIUS_POINTS
     }
 }

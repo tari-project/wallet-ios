@@ -62,7 +62,7 @@ class ReminderNotifications {
             identifier: "scheduled-reminders-recipient-1",
             title: ReminderNotifications.titleString,
             body: localized("scheduled_reminder.body.short"),
-            deliverAfter: TariSettings.shared.environment == .production ? 60 * 60 * 24 : 60 * 60 * 2 //24h for prod and 2h for debug/testflight
+            deliverAfter: TariSettings.shared.environment == .production ? 60 * 60 * 24 : 60 * 60 * 2 // 24h for prod and 2h for debug/testflight
         ),
         ScheduledReminder(
             identifier: "scheduled-reminders-recipient-2",
@@ -71,7 +71,7 @@ class ReminderNotifications {
                 format: localized("scheduled_reminder.body.long.with_param"),
                 TariSettings.shared.network.currencyDisplayTicker
             ),
-            deliverAfter: TariSettings.shared.environment == .production ? 60 * 60 * 48 : 60 * 60 * 4 //48h for prod and 4h for debug/testflight
+            deliverAfter: TariSettings.shared.environment == .production ? 60 * 60 * 48 : 60 * 60 * 4 // 48h for prod and 4h for debug/testflight
         )
     ]
 

@@ -139,7 +139,7 @@ struct MicroTari {
 
     init(decimalValue: Double) throws {
         guard let rawVal = UInt64(exactly: decimalValue * Double(MicroTari.conversion)) else {
-            throw MicroTariErrors.invalidStringFormat //TODO
+            throw MicroTariErrors.invalidStringFormat // TODO
         }
 
         self.rawValue = rawVal
