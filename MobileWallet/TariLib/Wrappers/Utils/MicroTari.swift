@@ -55,7 +55,7 @@ struct MicroTari {
         formatter.minimumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
         formatter.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
         formatter.negativePrefix = "-"
-        formatter.roundingMode = .floor
+        formatter.roundingMode = .down
         return formatter
     }()
 

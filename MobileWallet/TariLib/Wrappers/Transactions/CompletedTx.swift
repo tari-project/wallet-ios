@@ -62,9 +62,12 @@ class CompletedTx: TxProtocol {
 
     var microTari: (MicroTari?, Error?) {
         var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            completed_transaction_get_amount(ptr, error)})
-
+        let result = withUnsafeMutablePointer(
+            to: &errorCode, {
+                error in
+                completed_transaction_get_amount(ptr, error)
+            }
+        )
         guard errorCode == 0 else {
             return (nil, CompletedTxError.generic(errorCode))
         }

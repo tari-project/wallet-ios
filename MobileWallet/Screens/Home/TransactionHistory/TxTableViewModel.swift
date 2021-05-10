@@ -215,10 +215,13 @@ class TxTableViewModel: NSObject {
     func downloadGif() {
         if gifID == nil || gif != nil { return }
         gifDownloadFailed = false
-        TxGifManager.shared.downloadGif(gifID: gifID!) { [weak self] (result) in
+        TxGifManager.shared.downloadGif(gifID: gifID!) {
+            [weak self] (result) in
             switch result {
-            case .success(let media): self?.gif = media
-            case .failure: self?.gifDownloadFailed = true
+            case .success(let media):
+                self?.gif = media
+            case .failure:
+                self?.gifDownloadFailed = true
             }
         }
     }

@@ -84,14 +84,14 @@ class TxTableViewCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func prepareForReuse() {
-        super.prepareForReuse()
-        stopObservation()
-    }
-
     func configure(with model: TxTableViewModel) {
         setStatus(model.status)
-        setValue(microTari: model.value.microTari, direction: model.value.direction, isCancelled: model.value.isCancelled, isPending: model.value.isPending)
+        setValue(
+            microTari: model.value.microTari,
+            direction: model.value.direction,
+            isCancelled: model.value.isCancelled,
+            isPending: model.value.isPending
+        )
 
         if model.id == self.model?.id { return }
 
@@ -106,11 +106,12 @@ class TxTableViewCell: UITableViewCell {
         } else {
             loadingGifButton.isHidden = true
         }
-        setGif(media: model.gif)
         observe(item: model)
+        setGif(media: model.gif)
     }
 
     private func observe(item: TxTableViewModel) {
+        stopObservation()
         kvoGif = item.observe(\.gif, options: .new) { [weak self] (_, _) in
             self?.updateCell?()
         }
@@ -207,6 +208,14 @@ class TxTableViewCell: UITableViewCell {
             valueLabel.text = "0"
             valueLabel.backgroundColor = Theme.shared.colors.txTableBackground
             valueLabel.textColor = Theme.shared.colors.txScreenTextLabel
+        }
+        // fix to 2 decimal places
+        if let text = valueLabel.text, let distance = text.indexDistance(of: MicroTari.decimalSeparator) {
+            let upperBound = text.index(
+                text.startIndex,
+                offsetBy: distance + MicroTari.decimalSeparator.count + 2
+            )
+            valueLabel.text = "\(text[text.startIndex..<upperBound])"
         }
 
         valueLabel.padding = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
