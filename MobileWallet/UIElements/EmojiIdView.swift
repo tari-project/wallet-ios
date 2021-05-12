@@ -62,6 +62,11 @@ class EmojiIdView: UIView {
     private var expandedEmojiIdScrollView = UIScrollView()
     private lazy var expandedEmojiIdLabel = UILabel()
 
+    private var hexPubKeyTipView: UIView?
+    private var hexPubKeyTipLabel: UILabel?
+    private var hexPubKeyTipViewBottomConstraint: NSLayoutConstraint?
+    private var hexPubKeyTipViewHiddenBottomConstraint = CGFloat(250)
+
     private var labelInitialWidth: NSLayoutConstraint?
     private var labelWidthConstraint: NSLayoutConstraint?
     private var labelCenterConstraint: NSLayoutConstraint?
@@ -206,6 +211,7 @@ class EmojiIdView: UIView {
             UIApplication.shared.keyWindow?.addSubview(blackoutView)
             fadeView(view: blackoutView, fadeOut: false, maxAlpha: 0.65)
             showCopyEmojiIdButton()
+            showHexPubKeyCopyTip()
         }
         // add and show scroll view
         let padding = UIDevice.current.userInterfaceIdiom == .pad ? 60 : Theme.shared.sizes.appSidePadding
@@ -266,7 +272,7 @@ class EmojiIdView: UIView {
             CGPoint(x: 0, y: 0),
             animated: animated
         )
-        // hide copy emoji id button
+        // hide copy emoji id button & public key hex tip
         if blackoutWhileExpanded {
             DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.30 : 0)) {
                 [weak self] in
@@ -278,6 +284,7 @@ class EmojiIdView: UIView {
                 self?.hideCopyEmojiIdButton {
                     completion?()
                 }
+                self?.hideHexPubKeyCopyTip()
             }
         } else {
             DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.30 : 0)) {
@@ -422,10 +429,91 @@ extension EmojiIdView {
         fadeView(view: emojiMenu, fadeOut: false)
     }
 
+    private func showHexPubKeyCopyTip() {
+        hexPubKeyTipView = UIView()
+        hexPubKeyTipLabel = UILabel()
+        guard let tipView = hexPubKeyTipView,
+              let tipLabel = hexPubKeyTipLabel,
+              let parentView = UIApplication.shared.keyWindow else {
+            return
+        }
+        parentView.addSubview(tipView)
+        parentView.bringSubviewToFront(tipView)
+
+        tipView.backgroundColor = UIColor.white
+        tipView.layer.cornerRadius = 4
+
+        tipView.translatesAutoresizingMaskIntoConstraints = false
+        tipView.widthAnchor.constraint(
+            equalTo: parentView.widthAnchor,
+            constant: -Theme.shared.sizes.appSidePadding
+        ).isActive = true
+        tipView.centerXAnchor.constraint(
+            equalTo: parentView.centerXAnchor
+        ).isActive = true
+        hexPubKeyTipViewBottomConstraint = tipView.bottomAnchor.constraint(
+            equalTo: parentView.safeBottomAnchor,
+            constant: hexPubKeyTipViewHiddenBottomConstraint
+        )
+        hexPubKeyTipViewBottomConstraint?.isActive = true
+
+        tipLabel.text = localized("emoji.hex_tip")
+        tipLabel.font = Theme.shared.fonts.profileMiddleLabel
+        tipLabel.textColor = Theme.shared.colors.profileMiddleLabel!
+        tipLabel.translatesAutoresizingMaskIntoConstraints = false
+        tipView.addSubview(tipLabel)
+        tipLabel.interlineSpacing(spacingValue: 2)
+        tipLabel.leadingAnchor.constraint(
+            equalTo: tipView.leadingAnchor,
+            constant: 12
+        ).isActive = true
+        tipLabel.trailingAnchor.constraint(
+            equalTo: tipView.trailingAnchor,
+            constant: -12
+        ).isActive = true
+        tipLabel.topAnchor.constraint(
+            equalTo: tipView.topAnchor,
+            constant: 12
+        ).isActive = true
+        tipView.bottomAnchor.constraint(
+            equalTo: tipLabel.bottomAnchor,
+            constant: 12
+        ).isActive = true
+        tipLabel.numberOfLines = 0
+        tipLabel.lineBreakMode = .byWordWrapping
+        tipLabel.sizeToFit()
+        parentView.layoutIfNeeded()
+
+        hexPubKeyTipViewBottomConstraint?.constant =  -Theme.shared.sizes.appSidePadding / 2
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0.3,
+            options: .curveEaseInOut) {
+            parentView.layoutIfNeeded()
+        }
+    }
+
     private func hideCopyEmojiIdButton(completion: (() -> Void)? = nil) {
         fadeView(view: emojiMenu, fadeOut: true) { [weak self] in
             self?.emojiMenu.removeFromSuperview()
             completion?()
+        }
+    }
+
+    private func hideHexPubKeyCopyTip() {
+        hexPubKeyTipViewBottomConstraint?.constant =  hexPubKeyTipViewHiddenBottomConstraint
+        UIView.animate(
+            withDuration: 0.5,
+            delay: 0,
+            options: .curveEaseInOut) {
+            UIApplication.shared.keyWindow?.layoutIfNeeded()
+        } completion: {
+            [weak self]
+            (_) in
+            self?.hexPubKeyTipView?.removeFromSuperview()
+            self?.hexPubKeyTipViewBottomConstraint = nil
+            self?.hexPubKeyTipLabel = nil
+            self?.hexPubKeyTipView = nil
         }
     }
 

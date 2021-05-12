@@ -259,6 +259,7 @@
 "emoji.copied" = "COPIED";
 "emoji.copy" = "Copy Emoji ID";
 "emoji.paste" = "Paste copied Emoji ID";
+"emoji.hex_tip" = "ℹ️ You can long-press the Copy Emoji ID button to copy the public key in hexadecimal format.";
 
 /* Add recipient view */
 "add_recipient.recent_txs" = "Recent Transactions";
