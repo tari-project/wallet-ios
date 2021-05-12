@@ -222,6 +222,7 @@ struct Colors: Loopable {
     let contactCellImage = UIColor(named: "TableCellContactImage")
 
     // Amount screen
+    let amountAvailableBalance = UIColor(named: "AddAmountAvailableBalance")
     let keypadButton = UIColor(named: "KeypadButton")
     let warningBoxBorder = UIColor(named: "Warning")
     let amountWarningLabel = UIColor(named: "AmountWarningLabel")

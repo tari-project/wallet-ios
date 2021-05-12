@@ -49,9 +49,14 @@ class AddAmountViewController: UIViewController {
     private let amountLabel = AnimatedBalanceLabel()
     private let keypadContainerStackView = UIStackView()
     private let warningView = UIView()
-    private let warningLabel = UILabel()
-    private let warningBalanceLabel = UILabel()
-    private let warningBalanceStackView = UIStackView()
+    private let balanceExceededLabel = UILabel()
+    private let balancePendingLabel = UILabel()
+    private let walletBalanceIcon = UIImageView(
+        image: Theme.shared.images.currencySymbol?.withRenderingMode(.alwaysTemplate)
+    )
+    private let walletBalanceLabel = UILabel()
+    private let walletBalanceTitleLabel = UILabel()
+    private let walletBalanceStackView = UIStackView()
     private let txViewContainer = UIView()
     private let animationDuration = 0.2
     private var balanceCheckTimer: Timer?
@@ -74,6 +79,7 @@ class AddAmountViewController: UIViewController {
         setup()
         displayAliasOrEmojiId()
         updateLabelText()
+        showAvailableBalance()
 
         // Deep link value
         if let params = deepLinkParams {
@@ -153,19 +159,17 @@ class AddAmountViewController: UIViewController {
         } catch {
             switch error {
             case WalletErrors.notEnoughFunds:
-                showBalanceExceeded(
-                    warning: localized("add_amount.warning.not_enough_tari"),
-                    balance: totalMicroTari!.formatted
-                )
-                warningBalanceStackView.isHidden = false
+                balanceExceededLabel.isHidden = false
+                balancePendingLabel.isHidden = true
+                showBalanceExceeded(balance: totalMicroTari!.formatted)
+                walletBalanceStackView.isHidden = false
                 continueButton.variation = .disabled
                 hideTxFee()
             case WalletErrors.fundsPending:
-                showBalanceExceeded(
-                    warning: localized("add_amount.info.wait_completion_previous_tx.description"),
-                    balance: totalMicroTari!.formatted
-                )
-                warningBalanceStackView.isHidden = true
+                balanceExceededLabel.isHidden = true
+                balancePendingLabel.isHidden = false
+                showBalanceExceeded(balance: totalMicroTari!.formatted)
+                walletBalanceStackView.isHidden = true
                 continueButton.variation = .disabled
                 hideTxFee()
             default:
@@ -175,13 +179,13 @@ class AddAmountViewController: UIViewController {
         }
 
         if totalMicroTari!.rawValue < (microTariAmount.rawValue + fee.rawValue) {
-            showBalanceExceeded(
-                warning: localized("add_amount.warning.not_enough_tari"),
-                balance: totalMicroTari!.formatted
-            )
-            warningBalanceStackView.isHidden = false
+            balanceExceededLabel.isHidden = false
+            balancePendingLabel.isHidden = true
+            showBalanceExceeded(balance: totalMicroTari!.formatted)
+            walletBalanceStackView.isHidden = false
             continueButton.variation = .disabled
         } else {
+            showAvailableBalance()
             continueButton.variation = .normal
         }
         showTxFee(fee)
@@ -261,8 +265,6 @@ class AddAmountViewController: UIViewController {
         amountAttributedText.insert(NSAttributedString(string: "  "), at: 1)
         amountLabel.attributedText = amountAttributedText
 
-        hideBalanceExceeded()
-
         let isValidValue = isValidNumber(string: rawInput, finalNumber: true)
 
         if balanceCheckTimer != nil {
@@ -278,6 +280,7 @@ class AddAmountViewController: UIViewController {
             )
         } else {
             hideTxFee()
+            showAvailableBalance()
             continueButton.variation = .disabled
         }
     }
@@ -351,18 +354,14 @@ class AddAmountViewController: UIViewController {
         )
     }
 
-    private func showBalanceExceeded(warning: String, balance: String) {
+    private func showBalanceExceeded(balance: String) {
         UINotificationFeedbackGenerator().notificationOccurred(.error)
 
-        warningBalanceLabel.text = balance
-        warningLabel.text = warning
-        warningLabel.sizeToFit()
-        warningView.transform = CGAffineTransform(scaleX: 0.0, y: 0.0)
-        UIView.animate(withDuration: animationDuration, animations: { [weak self] in
-            guard let self = self else {return}
-            self.warningView.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
-            self.warningView.isHidden = false
-        }, completion: nil)
+        warningView.layer.borderWidth = 1
+        walletBalanceLabel.text = balance
+        walletBalanceTitleLabel.isHidden = true
+        walletBalanceIcon.tintColor = Theme.shared.colors.warningBoxBorder
+        walletBalanceLabel.textColor = Theme.shared.colors.warningBoxBorder
 
         let animation = CABasicAnimation(keyPath: "position")
         animation.duration = animationDuration / 4
@@ -373,8 +372,23 @@ class AddAmountViewController: UIViewController {
         amountLabel.layer.add(animation, forKey: "position")
     }
 
-    private func hideBalanceExceeded() {
-        warningView.isHidden = true
+    private func showAvailableBalance() {
+        guard let wallet = TariLib.shared.tariWallet else {
+            return
+        }
+        let (totalMicroTari, totalMicroTariError) = wallet.totalMicroTari
+        guard totalMicroTariError == nil else {
+            return
+        }
+        walletBalanceStackView.isHidden = false
+        warningView.isHidden = false
+        warningView.layer.borderWidth = 0
+        walletBalanceLabel.text = totalMicroTari!.formatted
+        balanceExceededLabel.isHidden = true
+        balancePendingLabel.isHidden = true
+        walletBalanceTitleLabel.isHidden = false
+        walletBalanceIcon.tintColor = Theme.shared.colors.amountAvailableBalance
+        walletBalanceLabel.textColor = Theme.shared.colors.amountAvailableBalance
     }
 
     private func showTxFee(_ fee: MicroTari) {
@@ -527,7 +541,7 @@ extension AddAmountViewController {
 
         warningView.layer.cornerRadius = 12
         warningView.layer.masksToBounds = true
-        warningView.layer.borderWidth = 1
+        warningView.layer.borderWidth = 0
         warningView.layer.borderColor = Theme.shared.colors.warningBoxBorder?.cgColor
         warningView.setContentCompressionResistancePriority(.required, for: .vertical)
 
@@ -542,46 +556,43 @@ extension AddAmountViewController {
         warningStackView.centerXAnchor.constraint(equalTo: warningView.centerXAnchor).isActive = true
         warningStackView.centerYAnchor.constraint(equalTo: warningView.centerYAnchor).isActive = true
 
-        warningBalanceStackView.alignment = .center
-        warningStackView.addArrangedSubview(warningBalanceStackView)
-        warningBalanceStackView.spacing = 4
-        let warningBalanceIcon = UIImageView(image: Theme.shared.images.currencySymbol?.withRenderingMode(.alwaysTemplate))
-        warningBalanceIcon.translatesAutoresizingMaskIntoConstraints = false
-        warningBalanceIcon.widthAnchor.constraint(equalToConstant: 11).isActive = true
-        warningBalanceIcon.heightAnchor.constraint(equalToConstant: 11).isActive = true
-        warningBalanceIcon.contentMode = .scaleAspectFit
-        warningBalanceIcon.tintColor = Theme.shared.colors.warningBoxBorder
-        warningBalanceStackView.addArrangedSubview(warningBalanceIcon)
-        warningBalanceStackView.addArrangedSubview(warningBalanceLabel)
-        warningBalanceLabel.font = Theme.shared.fonts.warningBoxTitleLabel
-        warningBalanceLabel.textColor = Theme.shared.colors.warningBoxBorder
-        warningBalanceLabel.text = "0.0"
+        walletBalanceStackView.alignment = .center
+        warningStackView.addArrangedSubview(walletBalanceStackView)
+        walletBalanceStackView.spacing = 4
+        walletBalanceIcon.translatesAutoresizingMaskIntoConstraints = false
+        walletBalanceIcon.widthAnchor.constraint(equalToConstant: 11).isActive = true
+        walletBalanceIcon.heightAnchor.constraint(equalToConstant: 11).isActive = true
+        walletBalanceIcon.contentMode = .scaleAspectFit
+        walletBalanceIcon.tintColor = Theme.shared.colors.warningBoxBorder
+        walletBalanceStackView.addArrangedSubview(walletBalanceIcon)
+        walletBalanceStackView.addArrangedSubview(walletBalanceLabel)
+        walletBalanceLabel.font = Theme.shared.fonts.warningBoxTitleLabel
+        walletBalanceLabel.textColor = Theme.shared.colors.warningBoxBorder
+        walletBalanceLabel.text = "0.0"
 
-        let warningLabelContainerView = UIView()
-        warningLabelContainerView.translatesAutoresizingMaskIntoConstraints = false
-        warningStackView.addArrangedSubview(warningLabelContainerView)
-        warningLabelContainerView.addSubview(warningLabel)
-        warningLabel.font = Theme.shared.fonts.amountWarningLabel
-        warningLabel.textColor = Theme.shared.colors.amountWarningLabel
-        warningLabel.text = localized("add_amount.warning.not_enough_tari")
-        warningLabel.numberOfLines = 0
-        warningLabel.textAlignment = .center
-        warningLabel.lineBreakMode = .byWordWrapping
-        warningLabel.topAnchor.constraint(
-            equalTo: warningLabelContainerView.topAnchor
-        ).isActive = true
-        warningLabel.widthAnchor.constraint(
-            equalTo: warningLabelContainerView.widthAnchor,
-            constant: 0
-        ).isActive = true
-        warningLabel.centerXAnchor.constraint(
-            equalTo: warningLabelContainerView.centerXAnchor,
-            constant: 0
-        ).isActive = true
-        warningLabel.sizeToFit()
-        warningLabelContainerView.bottomAnchor.constraint(
-            equalTo: warningLabel.bottomAnchor
-        ).isActive = true
+        warningStackView.addArrangedSubview(walletBalanceTitleLabel)
+        walletBalanceTitleLabel.font = Theme.shared.fonts.amountWarningLabel
+        walletBalanceTitleLabel.textColor = Theme.shared.colors.amountAvailableBalance
+        walletBalanceTitleLabel.text = localized("common.wallet_balance")
+        walletBalanceTitleLabel.numberOfLines = 1
+        walletBalanceTitleLabel.textAlignment = .center
+
+        warningStackView.addArrangedSubview(balanceExceededLabel)
+        balanceExceededLabel.font = Theme.shared.fonts.amountWarningLabel
+        balanceExceededLabel.textColor = Theme.shared.colors.amountWarningLabel
+        balanceExceededLabel.text = localized("add_amount.warning.not_enough_tari")
+        balanceExceededLabel.numberOfLines = 0
+        balanceExceededLabel.textAlignment = .center
+        balanceExceededLabel.lineBreakMode = .byWordWrapping
+
+        warningStackView.addArrangedSubview(balancePendingLabel)
+        balancePendingLabel.font = Theme.shared.fonts.amountWarningLabel
+        balancePendingLabel.textColor = Theme.shared.colors.amountWarningLabel
+        balancePendingLabel.numberOfLines = 0
+        balancePendingLabel.textAlignment = .center
+        balancePendingLabel.lineBreakMode = .byWordWrapping
+        balancePendingLabel.text = localized("add_amount.info.wait_completion_previous_tx.description")
+        balancePendingLabel.sizeToFit()
 
         // tx fee
         txViewContainer.alpha = 0.0

@@ -3,6 +3,7 @@
 "common.send.with_param" = "Send %@";
 
 "common.fee" = "Transaction Fee";
+"common.wallet_balance" = "Wallet Balance";
 "common.fee_info.title" = "Where does the fee go?";
 "common.fee_info.description" = "The transaction fee is distributed to the thousands of computers (also known as “miners”) who ensure that your Tari transactions are fast and secure.";
 
@@ -88,7 +89,7 @@
 "add_amount.error.available_balance.title" = "Available Balance error";
 "add_amount.error.available_balance.description" = "Could not get available balance from wallet";
 "add_amount.info.wait_completion_previous_tx.title" = "Hold your horses! 🐴";
-"add_amount.info.wait_completion_previous_tx.description" = "Sorry, you can’t send this much tXTR until your previous transaction(s) are complete. Please wait for at least one transaction to complete and then try again.";
+"add_amount.info.wait_completion_previous_tx.description" = "Sorry, you can’t send this much tXTR\nuntil your previous transaction(s) are complete.\nPlease wait for at least one transaction\nto complete and then try again.";
 "add_amount.error.invalid_number" = "Invalid number";
 "add_amount.warning.not_enough_tari" = "Not enough tXTR in your available balance";
 
