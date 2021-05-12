@@ -43,9 +43,14 @@ import GiphyUISDK
 import GiphyCoreSDK
 
 class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate, GPHGridDelegate, UIScrollViewDelegate {
+
+    private static var giphyKeywords = ["money", "money machine", "rich"]
+    private static var giphyCurrentKeywordIndex = 0
+
     var publicKey: PublicKey?
     var amount: MicroTari?
     var deepLinkParams: DeepLinkParams?
+
     private let sidePadding = Theme.shared.sizes.appSidePadding
     private let navigationBar = NavigationBar()
     fileprivate let scrollView = UIScrollView()
@@ -98,6 +103,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.delegate = self
+
         setup()
         hideKeyboardWhenTappedAroundOrSwipedDown(view: attachmentContainer)
         displayAliasOrEmojiId()
@@ -502,8 +508,16 @@ extension AddNoteViewController {
         poweredByGiphyImageView.bottomAnchor.constraint(equalTo: giphyVC.view.topAnchor, constant: -giffPadding).isActive = true
         poweredByGiphyImageView.isHidden = true
 
-        giphyVC.content = GPHContent.search(withQuery: "Money", mediaType: .gif, language: .english)
+        let keyword = AddNoteViewController.giphyKeywords[
+            AddNoteViewController.giphyCurrentKeywordIndex % AddNoteViewController.giphyKeywords.count
+        ]
+        giphyVC.content = GPHContent.search(
+            withQuery: keyword,
+            mediaType: .gif,
+            language: .english
+        )
         giphyVC.update()
+        AddNoteViewController.giphyCurrentKeywordIndex = AddNoteViewController.giphyCurrentKeywordIndex + 1
     }
 
     private func showGiphyCarousel(animated: Bool = true) {
