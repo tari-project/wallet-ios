@@ -92,20 +92,9 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        backUpWalletItem = backupNowSectionItems.first(
-            where: {
-                $0.title == BackupWalletSettingsItem.backupNow.rawValue
-            }
-        )
-        iCloudBackupsItem = settingsSectionItems.first(
-            where: {
-                $0.title == BackupWalletSettingsItem.iCloudBackups.rawValue
-            }
-        )
-
         tableView.delegate = self
         tableView.dataSource = self
-        observeICloudBackupsSwitch()
+        reloadTableViewWithAnimation()
     }
 
     private func onBackupNowAction() {
@@ -136,6 +125,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
 
     private func observeICloudBackupsSwitch() {
         guard let iCloudBackupsItem = self.iCloudBackupsItem else { return }
+        kvoiCloudBackupsToken?.invalidate()
         kvoiCloudBackupsToken = iCloudBackupsItem.observe(\.isSwitchIsOn, options: .new) {
             [weak self]
             (item, change) in
@@ -241,8 +231,19 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
                 at: 1
             )
         }
-
         super.reloadTableViewWithAnimation()
+
+        backUpWalletItem = backupNowSectionItems.first(
+            where: {
+                $0.title == BackupWalletSettingsItem.backupNow.rawValue
+            }
+        )
+        iCloudBackupsItem = settingsSectionItems.first(
+            where: {
+                $0.title == BackupWalletSettingsItem.iCloudBackups.rawValue
+            }
+        )
+        observeICloudBackupsSwitch()
     }
 
     override func updateMarks() {

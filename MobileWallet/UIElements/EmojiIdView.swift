@@ -446,7 +446,7 @@ extension EmojiIdView {
         tipView.translatesAutoresizingMaskIntoConstraints = false
         tipView.widthAnchor.constraint(
             equalTo: parentView.widthAnchor,
-            constant: -Theme.shared.sizes.appSidePadding
+            constant: -Theme.shared.sizes.appSidePadding * 2
         ).isActive = true
         tipView.centerXAnchor.constraint(
             equalTo: parentView.centerXAnchor

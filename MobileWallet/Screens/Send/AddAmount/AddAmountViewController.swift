@@ -164,14 +164,12 @@ class AddAmountViewController: UIViewController {
                 showBalanceExceeded(balance: totalMicroTari!.formatted)
                 walletBalanceStackView.isHidden = false
                 continueButton.variation = .disabled
-                hideTxFee()
             case WalletErrors.fundsPending:
                 balanceExceededLabel.isHidden = true
                 balancePendingLabel.isHidden = false
                 showBalanceExceeded(balance: totalMicroTari!.formatted)
                 walletBalanceStackView.isHidden = true
                 continueButton.variation = .disabled
-                hideTxFee()
             default:
                 break
             }
