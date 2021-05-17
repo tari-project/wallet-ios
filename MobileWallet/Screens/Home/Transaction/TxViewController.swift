@@ -274,13 +274,14 @@ class TxViewController: UIViewController {
             .receievedTxReply,
             .receivedFinalizedTx,
             .txBroadcast,
+            .txMinedUnconfirmed,
             .txMined
         ]
 
         eventTypes.forEach { (eventType) in
             TariEventBus.onMainThread(self, eventType: eventType) { [weak self] (result) in
                 guard let self = self else { return }
-                self.didRecieveUpdatedTx(updatedTx: result?.object as? TxProtocol)
+                self.didReceiveUpdatedTx(updatedTx: result?.object as? TxProtocol)
             }
         }
     }
@@ -289,7 +290,7 @@ class TxViewController: UIViewController {
         TariEventBus.unregister(self)
     }
 
-    func didRecieveUpdatedTx(updatedTx: TxProtocol?) {
+    func didReceiveUpdatedTx(updatedTx: TxProtocol?) {
         guard let currentTx = transaction else {
             return
         }
@@ -403,8 +404,15 @@ class TxViewController: UIViewController {
             } else if tx.direction == .outbound {
                 newState = .txWaitingForRecipient
             }
-        case .broadcast, .completed, .minedUnconfirmed:
-            newState = .txCompleted
+        case .broadcast, .completed:
+            newState = .txCompleted(confirmationCount: 1)
+        case .minedUnconfirmed:
+            guard let confirmationCount = (tx as? CompletedTx)?.confirmationCount,
+                  confirmationCount.1 == nil else {
+                newState = .txCompleted(confirmationCount: 1)
+                break
+            }
+            newState = .txCompleted(confirmationCount: confirmationCount.0 + 1)
         default:
             newState = nil
         }

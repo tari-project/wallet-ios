@@ -111,7 +111,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
 
         // ZIP db files only if this is debug
         // An archive needs to be created first before multipl files can be appended.
-        // If this is mainnet then just the current log file gets created and the rest will get appeneded below.
+        // If this is mainnet then just the current log file gets created and the rest will get appended below.
         var sourceURL = URL(fileURLWithPath: TariLib.shared.logFilePath)
         // Only allow attaching DB files in debugn and testflight
         if TariSettings.shared.environment != .production {

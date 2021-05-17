@@ -192,8 +192,30 @@ class TxTableViewModel: NSObject {
             } else if tx.direction == .outbound {
                 statusMessage = localized("refresh_view.waiting_for_recipient")
             }
-        case .broadcast, .completed, .minedUnconfirmed:
-            statusMessage = localized("refresh_view.final_processing")
+        case .broadcast, .completed:
+            guard let wallet = TariLib.shared.tariWallet,
+                let requiredConfirmationCount = try? wallet.getRequiredConfirmationCount() else {
+                statusMessage = localized("refresh_view.final_processing")
+                break
+            }
+            statusMessage = String(
+                format: localized("refresh_view.final_processing_with_param"),
+                1,
+                requiredConfirmationCount + 1
+            )
+        case .minedUnconfirmed:
+            guard let wallet = TariLib.shared.tariWallet,
+                let confirmationCount = (tx as? CompletedTx)?.confirmationCount,
+                confirmationCount.1 == nil,
+                let requiredConfirmationCount = try? wallet.getRequiredConfirmationCount() else {
+                statusMessage = localized("refresh_view.final_processing")
+                break
+            }
+            statusMessage = String(
+                format: localized("refresh_view.final_processing_with_param"),
+                confirmationCount.0 + 1,
+                requiredConfirmationCount + 1
+            )
         default:
             break
         }

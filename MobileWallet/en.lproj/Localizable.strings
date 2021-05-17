@@ -236,6 +236,7 @@
 /* Refresh view */
 "refresh_view.checking" = "Checking for Updates";
 "refresh_view.final_processing" = "Completing final processing…";
+"refresh_view.final_processing_with_param" = "Completing final processing (%d of %d)";
 "refresh_view.receiving_new_txs" = "Receiving new transactions";
 "refresh_view.completing_txs" = "Completing your transactions";
 "refresh_view.updating_txs" = "Updating your transactions";

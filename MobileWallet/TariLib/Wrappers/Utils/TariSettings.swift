@@ -66,7 +66,7 @@ enum AppEnvironment {
 struct TariSettings {
     static let shared = TariSettings()
 
-    let network: TariNetwork = .stibbons // TODO this will come from a build config
+    let network: TariNetwork = .stibbons
     let discoveryTimeoutSec: UInt64 = 20
     let safMessageDurationSec: UInt64 = 10800
     let deeplinkURI = "tari"

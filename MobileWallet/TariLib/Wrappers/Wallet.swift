@@ -89,6 +89,8 @@ class Wallet {
     var dbName: String
     var logPath: String
 
+    private var requiredConfirmationCount: UInt64?
+
     static let defaultFeePerGram = MicroTari(10)
     static let defaultKernelCount = UInt64(1)
     static let defaultOutputCount = UInt64(2)
@@ -880,7 +882,10 @@ class Wallet {
         return result
     }
 
-    func getConfirmations() throws -> UInt64 {
+    func getRequiredConfirmationCount() throws -> UInt64 {
+        if let requiredConfirmationCount = requiredConfirmationCount {
+            return requiredConfirmationCount
+        }
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
                  wallet_get_num_confirmations_required(ptr, error)
@@ -888,6 +893,7 @@ class Wallet {
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
+        requiredConfirmationCount = result
         return result
     }
 

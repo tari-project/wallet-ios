@@ -60,6 +60,17 @@ class CompletedTx: TxProtocol {
         return (result, errorCode != 0 ? CompletedTxError.generic(errorCode) : nil)
     }
 
+    var confirmationCount: (UInt64, Error?) {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(
+            to: &errorCode, {
+                error in
+                completed_transaction_get_confirmations(ptr, error)
+            }
+        )
+        return (result, errorCode != 0 ? CompletedTxError.generic(errorCode) : nil)
+    }
+
     var microTari: (MicroTari?, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(

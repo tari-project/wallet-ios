@@ -40,7 +40,7 @@
 
 import UIKit
 
-enum AnimatedRefreshingViewState {
+enum AnimatedRefreshingViewState: Equatable {
     // home view states
     case loading // sync.ing with base node
     case receiving // txs have been received or mined while syncing
@@ -52,7 +52,7 @@ enum AnimatedRefreshingViewState {
     // tx view states
     case txWaitingForSender
     case txWaitingForRecipient
-    case txCompleted
+    case txCompleted(confirmationCount: UInt64)
 }
 
 private class RefreshingInnerView: UIView {
@@ -127,10 +127,19 @@ private class RefreshingInnerView: UIView {
             spinner.stopAnimating()
             statusLabel.text = localized("refresh_view.waiting_for_sender")
             statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
-        case .txCompleted:
+        case .txCompleted(let confirmationCount):
+            guard let wallet = TariLib.shared.tariWallet,
+                let requiredConfirmationCount = try? wallet.getRequiredConfirmationCount() else {
+                statusLabel.text = localized("refresh_view.final_processing")
+                break
+            }
             emojiLabel.text = ""
             spinner.stopAnimating()
-            statusLabel.text = localized("refresh_view.final_processing")
+            statusLabel.text = String(
+                format: localized("refresh_view.final_processing_with_param"),
+                confirmationCount,
+                requiredConfirmationCount + 1
+            )
             statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         }
     }
@@ -320,10 +329,10 @@ class AnimatedRefreshingView: UIView {
         }
     }
 
-    func updateState(_ type: AnimatedRefreshingViewState,
+    func updateState(_ newState: AnimatedRefreshingViewState,
                      animated: Bool = true,
                      completion: (() -> Void)? = nil) {
-        guard currentState != type else {
+        guard currentState != newState else {
             return
         }
         if isUpdatingState {
@@ -331,18 +340,18 @@ class AnimatedRefreshingView: UIView {
                 deadline: .now() + 0.5 + CATransaction.animationDuration()
             ) {
                 [weak self] in
-                self?.updateState(type)
+                self?.updateState(newState)
             }
             return
         }
 
         isUpdatingState = true
-        currentState = type
+        currentState = newState
 
         let shiftUpPoints: CGFloat = 20
 
         let newInnerView = RefreshingInnerView()
-        newInnerView.setupView(type)
+        newInnerView.setupView(newState)
         newInnerView.alpha = 0
         setupInnerView(newInnerView)
 
