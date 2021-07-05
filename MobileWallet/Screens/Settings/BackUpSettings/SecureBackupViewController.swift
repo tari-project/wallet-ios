@@ -93,7 +93,7 @@ class SecureBackupViewController: SettingsParentViewController {
                         self.finishPendingProcess()
                     }
                 }
-                BPKeychainWrapper.setBackupPasswordToKeychain(password: password)
+                AppKeychainWrapper.setBackupPasswordToKeychain(password: password)
             } catch {
                 self.failedToCreateBackup(error: error)
             }

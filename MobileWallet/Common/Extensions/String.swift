@@ -58,6 +58,16 @@ extension String {
             return nil
         }
     }
+
+    static func random(unicodeRange: Range<UInt8> = 0..<UInt8.max, length: Int) -> String {
+        (0..<length)
+            .map { _ in
+                let charNumber = UInt8.random(in: unicodeRange)
+                let unicode = UnicodeScalar(charNumber)
+                return String(Character(unicode))
+            }
+            .joined()
+    }
 }
 
 extension StringProtocol {

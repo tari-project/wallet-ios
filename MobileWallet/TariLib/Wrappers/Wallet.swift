@@ -82,7 +82,20 @@ struct CallbackTxResult {
     let success: Bool
 }
 
-class Wallet {
+final class Wallet {
+
+    enum WalletError: Int32, Error {
+        case encryptionError = 420
+        case unknown = -1
+
+        init?(errorCode: Int32) {
+            guard errorCode > 0 else { return nil }
+            self = WalletError(rawValue: errorCode) ?? .unknown
+        }
+
+        var genericError: WalletErrors { WalletErrors.generic(rawValue) }
+    }
+
     private var ptr: OpaquePointer
 
     var dbPath: String
@@ -419,35 +432,60 @@ class Wallet {
         dbName = commsConfig.dbName
         logPath = loggingFilePath
 
-        var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_create(
-                commsConfig.pointer,
-                loggingFilePathPointer,
-                2, // number of rolling log files
-                10 * 1024 * 1024, // rolling log file max size in bytes
-                nil, // TODO use passphrase when ready to implement
-                receivedTxCallback,
-                receivedTxReplyCallback,
-                receivedFinalizedTxCallback,
-                txBroadcastCallback,
-                txMinedCallback,
-                txMinedUnconfirmedCallback,
-                directSendResultCallback,
-                storeAndForwardSendResultCallback,
-                txCancellationCallback,
-                utxoValidationCompleteCallback,
-                stxoValidationCompleteCallback,
-                invalidTXOValidationCompleteCallback,
-                txValidationCompleteCallback,
-                storedMessagesReceivedCallback,
-                error
-            )
-        })
-        guard errorCode == 0 else {
-            throw WalletErrors.generic(errorCode)
+        func createWallet(passphrase: String?) -> (result: OpaquePointer?, error: WalletError?) {
+            var errorCode: Int32 = -1
+            let result = withUnsafeMutablePointer(to: &errorCode, { error in
+                wallet_create(
+                    commsConfig.pointer,
+                    loggingFilePathPointer,
+                    2, // number of rolling log files
+                    10 * 1024 * 1024, // rolling log file max size in bytes
+                    passphrase,
+                    receivedTxCallback,
+                    receivedTxReplyCallback,
+                    receivedFinalizedTxCallback,
+                    txBroadcastCallback,
+                    txMinedCallback,
+                    txMinedUnconfirmedCallback,
+                    directSendResultCallback,
+                    storeAndForwardSendResultCallback,
+                    txCancellationCallback,
+                    utxoValidationCompleteCallback,
+                    stxoValidationCompleteCallback,
+                    invalidTXOValidationCompleteCallback,
+                    txValidationCompleteCallback,
+                    storedMessagesReceivedCallback,
+                    error
+                )
+            })
+
+            let error = WalletError(errorCode: errorCode)
+
+            return (result, error)
         }
-        ptr = result!
+
+        func handleInitializationFlow(passphrase: String?) throws -> (pointer: OpaquePointer, encryptionEnabled: Bool) {
+
+            let createWalletResponse = createWallet(passphrase: passphrase)
+
+            switch createWalletResponse {
+            case (_, .encryptionError) where passphrase != nil:
+                return try handleInitializationFlow(passphrase: nil)
+            case (_, .some(let error)):
+                throw error.genericError
+            case (.some(let result), _):
+                return (result, passphrase != nil)
+            default:
+                fatalError()
+            }
+        }
+
+        let result = try handleInitializationFlow(passphrase: Self.passphrase())
+
+        ptr = result.pointer
+
+        guard !result.encryptionEnabled else { return }
+        try enableEncryption()
     }
 
     func removeContact(_ contact: Contact) throws {
@@ -918,6 +956,34 @@ class Wallet {
         }
         return result
     }
+
+    func enableEncryption() throws {
+        var errorCode: Int32 = -1
+        withUnsafeMutablePointer(to: &errorCode) { wallet_apply_encryption(ptr, Self.passphrase(), $0) }
+        guard errorCode > 0 else { return }
+        throw WalletErrors.generic(errorCode)
+    }
+
+    func disableEncryption() throws {
+        var errorCode: Int32 = -1
+        withUnsafeMutablePointer(to: &errorCode) { wallet_remove_encryption(ptr, $0) }
+        guard errorCode > 0 else { return }
+        throw WalletErrors.generic(errorCode)
+    }
+
+    // MARK: - Helpers
+
+    private static func passphrase() -> String {
+        guard let passphrase = AppKeychainWrapper.dbPassphrase else {
+            let newPassphrase = String.random(length: 32)
+            AppKeychainWrapper.dbPassphrase = newPassphrase
+            return newPassphrase
+        }
+
+        return passphrase
+    }
+
+    // MARK: - Deinit
 
     deinit {
         TariLogger.warn("Wallet destroy")

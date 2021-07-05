@@ -376,9 +376,9 @@
 		37B48A7F24B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B48A7E24B3312000F8A8D2 /* PasswordVerificationViewController.swift */; };
 		37B48A8024B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B48A7E24B3312000F8A8D2 /* PasswordVerificationViewController.swift */; };
 		37B48A8124B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B48A7E24B3312000F8A8D2 /* PasswordVerificationViewController.swift */; };
-		37B48A8324B3968F00F8A8D2 /* BPKeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B48A8224B3968F00F8A8D2 /* BPKeychainWrapper.swift */; };
-		37B48A8424B3968F00F8A8D2 /* BPKeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B48A8224B3968F00F8A8D2 /* BPKeychainWrapper.swift */; };
-		37B48A8524B3968F00F8A8D2 /* BPKeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B48A8224B3968F00F8A8D2 /* BPKeychainWrapper.swift */; };
+		37B48A8324B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B48A8224B3968F00F8A8D2 /* AppKeychainWrapper.swift */; };
+		37B48A8424B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B48A8224B3968F00F8A8D2 /* AppKeychainWrapper.swift */; };
+		37B48A8524B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B48A8224B3968F00F8A8D2 /* AppKeychainWrapper.swift */; };
 		37B5289424CB1E16008C80EB /* NetworkSpeedProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B5289324CB1E16008C80EB /* NetworkSpeedProvider.swift */; };
 		37B5289524CB1E16008C80EB /* NetworkSpeedProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B5289324CB1E16008C80EB /* NetworkSpeedProvider.swift */; };
 		37B5289624CB1E16008C80EB /* NetworkSpeedProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B5289324CB1E16008C80EB /* NetworkSpeedProvider.swift */; };
@@ -729,7 +729,7 @@
 		37B4449D24890F6200592D92 /* ICloudBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICloudBackup.swift; sourceTree = "<group>"; };
 		37B444A8248949B800592D92 /* Checkbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Checkbox.swift; sourceTree = "<group>"; };
 		37B48A7E24B3312000F8A8D2 /* PasswordVerificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasswordVerificationViewController.swift; sourceTree = "<group>"; };
-		37B48A8224B3968F00F8A8D2 /* BPKeychainWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BPKeychainWrapper.swift; sourceTree = "<group>"; };
+		37B48A8224B3968F00F8A8D2 /* AppKeychainWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppKeychainWrapper.swift; sourceTree = "<group>"; };
 		37B5289324CB1E16008C80EB /* NetworkSpeedProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSpeedProvider.swift; sourceTree = "<group>"; };
 		37BB696A245705D20013AC4D /* RadialGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
 		37C8BA342480F59B005BBC05 /* WaveEmojiAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WaveEmojiAnimation.json; sourceTree = "<group>"; };
@@ -914,7 +914,7 @@
 			children = (
 				0048AF42245ADCA300E1A359 /* env.json */,
 				37765D2524A35BA20091AE2A /* AESEncryption.swift */,
-				37B48A8224B3968F00F8A8D2 /* BPKeychainWrapper.swift */,
+				37B48A8224B3968F00F8A8D2 /* AppKeychainWrapper.swift */,
 				00BBD800237C5B5200EBF5E6 /* CommandLineArgs.swift */,
 				00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */,
 				A01F54A7255EAB7E00F49AFA /* Localization.swift */,
@@ -2014,7 +2014,7 @@
 				004997BB2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */,
-				37B48A8324B3968F00F8A8D2 /* BPKeychainWrapper.swift in Sources */,
+				37B48A8324B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */,
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				37CFAA76248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */,
 				3708D74A247FCF2300807D72 /* SettingsViewController.swift in Sources */,
@@ -2187,7 +2187,7 @@
 				00D7BD8A24349AE3009DD097 /* UIDevice.swift in Sources */,
 				00F53A6B24290FAE00448466 /* StorageCleanup.swift in Sources */,
 				37ABB69524781F8600F08163 /* UILabelWithPadding.swift in Sources */,
-				37B48A8424B3968F00F8A8D2 /* BPKeychainWrapper.swift in Sources */,
+				37B48A8424B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */,
 				377C951F2522213800CC1696 /* TxsListViewController.swift in Sources */,
 				004277E823DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
 				37CB9F8B2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
@@ -2310,7 +2310,7 @@
 				37AFE267245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				37C8BA4D24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */,
 				37049272247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
-				37B48A8524B3968F00F8A8D2 /* BPKeychainWrapper.swift in Sources */,
+				37B48A8524B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */,
 				BFE1FC0A23E3ACDA00BA5EEC /* WalletCreationViewController.swift in Sources */,
 				004997AD2382E893000A0B7D /* PendingOutboundTxs.swift in Sources */,
 				00A994352396434B007D9990 /* QRButton.swift in Sources */,
