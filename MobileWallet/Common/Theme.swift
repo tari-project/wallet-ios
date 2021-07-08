@@ -254,6 +254,10 @@ struct Colors: Loopable {
     let restorePendingViewDescription = UIColor(named: "RestorePendingViewDescription")
     let restorePendingViewProgressView = UIColor(named: "RestorePendingViewProgressView")
 
+    // Connection Status
+    var connectionStatusOk = UIColor(named: "ConnectionStatusOk")
+    var connectionStatusWarning = UIColor(named: "ConnectionStatusWarning")
+    var connectionStatusError = UIColor(named: "ConnectionStatusError")
 }
 
 struct Images: Loopable {
@@ -427,6 +431,8 @@ struct Fonts: Loopable {
     let settingsPasswordTitle = UIFont.Avenir.medium.withSize(13.0)
     let settingsPasswordPlaceholder = UIFont.Avenir.roman.withSize(14.0)
     let settingsPasswordWarning = UIFont.Avenir.heavy.withSize(13.0)
+
+    let tooltip = UIFont.Avenir.heavy.withSize(12.0)
 }
 
 struct Sizes {

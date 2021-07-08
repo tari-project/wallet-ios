@@ -65,6 +65,8 @@ class HomeViewController: UIViewController {
     }()
 
     private let floatingPanelController = FloatingPanelController()
+    private let tapOnKeyWindowGestureRecognizer = UITapGestureRecognizer()
+
     private lazy var grabberHandle = UIView(frame: grabberRect(width: HomeViewController.GRABBER_WIDTH))
 
     private var hapticEnabled = false
@@ -106,6 +108,19 @@ class HomeViewController: UIViewController {
         }
     }
 
+    private let connectionIndicatorView: ConnectionIndicatorView = {
+        let view = ConnectionIndicatorView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    private let tooltipView: TooltipView = {
+        let view = TooltipView()
+        view.alpha = 0.0
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     override var navBarHeight: CGFloat {
         return (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0.0) + 56
     }
@@ -116,6 +131,7 @@ class HomeViewController: UIViewController {
         overrideUserInterfaceStyle = .light
         setup()
         setupKeyServer()
+        setupConnectionStatusMonitor()
         Tracker.shared.track("/home", "Home - Transaction List")
         TariEventBus.onMainThread(self, eventType: .balanceUpdate) {
             [weak self] (_) in
@@ -167,6 +183,12 @@ class HomeViewController: UIViewController {
         deepLinker.checkDeepLink()
         checkImportSecondUtxo()
         safeCheckIncompatibleNetwork()
+        enableWindowTapGesture()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        disableWindowTapGesture()
     }
 
     private func safeCheckIncompatibleNetwork() {
@@ -474,6 +496,55 @@ class HomeViewController: UIViewController {
         navigationController.modalPresentationStyle = .fullScreen
         UIApplication.shared.menuTabBarController?.present(navigationController, animated: true)
     }
+
+    // MARK: - Busness Logic
+
+    private func setupConnectionStatusMonitor() {
+        TariEventBus.onMainThread(self, eventType: .connectionMonitorStatusChanged) { [weak self] notification in
+            guard let connectionState = notification?.object as? ConnectionMonitorState else { return }
+            self?.handle(connectionState: connectionState)
+        }
+        handle(connectionState: ConnectionMonitor.shared.state)
+    }
+
+    private func handle(connectionState: ConnectionMonitorState) {
+
+        let indicatorState: ConnectionIndicatorView.State
+        let tooltipText: String
+
+        switch (connectionState.reachability, connectionState.torStatus, connectionState.baseNodeSyncStatus) {
+        case (.offline, _, _):
+            indicatorState = .disconnected
+            tooltipText = localized("connection_status.error.no_network_connection")
+        case (.unknown, _, _):
+            indicatorState = .disconnected
+            tooltipText = localized("connection_status.error.unknown_network_connection_status")
+        case (_, .failed, _):
+            indicatorState = .disconnected
+            tooltipText = localized("connection_status.error.disconnected_from_tor")
+        case (_, .connecting, _):
+            indicatorState = .disconnected
+            tooltipText = localized("connection_status.error.connecting_with_tor")
+        case (_, .unknown, _):
+            indicatorState = .disconnected
+            tooltipText = localized("connection_status.error.unknown_tor_connection_status")
+        case (_, _, .notInited):
+            indicatorState = .disconnected
+            tooltipText = localized("connection_status.error.disconnected_from_base_node")
+        case (_, _, .pending):
+            indicatorState = .connectedWithIssues
+            tooltipText = localized("connection_status.warning.sync_in_progress")
+        case (_, _, .failure):
+            indicatorState = .connectedWithIssues
+            tooltipText = localized("connection_status.warning.sync_failed")
+        default:
+            indicatorState = .connected
+            tooltipText = localized("connection_status.ok")
+        }
+
+        connectionIndicatorView.currentState.send(indicatorState)
+        tooltipView.text.send(tooltipText)
+    }
 }
 
 // MARK: - Actions
@@ -677,7 +748,9 @@ extension HomeViewController {
         setupTopButtons()
         setupBalanceLabel()
         setupBalanceValueLabel()
+        setupNetworkIndicator()
         setupFloatingPanel()
+        setupTooltipView()
         setupNavigationBar()
     }
 
@@ -742,6 +815,36 @@ extension HomeViewController {
         balanceValueLabel.centerYAnchor.constraint(equalTo: balanceContainer.centerYAnchor).isActive = true
         balanceValueLabel.leadingAnchor.constraint(equalTo: valueIcon.trailingAnchor, constant: 8).isActive = true
         balanceValueLabel.trailingAnchor.constraint(equalTo: balanceContainer.trailingAnchor).isActive = true
+    }
+
+    private func setupNetworkIndicator() {
+
+        view.addSubview(connectionIndicatorView)
+
+        let constraints = [
+            connectionIndicatorView.centerYAnchor.constraint(equalTo: balanceValueLabel.centerYAnchor),
+            connectionIndicatorView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+
+        connectionIndicatorView.onTap = { [weak self] in
+            self?.updateTooltipState(isVisible: true)
+        }
+    }
+
+    private func setupTooltipView() {
+
+        view.addSubview(tooltipView)
+
+        let constraints = [
+            tooltipView.tipXAnchor.constraint(equalTo: connectionIndicatorView.centerXAnchor),
+            tooltipView.tipYAnchor.constraint(equalTo: connectionIndicatorView.centerYAnchor),
+            tooltipView.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: 12.0),
+            tooltipView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12.0)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
     }
 
     private func setupNavigationBar() {
@@ -864,5 +967,29 @@ extension HomeViewController {
 
         gradientLayer.colors = toColors
         gradientLayer.add(animation, forKey: "animateGradientColorChange")
+    }
+
+    private func updateTooltipState(isVisible: Bool) {
+        UIView.animate(withDuration: 0.3) {
+            self.tooltipView.alpha = isVisible ? 1.0 : 0.0
+        }
+    }
+
+    private func enableWindowTapGesture() {
+        tapOnKeyWindowGestureRecognizer.delegate = self
+        UIApplication.shared.keyWindow?.addGestureRecognizer(tapOnKeyWindowGestureRecognizer)
+    }
+
+    private func disableWindowTapGesture() {
+        UIApplication.shared.keyWindow?.removeGestureRecognizer(tapOnKeyWindowGestureRecognizer)
+    }
+}
+
+extension HomeViewController: UIGestureRecognizerDelegate {
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        let shouldBlockTouchEvent = touch.view === connectionIndicatorView && tooltipView.alpha == 1.0
+        updateTooltipState(isVisible: false)
+        return shouldBlockTouchEvent
     }
 }

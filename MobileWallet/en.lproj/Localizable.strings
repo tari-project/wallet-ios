@@ -447,3 +447,14 @@
 "incompatible_network.description.bold_part_2"="Bad news:";
 "incompatible_network.confirm"="Start over, I say!";
 "incompatible_network.cancel"="I'll do it later";
+
+/* Connection status */
+"connection_status.ok" = "Everything ok. Move along, nothing to see here";
+"connection_status.warning.sync_in_progress" = "Syncing with base node";
+"connection_status.warning.sync_failed" = "Unable to sync with base node";
+"connection_status.error.no_network_connection" = "Unable to connect with internet";
+"connection_status.error.unknown_network_connection_status" = "Unknown internet connection status";
+"connection_status.error.disconnected_from_tor" = "Failed to connect with Tor";
+"connection_status.error.connecting_with_tor" = "Connecting with Tor";
+"connection_status.error.unknown_tor_connection_status" = "Unknown connection status with Tor";
+"connection_status.error.disconnected_from_base_node" = "Disconnected from the base node";

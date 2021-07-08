@@ -422,6 +422,12 @@
 		37EE285C2485649800335EDC /* WordsFlexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EE28592485649800335EDC /* WordsFlexView.swift */; };
 		37F29D5824504B92008C046F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
 		37F29D5924504B92008C046F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
+		3A811EEF26957856003D0DF3 /* ConnectionIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */; };
+		3A811EF12695BAEE003D0DF3 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EF02695BAEE003D0DF3 /* TooltipView.swift */; };
+		3AD3E0342696F471008FE1B6 /* ConnectionIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */; };
+		3AD3E0352696F471008FE1B6 /* ConnectionIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */; };
+		3AD3E0362696F47C008FE1B6 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EF02695BAEE003D0DF3 /* TooltipView.swift */; };
+		3AD3E0372696F47C008FE1B6 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EF02695BAEE003D0DF3 /* TooltipView.swift */; };
 		491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		491AB89B23F1B36100372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AddAmountViewController.swift */; };
@@ -745,6 +751,8 @@
 		37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheckboxSelectAnimation.json; sourceTree = "<group>"; };
 		37EE28592485649800335EDC /* WordsFlexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordsFlexView.swift; sourceTree = "<group>"; };
 		39441F6A326A7475D12D0092 /* Pods_MobileWalletNotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletNotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionIndicatorView.swift; sourceTree = "<group>"; };
+		3A811EF02695BAEE003D0DF3 /* TooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipView.swift; sourceTree = "<group>"; };
 		491AB89F23F3FF4400372189 /* AddAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAmountViewController.swift; sourceTree = "<group>"; };
 		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
 		4C2C95AF23795919005058AB /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libwallet_ffi.a; sourceTree = "<group>"; };
@@ -1146,6 +1154,7 @@
 		00E2BCB6236B46A400C2A105 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				3A811EED26957844003D0DF3 /* Views */,
 				37E4B62A24501FB200FA302B /* HomeViewController.swift */,
 				00A6779C23743674001A853E /* Transaction */,
 				00E2BCA6236AB25500C2A105 /* TransactionHistory */,
@@ -1417,6 +1426,15 @@
 				37C8BA342480F59B005BBC05 /* WaveEmojiAnimation.json */,
 			);
 			path = WaveEmojiAnimation;
+			sourceTree = "<group>";
+		};
+		3A811EED26957844003D0DF3 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */,
+				3A811EF02695BAEE003D0DF3 /* TooltipView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		491AB89E23F3FF1200372189 /* AddAmount */ = {
@@ -2007,6 +2025,7 @@
 				00D7BD8924349AE3009DD097 /* UIDevice.swift in Sources */,
 				370E887824FEA54100576F61 /* NetworkTools.m in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTx.swift in Sources */,
+				3A811EEF26957856003D0DF3 /* ConnectionIndicatorView.swift in Sources */,
 				BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */,
 				37ABB69424781F8600F08163 /* UILabelWithPadding.swift in Sources */,
 				0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
@@ -2059,6 +2078,7 @@
 				0053873024065F6C00901A68 /* SlideView.swift in Sources */,
 				00BBD816237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
+				3A811EF12695BAEE003D0DF3 /* TooltipView.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				00B084C0249E471800F7B9BD /* EmojiSet.swift in Sources */,
 				377C951E2522213800CC1696 /* TxsListViewController.swift in Sources */,
@@ -2194,6 +2214,7 @@
 				372AECAC24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */,
 				0042780023E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
+				3AD3E0342696F471008FE1B6 /* ConnectionIndicatorView.swift in Sources */,
 				491AB8A123F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				004277FC23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				003DF41724C05EC900675A2C /* PartialBackup.swift in Sources */,
@@ -2268,6 +2289,7 @@
 				3708D753247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
 				3730E15224C884D500827DFA /* MenuTabBarController.swift in Sources */,
 				00947CC823D1A35200526DD5 /* TxsProtocol.swift in Sources */,
+				3AD3E0362696F47C008FE1B6 /* TooltipView.swift in Sources */,
 				37C8BA5024813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				37ABB69124781CE800F08163 /* UILabel.swift in Sources */,
 				373CCDC62490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
@@ -2328,6 +2350,7 @@
 				491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				BFAB5D1323FDEA6A009E8563 /* EmojiIdView.swift in Sources */,
 				37B48A8124B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
+				3AD3E0352696F471008FE1B6 /* ConnectionIndicatorView.swift in Sources */,
 				37EE285C2485649800335EDC /* WordsFlexView.swift in Sources */,
 				BFF1ED9F2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				370E886524FE97E100576F61 /* OnionSettings.swift in Sources */,
@@ -2351,6 +2374,7 @@
 				00BCE481240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				3745508C24B891D1006295C8 /* ICloudServiceMock.swift in Sources */,
 				37547D542460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */,
+				3AD3E0372696F47C008FE1B6 /* TooltipView.swift in Sources */,
 				00BBD803237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				377C95202522213800CC1696 /* TxsListViewController.swift in Sources */,
