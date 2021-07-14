@@ -268,6 +268,7 @@ class ICloudBackup: NSObject {
         } catch {
             inProgress = false
             isLastBackupFailed = true
+            try cleanTempDirectory()
             throw error
         }
     }
@@ -289,7 +290,7 @@ class ICloudBackup: NSObject {
                     BackupScheduler.shared.startObserveEvents()
 
                     if password != nil {
-                        BPKeychainWrapper.setBackupPasswordToKeychain(password: password!)
+                        AppKeychainWrapper.setBackupPasswordToKeychain(password: password!)
                     }
                 } else {
                     do {
@@ -512,7 +513,7 @@ extension ICloudBackup {
                 self.scheduleNotification()
             }
 
-            let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+            let password = AppKeychainWrapper.loadBackupPasswordFromKeychain()
             do {
                 try self.createWalletBackup(password: password)
             } catch {
@@ -748,6 +749,10 @@ extension ICloudBackup {
     }
 
     private func zipWalletDatabase(encrypted: Bool) throws -> URL {
+
+        defer { try? TariLib.shared.tariWallet?.enableEncryption() }
+        try TariLib.shared.tariWallet?.disableEncryption()
+
         let archiveName = fileName + ".zip"
 
         let tmpDirectory = try getTempDirectory()

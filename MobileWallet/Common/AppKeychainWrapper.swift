@@ -1,4 +1,4 @@
-//  BPKeychainWrapper.swift
+//  AppKeychainWrapper.swift
 
 /*
 	Package MobileWallet
@@ -40,8 +40,10 @@
 
 import Foundation
 
-class BPKeychainWrapper {
+enum AppKeychainWrapper {
+
     private static let passwordKey = "BackupPasswordKey"
+    private static let dbPassphraseKey = "DBPassphraseKey"
 
     static func setBackupPasswordToKeychain(password: String) {
         TariSettings.sharedKeychainGroup.set(password, forKey: passwordKey)
@@ -53,5 +55,16 @@ class BPKeychainWrapper {
 
     static func removeBackupPasswordFromKeychain() {
         TariSettings.sharedKeychainGroup.removeObject(forKey: passwordKey)
+    }
+
+    static var dbPassphrase: String? {
+        get { TariSettings.sharedKeychainGroup.string(forKey: dbPassphraseKey) }
+        set {
+            guard let newValue = newValue else {
+                TariSettings.sharedKeychainGroup.removeObject(forKey: dbPassphraseKey)
+                return
+            }
+            TariSettings.sharedKeychainGroup.set(newValue, forKey: dbPassphraseKey)
+        }
     }
 }

@@ -142,7 +142,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
                     actionTitle: localized("backup_wallet_settings.switch.warning.confirm"),
                     cancelTitle: localized("backup_wallet_settings.switch.warning.cancel"),
                     onAction: { [weak self] in
-                            BPKeychainWrapper.removeBackupPasswordFromKeychain()
+                            AppKeychainWrapper.removeBackupPasswordFromKeychain()
                             self?.iCloudBackup.iCloudBackupsIsOn = false
                             self?.iCloudBackup.removeCurrentWalletBackup()
                             self?.reloadTableViewWithAnimation()
@@ -169,7 +169,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
                 case .started:
                     TariEventBus.unregister(self, eventType: .walletStateChanged)
                     do {
-                        let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+                        let password = AppKeychainWrapper.loadBackupPasswordFromKeychain()
                         try ICloudBackup.shared.createWalletBackup(password: password)
                     } catch {
                         self.failedToCreateBackup(error: error)
@@ -183,7 +183,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
             }
         } else {
             do {
-                let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+                let password = AppKeychainWrapper.loadBackupPasswordFromKeychain()
                 try ICloudBackup.shared.createWalletBackup(password: password)
             } catch {
                 failedToCreateBackup(error: error)

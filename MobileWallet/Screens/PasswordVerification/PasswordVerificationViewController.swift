@@ -77,7 +77,7 @@ class PasswordVerificationViewController: SettingsParentViewController {
     }
 
     private func changePasswordAction() {
-        if let currentPassword = BPKeychainWrapper.loadBackupPasswordFromKeychain() {
+        if let currentPassword = AppKeychainWrapper.loadBackupPasswordFromKeychain() {
             if passwordField.checkPassword(currentPassword) {
                 navigationController?.pushViewController(SecureBackupViewController(), animated: true)
             }

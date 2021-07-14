@@ -182,7 +182,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 )
             }
         } else {
-            BPKeychainWrapper.removeBackupPasswordFromKeychain()
+            AppKeychainWrapper.removeBackupPasswordFromKeychain()
             videoView.isHidden = false
             titleLabel.isHidden = false
             createWalletButton.isHidden = false
@@ -218,7 +218,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     private func createWalletBackup() {
         if ICloudBackup.shared.iCloudBackupsIsOn && !ICloudBackup.shared.isValidBackupExists() {
             do {
-                let password = BPKeychainWrapper.loadBackupPasswordFromKeychain()
+                let password = AppKeychainWrapper.loadBackupPasswordFromKeychain()
                 try ICloudBackup.shared.createWalletBackup(password: password)
             } catch {
                 var title = localized("iCloud_backup.error.title.create_backup")
