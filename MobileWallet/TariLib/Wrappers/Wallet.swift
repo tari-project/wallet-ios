@@ -226,62 +226,22 @@ final class Wallet {
     }
 
     static func checkBaseNodeSyncCompletion() {
-        // make a copy of the status map for concurrency protection
-        let validationStatusMap = baseNodeValidationStatusMap
-        // if base node not in sync, then switch to the next base node
-        let baseNodeNotInSync = validationStatusMap.filter {
-            (element) -> Bool in
-            element.value.1 != nil && element.value.1 == .baseNodeNotInSync
-        }.count > 0
-        if baseNodeNotInSync {
-            baseNodeValidationStatusMap.removeAll()
-            let result: [String: Any] = ["result": BaseNodeValidationResult.baseNodeNotInSync]
-            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
+        guard !handleSyncStatus(forResultType: .baseNodeNotInSync) else { return }
+        guard !handleSyncStatus(forResultType: .aborted) else { return }
+        guard !handleSyncStatus(forResultType: .failure) else {
+            try? TariLib.shared.setBasenode(syncAfterSetting: false)
             return
         }
-        // check if any is aborted
-        let aborted = validationStatusMap.filter {
-            (element) -> Bool in
-            element.value.1 != nil && element.value.1 == .aborted
-        }.count > 0
-        if aborted {
-            baseNodeValidationStatusMap.removeAll()
-            let result: [String: Any] = ["result": BaseNodeValidationResult.aborted]
-            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
-            return
-        }
-        // check if any has failed
-        let failed = validationStatusMap.filter {
-            (element) -> Bool in
-            element.value.1 != nil && element.value.1 == .failure
-        }.count > 0
-        if failed {
-            baseNodeValidationStatusMap.removeAll()
-            do {
-                try TariLib.shared.setBasenode(syncAfterSetting: false)
-            } catch {
-                // no-op
-            }
-            let result: [String: Any] = ["result": BaseNodeValidationResult.failure]
-            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
-            return
-        }
-        // if any of the results is null, we're still waiting for all callbacks to happen
-        let inProgress = validationStatusMap.filter {
-            (element) -> Bool in
-            element.value.1 == nil
-        }.count > 0
-        if inProgress { return }
-        // check if it's successful
-        let successful = validationStatusMap.filter {
-            (element) -> Bool in
-            element.value.1 != nil && element.value.1 != .success
-        }.isEmpty
-        if successful {
-            baseNodeValidationStatusMap.removeAll()
-            let result: [String: Any] = ["result": BaseNodeValidationResult.success]
-            TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: result)
-        }
+        guard !handleSyncStatus(forResultType: .none) else { return } // In Progress
+        handleSyncStatus(forResultType: .success)
+    }
+
+    @discardableResult static func handleSyncStatus(forResultType resultType: BaseNodeValidationResult?) -> Bool {
+        let result = baseNodeValidationStatusMap.contains { $0.value.1 == resultType }
+        guard result, resultType != nil else { return result }
+        baseNodeValidationStatusMap.removeAll()
+        TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: ["result": resultType])
+        return result
     }
 
     init(commsConfig: CommsConfig, loggingFilePath: String) throws {
