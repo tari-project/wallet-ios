@@ -130,14 +130,8 @@ class TariLib {
         return config
     }
 
-    static let currentBaseNodeUserDefaultsKey = "currentBaseNodeSet"
-
     private init() {
         OnionConnector.shared.addObserver(self)
-    }
-
-    deinit {
-
     }
 
     private func transportType() throws -> TransportType {
@@ -224,32 +218,29 @@ class TariLib {
             TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
             return
         }
-        do {
-            try setBasenode(syncAfterSetting: false)
-        } catch {
-            // no-op for now
-        }
+        try? setupBasenode()
         startListeningToBaseNodeSync()
         backgroundStorageCleanup()
         walletState = .started
     }
 
-    func setBasenode(syncAfterSetting: Bool = true, _ overridePeer: BaseNode? = nil) throws {
-        var basenode: BaseNode!
-        if overridePeer != nil {
-            basenode = overridePeer!
-        } else if let currentBaseNodeString = TariSettings.groupUserDefaults.string(forKey: TariLib.currentBaseNodeUserDefaultsKey) {
-            basenode = try BaseNode(currentBaseNodeString)
-        } else {
-            basenode = try BaseNode(TariSettings.shared.getRandomBaseNode())
-        }
+    /// Base note basic setup. Selects previously used base node or use random node if there wasn't any node selected before.
+    func setupBasenode() throws {
+        let baseNode = try GroupUserDefaults.selectedBaseNode ?? BaseNode.randomNode()
+        try update(baseNode: baseNode, syncAfterSetting: false)
+    }
 
-        try tariWallet?.addBaseNodePeer(basenode)
-        TariSettings.groupUserDefaults.set(basenode.peer, forKey: TariLib.currentBaseNodeUserDefaultsKey)
+    /// Selects new base node peer for Tari Wallet.
+    /// - Parameters:
+    ///   - baseNode: Selected base node.
+    ///   - syncAfterSetting: Boolean. If it  `true` then the wallet will try to sync with newly selected base node.
+    func update(baseNode: BaseNode, syncAfterSetting: Bool) throws {
 
-        if syncAfterSetting {
-            try? tariWallet?.syncBaseNode()
-        }
+        GroupUserDefaults.selectedBaseNode = baseNode
+
+        try tariWallet?.add(baseNode: baseNode)
+        guard syncAfterSetting else { return }
+        try? tariWallet?.syncBaseNode()
     }
 
     func createNewWallet() throws {

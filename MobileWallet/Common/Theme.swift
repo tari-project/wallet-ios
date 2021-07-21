@@ -409,6 +409,8 @@ struct Fonts: Loopable {
     // App table view
     let systemTableViewCell = UIFont.Avenir.medium.withSize(15.0)
     let systemTableViewCellMarkDescription = UIFont.Avenir.medium.withSize(14.0)
+    let systemTableViewCellMarkDescriptionSmall = UIFont.Avenir.medium.withSize(11.0)
+    let tableViewSection = UIFont.Avenir.medium.withSize(14.0)
 
     // Restore pending view
     let restorePendingViewTitle = UIFont.Avenir.light.withSize(18.0)
@@ -433,6 +435,9 @@ struct Fonts: Loopable {
     let settingsPasswordWarning = UIFont.Avenir.heavy.withSize(13.0)
 
     let tooltip = UIFont.Avenir.heavy.withSize(12.0)
+
+    // Text Field
+    let textField = UIFont.Avenir.light.withSize(14.0)
 }
 
 struct Sizes {
