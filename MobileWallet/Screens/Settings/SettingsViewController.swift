@@ -75,6 +75,7 @@ class SettingsViewController: SettingsParentTableViewController {
         case disclaimer
 
         case torBridgeConfiguration
+        case selectBaseNode
         case deleteWallet
 
         var rawValue: String {
@@ -82,6 +83,7 @@ class SettingsViewController: SettingsParentTableViewController {
             case .backUpWallet: return localized("settings.item.wallet_backups")
 
             case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
+            case .selectBaseNode: return localized("settings.item.select_base_node")
             case .deleteWallet: return localized("settings.item.delete_wallet")
 
             case .reportBug: return localized("settings.item.report_bug")
@@ -98,6 +100,7 @@ class SettingsViewController: SettingsParentTableViewController {
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: SettingsItemTitle.torBridgeConfiguration.rawValue),
+        SystemMenuTableViewCellItem(title: SettingsItemTitle.selectBaseNode.rawValue),
         SystemMenuTableViewCellItem(
             title: SettingsItemTitle.deleteWallet.rawValue,
             isDestructive: true
@@ -143,6 +146,10 @@ class SettingsViewController: SettingsParentTableViewController {
     private func onBridgeConfigurationAction() {
         let bridgesConfigurationViewController = BridgesConfigurationViewController()
         navigationController?.pushViewController(bridgesConfigurationViewController, animated: true)
+    }
+
+    private func onSelectBaseNodeAction() {
+        navigationController?.pushViewController(SelectBaseNodeViewController(), animated: true)
     }
 
     private func onDeleteWalletAction() {
@@ -254,10 +261,15 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         switch section {
         case .security: onBackupWalletAction()
         case .advancedSettings:
-            if indexPath.row == 0 {
+            switch indexPath.row {
+            case 0:
                 onBridgeConfigurationAction()
-            } else if indexPath.row == 1 {
+            case 1:
+                onSelectBaseNodeAction()
+            case 2:
                 onDeleteWalletAction()
+            default:
+                break
             }
         case .more:
             if SettingsItemTitle.allCases[indexPath.row + indexPath.section] == .reportBug {
@@ -286,39 +298,29 @@ extension SettingsViewController {
         navigationBar.rightButton.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
     }
 
-    fileprivate func checkClipboardForBaseNode() {
-        let pasteboardString: String? = UIPasteboard.general.string
-        guard let clipboardText = pasteboardString else { return }
+    private func checkClipboardForBaseNode() {
+        guard let pasteboardText = UIPasteboard.general.string, let baseNode = try? BaseNode(name: "From Pasteboard", peer: pasteboardText) else { return }
 
+        UserFeedback.shared.callToAction(
+            title: localized("Set custom base node"),
+            description: localized("We found a base node peer in your clipboard, would you like to use this instead of the default?\n\n\(pasteboardText)"),
+            actionTitle: localized("Set"),
+            cancelTitle: localized("Keep default"),
+            onAction: { [weak self] in self?.update(baseNode: baseNode) },
+            onCancel: { UIPasteboard.general.string = "" }
+        )
+    }
+
+    private func update(baseNode: BaseNode) {
         do {
-            let baseNode = try BaseNode(clipboardText)
-
-            UserFeedback.shared.callToAction(
-                title: localized("Set custom base node"),
-                description: String(
-                    format: localized("We found a base node peer in your clipboard, would you like to use this instead of the default?\n\n%@"),
-                    clipboardText
-                ),
-                actionTitle: localized("Set"),
-                cancelTitle: localized("Keep default"),
-                onAction: {
-                    do {
-                        try TariLib.shared.setBasenode(baseNode)
-                        UIPasteboard.general.string = ""
-                    } catch {
-                        UserFeedback.shared.error(
-                            title: localized("Base node error"),
-                            description: localized("Failed to set custom base node from clipboard"),
-                            error: error
-                        )
-                    }
-                },
-                onCancel: {
-                    UIPasteboard.general.string = ""
-                }
-            )
+            try TariLib.shared.update(baseNode: baseNode, syncAfterSetting: true)
+            UIPasteboard.general.string = ""
         } catch {
-            // No valid peer string found in clipboard
+            UserFeedback.shared.error(
+                title: localized("Base node error"),
+                description: localized("Failed to set custom base node from clipboard"),
+                error: error
+            )
         }
     }
 }

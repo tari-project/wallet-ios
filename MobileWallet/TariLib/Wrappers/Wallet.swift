@@ -229,7 +229,7 @@ final class Wallet {
         guard !handleSyncStatus(forResultType: .baseNodeNotInSync) else { return }
         guard !handleSyncStatus(forResultType: .aborted) else { return }
         guard !handleSyncStatus(forResultType: .failure) else {
-            try? TariLib.shared.setBasenode(syncAfterSetting: false)
+            try? TariLib.shared.setupBasenode()
             return
         }
         guard !handleSyncStatus(forResultType: .none) else { return } // In Progress
@@ -671,16 +671,12 @@ final class Wallet {
         TariEventBus.postToMainThread(.txListUpdate)
     }
 
-    func addBaseNodePeer(_ basenode: BaseNode) throws {
+    func add(baseNode: BaseNode) throws {
         var errorCode: Int32 = -1
-        let addressPointer = (basenode.address as NSString).utf8String
-
-        _ = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_add_base_node_peer(ptr, basenode.publicKey.pointer, addressPointer, error)})
-
-        guard errorCode == 0 else {
-            throw WalletErrors.generic(errorCode)
+        _ = withUnsafeMutablePointer(to: &errorCode) { error in
+            wallet_add_base_node_peer(ptr, baseNode.publicKey.pointer, baseNode.address, error)
         }
+        guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
     }
 
     func syncBaseNode() throws {
