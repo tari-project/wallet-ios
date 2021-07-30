@@ -131,7 +131,6 @@ class HomeViewController: UIViewController {
         overrideUserInterfaceStyle = .light
         setup()
         setupKeyServer()
-        setupConnectionStatusMonitor()
         Tracker.shared.track("/home", "Home - Transaction List")
         TariEventBus.onMainThread(self, eventType: .balanceUpdate) {
             [weak self] (_) in
@@ -155,6 +154,7 @@ class HomeViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        setupConnectionStatusMonitor()
         TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
             [weak self]
             (sender) in

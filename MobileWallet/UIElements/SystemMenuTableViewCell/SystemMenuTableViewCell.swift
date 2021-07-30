@@ -179,10 +179,8 @@ class SystemMenuTableViewCell: UITableViewCell {
         switcher.isHidden = !item.hasSwitch
         arrow.isHidden = item.hasSwitch
         titleLabel.text = item.title
-        if item.isDestructive {
-            titleLabel.textColor = Theme.shared.colors.warning
-            arrow.image = Theme.shared.images.forwardArrowRed
-        }
+        titleLabel.textColor = item.isDestructive ? Theme.shared.colors.warning : Theme.shared.colors.navigationBarTint
+        arrow.image = item.isDestructive ? Theme.shared.images.forwardArrowRed : Theme.shared.images.forwardArrow
         disableCellInProgress = item.disableCellInProgress
         mark = item.mark
         markDescription = item.markDescription
@@ -241,7 +239,6 @@ extension SystemMenuTableViewCell {
 
     private func setupArrow() {
         contentView.addSubview(arrow)
-        arrow.image = Theme.shared.images.forwardArrow
 
         arrow.translatesAutoresizingMaskIntoConstraints = false
         arrowWidthConstraint = arrow.widthAnchor.constraint(equalToConstant: 8)
