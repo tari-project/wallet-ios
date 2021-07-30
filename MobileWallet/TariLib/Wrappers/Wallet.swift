@@ -82,6 +82,39 @@ struct CallbackTxResult {
     let success: Bool
 }
 
+enum RestoreWalletStatus {
+    case unknown
+    case connectingToBaseNode
+    case connectedToBaseNode
+    case connectionFailed(attempt: UInt64, maxAttempts: UInt64)
+    case progress(restoredUTXOs: UInt64, totalNumberOfUTXOs: UInt64)
+    case completed
+    case scanningRoundFailed(attempt: UInt64, maxAttempts: UInt64)
+    case recoveryFailed
+
+    init(status: UInt8, firstValue: UInt64, secondValue: UInt64) {
+
+        switch status {
+        case 0:
+            self = .connectingToBaseNode
+        case 1:
+            self = .connectedToBaseNode
+        case 2:
+            self = .connectionFailed(attempt: firstValue, maxAttempts: secondValue)
+        case 3:
+            self = .progress(restoredUTXOs: firstValue, totalNumberOfUTXOs: secondValue)
+        case 4:
+            self = .completed
+        case 5:
+            self = .scanningRoundFailed(attempt: firstValue, maxAttempts: secondValue)
+        case 6:
+            self = .recoveryFailed
+        default:
+            self = .unknown
+        }
+    }
+}
+
 final class Wallet {
 
     enum WalletError: Int32, Error {
@@ -126,26 +159,9 @@ final class Wallet {
     }
 
     var seedWords: ([String]?, Error?) {
-        var errorCode: Int32 = -1
-        let seedWords = withUnsafeMutablePointer(to: &errorCode, { error in
-            SeedWords(pointer: wallet_get_seed_words(ptr, error))
-        })
-        guard errorCode == 0 else {
-            return (nil, WalletErrors.generic(errorCode))
-        }
-        let countResult = seedWords.count
-        if let error = countResult.1 {
-            return (nil, error)
-        }
         do {
-            var result = [String]()
-            for i in 0..<countResult.0 {
-                let seedWord = try seedWords.at(position: i)
-                if let error = seedWord.1 {
-                    return (nil, error)
-                }
-                result.append(seedWord.0)
-            }
+            let seedWords = try SeedWords(walletPointer: ptr)
+            let result = try seedWords.allElements()
             return (result, nil)
         } catch {
             return (nil, error)
@@ -244,7 +260,7 @@ final class Wallet {
         return result
     }
 
-    init(commsConfig: CommsConfig, loggingFilePath: String) throws {
+    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?) throws {
         let loggingFilePathPointer = UnsafeMutablePointer<Int8>(mutating: (loggingFilePath as NSString).utf8String)!
 
         let receivedTxCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
@@ -392,7 +408,7 @@ final class Wallet {
         dbName = commsConfig.dbName
         logPath = loggingFilePath
 
-        func createWallet(passphrase: String?) -> (result: OpaquePointer?, error: WalletError?) {
+        func createWallet(passphrase: String?, seedWords: SeedWords?) -> (result: OpaquePointer?, error: WalletError?) {
             var errorCode: Int32 = -1
             let result = withUnsafeMutablePointer(to: &errorCode, { error in
                 wallet_create(
@@ -401,6 +417,7 @@ final class Wallet {
                     2, // number of rolling log files
                     10 * 1024 * 1024, // rolling log file max size in bytes
                     passphrase,
+                    seedWords?.pointer,
                     receivedTxCallback,
                     receivedTxReplyCallback,
                     receivedFinalizedTxCallback,
@@ -426,7 +443,7 @@ final class Wallet {
 
         func handleInitializationFlow(passphrase: String?) throws -> (pointer: OpaquePointer, encryptionEnabled: Bool) {
 
-            let createWalletResponse = createWallet(passphrase: passphrase)
+            let createWalletResponse = createWallet(passphrase: passphrase, seedWords: seedWords) // TODO: Check!
 
             switch createWalletResponse {
             case (_, .encryptionError) where passphrase != nil:
@@ -925,6 +942,30 @@ final class Wallet {
         withUnsafeMutablePointer(to: &errorCode) { wallet_remove_encryption(ptr, $0) }
         guard errorCode > 0 else { return }
         throw WalletErrors.generic(errorCode)
+    }
+
+    func startRecovery() throws -> Bool {
+
+        guard let baseNode = GroupUserDefaults.selectedBaseNode else { return false }
+
+        let callback: @convention(c) (UInt8, UInt64, UInt64) -> Void = {
+            let state = RestoreWalletStatus(status: $0, firstValue: $1, secondValue: $2)
+            TariEventBus.postToMainThread(.restoreWalletStatusUpdate, sender: state)
+        }
+
+        var errorCode: Int32 = -1
+
+        let result = withUnsafeMutablePointer(to: &errorCode) {
+            wallet_start_recovery(
+                ptr,
+                baseNode.publicKey.pointer,
+                callback,
+                $0
+            )
+        }
+
+        guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
+        return result
     }
 
     // MARK: - Helpers

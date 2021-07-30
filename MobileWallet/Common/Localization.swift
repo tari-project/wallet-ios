@@ -40,6 +40,5 @@
 
 import Foundation
 
-func localized(_ key: String) -> String {
-    return NSLocalizedString(key, comment: "")
-}
+func localized(_ key: String) -> String { NSLocalizedString(key, comment: "") }
+func localized(_ key: String, arguments: CVarArg...) -> String { String(format: localized(key), arguments: arguments) }

@@ -38,47 +38,83 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+final class SeedWords {
 
-enum SeedWordsError: Error {
-    case generic(_ errorCode: Int32)
-}
-
-class SeedWords {
-
-    private var ptr: OpaquePointer
-
-    var pointer: OpaquePointer {
-        return ptr
+    enum Error: Swift.Error {
+        case invalidSeedWord, invalidSeedPhrase, unexpectedResult, phraseIsTooShort, phraseIsTooLong
     }
 
-    var count: (UInt32, Error?) {
+    private enum PushWordResult: UInt8 {
+        case invalidSeedWord, successfulPush, seedPhraseComplete, invalidSeedPhrase
+    }
+
+    // MARK: - Properties
+
+    let pointer: OpaquePointer
+
+    // MARK: - Initializers
+
+    init(walletPointer: OpaquePointer) throws {
         var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            seed_words_get_length(ptr, error)
-        })
-        return (result, errorCode != 0 ? SeedWordsError.generic(errorCode) : nil )
+        self.pointer = withUnsafeMutablePointer(to: &errorCode) { wallet_get_seed_words(walletPointer, $0) }
+        guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
     }
 
-    init (pointer: OpaquePointer) {
-        ptr = pointer
-    }
+    init(words: [String]) throws {
 
-    func at(position: UInt32) throws -> (String, Error?) {
-        var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            seed_words_get_at(ptr, position, error)
-        })
+        self.pointer = seed_words_create()
 
-        guard errorCode == 0 else {
-            throw SeedWordsError.generic(errorCode)
+        let lastIndex = words.count - 1
+
+        for word in words.enumerated() {
+
+            var errorCode: Int32 = -1
+
+            let rawResult = withUnsafeMutablePointer(to: &errorCode) {
+                seed_words_push_word(pointer, word.element, $0)
+            }
+
+            guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
+            guard let result = PushWordResult(rawValue: rawResult) else { throw Error.unexpectedResult }
+
+            switch result {
+            case .invalidSeedWord:
+                throw Error.invalidSeedWord
+            case .successfulPush:
+                guard word.offset < lastIndex else { throw Error.phraseIsTooShort }
+            case .seedPhraseComplete:
+                guard word.offset == lastIndex else { throw Error.phraseIsTooLong }
+            case .invalidSeedPhrase:
+                throw Error.invalidSeedPhrase
+            }
         }
-
-        return (String(validatingUTF8: result!)!, nil)
     }
+
+    // MARK: - Actions
+
+    func count() throws -> UInt32 {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode) { seed_words_get_length(pointer, $0) }
+        guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
+        return result
+    }
+
+    func element(at position: UInt32) throws -> String {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode) { seed_words_get_at(pointer, position, $0) }
+        guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
+        guard let result = result, let seedWord = String(validatingUTF8: result) else { return "" }
+        return seedWord
+    }
+
+    func allElements() throws -> [String] {
+        let seedWordsCount = try count()
+        return try (0..<seedWordsCount).map { try self.element(at: $0) }
+    }
+
+    // MARK: - Deinitialization
 
     deinit {
-        seed_words_destroy(ptr)
+        seed_words_destroy(pointer)
     }
-
 }

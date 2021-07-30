@@ -44,8 +44,6 @@ class TariLibWrapperTests: XCTestCase {
     //Use a random DB path for each test
     private let dbName = "test_db"
     private let backupPassword = "coolpassword"
-    private let privateKeyHex = "6259c39f75e27140a652a5ee8aefb3cf6c1686ef21d27793338d899380e8c801"
-    private let testWalletPublicKey = "30e1dfa197794858bfdbf96cdce5dc8637d4bd1202dc694991040ddecbf42d40"
     
     private func backupPath(_ storagePath: String) -> String {
         return "\(storagePath)/partial_backup_\(dbName).sqlite3"
@@ -72,21 +70,6 @@ class TariLibWrapperTests: XCTestCase {
             }
             
             XCTAssertEqual(hexString, "000102030405")
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-    }
-    
-    func testPrivateKey() {
-        //Create priv key from hex, then create hex from that to test ByteVector toString()
-        do {
-            let privateKey = try PrivateKey(hex: privateKeyHex)
-            let (hex, hexError) = privateKey.hex
-            if hexError != nil {
-                XCTFail(hexError!.localizedDescription)
-            }
-            
-            XCTAssertEqual(hex, privateKeyHex)
         } catch {
             XCTFail(error.localizedDescription)
         }
@@ -194,19 +177,17 @@ class TariLibWrapperTests: XCTestCase {
     }
    
     func testWallet() {
-        let (wallet, _) = createWallet(privateHex: privateKeyHex)
+        let (wallet, _) = createWallet()
             
         let (walletPublicKey, pubKeyError) = wallet.publicKey
         if pubKeyError != nil {
             XCTFail(pubKeyError!.localizedDescription)
         }
         
-        let (walletPublicKeyHex, walletPublicKeyHexError) = walletPublicKey!.hex
+        let walletPublicKeyHexError = walletPublicKey!.hex.1
         if walletPublicKeyHexError != nil {
             XCTFail(walletPublicKeyHexError!.localizedDescription)
         }
-        
-        XCTAssertEqual(walletPublicKeyHex, testWalletPublicKey)
         
         // check wallet can sign a message and then verify the signature of the message it signed
         let msg = "Hello"
@@ -283,7 +264,7 @@ class TariLibWrapperTests: XCTestCase {
     func testBackupAndRestoreWallet() {
         XCTAssertNoThrow(try ICloudServiceMock.removeBackups())
         var wallet: Wallet? = nil
-        wallet = createWallet(privateHex: nil).0
+        wallet = createWallet().0
         TariLib.shared.walletPublicKeyHex = wallet!.publicKey.0?.hex.0
         
         receiveTestTx(wallet: wallet!)
@@ -332,7 +313,7 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     func testPartialBackups() {
-        let (_, dbURL) = createWallet(privateHex: nil)
+        let (_, dbURL) = createWallet()
         let partialBackupPath = backupPath(TariSettings.testStoragePath)
         XCTAssertNoThrow(try WalletBackups.partialBackup(orginalFilePath: dbURL.path, backupFilePathWithFilename: partialBackupPath))
         XCTAssertTrue(FileManager.default.fileExists(atPath: partialBackupPath))
@@ -381,7 +362,7 @@ class TariLibWrapperTests: XCTestCase {
     
     func testKeyValueStorage() {
         TariLogger.info("TEST KEY VALUE STORAGE")
-        let (wallet, _) = createWallet(privateHex: nil)
+        let (wallet, _) = createWallet()
         // random key
         let key = "7SXVVFERUP"
         let value = "DQORS7M0EO_⚽🧣👂🤝🏧_X6IZFL5OG3"
@@ -415,7 +396,7 @@ class TariLibWrapperTests: XCTestCase {
             }
             
             do {
-                let wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: self.loggingTestPath(TariSettings.testStoragePath))
+                let wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: self.loggingTestPath(TariSettings.testStoragePath), seedWords: nil)
                 completion(wallet, error)
             } catch {
                 completion(nil, error)
@@ -425,7 +406,7 @@ class TariLibWrapperTests: XCTestCase {
     }
     
     //MARK: Create new wallet
-    func createWallet(privateHex: String?) -> (Wallet, URL) {
+    func createWallet() -> (Wallet, URL) {
         var wallet: Wallet?
         
         let fileManager = FileManager.default
@@ -453,11 +434,6 @@ class TariLibWrapperTests: XCTestCase {
                 discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
                 safMessageDurationSec: TariSettings.shared.safMessageDurationSec
             )
-            
-            if privateHex != nil {
-                let privateKey = try PrivateKey(hex: privateHex!)
-                try commsConfig?.setPrivateKey(privateKey)
-            }
 
             TariLogger.verbose("TariLib Logging path: \(loggingFilePath)")
         } catch {
@@ -465,7 +441,7 @@ class TariLibWrapperTests: XCTestCase {
         }
         
         do {
-            wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: loggingFilePath)
+            wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: loggingFilePath, seedWords: nil)
         } catch {
             XCTFail("Unable to create wallet \(error.localizedDescription)")
         }

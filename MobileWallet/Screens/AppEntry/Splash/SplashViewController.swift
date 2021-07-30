@@ -255,7 +255,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 )
                 self.createWalletButton.variation = .normal
             }
-            try TariLib.shared.createNewWallet()
+            try TariLib.shared.createNewWallet(seedWords: nil)
         } catch {
             TariEventBus.unregister(self, eventType: .walletStateChanged)
             UserFeedback.shared.error(
