@@ -474,3 +474,21 @@
 "add_base_node.error.invalid_peer" = "Invalid peer. Please correct the peer address and try again.";
 "add_base_node.error.button" = "OK";
 
+/* Restore Wallet From Seed Words */
+"restore_from_seed_words.label.description" = "Enter your seed phrase to restore your wallet";
+"restore_from_seed_words.button.submit" = "Restore Wallet";
+"restore_from_seed_words.error.title" = "Error";
+"restore_from_seed_words.error.description.invalid_seed_word" = "At least one of the entered seed words is invalid. Please review them and try again.";
+"restore_from_seed_words.error.description.phrase_too_short" = "You entered not enough seed words. Please add some more and try again.";
+"restore_from_seed_words.error.description.phrase_too_long" = "You entered too much seed words. Please remove few and try again.";
+"restore_from_seed_words.error.description.unknown_error" = "Unable to generate key from seed words. Please check your seed words and try again.";
+"restore_from_seed_words.progress_overlay.label.title" = "Restoring your wallet";
+"restore_from_seed_words.progress_overlay.label.description" = "This could take between 1 to 3 minutes.\nPlease keep the app open.";
+"restore_from_seed_words.progress_overlay.success" = "Your wallet was restored. Welcome back!";
+"restore_from_seed_words.progress_overlay.status.connecting" = "Waiting for connection.";
+"restore_from_seed_words.progress_overlay.status.connected" = "Connection established. The process will start soon.";
+"restore_from_seed_words.progress_overlay.status.progress" = "Restoring in progress:";
+"restore_from_seed_words.progress_overlay.progress.connection_failed" = "Attempt %d out of %d.";
+"restore_from_seed_words.progress_overlay.error.title" = "Recovery Failed";
+"restore_from_seed_words.progress_overlay.error.description.connection_failed" = "Unable to connect with base node. Please try again later.";
+"restore_from_seed_words.progress_overlay.error.description.unknown_error" = "Unable to recover your wallet due to the internal error.";

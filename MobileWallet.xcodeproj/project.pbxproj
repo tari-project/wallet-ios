@@ -422,9 +422,18 @@
 		37EE285C2485649800335EDC /* WordsFlexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EE28592485649800335EDC /* WordsFlexView.swift */; };
 		37F29D5824504B92008C046F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
 		37F29D5924504B92008C046F /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
-		3A35412C26A72D9F002AB5A8 /* UITableView+Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35412B26A72D9F002AB5A8 /* UITableView+Cells.swift */; };
-		3A35412D26A72D9F002AB5A8 /* UITableView+Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35412B26A72D9F002AB5A8 /* UITableView+Cells.swift */; };
-		3A35412E26A72D9F002AB5A8 /* UITableView+Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35412B26A72D9F002AB5A8 /* UITableView+Cells.swift */; };
+		3A0EA97A26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */; };
+		3A0EA97B26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */; };
+		3A0EA97C26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */; };
+		3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97D26AA8E3C002612D4 /* TokenView.swift */; };
+		3A0EA97F26AA8E3C002612D4 /* TokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97D26AA8E3C002612D4 /* TokenView.swift */; };
+		3A0EA98026AA8E3C002612D4 /* TokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97D26AA8E3C002612D4 /* TokenView.swift */; };
+		3A0EA98226AA8E64002612D4 /* TokenInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA98126AA8E64002612D4 /* TokenInputView.swift */; };
+		3A0EA98326AA8E64002612D4 /* TokenInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA98126AA8E64002612D4 /* TokenInputView.swift */; };
+		3A0EA98426AA8E64002612D4 /* TokenInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA98126AA8E64002612D4 /* TokenInputView.swift */; };
+		3A35412C26A72D9F002AB5A8 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35412B26A72D9F002AB5A8 /* Identifiable.swift */; };
+		3A35412D26A72D9F002AB5A8 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35412B26A72D9F002AB5A8 /* Identifiable.swift */; };
+		3A35412E26A72D9F002AB5A8 /* Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35412B26A72D9F002AB5A8 /* Identifiable.swift */; };
 		3A35413126A72DEE002AB5A8 /* SelectBaseNodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413026A72DEE002AB5A8 /* SelectBaseNodeCell.swift */; };
 		3A35413226A72DEE002AB5A8 /* SelectBaseNodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413026A72DEE002AB5A8 /* SelectBaseNodeCell.swift */; };
 		3A35413326A72DEE002AB5A8 /* SelectBaseNodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413026A72DEE002AB5A8 /* SelectBaseNodeCell.swift */; };
@@ -437,6 +446,16 @@
 		3A35413E26A73939002AB5A8 /* RoundedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413D26A73939002AB5A8 /* RoundedTextView.swift */; };
 		3A35413F26A73939002AB5A8 /* RoundedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413D26A73939002AB5A8 /* RoundedTextView.swift */; };
 		3A35414026A73939002AB5A8 /* RoundedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413D26A73939002AB5A8 /* RoundedTextView.swift */; };
+		3A3B2EE2269C28EA003A9588 /* SeedWordsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3B2EE1269C28EA003A9588 /* SeedWordsTests.swift */; };
+		3A4376E5269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4376E4269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift */; };
+		3A4376E6269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4376E4269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift */; };
+		3A4376E7269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4376E4269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift */; };
+		3A4376E9269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4376E8269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift */; };
+		3A4376EA269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4376E8269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift */; };
+		3A4376EB269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4376E8269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift */; };
+		3A4376EE269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4376ED269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift */; };
+		3A4376EF269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4376ED269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift */; };
+		3A4376F0269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4376ED269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift */; };
 		3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4CE32B26A18D7300ECF460 /* UserDefault.swift */; };
 		3A4CE32D26A18D7300ECF460 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4CE32B26A18D7300ECF460 /* UserDefault.swift */; };
 		3A4CE32E26A18D7300ECF460 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4CE32B26A18D7300ECF460 /* UserDefault.swift */; };
@@ -448,6 +467,18 @@
 		3A4CE33826A1A04000ECF460 /* SelectBaseNodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4CE33526A1A04000ECF460 /* SelectBaseNodeViewController.swift */; };
 		3A811EEF26957856003D0DF3 /* ConnectionIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */; };
 		3A811EF12695BAEE003D0DF3 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EF02695BAEE003D0DF3 /* TooltipView.swift */; };
+		3ACDA70026AFF83D00F138B8 /* OverlayPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */; };
+		3ACDA70126AFF83D00F138B8 /* OverlayPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */; };
+		3ACDA70226AFF83D00F138B8 /* OverlayPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */; };
+		3ACDA70526B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70426B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift */; };
+		3ACDA70626B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70426B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift */; };
+		3ACDA70726B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70426B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift */; };
+		3ACDA70926B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70826B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift */; };
+		3ACDA70A26B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70826B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift */; };
+		3ACDA70B26B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70826B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift */; };
+		3ACDA70E26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70D26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift */; };
+		3ACDA70F26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70D26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift */; };
+		3ACDA71026B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70D26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift */; };
 		3AD3E0342696F471008FE1B6 /* ConnectionIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */; };
 		3AD3E0352696F471008FE1B6 /* ConnectionIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */; };
 		3AD3E0362696F47C008FE1B6 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EF02695BAEE003D0DF3 /* TooltipView.swift */; };
@@ -464,6 +495,13 @@
 		3ADEBF6A26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */; };
 		3ADEBF6B26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */; };
 		3ADEBF6C26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */; };
+		3AFAEBF026B1308600B82603 /* StringTokenizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAEBEF26B1308600B82603 /* StringTokenizationTests.swift */; };
+		3AFAEBF226B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */; };
+		3AFAEBF326B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */; };
+		3AFAEBF426B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */; };
+		3AFAEBF626B17D1700B82603 /* SimpleErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAEBF526B17D1700B82603 /* SimpleErrorModel.swift */; };
+		3AFAEBF726B17D1700B82603 /* SimpleErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAEBF526B17D1700B82603 /* SimpleErrorModel.swift */; };
+		3AFAEBF826B17D1700B82603 /* SimpleErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAEBF526B17D1700B82603 /* SimpleErrorModel.swift */; };
 		491AB89A23F1B36000372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		491AB89B23F1B36100372189 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AddAmountViewController.swift */; };
@@ -787,20 +825,34 @@
 		37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheckboxSelectAnimation.json; sourceTree = "<group>"; };
 		37EE28592485649800335EDC /* WordsFlexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordsFlexView.swift; sourceTree = "<group>"; };
 		39441F6A326A7475D12D0092 /* Pods_MobileWalletNotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletNotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		3A35412B26A72D9F002AB5A8 /* UITableView+Cells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Cells.swift"; sourceTree = "<group>"; };
+		3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCollectionView.swift; sourceTree = "<group>"; };
+		3A0EA97D26AA8E3C002612D4 /* TokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenView.swift; sourceTree = "<group>"; };
+		3A0EA98126AA8E64002612D4 /* TokenInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInputView.swift; sourceTree = "<group>"; };
+		3A35412B26A72D9F002AB5A8 /* Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiable.swift; sourceTree = "<group>"; };
 		3A35413026A72DEE002AB5A8 /* SelectBaseNodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBaseNodeCell.swift; sourceTree = "<group>"; };
 		3A35413526A738D4002AB5A8 /* RoundedInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedInputField.swift; sourceTree = "<group>"; };
 		3A35413926A738F5002AB5A8 /* ContentScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentScrollView.swift; sourceTree = "<group>"; };
 		3A35413D26A73939002AB5A8 /* RoundedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextView.swift; sourceTree = "<group>"; };
+		3A3B2EE1269C28EA003A9588 /* SeedWordsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsTests.swift; sourceTree = "<group>"; };
+		3A4376E4269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsViewController.swift; sourceTree = "<group>"; };
+		3A4376E8269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsModel.swift; sourceTree = "<group>"; };
+		3A4376ED269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsView.swift; sourceTree = "<group>"; };
 		3A4CE32B26A18D7300ECF460 /* UserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
 		3A4CE32F26A18DFC00ECF460 /* GroupUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupUserDefaults.swift; sourceTree = "<group>"; };
 		3A4CE33526A1A04000ECF460 /* SelectBaseNodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBaseNodeViewController.swift; sourceTree = "<group>"; };
 		3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionIndicatorView.swift; sourceTree = "<group>"; };
 		3A811EF02695BAEE003D0DF3 /* TooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipView.swift; sourceTree = "<group>"; };
+		3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPresentable.swift; sourceTree = "<group>"; };
+		3ACDA70426B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsProgressViewController.swift; sourceTree = "<group>"; };
+		3ACDA70826B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsProgressView.swift; sourceTree = "<group>"; };
+		3ACDA70D26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsProgressModel.swift; sourceTree = "<group>"; };
 		3ADEBF5C26A54FA500E87C84 /* SelectBaseNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBaseNodeModel.swift; sourceTree = "<group>"; };
 		3ADEBF6126A59A5900E87C84 /* AddBaseNodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeViewController.swift; sourceTree = "<group>"; };
 		3ADEBF6526A5B5A500E87C84 /* AddBaseNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeView.swift; sourceTree = "<group>"; };
 		3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeModel.swift; sourceTree = "<group>"; };
+		3AFAEBEF26B1308600B82603 /* StringTokenizationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringTokenizationTests.swift; sourceTree = "<group>"; };
+		3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAvoidingContentView.swift; sourceTree = "<group>"; };
+		3AFAEBF526B17D1700B82603 /* SimpleErrorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleErrorModel.swift; sourceTree = "<group>"; };
 		491AB89F23F3FF4400372189 /* AddAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAmountViewController.swift; sourceTree = "<group>"; };
 		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
 		4C2C95AF23795919005058AB /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libwallet_ffi.a; sourceTree = "<group>"; };
@@ -961,7 +1013,6 @@
 				BFC5532423D9B8E4009130A8 /* UIView.swift */,
 				37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */,
 				004277F623E0628A00AE7BD9 /* UIViewController.swift */,
-				3A35412B26A72D9F002AB5A8 /* UITableView+Cells.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -969,6 +1020,7 @@
 		00262EB2236F022000A6C8A0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				3ACDA6FE26AFF80600F138B8 /* View Controllers */,
 				3A35413426A738C8002AB5A8 /* Views */,
 				0048AF42245ADCA300E1A359 /* env.json */,
 				37765D2524A35BA20091AE2A /* AESEncryption.swift */,
@@ -982,6 +1034,7 @@
 				372AECAA24B4A293005CBA0F /* UserDefaultsWrapper.swift */,
 				37AFE263245193CA006EA270 /* AlwaysPoppableNavigationController */,
 				00B4D6F4241B777500ED8318 /* BackgroundTasks */,
+				3ACDA6FD26AFD6B800F138B8 /* Protocols */,
 				00262EAD236F013500A6C8A0 /* Extensions */,
 				00A057B223D979BA0029C22A /* UserFeedback */,
 				3A4CE33326A18E3A00ECF460 /* Persistant Data */,
@@ -1057,6 +1110,7 @@
 			children = (
 				004277E623DF4A5600AE7BD9 /* FeedbackView.swift */,
 				00A057B323D979DA0029C22A /* UserFeedback.swift */,
+				3AFAEBF526B17D1700B82603 /* SimpleErrorModel.swift */,
 			);
 			path = UserFeedback;
 			sourceTree = "<group>";
@@ -1190,6 +1244,8 @@
 		00E2BCB5236B469C00C2A105 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				3ACDA70326B0317300F138B8 /* RestoreWalletFromSeedsProgress */,
+				3A4376E3269C0BF0006107B0 /* RestoreWalletFromSeeds */,
 				00BBD7FA237C462400EBF5E6 /* AppEntry */,
 				00C185BC238953B40096984E /* Debug */,
 				00E2BCB6236B46A400C2A105 /* Home */,
@@ -1273,12 +1329,14 @@
 		00E491B42366E08F007B332D /* MobileWalletTests */ = {
 			isa = PBXGroup;
 			children = (
+				3A3B2EE0269C28C8003A9588 /* WalletLib */,
 				00BBD7F6237B05A900EBF5E6 /* MobileWalletTests-Bridging-Header.h */,
 				00E491B72366E08F007B332D /* Info.plist */,
 				3723A7A124AB57F4003382EB /* AESEncryptionTests.swift */,
 				3745508924B8886C006295C8 /* ICloudServiceMock.swift */,
 				00E491B52366E08F007B332D /* MobileWalletTests.swift */,
 				00BBD81D237ECDAA00EBF5E6 /* TariLibWrapperTests.swift */,
+				3AFAEBEF26B1308600B82603 /* StringTokenizationTests.swift */,
 			);
 			path = MobileWalletTests;
 			sourceTree = "<group>";
@@ -1495,6 +1553,36 @@
 				3A35413926A738F5002AB5A8 /* ContentScrollView.swift */,
 				3A35413526A738D4002AB5A8 /* RoundedInputField.swift */,
 				3A35413D26A73939002AB5A8 /* RoundedTextView.swift */,
+				3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3A3B2EE0269C28C8003A9588 /* WalletLib */ = {
+			isa = PBXGroup;
+			children = (
+				3A3B2EE1269C28EA003A9588 /* SeedWordsTests.swift */,
+			);
+			path = WalletLib;
+			sourceTree = "<group>";
+		};
+		3A4376E3269C0BF0006107B0 /* RestoreWalletFromSeeds */ = {
+			isa = PBXGroup;
+			children = (
+				3A4376EC269C0CB5006107B0 /* Views */,
+				3A4376E4269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift */,
+				3A4376E8269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift */,
+			);
+			path = RestoreWalletFromSeeds;
+			sourceTree = "<group>";
+		};
+		3A4376EC269C0CB5006107B0 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3A4376ED269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift */,
+				3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */,
+				3A0EA97D26AA8E3C002612D4 /* TokenView.swift */,
+				3A0EA98126AA8E64002612D4 /* TokenInputView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1531,6 +1619,40 @@
 			children = (
 				3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */,
 				3A811EF02695BAEE003D0DF3 /* TooltipView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3ACDA6FD26AFD6B800F138B8 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				3A35412B26A72D9F002AB5A8 /* Identifiable.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		3ACDA6FE26AFF80600F138B8 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */,
+			);
+			path = "View Controllers";
+			sourceTree = "<group>";
+		};
+		3ACDA70326B0317300F138B8 /* RestoreWalletFromSeedsProgress */ = {
+			isa = PBXGroup;
+			children = (
+				3ACDA70C26B031EE00F138B8 /* Views */,
+				3ACDA70426B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift */,
+				3ACDA70D26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift */,
+			);
+			path = RestoreWalletFromSeedsProgress;
+			sourceTree = "<group>";
+		};
+		3ACDA70C26B031EE00F138B8 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3ACDA70826B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2125,6 +2247,7 @@
 				003DF41624C05EC900675A2C /* PartialBackup.swift in Sources */,
 				0087A1A923F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				001F6CE82381A22E00FA7002 /* CompletedTxs.swift in Sources */,
+				3ACDA70926B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift in Sources */,
 				001F6CE42380253B00FA7002 /* Contact.swift in Sources */,
 				00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00DD160F241CD41D00C955B4 /* BaseNode.swift in Sources */,
@@ -2134,7 +2257,7 @@
 				00D7BD8924349AE3009DD097 /* UIDevice.swift in Sources */,
 				370E887824FEA54100576F61 /* NetworkTools.m in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTx.swift in Sources */,
-				3A35412C26A72D9F002AB5A8 /* UITableView+Cells.swift in Sources */,
+				3A35412C26A72D9F002AB5A8 /* Identifiable.swift in Sources */,
 				3A811EEF26957856003D0DF3 /* ConnectionIndicatorView.swift in Sources */,
 				BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */,
 				37ABB69424781F8600F08163 /* UILabelWithPadding.swift in Sources */,
@@ -2147,6 +2270,7 @@
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
 				37CFAA76248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */,
 				3A4CE33026A18DFC00ECF460 /* GroupUserDefaults.swift in Sources */,
+				3A4376EE269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift in Sources */,
 				3708D74A247FCF2300807D72 /* SettingsViewController.swift in Sources */,
 				4CD20A362407967B007B64D8 /* TransportType.swift in Sources */,
 				00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */,
@@ -2159,9 +2283,11 @@
 				3A35413126A72DEE002AB5A8 /* SelectBaseNodeCell.swift in Sources */,
 				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
+				3A4376E5269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */,
 				37875E4424D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */,
 				00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
+				3AFAEBF226B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
 				37B48A7F24B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */,
@@ -2170,6 +2296,7 @@
 				001F6CE02380198D00FA7002 /* Contacts.swift in Sources */,
 				0072BF24247E735700BD28FB /* ReminderNotifications.swift in Sources */,
 				00665E7524E422C500030A13 /* CustomTabBar.swift in Sources */,
+				3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TxTableViewCell.swift in Sources */,
@@ -2177,7 +2304,9 @@
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
 				00230AFA2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
+				3ACDA70E26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift in Sources */,
 				009DFCB124741F9B0061DBC9 /* WalletTxs.swift in Sources */,
+				3A0EA98226AA8E64002612D4 /* TokenInputView.swift in Sources */,
 				00369D812426080D00BAB95B /* TariLogger.swift in Sources */,
 				3ADEBF6226A59A5900E87C84 /* AddBaseNodeViewController.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
@@ -2196,6 +2325,7 @@
 				00B084C0249E471800F7B9BD /* EmojiSet.swift in Sources */,
 				377C951E2522213800CC1696 /* TxsListViewController.swift in Sources */,
 				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
+				3A4376E9269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */,
 				3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				37875E4824D8787A00C0595B /* TxTableViewModel.swift in Sources */,
 				004277FF23E2F1D700AE7BD9 /* UIImage.swift in Sources */,
@@ -2211,6 +2341,7 @@
 				A0779C612552C1AF00614EF3 /* DeleteWalletViewController.swift in Sources */,
 				37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */,
 				3ADEBF6A26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */,
+				3ACDA70026AFF83D00F138B8 /* OverlayPresentable.swift in Sources */,
 				3A35413A26A738F5002AB5A8 /* ContentScrollView.swift in Sources */,
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
 				372AECAB24B4A293005CBA0F /* UserDefaultsWrapper.swift in Sources */,
@@ -2233,6 +2364,7 @@
 				00FB43D824BC937D0031D53E /* BackupPrompts.swift in Sources */,
 				37E0B008249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
+				3A0EA97A26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */,
 				37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
 				00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00947CC223CF090D00526DD5 /* TxProtocol.swift in Sources */,
@@ -2267,12 +2399,14 @@
 				37ABB69024781CE800F08163 /* UILabel.swift in Sources */,
 				379D27AF244EF25000F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				376C62AE247574850091BB28 /* Animation+EnumInit.swift in Sources */,
+				3ACDA70526B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */,
 				BFAB5D1123FDEA69009E8563 /* EmojiIdView.swift in Sources */,
 				A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */,
 				37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */,
 				004277FB23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
+				3AFAEBF626B17D1700B82603 /* SimpleErrorModel.swift in Sources */,
 				0087A1AC23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				6191948FA1B3F223B37A0D9B /* UTXO.swift in Sources */,
 				376B502324924BB700278ACC /* PendingView.swift in Sources */,
@@ -2287,6 +2421,7 @@
 				004997B02382E938000A0B7D /* PendingOutboundTx.swift in Sources */,
 				00C185BA238943980096984E /* UIViewControllerDebugExtension.swift in Sources */,
 				00BCE48A240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
+				3ACDA70A26B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift in Sources */,
 				0042780423E8421200AE7BD9 /* String.swift in Sources */,
 				BFC5532623D9B8E4009130A8 /* UIView.swift in Sources */,
 				3ADEBF5E26A54FA500E87C84 /* SelectBaseNodeModel.swift in Sources */,
@@ -2301,7 +2436,7 @@
 				BFE61E4924226A7E003DC99D /* NotificationManager.swift in Sources */,
 				37049271247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
 				37B5289524CB1E16008C80EB /* NetworkSpeedProvider.swift in Sources */,
-				3A35412D26A72D9F002AB5A8 /* UITableView+Cells.swift in Sources */,
+				3A35412D26A72D9F002AB5A8 /* Identifiable.swift in Sources */,
 				37C9B6F92507D57A0004647A /* BridgesConfigurationViewController.swift in Sources */,
 				0091D4AC23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				004997BC2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
@@ -2325,14 +2460,17 @@
 				006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				0087A1B323F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
 				009DFCB224741F9B0061DBC9 /* WalletTxs.swift in Sources */,
+				3AFAEBF326B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
 				3A35413226A72DEE002AB5A8 /* SelectBaseNodeCell.swift in Sources */,
 				004277F823E0628A00AE7BD9 /* UIViewController.swift in Sources */,
 				00262EB5236F024400A6C8A0 /* Theme.swift in Sources */,
+				3A0EA98326AA8E64002612D4 /* TokenInputView.swift in Sources */,
 				00E2BCB3236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				37CFAA77248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */,
 				00D7BD8A24349AE3009DD097 /* UIDevice.swift in Sources */,
 				00F53A6B24290FAE00448466 /* StorageCleanup.swift in Sources */,
 				37ABB69524781F8600F08163 /* UILabelWithPadding.swift in Sources */,
+				3A0EA97B26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */,
 				37B48A8424B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */,
 				377C951F2522213800CC1696 /* TxsListViewController.swift in Sources */,
 				004277E823DF4A5600AE7BD9 /* FeedbackView.swift in Sources */,
@@ -2341,6 +2479,7 @@
 				0042780023E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				0074619C239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				3AD3E0342696F471008FE1B6 /* ConnectionIndicatorView.swift in Sources */,
+				3ACDA70626B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */,
 				491AB8A123F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				004277FC23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				003DF41724C05EC900675A2C /* PartialBackup.swift in Sources */,
@@ -2353,7 +2492,9 @@
 				00E2BCBB236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				371A0819247290C000F97713 /* TransitionLabel.swift in Sources */,
 				004277F023E03E1600AE7BD9 /* TxViewControllerExtension.swift in Sources */,
+				3A4376EA269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */,
 				37E0B009249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
+				3ACDA70126AFF83D00F138B8 /* OverlayPresentable.swift in Sources */,
 				00C185BF238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
 				3ADEBF6726A5B5A500E87C84 /* AddBaseNodeView.swift in Sources */,
 				00A6779F23743696001A853E /* TxViewController.swift in Sources */,
@@ -2361,11 +2502,13 @@
 				00369D7E2422670300BAB95B /* DeepLinkManager.swift in Sources */,
 				37BB696C245705E60013AC4D /* RadialGradientView.swift in Sources */,
 				BFE1FC0923E3ACD900BA5EEC /* WalletCreationViewController.swift in Sources */,
+				3AFAEBF026B1308600B82603 /* StringTokenizationTests.swift in Sources */,
 				00947CC323CF090D00526DD5 /* TxProtocol.swift in Sources */,
 				00A66528243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				0087A1AD23F4235400B89EE7 /* ContactsTableViewController.swift in Sources */,
 				376C62AF247574850091BB28 /* Animation+EnumInit.swift in Sources */,
 				00D9886A2449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
+				3A3B2EE2269C28EA003A9588 /* SeedWordsTests.swift in Sources */,
 				370E887324FEA32600576F61 /* Ipv6Tester.swift in Sources */,
 				001F6CDD238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00BBD80F237DA07400EBF5E6 /* ByteVector.swift in Sources */,
@@ -2376,6 +2519,7 @@
 				00A057B523D979DA0029C22A /* UserFeedback.swift in Sources */,
 				004997AC2382E893000A0B7D /* PendingOutboundTxs.swift in Sources */,
 				3708D74B247FCF2300807D72 /* SettingsViewController.swift in Sources */,
+				3A4376E6269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */,
 				37F29D5824504B92008C046F /* HomeViewController.swift in Sources */,
 				A01F54A9255EAB7E00F49AFA /* Localization.swift in Sources */,
 				00DD160D241CCE5B00C955B4 /* TariSettings.swift in Sources */,
@@ -2413,14 +2557,17 @@
 				00C9F436242E08E70098E619 /* Tracker.swift in Sources */,
 				3745508B24B8886C006295C8 /* ICloudServiceMock.swift in Sources */,
 				001F6CE92381A22E00FA7002 /* CompletedTxs.swift in Sources */,
+				3ACDA70F26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift in Sources */,
 				0087A1B023F4235400B89EE7 /* ContactCell.swift in Sources */,
 				BF8316FE23EF7EAA00235403 /* LAContext.swift in Sources */,
 				00BBD81E237ECDAA00EBF5E6 /* TariLibWrapperTests.swift in Sources */,
 				3708D753247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
 				3730E15224C884D500827DFA /* MenuTabBarController.swift in Sources */,
 				00947CC823D1A35200526DD5 /* TxsProtocol.swift in Sources */,
+				3A0EA97F26AA8E3C002612D4 /* TokenView.swift in Sources */,
 				3AD3E0362696F47C008FE1B6 /* TooltipView.swift in Sources */,
 				37C8BA5024813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
+				3A4376EF269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift in Sources */,
 				37ABB69124781CE800F08163 /* UILabel.swift in Sources */,
 				373CCDC62490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
 				37B444AA248949B800592D92 /* Checkbox.swift in Sources */,
@@ -2432,6 +2579,7 @@
 				3A4CE33726A1A04000ECF460 /* SelectBaseNodeViewController.swift in Sources */,
 				619197D2BB78CBBC06B0F87E /* UTXO.swift in Sources */,
 				3776080A24B75900008167E8 /* Backup.swift in Sources */,
+				3AFAEBF726B17D1700B82603 /* SimpleErrorModel.swift in Sources */,
 				370E887924FEA54100576F61 /* NetworkTools.m in Sources */,
 				376B502424924BB700278ACC /* PendingView.swift in Sources */,
 				00B084C1249E471800F7B9BD /* EmojiSet.swift in Sources */,
@@ -2445,6 +2593,7 @@
 				00BBD81C237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				003DF41824C05EC900675A2C /* PartialBackup.swift in Sources */,
 				37C9B6FA2507D57B0004647A /* BridgesConfigurationViewController.swift in Sources */,
+				3ACDA70B26B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift in Sources */,
 				004277FD23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				00BBD818237EA67600EBF5E6 /* Wallet.swift in Sources */,
 				009DFCA92473ECCB0061DBC9 /* DeepLinkParams.swift in Sources */,
@@ -2454,7 +2603,7 @@
 				37C8BA5124813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				00BBD810237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				37B444AB248949B800592D92 /* Checkbox.swift in Sources */,
-				3A35412E26A72D9F002AB5A8 /* UITableView+Cells.swift in Sources */,
+				3A35412E26A72D9F002AB5A8 /* Identifiable.swift in Sources */,
 				0087A1B123F4235400B89EE7 /* ContactCell.swift in Sources */,
 				004997B92382ED79000A0B7D /* PendingInboundTxs.swift in Sources */,
 				00C185C62390221A0096984E /* DevelopmentUI.swift in Sources */,
@@ -2465,6 +2614,7 @@
 				00E491C12366E08F007B332D /* MobileWalletUITests.swift in Sources */,
 				37AFE267245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				37C8BA4D24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */,
+				3A4376F0269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift in Sources */,
 				37049272247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
 				3A4CE33226A18DFC00ECF460 /* GroupUserDefaults.swift in Sources */,
 				37B48A8524B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */,
@@ -2478,10 +2628,12 @@
 				00947CC923D1A35200526DD5 /* TxsProtocol.swift in Sources */,
 				3A35413326A72DEE002AB5A8 /* SelectBaseNodeCell.swift in Sources */,
 				0053873224065F6C00901A68 /* SlideView.swift in Sources */,
+				3A4376E7269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */,
 				3708D754247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00D7BD8B24349AE3009DD097 /* UIDevice.swift in Sources */,
 				37765D2824A35BA20091AE2A /* AESEncryption.swift in Sources */,
+				3AFAEBF426B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
 				37875E4624D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
 				491AB8A223F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				BFAB5D1323FDEA6A009E8563 /* EmojiIdView.swift in Sources */,
@@ -2490,6 +2642,7 @@
 				37EE285C2485649800335EDC /* WordsFlexView.swift in Sources */,
 				BFF1ED9F2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				370E886524FE97E100576F61 /* OnionSettings.swift in Sources */,
+				3A0EA98026AA8E3C002612D4 /* TokenView.swift in Sources */,
 				379D27BB244F091B00F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				00A057B623D979DA0029C22A /* UserFeedback.swift in Sources */,
 				376B502524924BB700278ACC /* PendingView.swift in Sources */,
@@ -2497,7 +2650,9 @@
 				00665E7624E422CC00030A13 /* CustomTabBar.swift in Sources */,
 				005387262405136700901A68 /* AddNoteViewController.swift in Sources */,
 				00230AFC2376C6DE00F23E34 /* Sequence.swift in Sources */,
+				3ACDA71026B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift in Sources */,
 				491AB89B23F1B36100372189 /* AnimatedBalanceLabel.swift in Sources */,
+				3A0EA98426AA8E64002612D4 /* TokenInputView.swift in Sources */,
 				004997BD2382F5ED000A0B7D /* WalletTestDataExtension.swift in Sources */,
 				3ADEBF6426A59A5900E87C84 /* AddBaseNodeViewController.swift in Sources */,
 				009BF8AE237ABB4700C02E44 /* TariLib.swift in Sources */,
@@ -2516,6 +2671,7 @@
 				00325ECC239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				377C95202522213800CC1696 /* TxsListViewController.swift in Sources */,
 				00E2BCBC236B5BE800C2A105 /* ActionButton.swift in Sources */,
+				3A4376EB269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */,
 				00DD1611241CD42500C955B4 /* BaseNode.swift in Sources */,
 				373CCDBF2490B66E00D0A2C9 /* CircularProgressView.swift in Sources */,
 				00B084C2249E471800F7B9BD /* EmojiSet.swift in Sources */,
@@ -2531,6 +2687,7 @@
 				A0779C6D2552C1BC00614EF3 /* DeleteWalletViewController.swift in Sources */,
 				37ABB69624781F8600F08163 /* UILabelWithPadding.swift in Sources */,
 				3ADEBF6C26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */,
+				3ACDA70226AFF83D00F138B8 /* OverlayPresentable.swift in Sources */,
 				3A35413C26A738F5002AB5A8 /* ContentScrollView.swift in Sources */,
 				375DB1E2246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
 				376C62B0247574850091BB28 /* Animation+EnumInit.swift in Sources */,
@@ -2553,6 +2710,7 @@
 				00369D7F2422670400BAB95B /* DeepLinkManager.swift in Sources */,
 				004277F523E0407900AE7BD9 /* TextButton.swift in Sources */,
 				00B084C7249E4F6900F7B9BD /* SeedWords.swift in Sources */,
+				3A0EA97C26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */,
 				00FB43DA24BC937D0031D53E /* BackupPrompts.swift in Sources */,
 				001F6CE62380253B00FA7002 /* Contact.swift in Sources */,
 				00C9F437242E08E80098E619 /* Tracker.swift in Sources */,
@@ -2587,12 +2745,14 @@
 				37547D5824601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				375894C724865A6A00B58816 /* VerifyPhraseViewController.swift in Sources */,
 				4CD20A382407967B007B64D8 /* TransportType.swift in Sources */,
+				3ACDA70726B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */,
 				001F6CEE2381A39300FA7002 /* CompletedTx.swift in Sources */,
 				A01F54AA255EAB7E00F49AFA /* Localization.swift in Sources */,
 				37C8BA49248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */,
 				006D211F23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				001256312371D81500A9C067 /* SplashViewController.swift in Sources */,
 				004997B52382ED68000A0B7D /* PendingInboundTx.swift in Sources */,
+				3AFAEBF826B17D1700B82603 /* SimpleErrorModel.swift in Sources */,
 				37BB696D245705E70013AC4D /* RadialGradientView.swift in Sources */,
 				00A66529243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				619198F3E20DFABEB23F63FE /* UTXO.swift in Sources */,

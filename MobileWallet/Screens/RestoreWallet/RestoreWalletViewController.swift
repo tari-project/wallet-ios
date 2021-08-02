@@ -47,8 +47,9 @@ class RestoreWalletViewController: SettingsParentTableViewController {
     private let pendingView = PendingView(title: localized("restore_pending_view.title"),
                                           definition: localized("restore_pending_view.description"))
     private let items: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue)]
-    // SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue)]
+        SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue),
+        SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue)
+    ]
 
     private enum RestoreCellTitle: CaseIterable {
         case iCloudRestore
@@ -125,7 +126,8 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     private func onPhraseRestoreAction() {
-
+        let viewController = RestoreWalletFromSeedsViewController()
+        navigationController?.pushViewController(viewController, animated: true)
     }
 
     private func restoreWallet(password: String?) {

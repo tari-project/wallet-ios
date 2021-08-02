@@ -1,4 +1,4 @@
-//  UITableView+Cells.swift
+//  Identifiable.swift
 
 /*
 	Package MobileWallet
@@ -40,6 +40,15 @@
 
 import UIKit
 
+protocol Identifiable {}
+
+extension Identifiable {
+    static var identifier: String { String(describing: Self.self) }
+}
+
+extension UITableViewCell: Identifiable {}
+extension UICollectionViewCell: Identifiable {}
+
 extension UITableView {
 
     func register<T: UITableViewCell>(type: T.Type) {
@@ -51,6 +60,13 @@ extension UITableView {
     }
 }
 
-extension UITableViewCell {
-    static var identifier: String { String(describing: Self.self) }
+extension UICollectionView {
+
+    func register<T: UICollectionViewCell>(type: T.Type) {
+        register(type, forCellWithReuseIdentifier: type.identifier)
+    }
+
+    func dequeueReusableCell<T: UICollectionViewCell>(type: T.Type, indexPath: IndexPath) -> T {
+        dequeueReusableCell(withReuseIdentifier: type.identifier, for: indexPath) as? T ?? T(frame: .zero)
+    }
 }

@@ -255,9 +255,16 @@ struct Colors: Loopable {
     let restorePendingViewProgressView = UIColor(named: "RestorePendingViewProgressView")
 
     // Connection Status
-    var connectionStatusOk = UIColor(named: "ConnectionStatusOk")
-    var connectionStatusWarning = UIColor(named: "ConnectionStatusWarning")
-    var connectionStatusError = UIColor(named: "ConnectionStatusError")
+    let connectionStatusOk = UIColor(named: "ConnectionStatusOk")
+    let connectionStatusWarning = UIColor(named: "ConnectionStatusWarning")
+    let connectionStatusError = UIColor(named: "ConnectionStatusError")
+
+    // Restore Wallet From Seed Words
+    let restoreFromSeedWordsTextColor = UIColor(named: "RestoreFromSeedWordsTextColor")
+    let tokenCollectionViewBackground = UIColor(named: "TokenCollectionViewBackground")
+    let tokenBorderColor = UIColor(named: "TokenBorderColor")
+    let restoreFromSeedWordsProgressOverlayTitle = UIColor(named: "RestoreFromSeedWordsProgressOverlayTitle")
+    let restoreFromSeedWordsProgressOverlayDescription = UIColor(named: "RestoreFromSeedWordsProgressOverlayDescription")
 }
 
 struct Images: Loopable {
@@ -297,6 +304,7 @@ struct Images: Loopable {
     let successIcon = UIImage(named: "SuccessIcon")
     let tariIcon = UIImage(named: "TariIcon")
     let cancelGiphy = UIImage(named: "cancelGiphy")
+    let cancelGrey = UIImage(named: "cancelGrey")
     let poweredByGiphy = UIImage(named: "poweredByGiphy")
     let searchIcon = UIImage(named: "SearchIcon")
 
@@ -438,6 +446,12 @@ struct Fonts: Loopable {
 
     // Text Field
     let textField = UIFont.Avenir.light.withSize(14.0)
+
+    // Restore Wallet From Seed Words
+    let restoreFromSeedWordsToken = UIFont.Avenir.heavy.withSize(14.0)
+    let restoreFormSeedWordsDescription = UIFont.Avenir.medium.withSize(14.0)
+    let restoreFromSeedWordsProgressOverlayTitle = UIFont.Avenir.light.withSize(18.0)
+    let restoreFromSeedWordsProgressOverlayDescription = UIFont.Avenir.medium.withSize(14.0)
 }
 
 struct Sizes {

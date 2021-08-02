@@ -39,6 +39,7 @@
 */
 
 import Foundation
+import Combine
 
 public enum TariEventTypes: String {
     // Wallet autobackup
@@ -73,6 +74,9 @@ public enum TariEventTypes: String {
 
     // connection monitor
     case connectionMonitorStatusChanged = "connection-monitor-status-changed"
+
+    // restore wallet from seed words
+    case restoreWalletStatusUpdate = "restore-wallet-status-update"
 }
 
 private let IDENTIFIER = "com.tari.eventbus"
@@ -162,6 +166,12 @@ open class TariEventBus {
             queue: OperationQueue(),
             handler: handler
         )
+    }
+
+    static func events(forType type: TariEventTypes) -> AnyPublisher<Notification, Never> {
+        NotificationCenter.default
+            .publisher(for: Notification.Name(type.rawValue))
+            .eraseToAnyPublisher()
     }
 
     // MARK: Unregister

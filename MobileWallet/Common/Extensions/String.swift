@@ -68,6 +68,17 @@ extension String {
             }
             .joined()
     }
+
+    func tokenize() -> [String] {
+
+        var result = split(separator: " ").map { String($0) }
+
+        if !result.isEmpty, hasSuffix(" ") {
+            result.append("")
+        }
+
+        return result
+    }
 }
 
 extension StringProtocol {

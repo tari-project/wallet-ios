@@ -1,10 +1,10 @@
-//  CommsConfig.swift
+//  SimpleErrorModel.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/15
+	Created by Adrian Truszczynski on 28/07/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,57 +38,15 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+struct SimpleErrorModel {
 
-enum CommsConfigError: Error {
-    case generic(_ errorCode: Int32)
-}
+    let title: String
+    let description: String
+    let error: Error?
 
-class CommsConfig {
-    private var ptr: OpaquePointer
-
-    var pointer: OpaquePointer {
-        return ptr
-    }
-
-    var dbPath: String
-    var dbName: String
-
-    init(
-	    transport: TransportType,
-	    databaseFolderPath: String,
-	    databaseName: String,
-	    publicAddress: String,
-	    discoveryTimeoutSec: UInt64,
-	    safMessageDurationSec: UInt64
-	) throws {
-        dbPath = databaseFolderPath
-        dbName = databaseName
-        var errorCode: Int32 = -1
-        let result = databaseName.withCString({ db in
-            databaseFolderPath.withCString({ path in
-                publicAddress.withCString({ address in
-                     withUnsafeMutablePointer(to: &errorCode, { error in
-                        comms_config_create(
-                            address,
-                            transport.pointer,
-                            db,
-                            path,
-                            discoveryTimeoutSec,
-                            safMessageDurationSec,
-                            error
-                        )
-                    })
-                })
-            })
-        })
-        ptr = result!
-        guard errorCode == 0 else {
-            throw CommsConfigError.generic(errorCode)
-        }
-    }
-
-    deinit {
-        comms_config_destroy(ptr)
+    init(title: String, description: String, error: Error? = nil) {
+        self.title = title
+        self.description = description
+        self.error = error
     }
 }

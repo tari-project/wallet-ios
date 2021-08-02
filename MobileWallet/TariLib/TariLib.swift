@@ -193,7 +193,7 @@ class TariLib {
 
     /// Starts an existing wallet service. Must only be called if wallet DB files already exist.
     /// - Throws: Can fail to generate a comms config, wallet creation and adding a basenode
-    func startWallet() {
+    func startWallet(seedWords: SeedWords?) {
         walletState = .starting
         TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
         guard let config = commsConfig else {
@@ -205,7 +205,8 @@ class TariLib {
         do {
             tariWallet = try Wallet(
                 commsConfig: config,
-                loggingFilePath: loggingFilePath
+                loggingFilePath: loggingFilePath,
+                seedWords: seedWords
             )
             walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
             walletState = .started
@@ -243,7 +244,7 @@ class TariLib {
         try? tariWallet?.syncBaseNode()
     }
 
-    func createNewWallet() throws {
+    func createNewWallet(seedWords: SeedWords?) throws {
         try FileManager.default.createDirectory(
             at: databaseDirectory,
             withIntermediateDirectories: true,
@@ -270,7 +271,7 @@ class TariLib {
             }
         }
         // then start wallet
-        startWallet()
+        startWallet(seedWords: seedWords)
     }
 
     func setCurrentNetworkKeyValue() throws {
