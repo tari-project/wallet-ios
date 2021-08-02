@@ -46,6 +46,7 @@ enum TariNetwork: String {
     case rincewind = "rincewind"
     case ridcully = "ridcully"
     case stibbons = "stibbons"
+    case weatherwax = "weatherwax"
 
     var currencyDisplayTicker: String {
         switch self {
@@ -66,7 +67,7 @@ enum AppEnvironment {
 struct TariSettings {
     static let shared = TariSettings()
 
-    let network: TariNetwork = .stibbons
+    let network: TariNetwork = .weatherwax
     let discoveryTimeoutSec: UInt64 = 20
     let safMessageDurationSec: UInt64 = 10800
     let deeplinkURI = "tari"
