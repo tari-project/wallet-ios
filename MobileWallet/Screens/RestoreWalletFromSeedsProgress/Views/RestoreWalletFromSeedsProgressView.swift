@@ -76,7 +76,7 @@ final class RestoreWalletFromSeedsProgressView: UIView {
 
     let statusLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.restoreFromSeedWordsProgressOverlayDescription
+        view.textColor = Theme.shared.colors.restoreFromSeedWordsProgressOverlayTitle
         view.font = Theme.shared.fonts.restoreFromSeedWordsProgressOverlayDescription
         view.adjustsFontSizeToFitWidth = true
         view.textAlignment = .center
