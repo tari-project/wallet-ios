@@ -122,7 +122,8 @@ class TariLib {
                databaseName: TariLib.databaseName,
                publicAddress: publicAddress,
                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
-               safMessageDurationSec: TariSettings.shared.safMessageDurationSec
+               safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
+               networkName: TariNetwork.weatherwax.rawValue
             )
         } catch {
             TariLogger.error("Failed to create comms config", error: error)

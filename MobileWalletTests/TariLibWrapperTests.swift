@@ -388,7 +388,8 @@ class TariLibWrapperTests: XCTestCase {
                     databaseName: self.dbName,
                     publicAddress: address,
                     discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
-                    safMessageDurationSec: TariSettings.shared.safMessageDurationSec
+                    safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
+                    networkName: TariNetwork.weatherwax.rawValue
                 )
             } catch {
                 completion(nil, error)
@@ -432,7 +433,8 @@ class TariLibWrapperTests: XCTestCase {
                 databaseName: dbName,
                 publicAddress: address,
                 discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
-                safMessageDurationSec: TariSettings.shared.safMessageDurationSec
+                safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
+                networkName: TariNetwork.weatherwax.rawValue
             )
 
             TariLogger.verbose("TariLib Logging path: \(loggingFilePath)")
