@@ -83,6 +83,7 @@ struct TariSettings {
     let privacyPolicyUrl = "https://www.tari.com/privacy_policy/"
     let storeUrl = "https://store.tarilabs.com/"
     let bugReportEmail = "bug_reports@tari.com"
+    let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
 
     var pushServerApiKey: String?
     var sentryPublicDSN: String?

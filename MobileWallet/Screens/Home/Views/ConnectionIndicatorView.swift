@@ -58,7 +58,8 @@ final class ConnectionIndicatorView: UIControl {
 
     // MARK: - Properties
 
-    var currentState: CurrentValueSubject<State, Never> = CurrentValueSubject(.disconnected)
+    @Published var currentState: State = .disconnected
+
     var onTap: (() -> Void)?
     private var cancelables = Set<AnyCancellable>()
 
@@ -98,7 +99,7 @@ final class ConnectionIndicatorView: UIControl {
     }
 
     private func setupActions() {
-        currentState
+        $currentState
             .map { $0.color }
             .assign(to: \.backgroundColor, on: dotView)
             .store(in: &cancelables)
