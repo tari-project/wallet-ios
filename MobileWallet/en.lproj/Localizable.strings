@@ -78,12 +78,16 @@
 "authentication.proceed" = "Proceed";
 
 /* Home view */
-"home.available_balance" = "Available Balance";
+"home.available_balance" = "Balance";
+"home.label.spendable" = "Available to spend";
 "home.error.update_balance" = "Balance update failed";
 "home.request_drop.title.with_param" = "You just got some %@!";
 "home.request_drop.description.with_param" = "Try sending a bit of %@ back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).";
 "home.request_drop.try_later" = "Try it later";
 "home.request_drop.error" = "Failed to claim %@";
+"home.info.amount_help.title" = "Why is some of my balance not spendable right now?";
+"home.info.amount_help.description" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
+"home.info.amount_help.action_button" = "Go to TariLabs University";
 
 /* Add amount view */
 "add_amount.error.available_balance.title" = "Available Balance error";
