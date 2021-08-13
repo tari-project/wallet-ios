@@ -473,6 +473,9 @@
 		3AA9499E26BD3EAC007C550D /* HomeViewToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA9499D26BD3EAC007C550D /* HomeViewToolbar.swift */; };
 		3AA9499F26BD3EAC007C550D /* HomeViewToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA9499D26BD3EAC007C550D /* HomeViewToolbar.swift */; };
 		3AA949A026BD3EAC007C550D /* HomeViewToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA9499D26BD3EAC007C550D /* HomeViewToolbar.swift */; };
+		3AC05F9B26C3F302002742C6 /* TransactionsListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC05F9A26C3F302002742C6 /* TransactionsListHeaderView.swift */; };
+		3AC05F9C26C3F302002742C6 /* TransactionsListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC05F9A26C3F302002742C6 /* TransactionsListHeaderView.swift */; };
+		3AC05F9D26C3F302002742C6 /* TransactionsListHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC05F9A26C3F302002742C6 /* TransactionsListHeaderView.swift */; };
 		3ACDA70026AFF83D00F138B8 /* OverlayPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */; };
 		3ACDA70126AFF83D00F138B8 /* OverlayPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */; };
 		3ACDA70226AFF83D00F138B8 /* OverlayPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */; };
@@ -850,6 +853,7 @@
 		3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionIndicatorView.swift; sourceTree = "<group>"; };
 		3A811EF02695BAEE003D0DF3 /* TooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipView.swift; sourceTree = "<group>"; };
 		3AA9499D26BD3EAC007C550D /* HomeViewToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewToolbar.swift; sourceTree = "<group>"; };
+		3AC05F9A26C3F302002742C6 /* TransactionsListHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionsListHeaderView.swift; sourceTree = "<group>"; };
 		3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPresentable.swift; sourceTree = "<group>"; };
 		3ACDA70426B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsProgressViewController.swift; sourceTree = "<group>"; };
 		3ACDA70826B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsProgressView.swift; sourceTree = "<group>"; };
@@ -1207,6 +1211,7 @@
 		00E2BCA6236AB25500C2A105 /* TransactionHistory */ = {
 			isa = PBXGroup;
 			children = (
+				3AC05F9926C3F2F4002742C6 /* Views */,
 				37D3D4EC251C970F00D24149 /* TxGifManager.swift */,
 				377C951D2522213800CC1696 /* TxsListViewController.swift */,
 				00E2BCA7236AB28200C2A105 /* TxTableViewCell.swift */,
@@ -1629,6 +1634,14 @@
 				3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */,
 				3A811EF02695BAEE003D0DF3 /* TooltipView.swift */,
 				3AA9499D26BD3EAC007C550D /* HomeViewToolbar.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3AC05F9926C3F2F4002742C6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3AC05F9A26C3F302002742C6 /* TransactionsListHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2296,6 +2309,7 @@
 				3A4376E5269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */,
 				37875E4424D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */,
+				3AC05F9B26C3F302002742C6 /* TransactionsListHeaderView.swift in Sources */,
 				00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				3AFAEBF226B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
 				37B48A7F24B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
@@ -2471,6 +2485,7 @@
 				37547D5724601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				006D211E23CEDF16007D1C10 /* MicroTari.swift in Sources */,
 				0087A1B323F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
+				3AC05F9C26C3F302002742C6 /* TransactionsListHeaderView.swift in Sources */,
 				009DFCB224741F9B0061DBC9 /* WalletTxs.swift in Sources */,
 				3AFAEBF326B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
 				3A35413226A72DEE002AB5A8 /* SelectBaseNodeCell.swift in Sources */,
@@ -2646,6 +2661,7 @@
 				3708D754247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
 				00E2BCB4236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				00D7BD8B24349AE3009DD097 /* UIDevice.swift in Sources */,
+				3AC05F9D26C3F302002742C6 /* TransactionsListHeaderView.swift in Sources */,
 				37765D2824A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				3AFAEBF426B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
 				37875E4624D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
