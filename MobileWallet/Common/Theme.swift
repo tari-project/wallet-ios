@@ -369,6 +369,7 @@ struct Fonts: Loopable {
     let txListEmptyMessageLabel = UIFont.Avenir.medium.withSize(14.0)
     let txFeeLabel = UIFont.Avenir.heavy.withSize(14.0)
     let txFeeButton = UIFont.Avenir.roman.withSize(13.0)
+    let txSectionTitleLabel = UIFont.Avenir.medium.withSize(16.0)
 
     // Sending tari screen
     let sendingTariTitleLabelFirst = UIFont.Avenir.light.withSize(18.0)
