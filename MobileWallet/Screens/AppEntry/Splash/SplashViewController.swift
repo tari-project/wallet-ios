@@ -43,6 +43,7 @@ import Lottie
 import LocalAuthentication
 import SwiftEntryKit
 import AVFoundation
+import Combine
 
 class SplashViewController: UIViewController, UITextViewDelegate {
     // MARK: - Variables and constants
@@ -76,6 +77,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         UserDefaults.Key.authStepPassed.boolValue()
     }()
 
+    private var cancelables = Set<AnyCancellable>()
+
     // MARK: - Override functions
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -91,17 +94,19 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        if !TariSettings.shared.isUnitTesting {
-            titleAnimation()
-            checkExistingWallet()
-        }
+        startOnboardingFlow()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         SwiftEntryKit.dismiss()
+    }
+
+    private func startOnboardingFlow() {
+        guard !TariSettings.shared.isUnitTesting else { return }
+        titleAnimation()
+        checkExistingWallet()
     }
 
     private func handleWalletEvents() {
@@ -162,24 +167,57 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         }
     }
 
+    private func prepareEnviroment() {
+
+        let dispatchGroup = DispatchGroup()
+        var error: Wallet.WalletError?
+
+        dispatchGroup.enter()
+        onTorSuccess { dispatchGroup.leave() }
+
+        dispatchGroup.enter()
+        waitForWalletStart(
+            onComplete: { dispatchGroup.leave() },
+            onError: {
+                error = $0
+                dispatchGroup.leave()
+            }
+        )
+
+        dispatchGroup.notify(queue: .main) { [weak self] in
+            guard let error = error else {
+                self?.startAnimation()
+                return
+            }
+
+            let description: String
+
+            switch error {
+            case .databaseDataError:
+                description = localized("splash.wallet_error.description.corrupted_database")
+            default:
+                description = localized("splash.wallet_error.description.generic")
+            }
+
+            UserFeedback.shared.callToAction(
+                title: localized("splash.wallet_error.title"),
+                description: description,
+                actionTitle: localized("splash.wallet_error.button.confirm"),
+                cancelTitle: localized("common.cancel"),
+                onAction: { [weak self] in
+                    TariLib.shared.deleteWallet()
+                    self?.startOnboardingFlow()
+                })
+        }
+    }
+
     private func checkExistingWallet() {
         if TariLib.shared.walletExists {
             // Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
             localAuthenticationContext.authenticateUser {
-                DispatchQueue.main.asyncAfter(
-                    deadline: .now() + 1,
-                    execute: {
-                        [weak self] in
-                        guard let self = self else { return }
-                        self.startAnimation {
-                            self.onTorSuccess {
-                                self.waitForWalletStart {
-                                    self.navigateToHome()
-                                }
-                            }
-                        }
-                    }
-                )
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+                    self?.prepareEnviroment()
+                }
             }
         } else {
             AppKeychainWrapper.removeBackupPasswordFromKeychain()
@@ -192,27 +230,19 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         }
     }
 
-    private func waitForWalletStart(onComplete: @escaping () -> Void, onError: (() -> Void)? = nil) {
-        if TariLib.shared.walletState != .started {
-            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
-                [weak self]
-                (sender) in
-                guard let self = self else { return }
-                let walletState = sender!.object as! TariLib.WalletState
+    private func waitForWalletStart(onComplete: @escaping () -> Void, onError: ((Wallet.WalletError) -> Void)?) {
+        TariLib.shared.walletStatePublisher
+            .sink { walletState in
                 switch walletState {
                 case .started:
-                    TariEventBus.unregister(self, eventType: .walletStateChanged)
                     onComplete()
-                case .startFailed:
-                    TariEventBus.unregister(self, eventType: .walletStateChanged)
-                    onError?()
-                default:
+                case let .startFailed(error):
+                    onError?(error)
+                case .notReady, .starting:
                     break
                 }
             }
-        } else {
-            onComplete()
-        }
+            .store(in: &cancelables)
     }
 
     private func createWalletBackup() {
@@ -246,8 +276,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                         self.navigateToHome()
                     }
                 }
-            } onError: {
-                [weak self] in
+            } onError: { [weak self] _ in
                 guard let self = self else { return }
                 UserFeedback.shared.error(
                     title: localized("wallet.error.title"),
@@ -257,7 +286,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             }
             try TariLib.shared.createNewWallet(seedWords: nil)
         } catch {
-            TariEventBus.unregister(self, eventType: .walletStateChanged)
             UserFeedback.shared.error(
                 title: localized("wallet.error.title"),
                 description: localized("wallet.error.create_new_wallet"),
@@ -279,16 +307,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         navigationController?.pushViewController(restoreWalletViewController, animated: true)
     }
 
-    func startAnimation(onComplete: @escaping () -> Void) {
-        animationContainer.play(
-            fromProgress: 0,
-            toProgress: 1,
-            loopMode: .playOnce,
-            completion: { [weak self] (_) in
-                guard let _ = self else { return }
-                onComplete()
-            }
-        )
+    func startAnimation(onComplete: (() -> Void)? = nil) {
+        animationContainer.play { _ in onComplete?() }
     }
 
     private func navigateToHome() {
@@ -329,5 +349,4 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
         TariEventBus.unregister(self)
     }
-
 }

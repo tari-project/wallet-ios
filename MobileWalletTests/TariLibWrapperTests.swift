@@ -175,91 +175,6 @@ class TariLibWrapperTests: XCTestCase {
         //Valid peer
         XCTAssertNoThrow(try BaseNode(name: "Test4", peer:"2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"))
     }
-   
-    func testWallet() {
-        let (wallet, _) = createWallet()
-            
-        let (walletPublicKey, pubKeyError) = wallet.publicKey
-        if pubKeyError != nil {
-            XCTFail(pubKeyError!.localizedDescription)
-        }
-        
-        let walletPublicKeyHexError = walletPublicKey!.hex.1
-        if walletPublicKeyHexError != nil {
-            XCTFail(walletPublicKeyHexError!.localizedDescription)
-        }
-        
-        // check wallet can sign a message and then verify the signature of the message it signed
-        let msg = "Hello"
-        let signature = try! wallet.signMessage(msg)
-        
-        do {
-            let verification = try signature.isValid(wallet: wallet)
-            if verification != true {
-                XCTFail("Verification of message failed")
-            }
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-        
-        //MARK: Remove Alice contact
-        let (contacts, contactsError) = wallet.contacts
-        if contactsError != nil {
-            XCTFail(contactsError!.localizedDescription)
-        }
-        
-        do {
-            let aliceContact = try contacts!.at(position: 0)
-            try wallet.removeContact(aliceContact)
-        }  catch {
-            XCTFail(error.localizedDescription)
-        }
-        
-        //MARK: Add Alice contact
-        do {
-            try wallet.addUpdateContact(
-                alias: "BillyBob",
-                publicKeyHex: "a03d9be195e40466e255bd64eb612ad41ae0010519b6cbfc7698e5d0916a1a7c"
-            )
-        } catch {
-            XCTFail("Failed to add contact \(error.localizedDescription)")
-        }
-        
-        receiveTestTx(wallet: wallet)
-        sendTxToBob(wallet: wallet)
-
-        let (availableBalance, _) = wallet.availableBalance
-        let (pendingIncomingBalance, _) = wallet.pendingIncomingBalance
-        let (pendingOutgoingBalance, _) = wallet.pendingOutgoingBalance
-        
-        XCTAssertGreaterThan(availableBalance, 0)
-        XCTAssertGreaterThan(pendingIncomingBalance, 0)
-        XCTAssertGreaterThan(pendingOutgoingBalance, 0)
-    
-        let (allTxs, allTxsError) = wallet.allTxs
-        guard allTxsError == nil else {
-            XCTFail("Failed to load all transactions: \(allTxsError!.localizedDescription)")
-            return
-        }
-        
-        
-        let totalTxsBeforeCancelling = allTxs.count
-        
-        XCTAssertGreaterThan(totalTxsBeforeCancelling, 0)
-        
-        //Test cancel function when a pending tx has aged for 2 seconds
-        sleep(2)
-        XCTAssertNoThrow(try wallet.cancelAllExpiredPendingTx(after: 1))
-        
-        let (allTxsWithCancelled, allTxsWithCancelledError) = wallet.allTxs
-        guard allTxsWithCancelledError == nil else {
-            XCTFail("Failed to load all (including cancelled) transactions: \(allTxsWithCancelledError!.localizedDescription)")
-            return
-        }
-        
-        //Cancelled transactions are still in the list
-        XCTAssertEqual(allTxsWithCancelled.count, totalTxsBeforeCancelling)
-    }
     
     func testBackupAndRestoreWallet() {
         XCTAssertNoThrow(try ICloudServiceMock.removeBackups())
@@ -310,13 +225,6 @@ class TariLibWrapperTests: XCTestCase {
                 }
             }
         }
-    }
-    
-    func testPartialBackups() {
-        let (_, dbURL) = createWallet()
-        let partialBackupPath = backupPath(TariSettings.testStoragePath)
-        XCTAssertNoThrow(try WalletBackups.partialBackup(orginalFilePath: dbURL.path, backupFilePathWithFilename: partialBackupPath))
-        XCTAssertTrue(FileManager.default.fileExists(atPath: partialBackupPath))
     }
     
     func testMicroTari() {

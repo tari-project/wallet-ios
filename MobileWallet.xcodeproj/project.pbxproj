@@ -48,9 +48,6 @@
 		0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B323FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		0039B1B423FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
-		003DF41624C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
-		003DF41724C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
-		003DF41824C05EC900675A2C /* PartialBackup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 003DF41524C05EC900675A2C /* PartialBackup.swift */; };
 		004277E723DF4A5600AE7BD9 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277E623DF4A5600AE7BD9 /* FeedbackView.swift */; };
 		004277E823DF4A5600AE7BD9 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277E623DF4A5600AE7BD9 /* FeedbackView.swift */; };
 		004277E923DF4A5600AE7BD9 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277E623DF4A5600AE7BD9 /* FeedbackView.swift */; };
@@ -672,7 +669,6 @@
 		00369D7C24221ACB00BAB95B /* DeepLinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkManager.swift; sourceTree = "<group>"; };
 		00369D802426080D00BAB95B /* TariLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariLogger.swift; sourceTree = "<group>"; };
 		0039B1B123FA925500F91E0F /* PasteEmojisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteEmojisView.swift; sourceTree = "<group>"; };
-		003DF41524C05EC900675A2C /* PartialBackup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialBackup.swift; sourceTree = "<group>"; };
 		004277E623DF4A5600AE7BD9 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		004277EE23E03E1600AE7BD9 /* TxViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxViewControllerExtension.swift; sourceTree = "<group>"; };
 		004277F223E0407900AE7BD9 /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
@@ -1174,7 +1170,6 @@
 				001F6CE32380253B00FA7002 /* Contact.swift */,
 				001F6CDF2380198D00FA7002 /* Contacts.swift */,
 				00B084BF249E471800F7B9BD /* EmojiSet.swift */,
-				003DF41524C05EC900675A2C /* PartialBackup.swift */,
 				00BBD811237E9EE200EBF5E6 /* PrivateKey.swift */,
 				001F6CDB238011CA00FA7002 /* PublicKey.swift */,
 				00B084C4249E4F6900F7B9BD /* SeedWords.swift */,
@@ -2267,7 +2262,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				003DF41624C05EC900675A2C /* PartialBackup.swift in Sources */,
 				0087A1A923F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				001F6CE82381A22E00FA7002 /* CompletedTxs.swift in Sources */,
 				3ACDA70926B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift in Sources */,
@@ -2509,7 +2503,6 @@
 				3ACDA70626B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */,
 				491AB8A123F3FF4400372189 /* AddAmountViewController.swift in Sources */,
 				004277FC23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
-				003DF41724C05EC900675A2C /* PartialBackup.swift in Sources */,
 				00230AFB2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				3723A7A724AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				00A057B023D875840029C22A /* TariEventBus.swift in Sources */,
@@ -2620,7 +2613,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				00BBD81C237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
-				003DF41824C05EC900675A2C /* PartialBackup.swift in Sources */,
 				37C9B6FA2507D57B0004647A /* BridgesConfigurationViewController.swift in Sources */,
 				3ACDA70B26B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift in Sources */,
 				004277FD23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,

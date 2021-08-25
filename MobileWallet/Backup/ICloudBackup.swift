@@ -220,7 +220,7 @@ class ICloudBackup: NSObject {
             if let password = password {
                 fileURL = try getZippedAndEncryptedWalletDatabase(password: password)
             } else {
-                fileURL = try zipWalletDatabase(encrypted: false)
+                fileURL = try zipWalletDatabase()
             }
 
             if TariSettings.shared.isUnitTesting {
@@ -748,13 +748,12 @@ extension ICloudBackup {
         throw ICloudBackupError.noICloudBackupExists
     }
 
-    private func zipWalletDatabase(encrypted: Bool) throws -> URL {
+    private func zipWalletDatabase() throws -> URL {
 
         defer { try? TariLib.shared.tariWallet?.enableEncryption() }
         try TariLib.shared.tariWallet?.disableEncryption()
 
         let archiveName = fileName + ".zip"
-
         let tmpDirectory = try getTempDirectory()
         let archiveURL = tmpDirectory.appendingPathComponent(archiveName)
 
@@ -763,21 +762,8 @@ extension ICloudBackup {
         }
 
         let sqlite3File = TariLib.databaseName.appending(".sqlite3")
-
         let originalFileURL = directory.appendingPathComponent(sqlite3File)
-
-        var dbDirectory: URL
-        if TariSettings.shared.isUnitTesting {
-            dbDirectory = try getTestDataBaseUrl()
-        } else if encrypted {
-            dbDirectory = originalFileURL
-        } else {
-            try WalletBackups.partialBackup(
-                orginalFilePath: originalFileURL.path,
-                backupFilePathWithFilename: tmpDirectory.appendingPathComponent(sqlite3File).path
-            )
-            dbDirectory = tmpDirectory.appendingPathComponent(sqlite3File)
-        }
+        let dbDirectory = TariSettings.shared.isUnitTesting ? try getTestDataBaseUrl() : originalFileURL
 
         try FileManager().zipItem(
             at: dbDirectory,
@@ -788,7 +774,7 @@ extension ICloudBackup {
     }
 
     private func getZippedAndEncryptedWalletDatabase(password: String) throws -> URL {
-        let zipURL = try zipWalletDatabase(encrypted: true)
+        let zipURL = try zipWalletDatabase()
         let data = try Data(contentsOf: zipURL)
 
         let aes = try AESEncryption(keyString: password)
