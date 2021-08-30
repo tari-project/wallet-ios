@@ -70,6 +70,7 @@ public enum TariEventTypes: String {
     case torConnectionFailed = "tari-event-tor-connection-failed"
 
     // wallet
+    @available(*, deprecated, message: "Please use TariLib.shared.walletStatePublisher instead")
     case walletStateChanged = "tari-event-wallet-state-changed"
 
     // connection monitor

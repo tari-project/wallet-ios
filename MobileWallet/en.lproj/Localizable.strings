@@ -1,5 +1,6 @@
 /* Common */
 "common.continue" = "Continue";
+"common.cancel" = "Cancel";
 "common.send.with_param" = "Send %@";
 
 "common.fee" = "Transaction Fee";
@@ -159,10 +160,13 @@
 "splash.disclaimer.with_params" = "By creating a wallet, you agree to the terms of the %1$@ and %2$@";
 "splash.disclaimer.param.privacy_policy" = "Privacy Policy";
 "splash.disclaimer.param.user_agreement" = "User Agreement";
-
 "splash.title" = "Private by default. Useful by design.";
 "splash.create_wallet" = "Create Your Wallet";
 "splash.restore_wallet" = "Restore an Existing wallet";
+"splash.wallet_error.title" = "Unable to start wallet";
+"splash.wallet_error.description.corrupted_database" = "The local wallet data isn't compatible with the current app version or the data was corrupted. Please remove your wallet from the device and restore your wallet from backup.";
+"splash.wallet_error.description.generic" = "The app was unable to initialize the wallet instance. Please remove your wallet from the device and restore your wallet from backup.";
+"splash.wallet_error.button.confirm" = "Delete Your Wallet";
 
 /* iCloudBackup error */
 "iCloud_backup.error.title.set_password" = "Failed to set backup password";

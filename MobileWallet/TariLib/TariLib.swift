@@ -39,6 +39,7 @@
 */
 
 import Foundation
+import Combine
 
 enum TariLibErrors: Error {
     case saveToKeychain
@@ -49,16 +50,29 @@ class TariLib {
     static let databaseName = "tari_wallet"
     static let logFilePrefix = "log"
     var torPortsOpened = false
-    public private(set) var walletState = WalletState.notReady
+
+    var walletState: WalletState { walletStateSubject.value }
+    var walletStatePublisher: AnyPublisher<WalletState, Never> { walletStateSubject.share().eraseToAnyPublisher() }
+    private let walletStateSubject = CurrentValueSubject<WalletState, Never>(.notReady)
+    private var cancelables = Set<AnyCancellable>()
 
     enum KeyValueStorageKeys: String {
         case network = "SU7FM2O6Q3BU4XVN7HDD"
     }
 
-    enum WalletState {
+    enum WalletState: Equatable {
+        static func == (lhs: TariLib.WalletState, rhs: TariLib.WalletState) -> Bool {
+            switch (lhs, rhs) {
+            case (.notReady, .notReady), (.starting, .starting), (.started, .started), (.startFailed, .startFailed):
+                return true
+            default:
+                return false
+            }
+        }
+
         case notReady
         case starting
-        case startFailed
+        case startFailed(error: Wallet.WalletError)
         case started
     }
 
@@ -132,7 +146,7 @@ class TariLib {
     }
 
     private init() {
-        OnionConnector.shared.addObserver(self)
+        setupListeners()
     }
 
     private func transportType() throws -> TransportType {
@@ -146,6 +160,13 @@ class TariLib {
             socksUsername: "",
             socksPassword: ""
         )
+    }
+    
+    private func setupListeners() {
+        OnionConnector.shared.addObserver(self)
+        walletStatePublisher
+            .sink { TariEventBus.postToMainThread(.walletStateChanged, sender: $0) }
+            .store(in: &cancelables)
     }
 
     func startTor() {
@@ -193,37 +214,29 @@ class TariLib {
     }
 
     /// Starts an existing wallet service. Must only be called if wallet DB files already exist.
-    /// - Throws: Can fail to generate a comms config, wallet creation and adding a basenode
     func startWallet(seedWords: SeedWords?) {
-        walletState = .starting
-        TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
+        walletStateSubject.send(.starting)
         guard let config = commsConfig else {
-            walletState = .startFailed
-            TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
+            walletStateSubject.send(.startFailed(error: .unknown))
             return
         }
         let loggingFilePath = TariLib.shared.logFilePath
         do {
-            tariWallet = try Wallet(
-                commsConfig: config,
-                loggingFilePath: loggingFilePath,
-                seedWords: seedWords
-            )
+            tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath, seedWords: seedWords)
             walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
-            walletState = .started
-            TariEventBus.postToMainThread(
-                .walletStateChanged,
-                sender: walletState
-            )
+            walletStateSubject.send(.started)
+        } catch let error as Wallet.WalletError {
+            walletStateSubject.send(.startFailed(error: error))
+            return
         } catch {
-            walletState = .startFailed
-            TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
+            walletStateSubject.send(.startFailed(error: .unknown))
             return
         }
+
         try? setupBasenode()
         startListeningToBaseNodeSync()
         backgroundStorageCleanup()
-        walletState = .started
+        walletStateSubject.send(.started)
     }
 
     /// Base note basic setup. Selects previously used base node or use random node if there wasn't any node selected before.
@@ -251,27 +264,27 @@ class TariLib {
             withIntermediateDirectories: true,
             attributes: nil
         )
+
         // start listening to wallet events first
-        TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
-            [weak self]
-            (sender) in
-            guard let self = self else { return }
-            let walletState = sender!.object as! WalletState
-            switch walletState {
-            case .started:
-                do {
-                    try self.setCurrentNetworkKeyValue()
-                } catch {
-                    // no-op for now
+        var cancelable: AnyCancellable?
+
+        cancelable = walletStatePublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] walletState in
+                switch walletState {
+                case .started:
+                    try? self?.setCurrentNetworkKeyValue()
+                    cancelable?.cancel()
+                case .startFailed:
+                    cancelable?.cancel()
+                case .starting, .notReady:
+                    break
                 }
-                TariEventBus.unregister(self, eventType: .walletStateChanged)
-            case .startFailed:
-                TariEventBus.unregister(self, eventType: .walletStateChanged)
-            default:
-                break
             }
-        }
-        // then start wallet
+
+        cancelable?
+            .store(in: &cancelables)
+
         startWallet(seedWords: seedWords)
     }
 
@@ -283,7 +296,7 @@ class TariLib {
     }
 
     func stopWallet() {
-        walletState = WalletState.notReady
+        walletStateSubject.send(.notReady)
         tariWallet = nil
         TariEventBus.unregister(self)
     }
