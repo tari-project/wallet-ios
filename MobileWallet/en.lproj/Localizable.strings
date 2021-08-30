@@ -366,7 +366,7 @@
 
 /* RestorePending view */
 "restore_pending_view.title" = "Restoring your wallet";
-"restore_pending_view.description" = "This could take between 1 to 3 minutes.\nPlease keep the app open.";
+"restore_pending_view.description" = "This could take between 1 to 3 minutes. Please keep the app open.";
 
 /* BackupPending view */
 "backup_pending_view.title" = "Backing up your wallet…";
@@ -491,10 +491,10 @@
 "restore_from_seed_words.progress_overlay.label.title" = "Restoring your wallet";
 "restore_from_seed_words.progress_overlay.label.description" = "This could take between 1 to 3 minutes.\nPlease keep the app open.";
 "restore_from_seed_words.progress_overlay.success" = "Your wallet was restored. Welcome back!";
-"restore_from_seed_words.progress_overlay.status.connecting" = "Waiting for connection.";
-"restore_from_seed_words.progress_overlay.status.connected" = "Connection established. The process will start soon.";
+"restore_from_seed_words.progress_overlay.status.connecting" = "Waiting for connection";
+"restore_from_seed_words.progress_overlay.status.connected" = "Connection established. The process will start soon";
 "restore_from_seed_words.progress_overlay.status.progress" = "Restoring in progress:";
-"restore_from_seed_words.progress_overlay.progress.connection_failed" = "Attempt %d out of %d.";
+"restore_from_seed_words.progress_overlay.progress.connection_failed" = "Attempt %d out of %d";
 "restore_from_seed_words.progress_overlay.error.title" = "Recovery Failed";
 "restore_from_seed_words.progress_overlay.error.description.connection_failed" = "Unable to connect with base node. Please try again later.";
 "restore_from_seed_words.progress_overlay.error.description.unknown_error" = "Unable to recover your wallet due to the internal error.";
