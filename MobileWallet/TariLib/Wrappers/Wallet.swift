@@ -359,7 +359,7 @@ final class Wallet {
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction cancelled callback. txID=\(cancelledTxId) ✅")
         }
-        
+
         let txoValidationCallback: (@convention(c) (UInt64, UInt8) -> Void) = { responseId, result in
             Wallet.checkValidationResult(type: .txo, responseId: responseId, result: BaseNodeValidationResult(rawValue: result)!)
         }
@@ -678,32 +678,32 @@ final class Wallet {
     }
 
     func syncBaseNode() throws {
-        
+
         Wallet.baseNodeValidationStatusMap.removeAll()
         var errorCode: Int32 = -1
-        
+
         let txoValidationRequestID = withUnsafeMutablePointer(to: &errorCode) { error in
             wallet_start_txo_validation(pointer, error)
         }
-        
+
         guard errorCode == 0 else {
             Wallet.baseNodeValidationStatusMap.removeAll()
             throw WalletErrors.generic(errorCode)
         }
-        
+
         Wallet.baseNodeValidationStatusMap[.txo] = (txoValidationRequestID, nil)
         TariLogger.info("txo validation started with request id \(txoValidationRequestID).")
-        
+
         // tx validation
         let txValidationRequestId = withUnsafeMutablePointer(to: &errorCode) { error in
             wallet_start_transaction_validation(pointer, error)
         }
-        
+
         guard errorCode == 0 else {
             Wallet.baseNodeValidationStatusMap.removeAll()
             throw WalletErrors.generic(errorCode)
         }
-        
+
         Wallet.baseNodeValidationStatusMap[.tx] = (txValidationRequestId, nil)
         TariLogger.info("tx validation started with request id \(txValidationRequestId).")
         TariEventBus.postToMainThread(.baseNodeSyncStarted, sender: nil)
@@ -755,13 +755,13 @@ final class Wallet {
     }
 
     func recentPublicKeys(limit: Int) throws -> [PublicKey] {
-        
+
         let completedPublicKeys = txsPublicKeyTimestampPair(transactions: try completedTransactions())
         let pendingInboundPublicKeys = txsPublicKeyTimestampPair(transactions: try pendingInboundTransactions())
         let pendingOutboundPublicKey = txsPublicKeyTimestampPair(transactions: try pendingOutboundTransactions())
-        
+
         let allPairs = completedPublicKeys + pendingInboundPublicKeys + pendingOutboundPublicKey
-        
+
         let result = allPairs
             .sorted { $0.timestamp > $1.timestamp }
             .map(\.publicKey)
@@ -770,10 +770,10 @@ final class Wallet {
                 result.append(publicKey)
             }
             .prefix(limit)
-        
+
         return Array(result)
     }
-    
+
     private func txsPublicKeyTimestampPair<T: TxsProtocol>(transactions: T) -> [(publicKey: PublicKey, timestamp: UInt64)] {
         transactions.list.0.compactMap {
             guard let publicKey = $0.direction == .inbound ? $0.sourcePublicKey.0 : $0.destinationPublicKey.0 else { return nil }
