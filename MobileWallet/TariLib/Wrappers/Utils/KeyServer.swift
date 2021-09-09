@@ -58,12 +58,12 @@ class KeyServer {
     private let MESSAGE_PREFIX = "Hello Tari from"
     private let TARIBOT_MESSAGE1 = String(
         format: localized("taribot.message1.with_param"),
-        TariSettings.shared.network.currencyDisplayTicker
+        NetworkManager.shared.selectedNetwork.tickerSymbol
     )
     private let TARIBOT_MESSAGE2 = String(
         format: localized("taribot.message2.with_params"),
-        TariSettings.shared.network.currencyDisplayTicker,
-        TariSettings.shared.network.currencyDisplayTicker
+        NetworkManager.shared.selectedNetwork.tickerSymbol,
+        NetworkManager.shared.selectedNetwork.tickerSymbol
     )
     private let signature: Signature
     private let url: URL

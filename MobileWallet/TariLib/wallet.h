@@ -150,7 +150,7 @@ struct TariPublicKey *emoji_id_to_public_key(const char *emoji, int *error_out);
 struct TariPrivateKey *private_key_create(struct ByteVector *bytes, int *error_out);
 
 // Generates a TariPrivateKey
-struct TariPrivateKey *private_key_generate(void);
+struct TariPrivateKey *private_key_generate();
 
 // Creates a ByteVector from a TariPrivateKey
 struct ByteVector *private_key_get_bytes(struct TariPrivateKey *private_key, int *error_out);
@@ -385,13 +385,13 @@ void pending_inbound_transactions_destroy(struct TariPendingInboundTransactions 
 // Creates a TariCommsConfig
 // Valid values for network are: ridcully, stibbons, weatherwax, localnet, mainnet
 struct TariCommsConfig *comms_config_create(const char *public_address,
-                                     struct TariTransportType *transport,
-                                     const char *database_name,
-                                     const char *datastore_path,
-                                     unsigned long long discovery_timeout_in_secs,
-                                     unsigned long long saf_message_duration_in_secs,
-                                     const char *network,
-                                     int* error_out);
+                                            struct TariTransportType *transport,
+                                            const char *database_name,
+                                            const char *datastore_path,
+                                            unsigned long long discovery_timeout_in_secs,
+                                            unsigned long long saf_message_duration_in_secs,
+                                            const char *network,
+                                            int *error_out);
 
 // Frees memory for a TariCommsConfig
 void comms_config_destroy(struct TariCommsConfig *wc);
@@ -441,6 +441,8 @@ void comms_config_destroy(struct TariCommsConfig *wc);
 /// `callback_saf_message_received` - The callback function pointer that will be called when the Dht has determined that
 /// is has connected to enough of its neighbours to be confident that it has received any SAF messages that were waiting
 /// for it.
+/// `recovery_in_progress` - Pointer to an bool which will be modified to indicate if there is an outstanding recovery
+/// that should be completed or not to an error code should one occur, may not be null. Functions as an out parameter.
 /// `error_out` - Pointer to an int which will be modified
 /// to an error code should one occur, may not be null. Functions as an out parameter.
 /// ## Returns
@@ -477,6 +479,7 @@ struct TariWallet *wallet_create(struct TariCommsConfig *config,
                                  void (*callback_invalid_txo_validation_complete)(unsigned long long, unsigned char),
                                  void (*callback_transaction_validation_complete)(unsigned long long, unsigned char),
                                  void (*callback_saf_message_received)(),
+                                 bool *recovery_in_progress,
                                  int *error_out);
 
 // Signs a message
@@ -484,9 +487,6 @@ char *wallet_sign_message(struct TariWallet *wallet, const char *msg, int *error
 
 // Verifies signature for a signed message
 bool wallet_verify_message_signature(struct TariWallet *wallet, struct TariPublicKey *public_key, const char *hex_sig_nonce, const char *msg, int *error_out);
-
-/// Generates test data
-bool wallet_test_generate_data(struct TariWallet *wallet, const char *datastore_path, int *error_out);
 
 // Adds a base node peer to the TariWallet
 bool wallet_add_base_node_peer(struct TariWallet *wallet, struct TariPublicKey *public_key, const char *address, int *error_out);
@@ -548,9 +548,6 @@ struct TariPendingInboundTransaction *wallet_get_pending_inbound_transaction_by_
 // Get a Cancelled transaction from a TariWallet by its TransactionId. Pending Inbound or Outbound transaction will be converted to a CompletedTransaction
 struct TariCompletedTransaction *wallet_get_cancelled_transaction_by_id(struct TariWallet *wallet, unsigned long long transaction_id, int *error_out);
 
-// Simulates completion of a TariPendingOutboundTransaction
-bool wallet_test_complete_sent_transaction(struct TariWallet *wallet, struct TariPendingOutboundTransaction *tx, int *error_out);
-
 // Import a UTXO into the wallet. This will add a spendable UTXO and create a faux completed transaction to record the
 // event.
 unsigned long long wallet_import_utxo(struct TariWallet *wallet, unsigned long long amount, struct TariPrivateKey *spending_key, struct TariPublicKey *source_public_key, const char *message, int *error_out);
@@ -576,18 +573,6 @@ void wallet_set_low_power_mode(struct TariWallet *wallet, int *error_out);
 
 // Set the power mode of the wallet to Normal Power mode which will then use the standard level of network traffic
 void wallet_set_normal_power_mode(struct TariWallet *wallet, int *error_out);
-
-// Simulates the completion of a broadcasted TariPendingInboundTransaction
-bool wallet_test_broadcast_transaction(struct TariWallet *wallet, unsigned long long tx, int *error_out);
-
-// Simulates receiving the finalized version of a TariPendingInboundTransaction
-bool wallet_test_finalize_received_transaction(struct TariWallet *wallet, struct TariPendingInboundTransaction *tx, int *error_out);
-
-// Simulates a TariCompletedTransaction that has been mined
-bool wallet_test_mine_transaction(struct TariWallet *wallet, unsigned long long tx, int *error_out);
-
-// Simulates a TariPendingInboundtransaction being received
-bool wallet_test_receive_transaction(struct TariWallet *wallet, int *error_out);
 
 /// Cancel a Pending Outbound Transaction
 bool wallet_cancel_pending_transaction(struct TariWallet *wallet, unsigned long long transaction_id, int *error_out);
@@ -735,7 +720,7 @@ void file_partial_backup(const char *original_file_path, const char *backup_file
 /// This function will log the provided string at debug level. To be used to have a client log messages to the LibWallet
 void log_debug_message(const char *msg);
 
-struct EmojiSet *get_emoji_set(void);
+struct EmojiSet *get_emoji_set();
 
 void emoji_set_destroy(struct EmojiSet *emoji_set);
 

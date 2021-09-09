@@ -66,7 +66,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
     private func getEmailFooter() -> String {
         var phoneDetails: [(key: String, value: String)] = []
 
-        phoneDetails.append((key: "Network", value: TariSettings.shared.network.rawValue))
+        phoneDetails.append((key: "Network", value: NetworkManager.shared.selectedNetwork.name))
         phoneDetails.append((key: "Phone", value: UIDevice.current.model.rawValue))
         phoneDetails.append((key: "iOS", value: UIDevice.current.systemVersion))
 
@@ -113,9 +113,9 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         // An archive needs to be created first before multipl files can be appended.
         // If this is mainnet then just the current log file gets created and the rest will get appended below.
         var sourceURL = URL(fileURLWithPath: TariLib.shared.logFilePath)
-        // Only allow attaching DB files in debugn and testflight
+        // Only allow attaching DB files in debug and testflight
         if TariSettings.shared.environment != .production {
-            sourceURL = TariLib.shared.databaseDirectory
+            sourceURL = TariLib.shared.connectedDatabaseDirectory
         }
 
         do {
@@ -231,7 +231,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
         else { return }
 
-        let title = "\(TariSettings.shared.network.rawValue.uppercased()) v\(version) (b\(build))"
+        let title = "\(NetworkManager.shared.selectedNetwork.name.uppercased()) v\(version) (b\(build))"
 
         UIViewController.debugMenuAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         guard let alert = UIViewController.debugMenuAlert else {

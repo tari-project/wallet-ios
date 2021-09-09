@@ -1,10 +1,10 @@
-//  UserDefaultsWrapper.swift
+//  NetworkManager.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 07.07.2020
+	Created by Adrian Truszczynski on 01/09/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,27 +38,39 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+import Combine
 
-extension UserDefaults {
-    enum Key: String {
-        case walletHasBeenIntroduced
-        case authStepPassed
-        case isLastBackupFailed
-        case backupOperationAborted
-        case hasVerifiedSeedPhrase
+final class NetworkManager {
 
-        func set<T>(_ value: T) {
-            UserDefaults.standard.set(value, forKey: rawValue)
+    // MARK: - Properties
+
+    static let shared = NetworkManager()
+
+    @Published var selectedNetwork: TariNetwork
+
+    private static var defaultNetwork: TariNetwork { .weatherwax }
+    private var cancelables = Set<AnyCancellable>()
+
+    // MARK: - Initializers
+
+    init() {
+        selectedNetwork = Self.setupNetwork()
+        setupFeedbacks()
+    }
+
+    // MARK: - Setups
+
+    private static func setupNetwork() -> TariNetwork {
+        guard let selectedNetworkName = GroupUserDefaults.selectedNetworkName, let network = TariNetwork.all.first(where: { $0.name == selectedNetworkName }) else {
+            GroupUserDefaults.selectedNetworkName = defaultNetwork.name
+            return defaultNetwork
         }
+        return network
+    }
 
-        func get<T>(_ type: T.Type) -> T? {
-            guard let value = UserDefaults.standard.value(forKey: rawValue) as? T else { return nil }
-            return value
-        }
-
-        func boolValue() -> Bool {
-            UserDefaults.standard.bool(forKey: rawValue)
-        }
+    private func setupFeedbacks() {
+        $selectedNetwork
+            .sink { GroupUserDefaults.selectedNetworkName = $0.name }
+            .store(in: &cancelables)
     }
 }

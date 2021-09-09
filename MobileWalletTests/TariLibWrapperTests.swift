@@ -107,20 +107,20 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertThrowsError(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽👽"))
 
         //Valid deep links
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇")
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇")
         )
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇?amount=32.1&note=hi%20there")
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇?amount=32.1&note=hi%20there")
         )
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=32.1note=hi%20there"))
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=32.1note=hi%20there"))
         //Derive a deep link from random pubkey, then init a pubkey using that deep link
         XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).emojiDeeplink.0))
         XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).hexDeeplink.0))
 
         //Invalid deep links
         XCTAssertThrowsError(try PublicKey(deeplink: "bla bla bla"))
-        XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱"))
-        XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/invalid"))
+        XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/eid/🖖🥴😍🙃💦🤘🤜👁🙃🙌😱"))
+        XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/pubkey/invalid"))
         XCTAssertThrowsError(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://made-up-net/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
 
         //Convenience init
@@ -158,7 +158,7 @@ class TariLibWrapperTests: XCTestCase {
     
     func testDeepLink() {
         do {
-           let params = try DeepLinkParams(deeplink: "\(TariSettings.shared.deeplinkURI)://\(TariSettings.shared.network)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=60.50&note=hi%20there")
+            let params = try DeepLinkParams(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork.name)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=60.50&note=hi%20there")
 
             XCTAssertEqual(60500000, params.amount.rawValue)
         } catch {
@@ -174,57 +174,6 @@ class TariLibWrapperTests: XCTestCase {
 
         //Valid peer
         XCTAssertNoThrow(try BaseNode(name: "Test4", peer:"2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141"))
-    }
-    
-    func testBackupAndRestoreWallet() {
-        XCTAssertNoThrow(try ICloudServiceMock.removeBackups())
-        var wallet: Wallet? = nil
-        wallet = createWallet().0
-        TariLib.shared.walletPublicKeyHex = wallet!.publicKey.0?.hex.0
-        
-        receiveTestTx(wallet: wallet!)
-        sendTxToBob(wallet: wallet!)
-        
-        let (walletPublicKey, walletPublicKeyError) = wallet!.publicKey
-        if walletPublicKeyError != nil {
-            XCTFail(walletPublicKeyError!.localizedDescription)
-        }
-        
-        let completedTxCount = wallet!.completedTxs.0?.count.0
-        let pendingInboundTxCount = wallet!.pendingInboundTxs.0?.count.0
-        let pendingOutboundTxCount = wallet!.pendingOutboundTxs.0?.count.0
-        let availableBalance = wallet!.availableBalance.0
-        let pendingIncomingBalance = wallet!.pendingIncomingBalance.0
-        let pendingOutgoingBalance = wallet!.pendingOutgoingBalance.0
-        XCTAssertNoThrow(try ICloudBackup.shared.createWalletBackup(password: backupPassword))
-        wallet = nil
-        
-        restoreWallet { restoredWallet, error in
-            if error != nil {
-                XCTFail("Failed to restore wallet backup \(error!.localizedDescription)")
-            } else {
-                if let restoredWallet = restoredWallet {
-                    let (restoredWalletPublicKey, restoredWalletPublicKeyError) = restoredWallet.publicKey
-                    if restoredWalletPublicKeyError != nil {
-                        XCTFail(restoredWalletPublicKeyError!.localizedDescription)
-                    }
-                    XCTAssertEqual(walletPublicKey, restoredWalletPublicKey)
-                    
-                    XCTAssertEqual(completedTxCount, restoredWallet.completedTxs.0?.count.0)
-                    XCTAssertEqual(pendingInboundTxCount, restoredWallet.pendingInboundTxs.0?.count.0)
-                    XCTAssertEqual(pendingOutboundTxCount, restoredWallet.pendingOutboundTxs.0?.count.0)
-                    
-                    // TODO tests below are failing - need to be investigated
-                    /*
-                    XCTAssertEqual(availableBalance, restoredWallet.availableBalance.0)
-                    XCTAssertEqual(pendingIncomingBalance, restoredWallet.pendingIncomingBalance.0)
-                    XCTAssertEqual(pendingOutgoingBalance, restoredWallet.pendingOutgoingBalance.0)
-                     */
-                } else {
-                    XCTFail("Failed to restore wallet backup")
-                }
-            }
-        }
     }
     
     func testMicroTari() {
@@ -268,22 +217,6 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertThrowsError(try MicroTari(decimalValue: 0.123456789))
     }
     
-    func testKeyValueStorage() {
-        TariLogger.info("TEST KEY VALUE STORAGE")
-        let (wallet, _) = createWallet()
-        // random key
-        let key = "7SXVVFERUP"
-        let value = "DQORS7M0EO_⚽🧣👂🤝🏧_X6IZFL5OG3"
-        // store value
-        XCTAssert(try wallet.setKeyValue(key: key, value: value))
-        // get value
-        XCTAssertEqual(value, try wallet.getKeyValue(key: key))
-        // clear value
-        XCTAssert(try wallet.removeKeyValue(key: key))
-        // value cleared, "get" should throw error
-        XCTAssertThrowsError(try wallet.getKeyValue(key: key))
-    }
-    
     func restoreWallet(completion: @escaping ((_ wallet: Wallet?, _ error: Error?) -> Void)) {
         ICloudBackup.shared.restoreWallet(password: backupPassword, completion: { error in
             var commsConfig: CommsConfig?
@@ -297,7 +230,7 @@ class TariLibWrapperTests: XCTestCase {
                     publicAddress: address,
                     discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
                     safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
-                    networkName: TariNetwork.weatherwax.rawValue
+                    networkName: TariNetwork.weatherwax.name
                 )
             } catch {
                 completion(nil, error)
@@ -312,140 +245,5 @@ class TariLibWrapperTests: XCTestCase {
                 return
             }
         })
-    }
-    
-    //MARK: Create new wallet
-    func createWallet() -> (Wallet, URL) {
-        var wallet: Wallet?
-        
-        let fileManager = FileManager.default
-        let databaseFolderPath = TariSettings.testStoragePath
-        let loggingFilePath = loggingTestPath(databaseFolderPath)
-        
-        do {
-            if fileManager.fileExists(atPath: databaseFolderPath) {
-                try fileManager.removeItem(atPath: databaseFolderPath)
-            }
-            try fileManager.createDirectory(atPath: databaseFolderPath, withIntermediateDirectories: true, attributes: nil)
-        } catch {
-            XCTFail("Unable to create directory \(error.localizedDescription)")
-        }
-                
-        var commsConfig: CommsConfig?
-        do {
-            let transport = TransportType()
-            let address = transport.address.0
-            commsConfig = try CommsConfig(
-                transport: transport,
-                databaseFolderPath: databaseFolderPath,
-                databaseName: dbName,
-                publicAddress: address,
-                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
-                safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
-                networkName: TariNetwork.weatherwax.rawValue
-            )
-
-            TariLogger.verbose("TariLib Logging path: \(loggingFilePath)")
-        } catch {
-            XCTFail("Unable to create comms config \(error.localizedDescription)")
-        }
-        
-        do {
-            wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: loggingFilePath, seedWords: nil)
-        } catch {
-            XCTFail("Unable to create wallet \(error.localizedDescription)")
-        }
-        
-        XCTAssertNoThrow(try wallet!.generateTestData())
-        
-        return (wallet!, URL(fileURLWithPath: databaseFolderPath).appendingPathComponent(dbName + ".sqlite3"))
-    }
-    
-    //MARK: Receive a test transaction
-    func receiveTestTx(wallet: Wallet) {
-        do {
-            try wallet.generateTestReceiveTx()
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-        
-        //MARK: Finalize and broadcast received test transaction
-        var txId: UInt64?
-        do {
-            let (pendingInboundTxs, pendingInboundTxsError) = wallet.pendingInboundTxs
-            if pendingInboundTxsError != nil {
-                XCTFail(pendingInboundTxsError!.localizedDescription)
-            }
-            
-            let (pendingInboundTxsCount, pendingInboundTxsCountError) = pendingInboundTxs!.count
-            if pendingInboundTxsCountError != nil {
-                XCTFail(pendingInboundTxsCountError!.localizedDescription)
-            }
-            
-            var currTx = 0
-            txId = 0
-            var pendingInboundTx: PendingInboundTx? = nil
-            while (currTx < pendingInboundTxsCount) {
-                pendingInboundTx = try pendingInboundTxs!.at(position: UInt32(currTx))
-                let (pendingInboundTxId, pendingInboundTxIdError) = pendingInboundTx!.id
-                if pendingInboundTxIdError != nil {
-                    XCTFail(pendingInboundTxIdError!.localizedDescription)
-                }
-                txId = pendingInboundTxId
-                let (pendingInboundTxStatus, _) = pendingInboundTx!.status
-                if pendingInboundTxStatus == TxStatus.pending
-                {
-                    break;
-                }
-                currTx += 1
-            }
-            
-            try wallet.testFinalizedReceivedTx(pendingInboundTx: pendingInboundTx!)
-            try wallet.testTxBroadcast(txID: txId!)
-            try wallet.testTxMined(txID: txId!)
-            let completedTx = try wallet.findCompletedTxBy(id: txId!)
-            let (status, statusError) = completedTx.status
-            if statusError != nil {
-                XCTFail(statusError!.localizedDescription)
-            }
-        
-            XCTAssertEqual(status, .minedUnconfirmed)
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-    }
-    
-    //MARK: Send transaction to bob
-    func sendTxToBob(wallet: Wallet) {
-        var sendTransactionId: UInt64?
-        do {
-            let (contacts, contactsError) = wallet.contacts
-            if contactsError != nil {
-                XCTFail(contactsError!.localizedDescription)
-            }
-            let bob = try contacts!.at(position: 0)
-            let (bobPublicKey, bobPublicKeyError) = bob.publicKey
-            if bobPublicKeyError != nil {
-                XCTFail(bobPublicKeyError!.localizedDescription)
-            }
-            
-            _ = try wallet.sendTx(destination: bobPublicKey!, amount: MicroTari(100000), feePerGram: MicroTari(101), message: "Oh hi bob")
-            let (pendingOutboundTxs, pendingOutboundTxsError) = wallet.pendingOutboundTxs
-            if pendingOutboundTxsError != nil {
-                XCTFail(pendingOutboundTxsError!.localizedDescription)
-            }
-            let pendingOutboundTx = try pendingOutboundTxs!.at(position: 0)
-            let (pendingOutboundTxId, pendingOutboundTxIdError) = pendingOutboundTx.id
-            if pendingOutboundTxIdError != nil {
-                XCTFail(pendingOutboundTxIdError!.localizedDescription)
-            }
-            sendTransactionId = pendingOutboundTxId
-        } catch {
-            XCTFail(error.localizedDescription)
-        }
-        
-        //MARK: Complete sent transaction to bob
-        XCTAssertNoThrow( _ = try wallet.findPendingOutboundTxBy(id: sendTransactionId!))
-        XCTAssertNoThrow(try wallet.testTxMined(txID: sendTransactionId!))
     }
 }

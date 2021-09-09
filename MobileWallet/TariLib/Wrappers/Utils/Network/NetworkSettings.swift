@@ -1,10 +1,10 @@
-//  UserDefaultsWrapper.swift
+//  NetworkSettings.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 07.07.2020
+	Created by Adrian Truszczynski on 01/09/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,27 +38,18 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+struct NetworkSettings: Codable, Equatable {
 
-extension UserDefaults {
-    enum Key: String {
-        case walletHasBeenIntroduced
-        case authStepPassed
-        case isLastBackupFailed
-        case backupOperationAborted
-        case hasVerifiedSeedPhrase
+    let name: String
+    let selectedBaseNode: BaseNode
+    let customBaseNodes: [BaseNode]
+    let isCloudBackupEnabled: Bool
 
-        func set<T>(_ value: T) {
-            UserDefaults.standard.set(value, forKey: rawValue)
-        }
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.name == rhs.name }
+}
 
-        func get<T>(_ type: T.Type) -> T? {
-            guard let value = UserDefaults.standard.value(forKey: rawValue) as? T else { return nil }
-            return value
-        }
-
-        func boolValue() -> Bool {
-            UserDefaults.standard.bool(forKey: rawValue)
-        }
-    }
+extension NetworkSettings {
+    func update(selectedBaseNode: BaseNode) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, isCloudBackupEnabled: isCloudBackupEnabled) }
+    func update(customBaseNodes: [BaseNode]) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, isCloudBackupEnabled: isCloudBackupEnabled) }
+    func update(isCloudBackupEnabled: Bool) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, isCloudBackupEnabled: isCloudBackupEnabled) }
 }

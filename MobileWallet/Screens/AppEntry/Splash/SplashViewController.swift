@@ -64,6 +64,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     let animationContainer = AnimationView()
     let elementsContainer = UIView()
     let createWalletButton = ActionButton()
+    let selectNetworkButton = ActionButton()
     let titleLabel = UILabel()
     let gemImageView = UIImageView()
     let disclaimerText = UITextView()
@@ -83,6 +84,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        setupFeedbacks()
         loadAnimation()
         handleWalletEvents()
     }
@@ -154,6 +156,12 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         }
     }
 
+    private func setupFeedbacks() {
+        NetworkManager.shared.$selectedNetwork
+            .sink { [weak self] in self?.update(networkName: $0.name) }
+            .store(in: &cancelables)
+    }
+
     private func onTorSuccess(_ onComplete: @escaping () -> Void) {
         // Handle if tor ports opened later
         TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
@@ -186,7 +194,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
         dispatchGroup.notify(queue: .main) { [weak self] in
             guard let error = error else {
-                self?.startAnimation()
+                self?.startAnimation { self?.navigateToHome() }
                 return
             }
 
@@ -212,7 +220,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func checkExistingWallet() {
-        if TariLib.shared.walletExists {
+        if TariLib.shared.isWalletExist {
             // Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
             localAuthenticationContext.authenticateUser {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
@@ -224,6 +232,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             videoView.isHidden = false
             titleLabel.isHidden = false
             createWalletButton.isHidden = false
+            selectNetworkButton.isHidden = false
             disclaimerText.isHidden = false
             restoreButton.isHidden = false
             Tracker.shared.track("/onboarding/introduction", "Onboarding - Introduction")
@@ -231,10 +240,15 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func waitForWalletStart(onComplete: @escaping () -> Void, onError: ((Wallet.WalletError) -> Void)?) {
-        TariLib.shared.walletStatePublisher
+
+        var cancel: AnyCancellable?
+
+        cancel = TariLib.shared.walletStatePublisher
+            .receive(on: RunLoop.main)
             .sink { walletState in
                 switch walletState {
                 case .started:
+                    cancel?.cancel()
                     onComplete()
                 case let .startFailed(error):
                     onError?(error)
@@ -242,7 +256,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                     break
                 }
             }
-            .store(in: &cancelables)
+
+        cancel?.store(in: &cancelables)
     }
 
     private func createWalletBackup() {
@@ -302,6 +317,21 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         }
     }
 
+    @objc func onSelectNetworkButtonTap() {
+
+        let controller = UIAlertController(title: localized("splash.action_sheet.select_network.title"), message: localized("splash.action_sheet.select_network.description"), preferredStyle: .actionSheet)
+
+        TariNetwork.all.forEach { [weak controller] network in
+            controller?.addAction(UIAlertAction(title: network.name.capitalized, style: .default, handler: { _ in
+                NetworkManager.shared.selectedNetwork = network
+            }))
+        }
+
+        controller.addAction(UIAlertAction(title: localized("common.cancel"), style: .destructive, handler: nil))
+
+        present(controller, animated: true)
+    }
+
     @objc func onRestoreWalletTap() {
         let restoreWalletViewController = RestoreWalletViewController()
         navigationController?.pushViewController(restoreWalletViewController, animated: true)
@@ -348,5 +378,14 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         }
 
         TariEventBus.unregister(self)
+    }
+
+    private func update(networkName: String) {
+
+        if let appVersion = AppInfo.appVersion, let buildVestion = AppInfo.buildVestion {
+            versionLabel.text = "\(networkName.uppercased()) v\(appVersion) (b\(buildVestion))"
+        }
+
+        selectNetworkButton.setTitle(localized("splash.button.select_network", arguments: networkName.capitalized), for: .normal)
     }
 }

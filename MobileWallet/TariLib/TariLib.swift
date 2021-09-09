@@ -46,8 +46,10 @@ enum TariLibErrors: Error {
 }
 
 class TariLib {
+
+    private let databaseNamespace = "tari_wallet"
+
     static let shared = TariLib()
-    static let databaseName = "tari_wallet"
     static let logFilePrefix = "log"
     var torPortsOpened = false
 
@@ -55,6 +57,9 @@ class TariLib {
     var walletStatePublisher: AnyPublisher<WalletState, Never> { walletStateSubject.share().eraseToAnyPublisher() }
     private let walletStateSubject = CurrentValueSubject<WalletState, Never>(.notReady)
     private var cancelables = Set<AnyCancellable>()
+
+    var connectedDatabaseName: String { databaseNamespace }
+    var connectedDatabaseDirectory: URL { TariSettings.storageDirectory.appendingPathComponent("\(databaseNamespace)_\(NetworkManager.shared.selectedNetwork.name)", isDirectory: true) }
 
     enum KeyValueStorageKeys: String {
         case network = "SU7FM2O6Q3BU4XVN7HDD"
@@ -83,10 +88,6 @@ class TariLib {
         return "\(TariSettings.storageDirectory.path)/\(TariLib.logFilePrefix)-\(dateString).txt"
     }()
 
-    lazy var databaseDirectory: URL = {
-        return TariSettings.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true)
-    }()
-
     var allLogFiles: [URL] {
         do {
             let allLogFiles = try FileManager.default.contentsOfDirectory(
@@ -101,25 +102,15 @@ class TariLib {
         }
     }
 
-    var publicAddress: String {
-        return "/ip4/0.0.0.0/tcp/9838"
-    }
-
-    var listenerAddress: String {
-        return "/ip4/0.0.0.0/tcp/9838"
-    }
+    private let publicAddress: String = "/ip4/0.0.0.0/tcp/9838"
+    private let listenerAddress: String = "/ip4/0.0.0.0/tcp/9838"
 
     var tariWallet: Wallet?
-
     var walletPublicKeyHex: String? // we need a cache of this for function that run while tariWallet = nil
 
-    var walletExists: Bool {
+    var isWalletExist: Bool {
         do {
-            let fileExists = try TariSettings.storageDirectory.appendingPathComponent(
-                TariLib.databaseName,
-                isDirectory: true
-            ).checkResourceIsReachable()
-            return fileExists
+            return try connectedDatabaseDirectory.checkResourceIsReachable()
         } catch {
             TariLogger.warn("Database path not reachable. Assuming wallet doesn't exist.", error: error)
             return false
@@ -127,22 +118,20 @@ class TariLib {
     }
 
     var commsConfig: CommsConfig? {
-        var config: CommsConfig?
         do {
-            let transport = try transportType()
-            config = try CommsConfig(
-               transport: transport,
-               databaseFolderPath: databaseDirectory.path,
-               databaseName: TariLib.databaseName,
-               publicAddress: publicAddress,
-               discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
-               safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
-               networkName: TariNetwork.weatherwax.rawValue
+            return try CommsConfig(
+                transport: try transportType(),
+                databaseFolderPath: connectedDatabaseDirectory.path,
+                databaseName: connectedDatabaseName,
+                publicAddress: publicAddress,
+                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
+                safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
+                networkName: NetworkManager.shared.selectedNetwork.name
             )
         } catch {
             TariLogger.error("Failed to create comms config", error: error)
+            return nil
         }
-        return config
     }
 
     private init() {
@@ -161,7 +150,7 @@ class TariLib {
             socksPassword: ""
         )
     }
-    
+
     private func setupListeners() {
         OnionConnector.shared.addObserver(self)
         walletStatePublisher
@@ -241,8 +230,7 @@ class TariLib {
 
     /// Base note basic setup. Selects previously used base node or use random node if there wasn't any node selected before.
     func setupBasenode() throws {
-        let baseNode = try GroupUserDefaults.selectedBaseNode ?? BaseNode.randomNode()
-        try update(baseNode: baseNode, syncAfterSetting: false)
+        try update(baseNode: NetworkManager.shared.selectedNetwork.selectedBaseNode, syncAfterSetting: false)
     }
 
     /// Selects new base node peer for Tari Wallet.
@@ -251,7 +239,7 @@ class TariLib {
     ///   - syncAfterSetting: Boolean. If it  `true` then the wallet will try to sync with newly selected base node.
     func update(baseNode: BaseNode, syncAfterSetting: Bool) throws {
 
-        GroupUserDefaults.selectedBaseNode = baseNode
+        NetworkManager.shared.selectedNetwork.selectedBaseNode = baseNode
 
         try tariWallet?.add(baseNode: baseNode)
         guard syncAfterSetting else { return }
@@ -260,7 +248,7 @@ class TariLib {
 
     func createNewWallet(seedWords: SeedWords?) throws {
         try FileManager.default.createDirectory(
-            at: databaseDirectory,
+            at: connectedDatabaseDirectory,
             withIntermediateDirectories: true,
             attributes: nil
         )
@@ -291,7 +279,7 @@ class TariLib {
     func setCurrentNetworkKeyValue() throws {
         _ = try tariWallet?.setKeyValue(
             key: KeyValueStorageKeys.network.rawValue,
-            value: TariSettings.shared.network.rawValue
+            value: NetworkManager.shared.selectedNetwork.name
         )
     }
 
@@ -305,7 +293,7 @@ class TariLib {
         stopWallet()
         do {
             // delete database files
-            try FileManager.default.removeItem(at: databaseDirectory)
+            try FileManager.default.removeItem(at: connectedDatabaseDirectory)
             // delete cached value
             walletPublicKeyHex = nil
             // delete log files

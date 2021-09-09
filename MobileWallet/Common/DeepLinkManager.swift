@@ -131,7 +131,7 @@ class ShortcutParser {
             type: ShortcutKey.send.rawValue,
             localizedTitle: String(
                 format: localized("common.send.with_param"),
-                TariSettings.shared.network.currencyDisplayTicker
+                NetworkManager.shared.selectedNetwork.tickerSymbol
             ),
             localizedSubtitle: nil,
             icon: UIApplicationShortcutIcon(templateImageName: "Gem"),

@@ -75,6 +75,7 @@ class SettingsViewController: SettingsParentTableViewController {
         case disclaimer
 
         case torBridgeConfiguration
+        case selectNetwork
         case selectBaseNode
         case deleteWallet
 
@@ -83,6 +84,7 @@ class SettingsViewController: SettingsParentTableViewController {
             case .backUpWallet: return localized("settings.item.wallet_backups")
 
             case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
+            case .selectNetwork: return localized("settings.item.select_network")
             case .selectBaseNode: return localized("settings.item.select_base_node")
             case .deleteWallet: return localized("settings.item.delete_wallet")
 
@@ -100,6 +102,7 @@ class SettingsViewController: SettingsParentTableViewController {
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: SettingsItemTitle.torBridgeConfiguration.rawValue),
+        SystemMenuTableViewCellItem(title: SettingsItemTitle.selectNetwork.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.selectBaseNode.rawValue),
         SystemMenuTableViewCellItem(
             title: SettingsItemTitle.deleteWallet.rawValue,
@@ -148,6 +151,10 @@ class SettingsViewController: SettingsParentTableViewController {
         navigationController?.pushViewController(bridgesConfigurationViewController, animated: true)
     }
 
+    private func onSelectNetworkAction() {
+        navigationController?.pushViewController(SelectNetworkViewController(), animated: true)
+    }
+
     private func onSelectBaseNodeAction() {
         navigationController?.pushViewController(SelectBaseNodeViewController(), animated: true)
     }
@@ -180,10 +187,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: String(describing: SystemMenuTableViewCell.self),
-            for: indexPath
-        ) as! SystemMenuTableViewCell
+        let cell = tableView.dequeueReusableCell(type: SystemMenuTableViewCell.self, indexPath: indexPath)
 
         guard let section = Section(rawValue: indexPath.section) else { return cell }
         switch section {
@@ -265,8 +269,10 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case 0:
                 onBridgeConfigurationAction()
             case 1:
-                onSelectBaseNodeAction()
+                onSelectNetworkAction()
             case 2:
+                onSelectBaseNodeAction()
+            case 3:
                 onDeleteWalletAction()
             default:
                 break
