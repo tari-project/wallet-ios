@@ -1,0 +1,79 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Run tests on simulator"
+  lane :tests do
+    run_tests()
+  end
+  desc "Just push a new beta build to App Store Connect"
+  lane :push do
+    increment_build_number(xcodeproj: "MobileWallet.xcodeproj")
+    build_app(workspace: "MobileWallet.xcworkspace", scheme: "MobileWallet")
+    upload_to_testflight
+  end
+  desc "Build number bump"
+  lane :bump do
+    increment_build_number(xcodeproj: "MobileWallet.xcodeproj")
+  end
+  lane :qa do
+      group_name = 'QA - Internal'
+      
+      sh "sh sync_libs.sh"
+
+      run_tests()
+      increment_build_number(xcodeproj: "MobileWallet.xcodeproj")
+      build_app(workspace: "MobileWallet.xcworkspace", scheme: "MobileWallet")
+      upload_to_testflight
+
+      puts ["Uploading new build and adding to group: ", group_name]
+
+      fastlane_require 'spaceship'
+
+      app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+      qa_group_name = CredentialsManager::AppfileConfig.try_fetch_value(:qa_group_name)
+
+      Spaceship::Tunes.login($apple_id)
+
+      app = Spaceship::ConnectAPI::App.find(app_identifier)
+      groups = app.get_beta_groups(filter: {name: group_name})
+      group = groups.first
+    
+      builds = Spaceship::ConnectAPI::Build.all(
+          app_id: app.id
+      )
+
+      latest_build = builds.first
+
+      puts ["Latest build", latest_build.version]
+
+      Spaceship::ConnectAPI.add_beta_groups_to_build(build_id: latest_build.id, beta_group_ids: [group.id])
+
+      upload_to_browserstack_app_live(
+        browserstack_username: ENV["BROWSERSTACK_USERNAME"],
+        browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"]
+      )
+  end
+  desc "Only build and upload the IPA to browserstack"
+  lane :browserstack do    
+    build_app(workspace: "MobileWallet.xcworkspace", scheme: "MobileWallet")
+    upload_to_browserstack_app_live(
+      browserstack_username: ENV["BROWSERSTACK_USERNAME"],
+      browserstack_access_key: ENV["BROWSERSTACK_ACCESS_KEY"]
+    )
+end
+end

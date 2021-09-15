@@ -44,11 +44,54 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+    func scene(_ scene: UIScene,
+               willConnectTo session: UISceneSession,
+               options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
+
+        // If the user opens the app from a notification when the app is closed
+        if let notification = connectionOptions.notificationResponse {
+            _ = notification.notification.request.content.userInfo
+            // TODO handle notification content here
+        }
+
+        // If the user opens a deep link while the app is closed
+        if let url = connectionOptions.urlContexts.first?.url {
+            deepLinker.handleShortcut(type: .send(deeplink: NSString(string: url.absoluteString) as String))
+        }
+
+        // If the user opens a home screen shortcut while the app is closed
+        if let shortcutItem = connectionOptions.shortcutItem {
+            deepLinker.handleShortcut(item: shortcutItem)
+        }
+
+        if ICloudBackup.shared.iCloudBackupsIsOn {
+            BackupScheduler.shared.startObserveEvents()
+        }
+
         guard let _ = (scene as? UIWindowScene) else { return }
+        if let windowScene = scene as? UIWindowScene {
+            let window = UIWindow(windowScene: windowScene)
+            let navigationController = AlwaysPoppableNavigationController(
+                rootViewController: SplashViewController()
+            )
+            navigationController.setNavigationBarHidden(true, animated: false)
+            window.rootViewController = navigationController
+            self.window = window
+            window.makeKeyAndVisible()
+        }
+    }
+
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let url = URLContexts.first?.url {
+            deepLinker.handleShortcut(
+                type: .send(
+                    deeplink: NSString(string: url.absoluteString) as String
+                )
+            )
+        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
@@ -61,6 +104,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         // Called when the scene has moved from an inactive state to an active state.
         // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
+
+        deepLinker.checkDeepLink()
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
@@ -68,9 +113,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This may occur due to temporary interruptions (ex. an incoming phone call).
     }
 
+    private func onTorSuccess(_ onComplete: @escaping () -> Void) {
+        // Handle if tor ports opened later
+        TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
+            guard let self = self else { return }
+            TariEventBus.unregister(self, eventType: .torPortsOpened)
+            onComplete()
+        }
+        if TariLib.shared.torPortsOpened {
+            TariEventBus.unregister(self, eventType: .torPortsOpened)
+            onComplete()
+        }
+    }
+
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+
+        // Remove badges from push notifications
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        ConnectionMonitor.shared.start()
+        TariLib.shared.startTor()
+        // Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
+        if TariLib.shared.walletExists {
+            onTorSuccess {
+                TariLib.shared.startWallet(seedWords: nil)
+            }
+        }
+        if UserDefaults.Key.backupOperationAborted.boolValue()
+            && ICloudBackup.shared.iCloudBackupsIsOn
+            && !ICloudBackup.shared.inProgress {
+            BackupScheduler.shared.scheduleBackup(immediately: true)
+        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -80,6 +154,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+        ConnectionMonitor.shared.stop()
+        TariLib.shared.stopWallet()
+        TariLib.shared.stopTor()
+        ICloudBackup.shared.backgroundBackupWallet()
     }
 
+    func windowScene(_ windowScene: UIWindowScene,
+                     performActionFor shortcutItem: UIApplicationShortcutItem,
+                     completionHandler: @escaping (Bool) -> Void) {
+        completionHandler(deepLinker.handleShortcut(item: shortcutItem))
+    }
 }
