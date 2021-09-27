@@ -161,7 +161,7 @@ class TariLib {
             socksPassword: ""
         )
     }
-    
+
     private func setupListeners() {
         OnionConnector.shared.addObserver(self)
         walletStatePublisher
