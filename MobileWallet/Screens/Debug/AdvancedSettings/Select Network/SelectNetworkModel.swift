@@ -1,10 +1,10 @@
-//  UserDefaultsWrapper.swift
+//  SelectNetworkModel.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 07.07.2020
+	Created by Adrian Truszczynski on 26/08/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,27 +38,39 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+final class SelectNetworkModel {
 
-extension UserDefaults {
-    enum Key: String {
-        case walletHasBeenIntroduced
-        case authStepPassed
-        case isLastBackupFailed
-        case backupOperationAborted
-        case hasVerifiedSeedPhrase
+    struct NetworkModel: Hashable {
+        let networkName: String
+        let isSelected: Bool
+    }
 
-        func set<T>(_ value: T) {
-            UserDefaults.standard.set(value, forKey: rawValue)
-        }
+    final class ViewModel {
+        @Published var networkModels: [NetworkModel] = []
+        @Published var selectedIndex: Int?
+    }
 
-        func get<T>(_ type: T.Type) -> T? {
-            guard let value = UserDefaults.standard.value(forKey: rawValue) as? T else { return nil }
-            return value
-        }
+    // MARK: - Properties
 
-        func boolValue() -> Bool {
-            UserDefaults.standard.bool(forKey: rawValue)
-        }
+    let viewModel = ViewModel()
+    private let networks = TariNetwork.all
+
+    // MARK: - Actions
+
+    func refreshData() {
+        viewModel.selectedIndex = networks.firstIndex { $0.name == NetworkManager.shared.selectedNetwork.name }
+        viewModel.networkModels = networks
+            .enumerated()
+            .map { NetworkModel(networkName: $1.name, isSelected: $0 == viewModel.selectedIndex) }
+    }
+
+    func update(selectedIndex: Int) {
+        guard viewModel.selectedIndex != selectedIndex else { return }
+        TariLib.shared.stopWallet()
+        NetworkManager.shared.selectedNetwork = networks[selectedIndex]
+        TariLib.shared.startWallet(seedWords: nil)
+        AppRouter.moveToSplashScreen()
     }
 }
+
+import UIKit

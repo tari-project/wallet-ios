@@ -64,13 +64,9 @@ final class AddBaseNodeModel {
             let node = try BaseNode(name: viewModel.name, peer: viewModel.peer)
             try? TariLib.shared.update(baseNode: node, syncAfterSetting: false)
 
-            if GroupUserDefaults.customBaseNodes == nil {
-                GroupUserDefaults.customBaseNodes = [node]
-            } else {
-                GroupUserDefaults.customBaseNodes?.append(node)
-            }
+            NetworkManager.shared.selectedNetwork.customBaseNodes.append(node)
+            NetworkManager.shared.selectedNetwork.selectedBaseNode = node
 
-            GroupUserDefaults.selectedBaseNode = node
             viewModel.isFinished = true
             viewModel.errorMessage = nil
         } catch {

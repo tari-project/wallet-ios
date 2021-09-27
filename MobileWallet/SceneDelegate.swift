@@ -135,7 +135,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         ConnectionMonitor.shared.start()
         TariLib.shared.startTor()
         // Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
-        if TariLib.shared.walletExists {
+        if TariLib.shared.isWalletExist {
             onTorSuccess {
                 TariLib.shared.startWallet(seedWords: nil)
             }

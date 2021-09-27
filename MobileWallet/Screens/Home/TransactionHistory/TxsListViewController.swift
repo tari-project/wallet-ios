@@ -488,12 +488,14 @@ extension TxsListViewController {
                     fallthrough
                 case .failure:
                     // change base node
+
                     do {
                         TariLogger.warn("Base node sync failed or base node not in sync. Setting another random peer.")
-                        try TariLib.shared.update(baseNode: .randomNode(), syncAfterSetting: true)
+                        try TariLib.shared.update(baseNode: NetworkManager.shared.selectedNetwork.randomNode(), syncAfterSetting: true)
                     } catch {
                         TariLogger.error("Failed to add random base node peer")
                     }
+
                     // retry sync
                     self.syncBaseNode()
                 case .aborted:

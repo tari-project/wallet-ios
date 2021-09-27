@@ -54,7 +54,7 @@ class ReminderNotifications {
 
     static let titleString = String(
         format: localized("scheduled_reminder.title.with_param"),
-        TariSettings.shared.network.currencyDisplayTicker
+        NetworkManager.shared.selectedNetwork.tickerSymbol
     )
 
     static let recipientReminderNotifications: [ScheduledReminder] = [
@@ -69,7 +69,7 @@ class ReminderNotifications {
             title: ReminderNotifications.titleString,
             body: String(
                 format: localized("scheduled_reminder.body.long.with_param"),
-                TariSettings.shared.network.currencyDisplayTicker
+                NetworkManager.shared.selectedNetwork.tickerSymbol
             ),
             deliverAfter: TariSettings.shared.environment == .production ? 60 * 60 * 48 : 60 * 60 * 4 // 48h for prod and 4h for debug/testflight
         )

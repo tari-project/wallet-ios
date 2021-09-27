@@ -242,7 +242,7 @@ class ScanViewController: UIViewController {
         switch scanResourceType {
         case .publicKey:
             title = String(format: localized("scan_view.scan_qr_to_send.with_param"),
-                TariSettings.shared.network.currencyDisplayTicker)
+                NetworkManager.shared.selectedNetwork.tickerSymbol)
         case .bridges:
             title = localized("scan_view.scan_qr_to_set_bridges")
         }

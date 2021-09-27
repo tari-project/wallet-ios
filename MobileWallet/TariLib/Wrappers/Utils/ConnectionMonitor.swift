@@ -72,10 +72,7 @@ class ConnectionMonitorState {
     var torStatus: ConnectionMonitorStateTor = .unknown { didSet { onUpdate() } }
     var baseNodeSyncStatus: ConnectionMonitorStateBaseNode = ConnectionMonitorStateBaseNode.notInited { didSet { onUpdate() } }
 
-    var currentBaseNodeName: String {
-        guard let currentPeer = GroupUserDefaults.selectedBaseNode else { return "Unknown" }
-        return currentPeer.name
-    }
+    var currentBaseNodeName: String { NetworkManager.shared.selectedNetwork.selectedBaseNode.name }
 
     var formattedDisplayItems: [String] {
         var entries: [String] = []

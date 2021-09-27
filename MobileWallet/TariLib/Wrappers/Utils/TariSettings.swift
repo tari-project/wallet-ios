@@ -41,23 +41,6 @@
 import Foundation
 import SwiftKeychainWrapper
 
-enum TariNetwork: String {
-    case mainnet = "mainnet"
-    case rincewind = "rincewind"
-    case ridcully = "ridcully"
-    case stibbons = "stibbons"
-    case weatherwax = "weatherwax"
-
-    var currencyDisplayTicker: String {
-        switch self {
-        case .rincewind:
-            return "tXTR"
-        default:
-            return "XTR"
-        }
-    }
-}
-
 enum AppEnvironment {
     case debug
     case testflight
@@ -67,7 +50,6 @@ enum AppEnvironment {
 struct TariSettings {
     static let shared = TariSettings()
 
-    let network: TariNetwork = .weatherwax
     let discoveryTimeoutSec: UInt64 = 20
     let safMessageDurationSec: UInt64 = 10800
     let deeplinkURI = "tari"

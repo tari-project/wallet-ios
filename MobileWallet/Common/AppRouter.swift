@@ -1,10 +1,10 @@
-//  UserDefaultsWrapper.swift
+//  AppRouter.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 07.07.2020
+	Created by Adrian Truszczynski on 02/09/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,27 +38,15 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+import UIKit
 
-extension UserDefaults {
-    enum Key: String {
-        case walletHasBeenIntroduced
-        case authStepPassed
-        case isLastBackupFailed
-        case backupOperationAborted
-        case hasVerifiedSeedPhrase
+enum AppRouter {
 
-        func set<T>(_ value: T) {
-            UserDefaults.standard.set(value, forKey: rawValue)
-        }
-
-        func get<T>(_ type: T.Type) -> T? {
-            guard let value = UserDefaults.standard.value(forKey: rawValue) as? T else { return nil }
-            return value
-        }
-
-        func boolValue() -> Bool {
-            UserDefaults.standard.bool(forKey: rawValue)
-        }
+    static func moveToSplashScreen() {
+        BackupScheduler.shared.stopObserveEvents()
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: SplashViewController())
+        navigationController.setNavigationBarHidden(true, animated: false)
+        UIApplication.shared.windows.first?.rootViewController = navigationController
+        UIApplication.shared.windows.first?.makeKeyAndVisible()
     }
 }

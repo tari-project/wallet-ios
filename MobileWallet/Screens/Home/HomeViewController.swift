@@ -168,10 +168,8 @@ final class HomeViewController: UIViewController {
             return
         }
         do {
-            let persistedNetwork = try TariLib.shared.tariWallet?.getKeyValue(
-                key: TariLib.KeyValueStorageKeys.network.rawValue
-            )
-            if TariNetwork(rawValue: persistedNetwork ?? "") != TariSettings.shared.network {
+            let persistedNetwork = try TariLib.shared.tariWallet?.getKeyValue(key: TariLib.KeyValueStorageKeys.network.rawValue)
+            if persistedNetwork != NetworkManager.shared.selectedNetwork.name {
                 // incompatible network
                 displayIncompatibleNetworkDialog()
             } else {
@@ -248,7 +246,7 @@ final class HomeViewController: UIViewController {
 
         let errorTitle = String(
             format: localized("home.request_drop.error"),
-            TariSettings.shared.network.currencyDisplayTicker
+            NetworkManager.shared.selectedNetwork.tickerSymbol
         )
 
         do {
@@ -258,11 +256,11 @@ final class HomeViewController: UIViewController {
 
                     let title = String(
                         format: localized("home.request_drop.title.with_param"),
-                        TariSettings.shared.network.currencyDisplayTicker
+                        NetworkManager.shared.selectedNetwork.tickerSymbol
                     )
                     let description = String(
                         format: localized("home.request_drop.description.with_param"),
-                        TariSettings.shared.network.currencyDisplayTicker
+                        NetworkManager.shared.selectedNetwork.tickerSymbol
                     )
 
                     UserFeedback.shared.callToAction(
@@ -270,7 +268,7 @@ final class HomeViewController: UIViewController {
                         description: description,
                         actionTitle: String(
                             format: localized("common.send.with_param"),
-                            TariSettings.shared.network.currencyDisplayTicker
+                            NetworkManager.shared.selectedNetwork.tickerSymbol
                         ),
                         cancelTitle: localized("home.request_drop.try_later"),
                         onAction: { [weak self] in

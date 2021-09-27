@@ -166,26 +166,12 @@ class DeleteWalletViewController: UIViewController {
 
     private func deleteWallet() {
         TariLib.shared.deleteWallet()
-        BackupScheduler.shared.stopObserveEvents()
-        // go back to splash screen
-        let navigationController = AlwaysPoppableNavigationController(
-            rootViewController: SplashViewController()
-        )
-        navigationController.setNavigationBarHidden(
-            true,
-            animated: false
-        )
-        UIApplication.shared.windows.first?.rootViewController = navigationController
-        UIApplication.shared.windows.first?.makeKeyAndVisible()
+        AppRouter.moveToSplashScreen()
     }
 
 }
 
 extension DeleteWalletViewController: UITableViewDelegate, UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 1

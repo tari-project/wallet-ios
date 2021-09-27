@@ -125,7 +125,7 @@ class ICloudBackup: NSObject {
 
     private var backgroundTaskIdentifier: UIBackgroundTaskIdentifier?
 
-    private let directory = TariLib.shared.databaseDirectory
+    private var directory: URL { TariLib.shared.connectedDatabaseDirectory }
     private let fileName = "Tari-Aurora-Backup"
     private var observers = NSPointerArray.weakObjects()
 
@@ -145,16 +145,10 @@ class ICloudBackup: NSObject {
     }
 
     var iCloudBackupsIsOn: Bool {
-        get {
-            return UserDefaults.Key.iCloudBackupsIsOn.boolValue()
-        }
+        get { NetworkManager.shared.selectedNetwork.isCloudBackupEnabled }
         set {
-            UserDefaults.Key.iCloudBackupsIsOn.set(newValue)
-            if newValue {
-                BackupScheduler.shared.startObserveEvents()
-            } else {
-                BackupScheduler.shared.stopObserveEvents()
-            }
+            NetworkManager.shared.selectedNetwork.isCloudBackupEnabled = newValue
+            newValue ? BackupScheduler.shared.startObserveEvents() : BackupScheduler.shared.stopObserveEvents()
         }
     }
 
@@ -180,7 +174,7 @@ class ICloudBackup: NSObject {
         try? startObserveReachability()
 
         if FileManager.default.ubiquityIdentityToken == nil {
-            UserDefaults.Key.iCloudBackupsIsOn.set(false)
+            iCloudBackupsIsOn = false
         }
     }
 
@@ -212,9 +206,7 @@ class ICloudBackup: NSObject {
         do {
             if inProgress { query.stop(); inProgress = false }
 
-            guard let backupFolder = TariLib.shared.walletPublicKeyHex else {
-                throw ICloudBackupError.unableCreateBackupFolder
-            }
+            let remoteBackupURL = try remoteBackupURL()
 
             let fileURL: URL
             if let password = password {
@@ -232,18 +224,16 @@ class ICloudBackup: NSObject {
                 return
             }
 
-            let walletFolderURL = try iCloudDirectory().appendingPathComponent(backupFolder)
-
-            if !FileManager.default.fileExists(atPath: walletFolderURL.path) {
+            if !FileManager.default.fileExists(atPath: remoteBackupURL.path) {
                 try FileManager.default.createDirectory(
-                    at: walletFolderURL,
+                    at: remoteBackupURL,
                     withIntermediateDirectories: true,
                     attributes: nil
                 )
             }
 
             if let previousBackupURL = try FileManager.default.contentsOfDirectory(
-                atURL: walletFolderURL,
+                atURL: remoteBackupURL,
                 sortedBy: .created
             ).last {
                 try FileManager.default.removeItem(at: previousBackupURL)
@@ -251,7 +241,7 @@ class ICloudBackup: NSObject {
 
             try FileManager.default.copyItem(
                 at: fileURL,
-                to: walletFolderURL.appendingPathComponent(fileURL.lastPathComponent)
+                to: remoteBackupURL.appendingPathComponent(fileURL.lastPathComponent)
             )
             isLastBackupFailed = false
             inProgress = true
@@ -274,18 +264,18 @@ class ICloudBackup: NSObject {
     }
 
     func restoreWallet(password: String?, completion: @escaping (_ error: Error?) -> Void) {
-        let dbDirectory = TariLib.shared.databaseDirectory
+        let dbDirectory = TariLib.shared.connectedDatabaseDirectory
         do {
             try FileManager.default.createDirectory(
                 at: dbDirectory,
                 withIntermediateDirectories: true,
                 attributes: nil
             )
-            restoreBackup(password: password, to: dbDirectory) { error in
+            restoreBackup(password: password, to: dbDirectory) { [weak self] error in
                 if error == nil {
                     UserDefaults.Key.walletHasBeenIntroduced.set(true)
                     UserDefaults.Key.authStepPassed.set(true)
-                    UserDefaults.Key.iCloudBackupsIsOn.set(true)
+                    self?.iCloudBackupsIsOn = true
 
                     BackupScheduler.shared.startObserveEvents()
 
@@ -651,9 +641,7 @@ extension ICloudBackup {
         }
     }
 
-    private func downloadBackup(
-        completion: @escaping ((_ backup: Backup?, _ error: Error?) -> Void)
-    ) {
+    private func downloadBackup(completion: @escaping ((_ backup: Backup?, _ error: Error?) -> Void)) {
         if TariSettings.shared.isUnitTesting {
             do {
                 let backup = try ICloudServiceMock.downloadBackup()
@@ -708,7 +696,7 @@ extension ICloudBackup {
     }
 
     private func getLastWalletBackup() throws -> Backup {
-        let iCloudFolderURL = try iCloudDirectory()
+        let iCloudFolderURL = try iCloudDirectory().appendingPathComponent(NetworkManager.shared.selectedNetwork.name)
         do {
             // if walletKeyHex != nil we find last backup for current wallet
             if let walletKeyHex = TariLib.shared.walletPublicKeyHex {
@@ -761,7 +749,7 @@ extension ICloudBackup {
             try FileManager.default.removeItem(atPath: archiveURL.path)
         }
 
-        let sqlite3File = TariLib.databaseName.appending(".sqlite3")
+        let sqlite3File = TariLib.shared.connectedDatabaseName.appending(".sqlite3")
         let originalFileURL = directory.appendingPathComponent(sqlite3File)
         let dbDirectory = TariSettings.shared.isUnitTesting ? try getTestDataBaseUrl() : originalFileURL
 
@@ -805,6 +793,17 @@ extension ICloudBackup {
             throw ICloudBackupError.iCloudContainerNotFound
         }
         return url
+    }
+
+    private func remoteDirectoryPath() throws -> String {
+        guard let publicKey = TariLib.shared.walletPublicKeyHex else { throw ICloudBackupError.unableCreateBackupFolder }
+        return "\(NetworkManager.shared.selectedNetwork.name)/\(publicKey)"
+    }
+
+    private func remoteBackupURL() throws -> URL {
+        let mainDirectory = try iCloudDirectory()
+        let backupPath = try remoteDirectoryPath()
+        return mainDirectory.appendingPathComponent(backupPath)
     }
 
     private func getTempDirectory() throws -> URL {

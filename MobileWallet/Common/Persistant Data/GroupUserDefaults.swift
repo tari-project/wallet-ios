@@ -39,6 +39,6 @@
 */
 
 enum GroupUserDefaults {
-    @UserDefault(key: "selectedBaseNode", suiteName: TariSettings.groupIndentifier) static var selectedBaseNode: BaseNode?
-    @UserDefault(key: "customBaseNodes", suiteName: TariSettings.groupIndentifier) static var customBaseNodes: [BaseNode]?
+    @UserDefault(key: "selectedNetworkName", suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
+    @UserDefault(key: "networksSettings", suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
 }

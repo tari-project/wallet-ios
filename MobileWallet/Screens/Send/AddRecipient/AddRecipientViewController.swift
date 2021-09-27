@@ -77,7 +77,7 @@ class AddRecipientViewController: UIViewController, UITextFieldDelegate, Contact
                 guard pubKey.hex.0 != TariLib.shared.tariWallet?.publicKey.0?.hex.0 else {
                     errorMessageView.message = String(
                         format: localized("add_recipient.warning.can_not_send_yourself.with_param"),
-                        TariSettings.shared.network.currencyDisplayTicker
+                        NetworkManager.shared.selectedNetwork.tickerSymbol
                     )
                     return
                 }

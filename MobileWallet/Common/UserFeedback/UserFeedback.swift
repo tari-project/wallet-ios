@@ -241,12 +241,12 @@ class UserFeedback {
             imageTop: imageTop,
             title: String(
                 format: localized("store_modal.title.with_param"),
-                TariSettings.shared.network.currencyDisplayTicker
+                NetworkManager.shared.selectedNetwork.tickerSymbol
             ),
             boldedTitle: localized("store_modal.bold_title"),
             description: String(
                 format: localized("store_modal.description"),
-                TariSettings.shared.network.currencyDisplayTicker
+                NetworkManager.shared.selectedNetwork.tickerSymbol
             ),
             cancelTitle: localized("store_modal.cancel"),
             actionTitle: localized("store_modal.action"),

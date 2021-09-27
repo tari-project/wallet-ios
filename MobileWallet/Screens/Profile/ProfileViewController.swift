@@ -155,7 +155,7 @@ class ProfileViewController: UIViewController {
             format: localized(
                 "profile_view.error.qr_code.description.with_param"
             ),
-            TariSettings.shared.network.currencyDisplayTicker
+            NetworkManager.shared.selectedNetwork.tickerSymbol
         )
         self.middleLabel.text = middleLabelText
         self.middleLabel.font = Theme.shared.fonts.profileMiddleLabel

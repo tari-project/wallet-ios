@@ -411,32 +411,38 @@ final class Wallet {
         logPath = loggingFilePath
 
         func createWallet(passphrase: String?, seedWords: SeedWords?) -> (result: OpaquePointer?, error: WalletError?) {
+
             var errorCode: Int32 = -1
-            let result = withUnsafeMutablePointer(to: &errorCode, { error in
-                wallet_create(
-                    commsConfig.pointer,
-                    loggingFilePathPointer,
-                    2, // number of rolling log files
-                    10 * 1024 * 1024, // rolling log file max size in bytes
-                    passphrase,
-                    seedWords?.pointer,
-                    receivedTxCallback,
-                    receivedTxReplyCallback,
-                    receivedFinalizedTxCallback,
-                    txBroadcastCallback,
-                    txMinedCallback,
-                    txMinedUnconfirmedCallback,
-                    directSendResultCallback,
-                    storeAndForwardSendResultCallback,
-                    txCancellationCallback,
-                    utxoValidationCompleteCallback,
-                    stxoValidationCompleteCallback,
-                    invalidTXOValidationCompleteCallback,
-                    txValidationCompleteCallback,
-                    storedMessagesReceivedCallback,
-                    error
-                )
-            })
+            var isRecoveryInProgress = false
+
+            let result = withUnsafeMutablePointer(to: &isRecoveryInProgress) { isRecoveryInProgressPointer in
+                withUnsafeMutablePointer(to: &errorCode, { error in
+                    wallet_create(
+                        commsConfig.pointer,
+                        loggingFilePathPointer,
+                        2, // number of rolling log files
+                        10 * 1024 * 1024, // rolling log file max size in bytes
+                        passphrase,
+                        seedWords?.pointer,
+                        receivedTxCallback,
+                        receivedTxReplyCallback,
+                        receivedFinalizedTxCallback,
+                        txBroadcastCallback,
+                        txMinedCallback,
+                        txMinedUnconfirmedCallback,
+                        directSendResultCallback,
+                        storeAndForwardSendResultCallback,
+                        txCancellationCallback,
+                        utxoValidationCompleteCallback,
+                        stxoValidationCompleteCallback,
+                        invalidTXOValidationCompleteCallback,
+                        txValidationCompleteCallback,
+                        storedMessagesReceivedCallback,
+                        isRecoveryInProgressPointer,
+                        error
+                    )
+                })
+            }
 
             let error = WalletError(errorCode: errorCode)
 
@@ -948,7 +954,7 @@ final class Wallet {
 
     func startRecovery() throws -> Bool {
 
-        guard let baseNode = GroupUserDefaults.selectedBaseNode else { return false }
+        let baseNode = NetworkManager.shared.selectedNetwork.selectedBaseNode
 
         let callback: @convention(c) (UInt8, UInt64, UInt64) -> Void = {
             let state = RestoreWalletStatus(status: $0, firstValue: $1, secondValue: $2)
