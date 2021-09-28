@@ -58,21 +58,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().delegate = self
         BackgroundTaskManager.shared.registerScheduleReminderNotificationsTask()
         ShortcutParser.shared.registerShortcuts()
-
-        if let giphyApiKey = TariSettings.shared.giphyApiKey {
-            Giphy.configure(apiKey: giphyApiKey)
-        }
+        Giphy.configure(apiKey: TariSettings.environmentSettings.giphyApiKey)
 
         return true
     }
 
     private func setupSentryCrashReporting() {
-        guard TariSettings.shared.environment != .debug,
-              let sentryPublicDSN = TariSettings.shared.sentryPublicDSN else {
-            return
-        }
+        guard TariSettings.shared.environment != .debug else { return }
         SentrySDK.start(options: [
-            "dsn": sentryPublicDSN,
+            "dsn": TariSettings.environmentSettings.sentryPublicDSN,
             "debug": false
         ])
         TariLogger.info("Sentry crash reporting has been started.")

@@ -66,7 +66,6 @@ enum PushNotificationServerError: Error {
     case invalidSignature
     case responseInvalid
     case pushNotSent
-    case missingApiKey
     case unknown
 }
 
@@ -253,10 +252,7 @@ class NotificationManager {
             throw hexError!
         }
 
-        guard let apiKey = TariSettings.shared.pushServerApiKey else {
-            throw PushNotificationServerError.missingApiKey
-        }
-
+        let apiKey = TariSettings.environmentSettings.pushServerApiKey
         // TODO add apiKey when new push server redeployed
         return try wallet.signMessage("\(apiKey)\(pubKeyHex)\(message)")
     }

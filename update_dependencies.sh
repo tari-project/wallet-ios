@@ -1,10 +1,10 @@
 #!/bin/bash
 
-FILE=env.json
+FILE=Settings.plist
 if test ! -f "$FILE"; then
     echo "$FILE does not exist. Creating default."
-    cp env-example.json env.json
-    echo "Please adjust env.json as needed."
+    cp Settings-example.plist ./MobileWallet/Settings.plist
+    echo "Please adjust Settings.plist as needed."
 fi
 
 echo "\n\n***Pulling latest Tari lib build***"

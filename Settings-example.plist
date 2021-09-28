@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>New item</key>
+	<string>Settings.plist</string>
+	<key>pushServerApiKey</key>
+	<string></string>
+	<key>sentryPublicDSN</key>
+	<string></string>
+	<key>appleTeamID</key>
+	<string>8XGMD9X2H2</string>
+	<key>giphyApiKey</key>
+	<string></string>
+</dict>
+</plist>

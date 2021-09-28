@@ -73,4 +73,4 @@ fastlane/Appfile
 MobileWallet/TariLib/libtari_wallet_ffi.a
 .idea/
 fastlane/.env*
-env.json
+Settings.plist

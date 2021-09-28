@@ -69,10 +69,6 @@
 		0042780323E8421200AE7BD9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0042780223E8421100AE7BD9 /* String.swift */; };
 		0042780423E8421200AE7BD9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0042780223E8421100AE7BD9 /* String.swift */; };
 		0042780523E8421200AE7BD9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0042780223E8421100AE7BD9 /* String.swift */; };
-		0048AF43245ADCA300E1A359 /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
-		0048AF44245ADCA300E1A359 /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
-		0048AF45245ADCA300E1A359 /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
-		0048AF46245ADCA300E1A359 /* env.json in Resources */ = {isa = PBXBuildFile; fileRef = 0048AF42245ADCA300E1A359 /* env.json */; };
 		004997AB2382E893000A0B7D /* PendingOutboundTxs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997AA2382E893000A0B7D /* PendingOutboundTxs.swift */; };
 		004997AC2382E893000A0B7D /* PendingOutboundTxs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997AA2382E893000A0B7D /* PendingOutboundTxs.swift */; };
 		004997AD2382E893000A0B7D /* PendingOutboundTxs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004997AA2382E893000A0B7D /* PendingOutboundTxs.swift */; };
@@ -469,6 +465,7 @@
 		3A62674A26D76EC4007F9895 /* SelectNetworkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A62674926D76EC4007F9895 /* SelectNetworkModel.swift */; };
 		3A62674B26D76EC4007F9895 /* SelectNetworkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A62674926D76EC4007F9895 /* SelectNetworkModel.swift */; };
 		3A62674C26D76EC4007F9895 /* SelectNetworkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A62674926D76EC4007F9895 /* SelectNetworkModel.swift */; };
+		3A711EB62701EB0200047C69 /* Settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3A711EB52701EB0200047C69 /* Settings.plist */; };
 		3A72DC3D26DFA02900E0BC43 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC3C26DFA02900E0BC43 /* NetworkManager.swift */; };
 		3A72DC3E26DFA02900E0BC43 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC3C26DFA02900E0BC43 /* NetworkManager.swift */; };
 		3A72DC3F26DFA02900E0BC43 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC3C26DFA02900E0BC43 /* NetworkManager.swift */; };
@@ -867,6 +864,7 @@
 		3A5E881D26BA9CF10029BB8B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		3A62674526D76E6B007F9895 /* SelectNetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNetworkViewController.swift; sourceTree = "<group>"; };
 		3A62674926D76EC4007F9895 /* SelectNetworkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNetworkModel.swift; sourceTree = "<group>"; };
+		3A711EB52701EB0200047C69 /* Settings.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Settings.plist; sourceTree = "<group>"; };
 		3A72DC3C26DFA02900E0BC43 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		3A72DC4026DFA1E100E0BC43 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		3A72DC4426DFA26000E0BC43 /* TariNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariNetwork.swift; sourceTree = "<group>"; };
@@ -1350,6 +1348,7 @@
 				00E491992366E08B007B332D /* AppDelegate.swift */,
 				00E4919B2366E08B007B332D /* SceneDelegate.swift */,
 				00E491A72366E08F007B332D /* Assets.xcassets */,
+				3A711EB52701EB0200047C69 /* Settings.plist */,
 				37B4449C24890F3000592D92 /* Backup */,
 				001256432371EBAA00A9C067 /* Boards */,
 				00262EB2236F022000A6C8A0 /* Common */,
@@ -2030,7 +2029,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF0A77A7241F904D00861A3E /* faceId@2x.png in Resources */,
-				0048AF46245ADCA300E1A359 /* env.json in Resources */,
 				BF0A77B82420CF1200861A3E /* NotificationAnimation.json in Resources */,
 				BF0A7769241EEA0A00861A3E /* FaceID.json in Resources */,
 				BF0A77C72420DA3200861A3E /* TouchIdAnimation.json in Resources */,
@@ -2043,13 +2041,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A711EB62701EB0200047C69 /* Settings.plist in Resources */,
 				BFF1EDA72408226200CC9EF6 /* sending-background.mp4 in Resources */,
 				00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */,
 				BF5537B92412B9BB0071328C /* purple_orb.mp4 in Resources */,
 				00A6651F2437AD9A0046E730 /* SplashAnimation.json in Resources */,
 				BF0A779C241F904D00861A3E /* faceId@3x.png in Resources */,
 				BF191A2923E5AFA200D33C85 /* img_0.png in Resources */,
-				0048AF43245ADCA300E1A359 /* env.json in Resources */,
 				00E491A82366E08F007B332D /* Assets.xcassets in Resources */,
 				BF191A1723E5AFA200D33C85 /* img_4.png in Resources */,
 				BF191A3223E70D3200D33C85 /* NerdEmojiAnimation.json in Resources */,
@@ -2095,7 +2093,6 @@
 				BF5537BA2412B9BB0071328C /* purple_orb.mp4 in Resources */,
 				BF0A77B62420CF1200861A3E /* NotificationAnimation.json in Resources */,
 				BFF1EDA42408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
-				0048AF44245ADCA300E1A359 /* env.json in Resources */,
 				BF191A2723E5AFA200D33C85 /* img_3.png in Resources */,
 				BF191A2A23E5AFA200D33C85 /* img_0.png in Resources */,
 				BF191A2123E5AFA200D33C85 /* img_1.png in Resources */,
@@ -2125,7 +2122,6 @@
 				BF5537BB2412B9BB0071328C /* purple_orb.mp4 in Resources */,
 				BF0A77B72420CF1200861A3E /* NotificationAnimation.json in Resources */,
 				BFF1EDA52408225900CC9EF6 /* sendingTariAnimation.json in Resources */,
-				0048AF45245ADCA300E1A359 /* env.json in Resources */,
 				BF191A2823E5AFA200D33C85 /* img_3.png in Resources */,
 				BF191A2B23E5AFA200D33C85 /* img_0.png in Resources */,
 				BF191A2223E5AFA200D33C85 /* img_1.png in Resources */,

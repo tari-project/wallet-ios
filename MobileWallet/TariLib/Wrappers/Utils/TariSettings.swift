@@ -47,6 +47,20 @@ enum AppEnvironment {
     case production
 }
 
+struct EnvironmentSettings: Decodable {
+    let pushServerApiKey: String
+    let sentryPublicDSN: String
+    let appleTeamID: String
+    let giphyApiKey: String
+
+    init() {
+        pushServerApiKey = ""
+        sentryPublicDSN = ""
+        appleTeamID = ""
+        giphyApiKey = ""
+    }
+}
+
 struct TariSettings {
     static let shared = TariSettings()
 
@@ -67,10 +81,7 @@ struct TariSettings {
     let bugReportEmail = "bug_reports@tari.com"
     let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
 
-    var pushServerApiKey: String?
-    var sentryPublicDSN: String?
-    static var appleTeamID: String?
-    var giphyApiKey: String?
+    private(set) static var environmentSettings: EnvironmentSettings = EnvironmentSettings()
 
     let pushNotificationServer = "https://push.tari.com"
 
@@ -89,7 +100,7 @@ struct TariSettings {
 
     static let sharedKeychainGroup = KeychainWrapper(
         serviceName: "tari",
-        accessGroup: "\(appleTeamID ?? "").com.tari.wallet.keychain"
+        accessGroup: "\(environmentSettings.appleTeamID).com.tari.wallet.keychain"
     )
     static let groupIndentifier = "group.com.tari.wallet"
     static let storageDirectory: URL = FileManager.default.containerURL(
@@ -117,39 +128,14 @@ struct TariSettings {
         TariLogger.info("Init settings...")
         TariLogger.warn("Environment: \(environment)")
 
-        guard let envPath = Bundle.main.path(forResource: "env", ofType: "json") else {
+        guard let settingsURL = Bundle.main.url(forResource: "Settings", withExtension: "plist") else {
             TariLogger.error("Could not find envrionment file")
             return
         }
 
         do {
-            let data = try Data(contentsOf: URL(fileURLWithPath: envPath), options: .mappedIfSafe)
-            let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
-
-            if let jsonResult = jsonResult as? [String: AnyObject] {
-                if let pushServerApiKey = jsonResult["pushServerApiKey"] as? String, !pushServerApiKey.isEmpty {
-                    self.pushServerApiKey = pushServerApiKey
-                } else {
-                    TariLogger.warn("pushServerApiKey not set in env.json. Sending push notifications will be disabled.")
-                }
-                if let sentryPublicDSN = jsonResult["sentryPublicDSN"] as? String, !sentryPublicDSN.isEmpty {
-                    self.sentryPublicDSN = sentryPublicDSN
-                } else {
-                    TariLogger.warn("sentryPublicDSN not set in env.json. Crash reporting will not work.")
-                }
-
-                if let giphyApiKey = jsonResult["giphyApiKey"] as? String, !giphyApiKey.isEmpty {
-                    self.giphyApiKey = giphyApiKey
-                } else {
-                    TariLogger.warn("giphyApiKey not set in env.json. Appending gifs to transaction notes will not work.")
-                }
-
-                if let appleTeamID = jsonResult["appleTeamID"] as? String, !appleTeamID.isEmpty {
-                    TariSettings.appleTeamID = appleTeamID
-                } else {
-                    fatalError("appleTeamID not set in env.json. Shared keychain will not work.")
-                }
-            }
+            let data = try Data(contentsOf: settingsURL)
+            TariSettings.environmentSettings = try PropertyListDecoder().decode(EnvironmentSettings.self, from: data)
         } catch {
             TariLogger.error("Could not load env vars", error: error)
         }
