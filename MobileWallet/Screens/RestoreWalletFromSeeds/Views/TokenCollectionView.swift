@@ -214,7 +214,7 @@ final class TokenCollectionView: UIView {
         let indexPath = IndexPath(item: tokenModels.count - 1, section: 0)
         collectionView.cellForItem(at: indexPath)?.becomeFirstResponder()
     }
-    
+
     // MARK: - First Responder
 
     override func resignFirstResponder() -> Bool {

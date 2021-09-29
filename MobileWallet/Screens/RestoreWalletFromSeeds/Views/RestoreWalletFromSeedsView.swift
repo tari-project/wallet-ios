@@ -134,6 +134,6 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
     }
 
     // MARK: - First Responder
-    
+
     override func resignFirstResponder() -> Bool { tokenView.resignFirstResponder() }
 }

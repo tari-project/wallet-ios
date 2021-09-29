@@ -490,6 +490,11 @@ final class HomeViewController: UIViewController {
 
     private func setupConnectionStatusMonitor() {
 
+        let initialState = handle(connectionState: ConnectionMonitor.shared.state)
+
+        mainView.connectionIndicatorView.currentState = initialState.0
+        mainView.tooltipView.text = initialState.1
+
         let connectionMonitorStatus = TariEventBus
             .events(forType: .connectionMonitorStatusChanged)
             .compactMap { $0.object as? ConnectionMonitorState }
