@@ -55,7 +55,7 @@ final class SelectBaseNodeModel {
 
     var viewModel = ViewModel()
 
-    private let predefinedNodes: [BaseNode] = NetworkManager.shared.selectedNetwork.baseNodes.sorted { $0.name < $1.name }
+    private var predefinedNodes: [BaseNode] { NetworkManager.shared.selectedNetwork.baseNodes }
     private var avaiableNodes: [BaseNode] { NetworkManager.shared.selectedNetwork.allBaseNodes }
     private var selectedNodeIndex: Int?
 

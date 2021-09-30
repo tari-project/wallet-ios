@@ -50,7 +50,7 @@ extension TariNetwork {
         case noPredefinedNodes
     }
 
-    var allBaseNodes: [BaseNode] { baseNodes + customBaseNodes }
+    var allBaseNodes: [BaseNode] { baseNodes.sorted { $0.name < $1.name } + customBaseNodes }
 
     var settings: NetworkSettings {
         let allSettings = GroupUserDefaults.networksSettings ?? []
