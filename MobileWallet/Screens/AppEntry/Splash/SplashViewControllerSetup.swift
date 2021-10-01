@@ -165,7 +165,6 @@ extension SplashViewController {
 
     func setupCreateWalletButton() {
         createWalletButton.isHidden = true
-        createWalletButton.setTitle(localized("splash.create_wallet"), for: .normal)
         createWalletButton.addTarget(self, action: #selector(onCreateWalletTap), for: .touchUpInside)
         elementsContainer.addSubview(createWalletButton)
 
