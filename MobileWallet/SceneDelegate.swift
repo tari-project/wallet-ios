@@ -134,12 +134,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         UIApplication.shared.applicationIconBadgeNumber = 0
         ConnectionMonitor.shared.start()
         TariLib.shared.startTor()
-        // Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
-        if TariLib.shared.isWalletExist {
-            onTorSuccess {
-                TariLib.shared.startWallet(seedWords: nil)
-            }
-        }
         if UserDefaults.Key.backupOperationAborted.boolValue()
             && ICloudBackup.shared.iCloudBackupsIsOn
             && !ICloudBackup.shared.inProgress {
