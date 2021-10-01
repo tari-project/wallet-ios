@@ -100,7 +100,7 @@ class PublicKey {
             return ("", emojisError)
         }
 
-        return ("\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/eid/\(emojisPubkey)", nil)
+        return ("\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork.name)/eid/\(emojisPubkey)", nil)
     }
 
     var hexDeeplink: (String, Error?) {
@@ -109,7 +109,7 @@ class PublicKey {
             return ("", hexError)
         }
 
-        return ("\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/pubkey/\(hexPubkey)", nil)
+        return ("\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork.name)/pubkey/\(hexPubkey)", nil)
     }
 
     // TODO setup attributed string version with dots in the middle for shortened version in Common dir.
@@ -178,7 +178,7 @@ class PublicKey {
             throw PublicKeyError.invalidDeepLink
         }
 
-        let deeplinkPrefix = "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)"
+        let deeplinkPrefix = "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork.name)"
 
         // Link is for a different network
         guard deeplink.hasPrefix(deeplinkPrefix) else {
