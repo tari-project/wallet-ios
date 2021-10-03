@@ -483,7 +483,10 @@ final class HomeViewController: UIViewController {
         let navigationController = AlwaysPoppableNavigationController(rootViewController: sendVC)
         navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.modalPresentationStyle = .fullScreen
-        UIApplication.shared.menuTabBarController?.present(navigationController, animated: true)
+
+        DispatchQueue.main.async {
+            UIApplication.shared.menuTabBarController?.present(navigationController, animated: true)
+        }
     }
 
     // MARK: - Busness Logic

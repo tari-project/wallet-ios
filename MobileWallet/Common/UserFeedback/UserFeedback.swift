@@ -180,8 +180,9 @@ class UserFeedback {
                 SwiftEntryKit.dismiss()
                 onCancel?()
             }, onAction: {
-                SwiftEntryKit.dismiss()
-                onAction()
+                SwiftEntryKit.dismiss {
+                    onAction()
+                }
             }
         )
 
