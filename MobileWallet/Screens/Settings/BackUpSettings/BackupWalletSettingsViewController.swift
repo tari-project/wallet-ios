@@ -207,12 +207,7 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     }
 
     override func reloadTableViewWithAnimation() {
-        var writeDownSeedPhraseMark: SystemMenuTableViewCell.SystemMenuTableViewCellMark!
-        if UserDefaults.Key.hasVerifiedSeedPhrase.boolValue() {
-            writeDownSeedPhraseMark = .success
-        } else {
-            writeDownSeedPhraseMark = .attention
-        }
+        let writeDownSeedPhraseMark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = TariSettings.shared.walletSettings.hasVerifiedSeedPhrase ? .success : .attention
         settingsSectionItems = [
             SystemMenuTableViewCellItem(
                 title: BackupWalletSettingsItem.iCloudBackups.rawValue,

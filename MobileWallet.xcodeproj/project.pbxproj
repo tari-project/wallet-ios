@@ -508,6 +508,8 @@
 		3AD3E0352696F471008FE1B6 /* ConnectionIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */; };
 		3AD3E0362696F47C008FE1B6 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EF02695BAEE003D0DF3 /* TooltipView.swift */; };
 		3AD3E0372696F47C008FE1B6 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EF02695BAEE003D0DF3 /* TooltipView.swift */; };
+		3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA73DC270A02B900D50E3B /* WalletSettings.swift */; };
+		3ADA73DF270A02DF00D50E3B /* WalletSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */; };
 		3ADEBF5D26A54FA500E87C84 /* SelectBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF5C26A54FA500E87C84 /* SelectBaseNodeModel.swift */; };
 		3ADEBF5E26A54FA500E87C84 /* SelectBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF5C26A54FA500E87C84 /* SelectBaseNodeModel.swift */; };
 		3ADEBF5F26A54FA500E87C84 /* SelectBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF5C26A54FA500E87C84 /* SelectBaseNodeModel.swift */; };
@@ -880,6 +882,8 @@
 		3ACDA70826B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsProgressView.swift; sourceTree = "<group>"; };
 		3ACDA70D26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsProgressModel.swift; sourceTree = "<group>"; };
 		3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
+		3ADA73DC270A02B900D50E3B /* WalletSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettings.swift; sourceTree = "<group>"; };
+		3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettingsManager.swift; sourceTree = "<group>"; };
 		3ADEBF5C26A54FA500E87C84 /* SelectBaseNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBaseNodeModel.swift; sourceTree = "<group>"; };
 		3ADEBF6126A59A5900E87C84 /* AddBaseNodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeViewController.swift; sourceTree = "<group>"; };
 		3ADEBF6526A5B5A500E87C84 /* AddBaseNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeView.swift; sourceTree = "<group>"; };
@@ -1089,6 +1093,7 @@
 		006D211B23CEDEEE007D1C10 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				3ADA73DA270A029B00D50E3B /* Settings */,
 				3A72DC3B26DF9FF700E0BC43 /* Network */,
 				00A66526243C766D0046E730 /* ConnectionMonitor.swift */,
 				009DFCA62473E33F0061DBC9 /* DeepLinkParams.swift */,
@@ -1100,7 +1105,6 @@
 				00F53A632428E44700448466 /* StorageCleanup.swift */,
 				00A057AE23D875840029C22A /* TariEventBus.swift */,
 				00369D802426080D00BAB95B /* TariLogger.swift */,
-				00DD160A241CCE0600C955B4 /* TariSettings.swift */,
 				619190C6EBD050DC647D1D7B /* UTXO.swift */,
 				3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */,
 			);
@@ -1722,6 +1726,24 @@
 				3ACDA70826B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		3ADA73DA270A029B00D50E3B /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				00DD160A241CCE0600C955B4 /* TariSettings.swift */,
+				3ADA73DB270A02AC00D50E3B /* Wallet */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		3ADA73DB270A02AC00D50E3B /* Wallet */ = {
+			isa = PBXGroup;
+			children = (
+				3ADA73DC270A02B900D50E3B /* WalletSettings.swift */,
+				3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */,
+			);
+			path = Wallet;
 			sourceTree = "<group>";
 		};
 		3ADEBF6026A59A4700E87C84 /* AddBaseNode */ = {
@@ -2443,6 +2465,7 @@
 				37547D522460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */,
 				00A994332396434B007D9990 /* QRButton.swift in Sources */,
 				3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */,
+				3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */,
 				00A66523243B3E380046E730 /* ErrorView.swift in Sources */,
 				3ADEBF6626A5B5A500E87C84 /* AddBaseNodeView.swift in Sources */,
 				375DB1E0246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
@@ -2465,6 +2488,7 @@
 				BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				3776080924B73500008167E8 /* Backup.swift in Sources */,
 				00369D7D24221ACB00BAB95B /* DeepLinkManager.swift in Sources */,
+				3ADA73DF270A02DF00D50E3B /* WalletSettingsManager.swift in Sources */,
 				37B5289424CB1E16008C80EB /* NetworkSpeedProvider.swift in Sources */,
 				001F6CEC2381A39300FA7002 /* CompletedTx.swift in Sources */,
 				3730E15124C884D500827DFA /* MenuTabBarController.swift in Sources */,

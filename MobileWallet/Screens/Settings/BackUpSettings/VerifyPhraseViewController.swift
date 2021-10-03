@@ -273,7 +273,7 @@ extension VerifyPhraseViewController {
     }
 
     @objc private func continueButtonAction() {
-        UserDefaults.Key.hasVerifiedSeedPhrase.set(true)
+        TariSettings.shared.walletSettings.hasVerifiedSeedPhrase = true
         let viewController = self.navigationController?.viewControllers.first {
             $0 is BackupWalletSettingsViewController
         }

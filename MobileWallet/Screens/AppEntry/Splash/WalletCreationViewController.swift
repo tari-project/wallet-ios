@@ -199,6 +199,7 @@ class WalletCreationViewController: UIViewController {
                 Tracker.shared.track("/onboarding/create_emoji_id", "Onboarding - Create Emoji Id")
             }
         case .showEmojiId:
+            TariSettings.shared.walletSettings.configationState = .initialized
             hideSubviews { [weak self] in
                 self?.emojiIdView.shrink(animated: false)
                 self?.prepareSubviews(for: .localAuthentication)
@@ -241,7 +242,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func successAuth() {
-        UserDefaults.Key.authStepPassed.set(true)
+        TariSettings.shared.walletSettings.configationState = .authorized
         hideSubviews { [weak self] in
             self?.prepareSubviews(for: .enableNotifications)
             self?.showEnableNotifications()

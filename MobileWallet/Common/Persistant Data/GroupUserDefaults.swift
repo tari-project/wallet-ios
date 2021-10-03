@@ -41,4 +41,5 @@
 enum GroupUserDefaults {
     @UserDefault(key: "selectedNetworkName", suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
     @UserDefault(key: "networksSettings", suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
+    @UserDefault(key: "walletSettings", suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
 }

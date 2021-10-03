@@ -60,7 +60,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     private let localAuthenticationContext = LAContext()
     var ticketTopLayoutConstraint: NSLayoutConstraint?
     var ticketBottom: NSLayoutConstraint?
-    var walletExistsInitially: Bool = false
     var alreadyReplacedVideo: Bool = false
 
     // MARK: - Outlets
@@ -80,9 +79,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     var animationContainerBottomAnchor: NSLayoutConstraint?
     var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
     private let progressFeedbackView = FeedbackView()
-    private lazy var authStepPassed: Bool = {
-        UserDefaults.Key.authStepPassed.boolValue()
-    }()
 
     private var cancelables = Set<AnyCancellable>()
 
@@ -371,42 +367,53 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func navigateToHome() {
-        if walletExistsInitially && authStepPassed {
-            // Calling this here in case they did not succesfully register the token in the onboarding
-            NotificationManager.shared.requestAuthorization()
 
-            let nav = AlwaysPoppableNavigationController()
-            let tabBarController = MenuTabBarController()
-            nav.setViewControllers([tabBarController], animated: false)
-
-            if let window = UIApplication.shared.keyWindow {
-                let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
-                tabBarController.view.addSubview(overlayView)
-                window.rootViewController = nav
-
-                UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
-                    overlayView.alpha = 0
-                }, completion: { _ in
-                    overlayView.removeFromSuperview()
-                })
-            }
-        } else {
-            let vc = WalletCreationViewController()
-            vc.startFromLocalAuth = !authStepPassed && walletExistsInitially
-            if let window = view.window {
-                let transition: CATransition = CATransition()
-                transition.duration = 0.5
-                transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-                transition.type = CATransitionType.push
-                transition.subtype = CATransitionSubtype.fromTop
-
-                window.layer.add(Theme.shared.transitions.pullDownOpen, forKey: kCATransition)
-                navigationController?.view.layer.add(transition, forKey: kCATransition)
-                navigationController?.pushViewController(vc, animated: false)
-            }
+        switch TariSettings.shared.walletSettings.configationState {
+        case .notConfigured:
+            moveToOnboarding(startFromLocalAuth: false)
+        case .initialized:
+            moveToOnboarding(startFromLocalAuth: true)
+        case .authorized, .ready:
+            moveToWallet()
         }
 
         TariEventBus.unregister(self)
+    }
+
+    private func moveToWallet() {
+        NotificationManager.shared.requestAuthorization()
+
+        let nav = AlwaysPoppableNavigationController()
+        let tabBarController = MenuTabBarController()
+        nav.setViewControllers([tabBarController], animated: false)
+
+        if let window = UIApplication.shared.keyWindow {
+            let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
+            tabBarController.view.addSubview(overlayView)
+            window.rootViewController = nav
+
+            UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
+                overlayView.alpha = 0
+            }, completion: { _ in
+                overlayView.removeFromSuperview()
+            })
+        }
+    }
+
+    private func moveToOnboarding(startFromLocalAuth: Bool) {
+        let vc = WalletCreationViewController()
+        vc.startFromLocalAuth = startFromLocalAuth
+        if let window = view.window {
+            let transition: CATransition = CATransition()
+            transition.duration = 0.5
+            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+            transition.type = CATransitionType.push
+            transition.subtype = CATransitionSubtype.fromTop
+
+            window.layer.add(Theme.shared.transitions.pullDownOpen, forKey: kCATransition)
+            navigationController?.view.layer.add(transition, forKey: kCATransition)
+            navigationController?.pushViewController(vc, animated: false)
+        }
     }
 
     private func update(networkName: String) {

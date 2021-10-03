@@ -48,7 +48,10 @@ enum AppEnvironment {
 }
 
 struct TariSettings {
+
     static let shared = TariSettings()
+
+    let walletSettings = WalletSettingsManager()
 
     let discoveryTimeoutSec: UInt64 = 20
     let safMessageDurationSec: UInt64 = 10800

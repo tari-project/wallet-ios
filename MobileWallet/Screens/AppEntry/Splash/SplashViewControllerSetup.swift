@@ -100,11 +100,9 @@ extension SplashViewController {
 
         if TariLib.shared.isWalletExist {
             animationContainer.centerYAnchor.constraint(equalTo: generalContainer.centerYAnchor).isActive = true
-            walletExistsInitially = true
         } else {
             ticketTopLayoutConstraint = animationContainer.topAnchor.constraint(equalTo: generalContainer.topAnchor, constant: 19)
             ticketTopLayoutConstraint?.isActive = true
-            walletExistsInitially = false
         }
     }
 

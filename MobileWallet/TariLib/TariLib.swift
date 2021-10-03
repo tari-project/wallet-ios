@@ -301,10 +301,8 @@ class TariLib {
                 try FileManager.default.removeItem(at: logFile)
             }
             // remove all user defaults
-            let domain = Bundle.main.bundleIdentifier!
-            UserDefaults.standard.removePersistentDomain(forName: domain)
-            UserDefaults.standard.removePersistentDomain(forName: TariSettings.groupIndentifier)
-            UserDefaults.standard.synchronize()
+            UserDefaults.standard.removeAll()
+            NetworkManager.shared.removeSelectedNetworkSettings()
         } catch {
             fatalError()
         }

@@ -77,7 +77,7 @@ final class HomeViewController: UIViewController {
     private var networkCompatibilityCheckIsWaitingForWallet = false
 
     var isFirstIntroToWallet: Bool {
-        return !UserDefaults.Key.walletHasBeenIntroduced.boolValue()
+        TariSettings.shared.walletSettings.configationState != .ready
     }
 
     private var isTxViewFullScreen: Bool = false {
@@ -444,7 +444,7 @@ final class HomeViewController: UIViewController {
 
             // User swipes down for the first time
             if isFirstIntroToWallet {
-                UserDefaults.Key.walletHasBeenIntroduced.set(true)
+                TariSettings.shared.walletSettings.configationState = .ready
             }
 
             navigationController?.setNavigationBarHidden(true, animated: true)

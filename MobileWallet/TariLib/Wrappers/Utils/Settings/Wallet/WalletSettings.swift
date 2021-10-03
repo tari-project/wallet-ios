@@ -1,8 +1,8 @@
-//  NetworkManager.swift
+//  WalletSettings.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 01/09/2021
+	Created by Adrian Truszczynski on 03/10/2021
 	Using Swift 5.0
 	Running on macOS 12.0
 
@@ -38,46 +38,29 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Combine
+struct WalletSettings: Codable, Equatable {
 
-final class NetworkManager {
-
-    // MARK: - Properties
-
-    static let shared = NetworkManager()
-
-    @Published var selectedNetwork: TariNetwork
-
-    private static var defaultNetwork: TariNetwork { .weatherwax }
-    private var cancelables = Set<AnyCancellable>()
-
-    // MARK: - Initializers
-
-    init() {
-        selectedNetwork = Self.setupNetwork()
-        setupFeedbacks()
+    enum  WalletConfigurationState: Codable {
+        /// Wallet wasn't configure
+        case notConfigured
+        /// Walet was created
+        case initialized
+        /// User finished authorisation flow
+        case authorized
+        /// Wallet screen was presented to the user
+        case ready
     }
 
-    // MARK: - Setups
+    let networkName: String
+    let configationState: WalletConfigurationState
+    let isCloudBackupEnabled: Bool
+    let hasVerifiedSeedPhrase: Bool
 
-    private static func setupNetwork() -> TariNetwork {
-        guard let selectedNetworkName = GroupUserDefaults.selectedNetworkName, let network = TariNetwork.all.first(where: { $0.name == selectedNetworkName }) else {
-            GroupUserDefaults.selectedNetworkName = defaultNetwork.name
-            return defaultNetwork
-        }
-        return network
-    }
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.networkName == rhs.networkName }
+}
 
-    private func setupFeedbacks() {
-        $selectedNetwork
-            .sink { GroupUserDefaults.selectedNetworkName = $0.name }
-            .store(in: &cancelables)
-    }
-
-    // MARK: - Actions
-
-    func removeSelectedNetworkSettings() {
-        GroupUserDefaults.networksSettings?.removeAll { $0.name == GroupUserDefaults.selectedNetworkName }
-        GroupUserDefaults.selectedNetworkName = nil
-    }
+extension WalletSettings {
+    func update(configationState: WalletConfigurationState) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase) }
+    func update(isCloudBackupEnabled: Bool) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase) }
+    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase) }
 }
