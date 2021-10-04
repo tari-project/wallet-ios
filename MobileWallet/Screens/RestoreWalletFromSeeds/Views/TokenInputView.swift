@@ -112,6 +112,11 @@ final class TokenInputView: UICollectionViewCell {
             self?.textField.text = self?.onTextChange?(self?.textField.text ?? "")
         }
     }
+
+    override func resignFirstResponder() -> Bool {
+        textField.text = onEndEditing?(textField.text ?? "")
+        return textField.resignFirstResponder()
+    }
 }
 
 extension TokenInputView: UITextFieldDelegate {

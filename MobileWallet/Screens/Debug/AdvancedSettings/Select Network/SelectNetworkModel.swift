@@ -68,7 +68,6 @@ final class SelectNetworkModel {
         guard viewModel.selectedIndex != selectedIndex else { return }
         TariLib.shared.stopWallet()
         NetworkManager.shared.selectedNetwork = networks[selectedIndex]
-        TariLib.shared.startWallet(seedWords: nil)
         AppRouter.moveToSplashScreen()
     }
 }

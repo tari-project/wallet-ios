@@ -100,11 +100,9 @@ extension SplashViewController {
 
         if TariLib.shared.isWalletExist {
             animationContainer.centerYAnchor.constraint(equalTo: generalContainer.centerYAnchor).isActive = true
-            walletExistsInitially = true
         } else {
             ticketTopLayoutConstraint = animationContainer.topAnchor.constraint(equalTo: generalContainer.topAnchor, constant: 19)
             ticketTopLayoutConstraint?.isActive = true
-            walletExistsInitially = false
         }
     }
 
@@ -165,7 +163,6 @@ extension SplashViewController {
 
     func setupCreateWalletButton() {
         createWalletButton.isHidden = true
-        createWalletButton.setTitle(localized("splash.create_wallet"), for: .normal)
         createWalletButton.addTarget(self, action: #selector(onCreateWalletTap), for: .touchUpInside)
         elementsContainer.addSubview(createWalletButton)
 

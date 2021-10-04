@@ -50,13 +50,13 @@ extension TariNetwork {
         case noPredefinedNodes
     }
 
-    var allBaseNodes: [BaseNode] { baseNodes + customBaseNodes }
+    var allBaseNodes: [BaseNode] { baseNodes.sorted { $0.name < $1.name } + customBaseNodes }
 
-    var settings: NetworkSettings {
+    private var settings: NetworkSettings {
         let allSettings = GroupUserDefaults.networksSettings ?? []
 
         guard let existingSettings = allSettings.first(where: { $0.name == name }) else {
-            let newSettings = NetworkSettings(name: name, selectedBaseNode: baseNodes.randomElement()!, customBaseNodes: [], isCloudBackupEnabled: false)
+            let newSettings = NetworkSettings(name: name, selectedBaseNode: baseNodes.randomElement()!, customBaseNodes: [])
             update(settings: newSettings)
             return newSettings
         }
@@ -71,11 +71,6 @@ extension TariNetwork {
     var customBaseNodes: [BaseNode] {
         get { settings.customBaseNodes }
         set { update(settings: settings.update(customBaseNodes: newValue)) }
-    }
-
-    var isCloudBackupEnabled: Bool {
-        get { settings.isCloudBackupEnabled }
-        set { update(settings: settings.update(isCloudBackupEnabled: newValue)) }
     }
 
     func randomNode() throws -> BaseNode {

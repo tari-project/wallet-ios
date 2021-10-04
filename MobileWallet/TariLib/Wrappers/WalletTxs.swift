@@ -55,7 +55,7 @@ extension Wallet {
     func cancelledTransactions() throws -> CompletedTxs {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode) {
-            CompletedTxs(completedTxsPointer: wallet_get_completed_transactions(pointer, $0), isCancelled: true)
+            CompletedTxs(completedTxsPointer: wallet_get_cancelled_transactions(pointer, $0), isCancelled: true)
         }
 
         guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }

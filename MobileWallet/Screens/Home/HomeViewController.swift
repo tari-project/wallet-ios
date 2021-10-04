@@ -77,7 +77,7 @@ final class HomeViewController: UIViewController {
     private var networkCompatibilityCheckIsWaitingForWallet = false
 
     var isFirstIntroToWallet: Bool {
-        return !UserDefaults.Key.walletHasBeenIntroduced.boolValue()
+        TariSettings.shared.walletSettings.configationState != .ready
     }
 
     private var isTxViewFullScreen: Bool = false {
@@ -444,7 +444,7 @@ final class HomeViewController: UIViewController {
 
             // User swipes down for the first time
             if isFirstIntroToWallet {
-                UserDefaults.Key.walletHasBeenIntroduced.set(true)
+                TariSettings.shared.walletSettings.configationState = .ready
             }
 
             navigationController?.setNavigationBarHidden(true, animated: true)
@@ -483,12 +483,20 @@ final class HomeViewController: UIViewController {
         let navigationController = AlwaysPoppableNavigationController(rootViewController: sendVC)
         navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.modalPresentationStyle = .fullScreen
-        UIApplication.shared.menuTabBarController?.present(navigationController, animated: true)
+
+        DispatchQueue.main.async {
+            UIApplication.shared.menuTabBarController?.present(navigationController, animated: true)
+        }
     }
 
     // MARK: - Busness Logic
 
     private func setupConnectionStatusMonitor() {
+
+        let initialState = handle(connectionState: ConnectionMonitor.shared.state)
+
+        mainView.connectionIndicatorView.currentState = initialState.0
+        mainView.tooltipView.text = initialState.1
 
         let connectionMonitorStatus = TariEventBus
             .events(forType: .connectionMonitorStatusChanged)

@@ -162,7 +162,8 @@
 "splash.disclaimer.param.privacy_policy" = "Privacy Policy";
 "splash.disclaimer.param.user_agreement" = "User Agreement";
 "splash.title" = "Private by default. Useful by design.";
-"splash.create_wallet" = "Create Your Wallet";
+"splash.button.create_wallet" = "Create Your Wallet";
+"splash.button.open_wallet" = "Open Existing Wallet";
 "splash.button.select_network" = "Selected Network: %@";
 "splash.restore_wallet" = "Restore an Existing wallet";
 "splash.wallet_error.title" = "Unable to start wallet";

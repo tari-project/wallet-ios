@@ -145,9 +145,9 @@ class ICloudBackup: NSObject {
     }
 
     var iCloudBackupsIsOn: Bool {
-        get { NetworkManager.shared.selectedNetwork.isCloudBackupEnabled }
+        get { TariSettings.shared.walletSettings.isCloudBackupEnabled }
         set {
-            NetworkManager.shared.selectedNetwork.isCloudBackupEnabled = newValue
+            TariSettings.shared.walletSettings.isCloudBackupEnabled = newValue
             newValue ? BackupScheduler.shared.startObserveEvents() : BackupScheduler.shared.stopObserveEvents()
         }
     }
@@ -273,8 +273,7 @@ class ICloudBackup: NSObject {
             )
             restoreBackup(password: password, to: dbDirectory) { [weak self] error in
                 if error == nil {
-                    UserDefaults.Key.walletHasBeenIntroduced.set(true)
-                    UserDefaults.Key.authStepPassed.set(true)
+                    TariSettings.shared.walletSettings.configationState = .authorized
                     self?.iCloudBackupsIsOn = true
 
                     BackupScheduler.shared.startObserveEvents()
