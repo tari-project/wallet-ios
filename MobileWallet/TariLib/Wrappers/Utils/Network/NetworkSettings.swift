@@ -1,8 +1,8 @@
-//  GroupUserDefaults.swift
+//  NetworkSettings.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/07/2021
+	Created by Adrian Truszczynski on 01/09/2021
 	Using Swift 5.0
 	Running on macOS 12.0
 
@@ -38,8 +38,18 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum GroupUserDefaults {
-    @UserDefault(key: "selectedNetworkName", suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
-    @UserDefault(key: "networksSettings", suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
-    @UserDefault(key: "walletSettings", suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
+struct NetworkSettings: Codable, Equatable {
+
+    let name: String
+    let selectedBaseNode: BaseNode
+    let customBaseNodes: [BaseNode]
+
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.name == rhs.name }
+}
+
+extension NetworkSettings {
+    func update(selectedBaseNode: BaseNode) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes) }
+    func update(customBaseNodes: [BaseNode]) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes) }
+    func update(isCloudBackupEnabled: Bool) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes) }
+    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes) }
 }

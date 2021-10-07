@@ -41,19 +41,41 @@
 import UIKit
 import Lottie
 
-protocol TxsTableViewDelegate: class {
+protocol TxsTableViewDelegate: AnyObject {
     func onTxSelect(_: Any)
     func onScrollTopHit(_: Bool)
 }
 
-class TxsListViewController: UIViewController {
+final class TxsListViewController: UIViewController {
+
+    private enum Section {
+        case pending
+        case completed
+
+        var title: String {
+            switch self {
+            case .pending:
+                return localized("home.transactions.section.pending")
+            case .completed:
+                return localized("home.transactions.section.completed")
+            }
+        }
+    }
+
+    enum BackgroundViewType: Equatable {
+        case none
+        case intro
+        case empty
+    }
+
     weak var actionDelegate: TxsTableViewDelegate?
 
-    let tableView = UITableView(frame: .zero, style: .plain)
+    let tableView = UITableView(frame: .zero, style: .grouped)
     private let animatedRefresher = AnimatedRefreshingView()
     private let refreshTimeoutPeriodSecs = 40.0
 
-    private var txModels = [TxTableViewModel]()
+    private var pendingTxModels = [TxTableViewModel]()
+    private var completedTxModels = [TxTableViewModel]()
 
     private let txDataUpdateQueue = DispatchQueue(
         label: "com.tari.wallet.tx_list.data_update_queue",
@@ -66,12 +88,6 @@ class TxsListViewController: UIViewController {
     private var hasCancelledTxWhileUpdating = false
 
     private var refreshTimeoutTimer: Timer?
-
-    enum BackgroundViewType: Equatable {
-        case none
-        case intro
-        case empty
-    }
 
     var backgroundType: BackgroundViewType = .none {
         didSet {
@@ -163,36 +179,60 @@ class TxsListViewController: UIViewController {
 
     @discardableResult
     private func fetchTx() -> Bool {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return false
-        }
-        // All completed/cancelled txs
-        let (allTxs, allTxsError) = wallet.allTxs
 
-        guard allTxsError == nil else {
-            DispatchQueue.main.async {
-                UserFeedback.shared.error(
-                    title: localized("tx_list.error.grouped_transactions.title"),
-                    description: localized("tx_list.error.grouped_transactions.descritpion"),
-                    error: allTxsError
-                )
-            }
-            return false
-        }
+        guard let wallet = TariLib.shared.tariWallet else { return false }
 
-        var newTxFetched = false
-        for (i, tx) in allTxs.enumerated() {
-            if let model = txModels.first(where: { $0.id == tx.id.0 }) {
-                model.update(tx: tx)
-            } else {
-                newTxFetched = true
-                let model = TxTableViewModel(tx: tx)
-                if !txModels.contains(model) && i <= txModels.count {
-                    txModels.insert(model, at: i)
+        do {
+            var pendingTransactions: [TxProtocol] = try wallet.pendingInboundTransactions().list.0
+            pendingTransactions += try wallet.pendingOutboundTransactions().list.0
+            var completedTransactions: [TxProtocol] = try wallet.completedTransactions().list.0
+            completedTransactions += try wallet.cancelledTransactions().list.0
+
+            pendingTxModels = pendingTransactions
+                .sorted {
+                    guard let lDate = $0.date.0, let rDate = $1.date.0 else { return false }
+                    return lDate > rDate
                 }
-            }
+                .map { TxTableViewModel(tx: $0) }
+
+            completedTxModels = completedTransactions
+                .sorted {
+                    guard let lDate = $0.date.0, let rDate = $1.date.0 else { return false }
+                    return lDate > rDate
+                }
+                .map { TxTableViewModel(tx: $0) }
+
+            return true
+        } catch {
+            UserFeedback.shared.error(
+                title: localized("tx_list.error.grouped_transactions.title"),
+                description: localized("tx_list.error.grouped_transactions.descritpion"),
+                error: error
+            )
+            return false
         }
-        return newTxFetched
+    }
+
+    // MARK: - ViewModel related
+
+    private func sections() -> [Section] {
+        var result = [Section]()
+        if !pendingTxModels.isEmpty { result.append(.pending) }
+        if !completedTxModels.isEmpty { result.append(.completed) }
+        return result
+    }
+
+    private func tableViewModels(forSection section: Int) -> [TxTableViewModel] {
+        switch sections()[section] {
+        case .pending:
+            return pendingTxModels
+        case .completed:
+            return completedTxModels
+        }
+    }
+
+    private func tableViewModel(forIndexPath indexPath: IndexPath) -> TxTableViewModel {
+        tableViewModels(forSection: indexPath.section)[indexPath.row]
     }
 }
 
@@ -297,51 +337,48 @@ extension TxsListViewController {
 
 // MARK: UITableViewDelegate & UITableViewDataSource
 extension TxsListViewController: UITableViewDelegate, UITableViewDataSource {
+
     func numberOfSections(in tableView: UITableView) -> Int {
-        if backgroundType != .intro {
-            if txModels.count == 0 {
-                backgroundType = .empty
-            } else {
-                backgroundType = .none
-            }
-        }
-
-        return 1
+        let sectionsCount = sections().count
+        guard backgroundType != .intro else { return sectionsCount }
+        backgroundType = sectionsCount == 0 ? .empty : .none
+        return sectionsCount
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return txModels.count
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let label = TransactionsListHeaderView()
+        label.title = sections()[section].title
+        return label
     }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int { tableViewModels(forSection: section).count }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: TxTableViewCell
 
-        cell = tableView.dequeueReusableCell(
-            withIdentifier: String(describing: TxTableViewCell.self),
-            for: indexPath
-        ) as! TxTableViewCell
-        cell.configure(with: txModels[indexPath.row])
-        txModels[indexPath.row].downloadGif()
+        let cell = tableView.dequeueReusableCell(type: TxTableViewCell.self, indexPath: indexPath)
+        let viewModel = tableViewModel(forIndexPath: indexPath)
+
+        cell.configure(with: viewModel)
+        viewModel.downloadGif()
 
         cell.updateCell = {
             DispatchQueue.main.async {
                 tableView.reloadRows(at: [indexPath], with: .fade)
             }
         }
+
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        actionDelegate?.onTxSelect(txModels[indexPath.row].tx)
+        actionDelegate?.onTxSelect(tableViewModel(forIndexPath: indexPath).tx)
     }
 }
 
 // MARK: UITableViewDataSourcePrefetching
 extension TxsListViewController: UITableViewDataSourcePrefetching {
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        indexPaths.forEach { (indexPath) in
-            txModels[indexPath.row].downloadGif()
-        }
+        indexPaths.forEach { tableViewModel(forIndexPath: $0).downloadGif() }
     }
 }
 
@@ -451,12 +488,14 @@ extension TxsListViewController {
                     fallthrough
                 case .failure:
                     // change base node
+
                     do {
                         TariLogger.warn("Base node sync failed or base node not in sync. Setting another random peer.")
-                        try TariLib.shared.update(baseNode: .randomNode(), syncAfterSetting: true)
+                        try TariLib.shared.update(baseNode: NetworkManager.shared.selectedNetwork.randomNode(), syncAfterSetting: true)
                     } catch {
                         TariLogger.error("Failed to add random base node peer")
                     }
+
                     // retry sync
                     self.syncBaseNode()
                 case .aborted:
@@ -514,6 +553,7 @@ extension TxsListViewController {
         tableView.dataSource = self
 
         tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
+        tableView.backgroundColor = .clear
 
         view.backgroundColor = Theme.shared.colors.txTableBackground
     }

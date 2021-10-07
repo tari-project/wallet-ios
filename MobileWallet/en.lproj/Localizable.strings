@@ -1,5 +1,6 @@
 /* Common */
 "common.continue" = "Continue";
+"common.cancel" = "Cancel";
 "common.send.with_param" = "Send %@";
 
 "common.fee" = "Transaction Fee";
@@ -78,12 +79,18 @@
 "authentication.proceed" = "Proceed";
 
 /* Home view */
-"home.available_balance" = "Available Balance";
+"home.available_balance" = "Balance";
+"home.label.spendable" = "Available to spend";
 "home.error.update_balance" = "Balance update failed";
 "home.request_drop.title.with_param" = "You just got some %@!";
 "home.request_drop.description.with_param" = "Try sending a bit of %@ back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).";
 "home.request_drop.try_later" = "Try it later";
 "home.request_drop.error" = "Failed to claim %@";
+"home.info.amount_help.title" = "Why is some of my balance not spendable right now?";
+"home.info.amount_help.description" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
+"home.info.amount_help.action_button" = "Go to TariLabs University";
+"home.transactions.section.pending" = "Pending Transactions";
+"home.transactions.section.completed" = "Completed Transactions";
 
 /* Add amount view */
 "add_amount.error.available_balance.title" = "Available Balance error";
@@ -139,6 +146,7 @@
 
 "settings.item.wallet_backups" = "Wallet Backups";
 "settings.item.bridge_configuration" = "Bridge Configuration";
+"settings.item.select_network" = "Select Network";
 "settings.item.select_base_node" = "Select Base Node";
 "settings.item.delete_wallet" = "Delete Your Wallet";
 
@@ -153,10 +161,17 @@
 "splash.disclaimer.with_params" = "By creating a wallet, you agree to the terms of the %1$@ and %2$@";
 "splash.disclaimer.param.privacy_policy" = "Privacy Policy";
 "splash.disclaimer.param.user_agreement" = "User Agreement";
-
 "splash.title" = "Private by default. Useful by design.";
-"splash.create_wallet" = "Create Your Wallet";
+"splash.button.create_wallet" = "Create Your Wallet";
+"splash.button.open_wallet" = "Open Existing Wallet";
+"splash.button.select_network" = "Selected Network: %@";
 "splash.restore_wallet" = "Restore an Existing wallet";
+"splash.wallet_error.title" = "Unable to start wallet";
+"splash.wallet_error.description.corrupted_database" = "The local wallet data isn't compatible with the current app version or the data was corrupted. Please remove your wallet from the device and restore your wallet from backup.";
+"splash.wallet_error.description.generic" = "The app was unable to initialize the wallet instance. Please remove your wallet from the device and restore your wallet from backup.";
+"splash.wallet_error.button.confirm" = "Delete Your Wallet";
+"splash.action_sheet.select_network.title" = "Select Network";
+"splash.action_sheet.select_network.description" = "Please select the network to which do you want to connect.";
 
 /* iCloudBackup error */
 "iCloud_backup.error.title.set_password" = "Failed to set backup password";
@@ -360,7 +375,7 @@
 
 /* RestorePending view */
 "restore_pending_view.title" = "Restoring your wallet";
-"restore_pending_view.description" = "This could take between 1 to 3 minutes.\nPlease keep the app open.";
+"restore_pending_view.description" = "This could take between 1 to 3 minutes. Please keep the app open.";
 
 /* BackupPending view */
 "backup_pending_view.title" = "Backing up your wallet…";
@@ -460,6 +475,11 @@
 "connection_status.error.unknown_tor_connection_status" = "Unknown connection status with Tor";
 "connection_status.error.disconnected_from_base_node" = "Disconnected from the base node";
 
+/* Select Network View */
+"select_network.title" = "Select Network";
+"select_network.dialog.switch_network.title" = "One thing before you go";
+"select_network.dialog.switch_network.description" = "You will be logged out and switched to a different network. Do you want to continue?";
+
 /* Select Base Node View */
 "select_base_node.title" = "Select Base Node";
 "select_base_node.cell.delete" = "Delete";
@@ -485,10 +505,10 @@
 "restore_from_seed_words.progress_overlay.label.title" = "Restoring your wallet";
 "restore_from_seed_words.progress_overlay.label.description" = "This could take between 1 to 3 minutes.\nPlease keep the app open.";
 "restore_from_seed_words.progress_overlay.success" = "Your wallet was restored. Welcome back!";
-"restore_from_seed_words.progress_overlay.status.connecting" = "Waiting for connection.";
-"restore_from_seed_words.progress_overlay.status.connected" = "Connection established. The process will start soon.";
+"restore_from_seed_words.progress_overlay.status.connecting" = "Waiting for connection";
+"restore_from_seed_words.progress_overlay.status.connected" = "Connection established. The process will start soon";
 "restore_from_seed_words.progress_overlay.status.progress" = "Restoring in progress:";
-"restore_from_seed_words.progress_overlay.progress.connection_failed" = "Attempt %d out of %d.";
+"restore_from_seed_words.progress_overlay.progress.connection_failed" = "Attempt %d out of %d";
 "restore_from_seed_words.progress_overlay.error.title" = "Recovery Failed";
 "restore_from_seed_words.progress_overlay.error.description.connection_failed" = "Unable to connect with base node. Please try again later.";
 "restore_from_seed_words.progress_overlay.error.description.unknown_error" = "Unable to recover your wallet due to the internal error.";

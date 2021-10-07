@@ -1,8 +1,8 @@
-//  GroupUserDefaults.swift
+//  TransactionsListHeaderView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/07/2021
+	Created by Adrian Truszczynski on 11/08/2021
 	Using Swift 5.0
 	Running on macOS 12.0
 
@@ -38,8 +38,51 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum GroupUserDefaults {
-    @UserDefault(key: "selectedNetworkName", suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
-    @UserDefault(key: "networksSettings", suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
-    @UserDefault(key: "walletSettings", suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
+import UIKit
+
+final class TransactionsListHeaderView: UITableViewHeaderFooterView {
+
+    // MARK: - Subviews
+
+    private let titleLabel: UILabel = {
+        let view = UILabel()
+        view.font = Theme.shared.fonts.txSectionTitleLabel
+        view.textColor = Theme.shared.colors.txCellNote
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    // MARK: - Properties
+
+    var title: String? {
+        get { titleLabel.text }
+        set { titleLabel.text = newValue }
+    }
+
+    // MARK: - Initializers
+
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        setupConstraints()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Setups
+
+    private func setupConstraints() {
+
+        addSubview(titleLabel)
+
+        let constraints = [
+            titleLabel.topAnchor.constraint(equalTo: topAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12.0),
+            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25.0)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
 }

@@ -38,57 +38,54 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+final class CommsConfig {
 
-enum CommsConfigError: Error {
-    case generic(_ errorCode: Int32)
-}
+    // MARK: Error
 
-class CommsConfig {
-    private var ptr: OpaquePointer
-
-    var pointer: OpaquePointer {
-        return ptr
+    enum Error: Swift.Error {
+        case invalidConfiguration
+        case generic(_ errorCode: Int32)
     }
+
+    // MARK: - Properties
 
     var dbPath: String
     var dbName: String
+    private(set) var pointer: OpaquePointer
 
-    init(
-	    transport: TransportType,
-	    databaseFolderPath: String,
-	    databaseName: String,
-	    publicAddress: String,
-	    discoveryTimeoutSec: UInt64,
-	    safMessageDurationSec: UInt64
-	) throws {
+    init(transport: TransportType, databaseFolderPath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64, safMessageDurationSec: UInt64, networkName: String) throws {
+
         dbPath = databaseFolderPath
         dbName = databaseName
+
         var errorCode: Int32 = -1
         let result = databaseName.withCString({ db in
             databaseFolderPath.withCString({ path in
-                publicAddress.withCString({ address in
-                     withUnsafeMutablePointer(to: &errorCode, { error in
-                        comms_config_create(
-                            address,
-                            transport.pointer,
-                            db,
-                            path,
-                            discoveryTimeoutSec,
-                            safMessageDurationSec,
-                            error
-                        )
+                networkName.withCString({ network in
+                    publicAddress.withCString({ address in
+                        withUnsafeMutablePointer(to: &errorCode, { error in
+                            comms_config_create(
+                                address,
+                                transport.pointer,
+                                db,
+                                path,
+                                discoveryTimeoutSec,
+                                safMessageDurationSec,
+                                network,
+                                error
+                            )
+                        })
                     })
                 })
             })
         })
-        ptr = result!
-        guard errorCode == 0 else {
-            throw CommsConfigError.generic(errorCode)
-        }
+
+        guard errorCode == 0 else { throw Error.generic(errorCode) }
+        guard let result = result else { throw Error.invalidConfiguration }
+        pointer = result
     }
 
     deinit {
-        comms_config_destroy(ptr)
+        comms_config_destroy(pointer)
     }
 }

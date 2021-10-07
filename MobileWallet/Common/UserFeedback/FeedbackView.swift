@@ -119,6 +119,7 @@ class FeedbackView: UIView {
         addSubview(callToActionButton)
         callToActionButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         callToActionButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 160).isActive = true
+        callToActionButton.contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 12.0, bottom: 0.0, right: 12.0)
         callToActionButton.addTarget(self, action: action, for: .touchUpInside)
     }
 

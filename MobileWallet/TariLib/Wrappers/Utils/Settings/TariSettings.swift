@@ -41,23 +41,6 @@
 import Foundation
 import SwiftKeychainWrapper
 
-enum TariNetwork: String {
-    case mainnet = "mainnet"
-    case rincewind = "rincewind"
-    case ridcully = "ridcully"
-    case stibbons = "stibbons"
-    case weatherwax = "weatherwax"
-
-    var currencyDisplayTicker: String {
-        switch self {
-        case .rincewind:
-            return "tXTR"
-        default:
-            return "XTR"
-        }
-    }
-}
-
 enum AppEnvironment {
     case debug
     case testflight
@@ -65,9 +48,11 @@ enum AppEnvironment {
 }
 
 struct TariSettings {
+
     static let shared = TariSettings()
 
-    let network: TariNetwork = .weatherwax
+    let walletSettings = WalletSettingsManager()
+
     let discoveryTimeoutSec: UInt64 = 20
     let safMessageDurationSec: UInt64 = 10800
     let deeplinkURI = "tari"
@@ -83,6 +68,7 @@ struct TariSettings {
     let privacyPolicyUrl = "https://www.tari.com/privacy_policy/"
     let storeUrl = "https://store.tarilabs.com/"
     let bugReportEmail = "bug_reports@tari.com"
+    let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
 
     var pushServerApiKey: String?
     var sentryPublicDSN: String?

@@ -1,10 +1,10 @@
-//  PartialBackup.swift
+//  WalletSettings.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/07/16
+	Created by Adrian Truszczynski on 03/10/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,21 +38,29 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+struct WalletSettings: Codable, Equatable {
 
-class WalletBackups {
-    static func partialBackup(orginalFilePath: String, backupFilePathWithFilename: String) throws {
-        var errorCode: Int32 = -1
-        withUnsafeMutablePointer(to: &errorCode, { error in
-            orginalFilePath.withCString({ orginalCstr in
-                backupFilePathWithFilename.withCString({ backupCstr in
-                    file_partial_backup(orginalCstr, backupCstr, error)
-                })
-            })
-        })
-
-        guard errorCode == 0 else {
-            throw WalletErrors.generic(errorCode)
-        }
+    enum  WalletConfigurationState: Codable {
+        /// Wallet wasn't configure
+        case notConfigured
+        /// Walet was created
+        case initialized
+        /// User finished authorisation flow
+        case authorized
+        /// Wallet screen was presented to the user
+        case ready
     }
+
+    let networkName: String
+    let configationState: WalletConfigurationState
+    let isCloudBackupEnabled: Bool
+    let hasVerifiedSeedPhrase: Bool
+
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.networkName == rhs.networkName }
+}
+
+extension WalletSettings {
+    func update(configationState: WalletConfigurationState) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase) }
+    func update(isCloudBackupEnabled: Bool) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase) }
+    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase) }
 }

@@ -39,26 +39,45 @@
 */
 
 import Foundation
+import Combine
 
 enum TariLibErrors: Error {
     case saveToKeychain
 }
 
 class TariLib {
+
+    private let databaseNamespace = "tari_wallet"
+
     static let shared = TariLib()
-    static let databaseName = "tari_wallet"
     static let logFilePrefix = "log"
     var torPortsOpened = false
-    public private(set) var walletState = WalletState.notReady
+
+    var walletState: WalletState { walletStateSubject.value }
+    var walletStatePublisher: AnyPublisher<WalletState, Never> { walletStateSubject.share().eraseToAnyPublisher() }
+    private let walletStateSubject = CurrentValueSubject<WalletState, Never>(.notReady)
+    private var cancelables = Set<AnyCancellable>()
+
+    var connectedDatabaseName: String { databaseNamespace }
+    var connectedDatabaseDirectory: URL { TariSettings.storageDirectory.appendingPathComponent("\(databaseNamespace)_\(NetworkManager.shared.selectedNetwork.name)", isDirectory: true) }
 
     enum KeyValueStorageKeys: String {
         case network = "SU7FM2O6Q3BU4XVN7HDD"
     }
 
-    enum WalletState {
+    enum WalletState: Equatable {
+        static func == (lhs: TariLib.WalletState, rhs: TariLib.WalletState) -> Bool {
+            switch (lhs, rhs) {
+            case (.notReady, .notReady), (.starting, .starting), (.started, .started), (.startFailed, .startFailed):
+                return true
+            default:
+                return false
+            }
+        }
+
         case notReady
         case starting
-        case startFailed
+        case startFailed(error: Wallet.WalletError)
         case started
     }
 
@@ -67,10 +86,6 @@ class TariLib {
         dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
         let dateString = dateFormatter.string(from: Date())
         return "\(TariSettings.storageDirectory.path)/\(TariLib.logFilePrefix)-\(dateString).txt"
-    }()
-
-    lazy var databaseDirectory: URL = {
-        return TariSettings.storageDirectory.appendingPathComponent(TariLib.databaseName, isDirectory: true)
     }()
 
     var allLogFiles: [URL] {
@@ -87,25 +102,15 @@ class TariLib {
         }
     }
 
-    var publicAddress: String {
-        return "/ip4/0.0.0.0/tcp/9838"
-    }
-
-    var listenerAddress: String {
-        return "/ip4/0.0.0.0/tcp/9838"
-    }
+    private let publicAddress: String = "/ip4/0.0.0.0/tcp/9838"
+    private let listenerAddress: String = "/ip4/0.0.0.0/tcp/9838"
 
     var tariWallet: Wallet?
-
     var walletPublicKeyHex: String? // we need a cache of this for function that run while tariWallet = nil
 
-    var walletExists: Bool {
+    var isWalletExist: Bool {
         do {
-            let fileExists = try TariSettings.storageDirectory.appendingPathComponent(
-                TariLib.databaseName,
-                isDirectory: true
-            ).checkResourceIsReachable()
-            return fileExists
+            return try connectedDatabaseDirectory.checkResourceIsReachable()
         } catch {
             TariLogger.warn("Database path not reachable. Assuming wallet doesn't exist.", error: error)
             return false
@@ -113,25 +118,24 @@ class TariLib {
     }
 
     var commsConfig: CommsConfig? {
-        var config: CommsConfig?
         do {
-            let transport = try transportType()
-            config = try CommsConfig(
-               transport: transport,
-               databaseFolderPath: databaseDirectory.path,
-               databaseName: TariLib.databaseName,
-               publicAddress: publicAddress,
-               discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
-               safMessageDurationSec: TariSettings.shared.safMessageDurationSec
+            return try CommsConfig(
+                transport: try transportType(),
+                databaseFolderPath: connectedDatabaseDirectory.path,
+                databaseName: connectedDatabaseName,
+                publicAddress: publicAddress,
+                discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
+                safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
+                networkName: NetworkManager.shared.selectedNetwork.name
             )
         } catch {
             TariLogger.error("Failed to create comms config", error: error)
+            return nil
         }
-        return config
     }
 
     private init() {
-        OnionConnector.shared.addObserver(self)
+        setupListeners()
     }
 
     private func transportType() throws -> TransportType {
@@ -145,6 +149,13 @@ class TariLib {
             socksUsername: "",
             socksPassword: ""
         )
+    }
+
+    private func setupListeners() {
+        OnionConnector.shared.addObserver(self)
+        walletStatePublisher
+            .sink { TariEventBus.postToMainThread(.walletStateChanged, sender: $0) }
+            .store(in: &cancelables)
     }
 
     func startTor() {
@@ -192,43 +203,34 @@ class TariLib {
     }
 
     /// Starts an existing wallet service. Must only be called if wallet DB files already exist.
-    /// - Throws: Can fail to generate a comms config, wallet creation and adding a basenode
     func startWallet(seedWords: SeedWords?) {
-        walletState = .starting
-        TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
+        walletStateSubject.send(.starting)
         guard let config = commsConfig else {
-            walletState = .startFailed
-            TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
+            walletStateSubject.send(.startFailed(error: .unknown))
             return
         }
         let loggingFilePath = TariLib.shared.logFilePath
         do {
-            tariWallet = try Wallet(
-                commsConfig: config,
-                loggingFilePath: loggingFilePath,
-                seedWords: seedWords
-            )
+            tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath, seedWords: seedWords)
             walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
-            walletState = .started
-            TariEventBus.postToMainThread(
-                .walletStateChanged,
-                sender: walletState
-            )
+            walletStateSubject.send(.started)
+        } catch let error as Wallet.WalletError {
+            walletStateSubject.send(.startFailed(error: error))
+            return
         } catch {
-            walletState = .startFailed
-            TariEventBus.postToMainThread(.walletStateChanged, sender: walletState)
+            walletStateSubject.send(.startFailed(error: .unknown))
             return
         }
+
         try? setupBasenode()
         startListeningToBaseNodeSync()
         backgroundStorageCleanup()
-        walletState = .started
+        walletStateSubject.send(.started)
     }
 
     /// Base note basic setup. Selects previously used base node or use random node if there wasn't any node selected before.
     func setupBasenode() throws {
-        let baseNode = try GroupUserDefaults.selectedBaseNode ?? BaseNode.randomNode()
-        try update(baseNode: baseNode, syncAfterSetting: false)
+        try update(baseNode: NetworkManager.shared.selectedNetwork.selectedBaseNode, syncAfterSetting: false)
     }
 
     /// Selects new base node peer for Tari Wallet.
@@ -237,7 +239,7 @@ class TariLib {
     ///   - syncAfterSetting: Boolean. If it  `true` then the wallet will try to sync with newly selected base node.
     func update(baseNode: BaseNode, syncAfterSetting: Bool) throws {
 
-        GroupUserDefaults.selectedBaseNode = baseNode
+        NetworkManager.shared.selectedNetwork.selectedBaseNode = baseNode
 
         try tariWallet?.add(baseNode: baseNode)
         guard syncAfterSetting else { return }
@@ -246,43 +248,43 @@ class TariLib {
 
     func createNewWallet(seedWords: SeedWords?) throws {
         try FileManager.default.createDirectory(
-            at: databaseDirectory,
+            at: connectedDatabaseDirectory,
             withIntermediateDirectories: true,
             attributes: nil
         )
+
         // start listening to wallet events first
-        TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
-            [weak self]
-            (sender) in
-            guard let self = self else { return }
-            let walletState = sender!.object as! WalletState
-            switch walletState {
-            case .started:
-                do {
-                    try self.setCurrentNetworkKeyValue()
-                } catch {
-                    // no-op for now
+        var cancelable: AnyCancellable?
+
+        cancelable = walletStatePublisher
+            .receive(on: RunLoop.main)
+            .sink { [weak self] walletState in
+                switch walletState {
+                case .started:
+                    try? self?.setCurrentNetworkKeyValue()
+                    cancelable?.cancel()
+                case .startFailed:
+                    cancelable?.cancel()
+                case .starting, .notReady:
+                    break
                 }
-                TariEventBus.unregister(self, eventType: .walletStateChanged)
-            case .startFailed:
-                TariEventBus.unregister(self, eventType: .walletStateChanged)
-            default:
-                break
             }
-        }
-        // then start wallet
+
+        cancelable?
+            .store(in: &cancelables)
+
         startWallet(seedWords: seedWords)
     }
 
     func setCurrentNetworkKeyValue() throws {
         _ = try tariWallet?.setKeyValue(
             key: KeyValueStorageKeys.network.rawValue,
-            value: TariSettings.shared.network.rawValue
+            value: NetworkManager.shared.selectedNetwork.name
         )
     }
 
     func stopWallet() {
-        walletState = WalletState.notReady
+        walletStateSubject.send(.notReady)
         tariWallet = nil
         TariEventBus.unregister(self)
     }
@@ -291,7 +293,7 @@ class TariLib {
         stopWallet()
         do {
             // delete database files
-            try FileManager.default.removeItem(at: databaseDirectory)
+            try FileManager.default.removeItem(at: connectedDatabaseDirectory)
             // delete cached value
             walletPublicKeyHex = nil
             // delete log files
@@ -299,10 +301,8 @@ class TariLib {
                 try FileManager.default.removeItem(at: logFile)
             }
             // remove all user defaults
-            let domain = Bundle.main.bundleIdentifier!
-            UserDefaults.standard.removePersistentDomain(forName: domain)
-            UserDefaults.standard.removePersistentDomain(forName: TariSettings.groupIndentifier)
-            UserDefaults.standard.synchronize()
+            UserDefaults.standard.removeAll()
+            NetworkManager.shared.removeSelectedNetworkSettings()
         } catch {
             fatalError()
         }

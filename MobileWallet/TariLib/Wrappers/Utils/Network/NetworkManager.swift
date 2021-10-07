@@ -1,8 +1,8 @@
-//  GroupUserDefaults.swift
+//  NetworkManager.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/07/2021
+	Created by Adrian Truszczynski on 01/09/2021
 	Using Swift 5.0
 	Running on macOS 12.0
 
@@ -38,8 +38,46 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum GroupUserDefaults {
-    @UserDefault(key: "selectedNetworkName", suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
-    @UserDefault(key: "networksSettings", suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
-    @UserDefault(key: "walletSettings", suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
+import Combine
+
+final class NetworkManager {
+
+    // MARK: - Properties
+
+    static let shared = NetworkManager()
+
+    @Published var selectedNetwork: TariNetwork
+
+    private static var defaultNetwork: TariNetwork { .weatherwax }
+    private var cancelables = Set<AnyCancellable>()
+
+    // MARK: - Initializers
+
+    init() {
+        selectedNetwork = Self.setupNetwork()
+        setupFeedbacks()
+    }
+
+    // MARK: - Setups
+
+    private static func setupNetwork() -> TariNetwork {
+        guard let selectedNetworkName = GroupUserDefaults.selectedNetworkName, let network = TariNetwork.all.first(where: { $0.name == selectedNetworkName }) else {
+            GroupUserDefaults.selectedNetworkName = defaultNetwork.name
+            return defaultNetwork
+        }
+        return network
+    }
+
+    private func setupFeedbacks() {
+        $selectedNetwork
+            .sink { GroupUserDefaults.selectedNetworkName = $0.name }
+            .store(in: &cancelables)
+    }
+
+    // MARK: - Actions
+
+    func removeSelectedNetworkSettings() {
+        GroupUserDefaults.networksSettings?.removeAll { $0.name == GroupUserDefaults.selectedNetworkName }
+        GroupUserDefaults.selectedNetworkName = nil
+    }
 }

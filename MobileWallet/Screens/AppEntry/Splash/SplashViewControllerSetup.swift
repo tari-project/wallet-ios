@@ -98,13 +98,11 @@ extension SplashViewController {
         animationContainer.heightAnchor.constraint(equalToConstant: 30).isActive = true
         animationContainer.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor).isActive = true
 
-        if TariLib.shared.walletExists {
+        if TariLib.shared.isWalletExist {
             animationContainer.centerYAnchor.constraint(equalTo: generalContainer.centerYAnchor).isActive = true
-            walletExistsInitially = true
         } else {
             ticketTopLayoutConstraint = animationContainer.topAnchor.constraint(equalTo: generalContainer.topAnchor, constant: 19)
             ticketTopLayoutConstraint?.isActive = true
-            walletExistsInitially = false
         }
     }
 
@@ -112,7 +110,7 @@ extension SplashViewController {
         videoView.isHidden = true
         generalContainer.insertSubview(videoView, belowSubview: animationContainer)
         videoView.translatesAutoresizingMaskIntoConstraints = false
-        if TariLib.shared.walletExists {
+        if TariLib.shared.isWalletExist {
             animationContainerBottomAnchor?.isActive = false
         } else {
             videoView.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor).isActive = true
@@ -130,6 +128,7 @@ extension SplashViewController {
 
         setupTitleLabel()
         setupCreateWalletButton()
+        setupSelectNetworkButton()
         setupRestoreButton()
         setupDisclaimer()
         setupGemImageView()
@@ -164,7 +163,6 @@ extension SplashViewController {
 
     func setupCreateWalletButton() {
         createWalletButton.isHidden = true
-        createWalletButton.setTitle(localized("splash.create_wallet"), for: .normal)
         createWalletButton.addTarget(self, action: #selector(onCreateWalletTap), for: .touchUpInside)
         elementsContainer.addSubview(createWalletButton)
 
@@ -174,6 +172,24 @@ extension SplashViewController {
         createWalletButton.trailingAnchor.constraint(equalTo: generalContainer.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
         createWalletButton.topAnchor.constraint(greaterThanOrEqualTo: titleLabel.bottomAnchor, constant: 5).isActive = true
         createWalletButton.topAnchor.constraint(lessThanOrEqualTo: titleLabel.bottomAnchor, constant: 25).isActive = true
+    }
+
+    func setupSelectNetworkButton() {
+
+        selectNetworkButton.translatesAutoresizingMaskIntoConstraints = false
+        selectNetworkButton.isHidden = true
+        selectNetworkButton.addTarget(self, action: #selector(onSelectNetworkButtonTap), for: .touchUpInside)
+
+        elementsContainer.addSubview(selectNetworkButton)
+
+        let constraints = [
+            selectNetworkButton.leadingAnchor.constraint(equalTo: generalContainer.leadingAnchor, constant: Theme.shared.sizes.appSidePadding),
+            selectNetworkButton.trailingAnchor.constraint(equalTo: generalContainer.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding),
+            selectNetworkButton.topAnchor.constraint(equalTo: createWalletButton.bottomAnchor, constant: 12.0),
+            selectNetworkButton.heightAnchor.constraint(equalToConstant: 32.0)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
     }
 
     func setupRestoreButton() {
@@ -188,8 +204,8 @@ extension SplashViewController {
         elementsContainer.addSubview(restoreButton)
         restoreButton.translatesAutoresizingMaskIntoConstraints = false
         restoreButton.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor).isActive = true
-        restoreButton.topAnchor.constraint(greaterThanOrEqualTo: createWalletButton.bottomAnchor, constant: 5).isActive = true
-        restoreButton.topAnchor.constraint(lessThanOrEqualTo: createWalletButton.bottomAnchor, constant: 22).isActive = true
+        restoreButton.topAnchor.constraint(greaterThanOrEqualTo: selectNetworkButton.bottomAnchor, constant: 5.0).isActive = true
+        restoreButton.topAnchor.constraint(lessThanOrEqualTo: selectNetworkButton.bottomAnchor, constant: 22.0).isActive = true
         restoreButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
     }
 
@@ -261,10 +277,6 @@ extension SplashViewController {
     func setupContraintsVersionLabel() {
         versionLabel.font = Theme.shared.fonts.splashVersionFooterLabel
         versionLabel.textColor = Theme.shared.colors.splashVersionLabel
-        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
-            let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-            versionLabel.text = "\(TariSettings.shared.network.rawValue.uppercased()) v\(version) (b\(build))"
-        }
 
         generalContainer.addSubview(versionLabel)
         versionLabel.textAlignment = .center

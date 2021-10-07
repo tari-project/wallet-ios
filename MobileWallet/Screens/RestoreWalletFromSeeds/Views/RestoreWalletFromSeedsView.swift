@@ -132,4 +132,8 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
     @objc private func onTapOnSubmitButtonAction() {
         onTapOnSubmitButton?()
     }
+
+    // MARK: - First Responder
+
+    override func resignFirstResponder() -> Bool { tokenView.resignFirstResponder() }
 }

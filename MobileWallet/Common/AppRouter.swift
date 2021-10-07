@@ -1,8 +1,8 @@
-//  GroupUserDefaults.swift
+//  AppRouter.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/07/2021
+	Created by Adrian Truszczynski on 02/09/2021
 	Using Swift 5.0
 	Running on macOS 12.0
 
@@ -38,8 +38,15 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum GroupUserDefaults {
-    @UserDefault(key: "selectedNetworkName", suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
-    @UserDefault(key: "networksSettings", suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
-    @UserDefault(key: "walletSettings", suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
+import UIKit
+
+enum AppRouter {
+
+    static func moveToSplashScreen() {
+        BackupScheduler.shared.stopObserveEvents()
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: SplashViewController())
+        navigationController.setNavigationBarHidden(true, animated: false)
+        UIApplication.shared.windows.first?.rootViewController = navigationController
+        UIApplication.shared.windows.first?.makeKeyAndVisible()
+    }
 }

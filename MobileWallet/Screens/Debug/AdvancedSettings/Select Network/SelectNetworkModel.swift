@@ -1,8 +1,8 @@
-//  GroupUserDefaults.swift
+//  SelectNetworkModel.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/07/2021
+	Created by Adrian Truszczynski on 26/08/2021
 	Using Swift 5.0
 	Running on macOS 12.0
 
@@ -38,8 +38,38 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum GroupUserDefaults {
-    @UserDefault(key: "selectedNetworkName", suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
-    @UserDefault(key: "networksSettings", suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
-    @UserDefault(key: "walletSettings", suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
+final class SelectNetworkModel {
+
+    struct NetworkModel: Hashable {
+        let networkName: String
+        let isSelected: Bool
+    }
+
+    final class ViewModel {
+        @Published var networkModels: [NetworkModel] = []
+        @Published var selectedIndex: Int?
+    }
+
+    // MARK: - Properties
+
+    let viewModel = ViewModel()
+    private let networks = TariNetwork.all
+
+    // MARK: - Actions
+
+    func refreshData() {
+        viewModel.selectedIndex = networks.firstIndex { $0.name == NetworkManager.shared.selectedNetwork.name }
+        viewModel.networkModels = networks
+            .enumerated()
+            .map { NetworkModel(networkName: $1.name, isSelected: $0 == viewModel.selectedIndex) }
+    }
+
+    func update(selectedIndex: Int) {
+        guard viewModel.selectedIndex != selectedIndex else { return }
+        TariLib.shared.stopWallet()
+        NetworkManager.shared.selectedNetwork = networks[selectedIndex]
+        AppRouter.moveToSplashScreen()
+    }
 }
+
+import UIKit

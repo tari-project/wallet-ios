@@ -1,8 +1,8 @@
-//  GroupUserDefaults.swift
+//  AppInfo.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/07/2021
+	Created by Adrian Truszczynski on 08/09/2021
 	Using Swift 5.0
 	Running on macOS 12.0
 
@@ -38,8 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum GroupUserDefaults {
-    @UserDefault(key: "selectedNetworkName", suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
-    @UserDefault(key: "networksSettings", suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
-    @UserDefault(key: "walletSettings", suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
+enum AppInfo {
+    static var appVersion: String? { Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String }
+    static var buildVestion: String? { Bundle.main.infoDictionary?["CFBundleVersion"] as? String }
 }

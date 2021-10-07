@@ -77,7 +77,7 @@ final class TokenCollectionView: UIView {
 
     var tokens: AnyPublisher<[String], Never> {
         $tokenModels
-            .map { $0.map { $0.text }.filter {!$0.isEmpty } }
+            .map { $0.map(\.text).filter { !$0.isEmpty } }
             .eraseToAnyPublisher()
     }
 
@@ -213,6 +213,14 @@ final class TokenCollectionView: UIView {
     @objc private func onTapOutsideAction() {
         let indexPath = IndexPath(item: tokenModels.count - 1, section: 0)
         collectionView.cellForItem(at: indexPath)?.becomeFirstResponder()
+    }
+
+    // MARK: - First Responder
+
+    override func resignFirstResponder() -> Bool {
+        let indexPath = IndexPath(item: tokenModels.count - 1, section: 0)
+        return collectionView.cellForItem(at: indexPath)?.resignFirstResponder() ?? false
+
     }
 }
 

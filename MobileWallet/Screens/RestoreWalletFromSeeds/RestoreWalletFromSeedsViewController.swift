@@ -86,6 +86,7 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
             .store(in: &cancelables)
 
         mainView.onTapOnSubmitButton = { [weak self] in
+            _ = self?.mainView.resignFirstResponder()
             self?.model.startRestoringWallet()
         }
 

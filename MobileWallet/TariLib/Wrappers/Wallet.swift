@@ -118,6 +118,7 @@ enum RestoreWalletStatus {
 final class Wallet {
 
     enum WalletError: Int32, Error {
+        case databaseDataError = 114
         case encryptionError = 420
         case unknown = -1
 
@@ -129,7 +130,7 @@ final class Wallet {
         var genericError: WalletErrors { WalletErrors.generic(rawValue) }
     }
 
-    private var ptr: OpaquePointer
+    private(set) var pointer: OpaquePointer
 
     var dbPath: String
     var dbName: String
@@ -143,14 +144,10 @@ final class Wallet {
 
     private static var baseNodeValidationStatusMap: [BaseNodeValidationType: (UInt64, BaseNodeValidationResult?)] = [:]
 
-    var pointer: OpaquePointer {
-        return ptr
-    }
-
     var contacts: (Contacts?, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            Contacts(contactsPointer: wallet_get_contacts(ptr, error))
+            Contacts(contactsPointer: wallet_get_contacts(pointer, error))
         })
         guard errorCode == 0 else {
             return (nil, WalletErrors.generic(errorCode))
@@ -160,7 +157,7 @@ final class Wallet {
 
     var seedWords: ([String]?, Error?) {
         do {
-            let seedWords = try SeedWords(walletPointer: ptr)
+            let seedWords = try SeedWords(walletPointer: pointer)
             let result = try seedWords.allElements()
             return (result, nil)
         } catch {
@@ -171,21 +168,21 @@ final class Wallet {
     var availableBalance: (UInt64, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_available_balance(ptr, error)})
+            wallet_get_available_balance(pointer, error)})
         return (result, errorCode != 0 ? WalletErrors.generic(errorCode) : nil)
     }
 
     var pendingIncomingBalance: (UInt64, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_pending_incoming_balance(ptr, error)})
+            wallet_get_pending_incoming_balance(pointer, error)})
         return (result, errorCode != 0 ? WalletErrors.generic(errorCode) : nil)
     }
 
     var pendingOutgoingBalance: (UInt64, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_pending_outgoing_balance(ptr, error)})
+            wallet_get_pending_outgoing_balance(pointer, error)})
         return (result, errorCode != 0 ? WalletErrors.generic(errorCode) : nil)
     }
 
@@ -208,10 +205,15 @@ final class Wallet {
         return (MicroTari(availableBalance + pendingIncomingBalance), nil)
     }
 
+    var availableMicroTari: (MicroTari?, Error?) {
+        let value = availableBalance
+        return (MicroTari(value.0), value.1)
+    }
+
     var publicKey: (PublicKey?, Error?) {
         var errorCode: Int32 = -1
         let result = PublicKey(pointer: withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_public_key(ptr, error)}))
+            wallet_get_public_key(pointer, error)}))
         guard errorCode == 0 else {
             return (nil, WalletErrors.generic(errorCode))
         }
@@ -409,32 +411,38 @@ final class Wallet {
         logPath = loggingFilePath
 
         func createWallet(passphrase: String?, seedWords: SeedWords?) -> (result: OpaquePointer?, error: WalletError?) {
+
             var errorCode: Int32 = -1
-            let result = withUnsafeMutablePointer(to: &errorCode, { error in
-                wallet_create(
-                    commsConfig.pointer,
-                    loggingFilePathPointer,
-                    2, // number of rolling log files
-                    10 * 1024 * 1024, // rolling log file max size in bytes
-                    passphrase,
-                    seedWords?.pointer,
-                    receivedTxCallback,
-                    receivedTxReplyCallback,
-                    receivedFinalizedTxCallback,
-                    txBroadcastCallback,
-                    txMinedCallback,
-                    txMinedUnconfirmedCallback,
-                    directSendResultCallback,
-                    storeAndForwardSendResultCallback,
-                    txCancellationCallback,
-                    utxoValidationCompleteCallback,
-                    stxoValidationCompleteCallback,
-                    invalidTXOValidationCompleteCallback,
-                    txValidationCompleteCallback,
-                    storedMessagesReceivedCallback,
-                    error
-                )
-            })
+            var isRecoveryInProgress = false
+
+            let result = withUnsafeMutablePointer(to: &isRecoveryInProgress) { isRecoveryInProgressPointer in
+                withUnsafeMutablePointer(to: &errorCode, { error in
+                    wallet_create(
+                        commsConfig.pointer,
+                        loggingFilePathPointer,
+                        2, // number of rolling log files
+                        10 * 1024 * 1024, // rolling log file max size in bytes
+                        passphrase,
+                        seedWords?.pointer,
+                        receivedTxCallback,
+                        receivedTxReplyCallback,
+                        receivedFinalizedTxCallback,
+                        txBroadcastCallback,
+                        txMinedCallback,
+                        txMinedUnconfirmedCallback,
+                        directSendResultCallback,
+                        storeAndForwardSendResultCallback,
+                        txCancellationCallback,
+                        utxoValidationCompleteCallback,
+                        stxoValidationCompleteCallback,
+                        invalidTXOValidationCompleteCallback,
+                        txValidationCompleteCallback,
+                        storedMessagesReceivedCallback,
+                        isRecoveryInProgressPointer,
+                        error
+                    )
+                })
+            }
 
             let error = WalletError(errorCode: errorCode)
 
@@ -443,13 +451,13 @@ final class Wallet {
 
         func handleInitializationFlow(passphrase: String?) throws -> (pointer: OpaquePointer, encryptionEnabled: Bool) {
 
-            let createWalletResponse = createWallet(passphrase: passphrase, seedWords: seedWords) // TODO: Check!
+            let createWalletResponse = createWallet(passphrase: passphrase, seedWords: seedWords)
 
             switch createWalletResponse {
             case (_, .encryptionError) where passphrase != nil:
                 return try handleInitializationFlow(passphrase: nil)
             case (_, .some(let error)):
-                throw error.genericError
+                throw error
             case (.some(let result), _):
                 return (result, passphrase != nil)
             default:
@@ -459,7 +467,7 @@ final class Wallet {
 
         let result = try handleInitializationFlow(passphrase: Self.passphrase())
 
-        ptr = result.pointer
+        pointer = result.pointer
 
         guard !result.encryptionEnabled else { return }
         try enableEncryption()
@@ -468,7 +476,7 @@ final class Wallet {
     func removeContact(_ contact: Contact) throws {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_remove_contact(ptr, contact.pointer, error)})
+            wallet_remove_contact(pointer, contact.pointer, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
@@ -501,7 +509,7 @@ final class Wallet {
         let newContact = try Contact(alias: alias, publicKey: publicKey)
         var errorCode: Int32 = -1
         let contactAdded = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_upsert_contact(ptr, newContact.pointer, error)})
+            wallet_upsert_contact(pointer, newContact.pointer, error)})
 
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
@@ -518,7 +526,7 @@ final class Wallet {
         var errorCode: Int32 = -1
 
         let fee = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_fee_estimate(ptr, amount.rawValue, feePerGram.rawValue, kernelCount, outputCount, error)})
+            wallet_get_fee_estimate(pointer, amount.rawValue, feePerGram.rawValue, kernelCount, outputCount, error)})
         guard errorCode == 0 else {
             if errorCode == 101 {
                 throw WalletErrors.notEnoughFunds
@@ -558,7 +566,7 @@ final class Wallet {
 
         let txId = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_send_transaction(
-                ptr,
+                pointer,
                 destination.pointer,
                 amount.rawValue,
                 feePerGram.rawValue,
@@ -579,7 +587,7 @@ final class Wallet {
     func findPendingOutboundTxBy(id: UInt64) throws -> PendingOutboundTx? {
         var errorCode: Int32 = -1
         let pendingOutboundTxPointer = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_pending_outbound_transaction_by_id(ptr, id, error)})
+            wallet_get_pending_outbound_transaction_by_id(pointer, id, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
@@ -592,7 +600,7 @@ final class Wallet {
     func findPendingInboundTxBy(id: UInt64) throws -> PendingInboundTx? {
          var errorCode: Int32 = -1
          let pendingInboundTxPointer = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_pending_inbound_transaction_by_id(ptr, id, error)})
+            wallet_get_pending_inbound_transaction_by_id(pointer, id, error)})
          guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
          }
@@ -605,7 +613,7 @@ final class Wallet {
     func findCompletedTxBy(id: UInt64) throws -> CompletedTx {
         var errorCode: Int32 = -1
         let completedTxPointer = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_completed_transaction_by_id(ptr, id, error)})
+            wallet_get_completed_transaction_by_id(pointer, id, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
@@ -620,7 +628,7 @@ final class Wallet {
     func findCancelledTxBy(id: UInt64) throws -> CompletedTx {
         var errorCode: Int32 = -1
         let completedTxPointer = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_cancelled_transaction_by_id(ptr, id, error)})
+            wallet_get_cancelled_transaction_by_id(pointer, id, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
@@ -636,7 +644,7 @@ final class Wallet {
         var errorCode: Int32 = -1
         let messagePointer = (message as NSString).utf8String
         let resultPtr = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_sign_message(ptr, messagePointer, error)})
+            wallet_sign_message(pointer, messagePointer, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
@@ -663,7 +671,7 @@ final class Wallet {
         let messagePointer = (message as NSString).utf8String
         let hexSigNoncePointer = ("\(signature)|\(nonce)" as NSString).utf8String
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_verify_message_signature(ptr, publicKey.pointer, hexSigNoncePointer, messagePointer, error)})
+            wallet_verify_message_signature(pointer, publicKey.pointer, hexSigNoncePointer, messagePointer, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
@@ -678,7 +686,7 @@ final class Wallet {
         var errorCode: Int32 = -1
         let messagePointer = (utxo.message as NSString).utf8String
         _ = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_import_utxo(ptr, utxo.value, privateKey.pointer, sourcePublicKey.pointer, messagePointer, error)})
+            wallet_import_utxo(pointer, utxo.value, privateKey.pointer, sourcePublicKey.pointer, messagePointer, error)})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
@@ -691,7 +699,7 @@ final class Wallet {
     func add(baseNode: BaseNode) throws {
         var errorCode: Int32 = -1
         _ = withUnsafeMutablePointer(to: &errorCode) { error in
-            wallet_add_base_node_peer(ptr, baseNode.publicKey.pointer, baseNode.address, error)
+            wallet_add_base_node_peer(pointer, baseNode.publicKey.pointer, baseNode.address, error)
         }
         guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
     }
@@ -704,7 +712,7 @@ final class Wallet {
             to: &errorCode
         ) {
             error in
-            wallet_start_utxo_validation(ptr, error)
+            wallet_start_utxo_validation(pointer, error)
         }
         guard errorCode == 0 else {
             Wallet.baseNodeValidationStatusMap.removeAll()
@@ -717,7 +725,7 @@ final class Wallet {
             to: &errorCode
         ) {
             error in
-            wallet_start_stxo_validation(ptr, error)
+            wallet_start_stxo_validation(pointer, error)
         }
         guard errorCode == 0 else {
             Wallet.baseNodeValidationStatusMap.removeAll()
@@ -730,7 +738,7 @@ final class Wallet {
             to: &errorCode
         ) {
             error in
-            wallet_start_invalid_txo_validation(ptr, error)
+            wallet_start_invalid_txo_validation(pointer, error)
         }
         guard errorCode == 0 else {
             Wallet.baseNodeValidationStatusMap.removeAll()
@@ -743,7 +751,7 @@ final class Wallet {
             to: &errorCode
         ) {
             error in
-            wallet_start_transaction_validation(ptr, error)
+            wallet_start_transaction_validation(pointer, error)
         }
         guard errorCode == 0 else {
             Wallet.baseNodeValidationStatusMap.removeAll()
@@ -791,7 +799,7 @@ final class Wallet {
     private func cancelPendingTx(_ txId: UInt64) throws {
         var errorCode: Int32 = -1
         _ = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_cancel_pending_transaction(ptr, txId, error)
+            wallet_cancel_pending_transaction(pointer, txId, error)
         })
 
         guard errorCode == 0 else {
@@ -836,7 +844,7 @@ final class Wallet {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             message.withCString({ cstr in
-                wallet_coin_split(ptr, amount, splitCount, fee, cstr, lockHeight, error)
+                wallet_coin_split(pointer, amount, splitCount, fee, cstr, lockHeight, error)
             })
             })
 
@@ -853,7 +861,7 @@ final class Wallet {
 
         let result = withUnsafeMutablePointer(to: &errorCode) {
             error in
-            wallet_set_key_value(ptr, keyPointer, valuePointer, error)
+            wallet_set_key_value(pointer, keyPointer, valuePointer, error)
         }
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
@@ -866,7 +874,7 @@ final class Wallet {
         let keyPointer = (key as NSString).utf8String
         let resultPtr = withUnsafeMutablePointer(to: &errorCode) {
             error in
-            wallet_get_value(ptr, keyPointer, error)
+            wallet_get_value(pointer, keyPointer, error)
         }
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
@@ -885,7 +893,7 @@ final class Wallet {
 
         let result = withUnsafeMutablePointer(to: &errorCode) {
             error in
-            wallet_clear_value(ptr, keyPointer, error)
+            wallet_clear_value(pointer, keyPointer, error)
         }
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
@@ -899,7 +907,7 @@ final class Wallet {
         }
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
-                 wallet_get_num_confirmations_required(ptr, error)
+                 wallet_get_num_confirmations_required(pointer, error)
             })
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
@@ -911,7 +919,7 @@ final class Wallet {
     func setConfirmations(number: UInt64) throws {
         var errorCode: Int32 = -1
         withUnsafeMutablePointer(to: &errorCode, { error in
-                wallet_set_num_confirmations_required(ptr, number, error)
+                wallet_set_num_confirmations_required(pointer, number, error)
         })
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
@@ -922,7 +930,7 @@ final class Wallet {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode) {
             error in
-            wallet_restart_transaction_broadcast(ptr, error)
+            wallet_restart_transaction_broadcast(pointer, error)
         }
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
@@ -932,21 +940,21 @@ final class Wallet {
 
     func enableEncryption() throws {
         var errorCode: Int32 = -1
-        withUnsafeMutablePointer(to: &errorCode) { wallet_apply_encryption(ptr, Self.passphrase(), $0) }
+        withUnsafeMutablePointer(to: &errorCode) { wallet_apply_encryption(pointer, Self.passphrase(), $0) }
         guard errorCode > 0 else { return }
         throw WalletErrors.generic(errorCode)
     }
 
     func disableEncryption() throws {
         var errorCode: Int32 = -1
-        withUnsafeMutablePointer(to: &errorCode) { wallet_remove_encryption(ptr, $0) }
+        withUnsafeMutablePointer(to: &errorCode) { wallet_remove_encryption(pointer, $0) }
         guard errorCode > 0 else { return }
         throw WalletErrors.generic(errorCode)
     }
 
     func startRecovery() throws -> Bool {
 
-        guard let baseNode = GroupUserDefaults.selectedBaseNode else { return false }
+        let baseNode = NetworkManager.shared.selectedNetwork.selectedBaseNode
 
         let callback: @convention(c) (UInt8, UInt64, UInt64) -> Void = {
             let state = RestoreWalletStatus(status: $0, firstValue: $1, secondValue: $2)
@@ -957,7 +965,7 @@ final class Wallet {
 
         let result = withUnsafeMutablePointer(to: &errorCode) {
             wallet_start_recovery(
-                ptr,
+                pointer,
                 baseNode.publicKey.pointer,
                 callback,
                 $0
@@ -984,7 +992,7 @@ final class Wallet {
 
     deinit {
         TariLogger.warn("Wallet destroy")
-        wallet_destroy(ptr)
+        wallet_destroy(pointer)
     }
 
 }

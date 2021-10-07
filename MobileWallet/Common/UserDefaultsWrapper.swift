@@ -41,16 +41,9 @@
 import Foundation
 
 extension UserDefaults {
-    enum Key: String {
-        case walletHasBeenIntroduced
-        case authStepPassed
-
-        case iCloudBackupsIsOn
+    enum Key: String, CaseIterable {
         case isLastBackupFailed
-
         case backupOperationAborted
-
-        case hasVerifiedSeedPhrase
 
         func set<T>(_ value: T) {
             UserDefaults.standard.set(value, forKey: rawValue)
@@ -64,5 +57,9 @@ extension UserDefaults {
         func boolValue() -> Bool {
             UserDefaults.standard.bool(forKey: rawValue)
         }
+    }
+
+    func removeAll() {
+        UserDefaults.Key.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }
     }
 }

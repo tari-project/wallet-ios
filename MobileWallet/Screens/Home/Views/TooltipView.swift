@@ -73,7 +73,11 @@ final class TooltipView: UIView {
 
     var tipXAnchor: NSLayoutXAxisAnchor { tipView.centerXAnchor }
     var tipYAnchor: NSLayoutYAxisAnchor { tipView.topAnchor }
-    var text: CurrentValueSubject<String?, Never> = CurrentValueSubject(nil)
+
+    var text: String? {
+        get { textLabel.text }
+        set { textLabel.text = newValue }
+    }
 
     var contentBackgroundColor: UIColor? = UIColor.init(white: 0.0, alpha: 0.5) {
         didSet { updateContentBackgroundColor() }
@@ -98,7 +102,6 @@ final class TooltipView: UIView {
     private func setup() {
         setupViews()
         setupConstraints()
-        setupAssignments()
         updateContentBackgroundColor()
     }
 
@@ -131,12 +134,6 @@ final class TooltipView: UIView {
         ]
 
         NSLayoutConstraint.activate(constraints)
-    }
-
-    private func setupAssignments() {
-        text
-            .assign(to: \.text, on: textLabel)
-            .store(in: &cancelables)
     }
 
     // MARK: - Updates

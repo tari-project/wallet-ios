@@ -199,6 +199,7 @@ class WalletCreationViewController: UIViewController {
                 Tracker.shared.track("/onboarding/create_emoji_id", "Onboarding - Create Emoji Id")
             }
         case .showEmojiId:
+            TariSettings.shared.walletSettings.configationState = .initialized
             hideSubviews { [weak self] in
                 self?.emojiIdView.shrink(animated: false)
                 self?.prepareSubviews(for: .localAuthentication)
@@ -241,7 +242,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func successAuth() {
-        UserDefaults.Key.authStepPassed.set(true)
+        TariSettings.shared.walletSettings.configationState = .authorized
         hideSubviews { [weak self] in
             self?.prepareSubviews(for: .enableNotifications)
             self?.showEnableNotifications()
@@ -395,7 +396,7 @@ extension WalletCreationViewController {
         secondLabel.text = localized("wallet_creation.create_emoji_state.second_label")
         thirdLabel.text = String(
             format: localized("wallet_creation.create_emoji_state.description.with_param"),
-            TariSettings.shared.network.currencyDisplayTicker
+            NetworkManager.shared.selectedNetwork.tickerSymbol
         )
 
         stackView.setCustomSpacing(16, after: secondLabel)
@@ -415,7 +416,7 @@ extension WalletCreationViewController {
         )
         secondLabel.attributedText = attributedString
 
-        let curency = TariSettings.shared.network.currencyDisplayTicker
+        let curency = NetworkManager.shared.selectedNetwork.tickerSymbol
         thirdLabel.text = localized("wallet_creation.emoji_state.second_label") + " \(curency)!"
         stackView.setCustomSpacing(16, after: secondLabel)
 
@@ -444,7 +445,7 @@ extension WalletCreationViewController {
 
         self.thirdLabel.text = String(
             format: localized("wallet_creation.secure_your_wallet.description.with_param"),
-            TariSettings.shared.network.currencyDisplayTicker
+            NetworkManager.shared.selectedNetwork.tickerSymbol
         )
         stackView.setCustomSpacing(16, after: secondLabel)
         stackViewCenterYConstraint?.constant = -85

@@ -41,7 +41,7 @@
 import UIKit
 import LocalAuthentication
 
-class RestoreWalletViewController: SettingsParentTableViewController {
+final class RestoreWalletViewController: SettingsParentTableViewController {
     private let localAuth = LAContext()
 
     private let pendingView = PendingView(title: localized("restore_pending_view.title"),
@@ -132,17 +132,11 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
 
     private func restoreWallet(password: String?) {
         pendingView.showPendingView { [weak self] in
-            ICloudBackup.shared.restoreWallet(password: password, completion: {
-                [weak self] error in
-                if error != nil {
-                    UserFeedback.shared.error(
-                        title: localized("iCloud_backup.error.title.restore_wallet"),
-                        description: error?.localizedDescription ?? "",
-                        error: nil
-                    ) {
-                        [weak self] in
+            ICloudBackup.shared.restoreWallet(password: password, completion: { [weak self] error in
+                if let error = error {
+                    UserFeedback.shared.error(title: localized("iCloud_backup.error.title.restore_wallet"), description: error.localizedDescription, error: nil) { [weak self] in
                         self?.pendingView.hidePendingView { [weak self] in
-                            switch error! {
+                            switch error {
                             case ICloudBackupError.noICloudBackupExists:
                                 self?.returnToSplashScreen()
                             default:
@@ -152,6 +146,9 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
                     }
                     return
                 }
+
+                TariLib.shared.startWallet(seedWords: nil)
+
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
                     self?.pendingView.hidePendingView { [weak self] in
                         self?.returnToSplashScreen()

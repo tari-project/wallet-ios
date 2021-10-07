@@ -41,6 +41,48 @@
 import Foundation
 
 extension Wallet {
+
+    func completedTransactions() throws -> CompletedTxs {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode) {
+            CompletedTxs(completedTxsPointer: wallet_get_completed_transactions(pointer, $0))
+        }
+
+        guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
+        return result
+    }
+
+    func cancelledTransactions() throws -> CompletedTxs {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode) {
+            CompletedTxs(completedTxsPointer: wallet_get_cancelled_transactions(pointer, $0), isCancelled: true)
+        }
+
+        guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
+        return result
+    }
+
+    func pendingOutboundTransactions() throws -> PendingOutboundTxs {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode) {
+            PendingOutboundTxs(pendingOutboundTxsPointer: wallet_get_pending_outbound_transactions(pointer, $0))
+        }
+
+        guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
+        return result
+    }
+
+    func pendingInboundTransactions() throws -> PendingInboundTxs {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode) {
+            PendingInboundTxs(pendingInboundTxsPointer: wallet_get_pending_inbound_transactions(pointer, $0))
+        }
+
+        guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
+        return result
+    }
+
+    @available(*, deprecated, message: "Please use completedTransactions() instead")
     var completedTxs: (CompletedTxs?, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
@@ -53,17 +95,7 @@ extension Wallet {
         return (result, nil)
     }
 
-    var cancelledTxs: (CompletedTxs?, Error?) {
-        var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            CompletedTxs(completedTxsPointer: wallet_get_cancelled_transactions(pointer, error), isCancelled: true)
-        })
-        guard errorCode == 0 else {
-            return (nil, WalletErrors.generic(errorCode))
-        }
-        return (result, nil)
-    }
-
+    @available(*, deprecated, message: "Please use pendingOutboundTransactions() instead")
     var pendingOutboundTxs: (PendingOutboundTxs?, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
@@ -77,6 +109,7 @@ extension Wallet {
         return (result, nil)
     }
 
+    @available(*, deprecated, message: "Please use pendingInboundTransactions() instead")
     var pendingInboundTxs: (PendingInboundTxs?, Error?) {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
@@ -87,67 +120,6 @@ extension Wallet {
         guard errorCode == 0 else {
             return (nil, WalletErrors.generic(errorCode))
         }
-        return (result, nil)
-    }
-
-    var allTxs: ([TxProtocol], Error?) {
-        let (completedTxs, completedError) = self.completedTxs
-        guard completedError == nil else {
-            return ([], completedError)
-        }
-
-        let (cancelledTxs, cancelledError) = self.cancelledTxs
-        guard cancelledError == nil else {
-            return ([], cancelledError)
-        }
-
-        let (pendingInboundTxs, pendingInboundError) = self.pendingInboundTxs
-        guard pendingInboundError == nil else {
-            return ([], pendingInboundError)
-        }
-
-        let (pendingOutboundTxs, pendingOutboundError) = self.pendingOutboundTxs
-        guard pendingOutboundError == nil else {
-            return ([], pendingOutboundError)
-        }
-
-        var result: [TxProtocol] =
-            (pendingInboundTxs!.list.0.map { $0 as TxProtocol })
-        result.append(contentsOf: pendingOutboundTxs!.list.0.map { $0 as TxProtocol })
-        let minedUnconfirmedTxs = completedTxs!.list.0.filter { (completedTx) -> Bool in
-            let (status, error) = completedTx.status
-            guard error == nil else {
-                fatalError()
-            }
-            return status == .minedUnconfirmed
-        }
-        let nonMinedUnconfirmedCompletedTxs = completedTxs!.list.0.filter { (completedTx) -> Bool in
-            let (status, error) = completedTx.status
-            guard error == nil else {
-                fatalError()
-            }
-            return status != .minedUnconfirmed
-        }
-
-        // Keep pending first but sorted
-        result.append(contentsOf: minedUnconfirmedTxs)
-        result.sort { (tx1, tx2) -> Bool in
-            let d1 = tx1.date.0 ?? Date()
-            let d2 = tx2.date.0 ?? Date()
-            return d1.compare(d2) == .orderedDescending
-        }
-
-        var completedAndCancelled: [TxProtocol] = []
-        completedAndCancelled.append(contentsOf: nonMinedUnconfirmedCompletedTxs)
-        completedAndCancelled.append(contentsOf: cancelledTxs!.list.0.map { $0 as TxProtocol })
-        completedAndCancelled.sort { (tx1, tx2) -> Bool in
-            let d1 = tx1.date.0 ?? Date()
-            let d2 = tx2.date.0 ?? Date()
-            return d1.compare(d2) == .orderedDescending
-        }
-
-        result.append(contentsOf: completedAndCancelled)
-
         return (result, nil)
     }
 }
