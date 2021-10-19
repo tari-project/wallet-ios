@@ -40,6 +40,7 @@
 
 import UIKit
 import LocalAuthentication
+import YatLib
 
 class SettingsViewController: SettingsParentTableViewController {
     private let localAuth = LAContext()
@@ -47,18 +48,21 @@ class SettingsViewController: SettingsParentTableViewController {
     private enum Section: Int, CaseIterable {
         case security
         case more
+        case yat
         case advancedSettings
     }
 
     private enum SettingsHeaderTitle: CaseIterable {
         case securityHeader
         case moreHeader
+        case yatHeader
         case advancedSettingsHeader
 
         var rawValue: String {
             switch self {
             case .securityHeader: return localized("settings.item.header.security")
             case .moreHeader: return localized("settings.item.header.more")
+            case .yatHeader: return localized("settings.item.header.yat")
             case .advancedSettingsHeader: return localized("settings.item.header.advanced_settings")
             }
         }
@@ -74,6 +78,8 @@ class SettingsViewController: SettingsParentTableViewController {
         case privacyPolicy
         case disclaimer
 
+        case connectYats
+
         case torBridgeConfiguration
         case selectNetwork
         case selectBaseNode
@@ -87,6 +93,8 @@ class SettingsViewController: SettingsParentTableViewController {
             case .selectNetwork: return localized("settings.item.select_network")
             case .selectBaseNode: return localized("settings.item.select_base_node")
             case .deleteWallet: return localized("settings.item.delete_wallet")
+
+            case .connectYats: return localized("settings.item.connect_yats")
 
             case .reportBug: return localized("settings.item.report_bug")
             case .visitTari: return localized("settings.item.visit_tari")
@@ -117,6 +125,10 @@ class SettingsViewController: SettingsParentTableViewController {
         SystemMenuTableViewCellItem(title: SettingsItemTitle.userAgreement.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.privacyPolicy.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.disclaimer.rawValue)]
+
+    private let yatSectionItems: [SystemMenuTableViewCellItem] = [
+        SystemMenuTableViewCellItem(title: SettingsItemTitle.connectYats.rawValue)
+    ]
 
     private let links: [SettingsItemTitle: URL?] = [
         .visitTari: URL(string: TariSettings.shared.tariUrl),
@@ -170,6 +182,13 @@ class SettingsViewController: SettingsParentTableViewController {
             UserFeedback.shared.openWebBrowser(url: url!)
         }
     }
+
+    private func onConnectYatAction() {
+        guard let publicKey = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { return }
+        Yat.integration.showOnboarding(onViewController: self, records: [
+            YatRecordInput(tag: .XTRAddress, value: publicKey)
+        ])
+    }
 }
 
 extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
@@ -182,6 +201,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         switch section {
         case .security: return securitySectionItems.count
         case .more: return moreSectionItems.count
+        case .yat: return yatSectionItems.count
         case .advancedSettings: return advancedSettingsSectionItems.count
         }
     }
@@ -191,10 +211,15 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
 
         guard let section = Section(rawValue: indexPath.section) else { return cell }
         switch section {
-        case .security: cell.configure(securitySectionItems[indexPath.row])
+        case .security:
+            cell.configure(securitySectionItems[indexPath.row])
+        case .more:
+            cell.configure(moreSectionItems[indexPath.row])
+        case .yat:
+            cell.configure(yatSectionItems[indexPath.row])
+            break
         case .advancedSettings:
             cell.configure(advancedSettingsSectionItems[indexPath.row])
-        case .more: cell.configure(moreSectionItems[indexPath.row])
         }
 
         cell.preservesSuperviewLayoutMargins = false
@@ -209,7 +234,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         let sec = Section(rawValue: section)
 
         switch sec {
-        case .security, .advancedSettings:
+        case .security, .advancedSettings, .yat:
             header.heightAnchor.constraint(equalToConstant: 70).isActive = true
         case .more:
             let lastSuccessful = iCloudBackup.lastBackup != nil && !iCloudBackup.inProgress && !iCloudBackup.isLastBackupFailed
@@ -264,6 +289,19 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         guard let section = Section(rawValue: indexPath.section) else { return nil }
         switch section {
         case .security: onBackupWalletAction()
+        case .more:
+            if SettingsItemTitle.allCases[indexPath.row + indexPath.section] == .reportBug {
+                onSendFeedback()
+            } else {
+                onLinkAction(indexPath: indexPath)
+            }
+        case .yat:
+            switch indexPath.row {
+            case 0:
+                onConnectYatAction()
+            default:
+                break
+            }
         case .advancedSettings:
             switch indexPath.row {
             case 0:
@@ -277,13 +315,8 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             default:
                 break
             }
-        case .more:
-            if SettingsItemTitle.allCases[indexPath.row + indexPath.section] == .reportBug {
-                onSendFeedback()
-            } else {
-                onLinkAction(indexPath: indexPath)
-            }
         }
+
         return nil
     }
 }

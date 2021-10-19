@@ -94,11 +94,6 @@ class DeeplinkNavigator {
                     let params = try DeepLinkParams(deeplink: deeplink)
                     homeVC.onSend(pubKey: pubKey, deepLinkParams: params)
                 } catch {
-                    UserFeedback.shared.error(
-                        title: localized("deep_link.error.title"),
-                        description: localized("deep_link.error.emoji_from_link"),
-                        error: error
-                    )
                 }
             } else {
                 homeVC.onSend()

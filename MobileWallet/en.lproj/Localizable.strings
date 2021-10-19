@@ -139,6 +139,7 @@
 
 "settings.done" = "Done";
 "settings.item.header.more" = "More";
+"settings.item.header.yat" = "Yat Settings";
 "settings.item.header.advanced_settings" = "Advanced Settings";
 "settings.item.header.security" = "Security";
 
@@ -149,6 +150,8 @@
 "settings.item.select_network" = "Select Network";
 "settings.item.select_base_node" = "Select Base Node";
 "settings.item.delete_wallet" = "Delete Your Wallet";
+
+"settings.item.connect_yats" = "Connect Yats";
 
 "settings.item.contribute_to_tari" = "Contribute to Tari Aurora";
 "settings.item.disclaimer" = "Disclaimer";
