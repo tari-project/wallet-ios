@@ -63,6 +63,11 @@ class PasteEmojisView: UIView {
         scrollView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4).isActive = true
         scrollView.heightAnchor.constraint(equalToConstant: CGFloat(30)).isActive = true
+        
+        layer.shadowOpacity = 0.1
+        layer.shadowOffset = CGSize(width: 0, height: 5)
+        layer.shadowRadius = 10
+        layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
     }
 
     required init?(coder: NSCoder) {
