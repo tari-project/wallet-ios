@@ -39,6 +39,7 @@
 */
 
 import UIKit
+import YatLib
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -71,6 +72,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             BackupScheduler.shared.startObserveEvents()
         }
 
+        if let appReturnLink = TariSettings.shared.yatReturnLink, let organizationName = TariSettings.shared.yatOrganizationName, let organizationKey = TariSettings.shared.yatOrganizationKey {
+            Yat.configuration = YatConfiguration(appReturnLink: appReturnLink, organizationName: organizationName, organizationKey: organizationKey)
+        }
+
         guard let _ = (scene as? UIWindowScene) else { return }
         if let windowScene = scene as? UIWindowScene {
             let window = UIWindow(windowScene: windowScene)
@@ -85,13 +90,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        if let url = URLContexts.first?.url {
-            deepLinker.handleShortcut(
-                type: .send(
-                    deeplink: NSString(string: url.absoluteString) as String
-                )
-            )
-        }
+        guard let url = URLContexts.first?.url else { return }
+        deepLinker.handleShortcut(type: .send(deeplink: url.absoluteString))
+        Yat.integration.handle(deeplink: url)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
