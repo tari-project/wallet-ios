@@ -286,6 +286,7 @@
 "add_recipient.recent_txs" = "Recent Transactions";
 "add_recipient.error.load_contacts.title" = "Failed to load contacts";
 "add_recipient.error.load_contacts.description" = "Could not access wallet";
+"add_recipient.error.load_contacts.invalid_emoji_set" = "Your recipient needs to upgrade to the latest version of Tari Aurora and copy their updated Emoji ID to transact with you";
 "add_recipient.inputbox.placeholder" = "Enter Emoji ID or Contact Name";
 "add_recipient.inputbox.warning" = "Invalid Emoji ID";
 "add_recipient.warning.can_not_send_yourself.with_param" = "Sorry, you cannot send %@ to yourself";

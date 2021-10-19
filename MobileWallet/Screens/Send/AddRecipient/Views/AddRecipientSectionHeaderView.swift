@@ -1,10 +1,10 @@
-//  ErrorView.swift
-
+//  AddRecipientSectionHeaderView.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/04/06
+	Created by Adrian Truszczynski on 18/10/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -39,41 +39,51 @@
 */
 
 import UIKit
+import TariCommon
 
-class ErrorView: UIView {
-    private let padding: CGFloat = 14
-    private let label = UILabel()
-    var message = "" {
-        didSet {
-            label.text = message
-            if message.isEmpty {
-                isHidden = true
-            } else {
-                isHidden = false
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-                TariLogger.error(message)
-            }
-        }
+final class AddRecipientSectionHeaderView: UITableViewHeaderFooterView {
+    
+    // MARK: - Subviews
+    
+    @View private var label: UILabel = {
+        let view = UILabel()
+        view.font = Theme.shared.fonts.txDateValueLabel
+        view.textColor = Theme.shared.colors.txSmallSubheadingLabel
+        return view
+    }()
+    
+    // MARK: - Properties
+    
+    var text: String? {
+        get { label.text }
+        set { label.text = newValue }
     }
-
-    override func draw(_ rect: CGRect) {
-        isHidden = true
-        backgroundColor = .clear
-
-        layer.cornerRadius = 4
-        layer.masksToBounds = true
-        layer.borderWidth = 1
-        layer.borderColor = Theme.shared.colors.warningBoxBorder!.cgColor
-
-        label.textAlignment = .center
-        label.textColor = Theme.shared.colors.warningBoxBorder
-        label.font = Theme.shared.fonts.warningBoxTitleLabel
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
+    
+    // MARK: - Initializers
+    
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+    
+    private func setupConstraints() {
+        
         addSubview(label)
-        label.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
-        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
-        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
+        
+        let constratins = [
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor),
+            label.heightAnchor.constraint(equalToConstant: label.font.pointSize * 1.3),
+            heightAnchor.constraint(equalToConstant: 35.0)
+        ]
+        
+        NSLayoutConstraint.activate(constratins)
     }
 }

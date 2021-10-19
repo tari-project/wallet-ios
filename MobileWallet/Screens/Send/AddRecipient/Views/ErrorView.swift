@@ -1,10 +1,10 @@
-//  Identifiable.swift
+//  ErrorView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 20/07/2021
+	Created by Jason van den Berg on 2020/04/06
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 10.15
 
 	Copyright 2019 The Tari Project
 
@@ -40,33 +40,41 @@
 
 import UIKit
 
-protocol Identifiable {}
-
-extension Identifiable {
-    static var identifier: String { String(describing: Self.self) }
-}
-
-extension UITableViewCell: Identifiable {}
-extension UICollectionViewCell: Identifiable {}
-
-extension UITableView {
-
-    func register<T: UITableViewCell>(type: T.Type) {
-        register(type, forCellReuseIdentifier: type.identifier)
+final class ErrorView: UIView {
+    private let padding: CGFloat = 14
+    private let label = UILabel()
+    var message = "" {
+        didSet {
+            label.text = message
+            if message.isEmpty {
+                alpha = 0.0
+            } else {
+                alpha = 1.0
+                UINotificationFeedbackGenerator().notificationOccurred(.error)
+                TariLogger.error(message)
+            }
+            
+        }
     }
 
-    func dequeueReusableCell<T: UITableViewCell>(type: T.Type, indexPath: IndexPath) -> T {
-        dequeueReusableCell(withIdentifier: type.identifier, for: indexPath) as? T ?? T(style: .default, reuseIdentifier: type.identifier)
-    }
-}
+    override func draw(_ rect: CGRect) {
+        alpha = 0.0
+        backgroundColor = .clear
 
-extension UICollectionView {
+        layer.cornerRadius = 4
+        layer.masksToBounds = true
+        layer.borderWidth = 1
+        layer.borderColor = Theme.shared.colors.warningBoxBorder!.cgColor
 
-    func register<T: UICollectionViewCell>(type: T.Type) {
-        register(type, forCellWithReuseIdentifier: type.identifier)
-    }
-
-    func dequeueReusableCell<T: UICollectionViewCell>(type: T.Type, indexPath: IndexPath) -> T {
-        dequeueReusableCell(withReuseIdentifier: type.identifier, for: indexPath) as? T ?? T(frame: .zero)
+        label.textAlignment = .center
+        label.textColor = Theme.shared.colors.warningBoxBorder
+        label.font = Theme.shared.fonts.warningBoxTitleLabel
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 0
+        addSubview(label)
+        label.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
+        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
+        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
+        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
     }
 }
