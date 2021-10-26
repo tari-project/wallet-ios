@@ -1,10 +1,10 @@
-//  QRButton.swift
-
+//  YatTransactionConstructor.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/12/03
+	Created by Adrian Truszczynski on 25/10/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,51 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-
-class QRButton: UIButton {
-    private let RADIUS_POINTS: CGFloat = 12.0
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonSetup()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonSetup()
-    }
-
-    private func commonSetup() {
-        bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: bounds.height)
-        layer.cornerRadius = RADIUS_POINTS
-        backgroundColor = .clear
-        setTitle("", for: .normal)
-        tintColor = Theme.shared.colors.actionButtonBackgroundSimple
-        setImage(Theme.shared.images.qrButton, for: .normal)
-    }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        pulseIn()
-    }
-
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        pulseOut()
-    }
-
-    private func pulseIn() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-            self.alpha = 0.6
-            self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-        })
-    }
-
-    private func pulseOut() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-            self.alpha = 1
-            self.transform = CGAffineTransform(scaleX: 1, y: 1)
-        })
+enum YatTransactionConstructor {
+    
+    static func buildScene(inputData: YatTransactionModel.InputData) -> YatTransactionViewController {
+        let model = YatTransactionModel(inputData: inputData)
+        return YatTransactionViewController(model: model)
     }
 }

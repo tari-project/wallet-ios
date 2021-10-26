@@ -42,6 +42,11 @@ import Combine
 import YatLib
 import UIKit
 
+struct PaymentInfo {
+    let publicKey: PublicKey
+    let yatID: String?
+}
+
 struct ContactsSectionItem {
     let title: String
     let items: [ContactElementItem]
@@ -60,16 +65,18 @@ final class AddRecipientModel {
 
     // MARK: - Constants
 
-    private let maxYatIDLenght: Int = 6
+    private let maxYatIDLenght: Int = 5
 
     // MARK: - View Model
 
     @Published private(set) var canMoveToNextStep: Bool = false
     @Published private(set) var errorMessage: String?
     @Published private(set) var errorDialog: SimpleErrorModel?
-    @Published private(set) var verifiedPublicKey: PublicKey?
+    @Published private(set) var verifiedPaymentInfo: PaymentInfo?
     @Published private(set) var contactsSectionItems: [ContactsSectionItem] = []
     @Published private(set) var validatedPasteboardText: String?
+    @Published private(set) var yatID: String?
+    @Published private(set) var walletAddressPreview: String?
     let searchText = CurrentValueSubject<String, Never>("")
     
     // MARK: - Properties
@@ -112,21 +119,35 @@ final class AddRecipientModel {
         }
         
         errorMessage = nil
-        verifiedPublicKey = publicKey
+        verifiedPaymentInfo = PaymentInfo(publicKey: publicKey, yatID: yatID)
     }
     
     func onSelectItem(atIndexPath indexPath: IndexPath) {
+        
+        let publicKey: PublicKey?
         
         let model = contactsSectionItems[indexPath.section].items[indexPath.row]
         
         switch indexPath.section {
         case 0:
-            verifiedPublicKey = recentPublicKeys[model.id]
+            publicKey = recentPublicKeys[model.id]
         case 1:
-            verifiedPublicKey = contacts[model.id]?.publicKey.0
+            publicKey = contacts[model.id]?.publicKey.0
         default:
-            break
+            return
         }
+        
+        guard let publicKey = publicKey else {
+            verifiedPaymentInfo = nil
+            return
+        }
+        
+        verifiedPaymentInfo = PaymentInfo(publicKey: publicKey, yatID: yatID)
+    }
+    
+    func toogleYatPreview() {
+        let isAddressVisible = walletAddressPreview != nil
+        walletAddressPreview = isAddressVisible ? nil : publicKey?.hex.0
     }
 
     // MARK: - Actions - Contacts
@@ -229,20 +250,22 @@ final class AddRecipientModel {
     // MARK: - Actions - Yat
 
     private func searchAddress(forYatID yatID: String) {
-
+        
+        self.yatID = nil
         guard yatID.containsOnlyEmoji, (1...maxYatIDLenght).contains(yatID.count) else { return }
 
         Yat.api.fetchRecordsPublisher(forEmojiID: yatID, symbol: "XTR")
             .sink(
                 receiveCompletion: { _ in },
-                receiveValue: { [weak self] in self?.handle(apiResponse: $0) }
+                receiveValue: { [weak self] in self?.handle(apiResponse: $0, yatID: yatID) }
             )
             .store(in: &cancelables)
     }
     
-    private func handle(apiResponse: LookupEmojiIDWithSymbolResponse) {
+    private func handle(apiResponse: LookupEmojiIDWithSymbolResponse, yatID: String) {
         guard let walletAddress = apiResponse.result?.first?.data else { return }
         generatePublicKey(text: walletAddress)
+        self.yatID = yatID
     }
     
     // MARK: - Actions - Public Key

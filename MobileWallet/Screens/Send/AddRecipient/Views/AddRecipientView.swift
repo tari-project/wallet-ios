@@ -62,23 +62,7 @@ final class AddRecipientView: UIView {
         return view
     }()
     
-    @View var searchField: UITextField = {
-        let view = UITextField()
-        view.placeholder = localized("add_recipient.inputbox.placeholder")
-        view.backgroundColor = Theme.shared.colors.appBackground
-        view.font = Theme.shared.fonts.searchContactsInputBoxText
-        view.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 11.0, height: 0.0))
-        view.leftViewMode = .always
-        view.rightViewMode = .always
-        view.layer.cornerRadius = 6.0
-        view.layer.shadowOpacity = 0.15
-        view.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
-        view.layer.shadowRadius = 6.0
-        view.layer.shadowColor = Theme.shared.colors.defaultShadow?.cgColor
-        return view
-    }()
-    
-    @View var scanButton = QRButton()
+    @View var searchView = AddRecipientSearchView()
     
     @View var contactsTableView: UITableView = {
         let view = UITableView(frame: .zero, style: .grouped)
@@ -119,10 +103,14 @@ final class AddRecipientView: UIView {
     }
     
     var isSearchTextDimmed: Bool = false {
-        didSet { searchField.textColor = isSearchTextDimmed ? Theme.shared.colors.emojisSeparatorExpanded : .black }
+        didSet { searchView.textField.textColor = isSearchTextDimmed ? Theme.shared.colors.emojisSeparatorExpanded : .black }
     }
     
     var isSearchFieldContainsValidAddress: Bool = false {
+        didSet { updateSearchFieldState() }
+    }
+    
+    var isPreviewButtonVisible: Bool = false {
         didSet { updateSearchFieldState() }
     }
     
@@ -142,6 +130,7 @@ final class AddRecipientView: UIView {
     var textSubject: CurrentValueSubject<String, Never> = CurrentValueSubject("")
     
     var onScanButtonTap: (() -> Void)?
+    var onPreviewButtonTap: (() -> Void)?
     var onSearchFieldBeginEditing: (() -> Void)?
     var onReturnButtonTap: (() -> Void)?
     var onContinueButtonTap: (() -> Void)?
@@ -180,7 +169,7 @@ final class AddRecipientView: UIView {
     
     private func setupConstraints() {
         
-        [searchContentView, navigationBar, contactsTableView, errorMessageView, continueButton, dimView, searchField, pasteEmojisView].forEach(addSubview)
+        [searchContentView, navigationBar, contactsTableView, errorMessageView, continueButton, dimView, searchView, pasteEmojisView].forEach(addSubview)
         
         let navigationBarHeightConstraint = navigationBar.heightAnchor.constraint(equalToConstant: 44.0)
         let continueButtonTopConstraint = continueButton.topAnchor.constraint(equalTo: bottomAnchor)
@@ -206,10 +195,9 @@ final class AddRecipientView: UIView {
             searchContentView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             searchContentView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
             searchContentView.heightAnchor.constraint(equalToConstant: 90.0),
-            searchField.centerYAnchor.constraint(equalTo: searchContentView.centerYAnchor),
-            searchField.leadingAnchor.constraint(equalTo: searchContentView.leadingAnchor, constant: 22.0),
-            searchField.trailingAnchor.constraint(equalTo: searchContentView.trailingAnchor, constant: -22.0),
-            searchField.heightAnchor.constraint(equalToConstant: 46.0),
+            searchView.centerYAnchor.constraint(equalTo: searchContentView.centerYAnchor),
+            searchView.leadingAnchor.constraint(equalTo: searchContentView.leadingAnchor, constant: 22.0),
+            searchView.trailingAnchor.constraint(equalTo: searchContentView.trailingAnchor, constant: -22.0),
             normalTableViewTopConstraint,
             contactsTableView.bottomAnchor.constraint(equalTo: bottomAnchor),
             contactsTableView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -236,8 +224,9 @@ final class AddRecipientView: UIView {
     
     private func setupFeedbacks() {
         continueButton.addTarget(self, action: #selector(onContinueButtonTapAction), for: .touchUpInside)
-        scanButton.addTarget(self, action: #selector(onScanButtonTapAction), for: .touchUpInside)
-        searchField.delegate = self
+        searchView.qrButton.addTarget(self, action: #selector(onScanButtonTapAction), for: .touchUpInside)
+        searchView.yatPreviewButton.addTarget(self, action: #selector(onYatPreviewButtonTapAction), for: .touchUpInside)
+        searchView.textField.delegate = self
     }
     
     private func setupTableViewDataSource() {
@@ -308,15 +297,20 @@ final class AddRecipientView: UIView {
     }
     
     private func updateSearchFieldState() {
-        searchField.textAlignment = isSearchFieldContainsValidAddress ? .center : .left
-        searchField.returnKeyType = isSearchFieldContainsValidAddress ? .continue : .default
-        searchField.rightView = isSearchFieldContainsValidAddress ? nil : scanButton
+        searchView.textField.textAlignment = isSearchFieldContainsValidAddress ? .center : .left
+        searchView.textField.returnKeyType = isSearchFieldContainsValidAddress ? .continue : .default
+        searchView.isQrButtonVisible = !isSearchFieldContainsValidAddress
+        searchView.isPreviewButtonVisible = isPreviewButtonVisible
     }
     
     // MARK: - Action Targets
     
     @objc private func onScanButtonTapAction() {
         onScanButtonTap?()
+    }
+    
+    @objc private func onYatPreviewButtonTapAction() {
+        onPreviewButtonTap?()
     }
     
     @objc private func onContinueButtonTapAction() {
