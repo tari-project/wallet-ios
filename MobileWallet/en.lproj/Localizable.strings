@@ -516,3 +516,10 @@
 "restore_from_seed_words.progress_overlay.error.title" = "Recovery Failed";
 "restore_from_seed_words.progress_overlay.error.description.connection_failed" = "Unable to connect with base node. Please try again later.";
 "restore_from_seed_words.progress_overlay.error.description.unknown_error" = "Unable to recover your wallet due to the internal error.";
+
+/* Yat Transaction Overlay */
+
+"yat_transaction.label.transaction" = "You are %@ to %@";
+"yat_transaction.label.transaction.sending" = "sending %@";
+"yat_transaction.label.success" = "SENT";
+"yat_transaction.label.failed" = "FAILED";

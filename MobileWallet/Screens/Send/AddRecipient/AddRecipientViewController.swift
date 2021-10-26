@@ -68,12 +68,15 @@ final class AddRecipientViewController: UIViewController {
         Tracker.shared.track("/home/send_tari/add_recipient", "Send Tari - Add Recipient")
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        model.searchText.send("")
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        guard model.verifiedPublicKey == nil else { return }
-        model.searchText.send("")
-        mainView.searchField.becomeFirstResponder()
+        guard !initialized else { return }
+        mainView.searchView.textField.becomeFirstResponder()
         initialized = true
     }
     
@@ -86,7 +89,7 @@ final class AddRecipientViewController: UIViewController {
     
     private func setupFeedbacks() {
         
-        let isEditingPublisher = mainView.searchField.isEditingPublisher()
+        let isEditingPublisher = mainView.searchView.textField.isEditingPublisher()
         let canMoveToNextStepPublisher = model.$canMoveToNextStep
         
         isEditingPublisher.combineLatest(canMoveToNextStepPublisher)
@@ -95,7 +98,7 @@ final class AddRecipientViewController: UIViewController {
             .assign(to: \.isSearchFieldContainsValidAddress, on: mainView)
             .store(in: &cancellables)
         
-        mainView.searchField
+        mainView.searchView.textField
             .textPublisher()
             .map { $0.filter { !"| ".contains($0) }}
             .sink { [weak self] in self?.model.searchText.send($0) }
@@ -103,7 +106,7 @@ final class AddRecipientViewController: UIViewController {
         
         model.searchText
             .map { $0.add(separator: " | ", interval: 3) }
-            .sink { [weak self] in self?.mainView.searchField.text = $0 }
+            .sink { [weak self] in self?.mainView.searchView.textField.text = $0 }
             .store(in: &cancellables)
         
         model.searchText
@@ -111,9 +114,22 @@ final class AddRecipientViewController: UIViewController {
             .assign(to: \.isSearchTextDimmed, on: mainView)
             .store(in: &cancellables)
         
+        model.$yatID
+            .receive(on: DispatchQueue.main)
+            .map { $0 != nil }
+            .assign(to: \.isPreviewButtonVisible, on: mainView)
+            .store(in: &cancellables)
+        
+        model.$walletAddressPreview
+            .print()
+            .receive(on: DispatchQueue.main)
+            .assign(to: \.previewText, on: mainView.searchView)
+            .store(in: &cancellables)
+        
         mainView.contactsTableView.delegate = self
         
         mainView.onScanButtonTap = { [weak self] in self?.openScanner() }
+        mainView.onPreviewButtonTap = { [weak self] in self?.model.toogleYatPreview() }
         mainView.onSearchFieldBeginEditing = { [weak self] in self?.model.checkPasteboard() }
         mainView.onReturnButtonTap = { [weak self] in self?.model.confirmSelection() }
         mainView.onContinueButtonTap = { [weak self] in self?.model.confirmSelection() }
@@ -129,9 +145,9 @@ final class AddRecipientViewController: UIViewController {
             .assign(to: \.errorMessage, on: mainView)
             .store(in: &cancellables)
         
-        model.$verifiedPublicKey
+        model.$verifiedPaymentInfo
             .compactMap { $0 }
-            .sink { [weak self] in self?.onContinue($0) }
+            .sink { [weak self] in self?.onContinue(paymentInfo: $0) }
             .store(in: &cancellables)
         
         model.$contactsSectionItems
@@ -195,11 +211,11 @@ final class AddRecipientViewController: UIViewController {
         mainView.tableDataSource?.apply(snapshot, animatingDifferences: initialized)
     }
     
-    private func onContinue(_ toPubKey: PublicKey) {
+    private func onContinue(paymentInfo: PaymentInfo) {
         let amountVC = AddAmountViewController()
-        amountVC.publicKey = toPubKey
+        amountVC.paymentInfo = paymentInfo
         amountVC.deepLinkParams = deepLinkParams
-        self.navigationController?.pushViewController(amountVC, animated: true)
+        navigationController?.pushViewController(amountVC, animated: true)
     }
 }
 
