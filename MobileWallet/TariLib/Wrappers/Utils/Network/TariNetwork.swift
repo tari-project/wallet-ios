@@ -42,6 +42,7 @@ struct TariNetwork {
     let name: String
     let tickerSymbol: String
     let baseNodes: [BaseNode]
+    let faucetURL: URL?
 }
 
 extension TariNetwork {
@@ -103,7 +104,8 @@ extension TariNetwork {
                 "seoul": "981cc8cd1e4fe2f99ea1bd3e0ab1e7821ca0bfab336a4967cfec053fee86254c::/onion3/7hxpnxrxycdfevirddau7ybofwedaamjrg2ijm57k2kevh5q46ixamid:18141",
                 "stockholm": "f2ce179fb733725961a5f7e1e45dacdd443dd43ba6237438d6abe344fb717058::/onion3/nvgdmjf4wucgatz7vemzvi2u4sw5o4gyzwuikagpepoj4w7mkii47zid:18141",
                 "sydney": "909c0160f4d8e815aba5c2bbccfcceb448877e7b38759fb160f3e9494484d515::/onion3/qw5uxv533sqdn2qoncfyqo35dgecy4rt4x27rexi2her6q6pcpxbm4qd:18141"
-            ]
+            ],
+            faucetURL: URL(string: "https://faucet.tari.com")
         )
     }
 
@@ -116,13 +118,14 @@ extension TariNetwork {
                 "oregon": "00b35047a341401bcd336b2a3d564280a72f6dc72ec4c739d30c502acce4e803::/onion3/ojhxd7z6ga7qrvjlr3px66u7eiwasmffnuklscbh5o7g6wrbysj45vid:18141",
                 "stockholm": "40a9d8573745072534bce7d0ecafe882b1c79570375a69841c08a98dee9ecb5f::/onion3/io37fylc2pupg4cte4siqlsmuszkeythgjsxs2i3prm6jyz2dtophaad:18141",
                 "sydney": "126c7ee64f71aca36398b977dd31fbbe9f9dad615df96473fb655bef5709c540::/onion3/6ilmgndocop7ybgmcvivbdsetzr5ggj4hhsivievoa2dx2b43wqlrlid:18141"
-            ]
+            ],
+            faucetURL: nil
         )
     }
 
-    private static func makeNetwork(name: String, isMainNet: Bool, rawBaseNodes: [String: String]) -> Self {
+    private static func makeNetwork(name: String, isMainNet: Bool, rawBaseNodes: [String: String], faucetURL: URL?) -> Self {
         let baseNodes = rawBaseNodes.compactMap { try? BaseNode(name: $0, peer: $1) }
         let currencySymbol = isMainNet ? "XTR" : "tXTR"
-        return Self(name: name, tickerSymbol: currencySymbol, baseNodes: baseNodes)
+        return Self(name: name, tickerSymbol: currencySymbol, baseNodes: baseNodes, faucetURL: faucetURL)
     }
 }

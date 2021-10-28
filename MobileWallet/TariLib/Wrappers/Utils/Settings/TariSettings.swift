@@ -57,8 +57,6 @@ struct TariSettings {
     let safMessageDurationSec: UInt64 = 10800
     let deeplinkURI = "tari"
 
-    let faucetServer = "https://faucet.tari.com"
-
     let iCloudContainerIdentifier = "iCloud.com.tari.wallet"
 
     let tariUrl = "https://www.tari.com/"
