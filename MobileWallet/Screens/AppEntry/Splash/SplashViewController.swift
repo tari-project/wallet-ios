@@ -53,10 +53,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     // MARK: - Variables and constants
-    var player: AVQueuePlayer!
-    var playerLayer: AVPlayerLayer!
-    var playerItem: AVPlayerItem!
-    var playerLooper: AVPlayerLooper!
     private let localAuthenticationContext = LAContext()
     var ticketTopLayoutConstraint: NSLayoutConstraint?
     var ticketBottom: NSLayoutConstraint?
@@ -64,7 +60,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
     // MARK: - Outlets
     let generalContainer = UIView()
-    let videoView = UIView()
+    let videoView = VideoView()
     let versionLabel = UILabel()
     let animationContainer = AnimationView()
     let elementsContainer = UIView()
@@ -209,7 +205,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             default:
                 description = localized("splash.wallet_error.description.generic")
             }
-
+            
             UserFeedback.shared.callToAction(
                 title: localized("splash.wallet_error.title"),
                 description: description,
@@ -217,6 +213,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 cancelTitle: localized("common.cancel"),
                 onAction: { [weak self] in
                     TariLib.shared.deleteWallet()
+                    self?.updateCreateWalletButtonState()
                     self?.startOnboardingFlow(animationType: .scaleDownLogo)
                 })
         }
@@ -269,6 +266,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                     cancel?.cancel()
                     onComplete()
                 case let .startFailed(error):
+                    cancel?.cancel()
                     onError?(error)
                 case .notReady, .starting:
                     break
@@ -305,9 +303,10 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 )
                 if let _ = self.ticketTopLayoutConstraint {
                     self.topAnimationAndRemoveVideoAnimation { [weak self] () in
-                        guard let self = self else { return }
-                        self.navigateToHome()
+                        self?.navigateToHome()
                     }
+                } else {
+                    self.navigateToHome()
                 }
             } onError: { [weak self] _ in
                 guard let self = self else { return }
@@ -423,7 +422,10 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         }
 
         selectNetworkButton.setTitle(localized("splash.button.select_network", arguments: networkName.capitalized), for: .normal)
-
+        updateCreateWalletButtonState()
+    }
+    
+    private func updateCreateWalletButtonState() {
         let createWalletButtonTitle = TariLib.shared.isWalletExist ? localized("splash.button.open_wallet") : localized("splash.button.create_wallet")
         createWalletButton.setTitle(createWalletButtonTitle, for: .normal)
     }

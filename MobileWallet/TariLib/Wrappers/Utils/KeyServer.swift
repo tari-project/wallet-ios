@@ -66,7 +66,7 @@ class KeyServer {
         NetworkManager.shared.selectedNetwork.tickerSymbol
     )
     private let signature: Signature
-    private let url: URL
+    private let url: URL?
     static var isRequestInProgress = false
     private static let secondUtxoStorageKey = "tari-available-utxo"
 
@@ -88,13 +88,15 @@ class KeyServer {
         let message = "\(MESSAGE_PREFIX) \(publicKeyHex)"
 
         self.signature = try wallet.signMessage(message)
-        self.url = URL(string: "\(TariSettings.shared.faucetServer)/free_tari/allocate_max/\(publicKeyHex)")!
+        
+        self.url = NetworkManager.shared.selectedNetwork.faucetURL?
+            .appendingPathComponent("free_tari/allocate_max")
+            .appendingPathComponent(publicKeyHex)
     }
 
     func requestDrop(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return
-        }
+        
+        guard let wallet = TariLib.shared.tariWallet, let url = self.url else { return }
 
         guard KeyServer.isRequestInProgress == false else {
             TariLogger.warn("Key server request already in progress")

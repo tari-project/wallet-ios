@@ -184,10 +184,19 @@ class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onConnectYatAction() {
-        guard let publicKey = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else { return }
+        
+        guard let publicKey = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else {
+            showNoConnectionError()
+            return
+        }
+        
         Yat.integration.showOnboarding(onViewController: self, records: [
             YatRecordInput(tag: .XTRAddress, value: publicKey)
         ])
+    }
+    
+    private func showNoConnectionError() {
+        UserFeedback.shared.error(title: localized("common.error"), description: localized("settings.error.connect_yats_no_connection"))
     }
 }
 

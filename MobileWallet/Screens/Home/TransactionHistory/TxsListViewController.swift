@@ -238,13 +238,31 @@ final class TxsListViewController: UIViewController {
 
 // MARK: AnimatedRefreshingView behavior
 extension TxsListViewController {
+    
+    func switchBaseNode(syncAfterSetting: Bool) throws {
+        
+        let currentBaseNode = NetworkManager.shared.selectedNetwork.selectedBaseNode
+        var newBaseNode: BaseNode!
+
+        repeat {
+            newBaseNode = try NetworkManager.shared.selectedNetwork.randomNode()
+        } while newBaseNode == nil || currentBaseNode == newBaseNode;
+
+        try TariLib.shared.update(baseNode: newBaseNode, syncAfterSetting: syncAfterSetting)
+    }
 
     private func onRefreshTimeout() {
         TariLogger.info("Refresh has timed out.")
         stopListeningToBaseNodeSync()
         refreshTimeoutTimer?.invalidate()
         refreshTimeoutTimer = nil
-        endRefreshingWithSuccess()
+        
+        do {
+            try switchBaseNode(syncAfterSetting: false)
+            beginRefreshing()
+        } catch {
+            endRefreshingWithSuccess()
+        }
     }
 
     private func beginRefreshing() {
@@ -491,7 +509,7 @@ extension TxsListViewController {
 
                     do {
                         TariLogger.warn("Base node sync failed or base node not in sync. Setting another random peer.")
-                        try TariLib.shared.update(baseNode: NetworkManager.shared.selectedNetwork.randomNode(), syncAfterSetting: true)
+                        try self.switchBaseNode(syncAfterSetting: true)
                     } catch {
                         TariLogger.error("Failed to add random base node peer")
                     }

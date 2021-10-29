@@ -61,6 +61,11 @@ struct ContactElementItem: Identifiable, Hashable {
     let isEmojiID: Bool
 }
 
+private struct PublicKeyMetadata {
+    let uuid: UUID
+    let publicKey: PublicKey
+}
+
 final class AddRecipientModel {
 
     // MARK: - Constants
@@ -83,7 +88,7 @@ final class AddRecipientModel {
     
     private var publicKey: PublicKey?
     private var contacts: [UUID: Contact] = [:]
-    private var recentPublicKeys: [UUID: PublicKey] = [:]
+    private var recentPublicKeys: [PublicKeyMetadata] = []
     private var allRecentContactsItems: [ContactElementItem] = []
     private var allContactsItems: [ContactElementItem] = []
     private var cancelables = Set<AnyCancellable>()
@@ -130,7 +135,7 @@ final class AddRecipientModel {
         
         switch indexPath.section {
         case 0:
-            publicKey = recentPublicKeys[model.id]
+            publicKey = recentPublicKeys.first(where: { $0.uuid == model.id } )?.publicKey
         case 1:
             publicKey = contacts[model.id]?.publicKey.0
         default:
@@ -198,11 +203,11 @@ final class AddRecipientModel {
         let sortedContacts = contactList.sorted { $0.alias.0.lowercased() < $1.alias.0.lowercased() }
         let publicKeys = try wallet.recentPublicKeys(limit: 3)
         
-        recentPublicKeys = publicKeys.reduce(into: [UUID: PublicKey]()) { $0[UUID()] = $1 }
+        recentPublicKeys = publicKeys.map { PublicKeyMetadata(uuid: UUID(), publicKey: $0) }
         contacts = sortedContacts.reduce(into: [UUID: Contact]()) { $0[UUID()] = $1 }
         
-        allRecentContactsItems = recentPublicKeys.map { (try? TariLib.shared.tariWallet?.contacts.0?.find(publicKey: $1).viewItem(uuid: $0)) ?? $1.viewItem(uuid: $0) }
-        allContactsItems = contacts.map { $1.viewItem(uuid: $0) }
+        allRecentContactsItems = recentPublicKeys.map { (try? TariLib.shared.tariWallet?.contacts.0?.find(publicKey: $0.publicKey).viewItem(uuid: $0.uuid)) ?? $0.publicKey.viewItem(uuid: $0.uuid) }
+        allContactsItems = contacts.map { $1.viewItem(uuid: $0) }.sorted { $0.title < $1.title }
         
         filterContacts(searchText: "")
     }
@@ -225,9 +230,9 @@ final class AddRecipientModel {
             let contactList = TariLib.shared.tariWallet?.contacts.0?.list.0
             recentContactsItems = recentPublicKeys
                 .filter {
-                    dataPair in dataPair.value.emojis.0.localizedCaseInsensitiveContains(searchText) ||
-                    ((contactList?.filter { $0.publicKey.0 == dataPair.value }.first?.alias.0.localizedCaseInsensitiveContains(searchText)) == true) }
-                .map(\.key)
+                    dataPair in dataPair.publicKey.emojis.0.localizedCaseInsensitiveContains(searchText) ||
+                    ((contactList?.filter { $0.publicKey.0 == dataPair.publicKey }.first?.alias.0.localizedCaseInsensitiveContains(searchText)) == true) }
+                .map(\.uuid)
                 .compactMap { uuid in allRecentContactsItems.first { $0.id == uuid } }
             
             contactsItems = contacts
