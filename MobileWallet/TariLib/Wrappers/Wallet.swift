@@ -755,36 +755,30 @@ final class Wallet {
     }
 
     func recentPublicKeys(limit: Int) throws -> [PublicKey] {
-        let completedPublicKeys = try txsPublicKeys(completedTxs, limit: limit)
-        let pendingInboundPublicKeys = try txsPublicKeys(pendingInboundTxs, limit: limit)
-        let pendingOutboundPublicKeys = try txsPublicKeys(pendingOutboundTxs, limit: limit)
-
-        return completedPublicKeys.union(pendingInboundPublicKeys).union(pendingOutboundPublicKeys).suffix(limit)
-    }
-
-    private func txsPublicKeys<Txs: TxsProtocol>(_ transactions: (txs: Txs?, txsError: Error?), limit: Int) throws -> Set<PublicKey> {
-        guard let txs = transactions.txs else { throw transactions.txsError! }
-
-        let (txsCount, txsCountError) = txs.count
-        guard txsCountError == nil else { throw txsCountError! }
-
-        var publicKeys: Set<PublicKey> = []
-
-        if txsCount > 0 {
-            for n in 0...txsCount - 1 {
-                if publicKeys.count >= limit {
-                    return publicKeys
-                }
-                let tx = try txs.at(position: UInt32(n))
-                let (publicKey, pubKeyError) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
-                guard let pubKey = publicKey, pubKeyError == nil else {
-                    throw pubKeyError!
-                }
-                publicKeys.insert(pubKey)
+        
+        let completedPublicKeys = txsPublicKeyTimestampPair(transactions: try completedTransactions())
+        let pendingInboundPublicKeys = txsPublicKeyTimestampPair(transactions: try pendingInboundTransactions())
+        let pendingOutboundPublicKey = txsPublicKeyTimestampPair(transactions: try pendingOutboundTransactions())
+        
+        let allPairs = completedPublicKeys + pendingInboundPublicKeys + pendingOutboundPublicKey
+        
+        let result = allPairs
+            .sorted { $0.timestamp > $1.timestamp }
+            .map(\.publicKey)
+            .reduce(into: [PublicKey]()) { result, publicKey in
+                guard !result.contains(publicKey) else { return }
+                result.append(publicKey)
             }
+            .prefix(limit)
+        
+        return Array(result)
+    }
+    
+    private func txsPublicKeyTimestampPair<T: TxsProtocol>(transactions: T) -> [(publicKey: PublicKey, timestamp: UInt64)] {
+        transactions.list.0.compactMap {
+            guard let publicKey = $0.direction == .inbound ? $0.sourcePublicKey.0 : $0.destinationPublicKey.0 else { return nil }
+            return (publicKey: publicKey, timestamp: $0.timestamp.0)
         }
-
-        return publicKeys
     }
 
     func coinSplit(amount: UInt64, splitCount: UInt64, fee: UInt64, message: String, lockHeight: UInt64) throws -> UInt64 {
@@ -793,7 +787,7 @@ final class Wallet {
             message.withCString({ cstr in
                 wallet_coin_split(pointer, amount, splitCount, fee, cstr, lockHeight, error)
             })
-            })
+        })
 
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
