@@ -53,10 +53,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     // MARK: - Variables and constants
-    var player: AVQueuePlayer!
-    var playerLayer: AVPlayerLayer!
-    var playerItem: AVPlayerItem!
-    var playerLooper: AVPlayerLooper!
     private let localAuthenticationContext = LAContext()
     var ticketTopLayoutConstraint: NSLayoutConstraint?
     var ticketBottom: NSLayoutConstraint?
@@ -64,7 +60,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
 
     // MARK: - Outlets
     let generalContainer = UIView()
-    let videoView = UIView()
+    let videoView = VideoView()
     let versionLabel = UILabel()
     let animationContainer = AnimationView()
     let elementsContainer = UIView()
