@@ -38,9 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+@testable import Tari_Aurora
 import XCTest
 
-class TariLibWrapperTests: XCTestCase {
+final class TariLibWrapperTests: XCTestCase {
     //Use a random DB path for each test
     private let dbName = "test_db"
     private let backupPassword = "coolpassword"
@@ -107,12 +108,12 @@ class TariLibWrapperTests: XCTestCase {
         XCTAssertThrowsError(try PublicKey(emojis: "🐒🐑🍔🔧❌👂🦒💇🔋💥🍷🍺👔😷🐶🧢🤩💥🎾🎲🏀🤠💪👮🤯🎁💉🌞🍉🤷🍦👽👽"))
 
         //Valid deep links
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇")
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork.name)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇")
         )
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇?amount=32.1&note=hi%20there")
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork.name)/eid/🎳🐍💸🐼🐷💍🍔💤💘🔫😻💨🎩😱💭🎒🚧🐵🏉🔦🍴🎺🍺🐪🍕👔🍄🐍😇🌂🐑🍭😇?amount=32.1&note=hi%20there")
         )
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
-        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=32.1note=hi%20there"))
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork.name)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a"))
+        XCTAssertNoThrow(try PublicKey(deeplink: "\(TariSettings.shared.deeplinkURI)://\(NetworkManager.shared.selectedNetwork.name)/pubkey/70350e09c474809209824c6e6888707b7dd09959aa227343b5106382b856f73a?amount=32.1note=hi%20there"))
         //Derive a deep link from random pubkey, then init a pubkey using that deep link
         XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).emojiDeeplink.0))
         XCTAssertNoThrow(try PublicKey(deeplink: PublicKey(privateKey: PrivateKey()).hexDeeplink.0))

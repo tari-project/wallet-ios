@@ -38,19 +38,12 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+@testable import Tari_Aurora
 import XCTest
 
 @testable import Pods_MobileWallet
 
-class MobileWalletTests: XCTestCase {
-
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
+final class MobileWalletTests: XCTestCase {
 
     func testThemeAssets() {
         let colors = Theme.shared.colors
@@ -115,12 +108,4 @@ class MobileWalletTests: XCTestCase {
         let threeDaysAgoValue = threeDaysAgo.relativeDayFromToday()
         XCTAssertEqual(threeDaysAgoValue, expectedResult, "Test Failed. Value returned from Relative Day value should have been - \(expectedResult)")
     }
-
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-
 }

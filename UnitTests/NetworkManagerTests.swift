@@ -39,6 +39,7 @@
 */
 
 import XCTest
+@testable import Tari_Aurora
 
 final class NetworkManagerTests: XCTestCase {
     
@@ -82,7 +83,7 @@ final class NetworkManagerTests: XCTestCase {
         
         let networkSettingsBeforeChange = GroupUserDefaults.networksSettings
         
-        _ = networkManager.selectedNetwork.settings // Initialization
+        initialiseNetworkSettings()
         
         let networkSettingsAfterChange = GroupUserDefaults.networksSettings
         
@@ -93,13 +94,14 @@ final class NetworkManagerTests: XCTestCase {
     
     func testSettingsOnNetworkSwitching() {
         
-        _ = networkManager.selectedNetwork.settings // Initialization
+        
+        initialiseNetworkSettings()
         
         let networkAfterSwitch = TariNetwork.igor
         let networkSettingsBeforeChange = GroupUserDefaults.networksSettings
 
         networkManager.selectedNetwork = networkAfterSwitch
-        _ = networkManager.selectedNetwork.settings // Update
+        initialiseNetworkSettings()
         
         let networkSettingsAfterChange = GroupUserDefaults.networksSettings
         
@@ -135,13 +137,10 @@ final class NetworkManagerTests: XCTestCase {
         XCTAssertEqual(customBaseNodes.first!, baseNode)
     }
     
-    func testIsCloudBackupEnabledUpdate() {
-        
-        networkManager.selectedNetwork.isCloudBackupEnabled = true
-        
-        let iCloudBackupEnabled = GroupUserDefaults.networksSettings!.first!.isCloudBackupEnabled
-        
-        XCTAssertEqual(iCloudBackupEnabled, networkManager.selectedNetwork.isCloudBackupEnabled)
-        XCTAssertTrue(iCloudBackupEnabled)
+    // MARK: - Helpers
+    
+    private func initialiseNetworkSettings() {
+        // User defaults are updated with every access to internal settings
+        _ = networkManager.selectedNetwork.selectedBaseNode
     }
 }
