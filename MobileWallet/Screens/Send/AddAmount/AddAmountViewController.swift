@@ -418,15 +418,8 @@ class AddAmountViewController: UIViewController {
     @objc private func continueButtonTapped() {
         // Check the actual available balance first, to see if we have enough mined transactions
         guard let wallet = TariLib.shared.tariWallet else { return }
-        let (availableBalance, availableBalanceError) = wallet.availableBalance
-        guard availableBalanceError == nil else {
-            UserFeedback.shared.error(
-                title: localized("add_amount.error.available_balance.title"),
-                description: localized("add_amount.error.available_balance.description"),
-                error: availableBalanceError
-            )
-            return
-        }
+        
+        let availableBalance = wallet.getBalance().available
 
         var tariAmount: MicroTari?
         do {

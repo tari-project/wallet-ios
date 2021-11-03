@@ -113,6 +113,22 @@ enum RestoreWalletStatus {
     }
 }
 
+final class WalletBalance {
+    var available, incoming, outgoing, timeLocked: UInt64
+    
+    init(available: UInt64, incoming: UInt64, outgoing: UInt64, timeLocked: UInt64)
+    {
+        self.available = available
+        self.incoming = incoming
+        self.outgoing = outgoing
+        self.timeLocked = timeLocked
+    }
+    
+    static func == (lhs: WalletBalance, rhs: WalletBalance) -> Bool {
+        return lhs.available == rhs.available && lhs.outgoing == rhs.outgoing && lhs.incoming == rhs.incoming && lhs.timeLocked == rhs.timeLocked
+        }
+}
+
 final class Wallet {
 
     enum WalletError: Int32, Error {
@@ -162,50 +178,15 @@ final class Wallet {
             return (nil, error)
         }
     }
-
-    var availableBalance: (UInt64, Error?) {
-        var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_available_balance(pointer, error)})
-        return (result, errorCode != 0 ? WalletErrors.generic(errorCode) : nil)
-    }
-
-    var pendingIncomingBalance: (UInt64, Error?) {
-        var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_pending_incoming_balance(pointer, error)})
-        return (result, errorCode != 0 ? WalletErrors.generic(errorCode) : nil)
-    }
-
-    var pendingOutgoingBalance: (UInt64, Error?) {
-        var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_pending_outgoing_balance(pointer, error)})
-        return (result, errorCode != 0 ? WalletErrors.generic(errorCode) : nil)
-    }
+    
+    private var balance = WalletBalance(available: 0, incoming: 0, outgoing: 0, timeLocked: 0)
 
     var totalMicroTari: (MicroTari?, Error?) {
-        let (availableBalance, availableBalanceError) = self.availableBalance
-        if availableBalanceError != nil {
-            return (nil, availableBalanceError)
-        }
-
-        let (pendingIncomingBalance, pendingIncomingBalanceError) = self.pendingIncomingBalance
-        if pendingIncomingBalanceError != nil {
-            return (nil, pendingIncomingBalanceError)
-        }
-
-        let (_, pendingOutgoingBalanceError) = self.pendingOutgoingBalance
-        if pendingOutgoingBalanceError != nil {
-            return (nil, pendingOutgoingBalanceError)
-        }
-
-        return (MicroTari(availableBalance + pendingIncomingBalance), nil)
+        return (MicroTari(balance.available + balance.incoming), nil)
     }
 
-    var availableMicroTari: (MicroTari?, Error?) {
-        let value = availableBalance
-        return (MicroTari(value.0), value.1)
+    var availableMicroTari: MicroTari {
+        return MicroTari(balance.available)
     }
 
     var publicKey: (PublicKey?, Error?) {
@@ -240,7 +221,7 @@ final class Wallet {
         baseNodeValidationStatusMap[type] = (currentStatus.0, result)
         Wallet.checkBaseNodeSyncCompletion()
     }
-
+    
     static func checkBaseNodeSyncCompletion() {
         guard !handleSyncStatus(forResultType: .baseNodeNotInSync) else { return }
         guard !handleSyncStatus(forResultType: .aborted) else { return }
@@ -380,6 +361,14 @@ final class Wallet {
         let storedMessagesReceivedCallback: (@convention(c) () -> Void)? = {
             TariLogger.verbose("Stored messages received ✅")
         }
+        
+        let balanceUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void)? = { valuePointer in
+            let bal = Balance(pointer: valuePointer!)
+            //Note context for this is unavailable withing the callback
+            TariEventBus.postToMainThread(.balanceUpdate)
+            TariLogger.verbose("Balance updated callback")
+        }
+    
 
         dbPath = commsConfig.dbPath
         dbName = commsConfig.dbName
@@ -409,6 +398,7 @@ final class Wallet {
                         storeAndForwardSendResultCallback,
                         txCancellationCallback,
                         txoValidationCallback,
+                        balanceUpdatedCallback,
                         txValidationCompleteCallback,
                         storedMessagesReceivedCallback,
                         isRecoveryInProgressPointer,
@@ -525,10 +515,7 @@ final class Wallet {
             throw error
         }
         let total = fee.rawValue + amount.rawValue
-        let (availableBalance, error) = self.availableBalance
-        if error != nil {
-            throw error!
-        }
+        let availableBalance = self.balance.available
 
         if total > availableBalance {
             throw WalletErrors.insufficientFunds(microTariSpendable: MicroTari(availableBalance))
@@ -754,6 +741,28 @@ final class Wallet {
         }
     }
 
+    func getBalance() throws -> WalletBalance {
+        var errorCode: Int32 = -1
+        let ptr = withUnsafeMutablePointer(to: &errorCode, { error in
+            wallet_get_balance(pointer, error)
+        })
+
+        guard errorCode == 0 else {
+            throw WalletErrors.generic(errorCode)
+        }
+        
+        let bal = Balance(pointer: ptr!);
+        
+        let updatedBalance = WalletBalance(available: bal.available, incoming: bal.incoming, outgoing: bal.outgoing, timeLocked: bal.timelocked)
+        if balance == updatedBalance
+        {
+            return balance
+        } else {
+            balance = updatedBalance
+            return balance
+        }
+    }
+    
     func recentPublicKeys(limit: Int) throws -> [PublicKey] {
 
         let completedPublicKeys = txsPublicKeyTimestampPair(transactions: try completedTransactions())
