@@ -45,53 +45,55 @@ enum CompletedTxKernelError: Error {
 }
 
 final class CompletedTxKernel {
-    private var ptr: OpaquePointer
+    let pointer : OpaquePointer
 
-    var pointer: OpaquePointer {
-        return ptr
+    var excess: String {
+        get throws  {
+            var errorCode: Int32 = -1
+            let excessPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+                transaction_kernel_get_excess_hex(pointer, error)
+            })
+            guard errorCode == 0 else {
+                throw ContactError.generic(errorCode)
+            }
+
+            return String(validatingUTF8: excessPointer!)!
+        }
     }
 
-    var excess: (String, Error?) {
-        var errorCode: Int32 = -1
-        let excessPointer = withUnsafeMutablePointer(to: &errorCode, { error in
-            transaction_kernel_get_excess_hex(ptr, error)
-        })
-        guard errorCode == 0 else {
-            return ("", ContactError.generic(errorCode))
-        }
+    var excessPublicNonce: String {
+        get throws {
+            var errorCode: Int32 = -1
+            let noncePointer = withUnsafeMutablePointer(to: &errorCode, { error in
+                transaction_kernel_get_excess_public_nonce_hex(pointer, error)
+            })
+            guard errorCode == 0 else {
+                throw ContactError.generic(errorCode)
+            }
 
-        return (String(validatingUTF8: excessPointer!)!, nil)
+            return String(validatingUTF8: noncePointer!)!
+        }
     }
 
-    var excessPublicNonce: (String, Error?) {
-        var errorCode: Int32 = -1
-        let noncePointer = withUnsafeMutablePointer(to: &errorCode, { error in
-            transaction_kernel_get_excess_public_nonce_hex(ptr, error)
-        })
-        guard errorCode == 0 else {
-            return ("", ContactError.generic(errorCode))
+    var excessSignature: String {
+        get throws {
+            var errorCode: Int32 = -1
+            let signaturePointer = withUnsafeMutablePointer(to: &errorCode, { error in
+                transaction_kernel_get_excess_signature_hex(pointer, error)
+            })
+            guard errorCode == 0 else {
+                throw ContactError.generic(errorCode)
+            }
+
+            return String(validatingUTF8: signaturePointer!)!
         }
-
-        return (String(validatingUTF8: noncePointer!)!, nil)
-    }
-
-    var excessSignature: (String, Error?) {
-        var errorCode: Int32 = -1
-        let signaturePointer = withUnsafeMutablePointer(to: &errorCode, { error in
-            transaction_kernel_get_excess_signature_hex(ptr, error)
-        })
-        guard errorCode == 0 else {
-            return ("", ContactError.generic(errorCode))
-        }
-
-        return (String(validatingUTF8: signaturePointer!)!, nil)
     }
 
     init(pointer: OpaquePointer) {
-        ptr = pointer
+        self.pointer = pointer
     }
 
     deinit {
-        transaction_kernel_destroy(ptr)
+        transaction_kernel_destroy(pointer)
     }
 }
