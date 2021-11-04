@@ -18,7 +18,7 @@ target 'MobileWallet' do
   pod 'Giphy', '2.0.0'
   pod 'IPtProxy', '~> 0.1.0'
   pod 'OpenSSL-Universal'
-  pod 'YatLib', '0.2.1'
+  pod 'YatLib', '0.2.2'
   pod 'TariCommon', '0.1.0'
 
   target 'MobileWalletTests' do

@@ -143,7 +143,7 @@ final class YatTransactionModel {
     
     private func fetchAnimation() {
         
-        Yat.api.fetchFromKeyValueStorePublisher(forEmojiID: inputData.yatID, dataType: VisualizerFileLocations.self)
+        Yat.api.fetchFromKeyValueStorePublisher(forYat: inputData.yatID, dataType: VisualizerFileLocations.self)
             .compactMap(\.data.video)
             .compactMap { URL(string: $0) }
             .sink(
