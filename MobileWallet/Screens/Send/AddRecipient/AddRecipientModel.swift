@@ -259,7 +259,7 @@ final class AddRecipientModel {
         self.yatID = nil
         guard yatID.containsOnlyEmoji, (1...maxYatIDLenght).contains(yatID.count) else { return }
 
-        Yat.api.fetchRecordsPublisher(forEmojiID: yatID, symbol: "XTR")
+        Yat.api.fetchRecordsPublisher(forYat: yatID, symbol: "XTR")
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] in self?.handle(apiResponse: $0, yatID: yatID) }
