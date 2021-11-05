@@ -38,6 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+@testable import Tari_Aurora
 import XCTest
 
 final class SeedWordsTests: XCTestCase {
