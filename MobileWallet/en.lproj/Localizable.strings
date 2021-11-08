@@ -3,6 +3,7 @@
 "common.cancel" = "Cancel";
 "common.send.with_param" = "Send %@";
 "common.error" = "Error";
+"common.recommended" = "Recommended";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -177,7 +178,7 @@
 "splash.wallet_error.description.generic" = "The app was unable to initialize the wallet instance. Please remove your wallet from the device and restore your wallet from backup.";
 "splash.wallet_error.button.confirm" = "Delete Your Wallet";
 "splash.action_sheet.select_network.title" = "Select Network";
-"splash.action_sheet.select_network.description" = "Please select the network to which do you want to connect.";
+"splash.action_sheet.select_network.description" = "Please select the network to which you want to connect.";
 
 /* iCloudBackup error */
 "iCloud_backup.error.title.set_password" = "Failed to set backup password";
@@ -521,7 +522,6 @@
 "restore_from_seed_words.progress_overlay.error.description.unknown_error" = "Unable to recover your wallet due to the internal error.";
 
 /* Yat Transaction Overlay */
-
 "yat_transaction.label.transaction" = "You are %@ to %@";
 "yat_transaction.label.transaction.sending" = "sending %@";
 "yat_transaction.label.success" = "SENT";

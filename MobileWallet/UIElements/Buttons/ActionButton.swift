@@ -80,6 +80,8 @@ class ActionButton: UIButton {
         heightAnchor.constraint(equalToConstant: ActionButton.HEIGHT).isActive = true
         backgroundColor = Theme.shared.colors.actionButtonBackgroundSimple
         titleLabel?.font = Theme.shared.fonts.actionButton
+        titleLabel?.adjustsFontSizeToFitWidth = true
+        contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 8.0, bottom: 0.0, right: 8.0)
     }
 
     override func setImage(_ image: UIImage?, for state: UIControl.State) {
