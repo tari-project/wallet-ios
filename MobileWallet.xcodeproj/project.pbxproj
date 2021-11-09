@@ -161,6 +161,7 @@
 		3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4CE32B26A18D7300ECF460 /* UserDefault.swift */; };
 		3A4CE33026A18DFC00ECF460 /* GroupUserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4CE32F26A18DFC00ECF460 /* GroupUserDefaults.swift */; };
 		3A4CE33626A1A04000ECF460 /* SelectBaseNodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4CE33526A1A04000ECF460 /* SelectBaseNodeViewController.swift */; };
+		3A4D90A2273A728300A23FA8 /* WalletConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4D90A1273A728300A23FA8 /* WalletConnectivityManager.swift */; };
 		3A5E881E26BA9CF10029BB8B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5E881D26BA9CF10029BB8B /* HomeView.swift */; };
 		3A62674626D76E6B007F9895 /* SelectNetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A62674526D76E6B007F9895 /* SelectNetworkViewController.swift */; };
 		3A62674A26D76EC4007F9895 /* SelectNetworkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A62674926D76EC4007F9895 /* SelectNetworkModel.swift */; };
@@ -429,6 +430,7 @@
 		3A4CE32B26A18D7300ECF460 /* UserDefault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefault.swift; sourceTree = "<group>"; };
 		3A4CE32F26A18DFC00ECF460 /* GroupUserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupUserDefaults.swift; sourceTree = "<group>"; };
 		3A4CE33526A1A04000ECF460 /* SelectBaseNodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBaseNodeViewController.swift; sourceTree = "<group>"; };
+		3A4D90A1273A728300A23FA8 /* WalletConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectivityManager.swift; sourceTree = "<group>"; };
 		3A5E881D26BA9CF10029BB8B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		3A62674526D76E6B007F9895 /* SelectNetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNetworkViewController.swift; sourceTree = "<group>"; };
 		3A62674926D76EC4007F9895 /* SelectNetworkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNetworkModel.swift; sourceTree = "<group>"; };
@@ -662,6 +664,7 @@
 				00369D802426080D00BAB95B /* TariLogger.swift */,
 				619190C6EBD050DC647D1D7B /* UTXO.swift */,
 				3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */,
+				3A4D90A1273A728300A23FA8 /* WalletConnectivityManager.swift */,
 			);
 			name = Utils;
 			path = Wrappers/Utils;
@@ -1747,6 +1750,7 @@
 				0091D4A723ED879E004BF7F7 /* Signature.swift in Sources */,
 				0053873024065F6C00901A68 /* SlideView.swift in Sources */,
 				00BBD816237EA67600EBF5E6 /* Wallet.swift in Sources */,
+				3A4D90A2273A728300A23FA8 /* WalletConnectivityManager.swift in Sources */,
 				00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				3A811EF12695BAEE003D0DF3 /* TooltipView.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
