@@ -372,6 +372,7 @@
 "add_note.search_giphy_button" = "SEARCH GIPHY";
 
 /* TariBot transaction */
+"taribot.message.prefix" = "Hello Tari from";
 "taribot.message1.with_param" = "💸 Here’s some %@!";
 "taribot.message2.with_params" = "Nice work! Here's more %1$@ to fill your coffers. Be sure to hit the store icon to see real, exclusive items you can redeem with your \"hard-earned\" %2$@.";
 
