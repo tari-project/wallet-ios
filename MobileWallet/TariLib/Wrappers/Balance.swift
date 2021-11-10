@@ -51,7 +51,7 @@ final class Balance {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             balance_get_available(pointer, error)})
-        guard errorCode > 0 else { return 0 }
+        guard errorCode == 0 else { return 0 }
         return result
     }
 
@@ -59,7 +59,7 @@ final class Balance {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             balance_get_pending_incoming(pointer, error)})
-        guard errorCode > 0 else { return 0 }
+        guard errorCode == 0 else { return 0 }
         return result
     }
 
@@ -67,7 +67,7 @@ final class Balance {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             balance_get_pending_outgoing(pointer, error)})
-        guard errorCode > 0 else { return 0 }
+        guard errorCode == 0 else { return 0 }
         return result
     }
 
@@ -75,7 +75,7 @@ final class Balance {
         var errorCode: Int32 = -1
         let result = withUnsafeMutablePointer(to: &errorCode, { error in
             balance_get_time_locked(pointer, error)})
-        guard errorCode > 0 else { return 0 }
+        guard errorCode == 0 else { return 0 }
         return result
     }
 

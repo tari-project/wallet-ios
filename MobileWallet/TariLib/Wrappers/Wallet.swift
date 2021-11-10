@@ -124,7 +124,7 @@ final class Wallet {
 
     enum WalletError: Int32, Error {
         case databaseDataError = 114
-        case encryptionError = 420
+        case invalidPassphrase = 428
         case unknown = -1
 
         init?(errorCode: Int32) {
@@ -408,7 +408,7 @@ final class Wallet {
             let createWalletResponse = createWallet(passphrase: passphrase, seedWords: seedWords)
 
             switch createWalletResponse {
-            case (_, .encryptionError) where passphrase != nil:
+            case (_, .invalidPassphrase) where passphrase != nil:
                 return try handleInitializationFlow(passphrase: nil)
             case (_, .some(let error)):
                 throw error
