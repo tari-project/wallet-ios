@@ -136,6 +136,18 @@ class CompletedTx: TxProtocol {
         return (PublicKey(pointer: resultPointer!), nil)
     }
 
+    var transactionKernel: (CompletedTxKernel?, Error?) {
+        var errorCode: Int32 = -1
+        let resultPointer = withUnsafeMutablePointer(to: &errorCode, { error in
+            completed_transaction_get_transaction_kernel(ptr, error)
+        })
+        guard errorCode == 0 else {
+            return (nil, CompletedTxKernelError.generic(errorCode))
+        }
+
+        return (CompletedTxKernel(pointer: resultPointer!), nil)
+    }
+
     var status: (TxStatus, Error?) {
         var errorCode: Int32 = -1
         let statusCode: Int32 = withUnsafeMutablePointer(to: &errorCode, { error in

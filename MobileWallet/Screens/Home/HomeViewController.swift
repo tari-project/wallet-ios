@@ -375,11 +375,9 @@ final class HomeViewController: UIViewController {
     }
 
     private func updateAvaiableToSpendAmount() throws {
-
-        let (value, error) = TariLib.shared.tariWallet!.availableMicroTari
-
-        if let error = error { throw error }
-        guard let formattedValue = value?.formatted else { return }
+        let value = try TariLib.shared.tariWallet!.balance().available
+        
+        let formattedValue = String(value)
 
         let text = NSMutableAttributedString(string: formattedValue)
 

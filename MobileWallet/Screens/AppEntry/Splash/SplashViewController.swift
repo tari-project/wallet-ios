@@ -157,7 +157,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     private func setupFeedbacks() {
         NetworkManager.shared.$selectedNetwork
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.update(networkName: $0.name) }
+            .sink { [weak self] in self?.update(network: $0) }
             .store(in: &cancelables)
     }
 
@@ -346,7 +346,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         let controller = UIAlertController(title: localized("splash.action_sheet.select_network.title"), message: localized("splash.action_sheet.select_network.description"), preferredStyle: .actionSheet)
 
         TariNetwork.all.forEach { [weak controller] network in
-            controller?.addAction(UIAlertAction(title: network.name.capitalized, style: .default, handler: { _ in
+            controller?.addAction(UIAlertAction(title: network.presentedName, style: .default, handler: { _ in
                 NetworkManager.shared.selectedNetwork = network
             }))
         }
@@ -415,13 +415,13 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         }
     }
 
-    private func update(networkName: String) {
+    private func update(network: TariNetwork) {
 
         if let appVersion = AppInfo.appVersion, let buildVestion = AppInfo.buildVestion {
-            versionLabel.text = "\(networkName.uppercased()) v\(appVersion) (b\(buildVestion))"
+            versionLabel.text = "\(network.name.uppercased()) v\(appVersion) (b\(buildVestion))"
         }
 
-        selectNetworkButton.setTitle(localized("splash.button.select_network", arguments: networkName.capitalized), for: .normal)
+        selectNetworkButton.setTitle(localized("splash.button.select_network", arguments: network.presentedName), for: .normal)
         updateCreateWalletButtonState()
     }
     

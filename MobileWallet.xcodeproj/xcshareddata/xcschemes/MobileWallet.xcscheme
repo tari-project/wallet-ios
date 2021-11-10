@@ -26,35 +26,25 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      onlyGenerateCoverageForSpecifiedTargets = "YES">
+      <CodeCoverageTargets>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "00E491952366E08B007B332D"
+            BuildableName = "Tari Aurora.app"
+            BlueprintName = "MobileWallet"
+            ReferencedContainer = "container:MobileWallet.xcodeproj">
+         </BuildableReference>
+      </CodeCoverageTargets>
       <Testables>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "00E491B02366E08F007B332D"
-               BuildableName = "MobileWalletTests.xctest"
-               BlueprintName = "MobileWalletTests"
-               ReferencedContainer = "container:MobileWallet.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "00E491BB2366E08F007B332D"
-               BuildableName = "MobileWalletUITests.xctest"
-               BlueprintName = "MobileWalletUITests"
-               ReferencedContainer = "container:MobileWallet.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "00B4D6AA2416A32200ED8318"
-               BuildableName = "MobileWalletUISnapshots.xctest"
-               BlueprintName = "MobileWalletUISnapshots"
+               BlueprintIdentifier = "3A1365C3272BE66800402389"
+               BuildableName = "UnitTests.xctest"
+               BlueprintName = "UnitTests"
                ReferencedContainer = "container:MobileWallet.xcodeproj">
             </BuildableReference>
          </TestableReference>

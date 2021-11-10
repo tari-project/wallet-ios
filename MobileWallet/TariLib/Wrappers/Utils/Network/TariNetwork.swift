@@ -40,6 +40,7 @@
 
 struct TariNetwork {
     let name: String
+    let presentedName: String
     let tickerSymbol: String
     let baseNodes: [BaseNode]
     let faucetURL: URL?
@@ -94,6 +95,7 @@ extension TariNetwork {
     static var weatherwax: Self {
         makeNetwork(
             name: "weatherwax",
+            presentedName: "Weatherwax (\(localized("common.recommended")))",
             isMainNet: false,
             rawBaseNodes: [
                 "jozi": "98bc76afc1c35ad4651bdc9ef57bbe0655a2ea3cd86c0e19b5fd5890546eb040::/onion3/33izgtjkrlxhxybj6luqowkpiy2wvte43osejnbqyieqtdfhovzghxad:18141",
@@ -112,6 +114,7 @@ extension TariNetwork {
     static var igor: Self {
         makeNetwork(
             name: "igor",
+            presentedName: "Igor",
             isMainNet: false,
             rawBaseNodes: [
                 "ncal": "8e7eb81e512f3d6347bf9b1ca9cd67d2c8e29f2836fc5bd608206505cc72af34::/onion3/l4wouomx42nezhzexjdzfh7pcou5l7df24ggmwgekuih7tkv2rsaokqd:18141",
@@ -123,9 +126,9 @@ extension TariNetwork {
         )
     }
 
-    private static func makeNetwork(name: String, isMainNet: Bool, rawBaseNodes: [String: String], faucetURL: URL?) -> Self {
+    private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, rawBaseNodes: [String: String], faucetURL: URL?) -> Self {
         let baseNodes = rawBaseNodes.compactMap { try? BaseNode(name: $0, peer: $1) }
         let currencySymbol = isMainNet ? "XTR" : "tXTR"
-        return Self(name: name, tickerSymbol: currencySymbol, baseNodes: baseNodes, faucetURL: faucetURL)
+        return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, baseNodes: baseNodes, faucetURL: faucetURL)
     }
 }

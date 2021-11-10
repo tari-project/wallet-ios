@@ -20,14 +20,4 @@ target 'MobileWallet' do
   pod 'OpenSSL-Universal'
   pod 'YatLib', '0.2.2'
   pod 'TariCommon', '0.1.0'
-
-  target 'MobileWalletTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
-  target 'MobileWalletUITests' do
-    # Pods for testing
-  end
-
 end

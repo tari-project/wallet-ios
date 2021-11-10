@@ -67,6 +67,7 @@ protocol TxProtocol {
     var sourcePublicKey: (PublicKey?, Error?) { get }
     var status: (TxStatus, Error?) { get }
     var destinationPublicKey: (PublicKey?, Error?) { get }
+    var transactionKernel: (CompletedTxKernel?, Error?) { get }
     var direction: TxDirection { get }
     var contact: (Contact?, Error?) { get }
 }
