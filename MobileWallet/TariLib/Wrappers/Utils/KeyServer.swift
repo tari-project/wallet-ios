@@ -72,7 +72,7 @@ final class KeyServer {
     )
     private let signature: Signature
     private let url: URL?
-    
+  
     private let jsonEncoder: JSONEncoder = {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase

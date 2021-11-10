@@ -770,7 +770,6 @@ final class Wallet {
                 result.append(publicKey)
             }
             .prefix(limit)
-
         return Array(result)
     }
 
