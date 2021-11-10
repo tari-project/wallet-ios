@@ -168,8 +168,10 @@
 		3A72DC3D26DFA02900E0BC43 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC3C26DFA02900E0BC43 /* NetworkManager.swift */; };
 		3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC4026DFA1E100E0BC43 /* NetworkSettings.swift */; };
 		3A72DC4526DFA26000E0BC43 /* TariNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC4426DFA26000E0BC43 /* TariNetwork.swift */; };
+		3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A74E7DA273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift */; };
 		3A811EEF26957856003D0DF3 /* ConnectionIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */; };
 		3A811EF12695BAEE003D0DF3 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EF02695BAEE003D0DF3 /* TooltipView.swift */; };
+		3A96B9452733E9A90040E59F /* TokensToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A96B9442733E9A90040E59F /* TokensToolbar.swift */; };
 		3A9A08F526E0A83D00D2E75C /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A08F426E0A83D00D2E75C /* AppRouter.swift */; };
 		3AA00E97271D5ECA00977C36 /* AddRecipientSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA00E96271D5ECA00977C36 /* AddRecipientSectionHeaderView.swift */; };
 		3AA9499E26BD3EAC007C550D /* HomeViewToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA9499D26BD3EAC007C550D /* HomeViewToolbar.swift */; };
@@ -439,8 +441,10 @@
 		3A72DC3C26DFA02900E0BC43 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		3A72DC4026DFA1E100E0BC43 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		3A72DC4426DFA26000E0BC43 /* TariNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariNetwork.swift; sourceTree = "<group>"; };
+		3A74E7DA273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsMnemonicWordList.swift; sourceTree = "<group>"; };
 		3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionIndicatorView.swift; sourceTree = "<group>"; };
 		3A811EF02695BAEE003D0DF3 /* TooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipView.swift; sourceTree = "<group>"; };
+		3A96B9442733E9A90040E59F /* TokensToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokensToolbar.swift; sourceTree = "<group>"; };
 		3A9A08F426E0A83D00D2E75C /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		3AA00E96271D5ECA00977C36 /* AddRecipientSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRecipientSectionHeaderView.swift; sourceTree = "<group>"; };
 		3AA9499D26BD3EAC007C550D /* HomeViewToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewToolbar.swift; sourceTree = "<group>"; };
@@ -670,6 +674,7 @@
 				619190C6EBD050DC647D1D7B /* UTXO.swift */,
 				3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */,
 				3A4D90A1273A728300A23FA8 /* WalletConnectivityManager.swift */,
+				3A74E7DA273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift */,
 			);
 			name = Utils;
 			path = Wrappers/Utils;
@@ -1154,6 +1159,7 @@
 				3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */,
 				3A0EA97D26AA8E3C002612D4 /* TokenView.swift */,
 				3A0EA98126AA8E64002612D4 /* TokenInputView.swift */,
+				3A96B9442733E9A90040E59F /* TokensToolbar.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1733,6 +1739,7 @@
 				0072BF24247E735700BD28FB /* ReminderNotifications.swift in Sources */,
 				00665E7524E422C500030A13 /* CustomTabBar.swift in Sources */,
 				3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */,
+				3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
@@ -1812,6 +1819,7 @@
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
 				3A0EA97A26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */,
 				37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
+				3A96B9452733E9A90040E59F /* TokensToolbar.swift in Sources */,
 				00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
 				00947CC223CF090D00526DD5 /* TxProtocol.swift in Sources */,
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,

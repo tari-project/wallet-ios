@@ -65,7 +65,11 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
 
     override func setupViews() {
         super.setupViews()
-
+        setupConstraints()
+    }
+    
+    private func setupConstraints() {
+        
         view.addSubview(mainView)
         mainView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -81,8 +85,12 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
 
     private func setupFeedbacks() {
 
-        mainView.tokens
+        mainView.tokenView.tokens
             .assign(to: \.seedWords, on: model)
+            .store(in: &cancelables)
+        
+        mainView.tokenView.$inputText
+            .assign(to: \.inputText, on: model)
             .store(in: &cancelables)
 
         mainView.onTapOnSubmitButton = { [weak self] in
@@ -104,6 +112,18 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
         model.viewModel.$error
             .compactMap { $0 }
             .sink { UserFeedback.shared.error(title: $0.title, description: $0.description) }
+            .store(in: &cancelables)
+        
+        model.viewModel.$isAutocompletionAvailable
+            .assign(to: \.isTokenToolbarVisible, on: mainView.tokenView)
+            .store(in: &cancelables)
+        
+        model.viewModel.$autocompletionTokens
+            .assign(to: \.autocompletionTokens, on: mainView.tokenView)
+            .store(in: &cancelables)
+        
+        model.viewModel.$autocompletionMessage
+            .assign(to: \.autocompletionMessage, on: mainView.tokenView)
             .store(in: &cancelables)
     }
 

@@ -72,6 +72,14 @@ final class TokenCollectionView: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    private weak var tokensToolbar: TokensToolbar? {
+        didSet {
+            updateAutocompletionTokens()
+            updateAutocompletionMessage()
+            updateTokensToolbarVisibility()
+        }
+    }
 
     // MARK: - Properties
 
@@ -80,10 +88,24 @@ final class TokenCollectionView: UIView {
             .map { $0.map(\.text).filter { !$0.isEmpty } }
             .eraseToAnyPublisher()
     }
-
+    
+    var isTokenToolbarVisible: Bool = false {
+        didSet { updateTokensToolbarVisibility() }
+    }
+    
+    var autocompletionTokens: [TokenViewModel] = [] {
+        didSet { updateAutocompletionTokens() }
+    }
+    
+    var autocompletionMessage: String? {
+        didSet { updateAutocompletionMessage() }
+    }
+    
     private var dataSource: UICollectionViewDiffableDataSource<Int, TokenModel>?
+    
+    @Published private(set) var inputText: String = ""
     @Published private var tokenModels: [TokenModel] = []
-
+    
     // MARK: - Initializers
 
     init() {
@@ -130,6 +152,7 @@ final class TokenCollectionView: UIView {
                 cell.onTextChange = { self.handleOnTextChange(text: $0) }
                 cell.onRemovingCharacterAtFirstPosition = { self.handleRemovingCharacterAtFirstPosition(text: $0) }
                 cell.onEndEditing = { self.handleTapOnReturnButton(text: $0) }
+                self.tokensToolbar = cell.toolbar
                 return cell
             } else {
                 let cell = collectionView.dequeueReusableCell(type: TokenView.self, indexPath: indexPath)
@@ -161,6 +184,7 @@ final class TokenCollectionView: UIView {
         var tokens = text.tokenize()
 
         guard tokens.count > 1 else {
+            inputText = text
             collectionView.collectionViewLayout.invalidateLayout()
             return text
         }
@@ -171,6 +195,8 @@ final class TokenCollectionView: UIView {
 
         tokenModels.insert(contentsOf: models, at: index)
         dataReload()
+        
+        inputText = lastToken
 
         return lastToken
     }
@@ -206,6 +232,18 @@ final class TokenCollectionView: UIView {
         snapshot.appendSections([0])
         snapshot.appendItems(tokenModels)
         dataSource?.apply(snapshot, animatingDifferences: true)
+    }
+    
+    private func updateAutocompletionTokens() {
+        tokensToolbar?.tokenModels = autocompletionTokens
+    }
+    
+    private func updateAutocompletionMessage() {
+        tokensToolbar?.text = autocompletionMessage
+    }
+    
+    private func updateTokensToolbarVisibility() {
+        tokensToolbar?.isHidden = !isTokenToolbarVisible
     }
 
     // MARK: - Target Actions
