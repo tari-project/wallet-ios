@@ -40,37 +40,31 @@
 
 import UIKit
 import Combine
+import TariCommon
 
 final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
 
     // MARK: - Subviews
 
-    private let descriptionLabel: UILabel = {
+    @View private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.textColor = Theme.shared.colors.restoreFromSeedWordsTextColor
         view.font = Theme.shared.fonts.restoreFormSeedWordsDescription
         view.text = localized("restore_from_seed_words.label.description")
         view.numberOfLines = 0
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    private let tokenView: TokenCollectionView = {
-        let view = TokenCollectionView()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    @View var tokenView = TokenCollectionView()
 
-    private let submitButton: ActionButton = {
+    @View private var submitButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("restore_from_seed_words.button.submit"), for: .normal)
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
     // MARK: - Properties
 
-    var tokens: AnyPublisher<[String], Never> { tokenView.tokens }
     var onTapOnSubmitButton: (() -> Void)?
 
     // MARK: - Initializers

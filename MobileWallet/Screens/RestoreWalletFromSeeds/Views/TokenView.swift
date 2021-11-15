@@ -65,6 +65,15 @@ final class TokenView: UICollectionViewCell {
         get { label.text }
         set { label.text = newValue }
     }
+    
+    var isDeleteIconVisible: Bool = true {
+        didSet {
+            deleteIconLeadingConstraint?.isActive = isDeleteIconVisible
+            deleteIconView.isHidden = !isDeleteIconVisible
+        }
+    }
+    
+    private var deleteIconLeadingConstraint: NSLayoutConstraint?
 
     // MARK: - Initializers
 
@@ -90,12 +99,19 @@ final class TokenView: UICollectionViewCell {
     private func setupConstraints() {
 
         [label, deleteIconView].forEach(addSubview)
+        
+        let labelTrailingConstraint = label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -13.0)
+        labelTrailingConstraint.priority = .defaultHigh
+        
+        let deleteIconLeadingConstraint = deleteIconView.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 5.0)
+        self.deleteIconLeadingConstraint = deleteIconLeadingConstraint
 
         let constraints = [
             label.topAnchor.constraint(equalTo: topAnchor, constant: 3.0),
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 13.0),
+            labelTrailingConstraint,
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -3.0),
-            deleteIconView.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 5.0),
+            deleteIconLeadingConstraint,
             deleteIconView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8.0),
             deleteIconView.centerYAnchor.constraint(equalTo: centerYAnchor),
             deleteIconView.heightAnchor.constraint(equalToConstant: 14.0),

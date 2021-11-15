@@ -506,6 +506,8 @@
 /* Restore Wallet From Seed Words */
 "restore_from_seed_words.label.description" = "Enter your seed phrase to restore your wallet";
 "restore_from_seed_words.button.submit" = "Restore Wallet";
+"restore_from_seed_words.autocompletion_toolbar.label.start_typing" = "Start typing to see suggestions";
+"restore_from_seed_words.autocompletion_toolbar.label.no_suggestions" = "There are no suggestions for the phrase";
 "restore_from_seed_words.error.title" = "Error";
 "restore_from_seed_words.error.description.invalid_seed_word" = "At least one of the entered seed words is invalid. Please review them and try again.";
 "restore_from_seed_words.error.description.phrase_too_short" = "You entered not enough seed words. Please add some more and try again.";
