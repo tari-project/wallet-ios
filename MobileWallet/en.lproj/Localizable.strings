@@ -2,6 +2,7 @@
 "common.continue" = "Continue";
 "common.cancel" = "Cancel";
 "common.send.with_param" = "Send %@";
+"common.error" = "Error";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -139,6 +140,7 @@
 
 "settings.done" = "Done";
 "settings.item.header.more" = "More";
+"settings.item.header.yat" = "Yat Settings";
 "settings.item.header.advanced_settings" = "Advanced Settings";
 "settings.item.header.security" = "Security";
 
@@ -150,12 +152,16 @@
 "settings.item.select_base_node" = "Select Base Node";
 "settings.item.delete_wallet" = "Delete Your Wallet";
 
+"settings.item.connect_yats" = "Connect Yats";
+
 "settings.item.contribute_to_tari" = "Contribute to Tari Aurora";
 "settings.item.disclaimer" = "Disclaimer";
 "settings.item.privacy_policy" = "Privacy Policy";
 "settings.item.user_agreement" = "User Agreement";
 "settings.item.visit_tari" = "Visit Tari.com";
 "settings.item.report_bug" = "Report a Bug";
+
+"settings.error.connect_yats_no_connection" = "The app isn't currently connected to a peer-to-peer network. Please check your internet connection or change the base node and try again.";
 
 /* Splash view */
 "splash.disclaimer.with_params" = "By creating a wallet, you agree to the terms of the %1$@ and %2$@";
@@ -283,6 +289,7 @@
 "add_recipient.recent_txs" = "Recent Transactions";
 "add_recipient.error.load_contacts.title" = "Failed to load contacts";
 "add_recipient.error.load_contacts.description" = "Could not access wallet";
+"add_recipient.error.load_contacts.invalid_emoji_set" = "Your recipient needs to upgrade to the latest version of Tari Aurora and copy their updated Emoji ID to transact with you";
 "add_recipient.inputbox.placeholder" = "Enter Emoji ID or Contact Name";
 "add_recipient.inputbox.warning" = "Invalid Emoji ID";
 "add_recipient.warning.can_not_send_yourself.with_param" = "Sorry, you cannot send %@ to yourself";
@@ -512,3 +519,10 @@
 "restore_from_seed_words.progress_overlay.error.title" = "Recovery Failed";
 "restore_from_seed_words.progress_overlay.error.description.connection_failed" = "Unable to connect with base node. Please try again later.";
 "restore_from_seed_words.progress_overlay.error.description.unknown_error" = "Unable to recover your wallet due to the internal error.";
+
+/* Yat Transaction Overlay */
+
+"yat_transaction.label.transaction" = "You are %@ to %@";
+"yat_transaction.label.transaction.sending" = "sending %@";
+"yat_transaction.label.success" = "SENT";
+"yat_transaction.label.failed" = "FAILED";

@@ -41,8 +41,8 @@
 import UIKit
 
 class AddAmountViewController: UIViewController {
-    var publicKey: PublicKey?
     var deepLinkParams: DeepLinkParams?
+    var paymentInfo: PaymentInfo?
     private var buttons = [UIButton]()
     private let navigationBar = NavigationBar()
     private let continueButton = ActionButton(frame: .zero)
@@ -98,7 +98,7 @@ class AddAmountViewController: UIViewController {
     }
 
     private func displayAliasOrEmojiId() {
-        guard let wallet = TariLib.shared.tariWallet, let pubKey = publicKey else {
+        guard let wallet = TariLib.shared.tariWallet, let pubKey = paymentInfo?.publicKey else {
             return
         }
 
@@ -458,7 +458,7 @@ class AddAmountViewController: UIViewController {
         }
 
         let noteVC = AddNoteViewController()
-        noteVC.publicKey = publicKey
+        noteVC.paymentInfo = paymentInfo
         noteVC.amount = tariAmount
         noteVC.deepLinkParams = deepLinkParams
 

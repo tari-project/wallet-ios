@@ -72,23 +72,7 @@ extension SplashViewController {
     }
 
     func setupVideoAnimation() {
-        if let path = Bundle.main.path(forResource: "purple_orb", ofType: "mp4") {
-            _ = try? AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playback, mode: .default, options: .mixWithOthers)
-            let pathURL = URL(fileURLWithPath: path)
-            let duration = Int64( ( (Float64(CMTimeGetSeconds(AVAsset(url: pathURL).duration)) *  10.0) - 1) / 10.0 )
-
-            player = AVQueuePlayer()
-            playerLayer = AVPlayerLayer(player: player)
-            playerItem = AVPlayerItem(url: pathURL)
-            playerLooper = AVPlayerLooper(player: player,
-                                          templateItem: playerItem,
-                                          timeRange: CMTimeRange(start: CMTime.zero, end: CMTimeMake(value: duration, timescale: 1)))
-            playerLayer.videoGravity = AVLayerVideoGravity.resizeAspect
-            playerLayer.frame = videoView.bounds
-            player.play()
-            videoView.layer.insertSublayer(playerLayer, at: 0)
-            videoView.clipsToBounds = true
-        }
+        videoView.url = Bundle.main.url(forResource: "purple_orb", withExtension: "mp4")
     }
 
     func setupAnimationContainer() {
@@ -116,10 +100,8 @@ extension SplashViewController {
             videoView.centerXAnchor.constraint(equalTo: generalContainer.centerXAnchor).isActive = true
             animationContainerBottomAnchor = videoView.topAnchor.constraint(equalTo: animationContainer.bottomAnchor)
             animationContainerBottomAnchor?.isActive = true
-
-            videoView.heightAnchor.constraint(lessThanOrEqualTo: generalContainer.widthAnchor).isActive = true
-            videoView.heightAnchor.constraint(greaterThanOrEqualTo: generalContainer.widthAnchor, multiplier: 0.74).isActive = true
-            videoView.widthAnchor.constraint(equalTo: videoView.heightAnchor).isActive = true
+            videoView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+            videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         }
     }
 

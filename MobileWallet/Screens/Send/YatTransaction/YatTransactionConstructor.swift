@@ -1,10 +1,10 @@
-//  ErrorView.swift
-
+//  YatTransactionConstructor.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/04/06
+	Created by Adrian Truszczynski on 25/10/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,42 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-
-class ErrorView: UIView {
-    private let padding: CGFloat = 14
-    private let label = UILabel()
-    var message = "" {
-        didSet {
-            label.text = message
-            if message.isEmpty {
-                isHidden = true
-            } else {
-                isHidden = false
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-                TariLogger.error(message)
-            }
-        }
-    }
-
-    override func draw(_ rect: CGRect) {
-        isHidden = true
-        backgroundColor = .clear
-
-        layer.cornerRadius = 4
-        layer.masksToBounds = true
-        layer.borderWidth = 1
-        layer.borderColor = Theme.shared.colors.warningBoxBorder!.cgColor
-
-        label.textAlignment = .center
-        label.textColor = Theme.shared.colors.warningBoxBorder
-        label.font = Theme.shared.fonts.warningBoxTitleLabel
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        addSubview(label)
-        label.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
-        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
-        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
+enum YatTransactionConstructor {
+    
+    static func buildScene(inputData: YatTransactionModel.InputData) -> YatTransactionViewController {
+        let model = YatTransactionModel(inputData: inputData)
+        return YatTransactionViewController(model: model)
     }
 }

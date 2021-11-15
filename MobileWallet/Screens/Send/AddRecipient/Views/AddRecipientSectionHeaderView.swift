@@ -1,10 +1,10 @@
-//  QRButton.swift
-
+//  AddRecipientSectionHeaderView.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/12/03
+	Created by Adrian Truszczynski on 18/10/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -39,50 +39,51 @@
 */
 
 import UIKit
+import TariCommon
 
-class QRButton: UIButton {
-    private let RADIUS_POINTS: CGFloat = 12.0
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonSetup()
+final class AddRecipientSectionHeaderView: UITableViewHeaderFooterView {
+    
+    // MARK: - Subviews
+    
+    @View private var label: UILabel = {
+        let view = UILabel()
+        view.font = Theme.shared.fonts.txDateValueLabel
+        view.textColor = Theme.shared.colors.txSmallSubheadingLabel
+        return view
+    }()
+    
+    // MARK: - Properties
+    
+    var text: String? {
+        get { label.text }
+        set { label.text = newValue }
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonSetup()
+    
+    // MARK: - Initializers
+    
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        setupConstraints()
     }
-
-    private func commonSetup() {
-        bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: bounds.height)
-        layer.cornerRadius = RADIUS_POINTS
-        backgroundColor = .clear
-        setTitle("", for: .normal)
-        tintColor = Theme.shared.colors.actionButtonBackgroundSimple
-        setImage(Theme.shared.images.qrButton, for: .normal)
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        pulseIn()
-    }
-
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        pulseOut()
-    }
-
-    private func pulseIn() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-            self.alpha = 0.6
-            self.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
-        })
-    }
-
-    private func pulseOut() {
-        UIView.animate(withDuration: 0.1, delay: 0, options: .curveEaseIn, animations: {
-            self.alpha = 1
-            self.transform = CGAffineTransform(scaleX: 1, y: 1)
-        })
+    
+    // MARK: - Setups
+    
+    private func setupConstraints() {
+        
+        addSubview(label)
+        
+        let constratins = [
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor),
+            label.heightAnchor.constraint(equalToConstant: label.font.pointSize * 1.3),
+            heightAnchor.constraint(equalToConstant: 35.0)
+        ]
+        
+        NSLayoutConstraint.activate(constratins)
     }
 }

@@ -57,8 +57,6 @@ struct TariSettings {
     let safMessageDurationSec: UInt64 = 10800
     let deeplinkURI = "tari"
 
-    let faucetServer = "https://faucet.tari.com"
-
     let iCloudContainerIdentifier = "iCloud.com.tari.wallet"
 
     let tariUrl = "https://www.tari.com/"
@@ -74,6 +72,9 @@ struct TariSettings {
     var sentryPublicDSN: String?
     static var appleTeamID: String?
     var giphyApiKey: String?
+    var yatReturnLink: String?
+    var yatOrganizationName: String?
+    var yatOrganizationKey: String?
 
     let pushNotificationServer = "https://push.tari.com"
 
@@ -151,6 +152,21 @@ struct TariSettings {
                     TariSettings.appleTeamID = appleTeamID
                 } else {
                     fatalError("appleTeamID not set in env.json. Shared keychain will not work.")
+                }
+                if let yatReturnLink = jsonResult["yatReturnLink"] as? String, !yatReturnLink.isEmpty {
+                    self.yatReturnLink = yatReturnLink
+                } else {
+                    fatalError("yatReturnLink not set in env.json. Yat related funtionalities will not work.")
+                }
+                if let yatOrganizationName = jsonResult["yatOrganizationName"] as? String, !yatOrganizationName.isEmpty {
+                    self.yatOrganizationName = yatOrganizationName
+                } else {
+                    fatalError("yatOrganizationName not set in env.json. Yat related funtionalities will not work.")
+                }
+                if let yatOrganizationKey = jsonResult["yatOrganizationKey"] as? String, !yatOrganizationKey.isEmpty {
+                    self.yatOrganizationKey = yatOrganizationKey
+                } else {
+                    fatalError("yatOrganizationKey not set in env.json. Yat related funtionalities will not work.")
                 }
             }
         } catch {

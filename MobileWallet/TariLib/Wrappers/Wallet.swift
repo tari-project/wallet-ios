@@ -63,10 +63,8 @@ enum WalletErrors: Error {
     case fundsPending
 }
 
-enum BaseNodeValidationType: String {
-    case utxo
-    case stxo
-    case invalidTxo
+private enum BaseNodeValidationType: String {
+    case txo
     case tx
 }
 
@@ -221,7 +219,7 @@ final class Wallet {
         return (result, nil)
     }
 
-    static func checkValidationResult(type: BaseNodeValidationType,
+    private static func checkValidationResult(type: BaseNodeValidationType,
                                responseId: UInt64,
                                result: BaseNodeValidationResult) {
         guard let currentStatus = baseNodeValidationStatusMap[type] else {
@@ -254,7 +252,7 @@ final class Wallet {
         handleSyncStatus(forResultType: .success)
     }
 
-    @discardableResult static func handleSyncStatus(forResultType resultType: BaseNodeValidationResult?) -> Bool {
+    @discardableResult private static func handleSyncStatus(forResultType resultType: BaseNodeValidationResult?) -> Bool {
         let result = baseNodeValidationStatusMap.contains { $0.value.1 == resultType }
         guard result, resultType != nil else { return result }
         baseNodeValidationStatusMap.removeAll()
@@ -361,32 +359,9 @@ final class Wallet {
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction cancelled callback. txID=\(cancelledTxId) ✅")
         }
-
-        let utxoValidationCompleteCallback: (@convention(c) (UInt64, UInt8) -> Void)? = {
-            responseId, result in
-            Wallet.checkValidationResult(
-                type: .utxo,
-                responseId: responseId,
-                result: BaseNodeValidationResult(rawValue: result)!
-            )
-        }
-
-        let stxoValidationCompleteCallback: (@convention(c) (UInt64, UInt8) -> Void)? = {
-            responseId, result in
-            Wallet.checkValidationResult(
-                type: .stxo,
-                responseId: responseId,
-                result: BaseNodeValidationResult(rawValue: result)!
-            )
-        }
-
-        let invalidTXOValidationCompleteCallback: (@convention(c) (UInt64, UInt8) -> Void)? = {
-            responseId, result in
-            Wallet.checkValidationResult(
-                type: .invalidTxo,
-                responseId: responseId,
-                result: BaseNodeValidationResult(rawValue: result)!
-            )
+        
+        let txoValidationCallback: (@convention(c) (UInt64, UInt8) -> Void) = { responseId, result in
+            Wallet.checkValidationResult(type: .txo, responseId: responseId, result: BaseNodeValidationResult(rawValue: result)!)
         }
 
         let txValidationCompleteCallback: (@convention(c) (UInt64, UInt8) -> Void)? = {
@@ -433,9 +408,7 @@ final class Wallet {
                         directSendResultCallback,
                         storeAndForwardSendResultCallback,
                         txCancellationCallback,
-                        utxoValidationCompleteCallback,
-                        stxoValidationCompleteCallback,
-                        invalidTXOValidationCompleteCallback,
+                        txoValidationCallback,
                         txValidationCompleteCallback,
                         storedMessagesReceivedCallback,
                         isRecoveryInProgressPointer,
@@ -705,58 +678,32 @@ final class Wallet {
     }
 
     func syncBaseNode() throws {
+        
         Wallet.baseNodeValidationStatusMap.removeAll()
         var errorCode: Int32 = -1
-        // utxo validation
-        let utxoValidationRequestId = withUnsafeMutablePointer(
-            to: &errorCode
-        ) {
-            error in
-            wallet_start_utxo_validation(pointer, error)
+        
+        let txoValidationRequestID = withUnsafeMutablePointer(to: &errorCode) { error in
+            wallet_start_txo_validation(pointer, error)
         }
+        
         guard errorCode == 0 else {
             Wallet.baseNodeValidationStatusMap.removeAll()
             throw WalletErrors.generic(errorCode)
         }
-        Wallet.baseNodeValidationStatusMap[.utxo] = (utxoValidationRequestId, nil)
-        TariLogger.info("utxo validation started with request id \(utxoValidationRequestId).")
-        // stxo validation
-        let stxoValidationRequestId = withUnsafeMutablePointer(
-            to: &errorCode
-        ) {
-            error in
-            wallet_start_stxo_validation(pointer, error)
-        }
-        guard errorCode == 0 else {
-            Wallet.baseNodeValidationStatusMap.removeAll()
-            throw WalletErrors.generic(errorCode)
-        }
-        Wallet.baseNodeValidationStatusMap[.stxo] = (stxoValidationRequestId, nil)
-        TariLogger.info("stxo validation started with request id \(stxoValidationRequestId).")
-        // invalid txo validation
-        let invalidTXOValidationRequestId = withUnsafeMutablePointer(
-            to: &errorCode
-        ) {
-            error in
-            wallet_start_invalid_txo_validation(pointer, error)
-        }
-        guard errorCode == 0 else {
-            Wallet.baseNodeValidationStatusMap.removeAll()
-            throw WalletErrors.generic(errorCode)
-        }
-        Wallet.baseNodeValidationStatusMap[.invalidTxo] = (invalidTXOValidationRequestId, nil)
-        TariLogger.info("invalidTxo validation started with request id \(invalidTXOValidationRequestId).")
+        
+        Wallet.baseNodeValidationStatusMap[.txo] = (txoValidationRequestID, nil)
+        TariLogger.info("txo validation started with request id \(txoValidationRequestID).")
+        
         // tx validation
-        let txValidationRequestId = withUnsafeMutablePointer(
-            to: &errorCode
-        ) {
-            error in
+        let txValidationRequestId = withUnsafeMutablePointer(to: &errorCode) { error in
             wallet_start_transaction_validation(pointer, error)
         }
+        
         guard errorCode == 0 else {
             Wallet.baseNodeValidationStatusMap.removeAll()
             throw WalletErrors.generic(errorCode)
         }
+        
         Wallet.baseNodeValidationStatusMap[.tx] = (txValidationRequestId, nil)
         TariLogger.info("tx validation started with request id \(txValidationRequestId).")
         TariEventBus.postToMainThread(.baseNodeSyncStarted, sender: nil)
@@ -808,36 +755,30 @@ final class Wallet {
     }
 
     func recentPublicKeys(limit: Int) throws -> [PublicKey] {
-        let completedPublicKeys = try txsPublicKeys(completedTxs, limit: limit)
-        let pendingInboundPublicKeys = try txsPublicKeys(pendingInboundTxs, limit: limit)
-        let pendingOutboundPublicKeys = try txsPublicKeys(pendingOutboundTxs, limit: limit)
-
-        return completedPublicKeys.union(pendingInboundPublicKeys).union(pendingOutboundPublicKeys).suffix(limit)
-    }
-
-    private func txsPublicKeys<Txs: TxsProtocol>(_ transactions: (txs: Txs?, txsError: Error?), limit: Int) throws -> Set<PublicKey> {
-        guard let txs = transactions.txs else { throw transactions.txsError! }
-
-        let (txsCount, txsCountError) = txs.count
-        guard txsCountError == nil else { throw txsCountError! }
-
-        var publicKeys: Set<PublicKey> = []
-
-        if txsCount > 0 {
-            for n in 0...txsCount - 1 {
-                if publicKeys.count >= limit {
-                    return publicKeys
-                }
-                let tx = try txs.at(position: UInt32(n))
-                let (publicKey, pubKeyError) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
-                guard let pubKey = publicKey, pubKeyError == nil else {
-                    throw pubKeyError!
-                }
-                publicKeys.insert(pubKey)
+        
+        let completedPublicKeys = txsPublicKeyTimestampPair(transactions: try completedTransactions())
+        let pendingInboundPublicKeys = txsPublicKeyTimestampPair(transactions: try pendingInboundTransactions())
+        let pendingOutboundPublicKey = txsPublicKeyTimestampPair(transactions: try pendingOutboundTransactions())
+        
+        let allPairs = completedPublicKeys + pendingInboundPublicKeys + pendingOutboundPublicKey
+        
+        let result = allPairs
+            .sorted { $0.timestamp > $1.timestamp }
+            .map(\.publicKey)
+            .reduce(into: [PublicKey]()) { result, publicKey in
+                guard !result.contains(publicKey) else { return }
+                result.append(publicKey)
             }
+            .prefix(limit)
+        
+        return Array(result)
+    }
+    
+    private func txsPublicKeyTimestampPair<T: TxsProtocol>(transactions: T) -> [(publicKey: PublicKey, timestamp: UInt64)] {
+        transactions.list.0.compactMap {
+            guard let publicKey = $0.direction == .inbound ? $0.sourcePublicKey.0 : $0.destinationPublicKey.0 else { return nil }
+            return (publicKey: publicKey, timestamp: $0.timestamp.0)
         }
-
-        return publicKeys
     }
 
     func coinSplit(amount: UInt64, splitCount: UInt64, fee: UInt64, message: String, lockHeight: UInt64) throws -> UInt64 {
@@ -846,7 +787,7 @@ final class Wallet {
             message.withCString({ cstr in
                 wallet_coin_split(pointer, amount, splitCount, fee, cstr, lockHeight, error)
             })
-            })
+        })
 
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)

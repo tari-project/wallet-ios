@@ -47,7 +47,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
     private static var giphyKeywords = ["money", "money machine", "rich"]
     private static var giphyCurrentKeywordIndex = 0
 
-    var publicKey: PublicKey?
+    var paymentInfo: PaymentInfo?
     var amount: MicroTari?
     var deepLinkParams: DeepLinkParams?
 
@@ -132,7 +132,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
     }
 
     private func displayAliasOrEmojiId() {
-        guard let wallet = TariLib.shared.tariWallet, let pubKey = publicKey else {
+        guard let wallet = TariLib.shared.tariWallet, let pubKey = paymentInfo?.publicKey else {
             return
         }
 
@@ -293,7 +293,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
             return
         }
 
-        guard let recipientPublicKey = publicKey else {
+        guard let recipientPublicKey = paymentInfo?.publicKey else {
             UserFeedback.shared.error(
                 title: localized("add_note.error.recipient_public_key.title"),
                 description: localized("add_note.error.recipient_public_key.description")
@@ -329,18 +329,44 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
     }
 
     private func sendTx(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari) {
-        // Init first so it starts listening for a callback right away
-        let sendingVC = SendingTariViewController()
-
-        if let m = attachment {
-            sendingVC.note = "\(noteText) \(m.embedUrl ?? "")"
-        } else {
-            sendingVC.note = noteText
+        
+        var message = noteText
+        
+        if let attachment = attachment, let embedUrl = attachment.embedUrl {
+            message += " \(embedUrl)"
         }
-
-        sendingVC.recipientPubKey = recipientPublicKey
-        sendingVC.amount = amount
-        self.navigationController?.pushViewController(sendingVC, animated: false)
+        
+        guard let yatID = paymentInfo?.yatID else {
+            // Init first so it starts listening for a callback right away
+            let sendingVC = SendingTariViewController()
+            sendingVC.note = message
+            sendingVC.recipientPubKey = recipientPublicKey
+            sendingVC.amount = amount
+            navigationController?.pushViewController(sendingVC, animated: false)
+            return
+        }
+        
+        let inputData = YatTransactionModel.InputData(publicKey: recipientPublicKey, amount: amount, message: message, yatID: yatID)
+        let controller = YatTransactionConstructor.buildScene(inputData: inputData)
+        
+        controller.onCompletion = { [weak self] error in
+            self?.navigationController?.popToRootViewController(animated: true)
+            guard let error = error else { return }
+            self?.show(transactionError: error)
+        }
+        
+        present(controller, animated: false)
+    }
+    
+    private func show(transactionError: TransactionError) {
+        switch transactionError {
+        case .noConnection:
+            UserFeedback.shared.error(title: localized("sending_tari.error.interwebs_connection.title"), description: localized("sending_tari.error.interwebs_connection.description"))
+            Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Tor Issue")
+        case .general:
+            UserFeedback.shared.error(title: localized("sending_tari.error.no_connection.title"), description: localized("sending_tari.error.no_connection.description"))
+            Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Node Issue")
+        }
     }
 }
 
