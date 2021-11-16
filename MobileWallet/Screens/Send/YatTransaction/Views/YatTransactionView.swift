@@ -81,6 +81,12 @@ final class YatTransactionView: UIView {
         return view
     }()
     
+    private let bottomAlphaMask: CAGradientLayer = {
+        let layer = CAGradientLayer()
+        layer.colors = [UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
+        return layer
+    }()
+    
     // MARK: - Properties
     
     var state: YatTransactionViewState = .idle {
@@ -159,8 +165,8 @@ final class YatTransactionView: UIView {
             return
         case let .initial(transaction, yatID):
             startAnimation(transactionText: transaction, yatID: yatID)
-        case let .playVideo(url):
-            playVideo(url: url)
+        case let .playVideo(url, scaleToFill):
+            playVideo(url: url, scaleToFill: scaleToFill)
         case .completion:
             showCompletionMessage(success: true)
         case .failed:
@@ -200,9 +206,11 @@ final class YatTransactionView: UIView {
         showScene()
     }
     
-    private func playVideo(url: URL) {
+    private func playVideo(url: URL, scaleToFill: Bool) {
 
         videoView.url = url
+        videoView.videoGravity = scaleToFill ? .resizeAspectFill : .resizeAspect
+        videoView.layer.mask = scaleToFill ? bottomAlphaMask : nil
         transactionLabelCenterConstraint?.isActive = false
         transactionLabelBottomConstraint?.isActive = true
         
@@ -259,5 +267,15 @@ final class YatTransactionView: UIView {
     
     private func removeMask() {
         layer.mask = nil
+    }
+    
+    // MARK: - Layout
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        bottomAlphaMask.frame = videoView.bounds
+        let startPoint = 100.0 / bottomAlphaMask.bounds.height
+        bottomAlphaMask.locations = [0.0, startPoint, 1.0].map { NSNumber(value: $0) }
     }
 }
