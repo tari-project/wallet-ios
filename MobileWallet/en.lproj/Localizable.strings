@@ -488,6 +488,7 @@
 "select_network.title" = "Select Network";
 "select_network.dialog.switch_network.title" = "One thing before you go";
 "select_network.dialog.switch_network.description" = "You will be logged out and switched to a different network. Do you want to continue?";
+"select_network.table_view.section_header.description" = "Please select the network to which you want to connect.";
 
 /* Select Base Node View */
 "select_base_node.title" = "Select Base Node";
