@@ -66,6 +66,9 @@ final class SelectNetworkViewController: SettingsParentTableViewController {
     override func setupViews() {
         super.setupViews()
         navigationBar.title = localized("select_network.title")
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 44.0
+        tableView.register(headerFooterType: SettingsHeaderView.self)
     }
 
     private func setupFeedbacks() {
@@ -102,6 +105,7 @@ final class SelectNetworkViewController: SettingsParentTableViewController {
 }
 
 extension SelectNetworkViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 65.0 }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -112,6 +116,12 @@ extension SelectNetworkViewController: UITableViewDelegate {
                                          actionTitle: localized("common.continue"), cancelTitle: localized("common.cancel")) { [weak self] in
             self?.model.update(selectedIndex: indexPath.row)
         }
-
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard section == 0 else { return nil }
+        let headerView = tableView.dequeueReusableHeaderFooterView(type: SettingsHeaderView.self)
+        headerView.text = localized("select_network.table_view.section_header.description")
+        return headerView
     }
 }

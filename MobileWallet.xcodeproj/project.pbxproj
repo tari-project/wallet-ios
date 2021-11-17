@@ -205,6 +205,7 @@
 		3AFAC362271C6F9E008AA842 /* UITextField+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAC361271C6F9E008AA842 /* UITextField+Combine.swift */; };
 		3AFAEBF226B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */; };
 		3AFAEBF626B17D1700B82603 /* SimpleErrorModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAEBF526B17D1700B82603 /* SimpleErrorModel.swift */; };
+		3AFC6E032745051400A20287 /* SettingsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFC6E022745051400A20287 /* SettingsHeaderView.swift */; };
 		491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AddAmountViewController.swift */; };
 		49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C6237962CB005058AB /* libc++.tbd */; };
@@ -479,6 +480,7 @@
 		3AFAC361271C6F9E008AA842 /* UITextField+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Combine.swift"; sourceTree = "<group>"; };
 		3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAvoidingContentView.swift; sourceTree = "<group>"; };
 		3AFAEBF526B17D1700B82603 /* SimpleErrorModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleErrorModel.swift; sourceTree = "<group>"; };
+		3AFC6E022745051400A20287 /* SettingsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeaderView.swift; sourceTree = "<group>"; };
 		491AB89F23F3FF4400372189 /* AddAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAmountViewController.swift; sourceTree = "<group>"; };
 		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
 		4C2C95AF23795919005058AB /* libwallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libwallet_ffi.a; sourceTree = "<group>"; };
@@ -976,6 +978,7 @@
 		370E885D24FE6E9A00576F61 /* AdvancedSettings */ = {
 			isa = PBXGroup;
 			children = (
+				3AFC6E012745050500A20287 /* Views */,
 				3A62674426D76E52007F9895 /* Select Network */,
 				3A4CE33426A1A02700ECF460 /* SelectBaseNode */,
 				3ADEBF6026A59A4700E87C84 /* AddBaseNode */,
@@ -1336,6 +1339,14 @@
 				3AF53B7D27311D1400C78562 /* SeedWordsTests.swift */,
 			);
 			path = WalletLib;
+			sourceTree = "<group>";
+		};
+		3AFC6E012745050500A20287 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3AFC6E022745051400A20287 /* SettingsHeaderView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		491AB89E23F3FF1200372189 /* AddAmount */ = {
@@ -1729,6 +1740,7 @@
 				37875E4424D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView.swift in Sources */,
 				3AC05F9B26C3F302002742C6 /* TransactionsListHeaderView.swift in Sources */,
+				3AFC6E032745051400A20287 /* SettingsHeaderView.swift in Sources */,
 				00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				3AFAEBF226B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
 				37B48A7F24B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
