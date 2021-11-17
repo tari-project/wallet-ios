@@ -153,9 +153,15 @@ final class RestoreWalletFromSeedsModel {
     }
 
     private func handle(walletError: WalletErrors) {
+        
+        guard let description = walletError.errorDescription else {
+            handleUnknownError()
+            return
+        }
+        
         viewModel.error = SimpleErrorModel(
             title: localized("restore_from_seed_words.error.title"),
-            description: "",
+            description: description,
             error: walletError
         )
     }
