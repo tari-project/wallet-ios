@@ -165,6 +165,7 @@
 		3A5E881E26BA9CF10029BB8B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A5E881D26BA9CF10029BB8B /* HomeView.swift */; };
 		3A62674626D76E6B007F9895 /* SelectNetworkViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A62674526D76E6B007F9895 /* SelectNetworkViewController.swift */; };
 		3A62674A26D76EC4007F9895 /* SelectNetworkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A62674926D76EC4007F9895 /* SelectNetworkModel.swift */; };
+		3A6734662742664C00F6203C /* YatCacheManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A6734652742664C00F6203C /* YatCacheManagerTests.swift */; };
 		3A72DC3D26DFA02900E0BC43 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC3C26DFA02900E0BC43 /* NetworkManager.swift */; };
 		3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC4026DFA1E100E0BC43 /* NetworkSettings.swift */; };
 		3A72DC4526DFA26000E0BC43 /* TariNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC4426DFA26000E0BC43 /* TariNetwork.swift */; };
@@ -438,6 +439,7 @@
 		3A5E881D26BA9CF10029BB8B /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		3A62674526D76E6B007F9895 /* SelectNetworkViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNetworkViewController.swift; sourceTree = "<group>"; };
 		3A62674926D76EC4007F9895 /* SelectNetworkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectNetworkModel.swift; sourceTree = "<group>"; };
+		3A6734652742664C00F6203C /* YatCacheManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YatCacheManagerTests.swift; sourceTree = "<group>"; };
 		3A72DC3C26DFA02900E0BC43 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		3A72DC4026DFA1E100E0BC43 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		3A72DC4426DFA26000E0BC43 /* TariNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariNetwork.swift; sourceTree = "<group>"; };
@@ -1110,6 +1112,7 @@
 				3AB2172D272BE7D3007139F1 /* NetworkManagerTests.swift */,
 				3AB2172F272BEC7A007139F1 /* StringTokenizationTests.swift */,
 				3AF53B8027311D9800C78562 /* MobileWalletTests.swift */,
+				3A6734652742664C00F6203C /* YatCacheManagerTests.swift */,
 			);
 			path = UnitTests;
 			sourceTree = "<group>";
@@ -1883,6 +1886,7 @@
 				3AB2172E272BE7D3007139F1 /* NetworkManagerTests.swift in Sources */,
 				3AF53B8127311D9800C78562 /* MobileWalletTests.swift in Sources */,
 				3AB21730272BEC7A007139F1 /* StringTokenizationTests.swift in Sources */,
+				3A6734662742664C00F6203C /* YatCacheManagerTests.swift in Sources */,
 				3AF53B7E27311D1400C78562 /* SeedWordsTests.swift in Sources */,
 				3AB21736272BEF5A007139F1 /* TariLibWrapperTests.swift in Sources */,
 			);

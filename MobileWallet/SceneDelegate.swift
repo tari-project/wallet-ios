@@ -75,6 +75,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let appReturnLink = TariSettings.shared.yatReturnLink, let organizationName = TariSettings.shared.yatOrganizationName, let organizationKey = TariSettings.shared.yatOrganizationKey {
             Yat.configuration = YatConfiguration(appReturnLink: appReturnLink, organizationName: organizationName, organizationKey: organizationKey)
         }
+        
+        if let yatWebServiceURL = TariSettings.shared.yatWebServiceURL, let yatApiURL = TariSettings.shared.yatApiURL {
+            Yat.urls = YatURLs(webServiceURL: yatWebServiceURL, apiURL: yatApiURL)
+        }
 
         guard let _ = (scene as? UIWindowScene) else { return }
         if let windowScene = scene as? UIWindowScene {
