@@ -243,7 +243,7 @@
 "wallet.error.mine_tx" = "Failed to mine test transaction.";
 "wallet.error.remove_contact" = "Failed to remove contact.";
 "wallet.error.send_tx" = "Failed to send transaction.";
-"wallet.error.generic_code" = "Generic error code:";
+"wallet.error.generic_code" = "The application has encountered an error.\nError code:";
 "wallet.error.insufficient_funds" = "Insufficient funds. Available spendable Tari:";
 "wallet.error.invalid_public_key_hex" = "Invalid public key hex.";
 "wallet.error.invalid_signature" = "Invalid signature created";
