@@ -123,8 +123,13 @@ struct WalletBalance: Equatable {
 final class Wallet {
 
     enum WalletError: Int32, Error {
+        
         case databaseDataError = 114
         case invalidPassphrase = 428
+        case seedWordsInvalidData = 429
+        case seedWordsVersionMismatch = 430
+        case seedWordsDecryptionFailed = 431
+        case seedWordsCrcError = 432
         case unknown = -1
 
         init?(errorCode: Int32) {

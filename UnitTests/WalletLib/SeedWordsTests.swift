@@ -46,11 +46,11 @@ final class SeedWordsTests: XCTestCase {
     func testWalletSeedInitializationWithSuccess() {
         
         let inputSeedWords = [
-            "dwarf", "basic", "depend", "tissue", "harsh",
-            "divert", "fatal", "badge", "boss", "power",
-            "loop", "quick", "skull", "abandon", "flip",
-            "regret", "inject", "birth", "egg", "nice",
-            "track", "canyon", "agree", "snake"
+            "abandon", "oven", "excuse", "sustain", "next",
+            "story", "fruit", "tool", "ramp", "milk",
+            "student", "snake", "hat", "table", "hospital",
+            "pipe", "business", "farm", "ensure", "approve",
+            "uniform", "fish", "wild", "wagon"
         ]
         
         let seedWords = try? SeedWords(words: inputSeedWords)
@@ -61,11 +61,11 @@ final class SeedWordsTests: XCTestCase {
     func testWalletSeedInitliaziationWithInvalidWord() {
         
         let inputSeedWords = [
-            "dwarf", "basic", "depend", "tissue", "harsh",
-            "divert", "fatal", "badge", "IAMERROR", "power",
-            "loop", "quick", "skull", "abandon", "flip",
-            "regret", "inject", "birth", "egg", "nice",
-            "track", "canyon", "agree", "snake"
+            "abandon", "oven", "excuse", "sustain", "next",
+            "story", "fruit", "tool", "IAMERROR", "milk",
+            "student", "snake", "hat", "table", "hospital",
+            "pipe", "business", "farm", "ensure", "approve",
+            "uniform", "fish", "wild", "wagon"
         ]
         
         var seedWords: SeedWords?
@@ -83,8 +83,8 @@ final class SeedWordsTests: XCTestCase {
     func testWalletSeedInitliaziationWithNotEnoughtSeedWords() {
         
         let inputSeedWords = [
-            "dwarf", "basic", "depend", "tissue", "harsh",
-            "divert", "fatal", "badge", "boss", "power"
+            "abandon", "oven", "excuse", "sustain", "next",
+            "story", "fruit", "tool", "ramp", "milk"
         ]
         
         var seedWords: SeedWords?
@@ -102,11 +102,11 @@ final class SeedWordsTests: XCTestCase {
     func testWalletSeedInitliaziationWithTooManySeedWords() {
         
         let inputSeedWords = [
-            "dwarf", "basic", "depend", "tissue", "harsh",
-            "divert", "fatal", "badge", "boss", "power",
-            "loop", "quick", "skull", "abandon", "flip",
-            "regret", "inject", "birth", "egg", "nice",
-            "track", "canyon", "agree", "snake", "dwarf"
+            "abandon", "oven", "excuse", "sustain", "next",
+            "story", "fruit", "tool", "ramp", "milk",
+            "student", "snake", "hat", "table", "hospital",
+            "pipe", "business", "farm", "ensure", "approve",
+            "uniform", "fish", "wild", "wagon", "abandon"
         ]
         
         var seedWords: SeedWords?
