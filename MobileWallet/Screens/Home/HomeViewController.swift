@@ -41,6 +41,7 @@
 import UIKit
 import FloatingPanel
 import Combine
+import TariCommon
 
 enum ScrollDirection {
     case none
@@ -50,7 +51,6 @@ enum ScrollDirection {
 
 final class HomeViewController: UIViewController {
 
-    private static let GRABBER_WIDTH: Double = 55.0
     private static let PANEL_BORDER_CORNER_RADIUS: CGFloat = 15.0
 
     private lazy var txsTableVC: TxsListViewController = {
@@ -61,8 +61,13 @@ final class HomeViewController: UIViewController {
 
     private let floatingPanelController = FloatingPanelController()
     private let tapOnKeyWindowGestureRecognizer = UITapGestureRecognizer()
-
-    private lazy var grabberHandle = UIView(frame: grabberRect(width: HomeViewController.GRABBER_WIDTH))
+    
+    @View private var grabberHandle: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 2.5
+        view.backgroundColor = Theme.shared.colors.floatingPanelGrabber
+        return view
+    }()
 
     private var hapticEnabled = false
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
@@ -91,6 +96,15 @@ final class HomeViewController: UIViewController {
 
     private let mainView = HomeView()
     private var cancelables: Set<AnyCancellable> = []
+    
+    private var grabberWidthConstraint: NSLayoutConstraint?
+    
+    private var isGrabberVisible: Bool = true {
+        didSet {
+            grabberWidthConstraint?.constant = isGrabberVisible ? 55.0 : 0.0
+            grabberHandle.alpha = isGrabberVisible ? 1.0 : 0.0
+        }
+    }
 
     override func loadView() {
         view = mainView
@@ -391,15 +405,6 @@ final class HomeViewController: UIViewController {
         mainView.avaiableFoundsValueLabel.attributedText = text
     }
 
-    private func grabberRect(width: Double) -> CGRect {
-        return CGRect(
-            x: (Double(self.view.frame.size.width) / 2) - (width / 2),
-            y: 20,
-            width: width,
-            height: 5
-        )
-    }
-
     private func showHideFullScreen() {
         if isTxViewFullScreen {
             // Don't show header for first intro
@@ -421,13 +426,10 @@ final class HomeViewController: UIViewController {
                 withDuration: CATransaction.animationDuration(),
                 delay: 0,
                 options: .curveEaseIn,
-                animations: {
-                    [weak self] in
-                    guard let self = self else { return }
-                    self.floatingPanelController.surfaceView.cornerRadius = 0
-                    self.grabberHandle.frame = self.grabberRect(width: 0)
-                    self.grabberHandle.alpha = 0
-                    self.view.layoutIfNeeded()
+                animations: { [weak self] in
+                    self?.floatingPanelController.surfaceView.cornerRadius = 0
+                    self?.isGrabberVisible = false
+                    self?.view.layoutIfNeeded()
                 }
             )
         } else {
@@ -451,13 +453,10 @@ final class HomeViewController: UIViewController {
                 withDuration: 0.5,
                 delay: 0,
                 options: .curveEaseIn,
-                animations: {
-                    [weak self] in
-                    guard let self = self else { return }
-                    self.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
-                    self.grabberHandle.frame = self.grabberRect(width: HomeViewController.GRABBER_WIDTH)
-                    self.grabberHandle.alpha = 1
-                    self.view.layoutIfNeeded()
+                animations: { [weak self] in
+                    self?.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
+                    self?.isGrabberVisible = true
+                    self?.view.layoutIfNeeded()
                 }
             )
         }
@@ -779,10 +778,23 @@ extension HomeViewController {
     }
 
     private func setupGrabber(_ floatingPanelController: FloatingPanelController) {
-        grabberHandle.layer.cornerRadius = 2.5
-        grabberHandle.backgroundColor = Theme.shared.colors.floatingPanelGrabber
+        
         floatingPanelController.surfaceView.grabberHandle.isHidden = true
         floatingPanelController.surfaceView.addSubview(grabberHandle)
+        
+        let grabberWidthConstraint = grabberHandle.widthAnchor.constraint(equalToConstant: 0.0)
+        self.grabberWidthConstraint = grabberWidthConstraint
+        
+        let constraints = [
+            grabberHandle.centerXAnchor.constraint(equalTo: floatingPanelController.surfaceView.grabberHandle.centerXAnchor),
+            grabberHandle.topAnchor.constraint(equalTo: floatingPanelController.surfaceView.topAnchor, constant: 20.0),
+            grabberWidthConstraint,
+            grabberHandle.heightAnchor.constraint(equalToConstant: 5.0)
+        ]
+        
+        isGrabberVisible = true
+        
+        NSLayoutConstraint.activate(constraints)
     }
 
     private func enableWindowTapGesture() {
