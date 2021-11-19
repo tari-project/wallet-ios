@@ -172,13 +172,9 @@ struct TariSettings {
                 }
                 if let yatWebServiceURL = jsonResult["yatWebServiceURL"] as? String, !yatWebServiceURL.isEmpty, let url = URL(string: yatWebServiceURL) {
                     self.yatWebServiceURL = url
-                } else {
-                    fatalError("yatWebServiceURL not set in env.json. Yat related funtionalities will not work.")
                 }
                 if let yatApiURL = jsonResult["yatApiURL"] as? String, !yatApiURL.isEmpty, let url = URL(string: yatApiURL) {
                     self.yatApiURL = url
-                } else {
-                    fatalError("yatApiURL not set in env.json. Yat related funtionalities will not work.")
                 }
             }
         } catch {
