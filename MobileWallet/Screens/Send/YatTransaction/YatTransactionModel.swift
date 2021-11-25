@@ -46,7 +46,7 @@ import Foundation
 enum YatTransactionViewState {
     case idle
     case initial(transaction: String, yatID: String)
-    case playVideo(url: URL)
+    case playVideo(url: URL, scaleToFill: Bool)
     case completion
     case failed
 }
@@ -144,23 +144,24 @@ final class YatTransactionModel {
     private func fetchAnimation() {
         
         Yat.api.fetchFromKeyValueStorePublisher(forYat: inputData.yatID, dataType: VisualizerFileLocations.self)
-            .compactMap(\.data.video)
-            .compactMap { URL(string: $0) }
+            .map(\.data)
             .sink(
                 receiveCompletion: { _ in },
-                receiveValue: { [weak self] in self?.handle(assetURL: $0) }
+                receiveValue: { [weak self] in self?.handle(fileLocations: $0) }
             )
             .store(in: &cancellables)
     }
     
-    private func handle(assetURL: URL) {
+    private func handle(fileLocations: VisualizerFileLocations) {
         
-        guard let cachedFileURL = cacheManager.fetchFileURL(name: assetURL.lastPathComponent) else {
-            download(assetURL: assetURL)
+        guard let path = fileLocations.verticalVideo ?? fileLocations.video, let url = URL(string: path) else { return }
+        
+        guard let cachedFileData = cacheManager.fetchFileData(name: url.lastPathComponent) else {
+            download(assetURL: url)
             return
         }
         
-        viewState = .playVideo(url: cachedFileURL)
+        play(fileData: cachedFileData)
         TariLogger.info("Play Yat visualisation from local cache")
     }
     
@@ -177,9 +178,14 @@ final class YatTransactionModel {
     }
     
     private func save(videoData: Data, name: String) {
-        guard let fileURL = cacheManager.save(data: videoData, name: name) else { return }
-        viewState = .playVideo(url: fileURL)
+        guard let fileData = cacheManager.save(data: videoData, name: name) else { return }
+        play(fileData: fileData)
         TariLogger.info("Play Yat visualisation from web")
+    }
+    
+    private func play(fileData: YatCacheManager.FileData) {
+        let scaleToFill = fileData.identifier == .verticalVideo
+        viewState = .playVideo(url: fileData.url, scaleToFill: scaleToFill)
     }
     
     // MARK: - Wallet

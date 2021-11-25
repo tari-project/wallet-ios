@@ -215,15 +215,6 @@ class ICloudBackup: NSObject {
                 fileURL = try zipWalletDatabase()
             }
 
-            if TariSettings.shared.isUnitTesting {
-                try ICloudServiceMock.uploadBackup(Backup(url: fileURL))
-                progressValue = 0.0
-                inProgress = false
-                isLastBackupFailed = false
-                try cleanTempDirectory()
-                return
-            }
-
             if !FileManager.default.fileExists(atPath: remoteBackupURL.path) {
                 try FileManager.default.createDirectory(
                     at: remoteBackupURL,
@@ -641,15 +632,6 @@ extension ICloudBackup {
     }
 
     private func downloadBackup(completion: @escaping ((_ backup: Backup?, _ error: Error?) -> Void)) {
-        if TariSettings.shared.isUnitTesting {
-            do {
-                let backup = try ICloudServiceMock.downloadBackup()
-                completion(backup, nil)
-            } catch {
-                completion(nil, error)
-            }
-            return
-        }
         do {
             let backup = try getLastWalletBackup()
             var lastPathComponent = backup.url.lastPathComponent

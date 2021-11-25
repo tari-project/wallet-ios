@@ -48,6 +48,7 @@ class PendingInboundTx: TxProtocol {
     var cachedContact: Contact?
 
     var destinationPublicKey: (PublicKey?, Error?)
+    var transactionKernel: (CompletedTxKernel?, Error?)
 
     private var ptr: OpaquePointer
 

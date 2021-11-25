@@ -38,7 +38,23 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Foundation
+
 final class YatCacheManager {
+    
+    struct FileData {
+        let url: URL
+        let identifier: FileIdentifier
+    }
+    
+    enum FileIdentifier: String {
+        case verticalVideo = "vert"
+        case normalVideo = ""
+        
+        init(identifier: String) {
+            self = Self(rawValue: identifier) ?? .normalVideo
+        }
+    }
     
     // MARK: - Properties
     
@@ -46,12 +62,26 @@ final class YatCacheManager {
     
     // MARK: - Actions
     
-    func fetchFileURL(name: String) -> URL? {
-        guard let fileURL = cacheURL?.appendingPathComponent(name), FileManager.default.fileExists(atPath: fileURL.path) else { return nil }
-        return fileURL
+    func fetchFileData(name: String) -> FileData? {
+        
+        guard let cacheURL = cacheURL, let requestedFileComponents = name.components,
+              let fileURL = try? FileManager.default.contentsOfDirectory(atURL: cacheURL, sortedBy: .created).first(where: { $0.lastPathComponent.hasPrefix(requestedFileComponents.assetName) }),
+              let cachedFileComponents = fileURL.absoluteString.components else {
+                  return nil
+              }
+        
+        if requestedFileComponents.hash != cachedFileComponents.hash {
+            return nil
+        }
+        
+        if requestedFileComponents.identifier == .verticalVideo, cachedFileComponents.identifier == .normalVideo {
+            return nil
+        }
+        
+        return FileData(url: fileURL, identifier: cachedFileComponents.identifier)
     }
     
-    func save(data: Data, name: String) -> URL? {
+    func save(data: Data, name: String) -> FileData? {
         
         guard let cacheURL = cacheURL, let components = name.components else { return nil }
         createDirectoryIfNeeded()
@@ -60,7 +90,7 @@ final class YatCacheManager {
             try removeObsoleteData(prefix: components.assetName)
             let fileURL = cacheURL.appendingPathComponent(name)
             try data.write(to: fileURL)
-            return fileURL
+            return FileData(url: fileURL, identifier: components.identifier)
         } catch {
             TariLogger.error("Unable to cache Yat Visualisation", error: error)
             return nil
@@ -82,15 +112,24 @@ final class YatCacheManager {
 
 private extension String {
     
-    var components: (assetName: String, hash: String, fileExtension: String)? {
+    var components: (assetName: String, hash: String, identifier: YatCacheManager.FileIdentifier, fileExtension: String)? {
+        
         var elements = split(separator: "-")
         guard elements.count >= 2 else { return nil }
         let lastElement = elements.removeLast()
-        let trailingElements = lastElement.split(separator: ".")
-        guard trailingElements.count == 2 else { return nil }
-        let assetName = elements.joined()
-        let hash = String(trailingElements[0])
-        let fileExtension = String(trailingElements[1])
-        return (assetName: assetName, hash: hash, fileExtension: fileExtension)
+        var trailingElements = lastElement.split(separator: ".")
+        guard trailingElements.count >= 2 else { return nil }
+        let assetName = elements.joined(separator: "-")
+        let fileExtension = trailingElements.removeLast()
+        var rawIdentifier: String = ""
+        
+        if trailingElements.count == 2 {
+            rawIdentifier = String(trailingElements.removeLast())
+        }
+        
+        let hash = trailingElements.joined(separator: ".")
+        let identifier = YatCacheManager.FileIdentifier(identifier: rawIdentifier)
+        
+        return (assetName: assetName, hash: hash, identifier: identifier, fileExtension: String(fileExtension))
     }
 }

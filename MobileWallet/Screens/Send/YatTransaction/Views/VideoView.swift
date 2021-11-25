@@ -53,6 +53,11 @@ final class VideoView: UIView {
         didSet { startPlayer() }
     }
     
+    var videoGravity: AVLayerVideoGravity {
+        get { videoLayer.videoGravity }
+        set { videoLayer.videoGravity = newValue }
+    }
+    
     private var looper: AVPlayerLooper?
     
     // MARK: - Initializers

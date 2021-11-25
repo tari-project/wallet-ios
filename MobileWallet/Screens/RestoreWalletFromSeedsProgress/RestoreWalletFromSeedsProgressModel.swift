@@ -39,6 +39,7 @@
 */
 
 import Combine
+import UIKit
 
 final class RestoreWalletFromSeedsProgressModel {
 
@@ -63,6 +64,13 @@ final class RestoreWalletFromSeedsProgressModel {
     // MARK: - Setups
 
     private func registerOnRestoreProgressCallbacks() {
+        
+        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                self?.resumeRestoringWallet()
+            }
+            .store(in: &cancelables)
+        
         TariEventBus
             .events(forType: .restoreWalletStatusUpdate)
             .compactMap { $0.object as? RestoreWalletStatus }
@@ -80,6 +88,17 @@ final class RestoreWalletFromSeedsProgressModel {
             }
         } catch {
             handleStartRecoveryFailure()
+        }
+    }
+    
+    private func resumeRestoringWallet() {
+        WalletConnectivityManager.startWallet { [weak self] result in
+            switch result {
+            case .success:
+                self?.startRestoringWallet()
+            case .failure:
+                self?.handleStartRecoveryFailure()
+            }
         }
     }
 

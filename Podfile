@@ -1,11 +1,7 @@
-# Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '13.0'
+use_frameworks!
 
 target 'MobileWallet' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
-
-  # Pods for MobileWallet
   pod 'SwiftLint'
   pod 'FloatingPanel', '1.7.5'
   pod 'lottie-ios'
@@ -18,16 +14,6 @@ target 'MobileWallet' do
   pod 'Giphy', '2.0.0'
   pod 'IPtProxy', '~> 0.1.0'
   pod 'OpenSSL-Universal'
-  pod 'YatLib', '0.2.2'
+  pod 'YatLib', '0.2.3'
   pod 'TariCommon', '0.1.0'
-
-  target 'MobileWalletTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
-  target 'MobileWalletUITests' do
-    # Pods for testing
-  end
-
 end

@@ -1,10 +1,10 @@
-//  AuthFunctions.swift
-	
+//  Balance.swift
+
 /*
-	Package MobileWalletUITests
-	Created by Jason van den Berg on 2019/11/14
+	Package MobileWallet
+	Created by David Main on 11/3/21
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 11.6
 
 	Copyright 2019 The Tari Project
 
@@ -39,14 +39,47 @@
 */
 
 import Foundation
-import XCTest
 
-// Face ID asks the user for permission the first time you try to authenticate. Touch ID doesn't.
-func acceptPermissionsPromptIfRequired() {
-    let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard") // Shows permissions alerts over our app
-    
-    let permissionsOkayButton = springboard.alerts.buttons["OK"].firstMatch
-    if permissionsOkayButton.exists {
-        permissionsOkayButton.tap()
+final class Balance {
+    let pointer: OpaquePointer
+
+    init (pointer: OpaquePointer) {
+        self.pointer = pointer
+    }
+
+    var available: UInt64 {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            balance_get_available(pointer, error)})
+        guard errorCode == 0 else { return 0 }
+        return result
+    }
+
+    var incoming: UInt64 {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            balance_get_pending_incoming(pointer, error)})
+        guard errorCode == 0 else { return 0 }
+        return result
+    }
+
+    var outgoing: UInt64 {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            balance_get_pending_outgoing(pointer, error)})
+        guard errorCode == 0 else { return 0 }
+        return result
+    }
+
+    var timelocked: UInt64 {
+        var errorCode: Int32 = -1
+        let result = withUnsafeMutablePointer(to: &errorCode, { error in
+            balance_get_time_locked(pointer, error)})
+        guard errorCode == 0 else { return 0 }
+        return result
+    }
+
+    deinit {
+        balance_destroy(pointer)
     }
 }

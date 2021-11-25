@@ -39,18 +39,21 @@
 */
 
 import UIKit
+import TariCommon
 
 final class TokenInputView: UICollectionViewCell {
 
     // MARK: - Subviews
+    
+    @View var toolbar = TokensToolbar()
 
-    private let textField: ObservableTextField = {
+    @View private var textField: ObservableTextField = {
         let view = ObservableTextField()
         view.font = Theme.shared.fonts.restoreFromSeedWordsToken
         view.textColor = Theme.shared.colors.restoreFromSeedWordsTextColor
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
-        view.translatesAutoresizingMaskIntoConstraints = false
+        view.spellCheckingType = .no
         return view
     }()
 
@@ -69,6 +72,7 @@ final class TokenInputView: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupViews()
         setupConstraints()
         setupFeedbacks()
     }
@@ -78,6 +82,10 @@ final class TokenInputView: UICollectionViewCell {
     }
 
     // MARK: - Setups
+    
+    private func setupViews() {
+        textField.inputAccessoryView = toolbar
+    }
 
     private func setupConstraints() {
 
@@ -96,8 +104,15 @@ final class TokenInputView: UICollectionViewCell {
     private func setupFeedbacks() {
         textField.addTarget(self, action: #selector(onTextChangeAction), for: .editingChanged)
         textField.delegate = self
+        
         textField.onRemovingCharacterAtFirstPosition = { [weak self] in
             self?.textField.text = self?.onRemovingCharacterAtFirstPosition?($0)
+            self?.onTextChangeAction()
+        }
+        
+        toolbar.onTapOnToken = { [weak self] in
+            self?.textField.text = $0 + " "
+            self?.onTextChangeAction()
         }
     }
 

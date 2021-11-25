@@ -40,33 +40,68 @@
 
 import Combine
 
+struct TokenViewModel: Identifiable, Hashable {
+    let id: UUID
+    let title: String
+}
+
 final class RestoreWalletFromSeedsModel {
 
     final class ViewModel {
         @Published var error: SimpleErrorModel?
         @Published var isConfimationEnabled: Bool = false
         @Published var isEmptyWalletCreated: Bool = false
+        @Published var isAutocompletionAvailable: Bool = false
+        @Published var autocompletionTokens: [TokenViewModel] = []
+        @Published var autocompletionMessage: String?
     }
 
     // MARK: - Properties
 
+    @Published var inputText: String = ""
     @Published var seedWords: [String] = []
-
+    
     let viewModel: ViewModel = ViewModel()
+    
+    private var availableAutocompletionTokens: [TokenViewModel] = [] {
+        didSet { viewModel.isAutocompletionAvailable = !availableAutocompletionTokens.isEmpty }
+    }
     private var cancelables = Set<AnyCancellable>()
-
+    
     // MARK: - Initalizers
 
     init() {
         setupFeedbacks()
+        fetchAvailableSeedWords()
     }
 
     // MARK: - Setups
 
     private func setupFeedbacks() {
+        
         $seedWords
             .map { !$0.isEmpty }
             .assign(to: \.isConfimationEnabled, on: viewModel)
+            .store(in: &cancelables)
+        
+        $inputText
+            .map { [unowned self] inputText in self.availableAutocompletionTokens.filter { $0.title.lowercased().hasPrefix(inputText.lowercased()) }}
+            .map { [unowned self] in $0 != self.availableAutocompletionTokens ? $0 : [] }
+            .assign(to: \.autocompletionTokens, on: viewModel)
+            .store(in: &cancelables)
+        
+        Publishers.CombineLatest($inputText, viewModel.$autocompletionTokens)
+            .map {
+                switch ($0.isEmpty, $1.isEmpty) {
+                case (true, true):
+                    return localized("restore_from_seed_words.autocompletion_toolbar.label.start_typing")
+                case (false, true):
+                    return localized("restore_from_seed_words.autocompletion_toolbar.label.no_suggestions")
+                default:
+                    return nil
+                }
+            }
+            .assign(to: \.autocompletionMessage, on: viewModel)
             .store(in: &cancelables)
     }
 
@@ -84,6 +119,10 @@ final class RestoreWalletFromSeedsModel {
         } catch {
             handleUnknownError()
         }
+    }
+    
+    private func fetchAvailableSeedWords() {
+        availableAutocompletionTokens = (try? SeedWordsMnemonicWordList(language: .english)?.seedWords.map { TokenViewModel(id: UUID(), title: $0) }) ?? []
     }
 
     // MARK: - Handlers
@@ -114,9 +153,15 @@ final class RestoreWalletFromSeedsModel {
     }
 
     private func handle(walletError: WalletErrors) {
+        
+        guard let description = walletError.errorDescription else {
+            handleUnknownError()
+            return
+        }
+        
         viewModel.error = SimpleErrorModel(
             title: localized("restore_from_seed_words.error.title"),
-            description: "",
+            description: description,
             error: walletError
         )
     }

@@ -3,6 +3,7 @@
 "common.cancel" = "Cancel";
 "common.send.with_param" = "Send %@";
 "common.error" = "Error";
+"common.recommended" = "Recommended";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -177,7 +178,7 @@
 "splash.wallet_error.description.generic" = "The app was unable to initialize the wallet instance. Please remove your wallet from the device and restore your wallet from backup.";
 "splash.wallet_error.button.confirm" = "Delete Your Wallet";
 "splash.action_sheet.select_network.title" = "Select Network";
-"splash.action_sheet.select_network.description" = "Please select the network to which do you want to connect.";
+"splash.action_sheet.select_network.description" = "Please select the network to which you want to connect.";
 
 /* iCloudBackup error */
 "iCloud_backup.error.title.set_password" = "Failed to set backup password";
@@ -242,7 +243,7 @@
 "wallet.error.mine_tx" = "Failed to mine test transaction.";
 "wallet.error.remove_contact" = "Failed to remove contact.";
 "wallet.error.send_tx" = "Failed to send transaction.";
-"wallet.error.generic_code" = "Generic error code:";
+"wallet.error.generic_code" = "The application has encountered an error.\nError code:";
 "wallet.error.insufficient_funds" = "Insufficient funds. Available spendable Tari:";
 "wallet.error.invalid_public_key_hex" = "Invalid public key hex.";
 "wallet.error.invalid_signature" = "Invalid signature created";
@@ -372,6 +373,7 @@
 "add_note.search_giphy_button" = "SEARCH GIPHY";
 
 /* TariBot transaction */
+"taribot.message.prefix" = "Hello Tari from";
 "taribot.message1.with_param" = "💸 Here’s some %@!";
 "taribot.message2.with_params" = "Nice work! Here's more %1$@ to fill your coffers. Be sure to hit the store icon to see real, exclusive items you can redeem with your \"hard-earned\" %2$@.";
 
@@ -486,6 +488,7 @@
 "select_network.title" = "Select Network";
 "select_network.dialog.switch_network.title" = "One thing before you go";
 "select_network.dialog.switch_network.description" = "You will be logged out and switched to a different network. Do you want to continue?";
+"select_network.table_view.section_header.description" = "Please select the network to which you want to connect.";
 
 /* Select Base Node View */
 "select_base_node.title" = "Select Base Node";
@@ -504,6 +507,8 @@
 /* Restore Wallet From Seed Words */
 "restore_from_seed_words.label.description" = "Enter your seed phrase to restore your wallet";
 "restore_from_seed_words.button.submit" = "Restore Wallet";
+"restore_from_seed_words.autocompletion_toolbar.label.start_typing" = "Start typing to see suggestions";
+"restore_from_seed_words.autocompletion_toolbar.label.no_suggestions" = "There are no suggestions for the phrase";
 "restore_from_seed_words.error.title" = "Error";
 "restore_from_seed_words.error.description.invalid_seed_word" = "At least one of the entered seed words is invalid. Please review them and try again.";
 "restore_from_seed_words.error.description.phrase_too_short" = "You entered not enough seed words. Please add some more and try again.";
@@ -521,7 +526,6 @@
 "restore_from_seed_words.progress_overlay.error.description.unknown_error" = "Unable to recover your wallet due to the internal error.";
 
 /* Yat Transaction Overlay */
-
 "yat_transaction.label.transaction" = "You are %@ to %@";
 "yat_transaction.label.transaction.sending" = "sending %@";
 "yat_transaction.label.success" = "SENT";

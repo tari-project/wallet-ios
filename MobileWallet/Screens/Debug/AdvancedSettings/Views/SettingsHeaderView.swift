@@ -1,10 +1,10 @@
-//  iCloudServiceMock.swift
+//  SettingsHeaderView.swift
 	
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 10.07.2020
+	Created by Adrian Truszczynski on 17/11/2021
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,38 +38,53 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
-import CloudKit
+import UIKit
+import TariCommon
 
-class ICloudServiceMock {
-    private static let testICloudFolder = "test_icloud_folder"
-    private static let backupName = "Tari-Aurora-Backup"
+final class SettingsHeaderView: UITableViewHeaderFooterView {
     
-    static func downloadBackup() throws -> Backup {
-        let directory = try getTestICloudDirectory()
-        let backupUrl = directory.appendingPathComponent(backupName)
-        return try Backup(url: backupUrl)
+    // MARK: - Subviews
+    
+    @View private var label: UILabel = {
+        let view = UILabel()
+        view.font = Theme.shared.fonts.settingsSeedPhraseDescription
+        view.textColor = Theme.shared.colors.settingsViewDescription
+        view.numberOfLines = 0
+        return view
+    }()
+    
+    // MARK: - Properties
+    
+    var text: String? {
+        get { label.text }
+        set { label.text = newValue }
     }
     
-    static func uploadBackup(_ backup: Backup) throws {
-        let directory = try getTestICloudDirectory()
-        if !FileManager.default.secureCopyItem(at: backup.url, to: directory.appendingPathComponent(backup.url.lastPathComponent)) {
-            throw ICloudBackupError.failedToCreateZip
-        }
+    // MARK: - Initialisers
+    
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        translatesAutoresizingMaskIntoConstraints = false
+        setupConstraints()
     }
     
-    static func removeBackups() throws {
-        try FileManager.default.removeItem(atPath: getTestICloudDirectory().path)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
-    private static func getTestICloudDirectory() throws -> URL {
-        if let iCloudDirectory = FileManager.default.documentDirectory()?.appendingPathComponent(testICloudFolder) {
-            
-            if !FileManager.default.fileExists(atPath: iCloudDirectory.path) {
-                try FileManager.default.createDirectory(at: iCloudDirectory, withIntermediateDirectories: true, attributes: nil)
-            }
-            
-            return iCloudDirectory
-        } else { throw ICloudBackupError.iCloudContainerNotFound }
+    // MARK: - Setups
+    
+    private func setupConstraints() {
+        
+        contentView.addSubview(label)
+        
+        let constraints = [
+            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 25.0),
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25.0)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
 }

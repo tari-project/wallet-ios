@@ -49,13 +49,18 @@ enum KeyServerError: Error {
     case unknown
 }
 
-struct KeyServerRequest: Codable {
+struct KeyServerRequest: Encodable {
     let signature: String
-    let public_nonce: String
+    let publicNonce: String
+    let network: String?
 }
 
-class KeyServer {
-    private let MESSAGE_PREFIX = "Hello Tari from"
+final class KeyServer {
+    
+    private static let secondUtxoStorageKey = "tari-available-utxo"
+    private static var isRequestInProgress = false
+    
+    private let MESSAGE_PREFIX = localized("taribot.message.prefix")
     private let TARIBOT_MESSAGE1 = String(
         format: localized("taribot.message1.with_param"),
         NetworkManager.shared.selectedNetwork.tickerSymbol
@@ -67,8 +72,12 @@ class KeyServer {
     )
     private let signature: Signature
     private let url: URL?
-    static var isRequestInProgress = false
-    private static let secondUtxoStorageKey = "tari-available-utxo"
+  
+    private let jsonEncoder: JSONEncoder = {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        return encoder
+    }()
 
     init() throws {
         guard let wallet = TariLib.shared.tariWallet else {
@@ -127,10 +136,11 @@ class KeyServer {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(
+        request.httpBody = try jsonEncoder.encode(
             KeyServerRequest(
                 signature: signature.hex,
-                public_nonce: signature.nonce
+                publicNonce: signature.nonce,
+                network: NetworkManager.shared.selectedNetwork.name
             )
         )
 

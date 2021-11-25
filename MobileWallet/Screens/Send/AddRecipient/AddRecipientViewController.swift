@@ -121,7 +121,6 @@ final class AddRecipientViewController: UIViewController {
             .store(in: &cancellables)
         
         model.$walletAddressPreview
-            .print()
             .receive(on: DispatchQueue.main)
             .assign(to: \.previewText, on: mainView.searchView)
             .store(in: &cancellables)

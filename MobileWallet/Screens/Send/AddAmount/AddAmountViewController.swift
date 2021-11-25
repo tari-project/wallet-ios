@@ -418,51 +418,49 @@ class AddAmountViewController: UIViewController {
     @objc private func continueButtonTapped() {
         // Check the actual available balance first, to see if we have enough mined transactions
         guard let wallet = TariLib.shared.tariWallet else { return }
-        let (availableBalance, availableBalanceError) = wallet.availableBalance
-        guard availableBalanceError == nil else {
-            UserFeedback.shared.error(
-                title: localized("add_amount.error.available_balance.title"),
-                description: localized("add_amount.error.available_balance.description"),
-                error: availableBalanceError
-            )
-            return
-        }
 
-        var tariAmount: MicroTari?
-        do {
-            tariAmount = try MicroTari(tariValue: rawInput)
+        do
+        {
+            let availableBalance = try wallet.balance().available
+
+            var tariAmount: MicroTari?
+            do {
+                tariAmount = try MicroTari(tariValue: rawInput)
+            } catch {
+                showInvalidNumberError(error)
+            }
+
+            guard let amount = tariAmount else { return }
+
+            var fee = MicroTari(0)
+            do {
+                fee = try wallet.estimateTxFee(
+                    amount: amount,
+                    feePerGram: Wallet.defaultFeePerGram,
+                    kernelCount: Wallet.defaultKernelCount,
+                    outputCount: Wallet.defaultOutputCount
+            )
+            } catch {
+                return
+            }
+
+            if amount.rawValue + fee.rawValue  > availableBalance {
+                UserFeedback.shared.info(
+                    title: localized("add_amount.info.wait_completion_previous_tx.title"),
+                    description: localized("add_amount.info.wait_completion_previous_tx.description")
+                )
+                return
+            }
+
+            let noteVC = AddNoteViewController()
+            noteVC.paymentInfo = paymentInfo
+            noteVC.amount = tariAmount
+            noteVC.deepLinkParams = deepLinkParams
+
+            navigationController?.pushViewController(noteVC, animated: true)
         } catch {
-            showInvalidNumberError(error)
-        }
-
-        guard let amount = tariAmount else { return }
-
-        var fee = MicroTari(0)
-        do {
-            fee = try wallet.estimateTxFee(
-                amount: amount,
-                feePerGram: Wallet.defaultFeePerGram,
-                kernelCount: Wallet.defaultKernelCount,
-                outputCount: Wallet.defaultOutputCount
-            )
-        } catch {
             return
         }
-
-        if amount.rawValue + fee.rawValue  > availableBalance {
-            UserFeedback.shared.info(
-                title: localized("add_amount.info.wait_completion_previous_tx.title"),
-                description: localized("add_amount.info.wait_completion_previous_tx.description")
-            )
-            return
-        }
-
-        let noteVC = AddNoteViewController()
-        noteVC.paymentInfo = paymentInfo
-        noteVC.amount = tariAmount
-        noteVC.deepLinkParams = deepLinkParams
-
-        navigationController?.pushViewController(noteVC, animated: true)
     }
 }
 
