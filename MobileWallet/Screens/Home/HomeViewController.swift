@@ -117,16 +117,17 @@ final class HomeViewController: UIViewController {
         setup()
         setupKeyServer()
         Tracker.shared.track("/home", "Home - Transaction List")
-        TariEventBus.onMainThread(self, eventType: .balanceUpdate) {
-            [weak self] (_) in
-            self?.safeRefreshBalance()
-        }
+        
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(appMovedToForeground),
             name: UIApplication.willEnterForegroundNotification,
             object: nil
         )
+        
+        TariEventBus.events(forType: .balanceUpdate)
+            .sink { [weak self] _ in self?.safeRefreshBalance() }
+            .store(in: &cancelables)
     }
 
     @objc func appMovedToForeground() {
@@ -350,10 +351,11 @@ final class HomeViewController: UIViewController {
     }
 
     private func refreshBalance() throws {
-        let (totalMicroTari, error) = TariLib.shared.tariWallet!.totalMicroTari
-        if let error = error { throw error }
-
-        let balanceValueString = totalMicroTari!.formatted
+        
+        let balance = try TariLib.shared.tariWallet!.balance()
+        let totalBalance = balance.available + balance.incoming
+        let balanceValueString = MicroTari(totalBalance).formatted
+        
         let balanceLabelAttributedText = NSMutableAttributedString(
             string: balanceValueString,
             attributes: [
