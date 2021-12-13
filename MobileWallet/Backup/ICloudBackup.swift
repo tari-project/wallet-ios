@@ -174,7 +174,7 @@ class ICloudBackup: NSObject {
         try? startObserveReachability()
 
         if FileManager.default.ubiquityIdentityToken == nil {
-            iCloudBackupsIsOn = false
+            TariSettings.shared.walletSettings.isCloudBackupEnabled = false
         }
     }
 
