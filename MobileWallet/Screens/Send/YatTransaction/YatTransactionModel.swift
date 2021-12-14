@@ -142,8 +142,7 @@ final class YatTransactionModel {
     // MARK: - Yat Visualisation
     
     private func fetchAnimation() {
-        
-        Yat.api.fetchFromKeyValueStorePublisher(forYat: inputData.yatID, dataType: VisualizerFileLocations.self)
+        Yat.api.emojiID.loadJsonPublisher(eid: inputData.yatID, key: "VisualizerFileLocations")
             .map(\.data)
             .sink(
                 receiveCompletion: { _ in },
@@ -152,9 +151,9 @@ final class YatTransactionModel {
             .store(in: &cancellables)
     }
     
-    private func handle(fileLocations: VisualizerFileLocations) {
+    private func handle(fileLocations: [String: CodableValue]) {
         
-        guard let path = fileLocations.verticalVideo ?? fileLocations.video, let url = URL(string: path) else { return }
+        guard let path = fileLocations["v_video"] ?? fileLocations["video"], let rawPath = path.value as? String, let url = URL(string: rawPath) else { return }
         
         guard let cachedFileData = cacheManager.fetchFileData(name: url.lastPathComponent) else {
             download(assetURL: url)
