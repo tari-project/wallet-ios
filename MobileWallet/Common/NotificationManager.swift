@@ -40,8 +40,9 @@
 
 import UIKit
 import UserNotifications
+import Combine
 
-private struct TokenRegistrationServerRequest: Codable {
+private struct TokenRegistrationServerRequest: Encodable {
     let token: String
     let platform: String = "ios"
     let signature: String
@@ -49,13 +50,13 @@ private struct TokenRegistrationServerRequest: Codable {
     let sandbox = TariSettings.shared.environment == .debug
 }
 
-private struct SendNotificationServerRequest: Codable {
+private struct SendNotificationServerRequest: Encodable {
     let from_pub_key: String
     let signature: String
     let public_nonce: String
 }
 
-private struct CancelRemindersServerRequest: Codable {
+private struct CancelRemindersServerRequest: Encodable {
     let pub_key: String
     let signature: String
     let public_nonce: String
@@ -70,7 +71,8 @@ enum PushNotificationServerError: Error {
     case unknown
 }
 
-class NotificationManager {
+final class NotificationManager {
+    
     enum NotificationIdentifier: String {
         case standard = "Local Notification"
         case backgroundBackupTask = "background-backup-task"
@@ -78,18 +80,35 @@ class NotificationManager {
     }
 
     static let shared = NotificationManager()
-
-    let notificationCenter = UNUserNotificationCenter.current()
-    private let options: UNAuthorizationOptions = [.alert, .sound, .badge]
+    
     private static let hasRegisteredTokenKey = "hasRegisteredPushToken"
 
-    var hasRegisteredToken: Bool {
-        get {
-            return UserDefaults.standard.bool(forKey: NotificationManager.hasRegisteredTokenKey)
-        }
+    private let notificationCenter = UNUserNotificationCenter.current()
+    private let options: UNAuthorizationOptions = [.alert, .sound, .badge]
+
+    private var hasRegisteredToken: Bool { UserDefaults.standard.bool(forKey: NotificationManager.hasRegisteredTokenKey) }
+    private var cancelables = Set<AnyCancellable>()
+    
+    private init() {
+        setupWalletStateHandler()
+    }
+    
+    private func setupWalletStateHandler() {
+        
+        TariLib.shared.walletStatePublisher
+            .sink { [weak self] in
+                switch $0 {
+                case .started:
+                    self?.requestAuthorization()
+                case .starting, .notReady, .startFailed:
+                    break
+                }
+            }
+            .store(in: &cancelables)
     }
 
     func requestAuthorization(_ completionHandler: ((Bool) -> Void)? = nil) {
+        
         if ProcessInfo.processInfo.arguments.contains("ui-test-mode") {
             completionHandler?(true)
             return
@@ -101,11 +120,9 @@ class NotificationManager {
             return
         }
 
-        notificationCenter.requestAuthorization(options: options) {
-            (_, error) in
+        notificationCenter.requestAuthorization(options: options) { _, error in
             guard error == nil else {
                 TariLogger.error("NotificationManager request authorization", error: error)
-
                 completionHandler?(false)
                 return
             }
@@ -132,22 +149,14 @@ class NotificationManager {
         }
     }
 
-    func handleForegroundNotification(
-        _ notification: UNNotification,
-        completionHandler: (UNNotificationPresentationOptions) -> Void
-    ) {
+    func handleForegroundNotification(_ notification: UNNotification, completionHandler: (UNNotificationPresentationOptions) -> Void) {
         try? TariLib.shared.tariWallet?.syncBaseNode()
         if notification.request.identifier == NotificationIdentifier.scheduledBackupFailure.rawValue {
             completionHandler([.alert, .badge, .sound])
         }
     }
 
-    func scheduleNotification(
-        title: String,
-        body: String,
-        identifier: String = NotificationIdentifier.standard.rawValue,
-        timeInterval: TimeInterval = 1,
-        onCompletion: ((Bool) -> Void)? = nil) {
+    func scheduleNotification(title: String, body: String, identifier: String = NotificationIdentifier.standard.rawValue, timeInterval: TimeInterval = 1, onCompletion: ((Bool) -> Void)? = nil) {
         let content = UNMutableNotificationContent()
 
         content.title = title
