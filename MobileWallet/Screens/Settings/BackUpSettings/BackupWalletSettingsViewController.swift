@@ -67,10 +67,11 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     private var backupNowButtonWalletBackup: Bool = false
 
     private enum BackupWalletSettingsItem: CaseIterable {
+        
         case iCloudBackups
         case setupPassword
-        case backupNow
         case writeDownSeedPhrase
+        case backupNow
 
         var rawValue: String {
             switch self {
