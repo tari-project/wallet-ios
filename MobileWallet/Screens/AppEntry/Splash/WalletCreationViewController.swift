@@ -214,7 +214,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func runNotificationRequest() {
-        NotificationManager.shared.requestAuthorization {_ in
+        NotificationManager.shared.requestAuthorization { _ in
             DispatchQueue.main.async {
                 Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
 
