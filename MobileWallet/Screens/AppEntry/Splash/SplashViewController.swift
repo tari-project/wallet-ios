@@ -155,9 +155,14 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func setupFeedbacks() {
+        
         NetworkManager.shared.$selectedNetwork
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.update(network: $0) }
+            .store(in: &cancelables)
+        
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in self?.videoView.startPlayer() }
             .store(in: &cancelables)
     }
 
