@@ -40,35 +40,39 @@
 
 import UIKit
 
-class RadialGradientView: UIView {
+final class RadialGradientView: UIView {
 
-    var insideColor: UIColor
-    var outsideColor: UIColor
+    // MARK: - Properties
+    
+    override class var layerClass: AnyClass { CAGradientLayer.self }
 
+    // MARK: - Initializers
+    
     init(insideColor: UIColor, outsideColor: UIColor) {
-        self.insideColor = insideColor
-        self.outsideColor = outsideColor
         super.init(frame: .zero)
+        setupLayer(insideColor: insideColor, outsideColor: outsideColor)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    lazy var gradienLayer: CAGradientLayer = {
-        let l = CAGradientLayer()
-        l.type = .radial
-        l.colors = [insideColor.cgColor,
-                    outsideColor.cgColor]
-        l.startPoint = CGPoint(x: 0.5, y: 0.5)
-        l.endPoint = CGPoint(x: 1, y: 1)
-        layer.addSublayer(l)
-        return l
-    }()
+    
+    // MARK: - Setups
+    
+    private func setupLayer(insideColor: UIColor, outsideColor: UIColor) {
+        
+        guard let gradientLayer = layer as? CAGradientLayer else { return }
+        
+        gradientLayer.type = .radial
+        gradientLayer.colors = [insideColor.cgColor, outsideColor.cgColor]
+        gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
+    }
+    
+    // MARK: - Autolayout
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        gradienLayer.frame = bounds
-        gradienLayer.cornerRadius = bounds.width / 2.0
+        layer.cornerRadius = bounds.width /  2.0
     }
 }
