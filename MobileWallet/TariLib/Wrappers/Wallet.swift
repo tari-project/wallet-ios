@@ -775,10 +775,9 @@ final class Wallet {
                 result.append(publicKey)
             }
             .prefix(limit)
-      
         return Array(result)
     }
-  
+
     private func txsPublicKeyTimestampPair<T: TxsProtocol>(transactions: T) -> [(publicKey: PublicKey, timestamp: UInt64)] {
         transactions.list.0.compactMap {
             guard let publicKey = $0.direction == .inbound ? $0.sourcePublicKey.0 : $0.destinationPublicKey.0 else { return nil }

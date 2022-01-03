@@ -255,12 +255,11 @@ class UserFeedback {
             onClose: {
                 SwiftEntryKit.dismiss()
             }) { [weak self] in
-                SwiftEntryKit.dismiss()
-                guard let url = URL(string: TariSettings.shared.storeUrl) else {
-                    return
+                SwiftEntryKit.dismiss() {
+                    guard let url = URL(string: TariSettings.shared.storeUrl) else  { return }
+                    self?.openWebBrowser(url: url)
+                    TariLogger.verbose("Opened store link")
                 }
-                self?.openWebBrowser(url: url)
-                TariLogger.verbose("Opened store link")
             }
 
         ctaFeedbackView.translatesAutoresizingMaskIntoConstraints = false
@@ -320,11 +319,13 @@ class UserFeedback {
     }
 
     func openWebBrowser(url: URL) {
-        guard let topController = UIApplication.shared.topController() else { return }
-        let webBrowserViewController = WebBrowserViewController()
-        webBrowserViewController.url = url
-        webBrowserViewController.modalPresentationStyle =
-            UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
-        topController.present(webBrowserViewController, animated: true)
+        
+        DispatchQueue.main.async {
+            guard let topController = UIApplication.shared.topController() else { return }
+            let webBrowserViewController = WebBrowserViewController()
+            webBrowserViewController.url = url
+            webBrowserViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
+            topController.present(webBrowserViewController, animated: true)
+        }
     }
 }

@@ -214,7 +214,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func runNotificationRequest() {
-        NotificationManager.shared.requestAuthorization {_ in
+        NotificationManager.shared.requestAuthorization { _ in
             DispatchQueue.main.async {
                 Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
 
@@ -345,7 +345,6 @@ extension WalletCreationViewController {
         view.layoutIfNeeded()
 
         UIView.animate(withDuration: 1, animations: { [weak self] in
-            self?.radialGradient.alpha = 0.2
             self?.thirdLabel.alpha = 1.0
             self?.view.layoutIfNeeded()
         })
@@ -363,6 +362,7 @@ extension WalletCreationViewController {
 
         UIView.animate(withDuration: 1, animations: { [weak self] in
             guard let self = self else { return }
+            self.radialGradient.alpha = 0.2
             self.thirdLabel.alpha = 1.0
             self.view.layoutIfNeeded()
         })

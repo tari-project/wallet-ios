@@ -109,6 +109,7 @@ final class AddRecipientModel {
             .store(in: &cancelables)
         
         searchText
+            .filter { !$0.isEmpty }
             .throttle(for: .milliseconds(750), scheduler: RunLoop.main, latest: true)
             .sink { [weak self] in self?.searchAddress(forYatID: $0) }
             .store(in: &cancelables)
@@ -259,7 +260,7 @@ final class AddRecipientModel {
         self.yatID = nil
         guard yatID.containsOnlyEmoji, (1...maxYatIDLenght).contains(yatID.count) else { return }
 
-        Yat.api.fetchRecordsPublisher(forYat: yatID, symbol: "XTR")
+        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: yatID, tags: YatRecordTag.XTRAddress.rawValue)
             .sink(
                 receiveCompletion: { _ in },
                 receiveValue: { [weak self] in self?.handle(apiResponse: $0, yatID: yatID) }
@@ -267,8 +268,8 @@ final class AddRecipientModel {
             .store(in: &cancelables)
     }
     
-    private func handle(apiResponse: LookupEmojiIDWithSymbolResponse, yatID: String) {
-        guard let walletAddress = apiResponse.result?.first?.data else { return }
+    private func handle(apiResponse: PaymentAddressResponse, yatID: String) {
+        guard let walletAddress = apiResponse.result?[YatRecordTag.XTRAddress.rawValue]?.address else { return }
         generatePublicKey(text: walletAddress)
         self.yatID = yatID
     }
