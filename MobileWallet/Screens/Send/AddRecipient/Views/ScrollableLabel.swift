@@ -51,7 +51,6 @@ final class ScrollableLabel: UIView {
     
     @View var label: UILabel = {
         let view = UILabel()
-        view.backgroundColor = .white
         view.font = Theme.shared.fonts.searchContactsInputBoxText
         return view
     }()
@@ -85,6 +84,7 @@ final class ScrollableLabel: UIView {
     // MARK: - Setups
     
     private func setupViews() {
+        backgroundColor = .white
         layer.mask = maskLayer
     }
     
