@@ -138,12 +138,15 @@ class AddAmountViewController: UIViewController {
             return
         }
 
-        let (totalMicroTari, totalMicroTariError) = wallet.totalMicroTari
-        guard totalMicroTariError == nil else {
+        let totalBalance: MicroTari
+        
+        do {
+            totalBalance = try wallet.totalBalance
+        } catch {
             UserFeedback.shared.error(
                 title: localized("add_amount.error.available_balance.title"),
                 description: localized("add_amount.error.available_balance.description"),
-                error: totalMicroTariError
+                error: error
             )
             return
         }
@@ -161,13 +164,13 @@ class AddAmountViewController: UIViewController {
             case WalletErrors.notEnoughFunds:
                 balanceExceededLabel.isHidden = false
                 balancePendingLabel.isHidden = true
-                showBalanceExceeded(balance: totalMicroTari!.formatted)
+                showBalanceExceeded(balance: totalBalance.formatted)
                 walletBalanceStackView.isHidden = false
                 continueButton.variation = .disabled
             case WalletErrors.fundsPending:
                 balanceExceededLabel.isHidden = true
                 balancePendingLabel.isHidden = false
-                showBalanceExceeded(balance: totalMicroTari!.formatted)
+                showBalanceExceeded(balance: totalBalance.formatted)
                 walletBalanceStackView.isHidden = true
                 continueButton.variation = .disabled
             default:
@@ -176,10 +179,10 @@ class AddAmountViewController: UIViewController {
             return
         }
 
-        if totalMicroTari!.rawValue < (microTariAmount.rawValue + fee.rawValue) {
+        if totalBalance.rawValue < (microTariAmount.rawValue + fee.rawValue) {
             balanceExceededLabel.isHidden = false
             balancePendingLabel.isHidden = true
-            showBalanceExceeded(balance: totalMicroTari!.formatted)
+            showBalanceExceeded(balance: totalBalance.formatted)
             walletBalanceStackView.isHidden = false
             continueButton.variation = .disabled
         } else {
@@ -371,17 +374,13 @@ class AddAmountViewController: UIViewController {
     }
 
     private func showAvailableBalance() {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return
-        }
-        let (totalMicroTari, totalMicroTariError) = wallet.totalMicroTari
-        guard totalMicroTariError == nil else {
-            return
-        }
+        
+        guard let totalBalance = try? TariLib.shared.tariWallet?.totalBalance else  { return }
+        
         walletBalanceStackView.isHidden = false
         warningView.isHidden = false
         warningView.layer.borderWidth = 0
-        walletBalanceLabel.text = totalMicroTari!.formatted
+        walletBalanceLabel.text = totalBalance.formatted
         balanceExceededLabel.isHidden = true
         balancePendingLabel.isHidden = true
         walletBalanceTitleLabel.isHidden = false

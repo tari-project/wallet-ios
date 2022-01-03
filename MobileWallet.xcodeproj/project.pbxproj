@@ -196,6 +196,7 @@
 		3ADEBF6226A59A5900E87C84 /* AddBaseNodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6126A59A5900E87C84 /* AddBaseNodeViewController.swift */; };
 		3ADEBF6626A5B5A500E87C84 /* AddBaseNodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6526A5B5A500E87C84 /* AddBaseNodeView.swift */; };
 		3ADEBF6A26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */; };
+		3AF167442782FD7C0019A30E /* Wallet+Conveniences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF167432782FD7C0019A30E /* Wallet+Conveniences.swift */; };
 		3AF51819270D7EFC00746884 /* AddRecipientModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF51818270D7EFC00746884 /* AddRecipientModel.swift */; };
 		3AF53B7E27311D1400C78562 /* SeedWordsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF53B7D27311D1400C78562 /* SeedWordsTests.swift */; };
 		3AF53B8127311D9800C78562 /* MobileWalletTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF53B8027311D9800C78562 /* MobileWalletTests.swift */; };
@@ -471,6 +472,7 @@
 		3ADEBF6126A59A5900E87C84 /* AddBaseNodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeViewController.swift; sourceTree = "<group>"; };
 		3ADEBF6526A5B5A500E87C84 /* AddBaseNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeView.swift; sourceTree = "<group>"; };
 		3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeModel.swift; sourceTree = "<group>"; };
+		3AF167432782FD7C0019A30E /* Wallet+Conveniences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Wallet+Conveniences.swift"; sourceTree = "<group>"; };
 		3AF51818270D7EFC00746884 /* AddRecipientModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRecipientModel.swift; sourceTree = "<group>"; };
 		3AF53B7D27311D1400C78562 /* SeedWordsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SeedWordsTests.swift; sourceTree = "<group>"; };
 		3AF53B8027311D9800C78562 /* MobileWalletTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MobileWalletTests.swift; sourceTree = "<group>"; };
@@ -621,6 +623,7 @@
 				37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */,
 				004277F623E0628A00AE7BD9 /* UIViewController.swift */,
 				3AFAC361271C6F9E008AA842 /* UITextField+Combine.swift */,
+				3AF167432782FD7C0019A30E /* Wallet+Conveniences.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1885,6 +1888,7 @@
 				37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */,
 				004277FB23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
+				3AF167442782FD7C0019A30E /* Wallet+Conveniences.swift in Sources */,
 				3AFAEBF626B17D1700B82603 /* SimpleErrorModel.swift in Sources */,
 				6191948FA1B3F223B37A0D9B /* UTXO.swift in Sources */,
 				376B502324924BB700278ACC /* PendingView.swift in Sources */,

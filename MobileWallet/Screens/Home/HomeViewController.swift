@@ -350,12 +350,10 @@ final class HomeViewController: UIViewController {
     }
 
     private func refreshBalance() throws {
-        let (totalMicroTari, error) = TariLib.shared.tariWallet!.totalMicroTari
-        if let error = error { throw error }
-
-        let balanceValueString = totalMicroTari!.formatted
+        
+        let formattedValue = try TariLib.shared.tariWallet!.totalBalance.formatted
         let balanceLabelAttributedText = NSMutableAttributedString(
-            string: balanceValueString,
+            string: formattedValue,
             attributes: [
                 .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel,
                 .foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!
@@ -370,7 +368,7 @@ final class HomeViewController: UIViewController {
                 .baselineOffset: 5.0
             ],
             range: NSRange(
-                location: balanceValueString.count - lastNumberOfDigitsToFormat,
+                location: formattedValue.count - lastNumberOfDigitsToFormat,
                 length: lastNumberOfDigitsToFormat
             )
         )
@@ -378,7 +376,7 @@ final class HomeViewController: UIViewController {
         balanceLabelAttributedText.addAttributes(
             [NSAttributedString.Key.kern: 1.1],
             range: NSRange(
-                location: balanceValueString.count - lastNumberOfDigitsToFormat - 1,
+                location: formattedValue.count - lastNumberOfDigitsToFormat - 1,
                 length: 1
             )
         )
@@ -390,8 +388,7 @@ final class HomeViewController: UIViewController {
 
     private func updateAvaiableToSpendAmount() throws {
         
-        let value = try TariLib.shared.tariWallet!.balance().available
-        let formattedValue = MicroTari(value).formatted
+        let formattedValue = try TariLib.shared.tariWallet!.availableBalance.formatted
         let text = NSMutableAttributedString(string: formattedValue)
 
         text.addAttributes(

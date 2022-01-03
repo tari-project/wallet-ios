@@ -177,14 +177,6 @@ final class Wallet {
 
     private var walletBalance = WalletBalance(available: 0, incoming: 0, outgoing: 0, timeLocked: 0)
 
-    var totalMicroTari: (MicroTari?, Error?) {
-        return (MicroTari(walletBalance.available + walletBalance.incoming), nil)
-    }
-
-    var availableMicroTari: MicroTari {
-        return MicroTari(walletBalance.available)
-    }
-
     var publicKey: (PublicKey?, Error?) {
         var errorCode: Int32 = -1
         let result = PublicKey(pointer: withUnsafeMutablePointer(to: &errorCode, { error in
