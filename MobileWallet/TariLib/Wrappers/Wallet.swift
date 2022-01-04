@@ -325,10 +325,8 @@ final class Wallet {
                 TariLogger.error("\(message) failure")
             }
         }
-
-        // check
-
-        let txCancellationCallback: (@convention(c) (OpaquePointer?) -> Void)? = { valuePointer in
+        
+        let txCancellationCallback: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { valuePointer, rejectonReason in
             let cancelledTxId = CompletedTx(completedTxPointer: valuePointer!).id
             TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.txCancellation)
@@ -526,7 +524,9 @@ final class Wallet {
                 destination.pointer,
                 amount.rawValue,
                 feePerGram.rawValue,
-                messagePointer, error
+                messagePointer,
+                false,
+                error
             )
         })
         guard errorCode == 0 else {
