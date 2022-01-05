@@ -114,8 +114,11 @@ public class TariLogger {
     }
 
     private static func logToFile(_ message: String) {
-        message.withCString({ cstr in
-            log_debug_message(cstr)
-        })
+        
+        var errorCode: Int32 = -1
+        
+        withUnsafeMutablePointer(to: &errorCode) { errorCodePointer in
+            message.withCString { log_debug_message($0, errorCodePointer) }
+        }
     }
 }

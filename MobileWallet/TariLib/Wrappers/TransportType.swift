@@ -93,6 +93,7 @@ class TransportType {
                             controlServerAddress.count > 0 ? control : nil,
                             torCookie.pointer,
                             UInt16(torPort),
+                            false,
                             socksUsername.count > 0 ? user : nil,
                             socksPassword.count > 0 ? pass : nil,
                             error
