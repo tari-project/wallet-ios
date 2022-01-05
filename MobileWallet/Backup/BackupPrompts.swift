@@ -152,8 +152,7 @@ private class BackupPrompts {
                 }
             }
 
-            let balance = wallet.totalMicroTari.0 ?? MicroTari(0)
-
+            let balance = (try? wallet.totalBalance) ?? MicroTari()
             let triggers = type.triggers
 
             guard incomingTxs >= triggers.numberOfIncomingTxs &&
