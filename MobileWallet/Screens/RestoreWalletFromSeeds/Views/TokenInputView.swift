@@ -47,7 +47,7 @@ final class TokenInputView: UICollectionViewCell {
     
     @View var toolbar = TokensToolbar()
 
-    @View private var textField: ObservableTextField = {
+    @View var textField: ObservableTextField = {
         let view = ObservableTextField()
         view.font = Theme.shared.fonts.restoreFromSeedWordsToken
         view.textColor = Theme.shared.colors.restoreFromSeedWordsTextColor
@@ -59,9 +59,9 @@ final class TokenInputView: UICollectionViewCell {
 
     // MARK: - Properties
 
-    var onTextChange: ((String) -> String)?
-    var onRemovingCharacterAtFirstPosition: ((String) -> String)?
-    var onEndEditing: ((String) -> String)?
+    var onTextChange: ((String) -> Void)?
+    var onRemovingCharacterAtFirstPosition: ((String) -> Void)?
+    var onEndEditing: ((String) -> Void)?
 
     var text: String? {
         get { textField.text }
@@ -106,8 +106,7 @@ final class TokenInputView: UICollectionViewCell {
         textField.delegate = self
         
         textField.onRemovingCharacterAtFirstPosition = { [weak self] in
-            self?.textField.text = self?.onRemovingCharacterAtFirstPosition?($0)
-            self?.onTextChangeAction()
+            self?.onRemovingCharacterAtFirstPosition?($0)
         }
         
         toolbar.onTapOnToken = { [weak self] in
@@ -123,25 +122,24 @@ final class TokenInputView: UICollectionViewCell {
     // MARK: - Target Actions
 
     @objc private func onTextChangeAction() {
-        DispatchQueue.main.async { [weak self] in
-            self?.textField.text = self?.onTextChange?(self?.textField.text ?? "")
-        }
+        onTextChange?(textField.text ?? "")
     }
 
     override func resignFirstResponder() -> Bool {
-        textField.text = onEndEditing?(textField.text ?? "")
+        onEndEditing?(textField.text ?? "")
         return textField.resignFirstResponder()
     }
 }
 
 extension TokenInputView: UITextFieldDelegate {
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.text = onEndEditing?(textField.text ?? "")
-        return false
+        _ = resignFirstResponder()
+        return true
     }
 }
 
-private final class ObservableTextField: UITextField {
+final class ObservableTextField: UITextField {
 
     var onRemovingCharacterAtFirstPosition: ((String) -> Void)?
 

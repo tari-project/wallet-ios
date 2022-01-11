@@ -39,23 +39,21 @@
 */
 
 import UIKit
+import TariCommon
 
 final class TokenView: UICollectionViewCell {
 
     // MARK: - Subviews
 
-    private let label: UILabel = {
+    @View private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.restoreFromSeedWordsToken
-        view.textColor = Theme.shared.colors.restoreFromSeedWordsTextColor
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    private let deleteIconView: UIImageView = {
+    @View private var deleteIconView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.cancelGrey
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
@@ -70,6 +68,14 @@ final class TokenView: UICollectionViewCell {
         didSet {
             deleteIconLeadingConstraint?.isActive = isDeleteIconVisible
             deleteIconView.isHidden = !isDeleteIconVisible
+        }
+    }
+    
+    var isValid: Bool = true {
+        didSet {
+            layer.borderColor = isValid ? Theme.shared.colors.tokenBorderColor?.cgColor : Theme.shared.colors.settingsTableViewMarkDescriptionWarning?.cgColor
+            label.textColor = isValid ? Theme.shared.colors.restoreFromSeedWordsTextColor : Theme.shared.colors.settingsTableViewMarkDescriptionWarning
+            deleteIconView.tintColor = isValid ? Theme.shared.colors.restoreFromSeedWordsTextColor : Theme.shared.colors.settingsTableViewMarkDescriptionWarning
         }
     }
     
@@ -93,7 +99,7 @@ final class TokenView: UICollectionViewCell {
         backgroundColor = .white
         layer.cornerRadius = 5.0
         layer.borderWidth = 1.0
-        layer.borderColor = Theme.shared.colors.tokenBorderColor?.cgColor
+        isValid = true
     }
 
     private func setupConstraints() {
