@@ -475,52 +475,41 @@ extension TxsListViewController {
     }
 
     private func startListeningToBaseNodeSync() {
-        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) {
-            [weak self]
-            (result) in
-            guard let self = self else { return }
-            if let result: [String: Any] = result?.object as? [String: Any] {
-                let result = result["result"] as! BaseNodeValidationResult
-                switch result {
-                case .success:
-                    self.refreshTimeoutTimer?.invalidate()
-                    self.refreshTimeoutTimer = nil
-                    self.animatedRefresher.stateType = .updateData
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        [weak self] in
-                        guard let self = self else { return }
-                        if self.animatedRefresher.stateType != .none {
-                            self.animatedRefresher.playUpdateSequence(
-                                hasReceivedTx: self.hasReceivedTxWhileUpdating,
-                                hasMinedTx: self.hasMinedTxWhileUpdating,
-                                hasBroadcastTx: self.hasBroadcastTxWhileUpdating,
-                                hasCancelledTx: self.hasCancelledTxWhileUpdating
-                            ) {
-                                [weak self] in
-                                self?.endRefreshingWithSuccess()
-                            }
-                        }
-                        NotificationManager.shared.cancelAllFutureReminderNotifications()
-                    }
-                case .baseNodeNotInSync:
-                    fallthrough
-                case .failure:
-                    // change base node
-
-                    do {
-                        TariLogger.warn("Base node sync failed or base node not in sync. Setting another random peer.")
-                        try self.switchBaseNode(syncAfterSetting: true)
-                    } catch {
-                        TariLogger.error("Failed to add random base node peer")
-                    }
-
-                    // retry sync
-                    self.syncBaseNode()
-                case .aborted:
-                    self.refreshTimeoutTimer?.invalidate()
-                    self.refreshTimeoutTimer = nil
-                    self.endRefreshingWithSuccess()
+        
+        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] result in
+            
+            guard let self = self, let result: [String: Any] = result?.object as? [String: Any] else { return }
+            guard let isSuccess = result["success"] as? Bool, isSuccess else {
+                
+                do {
+                    TariLogger.warn("Base node sync failed or base node not in sync. Setting another random peer.")
+                    try self.switchBaseNode(syncAfterSetting: true)
+                } catch {
+                    TariLogger.error("Failed to add random base node peer")
                 }
+                
+                // retry sync
+                self.syncBaseNode()
+                
+                return
+            }
+            
+            self.refreshTimeoutTimer?.invalidate()
+            self.refreshTimeoutTimer = nil
+            self.animatedRefresher.stateType = .updateData
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in guard let self = self else { return }
+                if self.animatedRefresher.stateType != .none {
+                    self.animatedRefresher.playUpdateSequence(
+                        hasReceivedTx: self.hasReceivedTxWhileUpdating,
+                        hasMinedTx: self.hasMinedTxWhileUpdating,
+                        hasBroadcastTx: self.hasBroadcastTxWhileUpdating,
+                        hasCancelledTx: self.hasCancelledTxWhileUpdating
+                    ) { [weak self] in
+                        self?.endRefreshingWithSuccess()
+                    }
+                }
+                NotificationManager.shared.cancelAllFutureReminderNotifications()
             }
         }
     }

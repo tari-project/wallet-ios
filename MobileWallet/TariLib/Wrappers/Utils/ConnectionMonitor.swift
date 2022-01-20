@@ -179,29 +179,18 @@ class ConnectionMonitor {
     }
 
     private func startMonitoringBaseNodeSync() {
-        TariEventBus.onMainThread(self, eventType: .baseNodeSyncStarted) {
-            [weak self]
-            (_) in
-            guard let self = self else { return }
-            self.state.baseNodeSyncStatus = .pending
+        
+        TariEventBus.onMainThread(self, eventType: .baseNodeSyncStarted) { [weak self] _ in
+            self?.state.baseNodeSyncStatus = .pending
         }
-        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) {
-            [weak self]
-            (result) in
-            guard let self = self else { return }
-            if let result: [String: Any] = result?.object as? [String: Any] {
-                let result = result["result"] as! BaseNodeValidationResult
-                switch result {
-                case .success:
-                    self.state.baseNodeSyncStatus = .success
-                case .aborted:
-                    fallthrough
-                case .baseNodeNotInSync:
-                    fallthrough
-                case .failure:
-                    self.state.baseNodeSyncStatus = .failure
-                }
+        
+        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] result in
+            guard let result = result?.object as? [String: Any] else { return }
+            guard let isSuccess = result["success"] as? Bool, isSuccess else {
+                self?.state.baseNodeSyncStatus = .failure
+                return
             }
+            self?.state.baseNodeSyncStatus = .success
         }
     }
 

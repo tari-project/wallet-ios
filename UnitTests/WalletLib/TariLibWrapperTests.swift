@@ -231,7 +231,7 @@ final class TariLibWrapperTests: XCTestCase {
                     publicAddress: address,
                     discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
                     safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
-                    networkName: TariNetwork.weatherwax.name
+                    networkName: TariNetwork.dibbler.name
                 )
             } catch {
                 completion(nil, error)

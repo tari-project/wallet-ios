@@ -68,13 +68,6 @@ private enum BaseNodeValidationType: String {
     case tx
 }
 
-enum BaseNodeValidationResult: UInt8 {
-    case success = 0
-    case aborted = 1
-    case failure = 2
-    case baseNodeNotInSync = 3
-}
-
 struct CallbackTxResult {
     let id: UInt64
     let success: Bool
@@ -152,7 +145,7 @@ final class Wallet {
     static let defaultKernelCount = UInt64(1)
     static let defaultOutputCount = UInt64(2)
 
-    private static var baseNodeValidationStatusMap: [BaseNodeValidationType: (UInt64, BaseNodeValidationResult?)] = [:]
+    private static var baseNodeValidationStatusMap: [BaseNodeValidationType: (UInt64, Bool?)] = [:]
 
     var contacts: (Contacts?, Error?) {
         var errorCode: Int32 = -1
@@ -188,44 +181,44 @@ final class Wallet {
         return (result, nil)
     }
 
-    private static func checkValidationResult(type: BaseNodeValidationType,
-                               responseId: UInt64,
-                               result: BaseNodeValidationResult) {
+    private static func checkValidationResult(type: BaseNodeValidationType, responseId: UInt64, isSuccess: Bool) {
+        
         guard let currentStatus = baseNodeValidationStatusMap[type] else {
             TariLogger.info(
-                "\(type.rawValue) validation [\(responseId)] complete. Result: \(result)."
-                    + " Current status is null, means we're not expecting a callback. Ignoring."
+                "\(type.rawValue) validation [\(responseId)] complete. Success: \(isSuccess)."
+                + " Current status is null, means we're not expecting a callback. Ignoring."
             )
             return
         }
+        
         if currentStatus.0 != responseId {
             TariLogger.info(
-                "\(type.rawValue) validation [\(responseId)] complete. Result: \(result)."
-                    + " Request id [\(currentStatus.0)] mismatch. Ignoring."
+                "\(type.rawValue) validation [\(responseId)] complete. Success: \(isSuccess)."
+                + " Request id [\(currentStatus.0)] mismatch. Ignoring."
             )
             return
         }
-        TariLogger.info("\(type.rawValue) validation [\(responseId)] complete. Result: \(result).")
-        baseNodeValidationStatusMap[type] = (currentStatus.0, result)
+        
+        TariLogger.info("\(type.rawValue) validation [\(responseId)] complete. Success: \(isSuccess).")
+        
+        baseNodeValidationStatusMap[type] = (currentStatus.0, isSuccess)
         Wallet.checkBaseNodeSyncCompletion()
     }
 
     static func checkBaseNodeSyncCompletion() {
-        guard !handleSyncStatus(forResultType: .baseNodeNotInSync) else { return }
-        guard !handleSyncStatus(forResultType: .aborted) else { return }
-        guard !handleSyncStatus(forResultType: .failure) else {
+        guard !handleSyncStatus(isSuccess: false) else {
             try? TariLib.shared.setupBasenode()
             return
         }
-        guard !handleSyncStatus(forResultType: .none) else { return } // In Progress
-        handleSyncStatus(forResultType: .success)
+        guard !handleSyncStatus(isSuccess: .none) else { return }
+        handleSyncStatus(isSuccess: true)
     }
 
-    @discardableResult private static func handleSyncStatus(forResultType resultType: BaseNodeValidationResult?) -> Bool {
-        let result = baseNodeValidationStatusMap.contains { $0.value.1 == resultType }
-        guard result, resultType != nil else { return result }
+    @discardableResult private static func handleSyncStatus(isSuccess: Bool?) -> Bool {
+        let result = baseNodeValidationStatusMap.contains { $0.value.1 == isSuccess }
+        guard result, isSuccess != nil else { return result }
         baseNodeValidationStatusMap.removeAll()
-        TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: ["result": resultType])
+        TariEventBus.postToMainThread(.baseNodeSyncComplete, sender: ["success": isSuccess])
         return result
     }
 
@@ -327,21 +320,14 @@ final class Wallet {
             TariLogger.verbose("Transaction cancelled callback. txID=\(cancelledTxId) ✅")
         }
 
-        let txoValidationCallback: (@convention(c) (UInt64, UInt8) -> Void) = { responseId, result in
-            Wallet.checkValidationResult(type: .txo, responseId: responseId, result: BaseNodeValidationResult(rawValue: result)!)
+        let txoValidationCallback: (@convention(c) (UInt64, Bool) -> Void) = { responseId, isSuccess in
+            Wallet.checkValidationResult(type: .txo, responseId: responseId, isSuccess: isSuccess)
         }
 
-        let txValidationCompleteCallback: (@convention(c) (UInt64, UInt8) -> Void)? = {
-            responseId, result in
-            let validationResult = BaseNodeValidationResult(rawValue: result)!
-            Wallet.checkValidationResult(
-                type: .tx,
-                responseId: responseId,
-                result: validationResult
-            )
-            if validationResult == .success {
-                TariEventBus.postToMainThread(.txValidationSuccessful)
-            }
+        let txValidationCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { responseId, isSuccess in
+            Wallet.checkValidationResult(type: .tx, responseId: responseId, isSuccess: isSuccess)
+            guard isSuccess else { return }
+            TariEventBus.postToMainThread(.txValidationSuccessful)
         }
 
         let storedMessagesReceivedCallback: (@convention(c) () -> Void)? = {
