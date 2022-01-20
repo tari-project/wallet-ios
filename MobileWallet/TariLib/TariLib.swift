@@ -181,23 +181,14 @@ class TariLib {
     }
 
     private func startListeningToBaseNodeSync() {
-        TariEventBus.onBackgroundThread(self, eventType: .baseNodeSyncComplete) {
-            [weak self]
-            (result) in
-            guard let self = self else { return }
-            if let result: [String: Any] = result?.object as? [String: Any] {
-                let result = result["result"] as! BaseNodeValidationResult
-                switch result {
-                case .success:
-                    do {
-                        try self.tariWallet?.cancelAllExpiredPendingTx()
-                        TariLogger.verbose("Checked for expired pending transactions")
-                    } catch {
-                        TariLogger.error("Failed to cancel expired pending transactions", error: error)
-                    }
-                default:
-                    break
-                }
+        TariEventBus.onBackgroundThread(self, eventType: .baseNodeSyncComplete) { [weak self] result in
+            guard let result = result?.object as? [String: Any], let isSuccess = result["success"] as? Bool, isSuccess else { return }
+                
+            do {
+                try self?.tariWallet?.cancelAllExpiredPendingTx()
+                TariLogger.verbose("Checked for expired pending transactions")
+            } catch {
+                TariLogger.error("Failed to cancel expired pending transactions", error: error)
             }
         }
     }

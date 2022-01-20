@@ -45,7 +45,7 @@ final class NetworkManagerTests: XCTestCase {
     
     // MARK: - Properties
     
-    private let defaultNetwork = TariNetwork.weatherwax
+    private let defaultNetwork = TariNetwork.dibbler
     private var networkManager: NetworkManager!
     
     // MARK: - Setups
