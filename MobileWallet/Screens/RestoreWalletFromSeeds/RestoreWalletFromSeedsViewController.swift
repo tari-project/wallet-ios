@@ -55,10 +55,10 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
         super.viewDidLoad()
         setupFeedbacks()
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        mainView.prepareView()
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        model.start()
     }
 
     // MARK: - Setups
@@ -84,10 +84,6 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
     }
 
     private func setupFeedbacks() {
-
-        mainView.tokenView.tokens
-            .assign(to: \.seedWords, on: model)
-            .store(in: &cancelables)
         
         mainView.tokenView.$inputText
             .assign(to: \.inputText, on: model)
@@ -125,6 +121,26 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
         model.viewModel.$autocompletionMessage
             .assign(to: \.autocompletionMessage, on: mainView.tokenView)
             .store(in: &cancelables)
+        
+        model.viewModel.$updatedInputText
+            .assign(to: \.updatedInputText, on: mainView.tokenView)
+            .store(in: &cancelables)
+        
+        model.viewModel.$seedWordModels
+            .assign(to: \.seedWords, on: mainView.tokenView)
+            .store(in: &cancelables)
+        
+        mainView.tokenView.onSelectSeedWord = { [weak self] in
+            self?.model.removeSeedWord(row: $0)
+        }
+        
+        mainView.tokenView.onRemovingCharacterAtFirstPosition = { [weak self] in
+            self?.model.handleRemovingFirstCharacter(existingText: $0)
+        }
+        
+        mainView.tokenView.onEndEditing = { [weak self] in
+            self?.model.handleEndEditing()
+        }
     }
 
     // MARK: - Actions

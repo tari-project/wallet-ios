@@ -43,24 +43,6 @@ import Combine
 
 final class TokenCollectionView: UIView {
 
-    private final class TokenModel: Hashable {
-
-        static func == (lhs: TokenModel, rhs: TokenModel) -> Bool { lhs === rhs }
-
-        var text: String
-        var isEditable: Bool
-
-        func hash(into hasher: inout Hasher) {
-            hasher.combine(text)
-            hasher.combine(isEditable)
-        }
-
-        init(text: String, isEditable: Bool) {
-            self.text = text
-            self.isEditable = isEditable
-        }
-    }
-
     // MARK: - Subviews
 
     private let collectionView: UICollectionView = {
@@ -80,13 +62,16 @@ final class TokenCollectionView: UIView {
             updateTokensToolbarVisibility()
         }
     }
+    
+    private var textField: UITextField? {
+        let inputView = collectionView.subviews.first { $0 is TokenInputView }
+        return (inputView as? TokenInputView)?.textField
+    }
 
     // MARK: - Properties
-
-    var tokens: AnyPublisher<[String], Never> {
-        $tokenModels
-            .map { $0.map(\.text).filter { !$0.isEmpty } }
-            .eraseToAnyPublisher()
+    
+    var seedWords: [SeedWordModel] = [] {
+        didSet { reloadData() }
     }
     
     var isTokenToolbarVisible: Bool = false {
@@ -101,10 +86,20 @@ final class TokenCollectionView: UIView {
         didSet { updateAutocompletionMessage() }
     }
     
-    private var dataSource: UICollectionViewDiffableDataSource<Int, TokenModel>?
+    var updatedInputText: String = "" {
+        didSet {
+            textField?.text = updatedInputText
+            inputText = updatedInputText
+        }
+    }
+    
+    var onRemovingCharacterAtFirstPosition: ((String) -> Void)?
+    var onSelectSeedWord: ((_ row: Int) -> Void)?
+    var onEndEditing: (() -> Void)?
+    
+    private var dataSource: UICollectionViewDiffableDataSource<Int, SeedWordModel>?
     
     @Published private(set) var inputText: String = ""
-    @Published private var tokenModels: [TokenModel] = []
     
     // MARK: - Initializers
 
@@ -143,20 +138,22 @@ final class TokenCollectionView: UIView {
 
     private func setupFeedbacks() {
 
-        let dataSource = UICollectionViewDiffableDataSource<Int, TokenModel>(collectionView: collectionView) { [weak self] collectionView, indexPath, model in
+        let dataSource = UICollectionViewDiffableDataSource<Int, SeedWordModel>(collectionView: collectionView) { [weak self] collectionView, indexPath, model in
 
             guard let self = self else { return UICollectionViewCell() }
-
-            if model.isEditable {
+            
+            switch model.state {
+            case .editing:
                 let cell = collectionView.dequeueReusableCell(type: TokenInputView.self, indexPath: indexPath)
                 cell.onTextChange = { self.handleOnTextChange(text: $0) }
                 cell.onRemovingCharacterAtFirstPosition = { self.handleRemovingCharacterAtFirstPosition(text: $0) }
                 cell.onEndEditing = { self.handleTapOnReturnButton(text: $0) }
                 self.tokensToolbar = cell.toolbar
                 return cell
-            } else {
+            case .valid, .invalid:
                 let cell = collectionView.dequeueReusableCell(type: TokenView.self, indexPath: indexPath)
-                cell.text = model.text
+                cell.text = model.title
+                cell.isValid = model.state == .valid
                 return cell
             }
         }
@@ -166,72 +163,32 @@ final class TokenCollectionView: UIView {
         collectionView.dataSource = dataSource
         collectionView.delegate = self
         collectionView.backgroundView?.addGestureRecognizer(tapGestureRecognizer)
-
+        
         self.dataSource = dataSource
     }
-
-    func prepareView() {
-        tokenModels = [TokenModel(text: "", isEditable: true)]
-        dataReload()
-    }
-
+    
     // MARK: - Actions
-
-    private func handleOnTextChange(text: String) -> String {
-
-        defer { collectionView.scrollToBottom(animated: false) }
-
-        var tokens = text.tokenize()
-
-        guard tokens.count > 1 else {
-            inputText = text
-            collectionView.collectionViewLayout.invalidateLayout()
-            return text
-        }
-
-        let lastToken = tokens.removeLast()
-        let models = tokens.map { TokenModel(text: $0, isEditable: false) }
-        let index = tokenModels.count - 1
-
-        tokenModels.insert(contentsOf: models, at: index)
-        dataReload()
-        
-        inputText = lastToken
-
-        return lastToken
+    
+    private func handleOnTextChange(text: String) {
+        inputText = text
+        collectionView.collectionViewLayout.invalidateLayout()
+    }
+    
+    private func handleRemovingCharacterAtFirstPosition(text: String) {
+        onRemovingCharacterAtFirstPosition?(text)
     }
 
-    private func handleRemovingCharacterAtFirstPosition(text: String) -> String {
-
-        defer { collectionView.collectionViewLayout.invalidateLayout() }
-
-        guard tokenModels.count > 1 else { return text }
-
-        let lastSubmittedTokenIndex = tokenModels.count - 2
-        let lastSubmittedToken = tokenModels[lastSubmittedTokenIndex].text
-
-        tokenModels.remove(at: lastSubmittedTokenIndex)
-        dataReload()
-
-        return lastSubmittedToken + text
+    private func handleTapOnReturnButton(text: String) {
+        onEndEditing?()
     }
 
-    private func handleTapOnReturnButton(text: String) -> String {
-        guard !text.isEmpty else { return text }
-
-        let model = TokenModel(text: text, isEditable: false)
-        let index = tokenModels.count - 1
-        tokenModels.insert(model, at: index)
-        endEditing(true)
-        dataReload()
-        return ""
-    }
-
-    private func dataReload() {
-        var snapshot = NSDiffableDataSourceSnapshot<Int, TokenModel>()
+    private func reloadData() {
+        var snapshot = NSDiffableDataSourceSnapshot<Int, SeedWordModel>()
         snapshot.appendSections([0])
-        snapshot.appendItems(tokenModels)
-        dataSource?.apply(snapshot, animatingDifferences: true)
+        snapshot.appendItems(seedWords)
+        dataSource?.apply(snapshot, animatingDifferences: true) { [weak self] in
+            self?.collectionView.scrollToBottom(animated: true)
+        }
     }
     
     private func updateAutocompletionTokens() {
@@ -249,24 +206,20 @@ final class TokenCollectionView: UIView {
     // MARK: - Target Actions
 
     @objc private func onTapOutsideAction() {
-        let indexPath = IndexPath(item: tokenModels.count - 1, section: 0)
-        collectionView.cellForItem(at: indexPath)?.becomeFirstResponder()
+        textField?.becomeFirstResponder()
     }
 
     // MARK: - First Responder
 
     override func resignFirstResponder() -> Bool {
-        let indexPath = IndexPath(item: tokenModels.count - 1, section: 0)
-        return collectionView.cellForItem(at: indexPath)?.resignFirstResponder() ?? false
-
+        textField?.resignFirstResponder() ?? false
     }
 }
 
 extension TokenCollectionView: UICollectionViewDelegate {
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard indexPath.row < tokenModels.count - 1 else { return }
-        tokenModels.remove(at: indexPath.row)
-        dataReload()
+        onSelectSeedWord?(indexPath.row)
     }
 }
 

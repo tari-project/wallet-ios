@@ -82,10 +82,6 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
 
     // MARK: - Setups
 
-    func prepareView() {
-        tokenView.prepareView()
-    }
-
     private func setupViews() {
         backgroundColor = Theme.shared.colors.appBackground
     }

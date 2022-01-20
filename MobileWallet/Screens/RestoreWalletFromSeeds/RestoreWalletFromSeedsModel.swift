@@ -45,9 +45,24 @@ struct TokenViewModel: Identifiable, Hashable {
     let title: String
 }
 
+struct SeedWordModel: Identifiable, Hashable {
+
+    enum State {
+        case valid
+        case invalid
+        case editing
+    }
+
+    let id: UUID
+    let title: String
+    let state: State
+}
+
 final class RestoreWalletFromSeedsModel {
 
     final class ViewModel {
+        @Published var seedWordModels: [SeedWordModel] = []
+        @Published var updatedInputText: String = ""
         @Published var error: SimpleErrorModel?
         @Published var isConfimationEnabled: Bool = false
         @Published var isEmptyWalletCreated: Bool = false
@@ -59,9 +74,10 @@ final class RestoreWalletFromSeedsModel {
     // MARK: - Properties
 
     @Published var inputText: String = ""
-    @Published var seedWords: [String] = []
     
     let viewModel: ViewModel = ViewModel()
+    
+    private let editingModel = SeedWordModel(id: UUID(), title: "", state: .editing)
     
     private var availableAutocompletionTokens: [TokenViewModel] = [] {
         didSet { viewModel.isAutocompletionAvailable = !availableAutocompletionTokens.isEmpty }
@@ -79,8 +95,8 @@ final class RestoreWalletFromSeedsModel {
 
     private func setupFeedbacks() {
         
-        $seedWords
-            .map { !$0.isEmpty }
+        viewModel.$seedWordModels
+            .map { $0.contains { $0.state != .editing } }
             .assign(to: \.isConfimationEnabled, on: viewModel)
             .store(in: &cancelables)
         
@@ -88,6 +104,10 @@ final class RestoreWalletFromSeedsModel {
             .map { [unowned self] inputText in self.availableAutocompletionTokens.filter { $0.title.lowercased().hasPrefix(inputText.lowercased()) }}
             .map { [unowned self] in $0 != self.availableAutocompletionTokens ? $0 : [] }
             .assign(to: \.autocompletionTokens, on: viewModel)
+            .store(in: &cancelables)
+        
+        $inputText
+            .sink { [unowned self] in self.handle(inputText: $0) }
             .store(in: &cancelables)
         
         Publishers.CombineLatest($inputText, viewModel.$autocompletionTokens)
@@ -106,8 +126,18 @@ final class RestoreWalletFromSeedsModel {
     }
 
     // MARK: - Actions
+    
+    func start() {
+        guard viewModel.seedWordModels.isEmpty else { return }
+        viewModel.seedWordModels = [editingModel]
+    }
 
     func startRestoringWallet() {
+        
+        let seedWords = viewModel.seedWordModels
+            .filter { $0.state != .editing }
+            .map { $0.title }
+        
         do {
             let walletSeedWords = try SeedWords(words: seedWords)
             try TariLib.shared.createNewWallet(seedWords: walletSeedWords)
@@ -121,11 +151,48 @@ final class RestoreWalletFromSeedsModel {
         }
     }
     
+    func removeSeedWord(row: Int) {
+        guard viewModel.seedWordModels.count > row else { return }
+        viewModel.seedWordModels.remove(at: row)
+    }
+    
+    func handleRemovingFirstCharacter(existingText: String) {
+        guard viewModel.seedWordModels.contains(where: { $0.state != .editing }) else { return }
+        let lastTokenIndex = viewModel.seedWordModels.count - 2
+        let lastToken = viewModel.seedWordModels.remove(at: lastTokenIndex)
+        viewModel.updatedInputText = lastToken.title + existingText
+    }
+    
+    func handleEndEditing() {
+        guard !inputText.isEmpty else { return }
+        let state = state(seedWord: inputText)
+        appendModelsBeforeEditingModel(models: [SeedWordModel(id: UUID(), title: inputText, state: state)])
+        viewModel.updatedInputText = ""
+    }
+    
     private func fetchAvailableSeedWords() {
         availableAutocompletionTokens = (try? SeedWordsMnemonicWordList(language: .english)?.seedWords.map { TokenViewModel(id: UUID(), title: $0) }) ?? []
     }
+    
+    private func appendModelsBeforeEditingModel(models: [SeedWordModel]) {
+        let index = viewModel.seedWordModels.count - 1
+        viewModel.seedWordModels.insert(contentsOf: models, at: index)
+    }
 
     // MARK: - Handlers
+    
+    private func handle(inputText: String) {
+        
+        var tokens = inputText.tokenize()
+        guard tokens.count > 1 else { return }
+        let lastToken = tokens.removeLast()
+        let models = tokens
+            .map { $0.lowercased() }
+            .map { SeedWordModel(id: UUID(), title: $0, state: state(seedWord: $0)) }
+        
+        appendModelsBeforeEditingModel(models: models)
+        viewModel.updatedInputText = lastToken
+    }
 
     private func handle(seedWordsError: SeedWords.Error) {
         switch seedWordsError {
@@ -171,5 +238,11 @@ final class RestoreWalletFromSeedsModel {
             title: localized("restore_from_seed_words.error.title"),
             description: localized("restore_from_seed_words.error.description.unknown_error")
         )
+    }
+    
+    // MARK: - Helpers
+    
+    private func state(seedWord: String) -> SeedWordModel.State {
+        availableAutocompletionTokens.contains { $0.title == seedWord } ? .valid : .invalid
     }
 }
