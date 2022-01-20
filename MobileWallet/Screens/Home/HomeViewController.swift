@@ -460,7 +460,8 @@ final class HomeViewController: UIViewController {
     }
 
     func onSend(pubKey: PublicKey? = nil, deepLinkParams: DeepLinkParams? = nil) {
-        let sendVC = AddRecipientViewController()
+
+        let sendVC = TransactionsViewController()
 
         // This is used by the deep link manager
         if let publicKey = pubKey {
@@ -468,8 +469,7 @@ final class HomeViewController: UIViewController {
                 deadline: .now() + 0.75
             ) { [weak self] in
                 guard let _ = self else { return }
-                sendVC.deepLinkParams = deepLinkParams
-                sendVC.onAdd(publicKey: publicKey)
+                sendVC.update(deeplinkParameters: deepLinkParams, publicKey: publicKey)
             }
         }
 

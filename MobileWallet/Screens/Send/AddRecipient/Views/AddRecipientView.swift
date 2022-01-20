@@ -46,12 +46,6 @@ final class AddRecipientView: UIView {
     
     // MARK: - Subviews
     
-    @View private var navigationBar: NavigationBar = {
-        let view = NavigationBar()
-        view.title = localized("add_recipient.title")
-        return view
-    }()
-    
     @View private var searchContentView: UIView = {
         let view = UIView()
         view.backgroundColor = Theme.shared.colors.navigationBarBackground
@@ -137,7 +131,6 @@ final class AddRecipientView: UIView {
     
     private(set) var tableDataSource: UITableViewDiffableDataSource<String, ContactElementItem>?
     
-    private var navigationBarHeightConstraint: NSLayoutConstraint?
     private var continueButtonTopConstraint: NSLayoutConstraint?
     private var continueButtonBottomConstraint: NSLayoutConstraint?
     private var pasteEmojisViewBottomConstraint: NSLayoutConstraint?
@@ -169,17 +162,12 @@ final class AddRecipientView: UIView {
     
     private func setupConstraints() {
         
-        [searchContentView, navigationBar, contactsTableView, errorMessageView, continueButton, dimView, searchView, pasteEmojisView].forEach(addSubview)
+        [searchContentView, contactsTableView, errorMessageView, continueButton, dimView, searchView, pasteEmojisView].forEach(addSubview)
         
-        let navigationBarHeightConstraint = navigationBar.heightAnchor.constraint(equalToConstant: 44.0)
         let continueButtonTopConstraint = continueButton.topAnchor.constraint(equalTo: bottomAnchor)
         let pasteEmojisViewBottomConstraint = pasteEmojisView.bottomAnchor.constraint(equalTo: bottomAnchor)
         let normalTableViewTopConstraint = contactsTableView.topAnchor.constraint(equalTo: searchContentView.bottomAnchor)
         
-        
-        
-        
-        self.navigationBarHeightConstraint = navigationBarHeightConstraint
         self.continueButtonTopConstraint = continueButtonTopConstraint
         self.continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -22.0)
         self.pasteEmojisViewBottomConstraint = pasteEmojisViewBottomConstraint
@@ -187,11 +175,7 @@ final class AddRecipientView: UIView {
         errorTableViewTopConstraint = contactsTableView.topAnchor.constraint(equalTo: errorMessageView.bottomAnchor)
         
         let constraints = [
-            navigationBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            navigationBar.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            navigationBarHeightConstraint,
-            searchContentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            searchContentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             searchContentView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
             searchContentView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
             searchContentView.heightAnchor.constraint(equalToConstant: 90.0),
@@ -268,7 +252,6 @@ final class AddRecipientView: UIView {
         
         pasteEmojisView.setEmojis(emojis: text, onPress: onPress)
         pasteEmojisViewBottomConstraint?.constant = -keyboardOffset
-        navigationBarHeightConstraint?.constant = 0.0
         
         UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
             self?.dimView.alpha = 0.6
@@ -280,7 +263,6 @@ final class AddRecipientView: UIView {
     func hideCopyFromClipboardDialog() {
         
         pasteEmojisViewBottomConstraint?.constant = 0.0
-        navigationBarHeightConstraint?.constant = 44.0
         
         UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
             self?.dimView.alpha = 0.0

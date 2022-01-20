@@ -222,7 +222,11 @@ extension AddRecipientViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let view = tableView.dequeueReusableHeaderFooterView(type: AddRecipientSectionHeaderView.self)
-        view.text = model.contactsSectionItems[section].title
+        
+        if model.contactsSectionItems.count > section {
+            view.text = model.contactsSectionItems[section].title
+        }
+        
         return view
     }
     

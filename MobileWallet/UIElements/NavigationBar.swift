@@ -40,7 +40,7 @@
 
 import UIKit
 
-protocol NavigationBarProtocol: class {
+protocol NavigationBarProtocol: AnyObject {
     var title: String? { get set }
 }
 

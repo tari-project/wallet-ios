@@ -51,7 +51,7 @@ class MenuTabBarController: UITabBarController {
 
     var homeViewController = HomeViewController()
     var storeViewController = WebBrowserViewController()
-    var addRecipientViewController = AddRecipientViewController()
+    var transactionsViewController = TransactionsViewController()
     var profileViewController = ProfileViewController()
     var settingsViewController = SettingsViewController()
     let customTabBar = CustomTabBar(frame: .null)
@@ -63,14 +63,14 @@ class MenuTabBarController: UITabBarController {
 
         homeViewController.tabBarItem.image = Theme.shared.images.homeItem
         storeViewController.tabBarItem.image = Theme.shared.images.ttlItem
-        addRecipientViewController.tabBarItem.image = Theme.shared.images.sendItem
-        addRecipientViewController.tabBarItem.tag = 1 // Using this to determine which icon to move upwards
+        transactionsViewController.tabBarItem.image = Theme.shared.images.sendItem
+        transactionsViewController.tabBarItem.tag = 1 // Using this to determine which icon to move upwards
         profileViewController.tabBarItem.image = Theme.shared.images.profileItem
         settingsViewController.tabBarItem.image = Theme.shared.images.settingsItem
 
         storeViewController.url = URL(string: TariSettings.shared.storeUrl)
 
-        viewControllers = [homeViewController, storeViewController, addRecipientViewController, profileViewController, settingsViewController]
+        viewControllers = [homeViewController, storeViewController, transactionsViewController, profileViewController, settingsViewController]
 
         for tabBarItem in tabBar.items! {
             // For the send image we need to raise it higher than the others
@@ -98,8 +98,8 @@ class MenuTabBarController: UITabBarController {
 
 extension MenuTabBarController: UITabBarControllerDelegate {
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        if viewController.isKind(of: AddRecipientViewController.self) {
-            let navigationController = AlwaysPoppableNavigationController(rootViewController: AddRecipientViewController())
+        if viewController.isKind(of: TransactionsViewController.self) {
+            let navigationController = AlwaysPoppableNavigationController(rootViewController: TransactionsViewController())
             navigationController.setNavigationBarHidden(true, animated: false)
             navigationController.modalPresentationStyle = .fullScreen
             present(navigationController, animated: true)
