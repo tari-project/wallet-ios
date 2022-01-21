@@ -49,7 +49,7 @@ enum ActionButtonVariation {
     case disabled
 }
 
-class ActionButton: UIButton {
+final class ActionButton: BaseButton {
     static let RADIUS_POINTS: CGFloat = 4.0
     static let HEIGHT: CGFloat = 53.0
 
@@ -148,21 +148,26 @@ class ActionButton: UIButton {
         case .normal:
             isEnabled = true
             applyGradient()
+            tintColor = Theme.shared.colors.actionButtonTitle
         case .destructive:
             isEnabled = true
             backgroundColor = Theme.shared.colors.warning
+            tintColor = Theme.shared.colors.actionButtonTitle
         case .raised:
             isEnabled = true
             applyShadow()
             applyGradient()
+            tintColor = Theme.shared.colors.actionButtonTitle
         case .loading:
             isEnabled = false
             titleLabel?.isHidden = true
             applyGradient()
             setupPendingAnimation()
+            tintColor = Theme.shared.colors.actionButtonTitle
         case .disabled:
             isEnabled = false
             backgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled
+            tintColor = Theme.shared.colors.actionButtonTitleDisabled
         }
     }
 

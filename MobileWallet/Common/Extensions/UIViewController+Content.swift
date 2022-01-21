@@ -46,6 +46,7 @@ var hasNotch: Bool {
 }
 
 extension UIViewController {
+    
     func hideKeyboardWhenTappedAroundOrSwipedDown() {
         hideKeyboardWhenTappedAroundOrSwipedDown(view: view)
     }
@@ -100,5 +101,24 @@ extension UIViewController {
 
             navController.setNavigationBarHidden(isHidden, animated: animated)
         }
+    }
+    
+    func add(childController controller: UIViewController, containerView: UIView) {
+        
+        addChild(controller)
+        containerView.addSubview(controller.view)
+        controller.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        let constraints = [
+            controller.view.topAnchor.constraint(equalTo: containerView.topAnchor),
+            controller.view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            controller.view.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            controller.view.bottomAnchor.constraint(equalTo: containerView.bottomAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+        
+        controller.willMove(toParent: self)
+        controller.didMove(toParent: self)
     }
 }

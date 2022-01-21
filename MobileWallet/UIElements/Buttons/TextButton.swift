@@ -46,7 +46,7 @@ enum TextButtonVariation {
     case warning
 }
 
-class TextButton: UIButton {
+final class TextButton: BaseButton {
     private static let imageHorizontalSpaceing: CGFloat = 1
 
     override init(frame: CGRect) {
