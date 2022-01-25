@@ -205,6 +205,8 @@
 		3ACDA85A2721578700F08C70 /* YatTransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA8592721578700F08C70 /* YatTransactionViewController.swift */; };
 		3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA85B27215BEB00F08C70 /* YatTransactionView.swift */; };
 		3ACDA85E2721794800F08C70 /* YatTransactionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA85D2721794800F08C70 /* YatTransactionModel.swift */; };
+		3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA428278EC9BF00EBED98 /* ProfileView.swift */; };
+		3ACFA42B278EC9F200EBED98 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */; };
 		3ACFDD1D26E8C1A900C5E1EA /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */; };
 		3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA73DC270A02B900D50E3B /* WalletSettings.swift */; };
 		3ADA73DF270A02DF00D50E3B /* WalletSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */; };
@@ -498,6 +500,8 @@
 		3ACDA8592721578700F08C70 /* YatTransactionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YatTransactionViewController.swift; sourceTree = "<group>"; };
 		3ACDA85B27215BEB00F08C70 /* YatTransactionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YatTransactionView.swift; sourceTree = "<group>"; };
 		3ACDA85D2721794800F08C70 /* YatTransactionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YatTransactionModel.swift; sourceTree = "<group>"; };
+		3ACFA428278EC9BF00EBED98 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		3ADA73DC270A02B900D50E3B /* WalletSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettings.swift; sourceTree = "<group>"; };
 		3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettingsManager.swift; sourceTree = "<group>"; };
@@ -1584,7 +1588,9 @@
 		BFD758E423E98A9F00B0F1A5 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */,
 				BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */,
+				3ACFA428278EC9BF00EBED98 /* ProfileView.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -1972,6 +1978,7 @@
 				3A72DC4526DFA26000E0BC43 /* TariNetwork.swift in Sources */,
 				004277F723E0628A00AE7BD9 /* UIViewController+Content.swift in Sources */,
 				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
+				3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */,
 				004997AB2382E893000A0B7D /* PendingOutboundTxs.swift in Sources */,
 				37C8BA4B24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */,
 				0087A1AF23F4235400B89EE7 /* ContactCell.swift in Sources */,
@@ -2002,6 +2009,7 @@
 				3AFAC360271C6B4D008AA842 /* ContactAvatarView.swift in Sources */,
 				379D27AF244EF25000F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				3A5E881E26BA9CF10029BB8B /* HomeView.swift in Sources */,
+				3ACFA42B278EC9F200EBED98 /* ProfileModel.swift in Sources */,
 				376C62AE247574850091BB28 /* Animation+EnumInit.swift in Sources */,
 				3ACDA70526B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */,
 				BFAB5D1123FDEA69009E8563 /* EmojiIdView.swift in Sources */,

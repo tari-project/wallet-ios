@@ -79,6 +79,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let yatWebServiceURL = TariSettings.shared.yatWebServiceURL, let yatApiURL = TariSettings.shared.yatApiURL {
             Yat.urls = YatURLs(webServiceURL: yatWebServiceURL, apiURL: yatApiURL)
         }
+        
+        setupYatIntegration()
 
         guard let _ = (scene as? UIWindowScene) else { return }
         if let windowScene = scene as? UIWindowScene {
@@ -170,5 +172,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                      performActionFor shortcutItem: UIApplicationShortcutItem,
                      completionHandler: @escaping (Bool) -> Void) {
         completionHandler(deepLinker.handleShortcut(item: shortcutItem))
+    }
+    
+    private func setupYatIntegration() {
+        Yat.integration.onYatConnected = {
+            TariSettings.shared.walletSettings.connectedYat = $0
+        }
     }
 }
