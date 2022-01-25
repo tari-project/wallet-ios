@@ -307,6 +307,9 @@ struct Images: Loopable {
     let cancelGrey = UIImage(named: "cancelGrey")
     let poweredByGiphy = UIImage(named: "poweredByGiphy")
     let searchIcon = UIImage(named: "SearchIcon")
+    let yatLogo = UIImage(named: "YatLogo")
+    let yatButtonOff = UIImage(named: "YatButtonOff")
+    let yatButtonOn = UIImage(named: "YatButtonOn")
 
     // Amount
     let delete = UIImage(named: "numpad-delete")

@@ -38,9 +38,8 @@
 
 import UIKit
 
-class EmojiIdView: UIView {
+final class EmojiIdView: UIView {
 
-    // var containerView = UIView()
     weak var blackoutParent: UIView?
     private lazy var blackoutView: UIView = {
         let view = UIView()
@@ -53,6 +52,9 @@ class EmojiIdView: UIView {
 
     var expanded: Bool = false
     var blackoutWhileExpanded = true
+    var copyText: String = ""
+    var tooltipText: String?
+    
     var tapToExpand: ((_ expanded: Bool) -> Void)?
     private var initialWidth: CGFloat = CGFloat(172)
 
@@ -73,8 +75,8 @@ class EmojiIdView: UIView {
 
     private let emojiMenu = EmojiMenuView()
 
-    private var emojiText: String!
-    private var pubKeyHex: String!
+    private var emojiText: String = ""
+    private var pubKeyHex: String?
 
     private var tapActionIsDisabled = false
 
@@ -86,6 +88,25 @@ class EmojiIdView: UIView {
     }
 
     private var superVC: UIViewController?
+    
+    func update(emojiID: String, hex: String?) {
+        emojiText = emojiID
+        pubKeyHex = hex
+        setupView()
+    }
+    
+    private func setupView(textCentered: Bool = true, inViewController vc: UIViewController? = nil, initialWidth: CGFloat = CGFloat(185), initialHeight: CGFloat = CGFloat(40), showContainerViewBlur: Bool = true, cornerRadius: CGFloat = 6.0) {
+        self.backgroundColor = .clear
+        self.cornerRadius = cornerRadius
+        blackoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap(_:))))
+        superVC = vc
+        superVC?.navigationController?.navigationBar.layer.zPosition = 0
+        blackoutWhileExpanded = showContainerViewBlur
+        // tap gesture
+        self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
+        prepareCondensedEmojiId(textCentered: textCentered, width: initialWidth, height: initialHeight)
+        prepareExpandedEmojiId(height: initialHeight)
+    }
 
     func setupView(pubKey: PublicKey,
                    textCentered: Bool,
@@ -164,7 +185,7 @@ class EmojiIdView: UIView {
         condensedEmojiIdLabel.font = UIFont.systemFont(ofSize: 14.0)
         condensedEmojiIdLabel.adjustsFontSizeToFitWidth = false
         // condensedEmojiIdLabel.copyText = emojiText
-        expandedEmojiIdLabel.numberOfLines = 0
+        expandedEmojiIdLabel.numberOfLines = 1
         expandedEmojiIdLabel.adjustsFontSizeToFitWidth = false
         expandedEmojiIdLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
         expandedEmojiIdLabel.isUserInteractionEnabled = true
@@ -175,17 +196,7 @@ class EmojiIdView: UIView {
         expandedEmojiIdLabel.text = getExpandedEmojiId() + " "
         expandedEmojiIdLabel.font = UIFont.systemFont(ofSize: 14.0)
         expandedEmojiIdLabel.letterSpacing(value: 1.6)
-        expandedEmojiIdLabel.sizeToFit()
-        expandedEmojiIdLabel.frame = CGRect(
-            x: 14,
-            y: 0,
-            width: expandedEmojiIdLabel.frame.width,
-            height: height
-        )
-        expandedEmojiIdScrollView.contentSize = CGSize(
-            width: expandedEmojiIdLabel.frame.size.width + 14*2,
-            height: height
-        )
+        
         expandedEmojiIdScrollView.addSubview(expandedEmojiIdLabel)
     }
 
@@ -196,6 +207,19 @@ class EmojiIdView: UIView {
         } else {
             expand(callTapCompletion: true)
         }
+    }
+    
+    private func update(scrollViewFrame: CGRect) {
+        
+        expandedEmojiIdScrollView.frame = scrollViewFrame
+        expandedEmojiIdLabel.sizeToFit()
+        
+        let padding: CGFloat = 14.0
+        let height = 40.0
+        let contentWidth = max(expandedEmojiIdLabel.bounds.width, expandedEmojiIdScrollView.bounds.width - 2.0 * padding)
+        
+        expandedEmojiIdLabel.frame = CGRect(x: padding ,y: 0.0, width: contentWidth, height: height)
+        expandedEmojiIdScrollView.contentSize = CGSize(width: expandedEmojiIdLabel.frame.width + 2.0 * padding, height: height)
     }
 
     func expand(completion: (() -> Void)? = nil, callTapCompletion: Bool = false, animated: Bool = true) {
@@ -216,7 +240,7 @@ class EmojiIdView: UIView {
         // add and show scroll view
         let padding = UIDevice.current.userInterfaceIdiom == .pad ? 60 : Theme.shared.sizes.appSidePadding
         let scrollViewTargetWidth = blackoutView.frame.width - padding * 2
-        expandedEmojiIdScrollView.frame = scrollViewFrame
+        update(scrollViewFrame: scrollViewFrame)
         // animate scroll view frame
         let scrollViewTargetFrame = CGRect(
             x: padding,
@@ -231,10 +255,11 @@ class EmojiIdView: UIView {
                 CGPoint(x: expandedEmojiIdLabel.frame.width / 2, y: 0),
                 animated: false
             )
+            
             fadeView(view: expandedEmojiIdScrollView, fadeOut: false)
             UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0) {
                 [weak self] in
-                self?.expandedEmojiIdScrollView.frame = scrollViewTargetFrame
+                self?.update(scrollViewFrame: scrollViewTargetFrame)
             }
             UIView.animate(withDuration: 0.5, animations: {
                 [weak self] in
@@ -245,7 +270,7 @@ class EmojiIdView: UIView {
             }
         } else {
             expandedEmojiIdScrollView.alpha = 1
-            expandedEmojiIdScrollView.frame = scrollViewTargetFrame
+            update(scrollViewFrame: scrollViewTargetFrame)
             tapActionIsDisabled = false
         }
         if callTapCompletion == true {
@@ -313,10 +338,6 @@ class EmojiIdView: UIView {
             }
             return
         }
-        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0) {
-            [weak self] in
-            self?.expandedEmojiIdScrollView.frame = scrollViewFrame
-        }
         if self.blackoutWhileExpanded {
             self.fadeView(view: self.blackoutView, fadeOut: true) {
                 [weak self] in
@@ -339,6 +360,9 @@ class EmojiIdView: UIView {
     }
 
     private func getCondensedEmojiId() -> String {
+        
+        guard emojiText.count > 6 else { return emojiText }
+        
         let firstThreeChar = emojiText.prefix(3)
         let lastThreeChar = emojiText.suffix(3)
         return "\(firstThreeChar)•••\(lastThreeChar)"
@@ -382,14 +406,14 @@ extension EmojiIdView {
 
     private func showCopyEmojiIdButton(completion: (() -> Void)? = nil) {
         emojiMenu.alpha = 0.0
-        emojiMenu.title = localized("emoji.copy")
+        emojiMenu.title = copyText
 
         emojiMenu.completion = {
             [weak self] isLongPress in
             guard let self = self else { return }
             self.tapActionIsDisabled = true
             if isLongPress {
-                self.copyToClipboard(string: self.pubKeyHex)
+                self.copyToClipboard(string: self.pubKeyHex ?? self.emojiText)
             } else {
                 self.copyToClipboard(string: self.emojiText)
             }
@@ -403,14 +427,10 @@ extension EmojiIdView {
         UIApplication.shared.keyWindow?.addSubview(emojiMenu)
         guard let globalFrame = condensedEmojiIdContainer.globalFrame else { return }
         let emojiMenuSize = CGSize(width: 119, height: 37)
-        let xPosition = (bounds.width / 2) - (emojiMenuSize.width / 2) + 25
         emojiMenu.alpha = 0.0
-        emojiMenu.frame = CGRect(
-            x: xPosition,
-            y: globalFrame.origin.y + globalFrame.height,
-            width: emojiMenuSize.width,
-            height: emojiMenuSize.height
-        )
+        emojiMenu.frame.origin.y = globalFrame.maxY
+        emojiMenu.frame.size = emojiMenuSize
+        emojiMenu.center.x = center.x
         emojiMenu.button.alpha = 1
 
         UIView.animate(withDuration: 0.5,
@@ -419,8 +439,9 @@ extension EmojiIdView {
                        initialSpringVelocity: 5,
                        options: .curveEaseInOut,
                        animations: { [weak self] in
-            self?.emojiMenu.alpha = 1.0
-            self?.emojiMenu.frame = CGRect(x: xPosition, y: globalFrame.origin.y + 45, width: emojiMenuSize.width, height: emojiMenuSize.height)
+            guard let self = self else { return }
+            self.emojiMenu.alpha = 1.0
+            self.emojiMenu.center.y += 4.0
         }) {
             (_) in
             completion?()
@@ -457,7 +478,8 @@ extension EmojiIdView {
         )
         hexPubKeyTipViewBottomConstraint?.isActive = true
 
-        tipLabel.text = localized("emoji.hex_tip")
+        tipView.isHidden = tooltipText == nil
+        tipLabel.text =  tooltipText
         tipLabel.font = Theme.shared.fonts.profileMiddleLabel
         tipLabel.textColor = Theme.shared.colors.profileMiddleLabel!
         tipLabel.translatesAutoresizingMaskIntoConstraints = false

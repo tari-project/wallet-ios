@@ -79,7 +79,7 @@ final class TransactionsView: UIView {
             toolbar.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             toolbar.leadingAnchor.constraint(equalTo: leadingAnchor),
             toolbar.trailingAnchor.constraint(equalTo: trailingAnchor),
-            toolbar.heightAnchor.constraint(equalToConstant: 44.0), // TODO: !
+            toolbar.heightAnchor.constraint(equalToConstant: 44.0),
             contentView.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),

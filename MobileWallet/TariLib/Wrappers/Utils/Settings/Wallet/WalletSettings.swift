@@ -55,12 +55,14 @@ struct WalletSettings: Codable, Equatable {
     let configationState: WalletConfigurationState
     let isCloudBackupEnabled: Bool
     let hasVerifiedSeedPhrase: Bool
+    let yat: String?
 
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.networkName == rhs.networkName }
 }
 
 extension WalletSettings {
-    func update(configationState: WalletConfigurationState) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase) }
-    func update(isCloudBackupEnabled: Bool) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase) }
-    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase) }
+    func update(configationState: WalletConfigurationState) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
+    func update(isCloudBackupEnabled: Bool) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
+    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
+    func update(yat: String?) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
 }

@@ -283,6 +283,7 @@
 /* Emoji view */
 "emoji.copied" = "COPIED";
 "emoji.copy" = "Copy Emoji ID";
+"emoji.yat.copy" = "Copy Yat";
 "emoji.paste" = "Paste copied Emoji ID";
 "emoji.hex_tip" = "ℹ️ You can long-press the Copy Emoji ID button to copy the address in hexadecimal format.";
 
@@ -328,6 +329,8 @@
 "profile_view.title" = "My Profile";
 "profile_view.error.qr_code.title" = "Failed to generate QR";
 "profile_view.error.qr_code.description.with_param" = "Transacting in person? Others can scan this QR code from the Tari Aurora App to send you %@.";
+"profile_view.error.yat_mismatch" = "You've previously connected this Yat.\n Do you want to re-connect it to your wallet?";
+"profile_view.button.recconect_yat" = "Reconnect Yat";
 
 /* Navigation bar */
 "navigation_bar.error.show_emoji.title" = "Public key error";
@@ -543,3 +546,8 @@
 "request.buttons.generate_qr" = "Generate QR Code";
 "request.qr_code.buttons.share" = "Share";
 "request.qr_code.buttons.close" = "Close";
+
+/* Errors */
+
+"error.generic.title" = "Error";
+"error.generic.description" = "Something went wrong! Please try again later. Please send us a bug report if this problem persists.";

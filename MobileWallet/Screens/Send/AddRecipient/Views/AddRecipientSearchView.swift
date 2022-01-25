@@ -51,17 +51,24 @@ final class AddRecipientSearchView: UIView {
         view.font = Theme.shared.fonts.searchContactsInputBoxText
         view.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 11.0, height: 0.0))
         view.leftViewMode = .always
-        view.rightViewMode = .always
         return view
     }()
+    
+    @View private var yatIconView: UIImageView = {
+        let view = UIImageView()
+        view.image = Theme.shared.images.yatLogo?.withAlignmentRectInsets(UIEdgeInsets(top: -7.0, left: -11.0, bottom: -7.0, right: 0.0))
+        view.tintColor = .black
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
+    
+    @View var yatPreviewButton = PulseButton()
 
     @View var qrButton: PulseButton = {
         let view = PulseButton()
         view.setImage(Theme.shared.images.qrButton, for: .normal)
         return view
     }()
-    
-    @View var yatPreviewButton = PulseButton()
     
     @View private var contentView: UIStackView = {
         let view = UIStackView()
@@ -110,7 +117,7 @@ final class AddRecipientSearchView: UIView {
     
     private func setupConstraints() {
         
-        [textField, yatPreviewButton, qrButton].forEach(contentView.addArrangedSubview)
+        [yatIconView, textField, yatPreviewButton, qrButton].forEach(contentView.addArrangedSubview)
         [contentView, previewView].forEach(addSubview)
        
         let constraints = [
@@ -120,6 +127,7 @@ final class AddRecipientSearchView: UIView {
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
             yatPreviewButton.widthAnchor.constraint(equalToConstant: 44.0),
             qrButton.widthAnchor.constraint(equalToConstant: 44.0),
+            yatIconView.widthAnchor.constraint(equalToConstant: 33.0),
             previewView.topAnchor.constraint(equalTo: textField.topAnchor),
             previewView.leadingAnchor.constraint(equalTo: textField.leadingAnchor),
             previewView.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
@@ -133,6 +141,7 @@ final class AddRecipientSearchView: UIView {
     private func updateViews() {
         qrButton.isHidden = !isQrButtonVisible
         yatPreviewButton.isHidden = !isPreviewButtonVisible
+        yatIconView.isHidden = !isPreviewButtonVisible
     }
     
     private func updatePreview() {
