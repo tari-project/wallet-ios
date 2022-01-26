@@ -52,8 +52,8 @@ final class EmojiIdView: UIView {
 
     var expanded: Bool = false
     var blackoutWhileExpanded = true
-    var copyText: String = ""
-    var tooltipText: String?
+    var copyText: String = localized("emoji.copy")
+    var tooltipText: String? = localized("profile_view.error.qr_code.description.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
     
     var tapToExpand: ((_ expanded: Bool) -> Void)?
     private var initialWidth: CGFloat = CGFloat(172)
