@@ -208,6 +208,7 @@
 		3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA428278EC9BF00EBED98 /* ProfileView.swift */; };
 		3ACFA42B278EC9F200EBED98 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */; };
 		3ACFDD1D26E8C1A900C5E1EA /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */; };
+		3ADA05F127A41D44007F5677 /* PointerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA05F027A41D44007F5677 /* PointerHandler.swift */; };
 		3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA73DC270A02B900D50E3B /* WalletSettings.swift */; };
 		3ADA73DF270A02DF00D50E3B /* WalletSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */; };
 		3ADEBF5D26A54FA500E87C84 /* SelectBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF5C26A54FA500E87C84 /* SelectBaseNodeModel.swift */; };
@@ -503,6 +504,7 @@
 		3ACFA428278EC9BF00EBED98 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
+		3ADA05F027A41D44007F5677 /* PointerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerHandler.swift; sourceTree = "<group>"; };
 		3ADA73DC270A02B900D50E3B /* WalletSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettings.swift; sourceTree = "<group>"; };
 		3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettingsManager.swift; sourceTree = "<group>"; };
 		3ADEBF5C26A54FA500E87C84 /* SelectBaseNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBaseNodeModel.swift; sourceTree = "<group>"; };
@@ -692,6 +694,7 @@
 				3A42059B279804E900A8D49C /* Formatters */,
 				3A420598279804A700A8D49C /* Factories */,
 				3A9A08F426E0A83D00D2E75C /* AppRouter.swift */,
+				3ADA05F027A41D44007F5677 /* PointerHandler.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1928,6 +1931,7 @@
 				3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */,
 				A0779C612552C1AF00614EF3 /* DeleteWalletViewController.swift in Sources */,
 				37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */,
+				3ADA05F127A41D44007F5677 /* PointerHandler.swift in Sources */,
 				3ABBC5DE2726B3A1001BB864 /* YatCacheManager.swift in Sources */,
 				3ADEBF6A26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */,
 				3A420597279803DF00A8D49C /* CharacterSet+CustomSets.swift in Sources */,
@@ -2214,7 +2218,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.10.0;
+				MARKETING_VERSION = 0.10.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2250,7 +2254,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.10.0;
+				MARKETING_VERSION = 0.10.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

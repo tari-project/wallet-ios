@@ -619,8 +619,24 @@ final class Wallet {
 
         var errorCode: Int32 = -1
         let messagePointer = (utxo.message as NSString).utf8String
+        
+        let metadataSignature = try makeCommitmentSignature(utxo: utxo)
+        let senderOffsetPublicKey = try utxo.makeSenderOffsetPublicKey()
+        
         _ = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_import_utxo(pointer, utxo.value, privateKey.pointer, sourcePublicKey.pointer, messagePointer, error)})
+            wallet_import_utxo(
+                pointer,
+                utxo.value,
+                privateKey.pointer,
+                sourcePublicKey.pointer,
+                nil,
+                metadataSignature,
+                senderOffsetPublicKey.pointer,
+                privateKey.pointer,
+                nil,
+                messagePointer,
+                error
+            )})
         guard errorCode == 0 else {
             throw WalletErrors.generic(errorCode)
         }
@@ -628,6 +644,24 @@ final class Wallet {
         TariEventBus.postToMainThread(.requiresBackup)
         TariEventBus.postToMainThread(.balanceUpdate)
         TariEventBus.postToMainThread(.txListUpdate)
+    }
+    
+    private func makeCommitmentSignature(utxo: UTXO) throws -> OpaquePointer {
+        
+        let publicNonceVector = try ByteVector(byteArray: [UInt8](utxo.publicNonce))
+        let uValueVector = try ByteVector(byteArray: [UInt8](utxo.uValue))
+        let vValueVector = try ByteVector(byteArray: [UInt8](utxo.vValue))
+        
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        let result = commitment_signature_create_from_bytes(publicNonceVector.pointer, uValueVector.pointer, vValueVector.pointer, errorCodePointer)
+        
+        guard errorCode == 0, let result = result else {
+            throw WalletErrors.generic(errorCode)
+        }
+        
+        return result
     }
 
     func add(baseNode: BaseNode) throws {
