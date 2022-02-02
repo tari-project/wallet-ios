@@ -141,9 +141,9 @@ final class ProfileModel {
     
     func updateYatIdData() {
         
-        yatButtonState = .loading
-        
         guard let connectedYat = TariSettings.shared.walletSettings.connectedYat else { return }
+        
+        yatButtonState = .loading
         
         Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: connectedYat, tags: YatRecordTag.XTRAddress.rawValue)
             .sink(
