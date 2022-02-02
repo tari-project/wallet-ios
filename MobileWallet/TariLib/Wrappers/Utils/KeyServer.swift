@@ -201,7 +201,7 @@ final class KeyServer {
                 return
             }
 
-            guard let keysDict = res["keys"] as? [[String: String]], let returnPubKeyHex = res["return_wallet_id"] as? String else {
+            guard let keysDict = res["keys"] as? [[String: Any]], let returnPubKeyHex = res["return_wallet_id"] as? String else {
                 onRequestError(KeyServerError.responseInvalid)
                 return
             }
@@ -211,12 +211,19 @@ final class KeyServer {
                 return
             }
 
-            guard let key1 = keysDict[0]["key"], let valueString1 = keysDict[0]["value"] else {
+            guard let key1 = keysDict[0]["key"] as? String, let valueString1 = keysDict[0]["value"] as? String else {
                 onRequestError(KeyServerError.responseInvalid)
                 return
             }
 
             guard let value1 = UInt64(valueString1) else {
+                onRequestError(KeyServerError.responseInvalid)
+                return
+            }
+            
+            guard let output1 = keysDict[0]["output"] as? [String: Any], let metadataSignature1 = output1["metadata_signature"] as? [String: String], let senderOffsetPublicKey1 = output1["sender_offset_public_key"] as? String,
+                    let rawPublicNonce1 = metadataSignature1["public_nonce"], let rawUValue1 = metadataSignature1["u"], let rawVValue1 = metadataSignature1["v"],
+                    let publicNonce1 = rawPublicNonce1.hexData, let uValue1 = rawUValue1.hexData, let vValue1 = rawVValue1.hexData else {
                 onRequestError(KeyServerError.responseInvalid)
                 return
             }
@@ -226,7 +233,11 @@ final class KeyServer {
                     privateKeyHex: key1,
                     value: value1,
                     message: self.TARIBOT_MESSAGE1,
-                    sourcePublicKeyHex: returnPubKeyHex
+                    sourcePublicKeyHex: returnPubKeyHex,
+                    publicNonce: publicNonce1,
+                    uValue: uValue1,
+                    vValue: vValue1,
+                    senderOffsetPublicKeyHex: senderOffsetPublicKey1
                 )
 
                 // Add TariBot as a contact
@@ -238,12 +249,19 @@ final class KeyServer {
                 return
             }
 
-            guard let key2 = keysDict[1]["key"], let valueString2 = keysDict[1]["value"] else {
+            guard let key2 = keysDict[1]["key"] as? String, let valueString2 = keysDict[1]["value"] as? String else {
                 onRequestError(KeyServerError.responseInvalid)
                 return
             }
 
             guard let value2 = UInt64(valueString2) else {
+                onRequestError(KeyServerError.responseInvalid)
+                return
+            }
+            
+            guard let output2 = keysDict[1]["output"] as? [String: Any], let metadataSignature2 = output2["metadata_signature"] as? [String: String], let senderOffsetPublicKey2 = output2["sender_offset_public_key"] as? String,
+                  let rawPublicNonce2 = metadataSignature2["public_nonce"], let rawUValue2 = metadataSignature2["u"], let rawVValue2 = metadataSignature2["v"],
+                  let publicNonce2 = rawPublicNonce2.hexData, let uValue2 = rawUValue2.hexData, let vValue2 = rawVValue2.hexData else {
                 onRequestError(KeyServerError.responseInvalid)
                 return
             }
@@ -254,7 +272,12 @@ final class KeyServer {
                         privateKeyHex: key2,
                         value: value2,
                         message: self.TARIBOT_MESSAGE2,
-                        sourcePublicKeyHex: returnPubKeyHex)
+                        sourcePublicKeyHex: returnPubKeyHex,
+                        publicNonce: publicNonce2,
+                        uValue: uValue2,
+                        vValue: vValue2,
+                        senderOffsetPublicKeyHex: senderOffsetPublicKey2
+                    )
                 )
             } catch {
                 onRequestError(error)

@@ -1,10 +1,10 @@
-//  UTXO.swift
-
+//  PointerHandler.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/03/30
+	Created by Adrian Truszczynski on 28/01/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.1
 
 	Copyright 2019 The Tari Project
 
@@ -40,17 +40,9 @@
 
 import Foundation
 
-struct UTXO: Codable {
-    let privateKeyHex: String
-    let value: UInt64
-    let message: String
-    let sourcePublicKeyHex: String
-    let publicNonce: Data
-    let uValue: Data
-    let vValue: Data
-    let senderOffsetPublicKeyHex: String
-
-    func getPrivateKey() throws -> PrivateKey { try PrivateKey(hex: privateKeyHex) }
-    func getSourcePublicKey() throws -> PublicKey { try PublicKey(hex: sourcePublicKeyHex) }
-    func makeSenderOffsetPublicKey() throws -> PublicKey { try PublicKey(hex: senderOffsetPublicKeyHex) }
+enum PointerHandler {
+    
+    static func pointer<T>(for value: inout T) -> UnsafeMutablePointer<T> {
+        withUnsafeMutablePointer(to: &value) { $0 }
+    }
 }
