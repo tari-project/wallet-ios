@@ -1,10 +1,10 @@
-//  SimpleErrorModel.swift
-
+//  WalletError.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 28/07/2021
+	Created by Adrian Truszczynski on 01/02/2022
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 12.1
 
 	Copyright 2019 The Tari Project
 
@@ -38,7 +38,22 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct SimpleErrorModel {
-    let title: String
-    let message: String
+struct WalletError: CoreError {
+    
+    let code: Int
+    var domain: String { "FFI" }
+    
+    init(code: Int32) {
+        self.code = Int(code)
+    }
+    
+    static var databaseDataError: Self { WalletError(code: 114) }
+    static var transactionNotFound: Self { WalletError(code: 204) }
+    static var contactNotFound: Self { WalletError(code: 401) }
+    static var invalidPassphraseEncryptionCypher: Self { WalletError(code: 420) }
+    static var invalidPassphrase: Self { WalletError(code: 428) }
+    static var seedWordsInvalidData: Self { WalletError(code: 429) }
+    static var seedWordsVersionMismatch: Self { WalletError(code: 430) }
+    
+    static var unknown: Self { WalletError(code: -1) }
 }

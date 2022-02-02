@@ -129,7 +129,7 @@ final class ProfileModel {
         guard let publicKey = TariLib.shared.tariWallet?.publicKey.0, publicKey.hexDeeplink.1 == nil, let deeplinkData = publicKey.hexDeeplink.0.data(using: .utf8) else {
             qrCodeImage = nil
             emojiData = nil
-            error = SimpleErrorModel(title: localized("profile_view.error.qr_code.title"), description: localized("wallet.error.failed_to_access"))
+            error = SimpleErrorModel(title: localized("profile_view.error.qr_code.title"), message: localized("wallet.error.failed_to_access"))
             return
         }
         
@@ -179,7 +179,7 @@ final class ProfileModel {
     
     private func show(error: Error?) {
         yatButtonState = .hidden
-        self.error = SimpleErrorModel(title: localized("error.generic.title"), description: localized("error.generic.description"), error: error)
+        self.error = ErrorMessageManager.errorModel(forError: error)
     }
     
     private func updatePresentedData(yatButtonState: YatButtonState) {

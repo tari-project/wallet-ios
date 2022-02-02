@@ -115,24 +115,6 @@ struct WalletBalance: Equatable {
 
 final class Wallet {
 
-    enum WalletError: Int32, Error {
-        
-        case databaseDataError = 114
-        case invalidPassphrase = 428
-        case seedWordsInvalidData = 429
-        case seedWordsVersionMismatch = 430
-        case seedWordsDecryptionFailed = 431
-        case seedWordsCrcError = 432
-        case unknown = -1
-
-        init?(errorCode: Int32) {
-            guard errorCode > 0 else { return nil }
-            self = WalletError(rawValue: errorCode) ?? .unknown
-        }
-
-        var genericError: WalletErrors { WalletErrors.generic(rawValue) }
-    }
-
     private(set) var pointer: OpaquePointer
 
     var dbPath: String
@@ -379,7 +361,11 @@ final class Wallet {
                 })
             }
 
-            let error = WalletError(errorCode: errorCode)
+            var error: WalletError?
+            
+            if errorCode > 0 {
+                error = WalletError(code: errorCode)
+            }
 
             return (result, error)
         }
@@ -389,7 +375,7 @@ final class Wallet {
             let createWalletResponse = createWallet(passphrase: passphrase, seedWords: seedWords)
 
             switch createWalletResponse {
-            case (_, .invalidPassphrase) where passphrase != nil:
+            case (_, .some(.invalidPassphrase)) where passphrase != nil:
                 return try handleInitializationFlow(passphrase: nil)
             case (_, .some(let error)):
                 throw error

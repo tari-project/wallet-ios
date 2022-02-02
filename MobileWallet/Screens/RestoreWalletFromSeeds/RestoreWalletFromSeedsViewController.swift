@@ -107,7 +107,7 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
 
         model.viewModel.$error
             .compactMap { $0 }
-            .sink { UserFeedback.shared.error(title: $0.title, description: $0.description) }
+            .sink { UserFeedback.showError(title: $0.title, description: $0.message) }
             .store(in: &cancelables)
         
         model.viewModel.$isAutocompletionAvailable

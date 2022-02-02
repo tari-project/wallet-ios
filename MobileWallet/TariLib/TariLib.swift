@@ -77,7 +77,7 @@ class TariLib {
 
         case notReady
         case starting
-        case startFailed(error: Wallet.WalletError)
+        case startFailed(error: WalletError)
         case started
     }
 
@@ -205,7 +205,7 @@ class TariLib {
             tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath, seedWords: seedWords)
             walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
             walletStateSubject.send(.started)
-        } catch let error as Wallet.WalletError {
+        } catch let error as WalletError {
             walletStateSubject.send(.startFailed(error: error))
             return
         } catch {

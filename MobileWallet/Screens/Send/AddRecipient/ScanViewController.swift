@@ -339,20 +339,18 @@ class ScanViewController: UIViewController {
                 self.actionDelegate?.onAdd(publicKey: publicKey)
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
             } catch {
-                UserFeedback.shared.error(
+                UserFeedback.showError(
                     title: localized("scan_view.error.title"),
-                    description: localized("scan_view.error.public_key.description"),
-                    error: error
+                    description: localized("scan_view.error.public_key.description")
                 )
             }
         case .bridges:
             if let bridges = qrText.findBridges() {
                 actionDelegate?.onAdd(string: bridges)
             } else {
-                UserFeedback.shared.error(
+                UserFeedback.showError(
                     title: localized("scan_view.error.title"),
-                    description: localized("scan_view.error.bridges.description"),
-                    error: nil
+                    description: localized("scan_view.error.bridges.description")
                 )
             }
 

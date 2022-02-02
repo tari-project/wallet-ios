@@ -147,10 +147,9 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
             do {
                 try navigationBar.showEmojiId(pubKey, inViewController: self)
             } catch {
-                UserFeedback.shared.error(
+                UserFeedback.showError(
                     title: localized("navigation_bar.error.show_emoji.title"),
-                    description: localized("navigation_bar.error.show_emoji.description"),
-                    error: error
+                    description: localized("navigation_bar.error.show_emoji.description")
                 )
             }
         }
@@ -285,7 +284,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
         )
 
         guard let wallet = TariLib.shared.tariWallet else {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("wallet.error.title"),
                 description: localized("wallet.error.wallet_not_initialized")
             )
@@ -294,7 +293,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
         }
 
         guard let recipientPublicKey = paymentInfo?.publicKey else {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("add_note.error.recipient_public_key.title"),
                 description: localized("add_note.error.recipient_public_key.description")
             )
@@ -303,7 +302,7 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
         }
 
         guard let recipientAmount = amount else {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("add_note.error.recipient_amount.title"),
                 description: localized("add_note.error.recipient_amount.description")
             )
@@ -361,10 +360,10 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
     private func show(transactionError: TransactionError) {
         switch transactionError {
         case .noConnection:
-            UserFeedback.shared.error(title: localized("sending_tari.error.interwebs_connection.title"), description: localized("sending_tari.error.interwebs_connection.description"))
+            UserFeedback.showError(title: localized("sending_tari.error.interwebs_connection.title"), description: localized("sending_tari.error.interwebs_connection.description"))
             Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Tor Issue")
         case .general:
-            UserFeedback.shared.error(title: localized("sending_tari.error.no_connection.title"), description: localized("sending_tari.error.no_connection.description"))
+            UserFeedback.showError(title: localized("sending_tari.error.no_connection.title"), description: localized("sending_tari.error.no_connection.description"))
             Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Node Issue")
         }
     }

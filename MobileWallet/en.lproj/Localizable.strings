@@ -551,3 +551,11 @@
 
 "error.generic.title" = "Error";
 "error.generic.description" = "Something went wrong! Please try again later. Please send us a bug report if this problem persists.";
+"error.code.prefix" = "Error Code:";
+"error.wallet.114" = "Something went wrong processing output. Please try again later or contact the support.";
+"error.wallet.204" = "Transaction not found. Please try again later. Please submit a bug report using the \"Report a Bug\" option from the settings menu if this problem appears again.";
+"error.wallet.401" = "Contact not found. Please try again later. Please submit a bug report using the \"Report a Bug\" option from the settings menu if this problem appears again.";
+"error.wallet.420" = "Wallet was not encrypted but a passphrase was supplied. Please try again later or try to restore your wallet.";
+"error.wallet.428" = "Unable to decrypt the wallet. Please try again later or try to restore your wallet.";
+"error.wallet.429" = "Unable to recover your wallet from provided seed words. Please check the list of entered seed words and try again.";
+"error.wallet.430" = "The provided seed words are not compatible with the current wallet version. Please get in touch with support for more details.";

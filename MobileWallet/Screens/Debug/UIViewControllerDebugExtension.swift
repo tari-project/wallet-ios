@@ -162,7 +162,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
                 present(mail, animated: true)
             } catch {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                    UserFeedback.shared.error(title: "Sending feedback failed", description: "Failed to add attachment", error: error)
+                    UserFeedback.showError(title: "Sending feedback failed", description: "Failed to add attachment")
                 })
             }
         } else {
@@ -199,7 +199,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             self.present(activityViewController, animated: true, completion: nil)
         } catch {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                UserFeedback.shared.error(title: "Sending feedback failed", description: "Failed to add attachment", error: error)
+                UserFeedback.showError(title: "Sending feedback failed", description: "Failed to add attachment")
             })
         }
     }
@@ -215,7 +215,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             case .sent:
             break
             case .failed:
-                UserFeedback.shared.error(title: "Error", description: "Failed to send feedback", error: error)
+                UserFeedback.showError(title: "Error", description: "Failed to send feedback")
             break
             default:
             break

@@ -770,7 +770,7 @@ class SendingTariViewController: UIViewController {
         guard let completionStatus = completionStatus else { return }
         switch completionStatus {
         case .internetConnectionError:
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("sending_tari.error.interwebs_connection.title"),
                 description: localized("sending_tari.error.interwebs_connection.description")
             )
@@ -779,7 +779,7 @@ class SendingTariViewController: UIViewController {
                 action: "Transaction Failed - Tor Issue"
             )
         case .networkConnectionTimeout, .sendError:
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("sending_tari.error.no_connection.title"),
                 description: localized("sending_tari.error.no_connection.description")
             )

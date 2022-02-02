@@ -154,6 +154,7 @@
 		3A35413626A738D4002AB5A8 /* RoundedInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413526A738D4002AB5A8 /* RoundedInputField.swift */; };
 		3A35413A26A738F5002AB5A8 /* ContentScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413926A738F5002AB5A8 /* ContentScrollView.swift */; };
 		3A35413E26A73939002AB5A8 /* RoundedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413D26A73939002AB5A8 /* RoundedTextView.swift */; };
+		3A386F3727A7FC6C0027FED4 /* ErrorMessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A386F3627A7FC6C0027FED4 /* ErrorMessageManager.swift */; };
 		3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4205912798001A00A8D49C /* AmountKeyboardView.swift */; };
 		3A420594279802E500A8D49C /* BaseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A420593279802E500A8D49C /* BaseButton.swift */; };
 		3A420597279803DF00A8D49C /* CharacterSet+CustomSets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A420596279803DF00A8D49C /* CharacterSet+CustomSets.swift */; };
@@ -180,6 +181,9 @@
 		3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A74E7DA273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift */; };
 		3A811EEF26957856003D0DF3 /* ConnectionIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */; };
 		3A811EF12695BAEE003D0DF3 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EF02695BAEE003D0DF3 /* TooltipView.swift */; };
+		3A87C3B527A94086007A553F /* CoreError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A87C3B427A94086007A553F /* CoreError.swift */; };
+		3A87C3B727A9409E007A553F /* WalletError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A87C3B627A9409E007A553F /* WalletError.swift */; };
+		3A87C3B927A96423007A553F /* ErrorMessageManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A87C3B827A96423007A553F /* ErrorMessageManagerTests.swift */; };
 		3A96B9452733E9A90040E59F /* TokensToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A96B9442733E9A90040E59F /* TokensToolbar.swift */; };
 		3A9A08F526E0A83D00D2E75C /* AppRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A9A08F426E0A83D00D2E75C /* AppRouter.swift */; };
 		3AA00E97271D5ECA00977C36 /* AddRecipientSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AA00E96271D5ECA00977C36 /* AddRecipientSectionHeaderView.swift */; };
@@ -450,6 +454,7 @@
 		3A35413526A738D4002AB5A8 /* RoundedInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedInputField.swift; sourceTree = "<group>"; };
 		3A35413926A738F5002AB5A8 /* ContentScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentScrollView.swift; sourceTree = "<group>"; };
 		3A35413D26A73939002AB5A8 /* RoundedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextView.swift; sourceTree = "<group>"; };
+		3A386F3627A7FC6C0027FED4 /* ErrorMessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessageManager.swift; sourceTree = "<group>"; };
 		3A4205912798001A00A8D49C /* AmountKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountKeyboardView.swift; sourceTree = "<group>"; };
 		3A420593279802E500A8D49C /* BaseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseButton.swift; sourceTree = "<group>"; };
 		3A420596279803DF00A8D49C /* CharacterSet+CustomSets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+CustomSets.swift"; sourceTree = "<group>"; };
@@ -476,6 +481,9 @@
 		3A74E7DA273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsMnemonicWordList.swift; sourceTree = "<group>"; };
 		3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionIndicatorView.swift; sourceTree = "<group>"; };
 		3A811EF02695BAEE003D0DF3 /* TooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipView.swift; sourceTree = "<group>"; };
+		3A87C3B427A94086007A553F /* CoreError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreError.swift; sourceTree = "<group>"; };
+		3A87C3B627A9409E007A553F /* WalletError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletError.swift; sourceTree = "<group>"; };
+		3A87C3B827A96423007A553F /* ErrorMessageManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessageManagerTests.swift; sourceTree = "<group>"; };
 		3A96B9442733E9A90040E59F /* TokensToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokensToolbar.swift; sourceTree = "<group>"; };
 		3A9A08F426E0A83D00D2E75C /* AppRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRouter.swift; sourceTree = "<group>"; };
 		3AA00E96271D5ECA00977C36 /* AddRecipientSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddRecipientSectionHeaderView.swift; sourceTree = "<group>"; };
@@ -672,6 +680,7 @@
 		00262EB2236F022000A6C8A0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				3A87C3B327A9406F007A553F /* Errors */,
 				3ACDA6FE26AFF80600F138B8 /* View Controllers */,
 				3A35413426A738C8002AB5A8 /* Views */,
 				0048AF42245ADCA300E1A359 /* env.json */,
@@ -693,6 +702,7 @@
 				3A4CE32A26A18D5600ECF460 /* Property Wrappers */,
 				3A42059B279804E900A8D49C /* Formatters */,
 				3A420598279804A700A8D49C /* Factories */,
+				3A386F3527A7FC580027FED4 /* Managers */,
 				3A9A08F426E0A83D00D2E75C /* AppRouter.swift */,
 				3ADA05F027A41D44007F5677 /* PointerHandler.swift */,
 			);
@@ -1168,6 +1178,7 @@
 				3AF53B8027311D9800C78562 /* MobileWalletTests.swift */,
 				3A6734652742664C00F6203C /* YatCacheManagerTests.swift */,
 				3AA2DD8F2796C98A00DC3CF7 /* AmountNumberFormatterTests.swift */,
+				3A87C3B827A96423007A553F /* ErrorMessageManagerTests.swift */,
 			);
 			path = UnitTests;
 			sourceTree = "<group>";
@@ -1198,6 +1209,14 @@
 				3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		3A386F3527A7FC580027FED4 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				3A386F3627A7FC6C0027FED4 /* ErrorMessageManager.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 		3A420598279804A700A8D49C /* Factories */ = {
@@ -1309,6 +1328,15 @@
 				3AA9499D26BD3EAC007C550D /* HomeViewToolbar.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		3A87C3B327A9406F007A553F /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				3A87C3B427A94086007A553F /* CoreError.swift */,
+				3A87C3B627A9409E007A553F /* WalletError.swift */,
+			);
+			path = Errors;
 			sourceTree = "<group>";
 		};
 		3AA271722790221C0076E51F /* New */ = {
@@ -1856,6 +1884,7 @@
 				3A35413126A72DEE002AB5A8 /* SelectBaseNodeCell.swift in Sources */,
 				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
+				3A386F3727A7FC6C0027FED4 /* ErrorMessageManager.swift in Sources */,
 				4CDEC323273A5E3600999DCB /* Balance.swift in Sources */,
 				3A4376E5269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */,
 				37875E4424D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
@@ -1920,6 +1949,7 @@
 				37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				0091D4AB23ED87BE004BF7F7 /* KeyServer.swift in Sources */,
 				37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */,
+				3A87C3B527A94086007A553F /* CoreError.swift in Sources */,
 				3723A7AB24ACD03E003382EB /* PasswordField.swift in Sources */,
 				3A494A422716D6DA00CF5B05 /* AddRecipientView.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
@@ -1971,6 +2001,7 @@
 				00A057B423D979DA0029C22A /* UserFeedback.swift in Sources */,
 				3AF79D602727206200613C24 /* AddRecipientSearchView.swift in Sources */,
 				37547D522460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */,
+				3A87C3B727A9409E007A553F /* WalletError.swift in Sources */,
 				00A994332396434B007D9990 /* PulseButton.swift in Sources */,
 				3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */,
 				3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */,
@@ -2040,6 +2071,7 @@
 				3AA2DD902796C98A00DC3CF7 /* AmountNumberFormatterTests.swift in Sources */,
 				3A6734662742664C00F6203C /* YatCacheManagerTests.swift in Sources */,
 				3AF53B7E27311D1400C78562 /* SeedWordsTests.swift in Sources */,
+				3A87C3B927A96423007A553F /* ErrorMessageManagerTests.swift in Sources */,
 				3AB21736272BEF5A007139F1 /* TariLibWrapperTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -298,18 +298,16 @@ final class HomeViewController: UIViewController {
                 }
             }) { (error) in
                 DispatchQueue.main.async {
-                    UserFeedback.shared.error(
+                    UserFeedback.showError(
                         title: errorTitle,
-                        description: "",
-                        error: error
+                        description: ""
                     )
                 }
             }
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: errorTitle,
-                description: "Could not setup key server.",
-                error: error
+                description: "Could not setup key server."
             )
         }
     }
@@ -345,7 +343,7 @@ final class HomeViewController: UIViewController {
             try refreshBalance()
             try updateAvaiableToSpendAmount()
         } catch {
-            UserFeedback.shared.error(title: localized("home.error.update_balance"), description: "", error: error)
+            UserFeedback.showError(title: localized("home.error.update_balance"), description: "")
         }
     }
 

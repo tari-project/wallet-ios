@@ -1,10 +1,10 @@
-//  SimpleErrorModel.swift
-
+//  CoreError.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 28/07/2021
+	Created by Adrian Truszczynski on 01/02/2022
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 12.1
 
 	Copyright 2019 The Tari Project
 
@@ -38,7 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct SimpleErrorModel {
-    let title: String
-    let message: String
+protocol CoreError: Error, Equatable {
+    var code: Int { get }
+    var domain: String { get }
+}
+
+extension CoreError {
+    
+    var signature: String { "\(domain)-\(code)" }
+    
+    static func == (lhs: Self, rhs: Self) -> Bool { lhs.code == rhs.code }
 }
