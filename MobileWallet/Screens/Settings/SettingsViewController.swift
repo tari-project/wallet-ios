@@ -77,6 +77,7 @@ class SettingsViewController: SettingsParentTableViewController {
         case userAgreement
         case privacyPolicy
         case disclaimer
+        case blockExplorer
 
         case connectYats
 
@@ -102,6 +103,7 @@ class SettingsViewController: SettingsParentTableViewController {
             case .userAgreement: return localized("settings.item.user_agreement")
             case .privacyPolicy: return localized("settings.item.privacy_policy")
             case .disclaimer: return localized("settings.item.disclaimer")
+            case .blockExplorer: return localized("settings.item.block_explorer")
             }
         }
     }
@@ -124,7 +126,9 @@ class SettingsViewController: SettingsParentTableViewController {
         SystemMenuTableViewCellItem(title: SettingsItemTitle.contributeToTariAurora.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.userAgreement.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.privacyPolicy.rawValue),
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.disclaimer.rawValue)]
+        SystemMenuTableViewCellItem(title: SettingsItemTitle.disclaimer.rawValue),
+        SystemMenuTableViewCellItem(title: SettingsItemTitle.blockExplorer.rawValue)
+    ]
 
     private let yatSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: SettingsItemTitle.connectYats.rawValue)
@@ -135,7 +139,9 @@ class SettingsViewController: SettingsParentTableViewController {
         .contributeToTariAurora: URL(string: TariSettings.shared.contributeUrl),
         .userAgreement: URL(string: TariSettings.shared.userAgreementUrl),
         .privacyPolicy: URL(string: TariSettings.shared.privacyPolicyUrl),
-        .disclaimer: URL(string: TariSettings.shared.disclaimer)]
+        .disclaimer: URL(string: TariSettings.shared.disclaimer),
+        .blockExplorer: URL(string: TariSettings.shared.blockExplorerUrl)
+    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
