@@ -257,11 +257,8 @@ final class HomeViewController: UIViewController {
             TariLogger.error("No KeyServer initialised")
             return
         }
-
-        let errorTitle = String(
-            format: localized("home.request_drop.error"),
-            NetworkManager.shared.selectedNetwork.tickerSymbol
-        )
+        
+        let errorTitle = localized("home.request_drop.error.title", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
 
         do {
             try keyServer.requestDrop(onSuccess: { () in
@@ -300,7 +297,7 @@ final class HomeViewController: UIViewController {
                 DispatchQueue.main.async {
                     UserFeedback.showError(
                         title: errorTitle,
-                        description: ""
+                        description: localized("home.request_drop.error.description")
                     )
                 }
             }
