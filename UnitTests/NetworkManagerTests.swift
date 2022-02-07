@@ -65,19 +65,21 @@ final class NetworkManagerTests: XCTestCase {
         XCTAssertEqual(selectedNetworkNameAfterChange, defaultNetwork.name)
     }
     
-    func testSwitchNetwork() {
-        
-        let networkAfterSwitch = TariNetwork.igor
-        
-        let selectedNetworkNameBeforeSwitch = GroupUserDefaults.selectedNetworkName
-        
-        networkManager.selectedNetwork = networkAfterSwitch
-        
-        let selectedNetworkNameAfterSwitch = GroupUserDefaults.selectedNetworkName
-        
-        XCTAssertEqual(selectedNetworkNameBeforeSwitch, defaultNetwork.name)
-        XCTAssertEqual(selectedNetworkNameAfterSwitch, networkAfterSwitch.name)
-    }
+    // App currently doesn't support multiple networks. Please uncomment this test when support for multiple networks was restored.
+    
+//    func testSwitchNetwork() {
+//
+//        let networkAfterSwitch = TariNetwork.igor
+//
+//        let selectedNetworkNameBeforeSwitch = GroupUserDefaults.selectedNetworkName
+//
+//        networkManager.selectedNetwork = networkAfterSwitch
+//
+//        let selectedNetworkNameAfterSwitch = GroupUserDefaults.selectedNetworkName
+//
+//        XCTAssertEqual(selectedNetworkNameBeforeSwitch, defaultNetwork.name)
+//        XCTAssertEqual(selectedNetworkNameAfterSwitch, networkAfterSwitch.name)
+//    }
     
     func testSettingsInitalization() {
         
@@ -92,24 +94,25 @@ final class NetworkManagerTests: XCTestCase {
         XCTAssertEqual(networkSettingsAfterChange!.first!.name, defaultNetwork.name)
     }
     
-    func testSettingsOnNetworkSwitching() {
-        
-        
-        initialiseNetworkSettings()
-        
-        let networkAfterSwitch = TariNetwork.igor
-        let networkSettingsBeforeChange = GroupUserDefaults.networksSettings
-
-        networkManager.selectedNetwork = networkAfterSwitch
-        initialiseNetworkSettings()
-        
-        let networkSettingsAfterChange = GroupUserDefaults.networksSettings
-        
-        XCTAssertEqual(networkSettingsBeforeChange!.count, 1)
-        XCTAssertEqual(networkSettingsAfterChange!.count, 2)
-        XCTAssertEqual(networkSettingsAfterChange![0].name, defaultNetwork.name)
-        XCTAssertEqual(networkSettingsAfterChange![1].name, networkAfterSwitch.name)
-    }
+    // App currently doesn't support multiple networks. Please uncomment this test when support for multiple networks was restored.
+    
+//    func testSettingsOnNetworkSwitching() {
+//
+//        initialiseNetworkSettings()
+//
+//        let networkAfterSwitch = TariNetwork.igor
+//        let networkSettingsBeforeChange = GroupUserDefaults.networksSettings
+//
+//        networkManager.selectedNetwork = networkAfterSwitch
+//        initialiseNetworkSettings()
+//
+//        let networkSettingsAfterChange = GroupUserDefaults.networksSettings
+//
+//        XCTAssertEqual(networkSettingsBeforeChange!.count, 1)
+//        XCTAssertEqual(networkSettingsAfterChange!.count, 2)
+//        XCTAssertEqual(networkSettingsAfterChange![0].name, defaultNetwork.name)
+//        XCTAssertEqual(networkSettingsAfterChange![1].name, networkAfterSwitch.name)
+//    }
     
     func testSelectedBaseNodeUpdate() {
         

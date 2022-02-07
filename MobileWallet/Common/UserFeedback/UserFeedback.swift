@@ -43,10 +43,10 @@ import SwiftEntryKit
 
 class UserFeedback {
     static let shared = UserFeedback()
-    private let VERTICAL_OFFSET: CGFloat = hasNotch ? -14 : 14
-    private let SIDE_OFFSET: CGFloat = 14
+    private static let VERTICAL_OFFSET: CGFloat = hasNotch ? -14 : 14
+    private static let SIDE_OFFSET: CGFloat = 14
 
-    private var defaultAttributes: EKAttributes {
+    private static var defaultAttributes: EKAttributes {
         var attributes = EKAttributes.bottomFloat
         attributes.screenBackground = .color(
             color: EKColor(Theme.shared.colors.feedbackPopupBackground!)
@@ -63,7 +63,7 @@ class UserFeedback {
         return attributes
     }
 
-    private func closeKeyboard() {
+    private static func closeKeyboard() {
         UIApplication.shared.sendAction(
             #selector(UIApplication.resignFirstResponder),
             to: nil,
@@ -71,42 +71,31 @@ class UserFeedback {
             for: nil
         )
     }
-
-    func error(title: String,
-               description: String,
-               error: Error? = nil,
-               onClose: (() -> Void)? = nil) {
-        let errorFeedbackView = FeedbackView()
-
-        var descriptionText = description
-        if TariSettings.shared.environment == .debug, let e = error {
-            descriptionText.append("\n\(e.localizedDescription)")
-        }
-
-        if onClose == nil {
-            errorFeedbackView.setupError(
-                title: title,
-                description: descriptionText
-            )
-        } else {
-            errorFeedbackView.setupError(
-                title: title,
-                description: descriptionText,
-                onClose: {
-                    SwiftEntryKit.dismiss()
-                    onClose?()
-                }
-            )
-        }
-
+    
+    static func showError(title: String, description: String, onClose: (() -> Void)? = nil) {
+        
+        let feedbackView = FeedbackView()
         var attributes = defaultAttributes
-        attributes.displayDuration = onClose == nil ? 12 : .infinity
+        
+        if let onClose = onClose {
+            attributes.displayDuration = .infinity
+            attributes.screenInteraction = .absorbTouches
+            feedbackView.setupError(title: title, description: description) {
+                SwiftEntryKit.dismiss()
+                onClose()
+            }
+        } else {
+            attributes.displayDuration = 12
+            attributes.screenInteraction = .dismiss
+            feedbackView.setupError(title: title, description: description)
+        }
+        
         attributes.hapticFeedbackType = .error
-        attributes.screenInteraction =  onClose == nil ? .dismiss : .absorbTouches
+        attributes.scroll = .disabled
 
-        SwiftEntryKit.display(entry: errorFeedbackView, using: attributes)
+        SwiftEntryKit.display(entry: feedbackView, using: attributes)
         closeKeyboard()
-        TariLogger.error("User feedback: title=\(title) description=\(description)", error: error)
+        TariLogger.error("User feedback: title=\(title) description=\(description)")
     }
 
     func info(title: String, description: String) {
@@ -115,7 +104,7 @@ class UserFeedback {
             SwiftEntryKit.dismiss()
         }
 
-        var attributes = defaultAttributes
+        var attributes = Self.defaultAttributes
         attributes.displayDuration = .infinity
         attributes.hapticFeedbackType = .none
         attributes.screenInteraction = .dismiss
@@ -128,7 +117,7 @@ class UserFeedback {
         )
 
         SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
-        closeKeyboard()
+        Self.closeKeyboard()
         TariLogger.verbose("User feedback: title=\(title) description=\(description)")
     }
 
@@ -154,7 +143,7 @@ class UserFeedback {
         attributes.screenInteraction = .forward
 
         SwiftEntryKit.display(entry: successFeedbackView, using: attributes)
-        closeKeyboard()
+        Self.closeKeyboard()
         TariLogger.verbose("User success feedback: title=\(title)")
     }
 
@@ -186,13 +175,13 @@ class UserFeedback {
             }
         )
 
-        var attributes = defaultAttributes
+        var attributes = Self.defaultAttributes
         attributes.displayDuration = .infinity
         attributes.hapticFeedbackType = .success
         attributes.screenInteraction = isDestructive ? .dismiss : .absorbTouches
 
         SwiftEntryKit.display(entry: ctaFeedbackView, using: attributes)
-        closeKeyboard()
+        Self.closeKeyboard()
         TariLogger.verbose("User call to action: title=\(title) description=\(description)")
     }
 
@@ -227,7 +216,7 @@ class UserFeedback {
         attributes.entryInteraction = .absorbTouches
 
         SwiftEntryKit.display(entry: successFeedbackView, using: attributes)
-        closeKeyboard()
+        Self.closeKeyboard()
         TariLogger.verbose("User call accept user input: title=\(title)")
     }
 
@@ -278,13 +267,13 @@ class UserFeedback {
             equalTo: containerView.trailingAnchor
         ).isActive = true
 
-        var attributes = defaultAttributes
+        var attributes = Self.defaultAttributes
         attributes.displayDuration = .infinity
         attributes.screenInteraction = .dismiss
 
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         SwiftEntryKit.display(entry: containerView, using: attributes)
-        closeKeyboard()
+        Self.closeKeyboard()
         TariLogger.verbose("User call to action store")
     }
 
@@ -303,7 +292,7 @@ class UserFeedback {
             setupView()
         }
 
-        var attributes = defaultAttributes
+        var attributes = Self.defaultAttributes
         attributes.displayDuration = .infinity
         attributes.hapticFeedbackType = .none
         attributes.screenInteraction = .dismiss
@@ -315,7 +304,7 @@ class UserFeedback {
             )
         )
         SwiftEntryKit.display(entry: infoFeedbackView, using: attributes)
-        closeKeyboard()
+        Self.closeKeyboard()
     }
 
     func openWebBrowser(url: URL) {

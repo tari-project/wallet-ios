@@ -204,10 +204,9 @@ final class TxsListViewController: UIViewController {
 
             return true
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("tx_list.error.grouped_transactions.title"),
-                description: localized("tx_list.error.grouped_transactions.descritpion"),
-                error: error
+                description: localized("tx_list.error.grouped_transactions.descritpion")
             )
             return false
         }
@@ -327,10 +326,9 @@ extension TxsListViewController {
             refreshTimeoutTimer?.invalidate()
             refreshTimeoutTimer = nil
             endRefreshingWithSuccess()
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("tx_list.error.sync_to_base_node.title"),
-                description: localized("tx_list.error.sync_to_base_node.description"),
-                error: error
+                description: localized("tx_list.error.sync_to_base_node.description")
             )
         }
     }

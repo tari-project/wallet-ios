@@ -114,10 +114,9 @@ class AddAmountViewController: UIViewController {
             do {
                 try navigationBar.showEmojiId(pubKey, inViewController: self)
             } catch {
-                UserFeedback.shared.error(
+                UserFeedback.showError(
                     title: localized("navigation_bar.error.show_emoji.title"),
-                    description: localized("navigation_bar.error.show_emoji.description"),
-                    error: error
+                    description: localized("navigation_bar.error.show_emoji.description")
                 )
             }
         }
@@ -143,10 +142,9 @@ class AddAmountViewController: UIViewController {
         do {
             totalBalance = try wallet.totalBalance
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("add_amount.error.available_balance.title"),
-                description: localized("add_amount.error.available_balance.description"),
-                error: error
+                description: localized("add_amount.error.available_balance.description")
             )
             return
         }
@@ -212,10 +210,9 @@ class AddAmountViewController: UIViewController {
 
     // Shouldn't ever really be used but just in case
     private func showInvalidNumberError(_ error: Error?) {
-        UserFeedback.shared.error(
+        UserFeedback.showError(
             title: localized("add_amount.error.invalid_number"),
-            description: "",
-            error: error
+            description: ""
         )
     }
 

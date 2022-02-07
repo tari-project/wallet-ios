@@ -40,8 +40,11 @@
 
 final class SeedWords {
 
-    enum Error: Swift.Error {
+    enum Error: Int, CoreError {
         case invalidSeedWord, invalidSeedPhrase, unexpectedResult, phraseIsTooShort, phraseIsTooLong
+        
+        var code: Int { rawValue }
+        var domain: String { "SWE" }
     }
 
     private enum PushWordResult: UInt8 {

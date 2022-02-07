@@ -134,7 +134,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
         pendingView.showPendingView { [weak self] in
             ICloudBackup.shared.restoreWallet(password: password, completion: { [weak self] error in
                 if let error = error {
-                    UserFeedback.shared.error(title: localized("iCloud_backup.error.title.restore_wallet"), description: error.localizedDescription, error: nil) { [weak self] in
+                    UserFeedback.showError(title: localized("iCloud_backup.error.title.restore_wallet"), description: error.localizedDescription) { [weak self] in
                         self?.pendingView.hidePendingView { [weak self] in
                             switch error {
                             case ICloudBackupError.noICloudBackupExists:

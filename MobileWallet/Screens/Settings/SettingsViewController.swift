@@ -196,7 +196,7 @@ class SettingsViewController: SettingsParentTableViewController {
     }
     
     private func showNoConnectionError() {
-        UserFeedback.shared.error(title: localized("common.error"), description: localized("settings.error.connect_yats_no_connection"))
+        UserFeedback.showError(title: localized("common.error"), description: localized("settings.error.connect_yats_no_connection"))
     }
 }
 
@@ -364,10 +364,9 @@ extension SettingsViewController {
             try TariLib.shared.update(baseNode: baseNode, syncAfterSetting: true)
             UIPasteboard.general.string = ""
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("Base node error"),
-                description: localized("Failed to set custom base node from clipboard"),
-                error: error
+                description: localized("Failed to set custom base node from clipboard")
             )
         }
     }

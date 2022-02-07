@@ -195,10 +195,9 @@ class TxViewController: UIViewController {
         do {
             try setDetails()
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("tx_detail.error.load_tx.title"),
-                description: localized("tx_detail.error.load_tx.description"),
-                error: error
+                description: localized("tx_detail.error.load_tx.description")
             )
         }
 
@@ -553,7 +552,7 @@ class TxViewController: UIViewController {
                     guard let self = self else { return }
                     if let tx = self.transaction {
                         guard tx.status.0 == .pending && tx.direction == .outbound else {
-                            UserFeedback.shared.error(
+                            UserFeedback.showError(
                                 title: localized("tx_detail.tx_cancellation.error.title"),
                                 description: localized("tx_detail.tx_cancellation.error.description")
                             )
@@ -574,7 +573,7 @@ class TxViewController: UIViewController {
                                         try self.setDetails()
                                         self.updateTxState()
                                     } catch {
-                                        UserFeedback.shared.error(
+                                        UserFeedback.showError(
                                             title: localized("tx_detail.error.load_tx.title"),
                                             description: localized("tx_detail.error.load_tx.description"),
                                             error: error
@@ -588,10 +587,9 @@ class TxViewController: UIViewController {
                             // If cancelled tx not found just go back to home view
                             self.navigationController?.popViewController(animated: true)
                         } catch {
-                            UserFeedback.shared.error(
+                            UserFeedback.showError(
                                 title: localized("tx_detail.tx_cancellation.error.title"),
-                                description: "",
-                                error: error
+                                description: ""
                             )
                         }
                     }
@@ -634,7 +632,7 @@ extension TxViewController: UITextFieldDelegate {
         }
 
         guard contactPublicKey != nil else {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("tx_detail.error.contact.title"),
                 description: localized("tx_detail.error.contact.description")
             )
@@ -649,10 +647,9 @@ extension TxViewController: UITextFieldDelegate {
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
             })
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("tx_detail.error.contact.title"),
-                description: localized("tx_detail.error.save_contact.description"),
-                error: error
+                description: localized("tx_detail.error.save_contact.description")
             )
         }
 
