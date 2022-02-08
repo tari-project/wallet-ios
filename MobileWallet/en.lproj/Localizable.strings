@@ -161,6 +161,7 @@
 "settings.item.user_agreement" = "User Agreement";
 "settings.item.visit_tari" = "Visit Tari.com";
 "settings.item.report_bug" = "Report a Bug";
+"settings.item.block_explorer" = "Block Explorer";
 
 "settings.error.connect_yats_no_connection" = "The app isn't currently connected to a peer-to-peer network. Please check your internet connection or change the base node and try again.";
 
