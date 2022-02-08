@@ -144,12 +144,27 @@ class SettingsViewController: SettingsParentTableViewController {
         backUpWalletItem = backupItem
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.tableFooterView = SettingsViewFooter()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         checkClipboardForBaseNode()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        guard let footerView = tableView.tableFooterView else { return }
+        
+        let width = tableView.bounds.width
+        let size = footerView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height))
+        
+        guard footerView.bounds.height != size.height else { return }
+        
+        footerView.bounds.size.height = size.height
+        tableView.tableFooterView = footerView
     }
 
     private func onBackupWalletAction() {

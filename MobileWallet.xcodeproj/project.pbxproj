@@ -145,6 +145,7 @@
 		37EE027E248A4DCC00E25D69 /* CheckboxDeselectAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37EE027C248A4DCB00E25D69 /* CheckboxDeselectAnimation.json */; };
 		37EE027F248A4DCC00E25D69 /* CheckboxSelectAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */; };
 		37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EE28592485649800335EDC /* WordsFlexView.swift */; };
+		3A052BF427B2658500C93671 /* AppVersionFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A052BF327B2658500C93671 /* AppVersionFormatter.swift */; };
 		3A0EA97A26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */; };
 		3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97D26AA8E3C002612D4 /* TokenView.swift */; };
 		3A0EA98226AA8E64002612D4 /* TokenInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA98126AA8E64002612D4 /* TokenInputView.swift */; };
@@ -155,6 +156,7 @@
 		3A35413A26A738F5002AB5A8 /* ContentScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413926A738F5002AB5A8 /* ContentScrollView.swift */; };
 		3A35413E26A73939002AB5A8 /* RoundedTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413D26A73939002AB5A8 /* RoundedTextView.swift */; };
 		3A386F3727A7FC6C0027FED4 /* ErrorMessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A386F3627A7FC6C0027FED4 /* ErrorMessageManager.swift */; };
+		3A39AF1C27B1570F00A32F46 /* SettingsViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A39AF1B27B1570F00A32F46 /* SettingsViewFooter.swift */; };
 		3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4205912798001A00A8D49C /* AmountKeyboardView.swift */; };
 		3A420594279802E500A8D49C /* BaseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A420593279802E500A8D49C /* BaseButton.swift */; };
 		3A420597279803DF00A8D49C /* CharacterSet+CustomSets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A420596279803DF00A8D49C /* CharacterSet+CustomSets.swift */; };
@@ -444,6 +446,7 @@
 		37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheckboxSelectAnimation.json; sourceTree = "<group>"; };
 		37EE28592485649800335EDC /* WordsFlexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordsFlexView.swift; sourceTree = "<group>"; };
 		39441F6A326A7475D12D0092 /* Pods_MobileWalletNotificationService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWalletNotificationService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3A052BF327B2658500C93671 /* AppVersionFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionFormatter.swift; sourceTree = "<group>"; };
 		3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCollectionView.swift; sourceTree = "<group>"; };
 		3A0EA97D26AA8E3C002612D4 /* TokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenView.swift; sourceTree = "<group>"; };
 		3A0EA98126AA8E64002612D4 /* TokenInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInputView.swift; sourceTree = "<group>"; };
@@ -455,6 +458,7 @@
 		3A35413926A738F5002AB5A8 /* ContentScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentScrollView.swift; sourceTree = "<group>"; };
 		3A35413D26A73939002AB5A8 /* RoundedTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedTextView.swift; sourceTree = "<group>"; };
 		3A386F3627A7FC6C0027FED4 /* ErrorMessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessageManager.swift; sourceTree = "<group>"; };
+		3A39AF1B27B1570F00A32F46 /* SettingsViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewFooter.swift; sourceTree = "<group>"; };
 		3A4205912798001A00A8D49C /* AmountKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountKeyboardView.swift; sourceTree = "<group>"; };
 		3A420593279802E500A8D49C /* BaseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseButton.swift; sourceTree = "<group>"; };
 		3A420596279803DF00A8D49C /* CharacterSet+CustomSets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+CustomSets.swift"; sourceTree = "<group>"; };
@@ -1016,6 +1020,7 @@
 		3708D748247FCF0700807D72 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				3A39AF1A27B156CB00A32F46 /* Views */,
 				37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */,
 				3708D755247FF81900807D72 /* SettingsParentViewController.swift */,
 				3708D749247FCF2300807D72 /* SettingsViewController.swift */,
@@ -1219,6 +1224,14 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
+		3A39AF1A27B156CB00A32F46 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3A39AF1B27B1570F00A32F46 /* SettingsViewFooter.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		3A420598279804A700A8D49C /* Factories */ = {
 			isa = PBXGroup;
 			children = (
@@ -1232,6 +1245,7 @@
 			isa = PBXGroup;
 			children = (
 				3A42059C279804F300A8D49C /* AmountNumberFormatter.swift */,
+				3A052BF327B2658500C93671 /* AppVersionFormatter.swift */,
 			);
 			path = Formatters;
 			sourceTree = "<group>";
@@ -1909,6 +1923,7 @@
 				3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */,
 				3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
+				3A39AF1C27B1570F00A32F46 /* SettingsViewFooter.swift in Sources */,
 				3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				3A9A08F526E0A83D00D2E75C /* AppRouter.swift in Sources */,
@@ -2050,6 +2065,7 @@
 				BFAB5D1123FDEA69009E8563 /* EmojiIdView.swift in Sources */,
 				A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */,
 				37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
+				3A052BF427B2658500C93671 /* AppVersionFormatter.swift in Sources */,
 				37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */,
 				004277FB23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
