@@ -225,13 +225,8 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
     }
 
     override open func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        guard
-            UIViewController.debugMenuAlert == nil,
-            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
-            let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
-        else { return }
-
-        let title = "\(NetworkManager.shared.selectedNetwork.name.uppercased()) v\(version) (b\(build))"
+        
+        guard let title = AppVersionFormatter.version else { return }
 
         UIViewController.debugMenuAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         guard let alert = UIViewController.debugMenuAlert else {

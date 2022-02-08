@@ -409,11 +409,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func update(network: TariNetwork) {
-
-        if let appVersion = AppInfo.appVersion, let buildVestion = AppInfo.buildVestion {
-            versionLabel.text = "\(network.name.uppercased()) v\(appVersion) (b\(buildVestion))"
-        }
-
+        versionLabel.text = AppVersionFormatter.version
         selectNetworkButton.setTitle(localized("splash.button.select_network", arguments: network.presentedName), for: .normal)
         updateCreateWalletButtonState()
     }
