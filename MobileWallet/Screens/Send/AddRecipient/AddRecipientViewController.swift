@@ -211,9 +211,7 @@ final class AddRecipientViewController: UIViewController {
     }
     
     private func onContinue(paymentInfo: PaymentInfo) {
-        let amountVC = AddAmountViewController()
-        amountVC.paymentInfo = paymentInfo
-        amountVC.deepLinkParams = deepLinkParams
+        let amountVC = AddAmountViewController(paymentInfo: paymentInfo, deepLinkParams: deepLinkParams)
         navigationController?.pushViewController(amountVC, animated: true)
     }
 }

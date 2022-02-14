@@ -47,7 +47,9 @@ enum TextButtonVariation {
 }
 
 final class TextButton: BaseButton {
-    private static let imageHorizontalSpaceing: CGFloat = 1
+    
+    private static let imageHorizontalSpaceing: CGFloat = 2.0
+    var spacing: CGFloat = imageHorizontalSpaceing
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -118,13 +120,15 @@ final class TextButton: BaseButton {
     }
 
     func setRightImage(_ image: UIImage) {
+        
         if let color = titleColor(for: .normal) {
-            setImage(image.withTintColor(color), for: .normal)
+            setImage(image.withTintColor(color, renderingMode: .alwaysOriginal), for: .normal)
         } else {
             setImage(image, for: .normal)
         }
-        imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: TextButton.imageHorizontalSpaceing)
-        titleEdgeInsets = UIEdgeInsets(top: 0, left: TextButton.imageHorizontalSpaceing, bottom: 0, right: 0)
+        
+        imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: spacing)
+        titleEdgeInsets = UIEdgeInsets(top: 0, left: spacing, bottom: 0, right: 0)
 
         transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
         titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)

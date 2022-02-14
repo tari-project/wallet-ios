@@ -1,5 +1,5 @@
 //  QRCodeFactory.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/01/2022
@@ -41,23 +41,23 @@
 import UIKit
 
 final class QRCodeFactory {
-    
+
     static func makeQrCode(data: Data) -> UIImage? {
-        
+
         guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
-        
+
         filter.setValuesForKeys([
             "inputMessage": data,
             "inputCorrectionLevel": "L"
         ])
-        
+
         guard let outputImage = filter.outputImage else { return nil }
-        
+
         let scaleX = UIScreen.main.bounds.width / outputImage.extent.size.width
         let scaleY = UIScreen.main.bounds.width / outputImage.extent.size.height
         let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
         let scaledOutputImage = outputImage.transformed(by: transform)
-        
+
         return UIImage(ciImage: scaledOutputImage)
     }
 }

@@ -1,8 +1,8 @@
-//  DeeplinkFactory.swift
-
+//  Result+Void.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 19/01/2022
+	Created by Adrian Truszczynski on 10/02/2022
 	Using Swift 5.0
 	Running on macOS 12.1
 
@@ -38,16 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum DeeplinkFactory {
-
-    private static let scheme = "tari"
-
-    static func tariRequest(network: String, publicKey: String, amount: String) -> URL? {
-        var components = URLComponents()
-        components.scheme = scheme
-        components.host = network
-        components.path = "/" + ["pubkey", publicKey].joined(separator: "/")
-        components.queryItems = [URLQueryItem(name: "amount", value: amount)]
-        return components.url
-    }
+extension Result where Success == Void {
+    static var success: Self { .success(Void()) }
 }

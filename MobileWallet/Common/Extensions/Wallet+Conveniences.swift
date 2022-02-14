@@ -1,5 +1,5 @@
 //  Wallet+Conveniences.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 03/01/2022
@@ -46,7 +46,7 @@ extension Wallet {
             return MicroTari(balance.available + balance.incoming)
         }
     }
-    
+
     var availableBalance: MicroTari {
         get throws {
             let balance = try balance()

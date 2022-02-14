@@ -42,14 +42,15 @@ import UIKit
 import GiphyUISDK
 import GiphyCoreSDK
 
-class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate, GPHGridDelegate, UIScrollViewDelegate {
+final class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate, GPHGridDelegate, UIScrollViewDelegate {
 
     private static var giphyKeywords = ["money", "money machine", "rich"]
     private static var giphyCurrentKeywordIndex = 0
 
-    var paymentInfo: PaymentInfo?
-    var amount: MicroTari?
-    var deepLinkParams: DeepLinkParams?
+    private let paymentInfo: PaymentInfo
+    private let amount: MicroTari
+    private let isOneSidedPayment: Bool
+    private let deepLinkParams: DeepLinkParams?
 
     private let sidePadding = Theme.shared.sizes.appSidePadding
     private let navigationBar = NavigationBar()
@@ -99,7 +100,19 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
             updateTitleColorAndSetSendButtonState()
         }
     }
-
+    
+    init(paymentInfo: PaymentInfo, amount: MicroTari, isOneSidedPayment: Bool, deepLinkParams: DeepLinkParams?) {
+        self.paymentInfo = paymentInfo
+        self.amount = amount
+        self.isOneSidedPayment = isOneSidedPayment
+        self.deepLinkParams = deepLinkParams
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.delegate = self
@@ -132,20 +145,20 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
     }
 
     private func displayAliasOrEmojiId() {
-        guard let wallet = TariLib.shared.tariWallet, let pubKey = paymentInfo?.publicKey else {
+        guard let wallet = TariLib.shared.tariWallet else {
             return
         }
 
         do {
-            guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
+            guard let contact = try wallet.contacts.0?.find(publicKey: paymentInfo.publicKey) else { return }
             if contact.alias.0.trimmingCharacters(in: .whitespaces).isEmpty {
-                try navigationBar.showEmojiId(pubKey, inViewController: self)
+                try navigationBar.showEmojiId(paymentInfo.publicKey, inViewController: self)
             } else {
                 navigationBar.title = contact.alias.0
             }
         } catch {
             do {
-                try navigationBar.showEmojiId(pubKey, inViewController: self)
+                try navigationBar.showEmojiId(paymentInfo.publicKey, inViewController: self)
             } catch {
                 UserFeedback.showError(
                     title: localized("navigation_bar.error.show_emoji.title"),
@@ -292,24 +305,6 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
             return
         }
 
-        guard let recipientPublicKey = paymentInfo?.publicKey else {
-            UserFeedback.showError(
-                title: localized("add_note.error.recipient_public_key.title"),
-                description: localized("add_note.error.recipient_public_key.description")
-            )
-            sender.resetStateWithAnimation(true)
-            return
-        }
-
-        guard let recipientAmount = amount else {
-            UserFeedback.showError(
-                title: localized("add_note.error.recipient_amount.title"),
-                description: localized("add_note.error.recipient_amount.description")
-            )
-            sender.resetStateWithAnimation(true)
-            return
-        }
-
         sendButton.variation = .loading
         UIApplication.shared.keyWindow?.isUserInteractionEnabled = false
         navigationBar.backButton.isHidden = true
@@ -320,8 +315,8 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
             self.navigationBar.backButton.isHidden = false
             self.sendTx(
                 wallet,
-                recipientPublicKey: recipientPublicKey,
-                amount: recipientAmount
+                recipientPublicKey: self.paymentInfo.publicKey,
+                amount: self.amount
             )
             self.sendButton.variation = .slide
         }
@@ -335,34 +330,33 @@ class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate,
             message += " \(embedUrl)"
         }
         
-        guard let yatID = paymentInfo?.yatID else {
-            // Init first so it starts listening for a callback right away
-            let sendingVC = SendingTariViewController()
-            sendingVC.note = message
-            sendingVC.recipientPubKey = recipientPublicKey
-            sendingVC.amount = amount
-            navigationController?.pushViewController(sendingVC, animated: false)
-            return
-        }
+        var controller: TransactionViewControllable
         
-        let inputData = YatTransactionModel.InputData(publicKey: recipientPublicKey, amount: amount, message: message, yatID: yatID)
-        let controller = YatTransactionConstructor.buildScene(inputData: inputData)
+        if let yatID = paymentInfo.yatID {
+            let inputData = YatTransactionModel.InputData(publicKey: recipientPublicKey, amount: amount, message: message, yatID: yatID, isOneSidedPayment: isOneSidedPayment)
+            controller = YatTransactionConstructor.buildScene(inputData: inputData)
+            present(controller, animated: false)
+        } else {
+            let inputData = SendingTariModel.InputData(publicKey: recipientPublicKey, amount: amount, message: message, isOneSidedPayment: isOneSidedPayment)
+            controller = SendingTariConstructor.buildScene(inputData: inputData)
+            navigationController?.pushViewController(controller, animated: false)
+        }
         
         controller.onCompletion = { [weak self] error in
-            self?.navigationController?.popToRootViewController(animated: true)
-            guard let error = error else { return }
-            self?.show(transactionError: error)
+            self?.navigationController?.dismiss(animated: true) {
+                UIApplication.shared.menuTabBarController?.setTab(.home)
+                guard let error = error else { return }
+                self?.show(transactionError: error)
+            }
         }
-        
-        present(controller, animated: false)
     }
     
-    private func show(transactionError: TransactionError) {
+    private func show(transactionError: WalletTransactionsManager.TransactionError) {
         switch transactionError {
-        case .noConnection:
+        case .noInternetConnection:
             UserFeedback.showError(title: localized("sending_tari.error.interwebs_connection.title"), description: localized("sending_tari.error.interwebs_connection.description"))
             Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Tor Issue")
-        case .general:
+        case .timeout, .transactionError, .unsucessfulTransaction, .unableToStartWallet:
             UserFeedback.showError(title: localized("sending_tari.error.no_connection.title"), description: localized("sending_tari.error.no_connection.description"))
             Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Node Issue")
         }
