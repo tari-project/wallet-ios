@@ -38,10 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 import Combine
 import YatLib
-import Foundation
 
 enum YatTransactionViewState {
     case idle
@@ -51,11 +49,6 @@ enum YatTransactionViewState {
     case failed
 }
 
-enum TransactionError: Error {
-    case noConnection
-    case general
-}
-
 final class YatTransactionModel {
     
     struct InputData {
@@ -63,12 +56,13 @@ final class YatTransactionModel {
         let amount: MicroTari
         let message: String
         let yatID: String
+        let isOneSidedPayment: Bool
     }
     
     // MARK: - View Model
     
     @Published private(set) var viewState: YatTransactionViewState = .idle
-    @Published private(set) var error: TransactionError?
+    @Published private(set) var error: WalletTransactionsManager.TransactionError?
     
     // MARK: - Constants
     
@@ -78,10 +72,9 @@ final class YatTransactionModel {
     
     private let inputData: InputData
     private let cacheManager = YatCacheManager()
+    private let walletTransactionsManager = WalletTransactionsManager()
     
-    private var txId: UInt64?
     private var cancellables = Set<AnyCancellable>()
-    private var walletEventsCancellables = Set<AnyCancellable>()
     
     // MARK: - Initializers
     
@@ -94,12 +87,9 @@ final class YatTransactionModel {
     func start() {
         guard case .idle = viewState else { return }
         
-        self.setupInitialViewState()
-        
-        waitForConnection { [weak self] in
-            self?.verifyWalletStateAndSendTransactionToBlockchain()
-            self?.fetchAnimation()
-        }
+        setupInitialViewState()
+        sendTransactionToBlockchain()
+        fetchAnimation()
     }
     
     private func setupInitialViewState() {
@@ -107,36 +97,9 @@ final class YatTransactionModel {
         viewState = .initial(transaction: localized("yat_transaction.label.transaction.sending", arguments: amount), yatID: inputData.yatID)
     }
     
-    private func show(error: TransactionError) {
+    private func show(error: WalletTransactionsManager.TransactionError) {
         self.error = error
         viewState = .failed
-    }
-    
-    private func waitForConnection(completed: @escaping () -> Void) {
-        
-        let connectionState = ConnectionMonitor.shared.state
-        
-        switch connectionState.reachability {
-        case .offline, .unknown:
-            show(error: .noConnection)
-        default:
-            break
-        }
-        
-        let startDate = Date()
-        
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
-            
-            if connectionState.torStatus == .connected, connectionState.torBootstrapProgress == 100 {
-                timer.invalidate()
-                completed()
-                return
-            }
-            
-            guard let self = self, Int(-startDate.timeIntervalSinceNow) > self.connectionTimeout else { return }
-            timer.invalidate()
-            self.show(error: .general)
-        }
     }
     
     // MARK: - Yat Visualisation
@@ -189,93 +152,18 @@ final class YatTransactionModel {
     
     // MARK: - Wallet
     
-    private func verifyWalletStateAndSendTransactionToBlockchain() {
-        
-        var cancel: AnyCancellable?
-
-        cancel = TariLib.shared.walletStatePublisher
-            .receive(on: RunLoop.main)
-            .sink { [weak self] walletState in
-                switch walletState {
-                case .started:
-                    cancel?.cancel()
-                    self?.sendTransactionToBlockchain()
-                case .startFailed:
-                    cancel?.cancel()
-                    self?.show(error: .general)
-                case .notReady, .starting:
-                    break
-                }
-            }
-        
-        cancel?.store(in: &cancellables)
-    }
-    
     private func sendTransactionToBlockchain() {
-        guard let wallet = TariLib.shared.tariWallet else { return }
-        do {
-            txId = try wallet.sendTx(destination: inputData.publicKey, amount: inputData.amount, feePerGram: Wallet.defaultFeePerGram, message: inputData.message)
-            startListeningForWalletEvents()
-        } catch {
-            show(error: .general)
-        }
-    }
-    
-    private func startListeningForWalletEvents() {
         
-        let directSendPublisher = TariEventBus.events(forType: .directSend)
-            .compactMap { $0.object as? CallbackTxResult }
-            .filter { [weak self] in $0.id == self?.txId }
-        
-        let storeAndForwardPublisher = TariEventBus.events(forType: .storeAndForwardSend)
-            .compactMap { $0.object as? CallbackTxResult }
-            .filter { [weak self] in $0.id == self?.txId }
-        
-        directSendPublisher
-            .filter(\.success)
-            .sink { [weak self] _ in
-                self?.cancelWalletEvents()
-                self?.sendPushNotificationToRecipient()
-                TariLogger.info("Direct send successful.")
-                Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Accepted - Synchronous")
+        walletTransactionsManager.performTransactionPublisher(publicKey: inputData.publicKey, amount: inputData.amount, message: inputData.message, isOneSidedPayment: inputData.isOneSidedPayment)
+            .sink { [weak self] completion in
+                switch completion {
+                case .finished:
+                    self?.viewState = .completion
+                case let .failure(error):
+                    self?.show(error: error)
+                }
+            } receiveValue: { _ in
             }
-            .store(in: &walletEventsCancellables)
-        
-        storeAndForwardPublisher
-            .filter(\.success)
-            .sink { [weak self] _ in
-                self?.cancelWalletEvents()
-                self?.sendPushNotificationToRecipient()
-                TariLogger.info("Store and forward send successful.")
-                Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Stored")
-            }
-            .store(in: &walletEventsCancellables)
-        
-        Publishers.CombineLatest(directSendPublisher, storeAndForwardPublisher)
-            .filter { $0.success == false && $1.success == false}
-            .sink { [weak self] _ in
-                self?.cancelWalletEvents()
-                self?.show(error: .general)
-            }
-            .store(in: &walletEventsCancellables)
-    }
-    
-    private func sendPushNotificationToRecipient() {
-        
-        do {
-            try NotificationManager.shared.sendToRecipient(
-                inputData.publicKey,
-                onSuccess: { TariLogger.info("Recipient has been notified") },
-                onError: { TariLogger.error("Failed to notify recipient", error: $0) }
-            )
-        } catch {
-            TariLogger.error("Failed to notify recipient", error: error)
-        }
-        
-        viewState = .completion
-    }
-    
-    private func cancelWalletEvents() {
-        walletEventsCancellables.forEach { $0.cancel() }
+            .store(in: &cancellables)
     }
 }

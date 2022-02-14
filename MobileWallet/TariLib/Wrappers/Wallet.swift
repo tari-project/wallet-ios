@@ -266,6 +266,18 @@ final class Wallet {
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction mined unconfirmed lib callback - \(confirmationCount) confirmations")
         }
+        
+        let fauxTransactionConfirmed: (@convention(c) (OpaquePointer?) -> Void)? = { _ in
+            TariEventBus.postToMainThread(.requiresBackup)
+            TariEventBus.postToMainThread(.txListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+        }
+        
+        let fauxTransactionUncorfirmed: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { _, _ in
+            TariEventBus.postToMainThread(.requiresBackup)
+            TariEventBus.postToMainThread(.txListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+        }
 
         let directSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
             TariEventBus.postToMainThread(.directSend, sender: CallbackTxResult(id: txID, success: success))
@@ -322,8 +334,10 @@ final class Wallet {
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Balance updated callback")
         }
-
-
+        
+        let callbackConectivityStatus: (@convention(c) (UInt64) -> Void)? = { _ in
+        }
+        
         dbPath = commsConfig.dbPath
         dbName = commsConfig.dbName
         logPath = loggingFilePath
@@ -348,6 +362,8 @@ final class Wallet {
                         txBroadcastCallback,
                         txMinedCallback,
                         txMinedUnconfirmedCallback,
+                        fauxTransactionConfirmed,
+                        fauxTransactionUncorfirmed,
                         directSendResultCallback,
                         storeAndForwardSendResultCallback,
                         txCancellationCallback,
@@ -355,6 +371,7 @@ final class Wallet {
                         balanceUpdatedCallback,
                         txValidationCompleteCallback,
                         storedMessagesReceivedCallback,
+                        callbackConectivityStatus,
                         isRecoveryInProgressPointer,
                         error
                     )
@@ -460,7 +477,7 @@ final class Wallet {
         return MicroTari(fee)
     }
 
-    func sendTx(destination: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String) throws -> UInt64 {
+    func sendTx(destination: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool) throws -> UInt64 {
         var fee = MicroTari(0)
         do {
             fee = try estimateTxFee(
@@ -489,7 +506,7 @@ final class Wallet {
                 amount.rawValue,
                 feePerGram.rawValue,
                 messagePointer,
-                false,
+                isOneSidedPayment,
                 error
             )
         })
