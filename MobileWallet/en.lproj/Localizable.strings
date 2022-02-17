@@ -564,3 +564,12 @@
 "error.wallet.428" = "Unable to decrypt the wallet. Please try again later or try to restore your wallet.";
 "error.wallet.429" = "Unable to recover your wallet from provided seed words. Please check the list of entered seed words and try again.";
 "error.wallet.430" = "The provided seed words are not compatible with the current wallet version. Please get in touch with support for more details.";
+
+"error.tx_rejection.0" = "The transaction failed for an unknown reason.";
+"error.tx_rejection.1" = "The transaction was canceled by the sender.";
+"error.tx_rejection.2" = "The transaction failed due to timeout.";
+"error.tx_rejection.3" = "The transaction was cancelled as it is spending funds that have already been spent.";
+"error.tx_rejection.4" = "The transaction was cancelled due to some funds being spent no longer being present in the chain.";
+"error.tx_rejection.5" = "This transaction was cancelled due to the funds not having reached their time-lock period yet.";
+"error.tx_rejection.6" = "The transaction failed to the invalid input data. This situation shouldn't happen. Please send a bug report or contact us directly.";
+"error.tx_rejection.7" = "The coinbase was abandoned.";

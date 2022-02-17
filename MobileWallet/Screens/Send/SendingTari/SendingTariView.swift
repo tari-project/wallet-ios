@@ -150,8 +150,8 @@ final class SendingTariView: UIView {
         }
     }
     
-    func hideAllComponents(completion: (() -> Void)? = nil) {
-        UIView.animate(withDuration: 1.0, delay: 0.0, options: [], animations: { [weak self] in
+    func hideAllComponents(delay: TimeInterval, completion: (() -> Void)? = nil) {
+        UIView.animate(withDuration: 1.0, delay: delay, options: [], animations: { [weak self] in
             self?.firstLabel.alpha = 0.0
             self?.secondLabel.alpha = 0.0
             self?.progressBar.alpha = 0.0

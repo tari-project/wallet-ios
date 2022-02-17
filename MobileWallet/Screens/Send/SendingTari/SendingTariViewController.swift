@@ -50,7 +50,6 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
     private let mainView = SendingTariView()
     private let model: SendingTariModel
     
-    private var activeStep: Int?
     private var stepTickCount = 0
     private var cancelables = Set<AnyCancellable>()
     
@@ -75,6 +74,7 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
     override func viewDidLoad() {
         super.viewDidLoad()
         runBackgroundAnimation()
+        setupBindings()
         Tracker.shared.track("/home/send_tari/finalize", "Send Tari - Finalize")
     }
     
@@ -82,7 +82,6 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
         super.viewDidAppear(animated)
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         mainView.playInitialAnimation()
-        setupBindings()
         model.start()
     }
     
@@ -96,19 +95,20 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
     private func setupBindings() {
         
         model.$stateModel
-            .first()
+            .compactMap { $0 }
             .receive(on: RunLoop.main)
-            .sink { [weak self] in
-                self?.activeStep = $0?.stepIndex
-                self?.updateLabels {
-                    self?.runProgressAnimation()
-                }
-            }
+            .sink { [weak self] in self?.updateViews(model: $0) }
             .store(in: &cancelables)
         
         NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
             .sink { [weak self] _ in self?.runBackgroundAnimation() }
             .store(in: &cancelables)
+    }
+    
+    func updateViews(model: SendingTariModel.StateModel) {
+        self.updateLabels { [weak self] in
+            self?.runProgressAnimation(stepIndex: model.stepIndex)
+        }
     }
     
     // MARK: - Actions
@@ -117,47 +117,35 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
         mainView.videoBackgroundView.startPlayer()
     }
     
-    private func runProgressAnimation() {
+    private func runProgressAnimation(stepIndex: Int) {
         
-        guard let activeStep = activeStep, let state = mainView.progressBar.state(forSection: activeStep) else { return }
+        guard let state = mainView.progressBar.state(forSection: stepIndex) else { return }
         
         switch state {
         case .disabled, .off:
-            mainView.progressBar.update(state: .on, forSection: activeStep) { [weak self] in
-                self?.runProgressAnimation()
-            }
+            updateProgressBar(state: .on, stepIndex: stepIndex)
         case .on:
-            handleProgressSectionOnState(activeStep: activeStep)
+            handleProgressSectionOnState(stepIndex: stepIndex)
         }
     }
         
-        
-    private func handleProgressSectionOnState(activeStep: Int) {
+    private func handleProgressSectionOnState(stepIndex: Int) {
         
         stepTickCount += 1
         
         guard stepTickCount >= 2 else {
-            mainView.progressBar.update(state: .off, forSection: activeStep) { [weak self] in
-                self?.runProgressAnimation()
-            }
+            updateProgressBar(state: .off, stepIndex: stepIndex)
             return
         }
         
-        guard let stateModel = model.stateModel else { return }
-        
-        guard activeStep == stateModel.stepIndex else {
+        guard !model.isNextStepAvailable else {
             stepTickCount = 0
-            self.activeStep = stateModel.stepIndex
-            updateLabels { [weak self] in
-                self?.runProgressAnimation()
-            }
+            model.moveToNextStep()
             return
         }
         
         guard let onCompletion = model.onCompletion else {
-            mainView.progressBar.update(state: .off, forSection: activeStep) { [weak self] in
-                self?.runProgressAnimation()
-            }
+            updateProgressBar(state: .off, stepIndex: stepIndex)
             return
         }
 
@@ -166,6 +154,12 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
             endFlowWithSuccess()
         case let .failure(error):
             endFlow(withError: error)
+        }
+    }
+    
+    private func updateProgressBar(state: ProgressBar.State, stepIndex: Int) {
+        mainView.progressBar.update(state: state, forSection: stepIndex) { [weak self] in
+            self?.runProgressAnimation(stepIndex: stepIndex)
         }
     }
     
@@ -183,7 +177,7 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
         mainView.playSuccessAnimation { dispatchGroup.leave() }
         
         dispatchGroup.enter()
-        mainView.hideAllComponents { dispatchGroup.leave() }
+        mainView.hideAllComponents(delay: 3.7) { dispatchGroup.leave() }
         
         dispatchGroup.notify(queue: .main) { [weak self] in
             self?.onCompletion?(nil)
@@ -198,7 +192,7 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
         mainView.playFailureAnimation { dispatchGroup.leave() }
         
         dispatchGroup.enter()
-        mainView.hideAllComponents { dispatchGroup.leave() }
+        mainView.hideAllComponents(delay: 0.0) { dispatchGroup.leave() }
         
         dispatchGroup.notify(queue: .main) { [weak self] in
             self?.onCompletion?(error)
