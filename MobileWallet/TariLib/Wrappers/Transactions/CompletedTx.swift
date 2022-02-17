@@ -40,6 +40,22 @@
 
 import Foundation
 
+enum TransactionRejectionReason: Int32 {
+    case notCancelled = -1
+    case unknown = 0
+    case userCancelled = 1
+    case timeout = 2
+    case doubleSpend = 3
+    case orphan = 4
+    case timeLocked = 5
+    case invalidTransaction = 6
+    case abandonedCoinbase = 7
+    
+    init(code: Int32) {
+        self = Self(rawValue: code) ?? .unknown
+    }
+}
+
 enum CompletedTxError: Error {
     case generic(_ errorCode: Int32)
 }
@@ -198,6 +214,18 @@ class CompletedTx: TxProtocol {
             return (cachedContact, nil)
         } catch {
             return (nil, error)
+        }
+    }
+    
+    var rejectionReason: TransactionRejectionReason {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            
+            let result = completed_transaction_get_cancellation_reason(ptr, errorCodePointer)
+            
+            guard errorCode == 0 else { throw CompletedTxError.generic(errorCode) }
+            return TransactionRejectionReason(code: result)
         }
     }
 
