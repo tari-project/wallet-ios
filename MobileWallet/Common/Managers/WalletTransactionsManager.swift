@@ -69,7 +69,9 @@ final class WalletTransactionsManager {
         waitForConnection { [weak self] result in
             switch result {
             case .success:
-                subject.send(.transaction)
+                if !isOneSidedPayment {
+                    subject.send(.transaction)
+                }
                 self?.verifyWalletStateAndSendTransactionToBlockchain(publicKey: publicKey, amount: amount, message: message, isOneSidedPayment: isOneSidedPayment) { result in
                     switch result {
                     case .success:
