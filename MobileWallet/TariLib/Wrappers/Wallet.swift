@@ -115,24 +115,6 @@ struct WalletBalance: Equatable {
 
 final class Wallet {
 
-    enum WalletError: Int32, Error {
-        
-        case databaseDataError = 114
-        case invalidPassphrase = 428
-        case seedWordsInvalidData = 429
-        case seedWordsVersionMismatch = 430
-        case seedWordsDecryptionFailed = 431
-        case seedWordsCrcError = 432
-        case unknown = -1
-
-        init?(errorCode: Int32) {
-            guard errorCode > 0 else { return nil }
-            self = WalletError(rawValue: errorCode) ?? .unknown
-        }
-
-        var genericError: WalletErrors { WalletErrors.generic(rawValue) }
-    }
-
     private(set) var pointer: OpaquePointer
 
     var dbPath: String
@@ -284,6 +266,18 @@ final class Wallet {
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction mined unconfirmed lib callback - \(confirmationCount) confirmations")
         }
+        
+        let fauxTransactionConfirmed: (@convention(c) (OpaquePointer?) -> Void)? = { _ in
+            TariEventBus.postToMainThread(.requiresBackup)
+            TariEventBus.postToMainThread(.txListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+        }
+        
+        let fauxTransactionUncorfirmed: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { _, _ in
+            TariEventBus.postToMainThread(.requiresBackup)
+            TariEventBus.postToMainThread(.txListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+        }
 
         let directSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
             TariEventBus.postToMainThread(.directSend, sender: CallbackTxResult(id: txID, success: success))
@@ -340,8 +334,10 @@ final class Wallet {
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Balance updated callback")
         }
-
-
+        
+        let callbackConectivityStatus: (@convention(c) (UInt64) -> Void)? = { _ in
+        }
+        
         dbPath = commsConfig.dbPath
         dbName = commsConfig.dbName
         logPath = loggingFilePath
@@ -366,6 +362,8 @@ final class Wallet {
                         txBroadcastCallback,
                         txMinedCallback,
                         txMinedUnconfirmedCallback,
+                        fauxTransactionConfirmed,
+                        fauxTransactionUncorfirmed,
                         directSendResultCallback,
                         storeAndForwardSendResultCallback,
                         txCancellationCallback,
@@ -373,13 +371,18 @@ final class Wallet {
                         balanceUpdatedCallback,
                         txValidationCompleteCallback,
                         storedMessagesReceivedCallback,
+                        callbackConectivityStatus,
                         isRecoveryInProgressPointer,
                         error
                     )
                 })
             }
 
-            let error = WalletError(errorCode: errorCode)
+            var error: WalletError?
+            
+            if errorCode > 0 {
+                error = WalletError(code: errorCode)
+            }
 
             return (result, error)
         }
@@ -389,7 +392,7 @@ final class Wallet {
             let createWalletResponse = createWallet(passphrase: passphrase, seedWords: seedWords)
 
             switch createWalletResponse {
-            case (_, .invalidPassphrase) where passphrase != nil:
+            case (_, .some(.invalidPassphrase)) where passphrase != nil:
                 return try handleInitializationFlow(passphrase: nil)
             case (_, .some(let error)):
                 throw error
@@ -474,7 +477,7 @@ final class Wallet {
         return MicroTari(fee)
     }
 
-    func sendTx(destination: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String) throws -> UInt64 {
+    func sendTx(destination: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool) throws -> UInt64 {
         var fee = MicroTari(0)
         do {
             fee = try estimateTxFee(
@@ -503,7 +506,7 @@ final class Wallet {
                 amount.rawValue,
                 feePerGram.rawValue,
                 messagePointer,
-                false,
+                isOneSidedPayment,
                 error
             )
         })

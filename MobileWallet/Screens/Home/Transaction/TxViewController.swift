@@ -195,10 +195,9 @@ class TxViewController: UIViewController {
         do {
             try setDetails()
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("tx_detail.error.load_tx.title"),
-                description: localized("tx_detail.error.load_tx.description"),
-                error: error
+                description: localized("tx_detail.error.load_tx.description")
             )
         }
 
@@ -456,13 +455,6 @@ class TxViewController: UIViewController {
                 emojiIdView.blackoutParent = view
             }
 
-            let (date, dateError) = tx.date
-            guard dateError == nil else {
-                throw dateError!
-            }
-
-            navigationBar.subtitle = date!.formattedDisplay()
-
             let (contact, contactError) = tx.contact
             if contactError == nil {
                 let (alias, aliasError) = contact!.alias
@@ -534,7 +526,31 @@ class TxViewController: UIViewController {
             } else if tx.status.0 != .minedConfirmed && tx.status.0 != .imported {
                 navigationBar.title = localized("tx_detail.payment_in_progress")
             }
+            
+            try updateNavigationBar(transaction: tx)
         }
+    }
+    
+    private func updateNavigationBar(transaction: TxProtocol) throws {
+        
+        let (date, dateError) = transaction.date
+        guard dateError == nil else { throw dateError! }
+        
+        var failureReason: String?
+        let formattedDate = date?.formattedDisplay()
+        var isCompact = false
+        
+        
+        if let completedTransaction = transaction as? CompletedTx, let description = try completedTransaction.rejectionReason.description {
+            failureReason = description
+            isCompact = true
+        }
+        
+        let subtitle = [failureReason, formattedDate]
+            .compactMap { $0 }
+            .joined(separator: "\n")
+        
+        navigationBar.update(subtitle: subtitle, isCompact: isCompact)
     }
 
     @objc func onCancelTx() {
@@ -553,7 +569,7 @@ class TxViewController: UIViewController {
                     guard let self = self else { return }
                     if let tx = self.transaction {
                         guard tx.status.0 == .pending && tx.direction == .outbound else {
-                            UserFeedback.shared.error(
+                            UserFeedback.showError(
                                 title: localized("tx_detail.tx_cancellation.error.title"),
                                 description: localized("tx_detail.tx_cancellation.error.description")
                             )
@@ -574,7 +590,7 @@ class TxViewController: UIViewController {
                                         try self.setDetails()
                                         self.updateTxState()
                                     } catch {
-                                        UserFeedback.shared.error(
+                                        UserFeedback.showError(
                                             title: localized("tx_detail.error.load_tx.title"),
                                             description: localized("tx_detail.error.load_tx.description"),
                                             error: error
@@ -588,10 +604,9 @@ class TxViewController: UIViewController {
                             // If cancelled tx not found just go back to home view
                             self.navigationController?.popViewController(animated: true)
                         } catch {
-                            UserFeedback.shared.error(
+                            UserFeedback.showError(
                                 title: localized("tx_detail.tx_cancellation.error.title"),
-                                description: "",
-                                error: error
+                                description: ""
                             )
                         }
                     }
@@ -634,7 +649,7 @@ extension TxViewController: UITextFieldDelegate {
         }
 
         guard contactPublicKey != nil else {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("tx_detail.error.contact.title"),
                 description: localized("tx_detail.error.contact.description")
             )
@@ -649,10 +664,9 @@ extension TxViewController: UITextFieldDelegate {
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
             })
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("tx_detail.error.contact.title"),
-                description: localized("tx_detail.error.save_contact.description"),
-                error: error
+                description: localized("tx_detail.error.save_contact.description")
             )
         }
 
@@ -694,6 +708,32 @@ extension TxViewController {
 
         } else {
             return (note, nil)
+        }
+    }
+}
+
+private extension TransactionRejectionReason {
+    
+    var description: String? {
+        switch self {
+        case .notCancelled:
+            return nil
+        case .unknown:
+            return localized("error.tx_rejection.0")
+        case .userCancelled:
+            return localized("error.tx_rejection.1")
+        case .timeout:
+            return localized("error.tx_rejection.2")
+        case .doubleSpend:
+            return localized("error.tx_rejection.3")
+        case .orphan:
+            return localized("error.tx_rejection.4")
+        case .timeLocked:
+            return localized("error.tx_rejection.5")
+        case .invalidTransaction:
+            return localized("error.tx_rejection.6")
+        case .abandonedCoinbase:
+            return localized("error.tx_rejection.7")
         }
     }
 }

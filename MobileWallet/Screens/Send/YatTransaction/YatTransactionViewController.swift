@@ -41,9 +41,9 @@
 import UIKit
 import Combine
 
-final class YatTransactionViewController: UIViewController {
+final class YatTransactionViewController: UIViewController, TransactionViewControllable {
     
-    var onCompletion: ((TransactionError?) -> Void)?
+    var onCompletion: ((WalletTransactionsManager.TransactionError?) -> Void)?
     
     private let mainView = YatTransactionView()
     private let model: YatTransactionModel

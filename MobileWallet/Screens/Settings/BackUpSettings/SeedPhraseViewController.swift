@@ -60,10 +60,9 @@ class SeedPhraseViewController: SettingsParentViewController {
             seedWords.append(contentsOf: walletSeedWords)
             collectionView?.reloadData()
         } else {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("seed_phrase.error.title"),
-                description: localized("seed_phrase.error.description"),
-                error: nil
+                description: localized("seed_phrase.error.description")
             ) {
                 [weak self] in
                 self?.navigationController?.popViewController(animated: true)

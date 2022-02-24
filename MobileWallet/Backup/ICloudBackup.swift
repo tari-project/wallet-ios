@@ -467,10 +467,9 @@ extension ICloudBackup {
            localizedError.failureReason != nil {
            title = localizedError.failureReason!
         }
-        UserFeedback.shared.error(
+        UserFeedback.showError(
             title: title,
-            description: error.localizedDescription,
-            error: nil
+            description: error.localizedDescription
         )
     }
 }

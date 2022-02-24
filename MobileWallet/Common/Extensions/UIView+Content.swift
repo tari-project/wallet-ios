@@ -40,7 +40,6 @@
 
 import UIKit
 
-
 struct Shadow {
     let color: UIColor
     let opacity: Float
@@ -49,7 +48,7 @@ struct Shadow {
 }
 
 extension UIView {
-    
+
     func addTopBorder(with color: UIColor?, andWidth borderWidth: CGFloat) {
         let border = UIView()
         border.backgroundColor = color
@@ -108,7 +107,7 @@ extension UIView {
             }
         }
     }
-    
+
     func apply(shadow: Shadow) {
         layer.shadowColor = shadow.color.cgColor
         layer.shadowOpacity = shadow.opacity

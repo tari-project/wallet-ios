@@ -1,5 +1,5 @@
 //  UITextField+Combine.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2021
@@ -42,30 +42,30 @@ import UIKit
 import Combine
 
 extension UITextField {
-    
+
     func bind(withSubject subject: CurrentValueSubject<String, Never>, storeIn cancellables: inout Set<AnyCancellable>) {
-        
+
         textPublisher()
             .sink { subject.send($0) }
             .store(in: &cancellables)
-        
+
         subject
             .sink { [weak self] in self?.text = $0 }
             .store(in: &cancellables)
     }
-    
+
     func textPublisher() -> AnyPublisher<String, Never> {
         NotificationCenter.default
             .publisher(for: UITextField.textDidChangeNotification, object: self)
             .compactMap { ($0.object as? Self)?.text }
             .eraseToAnyPublisher()
     }
-    
+
     func isEditingPublisher() -> AnyPublisher<Bool, Never> {
-        
+
         let beginEditingPublisher = NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification, object: self)
         let endEditingPublisher = NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification, object: self)
-        
+
         return Publishers.Merge(beginEditingPublisher, endEditingPublisher)
             .map { $0.name == UITextField.textDidBeginEditingNotification }
             .eraseToAnyPublisher()

@@ -161,7 +161,7 @@ extension SettingsParentTableViewController: OnionConnectorDelegate {
     }
 
     func onTorConnDifficulties(error: OnionError) {
-        UserFeedback.shared.error(title: error.failureReason ?? "Onion Error", description: error.localizedDescription, error: nil)
+        UserFeedback.showError(title: error.failureReason ?? "Onion Error", description: error.localizedDescription)
     }
 
     @objc func onTorConnFinished(_ configuration: BridgesConfuguration) {

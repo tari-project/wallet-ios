@@ -77,6 +77,7 @@ class SettingsViewController: SettingsParentTableViewController {
         case userAgreement
         case privacyPolicy
         case disclaimer
+        case blockExplorer
 
         case connectYats
 
@@ -102,6 +103,7 @@ class SettingsViewController: SettingsParentTableViewController {
             case .userAgreement: return localized("settings.item.user_agreement")
             case .privacyPolicy: return localized("settings.item.privacy_policy")
             case .disclaimer: return localized("settings.item.disclaimer")
+            case .blockExplorer: return localized("settings.item.block_explorer")
             }
         }
     }
@@ -124,7 +126,9 @@ class SettingsViewController: SettingsParentTableViewController {
         SystemMenuTableViewCellItem(title: SettingsItemTitle.contributeToTariAurora.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.userAgreement.rawValue),
         SystemMenuTableViewCellItem(title: SettingsItemTitle.privacyPolicy.rawValue),
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.disclaimer.rawValue)]
+        SystemMenuTableViewCellItem(title: SettingsItemTitle.disclaimer.rawValue),
+        SystemMenuTableViewCellItem(title: SettingsItemTitle.blockExplorer.rawValue)
+    ]
 
     private let yatSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: SettingsItemTitle.connectYats.rawValue)
@@ -135,7 +139,9 @@ class SettingsViewController: SettingsParentTableViewController {
         .contributeToTariAurora: URL(string: TariSettings.shared.contributeUrl),
         .userAgreement: URL(string: TariSettings.shared.userAgreementUrl),
         .privacyPolicy: URL(string: TariSettings.shared.privacyPolicyUrl),
-        .disclaimer: URL(string: TariSettings.shared.disclaimer)]
+        .disclaimer: URL(string: TariSettings.shared.disclaimer),
+        .blockExplorer: URL(string: TariSettings.shared.blockExplorerUrl)
+    ]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -144,12 +150,27 @@ class SettingsViewController: SettingsParentTableViewController {
         backUpWalletItem = backupItem
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.tableFooterView = SettingsViewFooter()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         checkClipboardForBaseNode()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        guard let footerView = tableView.tableFooterView else { return }
+        
+        let width = tableView.bounds.width
+        let size = footerView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height))
+        
+        guard footerView.bounds.height != size.height else { return }
+        
+        footerView.bounds.size.height = size.height
+        tableView.tableFooterView = footerView
     }
 
     private func onBackupWalletAction() {
@@ -196,7 +217,7 @@ class SettingsViewController: SettingsParentTableViewController {
     }
     
     private func showNoConnectionError() {
-        UserFeedback.shared.error(title: localized("common.error"), description: localized("settings.error.connect_yats_no_connection"))
+        UserFeedback.showError(title: localized("common.error"), description: localized("settings.error.connect_yats_no_connection"))
     }
 }
 
@@ -364,10 +385,9 @@ extension SettingsViewController {
             try TariLib.shared.update(baseNode: baseNode, syncAfterSetting: true)
             UIPasteboard.general.string = ""
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("Base node error"),
-                description: localized("Failed to set custom base node from clipboard"),
-                error: error
+                description: localized("Failed to set custom base node from clipboard")
             )
         }
     }

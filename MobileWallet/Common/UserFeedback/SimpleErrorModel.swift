@@ -39,14 +39,6 @@
 */
 
 struct SimpleErrorModel {
-
     let title: String
-    let description: String
-    let error: Error?
-
-    init(title: String, description: String, error: Error? = nil) {
-        self.title = title
-        self.description = description
-        self.error = error
-    }
+    let message: String
 }

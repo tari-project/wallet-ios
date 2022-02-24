@@ -87,7 +87,8 @@
 "home.request_drop.title.with_param" = "You just got some %@!";
 "home.request_drop.description.with_param" = "Try sending a bit of %@ back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).";
 "home.request_drop.try_later" = "Try it later";
-"home.request_drop.error" = "Failed to claim %@";
+"home.request_drop.error.title" = "Failed to claim %@";
+"home.request_drop.error.description" = "No free tXTR is available right now! Hang tight, we'll get you some tXTR the moment it is available.";
 "home.info.amount_help.title" = "Why is some of my balance not spendable right now?";
 "home.info.amount_help.description" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
 "home.info.amount_help.action_button" = "Go to TariLabs University";
@@ -101,6 +102,9 @@
 "add_amount.info.wait_completion_previous_tx.description" = "Sorry, you can’t send this much tXTR\nuntil your previous transaction(s) are complete.\nPlease wait for at least one transaction\nto complete and then try again.";
 "add_amount.error.invalid_number" = "Invalid number";
 "add_amount.warning.not_enough_tari" = "Not enough tXTR in your available balance";
+"add_amount.label.one_sided_payment" = "One-Sided Payment";
+"add_amount.pop_up.one_sided_payment.title" = "One-Sided Payment";
+"add_amount.pop_up.one_sided_payment.description" = "One-sided payments are broadcast instantly and do not require the recipient to be online. But they are less private. Use them if you know the recipient is offline for long periods, or for things like 'tip-jars'.";
 
 /* BackupWalletSettings view */
 "backup_wallet_settings.title" = "Security";
@@ -161,6 +165,7 @@
 "settings.item.user_agreement" = "User Agreement";
 "settings.item.visit_tari" = "Visit Tari.com";
 "settings.item.report_bug" = "Report a Bug";
+"settings.item.block_explorer" = "Block Explorer";
 
 "settings.error.connect_yats_no_connection" = "The app isn't currently connected to a peer-to-peer network. Please check your internet connection or change the base node and try again.";
 
@@ -551,3 +556,20 @@
 
 "error.generic.title" = "Error";
 "error.generic.description" = "Something went wrong! Please try again later. Please send us a bug report if this problem persists.";
+"error.code.prefix" = "Error Code:";
+"error.wallet.114" = "Something went wrong processing output. Please try again later or contact the support.";
+"error.wallet.204" = "Transaction not found. Please try again later. Please submit a bug report using the \"Report a Bug\" option from the settings menu if this problem appears again.";
+"error.wallet.401" = "Contact not found. Please try again later. Please submit a bug report using the \"Report a Bug\" option from the settings menu if this problem appears again.";
+"error.wallet.420" = "Wallet was not encrypted but a passphrase was supplied. Please try again later or try to restore your wallet.";
+"error.wallet.428" = "Unable to decrypt the wallet. Please try again later or try to restore your wallet.";
+"error.wallet.429" = "Unable to recover your wallet from provided seed words. Please check the list of entered seed words and try again.";
+"error.wallet.430" = "The provided seed words are not compatible with the current wallet version. Please get in touch with support for more details.";
+
+"error.tx_rejection.0" = "The transaction failed for an unknown reason.";
+"error.tx_rejection.1" = "The transaction was canceled by the sender.";
+"error.tx_rejection.2" = "The transaction failed due to timeout.";
+"error.tx_rejection.3" = "The transaction was cancelled as it is spending funds that have already been spent.";
+"error.tx_rejection.4" = "The transaction was cancelled due to some funds being spent no longer being present in the chain.";
+"error.tx_rejection.5" = "This transaction was cancelled due to the funds not having reached their time-lock period yet.";
+"error.tx_rejection.6" = "The transaction failed to the invalid input data. This situation shouldn't happen. Please send a bug report or contact us directly.";
+"error.tx_rejection.7" = "The coinbase was abandoned.";

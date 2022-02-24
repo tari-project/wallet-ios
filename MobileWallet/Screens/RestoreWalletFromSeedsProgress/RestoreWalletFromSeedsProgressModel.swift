@@ -127,7 +127,7 @@ final class RestoreWalletFromSeedsProgressModel {
         case .recoveryFailed, .unknown:
             viewModel.error = SimpleErrorModel(
                 title: localized("restore_from_seed_words.progress_overlay.error.title"),
-                description: localized("restore_from_seed_words.progress_overlay.error.description.connection_failed")
+                message: localized("restore_from_seed_words.progress_overlay.error.description.connection_failed")
             )
         }
     }
@@ -135,7 +135,7 @@ final class RestoreWalletFromSeedsProgressModel {
     private func handleStartRecoveryFailure() {
         viewModel.error = SimpleErrorModel(
             title: localized("restore_from_seed_words.progress_overlay.error.title"),
-            description: localized("restore_from_seed_words.progress_overlay.error.description.unknown_error")
+            message: localized("restore_from_seed_words.progress_overlay.error.description.unknown_error")
         )
     }
 }

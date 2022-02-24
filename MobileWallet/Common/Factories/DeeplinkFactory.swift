@@ -1,5 +1,5 @@
 //  DeeplinkFactory.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/01/2022
@@ -39,9 +39,9 @@
 */
 
 enum DeeplinkFactory {
-    
+
     private static let scheme = "tari"
-    
+
     static func tariRequest(network: String, publicKey: String, amount: String) -> URL? {
         var components = URLComponents()
         components.scheme = scheme

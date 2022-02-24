@@ -313,6 +313,7 @@ struct Images: Loopable {
 
     // Amount
     let delete = UIImage(named: "numpad-delete")
+    let helpButton = UIImage(named: "QuestionMark")
 
     // profile
     let settings = UIImage(named: "settings")

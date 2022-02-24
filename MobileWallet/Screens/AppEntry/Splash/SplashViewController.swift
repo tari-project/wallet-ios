@@ -144,12 +144,9 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         TariEventBus.onMainThread(self, eventType: .torConnectionFailed) { [weak self] (result) in
             guard let _ = self else { return }
 
-            let error: Error? = result?.object as? Error
-
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("tor.error.title"),
-                description: localized("tor.error.description"),
-                error: error
+                description: localized("tor.error.description")
             )
         }
     }
@@ -182,7 +179,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     private func prepareEnviroment(animationType: AnimationType) {
 
         let dispatchGroup = DispatchGroup()
-        var error: Wallet.WalletError?
+        var error: WalletError?
 
         dispatchGroup.enter()
         onTorSuccess { dispatchGroup.leave() }
@@ -197,30 +194,18 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         )
 
         dispatchGroup.notify(queue: .main) { [weak self] in
+            
             guard let error = error else {
                 self?.navigateToHome(animationType: animationType)
                 return
             }
-
-            let description: String
-
-            switch error {
-            case .databaseDataError:
-                description = localized("splash.wallet_error.description.corrupted_database")
-            default:
-                description = localized("splash.wallet_error.description.generic")
-            }
             
-            UserFeedback.shared.callToAction(
-                title: localized("splash.wallet_error.title"),
-                description: description,
-                actionTitle: localized("splash.wallet_error.button.confirm"),
-                cancelTitle: localized("common.cancel"),
-                onAction: { [weak self] in
-                    TariLib.shared.deleteWallet()
-                    self?.updateCreateWalletButtonState()
-                    self?.startOnboardingFlow(animationType: .scaleDownLogo)
-                })
+            let errorMessage = ErrorMessageManager.errorMessage(forError: error)
+            
+            UserFeedback.showError(title: localized("splash.wallet_error.title"), description: errorMessage) { [weak self] in
+                self?.updateCreateWalletButtonState()
+                self?.resetView()
+            }
         }
     }
 
@@ -244,14 +229,18 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             }
         } else {
             AppKeychainWrapper.removeBackupPasswordFromKeychain()
-            videoView.isHidden = false
-            titleLabel.isHidden = false
-            createWalletButton.isHidden = false
-            selectNetworkButton.isHidden = false
-            disclaimerText.isHidden = false
-            restoreButton.isHidden = false
-            Tracker.shared.track("/onboarding/introduction", "Onboarding - Introduction")
+            resetView()
         }
+    }
+    
+    private func resetView() {
+        videoView.isHidden = false
+        titleLabel.isHidden = false
+        createWalletButton.isHidden = false
+        selectNetworkButton.isHidden = false
+        disclaimerText.isHidden = false
+        restoreButton.isHidden = false
+        Tracker.shared.track("/onboarding/introduction", "Onboarding - Introduction")
     }
 
     private func startWalletIfNeeded() {
@@ -259,7 +248,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         TariLib.shared.startWallet(seedWords: nil)
     }
 
-    private func waitForWalletStart(onComplete: @escaping () -> Void, onError: ((Wallet.WalletError) -> Void)?) {
+    private func waitForWalletStart(onComplete: @escaping () -> Void, onError: ((WalletError) -> Void)?) {
 
         var cancel: AnyCancellable?
 
@@ -292,7 +281,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
                    title = localizedError.failureReason!
                 }
-                UserFeedback.shared.error(title: title, description: error.localizedDescription, error: nil)
+                UserFeedback.showError(title: title, description: error.localizedDescription)
             }
         }
     }
@@ -315,7 +304,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 }
             } onError: { [weak self] _ in
                 guard let self = self else { return }
-                UserFeedback.shared.error(
+                UserFeedback.showError(
                     title: localized("wallet.error.title"),
                     description: localized("wallet.error.create_new_wallet")
                 )
@@ -323,10 +312,9 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             }
             try TariLib.shared.createNewWallet(seedWords: nil)
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("wallet.error.title"),
-                description: localized("wallet.error.create_new_wallet"),
-                error: error
+                description: localized("wallet.error.create_new_wallet")
             )
             createWalletButton.variation = .normal
         }
@@ -421,11 +409,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     }
 
     private func update(network: TariNetwork) {
-
-        if let appVersion = AppInfo.appVersion, let buildVestion = AppInfo.buildVestion {
-            versionLabel.text = "\(network.name.uppercased()) v\(appVersion) (b\(buildVestion))"
-        }
-
+        versionLabel.text = AppVersionFormatter.version
         selectNetworkButton.setTitle(localized("splash.button.select_network", arguments: network.presentedName), for: .normal)
         updateCreateWalletButtonState()
     }

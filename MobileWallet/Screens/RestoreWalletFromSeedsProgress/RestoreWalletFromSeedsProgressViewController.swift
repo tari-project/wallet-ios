@@ -88,7 +88,7 @@ final class RestoreWalletFromSeedsProgressViewController: UIViewController {
 
     private func handle(errorModel: SimpleErrorModel?) {
         guard let errorModel = errorModel else { return }
-        UserFeedback.shared.error(title: errorModel.title, description: errorModel.description) { [weak self] in
+        UserFeedback.showError(title: errorModel.title, description: errorModel.message) { [weak self] in
             self?.dismiss(animated: true)
         }
     }

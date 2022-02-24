@@ -195,28 +195,7 @@ final class RestoreWalletFromSeedsModel {
     }
 
     private func handle(seedWordsError: SeedWords.Error) {
-        switch seedWordsError {
-        case .invalidSeedPhrase, .invalidSeedWord:
-            viewModel.error = SimpleErrorModel(
-                title: localized("restore_from_seed_words.error.title"),
-                description: localized("restore_from_seed_words.error.description.invalid_seed_word")
-            )
-        case .phraseIsTooShort:
-            viewModel.error = SimpleErrorModel(
-                title: localized("restore_from_seed_words.error.title"),
-                description: localized("restore_from_seed_words.error.description.phrase_too_short")
-            )
-        case .phraseIsTooLong:
-            viewModel.error = SimpleErrorModel(
-                title: localized("restore_from_seed_words.error.title"),
-                description: localized("restore_from_seed_words.error.description.phrase_too_long")
-            )
-        case .unexpectedResult:
-            viewModel.error = SimpleErrorModel(
-                title: localized("restore_from_seed_words.error.title"),
-                description: localized("restore_from_seed_words.error.description.unknown_error")
-            )
-        }
+        viewModel.error = ErrorMessageManager.errorModel(forError: seedWordsError)
     }
 
     private func handle(walletError: WalletErrors) {
@@ -228,15 +207,14 @@ final class RestoreWalletFromSeedsModel {
         
         viewModel.error = SimpleErrorModel(
             title: localized("restore_from_seed_words.error.title"),
-            description: description,
-            error: walletError
+            message: description
         )
     }
 
     private func handleUnknownError() {
         viewModel.error = SimpleErrorModel(
             title: localized("restore_from_seed_words.error.title"),
-            description: localized("restore_from_seed_words.error.description.unknown_error")
+            message: localized("restore_from_seed_words.error.description.unknown_error")
         )
     }
     

@@ -39,10 +39,13 @@
 */
 
 import UIKit
+import TariCommon
 
-class AddAmountViewController: UIViewController {
-    var deepLinkParams: DeepLinkParams?
-    var paymentInfo: PaymentInfo?
+final class AddAmountViewController: UIViewController {
+    
+    private let paymentInfo: PaymentInfo
+    private let deepLinkParams: DeepLinkParams?
+    
     private var buttons = [UIButton]()
     private let navigationBar = NavigationBar()
     private let continueButton = ActionButton(frame: .zero)
@@ -67,10 +70,50 @@ class AddAmountViewController: UIViewController {
         gemAttachment.bounds = CGRect(x: 0, y: 0, width: 21, height: 21)
         return NSAttributedString(attachment: gemAttachment)
     }()
+    
+    private let isSmallScreen: Bool = UIScreen.main.nativeBounds.height <= 1334.0
+    
+    @View private var oneSidedPaymentLabel: UILabel = {
+        let view = UILabel()
+        view.text = localized("add_amount.label.one_sided_payment")
+        view.font = .Avenir.medium.withSize(16.0)
+        view.textColor = Theme.shared.colors.navigationBarTint
+        return view
+    }()
+    
+    @View private var oneSidedPaymentSwitch: UISwitch = {
+        let view = UISwitch()
+        view.onTintColor = Theme.shared.colors.actionButtonBackgroundSimple
+        return view
+    }()
+    
+    @View private var oneSidedPaymentHelpButton: BaseButton = {
+        let view = BaseButton()
+        view.setImage(Theme.shared.images.helpButton, for: .normal)
+        view.tintColor = Theme.shared.colors.textButton
+        return view
+    }()
+    
+    @View private var oneSidedPaymentStackView: UIStackView = {
+        let view = UIStackView()
+        view.spacing = 18.0
+        view.alignment = .center
+        return view
+    }()
 
     var rawInput = ""
     private var txFeeIsVisible = false
-
+    
+    init(paymentInfo: PaymentInfo, deepLinkParams: DeepLinkParams?) {
+        self.paymentInfo = paymentInfo
+        self.deepLinkParams = deepLinkParams
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -89,6 +132,8 @@ class AddAmountViewController: UIViewController {
         }
 
         Tracker.shared.track("/home/send_tari/add_amount", "Send Tari - Add Amount")
+        
+        setupOneSidedPaymentElements()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -98,26 +143,25 @@ class AddAmountViewController: UIViewController {
     }
 
     private func displayAliasOrEmojiId() {
-        guard let wallet = TariLib.shared.tariWallet, let pubKey = paymentInfo?.publicKey else {
+        guard let wallet = TariLib.shared.tariWallet else {
             return
         }
 
         do {
-            guard let contact = try wallet.contacts.0?.find(publicKey: pubKey) else { return }
+            guard let contact = try wallet.contacts.0?.find(publicKey: paymentInfo.publicKey) else { return }
 
             if contact.alias.0.trimmingCharacters(in: .whitespaces).isEmpty {
-                try navigationBar.showEmojiId(pubKey, inViewController: self)
+                try navigationBar.showEmojiId(paymentInfo.publicKey, inViewController: self)
             } else {
                 navigationBar.title = contact.alias.0
             }
         } catch {
             do {
-                try navigationBar.showEmojiId(pubKey, inViewController: self)
+                try navigationBar.showEmojiId(paymentInfo.publicKey, inViewController: self)
             } catch {
-                UserFeedback.shared.error(
+                UserFeedback.showError(
                     title: localized("navigation_bar.error.show_emoji.title"),
-                    description: localized("navigation_bar.error.show_emoji.description"),
-                    error: error
+                    description: localized("navigation_bar.error.show_emoji.description")
                 )
             }
         }
@@ -143,10 +187,9 @@ class AddAmountViewController: UIViewController {
         do {
             totalBalance = try wallet.totalBalance
         } catch {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("add_amount.error.available_balance.title"),
-                description: localized("add_amount.error.available_balance.description"),
-                error: error
+                description: localized("add_amount.error.available_balance.description")
             )
             return
         }
@@ -212,10 +255,9 @@ class AddAmountViewController: UIViewController {
 
     // Shouldn't ever really be used but just in case
     private func showInvalidNumberError(_ error: Error?) {
-        UserFeedback.shared.error(
+        UserFeedback.showError(
             title: localized("add_amount.error.invalid_number"),
-            description: "",
-            error: error
+            description: ""
         )
     }
 
@@ -254,11 +296,14 @@ class AddAmountViewController: UIViewController {
     }
 
     private func updateLabelText() {
+        
+        let font: UIFont = isSmallScreen ? .Avenir.black.withSize(60.0) : .Avenir.black.withSize(90.0)
+        
         let amountAttributedText = NSMutableAttributedString(
             string: convertRawToFormattedString() ?? "0",
             attributes: [
-                NSAttributedString.Key.font: Theme.shared.fonts.amountLabel,
-                NSAttributedString.Key.foregroundColor: Theme.shared.colors.amountLabel!
+                .font: font,
+                .foregroundColor: Theme.shared.colors.amountLabel!
             ]
         )
 
@@ -451,10 +496,7 @@ class AddAmountViewController: UIViewController {
                 return
             }
 
-            let noteVC = AddNoteViewController()
-            noteVC.paymentInfo = paymentInfo
-            noteVC.amount = tariAmount
-            noteVC.deepLinkParams = deepLinkParams
+            let noteVC = AddNoteViewController(paymentInfo: paymentInfo, amount: amount, isOneSidedPayment: oneSidedPaymentSwitch.isOn, deepLinkParams: deepLinkParams)
 
             navigationController?.pushViewController(noteVC, animated: true)
         } catch {
@@ -514,6 +556,8 @@ extension AddAmountViewController {
         amountContainer.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
         amountContainer.bottomAnchor.constraint(equalTo: keypadContainerStackView.topAnchor).isActive = true
 
+        let amountHeight: CGFloat = isSmallScreen ? 50.0 : 75.0
+        
         // amount label
         view.addSubview(amountLabel)
         amountLabel.animation = .type
@@ -522,7 +566,7 @@ extension AddAmountViewController {
         amountLabel.trailingAnchor.constraint(equalTo: amountContainer.trailingAnchor, constant: -25).isActive = true
         amountLabel.leadingAnchor.constraint(equalTo: amountContainer.leadingAnchor, constant: 25).isActive = true
         amountLabel.centerYAnchor.constraint(equalTo: amountContainer.centerYAnchor).isActive = true
-        amountLabel.heightAnchor.constraint(equalToConstant: 75).isActive = true
+        amountLabel.heightAnchor.constraint(equalToConstant: amountHeight).isActive = true
 
         // warning view
         view.addSubview(warningView)
@@ -612,7 +656,8 @@ extension AddAmountViewController {
         let feeButton = TextButton()
         feeButton.translatesAutoresizingMaskIntoConstraints = false
         feeButton.setTitle(localized("common.fee"), for: .normal)
-        feeButton.setRightImage(Theme.shared.images.txFee!)
+        feeButton.spacing = 8.0
+        feeButton.setRightImage(Theme.shared.images.helpButton!)
         feeButton.addTarget(self, action: #selector(feeButtonPressed), for: .touchUpInside)
         continueButton.variation = .disabled
 
@@ -680,5 +725,29 @@ extension AddAmountViewController {
             }
         }
     }
-
+    
+    private func setupOneSidedPaymentElements() {
+        
+        oneSidedPaymentLabel.minimumScaleFactor = 0.5
+        oneSidedPaymentLabel.adjustsFontSizeToFitWidth = true
+        
+        view.addSubview(oneSidedPaymentStackView)
+        [oneSidedPaymentLabel, oneSidedPaymentSwitch, oneSidedPaymentHelpButton].forEach(oneSidedPaymentStackView.addArrangedSubview)
+        
+        let margin = isSmallScreen ? 8.0 : 20.0
+        
+        let constraints = [
+            oneSidedPaymentStackView.topAnchor.constraint(equalTo: keypadContainerStackView.bottomAnchor, constant: margin),
+            oneSidedPaymentStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -margin),
+            oneSidedPaymentStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            oneSidedPaymentHelpButton.heightAnchor.constraint(equalToConstant: 44.0),
+            oneSidedPaymentHelpButton.widthAnchor.constraint(equalToConstant: 44.0)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+        
+        oneSidedPaymentHelpButton.onTap = {
+            UserFeedback.shared.info(title: localized("add_amount.pop_up.one_sided_payment.title"), description: localized("add_amount.pop_up.one_sided_payment.description"))
+        }
+    }
 }

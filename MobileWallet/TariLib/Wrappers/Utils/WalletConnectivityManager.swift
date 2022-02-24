@@ -61,7 +61,7 @@ final class WalletConnectivityManager {
         TariLib.shared.startWallet(seedWords: nil)
     }
     
-    static func waitForWallet(result: @escaping (Result<Void, Wallet.WalletError>) -> Void) {
+    static func waitForWallet(result: @escaping (Result<Void, WalletError>) -> Void) {
         
         var cancel: AnyCancellable?
 
@@ -83,10 +83,10 @@ final class WalletConnectivityManager {
         cancel?.store(in: &cancellables)
     }
     
-    static func startWallet(result: @escaping (Result<Void, Wallet.WalletError>) -> Void) {
+    static func startWallet(result: @escaping (Result<Void, WalletError>) -> Void) {
         
         let dispatchGroup = DispatchGroup()
-        var startWalletResult: Result<Void, Wallet.WalletError>?
+        var startWalletResult: Result<Void, WalletError>?
 
         dispatchGroup.enter()
         connectWithTor {

@@ -41,19 +41,17 @@
 import UIKit
 
 protocol NavigationBarWithSubtitleProtocol: NavigationBarProtocol {
-    var subtitle: String? { get set }
+    func update(subtitle: String?, isCompact: Bool)
 }
 
-class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleProtocol {
+final class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleProtocol {
+    
     private let subtitleLabel = UILabel()
 
-    var subtitle: String? {
-        get {
-            subtitleLabel.text
-        }
-        set {
-            subtitleLabel.text = newValue
-        }
+    func update(subtitle: String?, isCompact: Bool) {
+        subtitleLabel.text = subtitle
+        subtitleLabel.numberOfLines = isCompact ? 2 : 1
+        subtitleLabel.font = isCompact ? .Avenir.medium.withSize(12.0) : .Avenir.medium.withSize(13.0)
     }
 
     override func draw(_ rect: CGRect) {
@@ -88,8 +86,9 @@ class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleProtoco
 
         // Style
         subtitleLabel.textAlignment = .center
-        subtitleLabel.font = Theme.shared.fonts.txScreenSubheadingLabel
         subtitleLabel.textColor = Theme.shared.colors.txScreenSubheadingLabel
+        subtitleLabel.minimumScaleFactor = 0.5
+        subtitleLabel.adjustsFontSizeToFitWidth = true
     }
 
     private func setupBackButton() {

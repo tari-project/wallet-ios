@@ -162,7 +162,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
                 present(mail, animated: true)
             } catch {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                    UserFeedback.shared.error(title: "Sending feedback failed", description: "Failed to add attachment", error: error)
+                    UserFeedback.showError(title: "Sending feedback failed", description: "Failed to add attachment")
                 })
             }
         } else {
@@ -199,7 +199,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             self.present(activityViewController, animated: true, completion: nil)
         } catch {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                UserFeedback.shared.error(title: "Sending feedback failed", description: "Failed to add attachment", error: error)
+                UserFeedback.showError(title: "Sending feedback failed", description: "Failed to add attachment")
             })
         }
     }
@@ -215,7 +215,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             case .sent:
             break
             case .failed:
-                UserFeedback.shared.error(title: "Error", description: "Failed to send feedback", error: error)
+                UserFeedback.showError(title: "Error", description: "Failed to send feedback")
             break
             default:
             break
@@ -225,13 +225,8 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
     }
 
     override open func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        guard
-            UIViewController.debugMenuAlert == nil,
-            let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
-            let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
-        else { return }
-
-        let title = "\(NetworkManager.shared.selectedNetwork.name.uppercased()) v\(version) (b\(build))"
+        
+        guard let title = AppVersionFormatter.version else { return }
 
         UIViewController.debugMenuAlert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         guard let alert = UIViewController.debugMenuAlert else {

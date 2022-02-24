@@ -179,10 +179,9 @@ extension CustomBridgesViewController: UIImagePickerControllerDelegate, UINaviga
         if let bridges = raw.findBridges() {
             onAdd(string: bridges)
         } else {
-            UserFeedback.shared.error(
+            UserFeedback.showError(
                 title: localized("custom_bridges.error.image_decode.title"),
-                description: localized("custom_bridges.error.image_decode.description"),
-                error: nil
+                description: localized("custom_bridges.error.image_decode.description")
             )
         }
     }

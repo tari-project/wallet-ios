@@ -67,6 +67,7 @@ struct TariSettings {
     let storeUrl = "https://store.tarilabs.com/"
     let bugReportEmail = "bug_reports@tari.com"
     let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
+    let blockExplorerUrl = "https://explore.tari.com/"
 
     var pushServerApiKey: String?
     var sentryPublicDSN: String?

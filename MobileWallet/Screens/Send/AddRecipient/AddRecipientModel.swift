@@ -170,10 +170,10 @@ final class AddRecipientModel {
             do {
                 try loadContacts()
             } catch {
-                errorDialog = SimpleErrorModel(title: localized("add_recipient.error.load_contacts.title"), description: localized("add_recipient.error.load_contacts.description"), error: error)
+                errorDialog = SimpleErrorModel(title: localized("add_recipient.error.load_contacts.title"), message: localized("add_recipient.error.load_contacts.description"))
             }
         case .startFailed:
-            errorDialog = SimpleErrorModel(title: localized("add_recipient.error.load_contacts.title"), description: localized("add_recipient.error.load_contacts.description"))
+            errorDialog = SimpleErrorModel(title: localized("add_recipient.error.load_contacts.title"), message: localized("add_recipient.error.load_contacts.description"))
         case .notReady, .starting:
             break
         }
