@@ -60,7 +60,7 @@ final class SendingTariModel {
         case failure(WalletTransactionsManager.TransactionError)
     }
     
-    private enum State {
+    private enum State: Comparable {
         case connectionCheck
         case discovery
         case sent
@@ -70,6 +70,7 @@ final class SendingTariModel {
     
     @Published var stateModel: StateModel?
     @Published var onCompletion: Completion?
+    var isNextStepAvailable: Bool { !stateQueue.isEmpty }
     
     // MARK: - Properties
     
@@ -78,6 +79,7 @@ final class SendingTariModel {
     private let inputData: InputData
     private let walletTransactionsManager = WalletTransactionsManager()
     
+    private var stateQueue: [State] = []
     private var transactionID: UInt64?
     private var cancellables = Set<AnyCancellable>()
     
@@ -111,6 +113,18 @@ final class SendingTariModel {
         sendTransactionToBlockchain()
     }
     
+    func moveToNextStep() {
+        guard isNextStepAvailable else { return }
+        state = stateQueue.removeFirst()
+    }
+    
+    private func addStateToQueue(state: State) {
+        guard state > self.state else { return }
+        var queue = Set(stateQueue)
+        queue.insert(state)
+        stateQueue = queue.sorted()
+    }
+    
     private func sendTransactionToBlockchain() {
         
         walletTransactionsManager.performTransactionPublisher(publicKey: inputData.publicKey, amount: inputData.amount, message: inputData.message, isOneSidedPayment: inputData.isOneSidedPayment)
@@ -124,22 +138,22 @@ final class SendingTariModel {
             } receiveValue: { [weak self] state in
                 switch state {
                 case .connectionCheck:
-                    self?.state = .connectionCheck
+                    self?.addStateToQueue(state: .connectionCheck)
                 case .transaction:
-                    self?.state = .discovery
+                    self?.addStateToQueue(state: .discovery)
                 }
             }
             .store(in: &cancellables)
     }
     
     private func finalizeTransaction() {
-        state = .sent
+        addStateToQueue(state: .sent)
         onCompletion = .success
     }
     
     // MARK: - Handlers
     
-    private func stateModel(forState state: State) -> StateModel {
+    private func stateModel(forState state: State) -> StateModel? {
         switch state {
         case .connectionCheck:
             return StateModel(firstText: localized("sending_tari.connecting"), secondText: localized("sending_tari.network"), stepIndex: 0)
