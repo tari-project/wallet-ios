@@ -39,6 +39,73 @@
 */
 
 import UIKit
+import TariCommon
+
+class BaseSettingsView: UIView {
+    
+    // MARK: - Subview
+    
+    @View private var statusBarBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Theme.shared.colors.navigationBarBackground
+        return view
+    }()
+    
+    @View private(set) var navigationBar: NavigationBar = {
+       let view = NavigationBar()
+        view.title = localized("settings.title")
+        view.verticalPositioning = .custom(24)
+        view.backgroundColor = Theme.shared.colors.navigationBarBackground
+        return view
+    }()
+    
+    @View private(set) var separator: UIView = {
+        let view = UIView()
+        view.backgroundColor = Theme.shared.colors.settingsNavBarSeparator
+        return view
+    }()
+    
+    // MARK: - Initialisers
+    
+    init() {
+        super.init(frame: .zero)
+        setupViews()
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+    
+    private func setupViews() {
+        backgroundColor = Theme.shared.colors.appBackground
+        navigationBar.verticalPositioning = .center
+    }
+    
+    private func setupConstraints() {
+        
+        [statusBarBackgroundView, navigationBar, separator].forEach(addSubview)
+        
+        let constraints = [
+            statusBarBackgroundView.topAnchor.constraint(equalTo: topAnchor),
+            statusBarBackgroundView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            statusBarBackgroundView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            statusBarBackgroundView.bottomAnchor.constraint(equalTo: navigationBar.topAnchor),
+            navigationBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            navigationBar.heightAnchor.constraint(equalToConstant: 50.0),
+            separator.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            separator.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 1.0)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+}
 
 class SettingsParentViewController: UIViewController {
     let navigationBar = NavigationBar()

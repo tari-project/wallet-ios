@@ -45,19 +45,6 @@ struct TokenViewModel: Identifiable, Hashable {
     let title: String
 }
 
-struct SeedWordModel: Identifiable, Hashable {
-
-    enum State {
-        case valid
-        case invalid
-        case editing
-    }
-
-    let id: UUID
-    let title: String
-    let state: State
-}
-
 final class RestoreWalletFromSeedsModel {
 
     final class ViewModel {
@@ -77,7 +64,7 @@ final class RestoreWalletFromSeedsModel {
     
     let viewModel: ViewModel = ViewModel()
     
-    private let editingModel = SeedWordModel(id: UUID(), title: "", state: .editing)
+    private let editingModel = SeedWordModel(id: UUID(), title: "", state: .editing, visualTrait: .none)
     
     private var availableAutocompletionTokens: [TokenViewModel] = [] {
         didSet { viewModel.isAutocompletionAvailable = !availableAutocompletionTokens.isEmpty }
@@ -166,7 +153,7 @@ final class RestoreWalletFromSeedsModel {
     func handleEndEditing() {
         guard !inputText.isEmpty else { return }
         let state = state(seedWord: inputText)
-        appendModelsBeforeEditingModel(models: [SeedWordModel(id: UUID(), title: inputText, state: state)])
+        appendModelsBeforeEditingModel(models: [SeedWordModel(id: UUID(), title: inputText, state: state, visualTrait: .deleteIcon)])
         viewModel.updatedInputText = ""
     }
     
@@ -188,7 +175,7 @@ final class RestoreWalletFromSeedsModel {
         let lastToken = tokens.removeLast()
         let models = tokens
             .map { $0.lowercased() }
-            .map { SeedWordModel(id: UUID(), title: $0, state: state(seedWord: $0)) }
+            .map { SeedWordModel(id: UUID(), title: $0, state: state(seedWord: $0), visualTrait: .deleteIcon) }
         
         appendModelsBeforeEditingModel(models: models)
         viewModel.updatedInputText = lastToken

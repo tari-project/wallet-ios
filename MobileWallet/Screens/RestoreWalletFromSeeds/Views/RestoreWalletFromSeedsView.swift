@@ -97,7 +97,7 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
             tokenView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 20.0),
             tokenView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
             tokenView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
-            tokenView.heightAnchor.constraint(equalToConstant: 200.0),
+            tokenView.heightAnchor.constraint(equalToConstant: 272.0),
             submitButton.topAnchor.constraint(greaterThanOrEqualTo: tokenView.bottomAnchor, constant: 20.0),
             submitButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
             submitButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
