@@ -277,12 +277,9 @@ extension SeedPhraseViewController {
     }
 
     @objc private func continueButtonAction() {
-        let verifyPhraseViewController = VerifyPhraseViewController()
-        verifyPhraseViewController.seedWords = seedWords
-        navigationController?.pushViewController(
-            verifyPhraseViewController,
-            animated: true
-        )
+        let inputData = VerifySeedWordsModel.InputData(seedWords: seedWords)
+        let controller = VerifySeedWordsConstructor.buildScene(inputData: inputData)
+        navigationController?.pushViewController(controller, animated: true)
     }
 }
 

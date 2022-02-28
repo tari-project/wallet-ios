@@ -41,6 +41,26 @@
 import UIKit
 import Combine
 
+struct SeedWordModel: Identifiable, Hashable {
+
+    enum State {
+        case valid
+        case invalid
+        case editing
+    }
+    
+    enum VisualTrait {
+        case none
+        case deleteIcon
+        case hidden
+    }
+
+    let id: UUID
+    let title: String
+    let state: State
+    let visualTrait: VisualTrait
+}
+
 final class TokenCollectionView: UIView {
 
     // MARK: - Subviews
@@ -98,6 +118,7 @@ final class TokenCollectionView: UIView {
     var onEndEditing: (() -> Void)?
     
     private var dataSource: UICollectionViewDiffableDataSource<Int, SeedWordModel>?
+    private var heightConstraint: NSLayoutConstraint?
     
     @Published private(set) var inputText: String = ""
     
@@ -125,12 +146,17 @@ final class TokenCollectionView: UIView {
     private func setupConstraints() {
 
         addSubview(collectionView)
+        
+        let heightConstraint = heightAnchor.constraint(equalToConstant: 0.0)
+        heightConstraint.priority = .defaultLow
+        self.heightConstraint = heightConstraint
 
         let constraints = [
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            heightConstraint
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -154,6 +180,9 @@ final class TokenCollectionView: UIView {
                 let cell = collectionView.dequeueReusableCell(type: TokenView.self, indexPath: indexPath)
                 cell.text = model.title
                 cell.isValid = model.state == .valid
+                cell.isDeleteIconVisible = model.visualTrait == .deleteIcon
+                cell.isHidden = model.visualTrait == .hidden
+                
                 return cell
             }
         }
@@ -187,7 +216,9 @@ final class TokenCollectionView: UIView {
         snapshot.appendSections([0])
         snapshot.appendItems(seedWords)
         dataSource?.apply(snapshot, animatingDifferences: true) { [weak self] in
-            self?.collectionView.scrollToBottom(animated: true)
+            guard let self = self else { return }
+            self.collectionView.scrollToBottom(animated: true)
+            self.heightConstraint?.constant = self.collectionView.contentSize.height
         }
     }
     
