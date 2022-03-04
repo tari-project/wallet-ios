@@ -40,6 +40,7 @@
 
 import Foundation
 import Reachability
+import Combine
 
 enum ConnectionMonitorStateReachability: String {
     case cellular = "Cellular ✅"
@@ -62,7 +63,7 @@ enum ConnectionMonitorStateBaseNode: String {
     case success = "Synced ✅"
 }
 
-class ConnectionMonitorState {
+final class ConnectionMonitorState {
     var reachability: ConnectionMonitorStateReachability = .unknown { didSet { onUpdate() } }
     var torBootstrapProgress: Int = 0 { didSet { onUpdate() } }
     var torPortsOpen = false { didSet { onUpdate() } }
@@ -73,18 +74,20 @@ class ConnectionMonitorState {
     var baseNodeSyncStatus: ConnectionMonitorStateBaseNode = ConnectionMonitorStateBaseNode.notInited { didSet { onUpdate() } }
 
     var currentBaseNodeName: String { NetworkManager.shared.selectedNetwork.selectedBaseNode.name }
+    var baseNodeConnectivityStatus: BaseNodeConnectivityStatus? { didSet { onUpdate() } }
 
     var formattedDisplayItems: [String] {
         var entries: [String] = []
         entries.append("Reachability: \(reachability.rawValue)")
         entries.append("Base node (\(currentBaseNodeName)): \(baseNodeSyncStatus.rawValue)")
+        entries.append("Base node connection status: \(baseNodeConnectivityStatus?.name ?? "Unknown ❓")")
         entries.append("Tor ports: \(torPortsOpenDisplay)")
         entries.append("Tor status: \(torStatus.rawValue)")
         entries.append("Tor bootstrap progress: \(torBootstrapProgress)%")
 
         return entries
     }
-
+    
     // ALlow other components to subscribe to connection state changes from one place
     private func onUpdate() {
         TariEventBus.postToMainThread(.connectionMonitorStatusChanged, sender: self)
@@ -96,6 +99,8 @@ class ConnectionMonitor {
     private var reachability: Reachability?
 
     var state = ConnectionMonitorState()
+    
+    private var cancellables = Set<AnyCancellable>()
 
     private init() {
         do {
@@ -192,11 +197,29 @@ class ConnectionMonitor {
             }
             self?.state.baseNodeSyncStatus = .success
         }
+        
+        TariEventBus.events(forType: .connectionStatusChanged)
+            .map { $0.object as? BaseNodeConnectivityStatus }
+            .assign(to: \.baseNodeConnectivityStatus, on: state)
+            .store(in: &cancellables)
     }
 
     func stop() {
         reachability?.stopNotifier()
         TariEventBus.unregister(self)
         TariLogger.verbose("Stopped monitoring network connections")
+    }
+}
+
+private extension BaseNodeConnectivityStatus {
+    var name: String {
+        switch self {
+        case .offline:
+            return "Disconnected ❌"
+        case .connecting:
+            return "Connecting ⌛"
+        case .online:
+            return "Connected ✅"
+        }
     }
 }

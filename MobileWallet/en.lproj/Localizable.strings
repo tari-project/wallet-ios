@@ -485,6 +485,7 @@
 "connection_status.ok" = "Everything ok. Move along, nothing to see here";
 "connection_status.warning.sync_in_progress" = "Syncing with base node";
 "connection_status.warning.sync_failed" = "Unable to sync with base node";
+"connection_status.warning.connecting_with_base_node" = "Connecting to the base node";
 "connection_status.error.no_network_connection" = "Unable to connect with internet";
 "connection_status.error.unknown_network_connection_status" = "Unknown internet connection status";
 "connection_status.error.disconnected_from_tor" = "Failed to connect with Tor";

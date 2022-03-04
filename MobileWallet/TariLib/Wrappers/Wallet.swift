@@ -113,6 +113,12 @@ struct WalletBalance: Equatable {
     var timeLocked: UInt64
 }
 
+enum BaseNodeConnectivityStatus: UInt64 {
+    case connecting
+    case online
+    case offline
+}
+
 final class Wallet {
 
     private(set) var pointer: OpaquePointer
@@ -335,7 +341,9 @@ final class Wallet {
             TariLogger.verbose("Balance updated callback")
         }
         
-        let callbackConectivityStatus: (@convention(c) (UInt64) -> Void)? = { _ in
+        let callbackConectivityStatus: (@convention(c) (UInt64) -> Void)? = { status in
+            guard let status = BaseNodeConnectivityStatus(rawValue: status) else { return }
+            TariEventBus.postToMainThread(.connectionStatusChanged, sender: status)
         }
         
         dbPath = commsConfig.dbPath

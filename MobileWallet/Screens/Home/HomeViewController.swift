@@ -503,22 +503,26 @@ final class HomeViewController: UIViewController {
     }
 
     private func handle(connectionState: ConnectionMonitorState) -> (ConnectionIndicatorView.State, String?) {
-        switch (connectionState.reachability, connectionState.torStatus, connectionState.baseNodeSyncStatus) {
-        case (.offline, _, _):
+        switch (connectionState.reachability, connectionState.torStatus, connectionState.baseNodeConnectivityStatus, connectionState.baseNodeSyncStatus) {
+        case (.offline, _, _, _):
             return (.disconnected, localized("connection_status.error.no_network_connection"))
-        case (.unknown, _, _):
+        case (.unknown, _, _, _):
             return (.disconnected, localized("connection_status.error.unknown_network_connection_status"))
-        case (_, .failed, _):
+        case (_, .failed, _, _):
             return (.disconnected, localized("connection_status.error.disconnected_from_tor"))
-        case (_, .connecting, _):
+        case (_, .connecting, _, _):
             return (.disconnected, localized("connection_status.error.connecting_with_tor"))
-        case (_, .unknown, _):
+        case (_, .unknown, _, _):
             return (.disconnected, localized("connection_status.error.unknown_tor_connection_status"))
-        case (_, _, .notInited):
+        case (_, _, .offline, _):
             return (.disconnected, localized("connection_status.error.disconnected_from_base_node"))
-        case (_, _, .pending):
+        case (_, _, .connecting, _):
+            return (.connectedWithIssues, localized("connection_status.warning.connecting_with_base_node"))
+        case (_, _, _, .notInited):
+            return (.disconnected, localized("connection_status.error.disconnected_from_base_node"))
+        case (_, _, _, .pending):
             return (.connectedWithIssues, localized("connection_status.warning.sync_in_progress"))
-        case (_, _, .failure):
+        case (_, _, _, .failure):
             return (.connectedWithIssues, localized("connection_status.warning.sync_failed"))
         default:
             return (.connected, localized("connection_status.ok"))
