@@ -60,12 +60,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // If the user opens a deep link while the app is closed
         if let url = connectionOptions.urlContexts.first?.url {
-            deepLinker.handleShortcut(type: .send(deeplink: NSString(string: url.absoluteString) as String))
+            try? DeeplinkHandler.handle(deeplink: url)
         }
 
         // If the user opens a home screen shortcut while the app is closed
         if let shortcutItem = connectionOptions.shortcutItem {
-            deepLinker.handleShortcut(item: shortcutItem)
+            ShortcutsManager.handle(shortcut: shortcutItem)
         }
 
         if ICloudBackup.shared.iCloudBackupsIsOn {
@@ -97,27 +97,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else { return }
-        deepLinker.handleShortcut(type: .send(deeplink: url.absoluteString))
+        try? DeeplinkHandler.handle(deeplink: url)
         Yat.integration.handle(deeplink: url)
     }
 
-    func sceneDidDisconnect(_ scene: UIScene) {
-        // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not neccessarily discarded (see `application:didDiscardSceneSessions` instead).
-    }
-
     func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
-
-        deepLinker.checkDeepLink()
-    }
-
-    func sceneWillResignActive(_ scene: UIScene) {
-        // Called when the scene will move from an active state to an inactive state.
-        // This may occur due to temporary interruptions (ex. an incoming phone call).
+        ShortcutsManager.executeQueuedShortcut()
     }
 
     private func onTorSuccess(_ onComplete: @escaping () -> Void) {
@@ -168,10 +153,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         ICloudBackup.shared.backgroundBackupWallet()
     }
 
-    func windowScene(_ windowScene: UIWindowScene,
-                     performActionFor shortcutItem: UIApplicationShortcutItem,
-                     completionHandler: @escaping (Bool) -> Void) {
-        completionHandler(deepLinker.handleShortcut(item: shortcutItem))
+    func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
+        ShortcutsManager.handle(shortcut: shortcutItem)
     }
     
     private func setupYatIntegration() {

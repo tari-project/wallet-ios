@@ -4,6 +4,7 @@
 "common.send.with_param" = "Send %@";
 "common.error" = "Error";
 "common.recommended" = "Recommended";
+"common.close" = "Close";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -552,6 +553,12 @@
 "request.buttons.generate_qr" = "Generate QR Code";
 "request.qr_code.buttons.share" = "Share";
 "request.qr_code.buttons.close" = "Close";
+
+/* Add base node dialog */
+
+"add_base_node_overlay.label.title" = "Add custom base node";
+"add_base_node_overlay.label.description" = "The QR code is a deep link request to assign your wallet to use this base node:\n\nName: %@\n\nPeer: %@";
+"add_base_node_overlay.button.confirm" = "Connect";
 
 /* Errors */
 

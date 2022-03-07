@@ -1,10 +1,10 @@
-//  AppRouter.swift
-
+//  BaseNodeManager.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 02/09/2021
+	Created by Adrian Truszczynski on 02/03/2022
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 12.1
 
 	Copyright 2019 The Tari Project
 
@@ -38,26 +38,12 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-
-enum AppRouter {
+enum BaseNodeManager {
     
-    static var isNavigationReady: Bool { tabBar != nil }
-    private static var tabBar: MenuTabBarController? { UIApplication.shared.menuTabBarController }
-
-    static func moveToSplashScreen() {
-        BackupScheduler.shared.stopObserveEvents()
-        let navigationController = AlwaysPoppableNavigationController(rootViewController: SplashViewController())
-        navigationController.setNavigationBarHidden(true, animated: false)
-        UIApplication.shared.windows.first?.rootViewController = navigationController
-        UIApplication.shared.windows.first?.makeKeyAndVisible()
-    }
-    
-    static func moveToTransactionSend(deeplink: TransactionsSendDeeplink?) {
-        tabBar?.homeViewController.onSend(deeplink: deeplink)
-    }
-    
-    static func moveToProfile() {
-        tabBar?.setTab(.profile)
+    static func addBaseNode(name: String, peer: String) throws {
+        let node = try BaseNode(name: name, peer: peer)
+        try TariLib.shared.update(baseNode: node, syncAfterSetting: false)
+        NetworkManager.shared.selectedNetwork.customBaseNodes.append(node)
+        NetworkManager.shared.selectedNetwork.selectedBaseNode = node
     }
 }

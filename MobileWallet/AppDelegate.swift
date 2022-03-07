@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         UNUserNotificationCenter.current().delegate = self
         BackgroundTaskManager.shared.registerScheduleReminderNotificationsTask()
-        ShortcutParser.shared.registerShortcuts()
+        ShortcutsManager.configureShortcuts()
 
         if let giphyApiKey = TariSettings.shared.giphyApiKey {
             Giphy.configure(apiKey: giphyApiKey)

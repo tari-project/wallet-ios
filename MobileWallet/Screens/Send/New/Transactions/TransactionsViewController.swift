@@ -100,9 +100,8 @@ final class TransactionsViewController: UIViewController {
     
     // MARK: - Deeplinks
     
-    func update(deeplinkParameters: DeepLinkParams?, publicKey: PublicKey) {
+    func update(deeplink: TransactionsSendDeeplink) {
         let controller = pageViewController.controllers.compactMap { $0 as? AddRecipientViewController }.first
-        controller?.deepLinkParams = deeplinkParameters
-        controller?.onAdd(publicKey: publicKey)
+        controller?.deeplink = deeplink
     }
 }

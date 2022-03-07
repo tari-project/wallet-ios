@@ -1,10 +1,10 @@
-//  AddBaseNodeModel.swift
-
+//  DeepLinkFormatter.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 19/07/2021
+	Created by Adrian Truszczynski on 01/03/2022
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 12.1
 
 	Copyright 2019 The Tari Project
 
@@ -38,34 +38,51 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class AddBaseNodeModel {
+protocol DeepLinkCodable: Codable {
+    static var command: String { get }
+}
 
-    final class ViewModel {
-        @Published var name: String = ""
-        @Published var peer: String = ""
-        @Published var isFinished: Bool = false
-        @Published var errorMessage: String?
+enum DeepLinkError: Error {
+    case invalidNetworkName
+    case invalidCommandName
+    case unableToParse(key: String)
+    case unableToEncode(error: Error)
+}
+
+enum DeepLinkFormatter {
+    
+    private static var validScheme: String { "tari" }
+    private static var validNetworkName: String { NetworkManager.shared.selectedNetwork.name }
+    
+    static func model<T: DeepLinkCodable>(type: T.Type, deeplink: URL) throws -> T {
+        guard let networkName = deeplink.host, networkName == validNetworkName else { throw DeepLinkError.invalidNetworkName }
+        guard deeplink.path == T.command else { throw DeepLinkError.invalidCommandName }
+        let decoder = DeepLinkDataDecoder(deeplink: deeplink)
+        return try T(from: decoder)
+        
     }
-
-    // MARK: - Properties
-
-    let viewModel = ViewModel()
-
-    // MARK: - Actions
-
-    func saveNode() {
-
-        guard !viewModel.name.isEmpty else {
-            viewModel.errorMessage = localized("add_base_node.error.invalid_peer")
-            return
-        }
-
+    
+    static func deeplink<T: DeepLinkCodable>(model: T, networkName: String = validNetworkName) throws -> URL? {
+        
+        let encoder = DeepLinkDataEncoder()
+        
         do {
-            try BaseNodeManager.addBaseNode(name: viewModel.name, peer: viewModel.peer)
-            viewModel.isFinished = true
-            viewModel.errorMessage = nil
+         try model.encode(to: encoder)
         } catch {
-            viewModel.errorMessage = localized("add_base_node.error.invalid_peer")
+            throw DeepLinkError.unableToEncode(error: error)
         }
+        
+        let query = encoder.query
+        
+        var urlComponents = URLComponents()
+        urlComponents.scheme = validScheme
+        urlComponents.host = networkName
+        urlComponents.path = T.command
+        
+        if !query.isEmpty {
+            urlComponents.query = query
+        }
+        
+        return urlComponents.url
     }
 }
