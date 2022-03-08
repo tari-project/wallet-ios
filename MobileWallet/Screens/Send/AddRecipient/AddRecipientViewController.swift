@@ -46,7 +46,9 @@ final class AddRecipientViewController: UIViewController {
 
     // MARK: - Properties
     
-    var deepLinkParams: DeepLinkParams?
+    var deeplink: TransactionsSendDeeplink? {
+        didSet { handleDeeplink() }
+    }
     
     private let model = AddRecipientModel()
     private let mainView = AddRecipientView()
@@ -211,8 +213,13 @@ final class AddRecipientViewController: UIViewController {
     }
     
     private func onContinue(paymentInfo: PaymentInfo) {
-        let amountVC = AddAmountViewController(paymentInfo: paymentInfo, deepLinkParams: deepLinkParams)
+        let amountVC = AddAmountViewController(paymentInfo: paymentInfo, deeplink: deeplink)
         navigationController?.pushViewController(amountVC, animated: true)
+    }
+    
+    private func handleDeeplink() {
+        guard let deeplink = deeplink, let publicKey = try? PublicKey(hex: deeplink.receiverPublicKey) else { return }
+        onAdd(publicKey: publicKey)
     }
 }
 

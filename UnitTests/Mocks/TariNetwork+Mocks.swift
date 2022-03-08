@@ -1,10 +1,10 @@
-//  AppRouter.swift
-
+//  TariNetwork+Mocks.swift
+	
 /*
-	Package MobileWallet
-	Created by Adrian Truszczynski on 02/09/2021
+	Package UnitTests
+	Created by Adrian Truszczynski on 03/03/2022
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 12.1
 
 	Copyright 2019 The Tari Project
 
@@ -38,26 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+@testable import Tari_Aurora
 
-enum AppRouter {
-    
-    static var isNavigationReady: Bool { tabBar != nil }
-    private static var tabBar: MenuTabBarController? { UIApplication.shared.menuTabBarController }
-
-    static func moveToSplashScreen() {
-        BackupScheduler.shared.stopObserveEvents()
-        let navigationController = AlwaysPoppableNavigationController(rootViewController: SplashViewController())
-        navigationController.setNavigationBarHidden(true, animated: false)
-        UIApplication.shared.windows.first?.rootViewController = navigationController
-        UIApplication.shared.windows.first?.makeKeyAndVisible()
-    }
-    
-    static func moveToTransactionSend(deeplink: TransactionsSendDeeplink?) {
-        tabBar?.homeViewController.onSend(deeplink: deeplink)
-    }
-    
-    static func moveToProfile() {
-        tabBar?.setTab(.profile)
-    }
+extension TariNetwork {
+    static let testNetwork = TariNetwork(name: "test_network", presentedName: "Test Network", tickerSymbol: "Test Symbol", baseNodes: [], faucetURL: nil)
 }

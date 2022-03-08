@@ -165,7 +165,7 @@ final class HomeViewController: UIViewController {
             }
         }
         safeRefreshBalance()
-        deepLinker.checkDeepLink()
+        ShortcutsManager.executeQueuedShortcut()
         checkImportSecondUtxo()
         safeCheckIncompatibleNetwork()
         enableWindowTapGesture()
@@ -454,26 +454,18 @@ final class HomeViewController: UIViewController {
         }
     }
 
-    func onSend(pubKey: PublicKey? = nil, deepLinkParams: DeepLinkParams? = nil) {
-
+    func onSend(deeplink: TransactionsSendDeeplink? = nil) {
+        
         let sendVC = TransactionsViewController()
-
-        // This is used by the deep link manager
-        if let publicKey = pubKey {
-            DispatchQueue.main.asyncAfter(
-                deadline: .now() + 0.75
-            ) { [weak self] in
-                guard let _ = self else { return }
-                sendVC.update(deeplinkParameters: deepLinkParams, publicKey: publicKey)
-            }
-        }
-
         let navigationController = AlwaysPoppableNavigationController(rootViewController: sendVC)
         navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.modalPresentationStyle = .fullScreen
 
         DispatchQueue.main.async {
-            UIApplication.shared.menuTabBarController?.present(navigationController, animated: true)
+            UIApplication.shared.menuTabBarController?.present(navigationController, animated: true) {
+                guard let deeplink = deeplink else { return }
+                sendVC.update(deeplink: deeplink)
+            }
         }
     }
 

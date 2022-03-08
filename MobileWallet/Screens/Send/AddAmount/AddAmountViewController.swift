@@ -44,7 +44,7 @@ import TariCommon
 final class AddAmountViewController: UIViewController {
     
     private let paymentInfo: PaymentInfo
-    private let deepLinkParams: DeepLinkParams?
+    private let deeplink: TransactionsSendDeeplink?
     
     private var buttons = [UIButton]()
     private let navigationBar = NavigationBar()
@@ -104,9 +104,9 @@ final class AddAmountViewController: UIViewController {
     var rawInput = ""
     private var txFeeIsVisible = false
     
-    init(paymentInfo: PaymentInfo, deepLinkParams: DeepLinkParams?) {
+    init(paymentInfo: PaymentInfo, deeplink: TransactionsSendDeeplink?) {
         self.paymentInfo = paymentInfo
-        self.deepLinkParams = deepLinkParams
+        self.deeplink = deeplink
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -125,10 +125,9 @@ final class AddAmountViewController: UIViewController {
         showAvailableBalance()
 
         // Deep link value
-        if let params = deepLinkParams {
-            if params.amount.rawValue > 0 {
-                addCharacter(params.amount.formatted)
-            }
+        if let amount = deeplink?.amount, amount > 0 {
+            let tariAmount = MicroTari(amount)
+            addCharacter(tariAmount.formatted)
         }
 
         Tracker.shared.track("/home/send_tari/add_amount", "Send Tari - Add Amount")
@@ -496,7 +495,7 @@ final class AddAmountViewController: UIViewController {
                 return
             }
 
-            let noteVC = AddNoteViewController(paymentInfo: paymentInfo, amount: amount, isOneSidedPayment: oneSidedPaymentSwitch.isOn, deepLinkParams: deepLinkParams)
+            let noteVC = AddNoteViewController(paymentInfo: paymentInfo, amount: amount, isOneSidedPayment: oneSidedPaymentSwitch.isOn, deeplink: deeplink)
 
             navigationController?.pushViewController(noteVC, animated: true)
         } catch {

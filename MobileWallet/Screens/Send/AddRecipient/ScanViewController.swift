@@ -353,7 +353,6 @@ class ScanViewController: UIViewController {
                     description: localized("scan_view.error.bridges.description")
                 )
             }
-
         }
 
         dismiss(animated: true)
