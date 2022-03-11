@@ -133,7 +133,6 @@
 		37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37BB696A245705D20013AC4D /* RadialGradientView.swift */; };
 		37C8BA352480F59B005BBC05 /* WaveEmojiAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37C8BA342480F59B005BBC05 /* WaveEmojiAnimation.json */; };
 		37C8BA47248126B4005BBC05 /* UIScrollView+RefreshControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */; };
-		37C8BA4B24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */; };
 		37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */; };
 		37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CB9F892451A2AD00C495F2 /* String+Emoji.swift */; };
 		37CFAA76248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */; };
@@ -152,6 +151,10 @@
 		3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97D26AA8E3C002612D4 /* TokenView.swift */; };
 		3A0EA98226AA8E64002612D4 /* TokenInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA98126AA8E64002612D4 /* TokenInputView.swift */; };
 		3A20A6B82722EE00002B15DB /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A20A6B72722EDFF002B15DB /* VideoView.swift */; };
+		3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */; };
+		3A237C7D27D8E141005FA6AB /* SeedWordsListConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */; };
+		3A2C0B8727DA22970018C5A8 /* SeedWordListElementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2C0B8627DA22970018C5A8 /* SeedWordListElementView.swift */; };
+		3A2C0B8927DA22C20018C5A8 /* ExpandButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2C0B8827DA22C20018C5A8 /* ExpandButton.swift */; };
 		3A35412C26A72D9F002AB5A8 /* ViewIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35412B26A72D9F002AB5A8 /* ViewIdentifiable.swift */; };
 		3A35413126A72DEE002AB5A8 /* SelectBaseNodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413026A72DEE002AB5A8 /* SelectBaseNodeCell.swift */; };
 		3A35413626A738D4002AB5A8 /* RoundedInputField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35413526A738D4002AB5A8 /* RoundedInputField.swift */; };
@@ -225,6 +228,8 @@
 		3ACFA42B278EC9F200EBED98 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */; };
 		3ACFDD1D26E8C1A900C5E1EA /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */; };
 		3ACFECAA27ABD0B100FA9FE1 /* SendingTariProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFECA927ABD0B100FA9FE1 /* SendingTariProgressBar.swift */; };
+		3AD1306827D6290A003EC7FA /* SeedWordsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD1306727D6290A003EC7FA /* SeedWordsListViewController.swift */; };
+		3AD1306A27D62918003EC7FA /* SeedWordsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD1306927D62918003EC7FA /* SeedWordsListView.swift */; };
 		3ADA05F127A41D44007F5677 /* PointerHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA05F027A41D44007F5677 /* PointerHandler.swift */; };
 		3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA73DC270A02B900D50E3B /* WalletSettings.swift */; };
 		3ADA73DF270A02DF00D50E3B /* WalletSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */; };
@@ -453,7 +458,6 @@
 		37BB696A245705D20013AC4D /* RadialGradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RadialGradientView.swift; sourceTree = "<group>"; };
 		37C8BA342480F59B005BBC05 /* WaveEmojiAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = WaveEmojiAnimation.json; sourceTree = "<group>"; };
 		37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+RefreshControl.swift"; sourceTree = "<group>"; };
-		37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedPhraseViewController.swift; sourceTree = "<group>"; };
 		37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsParentTableViewController.swift; sourceTree = "<group>"; };
 		37CB9F892451A2AD00C495F2 /* String+Emoji.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Emoji.swift"; sourceTree = "<group>"; };
 		37CFAA75248FE28600DEA096 /* NSPointerArray+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPointerArray+Extension.swift"; sourceTree = "<group>"; };
@@ -474,6 +478,10 @@
 		3A0EA98126AA8E64002612D4 /* TokenInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInputView.swift; sourceTree = "<group>"; };
 		3A1365C4272BE66800402389 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A20A6B72722EDFF002B15DB /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
+		3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListModel.swift; sourceTree = "<group>"; };
+		3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListConstructor.swift; sourceTree = "<group>"; };
+		3A2C0B8627DA22970018C5A8 /* SeedWordListElementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordListElementView.swift; sourceTree = "<group>"; };
+		3A2C0B8827DA22C20018C5A8 /* ExpandButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandButton.swift; sourceTree = "<group>"; };
 		3A35412B26A72D9F002AB5A8 /* ViewIdentifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewIdentifiable.swift; sourceTree = "<group>"; };
 		3A35413026A72DEE002AB5A8 /* SelectBaseNodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectBaseNodeCell.swift; sourceTree = "<group>"; };
 		3A35413526A738D4002AB5A8 /* RoundedInputField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedInputField.swift; sourceTree = "<group>"; };
@@ -547,6 +555,8 @@
 		3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
 		3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		3ACFECA927ABD0B100FA9FE1 /* SendingTariProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendingTariProgressBar.swift; sourceTree = "<group>"; };
+		3AD1306727D6290A003EC7FA /* SeedWordsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListViewController.swift; sourceTree = "<group>"; };
+		3AD1306927D62918003EC7FA /* SeedWordsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListView.swift; sourceTree = "<group>"; };
 		3ADA05F027A41D44007F5677 /* PointerHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PointerHandler.swift; sourceTree = "<group>"; };
 		3ADA73DC270A02B900D50E3B /* WalletSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettings.swift; sourceTree = "<group>"; };
 		3ADA73DE270A02DF00D50E3B /* WalletSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSettingsManager.swift; sourceTree = "<group>"; };
@@ -1076,10 +1086,10 @@
 		3708D750247FF7AD00807D72 /* BackUpSettings */ = {
 			isa = PBXGroup;
 			children = (
+				3AD1306627D62827003EC7FA /* Seed Words List */,
 				3A983A5827C6296D00F0AB61 /* VerifySeedWords */,
 				3708D751247FF7D000807D72 /* BackupWalletSettingsViewController.swift */,
 				3723A7A524AC9389003382EB /* SecureBackupViewController.swift */,
-				37C8BA4A24813F33005BBC05 /* SeedPhraseViewController.swift */,
 			);
 			path = BackUpSettings;
 			sourceTree = "<group>";
@@ -1238,6 +1248,15 @@
 			children = (
 				3ACDA85B27215BEB00F08C70 /* YatTransactionView.swift */,
 				3A20A6B72722EDFF002B15DB /* VideoView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3A2C0B8527DA21BF0018C5A8 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				3A2C0B8627DA22970018C5A8 /* SeedWordListElementView.swift */,
+				3A2C0B8827DA22C20018C5A8 /* ExpandButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1536,6 +1555,18 @@
 				3ABBC5DF2726D104001BB864 /* YatTransactionConstructor.swift */,
 			);
 			path = YatTransaction;
+			sourceTree = "<group>";
+		};
+		3AD1306627D62827003EC7FA /* Seed Words List */ = {
+			isa = PBXGroup;
+			children = (
+				3A2C0B8527DA21BF0018C5A8 /* Views */,
+				3AD1306727D6290A003EC7FA /* SeedWordsListViewController.swift */,
+				3AD1306927D62918003EC7FA /* SeedWordsListView.swift */,
+				3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */,
+				3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */,
+			);
+			path = "Seed Words List";
 			sourceTree = "<group>";
 		};
 		3ADA73DA270A029B00D50E3B /* Settings */ = {
@@ -2038,6 +2069,7 @@
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
 				3A39AF1C27B1570F00A32F46 /* SettingsViewFooter.swift in Sources */,
 				3ACDA85C27215BEB00F08C70 /* YatTransactionView.swift in Sources */,
+				3A2C0B8927DA22C20018C5A8 /* ExpandButton.swift in Sources */,
 				00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */,
 				3A9A08F526E0A83D00D2E75C /* AppRouter.swift in Sources */,
 				00E2BCA9236AB28200C2A105 /* TxTableViewCell.swift in Sources */,
@@ -2073,6 +2105,7 @@
 				377C951E2522213800CC1696 /* TxsListViewController.swift in Sources */,
 				3AEDBE4F27CE46D6006B0166 /* DeeplinkDataDecoder.swift in Sources */,
 				00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */,
+				3AD1306A27D62918003EC7FA /* SeedWordsListView.swift in Sources */,
 				3A66109627AD07F10038EB5B /* SendingTariView.swift in Sources */,
 				3A4376E9269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */,
 				3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */,
@@ -2094,6 +2127,7 @@
 				3A01248327B3BD0700A481F4 /* ProgressBar.swift in Sources */,
 				3AA2DD942796E8BA00DC3CF7 /* QRCodePresentationController.swift in Sources */,
 				3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */,
+				3AD1306827D6290A003EC7FA /* SeedWordsListViewController.swift in Sources */,
 				A0779C612552C1AF00614EF3 /* DeleteWalletViewController.swift in Sources */,
 				37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */,
 				3ADA05F127A41D44007F5677 /* PointerHandler.swift in Sources */,
@@ -2133,6 +2167,7 @@
 				37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
 				3A96B9452733E9A90040E59F /* TokensToolbar.swift in Sources */,
 				00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
+				3A237C7D27D8E141005FA6AB /* SeedWordsListConstructor.swift in Sources */,
 				00947CC223CF090D00526DD5 /* TxProtocol.swift in Sources */,
 				3ACFECAA27ABD0B100FA9FE1 /* SendingTariProgressBar.swift in Sources */,
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,
@@ -2142,6 +2177,8 @@
 				37547D522460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */,
 				3A87C3B727A9409E007A553F /* WalletError.swift in Sources */,
 				00A994332396434B007D9990 /* PulseButton.swift in Sources */,
+				3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */,
+				3A2C0B8727DA22970018C5A8 /* SeedWordListElementView.swift in Sources */,
 				3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */,
 				3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */,
 				00A66523243B3E380046E730 /* ErrorView.swift in Sources */,
@@ -2154,7 +2191,6 @@
 				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
 				3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */,
 				004997AB2382E893000A0B7D /* PendingOutboundTxs.swift in Sources */,
-				37C8BA4B24813F33005BBC05 /* SeedPhraseViewController.swift in Sources */,
 				0087A1AF23F4235400B89EE7 /* ContactCell.swift in Sources */,
 				370E887224FEA32600576F61 /* Ipv6Tester.swift in Sources */,
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,

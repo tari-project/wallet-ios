@@ -315,8 +315,11 @@ struct Images: Loopable {
     let delete = UIImage(named: "numpad-delete")
     let helpButton = UIImage(named: "QuestionMark")
 
-    // profile
+    // Profile
     let settings = UIImage(named: "settings")
+    
+    // Seed words list
+    let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
 }
 
 struct Fonts: Loopable {
