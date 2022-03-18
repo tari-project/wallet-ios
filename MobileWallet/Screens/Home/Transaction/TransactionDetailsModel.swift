@@ -290,6 +290,7 @@ final class TransactionDetailsModel {
     }
     
     private func fetchUserAlias() throws -> String? {
+        guard !transaction.isOneSidedPayment else { return nil }
         if let contactError = transaction.contact.1 { throw contactError }
         if let aliasError = transaction.contact.0?.alias.1 { throw aliasError }
         return transaction.contact.0?.alias.0
