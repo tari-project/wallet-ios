@@ -74,7 +74,7 @@ class TxTableViewModel: NSObject {
         value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.isPending)
         
         if tx.isOneSidedPayment {
-            message = localized("transaction.one_sided_payment.note")
+            message = localized("transaction.one_sided_payment.note.normal")
             gifID = nil
         } else {
             let (msg, giphyId) = TxTableViewModel.extractNote(from: tx.message.0)
