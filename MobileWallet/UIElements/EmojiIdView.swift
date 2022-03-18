@@ -39,6 +39,11 @@
 import UIKit
 
 final class EmojiIdView: UIView {
+    
+    struct ViewModel {
+        let emojiID: String
+        let hex: String?
+    }
 
     weak var blackoutParent: UIView?
     private lazy var blackoutView: UIView = {
@@ -89,10 +94,10 @@ final class EmojiIdView: UIView {
 
     private var superVC: UIViewController?
     
-    func update(emojiID: String, hex: String?) {
-        emojiText = emojiID
-        pubKeyHex = hex
-        setupView()
+    func update(viewModel: ViewModel, textCentered: Bool = true) {
+        emojiText = viewModel.emojiID
+        pubKeyHex = viewModel.hex
+        setupView(textCentered: textCentered)
     }
     
     private func setupView(textCentered: Bool = true, inViewController vc: UIViewController? = nil, initialWidth: CGFloat = CGFloat(185), initialHeight: CGFloat = CGFloat(40), showContainerViewBlur: Bool = true, cornerRadius: CGFloat = 6.0) {

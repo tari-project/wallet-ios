@@ -180,7 +180,7 @@ final class ProfileView: UIView {
     func update(emojiID: String, hex: String?, copyText: String, tooltopText: String?) {
         emojiIdView.copyText = copyText
         emojiIdView.tooltipText = tooltopText
-        emojiIdView.update(emojiID: emojiID, hex: hex)
+        emojiIdView.update(viewModel: EmojiIdView.ViewModel(emojiID: emojiID, hex: hex))
     }
     
     func updateYatButton(isOn: Bool) {

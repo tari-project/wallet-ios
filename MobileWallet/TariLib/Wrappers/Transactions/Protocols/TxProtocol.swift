@@ -54,6 +54,9 @@ enum TxStatus: Error {
     case imported
     case pending
     case minedConfirmed
+    case rejected
+    case fauxUnconfirmed
+    case fauxConfirmed
     case unknown
 }
 
@@ -81,28 +84,34 @@ extension TxProtocol {
 
         return (Date(timeIntervalSince1970: Double(timestamp)), nil)
     }
-
+    
     func statusFrom(code: Int32) -> TxStatus {
         switch code {
-            case -1:
-                return .txNullError
-            case 0:
-                return .completed
-            case 1:
-                return .broadcast
-            case 2:
-                return .minedUnconfirmed
-            case 3:
-                 return .imported
-            case 4:
-                 return .pending
-            case 6:
-             return .minedConfirmed
-            default:
-                return .unknown
+        case -1:
+            return .txNullError
+        case 0:
+            return .completed
+        case 1:
+            return .broadcast
+        case 2:
+            return .minedUnconfirmed
+        case 3:
+            return .imported
+        case 4:
+            return .pending
+        case 6:
+            return .minedConfirmed
+        case 7:
+            return .rejected
+        case 8:
+            return .fauxUnconfirmed
+        case 9:
+            return .fauxConfirmed
+        default:
+            return .unknown
         }
     }
-
+    
     var isCancelled: Bool {
         if let completedTx = self as? CompletedTx {
             return completedTx.isCancelled
@@ -121,5 +130,9 @@ extension TxProtocol {
         let (status, error) = self.status
         if error != nil { fatalError() }
         return status == .minedUnconfirmed
+    }
+    
+    var isOneSidedPayment: Bool {
+        status.0 == .fauxConfirmed || status.0 == .fauxUnconfirmed
     }
 }
