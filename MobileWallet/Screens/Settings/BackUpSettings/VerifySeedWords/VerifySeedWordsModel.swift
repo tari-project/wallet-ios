@@ -66,11 +66,17 @@ final class VerifySeedWordsModel {
     init(inputData: InputData) {
         self.inputData = inputData
         
+        if #available(iOS 15, *) {
+            fetchData()
+        }
+        
+        setupCallbacks()
+    }
+    
+    func fetchData() {
         availableTokenModels = inputData.seedWords
             .sorted()
             .map { SeedWordModel(id: UUID(), title: $0, state: .valid, visualTrait: .none) }
-        
-        setupCallbacks()
     }
     
     // MARK: - Setups
