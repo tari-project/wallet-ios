@@ -70,7 +70,6 @@ final class TransactionDetailsContactView: UIView {
         didSet { updateTextField() }
     }
     
-    var onBeginEditing: (() -> Void)?
     var onNameChange: ((String?) -> Void)?
     
     // MARK: - Initialisers
@@ -121,11 +120,6 @@ final class TransactionDetailsContactView: UIView {
 }
 
 extension TransactionDetailsContactView: UITextFieldDelegate {
-    
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        onBeginEditing?()
-        return true
-    }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         isEditingEnabled = false
