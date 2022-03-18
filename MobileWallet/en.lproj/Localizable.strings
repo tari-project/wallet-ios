@@ -62,6 +62,13 @@
 "tx_list.error.pending_outbound_tx.title" = "Could not load list of pending outbound transactions";
 "tx_list.error.pending_outbound_tx..description" = "Could not load pending outbound transactions";
 
+/* Transaction Data */
+
+"transaction.one_sided_payment.inbound_user_placeholder" = "Someone";
+"transaction.one_sided_payment.avatar" = "➡️";
+"transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
+"transaction.one_sided_payment.note.recovered" = "You recovered some funds";
+
 /* Tari key server error */
 "key_server.error.too_many_allocation_requests" = "You have made too many free tXTR requests.";
 "key_server.error.response_invalid" = "Invalid response from Tari key server.";

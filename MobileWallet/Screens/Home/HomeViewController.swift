@@ -524,11 +524,14 @@ final class HomeViewController: UIViewController {
 
 // MARK: - TxTableDelegateMethods
 extension HomeViewController: TxsTableViewDelegate {
+    
     func onTxSelect(_ tx: Any) {
         selectedTx = tx as? TxProtocol
-        let txVC = TxViewController()
-        txVC.transaction = selectedTx
-        self.navigationController?.pushViewController(txVC, animated: true)
+        
+        guard let transaction = selectedTx else { return }
+        
+        let controller = TransactionDetailsConstructor.buildScene(transaction: transaction)
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     func onScrollTopHit(_ isAtTop: Bool) {

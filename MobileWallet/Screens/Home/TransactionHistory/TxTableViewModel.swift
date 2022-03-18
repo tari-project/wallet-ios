@@ -72,11 +72,18 @@ class TxTableViewModel: NSObject {
         self.id = tx.id.0
 
         value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.isPending)
-        let (msg, giphyDd) = TxTableViewModel.extractNote(from: tx.message.0)
-        message = msg
+        
+        if tx.isOneSidedPayment {
+            message = localized("transaction.one_sided_payment.note")
+            gifID = nil
+        } else {
+            let (msg, giphyId) = TxTableViewModel.extractNote(from: tx.message.0)
+            message = msg
+            gifID = giphyId
+        }
+        
         time = tx.date.0?.relativeDayFromToday() ?? ""
-        gifID = giphyDd
-
+        
         super.init()
 
         updateTitleAndAvatar()
@@ -116,6 +123,14 @@ class TxTableViewModel: NSObject {
     }
 
     private func updateTitleAndAvatar() {
+        
+        guard !tx.isOneSidedPayment else {
+            avatar = localized("transaction.one_sided_payment.avatar")
+            let alias = localized("transaction.one_sided_payment.inbound_user_placeholder")
+            title = attributed(title: localized("tx_list.inbound_pending_title", arguments: alias), withAlias: alias, isAliasEmojiID: false)
+            return
+        }
+        
         let (publicKey, _) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
         guard let pubKey = publicKey else { fatalError() }
 
@@ -154,32 +169,35 @@ class TxTableViewModel: NSObject {
             )
         }
 
-        // Getting the line breaks around the alias an not the other spaces in the copy
-        titleText = titleText
-            .replacingOccurrences(of: " ", with: "\u{00A0}")
+        title = attributed(title: titleText, withAlias: alias, isAliasEmojiID: aliasIsEmojis)
+    }
+    
+    private func attributed(title: String, withAlias alias: String, isAliasEmojiID: Bool) -> NSAttributedString {
+        
+        let title = title.replacingOccurrences(of: " ", with: "\u{00A0}")
             .replacingOccurrences(of: alias, with: " \(alias) ")
             .trimmingCharacters(in: .whitespaces)
-
-        if let startIndex = titleText.indexDistance(of: alias) {
-            let attributedTitle = NSMutableAttributedString(
-                string: titleText,
-                attributes: [
-                    .font: Theme.shared.fonts.txCellUsernameLabel,
-                    .foregroundColor: Theme.shared.colors.txCellAlias!
-                ]
-            )
-
-            let range = NSRange(location: startIndex, length: alias.count)
-            attributedTitle.addAttribute(.font, value: Theme.shared.fonts.txCellUsernameLabelHeavy, range: range)
-            if aliasIsEmojis {
-                // So the elippises between the emojis is lighter
-                attributedTitle.addAttribute(.foregroundColor, value: Theme.shared.colors.emojisSeparator!, range: range)
-            }
-
-            title = attributedTitle
-        } else {
-            title = NSAttributedString()
+        
+        guard let startIndex = title.indexDistance(of: alias) else {
+            return NSAttributedString()
         }
+        
+        let attributedTitle = NSMutableAttributedString(
+            string: title,
+            attributes: [
+                .font: Theme.shared.fonts.txCellUsernameLabel,
+                .foregroundColor: Theme.shared.colors.txCellAlias!
+            ]
+        )
+        
+        let range = NSRange(location: startIndex, length: alias.count)
+        attributedTitle.addAttribute(.font, value: Theme.shared.fonts.txCellUsernameLabelHeavy, range: range)
+        
+        if isAliasEmojiID {
+            attributedTitle.addAttribute(.foregroundColor, value: Theme.shared.colors.emojisSeparator!, range: range)
+        }
+        
+        return attributedTitle
     }
 
     private func updateStatus() {

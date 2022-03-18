@@ -333,6 +333,9 @@ final class Wallet {
         let storedMessagesReceivedCallback: (@convention(c) () -> Void)? = {
             TariLogger.verbose("Stored messages received ✅")
         }
+        
+        let contactsLivenessDataUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void) = { _ in
+        }
 
         let balanceUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void)? = { valuePointer in
             //Note context for this is unavailable withing the callback but we still need to free the object passed in form the library
@@ -376,6 +379,7 @@ final class Wallet {
                         storeAndForwardSendResultCallback,
                         txCancellationCallback,
                         txoValidationCallback,
+                        contactsLivenessDataUpdatedCallback,
                         balanceUpdatedCallback,
                         txValidationCompleteCallback,
                         storedMessagesReceivedCallback,
@@ -930,15 +934,16 @@ final class Wallet {
         }
 
         var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let recoveredOutputMessage = localized("transaction.one_sided_payment.note.recovered")
 
-        let result = withUnsafeMutablePointer(to: &errorCode) {
-            wallet_start_recovery(
-                pointer,
-                baseNode.publicKey.pointer,
-                callback,
-                $0
-            )
-        }
+        let result = wallet_start_recovery(
+            pointer,
+            baseNode.publicKey.pointer,
+            callback,
+            recoveredOutputMessage,
+            errorCodePointer
+        )
 
         guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
         return result
