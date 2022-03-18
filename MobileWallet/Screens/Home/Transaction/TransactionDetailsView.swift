@@ -67,10 +67,7 @@ final class TransactionDetailsView: UIView {
         return view
     }()
     
-    @View private var scrollView: ContentScrollView = {
-        let view = ContentScrollView()
-        return view
-    }()
+    @View private var mainContentView = KeyboardAvoidingContentView()
     
     @View private(set) var contentStackView: UIStackView = {
         let view = UIStackView()
@@ -119,8 +116,9 @@ final class TransactionDetailsView: UIView {
     
     private func setupConstraints() {
         
-        [scrollView, navigationBar].forEach(addSubview)
-        scrollView.contentView.addSubview(contentStackView)
+        [mainContentView, navigationBar].forEach(addSubview)
+        mainContentView.contentView.addSubview(contentStackView)
+        
         [transactionStateView, cancelButton].forEach(navigationBar.addSubview)
         [valueView, contactView, contactNameView, separatorView, noteView].forEach(contentStackView.addArrangedSubview)
         
@@ -145,14 +143,14 @@ final class TransactionDetailsView: UIView {
             cancelButton.centerXAnchor.constraint(equalTo: navigationBar.centerXAnchor),
             cancelButton.heightAnchor.constraint(equalToConstant: 44.0),
             cancelButtonBottomConstraint,
-            scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            contentStackView.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor),
-            contentStackView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor),
-            contentStackView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor),
-            contentStackView.bottomAnchor.constraint(equalTo: scrollView.contentView.bottomAnchor)
+            mainContentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            mainContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            mainContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            mainContentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            contentStackView.topAnchor.constraint(equalTo: mainContentView.contentView.topAnchor),
+            contentStackView.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor),
+            contentStackView.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor),
+            contentStackView.bottomAnchor.constraint(equalTo: mainContentView.contentView.bottomAnchor)
         ]
         
         NSLayoutConstraint.activate(constraints)
