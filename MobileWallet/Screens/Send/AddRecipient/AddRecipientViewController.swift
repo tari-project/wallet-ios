@@ -219,7 +219,7 @@ final class AddRecipientViewController: UIViewController {
     
     private func handleDeeplink() {
         guard let deeplink = deeplink, let publicKey = try? PublicKey(hex: deeplink.receiverPublicKey) else { return }
-        onAdd(publicKey: publicKey)
+        model.searchText.send(publicKey.emojis.0)
     }
 }
 
@@ -247,8 +247,8 @@ extension AddRecipientViewController: UITableViewDelegate {
 
 extension AddRecipientViewController: ScanViewControllerDelegate {
     
-    func onAdd(publicKey: PublicKey) {
-        model.searchText.send(publicKey.emojis.0)
+    func onScan(deeplink: TransactionsSendDeeplink) {
+        self.deeplink = deeplink
     }
 }
 

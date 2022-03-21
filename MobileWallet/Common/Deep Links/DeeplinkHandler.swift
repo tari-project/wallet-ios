@@ -38,19 +38,36 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+
+protocol DeeplinkHandlable {
+    func handle(deeplink: TransactionsSendDeeplink)
+    func handle(deeplink: BaseNodesAddDeeplink)
+}
+
+enum DeeplinkError: Error {
+    case unknownDeeplink
+    case transactionSendDeeplinkError(_ error: Error)
+    case baseNodesAddDeeplinkError(_ error: Error)
+}
+
 enum DeeplinkHandler {
     
-    static func handle(deeplink: URL) throws {
+    static func handle(rawDeeplink: String, handler: DeeplinkHandlable? = nil) throws {
+        guard let deeplink = URL(string: rawDeeplink) else { throw DeeplinkError.unknownDeeplink }
+        return try handle(deeplink: deeplink, handler: handler)
+    }
+    
+    static func handle(deeplink: URL, handler: DeeplinkHandlable? = nil) throws {
         
         guard !handle(legacyDeeplink: deeplink) else { return }
         
         switch deeplink.path {
         case TransactionsSendDeeplink.command:
-            try handle(transactionSendDeeplink: deeplink)
+            try handle(transactionSendDeeplink: deeplink, handler: handler)
         case BaseNodesAddDeeplink.command:
-            try handle(baseNodesAddDeeplink: deeplink)
+            try handle(baseNodesAddDeeplink: deeplink, handler: handler)
         default:
-            break
+            throw DeeplinkError.unknownDeeplink
         }
     }
     
@@ -79,22 +96,42 @@ enum DeeplinkHandler {
         return true
     }
     
-    private static func handle(transactionSendDeeplink: URL) throws {
-        let deeplink = try DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: transactionSendDeeplink)
-        AppRouter.moveToTransactionSend(deeplink: deeplink)
+    private static func handle(transactionSendDeeplink: URL, handler: DeeplinkHandlable?) throws {
+        
+        do {
+            let deeplink = try DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: transactionSendDeeplink)
+            
+            guard let handler = handler else {
+                AppRouter.moveToTransactionSend(deeplink: deeplink)
+                return
+            }
+            
+            handler.handle(deeplink: deeplink)
+        } catch {
+            throw DeeplinkError.transactionSendDeeplinkError(error)
+        }
     }
     
-    private static func handle(baseNodesAddDeeplink: URL) throws {
+    private static func handle(baseNodesAddDeeplink: URL, handler: DeeplinkHandlable?) throws {
         
-        let model = try DeepLinkFormatter.model(type: BaseNodesAddDeeplink.self, deeplink: baseNodesAddDeeplink)
-        _ = try BaseNode(name: model.name, peer: model.peer)
-        
-        UserFeedback.shared.callToAction(
-            title: localized("add_base_node_overlay.label.title"),
-            description: localized("add_base_node_overlay.label.description", arguments: model.name, model.peer),
-            actionTitle: localized("add_base_node_overlay.button.confirm"),
-            cancelTitle: localized("common.close"),
-            onAction: { try? BaseNodeManager.addBaseNode(name: model.name, peer: model.peer) }
-        )
+        do {
+            let deeplink = try DeepLinkFormatter.model(type: BaseNodesAddDeeplink.self, deeplink: baseNodesAddDeeplink)
+            _ = try BaseNode(name: deeplink.name, peer: deeplink.peer)
+            
+            guard let handler = handler else {
+                UserFeedback.shared.callToAction(
+                    title: localized("add_base_node_overlay.label.title"),
+                    description: localized("add_base_node_overlay.label.description", arguments: deeplink.name, deeplink.peer),
+                    actionTitle: localized("add_base_node_overlay.button.confirm"),
+                    cancelTitle: localized("common.close"),
+                    onAction: { try? BaseNodeManager.addBaseNode(name: deeplink.name, peer: deeplink.peer) }
+                )
+                return
+            }
+            
+            handler.handle(deeplink: deeplink)
+        } catch {
+            throw DeeplinkError.baseNodesAddDeeplinkError(error)
+        }
     }
 }
