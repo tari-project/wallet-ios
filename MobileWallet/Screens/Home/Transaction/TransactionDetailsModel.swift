@@ -112,8 +112,6 @@ final class TransactionDetailsModel {
         transactionDirection = fetchTransactionDirection()
         emojiIdViewModel = fetchEmojiIdViewModel()
         isContactSectionVisible = !transaction.isOneSidedPayment
-        isAddContactButtonVisible = userAlias == nil
-        isNameSectionVisible = userAlias != nil
         
         do {
             subtitle = try fetchSubtitle()
@@ -124,6 +122,9 @@ final class TransactionDetailsModel {
         } catch {
             errorModel = SimpleErrorModel(title: localized("tx_detail.error.load_tx.title"), message: localized("tx_detail.error.load_tx.description"))
         }
+        
+        isAddContactButtonVisible = userAlias == nil
+        isNameSectionVisible = userAlias != nil
     }
     
     func cancelTransactionRequest() {
@@ -290,9 +291,9 @@ final class TransactionDetailsModel {
     }
     
     private func fetchUserAlias() throws -> String? {
-        if let contactError = transaction.contact.1 { throw contactError }
-        if let aliasError = transaction.contact.0?.alias.1 { throw aliasError }
-        return transaction.contact.0?.alias.0
+        guard let contact = transaction.contact.0 else { return nil }
+        if let aliasError = contact.alias.1 { throw aliasError }
+        return contact.alias.0
     }
     
     private func handleMessage() throws {

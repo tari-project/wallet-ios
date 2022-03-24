@@ -41,14 +41,14 @@
 import UIKit
 import AVFoundation
 
-protocol ScanViewControllerDelegate: class {
-    func onAdd(publicKey: PublicKey)
+protocol ScanViewControllerDelegate: AnyObject {
     func onAdd(string: String)
+    func onScan(deeplink: TransactionsSendDeeplink)
 }
 
 extension ScanViewControllerDelegate {
-    func onAdd(publicKey: PublicKey) { }
     func onAdd(string: String) { }
+    func onScan(deeplink: TransactionsSendDeeplink) {}
 }
 
 class ScanViewController: UIViewController {
@@ -330,34 +330,6 @@ class ScanViewController: UIViewController {
         captureSession = nil
     }
 
-    private func foundQR(qrText: String) {
-        switch scanResourceType {
-        case .publicKey:
-            do {
-                let publicKey = try PublicKey(deeplink: qrText)
-
-                self.actionDelegate?.onAdd(publicKey: publicKey)
-                UINotificationFeedbackGenerator().notificationOccurred(.success)
-            } catch {
-                UserFeedback.showError(
-                    title: localized("scan_view.error.title"),
-                    description: localized("scan_view.error.public_key.description")
-                )
-            }
-        case .bridges:
-            if let bridges = qrText.findBridges() {
-                actionDelegate?.onAdd(string: bridges)
-            } else {
-                UserFeedback.showError(
-                    title: localized("scan_view.error.title"),
-                    description: localized("scan_view.error.bridges.description")
-                )
-            }
-        }
-
-        dismiss(animated: true)
-    }
-
 // MARK: - Actions
 
     @objc func onBackAction() {
@@ -368,12 +340,40 @@ class ScanViewController: UIViewController {
 // MARK: - AVCaptureMetadataOutputObjectsDelegate
 extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
+        
+        guard let metadata = metadataObjects.first as? AVMetadataMachineReadableCodeObject, let rawDeeplink = metadata.stringValue else { return }
         captureSession.stopRunning()
-
-        if let metadataObject = metadataObjects.first {
-            guard let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject else { return }
-            guard let stringValue = readableObject.stringValue else { return }
-            foundQR(qrText: stringValue)
+        
+        switch scanResourceType {
+        case .publicKey:
+            do {
+                _ = try DeeplinkHandler.handle(rawDeeplink: rawDeeplink, handler: self)
+            } catch DeeplinkError.transactionSendDeeplinkError {
+                UserFeedback.showError(title: localized("scan_view.error.title"), description: localized("scan_view.error.public_key.description"))
+                dismiss(animated: true)
+            } catch {
+                dismiss(animated: true)
+            }
+            
+        case .bridges:
+            guard let bridges = rawDeeplink.findBridges() else {
+                UserFeedback.showError(title: localized("scan_view.error.title"), description: localized("scan_view.error.bridges.description"))
+                dismiss(animated: true)
+                return
+            }
+            actionDelegate?.onAdd(string: bridges)
+            dismiss(animated: true)
         }
     }
+}
+
+extension ScanViewController: DeeplinkHandlable {
+    
+    func handle(deeplink: TransactionsSendDeeplink) {
+        actionDelegate?.onScan(deeplink: deeplink)
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        dismiss(animated: true)
+    }
+    
+    func handle(deeplink: BaseNodesAddDeeplink) {}
 }
