@@ -150,6 +150,8 @@
 		3A0EA97A26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */; };
 		3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97D26AA8E3C002612D4 /* TokenView.swift */; };
 		3A0EA98226AA8E64002612D4 /* TokenInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA98126AA8E64002612D4 /* TokenInputView.swift */; };
+		3A115B1827EC4B14001259E5 /* TransactionDetailsSeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A115B1727EC4B14001259E5 /* TransactionDetailsSeparatorView.swift */; };
+		3A115B1A27EC4C82001259E5 /* TransactionDetailsBlockExplorerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A115B1927EC4C82001259E5 /* TransactionDetailsBlockExplorerView.swift */; };
 		3A20A6B82722EE00002B15DB /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A20A6B72722EDFF002B15DB /* VideoView.swift */; };
 		3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */; };
 		3A237C7D27D8E141005FA6AB /* SeedWordsListConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */; };
@@ -483,6 +485,8 @@
 		3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCollectionView.swift; sourceTree = "<group>"; };
 		3A0EA97D26AA8E3C002612D4 /* TokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenView.swift; sourceTree = "<group>"; };
 		3A0EA98126AA8E64002612D4 /* TokenInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInputView.swift; sourceTree = "<group>"; };
+		3A115B1727EC4B14001259E5 /* TransactionDetailsSeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsSeparatorView.swift; sourceTree = "<group>"; };
+		3A115B1927EC4C82001259E5 /* TransactionDetailsBlockExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsBlockExplorerView.swift; sourceTree = "<group>"; };
 		3A1365C4272BE66800402389 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A20A6B72722EDFF002B15DB /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListModel.swift; sourceTree = "<group>"; };
@@ -855,7 +859,7 @@
 			path = UserFeedback;
 			sourceTree = "<group>";
 		};
-		00A6779C23743674001A853E /* Transaction */ = {
+		00A6779C23743674001A853E /* Transaction Details */ = {
 			isa = PBXGroup;
 			children = (
 				3A82455227E1EDA6003B6B59 /* Views */,
@@ -865,7 +869,7 @@
 				3AE1D57F27E0A894001A46C4 /* TransactionDetailsModel.swift */,
 				3AE1D58127E0A8C8001A46C4 /* TransactionDetailsConstructor.swift */,
 			);
-			path = Transaction;
+			path = "Transaction Details";
 			sourceTree = "<group>";
 		};
 		00B4D6F4241B777500ED8318 /* BackgroundTasks */ = {
@@ -998,7 +1002,7 @@
 				3A811EED26957844003D0DF3 /* Views */,
 				37E4B62A24501FB200FA302B /* HomeViewController.swift */,
 				3A5E881D26BA9CF10029BB8B /* HomeView.swift */,
-				00A6779C23743674001A853E /* Transaction */,
+				00A6779C23743674001A853E /* Transaction Details */,
 				00E2BCA6236AB25500C2A105 /* TransactionHistory */,
 			);
 			path = Home;
@@ -1452,6 +1456,8 @@
 				3A82455727E1EE38003B6B59 /* TransactionDetailsEmojiView.swift */,
 				3A82455927E1EE93003B6B59 /* TransactionDetailsContactView.swift */,
 				3A82455B27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift */,
+				3A115B1727EC4B14001259E5 /* TransactionDetailsSeparatorView.swift */,
+				3A115B1927EC4C82001259E5 /* TransactionDetailsBlockExplorerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2057,6 +2063,7 @@
 				3ACDA85E2721794800F08C70 /* YatTransactionModel.swift in Sources */,
 				37B48A8324B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */,
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
+				3A115B1A27EC4C82001259E5 /* TransactionDetailsBlockExplorerView.swift in Sources */,
 				37CFAA76248FE28600DEA096 /* NSPointerArray+Extension.swift in Sources */,
 				3A4CE33026A18DFC00ECF460 /* GroupUserDefaults.swift in Sources */,
 				3A4376EE269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift in Sources */,
@@ -2146,6 +2153,7 @@
 				3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				37875E4824D8787A00C0595B /* TxTableViewModel.swift in Sources */,
 				3AF97E6727CF769A00FF6A3F /* BaseNodesAddDeeplink.swift in Sources */,
+				3A115B1827EC4B14001259E5 /* TransactionDetailsSeparatorView.swift in Sources */,
 				3AA271772790247E0076E51F /* TransactionsView.swift in Sources */,
 				004277FF23E2F1D700AE7BD9 /* UIImage.swift in Sources */,
 				37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
