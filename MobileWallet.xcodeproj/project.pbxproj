@@ -152,6 +152,8 @@
 		3A0EA98226AA8E64002612D4 /* TokenInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA98126AA8E64002612D4 /* TokenInputView.swift */; };
 		3A115B1827EC4B14001259E5 /* TransactionDetailsSeparatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A115B1727EC4B14001259E5 /* TransactionDetailsSeparatorView.swift */; };
 		3A115B1A27EC4C82001259E5 /* TransactionDetailsBlockExplorerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A115B1927EC4C82001259E5 /* TransactionDetailsBlockExplorerView.swift */; };
+		3A13260127EDE3B900289C8C /* TransactionProgressPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A13260027EDE3B900289C8C /* TransactionProgressPresenter.swift */; };
+		3A13260327EDE42A00289C8C /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A13260227EDE42A00289C8C /* GradientView.swift */; };
 		3A20A6B82722EE00002B15DB /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A20A6B72722EDFF002B15DB /* VideoView.swift */; };
 		3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */; };
 		3A237C7D27D8E141005FA6AB /* SeedWordsListConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */; };
@@ -487,6 +489,8 @@
 		3A0EA98126AA8E64002612D4 /* TokenInputView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenInputView.swift; sourceTree = "<group>"; };
 		3A115B1727EC4B14001259E5 /* TransactionDetailsSeparatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsSeparatorView.swift; sourceTree = "<group>"; };
 		3A115B1927EC4C82001259E5 /* TransactionDetailsBlockExplorerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsBlockExplorerView.swift; sourceTree = "<group>"; };
+		3A13260027EDE3B900289C8C /* TransactionProgressPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionProgressPresenter.swift; sourceTree = "<group>"; };
+		3A13260227EDE42A00289C8C /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 		3A1365C4272BE66800402389 /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3A20A6B72722EDFF002B15DB /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListModel.swift; sourceTree = "<group>"; };
@@ -946,6 +950,7 @@
 		00E2BCAF236B44CE00C2A105 /* UIElements */ = {
 			isa = PBXGroup;
 			children = (
+				3A1325FF27EDE39F00289C8C /* Transaction */,
 				49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */,
 				00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */,
 				373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */,
@@ -967,6 +972,7 @@
 				3730E14B24C8756100827DFA /* TabBar */,
 				371A081624728FCB00F97713 /* TransitionUILabel */,
 				375AFDCD2475380B00C62CA1 /* WebBrowserView */,
+				3A13260227EDE42A00289C8C /* GradientView.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -1246,6 +1252,14 @@
 				37C8BA342480F59B005BBC05 /* WaveEmojiAnimation.json */,
 			);
 			path = WaveEmojiAnimation;
+			sourceTree = "<group>";
+		};
+		3A1325FF27EDE39F00289C8C /* Transaction */ = {
+			isa = PBXGroup;
+			children = (
+				3A13260027EDE3B900289C8C /* TransactionProgressPresenter.swift */,
+			);
+			path = Transaction;
 			sourceTree = "<group>";
 		};
 		3A1365C5272BE66800402389 /* UnitTests */ = {
@@ -2050,6 +2064,7 @@
 				370E887824FEA54100576F61 /* NetworkTools.m in Sources */,
 				004997AF2382E938000A0B7D /* PendingOutboundTx.swift in Sources */,
 				3A35412C26A72D9F002AB5A8 /* ViewIdentifiable.swift in Sources */,
+				3A13260127EDE3B900289C8C /* TransactionProgressPresenter.swift in Sources */,
 				3A811EEF26957856003D0DF3 /* ConnectionIndicatorView.swift in Sources */,
 				3AA2717C279031950076E51F /* TransactionsToolbarView.swift in Sources */,
 				BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */,
@@ -2271,6 +2286,7 @@
 				A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */,
 				37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,
 				3A052BF427B2658500C93671 /* AppVersionFormatter.swift in Sources */,
+				3A13260327EDE42A00289C8C /* GradientView.swift in Sources */,
 				37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */,
 				004277FB23E1A61F00AE7BD9 /* ErrorDescriptions.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,

@@ -42,7 +42,7 @@ import UIKit
 import GiphyUISDK
 import GiphyCoreSDK
 
-final class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDelegate, GPHGridDelegate, UIScrollViewDelegate {
+final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDelegate, UIScrollViewDelegate {
 
     private static var giphyKeywords = ["money", "money machine", "rich"]
     private static var giphyCurrentKeywordIndex = 0
@@ -288,7 +288,7 @@ final class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDel
         }
     }
 
-    func slideViewDidFinish(_ sender: SlideView) {
+    private func onSlideToEndAction() {
         dismissKeyboard()
 
         Tracker.shared.track(
@@ -301,7 +301,7 @@ final class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDel
                 title: localized("wallet.error.title"),
                 description: localized("wallet.error.wallet_not_initialized")
             )
-            sender.resetStateWithAnimation(true)
+            sendButton.resetStateWithAnimation(true)
             return
         }
 
@@ -330,36 +330,14 @@ final class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDel
             message += " \(embedUrl)"
         }
         
-        var controller: TransactionViewControllable
-        
-        if let yatID = paymentInfo.yatID {
-            let inputData = YatTransactionModel.InputData(publicKey: recipientPublicKey, amount: amount, message: message, yatID: yatID, isOneSidedPayment: isOneSidedPayment)
-            controller = YatTransactionConstructor.buildScene(inputData: inputData)
-            present(controller, animated: false)
-        } else {
-            let inputData = SendingTariModel.InputData(publicKey: recipientPublicKey, amount: amount, message: message, isOneSidedPayment: isOneSidedPayment)
-            controller = SendingTariConstructor.buildScene(inputData: inputData)
-            navigationController?.pushViewController(controller, animated: false)
-        }
-        
-        controller.onCompletion = { [weak self] error in
-            self?.navigationController?.dismiss(animated: true) {
-                UIApplication.shared.menuTabBarController?.setTab(.home)
-                guard let error = error else { return }
-                self?.show(transactionError: error)
-            }
-        }
-    }
-    
-    private func show(transactionError: WalletTransactionsManager.TransactionError) {
-        switch transactionError {
-        case .noInternetConnection:
-            UserFeedback.showError(title: localized("sending_tari.error.interwebs_connection.title"), description: localized("sending_tari.error.interwebs_connection.description"))
-            Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Tor Issue")
-        case .timeout, .transactionError, .unsucessfulTransaction, .unableToStartWallet:
-            UserFeedback.showError(title: localized("sending_tari.error.no_connection.title"), description: localized("sending_tari.error.no_connection.description"))
-            Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Node Issue")
-        }
+        TransactionProgressPresenter.showTransactionProgress(
+            presenter: self,
+            recipientPublicKey: recipientPublicKey,
+            amount: amount,
+            message: message,
+            isOneSidedPayment: isOneSidedPayment,
+            yatID: paymentInfo.yatID
+        )
     }
 }
 
@@ -405,12 +383,9 @@ extension AddNoteViewController {
 
         sendButton.showSliderText = true
         sendButton.labelText = localized("add_note.slide_to_send")
-        sendButton.delegate = self
-
-        // If we're in testmode, the slide to send doesn't seem to work so allow it to be tapped in this case
-        if ProcessInfo.processInfo.arguments.contains("ui-test-mode") {
-            let tapButtonGesture = UITapGestureRecognizer(target: self, action: #selector (self.slideViewDidFinish (_:)))
-            sendButton.addGestureRecognizer(tapButtonGesture)
+        
+        sendButton.onSlideToEnd = { [weak self] in
+            self?.onSlideToEndAction()
         }
     }
 
