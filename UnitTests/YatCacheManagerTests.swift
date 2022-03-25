@@ -48,7 +48,6 @@ final class YatCacheManagerTests: XCTestCase {
     
     override func setUp() {
         super.setUp()
-        print(cacheFolder)
         try? FileManager.default.removeItem(at: cacheFolder)
         cacheManager = YatCacheManager()
     }

@@ -65,12 +65,17 @@ final class TransactionDetailsModel {
     @Published private(set) var gifMedia: GPHMedia?
     @Published private(set) var wasTransactionCanceled: Bool = false
     @Published private(set) var errorModel: SimpleErrorModel?
+    @Published private(set) var isBlockExplorerActionAvailable: Bool = false
+    @Published private(set) var linkToOpen: URL?
     
     var userAliasUpdateSuccessCallback: (() -> Void)?
     
     // MARK: - Properties
     
     private var transaction: TxProtocol
+    private var transactionNounce: String?
+    private var transactionSignature: String?
+    
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialisers
@@ -123,6 +128,8 @@ final class TransactionDetailsModel {
             errorModel = SimpleErrorModel(title: localized("tx_detail.error.load_tx.title"), message: localized("tx_detail.error.load_tx.description"))
         }
         
+        handleTransactionKernel()
+        
         isAddContactButtonVisible = userAlias == nil
         isNameSectionVisible = userAlias != nil
     }
@@ -163,6 +170,10 @@ final class TransactionDetailsModel {
     
     func resetAlias() {
         userAlias = userAlias
+    }
+    
+    func requestLinkToBlockExplorer() {
+        linkToOpen = fetchLinkToOpen()
     }
     
     // MARK: - Helpers
@@ -331,6 +342,28 @@ final class TransactionDetailsModel {
         }
         
         note = messageNote
+    }
+    
+    private func handleTransactionKernel() {
+        
+        defer {
+            isBlockExplorerActionAvailable = transactionNounce != nil && transactionSignature != nil
+        }
+        
+        guard let kernel = transaction.transactionKernel.0 else {
+            transactionNounce = nil
+            transactionSignature = nil
+            return
+        }
+        
+        transactionNounce = try? kernel.excessPublicNonce
+        transactionSignature = try? kernel.excessSignature
+    }
+    
+    private func fetchLinkToOpen() -> URL? {
+        guard let transactionNounce = transactionNounce, let transactionSignature = transactionSignature else { return nil }
+        let request = [transactionNounce, transactionSignature].joined(separator: "/")
+        return URL(string: TariSettings.shared.blockExplorerKernelUrl + "\(request)")
     }
 }
 

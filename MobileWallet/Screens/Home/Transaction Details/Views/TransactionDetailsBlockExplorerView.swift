@@ -1,8 +1,8 @@
-//  TransactionDetailsNoteView.swift
+//  TransactionDetailsBlockExplorerView.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/03/2022
+	Created by Adrian Truszczynski on 24/03/2022
 	Using Swift 5.0
 	Running on macOS 12.3
 
@@ -40,42 +40,27 @@
 
 import UIKit
 import TariCommon
-import GiphyUISDK
-import GiphyCoreSDK
 
-final class TransactionDetailsNoteView: UIView {
+final class TransactionDetailsBlockExplorerView: BaseButton {
     
     // MARK: - Subviews
     
-    @View private var noteLabel: UILabel = {
+    @View private var label: UILabel = {
         let view = UILabel()
+        view.text = localized("tx_detail.block_explorer.description")
         view.textColor = Theme.shared.colors.txScreenTextLabel
         view.font = Theme.shared.fonts.txScreenTextLabel
-        view.numberOfLines = 0
         return view
     }()
     
-    @View private var gifView: GPHMediaView = {
-        let view = GPHMediaView()
-        view.layer.cornerRadius = 20.0
-        view.clipsToBounds = true
+    @View private var accessoryView: UIImageView = {
+        let view = UIImageView()
+        view.image = Theme.shared.images.forwardArrow
+        view.contentMode = .scaleAspectFit
         return view
     }()
     
-    // MARK: - Properties
-    
-    var note: String? {
-        get { noteLabel.text }
-        set { noteLabel.text = newValue }
-    }
-    
-    var gifMedia: GPHMedia? {
-        didSet { updateGifView() }
-    }
-    
-    private var gifViewHeightConstraints: NSLayoutConstraint?
-    
-    // MARK: - Initialisers
+    // MARK: - Initialisations
     
     init() {
         super.init(frame: .zero)
@@ -90,33 +75,19 @@ final class TransactionDetailsNoteView: UIView {
     
     private func setupConstraints() {
         
-        [noteLabel, gifView].forEach(addSubview)
+        [label, accessoryView].forEach(addSubview)
         
         let constraints = [
-            noteLabel.topAnchor.constraint(equalTo: topAnchor, constant: 11.0),
-            noteLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            noteLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            gifView.topAnchor.constraint(equalTo: noteLabel.bottomAnchor, constant: 11.0),
-            gifView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            gifView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            gifView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -11.0)
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 11.0),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -11.0),
+            accessoryView.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 11.0),
+            accessoryView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
+            accessoryView.heightAnchor.constraint(equalToConstant: 13.0),
+            accessoryView.widthAnchor.constraint(equalToConstant: 13.0),
+            accessoryView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ]
         
         NSLayoutConstraint.activate(constraints)
-    }
-    
-    // MARK: - Updates
-    
-    private func updateGifView() {
-        
-        guard let media = gifMedia else {
-            gifView.media = nil
-            return
-        }
-        
-        gifView.media = media
-        gifViewHeightConstraints?.isActive = false
-        gifViewHeightConstraints = gifView.heightAnchor.constraint(equalTo: gifView.widthAnchor, multiplier: 1.0 / media.aspectRatio)
-        gifViewHeightConstraints?.isActive = true
     }
 }

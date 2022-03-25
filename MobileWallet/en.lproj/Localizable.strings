@@ -29,6 +29,8 @@
 "tx_detail.error.load_tx.title" = "Transaction error";
 "tx_detail.error.load_tx.description" = "Failed to load transaction details";
 "tx_detail.error.save_contact.description" = "Failed to save contact details.";
+"tx_detail.block_explorer.title" = "Information";
+"tx_detail.block_explorer.description" = "View on the block explorer";
 
 /* Transaction detail tx cancellation */
 "tx_detail.tx_cancellation.title" = "Are you sure?";

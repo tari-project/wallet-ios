@@ -121,7 +121,7 @@ final class TransactionDetailsViewController: UIViewController {
         model.$isNameSectionVisible
             .sink { [weak self] in
                 self?.mainView.contactNameView.isHidden = !$0
-                self?.mainView.separatorView.isHidden = !$0
+                self?.mainView.noteSeparatorView.isHidden = !$0
                 guard $0, self?.mainView.contactNameView.contentView.textField.text?.isEmpty == true else { return }
                 self?.mainView.contactNameView.contentView.isEditingEnabled = true
             }
@@ -148,6 +148,19 @@ final class TransactionDetailsViewController: UIViewController {
             }
             .store(in: &cancellables)
         
+        model.$isBlockExplorerActionAvailable
+            .map { !$0 }
+            .sink { [weak self] in
+                self?.mainView.blockExplorerSeparatorView.isHidden = $0
+                self?.mainView.blockExplorerView.isHidden = $0
+            }
+            .store(in: &cancellables)
+        
+        model.$linkToOpen
+            .compactMap { $0 }
+            .sink { UserFeedback.shared.openWebBrowser(url: $0) }
+            .store(in: &cancellables)
+        
         model.$errorModel
             .compactMap { $0 }
             .sink { UserFeedback.showError(title: $0.title, description: $0.message) }
@@ -171,6 +184,10 @@ final class TransactionDetailsViewController: UIViewController {
         
         mainView.contactNameView.contentView.onNameChange = { [weak self] in
             self?.model.update(alias: $0)
+        }
+        
+        mainView.blockExplorerView.contentView.onTap = { [weak self] in
+            self?.model.requestLinkToBlockExplorer()
         }
     }
     

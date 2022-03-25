@@ -78,9 +78,11 @@ final class TransactionDetailsView: UIView {
     @View private(set) var valueView = TransactionDetailsValueView()
     @View private(set) var contactView = TransactionDetailsSectionView<TransactionDetailsEmojiView>()
     @View private(set) var contactNameView = TransactionDetailsSectionView<TransactionDetailsContactView>()
-    @View private(set) var separatorView = TransactionDetailsSeparatorView()
-    
+    @View private(set) var noteSeparatorView = TransactionDetailsSeparatorView()
     @View private(set) var noteView = TransactionDetailsSectionView<TransactionDetailsNoteView>()
+    @View private(set) var blockExplorerSeparatorView = TransactionDetailsSeparatorView()
+    @View private(set) var blockExplorerView = TransactionDetailsSectionView<TransactionDetailsBlockExplorerView>()
+    
     
     // MARK: - Properties
     
@@ -111,6 +113,7 @@ final class TransactionDetailsView: UIView {
         backgroundColor = Theme.shared.colors.appBackground
         contactNameView.title = localized("tx_detail.contact_name")
         noteView.title = localized("tx_detail.note")
+        blockExplorerView.title = localized("tx_detail.block_explorer.description")
         transactionStateView.isHidden = true
     }
     
@@ -120,7 +123,7 @@ final class TransactionDetailsView: UIView {
         mainContentView.contentView.addSubview(contentStackView)
         
         [transactionStateView, cancelButton].forEach(navigationBar.addSubview)
-        [valueView, contactView, contactNameView, separatorView, noteView].forEach(contentStackView.addArrangedSubview)
+        [valueView, contactView, contactNameView, TransactionDetailsSeparatorView(), noteView, TransactionDetailsSeparatorView(), blockExplorerView].forEach(contentStackView.addArrangedSubview)
         
         let navigationBarHeightConstraint = navigationBar.heightAnchor.constraint(equalToConstant: 0.0)
         let transactionStateViewBottomConstraint = transactionStateView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: -8.0)
@@ -196,44 +199,5 @@ final class TransactionDetailsView: UIView {
             transactionStateView.isHidden = false
             cancelButton.isHidden = false
         }
-    }
-}
-
-final class TransactionDetailsSeparatorView: UIView {
-    
-    // MARK: - Subviews
-    
-    @View private var separatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Theme.shared.colors.txScreenDivider
-        return view
-    }()
-    
-    // MARK: - Initialisers
-    
-    init() {
-        super.init(frame: .zero)
-        setupConstaints()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    // MARK: - Setups
-    
-    private func setupConstaints() {
-        
-        addSubview(separatorView)
-        
-        let constraints = [
-            separatorView.topAnchor.constraint(equalTo: topAnchor),
-            separatorView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            separatorView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            separatorView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            separatorView.heightAnchor.constraint(equalToConstant: 1.0)
-        ]
-        
-        NSLayoutConstraint.activate(constraints)
     }
 }
