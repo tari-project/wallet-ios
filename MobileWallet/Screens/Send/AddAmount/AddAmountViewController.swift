@@ -100,6 +100,15 @@ final class AddAmountViewController: UIViewController {
         view.alignment = .center
         return view
     }()
+    
+    @View private var sliderBar: SlideView = {
+        let view = SlideView()
+        view.showSliderText = true
+        view.labelText = localized("add_note.slide_to_send")
+        view.variation = .slide
+        view.alpha = 0.0
+        return view
+    }()
 
     var rawInput = ""
     private var txFeeIsVisible = false
@@ -133,6 +142,7 @@ final class AddAmountViewController: UIViewController {
         Tracker.shared.track("/home/send_tari/add_amount", "Send Tari - Add Amount")
         
         setupOneSidedPaymentElements()
+        setupSliderBar()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -172,7 +182,7 @@ final class AddAmountViewController: UIViewController {
         do {
             microTariAmount = try MicroTari(tariValue: rawInput)
         } catch {
-            continueButton.variation = .disabled
+            updateNextStepElements(isEnabled: false)
             showInvalidNumberError(error)
             return
         }
@@ -208,13 +218,13 @@ final class AddAmountViewController: UIViewController {
                 balancePendingLabel.isHidden = true
                 showBalanceExceeded(balance: totalBalance.formatted)
                 walletBalanceStackView.isHidden = false
-                continueButton.variation = .disabled
+                updateNextStepElements(isEnabled: false)
             case WalletErrors.fundsPending:
                 balanceExceededLabel.isHidden = true
                 balancePendingLabel.isHidden = false
                 showBalanceExceeded(balance: totalBalance.formatted)
                 walletBalanceStackView.isHidden = true
-                continueButton.variation = .disabled
+                updateNextStepElements(isEnabled: false)
             default:
                 break
             }
@@ -226,10 +236,10 @@ final class AddAmountViewController: UIViewController {
             balancePendingLabel.isHidden = true
             showBalanceExceeded(balance: totalBalance.formatted)
             walletBalanceStackView.isHidden = false
-            continueButton.variation = .disabled
+            updateNextStepElements(isEnabled: false)
         } else {
             showAvailableBalance()
-            continueButton.variation = .normal
+            updateNextStepElements(isEnabled: true)
         }
         showTxFee(fee)
     }
@@ -326,7 +336,7 @@ final class AddAmountViewController: UIViewController {
         } else {
             hideTxFee()
             showAvailableBalance()
-            continueButton.variation = .disabled
+            updateNextStepElements(isEnabled: false)
         }
     }
 
@@ -459,11 +469,16 @@ final class AddAmountViewController: UIViewController {
     }
 
     @objc private func continueButtonTapped() {
-        // Check the actual available balance first, to see if we have enough mined transactions
-        guard let wallet = TariLib.shared.tariWallet else { return }
-
-        do
-        {
+        guard let amount = calculateAmount() else { return }
+        let noteVC = AddNoteViewController(paymentInfo: paymentInfo, amount: amount, isOneSidedPayment: oneSidedPaymentSwitch.isOn, deeplink: deeplink)
+        navigationController?.pushViewController(noteVC, animated: true)
+    }
+    
+    private func calculateAmount() -> MicroTari? {
+        
+        guard let wallet = TariLib.shared.tariWallet else { return nil }
+        
+        do {
             let availableBalance = try wallet.balance().available
 
             var tariAmount: MicroTari?
@@ -473,7 +488,7 @@ final class AddAmountViewController: UIViewController {
                 showInvalidNumberError(error)
             }
 
-            guard let amount = tariAmount else { return }
+            guard let amount = tariAmount else { return nil }
 
             var fee = MicroTari(0)
             do {
@@ -484,7 +499,7 @@ final class AddAmountViewController: UIViewController {
                     outputCount: Wallet.defaultOutputCount
             )
             } catch {
-                return
+                return nil
             }
 
             if amount.rawValue + fee.rawValue  > availableBalance {
@@ -492,14 +507,36 @@ final class AddAmountViewController: UIViewController {
                     title: localized("add_amount.info.wait_completion_previous_tx.title"),
                     description: localized("add_amount.info.wait_completion_previous_tx.description")
                 )
-                return
+                return nil
             }
-
-            let noteVC = AddNoteViewController(paymentInfo: paymentInfo, amount: amount, isOneSidedPayment: oneSidedPaymentSwitch.isOn, deeplink: deeplink)
-
-            navigationController?.pushViewController(noteVC, animated: true)
+            
+            return amount
         } catch {
-            return
+            return nil
+        }
+    }
+    
+    private func updateNextStepElements(isEnabled: Bool) {
+        continueButton.variation = isEnabled ? .normal : .disabled
+        sliderBar.isEnabled = isEnabled
+    }
+    
+    private func showTransactionProgress() {
+        guard let amount = calculateAmount() else { return }
+        TransactionProgressPresenter.showTransactionProgress(
+            presenter: self,
+            recipientPublicKey: paymentInfo.publicKey,
+            amount: amount,
+            message: "",
+            isOneSidedPayment: oneSidedPaymentSwitch.isOn,
+            yatID: paymentInfo.yatID
+        )
+    }
+    
+    @objc private func onOneSidedPaymentSwitchAction() {
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState]) {
+            self.continueButton.alpha = self.oneSidedPaymentSwitch.isOn ? 0.0 : 1.0
+            self.sliderBar.alpha = self.oneSidedPaymentSwitch.isOn ? 1.0 : 0.0
         }
     }
 }
@@ -658,10 +695,14 @@ extension AddAmountViewController {
         feeButton.spacing = 8.0
         feeButton.setRightImage(Theme.shared.images.helpButton!)
         feeButton.addTarget(self, action: #selector(feeButtonPressed), for: .touchUpInside)
-        continueButton.variation = .disabled
+        updateNextStepElements(isEnabled: false)
 
         txStackView.addArrangedSubview(txFeeLabel)
         txStackView.addArrangedSubview(feeButton)
+        
+        sliderBar.onSlideToEnd = { [weak self] in
+            self?.showTransactionProgress()
+        }
     }
 
     private func setupKeypad() {
@@ -748,5 +789,20 @@ extension AddAmountViewController {
         oneSidedPaymentHelpButton.onTap = {
             UserFeedback.shared.info(title: localized("add_amount.pop_up.one_sided_payment.title"), description: localized("add_amount.pop_up.one_sided_payment.description"))
         }
+        
+        oneSidedPaymentSwitch.addTarget(self, action: #selector(onOneSidedPaymentSwitchAction), for: .valueChanged)
+    }
+    
+    private func setupSliderBar() {
+        
+        view.addSubview(sliderBar)
+        
+        let constraints = [
+            sliderBar.topAnchor.constraint(equalTo: continueButton.topAnchor),
+            sliderBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            sliderBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
 }

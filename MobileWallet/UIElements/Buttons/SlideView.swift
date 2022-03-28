@@ -42,22 +42,21 @@
 
 import UIKit
 import Lottie
-
-@objc public protocol SlideViewDelegate {
-    func slideViewDidFinish(_ sender: SlideView)
-}
+import TariCommon
 
 enum SlideViewVariation {
     case slide
     case loading
 }
 
-@objcMembers public class SlideView: UIView {
+final class SlideView: UIView {
     static private let thumbnailMargin: CGFloat = 10
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     static private let thumbnailShadowRadius: Float = 0.5
     static private let thumbnailCornerRadius: CGFloat = 0
     private let pendingAnimationView = AnimationView()
+    
+    var onSlideToEnd: (() -> Void)?
 
     var variation: SlideViewVariation = .slide {
         didSet {
@@ -99,9 +98,11 @@ enum SlideViewVariation {
         let view = UIView()
         return view
     }()
+    
+    @View private var gradientBackgroundView = GradientView()
 
     // MARK: Public properties
-    public weak var delegate: SlideViewDelegate?
+    
     public var animationVelocity: Double = 0.2
     public var sliderViewTopDistance: CGFloat = 0 {
         didSet {
@@ -210,6 +211,7 @@ enum SlideViewVariation {
 
     private func setupView() {
         addSubview(view)
+        view.addSubview(gradientBackgroundView)
         view.addSubview(thumbnailImageView)
         view.addSubview(sliderHolderView)
         view.addSubview(draggedView)
@@ -282,6 +284,15 @@ enum SlideViewVariation {
         pendingAnimationView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
         pendingAnimationView.isHidden = true
+        
+        let constraints = [
+            gradientBackgroundView.topAnchor.constraint(equalTo: view.topAnchor),
+            gradientBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            gradientBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            gradientBackgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
 
     private func setStyle() {
@@ -344,7 +355,7 @@ enum SlideViewVariation {
                 // Finish action
                 isFinished = true
                 impactFeedbackGenerator.impactOccurred()
-                delegate?.slideViewDidFinish(self)
+                onSlideToEnd?()
                 return
             }
             if translatedPoint <= thumbnailViewStartingDistance {
@@ -387,7 +398,7 @@ enum SlideViewVariation {
             textLabel.isHidden = true
             sliderTextLabel.isHidden = true
             thumbnailImageView.isHidden = true
-            sliderHolderView.applyGradient()
+            gradientBackgroundView.isHidden = false
             pendingAnimationView.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
         case .slide:
             pendingAnimationView.isHidden = true
@@ -401,19 +412,18 @@ enum SlideViewVariation {
 
     private func updateIsEnabledStyle() {
         if isEnabled {
-            sliderBackgroundColor = .clear// Theme.shared.colors.actionButtonBackgroundSimple!
-            // slidingColor = Theme.shared.colors.actionButtonBackgroundSimple!
+            sliderBackgroundColor = .clear
             textColor = Theme.shared.colors.actionButtonTitle!
             thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonBackgroundSimple!)
             thumbnailImageView.layer.shadowOpacity = SlideView.thumbnailShadowRadius
-            sliderHolderView.applyGradient()
+            gradientBackgroundView.isHidden = false
+            
         } else {
             sliderBackgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled!
-            // slidingColor = Theme.shared.colors.actionButtonBackgroundDisabled!
             textColor = Theme.shared.colors.actionButtonTitleDisabled!
             thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonTitleDisabled!)
             thumbnailImageView.layer.shadowOpacity = 0
-            sliderHolderView.removeGradient()
+            gradientBackgroundView.isHidden = true
         }
     }
 }
@@ -421,7 +431,6 @@ enum SlideViewVariation {
 class SlideViewRoundImageView: UIImageView {
     override func layoutSubviews() {
         super.layoutSubviews()
-        // let radius: CGFloat = self.bounds.size.width / 2.0
         self.layer.cornerRadius = ActionButton.RADIUS_POINTS
     }
 }
