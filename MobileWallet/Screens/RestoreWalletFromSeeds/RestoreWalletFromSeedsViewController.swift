@@ -84,16 +84,7 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
     }
 
     private func setupFeedbacks() {
-        
-        mainView.tokenView.$inputText
-            .assign(to: \.inputText, on: model)
-            .store(in: &cancelables)
-
-        mainView.onTapOnSubmitButton = { [weak self] in
-            _ = self?.mainView.resignFirstResponder()
-            self?.model.startRestoringWallet()
-        }
-
+    
         model.viewModel.$isEmptyWalletCreated
             .sink { [weak self] isEmptyWalletCreated in
                 guard isEmptyWalletCreated else { return }
@@ -127,7 +118,13 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
             .store(in: &cancelables)
         
         model.viewModel.$seedWordModels
+            .receive(on: RunLoop.main)
             .assign(to: \.seedWords, on: mainView.tokenView)
+            .store(in: &cancelables)
+        
+        mainView.tokenView.$inputText
+            .receive(on: RunLoop.main)
+            .assign(to: \.inputText, on: model)
             .store(in: &cancelables)
         
         mainView.tokenView.onSelectSeedWord = { [weak self] in
@@ -141,6 +138,15 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
         mainView.tokenView.onEndEditing = { [weak self] in
             self?.model.handleEndEditing()
         }
+
+        mainView.selectBaseNodeButton.onTap =  { [weak self] in
+            self?.moveToSelectBaseNodeScene()
+        }
+        
+        mainView.submitButton.onTap = { [weak self] in
+            _ = self?.mainView.resignFirstResponder()
+            self?.model.startRestoringWallet()
+        }
     }
 
     // MARK: - Actions
@@ -150,12 +156,14 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
         let overlay = RestoreWalletFromSeedsProgressViewController()
 
         overlay.onSuccess = { [weak self, weak overlay] in
-            overlay?.dismiss(animated: true) {
-
-            }
+            overlay?.dismiss(animated: true)
             self?.navigationController?.popToRootViewController(animated: true)
         }
 
         show(overlay: overlay)
+    }
+    
+    private func moveToSelectBaseNodeScene() {
+        navigationController?.pushViewController(SelectBaseNodeViewController(), animated: true)
     }
 }

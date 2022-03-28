@@ -57,15 +57,18 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
 
     @View var tokenView = TokenCollectionView()
 
-    @View private var submitButton: ActionButton = {
+    @View private(set) var selectBaseNodeButton: TextButton = {
+        let view = TextButton()
+        view.setVariation(.secondary)
+        view.setTitle(localized("restore_from_seed_words.button.select_base_node"), for: .normal)
+        return view
+    }()
+    
+    @View private(set) var submitButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("restore_from_seed_words.button.submit"), for: .normal)
         return view
     }()
-
-    // MARK: - Properties
-
-    var onTapOnSubmitButton: (() -> Void)?
 
     // MARK: - Initializers
 
@@ -73,7 +76,6 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
         super.init(frame: .zero)
         setupViews()
         setupConstraints()
-        setupFeedbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -88,7 +90,7 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
 
     private func setupConstraints() {
 
-        [descriptionLabel, tokenView, submitButton].forEach(contentView.addSubview)
+        [descriptionLabel, tokenView, selectBaseNodeButton, submitButton].forEach(contentView.addSubview)
 
         let constraints = [
             descriptionLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20.0),
@@ -98,7 +100,10 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
             tokenView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
             tokenView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
             tokenView.heightAnchor.constraint(equalToConstant: 272.0),
-            submitButton.topAnchor.constraint(greaterThanOrEqualTo: tokenView.bottomAnchor, constant: 20.0),
+            selectBaseNodeButton.topAnchor.constraint(greaterThanOrEqualTo: tokenView.bottomAnchor, constant: 20.0),
+            selectBaseNodeButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
+            selectBaseNodeButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
+            submitButton.topAnchor.constraint(equalTo: selectBaseNodeButton.bottomAnchor, constant: 20.0),
             submitButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
             submitButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
             submitButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -28.0)
@@ -107,20 +112,10 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
         NSLayoutConstraint.activate(constraints)
     }
 
-    private func setupFeedbacks() {
-        submitButton.addTarget(self, action: #selector(onTapOnSubmitButtonAction), for: .touchUpInside)
-    }
-
     // MARK: - Actions
 
     func update(buttonIsEnabledStatus: Bool) {
         submitButton.variation = buttonIsEnabledStatus ? .normal : .disabled
-    }
-
-    // MARK: - Action Targets
-
-    @objc private func onTapOnSubmitButtonAction() {
-        onTapOnSubmitButton?()
     }
 
     // MARK: - First Responder
