@@ -320,6 +320,21 @@ struct Images: Loopable {
     
     // Seed words list
     let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
+    
+    // Settings Icons
+    let settingsBaseNodeIcon = UIImage(named: "icon-base-node")
+    let settingsBlockExplorerIcon = UIImage(named: "icon-block-explorer")
+    let settingsBridgeConfigIcon = UIImage(named: "icon-bridge-config")
+    let settingsContributeIcon = UIImage(named: "icon-contribute")
+    let settingsDeleteIcon = UIImage(named: "icon-delete")
+    let settingsDisclaimerIcon = UIImage(named: "icon-disclaimer")
+    let settingsNetworkIcon = UIImage(named: "icon-network")
+    let settingsPrivacyPolicyIcon = UIImage(named: "icon-privacy-policy")
+    let settingsReportBugIcon = UIImage(named: "icon-report-bug")
+    let settingsUserAgreementIcon = UIImage(named: "icon-user-agreement")
+    let settingsVisitTariIcon = UIImage(named: "icon-visit-tari")
+    let settingsWalletBackupsIcon = UIImage(named: "icon-wallet-backups")
+    let settingsYatIcon = UIImage(named: "icon-yat")
 }
 
 struct Fonts: Loopable {
