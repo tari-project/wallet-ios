@@ -99,6 +99,7 @@
 "home.request_drop.try_later" = "Try it later";
 "home.request_drop.error.title" = "Failed to claim %@";
 "home.request_drop.error.description" = "No free tXTR is available right now! Hang tight, we'll get you some tXTR the moment it is available.";
+"home.request_drop.error.generic" = "Could not setup key server.";
 "home.info.amount_help.title" = "Why is some of my balance not spendable right now?";
 "home.info.amount_help.description" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
 "home.info.amount_help.action_button" = "Go to TariLabs University";
@@ -178,6 +179,13 @@
 "settings.item.block_explorer" = "Block Explorer";
 
 "settings.error.connect_yats_no_connection" = "The app isn't currently connected to a peer-to-peer network. Please check your internet connection or change the base node and try again.";
+
+"settings.pasteboard.custom_base_node.pop_up.title" = "Set custom base node";
+"settings.pasteboard.custom_base_node.pop_up.message" = "We found a base node peer in your clipboard, would you like to use this instead of the default?\n\n%@";
+"settings.pasteboard.custom_base_node.pop_up.button.confirm" = "Set";
+"settings.pasteboard.custom_base_node.pop_up.button.cancel" = "Keep default";
+"settings.pasteboard.custom_base_node.error.title" = "Base node error";
+"settings.pasteboard.custom_base_node.error.message" = "Failed to set custom base node from clipboard";
 
 /* Splash view */
 "splash.disclaimer.with_params" = "By creating a wallet, you agree to the terms of the %1$@ and %2$@";
@@ -265,9 +273,9 @@
 "wallet.error.wallet_not_initialized" = "Tari wallet not yet initialized";
 
 /* Store modal */
-"store_modal.title.with_param" = "Spend %@ on exclusive stuff";
+"store_modal.title.part.1" = "Spend %@ on ";
+"store_modal.title.part.2" = "exclusive stuff";
 "store_modal.description" = "Check out The TTL Store to spend your “hard-earned” %@ on exclusive, one-of-a-kind stuff produced by the team at Tari Labs. Enjoy!";
-"store_modal.bold_title" = "exclusive stuff";
 "store_modal.action" = "Visit The TTL Store";
 "store_modal.cancel" = "I’ll check it out later";
 
@@ -486,8 +494,6 @@
 /* Incompatible network */
 "incompatible_network.title"="Time to move on";
 "incompatible_network.description"="Good news: The Tari testnet has been reset, bringing a whole host of new features and upgrades.\n\nBad news: Your old tXTR is no longer good here, and the network will reset your balance to zero soon. But on the bright side, this is a great opportunity to start afresh with a spanking new wallet! What do you say?";
-"incompatible_network.description.bold_part_1"="Good news:";
-"incompatible_network.description.bold_part_2"="Bad news:";
 "incompatible_network.confirm"="Start over, I say!";
 "incompatible_network.cancel"="I'll do it later";
 
@@ -567,7 +573,11 @@
 /* Add base node dialog */
 
 "add_base_node_overlay.label.title" = "Add custom base node";
-"add_base_node_overlay.label.description" = "The QR code is a deep link request to assign your wallet to use this base node:\n\nName: %@\n\nPeer: %@";
+"add_base_node_overlay.label.subtitle" = "The QR code is a deep link request to assign your wallet to use this base node.";
+"add_base_node_overlay.label.name" = "Name:";
+"add_base_node_overlay.label.peer" = "Peer:";
+"add_base_node_overlay.button.show_details" = "Show details";
+"add_base_node_overlay.button.hide_details" = "Hide details";
 "add_base_node_overlay.button.confirm" = "Connect";
 
 /* Errors */

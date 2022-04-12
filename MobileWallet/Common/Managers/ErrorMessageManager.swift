@@ -42,11 +42,11 @@ enum ErrorMessageManager {
     
     // MARK: - Properties
     
-    private static var genericErrorModel: SimpleErrorModel { SimpleErrorModel(title: localized("error.generic.title"), message: localized("error.generic.description")) }
+    private static var genericErrorModel: MessageModel { MessageModel(title: localized("error.generic.title"), message: localized("error.generic.description"), type: .error) }
     
     // MARK: - Actions
     
-    static func errorModel(forError error: Error?) -> SimpleErrorModel {
+    static func errorModel(forError error: Error?) -> MessageModel {
         
         guard let error = error else { return genericErrorModel }
         
@@ -60,23 +60,23 @@ enum ErrorMessageManager {
         }
     }
     
-    static func errorMessage(forError error: Error?) -> String { errorModel(forError: error).message }
+    static func errorMessage(forError error: Error?) -> String? { errorModel(forError: error).message }
     
     // MARK: - Helpers
     
-    private static func model(walletError: WalletError) -> SimpleErrorModel {
+    private static func model(walletError: WalletError) -> MessageModel {
         
         let translationKey = "error.wallet.\(walletError.code)"
-        var message = localized(translationKey)
+        var message: String? = localized(translationKey)
         
         if message == translationKey {
             message = genericErrorModel.message
         }
         
-        return SimpleErrorModel(title: genericErrorModel.title, message: message.appending(signature: walletError.signature))
+        return MessageModel(title: genericErrorModel.title, message: message?.appending(signature: walletError.signature), type: .error)
     }
     
-    private static func model(seedWordsError: SeedWords.Error) -> SimpleErrorModel {
+    private static func model(seedWordsError: SeedWords.Error) -> MessageModel {
         
         let message: String
         
@@ -91,7 +91,7 @@ enum ErrorMessageManager {
             message = localized("restore_from_seed_words.error.description.unknown_error")
         }
         
-        return SimpleErrorModel(title: localized("restore_from_seed_words.error.title"), message: message.appending(signature: seedWordsError.signature))
+        return MessageModel(title: localized("restore_from_seed_words.error.title"), message: message.appending(signature: seedWordsError.signature), type: .error)
     }
 }
 

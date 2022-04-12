@@ -179,10 +179,7 @@ extension CustomBridgesViewController: UIImagePickerControllerDelegate, UINaviga
         if let bridges = raw.findBridges() {
             onAdd(string: bridges)
         } else {
-            UserFeedback.showError(
-                title: localized("custom_bridges.error.image_decode.title"),
-                description: localized("custom_bridges.error.image_decode.description")
-            )
+            PopUpPresenter.show(message: MessageModel(title: localized("custom_bridges.error.image_decode.title"), message: localized("custom_bridges.error.image_decode.description"), type: .error))
         }
     }
 
@@ -283,7 +280,7 @@ extension CustomBridgesViewController: UITableViewDelegate, UITableViewDataSourc
         guard let section = Section(rawValue: indexPath.section) else { return }
         switch section {
         case .requestBridges:
-            UserFeedback.shared.openWebBrowser(url: OnionSettings.torBridgesLink)
+            WebBrowserPresenter.open(url: OnionSettings.torBridgesLink)
         case .QRcode:
             if CustomBridgesTitle.allCases[indexPath.row + indexPath.section] == .scanQRCode {
                 openScannerVC()

@@ -64,7 +64,7 @@ final class TransactionDetailsModel {
     @Published private(set) var note: String?
     @Published private(set) var gifMedia: GPHMedia?
     @Published private(set) var wasTransactionCanceled: Bool = false
-    @Published private(set) var errorModel: SimpleErrorModel?
+    @Published private(set) var errorModel: MessageModel?
     @Published private(set) var isBlockExplorerActionAvailable: Bool = false
     @Published private(set) var linkToOpen: URL?
     
@@ -125,7 +125,7 @@ final class TransactionDetailsModel {
             userAlias = try fetchUserAlias()
             try handleMessage()
         } catch {
-            errorModel = SimpleErrorModel(title: localized("tx_detail.error.load_tx.title"), message: localized("tx_detail.error.load_tx.description"))
+            errorModel = MessageModel(title: localized("tx_detail.error.load_tx.title"), message: localized("tx_detail.error.load_tx.description"), type: .error)
         }
         
         handleTransactionKernel()
@@ -137,7 +137,7 @@ final class TransactionDetailsModel {
     func cancelTransactionRequest() {
         
         guard transaction.status.0 == .pending, transaction.direction == .outbound else {
-            errorModel = SimpleErrorModel(title: localized("tx_detail.tx_cancellation.error.title"), message: localized("tx_detail.tx_cancellation.error.description"))
+            errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: localized("tx_detail.tx_cancellation.error.description"), type: .error)
             return
         }
         
@@ -145,7 +145,7 @@ final class TransactionDetailsModel {
             try TariLib.shared.tariWallet?.cancelPendingTx(transaction)
             wasTransactionCanceled = true
         } catch {
-            errorModel = SimpleErrorModel(title: localized("tx_detail.tx_cancellation.error.title"), message: "")
+            errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: nil, type: .error)
         }
     }
     
@@ -163,7 +163,7 @@ final class TransactionDetailsModel {
             userAliasUpdateSuccessCallback?()
             userAlias = alias
         } catch {
-            errorModel = SimpleErrorModel(title: localized("tx_detail.error.contact.title"), message: localized("tx_detail.error.save_contact.description"))
+            errorModel = MessageModel(title: localized("tx_detail.error.contact.title"), message: localized("tx_detail.error.save_contact.description"), type: .error)
             resetAlias()
         }
     }

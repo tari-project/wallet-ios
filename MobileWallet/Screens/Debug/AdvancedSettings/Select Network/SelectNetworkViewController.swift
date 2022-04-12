@@ -111,11 +111,18 @@ extension SelectNetworkViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         guard model.viewModel.selectedIndex != indexPath.row else { return }
-
-        UserFeedback.shared.callToAction(title: localized("select_network.dialog.switch_network.title"), description: localized("select_network.dialog.switch_network.description"),
-                                         actionTitle: localized("common.continue"), cancelTitle: localized("common.cancel")) { [weak self] in
-            self?.model.update(selectedIndex: indexPath.row)
-        }
+        
+        let popUpModel = PopUpDialogModel(
+            title: localized("select_network.dialog.switch_network.title"),
+            message: localized("select_network.dialog.switch_network.description"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("common.continue"), type: .normal, callback: { [weak self] in self?.model.update(selectedIndex: indexPath.row) }),
+                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text)
+            ],
+            hapticType: .none
+        )
+        
+        PopUpPresenter.showPopUp(model: popUpModel)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

@@ -136,8 +136,8 @@ final class ProfileViewController: UIViewController {
         }
     }
     
-    private func show(error: SimpleErrorModel) {
-        UserFeedback.showError(title: error.title, description: error.message)
+    private func show(error: MessageModel) {
+        PopUpPresenter.show(message: error)
     }
     
     private func showYatOnboardingFlow(publicKey: String) {

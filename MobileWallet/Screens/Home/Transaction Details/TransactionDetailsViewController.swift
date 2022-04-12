@@ -158,12 +158,12 @@ final class TransactionDetailsViewController: UIViewController {
         
         model.$linkToOpen
             .compactMap { $0 }
-            .sink { UserFeedback.shared.openWebBrowser(url: $0) }
+            .sink { WebBrowserPresenter.open(url: $0) }
             .store(in: &cancellables)
         
         model.$errorModel
             .compactMap { $0 }
-            .sink { UserFeedback.showError(title: $0.title, description: $0.message) }
+            .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
         
         model.userAliasUpdateSuccessCallback = {
@@ -199,7 +199,7 @@ final class TransactionDetailsViewController: UIViewController {
     }
     
     private func showFeeInfo() {
-        UserFeedback.shared.info(title: localized("common.fee_info.title"), description: localized("common.fee_info.description"))
+        PopUpPresenter.show(message: MessageModel(title: localized("common.fee_info.title"), message: localized("common.fee_info.description"), type: .normal))
     }
     
     private func showTransactionCancellationConfirmation() {

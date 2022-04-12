@@ -68,10 +68,10 @@ enum TransactionProgressPresenter {
     private static func show(transactionError: WalletTransactionsManager.TransactionError) {
         switch transactionError {
         case .noInternetConnection:
-            UserFeedback.showError(title: localized("sending_tari.error.interwebs_connection.title"), description: localized("sending_tari.error.interwebs_connection.description"))
+            PopUpPresenter.show(message: MessageModel(title: localized("sending_tari.error.interwebs_connection.title"), message: localized("sending_tari.error.interwebs_connection.description"), type: .error))
             Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Tor Issue")
         case .timeout, .transactionError, .unsucessfulTransaction, .unableToStartWallet:
-            UserFeedback.showError(title: localized("sending_tari.error.no_connection.title"), description: localized("sending_tari.error.no_connection.description"))
+            PopUpPresenter.show(message: MessageModel(title: localized("sending_tari.error.no_connection.title"), message: localized("sending_tari.error.no_connection.description"), type: .error))
             Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Node Issue")
         }
     }

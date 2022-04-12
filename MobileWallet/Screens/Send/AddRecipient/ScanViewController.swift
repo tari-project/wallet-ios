@@ -349,7 +349,7 @@ extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
             do {
                 _ = try DeeplinkHandler.handle(rawDeeplink: rawDeeplink, handler: self)
             } catch DeeplinkError.transactionSendDeeplinkError {
-                UserFeedback.showError(title: localized("scan_view.error.title"), description: localized("scan_view.error.public_key.description"))
+                PopUpPresenter.show(message: MessageModel(title: localized("scan_view.error.title"), message: localized("scan_view.error.public_key.description"), type: .error))
                 dismiss(animated: true)
             } catch {
                 dismiss(animated: true)
@@ -357,7 +357,7 @@ extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
             
         case .bridges:
             guard let bridges = rawDeeplink.findBridges() else {
-                UserFeedback.showError(title: localized("scan_view.error.title"), description: localized("scan_view.error.bridges.description"))
+                PopUpPresenter.show(message: MessageModel(title: localized("scan_view.error.title"), message: localized("scan_view.error.bridges.description"), type: .error))
                 dismiss(animated: true)
                 return
             }

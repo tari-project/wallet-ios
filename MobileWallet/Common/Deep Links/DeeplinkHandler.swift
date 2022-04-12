@@ -119,13 +119,7 @@ enum DeeplinkHandler {
             _ = try BaseNode(name: deeplink.name, peer: deeplink.peer)
             
             guard let handler = handler else {
-                UserFeedback.shared.callToAction(
-                    title: localized("add_base_node_overlay.label.title"),
-                    description: localized("add_base_node_overlay.label.description", arguments: deeplink.name, deeplink.peer),
-                    actionTitle: localized("add_base_node_overlay.button.confirm"),
-                    cancelTitle: localized("common.close"),
-                    onAction: { try? BaseNodeManager.addBaseNode(name: deeplink.name, peer: deeplink.peer) }
-                )
+                showCustomDeeplinkPopUp(name: deeplink.name, peer: deeplink.peer)
                 return
             }
             
@@ -133,5 +127,23 @@ enum DeeplinkHandler {
         } catch {
             throw DeeplinkError.baseNodesAddDeeplinkError(error)
         }
+    }
+    
+    private static func showCustomDeeplinkPopUp(name: String, peer: String) {
+        
+        let headerSection = PopUpHeaderWithSubtitle()
+        headerSection.titleLabel.text = localized("add_base_node_overlay.label.title")
+        headerSection.subtitleLabel.text = localized("add_base_node_overlay.label.subtitle")
+        
+        let contentSection = CustomDeeplinkPopUpContentView()
+        contentSection.update(name: name, peer: peer)
+        
+        let buttonSection = PopUpComponentsFactory.makeButtonsView(models: [
+            PopUpDialogButtonModel(title: localized("add_base_node_overlay.button.confirm"), type: .normal, callback: { try? BaseNodeManager.addBaseNode(name: name, peer: peer) }),
+            PopUpDialogButtonModel(title: localized("common.close"), type: .text)
+        ])
+        
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonSection)
+        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
     }
 }

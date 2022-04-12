@@ -1,10 +1,10 @@
-//  SimpleErrorModel.swift
-
+//  SuccessToast.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 28/07/2021
+	Created by Adrian Truszczynski on 11/04/2022
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 12.3
 
 	Copyright 2019 The Tari Project
 
@@ -38,7 +38,46 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct SimpleErrorModel {
-    let title: String
-    let message: String
+import UIKit
+import TariCommon
+
+final class SuccessToast: UIView {
+    
+    // MARK: - Subviews
+    
+    @View private(set) var label: UILabel = {
+        let view = UILabel()
+        view.textColor = Theme.shared.colors.successFeedbackPopupTitle
+        view.font = Theme.shared.fonts.feedbackPopupDescription
+        view.textAlignment = .center
+        view.numberOfLines = 0
+        return view
+    }()
+    
+    // MARK: - Initialisers
+    
+    init() {
+        super.init(frame: .zero)
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+    
+    private func setupConstraints() {
+        
+        addSubview(label)
+        
+        let constraints = [
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
+            label.centerYAnchor.constraint(equalTo: centerYAnchor),
+            heightAnchor.constraint(equalToConstant: 40.0)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
 }

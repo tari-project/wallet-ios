@@ -199,9 +199,9 @@ class SettingsViewController: SettingsParentTableViewController {
 
     private func onLinkAction(indexPath: IndexPath) {
         let item = SettingsItemTitle.allCases[indexPath.row + indexPath.section]
-        if let url = links[item] {
-            UserFeedback.shared.openWebBrowser(url: url!)
-        }
+        
+        guard let link = links[item], let url = link else { return }
+        WebBrowserPresenter.open(url: url)
     }
 
     private func onConnectYatAction() {
@@ -217,7 +217,7 @@ class SettingsViewController: SettingsParentTableViewController {
     }
     
     private func showNoConnectionError() {
-        UserFeedback.showError(title: localized("common.error"), description: localized("settings.error.connect_yats_no_connection"))
+        PopUpPresenter.show(message: MessageModel(title: localized("common.error"), message: localized("settings.error.connect_yats_no_connection"), type: .error))
     }
 }
 
@@ -370,14 +370,17 @@ extension SettingsViewController {
     private func checkClipboardForBaseNode() {
         guard let pasteboardText = UIPasteboard.general.string, let baseNode = try? BaseNode(name: "From Pasteboard", peer: pasteboardText) else { return }
 
-        UserFeedback.shared.callToAction(
-            title: localized("Set custom base node"),
-            description: localized("We found a base node peer in your clipboard, would you like to use this instead of the default?\n\n\(pasteboardText)"),
-            actionTitle: localized("Set"),
-            cancelTitle: localized("Keep default"),
-            onAction: { [weak self] in self?.update(baseNode: baseNode) },
-            onCancel: { UIPasteboard.general.string = "" }
+        let popUpModel = PopUpDialogModel(
+            title: localized("settings.pasteboard.custom_base_node.pop_up.title"),
+            message: localized("settings.pasteboard.custom_base_node.pop_up.message", arguments: pasteboardText),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("settings.pasteboard.custom_base_node.pop_up.button.confirm"), type: .normal, callback: { [weak self] in self?.update(baseNode: baseNode) }),
+                PopUpDialogButtonModel(title: localized("settings.pasteboard.custom_base_node.pop_up.button.cancel"), type: .text, callback: { UIPasteboard.general.string = "" })
+            ],
+            hapticType: .none
         )
+        
+        PopUpPresenter.showPopUp(model: popUpModel)
     }
 
     private func update(baseNode: BaseNode) {
@@ -385,10 +388,7 @@ extension SettingsViewController {
             try TariLib.shared.update(baseNode: baseNode, syncAfterSetting: true)
             UIPasteboard.general.string = ""
         } catch {
-            UserFeedback.showError(
-                title: localized("Base node error"),
-                description: localized("Failed to set custom base node from clipboard")
-            )
+            PopUpPresenter.show(message: MessageModel(title: localized("settings.pasteboard.custom_base_node.error.title"), message: localized("settings.pasteboard.custom_base_node.error.message"), type: .error))
         }
     }
 }
