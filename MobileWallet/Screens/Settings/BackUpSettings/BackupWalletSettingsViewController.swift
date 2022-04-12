@@ -134,25 +134,33 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
                 self?.iCloudBackup.iCloudBackupsIsOn = true
                 self?.createWalletBackup()
             } else {
-                UserFeedback.shared.callToAction(
-                    title: localized("backup_wallet_settings.switch.warning.title"),
-                    boldedTitle: nil,
-                    description: localized("backup_wallet_settings.switch.warning.description"),
-                    actionTitle: localized("backup_wallet_settings.switch.warning.confirm"),
-                    cancelTitle: localized("backup_wallet_settings.switch.warning.cancel"),
-                    onAction: { [weak self] in
-                            AppKeychainWrapper.removeBackupPasswordFromKeychain()
-                            self?.iCloudBackup.iCloudBackupsIsOn = false
-                            self?.iCloudBackup.removeCurrentWalletBackup()
-                            self?.reloadTableViewWithAnimation()
-                    },
-                    onCancel: { [weak self] in
+                
+                let onAction = { [weak self] in
+                    AppKeychainWrapper.removeBackupPasswordFromKeychain()
+                    self?.iCloudBackup.iCloudBackupsIsOn = false
+                    self?.iCloudBackup.removeCurrentWalletBackup()
+                    self?.reloadTableViewWithAnimation()
+                }
+                
+                let onCancel = { [weak self] in
                         self?.iCloudBackup.iCloudBackupsIsOn = true
                         self?.kvoiCloudBackupsToken?.invalidate()
                         self?.kvoiCloudBackupsToken = nil
                         self?.iCloudBackupsItem?.isSwitchIsOn = true
                         self?.observeICloudBackupsSwitch()
-                })
+                }
+                
+                let model = PopUpDialogModel(
+                    title: localized("backup_wallet_settings.switch.warning.title"),
+                    message: localized("backup_wallet_settings.switch.warning.description"),
+                    buttons: [
+                        PopUpDialogButtonModel(title: localized("backup_wallet_settings.switch.warning.confirm"), type: .normal, callback: onAction),
+                        PopUpDialogButtonModel(title: localized("backup_wallet_settings.switch.warning.cancel"), type: .text, callback: onCancel)
+                    ],
+                    hapticType: .error
+                )
+                
+                PopUpPresenter.showPopUp(model: model)
             }
         }
     }

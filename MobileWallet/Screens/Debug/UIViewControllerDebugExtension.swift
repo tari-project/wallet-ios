@@ -41,6 +41,7 @@
 import UIKit
 import MessageUI
 import ZIPFoundation
+import Combine
 
 private enum DebugErrors: Error {
     case zipURL
@@ -162,7 +163,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
                 present(mail, animated: true)
             } catch {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                    UserFeedback.showError(title: "Sending feedback failed", description: "Failed to add attachment")
+                    PopUpPresenter.show(message: MessageModel(title: "Sending feedback failed", message: "Failed to add attachment", type: .error))
                 })
             }
         } else {
@@ -199,7 +200,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             self.present(activityViewController, animated: true, completion: nil)
         } catch {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1, execute: {
-                UserFeedback.showError(title: "Sending feedback failed", description: "Failed to add attachment")
+                PopUpPresenter.show(message: MessageModel(title: "Sending feedback failed", message: "Failed to add attachment", type: .error))
             })
         }
     }
@@ -215,7 +216,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             case .sent:
             break
             case .failed:
-                UserFeedback.showError(title: "Error", description: "Failed to send feedback")
+            PopUpPresenter.show(message: MessageModel(title: "Error", message: "Failed to send feedback", type: .error))
             break
             default:
             break
@@ -257,10 +258,9 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             UIAlertAction(
                 title: "View connection status",
                 style: .default,
-                handler: {
-                    (_) in
+                handler: { [weak self] _ in
                     UIViewController.debugMenuAlert = nil
-                    UserFeedback.shared.showDebugConnectionStatus()
+                    self?.showConnectionStatusPopUp()
             }))
 
         alert.addAction(
@@ -278,5 +278,19 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         }
 
         present(alert, animated: true, completion: nil)
+    }
+    
+    private func showConnectionStatusPopUp() {
+        
+        let headerSection = PopUpComponentsFactory.makeHeaderView(title: "Connection status")
+        let contentSection = PopUpComponentsFactory.makeContentView(message: ConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n\n"))
+        
+        let event = TariEventBus.events(forType: .connectionMonitorStatusChanged)
+            .sink { [weak contentSection] _ in contentSection?.label.text = ConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n\n") }
+        
+        let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { event.cancel() })])
+        
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
     }
 }

@@ -74,7 +74,6 @@ class SplashViewController: UIViewController, UITextViewDelegate {
     var distanceTitleSubtitle = NSLayoutConstraint()
     var animationContainerBottomAnchor: NSLayoutConstraint?
     var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
-    private let progressFeedbackView = FeedbackView()
 
     private var cancelables = Set<AnyCancellable>()
 
@@ -131,23 +130,12 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                     attributes.displayDuration = .infinity
                     attributes.screenInteraction = .forward
                 }
-                self.progressFeedbackView.setupSuccess(title: "Tor bootstrapping: \(progress)%")
             }
-        }
-
-        // Handle on tor connected
-        TariEventBus.onMainThread(self, eventType: .torConnected) { [weak self] (_) in
-            guard let self = self else { return }
-            self.progressFeedbackView.setupSuccess(title: "Tor connection established")
         }
 
         TariEventBus.onMainThread(self, eventType: .torConnectionFailed) { [weak self] (result) in
             guard let _ = self else { return }
-
-            UserFeedback.showError(
-                title: localized("tor.error.title"),
-                description: localized("tor.error.description")
-            )
+            PopUpPresenter.show(message: MessageModel(title: localized("tor.error.title"), message: localized("tor.error.description"), type: .error))
         }
     }
 
@@ -202,7 +190,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
             
             let errorMessage = ErrorMessageManager.errorMessage(forError: error)
             
-            UserFeedback.showError(title: localized("splash.wallet_error.title"), description: errorMessage) { [weak self] in
+            PopUpPresenter.showMessageWithCloseButton(message: MessageModel(title: localized("splash.wallet_error.title"), message: errorMessage, type: .error)) { [weak self] in
                 self?.updateCreateWalletButtonState()
                 self?.resetView()
             }
@@ -281,7 +269,7 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
                    title = localizedError.failureReason!
                 }
-                UserFeedback.showError(title: title, description: error.localizedDescription)
+                PopUpPresenter.show(message: MessageModel(title: title, message: error.localizedDescription, type: .error))
             }
         }
     }
@@ -304,18 +292,12 @@ class SplashViewController: UIViewController, UITextViewDelegate {
                 }
             } onError: { [weak self] _ in
                 guard let self = self else { return }
-                UserFeedback.showError(
-                    title: localized("wallet.error.title"),
-                    description: localized("wallet.error.create_new_wallet")
-                )
+                PopUpPresenter.show(message: MessageModel(title: localized("wallet.error.title"), message: localized("wallet.error.create_new_wallet"), type: .error))
                 self.createWalletButton.variation = .normal
             }
             try TariLib.shared.createNewWallet(seedWords: nil)
         } catch {
-            UserFeedback.showError(
-                title: localized("wallet.error.title"),
-                description: localized("wallet.error.create_new_wallet")
-            )
+            PopUpPresenter.show(message: MessageModel(title: localized("wallet.error.title"), message: localized("wallet.error.create_new_wallet"), type: .error))
             createWalletButton.variation = .normal
         }
     }

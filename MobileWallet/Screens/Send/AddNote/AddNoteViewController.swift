@@ -160,10 +160,7 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
             do {
                 try navigationBar.showEmojiId(paymentInfo.publicKey, inViewController: self)
             } catch {
-                UserFeedback.showError(
-                    title: localized("navigation_bar.error.show_emoji.title"),
-                    description: localized("navigation_bar.error.show_emoji.description")
-                )
+                PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
             }
         }
     }
@@ -297,10 +294,7 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
         )
 
         guard let wallet = TariLib.shared.tariWallet else {
-            UserFeedback.showError(
-                title: localized("wallet.error.title"),
-                description: localized("wallet.error.wallet_not_initialized")
-            )
+            PopUpPresenter.show(message: MessageModel(title: localized("wallet.error.title"), message: localized("wallet.error.wallet_not_initialized"), type: .error))
             sendButton.resetStateWithAnimation(true)
             return
         }

@@ -195,29 +195,19 @@ final class HomeViewController: UIViewController {
     }
 
     private func displayIncompatibleNetworkDialog() {
-        UserFeedback.shared.callToAction(
+        let popUpModel = PopUpDialogModel(
             title: localized("incompatible_network.title"),
-            description: localized("incompatible_network.description"),
-            descriptionBoldParts: [
-                localized("incompatible_network.description.bold_part_1"),
-                localized("incompatible_network.description.bold_part_2")
+            message: localized("incompatible_network.description"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("incompatible_network.confirm"), type: .normal, callback: { [weak self] in self?.deleteWallet() }),
+                PopUpDialogButtonModel(title: localized("incompatible_network.cancel"), type: .text, callback: { [weak self] in
+                    try? TariLib.shared.setCurrentNetworkKeyValue()
+                    self?.checkBackupPrompt(delay: 2.0)
+                })
             ],
-            actionTitle: localized("incompatible_network.confirm"),
-            cancelTitle: localized("incompatible_network.cancel"),
-            onAction: {
-                [weak self] in
-                self?.deleteWallet()
-            },
-            onCancel: {
-                [weak self] in
-                do {
-                    try TariLib.shared.setCurrentNetworkKeyValue()
-                } catch {
-                    // ignore error
-                }
-                self?.checkBackupPrompt(delay: 2)
-            }
+            hapticType: .error
         )
+        PopUpPresenter.showPopUp(model: popUpModel)
     }
 
     private func deleteWallet() {
@@ -273,20 +263,18 @@ final class HomeViewController: UIViewController {
                         format: localized("home.request_drop.description.with_param"),
                         NetworkManager.shared.selectedNetwork.tickerSymbol
                     )
-
-                    UserFeedback.shared.callToAction(
+                    
+                    let popUpModel = PopUpDialogModel(
                         title: title,
-                        description: description,
-                        actionTitle: String(
-                            format: localized("common.send.with_param"),
-                            NetworkManager.shared.selectedNetwork.tickerSymbol
-                        ),
-                        cancelTitle: localized("home.request_drop.try_later"),
-                        onAction: { [weak self] in
-                            guard let self = self else { return }
-                            self.onSend()
-                        }
+                        message: description,
+                        buttons: [
+                            PopUpDialogButtonModel(title: localized("common.send.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol), type: .normal, callback: { [weak self] in self?.onSend() }),
+                            PopUpDialogButtonModel(title: localized("home.request_drop.try_later"), type: .text)
+                        ],
+                        hapticType: .none
                     )
+                    
+                    PopUpPresenter.showPopUp(model: popUpModel)
                 })
 
                 DispatchQueue.main.async { [weak self] in
@@ -295,17 +283,11 @@ final class HomeViewController: UIViewController {
                 }
             }) { (error) in
                 DispatchQueue.main.async {
-                    UserFeedback.showError(
-                        title: errorTitle,
-                        description: localized("home.request_drop.error.description")
-                    )
+                    PopUpPresenter.show(message: MessageModel(title: errorTitle, message: localized("home.request_drop.error.description"), type: .error))
                 }
             }
         } catch {
-            UserFeedback.showError(
-                title: errorTitle,
-                description: "Could not setup key server."
-            )
+            PopUpPresenter.show(message: MessageModel(title: errorTitle, message: localized("home.request_drop.error.generic"), type: .error))
         }
     }
 
@@ -320,7 +302,7 @@ final class HomeViewController: UIViewController {
             do {
                 try keyServer.importSecondUtxo {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                        UserFeedback.shared.callToActionStore()
+                        PopUpPresenter.showStorePopUp()
                     }
                 }
             } catch {
@@ -340,7 +322,7 @@ final class HomeViewController: UIViewController {
             try refreshBalance()
             try updateAvaiableToSpendAmount()
         } catch {
-            UserFeedback.showError(title: localized("home.error.update_balance"), description: "")
+            PopUpPresenter.show(message: MessageModel(title: localized("home.error.update_balance"), message: nil, type: .error))
         }
     }
 
@@ -703,6 +685,24 @@ extension HomeViewController: FloatingPanelControllerDelegate {
             txsTableVC.tableView.unlockScrollView()
         }
     }
+    
+    private func showHelpDialog()  {
+        
+        let popUpModel = PopUpDialogModel(
+            title: localized("home.info.amount_help.title"),
+            message: localized("home.info.amount_help.description"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("home.info.amount_help.action_button"), type: .normal, callback: {
+                    guard let url = URL(string: TariSettings.shared.tariLabsUniversityUrl) else { return }
+                    UIApplication.shared.open(url)
+                }),
+                PopUpDialogButtonModel(title: localized("feedback_view.close"), type: .text)
+            ],
+            hapticType: .none
+        )
+        
+        PopUpPresenter.showPopUp(model: popUpModel)
+    }
 }
 
 // MARK: setup subview
@@ -728,18 +728,8 @@ extension HomeViewController {
             self?.updateTracking(progress: 0.0)
         }
 
-        mainView.onAmountHelpButtonTap = {
-            UserFeedback.shared
-                .callToAction(
-                    title: localized("home.info.amount_help.title"),
-                    description: localized("home.info.amount_help.description"),
-                    actionTitle: localized("home.info.amount_help.action_button"),
-                    cancelTitle: localized("feedback_view.close"),
-                    onAction: {
-                        guard let url = URL(string: TariSettings.shared.tariLabsUniversityUrl) else { return }
-                        UIApplication.shared.open(url)
-                    }
-                )
+        mainView.onAmountHelpButtonTap = { [weak self] in
+            self?.showHelpDialog()
         }
     }
 
@@ -805,4 +795,29 @@ extension HomeViewController: UIGestureRecognizerDelegate {
         mainView.isTooltipVisible = false
         return shouldBlockTouchEvent
     }
+}
+
+private extension PopUpPresenter {
+    
+    static func showStorePopUp() {
+        
+        let contentSection = PopUpComponentsFactory.makeContentView(message: localized("store_modal.description", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol))
+        let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [
+            PopUpDialogButtonModel(title: localized("store_modal.action"), icon: Theme.shared.images.storeIcon, type: .normal, callback: { openStoreWebpage() }),
+            PopUpDialogButtonModel(title: localized("store_modal.cancel"), type: .text)
+        ])
+        
+        let popUp = TariPopUp(headerSection: PopUpStoreHeaderView(), contentSection: contentSection, buttonsSection: buttonsSection)
+        popUp.topOffset = 86.0
+        
+        show(popUp: popUp, configuration: .dialog(hapticType: .none))
+    }
+    
+    private static func openStoreWebpage() {
+        guard let url = URL(string: TariSettings.shared.storeUrl) else { return }
+        WebBrowserPresenter.open(url: url)
+        TariLogger.verbose("Opened store link")
+    }
+    
+    
 }

@@ -50,7 +50,7 @@ final class RestoreWalletFromSeedsModel {
     final class ViewModel {
         @Published var seedWordModels: [SeedWordModel] = []
         @Published var updatedInputText: String = ""
-        @Published var error: SimpleErrorModel?
+        @Published var error: MessageModel?
         @Published var isConfimationEnabled: Bool = false
         @Published var isEmptyWalletCreated: Bool = false
         @Published var isAutocompletionAvailable: Bool = false
@@ -192,16 +192,18 @@ final class RestoreWalletFromSeedsModel {
             return
         }
         
-        viewModel.error = SimpleErrorModel(
+        viewModel.error = MessageModel(
             title: localized("restore_from_seed_words.error.title"),
-            message: description
+            message: description,
+            type: .error
         )
     }
 
     private func handleUnknownError() {
-        viewModel.error = SimpleErrorModel(
+        viewModel.error = MessageModel(
             title: localized("restore_from_seed_words.error.title"),
-            message: localized("restore_from_seed_words.error.description.unknown_error")
+            message: localized("restore_from_seed_words.error.description.unknown_error"),
+            type: .error
         )
     }
     

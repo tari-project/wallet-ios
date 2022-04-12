@@ -46,7 +46,7 @@ final class RestoreWalletFromSeedsProgressModel {
     final class ViewModel {
         @Published var status: String? = localized("restore_from_seed_words.progress_overlay.status.connecting")
         @Published var progress: String?
-        @Published var error: SimpleErrorModel?
+        @Published var error: MessageModel?
         @Published var isWalletRestored: Bool = false
     }
 
@@ -125,17 +125,19 @@ final class RestoreWalletFromSeedsProgressModel {
         case .completed:
             viewModel.isWalletRestored = true
         case .recoveryFailed, .unknown:
-            viewModel.error = SimpleErrorModel(
+            viewModel.error = MessageModel(
                 title: localized("restore_from_seed_words.progress_overlay.error.title"),
-                message: localized("restore_from_seed_words.progress_overlay.error.description.connection_failed")
+                message: localized("restore_from_seed_words.progress_overlay.error.description.connection_failed"),
+                type: .error
             )
         }
     }
 
     private func handleStartRecoveryFailure() {
-        viewModel.error = SimpleErrorModel(
+        viewModel.error = MessageModel(
             title: localized("restore_from_seed_words.progress_overlay.error.title"),
-            message: localized("restore_from_seed_words.progress_overlay.error.description.unknown_error")
+            message: localized("restore_from_seed_words.progress_overlay.error.description.unknown_error"),
+            type: .error
         )
     }
 }

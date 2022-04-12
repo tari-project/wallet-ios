@@ -86,16 +86,16 @@ final class RestoreWalletFromSeedsProgressViewController: UIViewController {
 
     // MARK: - Actions
 
-    private func handle(errorModel: SimpleErrorModel?) {
+    private func handle(errorModel: MessageModel?) {
         guard let errorModel = errorModel else { return }
-        UserFeedback.showError(title: errorModel.title, description: errorModel.message) { [weak self] in
+        PopUpPresenter.showMessageWithCloseButton(message: errorModel) { [weak self] in
             self?.dismiss(animated: true)
         }
     }
 
     private func handle(isWalletRestored: Bool) {
         guard isWalletRestored else { return }
-        UserFeedback.shared.success(title: localized("restore_from_seed_words.progress_overlay.success"))
+        ToastPresenter.show(title: localized("restore_from_seed_words.progress_overlay.success"))
         onSuccess?()
     }
 }

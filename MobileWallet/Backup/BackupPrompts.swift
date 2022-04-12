@@ -166,16 +166,18 @@ private class BackupPrompts {
 
             setAsShown(type)
             let content = type.content
-            UserFeedback.shared.callToAction(
+            
+            let popUpModel = PopUpDialogModel(
                 title: content.title,
-                boldedTitle: content.boldTitle,
-                description: content.description,
-                actionTitle: content.ctaButton,
-                cancelTitle: content.cancelButton,
-                onAction: {
-                    UIApplication.shared.menuTabBarController?.setTab(.settings)
-            }
+                message: content.description,
+                buttons: [
+                    PopUpDialogButtonModel(title: content.ctaButton, type: .normal, callback: { UIApplication.shared.menuTabBarController?.setTab(.settings) }),
+                    PopUpDialogButtonModel(title: content.cancelButton, type: .text)
+                ],
+                hapticType: .none
             )
+            
+            PopUpPresenter.showPopUp(model: popUpModel)
             break
         }
     }

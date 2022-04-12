@@ -168,10 +168,7 @@ final class AddAmountViewController: UIViewController {
             do {
                 try navigationBar.showEmojiId(paymentInfo.publicKey, inViewController: self)
             } catch {
-                UserFeedback.showError(
-                    title: localized("navigation_bar.error.show_emoji.title"),
-                    description: localized("navigation_bar.error.show_emoji.description")
-                )
+                PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
             }
         }
     }
@@ -196,10 +193,7 @@ final class AddAmountViewController: UIViewController {
         do {
             totalBalance = try wallet.totalBalance
         } catch {
-            UserFeedback.showError(
-                title: localized("add_amount.error.available_balance.title"),
-                description: localized("add_amount.error.available_balance.description")
-            )
+            PopUpPresenter.show(message: MessageModel(title: localized("add_amount.error.available_balance.title"), message: localized("add_amount.error.available_balance.description"), type: .error))
             return
         }
 
@@ -264,10 +258,7 @@ final class AddAmountViewController: UIViewController {
 
     // Shouldn't ever really be used but just in case
     private func showInvalidNumberError(_ error: Error?) {
-        UserFeedback.showError(
-            title: localized("add_amount.error.invalid_number"),
-            description: ""
-        )
+        PopUpPresenter.show(message: MessageModel(title: localized("add_amount.error.invalid_number"), message: nil, type: .error))
     }
 
     private func deleteCharacter() {
@@ -403,10 +394,7 @@ final class AddAmountViewController: UIViewController {
     }
 
     @objc private func feeButtonPressed(_ sender: UIButton) {
-        UserFeedback.shared.info(
-            title: localized("common.fee_info.title"),
-            description: localized("common.fee_info.description")
-        )
+        PopUpPresenter.show(message: MessageModel(title: localized("common.fee_info.title"), message: localized("common.fee_info.description"), type: .normal))
     }
 
     private func showBalanceExceeded(balance: String) {
@@ -503,10 +491,11 @@ final class AddAmountViewController: UIViewController {
             }
 
             if amount.rawValue + fee.rawValue  > availableBalance {
-                UserFeedback.shared.info(
+                PopUpPresenter.show(message: MessageModel(
                     title: localized("add_amount.info.wait_completion_previous_tx.title"),
-                    description: localized("add_amount.info.wait_completion_previous_tx.description")
-                )
+                    message: localized("add_amount.info.wait_completion_previous_tx.description"),
+                    type: .normal
+                ))
                 return nil
             }
             
@@ -787,7 +776,7 @@ extension AddAmountViewController {
         NSLayoutConstraint.activate(constraints)
         
         oneSidedPaymentHelpButton.onTap = {
-            UserFeedback.shared.info(title: localized("add_amount.pop_up.one_sided_payment.title"), description: localized("add_amount.pop_up.one_sided_payment.description"))
+            PopUpPresenter.show(message: MessageModel(title: localized("add_amount.pop_up.one_sided_payment.title"), message: localized("add_amount.pop_up.one_sided_payment.description"), type: .normal))
         }
         
         oneSidedPaymentSwitch.addTarget(self, action: #selector(onOneSidedPaymentSwitchAction), for: .valueChanged)

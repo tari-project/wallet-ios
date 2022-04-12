@@ -150,18 +150,18 @@ class DeleteWalletViewController: UIViewController {
     }
 
     private func displayWarningDialog() {
-        UserFeedback.shared.callToAction(
+        
+        let popUpModel = PopUpDialogModel(
             title: localized("delete_wallet.dialog.title"),
-            boldedTitle: nil,
-            description: localized("delete_wallet.dialog.description"),
-            actionTitle: localized("backup_wallet_settings.switch.warning.confirm"),
-            cancelTitle: localized("backup_wallet_settings.switch.warning.cancel"),
-            isDestructive: true,
-            onAction: {
-                [weak self] in
-                self?.deleteWallet()
-            }
+            message: localized("delete_wallet.dialog.description"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("backup_wallet_settings.switch.warning.confirm"), type: .destructive, callback: { [weak self] in self?.deleteWallet() }),
+                PopUpDialogButtonModel(title: localized("backup_wallet_settings.switch.warning.cancel"), type: .textDimmed)
+            ],
+            hapticType: .error
         )
+        
+        PopUpPresenter.showPopUp(model: popUpModel)
     }
 
     private func deleteWallet() {

@@ -76,7 +76,7 @@ final class AddRecipientModel {
 
     @Published private(set) var canMoveToNextStep: Bool = false
     @Published private(set) var errorMessage: String?
-    @Published private(set) var errorDialog: SimpleErrorModel?
+    @Published private(set) var errorDialog: MessageModel?
     @Published private(set) var verifiedPaymentInfo: PaymentInfo?
     @Published private(set) var contactsSectionItems: [ContactsSectionItem] = []
     @Published private(set) var validatedPasteboardText: String?
@@ -170,10 +170,10 @@ final class AddRecipientModel {
             do {
                 try loadContacts()
             } catch {
-                errorDialog = SimpleErrorModel(title: localized("add_recipient.error.load_contacts.title"), message: localized("add_recipient.error.load_contacts.description"))
+                errorDialog = MessageModel(title: localized("add_recipient.error.load_contacts.title"), message: localized("add_recipient.error.load_contacts.description"), type: .error)
             }
         case .startFailed:
-            errorDialog = SimpleErrorModel(title: localized("add_recipient.error.load_contacts.title"), message: localized("add_recipient.error.load_contacts.description"))
+            errorDialog = MessageModel(title: localized("add_recipient.error.load_contacts.title"), message: localized("add_recipient.error.load_contacts.description"), type: .error)
         case .notReady, .starting:
             break
         }

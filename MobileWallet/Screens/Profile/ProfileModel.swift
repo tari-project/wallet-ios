@@ -64,7 +64,7 @@ final class ProfileModel {
     @Published private(set) var description: String?
     @Published private(set) var isReconnectButtonVisible: Bool = false
     @Published private(set) var qrCodeImage: UIImage?
-    @Published private(set) var error: SimpleErrorModel?
+    @Published private(set) var error: MessageModel?
     @Published private(set) var yatButtonState: YatButtonState = .hidden
     @Published private(set) var yatPublicKey: String?
     
@@ -129,7 +129,7 @@ final class ProfileModel {
         guard let publicKey = TariLib.shared.tariWallet?.publicKey.0, publicKey.hexDeeplink.1 == nil, let deeplinkData = publicKey.hexDeeplink.0.data(using: .utf8) else {
             qrCodeImage = nil
             emojiData = nil
-            error = SimpleErrorModel(title: localized("profile_view.error.qr_code.title"), message: localized("wallet.error.failed_to_access"))
+            error = MessageModel(title: localized("profile_view.error.qr_code.title"), message: localized("wallet.error.failed_to_access"), type: .error)
             return
         }
         

@@ -467,10 +467,7 @@ extension ICloudBackup {
            localizedError.failureReason != nil {
            title = localizedError.failureReason!
         }
-        UserFeedback.showError(
-            title: title,
-            description: error.localizedDescription
-        )
+        PopUpPresenter.show(message: MessageModel(title: title, message: error.localizedDescription, type: .error))
     }
 }
 
