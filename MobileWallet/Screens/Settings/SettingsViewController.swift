@@ -108,30 +108,27 @@ class SettingsViewController: SettingsParentTableViewController {
         }
     }
 
-    private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)]
+    private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsWalletBackupsIcon, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)]
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.torBridgeConfiguration.rawValue),
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.selectNetwork.rawValue),
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.selectBaseNode.rawValue),
-        SystemMenuTableViewCellItem(
-            title: SettingsItemTitle.deleteWallet.rawValue,
-            isDestructive: true
-        )
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsNetworkIcon, title: SettingsItemTitle.selectNetwork.rawValue),
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBaseNodeIcon, title: SettingsItemTitle.selectBaseNode.rawValue),
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsDeleteIcon, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
     ]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.reportBug.rawValue),
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.visitTari.rawValue),
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.contributeToTariAurora.rawValue),
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.userAgreement.rawValue),
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.privacyPolicy.rawValue),
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.disclaimer.rawValue),
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.blockExplorer.rawValue)
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsReportBugIcon, title: SettingsItemTitle.reportBug.rawValue),
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsVisitTariIcon, title: SettingsItemTitle.visitTari.rawValue),
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsContributeIcon, title: SettingsItemTitle.contributeToTariAurora.rawValue),
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsUserAgreementIcon, title: SettingsItemTitle.userAgreement.rawValue),
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsPrivacyPolicyIcon, title: SettingsItemTitle.privacyPolicy.rawValue),
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsDisclaimerIcon, title: SettingsItemTitle.disclaimer.rawValue),
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBlockExplorerIcon, title: SettingsItemTitle.blockExplorer.rawValue)
     ]
 
     private let yatSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(title: SettingsItemTitle.connectYats.rawValue)
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsYatIcon, title: SettingsItemTitle.connectYats.rawValue)
     ]
 
     private let links: [SettingsItemTitle: URL?] = [

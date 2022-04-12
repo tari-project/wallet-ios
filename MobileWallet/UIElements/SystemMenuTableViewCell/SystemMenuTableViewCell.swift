@@ -39,8 +39,11 @@
 */
 
 import UIKit
+import TariCommon
 
 class SystemMenuTableViewCellItem: NSObject {
+
+    let icon: UIImage?
     var title: String
 
     @objc dynamic var mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none
@@ -54,7 +57,8 @@ class SystemMenuTableViewCellItem: NSObject {
     private(set) var hasArrow = true
     private(set) var isDestructive = false
 
-    init(title: String,
+    init(icon: UIImage? = nil,
+         title: String,
          mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none,
          hasArrow: Bool = true,
          disableCellInProgress: Bool = true,
@@ -62,6 +66,7 @@ class SystemMenuTableViewCellItem: NSObject {
          switchIsOn: Bool = false,
          isDestructive: Bool = false) {
 
+        self.icon = icon
         self.title = title
         self.mark = mark
         self.hasArrow = hasArrow
@@ -85,6 +90,8 @@ class SystemMenuTableViewCell: UITableViewCell {
 
     private weak var item: SystemMenuTableViewCellItem?
 
+    @View private var iconImageView = UIImageView()
+    
     private let arrow = UIImageView()
     private var arrowWidthConstraint: NSLayoutConstraint?
 
@@ -101,6 +108,13 @@ class SystemMenuTableViewCell: UITableViewCell {
     private var kvoMarkToken: NSKeyValueObservation?
     private var kvoMarkDescriptionToken: NSKeyValueObservation?
     private var kvoSwitchValueToken: NSKeyValueObservation?
+    
+    private var titleWithoutIconConstraint: NSLayoutConstraint?
+    private var titleWithIconConstraint: NSLayoutConstraint?
+    
+    private var isIconVisible: Bool = false {
+        didSet { updateIconImageViewElement() }
+    }
 
     private var mark: SystemMenuTableViewCellMark = .none {
         didSet {
@@ -174,12 +188,18 @@ class SystemMenuTableViewCell: UITableViewCell {
             markImageViewTrailingConstraint?.constant = 0
             arrowWidthConstraint?.constant = 0
         }
+        
+        let tintColor = item.isDestructive ? Theme.shared.colors.warning : Theme.shared.colors.navigationBarTint
 
+        iconImageView.image = item.icon
+        iconImageView.tintColor = tintColor
+        isIconVisible = item.icon != nil
+        
         switcher.isOn = item.isSwitchIsOn
         switcher.isHidden = !item.hasSwitch
         arrow.isHidden = item.hasSwitch
         titleLabel.text = item.title
-        titleLabel.textColor = item.isDestructive ? Theme.shared.colors.warning : Theme.shared.colors.navigationBarTint
+        titleLabel.textColor = tintColor
         arrow.image = item.isDestructive ? Theme.shared.images.forwardArrowRed : Theme.shared.images.forwardArrow
         disableCellInProgress = item.disableCellInProgress
         mark = item.mark
@@ -205,6 +225,18 @@ class SystemMenuTableViewCell: UITableViewCell {
             self?.switcher.setOn(item.isSwitchIsOn, animated: true)
         }
     }
+    
+    private func updateIconImageViewElement() {
+        
+        guard isIconVisible else {
+            titleWithIconConstraint?.isActive = false
+            titleWithoutIconConstraint?.isActive = true
+            return
+        }
+        
+        titleWithoutIconConstraint?.isActive = false
+        titleWithIconConstraint?.isActive = true
+    }
 
     deinit {
         kvoPercentToken?.invalidate()
@@ -224,6 +256,7 @@ extension SystemMenuTableViewCell {
         setupMarkDescription()
         setupProgressView()
         setupTitle()
+        setupIconImageView()
     }
 
     override func prepareForReuse() {
@@ -290,12 +323,32 @@ extension SystemMenuTableViewCell {
 
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25).isActive = true
         let trailingAnchor = titleLabel.trailingAnchor.constraint(greaterThanOrEqualTo: markDescriptionLabel.leadingAnchor, constant: -20)
         trailingAnchor.isActive = true
         trailingAnchor.priority = .defaultLow
 
         titleLabel.setContentHuggingPriority(.required, for: .horizontal)
+    }
+    
+    private func setupIconImageView() {
+        contentView.addSubview(iconImageView)
+        
+        iconImageView.image = Theme.shared.images.handWave
+        iconImageView.contentMode = .scaleAspectFit
+        
+        titleWithoutIconConstraint = titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0)
+        titleWithIconConstraint = titleLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 16.0)
+        
+        updateIconImageViewElement()
+        
+        let constraints = [
+            iconImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
+            iconImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            iconImageView.heightAnchor.constraint(equalToConstant: 24.0),
+            iconImageView.widthAnchor.constraint(equalToConstant: 24.0),
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
 
     private func setupMarkDescription() {
