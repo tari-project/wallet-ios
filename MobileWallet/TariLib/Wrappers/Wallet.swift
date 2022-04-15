@@ -639,7 +639,7 @@ final class Wallet {
         let senderOffsetPublicKey = try utxo.makeSenderOffsetPublicKey()
         
         _ = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_import_utxo(
+            wallet_import_external_utxo_as_non_rewindable(
                 pointer,
                 utxo.value,
                 privateKey.pointer,
