@@ -118,10 +118,8 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     }
 
     private func onBackupWithRecoveryPhraseAction() {
-        navigationController?.pushViewController(
-            SeedPhraseViewController(),
-            animated: true
-        )
+        let controller = SeedWordsListConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     private func observeICloudBackupsSwitch() {

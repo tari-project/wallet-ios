@@ -165,7 +165,7 @@ final class HomeViewController: UIViewController {
             }
         }
         safeRefreshBalance()
-        deepLinker.checkDeepLink()
+        ShortcutsManager.executeQueuedShortcut()
         checkImportSecondUtxo()
         safeCheckIncompatibleNetwork()
         enableWindowTapGesture()
@@ -454,26 +454,18 @@ final class HomeViewController: UIViewController {
         }
     }
 
-    func onSend(pubKey: PublicKey? = nil, deepLinkParams: DeepLinkParams? = nil) {
-
+    func onSend(deeplink: TransactionsSendDeeplink? = nil) {
+        
         let sendVC = TransactionsViewController()
-
-        // This is used by the deep link manager
-        if let publicKey = pubKey {
-            DispatchQueue.main.asyncAfter(
-                deadline: .now() + 0.75
-            ) { [weak self] in
-                guard let _ = self else { return }
-                sendVC.update(deeplinkParameters: deepLinkParams, publicKey: publicKey)
-            }
-        }
-
         let navigationController = AlwaysPoppableNavigationController(rootViewController: sendVC)
         navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.modalPresentationStyle = .fullScreen
 
         DispatchQueue.main.async {
-            UIApplication.shared.menuTabBarController?.present(navigationController, animated: true)
+            UIApplication.shared.menuTabBarController?.present(navigationController, animated: true) {
+                guard let deeplink = deeplink else { return }
+                sendVC.update(deeplink: deeplink)
+            }
         }
     }
 
@@ -503,22 +495,26 @@ final class HomeViewController: UIViewController {
     }
 
     private func handle(connectionState: ConnectionMonitorState) -> (ConnectionIndicatorView.State, String?) {
-        switch (connectionState.reachability, connectionState.torStatus, connectionState.baseNodeSyncStatus) {
-        case (.offline, _, _):
+        switch (connectionState.reachability, connectionState.torStatus, connectionState.baseNodeConnectivityStatus, connectionState.baseNodeSyncStatus) {
+        case (.offline, _, _, _):
             return (.disconnected, localized("connection_status.error.no_network_connection"))
-        case (.unknown, _, _):
+        case (.unknown, _, _, _):
             return (.disconnected, localized("connection_status.error.unknown_network_connection_status"))
-        case (_, .failed, _):
+        case (_, .failed, _, _):
             return (.disconnected, localized("connection_status.error.disconnected_from_tor"))
-        case (_, .connecting, _):
+        case (_, .connecting, _, _):
             return (.disconnected, localized("connection_status.error.connecting_with_tor"))
-        case (_, .unknown, _):
+        case (_, .unknown, _, _):
             return (.disconnected, localized("connection_status.error.unknown_tor_connection_status"))
-        case (_, _, .notInited):
+        case (_, _, .offline, _):
             return (.disconnected, localized("connection_status.error.disconnected_from_base_node"))
-        case (_, _, .pending):
+        case (_, _, .connecting, _):
+            return (.connectedWithIssues, localized("connection_status.warning.connecting_with_base_node"))
+        case (_, _, _, .notInited):
+            return (.disconnected, localized("connection_status.error.disconnected_from_base_node"))
+        case (_, _, _, .pending):
             return (.connectedWithIssues, localized("connection_status.warning.sync_in_progress"))
-        case (_, _, .failure):
+        case (_, _, _, .failure):
             return (.connectedWithIssues, localized("connection_status.warning.sync_failed"))
         default:
             return (.connected, localized("connection_status.ok"))
@@ -528,11 +524,14 @@ final class HomeViewController: UIViewController {
 
 // MARK: - TxTableDelegateMethods
 extension HomeViewController: TxsTableViewDelegate {
+    
     func onTxSelect(_ tx: Any) {
         selectedTx = tx as? TxProtocol
-        let txVC = TxViewController()
-        txVC.transaction = selectedTx
-        self.navigationController?.pushViewController(txVC, animated: true)
+        
+        guard let transaction = selectedTx else { return }
+        
+        let controller = TransactionDetailsConstructor.buildScene(transaction: transaction)
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     func onScrollTopHit(_ isAtTop: Bool) {

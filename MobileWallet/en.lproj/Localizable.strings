@@ -4,6 +4,7 @@
 "common.send.with_param" = "Send %@";
 "common.error" = "Error";
 "common.recommended" = "Recommended";
+"common.close" = "Close";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -60,6 +61,13 @@
 "tx_list.error.pending_inbound_tx.description" = "Could not load pending inbound transactions";
 "tx_list.error.pending_outbound_tx.title" = "Could not load list of pending outbound transactions";
 "tx_list.error.pending_outbound_tx..description" = "Could not load pending outbound transactions";
+
+/* Transaction Data */
+
+"transaction.one_sided_payment.inbound_user_placeholder" = "Someone";
+"transaction.one_sided_payment.avatar" = "➡️";
+"transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
+"transaction.one_sided_payment.note.recovered" = "You recovered some funds";
 
 /* Tari key server error */
 "key_server.error.too_many_allocation_requests" = "You have made too many free tXTR requests.";
@@ -485,6 +493,7 @@
 "connection_status.ok" = "Everything ok. Move along, nothing to see here";
 "connection_status.warning.sync_in_progress" = "Syncing with base node";
 "connection_status.warning.sync_failed" = "Unable to sync with base node";
+"connection_status.warning.connecting_with_base_node" = "Connecting to the base node";
 "connection_status.error.no_network_connection" = "Unable to connect with internet";
 "connection_status.error.unknown_network_connection_status" = "Unknown internet connection status";
 "connection_status.error.disconnected_from_tor" = "Failed to connect with Tor";
@@ -551,6 +560,12 @@
 "request.buttons.generate_qr" = "Generate QR Code";
 "request.qr_code.buttons.share" = "Share";
 "request.qr_code.buttons.close" = "Close";
+
+/* Add base node dialog */
+
+"add_base_node_overlay.label.title" = "Add custom base node";
+"add_base_node_overlay.label.description" = "The QR code is a deep link request to assign your wallet to use this base node:\n\nName: %@\n\nPeer: %@";
+"add_base_node_overlay.button.confirm" = "Connect";
 
 /* Errors */
 

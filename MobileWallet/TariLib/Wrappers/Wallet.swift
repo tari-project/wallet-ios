@@ -113,6 +113,12 @@ struct WalletBalance: Equatable {
     var timeLocked: UInt64
 }
 
+enum BaseNodeConnectivityStatus: UInt64 {
+    case connecting
+    case online
+    case offline
+}
+
 final class Wallet {
 
     private(set) var pointer: OpaquePointer
@@ -327,6 +333,9 @@ final class Wallet {
         let storedMessagesReceivedCallback: (@convention(c) () -> Void)? = {
             TariLogger.verbose("Stored messages received ✅")
         }
+        
+        let contactsLivenessDataUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void) = { _ in
+        }
 
         let balanceUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void)? = { valuePointer in
             //Note context for this is unavailable withing the callback but we still need to free the object passed in form the library
@@ -335,7 +344,9 @@ final class Wallet {
             TariLogger.verbose("Balance updated callback")
         }
         
-        let callbackConectivityStatus: (@convention(c) (UInt64) -> Void)? = { _ in
+        let callbackConectivityStatus: (@convention(c) (UInt64) -> Void)? = { status in
+            guard let status = BaseNodeConnectivityStatus(rawValue: status) else { return }
+            TariEventBus.postToMainThread(.connectionStatusChanged, sender: status)
         }
         
         dbPath = commsConfig.dbPath
@@ -368,6 +379,7 @@ final class Wallet {
                         storeAndForwardSendResultCallback,
                         txCancellationCallback,
                         txoValidationCallback,
+                        contactsLivenessDataUpdatedCallback,
                         balanceUpdatedCallback,
                         txValidationCompleteCallback,
                         storedMessagesReceivedCallback,
@@ -627,7 +639,7 @@ final class Wallet {
         let senderOffsetPublicKey = try utxo.makeSenderOffsetPublicKey()
         
         _ = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_import_utxo(
+            wallet_import_external_utxo_as_non_rewindable(
                 pointer,
                 utxo.value,
                 privateKey.pointer,
@@ -922,15 +934,16 @@ final class Wallet {
         }
 
         var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let recoveredOutputMessage = localized("transaction.one_sided_payment.note.recovered")
 
-        let result = withUnsafeMutablePointer(to: &errorCode) {
-            wallet_start_recovery(
-                pointer,
-                baseNode.publicKey.pointer,
-                callback,
-                $0
-            )
-        }
+        let result = wallet_start_recovery(
+            pointer,
+            baseNode.publicKey.pointer,
+            callback,
+            recoveredOutputMessage,
+            errorCodePointer
+        )
 
         guard errorCode == 0 else { throw WalletErrors.generic(errorCode) }
         return result

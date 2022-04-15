@@ -61,12 +61,7 @@ final class AddBaseNodeModel {
         }
 
         do {
-            let node = try BaseNode(name: viewModel.name, peer: viewModel.peer)
-            try? TariLib.shared.update(baseNode: node, syncAfterSetting: false)
-
-            NetworkManager.shared.selectedNetwork.customBaseNodes.append(node)
-            NetworkManager.shared.selectedNetwork.selectedBaseNode = node
-
+            try BaseNodeManager.addBaseNode(name: viewModel.name, peer: viewModel.peer)
             viewModel.isFinished = true
             viewModel.errorMessage = nil
         } catch {

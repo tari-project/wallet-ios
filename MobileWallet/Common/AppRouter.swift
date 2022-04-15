@@ -41,6 +41,9 @@
 import UIKit
 
 enum AppRouter {
+    
+    static var isNavigationReady: Bool { tabBar != nil }
+    private static var tabBar: MenuTabBarController? { UIApplication.shared.menuTabBarController }
 
     static func moveToSplashScreen() {
         BackupScheduler.shared.stopObserveEvents()
@@ -48,5 +51,13 @@ enum AppRouter {
         navigationController.setNavigationBarHidden(true, animated: false)
         UIApplication.shared.windows.first?.rootViewController = navigationController
         UIApplication.shared.windows.first?.makeKeyAndVisible()
+    }
+    
+    static func moveToTransactionSend(deeplink: TransactionsSendDeeplink?) {
+        tabBar?.homeViewController.onSend(deeplink: deeplink)
+    }
+    
+    static func moveToProfile() {
+        tabBar?.setTab(.profile)
     }
 }

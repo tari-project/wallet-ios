@@ -50,7 +50,7 @@ final class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDel
     private let paymentInfo: PaymentInfo
     private let amount: MicroTari
     private let isOneSidedPayment: Bool
-    private let deepLinkParams: DeepLinkParams?
+    private let deeplink: TransactionsSendDeeplink?
 
     private let sidePadding = Theme.shared.sizes.appSidePadding
     private let navigationBar = NavigationBar()
@@ -101,11 +101,11 @@ final class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDel
         }
     }
     
-    init(paymentInfo: PaymentInfo, amount: MicroTari, isOneSidedPayment: Bool, deepLinkParams: DeepLinkParams?) {
+    init(paymentInfo: PaymentInfo, amount: MicroTari, isOneSidedPayment: Bool, deeplink: TransactionsSendDeeplink?) {
         self.paymentInfo = paymentInfo
         self.amount = amount
         self.isOneSidedPayment = isOneSidedPayment
-        self.deepLinkParams = deepLinkParams
+        self.deeplink = deeplink
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -132,9 +132,9 @@ final class AddNoteViewController: UIViewController, SlideViewDelegate, GiphyDel
         noteInput.becomeFirstResponder()
 
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-
-        if let params = deepLinkParams {
-            noteInput.text = params.note
+        
+        if let note = deeplink?.note {
+            noteInput.text = note
             textViewDidChangeSelection(noteInput)
         }
     }
