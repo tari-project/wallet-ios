@@ -40,6 +40,7 @@
 
 import UIKit
 import CoreData
+import AVFoundation
 import Sentry
 import GiphyUISDK
 import GiphyCoreSDK
@@ -56,6 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         setupSentryCrashReporting()
 
         UNUserNotificationCenter.current().delegate = self
+        try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
         BackgroundTaskManager.shared.registerScheduleReminderNotificationsTask()
         ShortcutsManager.configureShortcuts()
 
