@@ -59,7 +59,7 @@ enum DeeplinkHandler {
     
     static func handle(deeplink: URL, handler: DeeplinkHandlable? = nil) throws {
         
-        guard !handle(legacyDeeplink: deeplink) else { return }
+        guard !handle(legacyDeeplink: deeplink, handler: handler) else { return }
         
         switch deeplink.path {
         case TransactionsSendDeeplink.command:
@@ -72,7 +72,7 @@ enum DeeplinkHandler {
     }
     
     @available(*, deprecated, message: "This method will be removed in the near future")
-    private static func handle(legacyDeeplink: URL) -> Bool {
+    private static func handle(legacyDeeplink: URL, handler: DeeplinkHandlable?) -> Bool {
         guard let components = URLComponents(url: legacyDeeplink, resolvingAgainstBaseURL: false), components.scheme == "tari", components.host == NetworkManager.shared.selectedNetwork.name else { return false }
         
         let pathComponents = components.path
@@ -91,8 +91,13 @@ enum DeeplinkHandler {
         let note = queryItems["note"]
         
         let deeplink = TransactionsSendDeeplink(receiverPublicKey: publicKey, amount: amount, note: note)
-        AppRouter.moveToTransactionSend(deeplink: deeplink)
+
+        guard let handler = handler else {
+            AppRouter.moveToTransactionSend(deeplink: deeplink)
+            return true
+        }
         
+        handler.handle(deeplink: deeplink)
         return true
     }
     
