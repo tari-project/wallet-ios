@@ -136,7 +136,7 @@ final class AddAmountViewController: UIViewController {
         // Deep link value
         if let amount = deeplink?.amount, amount > 0 {
             let tariAmount = MicroTari(amount)
-            addCharacter(tariAmount.formatted)
+            addCharacter(tariAmount.formattedPrecise)
         }
 
         Tracker.shared.track("/home/send_tari/add_amount", "Send Tari - Add Amount")

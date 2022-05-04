@@ -103,7 +103,10 @@ final class AddRecipientViewController: UIViewController {
         mainView.searchView.textField
             .textPublisher()
             .map { $0.filter { !"| ".contains($0) }}
-            .sink { [weak self] in self?.model.searchText.send($0) }
+            .sink { [weak self] in
+                self?.model.searchText.send($0)
+                self?.deeplink = nil
+            }
             .store(in: &cancellables)
         
         model.searchText
@@ -214,6 +217,7 @@ final class AddRecipientViewController: UIViewController {
     
     private func onContinue(paymentInfo: PaymentInfo) {
         let amountVC = AddAmountViewController(paymentInfo: paymentInfo, deeplink: deeplink)
+        deeplink = nil
         navigationController?.pushViewController(amountVC, animated: true)
     }
     
