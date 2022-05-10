@@ -206,15 +206,12 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
 
     @objc private func showGiphyPanel() {
         view.endEditing(true)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
-            guard let self = self else { return }
-            self.giphyModal = GiphyViewController()
-            self.giphyModal.mediaTypeConfig = [.gifs]
-            self.giphyModal.theme = TariGiphyTheme()
-            self.giphyModal.delegate = self
-            GiphyViewController.trayHeightMultiplier = 0.8
-            self.present(self.giphyModal, animated: true, completion: nil)
-        }
+        giphyModal = GiphyViewController()
+        giphyModal.mediaTypeConfig = [.gifs]
+        giphyModal.theme = TariGiphyTheme()
+        giphyModal.delegate = self
+        GiphyViewController.trayHeightMultiplier = 0.8
+        present(giphyModal, animated: true, completion: nil)
     }
 
     func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
@@ -299,21 +296,7 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
             return
         }
 
-        sendButton.variation = .loading
-        UIApplication.shared.keyWindow?.isUserInteractionEnabled = false
-        navigationBar.backButton.isHidden = true
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) { [weak self] in
-            guard let self = self else { return }
-            UIApplication.shared.keyWindow?.isUserInteractionEnabled = true
-            self.navigationBar.backButton.isHidden = false
-            self.sendTx(
-                wallet,
-                recipientPublicKey: self.paymentInfo.publicKey,
-                amount: self.amount
-            )
-            self.sendButton.variation = .slide
-        }
+        sendTx(wallet, recipientPublicKey: paymentInfo.publicKey, amount: amount)
     }
 
     private func sendTx(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari) {

@@ -50,7 +50,6 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
     private let mainView = SendingTariView()
     private let model: SendingTariModel
     
-    private var stepTickCount = 0
     private var cancelables = Set<AnyCancellable>()
     
     // MARK: - Initialisers
@@ -131,15 +130,7 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
         
     private func handleProgressSectionOnState(stepIndex: Int) {
         
-        stepTickCount += 1
-        
-        guard stepTickCount >= 2 else {
-            updateProgressBar(state: .off, stepIndex: stepIndex)
-            return
-        }
-        
         guard !model.isNextStepAvailable else {
-            stepTickCount = 0
             model.moveToNextStep()
             return
         }
