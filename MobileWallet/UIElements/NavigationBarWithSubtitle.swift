@@ -53,29 +53,21 @@ final class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleP
         subtitleLabel.numberOfLines = isCompact ? 2 : 1
         subtitleLabel.font = isCompact ? .Avenir.medium.withSize(12.0) : .Avenir.medium.withSize(13.0)
     }
-
-    override func draw(_ rect: CGRect) {
-        super.draw(rect)
-
+    
+    init() {
+        super.init(frame: .zero)
+        
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 4.0)
         layer.shadowRadius = 4
-        layer.shadowOpacity = 0.0
+        layer.shadowOpacity = 0.1
         clipsToBounds = true
         layer.masksToBounds = false
-
-        // The shadow seems to be mistakenly added to all subviews briefly after loading.
-        // TODO figure out why this is happening so we can remove this delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: { [weak self] in
-            guard let self = self else { return }
-            let animation = CABasicAnimation(keyPath: "shadowOpacity")
-            animation.fromValue = self.layer.shadowOpacity
-            animation.toValue = 0.1
-            animation.duration = 0.25
-            self.layer.add(animation, forKey: animation.keyPath)
-            self.layer.shadowOpacity = 0.1
-        })
         setupSubtitle()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func setupSubtitle() {

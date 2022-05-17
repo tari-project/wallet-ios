@@ -210,10 +210,8 @@ class SplashViewController: UIViewController, UITextViewDelegate {
         if TariLib.shared.isWalletExist {
             startWalletIfNeeded()
             // Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
-            localAuthenticationContext.authenticateUser {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-                    self?.prepareEnviroment(animationType: animationType)
-                }
+            localAuthenticationContext.authenticateUser { [weak self] in
+                self?.prepareEnviroment(animationType: animationType)
             }
         } else {
             AppKeychainWrapper.removeBackupPasswordFromKeychain()
