@@ -125,8 +125,7 @@ class TariLib {
                 databaseName: connectedDatabaseName,
                 publicAddress: publicAddress,
                 discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
-                safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
-                networkName: NetworkManager.shared.selectedNetwork.name
+                safMessageDurationSec: TariSettings.shared.safMessageDurationSec
             )
         } catch {
             TariLogger.error("Failed to create comms config", error: error)
@@ -138,11 +137,11 @@ class TariLib {
         setupListeners()
     }
 
-    private func transportType() throws -> TransportType {
+    private func transportType() throws -> TransportConfig {
         let torCookieBytes = [UInt8](try OnionManager.getCookie())
         let torCookie = try ByteVector(byteArray: torCookieBytes)
 
-        return try TransportType(
+        return try TransportConfig(
             controlServerAddress: "/ip4/\(OnionManager.CONTROL_ADDRESS)/tcp/\(OnionManager.CONTROL_PORT)",
             torPort: 18101,
             torCookie: torCookie,
@@ -202,7 +201,7 @@ class TariLib {
         }
         let loggingFilePath = TariLib.shared.logFilePath
         do {
-            tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath, seedWords: seedWords)
+            tariWallet = try Wallet(commsConfig: config, loggingFilePath: loggingFilePath, seedWords: seedWords, networkName: NetworkManager.shared.selectedNetwork.name)
             walletPublicKeyHex = tariWallet?.publicKey.0?.hex.0
             walletStateSubject.send(.started)
         } catch let error as WalletError {

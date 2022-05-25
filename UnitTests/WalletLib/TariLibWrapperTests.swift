@@ -222,7 +222,7 @@ final class TariLibWrapperTests: XCTestCase {
         ICloudBackup.shared.restoreWallet(password: backupPassword, completion: { error in
             var commsConfig: CommsConfig?
             do {
-                let transport = TransportType()
+                let transport = TransportConfig()
                 let address = transport.address.0
                 commsConfig = try CommsConfig(
                     transport: transport,

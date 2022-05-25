@@ -44,7 +44,7 @@ enum TransportTypeError: Error {
     case generic(_ errorCode: Int32)
 }
 
-class TransportType {
+class TransportConfig {
     private var ptr: OpaquePointer
 
     var pointer: OpaquePointer {
