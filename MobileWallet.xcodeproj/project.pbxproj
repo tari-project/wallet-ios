@@ -286,7 +286,7 @@
 		4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C6237962CB005058AB /* libc++.tbd */; };
 		4C363B762574F15E00D99868 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C363B372574EFE500D99868 /* OpenSSL.xcframework */; };
 		4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
-		4CD20A362407967B007B64D8 /* TransportType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportType.swift */; };
+		4CD20A362407967B007B64D8 /* TransportConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportConfig.swift */; };
 		4CDEC323273A5E3600999DCB /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDEC322273A5E3500999DCB /* Balance.swift */; };
 		4CF0911B26E17CEE00582972 /* CompletedTxKernel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF0911A26E17CEE00582972 /* CompletedTxKernel.swift */; };
 		6191948FA1B3F223B37A0D9B /* UTXO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619190C6EBD050DC647D1D7B /* UTXO.swift */; };
@@ -639,7 +639,7 @@
 		4C2C95C6237962CB005058AB /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		4C363B372574EFE500D99868 /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = "Pods/OpenSSL-Universal/Frameworks/OpenSSL.xcframework"; sourceTree = "<group>"; };
 		4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtari_wallet_ffi.a; path = MobileWallet/TariLib/libtari_wallet_ffi.a; sourceTree = "<group>"; };
-		4CD20A352407967B007B64D8 /* TransportType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportType.swift; sourceTree = "<group>"; };
+		4CD20A352407967B007B64D8 /* TransportConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportConfig.swift; sourceTree = "<group>"; };
 		4CDEC322273A5E3500999DCB /* Balance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
 		4CF0911A26E17CEE00582972 /* CompletedTxKernel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletedTxKernel.swift; sourceTree = "<group>"; };
 		540C8A02EEFE26A1133C9AA7 /* Pods-MobileWallet-MobileWalletUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet-MobileWalletUITests/Pods-MobileWallet-MobileWalletUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -924,7 +924,7 @@
 				00BBD811237E9EE200EBF5E6 /* PrivateKey.swift */,
 				001F6CDB238011CA00FA7002 /* PublicKey.swift */,
 				00B084C4249E4F6900F7B9BD /* SeedWords.swift */,
-				4CD20A352407967B007B64D8 /* TransportType.swift */,
+				4CD20A352407967B007B64D8 /* TransportConfig.swift */,
 				00BBD815237EA67600EBF5E6 /* Wallet.swift */,
 				009DFCB024741F9B0061DBC9 /* WalletTxs.swift */,
 				001F6CEF2381A43800FA7002 /* Transactions */,
@@ -2138,7 +2138,7 @@
 				3A4376EE269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift in Sources */,
 				3A82455427E1EDBB003B6B59 /* TransactionDetailsValueView.swift in Sources */,
 				3708D74A247FCF2300807D72 /* SettingsViewController.swift in Sources */,
-				4CD20A362407967B007B64D8 /* TransportType.swift in Sources */,
+				4CD20A362407967B007B64D8 /* TransportConfig.swift in Sources */,
 				00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */,
 				00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */,
 				375AFDCF2475387700C62CA1 /* WebBrowserViewController.swift in Sources */,
