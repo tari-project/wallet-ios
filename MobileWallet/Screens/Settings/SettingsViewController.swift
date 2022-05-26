@@ -71,6 +71,7 @@ class SettingsViewController: SettingsParentTableViewController {
     private enum SettingsItemTitle: CaseIterable {
         case backUpWallet
 
+        case about
         case reportBug
         case visitTari
         case contributeToTariAurora
@@ -97,6 +98,7 @@ class SettingsViewController: SettingsParentTableViewController {
 
             case .connectYats: return localized("settings.item.connect_yats")
 
+            case .about: return localized("settings.item.about")
             case .reportBug: return localized("settings.item.report_bug")
             case .visitTari: return localized("settings.item.visit_tari")
             case .contributeToTariAurora: return localized("settings.item.contribute_to_tari")
@@ -118,6 +120,7 @@ class SettingsViewController: SettingsParentTableViewController {
     ]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = [
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsAboutIcon, title: SettingsItemTitle.about.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsReportBugIcon, title: SettingsItemTitle.reportBug.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsVisitTariIcon, title: SettingsItemTitle.visitTari.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsContributeIcon, title: SettingsItemTitle.contributeToTariAurora.rawValue),
@@ -174,6 +177,11 @@ class SettingsViewController: SettingsParentTableViewController {
         localAuth.authenticateUser(reason: .userVerification, showFailedDialog: false) { [weak self] in
             self?.navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)
         }
+    }
+    
+    private func onAboutAction() {
+        let controller = AboutViewController()
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     private func onBridgeConfigurationAction() {
@@ -317,9 +325,12 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         switch section {
         case .security: onBackupWalletAction()
         case .more:
-            if SettingsItemTitle.allCases[indexPath.row + indexPath.section] == .reportBug {
+            switch SettingsItemTitle.allCases[indexPath.row + indexPath.section] {
+            case .about:
+                onAboutAction()
+            case .reportBug:
                 onSendFeedback()
-            } else {
+            default:
                 onLinkAction(indexPath: indexPath)
             }
         case .yat:

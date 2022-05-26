@@ -322,6 +322,7 @@ struct Images: Loopable {
     let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
     
     // Settings Icons
+    let settingsAboutIcon = UIImage(named: "icon-about")
     let settingsBaseNodeIcon = UIImage(named: "icon-base-node")
     let settingsBlockExplorerIcon = UIImage(named: "icon-block-explorer")
     let settingsBridgeConfigIcon = UIImage(named: "icon-bridge-config")
@@ -501,5 +502,17 @@ struct Transitions {
         transition.subtype = CATransitionSubtype.fromTop
 
         return transition
+    }
+}
+
+// MARK: - New Color Pallete
+
+extension UIColor {
+    enum tari {
+        static var white: UIColor? { UIColor(named: "White") }
+        static var mediumLightGrey: UIColor? { UIColor(named: "MediumLightGrey") }
+        static var mediumDarkGrey: UIColor? { UIColor(named: "MediumDarkGrey") }
+        static var darkGrey: UIColor? { UIColor(named: "DarkGrey") }
+        static var black: UIColor? { UIColor(named: "Black") }
     }
 }
