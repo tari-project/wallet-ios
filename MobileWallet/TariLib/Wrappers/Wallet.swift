@@ -527,7 +527,7 @@ final class Wallet {
         do {
             fee = try estimateTxFee(
                 amount: amount,
-                feePerGram: Wallet.defaultFeePerGram,
+                feePerGram: feePerGram,
                 kernelCount: Wallet.defaultKernelCount,
                 outputCount: Wallet.defaultOutputCount
             )

@@ -42,16 +42,16 @@ import UIKit
 
 enum TransactionProgressPresenter {
     
-    static func showTransactionProgress(presenter: UIViewController, recipientPublicKey: PublicKey, amount: MicroTari, message: String, isOneSidedPayment: Bool, yatID: String?) {
+    static func showTransactionProgress(presenter: UIViewController, recipientPublicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, yatID: String?) {
         
         let controller: TransactionViewControllable
         
         if let yatID = yatID {
-            let inputData = YatTransactionModel.InputData(publicKey: recipientPublicKey, amount: amount, message: message, yatID: yatID, isOneSidedPayment: isOneSidedPayment)
+            let inputData = YatTransactionModel.InputData(publicKey: recipientPublicKey, amount: amount, feePerGram: feePerGram, message: message, yatID: yatID, isOneSidedPayment: isOneSidedPayment)
             controller = YatTransactionConstructor.buildScene(inputData: inputData)
             presenter.present(controller, animated: false)
         } else {
-            let inputData = SendingTariModel.InputData(publicKey: recipientPublicKey, amount: amount, message: message, isOneSidedPayment: isOneSidedPayment)
+            let inputData = SendingTariModel.InputData(publicKey: recipientPublicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
             controller = SendingTariConstructor.buildScene(inputData: inputData)
             presenter.navigationController?.pushViewController(controller, animated: false)
         }
