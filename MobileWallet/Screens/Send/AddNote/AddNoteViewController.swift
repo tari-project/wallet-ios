@@ -49,6 +49,7 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
 
     private let paymentInfo: PaymentInfo
     private let amount: MicroTari
+    private let feePerGram: MicroTari
     private let isOneSidedPayment: Bool
     private let deeplink: TransactionsSendDeeplink?
 
@@ -101,9 +102,10 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
         }
     }
     
-    init(paymentInfo: PaymentInfo, amount: MicroTari, isOneSidedPayment: Bool, deeplink: TransactionsSendDeeplink?) {
+    init(paymentInfo: PaymentInfo, amount: MicroTari, feePerGram: MicroTari, isOneSidedPayment: Bool, deeplink: TransactionsSendDeeplink?) {
         self.paymentInfo = paymentInfo
         self.amount = amount
+        self.feePerGram = feePerGram
         self.isOneSidedPayment = isOneSidedPayment
         self.deeplink = deeplink
         super.init(nibName: nil, bundle: nil)
@@ -296,10 +298,10 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
             return
         }
 
-        sendTx(wallet, recipientPublicKey: paymentInfo.publicKey, amount: amount)
+        sendTx(wallet, recipientPublicKey: paymentInfo.publicKey, amount: amount, feePerGram: feePerGram)
     }
 
-    private func sendTx(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari) {
+    private func sendTx(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari) {
         
         var message = noteText
         
@@ -311,6 +313,7 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
             presenter: self,
             recipientPublicKey: recipientPublicKey,
             amount: amount,
+            feePerGram: feePerGram,
             message: message,
             isOneSidedPayment: isOneSidedPayment,
             yatID: paymentInfo.yatID

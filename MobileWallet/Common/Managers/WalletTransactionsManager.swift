@@ -62,7 +62,7 @@ final class WalletTransactionsManager {
 
     // MARK: - Actions
 
-    func performTransactionPublisher(publicKey: PublicKey, amount: MicroTari, message: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
+    func performTransactionPublisher(publicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
 
         let subject = CurrentValueSubject<State, TransactionError>(.connectionCheck)
 
@@ -72,7 +72,7 @@ final class WalletTransactionsManager {
                 if !isOneSidedPayment {
                     subject.send(.transaction)
                 }
-                self?.verifyWalletStateAndSendTransactionToBlockchain(publicKey: publicKey, amount: amount, message: message, isOneSidedPayment: isOneSidedPayment) { result in
+                self?.verifyWalletStateAndSendTransactionToBlockchain(publicKey: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment) { result in
                     switch result {
                     case .success:
                         subject.send(completion: .finished)
@@ -115,7 +115,7 @@ final class WalletTransactionsManager {
         }
     }
 
-    private func verifyWalletStateAndSendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
+    private func verifyWalletStateAndSendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
 
         var cancel: AnyCancellable?
 
@@ -125,7 +125,7 @@ final class WalletTransactionsManager {
                 switch walletState {
                 case .started:
                     cancel?.cancel()
-                    self?.sendTransactionToBlockchain(publicKey: publicKey, amount: amount, message: message, isOneSidedPayment: isOneSidedPayment, result: result)
+                    self?.sendTransactionToBlockchain(publicKey: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment, result: result)
                 case .startFailed:
                     cancel?.cancel()
                     result(.failure(.unableToStartWallet))
@@ -137,12 +137,12 @@ final class WalletTransactionsManager {
         cancel?.store(in: &cancellables)
     }
 
-    private func sendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
+    private func sendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
         
         guard let wallet = TariLib.shared.tariWallet else { return }
 
         do {
-            let transactionID = try wallet.sendTx(destination: publicKey, amount: amount, feePerGram: Wallet.defaultFeePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
+            let transactionID = try wallet.sendTx(destination: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
 
             guard !isOneSidedPayment else {
                 result(.success)

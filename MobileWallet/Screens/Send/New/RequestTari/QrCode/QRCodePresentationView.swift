@@ -54,7 +54,7 @@ final class QRCodePresentationView: UIView {
     
     @View var qrCodeView: QRCodeView = {
         let view = QRCodeView()
-        view.apply(shadow: Shadow(color: .black, opacity: 0.1, radius: 13.5, offset: CGSize(width: 6.75, height: 6.75)))
+        view.apply(shadow: .box)
         return view
     }()
     

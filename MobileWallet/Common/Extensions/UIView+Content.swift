@@ -41,7 +41,7 @@
 import UIKit
 
 struct Shadow {
-    let color: UIColor
+    let color: UIColor?
     let opacity: Float
     let radius: CGFloat
     let offset: CGSize
@@ -109,7 +109,7 @@ extension UIView {
     }
 
     func apply(shadow: Shadow) {
-        layer.shadowColor = shadow.color.cgColor
+        layer.shadowColor = shadow.color?.cgColor
         layer.shadowOpacity = shadow.opacity
         layer.shadowRadius = shadow.radius
         layer.shadowOffset = shadow.offset
