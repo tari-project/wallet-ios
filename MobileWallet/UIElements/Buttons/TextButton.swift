@@ -118,6 +118,11 @@ final class TextButton: BaseButton {
 
         titleLabel?.font = font
     }
+    
+    func update(textColor: UIColor?, font: UIFont?) {
+        setTitleColor(textColor, for: .normal)
+        titleLabel?.font = font
+    }
 
     func setRightImage(_ image: UIImage?) {
  

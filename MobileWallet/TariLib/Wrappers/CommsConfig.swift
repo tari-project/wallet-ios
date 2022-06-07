@@ -53,7 +53,7 @@ final class CommsConfig {
     var dbName: String
     private(set) var pointer: OpaquePointer
 
-    init(transport: TransportType, databaseFolderPath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64, safMessageDurationSec: UInt64, networkName: String) throws {
+    init(transport: TransportConfig, databaseFolderPath: String, databaseName: String, publicAddress: String, discoveryTimeoutSec: UInt64, safMessageDurationSec: UInt64) throws {
 
         dbPath = databaseFolderPath
         dbName = databaseName
@@ -61,20 +61,17 @@ final class CommsConfig {
         var errorCode: Int32 = -1
         let result = databaseName.withCString({ db in
             databaseFolderPath.withCString({ path in
-                networkName.withCString({ network in
-                    publicAddress.withCString({ address in
-                        withUnsafeMutablePointer(to: &errorCode, { error in
-                            comms_config_create(
-                                address,
-                                transport.pointer,
-                                db,
-                                path,
-                                discoveryTimeoutSec,
-                                safMessageDurationSec,
-                                network,
-                                error
-                            )
-                        })
+                publicAddress.withCString({ address in
+                    withUnsafeMutablePointer(to: &errorCode, { error in
+                        comms_config_create(
+                            address,
+                            transport.pointer,
+                            db,
+                            path,
+                            discoveryTimeoutSec,
+                            safMessageDurationSec,
+                            error
+                        )
                     })
                 })
             })

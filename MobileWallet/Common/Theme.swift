@@ -322,6 +322,7 @@ struct Images: Loopable {
     let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
     
     // Settings Icons
+    let settingsAboutIcon = UIImage(named: "icon-about")
     let settingsBaseNodeIcon = UIImage(named: "icon-base-node")
     let settingsBlockExplorerIcon = UIImage(named: "icon-block-explorer")
     let settingsBridgeConfigIcon = UIImage(named: "icon-bridge-config")
@@ -335,6 +336,12 @@ struct Images: Loopable {
     let settingsVisitTariIcon = UIImage(named: "icon-visit-tari")
     let settingsWalletBackupsIcon = UIImage(named: "icon-wallet-backups")
     let settingsYatIcon = UIImage(named: "icon-yat")
+    
+    // Adjustable fees
+    
+    let speedometerLow = UIImage(named: "speedometer-low")
+    let speedometerMid = UIImage(named: "speedometer-mid")
+    let speedometerHigh = UIImage(named: "speedometer-high")
 }
 
 struct Fonts: Loopable {
@@ -502,4 +509,21 @@ struct Transitions {
 
         return transition
     }
+}
+
+// MARK: - New Color Pallete
+
+extension UIColor {
+    enum tari {
+        static var white: UIColor? { UIColor(named: "White") }
+        static var mediumLightGrey: UIColor? { UIColor(named: "MediumLightGrey") }
+        static var mediumDarkGrey: UIColor? { UIColor(named: "MediumDarkGrey") }
+        static var darkGrey: UIColor? { UIColor(named: "DarkGrey") }
+        static var black: UIColor? { UIColor(named: "Black") }
+        static var purple: UIColor? { UIColor(named: "Purple") }
+    }
+}
+
+extension Shadow {
+    static var box: Self { Self(color: .tari.black, opacity: 0.1, radius: 13.5, offset: CGSize(width: 6.75, height: 6.75)) }
 }

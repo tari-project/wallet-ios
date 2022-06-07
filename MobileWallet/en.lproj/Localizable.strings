@@ -113,9 +113,16 @@
 "add_amount.info.wait_completion_previous_tx.description" = "Sorry, you can’t send this much tXTR\nuntil your previous transaction(s) are complete.\nPlease wait for at least one transaction\nto complete and then try again.";
 "add_amount.error.invalid_number" = "Invalid number";
 "add_amount.warning.not_enough_tari" = "Not enough tXTR in your available balance";
+"add_amount.label.network_traffic" = "Network Traffic";
+"add_amount.label.button.adjust_fee" = "Speed Up Transaction";
 "add_amount.label.one_sided_payment" = "One-Sided Payment";
 "add_amount.pop_up.one_sided_payment.title" = "One-Sided Payment";
 "add_amount.pop_up.one_sided_payment.description" = "One-sided payments are broadcast instantly and do not require the recipient to be online. But they are less private. Use them if you know the recipient is offline for long periods, or for things like 'tip-jars'.";
+"add_amount.pop_up.adjust_fee.title" = "Modify Transaction Fee";
+"add_amount.pop_up.adjust_fee.description" = "Choose how fast you would like to move your transaction to the blockchain. A higher fee will speed up the process.";
+"add_amount.pop_up.adjust_fee.label.estimated_fee" = "Estimated Fee:";
+"add_amount.pop_up.adjust_fee.button.approve" = "Use This Fee";
+"add_amount.spinner_view.label.calculating" = "Calculating transaction fee...";
 
 /* BackupWalletSettings view */
 "backup_wallet_settings.title" = "Security";
@@ -177,6 +184,7 @@
 "settings.item.visit_tari" = "Visit Tari.com";
 "settings.item.report_bug" = "Report a Bug";
 "settings.item.block_explorer" = "Block Explorer";
+"settings.item.about" = "About";
 
 "settings.error.connect_yats_no_connection" = "The app isn't currently connected to a peer-to-peer network. Please check your internet connection or change the base node and try again.";
 
@@ -579,6 +587,12 @@
 "add_base_node_overlay.button.show_details" = "Show details";
 "add_base_node_overlay.button.hide_details" = "Hide details";
 "add_base_node_overlay.button.confirm" = "Connect";
+
+/* About */
+
+"about.title" = "About";
+"about.label.creative_commons" = "The following icons are licensed under";
+"about.button.creative_commons" = "Creative Commons 3.0:";
 
 /* Errors */
 

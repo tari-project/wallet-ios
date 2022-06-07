@@ -347,7 +347,7 @@ extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
         switch scanResourceType {
         case .publicKey:
             do {
-                _ = try DeeplinkHandler.handle(rawDeeplink: rawDeeplink, handler: self)
+                try DeeplinkHandler.handle(rawDeeplink: rawDeeplink, handler: self)
             } catch DeeplinkError.transactionSendDeeplinkError {
                 PopUpPresenter.show(message: MessageModel(title: localized("scan_view.error.title"), message: localized("scan_view.error.public_key.description"), type: .error))
                 dismiss(animated: true)

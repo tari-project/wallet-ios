@@ -252,9 +252,6 @@ final class HomeViewController: UIViewController {
 
         do {
             try keyServer.requestDrop(onSuccess: { () in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: { [weak self] in
-                    guard let _ = self else { return }
-
                     let title = String(
                         format: localized("home.request_drop.title.with_param"),
                         NetworkManager.shared.selectedNetwork.tickerSymbol
@@ -275,12 +272,6 @@ final class HomeViewController: UIViewController {
                     )
                     
                     PopUpPresenter.showPopUp(model: popUpModel)
-                })
-
-                DispatchQueue.main.async { [weak self] in
-                    guard let _ = self else { return }
-
-                }
             }) { (error) in
                 DispatchQueue.main.async {
                     PopUpPresenter.show(message: MessageModel(title: errorTitle, message: localized("home.request_drop.error.description"), type: .error))
@@ -297,17 +288,13 @@ final class HomeViewController: UIViewController {
             TariLogger.error("No KeyServer initialised")
             return
         }
-
-        DispatchQueue.global().asyncAfter(deadline: .now() + 1.5) {
-            do {
-                try keyServer.importSecondUtxo {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-                        PopUpPresenter.showStorePopUp()
-                    }
-                }
-            } catch {
-                TariLogger.error("Failed to import 2nd UTXO", error: error)
+        
+        do {
+            try keyServer.importSecondUtxo {
+                PopUpPresenter.showStorePopUp()
             }
+        } catch {
+            TariLogger.error("Failed to import 2nd UTXO", error: error)
         }
     }
 

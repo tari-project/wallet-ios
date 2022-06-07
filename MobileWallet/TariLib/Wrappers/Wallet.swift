@@ -63,14 +63,51 @@ enum WalletErrors: Error {
     case fundsPending
 }
 
+enum TrasactionSendStatus: UInt32 {
+    case queued
+    case directSendSafSend
+    case directSend
+    case safSend
+    case invalid
+    
+    var isDirectSend: Bool {
+        switch self {
+        case .directSend, .directSendSafSend:
+            return true
+        case .queued, .safSend, .invalid:
+            return false
+        }
+    }
+    
+    var isSafSend: Bool {
+        switch self {
+        case .directSendSafSend, .safSend:
+            return true
+        case .queued, .directSend, .invalid:
+            return false
+        }
+    }
+    
+    var isQueued: Bool {
+        switch self {
+        case .queued:
+            return true
+        case .directSendSafSend, .directSend, .safSend, .invalid:
+            return false
+        }
+    }
+    
+    var isSuccess: Bool { isDirectSend || isSafSend || !isQueued }
+}
+
 private enum BaseNodeValidationType: String {
     case txo
     case tx
 }
 
-struct CallbackTxResult {
+struct TransactionResult {
     let id: UInt64
-    let success: Bool
+    let status: TrasactionSendStatus
 }
 
 enum RestoreWalletStatus {
@@ -210,7 +247,7 @@ final class Wallet {
         return result
     }
 
-    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?) throws {
+    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, networkName: String) throws {
         let loggingFilePathPointer = UnsafeMutablePointer<Int8>(mutating: (loggingFilePath as NSString).utf8String)!
 
         let receivedTxCallback: (@convention(c) (OpaquePointer?) -> Void)? = {
@@ -284,31 +321,25 @@ final class Wallet {
             TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
         }
-
-        let directSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
-            TariEventBus.postToMainThread(.directSend, sender: CallbackTxResult(id: txID, success: success))
-            let message = "Direct send lib callback. txID=\(txID)"
-            if success {
-                TariLogger.verbose("\(message) ✅")
-                TariEventBus.postToMainThread(.txListUpdate)
-                TariEventBus.postToMainThread(.balanceUpdate)
-                TariEventBus.postToMainThread(.requiresBackup)
-            } else {
-                TariLogger.error("\(message) failure")
+        
+        let transactionSendResultCallback: @convention(c) (UInt64, OpaquePointer?) -> Void = { transactionID, transactionSendStatusPointer in
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = transaction_send_status_decode(transactionSendStatusPointer, errorCodePointer)
+            guard errorCode == 0, let status = TrasactionSendStatus(rawValue: result) else { return }
+            TariEventBus.postToMainThread(.transactionSendResult, sender: TransactionResult(id: transactionID, status: status))
+            
+            let message = "Store and forward lib callback. txID=\(transactionID)"
+            
+            guard status.isSuccess else {
+                TariLogger.error("\(message) FAILURE")
+                return
             }
-        }
-
-        let storeAndForwardSendResultCallback: (@convention(c) (UInt64, Bool) -> Void)? = { txID, success in
-            TariEventBus.postToMainThread(.storeAndForwardSend, sender: CallbackTxResult(id: txID, success: success))
-            let message = "Store and forward lib callback. txID=\(txID)"
-            if success {
-                TariLogger.verbose("\(message) ✅")
-                TariEventBus.postToMainThread(.txListUpdate)
-                TariEventBus.postToMainThread(.balanceUpdate)
-                TariEventBus.postToMainThread(.requiresBackup)
-            } else {
-                TariLogger.error("\(message) failure")
-            }
+            
+            TariLogger.verbose("\(message) SUCCESS")
+            TariEventBus.postToMainThread(.txListUpdate)
+            TariEventBus.postToMainThread(.balanceUpdate)
+            TariEventBus.postToMainThread(.requiresBackup)
         }
         
         let txCancellationCallback: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { valuePointer, rejectonReason in
@@ -321,7 +352,9 @@ final class Wallet {
         }
 
         let txoValidationCallback: (@convention(c) (UInt64, Bool) -> Void) = { responseId, isSuccess in
-            Wallet.checkValidationResult(type: .txo, responseId: responseId, isSuccess: isSuccess)
+            DispatchQueue.global().async {
+                Wallet.checkValidationResult(type: .txo, responseId: responseId, isSuccess: isSuccess)
+            }
         }
 
         let txValidationCompleteCallback: (@convention(c) (UInt64, Bool) -> Void)? = { responseId, isSuccess in
@@ -353,7 +386,7 @@ final class Wallet {
         dbName = commsConfig.dbName
         logPath = loggingFilePath
 
-        func createWallet(passphrase: String?, seedWords: SeedWords?) -> (result: OpaquePointer?, error: WalletError?) {
+        func createWallet(passphrase: String?, seedWords: SeedWords?, networkName: String) -> (result: OpaquePointer?, error: WalletError?) {
 
             var errorCode: Int32 = -1
             var isRecoveryInProgress = false
@@ -367,6 +400,7 @@ final class Wallet {
                         10 * 1024 * 1024, // rolling log file max size in bytes
                         passphrase,
                         seedWords?.pointer,
+                        networkName,
                         receivedTxCallback,
                         receivedTxReplyCallback,
                         receivedFinalizedTxCallback,
@@ -375,8 +409,7 @@ final class Wallet {
                         txMinedUnconfirmedCallback,
                         fauxTransactionConfirmed,
                         fauxTransactionUncorfirmed,
-                        directSendResultCallback,
-                        storeAndForwardSendResultCallback,
+                        transactionSendResultCallback,
                         txCancellationCallback,
                         txoValidationCallback,
                         contactsLivenessDataUpdatedCallback,
@@ -399,13 +432,13 @@ final class Wallet {
             return (result, error)
         }
 
-        func handleInitializationFlow(passphrase: String?) throws -> (pointer: OpaquePointer, encryptionEnabled: Bool) {
+        func handleInitializationFlow(passphrase: String?, networkName: String) throws -> (pointer: OpaquePointer, encryptionEnabled: Bool) {
 
-            let createWalletResponse = createWallet(passphrase: passphrase, seedWords: seedWords)
+            let createWalletResponse = createWallet(passphrase: passphrase, seedWords: seedWords, networkName: networkName)
 
             switch createWalletResponse {
             case (_, .some(.invalidPassphrase)) where passphrase != nil:
-                return try handleInitializationFlow(passphrase: nil)
+                return try handleInitializationFlow(passphrase: nil, networkName: networkName)
             case (_, .some(let error)):
                 throw error
             case (.some(let result), _):
@@ -415,7 +448,7 @@ final class Wallet {
             }
         }
 
-        let result = try handleInitializationFlow(passphrase: Self.passphrase())
+        let result = try handleInitializationFlow(passphrase: Self.passphrase(), networkName: networkName)
 
         pointer = result.pointer
 
@@ -494,7 +527,7 @@ final class Wallet {
         do {
             fee = try estimateTxFee(
                 amount: amount,
-                feePerGram: Wallet.defaultFeePerGram,
+                feePerGram: feePerGram,
                 kernelCount: Wallet.defaultKernelCount,
                 outputCount: Wallet.defaultOutputCount
             )

@@ -62,7 +62,7 @@ final class WalletTransactionsManager {
 
     // MARK: - Actions
 
-    func performTransactionPublisher(publicKey: PublicKey, amount: MicroTari, message: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
+    func performTransactionPublisher(publicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
 
         let subject = CurrentValueSubject<State, TransactionError>(.connectionCheck)
 
@@ -72,7 +72,7 @@ final class WalletTransactionsManager {
                 if !isOneSidedPayment {
                     subject.send(.transaction)
                 }
-                self?.verifyWalletStateAndSendTransactionToBlockchain(publicKey: publicKey, amount: amount, message: message, isOneSidedPayment: isOneSidedPayment) { result in
+                self?.verifyWalletStateAndSendTransactionToBlockchain(publicKey: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment) { result in
                     switch result {
                     case .success:
                         subject.send(completion: .finished)
@@ -115,7 +115,7 @@ final class WalletTransactionsManager {
         }
     }
 
-    private func verifyWalletStateAndSendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
+    private func verifyWalletStateAndSendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
 
         var cancel: AnyCancellable?
 
@@ -125,7 +125,7 @@ final class WalletTransactionsManager {
                 switch walletState {
                 case .started:
                     cancel?.cancel()
-                    self?.sendTransactionToBlockchain(publicKey: publicKey, amount: amount, message: message, isOneSidedPayment: isOneSidedPayment, result: result)
+                    self?.sendTransactionToBlockchain(publicKey: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment, result: result)
                 case .startFailed:
                     cancel?.cancel()
                     result(.failure(.unableToStartWallet))
@@ -137,12 +137,12 @@ final class WalletTransactionsManager {
         cancel?.store(in: &cancellables)
     }
 
-    private func sendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
+    private func sendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
         
         guard let wallet = TariLib.shared.tariWallet else { return }
 
         do {
-            let transactionID = try wallet.sendTx(destination: publicKey, amount: amount, feePerGram: Wallet.defaultFeePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
+            let transactionID = try wallet.sendTx(destination: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
 
             guard !isOneSidedPayment else {
                 result(.success)
@@ -155,42 +155,24 @@ final class WalletTransactionsManager {
     }
 
     private func startListeningForWalletEvents(transactionID: UInt64, publicKey: PublicKey, result: @escaping (Result<Void, TransactionError>) -> Void) {
-
-        let directSendPublisher = TariEventBus.events(forType: .directSend)
-            .compactMap { $0.object as? CallbackTxResult }
+        
+        TariEventBus.events(forType: .transactionSendResult)
+            .compactMap { $0.object as? TransactionResult }
             .filter { $0.id == transactionID }
-
-        let storeAndForwardPublisher = TariEventBus.events(forType: .storeAndForwardSend)
-            .compactMap { $0.object as? CallbackTxResult }
-            .filter { $0.id == transactionID }
-
-        directSendPublisher
-            .filter(\.success)
-            .sink { [weak self] _ in
+            .sink { [weak self] in
+                
                 self?.cancelWalletEvents()
+                
+                guard $0.status.isSuccess else {
+                    result(.failure(.unsucessfulTransaction))
+                    return
+                }
+                
                 self?.sendPushNotificationToRecipient(publicKey: publicKey)
-                TariLogger.info("Direct send successful.")
-                Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Accepted - Synchronous")
+                
+                TariLogger.info("Transaction send successful.")
+                Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Accepted")
                 result(.success)
-            }
-            .store(in: &cancellables)
-
-        storeAndForwardPublisher
-            .filter(\.success)
-            .sink { [weak self] _ in
-                self?.cancelWalletEvents()
-                self?.sendPushNotificationToRecipient(publicKey: publicKey)
-                TariLogger.info("Store and forward send successful.")
-                Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Stored")
-                result(.success)
-            }
-            .store(in: &cancellables)
-
-        Publishers.CombineLatest(directSendPublisher, storeAndForwardPublisher)
-            .filter { $0.success == false && $1.success == false}
-            .sink { [weak self] _ in
-                self?.cancelWalletEvents()
-                result(.failure(.unsucessfulTransaction))
             }
             .store(in: &cancellables)
     }

@@ -66,6 +66,8 @@ struct TariCompletedTransactions;
 
 struct TariBalance;
 
+struct TariTransactionSendStatus;
+
 struct TariCompletedTransaction;
 
 struct TariPendingOutboundTransactions;
@@ -76,7 +78,7 @@ struct TariPendingInboundTransactions;
 
 struct TariPendingInboundTransaction;
 
-struct TariTransportType;
+struct TariTransportConfig;
 
 struct TariSeedWords;
 
@@ -84,16 +86,20 @@ struct EmojiSet;
 
 struct TariTransactionKernel;
 
+struct TariFeePerGramStats;
+
+struct TariFeePerGramStat;
+
 /// -------------------------------- Transport Types ----------------------------------------------- ///
 
 // Creates a memory transport type
-struct TariTransportType *transport_memory_create();
+struct TariTransportConfig *transport_memory_create();
 
 // Creates a tcp transport type
-struct TariTransportType *transport_tcp_create(const char *listener_address, int *error_out);
+struct TariTransportConfig *transport_tcp_create(const char *listener_address, int *error_out);
 
 // Creates a tor transport type
-struct TariTransportType *transport_tor_create(
+struct TariTransportConfig *transport_tor_create(
     const char *control_server_address,
     struct ByteVector *tor_cookie,
     unsigned short tor_port,
@@ -103,10 +109,13 @@ struct TariTransportType *transport_tor_create(
     int *error_out);
 
 // Gets the address from a memory transport type
-char *transport_memory_get_address(struct TariTransportType *transport, int *error_out);
+char *transport_memory_get_address(struct TariTransportConfig *transport, int *error_out);
 
-// Frees memory for a transport type
-void transport_type_destroy(struct TariTransportType *transport);
+// Frees memory for a transport config (deprecated alias to transport_config_destroy)
+void transport_type_destroy(struct TariTransportConfig *transport);
+
+// Frees memory for a transport config
+void transport_config_destroy(struct TariTransportConfig *transport);
 
 /// -------------------------------- Strings ----------------------------------------------- ///
 
@@ -183,6 +192,34 @@ struct TariCommitmentSignature *commitment_signature_create_from_bytes(
 
 // Frees memory for a TariCommitmentSignature
 void commitment_signature_destroy(struct TariCommitmentSignature *com_sig);
+
+/// -------------------------------- Covenant  --------------------------------------------- ///
+
+// Creates a TariCovenant from a ByteVector containing the covenant bytes
+struct TariCovenant *covenant_create_from_bytes(
+    struct ByteVector *covenant_bytes,
+    int *error_out
+);
+
+// Frees memory for a TariCovenant
+void covenant_destroy(struct TariCovenant *covenant);
+
+/// -------------------------------- Output Features  --------------------------------------------- ///
+
+// Creates a TariOutputFeatures from byte values
+struct TariOutputFeatures *output_features_create_from_bytes(
+    unsigned char version,
+    unsigned char flags,
+    unsigned long long maturity,
+    unsigned char recovery_byte,
+    struct ByteVector *metadata,
+    struct ByteVector *unique_id,
+    struct ByteVector *parent_public_key,
+    int *error_out
+);
+
+// Frees memory for a TariOutputFeatures
+void output_features_destroy(struct TariOutputFeatures *output_features);
 
 /// -------------------------------- Seed Words  -------------------------------------------------- ///
 // Create an empty instance of TariSeedWords
@@ -431,6 +468,19 @@ int pending_inbound_transaction_get_status(struct TariPendingInboundTransaction 
 // Frees memory for a TariPendingInboundTransaction
 void pending_inbound_transaction_destroy(struct TariPendingInboundTransaction *transaction);
 
+/// -------------------------------- Transport Send Status ------------------------------------------------------ ///
+
+// Decode the transaction send status of a TariTransactionSendStatus
+//     !direct_send & !saf_send &  queued   = 0
+//      direct_send &  saf_send & !queued   = 1
+//      direct_send & !saf_send & !queued   = 2
+//     !direct_send &  saf_send & !queued   = 3
+//     any other combination (is not valid) = 4
+unsigned int transaction_send_status_decode(struct TariTransactionSendStatus *status, int *error_out);
+
+// Frees memory for a TariTransactionSendStatus
+void transaction_send_status_destroy(struct TariTransactionSendStatus *status);
+
 /// -------------------------------- InboundTransactions ------------------------------------------------------ ///
 
 // Gets the number of elements in a TariPendingInboundTransactions
@@ -446,12 +496,11 @@ void pending_inbound_transactions_destroy(struct TariPendingInboundTransactions 
 // Creates a TariCommsConfig
 // Valid values for network are: dibbler, igor, localnet, mainnet
 struct TariCommsConfig *comms_config_create(const char *public_address,
-                                            struct TariTransportType *transport,
+                                            struct TariTransportConfig *transport,
                                             const char *database_name,
                                             const char *datastore_path,
                                             unsigned long long discovery_timeout_in_secs,
                                             unsigned long long saf_message_duration_in_secs,
-                                            const char *network,
                                             int *error_out);
 
 // Frees memory for a TariCommsConfig
@@ -490,10 +539,15 @@ struct TariPublicKeys *comms_list_connected_public_keys(struct TariWallet *walle
 /// when a one-sided transaction is detected as mined AND confirmed.
 /// `callback_faux_transaction_unconfirmed` - The callback function pointer matching the function signature. This will
 /// be called  when a one-sided transaction is detected as mined but not yet confirmed.
-/// `callback_direct_send_result` - The callback function pointer matching the function signature. This is called
-/// when a direct send is completed. The first parameter is the transaction id and the second is whether if was successful or not.
-/// `callback_store_and_forward_send_result` - The callback function pointer matching the function signature. This is called
-/// when a direct send is completed. The first parameter is the transaction id and the second is whether if was successful or not.
+/// `callback_transaction_send_result` - The callback function pointer matching the function signature. This is called
+/// when a transaction send is completed. The first parameter is the transaction id and the second contains the
+/// transaction send status, weather it was send direct and/or send via saf on the one hand or queued for further retry
+/// sending on the other hand.
+///     !direct_send & !saf_send &  queued   = 0
+///      direct_send &  saf_send & !queued   = 1
+///      direct_send & !saf_send & !queued   = 2
+///     !direct_send &  saf_send & !queued   = 3
+///     any other combination (is not valid) = 4
 /// `callback_transaction_cancellation` - The callback function pointer matching the function signature. This is called
 /// when a transaction is cancelled. The first parameter is a pointer to the cancelled transaction, the second is a reason as to
 /// why said transaction failed that is mapped to the `TxCancellationReason` enum:
@@ -550,6 +604,7 @@ struct TariWallet *wallet_create(struct TariCommsConfig *config,
                                  unsigned int size_per_log_file_bytes,
                                  const char *passphrase,
                                  struct TariSeedWords *seed_words,
+                                 const char *network,
                                  void (*callback_received_transaction)(struct TariPendingInboundTransaction *),
                                  void (*callback_received_transaction_reply)(struct TariCompletedTransaction *),
                                  void (*callback_received_finalized_transaction)(struct TariCompletedTransaction *),
@@ -558,8 +613,7 @@ struct TariWallet *wallet_create(struct TariCommsConfig *config,
                                  void (*callback_transaction_mined_unconfirmed)(struct TariCompletedTransaction *, unsigned long long),
                                  void (*callback_faux_transaction_confirmed)(struct TariCompletedTransaction *),
                                  void (*callback_faux_transaction_unconfirmed)(struct TariCompletedTransaction *, unsigned long long),
-                                 void (*callback_direct_send_result)(unsigned long long, bool),
-                                 void (*callback_store_and_forward_send_result)(unsigned long long, bool),
+                                 void (*callback_transaction_send_result)(unsigned long long, struct TariTransactionSendStatus *),
                                  void (*callback_transaction_cancellation)(struct TariCompletedTransaction *, unsigned long long),
                                  void (*callback_txo_validation_complete)(unsigned long long, bool),
                                  void (*callback_contacts_liveness_data_updated)(struct TariContactsLivenessData *),
@@ -858,6 +912,22 @@ bool wallet_start_recovery(struct TariWallet *wallet, struct TariPublicKey *base
 /// # Safety
 /// None
 bool wallet_set_one_sided_payment_message(struct TariWallet *wallet, const char *message, int *error_out);
+
+struct TariFeePerGramStats* wallet_get_fee_per_gram_stats(struct TariWallet *wallet, unsigned int count, int *error_out);
+
+unsigned int fee_per_gram_stats_get_length(struct TariFeePerGramStats *fee_per_gram_stats, int *error_out);
+
+struct TariFeePerGramStat* fee_per_gram_stats_get_at(struct TariFeePerGramStats *fee_per_gram_stats, unsigned int position, int *error_out);
+
+void fee_per_gram_stats_destroy(struct TariFeePerGramStats *fee_per_gram_stats);
+
+unsigned long long fee_per_gram_stat_get_order(struct TariFeePerGramStat *fee_per_gram_stat, int *error_out);
+
+unsigned long long fee_per_gram_stat_get_min_fee_per_gram(struct TariFeePerGramStat *fee_per_gram_stat, int *error_out);
+
+unsigned long long fee_per_gram_stat_get_avg_fee_per_gram(struct TariFeePerGramStat *fee_per_gram_stat, int *error_out);
+
+unsigned long long fee_per_gram_stat_get_max_fee_per_gram(struct TariFeePerGramStat *fee_per_gram_stat, int *error_out);
 
 // Frees memory for a TariWallet
 void wallet_destroy(struct TariWallet *wallet);
