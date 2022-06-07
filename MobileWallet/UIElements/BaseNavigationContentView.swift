@@ -1,8 +1,8 @@
-//  AddAmountSpinnerView.swift
+//  BaseNavigationContentView.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 27/05/2022
+	Created by Adrian Truszczynski on 07/06/2022
 	Using Swift 5.0
 	Running on macOS 12.3
 
@@ -40,28 +40,27 @@
 
 import UIKit
 import TariCommon
-import Lottie
 
-final class AddAmountSpinnerView: UIView {
+class BaseNavigationContentView: UIView {
     
-    // MARK: - Subviews
+    // MARK: - Subview
     
-    private let spinnerView: AnimationView = {
-        let view = AnimationView()
-        view.backgroundBehavior = .pauseAndRestore
-        view.animation = Animation.named(.pendingCircleAnimation)
-        view.loopMode = .loop
-        view.play()
-        view.translatesAutoresizingMaskIntoConstraints = false
+    @View private var statusBarBackgroundView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Theme.shared.colors.navigationBarBackground
         return view
     }()
     
-    @View private var label: UILabel = {
-        let view = UILabel()
-        view.text = localized("add_amount.spinner_view.label.calculating")
-        view.textAlignment = .center
-        view.textColor = .tari.greys.mediumDarkGrey
-        view.font = .Avenir.light.withSize(14.0)
+    @View private(set) var navigationBar: NavigationBar = {
+       let view = NavigationBar()
+        view.verticalPositioning = .custom(24)
+        view.backgroundColor = Theme.shared.colors.navigationBarBackground
+        return view
+    }()
+    
+    @View private(set) var separator: UIView = {
+        let view = UIView()
+        view.backgroundColor = Theme.shared.colors.settingsNavBarSeparator
         return view
     }()
     
@@ -69,6 +68,7 @@ final class AddAmountSpinnerView: UIView {
     
     init() {
         super.init(frame: .zero)
+        setupViews()
         setupConstraints()
     }
     
@@ -78,19 +78,28 @@ final class AddAmountSpinnerView: UIView {
     
     // MARK: - Setups
     
+    private func setupViews() {
+        backgroundColor = Theme.shared.colors.appBackground
+        navigationBar.verticalPositioning = .center
+    }
+    
     private func setupConstraints() {
         
-        [spinnerView, label].forEach(addSubview)
+        [statusBarBackgroundView, navigationBar, separator].forEach(addSubview)
         
         let constraints = [
-            spinnerView.topAnchor.constraint(equalTo: topAnchor, constant: 5.0),
-            spinnerView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            spinnerView.heightAnchor.constraint(equalToConstant: 31.0),
-            spinnerView.widthAnchor.constraint(equalToConstant: 31.0),
-            label.topAnchor.constraint(equalTo: spinnerView.bottomAnchor, constant: 2.0),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
-            label.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -5.0)
+            statusBarBackgroundView.topAnchor.constraint(equalTo: topAnchor),
+            statusBarBackgroundView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            statusBarBackgroundView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            statusBarBackgroundView.bottomAnchor.constraint(equalTo: navigationBar.topAnchor),
+            navigationBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            navigationBar.heightAnchor.constraint(equalToConstant: 50.0),
+            separator.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            separator.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 1.0)
         ]
         
         NSLayoutConstraint.activate(constraints)

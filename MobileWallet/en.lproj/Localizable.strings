@@ -106,6 +106,13 @@
 "home.transactions.section.pending" = "Pending Transactions";
 "home.transactions.section.completed" = "Completed Transactions";
 
+/* UTXOs Wallet */
+
+"utxos_wallet.title" = "Wallet";
+"utxos_wallet.segmented_control.sort.size" = "Size";
+"utxos_wallet.segmented_control.sort.date" = "Date";
+"utxos_wallet.tile.label.state.mined" = "Mined";
+
 /* Add amount view */
 "add_amount.error.available_balance.title" = "Available Balance error";
 "add_amount.error.available_balance.description" = "Could not get available balance from wallet";

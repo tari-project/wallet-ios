@@ -1,8 +1,8 @@
-//  AddAmountSpinnerView.swift
+//  UTXOsWalletStateButton.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 27/05/2022
+	Created by Adrian Truszczynski on 07/06/2022
 	Using Swift 5.0
 	Running on macOS 12.3
 
@@ -39,37 +39,23 @@
 */
 
 import UIKit
-import TariCommon
-import Lottie
 
-final class AddAmountSpinnerView: UIView {
+final class UTXOsWalletStateButton: BaseButton {
     
-    // MARK: - Subviews
+    // MARK: - Properties
     
-    private let spinnerView: AnimationView = {
-        let view = AnimationView()
-        view.backgroundBehavior = .pauseAndRestore
-        view.animation = Animation.named(.pendingCircleAnimation)
-        view.loopMode = .loop
-        view.play()
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    override var isSelected: Bool {
+        didSet { backgroundColor = isSelected ? .tari.greys.mediumLightGrey : .clear }
+    }
     
-    @View private var label: UILabel = {
-        let view = UILabel()
-        view.text = localized("add_amount.spinner_view.label.calculating")
-        view.textAlignment = .center
-        view.textColor = .tari.greys.mediumDarkGrey
-        view.font = .Avenir.light.withSize(14.0)
-        return view
-    }()
+    var toggleAutomatically: Bool = true
     
     // MARK: - Initialisers
     
     init() {
         super.init(frame: .zero)
-        setupConstraints()
+        setupView()
+        setupCallbacks()
     }
     
     required init?(coder: NSCoder) {
@@ -78,21 +64,20 @@ final class AddAmountSpinnerView: UIView {
     
     // MARK: - Setups
     
-    private func setupConstraints() {
-        
-        [spinnerView, label].forEach(addSubview)
-        
-        let constraints = [
-            spinnerView.topAnchor.constraint(equalTo: topAnchor, constant: 5.0),
-            spinnerView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            spinnerView.heightAnchor.constraint(equalToConstant: 31.0),
-            spinnerView.widthAnchor.constraint(equalToConstant: 31.0),
-            label.topAnchor.constraint(equalTo: spinnerView.bottomAnchor, constant: 2.0),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
-            label.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -5.0)
-        ]
-        
-        NSLayoutConstraint.activate(constraints)
+    private func setupView() {
+        layer.cornerRadius = 5.0
+        contentMode = .scaleAspectFit
+        imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
+    }
+    
+    private func setupCallbacks() {
+        addTarget(self, action: #selector(onTapInside), for: .touchUpInside)
+    }
+    
+    // MARK: - Actions
+    
+    @objc private func onTapInside() {
+        guard toggleAutomatically else { return }
+        isSelected.toggle()
     }
 }

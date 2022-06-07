@@ -39,6 +39,7 @@
 */
 
 import UIKit
+import TariCommon
 import Combine
 
 final class HomeView: UIView {
@@ -121,6 +122,13 @@ final class HomeView: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    @View var utxosWalletButton: BaseButton = {
+        let view = BaseButton()
+        view.setImage(Theme.shared.images.homeWalletIcon, for: .normal)
+        view.tintColor = .tari.white
+        return view
+    }()
 
     let tooltipView: TooltipView = {
         let view = TooltipView()
@@ -175,7 +183,7 @@ final class HomeView: UIView {
 
     private func setupConstraints() {
 
-        [balanceTitleLabel, tariIconView, balanceValueLabel, avaiableFoundsTitleLabel, avaiableFoundsValueLabel, amountHelpButton, connectionIndicatorView, tooltipView, topToolbar].forEach(addSubview)
+        [balanceTitleLabel, tariIconView, balanceValueLabel, avaiableFoundsTitleLabel, avaiableFoundsValueLabel, amountHelpButton, connectionIndicatorView, utxosWalletButton, tooltipView, topToolbar].forEach(addSubview)
 
         let toolbarBottomConstraint = topToolbar.bottomAnchor.constraint(equalTo: topAnchor)
         let toolbarHeightConstraint = topToolbar.heightAnchor.constraint(equalToConstant: 0.0)
@@ -203,8 +211,12 @@ final class HomeView: UIView {
             amountHelpButton.centerYAnchor.constraint(equalTo: avaiableFoundsTitleLabel.centerYAnchor),
             amountHelpButton.heightAnchor.constraint(equalToConstant: 18.0),
             amountHelpButton.widthAnchor.constraint(equalToConstant: 18.0),
-            connectionIndicatorView.centerYAnchor.constraint(equalTo: balanceValueLabel.centerYAnchor),
-            connectionIndicatorView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            utxosWalletButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -26.0),
+            utxosWalletButton.centerYAnchor.constraint(equalTo: balanceValueLabel.centerYAnchor),
+            utxosWalletButton.heightAnchor.constraint(equalToConstant: 22.0),
+            utxosWalletButton.widthAnchor.constraint(equalToConstant: 22.0),
+            connectionIndicatorView.topAnchor.constraint(equalTo: utxosWalletButton.bottomAnchor),
+            connectionIndicatorView.centerXAnchor.constraint(equalTo: utxosWalletButton.centerXAnchor),
             tooltipView.tipXAnchor.constraint(equalTo: connectionIndicatorView.centerXAnchor),
             tooltipView.tipYAnchor.constraint(equalTo: connectionIndicatorView.centerYAnchor),
             tooltipView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 12.0),
