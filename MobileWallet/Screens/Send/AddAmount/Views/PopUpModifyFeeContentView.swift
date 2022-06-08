@@ -45,7 +45,7 @@ final class PopUpModifyFeeContentView: UIView {
     
     // MARK: - Subviews
     
-    @View private(set) var segmentedControl = TariSegmentedControl(icons: [Theme.shared.images.speedometerLow, Theme.shared.images.speedometerMid, Theme.shared.images.speedometerHigh], tintColor: .tari.black)
+    @View private(set) var segmentedControl = TariSegmentedControl(icons: [Theme.shared.images.speedometerLow, Theme.shared.images.speedometerMid, Theme.shared.images.speedometerHigh], tintColor: .tari.greys.black)
     
     @View private var estimatedFeeTitleLabel: UILabel = {
         let view = UILabel()

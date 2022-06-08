@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class VerifySeedWordsView: BaseSettingsView {
+final class VerifySeedWordsView: BaseNavigationContentView {
     
     // MARK: - Subviews
     

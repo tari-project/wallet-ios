@@ -1,0 +1,249 @@
+//  UTXOsWalletView.swift
+	
+/*
+	Package MobileWallet
+	Created by Adrian Truszczynski on 31/05/2022
+	Using Swift 5.0
+	Running on macOS 12.3
+
+	Copyright 2019 The Tari Project
+
+	Redistribution and use in source and binary forms, with or
+	without modification, are permitted provided that the
+	following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice,
+	this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above
+	copyright notice, this list of conditions and the following disclaimer in the
+	documentation and/or other materials provided with the distribution.
+
+	3. Neither the name of the copyright holder nor the names of
+	its contributors may be used to endorse or promote products
+	derived from this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+	CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+import UIKit
+import TariCommon
+import Combine
+
+final class UTXOsWalletView: BaseNavigationContentView {
+    
+    enum ListType {
+        case tiles
+        case text
+    }
+    
+    // MARK: - Suviews
+    
+    @View var tileListButton: UTXOsWalletStateButton = {
+        let view = UTXOsWalletStateButton()
+        view.setImage(Theme.shared.images.utxoTileViewIcon, for: .normal)
+        view.tintColor = .tari.greys.black
+        view.toggleAutomatically = false
+        return view
+    }()
+    
+    @View var textListButton: UTXOsWalletStateButton = {
+        let view = UTXOsWalletStateButton()
+        view.setImage(Theme.shared.images.utxoTextListIcon, for: .normal)
+        view.tintColor = .tari.greys.black
+        view.toggleAutomatically = false
+        return view
+    }()
+    
+    @View private var sortMethodSegmenterControl: UISegmentedControl = {
+        let view = UISegmentedControl(items: [localized("utxos_wallet.segmented_control.sort.size"), localized("utxos_wallet.segmented_control.sort.date")])
+        view.setWidth(85.0, forSegmentAt: 0)
+        view.setWidth(85.0, forSegmentAt: 1)
+        view.selectedSegmentIndex = 0
+        return view
+    }()
+    
+    @View var sortDirectionButton: BaseButton = {
+        let view = BaseButton()
+        view.tintColor = .tari.greys.black
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
+    
+    @View var selectionModeButton: UTXOsWalletStateButton = {
+        let view = UTXOsWalletStateButton()
+        view.setImage(Theme.shared.images.utxoSelectIcon, for: .normal)
+        view.tintColor = .tari.greys.black
+        return view
+    }()
+    
+    @View private var scrollView = ContentScrollView()
+    
+    @View private var contentStackView: UIStackView = {
+        let view = UIStackView()
+        view.distribution = .fillEqually
+        view.alignment = .leading
+        view.spacing = 12.0
+        return view
+    }()
+    
+    // MARK: - Properties
+    
+    @Published var tileModels: [UTXOTileView.Model] = []
+    @Published var isSortAscending: Bool = false
+    @Published private var visibleListType: ListType = .tiles
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Initialisers
+    
+    override init() {
+        super.init()
+        setupViews()
+        setupConstraints()
+        setupCallbacks()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+    
+    private func setupViews() {
+        backgroundColor = .tari.white
+        navigationBar.title = localized("utxos_wallet.title")
+    }
+    
+    private func setupConstraints() {
+        
+        [sortMethodSegmenterControl, scrollView, sortDirectionButton, selectionModeButton].forEach(addSubview)
+        [textListButton, tileListButton].forEach(navigationBar.addSubview)
+        scrollView.contentView.addSubview(contentStackView)
+        
+        let constraints = [
+            textListButton.trailingAnchor.constraint(equalTo: tileListButton.leadingAnchor, constant: -4.0),
+            textListButton.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor),
+            textListButton.heightAnchor.constraint(equalToConstant: 30.0),
+            textListButton.widthAnchor.constraint(equalToConstant: 30.0),
+            tileListButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -12.0),
+            tileListButton.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor),
+            tileListButton.heightAnchor.constraint(equalToConstant: 30.0),
+            tileListButton.widthAnchor.constraint(equalToConstant: 30.0),
+            sortMethodSegmenterControl.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 30.0),
+            sortMethodSegmenterControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
+            scrollView.topAnchor.constraint(equalTo: sortMethodSegmenterControl.bottomAnchor),
+            sortDirectionButton.leadingAnchor.constraint(equalTo: sortMethodSegmenterControl.trailingAnchor, constant: 8.0),
+            sortDirectionButton.centerYAnchor.constraint(equalTo: sortMethodSegmenterControl.centerYAnchor),
+            sortDirectionButton.heightAnchor.constraint(equalToConstant: 22.0),
+            sortDirectionButton.widthAnchor.constraint(equalToConstant: 22.0),
+            selectionModeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
+            selectionModeButton.centerYAnchor.constraint(equalTo: sortMethodSegmenterControl.centerYAnchor),
+            selectionModeButton.heightAnchor.constraint(equalToConstant: 30.0),
+            selectionModeButton.widthAnchor.constraint(equalToConstant: 30.0),
+            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            contentStackView.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor, constant: 12.0),
+            contentStackView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 30.0),
+            contentStackView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -30.0),
+            contentStackView.bottomAnchor.constraint(equalTo: scrollView.contentView.bottomAnchor, constant: -12.0)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    private func setupCallbacks() {
+        
+        $tileModels
+            .sink { [weak self] in self?.updateContent(models: $0) }
+            .store(in: &cancellables)
+        
+        $isSortAscending
+            .sink { [weak self] in
+                let image = $0 ? Theme.shared.images.utxoAscendingIcon : Theme.shared.images.utxoDescendingIcon
+                self?.sortDirectionButton.setImage(image, for: .normal)
+            }
+            .store(in: &cancellables)
+        
+        $visibleListType
+            .sink { [weak self] in self?.updateListComponents(visibleListType: $0) }
+            .store(in: &cancellables)
+        
+        tileListButton.onTap = { [weak self] in
+            self?.visibleListType = .tiles
+        }
+        
+        textListButton.onTap = { [weak self] in
+            self?.visibleListType = .text
+        }
+    }
+    
+    // MARK: - Actions
+    
+    private func updateContent(models: [UTXOTileView.Model]) {
+        
+        removeTiles()
+        
+        let columnsCount = UIDevice.current.userInterfaceIdiom == .pad ? 4 : 2
+        
+        let initialData: [(index: Int, height: CGFloat, column: UIStackView)] = (0..<columnsCount)
+            .map { ($0, 0.0, makeColumn()) }
+        
+        models
+            .reduce(into: initialData) { result, model in
+                
+                guard let columnIndex = result.min(by: { $0.height < $1.height })?.index else { return }
+                
+                let tile = UTXOTileView(model: model)
+                result[columnIndex].height += model.height
+                result[columnIndex].column.addArrangedSubview(tile)
+            }
+            .map(\.column)
+            .forEach(contentStackView.addArrangedSubview)
+    }
+    
+    private func updateListComponents(visibleListType: ListType) {
+        switch visibleListType {
+        case .tiles:
+            tileListButton.isSelected = true
+            textListButton.isSelected = false
+        case .text:
+            tileListButton.isSelected = false
+            textListButton.isSelected = true
+        }
+    }
+    
+    private func removeTiles() {
+        contentStackView.arrangedSubviews
+            .compactMap { $0 as? UIStackView }
+            .forEach { column in
+                column.arrangedSubviews.forEach {
+                    column.removeArrangedSubview($0)
+                    $0.removeFromSuperview()
+                }
+                contentStackView.removeArrangedSubview(column)
+        }
+    }
+    
+    // MARK: - Factories
+    
+    private func makeColumn() -> UIStackView {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.spacing = 5.0
+        return view
+    }
+}

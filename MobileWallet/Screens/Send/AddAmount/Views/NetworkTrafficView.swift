@@ -54,7 +54,7 @@ final class NetworkTrafficView: UIView {
     @View private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.tintColor = .tari.mediumDarkGrey
+        view.tintColor = .tari.greys.mediumDarkGrey
         return view
     }()
     
@@ -62,7 +62,7 @@ final class NetworkTrafficView: UIView {
         let view = UILabel()
         view.text = localized("add_amount.label.network_traffic")
         view.font = .Avenir.medium.withSize(14.0)
-        view.textColor = .tari.mediumDarkGrey
+        view.textColor = .tari.greys.mediumDarkGrey
         return view
     }()
     

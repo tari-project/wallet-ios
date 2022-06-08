@@ -56,14 +56,14 @@ final class CurrencyLabelView: UIView {
         let view = UILabel()
         view.numberOfLines = 1
         view.setContentHuggingPriority(.required, for: .vertical)
+        view.adjustsFontSizeToFitWidth = true
         return view
     }()
     
     // MARK: - Properties
     
     var text: String? {
-        get { label.text }
-        set { label.text = newValue }
+        didSet { updateLabel() }
     }
     
     var textColor: UIColor? {
@@ -75,8 +75,15 @@ final class CurrencyLabelView: UIView {
     }
     
     var font: UIFont? {
-        get { label.font }
-        set { label.font = newValue }
+        didSet { updateLabel() }
+    }
+    
+    var secondaryFont: UIFont? {
+        didSet { updateLabel() }
+    }
+    
+    var separator: String? {
+        didSet { updateLabel() }
     }
     
     var iconHeight: CGFloat? {
@@ -133,5 +140,31 @@ final class CurrencyLabelView: UIView {
         defaultCurrencyIconHeightConstraint?.isActive = false
         definedCurrencyIconHeightConstraint?.constant = iconHeight
         definedCurrencyIconHeightConstraint?.isActive = true
+    }
+    
+    private func updateLabel() {
+        
+        guard let text = text, let font = font, let secondaryFont = secondaryFont, let separator = separator, let index = text.firstIndex(where: { String($0) == separator }) else {
+            label.text = text
+            label.font = font
+            return
+        }
+        
+        label.font = font
+
+        let range = index..<text.endIndex
+        let attributedRange = NSRange(range, in: text)
+        
+        let attributedString = NSMutableAttributedString(string: text)
+        
+        attributedString.addAttributes(
+            [
+                .font: secondaryFont,
+                .baselineOffset: font.capHeight - secondaryFont.capHeight
+            ],
+            range: attributedRange
+        )
+        
+        label.attributedText = attributedString
     }
 }

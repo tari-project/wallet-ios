@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class AboutView: BaseSettingsView {
+final class AboutView: BaseNavigationContentView {
     
     struct CellModel: Identifiable, Hashable {
         let id: UUID = UUID()

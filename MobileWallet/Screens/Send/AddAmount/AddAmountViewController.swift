@@ -87,7 +87,7 @@ final class AddAmountViewController: UIViewController {
     
     @View private var feeButton: TextButton = {
         let view = TextButton()
-        view.update(textColor: .tari.mediumDarkGrey, font: .Avenir.medium.withSize(14.0))
+        view.update(textColor: .tari.greys.mediumDarkGrey, font: .Avenir.medium.withSize(14.0))
         view.spacing = 3.0
         view.setRightImage(Theme.shared.images.helpButton)
         return view
