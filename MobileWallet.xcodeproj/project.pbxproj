@@ -239,6 +239,9 @@
 		3AB2172E272BE7D3007139F1 /* NetworkManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2172D272BE7D3007139F1 /* NetworkManagerTests.swift */; };
 		3AB21730272BEC7A007139F1 /* StringTokenizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2172F272BEC7A007139F1 /* StringTokenizationTests.swift */; };
 		3AB21736272BEF5A007139F1 /* TariLibWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB21735272BEF59007139F1 /* TariLibWrapperTests.swift */; };
+		3ABBBA7C2850771C00A3108D /* UTXOsWalletTextListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBBA7B2850771C00A3108D /* UTXOsWalletTextListView.swift */; };
+		3ABBBA7E2850815C00A3108D /* UTXOsWalletTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBBA7D2850815C00A3108D /* UTXOsWalletTileView.swift */; };
+		3ABBBA8028508AB000A3108D /* UTXOsWalletTextListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBBA7F28508AB000A3108D /* UTXOsWalletTextListViewCell.swift */; };
 		3ABBC5DE2726B3A1001BB864 /* YatCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBC5DD2726B3A1001BB864 /* YatCacheManager.swift */; };
 		3ABBC5E02726D104001BB864 /* YatTransactionConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBC5DF2726D104001BB864 /* YatTransactionConstructor.swift */; };
 		3ABF91A7283FFA6E0001C766 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABF91A6283FFA6E0001C766 /* AboutView.swift */; };
@@ -609,6 +612,9 @@
 		3AB2172D272BE7D3007139F1 /* NetworkManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManagerTests.swift; sourceTree = "<group>"; };
 		3AB2172F272BEC7A007139F1 /* StringTokenizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringTokenizationTests.swift; sourceTree = "<group>"; };
 		3AB21735272BEF59007139F1 /* TariLibWrapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TariLibWrapperTests.swift; sourceTree = "<group>"; };
+		3ABBBA7B2850771C00A3108D /* UTXOsWalletTextListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTextListView.swift; sourceTree = "<group>"; };
+		3ABBBA7D2850815C00A3108D /* UTXOsWalletTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTileView.swift; sourceTree = "<group>"; };
+		3ABBBA7F28508AB000A3108D /* UTXOsWalletTextListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTextListViewCell.swift; sourceTree = "<group>"; };
 		3ABBC5DD2726B3A1001BB864 /* YatCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YatCacheManager.swift; sourceTree = "<group>"; };
 		3ABBC5DF2726D104001BB864 /* YatTransactionConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YatTransactionConstructor.swift; sourceTree = "<group>"; };
 		3ABF91A6283FFA6E0001C766 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
@@ -1399,8 +1405,11 @@
 		3A3E7AD4284E03030065F3C0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				3A3E7AD5284E03140065F3C0 /* UTXOTileView.swift */,
 				3AECD491284F3F0A00D81C80 /* UTXOsWalletStateButton.swift */,
+				3ABBBA7D2850815C00A3108D /* UTXOsWalletTileView.swift */,
+				3A3E7AD5284E03140065F3C0 /* UTXOTileView.swift */,
+				3ABBBA7B2850771C00A3108D /* UTXOsWalletTextListView.swift */,
+				3ABBBA7F28508AB000A3108D /* UTXOsWalletTextListViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2228,6 +2237,7 @@
 				0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				009BF8AC237ABB4700C02E44 /* TariLib.swift in Sources */,
 				3A6A033C2802DD34000432B4 /* PopUpPresenter.swift in Sources */,
+				3ABBBA8028508AB000A3108D /* UTXOsWalletTextListViewCell.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
 				3ABF91AC283FFAA50001C766 /* AboutViewCell.swift in Sources */,
 				00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */,
@@ -2464,6 +2474,7 @@
 				3ACFA42B278EC9F200EBED98 /* ProfileModel.swift in Sources */,
 				3A6A03382802DC85000432B4 /* PopUpButtonsView.swift in Sources */,
 				376C62AE247574850091BB28 /* Animation+EnumInit.swift in Sources */,
+				3ABBBA7C2850771C00A3108D /* UTXOsWalletTextListView.swift in Sources */,
 				3ACDA70526B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */,
 				BFAB5D1123FDEA69009E8563 /* EmojiIdView.swift in Sources */,
 				A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */,
@@ -2478,6 +2489,7 @@
 				3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */,
 				3A3E7AD6284E03140065F3C0 /* UTXOTileView.swift in Sources */,
 				3A420594279802E500A8D49C /* BaseButton.swift in Sources */,
+				3ABBBA7E2850815C00A3108D /* UTXOsWalletTileView.swift in Sources */,
 				376B502324924BB700278ACC /* PendingView.swift in Sources */,
 				3A01248127B39FC000A481F4 /* SendingTariLabel.swift in Sources */,
 			);

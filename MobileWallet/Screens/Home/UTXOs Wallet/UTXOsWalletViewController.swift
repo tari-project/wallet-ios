@@ -78,7 +78,12 @@ final class UTXOsWalletViewController: UIViewController {
         
         model.$utxoModels
             .compactMap { [weak self] in self?.tileModels(fromModels: $0) }
-            .assign(to: \.tileModels, on: mainView)
+            .sink { [weak self] in self?.mainView.updateTileList(models: $0) }
+            .store(in: &cancellables)
+        
+        model.$utxoModels
+            .compactMap { [weak self] in self?.textListModels(fromModels: $0) }
+            .sink { [weak self] in self?.mainView.updateTextList(models: $0) }
             .store(in: &cancellables)
         
         model.$isSortOrderAscending
@@ -92,7 +97,11 @@ final class UTXOsWalletViewController: UIViewController {
     
     // MARK: - Helpers
     
-    func tileModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOTileView.Model] {
-        models.map { UTXOTileView.Model(amountText: $0.amountText, backgroundColor: $0.color, height: $0.tileHeight, statusIcon: $0.status.icon, statusName: $0.status.name) }
+    private func tileModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOTileView.Model] {
+        models.map { UTXOTileView.Model(amountText: $0.amountText, backgroundColor: .tari.purple?.colorVariant(text: $0.hash), height: $0.tileHeight, statusIcon: $0.status.icon, statusName: $0.status.name) }
+    }
+    
+    private func textListModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOsWalletTextListViewCell.Model] {
+        models.map { UTXOsWalletTextListViewCell.Model(id: UUID(), amount: $0.amountWithCurrency, hash: $0.hash) }
     }
 }
