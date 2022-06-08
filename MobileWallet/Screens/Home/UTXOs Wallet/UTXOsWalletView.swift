@@ -79,6 +79,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
         let view = BaseButton()
         view.tintColor = .tari.greys.black
         view.contentMode = .scaleAspectFit
+        view.imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
         return view
     }()
     
@@ -89,19 +90,16 @@ final class UTXOsWalletView: BaseNavigationContentView {
         return view
     }()
     
-    @View private var scrollView = ContentScrollView()
+    @View private var tileList = UTXOsWalletTileView()
     
-    @View private var contentStackView: UIStackView = {
-        let view = UIStackView()
-        view.distribution = .fillEqually
-        view.alignment = .leading
-        view.spacing = 12.0
+    @View private var textList: UTXOsWalletTextListView = {
+        let view = UTXOsWalletTextListView()
+        view.alpha = 0.0
         return view
     }()
     
     // MARK: - Properties
     
-    @Published var tileModels: [UTXOTileView.Model] = []
     @Published var isSortAscending: Bool = false
     @Published private var visibleListType: ListType = .tiles
     
@@ -129,9 +127,8 @@ final class UTXOsWalletView: BaseNavigationContentView {
     
     private func setupConstraints() {
         
-        [sortMethodSegmenterControl, scrollView, sortDirectionButton, selectionModeButton].forEach(addSubview)
+        [sortMethodSegmenterControl, tileList, textList, sortDirectionButton, selectionModeButton].forEach(addSubview)
         [textListButton, tileListButton].forEach(navigationBar.addSubview)
-        scrollView.contentView.addSubview(contentStackView)
         
         let constraints = [
             textListButton.trailingAnchor.constraint(equalTo: tileListButton.leadingAnchor, constant: -4.0),
@@ -144,32 +141,28 @@ final class UTXOsWalletView: BaseNavigationContentView {
             tileListButton.widthAnchor.constraint(equalToConstant: 30.0),
             sortMethodSegmenterControl.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 30.0),
             sortMethodSegmenterControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
-            scrollView.topAnchor.constraint(equalTo: sortMethodSegmenterControl.bottomAnchor),
             sortDirectionButton.leadingAnchor.constraint(equalTo: sortMethodSegmenterControl.trailingAnchor, constant: 8.0),
             sortDirectionButton.centerYAnchor.constraint(equalTo: sortMethodSegmenterControl.centerYAnchor),
-            sortDirectionButton.heightAnchor.constraint(equalToConstant: 22.0),
-            sortDirectionButton.widthAnchor.constraint(equalToConstant: 22.0),
+            sortDirectionButton.heightAnchor.constraint(equalToConstant: 30.0),
+            sortDirectionButton.widthAnchor.constraint(equalToConstant: 30.0),
             selectionModeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
             selectionModeButton.centerYAnchor.constraint(equalTo: sortMethodSegmenterControl.centerYAnchor),
             selectionModeButton.heightAnchor.constraint(equalToConstant: 30.0),
             selectionModeButton.widthAnchor.constraint(equalToConstant: 30.0),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            contentStackView.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor, constant: 12.0),
-            contentStackView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 30.0),
-            contentStackView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -30.0),
-            contentStackView.bottomAnchor.constraint(equalTo: scrollView.contentView.bottomAnchor, constant: -12.0)
+            tileList.topAnchor.constraint(equalTo: sortMethodSegmenterControl.bottomAnchor),
+            tileList.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tileList.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tileList.bottomAnchor.constraint(equalTo: bottomAnchor),
+            textList.topAnchor.constraint(equalTo: sortMethodSegmenterControl.bottomAnchor),
+            textList.leadingAnchor.constraint(equalTo: leadingAnchor),
+            textList.trailingAnchor.constraint(equalTo: trailingAnchor),
+            textList.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
         
         NSLayoutConstraint.activate(constraints)
     }
     
     private func setupCallbacks() {
-        
-        $tileModels
-            .sink { [weak self] in self?.updateContent(models: $0) }
-            .store(in: &cancellables)
         
         $isSortAscending
             .sink { [weak self] in
@@ -193,26 +186,12 @@ final class UTXOsWalletView: BaseNavigationContentView {
     
     // MARK: - Actions
     
-    private func updateContent(models: [UTXOTileView.Model]) {
-        
-        removeTiles()
-        
-        let columnsCount = UIDevice.current.userInterfaceIdiom == .pad ? 4 : 2
-        
-        let initialData: [(index: Int, height: CGFloat, column: UIStackView)] = (0..<columnsCount)
-            .map { ($0, 0.0, makeColumn()) }
-        
-        models
-            .reduce(into: initialData) { result, model in
-                
-                guard let columnIndex = result.min(by: { $0.height < $1.height })?.index else { return }
-                
-                let tile = UTXOTileView(model: model)
-                result[columnIndex].height += model.height
-                result[columnIndex].column.addArrangedSubview(tile)
-            }
-            .map(\.column)
-            .forEach(contentStackView.addArrangedSubview)
+    func updateTileList(models: [UTXOTileView.Model]) {
+        tileList.models = models
+    }
+    
+    func updateTextList(models: [UTXOsWalletTextListViewCell.Model]) {
+        textList.models = models
     }
     
     private func updateListComponents(visibleListType: ListType) {
@@ -224,26 +203,16 @@ final class UTXOsWalletView: BaseNavigationContentView {
             tileListButton.isSelected = false
             textListButton.isSelected = true
         }
-    }
-    
-    private func removeTiles() {
-        contentStackView.arrangedSubviews
-            .compactMap { $0 as? UIStackView }
-            .forEach { column in
-                column.arrangedSubviews.forEach {
-                    column.removeArrangedSubview($0)
-                    $0.removeFromSuperview()
-                }
-                contentStackView.removeArrangedSubview(column)
+        
+        UIView.animate(withDuration: 0.3) {
+            switch visibleListType {
+            case .tiles:
+                self.tileList.alpha = 1.0
+                self.textList.alpha = 0.0
+            case .text:
+                self.tileList.alpha = 0.0
+                self.textList.alpha = 1.0
+            }
         }
-    }
-    
-    // MARK: - Factories
-    
-    private func makeColumn() -> UIStackView {
-        let view = UIStackView()
-        view.axis = .vertical
-        view.spacing = 5.0
-        return view
     }
 }

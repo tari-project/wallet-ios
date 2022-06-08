@@ -48,9 +48,9 @@ final class UTXOsWalletModel {
 
     struct UtxoModel {
         let amountText: String
-        let color: UIColor?
         let tileHeight: CGFloat
         let status: UtxoStatus
+        let hash: String
     }
     
     // MARK: - Constants
@@ -77,17 +77,16 @@ final class UTXOsWalletModel {
     
     private func generateData() {
         
-        let amounts = generateMockedAmounts().sorted { $0.rawValue < $1.rawValue }
-        let heights = calculateHeights(fromAmounts: amounts)
+        let data = generateMockedData().sorted { $0.amount.rawValue > $1.amount.rawValue }
+        let heights = calculateHeights(fromAmounts: data.map { $0.amount} )
         
-        utxoModels = zip(amounts, heights)
-            .sorted { $0.0.rawValue > $1.0.rawValue }
-            .map { UtxoModel(amountText: $0.formattedPrecise, color: generateColor(), tileHeight: $1, status: .mined) }
+        utxoModels = zip(data, heights)
+            .map { UtxoModel(amountText: $0.amount.formattedPrecise, tileHeight: $1, status: .mined, hash: $0.hash) }
     }
     
     // MARK: - Helpers
     
-    private func generateMockedAmounts() -> [MicroTari] {
+    private func generateMockedData() -> [(amount: MicroTari, hash: String)] {
         
         let elementsCount = 20
         var amounts = [UInt64(100000)]
@@ -104,12 +103,21 @@ final class UTXOsWalletModel {
         amounts += (0..<elem2)
             .map { _ in UInt64.random(in: 100...200) }
         
-        return amounts.map { MicroTari($0) }
+        let hashCharacters = "0123456789ABCDE"
+        
+        return amounts
+            .map {
+                let hash = (0..<64)
+                    .compactMap { _ in hashCharacters.randomElement() }
+                    .map { String($0) }
+                    .joined()
+                
+                return (MicroTari($0), hash)
+            }
     }
     
-    private func generateColor() -> UIColor? {
-        let identifier = String.random(length: 32)
-        return .tari.purple?.colorVariant(text: identifier)
+    private func generateColor(hash: String) -> UIColor? {
+        return .tari.purple?.colorVariant(text: hash)
     }
     
     private func calculateHeights(fromAmounts amounts: [MicroTari]) -> [CGFloat] {
@@ -124,6 +132,10 @@ final class UTXOsWalletModel {
         
         return rawAmounts.map { ($0 - minAmount) * scale + minTileHeight }
     }
+}
+
+extension UTXOsWalletModel.UtxoModel {
+    var amountWithCurrency: String { "\(amountText) \(NetworkManager.shared.selectedNetwork.tickerSymbol)" }
 }
 
 extension UTXOsWalletModel.UtxoStatus {
