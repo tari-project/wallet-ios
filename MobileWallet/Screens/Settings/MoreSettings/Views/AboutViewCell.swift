@@ -48,13 +48,13 @@ final class AboutViewCell: UITableViewCell {
     @View private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.tintColor = .tari.black
+        view.tintColor = .tari.greys.black
         return view
     }()
     
     @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = UIColor.tari.mediumDarkGrey
+        view.textColor = .tari.greys.mediumDarkGrey
         view.font = .Avenir.light.withSize(14.0)
         view.numberOfLines = 2
         return view

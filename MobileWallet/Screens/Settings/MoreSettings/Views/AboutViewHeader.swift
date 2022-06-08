@@ -54,7 +54,7 @@ final class AboutViewHeader: UITableViewHeaderFooterView {
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = localized("about.label.creative_commons")
-        view.textColor = UIColor.tari.mediumDarkGrey
+        view.textColor = .tari.greys.mediumDarkGrey
         view.font = .Avenir.light.withSize(14.0)
         return view
     }()

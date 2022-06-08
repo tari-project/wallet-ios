@@ -88,7 +88,7 @@ final class TariSegmentedControl: UIView {
     
     private func setupViews(icons: [UIImage?], tintColor: UIColor?) {
         
-        backgroundColor = .tari.mediumLightGrey
+        backgroundColor = .tari.greys.mediumLightGrey
         layer.cornerRadius = 9.0
         
         icons

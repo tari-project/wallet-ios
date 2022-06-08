@@ -321,6 +321,17 @@ struct Images: Loopable {
     // Seed words list
     let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
     
+    // Home Icons
+    let homeWalletIcon = UIImage(named: "icon-wallet")
+    
+    // UTXOs Wallet Icons
+    let utxoAscendingIcon = UIImage(named: "icon-ascending")
+    let utxoDescendingIcon = UIImage(named: "icon-descending")
+    let utxoSelectIcon = UIImage(named: "icon-select")
+    let utxoTileViewIcon = UIImage(named: "icon-blockview")
+    let utxoTextListIcon = UIImage(named: "icon-listview")
+    let utxoStatusMined = UIImage(named: "icon-mined")
+    
     // Settings Icons
     let settingsAboutIcon = UIImage(named: "icon-about")
     let settingsBaseNodeIcon = UIImage(named: "icon-base-node")
@@ -516,14 +527,17 @@ struct Transitions {
 extension UIColor {
     enum tari {
         static var white: UIColor? { UIColor(named: "White") }
-        static var mediumLightGrey: UIColor? { UIColor(named: "MediumLightGrey") }
-        static var mediumDarkGrey: UIColor? { UIColor(named: "MediumDarkGrey") }
         static var darkGrey: UIColor? { UIColor(named: "DarkGrey") }
-        static var black: UIColor? { UIColor(named: "Black") }
         static var purple: UIColor? { UIColor(named: "Purple") }
+        
+        enum greys {
+            static var mediumLightGrey: UIColor? { UIColor(named: "MediumLightGrey") }
+            static var mediumDarkGrey: UIColor? { UIColor(named: "MediumDarkGrey") }
+            static var black: UIColor? { UIColor(named: "Black") }
+        }
     }
 }
 
 extension Shadow {
-    static var box: Self { Self(color: .tari.black, opacity: 0.1, radius: 13.5, offset: CGSize(width: 6.75, height: 6.75)) }
+    static var box: Self { Self(color: .tari.greys.black, opacity: 0.1, radius: 13.5, offset: CGSize(width: 6.75, height: 6.75)) }
 }

@@ -690,6 +690,11 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         
         PopUpPresenter.showPopUp(model: popUpModel)
     }
+    
+    private func moveToUtxosWallet() {
+        let controller = UTXOsWalletConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
+    }
 }
 
 // MARK: setup subview
@@ -697,12 +702,12 @@ extension HomeViewController {
 
     private func setup() {
         setupFloatingPanel()
-        setupFeedbacks()
+        setupCallbacks()
         mainView.toolbarHeightConstraint?.constant = navBarHeight
         mainView.updateViewsOrder()
     }
 
-    private func setupFeedbacks() {
+    private func setupCallbacks() {
 
         mainView.connectionIndicatorView.onTap = { [weak self] in
             self?.mainView.isTooltipVisible = true
@@ -717,6 +722,10 @@ extension HomeViewController {
 
         mainView.onAmountHelpButtonTap = { [weak self] in
             self?.showHelpDialog()
+        }
+        
+        mainView.utxosWalletButton.onTap = { [weak self] in
+            self?.moveToUtxosWallet()
         }
     }
 
@@ -805,6 +814,4 @@ private extension PopUpPresenter {
         WebBrowserPresenter.open(url: url)
         TariLogger.verbose("Opened store link")
     }
-    
-    
 }

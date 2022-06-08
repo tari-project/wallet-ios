@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class SeedWordsListView: BaseSettingsView {
+final class SeedWordsListView: BaseNavigationContentView {
     
     // MARK: - Subviews
     
@@ -150,6 +150,7 @@ final class SeedWordsListView: BaseSettingsView {
     // MARK: - Setups
     
     private func setupViews() {
+        navigationBar.title = localized("seed_phrase.title")
         backgroundColor = Theme.shared.colors.appBackground
         seedWordsBackgroundView.layer.mask = fadeOutMask
     }
