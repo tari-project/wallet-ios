@@ -90,18 +90,32 @@ final class UTXOsWalletViewController: UIViewController {
             .assign(to: \.isSortAscending, on: mainView)
             .store(in: &cancellables)
         
+        model.$selectedIDs
+            .assign(to: \.selectedElements, on: mainView)
+            .store(in: &cancellables)
+        
         mainView.sortDirectionButton.onTap = { [weak self] in
             self?.model.toggleSortOrder()
         }
+        
+        mainView.$tappedElement
+            .compactMap { $0 }
+            .sink { [weak self] in self?.model.toogleState(elementID: $0) }
+            .store(in: &cancellables)
+        
+        mainView.$isEditingEnabled
+            .filter { $0 == false }
+            .sink { [weak self] _ in self?.model.deselectAllElements() }
+            .store(in: &cancellables)
     }
     
     // MARK: - Helpers
     
     private func tileModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOTileView.Model] {
-        models.map { UTXOTileView.Model(amountText: $0.amountText, backgroundColor: .tari.purple?.colorVariant(text: $0.hash), height: $0.tileHeight, statusIcon: $0.status.icon, statusName: $0.status.name) }
+        models.map { UTXOTileView.Model(uuid: $0.uuid, amountText: $0.amountText, backgroundColor: .tari.purple?.colorVariant(text: $0.hash), height: $0.tileHeight, statusIcon: $0.status.icon, statusName: $0.status.name) }
     }
     
     private func textListModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOsWalletTextListViewCell.Model] {
-        models.map { UTXOsWalletTextListViewCell.Model(id: UUID(), amount: $0.amountWithCurrency, hash: $0.hash) }
+        models.map { UTXOsWalletTextListViewCell.Model(id: $0.uuid, amount: $0.amountWithCurrency, hash: $0.hash) }
     }
 }

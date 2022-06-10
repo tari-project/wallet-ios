@@ -53,13 +53,19 @@ final class UTXOsWalletTextListView: UIView {
         return view
     }()
     
-    
     // MARK: - Properties
     
     var models: [UTXOsWalletTextListViewCell.Model] = [] {
         didSet { updateCells(models: models) }
     }
     
+    var isEditingEnabled: Bool = false {
+        didSet { updateCellsState(isEditing: isEditingEnabled) }
+    }
+    
+    var onTapOnTickbox: ((UUID) -> Void)?
+    
+    private var selectedIDs: Set<UUID> = []
     private var dataSource: UITableViewDiffableDataSource<Int, UTXOsWalletTextListViewCell.Model>?
     
     // MARK: - Initialisers
@@ -92,9 +98,20 @@ final class UTXOsWalletTextListView: UIView {
     
     private func setupCallbacks() {
         
-        dataSource = UITableViewDiffableDataSource(tableView: tableView) { tableView, indexPath, model in
+        dataSource = UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, model in
+            
+            guard let self = self else { return UITableViewCell() }
+            
             let cell = tableView.dequeueReusableCell(type: UTXOsWalletTextListViewCell.self, indexPath: indexPath)
+            
             cell.update(model: model)
+            cell.updateTickBox(isVisible: self.isEditingEnabled, animated: false)
+            cell.isTickSelected = self.selectedIDs.contains(model.id)
+            
+            cell.onTapOnTickbox = {
+                self.onTapOnTickbox?($0)
+            }
+            
             return cell
         }
         
@@ -103,10 +120,28 @@ final class UTXOsWalletTextListView: UIView {
     
     // MARK: - Actions
     
+    func update(selectedElements: Set<UUID>) {
+        
+        selectedIDs = selectedElements
+        
+        tableView.visibleCells
+            .compactMap { $0 as? UTXOsWalletTextListViewCell }
+            .forEach {
+                guard let elementID = $0.elementID else { return }
+                $0.isTickSelected = selectedIDs.contains(elementID)
+            }
+    }
+    
     private func updateCells(models: [UTXOsWalletTextListViewCell.Model]) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, UTXOsWalletTextListViewCell.Model>()
         snapshot.appendSections([0])
         snapshot.appendItems(models, toSection: 0)
         dataSource?.apply(snapshot)
+    }
+    
+    private func updateCellsState(isEditing: Bool) {
+        tableView.visibleCells
+            .compactMap { $0 as? UTXOsWalletTextListViewCell }
+            .forEach { $0.updateTickBox(isVisible: isEditing, animated: true) }
     }
 }
