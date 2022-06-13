@@ -90,7 +90,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
         return view
     }()
     
-    @View private var tileList = UTXOsWalletTileView()
+    @View private var tileList = UTXOsWalletTileListView()
     
     @View private var textList: UTXOsWalletTextListView = {
         let view = UTXOsWalletTextListView()
@@ -101,6 +101,9 @@ final class UTXOsWalletView: BaseNavigationContentView {
     // MARK: - Properties
     
     @Published var isSortAscending: Bool = false
+    @Published var selectedElements: Set<UUID> = []
+    @Published private(set) var isEditingEnabled: Bool = false
+    @Published private(set) var tappedElement: UUID?
     @Published private var visibleListType: ListType = .tiles
     
     private var cancellables = Set<AnyCancellable>()
@@ -175,12 +178,45 @@ final class UTXOsWalletView: BaseNavigationContentView {
             .sink { [weak self] in self?.updateListComponents(visibleListType: $0) }
             .store(in: &cancellables)
         
+        $isEditingEnabled
+            .sink { [weak self] in
+                self?.tileList.isEditingEnabled = $0
+                self?.textList.isEditingEnabled = $0
+            }
+            .store(in: &cancellables)
+        
+        $selectedElements
+            .sink { [weak self] in
+                self?.tileList.update(selectedElements: $0)
+                self?.textList.update(selectedElements: $0)
+            }
+            .store(in: &cancellables)
+        
         tileListButton.onTap = { [weak self] in
             self?.visibleListType = .tiles
         }
         
         textListButton.onTap = { [weak self] in
             self?.visibleListType = .text
+        }
+        
+        selectionModeButton.onTap = { [weak self] in
+            self?.isEditingEnabled.toggle()
+        }
+        
+        tileList.onTapOnTile = { [weak self] in
+            self?.tappedElement = $0
+        }
+        
+        tileList.onLongPressOnTile = { [weak self] in
+            guard let self = self, !self.isEditingEnabled else { return }
+            self.selectionModeButton.isSelected = true
+            self.isEditingEnabled = true
+            self.tappedElement = $0
+        }
+        
+        textList.onTapOnTickbox = { [weak self] in
+            self?.tappedElement = $0
         }
     }
     

@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class UTXOsWalletTileView: UIView {
+final class UTXOsWalletTileListView: UIView {
     
     // MARK: - Subviews
     
@@ -60,6 +60,20 @@ final class UTXOsWalletTileView: UIView {
     var models: [UTXOTileView.Model] = [] {
         didSet { updateTiles(models: models) }
     }
+    
+    var isEditingEnabled: Bool = false {
+        didSet { updateTilesState(isEditing: isEditingEnabled) }
+    }
+    
+    private var allTiles: [UTXOTileView] {
+        contentStackView.arrangedSubviews
+            .compactMap { $0 as? UIStackView }
+            .flatMap { $0.arrangedSubviews }
+            .compactMap { $0 as? UTXOTileView }
+    }
+    
+    var onTapOnTile: ((UUID) -> Void)?
+    var onLongPressOnTile: ((UUID) -> Void)?
     
     // MARK: - Initialisers
     
@@ -95,6 +109,10 @@ final class UTXOsWalletTileView: UIView {
     
     // MARK: - Actions
     
+    func update(selectedElements: Set<UUID>) {
+        allTiles.forEach { $0.isSelected = selectedElements.contains($0.elementID) }
+    }
+    
     private func updateTiles(models: [UTXOTileView.Model]) {
         
         removeTiles()
@@ -105,13 +123,21 @@ final class UTXOsWalletTileView: UIView {
             .map { ($0, 0.0, makeColumn()) }
         
         models
-            .reduce(into: initialData) { result, model in
+            .reduce(into: initialData) { [weak self] result, model in
                 
                 guard let columnIndex = result.min(by: { $0.height < $1.height })?.index else { return }
                 
                 let tile = UTXOTileView(model: model)
                 result[columnIndex].height += model.height
                 result[columnIndex].column.addArrangedSubview(tile)
+                
+                tile.onTapOnTickbox = {
+                    self?.onTapOnTile?($0)
+                }
+                
+                tile.onLongPress = {
+                    self?.onLongPressOnTile?($0)
+                }
             }
             .map(\.column)
             .forEach(contentStackView.addArrangedSubview)
@@ -129,6 +155,10 @@ final class UTXOsWalletTileView: UIView {
         }
     }
     
+    private func updateTilesState(isEditing: Bool) {
+        allTiles.forEach { $0.isSelectModeEnabled = isEditing }
+    }
+    
     // MARK: - Factories
     
     private func makeColumn() -> UIStackView {
@@ -138,4 +168,3 @@ final class UTXOsWalletTileView: UIView {
         return view
     }
 }
-
