@@ -47,6 +47,7 @@ final class UTXOsWalletModel {
     }
 
     struct UtxoModel {
+        let uuid: UUID
         let amountText: String
         let tileHeight: CGFloat
         let status: UtxoStatus
@@ -61,7 +62,8 @@ final class UTXOsWalletModel {
     // MARK: - Model
     
     @Published private(set) var utxoModels: [UtxoModel] = []
-    @Published private(set) var isSortOrderAscending = false
+    @Published private(set) var isSortOrderAscending: Bool = false
+    @Published private(set) var selectedIDs: Set<UUID> = []
     
     // MARK: - Initialisers
     
@@ -75,13 +77,27 @@ final class UTXOsWalletModel {
         isSortOrderAscending.toggle()
     }
     
+    func toogleState(elementID: UUID) {
+        
+        guard selectedIDs.contains(elementID) else {
+            selectedIDs.update(with: elementID)
+            return
+        }
+        
+        selectedIDs.remove(elementID)
+    }
+    
+    func deselectAllElements() {
+        selectedIDs = []
+    }
+    
     private func generateData() {
         
         let data = generateMockedData().sorted { $0.amount.rawValue > $1.amount.rawValue }
         let heights = calculateHeights(fromAmounts: data.map { $0.amount} )
         
         utxoModels = zip(data, heights)
-            .map { UtxoModel(amountText: $0.amount.formattedPrecise, tileHeight: $1, status: .mined, hash: $0.hash) }
+            .map { UtxoModel(uuid: UUID(), amountText: $0.amount.formattedPrecise, tileHeight: $1, status: .mined, hash: $0.hash) }
     }
     
     // MARK: - Helpers

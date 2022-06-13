@@ -44,6 +44,7 @@ import TariCommon
 final class UTXOTileView: UIView {
     
     struct Model {
+        let uuid: UUID
         let amountText: String
         let backgroundColor: UIColor?
         let height: CGFloat
@@ -53,7 +54,19 @@ final class UTXOTileView: UIView {
     
     // MARK: - Subviews
     
+    @View private var contentView: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 10.0
+        return view
+    }()
+    
     @View private var amountContentView = UIView()
+    
+    @View private var tickButton: UTXOsWalletTileTickButton = {
+        let view = UTXOsWalletTileTickButton()
+        view.alpha = 0.0
+        return view
+    }()
     
     @View private var amountLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
@@ -79,12 +92,29 @@ final class UTXOTileView: UIView {
         return view
     }()
     
+    // MARK: - Properties
+    
+    let elementID: UUID
+    
+    var isSelected: Bool = false {
+        didSet { update(selectionState: isSelected) }
+    }
+    
+    var isSelectModeEnabled: Bool = false {
+        didSet { updateTickBox(isVisible: isSelectModeEnabled) }
+    }
+    
+    var onTapOnTickbox: ((UUID) -> Void)?
+    var onLongPress: ((UUID) -> Void)?
+    
     // MARK: - Initialisers
     
     init(model: Model) {
+        self.elementID = model.uuid
         super.init(frame: .zero)
         setupViews(model: model)
         setupConstraints(height: model.height)
+        setupCallbacks()
     }
     
     required init?(coder: NSCoder) {
@@ -94,8 +124,9 @@ final class UTXOTileView: UIView {
     // MARK: - Setups
     
     private func setupViews(model: Model) {
+        backgroundColor = .tari.white
         layer.cornerRadius = 10.0
-        backgroundColor = model.backgroundColor
+        contentView.backgroundColor = model.backgroundColor
         amountLabel.text = model.amountText
         statusIcon.image = model.statusIcon
         statusLabel.text = model.statusName
@@ -103,30 +134,73 @@ final class UTXOTileView: UIView {
     
     private func setupConstraints(height: CGFloat) {
         
+        addSubview(contentView)
         amountContentView.addSubview(amountLabel)
-        [amountContentView, statusIcon, statusLabel].forEach(addSubview)
+        [amountContentView, statusIcon, statusLabel, tickButton].forEach(contentView.addSubview)
         
         let constraints = [
-            amountContentView.topAnchor.constraint(equalTo: topAnchor),
-            amountContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            amountContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contentView.topAnchor.constraint(equalTo: topAnchor, constant: 2.0),
+            contentView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2.0),
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2.0),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2.0),
+            tickButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
+            tickButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0),
+            tickButton.heightAnchor.constraint(equalToConstant: 24.0),
+            tickButton.widthAnchor.constraint(equalToConstant: 24.0),
+            amountContentView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            amountContentView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            amountContentView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             amountLabel.leadingAnchor.constraint(greaterThanOrEqualTo: amountContentView.leadingAnchor, constant: 10.0),
             amountLabel.trailingAnchor.constraint(lessThanOrEqualTo: amountContentView.trailingAnchor, constant: -10.0),
-            amountLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            amountLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
-            statusIcon.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.0),
+            amountLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            amountLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            statusIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0),
             statusIcon.heightAnchor.constraint(equalToConstant: 14.0),
             statusIcon.widthAnchor.constraint(equalToConstant: 14.0),
             statusIcon.centerYAnchor.constraint(equalTo: statusLabel.centerYAnchor),
             statusLabel.topAnchor.constraint(equalTo: amountContentView.bottomAnchor),
             statusLabel.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 6.0),
-            statusLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.0),
-            statusLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0),
-            heightAnchor.constraint(equalToConstant: height),
+            statusLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10.0),
+            statusLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
+            contentView.heightAnchor.constraint(equalToConstant: height)
         ]
         
         NSLayoutConstraint.activate(constraints)
     }
+    
+    private func setupCallbacks() {
+        
+        tickButton.onTap = { [weak self] in
+            guard let self = self else { return }
+            self.onTapOnTickbox?(self.elementID)
+        }
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPressGesture))
+        addGestureRecognizer(longPressGesture)
+    }
+    
+    // MARK: - Actions
+    
+    private func update(selectionState: Bool) {
+        
+        UIView.animate(withDuration: 0.3) {
+            let shadow: Shadow = selectionState ? .selection : .none
+            self.apply(shadow: shadow)
+        }
+        
+        tickButton.isSelected = selectionState
+    }
+    
+    private func updateTickBox(isVisible: Bool) {
+        
+        UIView.animate(withDuration: 0.1) {
+            self.tickButton.alpha = isVisible ? 1.0 : 0.0
+        }
+    }
+    
+    // MARK: - Target Actions
+    
+    @objc private func onLongPressGesture() {
+        onLongPress?(elementID)
+    }
 }
-
-
