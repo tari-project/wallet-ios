@@ -112,6 +112,9 @@
 "utxos_wallet.segmented_control.sort.size" = "Size";
 "utxos_wallet.segmented_control.sort.date" = "Date";
 "utxos_wallet.tile.label.state.mined" = "Mined";
+"utxos_wallet.button.actions.split" = "Split";
+"utxos_wallet.button.actions.join" = "Join";
+"utxos_wallet.button.actions.join_split" = "Join-Split";
 
 /* Add amount view */
 "add_amount.error.available_balance.title" = "Available Balance error";

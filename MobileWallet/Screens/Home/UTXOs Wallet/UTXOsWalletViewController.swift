@@ -94,12 +94,19 @@ final class UTXOsWalletViewController: UIViewController {
             .assign(to: \.selectedElements, on: mainView)
             .store(in: &cancellables)
         
+        model.$selectedIDs
+            .compactMap { [weak self] in self?.contextualButtonsModels(selectedIDs: $0) }
+            .removeDuplicates()
+            .assign(to: \.contextualButtons, on: mainView)
+            .store(in: &cancellables)
+        
         mainView.sortDirectionButton.onTap = { [weak self] in
             self?.model.toggleSortOrder()
         }
         
         mainView.$tappedElement
             .compactMap { $0 }
+            .filter { [unowned self] _ in self.mainView.isEditingEnabled }
             .sink { [weak self] in self?.model.toogleState(elementID: $0) }
             .store(in: &cancellables)
         
@@ -118,4 +125,21 @@ final class UTXOsWalletViewController: UIViewController {
     private func textListModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOsWalletTextListViewCell.Model] {
         models.map { UTXOsWalletTextListViewCell.Model(id: $0.uuid, amount: $0.amountWithCurrency, hash: $0.hash) }
     }
+    
+    private func contextualButtonsModels(selectedIDs: Set<UUID>) -> [ContextualButtonsOverlay.ButtonModel] {
+        switch selectedIDs.count {
+        case 0:
+            return .none
+        case 1:
+            return .split
+        default:
+            return .join
+        }
+    }
+}
+
+private extension Array where Element == ContextualButtonsOverlay.ButtonModel {
+    static var none: Self { [] }
+    static var split: Self { [Element(text: localized("utxos_wallet.button.actions.split"), image: Theme.shared.images.utxoActionSplit)] }
+    static var join: Self { [Element(text: localized("utxos_wallet.button.actions.join"), image: Theme.shared.images.utxoActionJoin), Element(text: localized("utxos_wallet.button.actions.join_split"), image: Theme.shared.images.utxoActionJoinSplit)] }
 }

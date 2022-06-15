@@ -241,7 +241,7 @@
 		3AB2172E272BE7D3007139F1 /* NetworkManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2172D272BE7D3007139F1 /* NetworkManagerTests.swift */; };
 		3AB21730272BEC7A007139F1 /* StringTokenizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2172F272BEC7A007139F1 /* StringTokenizationTests.swift */; };
 		3AB21736272BEF5A007139F1 /* TariLibWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB21735272BEF59007139F1 /* TariLibWrapperTests.swift */; };
-		3AB8B911285202D200E66D5C /* UTXOsWalletTileTickButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8B910285202D200E66D5C /* UTXOsWalletTileTickButton.swift */; };
+		3AB8B911285202D200E66D5C /* UTXOsWalletTileTickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8B910285202D200E66D5C /* UTXOsWalletTileTickView.swift */; };
 		3ABBBA7C2850771C00A3108D /* UTXOsWalletTextListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBBA7B2850771C00A3108D /* UTXOsWalletTextListView.swift */; };
 		3ABBBA7E2850815C00A3108D /* UTXOsWalletTileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBBA7D2850815C00A3108D /* UTXOsWalletTileListView.swift */; };
 		3ABBBA8028508AB000A3108D /* UTXOsWalletTextListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBBA7F28508AB000A3108D /* UTXOsWalletTextListViewCell.swift */; };
@@ -272,6 +272,8 @@
 		3ADEBF6226A59A5900E87C84 /* AddBaseNodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6126A59A5900E87C84 /* AddBaseNodeViewController.swift */; };
 		3ADEBF6626A5B5A500E87C84 /* AddBaseNodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6526A5B5A500E87C84 /* AddBaseNodeView.swift */; };
 		3ADEBF6A26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */; };
+		3ADF96CC28585E2400A3C888 /* ContextualButtonsOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADF96CB28585E2400A3C888 /* ContextualButtonsOverlay.swift */; };
+		3ADF96CE2858A93000A3C888 /* ContextualButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ADF96CD2858A93000A3C888 /* ContextualButton.swift */; };
 		3AE138C928044A1800443D34 /* PopUpComponentsFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE138C828044A1800443D34 /* PopUpComponentsFactory.swift */; };
 		3AE138CB28044B1E00443D34 /* CustomDeeplinkPopUpContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE138CA28044B1E00443D34 /* CustomDeeplinkPopUpContentView.swift */; };
 		3AE138CF2804A88500443D34 /* ToastPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE138CE2804A88500443D34 /* ToastPresenter.swift */; };
@@ -617,7 +619,7 @@
 		3AB2172D272BE7D3007139F1 /* NetworkManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManagerTests.swift; sourceTree = "<group>"; };
 		3AB2172F272BEC7A007139F1 /* StringTokenizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringTokenizationTests.swift; sourceTree = "<group>"; };
 		3AB21735272BEF59007139F1 /* TariLibWrapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TariLibWrapperTests.swift; sourceTree = "<group>"; };
-		3AB8B910285202D200E66D5C /* UTXOsWalletTileTickButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTileTickButton.swift; sourceTree = "<group>"; };
+		3AB8B910285202D200E66D5C /* UTXOsWalletTileTickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTileTickView.swift; sourceTree = "<group>"; };
 		3ABBBA7B2850771C00A3108D /* UTXOsWalletTextListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTextListView.swift; sourceTree = "<group>"; };
 		3ABBBA7D2850815C00A3108D /* UTXOsWalletTileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTileListView.swift; sourceTree = "<group>"; };
 		3ABBBA7F28508AB000A3108D /* UTXOsWalletTextListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTextListViewCell.swift; sourceTree = "<group>"; };
@@ -648,6 +650,8 @@
 		3ADEBF6126A59A5900E87C84 /* AddBaseNodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeViewController.swift; sourceTree = "<group>"; };
 		3ADEBF6526A5B5A500E87C84 /* AddBaseNodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeView.swift; sourceTree = "<group>"; };
 		3ADEBF6926A5C10E00E87C84 /* AddBaseNodeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddBaseNodeModel.swift; sourceTree = "<group>"; };
+		3ADF96CB28585E2400A3C888 /* ContextualButtonsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextualButtonsOverlay.swift; sourceTree = "<group>"; };
+		3ADF96CD2858A93000A3C888 /* ContextualButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextualButton.swift; sourceTree = "<group>"; };
 		3AE138C828044A1800443D34 /* PopUpComponentsFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpComponentsFactory.swift; sourceTree = "<group>"; };
 		3AE138CA28044B1E00443D34 /* CustomDeeplinkPopUpContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomDeeplinkPopUpContentView.swift; sourceTree = "<group>"; };
 		3AE138CE2804A88500443D34 /* ToastPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastPresenter.swift; sourceTree = "<group>"; };
@@ -1417,8 +1421,10 @@
 				3A3E7AD5284E03140065F3C0 /* UTXOTileView.swift */,
 				3ABBBA7B2850771C00A3108D /* UTXOsWalletTextListView.swift */,
 				3ABBBA7F28508AB000A3108D /* UTXOsWalletTextListViewCell.swift */,
-				3AB8B910285202D200E66D5C /* UTXOsWalletTileTickButton.swift */,
+				3AB8B910285202D200E66D5C /* UTXOsWalletTileTickView.swift */,
 				3A8A0557285370B200D48FCE /* UTXOsWalletTextTickButton.swift */,
+				3ADF96CB28585E2400A3C888 /* ContextualButtonsOverlay.swift */,
+				3ADF96CD2858A93000A3C888 /* ContextualButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2350,6 +2356,7 @@
 				3AD1306A27D62918003EC7FA /* SeedWordsListView.swift in Sources */,
 				3A66109627AD07F10038EB5B /* SendingTariView.swift in Sources */,
 				3A4376E9269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */,
+				3ADF96CE2858A93000A3C888 /* ContextualButton.swift in Sources */,
 				3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */,
 				37875E4824D8787A00C0595B /* TxTableViewModel.swift in Sources */,
 				3AF97E6727CF769A00FF6A3F /* BaseNodesAddDeeplink.swift in Sources */,
@@ -2434,7 +2441,7 @@
 				3A2C0B8727DA22970018C5A8 /* SeedWordListElementView.swift in Sources */,
 				3A6F3FF8283BF980005D1793 /* TariFeePerGramStats.swift in Sources */,
 				3A94DB21283E7CEF00B0A740 /* TransactionFeesManager.swift in Sources */,
-				3AB8B911285202D200E66D5C /* UTXOsWalletTileTickButton.swift in Sources */,
+				3AB8B911285202D200E66D5C /* UTXOsWalletTileTickView.swift in Sources */,
 				3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */,
 				3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */,
 				00A66523243B3E380046E730 /* ErrorView.swift in Sources */,
@@ -2477,6 +2484,7 @@
 				371A0818247290C000F97713 /* TransitionLabel.swift in Sources */,
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
+				3ADF96CC28585E2400A3C888 /* ContextualButtonsOverlay.swift in Sources */,
 				37ABB69024781CE800F08163 /* UILabel.swift in Sources */,
 				3AA2DD962796F72100DC3CF7 /* QRCodePresentationView.swift in Sources */,
 				3AFAC360271C6B4D008AA842 /* ContactAvatarView.swift in Sources */,

@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class UTXOTileView: UIView {
+final class UTXOTileView: BaseButton {
     
     struct Model {
         let uuid: UUID
@@ -62,8 +62,8 @@ final class UTXOTileView: UIView {
     
     @View private var amountContentView = UIView()
     
-    @View private var tickButton: UTXOsWalletTileTickButton = {
-        let view = UTXOsWalletTileTickButton()
+    @View private var tickView: UTXOsWalletTileTickView = {
+        let view = UTXOsWalletTileTickView()
         view.alpha = 0.0
         return view
     }()
@@ -96,8 +96,8 @@ final class UTXOTileView: UIView {
     
     let elementID: UUID
     
-    var isSelected: Bool = false {
-        didSet { update(selectionState: isSelected) }
+    var isTickSelected: Bool = false {
+        didSet { update(selectionState: isTickSelected) }
     }
     
     var isSelectModeEnabled: Bool = false {
@@ -136,17 +136,20 @@ final class UTXOTileView: UIView {
         
         addSubview(contentView)
         amountContentView.addSubview(amountLabel)
-        [amountContentView, statusIcon, statusLabel, tickButton].forEach(contentView.addSubview)
+        [amountContentView, statusIcon, statusLabel, tickView].forEach(contentView.addSubview)
+        
+        contentView.isUserInteractionEnabled = false
+        [amountContentView, statusIcon, statusLabel].forEach { $0.isUserInteractionEnabled = false }
         
         let constraints = [
             contentView.topAnchor.constraint(equalTo: topAnchor, constant: 2.0),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2.0),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2.0),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2.0),
-            tickButton.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
-            tickButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0),
-            tickButton.heightAnchor.constraint(equalToConstant: 24.0),
-            tickButton.widthAnchor.constraint(equalToConstant: 24.0),
+            tickView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
+            tickView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0),
+            tickView.heightAnchor.constraint(equalToConstant: 24.0),
+            tickView.widthAnchor.constraint(equalToConstant: 24.0),
             amountContentView.topAnchor.constraint(equalTo: contentView.topAnchor),
             amountContentView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             amountContentView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
@@ -170,7 +173,7 @@ final class UTXOTileView: UIView {
     
     private func setupCallbacks() {
         
-        tickButton.onTap = { [weak self] in
+        onTap = { [weak self] in
             guard let self = self else { return }
             self.onTapOnTickbox?(self.elementID)
         }
@@ -188,13 +191,13 @@ final class UTXOTileView: UIView {
             self.apply(shadow: shadow)
         }
         
-        tickButton.isSelected = selectionState
+        tickView.isSelected = selectionState
     }
     
     private func updateTickBox(isVisible: Bool) {
         
         UIView.animate(withDuration: 0.1) {
-            self.tickButton.alpha = isVisible ? 1.0 : 0.0
+            self.tickView.alpha = isVisible ? 1.0 : 0.0
         }
     }
     
