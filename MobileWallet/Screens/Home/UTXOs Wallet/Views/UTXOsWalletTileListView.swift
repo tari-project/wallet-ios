@@ -110,7 +110,7 @@ final class UTXOsWalletTileListView: UIView {
     // MARK: - Actions
     
     func update(selectedElements: Set<UUID>) {
-        allTiles.forEach { $0.isSelected = selectedElements.contains($0.elementID) }
+        allTiles.forEach { $0.isTickSelected = selectedElements.contains($0.elementID) }
     }
     
     private func updateTiles(models: [UTXOTileView.Model]) {

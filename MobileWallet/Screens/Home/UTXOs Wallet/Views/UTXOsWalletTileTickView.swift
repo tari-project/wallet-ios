@@ -40,7 +40,7 @@
 
 import UIKit
 
-final class UTXOsWalletTileTickButton: BaseButton {
+final class UTXOsWalletTileTickView: UIView {
     
     // MARK: - Subviews
     
@@ -53,7 +53,7 @@ final class UTXOsWalletTileTickButton: BaseButton {
     
     // MARK: - Properties
     
-    override var isSelected: Bool {
+    var isSelected: Bool = false {
         didSet { update(selectionState: isSelected) }
     }
     
