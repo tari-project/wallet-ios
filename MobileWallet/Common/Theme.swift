@@ -331,6 +331,9 @@ struct Images: Loopable {
     let utxoTileViewIcon = UIImage(named: "icon-blockview")
     let utxoTextListIcon = UIImage(named: "icon-listview")
     let utxoStatusMined = UIImage(named: "icon-mined")
+    let utxoActionJoin = UIImage(named: "icon-join")
+    let utxoActionSplit = UIImage(named: "icon-split")
+    let utxoActionJoinSplit = UIImage(named: "icon-join-split")
     
     // Settings Icons
     let settingsAboutIcon = UIImage(named: "icon-about")

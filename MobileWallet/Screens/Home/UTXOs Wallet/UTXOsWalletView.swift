@@ -51,6 +51,8 @@ final class UTXOsWalletView: BaseNavigationContentView {
     
     // MARK: - Suviews
     
+    @View var contextualButtonsOverlay = ContextualButtonsOverlay()
+    
     @View var tileListButton: UTXOsWalletStateButton = {
         let view = UTXOsWalletStateButton()
         view.setImage(Theme.shared.images.utxoTileViewIcon, for: .normal)
@@ -102,6 +104,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
     
     @Published var isSortAscending: Bool = false
     @Published var selectedElements: Set<UUID> = []
+    @Published var contextualButtons: [ContextualButtonsOverlay.ButtonModel] = []
     @Published private(set) var isEditingEnabled: Bool = false
     @Published private(set) var tappedElement: UUID?
     @Published private var visibleListType: ListType = .tiles
@@ -130,7 +133,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
     
     private func setupConstraints() {
         
-        [sortMethodSegmenterControl, tileList, textList, sortDirectionButton, selectionModeButton].forEach(addSubview)
+        [sortMethodSegmenterControl, tileList, textList, sortDirectionButton, selectionModeButton, contextualButtonsOverlay].forEach(addSubview)
         [textListButton, tileListButton].forEach(navigationBar.addSubview)
         
         let constraints = [
@@ -159,7 +162,11 @@ final class UTXOsWalletView: BaseNavigationContentView {
             textList.topAnchor.constraint(equalTo: sortMethodSegmenterControl.bottomAnchor),
             textList.leadingAnchor.constraint(equalTo: leadingAnchor),
             textList.trailingAnchor.constraint(equalTo: trailingAnchor),
-            textList.bottomAnchor.constraint(equalTo: bottomAnchor)
+            textList.bottomAnchor.constraint(equalTo: bottomAnchor),
+            contextualButtonsOverlay.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            contextualButtonsOverlay.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contextualButtonsOverlay.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contextualButtonsOverlay.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
         
         NSLayoutConstraint.activate(constraints)
@@ -218,6 +225,10 @@ final class UTXOsWalletView: BaseNavigationContentView {
         textList.onTapOnTickbox = { [weak self] in
             self?.tappedElement = $0
         }
+        
+        $contextualButtons
+            .sink { [weak self] in self?.contextualButtonsOverlay.setup(buttons: $0) }
+            .store(in: &cancellables)
     }
     
     // MARK: - Actions
