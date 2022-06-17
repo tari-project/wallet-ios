@@ -109,7 +109,6 @@ final class AddRecipientModel {
             .store(in: &cancelables)
         
         searchText
-            .filter { !$0.isEmpty }
             .throttle(for: .milliseconds(750), scheduler: RunLoop.main, latest: true)
             .sink { [weak self] in self?.searchAddress(forYatID: $0) }
             .store(in: &cancelables)
