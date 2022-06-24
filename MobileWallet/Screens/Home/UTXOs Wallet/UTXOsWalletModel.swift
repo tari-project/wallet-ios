@@ -39,11 +39,19 @@
 */
 
 import UIKit
+import Combine
 
 final class UTXOsWalletModel {
     
     enum UtxoStatus {
         case mined
+    }
+    
+    enum SortMethod {
+        case amountAscending
+        case amountDescending
+        case minedHeightAscending
+        case minedHeightDescending
     }
 
     struct UtxoModel {
@@ -61,21 +69,34 @@ final class UTXOsWalletModel {
     
     // MARK: - Model
     
+    @Published var sortMethod: SortMethod = .amountDescending
+    
     @Published private(set) var utxoModels: [UtxoModel] = []
-    @Published private(set) var isSortOrderAscending: Bool = false
     @Published private(set) var selectedIDs: Set<UUID> = []
+    @Published private(set) var errorMessage: MessageModel?
+    
+    // MARK: - Properties
+    
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialisers
     
     init() {
-        generateData()
+        setupCallbacks()
     }
     
-    // MARK: - Actions
+    // MARK: - Setups
     
-    func toggleSortOrder() {
-        isSortOrderAscending.toggle()
+    private func setupCallbacks() {
+        
+        $sortMethod
+            .removeDuplicates()
+            .sink { [weak self] in self?.fetchUTXOs(sortMethod: $0) }
+            .store(in: &cancellables)
+        
     }
+    
+    // MARK: - Model Actions
     
     func toogleState(elementID: UUID) {
         
@@ -91,56 +112,56 @@ final class UTXOsWalletModel {
         selectedIDs = []
     }
     
-    private func generateData() {
+    // MARK: - Actions
+    
+    private func fetchUTXOs(sortMethod: SortMethod) {
+    
+        guard let wallet = TariLib.shared.tariWallet else {
+            errorMessage = ErrorMessageManager.errorModel(forError: nil)
+            return
+        }
         
-        let data = generateMockedData().sorted { $0.amount.rawValue > $1.amount.rawValue }
-        let heights = calculateHeights(fromAmounts: data.map { $0.amount} )
+        do {
+            let utxos = try fetchAllUTXOs(wallet: wallet)
+            let heights = calculateHeights(rawAmounts: utxos.map(\.value))
+            
+            utxoModels = zip(utxos, heights)
+                .compactMap {
+                    guard let commitment = $0.commitment.string else { return nil }
+                    return UtxoModel(uuid: UUID(), amountText: MicroTari($0.value).formattedPrecise, tileHeight: $1, status: .mined, hash: commitment)
+                }
+        } catch {
+            errorMessage = ErrorMessageManager.errorModel(forError: error)
+        }
+    }
+    
+    private func fetchAllUTXOs(wallet: Wallet) throws -> [TariUtxo] {
         
-        utxoModels = zip(data, heights)
-            .map { UtxoModel(uuid: UUID(), amountText: $0.amount.formattedPrecise, tileHeight: $1, status: .mined, hash: $0.hash) }
+        let batchSize: UInt = 50
+        
+        var allUTXOs = [TariUtxo]()
+        var batch = [TariUtxo]()
+        var page: UInt = 0
+        
+        repeat {
+            
+            batch = try wallet.utxos(page: page * batchSize, pageSize: batchSize, sortMethod: sortMethod.ffiSortMethod, dustTreshold: 0)
+            
+            allUTXOs += batch
+            page += 1
+            
+        } while !batch.isEmpty
+        
+        return allUTXOs
     }
     
     // MARK: - Helpers
     
-    private func generateMockedData() -> [(amount: MicroTari, hash: String)] {
+    private func calculateHeights(rawAmounts: [UInt64]) -> [CGFloat] {
         
-        let elementsCount = 20
-        var amounts = [UInt64(100000)]
+        let rawAmounts = rawAmounts.map { CGFloat($0) }
         
-        amounts += (1...9).map { UInt64($0) }
-        
-        let elem = (elementsCount - 10) / 2
-        let elem2 = (elementsCount - 10) - elem
-        
-        amounts += (0..<elem)
-            .map { _ in UInt64.random(in: 100..<10000) }
-            .map { $0 * 1000 }
-        
-        amounts += (0..<elem2)
-            .map { _ in UInt64.random(in: 100...200) }
-        
-        let hashCharacters = "0123456789ABCDE"
-        
-        return amounts
-            .map {
-                let hash = (0..<64)
-                    .compactMap { _ in hashCharacters.randomElement() }
-                    .map { String($0) }
-                    .joined()
-                
-                return (MicroTari($0), hash)
-            }
-    }
-    
-    private func generateColor(hash: String) -> UIColor? {
-        return .tari.purple?.colorVariant(text: hash)
-    }
-    
-    private func calculateHeights(fromAmounts amounts: [MicroTari]) -> [CGFloat] {
-        
-        let rawAmounts = amounts.map { CGFloat($0.rawValue) }
-        
-        guard let minAmount = rawAmounts.min(), let maxAmount = rawAmounts.max() else { return amounts.map { _ in maxTileHeight }}
+        guard let minAmount = rawAmounts.min(), let maxAmount = rawAmounts.max(), minAmount < maxAmount else { return rawAmounts.map { _ in maxTileHeight }}
         
         let amountDiff = maxAmount - minAmount
         let heightDiff = maxTileHeight - minTileHeight
@@ -167,6 +188,22 @@ extension UTXOsWalletModel.UtxoStatus {
         switch self {
         case .mined:
             return Theme.shared.images.utxoStatusMined
+        }
+    }
+}
+
+private extension UTXOsWalletModel.SortMethod {
+    
+    var ffiSortMethod: TariUtxoSort {
+        switch self {
+        case .amountAscending:
+            return TariUtxoSort(rawValue: 0)
+        case .amountDescending:
+            return TariUtxoSort(rawValue: 1)
+        case .minedHeightAscending:
+            return TariUtxoSort(rawValue: 2)
+        case .minedHeightDescending:
+            return TariUtxoSort(rawValue: 3)
         }
     }
 }

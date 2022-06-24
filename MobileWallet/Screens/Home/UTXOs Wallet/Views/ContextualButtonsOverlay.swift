@@ -161,7 +161,7 @@ final class ContextualButtonsOverlay: UIView {
     }
     
     private func showButtons() {
-        UIView.animate(withDuration: animationTime, delay: 0.0, options: [.beginFromCurrentState]) {
+        UIView.animate(withDuration: animationTime) {
             self.contentView.alpha = 1.0
         }
     }

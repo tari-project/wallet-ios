@@ -41,9 +41,9 @@
 import UIKit
 import TariCommon
 
-final class UTXOTileView: BaseButton {
+final class UTXOTileView: UICollectionViewCell {
     
-    struct Model {
+    struct Model: Hashable {
         let uuid: UUID
         let amountText: String
         let backgroundColor: UIColor?
@@ -54,7 +54,7 @@ final class UTXOTileView: BaseButton {
     
     // MARK: - Subviews
     
-    @View private var contentView: UIView = {
+    @View private var backgroundContentView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 10.0
         return view
@@ -94,7 +94,7 @@ final class UTXOTileView: BaseButton {
     
     // MARK: - Properties
     
-    let elementID: UUID
+    private(set) var elementID: UUID?
     
     var isTickSelected: Bool = false {
         didSet { update(selectionState: isTickSelected) }
@@ -109,12 +109,11 @@ final class UTXOTileView: BaseButton {
     
     // MARK: - Initialisers
     
-    init(model: Model) {
-        self.elementID = model.uuid
-        super.init(frame: .zero)
-        setupViews(model: model)
-        setupConstraints(height: model.height)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
         setupCallbacks()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -123,63 +122,66 @@ final class UTXOTileView: BaseButton {
     
     // MARK: - Setups
     
-    private func setupViews(model: Model) {
-        backgroundColor = .tari.white
-        layer.cornerRadius = 10.0
-        contentView.backgroundColor = model.backgroundColor
+    func update(model: Model) {
+        elementID = model.uuid
+        backgroundContentView.backgroundColor = model.backgroundColor
         amountLabel.text = model.amountText
         statusIcon.image = model.statusIcon
         statusLabel.text = model.statusName
     }
     
-    private func setupConstraints(height: CGFloat) {
+    private func setupViews() {
+        backgroundColor = .tari.white
+        layer.cornerRadius = 10.0
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+    }
+    
+    private func setupConstraints() {
         
-        addSubview(contentView)
+        contentView.addSubview(backgroundContentView)
         amountContentView.addSubview(amountLabel)
-        [amountContentView, statusIcon, statusLabel, tickView].forEach(contentView.addSubview)
-        
-        contentView.isUserInteractionEnabled = false
+        [amountContentView, statusIcon, statusLabel, tickView].forEach(backgroundContentView.addSubview)
+
+        backgroundContentView.isUserInteractionEnabled = false
         [amountContentView, statusIcon, statusLabel].forEach { $0.isUserInteractionEnabled = false }
-        
+
         let constraints = [
-            contentView.topAnchor.constraint(equalTo: topAnchor, constant: 2.0),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2.0),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2.0),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2.0),
-            tickView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
-            tickView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0),
+            contentView.topAnchor.constraint(equalTo: topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            backgroundContentView.topAnchor.constraint(equalTo: topAnchor, constant: 2.0),
+            backgroundContentView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2.0),
+            backgroundContentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2.0),
+            backgroundContentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2.0),
+            tickView.topAnchor.constraint(equalTo: backgroundContentView.topAnchor, constant: 10.0),
+            tickView.leadingAnchor.constraint(equalTo: backgroundContentView.leadingAnchor, constant: 10.0),
             tickView.heightAnchor.constraint(equalToConstant: 24.0),
             tickView.widthAnchor.constraint(equalToConstant: 24.0),
-            amountContentView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            amountContentView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            amountContentView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            amountContentView.topAnchor.constraint(equalTo: backgroundContentView.topAnchor),
+            amountContentView.leadingAnchor.constraint(equalTo: backgroundContentView.leadingAnchor),
+            amountContentView.trailingAnchor.constraint(equalTo: backgroundContentView.trailingAnchor),
             amountLabel.leadingAnchor.constraint(greaterThanOrEqualTo: amountContentView.leadingAnchor, constant: 10.0),
             amountLabel.trailingAnchor.constraint(lessThanOrEqualTo: amountContentView.trailingAnchor, constant: -10.0),
-            amountLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            amountLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            statusIcon.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10.0),
+            amountLabel.centerXAnchor.constraint(equalTo: backgroundContentView.centerXAnchor),
+            amountLabel.centerYAnchor.constraint(equalTo: backgroundContentView.centerYAnchor),
+            statusIcon.leadingAnchor.constraint(equalTo: backgroundContentView.leadingAnchor, constant: 10.0),
             statusIcon.heightAnchor.constraint(equalToConstant: 14.0),
             statusIcon.widthAnchor.constraint(equalToConstant: 14.0),
             statusIcon.centerYAnchor.constraint(equalTo: statusLabel.centerYAnchor),
             statusLabel.topAnchor.constraint(equalTo: amountContentView.bottomAnchor),
             statusLabel.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 6.0),
-            statusLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10.0),
-            statusLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
-            contentView.heightAnchor.constraint(equalToConstant: height)
+            statusLabel.trailingAnchor.constraint(equalTo: backgroundContentView.trailingAnchor, constant: -10.0),
+            statusLabel.bottomAnchor.constraint(equalTo: backgroundContentView.bottomAnchor, constant: -10.0),
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
     
     private func setupCallbacks() {
-        
-        onTap = { [weak self] in
-            guard let self = self else { return }
-            self.onTapOnTickbox?(self.elementID)
-        }
-        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onTapGesture))
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(onLongPressGesture))
-        addGestureRecognizer(longPressGesture)
+        [tapGesture, longPressGesture].forEach(addGestureRecognizer)
     }
     
     // MARK: - Actions
@@ -203,7 +205,13 @@ final class UTXOTileView: BaseButton {
     
     // MARK: - Target Actions
     
+    @objc private func onTapGesture() {
+        guard let elementID = elementID else { return }
+        onTapOnTickbox?(elementID)
+    }
+    
     @objc private func onLongPressGesture() {
+        guard let elementID = elementID else { return }
         onLongPress?(elementID)
     }
 }

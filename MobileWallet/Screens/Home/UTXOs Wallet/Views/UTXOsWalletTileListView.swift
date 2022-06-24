@@ -45,13 +45,10 @@ final class UTXOsWalletTileListView: UIView {
     
     // MARK: - Subviews
     
-    @View private var scrollView = ContentScrollView()
-    
-    @View private var contentStackView: UIStackView = {
-        let view = UIStackView()
-        view.distribution = .fillEqually
-        view.alignment = .leading
-        view.spacing = 12.0
+    private lazy var collectionView: UICollectionView = {
+        let view = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.register(type: UTXOTileView.self)
         return view
     }()
     
@@ -65,21 +62,27 @@ final class UTXOsWalletTileListView: UIView {
         didSet { updateTilesState(isEditing: isEditingEnabled) }
     }
     
-    private var allTiles: [UTXOTileView] {
-        contentStackView.arrangedSubviews
-            .compactMap { $0 as? UIStackView }
-            .flatMap { $0.arrangedSubviews }
-            .compactMap { $0 as? UTXOTileView }
+    var selectedElements: Set<UUID> = [] {
+        didSet { update(selectedElements: selectedElements) }
     }
     
     var onTapOnTile: ((UUID) -> Void)?
     var onLongPressOnTile: ((UUID) -> Void)?
+    
+    private let collectionViewLayout: UTXOsWalletTileListLayout = {
+        let layout = UTXOsWalletTileListLayout()
+        layout.columnsCount = UIDevice.current.userInterfaceIdiom == .pad ? 4 : 2
+        return layout
+    }()
+    
+    private var dataSource: UICollectionViewDiffableDataSource<Int, UTXOTileView.Model>?
     
     // MARK: - Initialisers
     
     init() {
         super.init(frame: .zero)
         setupConstraints()
+        setupCallbacks()
     }
     
     required init?(coder: NSCoder) {
@@ -90,81 +93,74 @@ final class UTXOsWalletTileListView: UIView {
     
     private func setupConstraints() {
         
-        addSubview(scrollView)
-        scrollView.contentView.addSubview(contentStackView)
+        addSubview(collectionView)
         
         let constraints = [
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            contentStackView.topAnchor.constraint(equalTo: scrollView.contentView.topAnchor, constant: 12.0),
-            contentStackView.leadingAnchor.constraint(equalTo: scrollView.contentView.leadingAnchor, constant: 30.0),
-            contentStackView.trailingAnchor.constraint(equalTo: scrollView.contentView.trailingAnchor, constant: -30.0),
-            contentStackView.bottomAnchor.constraint(equalTo: scrollView.contentView.bottomAnchor, constant: -12.0),
+            collectionView.topAnchor.constraint(equalTo: topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
         
         NSLayoutConstraint.activate(constraints)
     }
     
-    // MARK: - Actions
-    
-    func update(selectedElements: Set<UUID>) {
-        allTiles.forEach { $0.isTickSelected = selectedElements.contains($0.elementID) }
-    }
-    
-    private func updateTiles(models: [UTXOTileView.Model]) {
+    private func setupCallbacks() {
         
-        removeTiles()
-        
-        let columnsCount = UIDevice.current.userInterfaceIdiom == .pad ? 4 : 2
-        
-        let initialData: [(index: Int, height: CGFloat, column: UIStackView)] = (0..<columnsCount)
-            .map { ($0, 0.0, makeColumn()) }
-        
-        models
-            .reduce(into: initialData) { [weak self] result, model in
-                
-                guard let columnIndex = result.min(by: { $0.height < $1.height })?.index else { return }
-                
-                let tile = UTXOTileView(model: model)
-                result[columnIndex].height += model.height
-                result[columnIndex].column.addArrangedSubview(tile)
-                
-                tile.onTapOnTickbox = {
-                    self?.onTapOnTile?($0)
-                }
-                
-                tile.onLongPress = {
-                    self?.onLongPressOnTile?($0)
-                }
+        dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView) { [weak self] collectionView, indexPath, model in
+            let cell = collectionView.dequeueReusableCell(type: UTXOTileView.self, indexPath: indexPath)
+            
+            guard let self = self else { return cell }
+            
+            cell.update(model: model)
+            cell.isSelectModeEnabled = self.isEditingEnabled
+            cell.isTickSelected = self.selectedElements.contains(model.uuid)
+            
+            cell.onTapOnTickbox = {
+                self.onTapOnTile?($0)
             }
-            .map(\.column)
-            .forEach(contentStackView.addArrangedSubview)
-    }
-    
-    private func removeTiles() {
-        contentStackView.arrangedSubviews
-            .compactMap { $0 as? UIStackView }
-            .forEach { column in
-                column.arrangedSubviews.forEach {
-                    column.removeArrangedSubview($0)
-                    $0.removeFromSuperview()
-                }
-                contentStackView.removeArrangedSubview(column)
+            
+            cell.onLongPress = {
+                self.onLongPressOnTile?($0)
+            }
+            
+            return cell
+        }
+        
+        collectionViewLayout.onCheckHeightAtIndex = { [weak self] in
+            self?.models[$0].height ?? 0.0
         }
     }
     
-    private func updateTilesState(isEditing: Bool) {
-        allTiles.forEach { $0.isSelectModeEnabled = isEditing }
+    // MARK: - Actions
+    
+    private func updateTiles(models: [UTXOTileView.Model]) {
+        
+        var snapshot = NSDiffableDataSourceSnapshot<Int, UTXOTileView.Model>()
+        
+        snapshot.appendSections([0])
+        snapshot.appendItems(models)
+        
+        dataSource?.apply(snapshot, animatingDifferences: true)
     }
     
-    // MARK: - Factories
+    private func updateTilesState(isEditing: Bool) {
+        
+        guard !models.isEmpty else { return }
+        
+        collectionView.visibleCells
+            .compactMap { $0 as? UTXOTileView }
+            .forEach { $0.isSelectModeEnabled = isEditing }
+    }
     
-    private func makeColumn() -> UIStackView {
-        let view = UIStackView()
-        view.axis = .vertical
-        view.spacing = 12.0
-        return view
+    private func update(selectedElements: Set<UUID>) {
+        
+        guard !models.isEmpty else { return }
+        
+        collectionView.visibleCells
+            .compactMap { $0 as? UTXOTileView }
+            .forEach {
+                guard let elementID = $0.elementID else { return }
+                $0.isTickSelected = selectedElements.contains(elementID) }
     }
 }
