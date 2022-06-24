@@ -156,6 +156,8 @@
 		3A20A6B82722EE00002B15DB /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A20A6B72722EDFF002B15DB /* VideoView.swift */; };
 		3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */; };
 		3A237C7D27D8E141005FA6AB /* SeedWordsListConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */; };
+		3A2B95682864801D0085BE21 /* UTXOsWalletTileListLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2B95672864801D0085BE21 /* UTXOsWalletTileListLayout.swift */; };
+		3A2B956A28648D860085BE21 /* CChar+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2B956928648D860085BE21 /* CChar+Helpers.swift */; };
 		3A2C0B8727DA22970018C5A8 /* SeedWordListElementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2C0B8627DA22970018C5A8 /* SeedWordListElementView.swift */; };
 		3A2C0B8927DA22C20018C5A8 /* ExpandButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2C0B8827DA22C20018C5A8 /* ExpandButton.swift */; };
 		3A35412C26A72D9F002AB5A8 /* ViewIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A35412B26A72D9F002AB5A8 /* ViewIdentifiable.swift */; };
@@ -534,6 +536,8 @@
 		3A20A6B72722EDFF002B15DB /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListModel.swift; sourceTree = "<group>"; };
 		3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListConstructor.swift; sourceTree = "<group>"; };
+		3A2B95672864801D0085BE21 /* UTXOsWalletTileListLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTileListLayout.swift; sourceTree = "<group>"; };
+		3A2B956928648D860085BE21 /* CChar+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CChar+Helpers.swift"; sourceTree = "<group>"; };
 		3A2C0B8627DA22970018C5A8 /* SeedWordListElementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordListElementView.swift; sourceTree = "<group>"; };
 		3A2C0B8827DA22C20018C5A8 /* ExpandButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandButton.swift; sourceTree = "<group>"; };
 		3A35412B26A72D9F002AB5A8 /* ViewIdentifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewIdentifiable.swift; sourceTree = "<group>"; };
@@ -834,6 +838,7 @@
 				3AE138D22804AB4100443D34 /* UIApplication+Keyboard.swift */,
 				3AECD493284F46FD00D81C80 /* UIColor+Utils.swift */,
 				3A8A05552853270B00D48FCE /* UIImage+Utils.swift */,
+				3A2B956928648D860085BE21 /* CChar+Helpers.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1367,6 +1372,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		3A2B95662864800D0085BE21 /* Other */ = {
+			isa = PBXGroup;
+			children = (
+				3A2B95672864801D0085BE21 /* UTXOsWalletTileListLayout.swift */,
+			);
+			path = Other;
+			sourceTree = "<group>";
+		};
 		3A2C0B8527DA21BF0018C5A8 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -1611,6 +1624,7 @@
 		3A84CDCE2846084C005F2F8D /* UTXOs Wallet */ = {
 			isa = PBXGroup;
 			children = (
+				3A2B95662864800D0085BE21 /* Other */,
 				3A3E7AD4284E03030065F3C0 /* Views */,
 				3A84CDD52846089B005F2F8D /* UTXOsWalletModel.swift */,
 				3A84CDD12846087D005F2F8D /* UTXOsWalletViewController.swift */,
@@ -2421,6 +2435,7 @@
 				00FB43D824BC937D0031D53E /* BackupPrompts.swift in Sources */,
 				37E0B008249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
+				3A2B956A28648D860085BE21 /* CChar+Helpers.swift in Sources */,
 				3A0EA97A26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */,
 				37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
 				3A96B9452733E9A90040E59F /* TokensToolbar.swift in Sources */,
@@ -2451,6 +2466,7 @@
 				3708D752247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
 				3A72DC4526DFA26000E0BC43 /* TariNetwork.swift in Sources */,
 				004277F723E0628A00AE7BD9 /* UIViewController+Content.swift in Sources */,
+				3A2B95682864801D0085BE21 /* UTXOsWalletTileListLayout.swift in Sources */,
 				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
 				3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */,
 				004997AB2382E893000A0B7D /* PendingOutboundTxs.swift in Sources */,

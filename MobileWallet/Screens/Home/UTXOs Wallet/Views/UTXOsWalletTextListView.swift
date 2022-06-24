@@ -65,7 +65,10 @@ final class UTXOsWalletTextListView: UIView {
     
     var onTapOnTickbox: ((UUID) -> Void)?
     
-    private var selectedIDs: Set<UUID> = []
+    var selectedElements: Set<UUID> = [] {
+        didSet { update(selectedElements: selectedElements) }
+    }
+    
     private var dataSource: UITableViewDiffableDataSource<Int, UTXOsWalletTextListViewCell.Model>?
     
     // MARK: - Initialisers
@@ -106,7 +109,7 @@ final class UTXOsWalletTextListView: UIView {
             
             cell.update(model: model)
             cell.updateTickBox(isVisible: self.isEditingEnabled, animated: false)
-            cell.isTickSelected = self.selectedIDs.contains(model.id)
+            cell.isTickSelected = self.selectedElements.contains(model.id)
             
             cell.onTapOnTickbox = {
                 self.onTapOnTickbox?($0)
@@ -115,20 +118,18 @@ final class UTXOsWalletTextListView: UIView {
             return cell
         }
         
+        dataSource?.defaultRowAnimation = .fade
         tableView.dataSource = dataSource
     }
     
     // MARK: - Actions
     
-    func update(selectedElements: Set<UUID>) {
-        
-        selectedIDs = selectedElements
-        
+    private func update(selectedElements: Set<UUID>) {
         tableView.visibleCells
             .compactMap { $0 as? UTXOsWalletTextListViewCell }
             .forEach {
                 guard let elementID = $0.elementID else { return }
-                $0.isTickSelected = selectedIDs.contains(elementID)
+                $0.isTickSelected = selectedElements.contains(elementID)
             }
     }
     
