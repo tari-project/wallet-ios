@@ -86,8 +86,9 @@ final class UTXOsWalletViewController: UIViewController {
             .sink { [weak self] in self?.mainView.updateTextList(models: $0) }
             .store(in: &cancellables)
         
-        model.$isSortOrderAscending
-            .assign(to: \.isSortAscending, on: mainView)
+        Publishers.CombineLatest(mainView.$sortOption, mainView.$isSortAscending)
+            .compactMap { [weak self] in self?.sortMethod(sortOption: $0, isSortAscending: $1) }
+            .assign(to: \.sortMethod, on: model)
             .store(in: &cancellables)
         
         model.$selectedIDs
@@ -100,9 +101,10 @@ final class UTXOsWalletViewController: UIViewController {
             .assign(to: \.contextualButtons, on: mainView)
             .store(in: &cancellables)
         
-        mainView.sortDirectionButton.onTap = { [weak self] in
-            self?.model.toggleSortOrder()
-        }
+        model.$errorMessage
+            .compactMap { $0 }
+            .sink { PopUpPresenter.show(message: $0) }
+            .store(in: &cancellables)
         
         mainView.$tappedElement
             .compactMap { $0 }
@@ -124,6 +126,19 @@ final class UTXOsWalletViewController: UIViewController {
     
     private func textListModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOsWalletTextListViewCell.Model] {
         models.map { UTXOsWalletTextListViewCell.Model(id: $0.uuid, amount: $0.amountWithCurrency, hash: $0.hash) }
+    }
+    
+    private func sortMethod(sortOption: UTXOsWalletView.SortOption, isSortAscending: Bool) -> UTXOsWalletModel.SortMethod {
+        switch (sortOption, isSortAscending) {
+        case (.amount, false):
+            return .amountDescending
+        case (.amount, true):
+            return .amountAscending
+        case (.date, false):
+            return .minedHeightDescending
+        case (.date, true):
+            return .minedHeightAscending
+        }
     }
     
     private func contextualButtonsModels(selectedIDs: Set<UUID>) -> [ContextualButtonsOverlay.ButtonModel] {

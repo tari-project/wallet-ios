@@ -49,6 +49,11 @@ final class UTXOsWalletView: BaseNavigationContentView {
         case text
     }
     
+    enum SortOption: CaseIterable {
+        case amount
+        case date
+    }
+    
     // MARK: - Suviews
     
     @View var contextualButtonsOverlay = ContextualButtonsOverlay()
@@ -69,15 +74,15 @@ final class UTXOsWalletView: BaseNavigationContentView {
         return view
     }()
     
-    @View private var sortMethodSegmenterControl: UISegmentedControl = {
-        let view = UISegmentedControl(items: [localized("utxos_wallet.segmented_control.sort.size"), localized("utxos_wallet.segmented_control.sort.date")])
+    @View private var sortMethodSegmentedControl: UISegmentedControl = {
+        let view = UISegmentedControl(items: SortOption.allCases.map(\.title))
         view.setWidth(85.0, forSegmentAt: 0)
         view.setWidth(85.0, forSegmentAt: 1)
         view.selectedSegmentIndex = 0
         return view
     }()
     
-    @View var sortDirectionButton: BaseButton = {
+    @View private var sortDirectionButton: BaseButton = {
         let view = BaseButton()
         view.tintColor = .tari.greys.black
         view.contentMode = .scaleAspectFit
@@ -102,6 +107,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
     
     // MARK: - Properties
     
+    @Published var sortOption: SortOption = SortOption.allCases[0]
     @Published var isSortAscending: Bool = false
     @Published var selectedElements: Set<UUID> = []
     @Published var contextualButtons: [ContextualButtonsOverlay.ButtonModel] = []
@@ -133,7 +139,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
     
     private func setupConstraints() {
         
-        [sortMethodSegmenterControl, tileList, textList, sortDirectionButton, selectionModeButton, contextualButtonsOverlay].forEach(addSubview)
+        [sortMethodSegmentedControl, tileList, textList, sortDirectionButton, selectionModeButton, contextualButtonsOverlay].forEach(addSubview)
         [textListButton, tileListButton].forEach(navigationBar.addSubview)
         
         let constraints = [
@@ -145,21 +151,21 @@ final class UTXOsWalletView: BaseNavigationContentView {
             tileListButton.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor),
             tileListButton.heightAnchor.constraint(equalToConstant: 30.0),
             tileListButton.widthAnchor.constraint(equalToConstant: 30.0),
-            sortMethodSegmenterControl.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 30.0),
-            sortMethodSegmenterControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
-            sortDirectionButton.leadingAnchor.constraint(equalTo: sortMethodSegmenterControl.trailingAnchor, constant: 8.0),
-            sortDirectionButton.centerYAnchor.constraint(equalTo: sortMethodSegmenterControl.centerYAnchor),
+            sortMethodSegmentedControl.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 30.0),
+            sortMethodSegmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
+            sortDirectionButton.leadingAnchor.constraint(equalTo: sortMethodSegmentedControl.trailingAnchor, constant: 8.0),
+            sortDirectionButton.centerYAnchor.constraint(equalTo: sortMethodSegmentedControl.centerYAnchor),
             sortDirectionButton.heightAnchor.constraint(equalToConstant: 30.0),
             sortDirectionButton.widthAnchor.constraint(equalToConstant: 30.0),
             selectionModeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
-            selectionModeButton.centerYAnchor.constraint(equalTo: sortMethodSegmenterControl.centerYAnchor),
+            selectionModeButton.centerYAnchor.constraint(equalTo: sortMethodSegmentedControl.centerYAnchor),
             selectionModeButton.heightAnchor.constraint(equalToConstant: 30.0),
             selectionModeButton.widthAnchor.constraint(equalToConstant: 30.0),
-            tileList.topAnchor.constraint(equalTo: sortMethodSegmenterControl.bottomAnchor),
+            tileList.topAnchor.constraint(equalTo: sortMethodSegmentedControl.bottomAnchor),
             tileList.leadingAnchor.constraint(equalTo: leadingAnchor),
             tileList.trailingAnchor.constraint(equalTo: trailingAnchor),
             tileList.bottomAnchor.constraint(equalTo: bottomAnchor),
-            textList.topAnchor.constraint(equalTo: sortMethodSegmenterControl.bottomAnchor),
+            textList.topAnchor.constraint(equalTo: sortMethodSegmentedControl.bottomAnchor),
             textList.leadingAnchor.constraint(equalTo: leadingAnchor),
             textList.trailingAnchor.constraint(equalTo: trailingAnchor),
             textList.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -194,8 +200,8 @@ final class UTXOsWalletView: BaseNavigationContentView {
         
         $selectedElements
             .sink { [weak self] in
-                self?.tileList.update(selectedElements: $0)
-                self?.textList.update(selectedElements: $0)
+                self?.tileList.selectedElements = $0
+                self?.textList.selectedElements = $0
             }
             .store(in: &cancellables)
         
@@ -209,6 +215,10 @@ final class UTXOsWalletView: BaseNavigationContentView {
         
         selectionModeButton.onTap = { [weak self] in
             self?.isEditingEnabled.toggle()
+        }
+        
+        sortDirectionButton.onTap = { [weak self] in
+            self?.isSortAscending.toggle()
         }
         
         tileList.onTapOnTile = { [weak self] in
@@ -229,6 +239,8 @@ final class UTXOsWalletView: BaseNavigationContentView {
         $contextualButtons
             .sink { [weak self] in self?.contextualButtonsOverlay.setup(buttons: $0) }
             .store(in: &cancellables)
+        
+        sortMethodSegmentedControl.addTarget(self, action: #selector(onSortMethodChanged), for: .valueChanged)
     }
     
     // MARK: - Actions
@@ -260,6 +272,24 @@ final class UTXOsWalletView: BaseNavigationContentView {
                 self.tileList.alpha = 0.0
                 self.textList.alpha = 1.0
             }
+        }
+    }
+    
+    // MARK: - Target Actions
+    
+    @objc private func onSortMethodChanged(_ segmentedControl: UISegmentedControl) {
+        sortOption = SortOption.allCases[segmentedControl.selectedSegmentIndex]
+    }
+}
+
+private extension UTXOsWalletView.SortOption {
+    
+    var title: String {
+        switch self {
+        case .amount:
+            return localized("utxos_wallet.segmented_control.sort.size")
+        case .date:
+            return localized("utxos_wallet.segmented_control.sort.date")
         }
     }
 }

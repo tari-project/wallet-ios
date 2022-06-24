@@ -796,6 +796,17 @@ final class Wallet {
             throw WalletErrors.generic(errorCode)
         }
     }
+    
+    func utxos(page: UInt, pageSize: UInt, sortMethod: TariUtxoSort, dustTreshold: UInt64) throws -> [TariUtxo] {
+        
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+
+        let result = wallet_get_utxos(pointer, page, pageSize, sortMethod, dustTreshold, errorCodePointer)
+
+        guard errorCode <= 0, let result = result else { throw WalletError(code: errorCode) } // TODO: == 0
+        return result.pointee.array()
+    }
 
     func balance() throws -> WalletBalance {
         var errorCode: Int32 = -1
@@ -1001,4 +1012,12 @@ final class Wallet {
         wallet_destroy(pointer)
     }
 
+}
+
+extension TariOutputs {
+    
+    func array() -> [TariUtxo] {
+        let bufferPointer = UnsafeBufferPointer(start: ptr, count: Int(len))
+        return Array(bufferPointer)
+    }
 }
