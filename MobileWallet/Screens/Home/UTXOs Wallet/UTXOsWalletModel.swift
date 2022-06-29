@@ -45,9 +45,10 @@ final class UTXOsWalletModel {
     
     enum UtxoStatus {
         case mined
+        case unconfirmed
     }
     
-    enum SortMethod {
+    enum SortMethod: Int, CaseIterable {
         case amountAscending
         case amountDescending
         case minedHeightAscending
@@ -59,6 +60,8 @@ final class UTXOsWalletModel {
         let amountText: String
         let tileHeight: CGFloat
         let status: UtxoStatus
+        let date: String
+        let time: String
         let hash: String
     }
     
@@ -72,6 +75,7 @@ final class UTXOsWalletModel {
     @Published var sortMethod: SortMethod = .amountDescending
     
     @Published private(set) var utxoModels: [UtxoModel] = []
+    @Published private(set) var isLoadingData: Bool = false
     @Published private(set) var selectedIDs: Set<UUID> = []
     @Published private(set) var errorMessage: MessageModel?
     
@@ -121,21 +125,24 @@ final class UTXOsWalletModel {
             return
         }
         
+        isLoadingData = true
+        
         do {
-            let utxos = try fetchAllUTXOs(wallet: wallet)
+            let utxos = try fetchAllUTXOs(wallet: wallet, sortMethod: sortMethod)
             let heights = calculateHeights(rawAmounts: utxos.map(\.value))
             
             utxoModels = zip(utxos, heights)
                 .compactMap {
                     guard let commitment = $0.commitment.string else { return nil }
-                    return UtxoModel(uuid: UUID(), amountText: MicroTari($0.value).formattedPrecise, tileHeight: $1, status: .mined, hash: commitment)
+                    return UtxoModel(uuid: UUID(), amountText: MicroTari($0.value).formattedPrecise, tileHeight: $1, status: .mined, date: "01.01.1970", time: "00:00", hash: commitment) // TODO: !
                 }
+            isLoadingData = false
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
         }
     }
     
-    private func fetchAllUTXOs(wallet: Wallet) throws -> [TariUtxo] {
+    private func fetchAllUTXOs(wallet: Wallet, sortMethod: SortMethod) throws -> [TariUtxo] {
         
         let batchSize: UInt = 50
         
@@ -144,12 +151,9 @@ final class UTXOsWalletModel {
         var page: UInt = 0
         
         repeat {
-            
             batch = try wallet.utxos(page: page * batchSize, pageSize: batchSize, sortMethod: sortMethod.ffiSortMethod, dustTreshold: 0)
-            
             allUTXOs += batch
             page += 1
-            
         } while !batch.isEmpty
         
         return allUTXOs
@@ -181,13 +185,26 @@ extension UTXOsWalletModel.UtxoStatus {
         switch self {
         case .mined:
             return localized("utxos_wallet.tile.label.state.mined")
+        case .unconfirmed:
+            return localized("utxos_wallet.tile.label.state.unconfirmed")
         }
     }
     
     var icon: UIImage? {
         switch self {
         case .mined:
-            return Theme.shared.images.utxoStatusMined
+            return Theme.shared.images.utxoTick
+        case .unconfirmed:
+            return Theme.shared.images.utxoStatusHourglass
+        }
+    }
+    
+    var color: UIColor? {
+        switch self {
+        case .mined:
+            return .tari.system.green
+        case .unconfirmed:
+            return .tari.system.orange
         }
     }
 }

@@ -46,10 +46,18 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     struct Model: Identifiable, Hashable {
         var id: UUID
         let amount: String
+        let statusColor: UIColor?
+        let statusText: String?
         let hash: String
     }
     
     // MARK: - Subviews
+    
+    @View private var backgroundContentView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
     
     @View private var amountLabel: UILabel = {
         let view = UILabel()
@@ -59,6 +67,15 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     }()
     
     @View private var hashLabel: UILabel = {
+        let view = UILabel()
+        view.textColor = .tari.greys.mediumDarkGrey
+        view.font = .Avenir.roman.withSize(12.0)
+        return view
+    }()
+    
+    @View private var statusCircleView: UIView = UIView()
+    
+    @View private var statusLabel: UILabel = {
         let view = UILabel()
         view.textColor = .tari.greys.mediumDarkGrey
         view.font = .Avenir.roman.withSize(12.0)
@@ -76,10 +93,8 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     var onTapOnTickbox: ((UUID) -> Void)?
     private(set) var elementID: UUID?
     
-    private var leadingAmountLabelConstraint: NSLayoutConstraint?
-    private var leadingAmountLabelConstraintInEditing: NSLayoutConstraint?
-    private var leadingHashLabelConstraint: NSLayoutConstraint?
-    private var leadingHashLabelConstraintInEditing: NSLayoutConstraint?
+    private var leadingConstraint: NSLayoutConstraint?
+    private var leadingConstraintInEditing: NSLayoutConstraint?
     
     // MARK: - Initialisers
     
@@ -98,32 +113,43 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     
     private func setupViews() {
         selectionStyle = .none
+        backgroundColor = .white
     }
     
     private func setupConstraints() {
         
-        [tickView, amountLabel, hashLabel].forEach(contentView.addSubview)
+        [backgroundContentView, tickView].forEach(contentView.addSubview)
+        [amountLabel, statusCircleView, statusLabel, hashLabel].forEach(backgroundContentView.addSubview)
         
-        let leadingAmountLabelConstraint = amountLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30.0)
-        let leadingHashLabelConstraint = hashLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30.0)
-        leadingAmountLabelConstraintInEditing = amountLabel.leadingAnchor.constraint(equalTo: tickView.trailingAnchor, constant: 10.0)
-        leadingHashLabelConstraintInEditing = hashLabel.leadingAnchor.constraint(equalTo: tickView.trailingAnchor, constant: 10.0)
+        let leadingConstraint = backgroundContentView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30.0)
+        leadingConstraintInEditing = backgroundContentView.leadingAnchor.constraint(equalTo: tickView.trailingAnchor, constant: 10.0)
         
-        self.leadingAmountLabelConstraint = leadingAmountLabelConstraint
-        self.leadingHashLabelConstraint = leadingHashLabelConstraint
+        self.leadingConstraint = leadingConstraint
+        
         
         let constraints = [
+            backgroundContentView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            leadingConstraint,
+            backgroundContentView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            backgroundContentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             tickView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30.0),
             tickView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             tickView.widthAnchor.constraint(equalToConstant: 24.0),
             tickView.heightAnchor.constraint(equalToConstant: 24.0),
-            amountLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15.0),
-            leadingAmountLabelConstraint,
-            amountLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30.0),
-            hashLabel.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 5.0),
-            leadingHashLabelConstraint,
-            hashLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30.0),
-            hashLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15.0)
+            amountLabel.topAnchor.constraint(equalTo: backgroundContentView.topAnchor, constant: 15.0),
+            amountLabel.leadingAnchor.constraint(equalTo: backgroundContentView.leadingAnchor),
+            amountLabel.trailingAnchor.constraint(equalTo: backgroundContentView.trailingAnchor, constant: -30.0),
+            statusCircleView.leadingAnchor.constraint(equalTo: backgroundContentView.leadingAnchor),
+            statusCircleView.centerYAnchor.constraint(equalTo: statusLabel.centerYAnchor),
+            statusCircleView.widthAnchor.constraint(equalToConstant: 8.0),
+            statusCircleView.heightAnchor.constraint(equalToConstant: 8.0),
+            statusLabel.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 5.0),
+            statusLabel.leadingAnchor.constraint(equalTo: statusCircleView.trailingAnchor, constant: 5.0),
+            statusLabel.trailingAnchor.constraint(equalTo: backgroundContentView.trailingAnchor, constant: -30.0),
+            hashLabel.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 5.0),
+            hashLabel.leadingAnchor.constraint(equalTo: backgroundContentView.leadingAnchor),
+            hashLabel.trailingAnchor.constraint(equalTo: backgroundContentView.trailingAnchor, constant: -30.0),
+            hashLabel.bottomAnchor.constraint(equalTo: backgroundContentView.bottomAnchor, constant: -15.0)
         ]
         
         NSLayoutConstraint.activate(constraints)
@@ -143,23 +169,21 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
         elementID = model.id
         amountLabel.text = model.amount
         hashLabel.text = model.hash
+        statusCircleView.backgroundColor = model.statusColor
+        statusLabel.text = model.statusText
     }
     
     func updateTickBox(isVisible: Bool, animated: Bool) {
         
-        if isVisible  {
-            leadingAmountLabelConstraint?.isActive = false
-            leadingHashLabelConstraint?.isActive = false
-            leadingAmountLabelConstraintInEditing?.isActive = true
-            leadingHashLabelConstraintInEditing?.isActive = true
+        if isVisible {
+            leadingConstraint?.isActive = false
+            leadingConstraintInEditing?.isActive = true
         } else {
-            leadingAmountLabelConstraintInEditing?.isActive = false
-            leadingHashLabelConstraintInEditing?.isActive = false
-            leadingAmountLabelConstraint?.isActive = true
-            leadingHashLabelConstraint?.isActive = true
+            leadingConstraintInEditing?.isActive = false
+            leadingConstraint?.isActive = true
         }
         
-        UIView.animate(withDuration: animated ? 0.3: 0.0) {
+        UIView.animate(withDuration: animated ? 0.3 : 0.0) {
             self.tickView.alpha = isVisible ? 1.0 : 0.0
             self.layoutIfNeeded()
         }
@@ -167,5 +191,12 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     
     private func update(selectionState: Bool) {
         tickView.isSelected = selectionState
+    }
+    
+    // MARK: - Layout
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        statusCircleView.layer.cornerRadius = statusCircleView.bounds.height / 2.0
     }
 }

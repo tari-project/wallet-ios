@@ -49,14 +49,20 @@ final class UTXOTileView: UICollectionViewCell {
         let backgroundColor: UIColor?
         let height: CGFloat
         let statusIcon: UIImage?
-        let statusName: String
+        let statusColor: UIColor?
+        let date: String?
     }
+    
+    // MARK: - Constants
+    
+    private let cornerShapeRadius: CGFloat = 26.0
     
     // MARK: - Subviews
     
     @View private var backgroundContentView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 10.0
+        view.clipsToBounds = true
         return view
     }()
     
@@ -78,6 +84,13 @@ final class UTXOTileView: UICollectionViewCell {
         return view
     }()
     
+    @View private var dateLabel: UILabel = {
+        let view = UILabel()
+        view.textColor = .tari.white
+        view.font = .Avenir.medium.withSize(12.0)
+        return view
+    }()
+    
     @View private var statusIcon: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
@@ -85,12 +98,7 @@ final class UTXOTileView: UICollectionViewCell {
         return view
     }()
     
-    @View private var statusLabel: UILabel = {
-        let view = UILabel()
-        view.textColor = .tari.white
-        view.font = .Avenir.medium.withSize(12.0)
-        return view
-    }()
+    private let cornerRoundedShapeLayer = CAShapeLayer()
     
     // MARK: - Properties
     
@@ -126,24 +134,22 @@ final class UTXOTileView: UICollectionViewCell {
         elementID = model.uuid
         backgroundContentView.backgroundColor = model.backgroundColor
         amountLabel.text = model.amountText
+        dateLabel.text = model.date
         statusIcon.image = model.statusIcon
-        statusLabel.text = model.statusName
+        cornerRoundedShapeLayer.fillColor = model.statusColor?.cgColor
     }
     
     private func setupViews() {
-        backgroundColor = .tari.white
         layer.cornerRadius = 10.0
         contentView.translatesAutoresizingMaskIntoConstraints = false
+        backgroundContentView.layer.addSublayer(cornerRoundedShapeLayer)
     }
     
     private func setupConstraints() {
         
         contentView.addSubview(backgroundContentView)
         amountContentView.addSubview(amountLabel)
-        [amountContentView, statusIcon, statusLabel, tickView].forEach(backgroundContentView.addSubview)
-
-        backgroundContentView.isUserInteractionEnabled = false
-        [amountContentView, statusIcon, statusLabel].forEach { $0.isUserInteractionEnabled = false }
+        [amountContentView, dateLabel, statusIcon, tickView].forEach(backgroundContentView.addSubview)
 
         let constraints = [
             contentView.topAnchor.constraint(equalTo: topAnchor),
@@ -165,14 +171,12 @@ final class UTXOTileView: UICollectionViewCell {
             amountLabel.trailingAnchor.constraint(lessThanOrEqualTo: amountContentView.trailingAnchor, constant: -10.0),
             amountLabel.centerXAnchor.constraint(equalTo: backgroundContentView.centerXAnchor),
             amountLabel.centerYAnchor.constraint(equalTo: backgroundContentView.centerYAnchor),
-            statusIcon.leadingAnchor.constraint(equalTo: backgroundContentView.leadingAnchor, constant: 10.0),
+            dateLabel.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 0.0),
+            dateLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            statusIcon.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -6.0),
+            statusIcon.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6.0),
             statusIcon.heightAnchor.constraint(equalToConstant: 14.0),
-            statusIcon.widthAnchor.constraint(equalToConstant: 14.0),
-            statusIcon.centerYAnchor.constraint(equalTo: statusLabel.centerYAnchor),
-            statusLabel.topAnchor.constraint(equalTo: amountContentView.bottomAnchor),
-            statusLabel.leadingAnchor.constraint(equalTo: statusIcon.trailingAnchor, constant: 6.0),
-            statusLabel.trailingAnchor.constraint(equalTo: backgroundContentView.trailingAnchor, constant: -10.0),
-            statusLabel.bottomAnchor.constraint(equalTo: backgroundContentView.bottomAnchor, constant: -10.0),
+            statusIcon.widthAnchor.constraint(equalToConstant: 14.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -184,6 +188,23 @@ final class UTXOTileView: UICollectionViewCell {
         [tapGesture, longPressGesture].forEach(addGestureRecognizer)
     }
     
+    private func updateCornerShape() {
+        
+        backgroundContentView.layoutIfNeeded()
+        
+        let rightOffset = backgroundContentView.bounds.maxX
+        let bottomOffset = backgroundContentView.bounds.maxY
+        let leftOffset = rightOffset - cornerShapeRadius
+        
+        let bezierPath = UIBezierPath()
+        bezierPath.move(to: CGPoint(x: rightOffset, y: bottomOffset))
+        bezierPath.addLine(to: CGPoint(x: leftOffset, y: bottomOffset))
+        bezierPath.addArc(withCenter: CGPoint(x: rightOffset, y: bottomOffset), radius: cornerShapeRadius, startAngle: .pi, endAngle: .pi * 1.5, clockwise: true)
+        bezierPath.close()
+        
+        cornerRoundedShapeLayer.path = bezierPath.cgPath
+    }
+    
     // MARK: - Actions
     
     private func update(selectionState: Bool) {
@@ -191,6 +212,7 @@ final class UTXOTileView: UICollectionViewCell {
         UIView.animate(withDuration: 0.3) {
             let shadow: Shadow = selectionState ? .selection : .none
             self.apply(shadow: shadow)
+            self.backgroundColor = selectionState ? .tari.white : .clear
         }
         
         tickView.isSelected = selectionState
@@ -213,5 +235,12 @@ final class UTXOTileView: UICollectionViewCell {
     @objc private func onLongPressGesture() {
         guard let elementID = elementID else { return }
         onLongPress?(elementID)
+    }
+    
+    // MARK: - Layout
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        updateCornerShape()
     }
 }

@@ -49,54 +49,28 @@ final class UTXOsWalletView: BaseNavigationContentView {
         case text
     }
     
-    enum SortOption: CaseIterable {
-        case amount
-        case date
+    enum VisibleContentType {
+        case placeholder
+        case loadingScreen
+        case tilesList
+        case textList
     }
+    
+    // MARK: - Constants
+    
+    private let topBarHeight: CGFloat = 66.0
     
     // MARK: - Suviews
     
     @View var contextualButtonsOverlay = ContextualButtonsOverlay()
     
-    @View var tileListButton: UTXOsWalletStateButton = {
-        let view = UTXOsWalletStateButton()
-        view.setImage(Theme.shared.images.utxoTileViewIcon, for: .normal)
-        view.tintColor = .tari.greys.black
-        view.toggleAutomatically = false
-        return view
-    }()
-    
-    @View var textListButton: UTXOsWalletStateButton = {
-        let view = UTXOsWalletStateButton()
-        view.setImage(Theme.shared.images.utxoTextListIcon, for: .normal)
-        view.tintColor = .tari.greys.black
-        view.toggleAutomatically = false
-        return view
-    }()
-    
-    @View private var sortMethodSegmentedControl: UISegmentedControl = {
-        let view = UISegmentedControl(items: SortOption.allCases.map(\.title))
-        view.setWidth(85.0, forSegmentAt: 0)
-        view.setWidth(85.0, forSegmentAt: 1)
-        view.selectedSegmentIndex = 0
-        return view
-    }()
-    
-    @View private var sortDirectionButton: BaseButton = {
+    @View private var switchListButton: BaseButton = {
         let view = BaseButton()
         view.tintColor = .tari.greys.black
-        view.contentMode = .scaleAspectFit
-        view.imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
         return view
     }()
     
-    @View var selectionModeButton: UTXOsWalletStateButton = {
-        let view = UTXOsWalletStateButton()
-        view.setImage(Theme.shared.images.utxoSelectIcon, for: .normal)
-        view.tintColor = .tari.greys.black
-        return view
-    }()
-    
+    @View private var topToolbar = UTXOsWalletTopBar()
     @View private var tileList = UTXOsWalletTileListView()
     
     @View private var textList: UTXOsWalletTextListView = {
@@ -105,15 +79,29 @@ final class UTXOsWalletView: BaseNavigationContentView {
         return view
     }()
     
+    @View private var placeholderView: UTXOsWalletPlaceholderView = {
+        let view = UTXOsWalletPlaceholderView()
+        view.alpha = 0.0
+        return view
+    }()
+    
+    @View private var loadingView: UTXOsWalletLoadingView = {
+        let view = UTXOsWalletLoadingView()
+        view.alpha = 0.0
+        return view
+    }()
+    
     // MARK: - Properties
     
-    @Published var sortOption: SortOption = SortOption.allCases[0]
-    @Published var isSortAscending: Bool = false
+    @Published var selectedSortMethodName: String?
+    @Published var visibleContentType: VisibleContentType = .tilesList
     @Published var selectedElements: Set<UUID> = []
     @Published var contextualButtons: [ContextualButtonsOverlay.ButtonModel] = []
     @Published private(set) var isEditingEnabled: Bool = false
     @Published private(set) var tappedElement: UUID?
-    @Published private var visibleListType: ListType = .tiles
+    @Published private(set) var selectedListType: ListType = .tiles
+    
+    var onFilterButtonTap: (() -> Void)?
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -133,39 +121,39 @@ final class UTXOsWalletView: BaseNavigationContentView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = .tari.white
+        backgroundColor = Theme.shared.colors.profileBackground
         navigationBar.title = localized("utxos_wallet.title")
+        topToolbar.height = topBarHeight
+        tileList.verticalContentInset = topBarHeight
+        textList.verticalContentInset = topBarHeight
     }
     
     private func setupConstraints() {
         
-        [sortMethodSegmentedControl, tileList, textList, sortDirectionButton, selectionModeButton, contextualButtonsOverlay].forEach(addSubview)
-        [textListButton, tileListButton].forEach(navigationBar.addSubview)
+        [loadingView, placeholderView, tileList, textList, topToolbar, contextualButtonsOverlay].forEach(addSubview)
+        navigationBar.addSubview(switchListButton)
         
         let constraints = [
-            textListButton.trailingAnchor.constraint(equalTo: tileListButton.leadingAnchor, constant: -4.0),
-            textListButton.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor),
-            textListButton.heightAnchor.constraint(equalToConstant: 30.0),
-            textListButton.widthAnchor.constraint(equalToConstant: 30.0),
-            tileListButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -12.0),
-            tileListButton.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor),
-            tileListButton.heightAnchor.constraint(equalToConstant: 30.0),
-            tileListButton.widthAnchor.constraint(equalToConstant: 30.0),
-            sortMethodSegmentedControl.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 30.0),
-            sortMethodSegmentedControl.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
-            sortDirectionButton.leadingAnchor.constraint(equalTo: sortMethodSegmentedControl.trailingAnchor, constant: 8.0),
-            sortDirectionButton.centerYAnchor.constraint(equalTo: sortMethodSegmentedControl.centerYAnchor),
-            sortDirectionButton.heightAnchor.constraint(equalToConstant: 30.0),
-            sortDirectionButton.widthAnchor.constraint(equalToConstant: 30.0),
-            selectionModeButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
-            selectionModeButton.centerYAnchor.constraint(equalTo: sortMethodSegmentedControl.centerYAnchor),
-            selectionModeButton.heightAnchor.constraint(equalToConstant: 30.0),
-            selectionModeButton.widthAnchor.constraint(equalToConstant: 30.0),
-            tileList.topAnchor.constraint(equalTo: sortMethodSegmentedControl.bottomAnchor),
+            switchListButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -30.0),
+            switchListButton.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor),
+            switchListButton.heightAnchor.constraint(equalToConstant: 30.0),
+            switchListButton.widthAnchor.constraint(equalToConstant: 30.0),
+            topToolbar.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            topToolbar.leadingAnchor.constraint(equalTo: leadingAnchor),
+            topToolbar.trailingAnchor.constraint(equalTo: trailingAnchor),
+            loadingView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            loadingView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            loadingView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            loadingView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            placeholderView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            placeholderView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            placeholderView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            placeholderView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            tileList.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             tileList.leadingAnchor.constraint(equalTo: leadingAnchor),
             tileList.trailingAnchor.constraint(equalTo: trailingAnchor),
             tileList.bottomAnchor.constraint(equalTo: bottomAnchor),
-            textList.topAnchor.constraint(equalTo: sortMethodSegmentedControl.bottomAnchor),
+            textList.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             textList.leadingAnchor.constraint(equalTo: leadingAnchor),
             textList.trailingAnchor.constraint(equalTo: trailingAnchor),
             textList.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -180,19 +168,21 @@ final class UTXOsWalletView: BaseNavigationContentView {
     
     private func setupCallbacks() {
         
-        $isSortAscending
-            .sink { [weak self] in
-                let image = $0 ? Theme.shared.images.utxoAscendingIcon : Theme.shared.images.utxoDescendingIcon
-                self?.sortDirectionButton.setImage(image, for: .normal)
-            }
+        $selectedSortMethodName
+            .sink { [weak self] in self?.topToolbar.filterButtonTitle = $0 }
             .store(in: &cancellables)
         
-        $visibleListType
-            .sink { [weak self] in self?.updateListComponents(visibleListType: $0) }
+        $selectedListType
+            .sink { [weak self] in self?.updateListSwitchIcon(selectedListType: $0) }
+            .store(in: &cancellables)
+        
+        $visibleContentType
+            .sink { [weak self] in self?.updateListComponents(visibleContentType: $0) }
             .store(in: &cancellables)
         
         $isEditingEnabled
             .sink { [weak self] in
+                self?.topToolbar.isEditingEnabled = $0
                 self?.tileList.isEditingEnabled = $0
                 self?.textList.isEditingEnabled = $0
             }
@@ -205,20 +195,23 @@ final class UTXOsWalletView: BaseNavigationContentView {
             }
             .store(in: &cancellables)
         
-        tileListButton.onTap = { [weak self] in
-            self?.visibleListType = .tiles
+        switchListButton.onTap = { [weak self] in
+            guard let self = self else { return }
+            switch self.selectedListType {
+            case .text:
+                self.selectedListType = .tiles
+            case .tiles:
+                self.selectedListType = .text
+            
+            }
         }
         
-        textListButton.onTap = { [weak self] in
-            self?.visibleListType = .text
+        topToolbar.onFilterButtonTap = { [weak self] in
+            self?.onFilterButtonTap?()
         }
         
-        selectionModeButton.onTap = { [weak self] in
+        topToolbar.onSelectButtonTap = { [weak self] in
             self?.isEditingEnabled.toggle()
-        }
-        
-        sortDirectionButton.onTap = { [weak self] in
-            self?.isSortAscending.toggle()
         }
         
         tileList.onTapOnTile = { [weak self] in
@@ -227,7 +220,6 @@ final class UTXOsWalletView: BaseNavigationContentView {
         
         tileList.onLongPressOnTile = { [weak self] in
             guard let self = self, !self.isEditingEnabled else { return }
-            self.selectionModeButton.isSelected = true
             self.isEditingEnabled = true
             self.tappedElement = $0
         }
@@ -236,11 +228,24 @@ final class UTXOsWalletView: BaseNavigationContentView {
             self?.tappedElement = $0
         }
         
+        Publishers.CombineLatest3(tileList.$verticalContentOffset, textList.$verticalContentOffset, $selectedListType)
+            .map {
+                switch $2 {
+                case .tiles:
+                    return $0
+                case .text:
+                    return $1
+                }
+            }
+            .map { [unowned self] in $0 + self.topBarHeight }
+            .map { min($0, 50.0) / 50.0 }
+            .map { min($0, 0.9) }
+            .sink { [weak self] in self?.topToolbar.backgroundAlpha = $0 }
+            .store(in: &cancellables)
+        
         $contextualButtons
             .sink { [weak self] in self?.contextualButtonsOverlay.setup(buttons: $0) }
             .store(in: &cancellables)
-        
-        sortMethodSegmentedControl.addTarget(self, action: #selector(onSortMethodChanged), for: .valueChanged)
     }
     
     // MARK: - Actions
@@ -253,43 +258,26 @@ final class UTXOsWalletView: BaseNavigationContentView {
         textList.models = models
     }
     
-    private func updateListComponents(visibleListType: ListType) {
-        switch visibleListType {
-        case .tiles:
-            tileListButton.isSelected = true
-            textListButton.isSelected = false
-        case .text:
-            tileListButton.isSelected = false
-            textListButton.isSelected = true
-        }
+    private func updateListComponents(visibleContentType: VisibleContentType) {
         
-        UIView.animate(withDuration: 0.3) {
-            switch visibleListType {
-            case .tiles:
-                self.tileList.alpha = 1.0
-                self.textList.alpha = 0.0
-            case .text:
-                self.tileList.alpha = 0.0
-                self.textList.alpha = 1.0
-            }
+        let isDataVisible = visibleContentType == .tilesList || visibleContentType == .textList
+        
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState]) {
+            self.switchListButton.alpha = isDataVisible ? 1.0 : 0.0
+            self.topToolbar.alpha = isDataVisible ? 1.0 : 0.0
+            self.loadingView.alpha = visibleContentType == .loadingScreen ? 1.0 : 0.0
+            self.placeholderView.alpha = visibleContentType == .placeholder ? 1.0 : 0.0
+            self.tileList.alpha = visibleContentType == .tilesList ? 1.0 : 0.0
+            self.textList.alpha = visibleContentType == .textList ? 1.0 : 0.0
         }
     }
     
-    // MARK: - Target Actions
-    
-    @objc private func onSortMethodChanged(_ segmentedControl: UISegmentedControl) {
-        sortOption = SortOption.allCases[segmentedControl.selectedSegmentIndex]
-    }
-}
-
-private extension UTXOsWalletView.SortOption {
-    
-    var title: String {
-        switch self {
-        case .amount:
-            return localized("utxos_wallet.segmented_control.sort.size")
-        case .date:
-            return localized("utxos_wallet.segmented_control.sort.date")
+    private func updateListSwitchIcon(selectedListType: ListType) {
+        switch selectedListType {
+        case .tiles:
+            switchListButton.setImage(Theme.shared.images.utxoTextListIcon, for: .normal)
+        case .text:
+            switchListButton.setImage(Theme.shared.images.utxoTileViewIcon, for: .normal)
         }
     }
 }
