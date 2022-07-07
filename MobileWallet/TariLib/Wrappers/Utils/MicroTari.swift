@@ -163,10 +163,8 @@ extension MicroTari {
     }
 
     public static func checkValue(_ value: NSNumber) -> Bool {
-        guard let _ = UInt64(exactly: value.floatValue * Float(MicroTari.conversion)) else {
-            return false
-        }
-        return true
+        let convertedValue = value.decimalValue * Decimal(MicroTari.conversion)
+        return convertedValue.isLessThanOrEqualTo(Decimal(UInt64.max))
     }
 
     public static func checkValue(_ value: String) -> Bool {
