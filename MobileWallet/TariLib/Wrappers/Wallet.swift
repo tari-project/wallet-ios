@@ -797,6 +797,17 @@ final class Wallet {
         }
     }
     
+    func allUtxos() throws -> [TariUtxo] {
+        
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        let result = wallet_get_all_utxos(pointer, errorCodePointer)
+        
+        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
+        return result.pointee.array()
+    }
+    
     func utxos(page: UInt, pageSize: UInt, sortMethod: TariUtxoSort, dustTreshold: UInt64) throws -> [TariUtxo] {
         
         var errorCode: Int32 = -1
@@ -804,7 +815,7 @@ final class Wallet {
 
         let result = wallet_get_utxos(pointer, page, pageSize, sortMethod, dustTreshold, errorCodePointer)
 
-        guard errorCode <= 0, let result = result else { throw WalletError(code: errorCode) } // TODO: == 0
+        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         return result.pointee.array()
     }
 
@@ -854,6 +865,34 @@ final class Wallet {
             guard let publicKey = $0.direction == .inbound ? $0.sourcePublicKey.0 : $0.destinationPublicKey.0 else { return nil }
             return (publicKey: publicKey, timestamp: $0.timestamp.0)
         }
+    }
+    
+    func previewCoinSplit(commitments: [String], splitsCount: UInt, feePerGram: UInt64) throws -> TariCoinPreview {
+        
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        let vector = TariVectorWrapper(type: TariTypeTag(0))
+        try vector.add(commitments: commitments)
+        
+        let result = wallet_preview_coin_split(pointer, vector.pointer, splitsCount, feePerGram, errorCodePointer)
+        
+        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
+        return result.pointee
+    }
+    
+    func coinSplit(commitments: [String], splitsCount: UInt, feePerGram: UInt64) throws -> UInt64 {
+        
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        let vector = TariVectorWrapper(type: TariTypeTag(0))
+        try vector.add(commitments: commitments)
+        
+        let result = wallet_coin_split(pointer, vector.pointer, splitsCount, feePerGram, errorCodePointer)
+        
+        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        return result
     }
 
     func setKeyValue(key: String, value: String) throws -> Bool {

@@ -50,6 +50,7 @@ final class UTXOsWalletTileListView: UIView {
         let view = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .clear
+        view.alwaysBounceVertical = true
         view.register(type: UTXOTileView.self)
         return view
     }()
