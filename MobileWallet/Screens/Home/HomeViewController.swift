@@ -797,16 +797,35 @@ private extension PopUpPresenter {
     
     static func showStorePopUp() {
         
+        let headerSection = PopUpImageHeaderView()
+        
+        headerSection.imageHeight = 180.0
+        headerSection.imageView.image = Theme.shared.images.storeModal
+        
         let contentSection = PopUpComponentsFactory.makeContentView(message: localized("store_modal.description", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol))
         let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [
             PopUpDialogButtonModel(title: localized("store_modal.action"), icon: Theme.shared.images.storeIcon, type: .normal, callback: { openStoreWebpage() }),
             PopUpDialogButtonModel(title: localized("store_modal.cancel"), type: .text)
         ])
         
-        let popUp = TariPopUp(headerSection: PopUpStoreHeaderView(), contentSection: contentSection, buttonsSection: buttonsSection)
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
         popUp.topOffset = 86.0
         
         show(popUp: popUp, configuration: .dialog(hapticType: .none))
+    }
+    
+    private static func storePopUpTitle() -> NSAttributedString {
+
+        let boldedText = localized("store_modal.title.part.2")
+        let text = localized("store_modal.title.part.1", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol) + boldedText
+        let title = NSMutableAttributedString(string: text)
+
+        if let startIndex = text.indexDistance(of: boldedText) {
+            let range = NSRange(location: startIndex, length: boldedText.count)
+            title.addAttribute(.font, value: Theme.shared.fonts.feedbackPopupHeavy, range: range)
+        }
+
+        return title
     }
     
     private static func openStoreWebpage() {

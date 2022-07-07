@@ -1,8 +1,8 @@
-//  PopUpStoreHeaderView.swift
+//  TextCapsule.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 10/04/2022
+	Created by Adrian Truszczynski on 05/07/2022
 	Using Swift 5.0
 	Running on macOS 12.3
 
@@ -41,31 +41,17 @@
 import UIKit
 import TariCommon
 
-final class PopUpStoreHeaderView: UIView {
+final class TextCapsule: UIView {
     
     // MARK: - Subviews
     
-    @View private var imageView: UIImageView = {
-        let view = UIImageView()
-        view.image = Theme.shared.images.storeModal
-        view.contentMode = .scaleToFill
-        return view
-    }()
+    @View private(set) var label = UILabel()
     
-    @View private var label: UILabel = {
-        let view = UILabel()
-        view.textColor = Theme.shared.colors.feedbackPopupTitle
-        view.font = Theme.shared.fonts.feedbackPopupTitle
-        view.textAlignment = .center
-        view.numberOfLines = 0
-        return view
-    }()
-    
-    // MARK: - Initialiserss
+    // MARK: - Initialisers
     
     init() {
         super.init(frame: .zero)
-        setupText()
+        setupViews()
         setupConstraints()
     }
     
@@ -75,34 +61,27 @@ final class PopUpStoreHeaderView: UIView {
     
     // MARK: - Setups
     
-    private func setupText() {
-        
-        let boldedText = localized("store_modal.title.part.2")
-        let text = localized("store_modal.title.part.1", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol) + boldedText
-        let title = NSMutableAttributedString(string: text)
-        
-        if let startIndex = text.indexDistance(of: boldedText) {
-            let range = NSRange(location: startIndex, length: boldedText.count)
-            title.addAttribute(.font, value: Theme.shared.fonts.feedbackPopupHeavy, range: range)
-        }
-        
-        label.attributedText = title
+    private func setupViews() {
+        backgroundColor = .tari.white
+        apply(shadow: .box)
     }
     
     private func setupConstraints() {
         
-        [imageView, label].forEach(addSubview)
+        addSubview(label)
         
         let constraints = [
-            imageView.topAnchor.constraint(equalTo: topAnchor),
-            imageView.heightAnchor.constraint(equalToConstant: 180.0),
-            imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 20.0),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor)
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0)
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = bounds.height / 2.0
     }
 }

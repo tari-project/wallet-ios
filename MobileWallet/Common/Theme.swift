@@ -353,6 +353,9 @@ struct Images: Loopable {
     
     let utxoTick = UIImage(named: "tick")
     let utxoWalletPlaceholder = UIImage(named: "UtxoWalletPlaceholder")
+    let utxoWalletPickerMinus = UIImage(named: "ValuePickerMinus")
+    let utxoWalletPickerPlus = UIImage(named: "ValuePickerPlus")
+    let utxoSuccessImage = UIImage(named: "UtxoSuccess")
     
     // Adjustable fees
     

@@ -56,13 +56,19 @@ final class UTXOsWalletView: BaseNavigationContentView {
         case textList
     }
     
+    enum ActionType {
+        case split
+        case join
+        case splitJoin
+    }
+    
     // MARK: - Constants
     
     private let topBarHeight: CGFloat = 66.0
     
     // MARK: - Suviews
     
-    @View var contextualButtonsOverlay = ContextualButtonsOverlay()
+    @View private var contextualButtonsOverlay = ContextualButtonsOverlay()
     
     @View private var switchListButton: BaseButton = {
         let view = BaseButton()
@@ -96,12 +102,13 @@ final class UTXOsWalletView: BaseNavigationContentView {
     @Published var selectedSortMethodName: String?
     @Published var visibleContentType: VisibleContentType = .tilesList
     @Published var selectedElements: Set<UUID> = []
-    @Published var contextualButtons: [ContextualButtonsOverlay.ButtonModel] = []
-    @Published private(set) var isEditingEnabled: Bool = false
+    @Published var actionTypes: [ActionType] = []
+    @Published var isEditingEnabled: Bool = false
     @Published private(set) var tappedElement: UUID?
     @Published private(set) var selectedListType: ListType = .tiles
     
     var onFilterButtonTap: (() -> Void)?
+    var onActionButtonTap: ((ActionType) -> Void)?
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -243,7 +250,8 @@ final class UTXOsWalletView: BaseNavigationContentView {
             .sink { [weak self] in self?.topToolbar.backgroundAlpha = $0 }
             .store(in: &cancellables)
         
-        $contextualButtons
+        $actionTypes
+            .compactMap { [weak self] in self?.contextualButtonsModels(actionTypes: $0) }
             .sink { [weak self] in self?.contextualButtonsOverlay.setup(buttons: $0) }
             .store(in: &cancellables)
     }
@@ -278,6 +286,26 @@ final class UTXOsWalletView: BaseNavigationContentView {
             switchListButton.setImage(Theme.shared.images.utxoTextListIcon, for: .normal)
         case .text:
             switchListButton.setImage(Theme.shared.images.utxoTileViewIcon, for: .normal)
+        }
+    }
+    
+    // MARK: - Helpers
+    
+    private func contextualButtonsModels(actionTypes: [ActionType]) -> [ContextualButtonsOverlay.ButtonModel] {
+        actionTypes.map { action in
+            
+            let callback: () -> Void = { [weak self] in
+                self?.onActionButtonTap?(action)
+            }
+            
+            switch action {
+            case .split:
+                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.split"), image: Theme.shared.images.utxoActionSplit, callback: callback)
+            case .join:
+                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.join"), image: Theme.shared.images.utxoActionJoin, callback: callback)
+            case .splitJoin:
+                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.join_split"), image: Theme.shared.images.utxoActionJoinSplit, callback: callback)
+            }
         }
     }
 }
