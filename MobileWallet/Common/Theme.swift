@@ -325,12 +325,10 @@ struct Images: Loopable {
     let homeWalletIcon = UIImage(named: "icon-wallet")
     
     // UTXOs Wallet Icons
-    let utxoAscendingIcon = UIImage(named: "icon-ascending")
-    let utxoDescendingIcon = UIImage(named: "icon-descending")
-    let utxoSelectIcon = UIImage(named: "icon-select")
+    let utxoFaucet = UIImage(named: "icon-faucet")
     let utxoTileViewIcon = UIImage(named: "icon-blockview")
     let utxoTextListIcon = UIImage(named: "icon-listview")
-    let utxoStatusMined = UIImage(named: "icon-mined")
+    let utxoStatusHourglass = UIImage(named: "icon-hourglass")
     let utxoActionJoin = UIImage(named: "icon-join")
     let utxoActionSplit = UIImage(named: "icon-split")
     let utxoActionJoinSplit = UIImage(named: "icon-join-split")
@@ -354,6 +352,7 @@ struct Images: Loopable {
     // UTXOs Wallet
     
     let utxoTick = UIImage(named: "tick")
+    let utxoWalletPlaceholder = UIImage(named: "UtxoWalletPlaceholder")
     
     // Adjustable fees
     
@@ -542,6 +541,11 @@ extension UIColor {
             static var mediumGrey: UIColor? { UIColor(named: "MediumGrey") }
             static var mediumDarkGrey: UIColor? { UIColor(named: "MediumDarkGrey") }
             static var black: UIColor? { UIColor(named: "Black") }
+        }
+        
+        enum system {
+            static var green: UIColor? { UIColor(named: "Green") }
+            static var orange: UIColor? { UIColor(named: "Orange") }
         }
     }
 }

@@ -40,6 +40,7 @@
 
 import UIKit
 import TariCommon
+import Combine
 
 final class UTXOsWalletTextListView: UIView {
     
@@ -49,27 +50,23 @@ final class UTXOsWalletTextListView: UIView {
         let view = UITableView()
         view.separatorColor = .tari.greys.mediumLightGrey
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 30.0, bottom: 0.0, right: 30.0)
+        view.backgroundColor = .clear
         view.register(type: UTXOsWalletTextListViewCell.self)
         return view
     }()
     
     // MARK: - Properties
     
-    var models: [UTXOsWalletTextListViewCell.Model] = [] {
-        didSet { updateCells(models: models) }
-    }
-    
-    var isEditingEnabled: Bool = false {
-        didSet { updateCellsState(isEditing: isEditingEnabled) }
-    }
+    @Published var models: [UTXOsWalletTextListViewCell.Model] = []
+    @Published var verticalContentInset: CGFloat = 0.0
+    @Published var isEditingEnabled: Bool = false
+    @Published var selectedElements: Set<UUID> = []
+    @Published private(set) var verticalContentOffset: CGFloat = 0.0
     
     var onTapOnTickbox: ((UUID) -> Void)?
     
-    var selectedElements: Set<UUID> = [] {
-        didSet { update(selectedElements: selectedElements) }
-    }
-    
     private var dataSource: UITableViewDiffableDataSource<Int, UTXOsWalletTextListViewCell.Model>?
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialisers
     
@@ -101,6 +98,26 @@ final class UTXOsWalletTextListView: UIView {
     
     private func setupCallbacks() {
         
+        $models
+            .sink { [weak self] in self?.updateCells(models: $0) }
+            .store(in: &cancellables)
+        
+        $verticalContentInset
+            .map { UIEdgeInsets(top: $0, left: 0.0, bottom: 0.0, right: 0.0) }
+            .sink { [weak self] in
+                self?.tableView.contentInset = $0
+                self?.tableView.scrollToTop(animated: false)
+            }
+            .store(in: &cancellables)
+        
+        $isEditingEnabled
+            .sink { [weak self] in self?.updateCellsState(isEditing: $0) }
+            .store(in: &cancellables)
+        
+        $selectedElements
+            .sink { [weak self] in self?.update(selectedElements: $0) }
+            .store(in: &cancellables)
+        
         dataSource = UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, model in
             
             guard let self = self else { return UITableViewCell() }
@@ -119,7 +136,7 @@ final class UTXOsWalletTextListView: UIView {
         }
         
         dataSource?.defaultRowAnimation = .fade
-        tableView.dataSource = dataSource
+        tableView.delegate = self
     }
     
     // MARK: - Actions
@@ -144,5 +161,12 @@ final class UTXOsWalletTextListView: UIView {
         tableView.visibleCells
             .compactMap { $0 as? UTXOsWalletTextListViewCell }
             .forEach { $0.updateTickBox(isVisible: isEditing, animated: true) }
+    }
+}
+
+extension UTXOsWalletTextListView: UITableViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        verticalContentOffset = scrollView.contentOffset.y
     }
 }
