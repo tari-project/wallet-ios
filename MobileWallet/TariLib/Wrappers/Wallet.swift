@@ -856,20 +856,6 @@ final class Wallet {
         }
     }
 
-    func coinSplit(amount: UInt64, splitCount: UInt64, fee: UInt64, message: String, lockHeight: UInt64) throws -> UInt64 {
-        var errorCode: Int32 = -1
-        let result = withUnsafeMutablePointer(to: &errorCode, { error in
-            message.withCString({ cstr in
-                wallet_coin_split(pointer, amount, splitCount, fee, cstr, lockHeight, error)
-            })
-        })
-
-        guard errorCode == 0 else {
-            throw WalletErrors.generic(errorCode)
-        }
-        return result
-    }
-
     func setKeyValue(key: String, value: String) throws -> Bool {
         var errorCode: Int32 = -1
         let keyPointer = (key as NSString).utf8String
