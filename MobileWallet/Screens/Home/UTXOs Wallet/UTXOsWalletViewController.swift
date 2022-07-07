@@ -86,9 +86,9 @@ final class UTXOsWalletViewController: UIViewController {
             .sink { [weak self] in self?.mainView.updateTextList(models: $0) }
             .store(in: &cancellables)
         
-        Publishers.CombineLatest(mainView.$sortOption, mainView.$isSortAscending)
-            .compactMap { [weak self] in self?.sortMethod(sortOption: $0, isSortAscending: $1) }
-            .assign(to: \.sortMethod, on: model)
+        model.$sortMethod
+            .map { $0.title }
+            .assign(to: \.selectedSortMethodName, on: mainView)
             .store(in: &cancellables)
         
         model.$selectedIDs
@@ -116,29 +116,57 @@ final class UTXOsWalletViewController: UIViewController {
             .filter { $0 == false }
             .sink { [weak self] _ in self?.model.deselectAllElements() }
             .store(in: &cancellables)
+        
+        mainView.onFilterButtonTap = { [weak self] in
+            self?.showFiltersListDialog()
+        }
+        
+        Publishers.CombineLatest3(model.$isLoadingData, model.$utxoModels, mainView.$selectedListType)
+            .map {
+                guard !$0 else { return .loadingScreen }
+                guard $1.count > 0 else { return .placeholder }
+                
+                switch $2 {
+                case .tiles:
+                    return .tilesList
+                case .text:
+                    return .textList
+                }
+            }
+            .assign(to: \.visibleContentType, on: mainView)
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - Actions
+    
+    private func showFiltersListDialog() {
+        
+        let headerSection = PopUpHeaderView()
+        let contentSection = PopUpSelectionView()
+        let buttonsSection = PopUpButtonsView()
+        
+        headerSection.label.text = localized("utxos_wallet.pop_up.sort.title")
+        contentSection.update(options: UTXOsWalletModel.SortMethod.allCases.map { $0.title }, selectedIndex: model.sortMethod.rawValue)
+        
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.apply"), type: .normal, callback: { [weak contentSection, weak self] in
+            PopUpPresenter.dismissPopup()
+            guard let contentSection = contentSection, let sortState = UTXOsWalletModel.SortMethod(rawValue: contentSection.selectedIndex) else { return }
+            self?.model.sortMethod = sortState
+        }))
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
+        
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        PopUpPresenter.show(popUp: popUp)
     }
     
     // MARK: - Helpers
     
     private func tileModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOTileView.Model] {
-        models.map { UTXOTileView.Model(uuid: $0.uuid, amountText: $0.amountText, backgroundColor: .tari.purple?.colorVariant(text: $0.hash), height: $0.tileHeight, statusIcon: $0.status.icon, statusName: $0.status.name) }
+        models.map { UTXOTileView.Model(uuid: $0.uuid, amountText: $0.amountText, backgroundColor: .tari.purple?.colorVariant(text: $0.hash), height: $0.tileHeight, statusIcon: $0.status.icon, statusColor: $0.status.color, date: $0.date) }
     }
     
     private func textListModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOsWalletTextListViewCell.Model] {
-        models.map { UTXOsWalletTextListViewCell.Model(id: $0.uuid, amount: $0.amountWithCurrency, hash: $0.hash) }
-    }
-    
-    private func sortMethod(sortOption: UTXOsWalletView.SortOption, isSortAscending: Bool) -> UTXOsWalletModel.SortMethod {
-        switch (sortOption, isSortAscending) {
-        case (.amount, false):
-            return .amountDescending
-        case (.amount, true):
-            return .amountAscending
-        case (.date, false):
-            return .minedHeightDescending
-        case (.date, true):
-            return .minedHeightAscending
-        }
+        models.map { UTXOsWalletTextListViewCell.Model(id: $0.uuid, amount: $0.amountWithCurrency, statusColor: $0.status.color, statusText: [$0.status.name, $0.date, $0.time].joined(separator: " | "), hash: $0.hash) }
     }
     
     private func contextualButtonsModels(selectedIDs: Set<UUID>) -> [ContextualButtonsOverlay.ButtonModel] {
@@ -157,4 +185,20 @@ private extension Array where Element == ContextualButtonsOverlay.ButtonModel {
     static var none: Self { [] }
     static var split: Self { [Element(text: localized("utxos_wallet.button.actions.split"), image: Theme.shared.images.utxoActionSplit)] }
     static var join: Self { [Element(text: localized("utxos_wallet.button.actions.join"), image: Theme.shared.images.utxoActionJoin), Element(text: localized("utxos_wallet.button.actions.join_split"), image: Theme.shared.images.utxoActionJoinSplit)] }
+}
+
+extension UTXOsWalletModel.SortMethod {
+
+    var title: String {
+        switch self {
+        case .amountAscending:
+            return localized("utxos_wallet.pop_up.sort.size.ascending")
+        case .amountDescending:
+            return localized("utxos_wallet.pop_up.sort.size.descending")
+        case .minedHeightAscending:
+            return localized("utxos_wallet.pop_up.sort.date.ascending")
+        case .minedHeightDescending:
+            return localized("utxos_wallet.pop_up.sort.date.descending")
+        }
+    }
 }

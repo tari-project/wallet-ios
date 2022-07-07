@@ -1,8 +1,8 @@
-//  UTXOsWalletStateButton.swift
+//  UTXOsWalletLoadingView.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 07/06/2022
+	Created by Adrian Truszczynski on 05/07/2022
 	Using Swift 5.0
 	Running on macOS 12.3
 
@@ -39,23 +39,43 @@
 */
 
 import UIKit
+import TariCommon
+import Lottie
 
-final class UTXOsWalletStateButton: BaseButton {
+final class UTXOsWalletLoadingView: UIView {
     
-    // MARK: - Properties
+    // MARK: - Subviews
     
-    override var isSelected: Bool {
-        didSet { backgroundColor = isSelected ? .tari.greys.mediumLightGrey : .clear }
-    }
+    @View private var stackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.spacing = 4.0
+        return view
+    }()
     
-    var toggleAutomatically: Bool = true
+    @View private var spinnerView: AnimationView = {
+        let view = AnimationView()
+        view.backgroundBehavior = .pauseAndRestore
+        view.animation = Animation.named(.pendingCircleAnimation)
+        view.loopMode = .loop
+        view.play()
+        return view
+    }()
+    
+    @View private var titleLabel: UILabel = {
+        let view = UILabel()
+        view.text = localized("utxos_wallet.spinner.label.title")
+        view.textColor = .tari.greys.mediumDarkGrey
+        view.textAlignment = .center
+        view.font = .Avenir.roman.withSize(14.0)
+        return view
+    }()
     
     // MARK: - Initialisers
     
     init() {
         super.init(frame: .zero)
-        setupView()
-        setupCallbacks()
+        setupConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -64,20 +84,17 @@ final class UTXOsWalletStateButton: BaseButton {
     
     // MARK: - Setups
     
-    private func setupView() {
-        layer.cornerRadius = 5.0
-        contentMode = .scaleAspectFit
-        imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
-    }
-    
-    private func setupCallbacks() {
-        addTarget(self, action: #selector(onTapInside), for: .touchUpInside)
-    }
-    
-    // MARK: - Actions
-    
-    @objc private func onTapInside() {
-        guard toggleAutomatically else { return }
-        isSelected.toggle()
+    private func setupConstraints() {
+        
+        addSubview(stackView)
+        [spinnerView, titleLabel].forEach(stackView.addArrangedSubview)
+        
+        let constraints = [
+            spinnerView.heightAnchor.constraint(equalToConstant: 42.0),
+            stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
 }

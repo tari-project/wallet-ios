@@ -40,6 +40,7 @@
 
 import UIKit
 import TariCommon
+import Combine
 
 final class UTXOsWalletTileListView: UIView {
     
@@ -48,23 +49,18 @@ final class UTXOsWalletTileListView: UIView {
     private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = .clear
         view.register(type: UTXOTileView.self)
         return view
     }()
     
     // MARK: - Properties
     
-    var models: [UTXOTileView.Model] = [] {
-        didSet { updateTiles(models: models) }
-    }
-    
-    var isEditingEnabled: Bool = false {
-        didSet { updateTilesState(isEditing: isEditingEnabled) }
-    }
-    
-    var selectedElements: Set<UUID> = [] {
-        didSet { update(selectedElements: selectedElements) }
-    }
+    @Published var models: [UTXOTileView.Model] = []
+    @Published var verticalContentInset: CGFloat = 0.0
+    @Published var isEditingEnabled: Bool = false
+    @Published var selectedElements: Set<UUID> = []
+    @Published private(set) var verticalContentOffset: CGFloat = 0.0
     
     var onTapOnTile: ((UUID) -> Void)?
     var onLongPressOnTile: ((UUID) -> Void)?
@@ -76,6 +72,7 @@ final class UTXOsWalletTileListView: UIView {
     }()
     
     private var dataSource: UICollectionViewDiffableDataSource<Int, UTXOTileView.Model>?
+    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialisers
     
@@ -107,6 +104,24 @@ final class UTXOsWalletTileListView: UIView {
     
     private func setupCallbacks() {
         
+        $models
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.updateTiles(models: $0) }
+            .store(in: &cancellables)
+        
+        $verticalContentInset
+            .map { UIEdgeInsets(top: $0, left: 0.0, bottom: 0.0, right: 0.0) }
+            .sink { [weak self] in self?.collectionView.contentInset = $0 }
+            .store(in: &cancellables)
+        
+        $isEditingEnabled
+            .sink { [weak self] in self?.updateTilesState(isEditing: $0) }
+            .store(in: &cancellables)
+        
+        $selectedElements
+            .sink { [weak self] in self?.update(selectedElements: $0) }
+            .store(in: &cancellables)
+        
         dataSource = UICollectionViewDiffableDataSource(collectionView: collectionView) { [weak self] collectionView, indexPath, model in
             let cell = collectionView.dequeueReusableCell(type: UTXOTileView.self, indexPath: indexPath)
             
@@ -130,6 +145,8 @@ final class UTXOsWalletTileListView: UIView {
         collectionViewLayout.onCheckHeightAtIndex = { [weak self] in
             self?.models[$0].height ?? 0.0
         }
+        
+        collectionView.delegate = self
     }
     
     // MARK: - Actions
@@ -162,5 +179,12 @@ final class UTXOsWalletTileListView: UIView {
             .forEach {
                 guard let elementID = $0.elementID else { return }
                 $0.isTickSelected = selectedElements.contains(elementID) }
+    }
+}
+
+extension UTXOsWalletTileListView: UICollectionViewDelegate {
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        verticalContentOffset = scrollView.contentOffset.y
     }
 }

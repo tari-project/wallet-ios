@@ -5,6 +5,7 @@
 "common.error" = "Error";
 "common.recommended" = "Recommended";
 "common.close" = "Close";
+"common.apply" = "Apply";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -109,12 +110,20 @@
 /* UTXOs Wallet */
 
 "utxos_wallet.title" = "Wallet";
-"utxos_wallet.segmented_control.sort.size" = "Size";
-"utxos_wallet.segmented_control.sort.date" = "Date";
 "utxos_wallet.tile.label.state.mined" = "Mined";
+"utxos_wallet.tile.label.state.unconfirmed" = "Unconfirmed";
 "utxos_wallet.button.actions.split" = "Split";
 "utxos_wallet.button.actions.join" = "Join";
 "utxos_wallet.button.actions.join_split" = "Join-Split";
+"utxos_wallet.button.edit_mode.select" = "Select";
+"utxos_wallet.pop_up.sort.title" = "Sort by";
+"utxos_wallet.pop_up.sort.size.descending" = "Size, Descending";
+"utxos_wallet.pop_up.sort.size.ascending" = "Size, Ascending";
+"utxos_wallet.pop_up.sort.date.descending" = "Date, Descending";
+"utxos_wallet.pop_up.sort.date.ascending" = "Date, Ascending";
+"utxos_wallet.placeholder.label.title" = "Your wallet is empty";
+"utxos_wallet.placeholder.label.subtitle" = "Once you have some funds, you’ll be able to view your coins here.";
+"utxos_wallet.spinner.label.title" = "Just a sec...";
 
 /* Add amount view */
 "add_amount.error.available_balance.title" = "Available Balance error";
