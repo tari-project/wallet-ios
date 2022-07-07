@@ -204,7 +204,8 @@
 		3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC4026DFA1E100E0BC43 /* NetworkSettings.swift */; };
 		3A72DC4526DFA26000E0BC43 /* TariNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC4426DFA26000E0BC43 /* TariNetwork.swift */; };
 		3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A74E7DA273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift */; };
-		3A793BF128031F540094DF23 /* PopUpStoreHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A793BF028031F540094DF23 /* PopUpStoreHeaderView.swift */; };
+		3A78860E2872FB39003B1F9A /* TariVectorWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A78860D2872FB39003B1F9A /* TariVectorWrapper.swift */; };
+		3A793BF128031F540094DF23 /* PopUpImageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A793BF028031F540094DF23 /* PopUpImageHeaderView.swift */; };
 		3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A793BF2280354830094DF23 /* PopUpHeaderWithSubtitle.swift */; };
 		3A811EEF26957856003D0DF3 /* ConnectionIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */; };
 		3A811EF12695BAEE003D0DF3 /* TooltipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A811EF02695BAEE003D0DF3 /* TooltipView.swift */; };
@@ -257,6 +258,7 @@
 		3AC877E4287415AD006F327B /* UTXOsWalletPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC877E3287415AD006F327B /* UTXOsWalletPlaceholderView.swift */; };
 		3AC877E628741680006F327B /* UTXOsWalletLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC877E528741680006F327B /* UTXOsWalletLoadingView.swift */; };
 		3AC8C25D27999CAC00334F26 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AC8C25C27999CAC00334F26 /* PageViewController.swift */; };
+		3ACC4F602876D2F100632F64 /* NSAttributedString+Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACC4F5F2876D2F100632F64 /* NSAttributedString+Format.swift */; };
 		3ACDA70026AFF83D00F138B8 /* OverlayPresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */; };
 		3ACDA70526B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70426B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift */; };
 		3ACDA70926B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA70826B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift */; };
@@ -287,6 +289,9 @@
 		3AE138D52804ACE100443D34 /* WebBrowserPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE138D42804ACE100443D34 /* WebBrowserPresenter.swift */; };
 		3AE1D58027E0A894001A46C4 /* TransactionDetailsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE1D57F27E0A894001A46C4 /* TransactionDetailsModel.swift */; };
 		3AE1D58227E0A8C8001A46C4 /* TransactionDetailsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE1D58127E0A8C8001A46C4 /* TransactionDetailsConstructor.swift */; };
+		3AE5E5662874656200D3AF85 /* PopUpUTXOsSplitContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5E5652874656200D3AF85 /* PopUpUTXOsSplitContentView.swift */; };
+		3AE5E5682874696E00D3AF85 /* ValuePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5E5672874696E00D3AF85 /* ValuePickerView.swift */; };
+		3AE5E56A287469E500D3AF85 /* TextCapsule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5E569287469E500D3AF85 /* TextCapsule.swift */; };
 		3AE88506283785100070D1AC /* PopUpModifyFeeContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE88505283785100070D1AC /* PopUpModifyFeeContentView.swift */; };
 		3AE885082837857B0070D1AC /* CurrencyLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE885072837857B0070D1AC /* CurrencyLabelView.swift */; };
 		3AE8850A28378B8C0070D1AC /* NetworkTrafficView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE8850928378B8C0070D1AC /* NetworkTrafficView.swift */; };
@@ -588,7 +593,8 @@
 		3A72DC4026DFA1E100E0BC43 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		3A72DC4426DFA26000E0BC43 /* TariNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariNetwork.swift; sourceTree = "<group>"; };
 		3A74E7DA273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsMnemonicWordList.swift; sourceTree = "<group>"; };
-		3A793BF028031F540094DF23 /* PopUpStoreHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpStoreHeaderView.swift; sourceTree = "<group>"; };
+		3A78860D2872FB39003B1F9A /* TariVectorWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariVectorWrapper.swift; sourceTree = "<group>"; };
+		3A793BF028031F540094DF23 /* PopUpImageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpImageHeaderView.swift; sourceTree = "<group>"; };
 		3A793BF2280354830094DF23 /* PopUpHeaderWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpHeaderWithSubtitle.swift; sourceTree = "<group>"; };
 		3A811EEE26957856003D0DF3 /* ConnectionIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionIndicatorView.swift; sourceTree = "<group>"; };
 		3A811EF02695BAEE003D0DF3 /* TooltipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TooltipView.swift; sourceTree = "<group>"; };
@@ -641,6 +647,7 @@
 		3AC877E3287415AD006F327B /* UTXOsWalletPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletPlaceholderView.swift; sourceTree = "<group>"; };
 		3AC877E528741680006F327B /* UTXOsWalletLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletLoadingView.swift; sourceTree = "<group>"; };
 		3AC8C25C27999CAC00334F26 /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
+		3ACC4F5F2876D2F100632F64 /* NSAttributedString+Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Format.swift"; sourceTree = "<group>"; };
 		3ACDA6FF26AFF83D00F138B8 /* OverlayPresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayPresentable.swift; sourceTree = "<group>"; };
 		3ACDA70426B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsProgressViewController.swift; sourceTree = "<group>"; };
 		3ACDA70826B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletFromSeedsProgressView.swift; sourceTree = "<group>"; };
@@ -671,6 +678,9 @@
 		3AE138D42804ACE100443D34 /* WebBrowserPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebBrowserPresenter.swift; sourceTree = "<group>"; };
 		3AE1D57F27E0A894001A46C4 /* TransactionDetailsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsModel.swift; sourceTree = "<group>"; };
 		3AE1D58127E0A8C8001A46C4 /* TransactionDetailsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsConstructor.swift; sourceTree = "<group>"; };
+		3AE5E5652874656200D3AF85 /* PopUpUTXOsSplitContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpUTXOsSplitContentView.swift; sourceTree = "<group>"; };
+		3AE5E5672874696E00D3AF85 /* ValuePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValuePickerView.swift; sourceTree = "<group>"; };
+		3AE5E569287469E500D3AF85 /* TextCapsule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextCapsule.swift; sourceTree = "<group>"; };
 		3AE88505283785100070D1AC /* PopUpModifyFeeContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpModifyFeeContentView.swift; sourceTree = "<group>"; };
 		3AE885072837857B0070D1AC /* CurrencyLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyLabelView.swift; sourceTree = "<group>"; };
 		3AE8850928378B8C0070D1AC /* NetworkTrafficView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTrafficView.swift; sourceTree = "<group>"; };
@@ -847,6 +857,7 @@
 				3AECD493284F46FD00D81C80 /* UIColor+Utils.swift */,
 				3A8A05552853270B00D48FCE /* UIImage+Utils.swift */,
 				3A2B956928648D860085BE21 /* CChar+Helpers.swift */,
+				3ACC4F5F2876D2F100632F64 /* NSAttributedString+Format.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1000,6 +1011,7 @@
 				009DFCB024741F9B0061DBC9 /* WalletTxs.swift */,
 				001F6CEF2381A43800FA7002 /* Transactions */,
 				3A6F3FF7283BF980005D1793 /* TariFeePerGramStats.swift */,
+				3A78860D2872FB39003B1F9A /* TariVectorWrapper.swift */,
 			);
 			path = Wrappers;
 			sourceTree = "<group>";
@@ -1449,6 +1461,9 @@
 				3AEE7AA2286599E6000F84ED /* UTXOsWalletTopBar.swift */,
 				3AC877E3287415AD006F327B /* UTXOsWalletPlaceholderView.swift */,
 				3AC877E528741680006F327B /* UTXOsWalletLoadingView.swift */,
+				3AE5E5652874656200D3AF85 /* PopUpUTXOsSplitContentView.swift */,
+				3AE5E5672874696E00D3AF85 /* ValuePickerView.swift */,
+				3AE5E569287469E500D3AF85 /* TextCapsule.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1582,7 +1597,7 @@
 				3A6A03332802DBB5000432B4 /* PopUpHeaderView.swift */,
 				3A6A03352802DC2B000432B4 /* PopUpDescriptionContentView.swift */,
 				3A6A03372802DC85000432B4 /* PopUpButtonsView.swift */,
-				3A793BF028031F540094DF23 /* PopUpStoreHeaderView.swift */,
+				3A793BF028031F540094DF23 /* PopUpImageHeaderView.swift */,
 				3A793BF2280354830094DF23 /* PopUpHeaderWithSubtitle.swift */,
 				3AE138CA28044B1E00443D34 /* CustomDeeplinkPopUpContentView.swift */,
 				3AF985F9286B233100290387 /* PopUpSelectionView.swift */,
@@ -2356,8 +2371,10 @@
 				00369D812426080D00BAB95B /* TariLogger.swift in Sources */,
 				3ADEBF6226A59A5900E87C84 /* AddBaseNodeViewController.swift in Sources */,
 				3A4BF7CE27B5712900CA499D /* Result+Void.swift in Sources */,
+				3A78860E2872FB39003B1F9A /* TariVectorWrapper.swift in Sources */,
 				3A6A03362802DC2B000432B4 /* PopUpDescriptionContentView.swift in Sources */,
 				3AF79D5E2727201A00613C24 /* ScrollableLabel.swift in Sources */,
+				3AE5E5682874696E00D3AF85 /* ValuePickerView.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
 				00F53A642428E44700448466 /* StorageCleanup.swift in Sources */,
 				004997B32382ED68000A0B7D /* PendingInboundTx.swift in Sources */,
@@ -2397,7 +2414,7 @@
 				37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */,
 				3A87C3B527A94086007A553F /* CoreError.swift in Sources */,
 				3723A7AB24ACD03E003382EB /* PasswordField.swift in Sources */,
-				3A793BF128031F540094DF23 /* PopUpStoreHeaderView.swift in Sources */,
+				3A793BF128031F540094DF23 /* PopUpImageHeaderView.swift in Sources */,
 				3A494A422716D6DA00CF5B05 /* AddRecipientView.swift in Sources */,
 				00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */,
 				37049270247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */,
@@ -2432,6 +2449,7 @@
 				37547D5624601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
 				3A983A5E27C64B0500F0AB61 /* VerifySeedWordsModel.swift in Sources */,
+				3AE5E56A287469E500D3AF85 /* TextCapsule.swift in Sources */,
 				3A6A033E2802DEEB000432B4 /* PopUpPresenter+CommonPopUps.swift in Sources */,
 				3ADEBF5D26A54FA500E87C84 /* SelectBaseNodeModel.swift in Sources */,
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
@@ -2469,6 +2487,7 @@
 				3A2C0B8727DA22970018C5A8 /* SeedWordListElementView.swift in Sources */,
 				3A6F3FF8283BF980005D1793 /* TariFeePerGramStats.swift in Sources */,
 				3A94DB21283E7CEF00B0A740 /* TransactionFeesManager.swift in Sources */,
+				3ACC4F602876D2F100632F64 /* NSAttributedString+Format.swift in Sources */,
 				3AB8B911285202D200E66D5C /* UTXOsWalletTileTickView.swift in Sources */,
 				3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */,
 				3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */,
@@ -2493,6 +2512,7 @@
 				3ACFDD1D26E8C1A900C5E1EA /* AppInfo.swift in Sources */,
 				3A983A5C27C62A5700F0AB61 /* VerifySeedWordsView.swift in Sources */,
 				3AA2717A279028BF0076E51F /* RequestTariAmountViewController.swift in Sources */,
+				3AE5E5662874656200D3AF85 /* PopUpUTXOsSplitContentView.swift in Sources */,
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
 				3A4BF7D027B57CE400CA499D /* SendingTariConstructor.swift in Sources */,
 				372AECA724B496F0005CBA0F /* BackupScheduler.swift in Sources */,

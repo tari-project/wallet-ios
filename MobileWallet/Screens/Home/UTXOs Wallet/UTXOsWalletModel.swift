@@ -57,12 +57,20 @@ final class UTXOsWalletModel {
 
     struct UtxoModel {
         let uuid: UUID
+        let amount: UInt64
         let amountText: String
         let tileHeight: CGFloat
         let status: UtxoStatus
         let date: String
         let time: String
         let hash: String
+    }
+    
+    struct SplitPreviewData {
+        let amount: String
+        let splitCount: String
+        let splitAmount: String
+        let fee: String
     }
     
     // MARK: - Constants
@@ -116,10 +124,62 @@ final class UTXOsWalletModel {
         selectedIDs = []
     }
     
+    func splitCoinPreview(splitCount: Int) -> SplitPreviewData? {
+        
+        guard let wallet = TariLib.shared.tariWallet else {
+            return nil
+        }
+        
+        let models = utxoModels
+            .filter { self.selectedIDs.contains($0.uuid) }
+        
+        let amount = models
+            .map(\.amount)
+            .reduce(0, +)
+        
+        let commitments = models.map(\.hash)
+        
+        do {
+            let result = try wallet.previewCoinSplit(commitments: commitments, splitsCount: UInt(splitCount), feePerGram: Wallet.defaultFeePerGram.rawValue)
+            let splitAmount = (amount - result.fee) / UInt64(splitCount)
+            
+            let amountText = MicroTari(amount).formattedPrecise
+            let splitAmountText = MicroTari(splitAmount).formattedPrecise
+            let feeText = MicroTari(result.fee).formattedPrecise
+            
+            return SplitPreviewData(amount: amountText, splitCount: "\(splitCount)", splitAmount: splitAmountText, fee: feeText)
+            
+        } catch {
+            return nil
+        }
+    }
+    
+    func performSplitAction(splitCount: Int) {
+        
+        guard let wallet = TariLib.shared.tariWallet else {
+            errorMessage = ErrorMessageManager.errorModel(forError: nil)
+            return
+        }
+        
+        let commitments = utxoModels
+            .filter { self.selectedIDs.contains($0.uuid) }
+            .map(\.hash)
+        
+        do {
+            _ = try wallet.coinSplit(commitments: commitments, splitsCount: UInt(splitCount), feePerGram: Wallet.defaultFeePerGram.rawValue)
+        } catch {
+            errorMessage = ErrorMessageManager.errorModel(forError: error)
+        }
+    }
+    
     // MARK: - Actions
     
-    private func fetchUTXOs(sortMethod: SortMethod) {
+    func reloadData() {
+        fetchUTXOs(sortMethod: sortMethod)
+    }
     
+    private func fetchUTXOs(sortMethod: SortMethod) {
+        
         guard let wallet = TariLib.shared.tariWallet else {
             errorMessage = ErrorMessageManager.errorModel(forError: nil)
             return
@@ -128,50 +188,49 @@ final class UTXOsWalletModel {
         isLoadingData = true
         
         do {
-            let utxos = try fetchAllUTXOs(wallet: wallet, sortMethod: sortMethod)
-            let heights = calculateHeights(rawAmounts: utxos.map(\.value))
-            
-            utxoModels = zip(utxos, heights)
-                .compactMap {
-                    guard let commitment = $0.commitment.string else { return nil }
-                    return UtxoModel(uuid: UUID(), amountText: MicroTari($0.value).formattedPrecise, tileHeight: $1, status: .mined, date: "01.01.1970", time: "00:00", hash: commitment) // TODO: !
+            let utxosData = try wallet.allUtxos()
+                .reduce(into: UTXOsData()) { result, model in
+                    guard let status = FFIUtxoStatus(rawValue: model.status)?.walletUtxoStatus else { return }
+                    
+                    result.minAmount = min(model.value, result.minAmount)
+                    result.maxAmount = max(model.value, result.maxAmount)
+                    result.data.append((model: model, status: status))
                 }
+            
+            let minAmount = utxosData.minAmount
+            let heightScale: CGFloat
+            
+            if utxosData.minAmount == utxosData.maxAmount {
+                heightScale = 1.0
+            } else {
+                let amountDiff = utxosData.maxAmount - utxosData.minAmount
+                let heightDiff = maxTileHeight - minTileHeight
+                heightScale = heightDiff / CGFloat(amountDiff)
+            }
+            
+            utxoModels = utxosData.data
+                .sorted {
+                    switch sortMethod {
+                    case .amountAscending:
+                        return $0.model.value < $1.model.value
+                    case .amountDescending:
+                        return $0.model.value > $1.model.value
+                    case .minedHeightAscending:
+                        return $0.model.mined_height < $1.model.mined_height
+                    case .minedHeightDescending:
+                        return $0.model.mined_height > $1.model.mined_height
+                    }
+                }
+                .compactMap {
+                    guard let commitment = $0.model.commitment.string else { return nil }
+                    let tileHeight = CGFloat($0.model.value - minAmount) * heightScale + minTileHeight
+                    return UtxoModel(uuid: UUID(), amount: $0.model.value, amountText: MicroTari($0.model.value).formattedPrecise, tileHeight: tileHeight, status: $0.status, date: "01.01.1970", time: "00:00", hash: commitment)
+                }
+            
             isLoadingData = false
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
         }
-    }
-    
-    private func fetchAllUTXOs(wallet: Wallet, sortMethod: SortMethod) throws -> [TariUtxo] {
-        
-        let batchSize: UInt = 50
-        
-        var allUTXOs = [TariUtxo]()
-        var batch = [TariUtxo]()
-        var page: UInt = 0
-        
-        repeat {
-            batch = try wallet.utxos(page: page * batchSize, pageSize: batchSize, sortMethod: sortMethod.ffiSortMethod, dustTreshold: 0)
-            allUTXOs += batch
-            page += 1
-        } while !batch.isEmpty
-        
-        return allUTXOs
-    }
-    
-    // MARK: - Helpers
-    
-    private func calculateHeights(rawAmounts: [UInt64]) -> [CGFloat] {
-        
-        let rawAmounts = rawAmounts.map { CGFloat($0) }
-        
-        guard let minAmount = rawAmounts.min(), let maxAmount = rawAmounts.max(), minAmount < maxAmount else { return rawAmounts.map { _ in maxTileHeight }}
-        
-        let amountDiff = maxAmount - minAmount
-        let heightDiff = maxTileHeight - minTileHeight
-        let scale = heightDiff / amountDiff
-        
-        return rawAmounts.map { ($0 - minAmount) * scale + minTileHeight }
     }
 }
 
@@ -209,18 +268,39 @@ extension UTXOsWalletModel.UtxoStatus {
     }
 }
 
-private extension UTXOsWalletModel.SortMethod {
+private enum FFIUtxoStatus: UInt8 {
+    case unspend
+    case spent
+    case encumberedToBeReceived
+    case encumberedToBeSpent
+    case invalid
+    case cancelledInbound
+    case unspentMinedUnconfirmed
+    case shortTermEncumberedToBeReceived
+    case shortTermEncumberedToBeSpent
+    case spentMinedUnconfirmed
+    case abandonedCoinbase
+    case notStored
+}
+
+extension FFIUtxoStatus {
     
-    var ffiSortMethod: TariUtxoSort {
+    var walletUtxoStatus: UTXOsWalletModel.UtxoStatus? {
         switch self {
-        case .amountAscending:
-            return TariUtxoSort(rawValue: 0)
-        case .amountDescending:
-            return TariUtxoSort(rawValue: 1)
-        case .minedHeightAscending:
-            return TariUtxoSort(rawValue: 2)
-        case .minedHeightDescending:
-            return TariUtxoSort(rawValue: 3)
+        case .unspend:
+            return .mined
+        case .encumberedToBeReceived, .unspentMinedUnconfirmed:
+            return .unconfirmed
+        default:
+            return nil
         }
     }
+    
+    var isVisibleUtxoStatus: Bool { walletUtxoStatus != nil }
+}
+
+private struct UTXOsData {
+    var data: [(model: TariUtxo, status: UTXOsWalletModel.UtxoStatus)] = []
+    var maxAmount: UInt64 = 0
+    var minAmount: UInt64 = .max
 }

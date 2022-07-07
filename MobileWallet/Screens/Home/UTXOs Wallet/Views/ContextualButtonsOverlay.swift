@@ -43,9 +43,10 @@ import TariCommon
 
 final class ContextualButtonsOverlay: UIView {
     
-    struct ButtonModel: Equatable {
+    struct ButtonModel {
         let text: String?
         let image: UIImage?
+        let callback: (() -> Void)?
     }
     
     // MARK: - Constants
@@ -151,10 +152,16 @@ final class ContextualButtonsOverlay: UIView {
     
     private func addButtons(models: [ButtonModel]) {
         models.reduce(into: [UIView]()) { result, model in
-            let view = ContextualButton()
-            view.update(text: model.text, icon: model.image)
+            
+            let button = ContextualButton()
+            button.update(text: model.text, icon: model.image)
+            
+            button.onTap = {
+                model.callback?()
+            }
+            
             let separator = makeSeparator()
-            result += [view, separator]
+            result += [button, separator]
         }
         .dropLast()
         .forEach { stackView.addArrangedSubview($0) }

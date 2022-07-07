@@ -38,7 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+import UIKit
 
 extension String {
     func insertSeparator(_ separatorString: String, atEvery n: Int) -> String {
@@ -94,6 +94,26 @@ extension String {
 
         guard data.count > 0 else { return nil }
         return data
+    }
+    
+    func withCurrencySymbol(imageBounds: CGRect, imageTintColor: UIColor?) -> NSAttributedString {
+        
+        guard var symbol = Theme.shared.images.currencySymbol else { return NSAttributedString() }
+        
+        if let imageTintColor = imageTintColor {
+            symbol = symbol
+                .withRenderingMode(.alwaysTemplate)
+                .withTintColor(imageTintColor)
+        }
+        
+        let currencySymbol = NSTextAttachment(image: symbol)
+        currencySymbol.bounds = imageBounds
+        
+        let output = NSMutableAttributedString()
+        output.append(NSAttributedString(attachment: currencySymbol))
+        output.append(NSAttributedString(string: " " + self))
+        
+        return output
     }
 }
 

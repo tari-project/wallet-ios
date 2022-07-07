@@ -96,9 +96,9 @@ final class UTXOsWalletViewController: UIViewController {
             .store(in: &cancellables)
         
         model.$selectedIDs
-            .compactMap { [weak self] in self?.contextualButtonsModels(selectedIDs: $0) }
+            .compactMap { [weak self] in self?.actionTypes(selectedIDs: $0) }
             .removeDuplicates()
-            .assign(to: \.contextualButtons, on: mainView)
+            .assign(to: \.actionTypes, on: mainView)
             .store(in: &cancellables)
         
         model.$errorMessage
@@ -119,6 +119,17 @@ final class UTXOsWalletViewController: UIViewController {
         
         mainView.onFilterButtonTap = { [weak self] in
             self?.showFiltersListDialog()
+        }
+
+        mainView.onActionButtonTap = { [weak self] in
+            switch $0 {
+            case .split:
+                self?.showSplitDialog()
+            case .join:
+                break
+            case .splitJoin:
+                break
+            }
         }
         
         Publishers.CombineLatest3(model.$isLoadingData, model.$utxoModels, mainView.$selectedListType)
@@ -159,6 +170,74 @@ final class UTXOsWalletViewController: UIViewController {
         PopUpPresenter.show(popUp: popUp)
     }
     
+    private func showSplitDialog() {
+        
+        let headerSection = PopUpHeaderView()
+        let contentSection = PopUpUTXOsSplitContentView()
+        let buttonsSection = PopUpButtonsView()
+        
+        
+        headerSection.label.text = localized("utxos_wallet.pop_up.split.title")
+        
+        let cancellable = contentSection.$value
+            .sink { [weak self, weak contentSection] in
+                guard let self = self, let previewData = self.model.splitCoinPreview(splitCount: $0) else { return }
+                contentSection?.update(amount: previewData.amount, splitCount: previewData.splitCount, splitAmount: previewData.splitAmount, fee: previewData.fee)
+            }
+        
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("utxos_wallet.pop_up.split.button.ok"), type: .normal, callback: {
+            cancellable.cancel()
+            PopUpPresenter.dismissPopup { [weak contentSection, weak self] in
+                guard let contentSection = contentSection else { return }
+                self?.showSplitConfirmationDialog(splitCount: contentSection.value)
+            }
+        }))
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
+        
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        PopUpPresenter.show(popUp: popUp)
+    }
+    
+    private func showSplitConfirmationDialog(splitCount: Int) {
+        
+        let model = PopUpDialogModel(
+            title: localized("utxos_wallet.pop_up.split_confirmation.title"),
+            message: localized("utxos_wallet.pop_up.split_confirmation.description"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("utxos_wallet.pop_up.split_confirmation.button.ok"), type: .normal, callback: { [weak self] in
+                    self?.model.performSplitAction(splitCount: splitCount)
+                    self?.showSplitSuccessDialog()
+                }),
+                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text),
+            ],
+            hapticType: .none
+        )
+        
+        PopUpPresenter.showPopUp(model: model)
+    }
+    
+    private func showSplitSuccessDialog() {
+        
+        let headerSection = PopUpImageHeaderView()
+        let contentSection = PopUpDescriptionContentView()
+        let buttonsSection = PopUpButtonsView()
+        
+        headerSection.imageView.image = Theme.shared.images.utxoSuccessImage
+        headerSection.imageHeight = 90.0
+        
+        headerSection.label.text = localized("utxos_wallet.pop_up.split_success.title")
+        contentSection.label.text = localized("utxos_wallet.pop_up.split_success.description")
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { [weak self] in
+            self?.mainView.isEditingEnabled = false
+            self?.model.reloadData()
+            PopUpPresenter.dismissPopup()
+        }))
+        
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        popUp.topOffset = 75.0
+        PopUpPresenter.show(popUp: popUp)
+    }
+    
     // MARK: - Helpers
     
     private func tileModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOTileView.Model] {
@@ -169,22 +248,16 @@ final class UTXOsWalletViewController: UIViewController {
         models.map { UTXOsWalletTextListViewCell.Model(id: $0.uuid, amount: $0.amountWithCurrency, statusColor: $0.status.color, statusText: [$0.status.name, $0.date, $0.time].joined(separator: " | "), hash: $0.hash) }
     }
     
-    private func contextualButtonsModels(selectedIDs: Set<UUID>) -> [ContextualButtonsOverlay.ButtonModel] {
+    private func actionTypes(selectedIDs: Set<UUID>) -> [UTXOsWalletView.ActionType] {
         switch selectedIDs.count {
         case 0:
-            return .none
+            return []
         case 1:
-            return .split
+            return [.split]
         default:
-            return .join
+            return [.join, .splitJoin]
         }
     }
-}
-
-private extension Array where Element == ContextualButtonsOverlay.ButtonModel {
-    static var none: Self { [] }
-    static var split: Self { [Element(text: localized("utxos_wallet.button.actions.split"), image: Theme.shared.images.utxoActionSplit)] }
-    static var join: Self { [Element(text: localized("utxos_wallet.button.actions.join"), image: Theme.shared.images.utxoActionJoin), Element(text: localized("utxos_wallet.button.actions.join_split"), image: Theme.shared.images.utxoActionJoinSplit)] }
 }
 
 extension UTXOsWalletModel.SortMethod {
