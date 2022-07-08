@@ -64,6 +64,7 @@ final class UTXOsWalletModel {
         let date: String
         let time: String
         let hash: String
+        let isSelectable: Bool
     }
     
     struct SplitPreviewData {
@@ -172,6 +173,42 @@ final class UTXOsWalletModel {
         }
     }
     
+    func joinCoinsFeePreview() -> String? {
+        
+        guard let wallet = TariLib.shared.tariWallet else {
+            return nil
+        }
+        
+        let commitments = utxoModels
+            .filter { self.selectedIDs.contains($0.uuid) }
+            .map(\.hash)
+        
+        do {
+            let result = try wallet.previewCoinsJoin(commitments: commitments, feePerGram: Wallet.defaultFeePerGram.rawValue)
+            return MicroTari(result.fee).formattedPrecise
+        } catch {
+            return nil
+        }
+    }
+    
+    func performJoinAction() {
+        
+        guard let wallet = TariLib.shared.tariWallet else {
+            errorMessage = ErrorMessageManager.errorModel(forError: nil)
+            return
+        }
+        
+        let commitments = utxoModels
+            .filter { self.selectedIDs.contains($0.uuid) }
+            .map(\.hash)
+        
+        do {
+            _ = try wallet.coinsJoin(commitments: commitments, feePerGram: Wallet.defaultFeePerGram.rawValue)
+        } catch {
+            errorMessage = ErrorMessageManager.errorModel(forError: error)
+        }
+    }
+    
     // MARK: - Actions
     
     func reloadData() {
@@ -224,7 +261,17 @@ final class UTXOsWalletModel {
                 .compactMap {
                     guard let commitment = $0.model.commitment.string else { return nil }
                     let tileHeight = CGFloat($0.model.value - minAmount) * heightScale + minTileHeight
-                    return UtxoModel(uuid: UUID(), amount: $0.model.value, amountText: MicroTari($0.model.value).formattedPrecise, tileHeight: tileHeight, status: $0.status, date: "01.01.1970", time: "00:00", hash: commitment)
+                    return UtxoModel(
+                        uuid: UUID(),
+                        amount: $0.model.value,
+                        amountText: MicroTari($0.model.value).formattedPrecise,
+                        tileHeight: tileHeight,
+                        status: $0.status,
+                        date: "01.01.1970",
+                        time: "00:00",
+                        hash: commitment,
+                        isSelectable: $0.status == .mined
+                    )
                 }
             
             isLoadingData = false

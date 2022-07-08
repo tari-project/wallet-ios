@@ -76,22 +76,7 @@ final class PopUpUTXOsSplitContentView: UIView {
         return view
     }()
     
-    @View private var estimationLabelBackground: UIView = {
-        let view = UIView()
-        view.backgroundColor = Theme.shared.colors.profileBackground
-        view.layer.cornerRadius = 5.0
-        return view
-    }()
-    
-    @View private var estimationLabel: UILabel = {
-        let view = UILabel()
-        view.numberOfLines = 0
-        view.textAlignment = .center
-        view.textColor = .tari.greys.mediumDarkGrey
-        view.font = .Avenir.medium.withSize(14.0)
-        
-        return view
-    }()
+    @View private var estimationLabel = UTXOsEstimationLabel()
     
     // MARK: - Properties
     
@@ -101,7 +86,7 @@ final class PopUpUTXOsSplitContentView: UIView {
     
     func update(amount: String, splitCount: String, splitAmount: String, fee: String) {
         
-        let imageBounds = CGRect(x: 0.0, y: 0.0, width: 10.0, height: 10.0)
+        let imageBounds = CGRect(x: 0.0, y: 0.0, width: 8.0, height: 8.0)
         
         let format = NSAttributedString(string: localized("utxos_wallet.pop_up.split.estimation"))
         let amount = amount.withCurrencySymbol(imageBounds: imageBounds, imageTintColor: .tari.greys.mediumDarkGrey)
@@ -128,8 +113,7 @@ final class PopUpUTXOsSplitContentView: UIView {
     
     private func setupConstraints() {
         
-        [descriptionLabel, valuePicker, valueSlider, estimationLabelBackground].forEach(addSubview)
-        estimationLabelBackground.addSubview(estimationLabel)
+        [descriptionLabel, valuePicker, valueSlider, estimationLabel].forEach(addSubview)
         
         let constraints = [
             descriptionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
@@ -140,14 +124,10 @@ final class PopUpUTXOsSplitContentView: UIView {
             valueSlider.topAnchor.constraint(equalTo: valuePicker.bottomAnchor, constant: 10.0),
             valueSlider.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
             valueSlider.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            estimationLabelBackground.topAnchor.constraint(equalTo: valueSlider.bottomAnchor, constant: 22.0),
-            estimationLabelBackground.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            estimationLabelBackground.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
-            estimationLabelBackground.bottomAnchor.constraint(equalTo: bottomAnchor),
-            estimationLabel.topAnchor.constraint(equalTo: estimationLabelBackground.topAnchor, constant: 10.0),
-            estimationLabel.leadingAnchor.constraint(equalTo: estimationLabelBackground.leadingAnchor, constant: 20.0),
-            estimationLabel.trailingAnchor.constraint(equalTo: estimationLabelBackground.trailingAnchor, constant: -20.0),
-            estimationLabel.bottomAnchor.constraint(equalTo: estimationLabelBackground.bottomAnchor, constant: -10.0)
+            estimationLabel.topAnchor.constraint(equalTo: valueSlider.bottomAnchor, constant: 22.0),
+            estimationLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
+            estimationLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            estimationLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
         
         NSLayoutConstraint.activate(constraints)

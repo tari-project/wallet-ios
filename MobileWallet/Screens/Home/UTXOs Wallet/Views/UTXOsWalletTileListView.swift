@@ -129,15 +129,17 @@ final class UTXOsWalletTileListView: UIView {
             guard let self = self else { return cell }
             
             cell.update(model: model)
-            cell.isSelectModeEnabled = self.isEditingEnabled
+            cell.updateTickBox(isVisible: model.isSelectable && self.isEditingEnabled)
             cell.isTickSelected = self.selectedElements.contains(model.uuid)
             
-            cell.onTapOnTickbox = {
-                self.onTapOnTile?($0)
+            cell.onTapOnTickbox = { [weak self] uuid in
+                guard self?.models.first(where: { $0.uuid == uuid })?.isSelectable == true else { return }
+                self?.onTapOnTile?(uuid)
             }
             
-            cell.onLongPress = {
-                self.onLongPressOnTile?($0)
+            cell.onLongPress = { [weak self] uuid in
+                guard self?.models.first(where: { $0.uuid == uuid })?.isSelectable == true else { return }
+                self?.onLongPressOnTile?(uuid)
             }
             
             return cell
@@ -168,7 +170,10 @@ final class UTXOsWalletTileListView: UIView {
         
         collectionView.visibleCells
             .compactMap { $0 as? UTXOTileView }
-            .forEach { $0.isSelectModeEnabled = isEditing }
+            .forEach { tile in
+                guard let model = models.first(where: { $0.uuid == tile.elementID }) else { return }
+                tile.updateTickBox(isVisible: model.isSelectable && isEditing)
+            }
     }
     
     private func update(selectedElements: Set<UUID>) {
