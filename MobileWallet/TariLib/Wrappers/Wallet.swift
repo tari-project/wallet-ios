@@ -894,6 +894,34 @@ final class Wallet {
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
     }
+    
+    func previewCoinsJoin(commitments: [String], feePerGram: UInt64) throws -> TariCoinPreview {
+        
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        let vector = TariVectorWrapper(type: TariTypeTag(0))
+        try vector.add(commitments: commitments)
+        
+        let result = wallet_preview_coin_join(pointer, vector.pointer, feePerGram, errorCodePointer)
+        
+        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
+        return result.pointee
+    }
+    
+    func coinsJoin(commitments: [String], feePerGram: UInt64) throws -> UInt64 {
+        
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        let vector = TariVectorWrapper(type: TariTypeTag(0))
+        try vector.add(commitments: commitments)
+        
+        let result = wallet_coin_join(pointer, vector.pointer, feePerGram, errorCodePointer)
+        
+        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        return result
+    }
 
     func setKeyValue(key: String, value: String) throws -> Bool {
         var errorCode: Int32 = -1

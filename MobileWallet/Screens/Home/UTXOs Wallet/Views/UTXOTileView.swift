@@ -51,6 +51,7 @@ final class UTXOTileView: UICollectionViewCell {
         let statusIcon: UIImage?
         let statusColor: UIColor?
         let date: String?
+        let isSelectable: Bool
     }
     
     // MARK: - Constants
@@ -106,10 +107,6 @@ final class UTXOTileView: UICollectionViewCell {
     
     var isTickSelected: Bool = false {
         didSet { update(selectionState: isTickSelected) }
-    }
-    
-    var isSelectModeEnabled: Bool = false {
-        didSet { updateTickBox(isVisible: isSelectModeEnabled) }
     }
     
     var onTapOnTickbox: ((UUID) -> Void)?
@@ -218,7 +215,7 @@ final class UTXOTileView: UICollectionViewCell {
         tickView.isSelected = selectionState
     }
     
-    private func updateTickBox(isVisible: Bool) {
+    func updateTickBox(isVisible: Bool) {
         
         UIView.animate(withDuration: 0.1) {
             self.tickView.alpha = isVisible ? 1.0 : 0.0
