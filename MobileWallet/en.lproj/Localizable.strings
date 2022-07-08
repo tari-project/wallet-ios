@@ -133,6 +133,10 @@
 "utxos_wallet.pop_up.join_confirmation.message" = "You are about to join these coins.";
 "utxos_wallet.pop_up.join_confirmation.fee" = "Estimated Fee: %@";
 "utxos_wallet.pop_up.join_success.description" = "Your coins will be combined soon. Keep an eye on the transactions screen to see when it’s been mined.";
+"utxos_wallet.pop_up.join_split.title" = "Combine & Break Coins";
+"utxos_wallet.pop_up.join_split.button.ok" = "Combine & Break";
+"utxos_wallet.pop_up.join_split_confirmation.message" = "You are about to combine & break these coins.";
+"utxos_wallet.pop_up.join_split_success.description" = "Your coins will be broken soon. Keep an eye on the transactions screen to see when it’s been mined.";
 "utxos_wallet.placeholder.label.title" = "Your wallet is empty";
 "utxos_wallet.placeholder.label.subtitle" = "Once you have some funds, you’ll be able to view your coins here.";
 "utxos_wallet.spinner.label.title" = "Just a sec...";
