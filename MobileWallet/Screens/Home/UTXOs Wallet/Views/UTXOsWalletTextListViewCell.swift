@@ -49,6 +49,7 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
         let statusColor: UIColor?
         let statusText: String?
         let hash: String
+        let isSelectable: Bool
     }
     
     // MARK: - Subviews
@@ -93,6 +94,7 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     var onTapOnTickbox: ((UUID) -> Void)?
     private(set) var elementID: UUID?
     
+    private var isSelectable = false
     private var leadingConstraint: NSLayoutConstraint?
     private var leadingConstraintInEditing: NSLayoutConstraint?
     
@@ -167,6 +169,7 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     
     func update(model: Model) {
         elementID = model.id
+        isSelectable = model.isSelectable
         amountLabel.text = model.amount
         hashLabel.text = model.hash
         statusCircleView.backgroundColor = model.statusColor

@@ -126,7 +126,7 @@ final class UTXOsWalletViewController: UIViewController {
             case .split:
                 self?.showSplitDialog()
             case .join:
-                break
+                self?.showJoinConfimationDialog()
             case .splitJoin:
                 break
             }
@@ -170,12 +170,13 @@ final class UTXOsWalletViewController: UIViewController {
         PopUpPresenter.show(popUp: popUp)
     }
     
+    // MARK: - Actions - Break Pop Ups
+    
     private func showSplitDialog() {
         
         let headerSection = PopUpHeaderView()
         let contentSection = PopUpUTXOsSplitContentView()
         let buttonsSection = PopUpButtonsView()
-        
         
         headerSection.label.text = localized("utxos_wallet.pop_up.split.title")
         
@@ -195,19 +196,54 @@ final class UTXOsWalletViewController: UIViewController {
         buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
         
         let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
-        PopUpPresenter.show(popUp: popUp)
+        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
     }
     
     private func showSplitConfirmationDialog(splitCount: Int) {
+        showConfirmationDialog(message: localized("utxos_wallet.pop_up.split_confirmation.message")) { [weak self] in
+            self?.model.performSplitAction(splitCount: splitCount)
+            self?.showSplitSuccessDialog()
+        }
+    }
+    
+    private func showSplitSuccessDialog() {
+        showSuccessDialog(message: localized("utxos_wallet.pop_up.split_success.description"))
+    }
+    
+    // MARK: - Actions - Combine Pop Ups
+    
+    private func showJoinConfimationDialog() {
+        
+        let headerSection = PopUpHeaderView()
+        let contentSection = PopUpCombineUTXOsConfirmationContentView()
+        let buttonsSection = PopUpButtonsView()
+        
+        headerSection.label.text = localized("utxos_wallet.pop_up.confirmation.title")
+        contentSection.messageText = localized("utxos_wallet.pop_up.join_confirmation.message")
+        contentSection.feeText = model.joinCoinsFeePreview() ?? ""
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("utxos_wallet.pop_up.confirmation.button.ok"), type: .normal, callback: { [weak self] in
+            self?.model.performJoinAction()
+            self?.showJoinSuccessDialog()
+        }))
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
+        
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
+    }
+    
+    private func showJoinSuccessDialog() {
+        showSuccessDialog(message: localized("utxos_wallet.pop_up.join_success.description"))
+    }
+    
+    // MARK: - Actions - Pop Ups Helpers
+    
+    private func showConfirmationDialog(message: String, onConfirm: @escaping (() -> Void)) {
         
         let model = PopUpDialogModel(
-            title: localized("utxos_wallet.pop_up.split_confirmation.title"),
-            message: localized("utxos_wallet.pop_up.split_confirmation.description"),
+            title: localized("utxos_wallet.pop_up.confirmation.title"),
+            message: message,
             buttons: [
-                PopUpDialogButtonModel(title: localized("utxos_wallet.pop_up.split_confirmation.button.ok"), type: .normal, callback: { [weak self] in
-                    self?.model.performSplitAction(splitCount: splitCount)
-                    self?.showSplitSuccessDialog()
-                }),
+                PopUpDialogButtonModel(title: localized("utxos_wallet.pop_up.confirmation.button.ok"), type: .normal, callback: onConfirm),
                 PopUpDialogButtonModel(title: localized("common.cancel"), type: .text),
             ],
             hapticType: .none
@@ -216,7 +252,7 @@ final class UTXOsWalletViewController: UIViewController {
         PopUpPresenter.showPopUp(model: model)
     }
     
-    private func showSplitSuccessDialog() {
+    private func showSuccessDialog(message: String) {
         
         let headerSection = PopUpImageHeaderView()
         let contentSection = PopUpDescriptionContentView()
@@ -225,8 +261,8 @@ final class UTXOsWalletViewController: UIViewController {
         headerSection.imageView.image = Theme.shared.images.utxoSuccessImage
         headerSection.imageHeight = 90.0
         
-        headerSection.label.text = localized("utxos_wallet.pop_up.split_success.title")
-        contentSection.label.text = localized("utxos_wallet.pop_up.split_success.description")
+        headerSection.label.text = localized("utxos_wallet.pop_up.success.title")
+        contentSection.label.text = message
         buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { [weak self] in
             self?.mainView.isEditingEnabled = false
             self?.model.reloadData()
@@ -235,17 +271,30 @@ final class UTXOsWalletViewController: UIViewController {
         
         let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
         popUp.topOffset = 75.0
-        PopUpPresenter.show(popUp: popUp)
+        
+        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
     }
     
     // MARK: - Helpers
     
     private func tileModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOTileView.Model] {
-        models.map { UTXOTileView.Model(uuid: $0.uuid, amountText: $0.amountText, backgroundColor: .tari.purple?.colorVariant(text: $0.hash), height: $0.tileHeight, statusIcon: $0.status.icon, statusColor: $0.status.color, date: $0.date) }
+        models
+            .map {
+                UTXOTileView.Model(
+                    uuid: $0.uuid,
+                    amountText: $0.amountText,
+                    backgroundColor: .tari.purple?.colorVariant(text: $0.hash),
+                    height: $0.tileHeight,
+                    statusIcon: $0.status.icon,
+                    statusColor: $0.status.color,
+                    date: $0.date,
+                    isSelectable: $0.isSelectable
+                )
+            }
     }
     
     private func textListModels(fromModels models: [UTXOsWalletModel.UtxoModel]) -> [UTXOsWalletTextListViewCell.Model] {
-        models.map { UTXOsWalletTextListViewCell.Model(id: $0.uuid, amount: $0.amountWithCurrency, statusColor: $0.status.color, statusText: [$0.status.name, $0.date, $0.time].joined(separator: " | "), hash: $0.hash) }
+        models.map { UTXOsWalletTextListViewCell.Model(id: $0.uuid, amount: $0.amountWithCurrency, statusColor: $0.status.color, statusText: [$0.status.name, $0.date, $0.time].joined(separator: " | "), hash: $0.hash, isSelectable: $0.isSelectable) }
     }
     
     private func actionTypes(selectedIDs: Set<UUID>) -> [UTXOsWalletView.ActionType] {

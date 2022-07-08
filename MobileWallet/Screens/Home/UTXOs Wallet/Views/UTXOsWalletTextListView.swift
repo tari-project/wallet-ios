@@ -125,7 +125,7 @@ final class UTXOsWalletTextListView: UIView {
             let cell = tableView.dequeueReusableCell(type: UTXOsWalletTextListViewCell.self, indexPath: indexPath)
             
             cell.update(model: model)
-            cell.updateTickBox(isVisible: self.isEditingEnabled, animated: false)
+            cell.updateTickBox(isVisible: model.isSelectable && self.isEditingEnabled, animated: false)
             cell.isTickSelected = self.selectedElements.contains(model.id)
             
             cell.onTapOnTickbox = {
@@ -160,7 +160,10 @@ final class UTXOsWalletTextListView: UIView {
     private func updateCellsState(isEditing: Bool) {
         tableView.visibleCells
             .compactMap { $0 as? UTXOsWalletTextListViewCell }
-            .forEach { $0.updateTickBox(isVisible: isEditing, animated: true) }
+            .forEach { cell in
+                guard let isSelectable = models.first(where: { $0.id == cell.elementID })?.isSelectable else { return }
+                cell.updateTickBox(isVisible: isSelectable && isEditing, animated: true)
+            }
     }
 }
 
