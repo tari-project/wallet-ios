@@ -128,7 +128,7 @@ final class UTXOsWalletViewController: UIViewController {
             case .join:
                 self?.showJoinConfimationDialog()
             case .splitJoin:
-                break
+                self?.showJoinSplitDialog()
             }
         }
         
@@ -173,30 +173,9 @@ final class UTXOsWalletViewController: UIViewController {
     // MARK: - Actions - Break Pop Ups
     
     private func showSplitDialog() {
-        
-        let headerSection = PopUpHeaderView()
-        let contentSection = PopUpUTXOsSplitContentView()
-        let buttonsSection = PopUpButtonsView()
-        
-        headerSection.label.text = localized("utxos_wallet.pop_up.split.title")
-        
-        let cancellable = contentSection.$value
-            .sink { [weak self, weak contentSection] in
-                guard let self = self, let previewData = self.model.splitCoinPreview(splitCount: $0) else { return }
-                contentSection?.update(amount: previewData.amount, splitCount: previewData.splitCount, splitAmount: previewData.splitAmount, fee: previewData.fee)
-            }
-        
-        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("utxos_wallet.pop_up.split.button.ok"), type: .normal, callback: {
-            cancellable.cancel()
-            PopUpPresenter.dismissPopup { [weak contentSection, weak self] in
-                guard let contentSection = contentSection else { return }
-                self?.showSplitConfirmationDialog(splitCount: contentSection.value)
-            }
-        }))
-        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
-        
-        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
-        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
+        showSplitSelectionDialog(title: localized("utxos_wallet.pop_up.split.title"), confirmButtonText: localized("utxos_wallet.pop_up.split.button.ok")) { [weak self] in
+            self?.showSplitConfirmationDialog(splitCount: $0)
+        }
     }
     
     private func showSplitConfirmationDialog(splitCount: Int) {
@@ -235,7 +214,53 @@ final class UTXOsWalletViewController: UIViewController {
         showSuccessDialog(message: localized("utxos_wallet.pop_up.join_success.description"))
     }
     
+    // MARK: - Actions - Combine & Brake Pop Ups
+    
+    private func showJoinSplitDialog() {
+        showSplitSelectionDialog(title: localized("utxos_wallet.pop_up.join_split.title"), confirmButtonText: localized("utxos_wallet.pop_up.join_split.button.ok")) { [weak self] in
+            self?.showJoinSplitConfirmationDialog(splitCount: $0)
+        }
+    }
+    
+    private func showJoinSplitConfirmationDialog(splitCount: Int) {
+        showConfirmationDialog(message: localized("utxos_wallet.pop_up.join_split_confirmation.message")) { [weak self] in
+            self?.model.performSplitAction(splitCount: splitCount)
+            self?.showJoinSplitSuccessDialog()
+        }
+    }
+    
+    private func showJoinSplitSuccessDialog() {
+        showSuccessDialog(message: localized("utxos_wallet.pop_up.join_split_success.description"))
+    }
+    
     // MARK: - Actions - Pop Ups Helpers
+    
+    private func showSplitSelectionDialog(title: String, confirmButtonText: String, onConfirm: @escaping ((Int) -> Void)) {
+        
+        let headerSection = PopUpHeaderView()
+        let contentSection = PopUpUTXOsSplitContentView()
+        let buttonsSection = PopUpButtonsView()
+        
+        headerSection.label.text = title
+        
+        let cancellable = contentSection.$value
+            .sink { [weak self, weak contentSection] in
+                guard let self = self, let previewData = self.model.splitCoinPreview(splitCount: $0) else { return }
+                contentSection?.update(amount: previewData.amount, splitCount: previewData.splitCount, splitAmount: previewData.splitAmount, fee: previewData.fee)
+            }
+        
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: confirmButtonText, type: .normal, callback: {
+            cancellable.cancel()
+            PopUpPresenter.dismissPopup { [weak contentSection] in
+                guard let contentSection = contentSection else { return }
+                onConfirm(contentSection.value)
+            }
+        }))
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
+        
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
+    }
     
     private func showConfirmationDialog(message: String, onConfirm: @escaping (() -> Void)) {
         
