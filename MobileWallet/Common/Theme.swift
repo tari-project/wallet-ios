@@ -540,6 +540,7 @@ extension UIColor {
         static var purple: UIColor? { UIColor(named: "Purple") }
         
         enum greys {
+            static var grey: UIColor? { UIColor(named: "Grey") }
             static var mediumLightGrey: UIColor? { UIColor(named: "MediumLightGrey") }
             static var mediumGrey: UIColor? { UIColor(named: "MediumGrey") }
             static var mediumDarkGrey: UIColor? { UIColor(named: "MediumDarkGrey") }
@@ -555,6 +556,6 @@ extension UIColor {
 
 extension Shadow {
     static var box: Self { Self(color: .tari.greys.black, opacity: 0.1, radius: 13.5, offset: CGSize(width: 6.75, height: 6.75)) }
-    static var selection: Self { Self(color: .tari.greys.mediumDarkGrey, opacity: 1.0, radius: 15.0, offset: CGSize(width: 2.0, height: 2.0)) }
+    static var selection: Self { Self(color: .tari.greys.grey, opacity: 1.0, radius: 10.0, offset: CGSize(width: 2.0, height: 2.0)) }
     static var none: Self { Self(color: nil, opacity: 0.0, radius: 0.0, offset: .zero) }
 }
