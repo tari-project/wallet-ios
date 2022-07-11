@@ -80,7 +80,7 @@ final class UTXOTileView: UICollectionViewCell {
         view.textColor = .tari.white
         view.font = .Avenir.black.withSize(30.0)
         view.secondaryFont = .Avenir.black.withSize(12.0)
-        view.separator = "."
+        view.separator = Locale.current.decimalSeparator
         view.iconHeight = 13.0
         return view
     }()
@@ -109,7 +109,7 @@ final class UTXOTileView: UICollectionViewCell {
         didSet { update(selectionState: isTickSelected) }
     }
     
-    var onTapOnTickbox: ((UUID) -> Void)?
+    var onTap: ((UUID) -> Void)?
     var onLongPress: ((UUID) -> Void)?
     
     // MARK: - Initialisers
@@ -226,7 +226,7 @@ final class UTXOTileView: UICollectionViewCell {
     
     @objc private func onTapGesture() {
         guard let elementID = elementID else { return }
-        onTapOnTickbox?(elementID)
+        onTap?(elementID)
     }
     
     @objc private func onLongPressGesture() {

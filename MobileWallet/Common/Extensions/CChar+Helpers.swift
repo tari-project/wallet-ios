@@ -38,6 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension UnsafeMutablePointer where Pointee == CChar {
-    var string: String? { String(utf8String: self) }
+extension UnsafePointer where Pointee == CChar {
+    var string: String { String(cString: self) }
 }

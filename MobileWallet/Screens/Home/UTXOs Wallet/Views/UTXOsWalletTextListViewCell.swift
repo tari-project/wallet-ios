@@ -91,7 +91,6 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
         didSet { update(selectionState: isTickSelected) }
     }
     
-    var onTapOnTickbox: ((UUID) -> Void)?
     private(set) var elementID: UUID?
     
     private var isSelectable = false
@@ -104,7 +103,6 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
-        setupCallbacks()
     }
     
     required init?(coder: NSCoder) {
@@ -155,14 +153,6 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
         ]
         
         NSLayoutConstraint.activate(constraints)
-    }
-    
-    private func setupCallbacks() {
-        
-        tickView.onTap = { [weak self] in
-            guard let elementID = self?.elementID else { return }
-            self?.onTapOnTickbox?(elementID)
-        }
     }
     
     // MARK: - Actions

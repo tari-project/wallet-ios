@@ -66,7 +66,7 @@ final class PopUpCombineUTXOsConfirmationContentView: UIView {
     var feeText: String? {
         didSet {
             guard let feeText = feeText else { return }
-            let format = NSAttributedString(string: localized("utxos_wallet.pop_up.join_confirmation.fee"))
+            let format = NSAttributedString(string: localized("utxos_wallet.pop_up.combine_confirmation.fee"))
             let feeWithCurrencySymbol = feeText.withCurrencySymbol(imageBounds: CGRect(x: 0.0, y: 0.0, width: 8.0, height: 8.0), imageTintColor: .tari.greys.mediumDarkGrey)
             feeLabel.attributedText = NSAttributedString(format: format, arguments: feeWithCurrencySymbol)
         }
