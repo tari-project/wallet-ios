@@ -61,16 +61,17 @@ final class UTXOsWalletModel {
         let amountText: String
         let tileHeight: CGFloat
         let status: UtxoStatus
-        let date: String
-        let time: String
-        let hash: String
+        let date: String?
+        let time: String?
+        let commitment: String
+        let blockHeight: String?
         let isSelectable: Bool
     }
     
-    struct SplitPreviewData {
+    struct BreakPreviewData {
         let amount: String
-        let splitCount: String
-        let splitAmount: String
+        let breakCount: String
+        let breakAmount: String
         let fee: String
     }
     
@@ -86,9 +87,24 @@ final class UTXOsWalletModel {
     @Published private(set) var utxoModels: [UtxoModel] = []
     @Published private(set) var isLoadingData: Bool = false
     @Published private(set) var selectedIDs: Set<UUID> = []
+    @Published private(set) var utxoDetails: UtxoModel?
     @Published private(set) var errorMessage: MessageModel?
     
     // MARK: - Properties
+    
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        return formatter
+    }()
+    
+    private let timeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter
+    }()
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -101,17 +117,17 @@ final class UTXOsWalletModel {
     // MARK: - Setups
     
     private func setupCallbacks() {
-        
         $sortMethod
             .removeDuplicates()
             .sink { [weak self] in self?.fetchUTXOs(sortMethod: $0) }
             .store(in: &cancellables)
-        
     }
     
     // MARK: - Model Actions
     
     func toogleState(elementID: UUID) {
+        
+        guard let model = utxoModels.first(where: { $0.uuid == elementID }), model.status == .mined else { return }
         
         guard selectedIDs.contains(elementID) else {
             selectedIDs.update(with: elementID)
@@ -125,55 +141,73 @@ final class UTXOsWalletModel {
         selectedIDs = []
     }
     
-    func splitCoinPreview(splitCount: Int) -> SplitPreviewData? {
+    func breakCoinPreview(breakCount: Int, elementID: UUID) -> BreakPreviewData? {
+        guard let model = utxoModels.first(where: { $0.uuid == elementID }) else { return nil }
+        return breakCoinPreview(breakCount: breakCount, models: [model])
+    }
+    
+    func breakCoinPreviewForSelectedElements(breakCount: Int) -> BreakPreviewData? {
+        let models = utxoModels.filter { self.selectedIDs.contains($0.uuid) }
+        return breakCoinPreview(breakCount: breakCount, models: models)
+    }
+    
+    private func breakCoinPreview(breakCount: Int, models: [UtxoModel]) -> BreakPreviewData? {
         
         guard let wallet = TariLib.shared.tariWallet else {
             return nil
         }
         
-        let models = utxoModels
-            .filter { self.selectedIDs.contains($0.uuid) }
-        
         let amount = models
             .map(\.amount)
             .reduce(0, +)
         
-        let commitments = models.map(\.hash)
+        let commitments = models.map(\.commitment)
         
         do {
-            let result = try wallet.previewCoinSplit(commitments: commitments, splitsCount: UInt(splitCount), feePerGram: Wallet.defaultFeePerGram.rawValue)
-            let splitAmount = (amount - result.fee) / UInt64(splitCount)
+            let result = try wallet.previewCoinSplit(commitments: commitments, splitsCount: UInt(breakCount), feePerGram: Wallet.defaultFeePerGram.rawValue)
+            let breakAmount = (amount - result.fee) / UInt64(breakCount)
             
             let amountText = MicroTari(amount).formattedPrecise
-            let splitAmountText = MicroTari(splitAmount).formattedPrecise
+            let breakAmountText = MicroTari(breakAmount).formattedPrecise
             let feeText = MicroTari(result.fee).formattedPrecise
             
-            return SplitPreviewData(amount: amountText, splitCount: "\(splitCount)", splitAmount: splitAmountText, fee: feeText)
+            return BreakPreviewData(amount: amountText, breakCount: "\(breakCount)", breakAmount: breakAmountText, fee: feeText)
             
         } catch {
             return nil
         }
     }
     
-    func performSplitAction(splitCount: Int) {
+    func performBreakAction(breakCount: Int, elementID: UUID) {
+        guard let model = utxoModels.first(where: { $0.uuid == elementID }) else {
+            errorMessage = ErrorMessageManager.errorModel(forError: nil)
+            return
+        }
+        performBreakAction(breakCount: breakCount, models: [model])
+    }
+    
+    func performBreakActionForSelectedElements(breakCount: Int) {
+        let models = utxoModels.filter { self.selectedIDs.contains($0.uuid) }
+        performBreakAction(breakCount: breakCount, models: models)
+    }
+    
+    private func performBreakAction(breakCount: Int, models: [UtxoModel]) {
         
         guard let wallet = TariLib.shared.tariWallet else {
             errorMessage = ErrorMessageManager.errorModel(forError: nil)
             return
         }
         
-        let commitments = utxoModels
-            .filter { self.selectedIDs.contains($0.uuid) }
-            .map(\.hash)
+        let commitments = models.map(\.commitment)
         
         do {
-            _ = try wallet.coinSplit(commitments: commitments, splitsCount: UInt(splitCount), feePerGram: Wallet.defaultFeePerGram.rawValue)
+            _ = try wallet.coinSplit(commitments: commitments, splitsCount: UInt(breakCount), feePerGram: Wallet.defaultFeePerGram.rawValue)
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
         }
     }
     
-    func joinCoinsFeePreview() -> String? {
+    func combineCoinsFeePreview() -> String? {
         
         guard let wallet = TariLib.shared.tariWallet else {
             return nil
@@ -181,7 +215,7 @@ final class UTXOsWalletModel {
         
         let commitments = utxoModels
             .filter { self.selectedIDs.contains($0.uuid) }
-            .map(\.hash)
+            .map(\.commitment)
         
         do {
             let result = try wallet.previewCoinsJoin(commitments: commitments, feePerGram: Wallet.defaultFeePerGram.rawValue)
@@ -191,7 +225,7 @@ final class UTXOsWalletModel {
         }
     }
     
-    func performJoinAction() {
+    func performCombineAction() {
         
         guard let wallet = TariLib.shared.tariWallet else {
             errorMessage = ErrorMessageManager.errorModel(forError: nil)
@@ -200,7 +234,7 @@ final class UTXOsWalletModel {
         
         let commitments = utxoModels
             .filter { self.selectedIDs.contains($0.uuid) }
-            .map(\.hash)
+            .map(\.commitment)
         
         do {
             _ = try wallet.coinsJoin(commitments: commitments, feePerGram: Wallet.defaultFeePerGram.rawValue)
@@ -209,11 +243,15 @@ final class UTXOsWalletModel {
         }
     }
     
-    // MARK: - Actions
-    
     func reloadData() {
         fetchUTXOs(sortMethod: sortMethod)
     }
+    
+    func requestDetails(elementID: UUID) {
+        utxoDetails = utxoModels.first { $0.uuid == elementID }
+    }
+    
+    // MARK: - Actions
     
     private func fetchUTXOs(sortMethod: SortMethod) {
         
@@ -233,6 +271,11 @@ final class UTXOsWalletModel {
                     result.maxAmount = max(model.value, result.maxAmount)
                     result.data.append((model: model, status: status))
                 }
+            
+            guard !utxosData.data.isEmpty else {
+                isLoadingData = false
+                return
+            }
             
             let minAmount = utxosData.minAmount
             let heightScale: CGFloat
@@ -258,18 +301,24 @@ final class UTXOsWalletModel {
                         return $0.model.mined_height > $1.model.mined_height
                     }
                 }
-                .compactMap {
-                    guard let commitment = $0.model.commitment.string else { return nil }
+                .compactMap { [weak self] in
+                    guard let self = self else { return nil }
+                    
                     let tileHeight = CGFloat($0.model.value - minAmount) * heightScale + minTileHeight
+                    let timestamp = Date(timeIntervalSince1970: TimeInterval($0.model.mined_timestamp) / 1000.0)
+                    let date = timestamp > Date(timeIntervalSince1970: 0) ? self.dateFormatter.string(from: timestamp) : nil
+                    let time = timestamp > Date(timeIntervalSince1970: 0) ? self.timeFormatter.string(from: timestamp) : nil
+                    let blockHeight = $0.model.mined_height > 0 ? "\($0.model.mined_height)" : nil
                     return UtxoModel(
                         uuid: UUID(),
                         amount: $0.model.value,
                         amountText: MicroTari($0.model.value).formattedPrecise,
                         tileHeight: tileHeight,
                         status: $0.status,
-                        date: "01.01.1970",
-                        time: "00:00",
-                        hash: commitment,
+                        date: date,
+                        time: time,
+                        commitment: $0.model.commitment.string,
+                        blockHeight: blockHeight,
                         isSelectable: $0.status == .mined
                     )
                 }

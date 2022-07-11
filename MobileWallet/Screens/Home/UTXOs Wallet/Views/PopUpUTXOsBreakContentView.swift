@@ -1,4 +1,4 @@
-//  PopUpUTXOsSplitContentView.swift
+//  PopUpUTXOsBreakContentView.swift
 	
 /*
 	Package MobileWallet
@@ -42,7 +42,7 @@ import UIKit
 import TariCommon
 import Combine
 
-final class PopUpUTXOsSplitContentView: UIView {
+final class PopUpUTXOsBreakContentView: UIView {
     
     // MARK: - Constants
     
@@ -53,7 +53,7 @@ final class PopUpUTXOsSplitContentView: UIView {
     
     @View private var descriptionLabel: UILabel = {
         let view = UILabel()
-        view.text = localized("utxos_wallet.pop_up.split.description")
+        view.text = localized("utxos_wallet.pop_up.break.description")
         view.textColor = .tari.greys.mediumDarkGrey
         view.textAlignment = .center
         view.font = .Avenir.medium.withSize(14.0)
@@ -84,17 +84,17 @@ final class PopUpUTXOsSplitContentView: UIView {
     
     private var cancellables = Set<AnyCancellable>()
     
-    func update(amount: String, splitCount: String, splitAmount: String, fee: String) {
+    func update(amount: String, breakCount: String, breakAmount: String, fee: String) {
         
         let imageBounds = CGRect(x: 0.0, y: 0.0, width: 8.0, height: 8.0)
         
-        let format = NSAttributedString(string: localized("utxos_wallet.pop_up.split.estimation"))
+        let format = NSAttributedString(string: localized("utxos_wallet.pop_up.break.estimation"))
         let amount = amount.withCurrencySymbol(imageBounds: imageBounds, imageTintColor: .tari.greys.mediumDarkGrey)
-        let splitCount = NSAttributedString(string: splitCount)
-        let splitAmount = splitAmount.withCurrencySymbol(imageBounds: imageBounds, imageTintColor: .tari.greys.mediumDarkGrey)
+        let breakCount = NSAttributedString(string: breakCount)
+        let breakAmount = breakAmount.withCurrencySymbol(imageBounds: imageBounds, imageTintColor: .tari.greys.mediumDarkGrey)
         let fee = fee.withCurrencySymbol(imageBounds: imageBounds, imageTintColor: .tari.greys.mediumDarkGrey)
         
-        estimationLabel.attributedText = NSAttributedString(format: format, arguments: amount, splitCount, splitAmount, fee)
+        estimationLabel.attributedText = NSAttributedString(format: format, arguments: amount, breakCount, breakAmount, fee)
     }
     
     // MARK: - Initalisers

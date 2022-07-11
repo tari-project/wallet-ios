@@ -64,3 +64,12 @@ final class TariVectorWrapper {
         destroy_tari_vector(pointer)
     }
 }
+
+extension UnsafeMutablePointer where Pointee == TariVector {
+    
+    func array<T>() -> [T] {
+        let pointer = pointee.ptr.bindMemory(to: T.self, capacity: Int(pointee.len))
+        let buffer = UnsafeBufferPointer(start: pointer, count: Int(pointee.len))
+        return Array(buffer)
+    }
+}
