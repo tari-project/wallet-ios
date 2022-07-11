@@ -132,8 +132,7 @@ final class UTXOsWalletTileListView: UIView {
             cell.updateTickBox(isVisible: model.isSelectable && self.isEditingEnabled)
             cell.isTickSelected = self.selectedElements.contains(model.uuid)
             
-            cell.onTapOnTickbox = { [weak self] uuid in
-                guard self?.models.first(where: { $0.uuid == uuid })?.isSelectable == true else { return }
+            cell.onTap = { [weak self] uuid in
                 self?.onTapOnTile?(uuid)
             }
             

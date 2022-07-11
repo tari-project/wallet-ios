@@ -57,9 +57,9 @@ final class UTXOsWalletView: BaseNavigationContentView {
     }
     
     enum ActionType {
-        case split
-        case join
-        case splitJoin
+        case `break`
+        case combine
+        case combineBreak
     }
     
     // MARK: - Constants
@@ -231,7 +231,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
             self.tappedElement = $0
         }
         
-        textList.onTapOnTickbox = { [weak self] in
+        textList.onTapOnCell = { [weak self] in
             self?.tappedElement = $0
         }
         
@@ -299,12 +299,12 @@ final class UTXOsWalletView: BaseNavigationContentView {
             }
             
             switch action {
-            case .split:
-                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.split"), image: Theme.shared.images.utxoActionSplit, callback: callback)
-            case .join:
-                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.join"), image: Theme.shared.images.utxoActionJoin, callback: callback)
-            case .splitJoin:
-                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.join_split"), image: Theme.shared.images.utxoActionJoinSplit, callback: callback)
+            case .break:
+                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.break"), image: Theme.shared.images.utxoActionSplit, callback: callback)
+            case .combine:
+                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.combine"), image: Theme.shared.images.utxoActionJoin, callback: callback)
+            case .combineBreak:
+                return ContextualButtonsOverlay.ButtonModel(text: localized("utxos_wallet.button.actions.combine_break"), image: Theme.shared.images.utxoActionJoinSplit, callback: callback)
             }
         }
     }

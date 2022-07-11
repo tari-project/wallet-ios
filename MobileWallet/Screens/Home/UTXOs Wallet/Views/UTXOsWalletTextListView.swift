@@ -63,7 +63,7 @@ final class UTXOsWalletTextListView: UIView {
     @Published var selectedElements: Set<UUID> = []
     @Published private(set) var verticalContentOffset: CGFloat = 0.0
     
-    var onTapOnTickbox: ((UUID) -> Void)?
+    var onTapOnCell: ((UUID) -> Void)?
     
     private var dataSource: UITableViewDiffableDataSource<Int, UTXOsWalletTextListViewCell.Model>?
     private var cancellables = Set<AnyCancellable>()
@@ -128,10 +128,6 @@ final class UTXOsWalletTextListView: UIView {
             cell.updateTickBox(isVisible: model.isSelectable && self.isEditingEnabled, animated: false)
             cell.isTickSelected = self.selectedElements.contains(model.id)
             
-            cell.onTapOnTickbox = {
-                self.onTapOnTickbox?($0)
-            }
-            
             return cell
         }
         
@@ -171,5 +167,9 @@ extension UTXOsWalletTextListView: UITableViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         verticalContentOffset = scrollView.contentOffset.y
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        onTapOnCell?(models[indexPath.row].id)
     }
 }
