@@ -130,7 +130,7 @@
 "utxos_wallet.pop_up.break.button.ok" = "Break";
 "utxos_wallet.pop_up.break_confirmation.message" = "You are about to break this coin.";
 "utxos_wallet.pop_up.break_success.description" = "Your coin will be broken soon. Keep an eye on the transactions screen to see when it’s been mined.";
-"utxos_wallet.pop_up.combine_confirmation.message" = "You are about to join these coins.";
+"utxos_wallet.pop_up.combine_confirmation.message" = "You are about to combine these coins.";
 "utxos_wallet.pop_up.combine_confirmation.fee" = "Estimated Fee: %@";
 "utxos_wallet.pop_up.combine_success.description" = "Your coins will be combined soon. Keep an eye on the transactions screen to see when it’s been mined.";
 "utxos_wallet.pop_up.combine_break.title" = "Combine & Break Coins";
