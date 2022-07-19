@@ -38,9 +38,176 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
 import Reachability
+import UIKit
 import Combine
+
+final class ConnectionMonitor {
+    
+    struct StatusModel {
+        let networkConnection: NetworkMonitor.Status
+        let torConnection: TorMonitor.Status
+        let baseNodeConnectivity: BaseNodeConnectivityStatus
+        let syncStatus: BaseNodeStatusMonitor.SyncStatus
+    }
+    
+    // MARK: - Properties
+    
+    static let shared = ConnectionMonitor()
+    
+    @Published private(set) var status: StatusModel?
+    
+    private let networkMonitor = NetworkMonitor()
+    private let torMonitor = TorMonitor()
+    private let baseNodeStatusMonitor = BaseNodeStatusMonitor()
+    
+    private var cancellables = Set<AnyCancellable>()
+    
+    // MARK: - Initialisers
+    
+    private init() {
+        setupCallbacks()
+    }
+    
+    // MARK: - Setups
+    
+    private func setupCallbacks() {
+        Publishers.CombineLatest4(networkMonitor.$status, torMonitor.$status, baseNodeStatusMonitor.$connectionStatus, baseNodeStatusMonitor.$syncStatus)
+            .map { StatusModel(networkConnection: $0, torConnection: $1, baseNodeConnectivity: $2, syncStatus: $3) }
+            .assign(to: \.status, on: self)
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - Actions
+    
+    func showDetailsPopup() {
+        
+        let headerSection = PopUpHeaderView()
+        let contentSection = PopUpNetworkStatusContentView()
+        let buttonsSection = PopUpButtonsView()
+        
+        headerSection.label.text = localized("connection_status.popUp.header")
+        
+        let cancellable = $status
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak contentSection] in
+                contentSection?.updateNetworkStatus(text: $0.networkConnection.statusName, statusColor: $0.networkConnection.statusColor)
+                contentSection?.updateTorStatus(text: $0.torConnection.statusName, statusColor: $0.torConnection.statusColor)
+                contentSection?.updateBaseNodeConnectionStatus(text: $0.baseNodeConnectivity.statusName, statusColor: $0.baseNodeConnectivity.statusColor)
+                contentSection?.updateBaseNodeSyncStatus(text: $0.syncStatus.statusName, statusColor: $0.syncStatus.statusColor)
+            }
+        
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { PopUpPresenter.dismissPopup { [weak cancellable] in cancellable?.cancel() }}))
+        
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
+    }
+}
+
+private extension NetworkMonitor.Status {
+    
+    var statusName: String {
+        switch self {
+        case .disconnected:
+            return localized("connection_status.popUp.label.network_status.disconnected")
+        case .connected:
+            return localized("connection_status.popUp.label.network_status.connected")
+        }
+    }
+    
+    var statusColor: UIColor? {
+        switch self {
+        case .disconnected:
+            return .tari.system.red
+        case .connected:
+            return .tari.system.green
+        }
+    }
+}
+
+private extension TorMonitor.Status {
+    
+    var statusName: String {
+        switch self {
+        case .disconnected:
+            return localized("connection_status.popUp.label.tor_status.disconnected")
+        case .connecting:
+            return localized("connection_status.popUp.label.tor_status.connecting")
+        case .connected:
+            return localized("connection_status.popUp.label.tor_status.connected")
+        case .failed:
+            return localized("connection_status.popUp.label.tor_status.failed")
+        }
+    }
+    
+    var statusColor: UIColor? {
+        switch self {
+        case .disconnected:
+            return .tari.system.red
+        case .connecting:
+            return .tari.system.orange
+        case .connected:
+            return .tari.system.green
+        case .failed:
+            return .tari.system.red
+        }
+    }
+}
+
+private extension BaseNodeConnectivityStatus {
+    
+    var statusName: String {
+        switch self {
+        case .offline:
+            return localized("connection_status.popUp.label.base_node_connection.disconnected")
+        case .connecting:
+            return localized("connection_status.popUp.label.base_node_connection.connecting")
+        case .online:
+            return localized("connection_status.popUp.label.base_node_connection.connected")
+        }
+    }
+    
+    var statusColor: UIColor? {
+        switch self {
+        case .offline:
+            return .tari.system.red
+        case .connecting:
+            return .tari.system.orange
+        case .online:
+            return .tari.system.green
+        }
+    }
+}
+
+private extension BaseNodeStatusMonitor.SyncStatus {
+    
+    var statusName: String {
+        switch self {
+        case .idle:
+            return localized("connection_status.popUp.label.base_node_sync.idle")
+        case .pending:
+            return localized("connection_status.popUp.label.base_node_sync.pending")
+        case .success:
+            return localized("connection_status.popUp.label.base_node_sync.success")
+        case .failure:
+            return localized("connection_status.popUp.label.base_node_sync.failure")
+        }
+    }
+    
+    var statusColor: UIColor? {
+        switch self {
+        case .idle:
+            return .tari.system.red
+        case .pending:
+            return .tari.system.orange
+        case .success:
+            return .tari.system.green
+        case .failure:
+            return .tari.system.red
+        }
+    }
+}
 
 enum ConnectionMonitorStateReachability: String {
     case cellular = "Cellular ✅"
@@ -87,19 +254,20 @@ final class ConnectionMonitorState {
 
         return entries
     }
-    
+
     // ALlow other components to subscribe to connection state changes from one place
     private func onUpdate() {
         TariEventBus.postToMainThread(.connectionMonitorStatusChanged, sender: self)
     }
 }
 
-class ConnectionMonitor {
-    public static let shared = ConnectionMonitor()
+@available(*, deprecated, message: "This monitor will be removed in the near future. Please Use ConnectionMonitor instead")
+class LegacyConnectionMonitor {
+    public static let shared = LegacyConnectionMonitor()
     private var reachability: Reachability?
 
     var state = ConnectionMonitorState()
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     private init() {
@@ -184,11 +352,11 @@ class ConnectionMonitor {
     }
 
     private func startMonitoringBaseNodeSync() {
-        
+
         TariEventBus.onMainThread(self, eventType: .baseNodeSyncStarted) { [weak self] _ in
             self?.state.baseNodeSyncStatus = .pending
         }
-        
+
         TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] result in
             guard let result = result?.object as? [String: Any] else { return }
             guard let isSuccess = result["success"] as? Bool, isSuccess else {
@@ -197,7 +365,7 @@ class ConnectionMonitor {
             }
             self?.state.baseNodeSyncStatus = .success
         }
-        
+
         TariEventBus.events(forType: .connectionStatusChanged)
             .map { $0.object as? BaseNodeConnectivityStatus }
             .assign(to: \.baseNodeConnectivityStatus, on: state)

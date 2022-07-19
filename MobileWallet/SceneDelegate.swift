@@ -124,7 +124,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Remove badges from push notifications
         UIApplication.shared.applicationIconBadgeNumber = 0
-        ConnectionMonitor.shared.start()
+        LegacyConnectionMonitor.shared.start()
         TariLib.shared.startTor()
         // Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
         if TariLib.shared.isWalletExist {
@@ -147,7 +147,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
-        ConnectionMonitor.shared.stop()
+        LegacyConnectionMonitor.shared.stop()
         TariLib.shared.stopWallet()
         TariLib.shared.stopTor()
         ICloudBackup.shared.backgroundBackupWallet()

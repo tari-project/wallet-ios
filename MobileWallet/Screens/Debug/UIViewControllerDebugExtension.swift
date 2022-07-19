@@ -87,7 +87,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             footer.append("<br/>\(key): \(value)")
         }
         footer.append("<br/>")
-        footer.append(ConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "<br/>"))
+        footer.append(LegacyConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "<br/>"))
         footer.append("</i></p>")
 
         return footer
@@ -283,10 +283,10 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
     private func showConnectionStatusPopUp() {
         
         let headerSection = PopUpComponentsFactory.makeHeaderView(title: "Connection status")
-        let contentSection = PopUpComponentsFactory.makeContentView(message: ConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n\n"))
+        let contentSection = PopUpComponentsFactory.makeContentView(message: LegacyConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n\n"))
         
         let event = TariEventBus.events(forType: .connectionMonitorStatusChanged)
-            .sink { [weak contentSection] _ in contentSection?.label.text = ConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n\n") }
+            .sink { [weak contentSection] _ in contentSection?.label.text = LegacyConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n\n") }
         
         let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { event.cancel() })])
         
