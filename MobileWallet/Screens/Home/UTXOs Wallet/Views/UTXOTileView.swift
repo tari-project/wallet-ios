@@ -216,9 +216,14 @@ final class UTXOTileView: UICollectionViewCell {
     }
     
     func updateTickBox(isVisible: Bool) {
-        
-        UIView.animate(withDuration: 0.1) {
+        UIView.animate(withDuration: 0.3) {
             self.tickView.alpha = isVisible ? 1.0 : 0.0
+        }
+    }
+    
+    func updateBackground(isSemitransparent: Bool) {
+        UIView.animate(withDuration: 0.3) {
+            self.contentView.alpha = isSemitransparent ? 0.6 : 1.0
         }
     }
     
