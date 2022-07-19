@@ -349,6 +349,11 @@ struct Images: Loopable {
     let settingsWalletBackupsIcon = UIImage(named: "icon-wallet-backups")
     let settingsYatIcon = UIImage(named: "icon-yat")
     
+    // Connection Details Icons
+    let connectionInternetIcon = UIImage(named: "icon-internet")
+    let connectionTorIcon = UIImage(named: "icon-tor")
+    let connectionSyncIcon = UIImage(named: "icon-sync")
+    
     // UTXOs Wallet
     
     let utxoTick = UIImage(named: "tick")
@@ -362,6 +367,12 @@ struct Images: Loopable {
     let speedometerLow = UIImage(named: "speedometer-low")
     let speedometerMid = UIImage(named: "speedometer-mid")
     let speedometerHigh = UIImage(named: "speedometer-high")
+    
+    // Connection Indicator
+    
+    let connectionIndicatorConnectedIcon = UIImage(named: "network-full")
+    let connectionIndicatorLimitedConnectonIcon = UIImage(named: "network-limited")
+    let connectionIndicatorDisconnectedIcon = UIImage(named: "network-off")
 }
 
 struct Fonts: Loopable {
@@ -550,6 +561,7 @@ extension UIColor {
         enum system {
             static var green: UIColor? { UIColor(named: "Green") }
             static var orange: UIColor? { UIColor(named: "Orange") }
+            static var red: UIColor? { UIColor(named: "Red") }
         }
     }
 }

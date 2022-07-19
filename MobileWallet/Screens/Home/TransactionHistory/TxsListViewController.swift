@@ -279,7 +279,7 @@ extension TxsListViewController {
                 self?.onRefreshTimeout()
             }
         }
-        let connectionState = ConnectionMonitor.shared.state
+        let connectionState = LegacyConnectionMonitor.shared.state
         if connectionState.torBootstrapProgress == 100 {
             syncBaseNode()
         } else {

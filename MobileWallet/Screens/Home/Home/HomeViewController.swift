@@ -50,25 +50,17 @@ enum ScrollDirection {
 }
 
 final class HomeViewController: UIViewController {
+    
+    // MARK: - Constants
+    
+    private static let panelBorderCornerRadius: CGFloat = 15.0
 
-    private static let PANEL_BORDER_CORNER_RADIUS: CGFloat = 15.0
-
-    private lazy var txsTableVC: TxsListViewController = {
-        let txController = TxsListViewController()
-        txController.backgroundType =  isFirstIntroToWallet ? .intro : .empty
-        return txController
-    }()
-
-    private let floatingPanelController = FloatingPanelController()
+    // MARK: - Properties
+    
+    private let model = HomeViewModel()
+    private let mainView = HomeView()
     private let tapOnKeyWindowGestureRecognizer = UITapGestureRecognizer()
     
-    @View private var grabberHandle: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 2.5
-        view.backgroundColor = Theme.shared.colors.floatingPanelGrabber
-        return view
-    }()
-
     private var hapticEnabled = false
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
 
@@ -81,23 +73,37 @@ final class HomeViewController: UIViewController {
     private var tableDataReloadIsWaitingForWallet = false
     private var networkCompatibilityCheckIsWaitingForWallet = false
 
-    var isFirstIntroToWallet: Bool {
+    private var isFirstIntroToWallet: Bool {
         TariSettings.shared.walletSettings.configationState != .ready
     }
-
+    
     private var isTxViewFullScreen: Bool = false {
         didSet {
             showHideFullScreen()
             setNeedsStatusBarAppearanceUpdate()
         }
     }
-
-    override var navBarHeight: CGFloat { (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0.0) + 56.0 }
-
-    private let mainView = HomeView()
-    private var cancelables: Set<AnyCancellable> = []
     
     private var grabberWidthConstraint: NSLayoutConstraint?
+    override var navBarHeight: CGFloat { (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0.0) + 56.0 }
+    
+    private var cancelables: Set<AnyCancellable> = []
+    
+    private lazy var txsTableVC: TxsListViewController = {
+        let txController = TxsListViewController()
+        txController.backgroundType =  isFirstIntroToWallet ? .intro : .empty
+        return txController
+    }()
+    
+    private let floatingPanelController = FloatingPanelController()
+    
+    @View private var grabberHandle: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 2.5
+        view.backgroundColor = Theme.shared.colors.floatingPanelGrabber
+        return view
+    }()
+
     
     private var isGrabberVisible: Bool = true {
         didSet {
@@ -105,41 +111,129 @@ final class HomeViewController: UIViewController {
             grabberHandle.alpha = isGrabberVisible ? 1.0 : 0.0
         }
     }
-
+    
+    // MARK: - View Lifecycle
+    
     override func loadView() {
         view = mainView
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        styleNavigatorBar(isHidden: true)
-        overrideUserInterfaceStyle = .light
-        setup()
+        setupViews()
+        setupFloatingPanel()
+        setupCallbacks()
         setupKeyServer()
         Tracker.shared.track("/home", "Home - Transaction List")
-        TariEventBus.onMainThread(self, eventType: .balanceUpdate) {
-            [weak self] (_) in
+    }
+    
+    // MARK: - Setups
+    
+    private func setupViews() {
+        mainView.toolbarHeightConstraint?.constant = navBarHeight
+        mainView.updateViewsOrder()
+        styleNavigatorBar(isHidden: true)
+    }
+
+    private func setupFloatingPanel() {
+        floatingPanelController.delegate = self
+        txsTableVC.actionDelegate = self
+
+        floatingPanelController.set(contentViewController: txsTableVC)
+        floatingPanelController.surfaceView.cornerRadius = HomeViewController.panelBorderCornerRadius
+        floatingPanelController.surfaceView.shadowColor = .black
+        floatingPanelController.surfaceView.shadowRadius = 22
+        floatingPanelController.surfaceView.contentInsets = HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets
+
+        setupGrabber(floatingPanelController)
+        floatingPanelController.contentMode = .static
+        floatingPanelController.addPanel(toParent: self)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) {
+            self.floatingPanelController.move(to: self.isFirstIntroToWallet ? .full : .half, animated: true) {
+                if !self.isFirstIntroToWallet {
+                    DispatchQueue.main.async {
+                        self.txsTableVC.tableView.beginRefreshing()
+                    }
+                }
+            }
+        }
+    }
+
+    private func setupGrabber(_ floatingPanelController: FloatingPanelController) {
+        
+        floatingPanelController.surfaceView.grabberHandle.isHidden = true
+        floatingPanelController.surfaceView.addSubview(grabberHandle)
+        
+        let grabberWidthConstraint = grabberHandle.widthAnchor.constraint(equalToConstant: 0.0)
+        self.grabberWidthConstraint = grabberWidthConstraint
+        
+        let constraints = [
+            grabberHandle.centerXAnchor.constraint(equalTo: floatingPanelController.surfaceView.grabberHandle.centerXAnchor),
+            grabberHandle.topAnchor.constraint(equalTo: floatingPanelController.surfaceView.topAnchor, constant: 20.0),
+            grabberWidthConstraint,
+            grabberHandle.heightAnchor.constraint(equalToConstant: 5.0)
+        ]
+        
+        isGrabberVisible = true
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    private func setupCallbacks() {
+        
+        model.$connectionStatusImage
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.connectionStatusIcon = $0 }
+            .store(in: &cancelables)
+        
+        mainView.onOnCloseButtonTap = { [weak self] in
+            self?.txsTableVC.tableView.scrollToTop(animated: true)
+            self?.floatingPanelController.move(to: .half, animated: true)
+            self?.animateNavBar(progress: 0.0, buttonAction: true)
+            self?.updateTracking(progress: 0.0)
+        }
+
+        mainView.onAmountHelpButtonTap = { [weak self] in
+            self?.showHelpDialog()
+        }
+        
+        mainView.onConnectionStatusButtonTap = { [weak self] in
+            self?.showConectionStatusPopUp()
+        }
+        
+        mainView.utxosWalletButton.onTap = { [weak self] in
+            self?.moveToUtxosWallet()
+        }
+        
+        TariEventBus.onMainThread(self, eventType: .balanceUpdate) { [weak self] _ in
             self?.safeRefreshBalance()
         }
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(appMovedToForeground),
-            name: UIApplication.willEnterForegroundNotification,
-            object: nil
-        )
+        
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in self?.onAppMovedToForeground() }
+            .store(in: &cancelables)
     }
-
-    @objc func appMovedToForeground() {
-        if TariLib.shared.walletState != .started {
-            tableDataReloadIsWaitingForWallet = true
-        } else {
+    
+    // MARK: - Actions
+    
+    private func showConectionStatusPopUp() {
+        ConnectionMonitor.shared.showDetailsPopup()
+    }
+    
+    private func onAppMovedToForeground() {
+        guard TariLib.shared.walletState != .started else {
             txsTableVC.tableView.beginRefreshing()
+            return
         }
+        tableDataReloadIsWaitingForWallet = true
     }
-
+    
+    // MARK: - Other
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        setupConnectionStatusMonitor()
         TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
             [weak self]
             (sender) in
@@ -168,12 +262,6 @@ final class HomeViewController: UIViewController {
         ShortcutsManager.executeQueuedShortcut()
         checkImportSecondUtxo()
         safeCheckIncompatibleNetwork()
-        enableWindowTapGesture()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        disableWindowTapGesture()
     }
 
     private func safeCheckIncompatibleNetwork() {
@@ -415,7 +503,7 @@ final class HomeViewController: UIViewController {
                 delay: 0,
                 options: .curveEaseIn,
                 animations: { [weak self] in
-                    self?.floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
+                    self?.floatingPanelController.surfaceView.cornerRadius = HomeViewController.panelBorderCornerRadius
                     self?.isGrabberVisible = true
                     self?.view.layoutIfNeeded()
                 }
@@ -435,58 +523,6 @@ final class HomeViewController: UIViewController {
                 guard let deeplink = deeplink else { return }
                 sendVC.update(deeplink: deeplink)
             }
-        }
-    }
-
-    // MARK: - Busness Logic
-
-    private func setupConnectionStatusMonitor() {
-
-        let initialState = handle(connectionState: ConnectionMonitor.shared.state)
-
-        mainView.connectionIndicatorView.currentState = initialState.0
-        mainView.tooltipView.text = initialState.1
-
-        let connectionMonitorStatus = TariEventBus
-            .events(forType: .connectionMonitorStatusChanged)
-            .compactMap { $0.object as? ConnectionMonitorState }
-            .compactMap { [weak self] in self?.handle(connectionState: $0) }
-
-        connectionMonitorStatus
-            .map(\.0)
-            .sink { self.mainView.connectionIndicatorView.currentState = $0 }
-            .store(in: &cancelables)
-
-        connectionMonitorStatus
-            .map(\.1)
-            .assign(to: \.text, on: mainView.tooltipView)
-            .store(in: &cancelables)
-    }
-
-    private func handle(connectionState: ConnectionMonitorState) -> (ConnectionIndicatorView.State, String?) {
-        switch (connectionState.reachability, connectionState.torStatus, connectionState.baseNodeConnectivityStatus, connectionState.baseNodeSyncStatus) {
-        case (.offline, _, _, _):
-            return (.disconnected, localized("connection_status.error.no_network_connection"))
-        case (.unknown, _, _, _):
-            return (.disconnected, localized("connection_status.error.unknown_network_connection_status"))
-        case (_, .failed, _, _):
-            return (.disconnected, localized("connection_status.error.disconnected_from_tor"))
-        case (_, .connecting, _, _):
-            return (.disconnected, localized("connection_status.error.connecting_with_tor"))
-        case (_, .unknown, _, _):
-            return (.disconnected, localized("connection_status.error.unknown_tor_connection_status"))
-        case (_, _, .offline, _):
-            return (.disconnected, localized("connection_status.error.disconnected_from_base_node"))
-        case (_, _, .connecting, _):
-            return (.connectedWithIssues, localized("connection_status.warning.connecting_with_base_node"))
-        case (_, _, _, .notInited):
-            return (.disconnected, localized("connection_status.error.disconnected_from_base_node"))
-        case (_, _, _, .pending):
-            return (.connectedWithIssues, localized("connection_status.warning.sync_in_progress"))
-        case (_, _, _, .failure):
-            return (.connectedWithIssues, localized("connection_status.warning.sync_failed"))
-        default:
-            return (.connected, localized("connection_status.ok"))
         }
     }
 }
@@ -579,8 +615,8 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         }
 
         self.floatingPanelController.surfaceView.cornerRadius =
-            HomeViewController.PANEL_BORDER_CORNER_RADIUS
-                - (HomeViewController.PANEL_BORDER_CORNER_RADIUS * max(progress, 0))
+            HomeViewController.panelBorderCornerRadius
+                - (HomeViewController.panelBorderCornerRadius * max(progress, 0))
 
         if floatingPanelController.position == .half && !isTxViewFullScreen {
             UIView.animate(
@@ -694,102 +730,6 @@ extension HomeViewController: FloatingPanelControllerDelegate {
     private func moveToUtxosWallet() {
         let controller = UTXOsWalletConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
-    }
-}
-
-// MARK: setup subview
-extension HomeViewController {
-
-    private func setup() {
-        setupFloatingPanel()
-        setupCallbacks()
-        mainView.toolbarHeightConstraint?.constant = navBarHeight
-        mainView.updateViewsOrder()
-    }
-
-    private func setupCallbacks() {
-
-        mainView.connectionIndicatorView.onTap = { [weak self] in
-            self?.mainView.isTooltipVisible = true
-        }
-
-        mainView.onOnCloseButtonTap = { [weak self] in
-            self?.txsTableVC.tableView.scrollToTop(animated: true)
-            self?.floatingPanelController.move(to: .half, animated: true)
-            self?.animateNavBar(progress: 0.0, buttonAction: true)
-            self?.updateTracking(progress: 0.0)
-        }
-
-        mainView.onAmountHelpButtonTap = { [weak self] in
-            self?.showHelpDialog()
-        }
-        
-        mainView.utxosWalletButton.onTap = { [weak self] in
-            self?.moveToUtxosWallet()
-        }
-    }
-
-    private func setupFloatingPanel() {
-        floatingPanelController.delegate = self
-        txsTableVC.actionDelegate = self
-
-        floatingPanelController.set(contentViewController: txsTableVC)
-        floatingPanelController.surfaceView.cornerRadius = HomeViewController.PANEL_BORDER_CORNER_RADIUS
-        floatingPanelController.surfaceView.shadowColor = .black
-        floatingPanelController.surfaceView.shadowRadius = 22
-        floatingPanelController.surfaceView.contentInsets = HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets
-
-        setupGrabber(floatingPanelController)
-        floatingPanelController.contentMode = .static
-        floatingPanelController.addPanel(toParent: self)
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) {
-            self.floatingPanelController.move(to: self.isFirstIntroToWallet ? .full : .half, animated: true) {
-                if !self.isFirstIntroToWallet {
-                    DispatchQueue.main.async {
-                        self.txsTableVC.tableView.beginRefreshing()
-                    }
-                }
-            }
-        }
-    }
-
-    private func setupGrabber(_ floatingPanelController: FloatingPanelController) {
-        
-        floatingPanelController.surfaceView.grabberHandle.isHidden = true
-        floatingPanelController.surfaceView.addSubview(grabberHandle)
-        
-        let grabberWidthConstraint = grabberHandle.widthAnchor.constraint(equalToConstant: 0.0)
-        self.grabberWidthConstraint = grabberWidthConstraint
-        
-        let constraints = [
-            grabberHandle.centerXAnchor.constraint(equalTo: floatingPanelController.surfaceView.grabberHandle.centerXAnchor),
-            grabberHandle.topAnchor.constraint(equalTo: floatingPanelController.surfaceView.topAnchor, constant: 20.0),
-            grabberWidthConstraint,
-            grabberHandle.heightAnchor.constraint(equalToConstant: 5.0)
-        ]
-        
-        isGrabberVisible = true
-        
-        NSLayoutConstraint.activate(constraints)
-    }
-
-    private func enableWindowTapGesture() {
-        tapOnKeyWindowGestureRecognizer.delegate = self
-        UIApplication.shared.keyWindow?.addGestureRecognizer(tapOnKeyWindowGestureRecognizer)
-    }
-
-    private func disableWindowTapGesture() {
-        UIApplication.shared.keyWindow?.removeGestureRecognizer(tapOnKeyWindowGestureRecognizer)
-    }
-}
-
-extension HomeViewController: UIGestureRecognizerDelegate {
-
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-        let shouldBlockTouchEvent = touch.view === mainView.connectionIndicatorView && mainView.isTooltipVisible
-        mainView.isTooltipVisible = false
-        return shouldBlockTouchEvent
     }
 }
 

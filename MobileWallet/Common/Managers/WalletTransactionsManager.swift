@@ -90,7 +90,7 @@ final class WalletTransactionsManager {
 
     private func waitForConnection(result: @escaping (Result<Void, TransactionError>) -> Void) {
 
-        let connectionState = ConnectionMonitor.shared.state
+        let connectionState = LegacyConnectionMonitor.shared.state
 
         switch connectionState.reachability {
         case .offline, .unknown:

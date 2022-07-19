@@ -57,7 +57,11 @@ class TariLib {
     var walletStatePublisher: AnyPublisher<WalletState, Never> { walletStateSubject.share().eraseToAnyPublisher() }
     private let walletStateSubject = CurrentValueSubject<WalletState, Never>(.notReady)
     private var cancelables = Set<AnyCancellable>()
-
+    
+    @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
+    private var cancellables = Set<AnyCancellable>()
+    
+    
     var connectedDatabaseName: String { databaseNamespace }
     var connectedDatabaseDirectory: URL { TariSettings.storageDirectory.appendingPathComponent("\(databaseNamespace)_\(NetworkManager.shared.selectedNetwork.name)", isDirectory: true) }
 
@@ -155,6 +159,11 @@ class TariLib {
         walletStatePublisher
             .sink { TariEventBus.postToMainThread(.walletStateChanged, sender: $0) }
             .store(in: &cancelables)
+        
+        TariEventBus.events(forType: .connectionStatusChanged)
+            .compactMap { $0.object as? BaseNodeConnectivityStatus }
+            .assign(to: \.baseNodeConnectionStatus, on: self)
+            .store(in: &cancellables)
     }
 
     func startTor() {
@@ -276,6 +285,7 @@ class TariLib {
     func stopWallet() {
         walletStateSubject.send(.notReady)
         tariWallet = nil
+        baseNodeConnectionStatus = .offline
         TariEventBus.unregister(self)
     }
 

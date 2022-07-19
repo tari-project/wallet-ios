@@ -116,10 +116,9 @@ final class HomeView: UIView {
         view.tintColor = .white
         return view
     }()
-
-    let connectionIndicatorView: ConnectionIndicatorView = {
-        let view = ConnectionIndicatorView()
-        view.translatesAutoresizingMaskIntoConstraints = false
+    
+    @View private var connectionStatusButton: BaseButton = {
+        let view = BaseButton()
         return view
     }()
     
@@ -130,13 +129,6 @@ final class HomeView: UIView {
         return view
     }()
 
-    let tooltipView: TooltipView = {
-        let view = TooltipView()
-        view.alpha = 0.0
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-
     let topToolbar: HomeViewToolbar = {
         let view = HomeViewToolbar()
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -144,10 +136,24 @@ final class HomeView: UIView {
     }()
 
     // MARK: - Properties
+    
+    var connectionStatusIcon: UIImage? {
+        get { connectionStatusButton.image(for: .normal) }
+        set {
+            UIView.transition(with: connectionStatusButton, duration: 0.5, options: .transitionCrossDissolve) {
+                self.connectionStatusButton.setImage(newValue, for: .normal)
+            }
+        }
+    }
 
     var onOnCloseButtonTap: (() -> Void)? {
         get { topToolbar.onOnCloseButtonTap }
         set { topToolbar.onOnCloseButtonTap = newValue }
+    }
+    
+    var onConnectionStatusButtonTap: (() -> Void)? {
+        get { connectionStatusButton.onTap }
+        set { connectionStatusButton.onTap = newValue }
     }
 
     var onAmountHelpButtonTap: (() -> Void)?
@@ -155,7 +161,6 @@ final class HomeView: UIView {
     private(set) var toolbarBottomConstraint: NSLayoutConstraint?
     private(set) var toolbarHeightConstraint: NSLayoutConstraint?
 
-    @Published var isTooltipVisible: Bool = false
     private var cancelables: Set<AnyCancellable> = []
 
     // MARK: - Initializers
@@ -164,7 +169,6 @@ final class HomeView: UIView {
         super.init(frame: .zero)
         setupLayers()
         setupConstraints()
-        setupFeedbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -183,7 +187,7 @@ final class HomeView: UIView {
 
     private func setupConstraints() {
 
-        [balanceTitleLabel, tariIconView, balanceValueLabel, avaiableFoundsTitleLabel, avaiableFoundsValueLabel, amountHelpButton, connectionIndicatorView, utxosWalletButton, tooltipView, topToolbar].forEach(addSubview)
+        [balanceTitleLabel, tariIconView, balanceValueLabel, avaiableFoundsTitleLabel, avaiableFoundsValueLabel, amountHelpButton, connectionStatusButton, utxosWalletButton, topToolbar].forEach(addSubview)
 
         let toolbarBottomConstraint = topToolbar.bottomAnchor.constraint(equalTo: topAnchor)
         let toolbarHeightConstraint = topToolbar.heightAnchor.constraint(equalToConstant: 0.0)
@@ -201,26 +205,22 @@ final class HomeView: UIView {
             tariIconView.centerYAnchor.constraint(equalTo: balanceValueLabel.centerYAnchor),
             balanceValueLabel.topAnchor.constraint(equalTo: balanceTitleLabel.bottomAnchor, constant: -7.0),
             balanceValueLabel.leadingAnchor.constraint(equalTo: tariIconView.trailingAnchor, constant: 8.0),
-            balanceValueLabel.trailingAnchor.constraint(equalTo: connectionIndicatorView.leadingAnchor),
             avaiableFoundsTitleLabel.topAnchor.constraint(equalTo: balanceValueLabel.bottomAnchor, constant: -1.0),
             avaiableFoundsTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
             avaiableFoundsValueLabel.topAnchor.constraint(equalTo: avaiableFoundsTitleLabel.bottomAnchor),
             avaiableFoundsValueLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
-            avaiableFoundsValueLabel.trailingAnchor.constraint(equalTo: connectionIndicatorView.leadingAnchor),
             amountHelpButton.leadingAnchor.constraint(equalTo: avaiableFoundsTitleLabel.trailingAnchor, constant: 4.0),
             amountHelpButton.centerYAnchor.constraint(equalTo: avaiableFoundsTitleLabel.centerYAnchor),
             amountHelpButton.heightAnchor.constraint(equalToConstant: 18.0),
             amountHelpButton.widthAnchor.constraint(equalToConstant: 18.0),
+            connectionStatusButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -26.0),
+            connectionStatusButton.centerYAnchor.constraint(equalTo: balanceValueLabel.centerYAnchor),
+            connectionStatusButton.heightAnchor.constraint(equalToConstant: 22.0),
+            connectionStatusButton.widthAnchor.constraint(equalToConstant: 22.0),
+            utxosWalletButton.topAnchor.constraint(equalTo: connectionStatusButton.bottomAnchor, constant: 8.0),
             utxosWalletButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -26.0),
-            utxosWalletButton.centerYAnchor.constraint(equalTo: balanceValueLabel.centerYAnchor),
             utxosWalletButton.heightAnchor.constraint(equalToConstant: 22.0),
             utxosWalletButton.widthAnchor.constraint(equalToConstant: 22.0),
-            connectionIndicatorView.topAnchor.constraint(equalTo: utxosWalletButton.bottomAnchor),
-            connectionIndicatorView.centerXAnchor.constraint(equalTo: utxosWalletButton.centerXAnchor),
-            tooltipView.tipXAnchor.constraint(equalTo: connectionIndicatorView.centerXAnchor),
-            tooltipView.tipYAnchor.constraint(equalTo: connectionIndicatorView.centerYAnchor),
-            tooltipView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 12.0),
-            tooltipView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12.0),
             topToolbar.leadingAnchor.constraint(equalTo: leadingAnchor),
             topToolbar.trailingAnchor.constraint(equalTo: trailingAnchor),
             toolbarBottomConstraint,
@@ -228,23 +228,6 @@ final class HomeView: UIView {
         ]
 
         NSLayoutConstraint.activate(constraints)
-    }
-
-    private func setupFeedbacks() {
-        $isTooltipVisible
-            .sink { [weak self] in self?.updateTooltipState(isVisible: $0) }
-            .store(in: &cancelables)
-
-        amountHelpButton.addTarget(self, action: #selector(onAmountHelpButtonTapAction), for: .touchUpInside)
-    }
-
-    // MARK: - Actions
-
-    private func updateTooltipState(isVisible: Bool) {
-        bringSubviewToFront(tooltipView)
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: .beginFromCurrentState) {
-            self.tooltipView.alpha = isVisible ? 1.0 : 0.0
-        }
     }
 
     // MARK: - Action Targets

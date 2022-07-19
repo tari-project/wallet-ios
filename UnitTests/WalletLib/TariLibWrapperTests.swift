@@ -230,8 +230,7 @@ final class TariLibWrapperTests: XCTestCase {
                     databaseName: self.dbName,
                     publicAddress: address,
                     discoveryTimeoutSec: TariSettings.shared.discoveryTimeoutSec,
-                    safMessageDurationSec: TariSettings.shared.safMessageDurationSec,
-                    networkName: TariNetwork.dibbler.name
+                    safMessageDurationSec: TariSettings.shared.safMessageDurationSec
                 )
             } catch {
                 completion(nil, error)
@@ -239,7 +238,7 @@ final class TariLibWrapperTests: XCTestCase {
             }
             
             do {
-                let wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: self.loggingTestPath(TariSettings.testStoragePath), seedWords: nil)
+                let wallet = try Wallet(commsConfig: commsConfig!, loggingFilePath: self.loggingTestPath(TariSettings.testStoragePath), seedWords: nil, networkName: TariNetwork.dibbler.name)
                 completion(wallet, error)
             } catch {
                 completion(nil, error)
