@@ -136,7 +136,8 @@ class OnionManager: NSObject {
         return configuration
     }
     
-    var state = TorState.none
+    @Published private(set) var state: TorState = .none
+    
     private var torController: TorController?
     private var torThread: TorThread?
     private var initRetry: DispatchWorkItem?

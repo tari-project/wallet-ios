@@ -129,7 +129,7 @@ final class UTXOsWalletTileListView: UIView {
             guard let self = self else { return cell }
             
             cell.update(model: model)
-            cell.updateTickBox(isVisible: model.isSelectable && self.isEditingEnabled)
+            cell.update(isSelectable: model.isSelectable, isEditingEnabled: self.isEditingEnabled)
             cell.isTickSelected = self.selectedElements.contains(model.uuid)
             
             cell.onTap = { [weak self] uuid in
@@ -171,7 +171,7 @@ final class UTXOsWalletTileListView: UIView {
             .compactMap { $0 as? UTXOTileView }
             .forEach { tile in
                 guard let model = models.first(where: { $0.uuid == tile.elementID }) else { return }
-                tile.updateTickBox(isVisible: model.isSelectable && isEditing)
+                tile.update(isSelectable: model.isSelectable, isEditingEnabled: isEditing)
             }
     }
     
@@ -191,5 +191,13 @@ extension UTXOsWalletTileListView: UICollectionViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         verticalContentOffset = scrollView.contentOffset.y
+    }
+}
+
+private extension UTXOTileView {
+    
+    func update(isSelectable: Bool, isEditingEnabled: Bool) {
+        updateTickBox(isVisible: isSelectable && isEditingEnabled)
+        updateBackground(isSemitransparent: !isSelectable && isEditingEnabled)
     }
 }

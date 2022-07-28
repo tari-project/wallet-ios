@@ -182,6 +182,13 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
         }
     }
     
+    func updateBackground(isSemitransparent: Bool, animated: Bool) {
+        
+        UIView.animate(withDuration: animated ? 0.3 : 0.0) {
+            self.contentView.alpha = isSemitransparent ? 0.6 : 1.0
+        }
+    }
+    
     private func update(selectionState: Bool) {
         tickView.isSelected = selectionState
     }
