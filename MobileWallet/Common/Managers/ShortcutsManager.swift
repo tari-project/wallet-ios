@@ -63,7 +63,7 @@ final class ShortcutsManager {
         
         let sendShortcutItem = UIApplicationShortcutItem(
             type: ShortcutType.send.rawValue,
-            localizedTitle: localized("common.send.with_param"),
+            localizedTitle: localized("common.send.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol),
             localizedSubtitle: nil,
             icon: UIApplicationShortcutIcon(templateImageName: "Gem"),
             userInfo: nil
