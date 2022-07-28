@@ -200,7 +200,8 @@ final class TransactionFeesManager {
     
     private func calculateFees(wallet: Wallet, amount: MicroTari, feesPerGram: FeeOptions) throws -> FeeOptions {
         
-        let maxAmountRaw = try wallet.totalBalance.rawValue - rawMaxAmountBuffer
+        let totalBalance = try wallet.totalBalance.rawValue
+        let maxAmountRaw = totalBalance > rawMaxAmountBuffer ? totalBalance - rawMaxAmountBuffer : 0
         let amountRaw = min(amount.rawValue, maxAmountRaw)
         let amount = MicroTari(amountRaw)
         
