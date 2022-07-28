@@ -50,7 +50,7 @@ final class WalletConnectivityManager {
             TariEventBus.unregister(self, eventType: .torPortsOpened)
             completion()
         }
-        if TariLib.shared.torPortsOpened {
+        if TariLib.shared.areTorPortsOpen {
             TariEventBus.unregister(self, eventType: .torPortsOpened)
             completion()
         }

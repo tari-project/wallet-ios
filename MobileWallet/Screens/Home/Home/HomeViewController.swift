@@ -74,7 +74,7 @@ final class HomeViewController: UIViewController {
     private var networkCompatibilityCheckIsWaitingForWallet = false
 
     private var isFirstIntroToWallet: Bool {
-        TariSettings.shared.walletSettings.configationState != .ready
+        TariSettings.shared.walletSettings.configurationState != .ready
     }
     
     private var isTxViewFullScreen: Bool = false {
@@ -301,16 +301,7 @@ final class HomeViewController: UIViewController {
     private func deleteWallet() {
         TariLib.shared.deleteWallet()
         BackupScheduler.shared.stopObserveEvents()
-        // go back to splash screen
-        let navigationController = AlwaysPoppableNavigationController(
-            rootViewController: SplashViewController()
-        )
-        navigationController.setNavigationBarHidden(
-            true,
-            animated: false
-        )
-        UIApplication.shared.windows.first?.rootViewController = navigationController
-        UIApplication.shared.windows.first?.makeKeyAndVisible()
+        AppRouter.transitionToSplashScreen()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -358,8 +349,10 @@ final class HomeViewController: UIViewController {
                         ],
                         hapticType: .none
                     )
-                    
+                
+                DispatchQueue.main.async {
                     PopUpPresenter.showPopUp(model: popUpModel)
+                }
             }) { (error) in
                 DispatchQueue.main.async {
                     PopUpPresenter.show(message: MessageModel(title: errorTitle, message: localized("home.request_drop.error.description"), type: .error))
@@ -492,7 +485,7 @@ final class HomeViewController: UIViewController {
 
             // User swipes down for the first time
             if isFirstIntroToWallet {
-                TariSettings.shared.walletSettings.configationState = .ready
+                TariSettings.shared.walletSettings.configurationState = .ready
             }
 
             navigationController?.setNavigationBarHidden(true, animated: true)

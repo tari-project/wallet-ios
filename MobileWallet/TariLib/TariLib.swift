@@ -51,14 +51,15 @@ class TariLib {
 
     static let shared = TariLib()
     static let logFilePrefix = "log"
-    var torPortsOpened = false
 
     var walletState: WalletState { walletStateSubject.value }
     var walletStatePublisher: AnyPublisher<WalletState, Never> { walletStateSubject.share().eraseToAnyPublisher() }
     private let walletStateSubject = CurrentValueSubject<WalletState, Never>(.notReady)
     private var cancelables = Set<AnyCancellable>()
     
+    @Published private(set) var areTorPortsOpen = false
     @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
+    
     private var cancellables = Set<AnyCancellable>()
     
     
@@ -185,7 +186,7 @@ class TariLib {
             return
         }
         OnionConnector.shared.stop()
-        torPortsOpened = false
+        areTorPortsOpen = false
     }
 
     private func startListeningToBaseNodeSync() {
@@ -316,7 +317,7 @@ extension TariLib: OnionConnectorDelegate {
     }
 
     func onTorPortsOpened() {
-        self.torPortsOpened = true
+        self.areTorPortsOpen = true
         TariEventBus.postToMainThread(.torPortsOpened, sender: nil)
     }
 

@@ -52,7 +52,7 @@ struct WalletSettings: Codable, Equatable {
     }
 
     let networkName: String
-    let configationState: WalletConfigurationState
+    let configurationState: WalletConfigurationState
     let isCloudBackupEnabled: Bool
     let hasVerifiedSeedPhrase: Bool
     let yat: String?
@@ -61,8 +61,8 @@ struct WalletSettings: Codable, Equatable {
 }
 
 extension WalletSettings {
-    func update(configationState: WalletConfigurationState) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
-    func update(isCloudBackupEnabled: Bool) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
-    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
-    func update(yat: String?) -> Self { Self(networkName: networkName, configationState: configationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
+    func update(configurationState: WalletConfigurationState) -> Self { Self(networkName: networkName, configurationState: configurationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
+    func update(isCloudBackupEnabled: Bool) -> Self { Self(networkName: networkName, configurationState: configurationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
+    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(networkName: networkName, configurationState: configurationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
+    func update(yat: String?) -> Self { Self(networkName: networkName, configurationState: configurationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
 }

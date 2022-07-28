@@ -199,7 +199,7 @@ class WalletCreationViewController: UIViewController {
                 Tracker.shared.track("/onboarding/create_emoji_id", "Onboarding - Create Emoji Id")
             }
         case .showEmojiId:
-            TariSettings.shared.walletSettings.configationState = .initialized
+            TariSettings.shared.walletSettings.configurationState = .initialized
             hideSubviews { [weak self] in
                 self?.emojiIdView.shrink(animated: false)
                 self?.prepareSubviews(for: .localAuthentication)
@@ -215,25 +215,8 @@ class WalletCreationViewController: UIViewController {
 
     private func runNotificationRequest() {
         NotificationManager.shared.requestAuthorization { _ in
-            DispatchQueue.main.async {
-                Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
-
-                let nav = AlwaysPoppableNavigationController()
-                let tabBarController = MenuTabBarController()
-                nav.setViewControllers([tabBarController], animated: false)
-
-                if let window = UIApplication.shared.keyWindow {
-                    let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
-                    tabBarController.view.addSubview(overlayView)
-                    window.rootViewController = nav
-
-                    UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
-                        overlayView.alpha = 0
-                    }, completion: { _ in
-                        overlayView.removeFromSuperview()
-                    })
-                }
-            }
+            Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
+            AppRouter.transitionToHomeScreen()
         }
     }
 
@@ -242,7 +225,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func successAuth() {
-        TariSettings.shared.walletSettings.configationState = .authorized
+        TariSettings.shared.walletSettings.configurationState = .authorized
         hideSubviews { [weak self] in
             self?.prepareSubviews(for: .enableNotifications)
             self?.showEnableNotifications()

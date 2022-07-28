@@ -66,7 +66,6 @@
 		00BCE47F240D5A9700B181F3 /* OnionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE47D240D5A9700B181F3 /* OnionManager.swift */; };
 		00BCE482240D5A9700B181F3 /* OnionConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE47E240D5A9700B181F3 /* OnionConnector.swift */; };
 		00BCE487240D5C4100B181F3 /* Tor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BCE486240D5C4100B181F3 /* Tor.framework */; };
-		00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BCE488240EB1EE00B181F3 /* SplashViewControllerSetup.swift */; };
 		00C185B9238943980096984E /* UIViewControllerDebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185B8238943980096984E /* UIViewControllerDebugExtension.swift */; };
 		00C185BE238953F60096984E /* DebugLogsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00C185BD238953F60096984E /* DebugLogsTableViewController.swift */; };
 		00D7BD8924349AE3009DD097 /* UIDevice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D7BD8824349AE3009DD097 /* UIDevice.swift */; };
@@ -143,6 +142,8 @@
 		3A0124A527B3EDEB00A481F4 /* TransactionViewControllable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0124A427B3EDEB00A481F4 /* TransactionViewControllable.swift */; };
 		3A03682E27DF20E300F304A2 /* TransactionDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A03682D27DF20E300F304A2 /* TransactionDetailsViewController.swift */; };
 		3A03683127DF211D00F304A2 /* TransactionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A03683027DF211D00F304A2 /* TransactionDetailsView.swift */; };
+		3A03A600288932DE00788A02 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A03A5FF288932DE00788A02 /* SplashView.swift */; };
+		3A03A602288962FA00788A02 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A03A601288962FA00788A02 /* SplashViewModel.swift */; };
 		3A052BF427B2658500C93671 /* AppVersionFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A052BF327B2658500C93671 /* AppVersionFormatter.swift */; };
 		3A052BFA27B2940900C93671 /* WalletTransactionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A052BF927B2940900C93671 /* WalletTransactionsManager.swift */; };
 		3A0EA97A26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */; };
@@ -325,6 +326,7 @@
 		3AFAC360271C6B4D008AA842 /* ContactAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAC35F271C6B4D008AA842 /* ContactAvatarView.swift */; };
 		3AFAC362271C6F9E008AA842 /* UITextField+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAC361271C6F9E008AA842 /* UITextField+Combine.swift */; };
 		3AFAEBF226B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */; };
+		3AFC3D60288EC3FA0046D386 /* UnselectableTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFC3D5F288EC3FA0046D386 /* UnselectableTextView.swift */; };
 		3AFC6E032745051400A20287 /* SettingsHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AFC6E022745051400A20287 /* SettingsHeaderView.swift */; };
 		491AB8A023F3FF4400372189 /* AddAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 491AB89F23F3FF4400372189 /* AddAmountViewController.swift */; };
 		49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
@@ -449,7 +451,6 @@
 		00BCE47D240D5A9700B181F3 /* OnionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnionManager.swift; sourceTree = "<group>"; };
 		00BCE47E240D5A9700B181F3 /* OnionConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnionConnector.swift; sourceTree = "<group>"; };
 		00BCE486240D5C4100B181F3 /* Tor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Tor.framework; path = Carthage/Build/iOS/Tor.framework; sourceTree = "<group>"; };
-		00BCE488240EB1EE00B181F3 /* SplashViewControllerSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewControllerSetup.swift; sourceTree = "<group>"; };
 		00C185B8238943980096984E /* UIViewControllerDebugExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerDebugExtension.swift; sourceTree = "<group>"; };
 		00C185BD238953F60096984E /* DebugLogsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogsTableViewController.swift; sourceTree = "<group>"; };
 		00C520AE2469716E0077BF7F /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "usr/lib/libc++.1.tbd"; sourceTree = SDKROOT; };
@@ -537,6 +538,8 @@
 		3A0124A427B3EDEB00A481F4 /* TransactionViewControllable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewControllable.swift; sourceTree = "<group>"; };
 		3A03682D27DF20E300F304A2 /* TransactionDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsViewController.swift; sourceTree = "<group>"; };
 		3A03683027DF211D00F304A2 /* TransactionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsView.swift; sourceTree = "<group>"; };
+		3A03A5FF288932DE00788A02 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		3A03A601288962FA00788A02 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
 		3A052BF327B2658500C93671 /* AppVersionFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionFormatter.swift; sourceTree = "<group>"; };
 		3A052BF927B2940900C93671 /* WalletTransactionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionsManager.swift; sourceTree = "<group>"; };
 		3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenCollectionView.swift; sourceTree = "<group>"; };
@@ -720,6 +723,7 @@
 		3AFAC35F271C6B4D008AA842 /* ContactAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactAvatarView.swift; sourceTree = "<group>"; };
 		3AFAC361271C6F9E008AA842 /* UITextField+Combine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Combine.swift"; sourceTree = "<group>"; };
 		3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardAvoidingContentView.swift; sourceTree = "<group>"; };
+		3AFC3D5F288EC3FA0046D386 /* UnselectableTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnselectableTextView.swift; sourceTree = "<group>"; };
 		3AFC6E022745051400A20287 /* SettingsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeaderView.swift; sourceTree = "<group>"; };
 		491AB89F23F3FF4400372189 /* AddAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAmountViewController.swift; sourceTree = "<group>"; };
 		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
@@ -800,8 +804,9 @@
 		0012562D2371D21E00A9C067 /* Splash */ = {
 			isa = PBXGroup;
 			children = (
+				3A03A601288962FA00788A02 /* SplashViewModel.swift */,
 				0012562E2371D81500A9C067 /* SplashViewController.swift */,
-				00BCE488240EB1EE00B181F3 /* SplashViewControllerSetup.swift */,
+				3A03A5FF288932DE00788A02 /* SplashView.swift */,
 				BFE1FBFF23E20E3600BA5EEC /* WalletCreationViewController.swift */,
 				BF191A2D23E5B05400D33C85 /* CheckMarkAnimation */,
 				BF191A2C23E5B02F00D33C85 /* EmojiWheelAnimation */,
@@ -1088,6 +1093,7 @@
 				3A1325FF27EDE39F00289C8C /* Transaction */,
 				371A081624728FCB00F97713 /* TransitionUILabel */,
 				375AFDCD2475380B00C62CA1 /* WebBrowserView */,
+				3AFC3D5F288EC3FA0046D386 /* UnselectableTextView.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -2377,7 +2383,6 @@
 				3A4205A127980FFA00A8D49C /* QRCodeView.swift in Sources */,
 				3AC05F9B26C3F302002742C6 /* TransactionsListHeaderView.swift in Sources */,
 				3AFC6E032745051400A20287 /* SettingsHeaderView.swift in Sources */,
-				00BCE489240EB1EE00B181F3 /* SplashViewControllerSetup.swift in Sources */,
 				3AEDBE5127CE477B006B0166 /* DeepLinkDataEncoder.swift in Sources */,
 				3AFAEBF226B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
 				37B48A7F24B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
@@ -2500,6 +2505,7 @@
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
 				3AE9F4E42795A260006101D1 /* RequestTariAmountModel.swift in Sources */,
 				3AA2E2212885755A00D30B62 /* NetworkMonitor.swift in Sources */,
+				3A03A600288932DE00788A02 /* SplashView.swift in Sources */,
 				00BCE47F240D5A9700B181F3 /* OnionManager.swift in Sources */,
 				3A052BFA27B2940900C93671 /* WalletTransactionsManager.swift in Sources */,
 				00A9190B242CDD7700B7F14D /* Tracker.swift in Sources */,
@@ -2522,6 +2528,7 @@
 				00947CC223CF090D00526DD5 /* TxProtocol.swift in Sources */,
 				3ACFECAA27ABD0B100FA9FE1 /* SendingTariProgressBar.swift in Sources */,
 				00BBD809237D80C800EBF5E6 /* Date.swift in Sources */,
+				3AFC3D60288EC3FA0046D386 /* UnselectableTextView.swift in Sources */,
 				3A7A38D32881689A00D7E8BD /* PopUpNetworkStatusContentView.swift in Sources */,
 				3AF97E6C27CF988D00FF6A3F /* BaseNodeManager.swift in Sources */,
 				3AF79D602727206200613C24 /* AddRecipientSearchView.swift in Sources */,
@@ -2582,6 +2589,7 @@
 				3A6A033A2802DCE7000432B4 /* TariPopUp.swift in Sources */,
 				371A0818247290C000F97713 /* TransitionLabel.swift in Sources */,
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
+				3A03A602288962FA00788A02 /* SplashViewModel.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				3ADF96CC28585E2400A3C888 /* ContextualButtonsOverlay.swift in Sources */,
 				37ABB69024781CE800F08163 /* UILabel.swift in Sources */,
