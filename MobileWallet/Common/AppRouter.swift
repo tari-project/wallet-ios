@@ -44,14 +44,49 @@ enum AppRouter {
     
     static var isNavigationReady: Bool { tabBar != nil }
     private static var tabBar: MenuTabBarController? { UIApplication.shared.menuTabBarController }
+    
+    // MARK: - Transitions
 
-    static func moveToSplashScreen() {
+    static func transitionToSplashScreen(window: UIWindow? = UIApplication.shared.windows.first) {
+        
+        guard let window = window else { return }
+        
         BackupScheduler.shared.stopObserveEvents()
         let navigationController = AlwaysPoppableNavigationController(rootViewController: SplashViewController())
         navigationController.setNavigationBarHidden(true, animated: false)
-        UIApplication.shared.windows.first?.rootViewController = navigationController
-        UIApplication.shared.windows.first?.makeKeyAndVisible()
+        
+        transition(to: navigationController)
+        
+        window.rootViewController = navigationController
+        window.makeKeyAndVisible()
     }
+    
+    static func transitionToHomeScreen() {
+        DispatchQueue.main.async {
+            
+            guard let window = UIApplication.shared.windows.first else { return }
+            
+            let tabBarController = MenuTabBarController()
+            let navigationController = AlwaysPoppableNavigationController(rootViewController: tabBarController)
+            
+            self.transition(to: tabBarController)
+            window.rootViewController = navigationController
+        }
+    }
+    
+    private static func transition(to controller: UIViewController) {
+        
+        let snapshot = UIScreen.main.snapshotView(afterScreenUpdates: false)
+        controller.view.addSubview(snapshot)
+        
+        UIView.animate(withDuration: 0.4, delay: 0.0, options: .transitionCrossDissolve, animations: {
+            snapshot.alpha = 0.0
+        }, completion: { _ in
+            snapshot.removeFromSuperview()
+        })
+    }
+    
+    // MARK: - TabBar Actions
     
     static func moveToTransactionSend(deeplink: TransactionsSendDeeplink?) {
         tabBar?.homeViewController.onSend(deeplink: deeplink)

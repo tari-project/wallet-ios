@@ -155,9 +155,8 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
 
         let overlay = RestoreWalletFromSeedsProgressViewController()
 
-        overlay.onSuccess = { [weak self, weak overlay] in
-            overlay?.dismiss(animated: true)
-            self?.navigationController?.popToRootViewController(animated: true)
+        overlay.onSuccess = {
+            AppRouter.transitionToSplashScreen()
         }
 
         show(overlay: overlay)

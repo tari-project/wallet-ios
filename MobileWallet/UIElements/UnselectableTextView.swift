@@ -1,10 +1,10 @@
-//  SelectNetworkModel.swift
-
+//  UnselectableTextView.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 26/08/2021
+	Created by Adrian Truszczynski on 25/07/2022
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 12.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,36 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class SelectNetworkModel {
+import UIKit
 
-    struct NetworkModel: Hashable {
-        let networkName: String
-        let isSelected: Bool
-    }
-
-    final class ViewModel {
-        @Published var networkModels: [NetworkModel] = []
-        @Published var selectedIndex: Int?
-    }
-
-    // MARK: - Properties
-
-    let viewModel = ViewModel()
-    private let networks = TariNetwork.all
-
-    // MARK: - Actions
-
-    func refreshData() {
-        viewModel.selectedIndex = networks.firstIndex { $0.name == NetworkManager.shared.selectedNetwork.name }
-        viewModel.networkModels = networks
-            .enumerated()
-            .map { NetworkModel(networkName: $1.presentedName, isSelected: $0 == viewModel.selectedIndex) }
-    }
-
-    func update(selectedIndex: Int) {
-        guard viewModel.selectedIndex != selectedIndex else { return }
-        TariLib.shared.stopWallet()
-        NetworkManager.shared.selectedNetwork = networks[selectedIndex]
-        AppRouter.transitionToSplashScreen()
+final class UnselectableTextView: UITextView {
+    
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        guard let position = closestPosition(to: point), let range = tokenizer.rangeEnclosingPosition(position, with: .character, inDirection: .layout(.left)) else { return false }
+        let startIndex = offset(from: beginningOfDocument, to: range.start)
+        return attributedText.attribute(.link, at: startIndex, effectiveRange: nil) != nil
     }
 }

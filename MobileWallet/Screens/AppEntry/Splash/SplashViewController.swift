@@ -39,363 +39,171 @@
 */
 
 import UIKit
-import Lottie
 import LocalAuthentication
-import SwiftEntryKit
-import AVFoundation
 import Combine
 
-class SplashViewController: UIViewController, UITextViewDelegate {
-
-    private enum AnimationType {
-        case scaleDownLogo
-        case squashLetters
+final class SplashViewController: UIViewController {
+    
+    // MARK: - Properties
+    
+    private let model = SplashViewModel()
+    private let mainView = SplashView()
+    private let authenticationContext = LAContext()
+    
+    private var cancellables = Set<AnyCancellable>()
+    private var animateTransitions = false
+    
+    // MARK: - View Lifecycle
+    
+    override func loadView() {
+        view = mainView
     }
-
-    // MARK: - Variables and constants
-    private let localAuthenticationContext = LAContext()
-    var ticketTopLayoutConstraint: NSLayoutConstraint?
-    var ticketBottom: NSLayoutConstraint?
-    var alreadyReplacedVideo: Bool = false
-
-    // MARK: - Outlets
-    let generalContainer = UIView()
-    let videoView = VideoView()
-    let versionLabel = UILabel()
-    let animationContainer = AnimationView()
-    let elementsContainer = UIView()
-    let createWalletButton = ActionButton()
-    let selectNetworkButton = ActionButton()
-    let titleLabel = UILabel()
-    let gemImageView = UIImageView()
-    let disclaimerText = UITextView()
-    let restoreButton = UIButton()
-
-    var distanceTitleSubtitle = NSLayoutConstraint()
-    var animationContainerBottomAnchor: NSLayoutConstraint?
-    var animationContainerBottomAnchorToVideo: NSLayoutConstraint?
-
-    private var cancelables = Set<AnyCancellable>()
-
-    // MARK: - Override functions
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupView()
-        setupFeedbacks()
-        loadAnimation()
-        handleWalletEvents()
+        setupCallbacks()
     }
-
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        setupVideoAnimation()
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        startOnboardingFlow(animationType: .squashLetters)
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        SwiftEntryKit.dismiss()
-    }
-
-    private func startOnboardingFlow(animationType: AnimationType) {
-        guard !TariSettings.shared.isUnitTesting else { return }
-        titleAnimation()
-        checkExistingWallet(animationType: animationType)
-    }
-
-    private func handleWalletEvents() {
-        // Handle tor progress
-        TariEventBus.onMainThread(self, eventType: .torConnectionProgress) {
-            [weak self] (result) in
-            guard let self = self else { return }
-
-            if let progress: Int = result?.object as? Int {
-                if progress == 0 {
-                    var attributes = EKAttributes.topToast
-                    attributes.entryBackground = .color(color: EKColor(Theme.shared.colors.successFeedbackPopupBackground!))
-                    attributes.screenBackground = .clear
-                    attributes.shadow = .active(
-                        with: .init(
-                            color: EKColor(Theme.shared.colors.feedbackPopupBackground!),
-                            opacity: 0.35,
-                            radius: 10,
-                            offset: .zero
-                        )
-                    )
-                    attributes.displayDuration = .infinity
-                    attributes.screenInteraction = .forward
-                }
-            }
-        }
-
-        TariEventBus.onMainThread(self, eventType: .torConnectionFailed) { [weak self] (result) in
-            guard let _ = self else { return }
-            PopUpPresenter.show(message: MessageModel(title: localized("tor.error.title"), message: localized("tor.error.description"), type: .error))
-        }
-    }
-
-    private func setupFeedbacks() {
+    
+    // MARK: - Setups
+    
+    private func setupCallbacks() {
         
-        NetworkManager.shared.$selectedNetwork
+        model.$status
+            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.update(network: $0) }
-            .store(in: &cancelables)
+            .sink { [weak self] in self?.handle(status: $0) }
+            .store(in: &cancellables)
         
-        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
-            .sink { [weak self] _ in self?.videoView.startPlayer() }
-            .store(in: &cancelables)
-    }
-
-    private func onTorSuccess(_ onComplete: @escaping () -> Void) {
-        // Handle if tor ports opened later
-        TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
-            guard let self = self else { return }
-            TariEventBus.unregister(self, eventType: .torPortsOpened)
-            onComplete()
+        model.$networkName
+            .compactMap { $0 }
+            .map { localized("splash.button.select_network", arguments: $0) }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.selectNetworkButtonTitle = $0 }
+            .store(in: &cancellables)
+        
+        model.$appVersion
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.versionText = $0 }
+            .store(in: &cancellables)
+        
+        model.$isWalletExist
+            .map { $0 ? localized("splash.button.open_wallet") : localized("splash.button.create_wallet") }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.createWalletButtonTitle = $0 }
+            .store(in: &cancellables)
+        
+        model.$errorMessage
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { PopUpPresenter.show(message: $0) }
+            .store(in: &cancellables)
+        
+        mainView.onCreateWalletButtonTap = { [weak self] in
+            self?.model.startWallet()
         }
-        if TariLib.shared.torPortsOpened {
-            TariEventBus.unregister(self, eventType: .torPortsOpened)
-            onComplete()
+        
+        mainView.onSelectNetworkButtonTap = { [weak self] in
+            self?.showNetworkListPopup()
         }
-    }
-
-    private func prepareEnviroment(animationType: AnimationType) {
-
-        let dispatchGroup = DispatchGroup()
-        var error: WalletError?
-
-        dispatchGroup.enter()
-        onTorSuccess { dispatchGroup.leave() }
-
-        dispatchGroup.enter()
-        waitForWalletStart(
-            onComplete: { dispatchGroup.leave() },
-            onError: {
-                error = $0
-                dispatchGroup.leave()
-            }
-        )
-
-        dispatchGroup.notify(queue: .main) { [weak self] in
-            
-            guard let error = error else {
-                self?.navigateToHome(animationType: animationType)
-                return
-            }
-            
-            let errorMessage = ErrorMessageManager.errorMessage(forError: error)
-            
-            PopUpPresenter.showMessageWithCloseButton(message: MessageModel(title: localized("splash.wallet_error.title"), message: errorMessage, type: .error)) { [weak self] in
-                self?.updateCreateWalletButtonState()
-                self?.resetView()
-            }
-        }
-    }
-
-    private func navigateToHome(animationType: AnimationType) {
-        switch animationType {
-        case .scaleDownLogo:
-            topAnimationAndRemoveVideoAnimation { [weak self] in self?.navigateToHome() }
-        case .squashLetters:
-            startAnimation { [weak self] in self?.navigateToHome() }
-        }
-    }
-
-    private func checkExistingWallet(animationType: AnimationType) {
-        if TariLib.shared.isWalletExist {
-            startWalletIfNeeded()
-            // Authenticate user -> start animation -> wait for tor -> start wallet -> navigate to home
-            localAuthenticationContext.authenticateUser { [weak self] in
-                self?.prepareEnviroment(animationType: animationType)
-            }
-        } else {
-            AppKeychainWrapper.removeBackupPasswordFromKeychain()
-            resetView()
+        
+        mainView.onRestoreWalletButtonTap = { [weak self] in
+            self?.moveToRestoreWalletScreen()
         }
     }
     
-    private func resetView() {
-        videoView.isHidden = false
-        titleLabel.isHidden = false
-        createWalletButton.isHidden = false
-        selectNetworkButton.isHidden = false
-        disclaimerText.isHidden = false
-        restoreButton.isHidden = false
-        Tracker.shared.track("/onboarding/introduction", "Onboarding - Introduction")
-    }
-
-    private func startWalletIfNeeded() {
-        guard TariLib.shared.walletState == .notReady else { return }
-        TariLib.shared.startWallet(seedWords: nil)
-    }
-
-    private func waitForWalletStart(onComplete: @escaping () -> Void, onError: ((WalletError) -> Void)?) {
-
-        var cancel: AnyCancellable?
-
-        cancel = TariLib.shared.walletStatePublisher
-            .receive(on: RunLoop.main)
-            .sink { walletState in
-                switch walletState {
-                case .started:
-                    cancel?.cancel()
-                    onComplete()
-                case let .startFailed(error):
-                    cancel?.cancel()
-                    onError?(error)
-                case .notReady, .starting:
-                    break
-                }
+    private func showNetworkListPopup() {
+        
+        let headerSection = PopUpHeaderWithSubtitle()
+        
+        headerSection.titleLabel.text = localized("splash.action_sheet.select_network.title")
+        headerSection.subtitleLabel.text = localized("splash.action_sheet.select_network.description")
+        
+        var buttonsModels = model.allNetworkNames
+            .enumerated()
+            .map { [weak self] index, networkName in
+                PopUpDialogButtonModel(title: networkName, type: .normal, callback: { self?.model.selectNetwork(onIndex: index) })
             }
-
-        cancel?.store(in: &cancelables)
+        
+        buttonsModels.append(PopUpDialogButtonModel(title: localized("common.cancel"), type: .text))
+        
+        let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: buttonsModels)
+        
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: nil, buttonsSection: buttonsSection)
+        
+        PopUpPresenter.show(popUp: popUp)
     }
-
-    private func createWalletBackup() {
-        if ICloudBackup.shared.iCloudBackupsIsOn && !ICloudBackup.shared.isValidBackupExists() {
-            do {
-                let password = AppKeychainWrapper.loadBackupPasswordFromKeychain()
-                try ICloudBackup.shared.createWalletBackup(password: password)
-            } catch {
-                var title = localized("iCloud_backup.error.title.create_backup")
-
-                if let localizedError = error as? LocalizedError, localizedError.failureReason != nil {
-                   title = localizedError.failureReason!
-                }
-                PopUpPresenter.show(message: MessageModel(title: title, message: error.localizedDescription, type: .error))
-            }
-        }
-    }
-
-    private func createNewWallet() {
-        do {
-            waitForWalletStart {
-                [weak self] in
-                guard let self = self else { return }
-                Tracker.shared.track(
-                    "/onboarding/create_wallet",
-                    "Onboarding - Create Wallet"
-                )
-                if let _ = self.ticketTopLayoutConstraint {
-                    self.topAnimationAndRemoveVideoAnimation { [weak self] () in
-                        self?.navigateToHome()
-                    }
-                } else {
-                    self.navigateToHome()
-                }
-            } onError: { [weak self] _ in
-                guard let self = self else { return }
-                PopUpPresenter.show(message: MessageModel(title: localized("wallet.error.title"), message: localized("wallet.error.create_new_wallet"), type: .error))
-                self.createWalletButton.variation = .normal
-            }
-            try TariLib.shared.createNewWallet(seedWords: nil)
-        } catch {
-            PopUpPresenter.show(message: MessageModel(title: localized("wallet.error.title"), message: localized("wallet.error.create_new_wallet"), type: .error))
-            createWalletButton.variation = .normal
-        }
-    }
-
-    @objc func onCreateWalletTap() {
-
-        createWalletButton.variation = .loading
-
-        guard !TariLib.shared.isWalletExist else {
-            startOnboardingFlow(animationType: .scaleDownLogo)
-            return
-        }
-
-        onTorSuccess {
-            self.createNewWallet()
-        }
-    }
-
-    @objc func onSelectNetworkButtonTap() {
-
-        let controller = UIAlertController(title: localized("splash.action_sheet.select_network.title"), message: localized("splash.action_sheet.select_network.description"), preferredStyle: .actionSheet)
-
-        TariNetwork.all.forEach { [weak controller] network in
-            controller?.addAction(UIAlertAction(title: network.presentedName, style: .default, handler: { _ in
-                NetworkManager.shared.selectedNetwork = network
-            }))
-        }
-
-        controller.addAction(UIAlertAction(title: localized("common.cancel"), style: .destructive, handler: nil))
-
-        present(controller, animated: true)
-    }
-
-    @objc func onRestoreWalletTap() {
-        let restoreWalletViewController = RestoreWalletViewController()
-        navigationController?.pushViewController(restoreWalletViewController, animated: true)
-    }
-
-    func startAnimation(onComplete: (() -> Void)? = nil) {
-        animationContainer.play { _ in onComplete?() }
-    }
-
-    private func navigateToHome() {
-
-        switch TariSettings.shared.walletSettings.configationState {
+    
+    // MARK: - Actions
+    
+    private func moveToNextScreen() {
+        switch TariSettings.shared.walletSettings.configurationState {
         case .notConfigured:
-            moveToOnboarding(startFromLocalAuth: false)
+            moveToOnboardingScreen(startFromLocalAuth: false)
         case .initialized:
-            moveToOnboarding(startFromLocalAuth: true)
+            moveToOnboardingScreen(startFromLocalAuth: true)
         case .authorized, .ready:
-            moveToWallet()
+            moveToHomeScreen()
         }
-
-        TariEventBus.unregister(self)
-    }
-
-    private func moveToWallet() {
-        NotificationManager.shared.requestAuthorization()
-
-        let nav = AlwaysPoppableNavigationController()
-        let tabBarController = MenuTabBarController()
-        nav.setViewControllers([tabBarController], animated: false)
-
-        if let window = UIApplication.shared.keyWindow {
-            let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
-            tabBarController.view.addSubview(overlayView)
-            window.rootViewController = nav
-
-            UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
-                overlayView.alpha = 0
-            }, completion: { _ in
-                overlayView.removeFromSuperview()
-            })
-        }
-    }
-
-    private func moveToOnboarding(startFromLocalAuth: Bool) {
-        let vc = WalletCreationViewController()
-        vc.startFromLocalAuth = startFromLocalAuth
-        if let window = view.window {
-            let transition: CATransition = CATransition()
-            transition.duration = 0.5
-            transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-            transition.type = CATransitionType.push
-            transition.subtype = CATransitionSubtype.fromTop
-
-            window.layer.add(Theme.shared.transitions.pullDownOpen, forKey: kCATransition)
-            navigationController?.view.layer.add(transition, forKey: kCATransition)
-            navigationController?.pushViewController(vc, animated: false)
-        }
-    }
-
-    private func update(network: TariNetwork) {
-        versionLabel.text = AppVersionFormatter.version
-        selectNetworkButton.setTitle(localized("splash.button.select_network", arguments: network.presentedName), for: .normal)
-        updateCreateWalletButtonState()
     }
     
-    private func updateCreateWalletButtonState() {
-        let createWalletButtonTitle = TariLib.shared.isWalletExist ? localized("splash.button.open_wallet") : localized("splash.button.create_wallet")
-        createWalletButton.setTitle(createWalletButtonTitle, for: .normal)
+    private func moveToRestoreWalletScreen() {
+        navigationController?.pushViewController(RestoreWalletViewController(), animated: true)
+    }
+    
+    private func moveToOnboardingScreen(startFromLocalAuth: Bool) {
+        mainView.playLogoAnimation { [weak self] in self?.transitionToOnboardingScreen(startFromLocalAuth: startFromLocalAuth) }
+    }
+    
+    private func transitionToOnboardingScreen(startFromLocalAuth: Bool) {
+        
+        guard let window = view.window else { return }
+        
+        Tracker.shared.track("/onboarding/create_wallet", "Onboarding - Create Wallet")
+        
+        let controller = WalletCreationViewController()
+        controller.startFromLocalAuth = startFromLocalAuth
+        
+        let transition: CATransition = CATransition()
+        transition.duration = 0.5
+        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+        transition.type = CATransitionType.push
+        transition.subtype = CATransitionSubtype.fromTop
+        
+        window.layer.add(Theme.shared.transitions.pullDownOpen, forKey: kCATransition)
+        navigationController?.view.layer.add(transition, forKey: kCATransition)
+        navigationController?.pushViewController(controller, animated: false)
+    }
+    
+    private func moveToHomeScreen() {
+        authenticationContext.authenticateUser { [weak self] in
+            self?.mainView.playLogoAnimation { AppRouter.transitionToHomeScreen() }
+        }
+    }
+    
+    // MARK: - Helpers
+    
+    private func handle(status: SplashViewModel.StatusModel) {
+        
+        switch (status.status, status.statusRepresentation) {
+        case (.idle, .content):
+            mainView.isCreateWalletButtonSpinnerVisible = false
+            mainView.updateLayout(showInterface: true, animated: animateTransitions)
+        case (.idle, .logo):
+            mainView.updateLayout(showInterface: false, animated: animateTransitions)
+            model.startWallet()
+        case (.working, .content):
+            mainView.isCreateWalletButtonSpinnerVisible = true
+        case (.working, .logo):
+            mainView.updateLayout(showInterface: false, animated: animateTransitions)
+        case (.success, .content):
+            mainView.updateLayout(showInterface: false, animated: animateTransitions) { [weak self] in
+                self?.moveToNextScreen()
+            }
+        case (.success, .logo):
+            moveToNextScreen()
+        }
+        
+        guard !animateTransitions else { return }
+        animateTransitions = true
     }
 }

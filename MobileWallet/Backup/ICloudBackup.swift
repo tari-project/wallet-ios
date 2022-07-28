@@ -264,7 +264,7 @@ class ICloudBackup: NSObject {
             )
             restoreBackup(password: password, to: dbDirectory) { [weak self] error in
                 if error == nil {
-                    TariSettings.shared.walletSettings.configationState = .authorized
+                    TariSettings.shared.walletSettings.configurationState = .authorized
                     self?.iCloudBackupsIsOn = true
 
                     BackupScheduler.shared.startObserveEvents()

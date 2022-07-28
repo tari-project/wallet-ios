@@ -90,6 +90,7 @@ final class HomeView: UIView {
         let view = AnimatedBalanceLabel()
         view.animationSpeed = .slow
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.setContentCompressionResistancePriority(.required, for: .vertical)
         return view
     }()
 
@@ -106,6 +107,7 @@ final class HomeView: UIView {
         let view = AnimatedBalanceLabel()
         view.animationSpeed = .slow
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.setContentCompressionResistancePriority(.required, for: .vertical)
         return view
     }()
 
