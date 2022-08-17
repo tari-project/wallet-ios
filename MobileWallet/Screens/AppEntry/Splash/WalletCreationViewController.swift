@@ -216,7 +216,9 @@ class WalletCreationViewController: UIViewController {
     private func runNotificationRequest() {
         NotificationManager.shared.requestAuthorization { _ in
             Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
-            AppRouter.transitionToHomeScreen()
+            DispatchQueue.main.async {
+                AppRouter.transitionToHomeScreen()
+            }
         }
     }
 

@@ -151,27 +151,9 @@ final class SplashViewController: UIViewController {
     }
     
     private func moveToOnboardingScreen(startFromLocalAuth: Bool) {
-        mainView.playLogoAnimation { [weak self] in self?.transitionToOnboardingScreen(startFromLocalAuth: startFromLocalAuth) }
-    }
-    
-    private func transitionToOnboardingScreen(startFromLocalAuth: Bool) {
-        
-        guard let window = view.window else { return }
-        
-        Tracker.shared.track("/onboarding/create_wallet", "Onboarding - Create Wallet")
-        
-        let controller = WalletCreationViewController()
-        controller.startFromLocalAuth = startFromLocalAuth
-        
-        let transition: CATransition = CATransition()
-        transition.duration = 0.5
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.push
-        transition.subtype = CATransitionSubtype.fromTop
-        
-        window.layer.add(Theme.shared.transitions.pullDownOpen, forKey: kCATransition)
-        navigationController?.view.layer.add(transition, forKey: kCATransition)
-        navigationController?.pushViewController(controller, animated: false)
+        mainView.playLogoAnimation {
+            AppRouter.transitionToOnboardingScreen(startFromLocalAuth: startFromLocalAuth)
+        }
     }
     
     private func moveToHomeScreen() {

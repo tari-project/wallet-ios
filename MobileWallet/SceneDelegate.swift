@@ -81,9 +81,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         setupYatIntegration()
         
         guard let windowScene = scene as? UIWindowScene else { return }
-        let window = UIWindow(windowScene: windowScene)
-        self.window = window
-        AppRouter.transitionToSplashScreen(window: window)
+        window = UIWindow(windowScene: windowScene)
+        window?.makeKeyAndVisible()
+        AppRouter.transitionToSplashScreen(animated: false)
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
