@@ -48,7 +48,7 @@ final class NetworkManager {
 
     @Published var selectedNetwork: TariNetwork
 
-    private static var defaultNetwork: TariNetwork { .dibbler }
+    private static var defaultNetwork: TariNetwork { .esmeralda }
     private var cancelables = Set<AnyCancellable>()
 
     // MARK: - Initializers

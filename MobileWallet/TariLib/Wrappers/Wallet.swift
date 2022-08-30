@@ -682,6 +682,8 @@ final class Wallet {
                 senderOffsetPublicKey.pointer,
                 privateKey.pointer,
                 nil,
+                nil,
+                0,
                 messagePointer,
                 error
             )})
