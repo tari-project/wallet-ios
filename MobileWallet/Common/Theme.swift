@@ -138,7 +138,6 @@ struct Colors: Loopable {
     let settingsPasswordWarning = UIColor(named: "SettingsPasswordWarning")
 
     // Home screen
-    let homeScreenBackground = UIColor(named: "HomeScreenBackground")
     let homeScreenTotalBalanceLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
     let homeScreenTotalBalanceValueLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
     let floatingPanelGrabber = UIColor(named: "FloatingPanelGrabber")
