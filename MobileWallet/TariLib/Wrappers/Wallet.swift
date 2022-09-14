@@ -509,7 +509,9 @@ final class Wallet {
         var errorCode: Int32 = -1
 
         let fee = withUnsafeMutablePointer(to: &errorCode, { error in
-            wallet_get_fee_estimate(pointer, amount.rawValue, feePerGram.rawValue, kernelCount, outputCount, error)})
+            wallet_get_fee_estimate(pointer, amount.rawValue, nil, feePerGram.rawValue, kernelCount, outputCount, error)
+        })
+
         guard errorCode == 0 else {
             if errorCode == 101 {
                 throw WalletErrors.notEnoughFunds
@@ -549,6 +551,7 @@ final class Wallet {
                 pointer,
                 destination.pointer,
                 amount.rawValue,
+                nil,
                 feePerGram.rawValue,
                 messagePointer,
                 isOneSidedPayment,
