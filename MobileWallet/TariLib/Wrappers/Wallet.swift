@@ -351,8 +351,10 @@ final class Wallet {
             TariLogger.verbose("Transaction cancelled callback. txID=\(cancelledTxId) ✅")
         }
 
-        let txoValidationCallback: (@convention(c) (UInt64, Bool) -> Void) = { responseId, isSuccess in
+        let txoValidationCallback: (@convention(c) (UInt64, UInt64) -> Void) = { responseId, status in
+            guard status != 1 else { return }
             DispatchQueue.global().async {
+                let isSuccess = status == 0
                 Wallet.checkValidationResult(type: .txo, responseId: responseId, isSuccess: isSuccess)
             }
         }
