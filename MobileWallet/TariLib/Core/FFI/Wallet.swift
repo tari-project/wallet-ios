@@ -1,0 +1,168 @@
+//  WalletV2.swift
+	
+/*
+	Package MobileWallet
+	Created by Adrian Truszczynski on 09/11/2021
+	Using Swift 5.0
+	Running on macOS 12.0
+
+	Copyright 2019 The Tari Project
+
+	Redistribution and use in source and binary forms, with or
+	without modification, are permitted provided that the
+	following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice,
+	this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above
+	copyright notice, this list of conditions and the following disclaimer in the
+	documentation and/or other materials provided with the distribution.
+
+	3. Neither the name of the copyright holder nor the names of
+	its contributors may be used to endorse or promote products
+	derived from this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+	CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+final class Wallet {
+    
+    // MARK: - Constants
+    
+    private static let numberOfRollingLogFiles: UInt32 = 2
+    private static let logFileSize: UInt32 = 10 * 1024 * 1024
+    private static let isRecoveryInProgress: Bool = false
+    
+    // MARK: - Properties
+    
+    let pointer: OpaquePointer
+    
+    // MARK: - Initialisers
+    
+    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String) throws {
+        
+        let receivedTransactionCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+            WalletCallbacksManager.shared.post(name: .receivedTransaction, object: pointer)
+        }
+        
+        let receivedTransactionReplyCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+            WalletCallbacksManager.shared.post(name: .receivedTransactionReply, object: pointer)
+        }
+        
+        let receivedFinalizedTransactionCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+            WalletCallbacksManager.shared.post(name: .receivedFinalizedTransaction, object: pointer)
+        }
+        
+        let fauxTransactionConfirmedCallback: (@convention(c) (OpaquePointer?) -> Void)? = { pointer in
+            WalletCallbacksManager.shared.post(name: .fauxTransactionConfirmed, object: pointer)
+        }
+        
+        let fauxTransactionUncorfirmedCallback: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { pointer, reason in
+            WalletCallbacksManager.shared.post(name: .fauxTransactionUnconfirmed, object: pointer)
+        }
+        
+        let transactionSendResultCallback: (@convention(c) (UInt64, OpaquePointer?) -> Void) = { identifier, pointer in
+            guard let pointer = pointer, let data = try? TransactionSendResult(identifier: identifier, pointer: pointer) else { return }
+            WalletCallbacksManager.shared.post(name: .transactionSendResult, object: data)
+        }
+        
+        let transactionBroadcastCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+            WalletCallbacksManager.shared.post(name: .transactionBroadcast, object: pointer)
+        }
+
+        let transactionMinedCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+            WalletCallbacksManager.shared.post(name: .transactionMined, object: pointer)
+        }
+        
+        let unconfirmedTransactionMinedCallback: @convention(c) (OpaquePointer?, UInt64) -> Void = { pointer, confirmationCount in
+            WalletCallbacksManager.shared.post(name: .unconfirmedTransactionMined, object: pointer)
+        }
+
+        let transactionCancellationCallback: @convention(c) (OpaquePointer?, UInt64) -> Void = { pointer, rejectonReason in
+            WalletCallbacksManager.shared.post(name: .transactionCancellation, object: pointer)
+        }
+        
+        let txoValidationCallback: @convention(c) (UInt64, UInt64) -> Void = { responseId, status in
+            guard let status = TxoValidationStatus(rawValue: status) else { return }
+            WalletCallbacksManager.shared.post(name: .transactionOutputValidation, object: TransactionOutputValidationData(identifier: responseId, status: status))
+        }
+        
+        let contactsLivenessDataUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void) = { _ in
+        }
+        
+        let balanceUpdatedCallback: @convention(c) (OpaquePointer?) -> Void = { balancePointer in
+            guard let balancePointer = balancePointer else { return }
+            let balance = Balance(pointer: balancePointer)
+            WalletCallbacksManager.shared.post(name: .walletBalanceUpdate, object: balance)
+            
+        }
+        
+        let trasactionValidationCompleteCallback: @convention(c) (UInt64, Bool) -> Void = { responseId, isSuccess in
+            WalletCallbacksManager.shared.post(name: .transactionValidation, object: TransactionValidationData(identifier: responseId, isSuccess: isSuccess))
+        }
+        
+        let storedMessagesReceivedCallback: (@convention(c) () -> Void) = {
+        }
+        
+        let connectivityStatusCallback: (@convention(c) (UInt64) -> Void) = { rawStatus in
+            guard let status = BaseNodeConnectivityStatus(rawValue: rawStatus) else { return }
+            WalletCallbacksManager.shared.post(name: .baseNodeConnectionStatusUpdate, object: status)
+        }
+        
+        var isRecoveryInProgress = false
+        var errorCode: Int32 = -1
+         
+        let isRecoveryInProgressPointer = PointerHandler.pointer(for: &isRecoveryInProgress)
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        let result = wallet_create(
+            commsConfig.pointer,
+            loggingFilePath,
+            Self.numberOfRollingLogFiles,
+            Self.logFileSize,
+            passphrase,
+            seedWords?.pointer,
+            networkName,
+            receivedTransactionCallback,
+            receivedTransactionReplyCallback,
+            receivedFinalizedTransactionCallback,
+            transactionBroadcastCallback,
+            transactionMinedCallback,
+            unconfirmedTransactionMinedCallback,
+            fauxTransactionConfirmedCallback,
+            fauxTransactionUncorfirmedCallback,
+            transactionSendResultCallback,
+            transactionCancellationCallback,
+            txoValidationCallback,
+            contactsLivenessDataUpdatedCallback,
+            balanceUpdatedCallback,
+            trasactionValidationCompleteCallback,
+            storedMessagesReceivedCallback,
+            connectivityStatusCallback,
+            isRecoveryInProgressPointer,
+            errorCodePointer
+        )
+        
+        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
+        pointer = result
+    }
+    
+    // MARK: - Deinitialiser
+    
+    deinit {
+        wallet_destroy(pointer)
+    }
+}

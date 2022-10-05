@@ -39,18 +39,21 @@
 */
 
 import UIKit
+import Combine
 
-class BridgesConfigurationViewController: SettingsParentTableViewController {
+final class BridgesConfigurationViewController: SettingsParentTableViewController, CustomBridgesHandable {
 
     typealias BridgesType = OnionSettings.BridgesType
 
-    private lazy var bridgesConfiguration: BridgesConfuguration = {
+    private lazy var bridgesConfiguration: BridgesConfiguration = {
         OnionSettings.currentlyUsedBridgesConfiguration
     }()
 
     private enum Section: Int {
         case chooseBridge = 1
     }
+    
+    private var cancellables = Set<AnyCancellable>()
 
     private enum BridgesConfigurationItemTitle: CaseIterable {
         case requestBridgesFromTorproject
@@ -73,8 +76,8 @@ class BridgesConfigurationViewController: SettingsParentTableViewController {
 
     private func getBridgeSectionItems() -> [SystemMenuTableViewCellItem] {
         [
-            SystemMenuTableViewCellItem(title: BridgesConfigurationItemTitle.noBridges.rawValue, mark: OnionConnector.shared.bridgesConfiguration.bridgesType == BridgesType.none ? .scheduled : .none, hasArrow: false),
-            SystemMenuTableViewCellItem(title: BridgesConfigurationItemTitle.custom.rawValue, mark: OnionConnector.shared.bridgesConfiguration.bridgesType == BridgesType.custom ? .scheduled : .none)
+            SystemMenuTableViewCellItem(title: BridgesConfigurationItemTitle.noBridges.rawValue, mark: Tari.shared.torBridgesConfiguration.bridgesType == BridgesType.none ? .scheduled : .none, hasArrow: false),
+            SystemMenuTableViewCellItem(title: BridgesConfigurationItemTitle.custom.rawValue, mark: Tari.shared.torBridgesConfiguration.bridgesType == BridgesType.custom ? .scheduled : .none)
         ]
     }
 
@@ -82,6 +85,9 @@ class BridgesConfigurationViewController: SettingsParentTableViewController {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        
+        setupCustomBridgeProgressHandler()
+            .store(in: &cancellables)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -98,12 +104,19 @@ extension BridgesConfigurationViewController {
         navigationBar.rightButton.isEnabled = false
         navigationBar.rightButtonAction = { [weak self] in
             guard let self = self else { return }
-            OnionConnector.shared.addObserver(self)
             self.navigationBar.setProgress(0.0)
             self.navigationBar.progressView.isHidden = false
             self.navigationBar.rightButton.isEnabled = false
             self.view.isUserInteractionEnabled = false
-            OnionConnector.shared.bridgesConfiguration = self.bridgesConfiguration
+            Task { [weak self] in
+                do {
+                    guard let self = self else { return }
+                    try await Tari.shared.update(torBridgesConfiguration: self.bridgesConfiguration)
+                    self.onCustomBridgeSuccessAction()
+                } catch {
+                    self?.onCustomBridgeFailureAction(error: error)
+                }
+            }
         }
 
         let title = localized("bridges_configuration.connect")

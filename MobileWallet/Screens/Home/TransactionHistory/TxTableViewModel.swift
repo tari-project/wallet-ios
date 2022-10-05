@@ -38,15 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
 import GiphyUISDK
 import GiphyCoreSDK
 
 class TxTableViewModel: NSObject {
-    typealias Value = (microTari: MicroTari?, direction: TxDirection, isCancelled: Bool, isPending: Bool)
+    typealias Value = (microTari: MicroTari?, isOutboundTransaction: Bool, isCancelled: Bool, isPending: Bool)
 
     let id: UInt64
-    private(set) var tx: TxProtocol
+    private(set) var transaction: Transaction
     private(set) var title = NSAttributedString()
     private(set) var avatar: String = ""
     private(set) var message: String
@@ -66,32 +65,32 @@ class TxTableViewModel: NSObject {
     @objc dynamic private(set) var gif: GPHMedia?
     @objc dynamic private(set) var status: String = ""
     @objc dynamic private(set) var time: String
-
-    required init(tx: TxProtocol) {
-        self.tx = tx
-        self.id = tx.id.0
-
-        value = (microTari: tx.microTari.0, direction: tx.direction, isCancelled: tx.isCancelled, isPending: tx.isPending)
+    
+    init(transaction: Transaction) throws {
+        self.transaction = transaction
+        self.id = try transaction.identifier
         
-        if tx.isOneSidedPayment {
+        value = (microTari: MicroTari(try transaction.amount), isOutboundTransaction: try transaction.isOutboundTransaction, isCancelled: transaction.isCancelled, transaction.isPending)
+        
+        if try transaction.isOneSidedPayment {
             message = localized("transaction.one_sided_payment.note.normal")
             gifID = nil
         } else {
-            let (msg, giphyId) = TxTableViewModel.extractNote(from: tx.message.0)
+            let (msg, giphyId) = TxTableViewModel.extractNote(from: try transaction.message)
             message = msg
             gifID = giphyId
         }
         
-        time = tx.date.0?.relativeDayFromToday() ?? ""
+        time = try transaction.formattedTimestamp
         
         super.init()
 
-        updateTitleAndAvatar()
-        updateStatus()
+        try updateTitleAndAvatar()
+        try updateStatus()
         updateMedia()
-
+        
         Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] (_) in
-            self?.time = tx.date.0?.relativeDayFromToday() ?? ""
+            self?.time = (try? transaction.formattedTimestamp) ?? ""
         }
     }
 
@@ -108,65 +107,50 @@ class TxTableViewModel: NSObject {
         }
     }
 
-    func update(tx: TxProtocol) {
-        if tx.id.0 != self.tx.id.0 { fatalError() }
-        self.tx = tx
-        self.value = (
-            microTari: tx.microTari.0,
-            direction: tx.direction,
-            isCancelled: tx.isCancelled,
-            isPending: tx.isPending
-        )
-        updateTitleAndAvatar()
-        updateStatus()
+    func update(transaction: Transaction) throws {
+        
+        guard try id == transaction.identifier else { return }
+        self.transaction = transaction
+        
+        value = (microTari: MicroTari(try transaction.amount), isOutboundTransaction: try transaction.isOutboundTransaction, isCancelled: transaction.isCancelled, transaction.isPending)
+        
+        try updateTitleAndAvatar()
+        try updateStatus()
         updateMedia()
     }
 
-    private func updateTitleAndAvatar() {
+    private func updateTitleAndAvatar() throws {
         
-        guard !tx.isOneSidedPayment else {
+        guard try !transaction.isOneSidedPayment else {
             avatar = localized("transaction.one_sided_payment.avatar")
             let alias = localized("transaction.one_sided_payment.inbound_user_placeholder")
             title = attributed(title: localized("tx_list.inbound_pending_title", arguments: alias), withAlias: alias, isAliasEmojiID: false)
             return
         }
         
-        let (publicKey, _) = tx.direction == .inbound ? tx.sourcePublicKey : tx.destinationPublicKey
-        guard let pubKey = publicKey else { fatalError() }
+        let publicKey = try transaction.publicKey
 
-        let (emojis, _) = pubKey.emojis
-        avatar = String(emojis.emojis.prefix(1))
+        let emojis = try publicKey.emojis
+        avatar = String(emojis.prefix(1))
 
         var alias = ""
         var aliasIsEmojis = false
-        if let contact = tx.contact.0 {
-            alias = contact.alias.0
+        
+        if let contact = try Tari.shared.contacts.findContact(hex: try publicKey.byteVector.hex) {
+            alias = try contact.alias
         }
 
         if alias.isEmpty {
-            let (emojis, _) = pubKey.emojis
-            alias = "\(String(emojis.emojis.prefix(2)))•••\(String(emojis.emojis.suffix(2)))"
+            alias = "\(String(emojis.prefix(2)))•••\(String(emojis.suffix(2)))"
             aliasIsEmojis = true
         }
 
         var titleText = ""
-        if tx.direction == .inbound {
-            if tx.status.0 == .pending {
-                titleText = String(
-                    format: localized("tx_list.inbound_pending_title"),
-                    alias
-                )
-            } else {
-                titleText =  String(
-                    format: localized("tx_list.inbound_title"),
-                    alias
-                )
-            }
-        } else if tx.direction == .outbound {
-            titleText =  String(
-                format: localized("tx_list.outbound_title"),
-                alias
-            )
+        
+        if try transaction.isOutboundTransaction {
+            titleText = localized("tx_list.outbound_title", arguments: alias)
+        } else {
+            titleText = try transaction.status == .pending ? localized("tx_list.inbound_pending_title", arguments: alias) : localized("tx_list.inbound_title", arguments: alias)
         }
 
         title = attributed(title: titleText, withAlias: alias, isAliasEmojiID: aliasIsEmojis)
@@ -174,7 +158,7 @@ class TxTableViewModel: NSObject {
     
     private func attributed(title: String, withAlias alias: String, isAliasEmojiID: Bool) -> NSAttributedString {
         
-        let title = title.replacingOccurrences(of: " ", with: "\u{00A0}")
+        let title = title
             .replacingOccurrences(of: alias, with: " \(alias) ")
             .trimmingCharacters(in: .whitespaces)
         
@@ -200,45 +184,29 @@ class TxTableViewModel: NSObject {
         return attributedTitle
     }
 
-    private func updateStatus() {
+    private func updateStatus() throws {
         var statusMessage = ""
 
-        switch tx.status.0 {
+        switch try transaction.status {
         case .pending:
-            if tx.direction == .inbound {
-                statusMessage = localized("refresh_view.waiting_for_sender")
-            } else if tx.direction == .outbound {
-                statusMessage = localized("refresh_view.waiting_for_recipient")
-            }
+            statusMessage = try transaction.isOutboundTransaction ? localized("refresh_view.waiting_for_recipient") : localized("refresh_view.waiting_for_sender")
         case .broadcast, .completed:
-            guard let wallet = TariLib.shared.tariWallet,
-                let requiredConfirmationCount = try? wallet.getRequiredConfirmationCount() else {
+            guard let requiredConfirmationCount = try? Tari.shared.transactions.requiredConfirmationsCount else {
                 statusMessage = localized("refresh_view.final_processing")
                 break
             }
-            statusMessage = String(
-                format: localized("refresh_view.final_processing_with_param"),
-                1,
-                requiredConfirmationCount + 1
-            )
+            statusMessage = localized("refresh_view.final_processing_with_param", arguments: 1, requiredConfirmationCount + 1)
         case .minedUnconfirmed:
-            guard let wallet = TariLib.shared.tariWallet,
-                let confirmationCount = (tx as? CompletedTx)?.confirmationCount,
-                confirmationCount.1 == nil,
-                let requiredConfirmationCount = try? wallet.getRequiredConfirmationCount() else {
+            guard let confirmationCount = try? (transaction as? CompletedTransaction)?.confirmationCount, let requiredConfirmationCount = try? Tari.shared.transactions.requiredConfirmationsCount else {
                 statusMessage = localized("refresh_view.final_processing")
                 break
             }
-            statusMessage = String(
-                format: localized("refresh_view.final_processing_with_param"),
-                confirmationCount.0 + 1,
-                requiredConfirmationCount + 1
-            )
+            statusMessage = localized("refresh_view.final_processing_with_param", arguments: confirmationCount + 1, requiredConfirmationCount + 1)
         default:
             break
         }
 
-        if tx.isCancelled {
+        if transaction.isCancelled {
             statusMessage = localized("tx_detail.payment_cancelled")
         }
 

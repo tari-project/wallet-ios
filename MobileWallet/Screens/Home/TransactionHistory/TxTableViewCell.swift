@@ -88,7 +88,7 @@ class TxTableViewCell: UITableViewCell {
         setStatus(model.status)
         setValue(
             microTari: model.value.microTari,
-            direction: model.value.direction,
+            isOutboundTransaction: model.value.isOutboundTransaction,
             isCancelled: model.value.isCancelled,
             isPending: model.value.isPending
         )
@@ -133,7 +133,7 @@ class TxTableViewCell: UITableViewCell {
                 self.setStatus(item.status)
                 self.setValue(
                     microTari: model.value.microTari,
-                    direction: model.tx.direction,
+                    isOutboundTransaction: model.value.isOutboundTransaction,
                     isCancelled: model.value.isCancelled,
                     isPending: model.value.isPending
                 )
@@ -183,20 +183,20 @@ class TxTableViewCell: UITableViewCell {
         }
     }
 
-    private func setValue(microTari: MicroTari?, direction: TxDirection, isCancelled: Bool, isPending: Bool) {
+    private func setValue(microTari: MicroTari?, isOutboundTransaction: Bool, isCancelled: Bool, isPending: Bool) {
         if let mt = microTari {
             if isCancelled {
                 valueLabel.text = mt.formattedPrecise
                 valueLabel.backgroundColor = Theme.shared.colors.txCellValueCancelledBackground
                 valueLabel.textColor = Theme.shared.colors.txCellValueCancelledText
-            } else if direction == .inbound {
-                valueLabel.text = mt.formattedWithOperator
-                valueLabel.backgroundColor = Theme.shared.colors.txCellValuePositiveBackground
-                valueLabel.textColor = Theme.shared.colors.txCellValuePositiveText
-            } else if direction == .outbound {
+            } else if isOutboundTransaction {
                 valueLabel.text = mt.formattedWithNegativeOperator
                 valueLabel.backgroundColor = Theme.shared.colors.txCellValueNegativeBackground
                 valueLabel.textColor = Theme.shared.colors.txCellValueNegativeText
+            } else {
+                valueLabel.text = mt.formattedWithOperator
+                valueLabel.backgroundColor = Theme.shared.colors.txCellValuePositiveBackground
+                valueLabel.textColor = Theme.shared.colors.txCellValuePositiveText
             }
 
             if isPending && !isCancelled {

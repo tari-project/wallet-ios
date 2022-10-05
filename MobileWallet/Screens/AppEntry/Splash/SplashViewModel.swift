@@ -78,7 +78,7 @@ final class SplashViewModel {
     // MARK: - Initialisers
     
     init() {
-        status = StatusModel(status: .idle, statusRepresentation: TariLib.shared.isWalletExist ? .logo : .content)
+        status = StatusModel(status: .idle, statusRepresentation: Tari.shared.isWalletExist ? .logo : .content)
         setupCallbacks()
         setupData()
     }
@@ -94,7 +94,7 @@ final class SplashViewModel {
         
         NetworkManager.shared.$selectedNetwork
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.isWalletExist = TariLib.shared.isWalletExist }
+            .sink { [weak self] _ in self?.isWalletExist = Tari.shared.isWalletExist }
             .store(in: &cancellables)
         
         $isWalletExist
@@ -116,64 +116,19 @@ final class SplashViewModel {
     }
     
     func startWallet() {
-        TariLib.shared.isWalletExist ? openWallet() : createWallet()
+        Tari.shared.isWalletExist ? openWallet() : createWallet()
     }
+    
+    // MARK: - Actions
     
     private func createWallet() {
         Task {
             do {
                 status = StatusModel(status: .working, statusRepresentation: .content)
-                try await waitForConnection()
-                try await createNewWallet()
+                try await startWallet()
                 status = StatusModel(status: .success, statusRepresentation: .content)
             } catch {
                 handle(error: error)
-            }
-        }
-    }
-    
-    // MARK: - Actions
-    
-    private func waitForConnection() async throws {
-        
-        try await withCheckedThrowingContinuation { [unowned self] continuation in
-            
-            Publishers.CombineLatest(ConnectionMonitor.shared.$status, TariLib.shared.$areTorPortsOpen)
-                .compactMap {
-                    guard let connectionStatus = $0 else { return nil }
-                    return (connectionStatus, $1)
-                }
-                .tryCompactMap { try self.handle(connectionStatus: $0, areTorPortsOpen: $1) }
-                .first()
-                .sink {
-                    guard let error = self.handle(completion: $0) else { return }
-                    continuation.resume(throwing: error)
-                } receiveValue: {
-                    continuation.resume()
-                }
-                .store(in: &self.cancellables)
-        }
-    }
-    
-    private func createNewWallet() async throws {
-        
-        return try await withCheckedThrowingContinuation { [unowned self] continuation in
-            
-            TariLib.shared.walletStatePublisher
-                .tryCompactMap { try self.handle(walletState: $0) }
-                .first()
-                .sink {
-                    guard let error = self.handle(completion: $0) else { return }
-                    continuation.resume(throwing: error)
-                } receiveValue: {
-                    continuation.resume()
-                }
-                .store(in: &cancellables)
-            
-            do {
-                try TariLib.shared.createNewWallet(seedWords: nil)
-            } catch {
-                continuation.resume(throwing: error)
             }
         }
     }
@@ -183,8 +138,7 @@ final class SplashViewModel {
             do {
                 let statusRepresentation = status?.statusRepresentation ?? .content
                 status = StatusModel(status: .working, statusRepresentation: statusRepresentation)
-                try await waitForConnection()
-                startWalletIfNeeded()
+                try await startWallet()
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
             } catch {
                 self.handle(error: error)
@@ -192,33 +146,9 @@ final class SplashViewModel {
         }
     }
     
-    private func startWalletIfNeeded() {
-        guard TariLib.shared.walletState == .notReady else { return }
-        TariLib.shared.startWallet(seedWords: nil)
-    }
-    
-    // MARK: - Helpers
-    
-    private func handle(connectionStatus: ConnectionMonitor.StatusModel, areTorPortsOpen: Bool) throws -> Void? {
-        switch (connectionStatus.networkConnection, connectionStatus.torConnection, areTorPortsOpen) {
-        case (.connected, .connected, _), (.connected, _, true):
-            return ()
-        case (.disconnected, _, _), (_, .failed, _):
-            throw InternalError.disconnectedFromTor
-        default:
-            return nil
-        }
-    }
-    
-    private func handle(walletState: TariLib.WalletState) throws -> Void? {
-        switch walletState {
-        case .started:
-            return ()
-        case let .startFailed(error):
-            throw error
-        default:
-            return nil
-        }
+    private func startWallet() async throws {
+        try await Tari.shared.startWallet()
+        try Tari.shared.keyValues.set(key: .network, value: NetworkManager.shared.selectedNetwork.name)
     }
     
     private func handle(completion: Subscribers.Completion<Error>) -> Error? {

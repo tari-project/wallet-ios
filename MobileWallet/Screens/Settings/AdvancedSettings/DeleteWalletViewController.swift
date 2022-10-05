@@ -165,7 +165,7 @@ class DeleteWalletViewController: UIViewController {
     }
 
     private func deleteWallet() {
-        TariLib.shared.deleteWallet()
+        Tari.shared.deleteWallet()
         AppRouter.transitionToSplashScreen()
     }
 

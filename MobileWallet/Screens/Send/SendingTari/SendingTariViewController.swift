@@ -95,7 +95,7 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
         
         model.$stateModel
             .compactMap { $0 }
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.updateViews(model: $0) }
             .store(in: &cancelables)
         

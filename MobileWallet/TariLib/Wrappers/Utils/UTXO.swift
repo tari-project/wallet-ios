@@ -38,8 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
-
 struct UTXO: Codable {
     let privateKeyHex: String
     let value: UInt64
@@ -49,8 +47,4 @@ struct UTXO: Codable {
     let uValue: Data
     let vValue: Data
     let senderOffsetPublicKeyHex: String
-
-    func getPrivateKey() throws -> PrivateKey { try PrivateKey(hex: privateKeyHex) }
-    func getSourcePublicKey() throws -> PublicKey { try PublicKey(hex: sourcePublicKeyHex) }
-    func makeSenderOffsetPublicKey() throws -> PublicKey { try PublicKey(hex: senderOffsetPublicKeyHex) }
 }

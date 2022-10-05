@@ -43,10 +43,6 @@ import GiphyCoreSDK
 
 final class TransactionDetailsModel {
     
-    private enum ModelError: Error {
-        case generic
-    }
-    
     // MARK: - View Model
     
     @Published private(set) var title: String?
@@ -72,7 +68,7 @@ final class TransactionDetailsModel {
     
     // MARK: - Properties
     
-    private var transaction: TxProtocol
+    private var transaction: Transaction
     private var transactionNounce: String?
     private var transactionSignature: String?
     
@@ -80,45 +76,42 @@ final class TransactionDetailsModel {
     
     // MARK: - Initialisers
     
-    init(transaction: TxProtocol) {
+    init(transaction: Transaction) {
         self.transaction = transaction
+        setupCallbacks()
+        fetchData()
     }
     
     // MARK: - Setups
     
     private func setupCallbacks() {
-        let eventTypes: [TariEventTypes] = [
-            .receievedTxReply,
-            .receivedFinalizedTx,
-            .txBroadcast,
-            .txMinedUnconfirmed,
-            .txMined
+        
+        let events = [
+            WalletCallbacksManager.shared.receivedTransactionReply,
+            WalletCallbacksManager.shared.receivedFinalizedTransaction,
+            WalletCallbacksManager.shared.transactionBroadcast,
+            WalletCallbacksManager.shared.unconfirmedTransactionMined,
+            WalletCallbacksManager.shared.transactionMined
         ]
         
-        eventTypes.forEach {
-            TariEventBus.events(forType: $0)
-                .compactMap(\.object)
-                .compactMap { $0 as? TxProtocol }
+        events.forEach {
+            $0
+                .filter { [unowned self] in (try? $0.identifier) == (try? self.transaction.identifier) }
                 .sink { [weak self] in self?.handle(transaction: $0) }
                 .store(in: &cancellables)
         }
     }
     
-    private func handle(transaction: TxProtocol) {
-        self.transaction = transaction
-        fetchData()
-    }
-    
     // MARK: - Actions
     
-    func fetchData() {
-        title = fetchTitle()
-        transactionState = fetchTransactionState()
-        transactionDirection = fetchTransactionDirection()
-        emojiIdViewModel = fetchEmojiIdViewModel()
-        isContactSectionVisible = !transaction.isOneSidedPayment
+    private func fetchData() {
         
         do {
+            title = try fetchTitle()
+            transactionState = try fetchTransactionState()
+            transactionDirection = try fetchTransactionDirection()
+            emojiIdViewModel = try fetchEmojiIdViewModel()
+            isContactSectionVisible = try !transaction.isOneSidedPayment
             subtitle = try fetchSubtitle()
             amount = try fetchAmount()
             fee = try fetchFee()
@@ -136,14 +129,12 @@ final class TransactionDetailsModel {
     
     func cancelTransactionRequest() {
         
-        guard transaction.status.0 == .pending, transaction.direction == .outbound else {
-            errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: localized("tx_detail.tx_cancellation.error.description"), type: .error)
-            return
-        }
-        
         do {
-            try TariLib.shared.tariWallet?.cancelPendingTx(transaction)
-            wasTransactionCanceled = true
+            guard try transaction.status == .pending, try transaction.isOutboundTransaction else {
+                errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: localized("tx_detail.tx_cancellation.error.description"), type: .error)
+                return
+            }
+            wasTransactionCanceled = try Tari.shared.transactions.cancelPendingTransaction(identifier: transaction.identifier)
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: nil, type: .error)
         }
@@ -156,10 +147,12 @@ final class TransactionDetailsModel {
     
     func update(alias: String?) {
         
-        guard let alias = alias, !alias.isEmpty, let hex = emojiIdViewModel?.hex, let wallet = TariLib.shared.tariWallet else { return }
+        guard let alias = alias, !alias.isEmpty else { return }
         
         do {
-            try wallet.addUpdateContact(alias: alias, publicKeyHex: hex)
+            let publicKey = try transaction.publicKey
+            let contact = try Contact(alias: alias, publicKeyPointer: publicKey.pointer)
+            _ = try Tari.shared.contacts.upsert(contact: contact)
             userAliasUpdateSuccessCallback?()
             userAlias = alias
         } catch {
@@ -178,38 +171,31 @@ final class TransactionDetailsModel {
     
     // MARK: - Helpers
     
-    private func fetchTitle() -> String? {
+    private func fetchTitle() throws -> String? {
         
         if transaction.isCancelled {
             return localized("tx_detail.payment_cancelled")
         }
         
-        switch transaction.status.0 {
+        switch try transaction.status {
         case .txNullError, .completed, .broadcast, .minedUnconfirmed, .pending, .unknown:
             return localized("tx_detail.payment_in_progress")
         case .minedConfirmed, .imported, .rejected, .fauxUnconfirmed, .fauxConfirmed:
-            break
+            return try transaction.isOutboundTransaction ? localized("tx_detail.payment_sent") : localized("tx_detail.payment_received")
         }
-        
-        switch transaction.direction {
-        case .inbound:
-            return localized("tx_detail.payment_received")
-        case .outbound:
-            return localized("tx_detail.payment_sent")
-        case .none:
-            break
-        }
-        
-        return nil
     }
     
     private func fetchSubtitle() throws -> String {
         
-        let date = transaction.date.0
-        var failureReason: String?
-        let formattedDate = date?.formattedDisplay()
+        var formattedDate: String?
         
-        if let completedTransaction = transaction as? CompletedTx, let description = try completedTransaction.rejectionReason.description {
+        if let timestamp = try? transaction.timestamp {
+            formattedDate = Date(timeIntervalSince1970: TimeInterval(timestamp)).formattedDisplay()
+        }
+        
+        var failureReason: String?
+        
+        if let completedTransaction = transaction as? CompletedTransaction, let description = try completedTransaction.rejectionReason.description {
             failureReason = description
         }
         
@@ -220,104 +206,67 @@ final class TransactionDetailsModel {
             .joined(separator: "\n")
     }
     
-    private func fetchTransactionState() -> AnimatedRefreshingViewState? {
+    private func fetchTransactionState() throws -> AnimatedRefreshingViewState? {
         
         guard !transaction.isCancelled else {
             return nil
         }
         
-        switch transaction.status.0 {
+        switch try transaction.status {
         case .pending:
-            switch transaction.direction {
-            case .inbound:
-                return .txWaitingForSender
-            case .outbound:
-                return .txWaitingForRecipient
-            case .none:
-                return nil
-            }
+            return try transaction.isOutboundTransaction ? .txWaitingForRecipient : .txWaitingForSender
         case .broadcast, .completed:
             return .txCompleted(confirmationCount: 1)
         case .minedUnconfirmed:
-            guard let confirmationCountTuple = (transaction as? CompletedTx)?.confirmationCount, confirmationCountTuple.1 == nil else {
+            guard let confirmationCount = try (transaction as? CompletedTransaction)?.confirmationCount else {
                 return .txCompleted(confirmationCount: 1)
             }
-            return .txCompleted(confirmationCount: confirmationCountTuple.0 + 1)
+            return .txCompleted(confirmationCount: confirmationCount + 1)
         case .txNullError, .imported, .minedConfirmed, .unknown, .rejected, .fauxUnconfirmed, .fauxConfirmed:
             return nil
         }
     }
     
-    private func fetchTransactionDirection() -> String? {
-        switch transaction.direction {
-        case .inbound:
-            return localized("tx_detail.from")
-        case .outbound:
-            return localized("tx_detail.to")
-        case .none:
-            return nil
-        }
+    private func fetchTransactionDirection() throws -> String? {
+        try transaction.isOutboundTransaction ? localized("tx_detail.to") : localized("tx_detail.from")
     }
     
     private func fetchAmount() throws -> String {
-        
-        guard let amount = transaction.microTari.0 else {
-            throw transaction.microTari.1 ?? ModelError.generic
-        }
-        
-        return amount.formattedPrecise
+        let amount = try transaction.amount
+        return MicroTari(amount).formattedPrecise
     }
     
     private func fetchFee() throws -> String? {
-        
-        guard transaction.direction == .outbound, let fee = (transaction as? CompletedTx)?.fee ?? (transaction as? PendingOutboundTx)?.fee else {
-            return nil
-        }
-        
-        if let error = fee.1 {
-            throw error
-        }
-        
-        return fee.0?.formattedWithOperator
+        guard try transaction.isOutboundTransaction, let fee = try (transaction as? CompletedTransaction)?.fee ?? (transaction as? PendingOutboundTransaction)?.fee else { return nil }
+        return MicroTari(fee).formattedWithOperator
     }
     
-    private func fetchEmojiIdViewModel() -> EmojiIdView.ViewModel? {
-        
-        var emojiID: String?
-        var hex: String?
-        
-        switch transaction.direction {
-        case .inbound:
-            emojiID = transaction.sourcePublicKey.0?.emojis.0
-            hex = transaction.sourcePublicKey.0?.hex.0
-        case .outbound:
-            emojiID = transaction.destinationPublicKey.0?.emojis.0
-            hex = transaction.destinationPublicKey.0?.hex.0
-        case .none:
-            return nil
-        }
-        
-        guard let emojiID = emojiID, let hex = hex else { return nil }
+    private func fetchEmojiIdViewModel() throws -> EmojiIdView.ViewModel {
+        let publicKey = try transaction.publicKey
+        let emojiID = try publicKey.emojis
+        let hex = try publicKey.byteVector.hex
         return EmojiIdView.ViewModel(emojiID: emojiID, hex: hex)
     }
     
     private func fetchUserAlias() throws -> String? {
-        guard let contact = transaction.contact.0 else { return nil }
-        if let aliasError = contact.alias.1 { throw aliasError }
-        return contact.alias.0
+        let contact = try Tari.shared.contacts.findContact(hex: try transaction.publicKey.byteVector.hex)
+        return try contact?.alias
+    }
+    
+    private func handle(transaction: Transaction) {
+        self.transaction = transaction
+        fetchData()
     }
     
     private func handleMessage() throws {
         
-        guard !transaction.isOneSidedPayment else {
+        guard try !transaction.isOneSidedPayment else {
             note = localized("transaction.one_sided_payment.note.normal")
             gifMedia = nil
             return
         }
         
-        if let messageError = transaction.message.1 { throw messageError }
-        
-        let message = transaction.message.0
+        let message = try transaction.message
         let giphyLinkPrefix = "https://giphy.com/embed/"
         
         guard let endIndex = message.range(of: giphyLinkPrefix)?.lowerBound else {
@@ -350,14 +299,14 @@ final class TransactionDetailsModel {
             isBlockExplorerActionAvailable = transactionNounce != nil && transactionSignature != nil
         }
         
-        guard let kernel = transaction.transactionKernel.0 else {
+        guard let kernel = try? (transaction as? CompletedTransaction)?.transactionKernel else {
             transactionNounce = nil
             transactionSignature = nil
             return
         }
         
-        transactionNounce = try? kernel.excessPublicNonce
-        transactionSignature = try? kernel.excessSignature
+        transactionNounce = try? kernel.excessPublicNonceHex
+        transactionSignature = try? kernel.excessSignatureHex
     }
     
     private func fetchLinkToOpen() -> URL? {
@@ -367,7 +316,7 @@ final class TransactionDetailsModel {
     }
 }
 
-private extension TransactionRejectionReason {
+private extension CompletedTransaction.RejectionReason {
     
     var description: String? {
         switch self {

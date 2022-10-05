@@ -111,18 +111,15 @@ final class HomeView: UIView {
         return view
     }()
 
-    let amountHelpButton: UIButton = {
-        let view = UIButton()
+    let amountHelpButton: BaseButton = {
+        let view = BaseButton()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
         view.tintColor = .white
         return view
     }()
     
-    @View private var connectionStatusButton: BaseButton = {
-        let view = BaseButton()
-        return view
-    }()
+    @View private var connectionStatusButton: BaseButton = BaseButton()
     
     @View var utxosWalletButton: BaseButton = {
         let view = BaseButton()
@@ -163,14 +160,13 @@ final class HomeView: UIView {
     private(set) var toolbarBottomConstraint: NSLayoutConstraint?
     private(set) var toolbarHeightConstraint: NSLayoutConstraint?
 
-    private var cancelables: Set<AnyCancellable> = []
-
     // MARK: - Initializers
 
     init() {
         super.init(frame: .zero)
         setupLayers()
         setupConstraints()
+        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -207,10 +203,12 @@ final class HomeView: UIView {
             tariIconView.centerYAnchor.constraint(equalTo: balanceValueLabel.centerYAnchor),
             balanceValueLabel.topAnchor.constraint(equalTo: balanceTitleLabel.bottomAnchor, constant: -7.0),
             balanceValueLabel.leadingAnchor.constraint(equalTo: tariIconView.trailingAnchor, constant: 8.0),
+            balanceValueLabel.trailingAnchor.constraint(equalTo: utxosWalletButton.leadingAnchor, constant: -8.0),
             avaiableFoundsTitleLabel.topAnchor.constraint(equalTo: balanceValueLabel.bottomAnchor, constant: -1.0),
             avaiableFoundsTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
             avaiableFoundsValueLabel.topAnchor.constraint(equalTo: avaiableFoundsTitleLabel.bottomAnchor),
             avaiableFoundsValueLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
+            avaiableFoundsValueLabel.trailingAnchor.constraint(equalTo: utxosWalletButton.leadingAnchor, constant: -8.0),
             amountHelpButton.leadingAnchor.constraint(equalTo: avaiableFoundsTitleLabel.trailingAnchor, constant: 4.0),
             amountHelpButton.centerYAnchor.constraint(equalTo: avaiableFoundsTitleLabel.centerYAnchor),
             amountHelpButton.heightAnchor.constraint(equalToConstant: 18.0),
@@ -231,11 +229,11 @@ final class HomeView: UIView {
 
         NSLayoutConstraint.activate(constraints)
     }
-
-    // MARK: - Action Targets
-
-    @objc private func onAmountHelpButtonTapAction() {
-        onAmountHelpButtonTap?()
+    
+    private func setupCallbacks() {
+        amountHelpButton.onTap = { [weak self] in
+            self?.onAmountHelpButtonTap?()
+        }
     }
 
     // MARK: - Layout

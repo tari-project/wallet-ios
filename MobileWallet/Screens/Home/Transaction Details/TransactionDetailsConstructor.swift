@@ -40,7 +40,7 @@
 
 enum TransactionDetailsConstructor {
     
-    static func buildScene(transaction: TxProtocol) -> TransactionDetailsViewController {
+    static func buildScene(transaction: Transaction) -> TransactionDetailsViewController {
         let model = TransactionDetailsModel(transaction: transaction)
         return TransactionDetailsViewController(model: model)
     }

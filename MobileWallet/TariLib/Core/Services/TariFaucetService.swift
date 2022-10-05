@@ -1,0 +1,77 @@
+//  TariFaucetService.swift
+	
+/*
+	Package MobileWallet
+	Created by Adrian Truszczynski on 04/10/2022
+	Using Swift 5.0
+	Running on macOS 12.4
+
+	Copyright 2019 The Tari Project
+
+	Redistribution and use in source and binary forms, with or
+	without modification, are permitted provided that the
+	following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice,
+	this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above
+	copyright notice, this list of conditions and the following disclaimer in the
+	documentation and/or other materials provided with the distribution.
+
+	3. Neither the name of the copyright holder nor the names of
+	its contributors may be used to endorse or promote products
+	derived from this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+	CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+final class TariFaucetService: CoreTariService {
+    
+    enum InternalError: Error {
+        case invalidSignatureAndNonceString
+    }
+    
+    // MARK: - Actions
+    
+    func sign(message: String) throws -> MessageMetadata {
+        let data = try walletManager.sign(message: message)
+        let components = data.components(separatedBy: "|")
+        guard components.count == 2 else { throw InternalError.invalidSignatureAndNonceString }
+        return MessageMetadata(hex: components[0], nonce: components[1])
+    }
+    
+    @discardableResult func importUtxo(amount: UInt64, spendingKey: PrivateKey, sourcePublicKey: PublicKey, metadataSignaturePointer: OpaquePointer, senderOffsetPublicKey: PublicKey, scriptPrivateKey: PrivateKey, message: String) throws -> UInt64 {
+        
+        try walletManager.importExternalUtxoAsNonRewindable(
+            amount: amount,
+            spendingKey: spendingKey,
+            sourcePublicKey: sourcePublicKey,
+            metadataSignaturePointer: metadataSignaturePointer,
+            senderOffsetPublicKey: senderOffsetPublicKey,
+            scriptPrivateKey: scriptPrivateKey,
+            message: message
+        )
+    }
+    
+    func commitmentSignature(publicNonce: Data, u: Data, v: Data) throws -> OpaquePointer {
+        
+        let publicNonceBytes = try ByteVector(data: publicNonce)
+        let uBytes = try ByteVector(data: u)
+        let vBytes = try ByteVector(data: v)
+        
+        return try walletManager.commitmentSignatureCreateFromBytes(publicNonceBytes: publicNonceBytes, uBytes: uBytes, vBytes: vBytes)
+    }
+}

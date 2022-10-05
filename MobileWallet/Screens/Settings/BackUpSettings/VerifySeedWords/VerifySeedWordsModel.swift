@@ -65,11 +65,6 @@ final class VerifySeedWordsModel {
     
     init(inputData: InputData) {
         self.inputData = inputData
-        
-        if #available(iOS 15, *) {
-            fetchData()
-        }
-        
         setupCallbacks()
     }
     
@@ -82,16 +77,11 @@ final class VerifySeedWordsModel {
     // MARK: - Setups
     
     private func setupCallbacks() {
-        if #available(iOS 14.0, *) {
-            $selectedTokenModels
-                .map(\.isEmpty)
-                .assign(to: &$isSelectedTokenTipVisible)
-        } else {
-            $selectedTokenModels
-                .map(\.isEmpty)
-                .assign(to: \.isSelectedTokenTipVisible, on: self)
-                .store(in: &cancellables)
-        }
+        
+        $selectedTokenModels
+            .map(\.isEmpty)
+            .assign(to: \.isSelectedTokenTipVisible, on: self)
+            .store(in: &cancellables)
         
         $selectedTokenModels
             .sink { [weak self] in self?.handle(selectedTokens: $0) }

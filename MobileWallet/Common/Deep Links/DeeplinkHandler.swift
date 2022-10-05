@@ -144,7 +144,7 @@ enum DeeplinkHandler {
         contentSection.update(name: name, peer: peer)
         
         let buttonSection = PopUpComponentsFactory.makeButtonsView(models: [
-            PopUpDialogButtonModel(title: localized("add_base_node_overlay.button.confirm"), type: .normal, callback: { try? BaseNodeManager.addBaseNode(name: name, peer: peer) }),
+            PopUpDialogButtonModel(title: localized("add_base_node_overlay.button.confirm"), type: .normal, callback: { try? Tari.shared.connection.addBaseNode(name: name, peer: peer) }),
             PopUpDialogButtonModel(title: localized("common.close"), type: .text)
         ])
         
