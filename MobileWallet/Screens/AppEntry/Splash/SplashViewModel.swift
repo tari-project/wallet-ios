@@ -125,7 +125,7 @@ final class SplashViewModel {
         Task {
             do {
                 status = StatusModel(status: .working, statusRepresentation: .content)
-                try await startWallet()
+                try await connectToWallet()
                 status = StatusModel(status: .success, statusRepresentation: .content)
             } catch {
                 handle(error: error)
@@ -138,7 +138,7 @@ final class SplashViewModel {
             do {
                 let statusRepresentation = status?.statusRepresentation ?? .content
                 status = StatusModel(status: .working, statusRepresentation: statusRepresentation)
-                try await startWallet()
+                try await connectToWallet()
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
             } catch {
                 self.handle(error: error)
@@ -146,9 +146,10 @@ final class SplashViewModel {
         }
     }
     
-    private func startWallet() async throws {
+    private func connectToWallet() async throws {
         try await Tari.shared.startWallet()
         try Tari.shared.keyValues.set(key: .network, value: NetworkManager.shared.selectedNetwork.name)
+        Tari.shared.canAutomaticalyReconnectWallet = true
     }
     
     private func handle(completion: Subscribers.Completion<Error>) -> Error? {

@@ -97,6 +97,8 @@ final class Tari: MainServiceable {
     var isWalletExist: Bool { (try? connectedDatabaseDirectory.checkResourceIsReachable()) ?? false }
     var torBridgesConfiguration: BridgesConfiguration { torManager.usedBridgesConfiguration }
     
+    var canAutomaticalyReconnectWallet: Bool = false
+    
     private let torManager = TorManager()
     private let walletManager = FFIWalletManager()
     private var cancellables = Set<AnyCancellable>()
@@ -181,10 +183,15 @@ final class Tari: MainServiceable {
     }
     
     private func connect() {
-        Task { try? await torManager.reinitiateConnection() }
+        Task {
+            try? await torManager.reinitiateConnection()
+            guard canAutomaticalyReconnectWallet, !walletManager.isWalletConnected else { return }
+            try? await startWallet()
+        }
     }
     
     private func disconnect() {
+        walletManager.disconnectWallet()
         Task { await torManager.stop() }
     }
     
