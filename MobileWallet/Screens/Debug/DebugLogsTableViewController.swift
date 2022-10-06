@@ -78,6 +78,10 @@ class DebugLogsTableViewController: UITableViewController {
             }
         }
     }
+    
+    private var logsURLs: [URL] {
+        (try? Tari.shared.logsURLs) ?? []
+    }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -219,7 +223,7 @@ class DebugLogsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentLogFile != nil ? logLines.count : TariLib.shared.allLogFiles.count
+        return currentLogFile != nil ? logLines.count : logsURLs.count
     }
 
     override func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
@@ -237,10 +241,10 @@ class DebugLogsTableViewController: UITableViewController {
             cell.textLabel?.text = logLines[indexPath.row]
             cell.textLabel?.numberOfLines = 10
         } else {
-            let url = TariLib.shared.allLogFiles[indexPath.row]
+            let url = logsURLs[indexPath.row]
             let filename = url.lastPathComponent
 
-            var labelText = TariLib.shared.logFilePath.contains(filename) ? "\(filename) (current)" : filename
+            var labelText = Tari.shared.logFilePath.contains(filename) ? "\(filename) (current)" : filename
 
             do {
                 let attr = try FileManager.default.attributesOfItem(atPath: url.path)
@@ -268,7 +272,7 @@ class DebugLogsTableViewController: UITableViewController {
         }
 
         let logsVC = DebugLogsTableViewController()
-        logsVC.currentLogFile = TariLib.shared.allLogFiles[indexPath.row]
+        logsVC.currentLogFile = logsURLs[indexPath.row]
         navigationController?.pushViewController(logsVC, animated: true)
     }
 }

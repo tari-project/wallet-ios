@@ -87,24 +87,17 @@ final class NotificationManager {
     private let options: UNAuthorizationOptions = [.alert, .sound, .badge]
 
     private var hasRegisteredToken: Bool { UserDefaults.standard.bool(forKey: NotificationManager.hasRegisteredTokenKey) }
-    private var cancelables = Set<AnyCancellable>()
+    private var cancellables = Set<AnyCancellable>()
     
     private init() {
         setupWalletStateHandler()
     }
     
-    private func setupWalletStateHandler() {
-        
-        TariLib.shared.walletStatePublisher
-            .sink { [weak self] in
-                switch $0 {
-                case .started:
-                    self?.requestAuthorization()
-                case .starting, .notReady, .startFailed:
-                    break
-                }
-            }
-            .store(in: &cancelables)
+    func setupWalletStateHandler() {
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
+            .filter { _ in Tari.shared.isWalletExist }
+            .sink { [weak self] _ in self?.requestAuthorization() }
+            .store(in: &cancellables)
     }
 
     func requestAuthorization(_ completionHandler: ((Bool) -> Void)? = nil) {
@@ -150,7 +143,6 @@ final class NotificationManager {
     }
 
     func handleForegroundNotification(_ notification: UNNotification, completionHandler: (UNNotificationPresentationOptions) -> Void) {
-        try? TariLib.shared.tariWallet?.syncBaseNode()
         if notification.request.identifier == NotificationIdentifier.scheduledBackupFailure.rawValue {
             completionHandler([.alert, .badge, .sound])
         }
@@ -195,17 +187,17 @@ final class NotificationManager {
         TariLogger.verbose("Registering device token with public key")
 
         do {
-            let signature = try signRequestMessage(apnsDeviceToken)
+            let messageData = try sign(message: apnsDeviceToken)
 
             let requestPayload = try JSONEncoder().encode(
                 TokenRegistrationServerRequest(
                     token: apnsDeviceToken,
-                    signature: signature.hex,
-                    public_nonce: signature.nonce
+                    signature: messageData.metadata.hex,
+                    public_nonce: messageData.metadata.nonce
                 )
             )
             pushServerRequest(
-                path: "/register/\(signature.publicKey.hex.0)",
+                path: "/register/\(messageData.hex)",
                 requestPayload: requestPayload,
                 onSuccess: {
                     UserDefaults.standard.set(true, forKey: NotificationManager.hasRegisteredTokenKey)
@@ -218,56 +210,39 @@ final class NotificationManager {
         }
     }
 
-    func sendToRecipient(_ toPublicKey: PublicKey, onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
-        let signature = try signRequestMessage(toPublicKey.hex.0)
+    func sendToRecipient(recipientHex: String, onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
+        let messageData = try sign(message: recipientHex)
 
         let requestPayload = try JSONEncoder().encode(
             SendNotificationServerRequest(
-                from_pub_key: signature.publicKey.hex.0,
-                signature: signature.hex,
-                public_nonce: signature.nonce
+                from_pub_key: messageData.hex,
+                signature: messageData.metadata.hex,
+                public_nonce: messageData.metadata.nonce
             )
         )
 
-        pushServerRequest(path: "/send/\(toPublicKey.hex.0)", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
+        pushServerRequest(path: "/send/\(recipientHex)", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
     }
 
     // TODO remove this is local push notifications work better
     func cancelReminders(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
-        let signature = try signRequestMessage("cancel-reminders")
-
+        let messageData = try sign(message: "cancel-reminders")
         let requestPayload = try JSONEncoder().encode(
             CancelRemindersServerRequest(
-                pub_key: signature.publicKey.hex.0,
-                signature: signature.hex,
-                public_nonce: signature.nonce
+                pub_key: messageData.hex,
+                signature: messageData.metadata.hex,
+                public_nonce: messageData.metadata.nonce
             )
         )
 
         pushServerRequest(path: "/cancel-reminders", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
     }
-
-    private func signRequestMessage(_ message: String) throws -> Signature {
-        guard let wallet = TariLib.shared.tariWallet else {
-            throw WalletErrors.walletNotInitialized
-        }
-
-        let (pubKey, pubKeyError) = wallet.publicKey
-        guard pubKeyError == nil else {
-            throw pubKeyError!
-        }
-
-        let (pubKeyHex, hexError) = pubKey!.hex
-        guard hexError == nil else {
-            throw hexError!
-        }
-
-        guard let apiKey = TariSettings.shared.pushServerApiKey else {
-            throw PushNotificationServerError.missingApiKey
-        }
-
-        // TODO add apiKey when new push server redeployed
-        return try wallet.signMessage("\(apiKey)\(pubKeyHex)\(message)")
+    
+    private func sign(message: String) throws -> (hex: String, metadata: MessageMetadata) {
+        let publicKeyHex = try Tari.shared.walletPublicKey.byteVector.hex
+        guard let apiKey = TariSettings.shared.pushServerApiKey else { throw PushNotificationServerError.missingApiKey }
+        let metadata = try Tari.shared.faucet.sign(message: "\(apiKey)\(publicKeyHex)\(message)")
+        return (hex: publicKeyHex, metadata: metadata)
     }
 
     private func pushServerRequest(path: String, requestPayload: Data, onSuccess: @escaping () -> Void, onError: @escaping (Error) -> Void) {

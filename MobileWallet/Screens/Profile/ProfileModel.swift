@@ -64,7 +64,7 @@ final class ProfileModel {
     @Published private(set) var description: String?
     @Published private(set) var isReconnectButtonVisible: Bool = false
     @Published private(set) var qrCodeImage: UIImage?
-    @Published private(set) var error: MessageModel?
+    @Published private(set) var errorMessage: MessageModel?
     @Published private(set) var yatButtonState: YatButtonState = .hidden
     @Published private(set) var yatPublicKey: String?
     
@@ -83,27 +83,15 @@ final class ProfileModel {
     // MARK: - Initialisers
     
     init() {
+        updateData()
         setupCallbacks()
     }
     
     // MARK: - Setups
     
     private func setupCallbacks() {
-        
-        TariLib.shared.walletStatePublisher
-            .filter {
-                switch $0 {
-                case .started, .startFailed:
-                    return true
-                case .notReady, .starting:
-                    return false
-                }
-            }
-            .sink { [weak self] _ in self?.updateData() }
-            .store(in: &cancellables)
-        
         $yatButtonState
-            .sink { [weak self] in self?.updatePresentedData(yatButtonState: $0) }
+            .sink { [weak self] in try? self?.updatePresentedData(yatButtonState: $0) }
             .store(in: &cancellables)
     }
     
@@ -121,22 +109,21 @@ final class ProfileModel {
     }
     
     func reconnectYat() {
-        yatPublicKey = publicKey?.hex.0
+        yatPublicKey = try? publicKey?.byteVector.hex
     }
     
     private func updateData() {
-        
-        guard let publicKey = TariLib.shared.tariWallet?.publicKey.0, publicKey.hexDeeplink.1 == nil, let deeplinkData = publicKey.hexDeeplink.0.data(using: .utf8) else {
+        do {
+            let walletPublicKey = try Tari.shared.walletPublicKey
+            let deeplinkData = try walletPublicKey.byteVector.hex.data(using: .utf8) ?? Data()
+            publicKey = walletPublicKey
+            qrCodeImage = QRCodeFactory.makeQrCode(data: deeplinkData)
+            updateYatIdData()
+        } catch {
             qrCodeImage = nil
             emojiData = nil
-            error = MessageModel(title: localized("profile_view.error.qr_code.title"), message: localized("wallet.error.failed_to_access"), type: .error)
-            return
+            errorMessage = MessageModel(title: localized("profile_view.error.qr_code.title"), message: localized("wallet.error.failed_to_access"), type: .error)
         }
-        
-        self.publicKey = publicKey
-        qrCodeImage = QRCodeFactory.makeQrCode(data: deeplinkData)
-        
-        updateYatIdData()
     }
     
     func updateYatIdData() {
@@ -165,7 +152,7 @@ final class ProfileModel {
             return
         }
         
-        isYatOutOfSync = walletAddress != publicKey?.hex.0
+        isYatOutOfSync = walletAddress != (try? publicKey?.byteVector.hex)
     }
     
     private func handle(completion: Subscribers.Completion<APIError>) {
@@ -179,14 +166,14 @@ final class ProfileModel {
     
     private func show(error: Error?) {
         yatButtonState = .hidden
-        self.error = ErrorMessageManager.errorModel(forError: error)
+        self.errorMessage = ErrorMessageManager.errorModel(forError: error)
     }
     
-    private func updatePresentedData(yatButtonState: YatButtonState) {
+    private func updatePresentedData(yatButtonState: YatButtonState) throws {
         switch yatButtonState {
         case .hidden, .loading, .off:
             guard let publicKey = publicKey else { return }
-            emojiData = EmojiData(emojiID: publicKey.emojis.0, hex: publicKey.hex.0, copyText: localized("emoji.copy"), tooltipText: localized("emoji.hex_tip"))
+            emojiData = EmojiData(emojiID: try publicKey.emojis, hex: try publicKey.byteVector.hex, copyText: localized("emoji.copy"), tooltipText: localized("emoji.hex_tip"))
             description = walletDescription
             isReconnectButtonVisible = false
         case .on:

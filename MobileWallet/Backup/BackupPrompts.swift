@@ -134,29 +134,19 @@ private class BackupPrompts {
     private init () {}
 
     func check(_ vc: UIViewController) {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return
-        }
 
         for type in PromptType.allCases.reversed() {
             // If they have been shown this once, skip over this prompt
             guard UserDefaults.standard.bool(forKey: type.userDefaultsKey) == false else {
                 continue
             }
-
-            var incomingTxs = wallet.pendingInboundTxs.0?.count.0 ?? 0
-            let completedTxs: [CompletedTx] = (wallet.completedTxs.0?.list.0 ?? [])
-            completedTxs.forEach { (tx) in
-                if tx.direction == .inbound {
-                    incomingTxs += 1
-                }
-            }
-
-            let balance = (try? wallet.totalBalance) ?? MicroTari()
+            
+            let incomingTransactionsCount = Tari.shared.transactions.pendingInbound.count + Tari.shared.transactions.completed.filter { (try? $0.isOutboundTransaction) == false }.count
+            let balance = Tari.shared.walletBalance.balance.total
             let triggers = type.triggers
 
-            guard incomingTxs >= triggers.numberOfIncomingTxs &&
-            balance.rawValue >= triggers.totalBalance.rawValue &&
+            guard incomingTransactionsCount >= triggers.numberOfIncomingTxs &&
+            balance >= triggers.totalBalance.rawValue &&
                 ICloudBackup.shared.isValidBackupExists() == triggers.hasConnectediCloud &&
                 (ICloudBackup.shared.lastBackup?.isEncrypted ?? false) == triggers.backupIsEncrypted &&
                 !ICloudBackup.shared.iCloudBackupsIsOn

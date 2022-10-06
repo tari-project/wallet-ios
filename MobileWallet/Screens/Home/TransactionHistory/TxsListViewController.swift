@@ -40,9 +40,10 @@
 
 import UIKit
 import Lottie
+import Combine
 
 protocol TxsTableViewDelegate: AnyObject {
-    func onTxSelect(_: Any)
+    func onTxSelect(_: Transaction)
     func onScrollTopHit(_: Bool)
 }
 
@@ -88,6 +89,8 @@ final class TxsListViewController: UIViewController {
     private var hasCancelledTxWhileUpdating = false
 
     private var refreshTimeoutTimer: Timer?
+    private var transactionModelsCancellables = Set<AnyCancellable>()
+    private var cancellables = Set<AnyCancellable>()
 
     var backgroundType: BackgroundViewType = .none {
         didSet {
@@ -108,29 +111,16 @@ final class TxsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewSetup()
-        DispatchQueue.main.asyncAfter(
-            deadline: .now() + 1.0 + CATransaction.animationDuration()
-        ) {
-            [weak self] in
-            guard let self = self else { return }
-            self.registerEvents()
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(self.registerEvents),
-                name: UIApplication.willEnterForegroundNotification,
-                object: nil
-            )
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(self.unregisterEvents),
-                name: UIApplication.didEnterBackgroundNotification,
-                object: nil
-            )
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 + CATransaction.animationDuration()) { [weak self] in
+            self?.setupEvents()
         }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        
+        setupTransactionsCallbacks()
+        
         if backgroundType != .intro {
             safeRefreshTable()
         }
@@ -142,71 +132,118 @@ final class TxsListViewController: UIViewController {
             animatedRefresher.stateType = .none
         }
     }
-
-    func safeRefreshTable(_ completion:(() -> Void)? = nil) {
-        if TariLib.shared.walletState == .started {
-            refreshTable(completion)
-        } else {
-            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
-                [weak self]
-                (sender) in
-                guard let self = self else { return }
-                let walletState = sender!.object as! TariLib.WalletState
-                switch walletState {
-                case .started:
-                    TariEventBus.unregister(self, eventType: .walletStateChanged)
-                    self.refreshTable(completion)
-                case .startFailed:
-                    TariEventBus.unregister(self, eventType: .walletStateChanged)
-                default:
-                    break
-                }
-            }
-        }
-     }
-
-    private func refreshTable(_ completion:(() -> Void)?) {
-        txDataUpdateQueue.async(flags: .barrier) {
-            if self.fetchTx() == true {
-               DispatchQueue.main.async {
-                   [weak self] in
-                   self?.tableView.reloadData()
-               }
-           }
-           DispatchQueue.main.async { completion?() }
-        }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        cancelTransactionsCallbacks()
     }
 
-    @discardableResult
-    private func fetchTx() -> Bool {
-
-        guard let wallet = TariLib.shared.tariWallet else { return false }
-
-        do {
-            var pendingTransactions: [TxProtocol] = try wallet.pendingInboundTransactions().list.0
-            pendingTransactions += try wallet.pendingOutboundTransactions().list.0
-            var completedTransactions: [TxProtocol] = try wallet.completedTransactions().list.0
-            completedTransactions += try wallet.cancelledTransactions().list.0
-
-            pendingTxModels = pendingTransactions
-                .sorted {
-                    guard let lDate = $0.date.0, let rDate = $1.date.0 else { return false }
-                    return lDate > rDate
-                }
-                .map { TxTableViewModel(tx: $0) }
-
-            completedTxModels = completedTransactions
-                .sorted {
-                    guard let lDate = $0.date.0, let rDate = $1.date.0 else { return false }
-                    return lDate > rDate
-                }
-                .map { TxTableViewModel(tx: $0) }
-
-            return true
-        } catch {
-            PopUpPresenter.show(message: MessageModel(title: localized("tx_list.error.grouped_txs.title"), message: localized("tx_list.error.grouped_txs.descritpion"), type: .error))
-            return false
+    func safeRefreshTable(_ completion:(() -> Void)? = nil) {
+        txDataUpdateQueue.async(flags: .barrier) {
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.reloadData()
+                completion?()
+            }
         }
+    }
+    
+    private func setupTransactionsCallbacks() {
+        
+        Publishers.CombineLatest(Tari.shared.transactions.$pendingInbound, Tari.shared.transactions.$pendingOutbound)
+            .map { $0 as [Transaction] + $1 }
+            .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
+            .tryMap { try $0.map { try TxTableViewModel(transaction: $0) }}
+            .replaceError(with: [])
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.pendingTxModels = $0 }
+            .store(in: &transactionModelsCancellables)
+        
+        Publishers.CombineLatest(Tari.shared.transactions.$completed, Tari.shared.transactions.$cancelled)
+            .map { $0 + $1 }
+            .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
+            .tryMap { try $0.map { try TxTableViewModel(transaction: $0) }}
+            .replaceError(with: [])
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.completedTxModels = $0 }
+            .store(in: &transactionModelsCancellables)
+    }
+    
+    private func cancelTransactionsCallbacks() {
+        transactionModelsCancellables.forEach { $0.cancel() }
+        transactionModelsCancellables.removeAll()
+    }
+    
+    private func setupEvents() {
+        
+        WalletCallbacksManager.shared.receivedTransaction
+            .sink { [weak self] _ in
+                self?.safeRefreshTable()
+                guard self?.animatedRefresher.stateType == .updateData else { return }
+                self?.hasReceivedTxWhileUpdating = true
+            }
+            .store(in: &cancellables)
+        
+        WalletCallbacksManager.shared.receivedTransactionReply
+            .sink { [weak self] _ in self?.safeRefreshTable() }
+            .store(in: &cancellables)
+        
+        WalletCallbacksManager.shared.receivedFinalizedTransaction
+            .sink { [weak self] _ in self?.safeRefreshTable() }
+            .store(in: &cancellables)
+        
+        WalletCallbacksManager.shared.transactionBroadcast
+            .sink { [weak self] _ in
+                self?.safeRefreshTable()
+                guard self?.animatedRefresher.stateType == .updateData else { return }
+                self?.hasBroadcastTxWhileUpdating = true
+            }
+            .store(in: &cancellables)
+        
+        WalletCallbacksManager.shared.transactionMined
+            .sink { [weak self] _ in
+                self?.safeRefreshTable()
+                guard self?.animatedRefresher.stateType == .updateData else { return }
+                self?.hasMinedTxWhileUpdating = true
+            }
+            .store(in: &cancellables)
+        
+        WalletCallbacksManager.shared.unconfirmedTransactionMined
+            .sink { [weak self] _ in self?.safeRefreshTable() }
+            .store(in: &cancellables)
+        
+        WalletCallbacksManager.shared.fauxTransactionConfirmed
+            .sink { [weak self] _ in self?.safeRefreshTable() }
+            .store(in: &cancellables)
+        
+        WalletCallbacksManager.shared.fauxTransactionUnconfirmed
+            .sink { [weak self] _ in self?.safeRefreshTable() }
+            .store(in: &cancellables)
+        
+        WalletCallbacksManager.shared.transactionSendResult
+            .sink { [weak self] _ in self?.safeRefreshTable() }
+            .store(in: &cancellables)
+        
+        WalletCallbacksManager.shared.transactionCancellation
+            .sink { [weak self] _ in
+                self?.safeRefreshTable()
+                guard self?.animatedRefresher.stateType == .updateData else { return }
+                self?.hasCancelledTxWhileUpdating = true
+            }
+            .store(in: &cancellables)
+        
+        Tari.shared.connectionMonitor.$syncStatus
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.handle(syncStatus: $0) }
+            .store(in: &cancellables)
+        
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.animatedRefresher.animateOut()
+                self?.tableView.endRefreshing()
+                self?.animatedRefresher.stateType = .none
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: - ViewModel related
@@ -230,95 +267,58 @@ final class TxsListViewController: UIViewController {
     private func tableViewModel(forIndexPath indexPath: IndexPath) -> TxTableViewModel {
         tableViewModels(forSection: indexPath.section)[indexPath.row]
     }
+    
+    // MARK: - Handlers
+    
+    private func handle(syncStatus: TariValidationService.SyncStatus) {
+        switch syncStatus {
+        case .idle:
+            break
+        case .syncing:
+            self.animateToSyncingState()
+        case .synced:
+            self.animateToSyncState()
+        case .failed:
+            break
+        }
+    }
+    
+    // MARK: - Animations
+    
+    private func animateToSyncingState() {
+        guard animatedRefresher.stateType == .none else { return }
+        animatedRefresher.updateState(.loading, animated: false)
+        animatedRefresher.animateIn()
+    }
+    
+    private func animateToSyncState() {
+        animatedRefresher.stateType = .updateData
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in guard let self = self else { return }
+            if self.animatedRefresher.stateType != .none {
+                self.animatedRefresher.playUpdateSequence(
+                    hasReceivedTx: self.hasReceivedTxWhileUpdating,
+                    hasMinedTx: self.hasMinedTxWhileUpdating,
+                    hasBroadcastTx: self.hasBroadcastTxWhileUpdating,
+                    hasCancelledTx: self.hasCancelledTxWhileUpdating
+                ) { [weak self] in
+                    self?.endRefreshingWithSuccess()
+                }
+            }
+            NotificationManager.shared.cancelAllFutureReminderNotifications()
+        }
+    }
 }
 
 // MARK: AnimatedRefreshingView behavior
 extension TxsListViewController {
-    
-    func switchBaseNode(syncAfterSetting: Bool) throws {
-        
-        let currentBaseNode = NetworkManager.shared.selectedNetwork.selectedBaseNode
-        var newBaseNode: BaseNode!
-
-        repeat {
-            newBaseNode = try NetworkManager.shared.selectedNetwork.randomNode()
-        } while newBaseNode == nil || currentBaseNode == newBaseNode;
-
-        try TariLib.shared.update(baseNode: newBaseNode, syncAfterSetting: syncAfterSetting)
-    }
-
-    private func onRefreshTimeout() {
-        TariLogger.info("Refresh has timed out.")
-        stopListeningToBaseNodeSync()
-        refreshTimeoutTimer?.invalidate()
-        refreshTimeoutTimer = nil
-        
-        do {
-            try switchBaseNode(syncAfterSetting: false)
-            beginRefreshing()
-        } catch {
-            endRefreshingWithSuccess()
-        }
-    }
-
-    private func beginRefreshing() {
-        if animatedRefresher.stateType != .none {
-            return
-        }
-        animatedRefresher.updateState(.loading, animated: false)
-        animatedRefresher.animateIn()
-
-        if refreshTimeoutTimer == nil {
-            refreshTimeoutTimer = Timer.scheduledTimer(
-                withTimeInterval: refreshTimeoutPeriodSecs,
-                repeats: false
-            ) {
-                [weak self]
-                (timer) in
-                timer.invalidate()
-                self?.onRefreshTimeout()
-            }
-        }
-        let connectionState = LegacyConnectionMonitor.shared.state
-        if connectionState.torBootstrapProgress == 100 {
-            syncBaseNode()
-        } else {
-            TariEventBus.onMainThread(self, eventType: .torConnectionProgress) {
-                [weak self] (result) in
-                guard let self = self else { return }
-                if let progress: Int = result?.object as? Int, progress == 100 {
-                    TariEventBus.unregister(self, eventType: .torConnectionProgress)
-                    TariEventBus.unregister(self, eventType: .torConnectionFailed)
-                    self.beginRefreshing()
-                }
-            }
-            TariEventBus.onMainThread(self, eventType: .torConnectionFailed) {
-                [weak self] (_) in
-                guard let self = self else { return }
-                TariEventBus.unregister(self, eventType: .torConnectionProgress)
-                TariEventBus.unregister(self, eventType: .torConnectionFailed)
-                self.refreshTimeoutTimer?.invalidate()
-                self.refreshTimeoutTimer = nil
-                self.endRefreshingWithSuccess()
-            }
-        }
-    }
 
     private func syncBaseNode() {
         do {
-            if let wallet = TariLib.shared.tariWallet {
-                hasReceivedTxWhileUpdating = false
-                hasBroadcastTxWhileUpdating = false
-                hasMinedTxWhileUpdating = false
-                hasCancelledTxWhileUpdating = false
-                startListeningToBaseNodeSync()
-                try wallet.syncBaseNode()
-            } else {
-                TariLogger.error("Cannot get wallet.")
-                refreshTimeoutTimer?.invalidate()
-                refreshTimeoutTimer = nil
-                endRefreshingWithSuccess()
-            }
+            try Tari.shared.validation.sync()
+            hasReceivedTxWhileUpdating = false
+            hasBroadcastTxWhileUpdating = false
+            hasMinedTxWhileUpdating = false
+            hasCancelledTxWhileUpdating = false
         } catch {
             refreshTimeoutTimer?.invalidate()
             refreshTimeoutTimer = nil
@@ -381,7 +381,7 @@ extension TxsListViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        actionDelegate?.onTxSelect(tableViewModel(forIndexPath: indexPath).tx)
+        actionDelegate?.onTxSelect(tableViewModel(forIndexPath: indexPath).transaction)
     }
 }
 
@@ -400,121 +400,6 @@ extension TxsListViewController: UIScrollViewDelegate {
         } else {
             actionDelegate?.onScrollTopHit(false)
         }
-    }
-}
-
-// MARK: TariBus events observation
-extension TxsListViewController {
-
-    @objc private func registerEvents() {
-        // Event for table refreshing
-        TariEventBus.onMainThread(self, eventType: .txListUpdate) {
-            [weak self] (_) in
-            guard let self = self else { return }
-            /*
-            if self.animatedRefresher.stateType != .updateData {
-                self.safeRefreshTable()
-            }
-             */
-            // temporary :: display all changes immediately
-            // regardless of refresh status
-            self.safeRefreshTable()
-        }
-
-        TariEventBus.onBackgroundThread(self, eventType: .receivedTx) {
-            [weak self] (_) in
-            guard let self = self else { return }
-            if self.animatedRefresher.stateType == .updateData {
-                self.hasReceivedTxWhileUpdating = true
-            }
-        }
-
-        TariEventBus.onBackgroundThread(self, eventType: .txBroadcast) {
-            [weak self] (_) in
-            guard let self = self else { return }
-            if self.animatedRefresher.stateType == .updateData {
-                self.hasBroadcastTxWhileUpdating = true
-            }
-        }
-
-        TariEventBus.onBackgroundThread(self, eventType: .txMined) {
-            [weak self] (_) in
-            guard let self = self else { return }
-            if self.animatedRefresher.stateType == .updateData {
-                self.hasMinedTxWhileUpdating = true
-            }
-        }
-
-        TariEventBus.onBackgroundThread(self, eventType: .txCancellation) {
-            [weak self] (_) in
-            guard let self = self else { return }
-            if self.animatedRefresher.stateType == .updateData {
-                self.hasCancelledTxWhileUpdating = true
-            }
-        }
-
-        TariEventBus.onBackgroundThread(self, eventType: .txValidationSuccessful) {
-            (_) in
-            if let wallet = TariLib.shared.tariWallet {
-                do {
-                    let successful = try wallet.restartTxBroadcast()
-                    TariLogger.info("Restart tx broadcast is successful? \(successful)")
-                } catch {
-                    TariLogger.error("Error while restarting tx broadcast: \(error.localizedDescription)")
-                }
-            }
-        }
-    }
-
-    private func startListeningToBaseNodeSync() {
-        
-        TariEventBus.onMainThread(self, eventType: .baseNodeSyncComplete) { [weak self] result in
-            
-            guard let self = self, let result: [String: Any] = result?.object as? [String: Any] else { return }
-            guard let isSuccess = result["success"] as? Bool, isSuccess else {
-                
-                do {
-                    TariLogger.warn("Base node sync failed or base node not in sync. Setting another random peer.")
-                    try self.switchBaseNode(syncAfterSetting: true)
-                } catch {
-                    TariLogger.error("Failed to add random base node peer")
-                }
-                
-                // retry sync
-                self.syncBaseNode()
-                
-                return
-            }
-            
-            self.refreshTimeoutTimer?.invalidate()
-            self.refreshTimeoutTimer = nil
-            self.animatedRefresher.stateType = .updateData
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in guard let self = self else { return }
-                if self.animatedRefresher.stateType != .none {
-                    self.animatedRefresher.playUpdateSequence(
-                        hasReceivedTx: self.hasReceivedTxWhileUpdating,
-                        hasMinedTx: self.hasMinedTxWhileUpdating,
-                        hasBroadcastTx: self.hasBroadcastTxWhileUpdating,
-                        hasCancelledTx: self.hasCancelledTxWhileUpdating
-                    ) { [weak self] in
-                        self?.endRefreshingWithSuccess()
-                    }
-                }
-                NotificationManager.shared.cancelAllFutureReminderNotifications()
-            }
-        }
-    }
-
-    private func stopListeningToBaseNodeSync() {
-        TariEventBus.unregister(self, eventType: .baseNodeSyncComplete)
-    }
-
-    @objc private func unregisterEvents() {
-        animatedRefresher.animateOut()
-        tableView.endRefreshing()
-        animatedRefresher.stateType = .none
-        TariEventBus.unregister(self)
     }
 }
 
@@ -713,6 +598,6 @@ extension TxsListViewController {
     }
 
     @objc private func refresh(_ sender: AnyObject) {
-        beginRefreshing()
+        syncBaseNode()
     }
 }

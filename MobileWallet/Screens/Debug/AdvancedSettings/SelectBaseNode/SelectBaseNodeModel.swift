@@ -46,14 +46,13 @@ final class SelectBaseNodeModel {
         let isSelected: Bool
         let canBeRemoved: Bool
     }
+    
+    // MARK: - View Model
 
-    final class ViewModel {
-        @Published var nodes: [NodeModel] = []
-    }
+    @Published var nodes: [NodeModel] = []
+    @Published var errorMessaage: MessageModel?
 
     // MARK: - Properties
-
-    var viewModel = ViewModel()
 
     private var predefinedNodes: [BaseNode] { NetworkManager.shared.selectedNetwork.baseNodes }
     private var avaiableNodes: [BaseNode] { NetworkManager.shared.selectedNetwork.allBaseNodes }
@@ -67,7 +66,7 @@ final class SelectBaseNodeModel {
     }
 
     private func updateViewModelNodes() {
-        viewModel.nodes = avaiableNodes
+        nodes = avaiableNodes
             .enumerated()
             .map {
                 let isSelected = $0 == selectedNodeIndex
@@ -90,9 +89,13 @@ final class SelectBaseNodeModel {
 
     func selectNode(index: Int) {
         let baseNode = avaiableNodes[index]
-        try? TariLib.shared.update(baseNode: baseNode, syncAfterSetting: true)
-        selectedNodeIndex = index
-        updateViewModelNodes()
+        do {
+            try Tari.shared.connection.select(baseNode: baseNode)
+            selectedNodeIndex = index
+            updateViewModelNodes()
+        } catch {
+            errorMessaage = ErrorMessageManager.errorModel(forError: error)
+        }
     }
 
     func deleteNode(index: Int) {

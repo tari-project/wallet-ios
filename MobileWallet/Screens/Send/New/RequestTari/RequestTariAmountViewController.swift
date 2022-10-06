@@ -75,13 +75,13 @@ final class RequestTariAmountViewController: UIViewController {
         
         model.$qrCode
             .compactMap { $0 }
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.showQrCode(image: $0) }
             .store(in: &cancellables)
         
         model.$deeplink
             .compactMap { $0 }
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.showShareDialog(data: $0) }
             .store(in: &cancellables)
         

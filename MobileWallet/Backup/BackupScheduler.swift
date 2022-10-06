@@ -38,7 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+import Combine
 
 class BackupScheduler: NSObject {
     private let autoBackupTimeInterval: TimeInterval = 60.0 // 1 min
@@ -66,6 +66,7 @@ class BackupScheduler: NSObject {
     static let shared = BackupScheduler()
     private var timer = Timer()
     private(set) var scheduledBackupStarted: Bool = false
+    private var cancellables = Set<AnyCancellable>()
 
     override init() {
         super.init()
@@ -73,15 +74,17 @@ class BackupScheduler: NSObject {
     }
 
     func startObserveEvents() {
-        TariEventBus.onMainThread(self, eventType: .requiresBackup) {
-            [weak self] (_) in
-            self?.scheduleBackup()
-        }
+        
+        cancellables.forEach { $0.cancel() }
+        
+        Tari.shared.transactions.onUpdate
+            .sink { [weak self] in self?.scheduleBackup() }
+            .store(in: &cancellables)
     }
 
     func stopObserveEvents() {
         timer.invalidate()
-        TariEventBus.unregister(self)
+        cancellables.forEach { $0.cancel() }
     }
 
     func scheduleBackup(immediately: Bool = false) {
@@ -99,22 +102,6 @@ class BackupScheduler: NSObject {
     }
 
     private func createWalletBackup() {
-        guard TariLib.shared.walletState == .started else {
-            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
-                [weak self]
-                (sender) in
-                guard let self = self else { return }
-                let walletState = sender!.object as! TariLib.WalletState
-                switch walletState {
-                case .started:
-                    TariEventBus.unregister(self, eventType: .walletStateChanged)
-                    self.createWalletBackup()
-                default:
-                    break
-                }
-            }
-            return
-        }
         scheduledBackupStarted = true
         do {
             let password = AppKeychainWrapper.loadBackupPasswordFromKeychain()
@@ -151,5 +138,4 @@ extension BackupScheduler: ICloudBackupObserver {
             self.scheduledBackupStarted = false
         }
     }
-
 }

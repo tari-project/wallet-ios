@@ -125,7 +125,8 @@ class ICloudBackup: NSObject {
 
     private var backgroundTaskIdentifier: UIBackgroundTaskIdentifier?
 
-    private var directory: URL { TariLib.shared.connectedDatabaseDirectory }
+    private var connectedDatabaseDirectory = Tari.shared.connectedDatabaseDirectory
+    private var walletPublicKeyHex: String? { try? Tari.shared.walletPublicKey.byteVector.hex }
     private let fileName = "Tari-Aurora-Backup"
     private var observers = NSPointerArray.weakObjects()
 
@@ -255,17 +256,17 @@ class ICloudBackup: NSObject {
     }
 
     func restoreWallet(password: String?, completion: @escaping (_ error: Error?) -> Void) {
-        let dbDirectory = TariLib.shared.connectedDatabaseDirectory
         do {
             try FileManager.default.createDirectory(
-                at: dbDirectory,
+                at: connectedDatabaseDirectory,
                 withIntermediateDirectories: true,
                 attributes: nil
             )
-            restoreBackup(password: password, to: dbDirectory) { [weak self] error in
+            restoreBackup(password: password, to: connectedDatabaseDirectory) { [weak self] error in
+                guard let self = self else { return }
                 if error == nil {
                     TariSettings.shared.walletSettings.configurationState = .authorized
-                    self?.iCloudBackupsIsOn = true
+                    self.iCloudBackupsIsOn = true
 
                     BackupScheduler.shared.startObserveEvents()
 
@@ -274,7 +275,7 @@ class ICloudBackup: NSObject {
                     }
                 } else {
                     do {
-                        try FileManager.default.removeItem(at: dbDirectory)
+                        try FileManager.default.removeItem(at: self.connectedDatabaseDirectory)
                     } catch {
                         completion(error)
                         return
@@ -288,7 +289,7 @@ class ICloudBackup: NSObject {
     }
 
     func removeCurrentWalletBackup() {
-        if TariLib.shared.walletPublicKeyHex != nil {
+        if walletPublicKeyHex != nil {
             do {
                 try FileManager.default.removeBackup(getLastWalletBackup())
             } catch {
@@ -676,7 +677,7 @@ extension ICloudBackup {
         let iCloudFolderURL = try iCloudDirectory().appendingPathComponent(NetworkManager.shared.selectedNetwork.name)
         do {
             // if walletKeyHex != nil we find last backup for current wallet
-            if let walletKeyHex = TariLib.shared.walletPublicKeyHex {
+            if let walletKeyHex = walletPublicKeyHex {
                 if let lastWalletFolder = try FileManager.default.contentsOfDirectory(
                     atURL: iCloudFolderURL,
                     sortedBy: .created,
@@ -715,8 +716,8 @@ extension ICloudBackup {
 
     private func zipWalletDatabase() throws -> URL {
 
-        defer { try? TariLib.shared.tariWallet?.enableEncryption() }
-        try TariLib.shared.tariWallet?.disableEncryption()
+        defer { try? Tari.shared.encryption.apply() }
+        try Tari.shared.encryption.remove()
 
         let archiveName = fileName + ".zip"
         let tmpDirectory = try getTempDirectory()
@@ -726,8 +727,8 @@ extension ICloudBackup {
             try FileManager.default.removeItem(atPath: archiveURL.path)
         }
 
-        let sqlite3File = TariLib.shared.connectedDatabaseName.appending(".sqlite3")
-        let originalFileURL = directory.appendingPathComponent(sqlite3File)
+        let sqlite3File = Tari.shared.databaseName.appending(".sqlite3")
+        let originalFileURL = connectedDatabaseDirectory.appendingPathComponent(sqlite3File)
         let dbDirectory = TariSettings.shared.isUnitTesting ? try getTestDataBaseUrl() : originalFileURL
 
         try FileManager().zipItem(
@@ -773,7 +774,7 @@ extension ICloudBackup {
     }
 
     private func remoteDirectoryPath() throws -> String {
-        guard let publicKey = TariLib.shared.walletPublicKeyHex else { throw ICloudBackupError.unableCreateBackupFolder }
+        guard let publicKey = walletPublicKeyHex else { throw ICloudBackupError.unableCreateBackupFolder }
         return "\(NetworkManager.shared.selectedNetwork.name)/\(publicKey)"
     }
 

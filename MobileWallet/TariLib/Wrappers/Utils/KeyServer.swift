@@ -70,7 +70,7 @@ final class KeyServer {
         NetworkManager.shared.selectedNetwork.tickerSymbol,
         NetworkManager.shared.selectedNetwork.tickerSymbol
     )
-    private let signature: Signature
+    private let messageMetadata: MessageMetadata
     private let url: URL?
   
     private let jsonEncoder: JSONEncoder = {
@@ -80,23 +80,11 @@ final class KeyServer {
     }()
 
     init() throws {
-        guard let wallet = TariLib.shared.tariWallet else {
-            throw WalletErrors.walletNotInitialized
-        }
 
-        let (publicKey, publicKeyError) = wallet.publicKey
-        guard publicKeyError == nil else {
-            throw publicKeyError!
-        }
-
-        let (publicKeyHex, hexError) = publicKey!.hex
-        guard hexError == nil else {
-            throw hexError!
-        }
-
+        let publicKeyHex = try Tari.shared.walletPublicKey.byteVector.hex
         let message = "\(MESSAGE_PREFIX) \(publicKeyHex)"
-
-        self.signature = try wallet.signMessage(message)
+        
+        messageMetadata = try Tari.shared.faucet.sign(message: message)
         
         self.url = NetworkManager.shared.selectedNetwork.faucetURL?
             .appendingPathComponent("free_tari/allocate_max")
@@ -105,7 +93,7 @@ final class KeyServer {
 
     func requestDrop(onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
         
-        guard let wallet = TariLib.shared.tariWallet, let url = self.url else { return }
+        guard let url = url else { return }
 
         guard KeyServer.isRequestInProgress == false else {
             TariLogger.warn("Key server request already in progress")
@@ -113,18 +101,8 @@ final class KeyServer {
         }
 
         KeyServer.isRequestInProgress = true
-
-        let (completedTxs, completedTxsError) = wallet.completedTxs
-        guard completedTxs != nil else {
-            KeyServer.isRequestInProgress = false
-            throw completedTxsError!
-        }
-
-        let (completedTxsCount, completedTxsCountError) = completedTxs!.count
-        guard completedTxsCountError == nil else {
-            KeyServer.isRequestInProgress = false
-            throw completedTxsCountError!
-        }
+        
+        let completedTxsCount = Tari.shared.transactions.completed.count
 
         // If the user has a completed, just ignore this request as it's not a fresh install
         guard completedTxsCount == 0 else {
@@ -138,8 +116,8 @@ final class KeyServer {
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try jsonEncoder.encode(
             KeyServerRequest(
-                signature: signature.hex,
-                publicNonce: signature.nonce,
+                signature: messageMetadata.hex,
+                publicNonce: messageMetadata.nonce,
                 network: NetworkManager.shared.selectedNetwork.name
             )
         )
@@ -229,21 +207,7 @@ final class KeyServer {
             }
 
             do {
-                let utxo = UTXO(
-                    privateKeyHex: key1,
-                    value: value1,
-                    message: self.TARIBOT_MESSAGE1,
-                    sourcePublicKeyHex: returnPubKeyHex,
-                    publicNonce: publicNonce1,
-                    uValue: uValue1,
-                    vValue: vValue1,
-                    senderOffsetPublicKeyHex: senderOffsetPublicKey1
-                )
-
-                // Add TariBot as a contact
-                try wallet.addUpdateContact(alias: "TariBot", publicKeyHex: utxo.sourcePublicKeyHex)
-                try wallet.importUtxo(utxo)
-
+                try self.importUtxo(sourcePublicKeyHex: returnPubKeyHex, spendingKeyHex: key1, nonce: publicNonce1, uData: uValue1, vData: vValue1, senderOffsetPublicKeyHex: senderOffsetPublicKey1, amount: value1, message: self.TARIBOT_MESSAGE1)
             } catch {
                 onRequestError(error)
                 return
@@ -290,71 +254,92 @@ final class KeyServer {
 
         task.resume()
     }
+    
+    private func importUtxo(sourcePublicKeyHex: String, spendingKeyHex: String, nonce: Data, uData: Data, vData: Data, senderOffsetPublicKeyHex: String, amount: UInt64, message: String) throws {
+        
+        let sourcePublicKey = try PublicKey(hex: sourcePublicKeyHex)
+        let contact = try Contact(alias: "TariBot", publicKeyPointer: sourcePublicKey.pointer)
+        try Tari.shared.contacts.upsert(contact: contact)
+        
+        let spendingKey = try PrivateKey(hex: spendingKeyHex)
+        let signaturePointer = try Tari.shared.faucet.commitmentSignature(publicNonce: nonce, u: uData, v: vData)
+        let senderOffsetPublicKey = try PublicKey(hex: senderOffsetPublicKeyHex)
+        
+        try Tari.shared.faucet.importUtxo(
+            amount: amount,
+            spendingKey: spendingKey,
+            sourcePublicKey: sourcePublicKey,
+            metadataSignaturePointer: signaturePointer,
+            senderOffsetPublicKey: senderOffsetPublicKey,
+            scriptPrivateKey: spendingKey,
+            message: message
+        )
+    }
 
     private func hasSentATx() -> Bool {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return false
+        
+        guard Tari.shared.transactions.pendingOutbound.isEmpty else { return true }
+        
+        do {
+            return try Tari.shared.transactions.completed.contains { try $0.isOutboundTransaction }
+        } catch {
+            TariLogger.error("Failed to load completed tx", error: error)
         }
-
-        guard let (pendingOutboundTxs) = wallet.pendingOutboundTxs.0 else {
-            TariLogger.error("Failed to load pendingOutboundTxs")
-            return false
-        }
-
-        if pendingOutboundTxs.count.0 > 0 {
-            return true
-        }
-
-        guard let (completedTxs) = wallet.completedTxs.0 else {
-            TariLogger.error("Failed to load completedTxs")
-            return false
-        }
-
-        let completedCount = completedTxs.count.0
-        guard completedCount > 0 else {
-            return false
-        }
-
-        for n in 0...completedCount - 1 {
-            do {
-                let tx = try completedTxs.at(position: n)
-                if tx.direction == .outbound {
-                    return true
-                }
-            } catch {
-                TariLogger.error("Failed to load completed tx", error: error)
-            }
-        }
-
+        
         return false
     }
 
     func importSecondUtxo(onComplete: @escaping (() -> Void)) throws {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return
-        }
-
-        if let data = UserDefaults.standard.value(forKey: KeyServer.secondUtxoStorageKey) as? Data {
-            guard hasSentATx() else {
-                return
-            }
-
-            do {
-                let utxo = try PropertyListDecoder().decode(UTXO.self, from: data)
-                TariLogger.info("Importing stored 2nd utxo")
-
-                try wallet.importUtxo(utxo)
-
-                UserDefaults.standard.removeObject(forKey: KeyServer.secondUtxoStorageKey)
-                onComplete()
-            } catch {
-                TariLogger.error("Unable to load stored UTXO", error: error)
-            }
+        
+        guard let data = UserDefaults.standard.value(forKey: KeyServer.secondUtxoStorageKey) as? Data, hasSentATx() else { return }
+        
+        do {
+            let utxo = try PropertyListDecoder().decode(UTXO.self, from: data)
+            TariLogger.info("Importing stored 2nd utxo")
+            
+            try importUtxo(
+                sourcePublicKeyHex: utxo.sourcePublicKeyHex,
+                spendingKeyHex: utxo.privateKeyHex,
+                nonce: utxo.publicNonce,
+                uData: utxo.uValue,
+                vData: utxo.vValue,
+                senderOffsetPublicKeyHex: utxo.senderOffsetPublicKeyHex,
+                amount: utxo.value,
+                message: utxo.message
+            )
+            
+            UserDefaults.standard.removeObject(forKey: KeyServer.secondUtxoStorageKey)
+            onComplete()
+        } catch {
+            TariLogger.error("Unable to load stored UTXO", error: error)
         }
     }
 
     private func storeUtxo(utxo: UTXO) throws {
         TariLogger.verbose("Storing UTXO for later use")
         UserDefaults.standard.set(try? PropertyListEncoder().encode(utxo), forKey: KeyServer.secondUtxoStorageKey)
+    }
+}
+
+extension KeyServerError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .server(let statusCode, let message):
+            if message != nil {
+                return message
+            }
+
+            return localized("key_server.error.server") + " \(statusCode)."
+        case .unknown:
+            return localized("key_server.error.unknown")
+        case .invalidSignature:
+            return localized("key_server.error.invalid_signature")
+        case .tooManyAllocationRequests:
+            return localized("key_server.error.too_many_allocation_requests")
+        case .missingResponse:
+            return localized("key_server.error.missing_response")
+        case .responseInvalid:
+            return localized("key_server.error.response_invalid")
+        }
     }
 }

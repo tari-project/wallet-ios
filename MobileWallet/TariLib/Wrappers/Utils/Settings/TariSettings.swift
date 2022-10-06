@@ -53,8 +53,6 @@ struct TariSettings {
 
     let walletSettings = WalletSettingsManager()
 
-    let discoveryTimeoutSec: UInt64 = 20
-    let safMessageDurationSec: UInt64 = 10800
     let deeplinkURI = "tari"
 
     let iCloudContainerIdentifier = "iCloud.com.tari.wallet"

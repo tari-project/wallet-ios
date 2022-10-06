@@ -191,24 +191,14 @@ final class AddAmountViewController: UIViewController {
     }
 
     private func displayAliasOrEmojiId() {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return
-        }
-
         do {
-            guard let contact = try wallet.contacts.0?.find(publicKey: paymentInfo.publicKey) else { return }
-
-            if contact.alias.0.trimmingCharacters(in: .whitespaces).isEmpty {
-                try navigationBar.showEmojiId(paymentInfo.publicKey, inViewController: self)
-            } else {
-                navigationBar.title = contact.alias.0
+            guard let contact = try Tari.shared.contacts.findContact(hex: paymentInfo.publicKey.byteVector.hex) else {
+                navigationBar.showEmojiId(emojiID: try paymentInfo.publicKey.emojis, hex: try paymentInfo.publicKey.byteVector.hex, presenterController: self)
+                return
             }
+            navigationBar.title = try contact.alias
         } catch {
-            do {
-                try navigationBar.showEmojiId(paymentInfo.publicKey, inViewController: self)
-            } catch {
-                PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
-            }
+            PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
         }
     }
 
@@ -289,7 +279,7 @@ final class AddAmountViewController: UIViewController {
             return
         }
 
-        if numberOfDecimals(in: updatedText) > MicroTari.MAX_FRACTION_DIGITS {
+        if numberOfDecimals(in: updatedText) > MicroTari.maxFractionDigits {
             return
         }
 
@@ -350,7 +340,7 @@ final class AddAmountViewController: UIViewController {
             return false
         }
 
-        guard numberOfDecimals(in: string) <= MicroTari.MAX_FRACTION_DIGITS else {
+        guard numberOfDecimals(in: string) <= MicroTari.maxFractionDigits else {
             return false
         }
 
@@ -421,12 +411,12 @@ final class AddAmountViewController: UIViewController {
 
     private func showAvailableBalance() {
         
-        guard let totalBalance = try? TariLib.shared.tariWallet?.totalBalance else  { return }
+        let totalBalance = Tari.shared.walletBalance.balance.total
         
         walletBalanceStackView.isHidden = false
         warningView.isHidden = false
         warningView.layer.borderWidth = 0
-        walletBalanceLabel.text = totalBalance.formatted
+        walletBalanceLabel.text = MicroTari(totalBalance).formatted
         balanceExceededLabel.isHidden = true
         balancePendingLabel.isHidden = true
         walletBalanceTitleLabel.isHidden = false
@@ -467,45 +457,34 @@ final class AddAmountViewController: UIViewController {
     
     private func calculateAmount() -> MicroTari? {
         
-        guard let wallet = TariLib.shared.tariWallet else { return nil }
+        let availableBalance = Tari.shared.walletBalance.balance.available
+        var tariAmount: MicroTari?
         
         do {
-            let availableBalance = try wallet.balance().available
-
-            var tariAmount: MicroTari?
-            do {
-                tariAmount = try MicroTari(tariValue: rawInput)
-            } catch {
-                showInvalidNumberError(error)
-            }
-
-            guard let amount = tariAmount else { return nil }
-
-            var fee = MicroTari(0)
-            do {
-                fee = try wallet.estimateTxFee(
-                    amount: amount,
-                    feePerGram: Wallet.defaultFeePerGram,
-                    kernelCount: Wallet.defaultKernelCount,
-                    outputCount: Wallet.defaultOutputCount
-            )
-            } catch {
-                return nil
-            }
-
-            if amount.rawValue + fee.rawValue  > availableBalance {
-                PopUpPresenter.show(message: MessageModel(
-                    title: localized("add_amount.info.wait_completion_previous_tx.title"),
-                    message: localized("add_amount.info.wait_completion_previous_tx.description"),
-                    type: .normal
-                ))
-                return nil
-            }
-            
-            return amount
+            tariAmount = try MicroTari(tariValue: rawInput)
+        } catch {
+            showInvalidNumberError(error)
+        }
+        
+        guard let amount = tariAmount else { return nil }
+        
+        let fee: UInt64
+        do {
+            fee = try Tari.shared.fees.estimateFee(amount: amount.rawValue)
         } catch {
             return nil
         }
+        
+        if amount.rawValue + fee > availableBalance {
+            PopUpPresenter.show(message: MessageModel(
+                title: localized("add_amount.info.wait_completion_previous_tx.title"),
+                message: localized("add_amount.info.wait_completion_previous_tx.description"),
+                type: .normal
+            ))
+            return nil
+        }
+        
+        return amount
     }
     
     private func updateNextStepElements(isEnabled: Bool) {
@@ -904,14 +883,14 @@ extension AddAmountViewController {
     private func handle(error: Error) {
         
         switch error {
-        case WalletErrors.notEnoughFunds:
+        case WalletError.notEnoughFunds:
             guard let totalBalance = fetchTotalBalance() else { return }
             balanceExceededLabel.isHidden = false
             balancePendingLabel.isHidden = true
             showBalanceExceeded(balance: totalBalance.formatted)
             walletBalanceStackView.isHidden = false
             updateNextStepElements(isEnabled: false)
-        case WalletErrors.fundsPending:
+        case WalletError.fundsPending:
             guard let totalBalance = fetchTotalBalance() else { return }
             balanceExceededLabel.isHidden = true
             balancePendingLabel.isHidden = false
@@ -942,15 +921,8 @@ extension AddAmountViewController {
     }
     
     private func fetchTotalBalance() -> MicroTari? {
-        
-        guard let wallet = TariLib.shared.tariWallet else { return nil }
-        
-        do {
-            return try wallet.totalBalance
-        } catch {
-            PopUpPresenter.show(message: MessageModel(title: localized("add_amount.error.available_balance.title"), message: localized("add_amount.error.available_balance.description"), type: .error))
-            return nil
-        }
+        let totalBalance = Tari.shared.walletBalance.balance.total
+        return MicroTari(totalBalance)
     }
 }
 

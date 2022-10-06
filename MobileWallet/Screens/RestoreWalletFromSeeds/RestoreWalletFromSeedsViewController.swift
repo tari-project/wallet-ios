@@ -118,12 +118,12 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
             .store(in: &cancelables)
         
         model.viewModel.$seedWordModels
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .assign(to: \.seedWords, on: mainView.tokenView)
             .store(in: &cancelables)
         
         mainView.tokenView.$inputText
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .assign(to: \.inputText, on: model)
             .store(in: &cancelables)
         

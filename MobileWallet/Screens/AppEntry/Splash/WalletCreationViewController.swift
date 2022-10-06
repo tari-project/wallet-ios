@@ -43,7 +43,7 @@ import Lottie
 import LocalAuthentication
 import AVFoundation
 
-class WalletCreationViewController: UIViewController {
+final class WalletCreationViewController: UIViewController {
     typealias LottieAnimation = Animation.LottieAnimation
 
     // MARK: - States
@@ -406,10 +406,11 @@ extension WalletCreationViewController {
         stackView.setCustomSpacing(16, after: secondLabel)
 
         continueButton.setTitle(localized("common.continue"), for: .normal)
-
-        if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
-            emojiIdView.setupView(
-                pubKey: pubKey,
+        
+        if let walletPublicKey = try? Tari.shared.walletPublicKey, let emojiID = try? walletPublicKey.emojis, let hex = try? walletPublicKey.byteVector.hex {
+            emojiIdView.setup(
+                emojiID: emojiID,
+                hex: hex,
                 textCentered: true,
                 inViewController: self,
                 showContainerViewBlur: false

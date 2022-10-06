@@ -68,8 +68,6 @@ final class ContextualButton: BaseButton {
     
     private var labelLeadingConstraint: NSLayoutConstraint?
     
-    private var testConst: NSLayoutConstraint?
-    
     // MARK: - Initialisers
     
     init() {

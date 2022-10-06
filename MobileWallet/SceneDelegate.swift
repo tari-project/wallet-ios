@@ -96,34 +96,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         ShortcutsManager.executeQueuedShortcut()
     }
 
-    private func onTorSuccess(_ onComplete: @escaping () -> Void) {
-        // Handle if tor ports opened later
-        TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
-            guard let self = self else { return }
-            TariEventBus.unregister(self, eventType: .torPortsOpened)
-            onComplete()
-        }
-        if TariLib.shared.areTorPortsOpen {
-            TariEventBus.unregister(self, eventType: .torPortsOpened)
-            onComplete()
-        }
-    }
-
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
 
         // Remove badges from push notifications
         UIApplication.shared.applicationIconBadgeNumber = 0
-        LegacyConnectionMonitor.shared.start()
-        TariLib.shared.startTor()
-        // Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
-        if TariLib.shared.isWalletExist {
-            onTorSuccess {
-                guard TariLib.shared.walletState == .notReady else { return }
-                TariLib.shared.startWallet(seedWords: nil)
-            }
-        }
+        
         if UserDefaults.Key.backupOperationAborted.boolValue()
             && ICloudBackup.shared.iCloudBackupsIsOn
             && !ICloudBackup.shared.inProgress {
@@ -138,9 +117,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
-        LegacyConnectionMonitor.shared.stop()
-        TariLib.shared.stopWallet()
-        TariLib.shared.stopTor()
         ICloudBackup.shared.backgroundBackupWallet()
     }
 

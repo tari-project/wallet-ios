@@ -53,7 +53,7 @@ final class RestoreWalletFromSeedsProgressModel {
     // MARK: - Properties
 
     let viewModel = ViewModel()
-    private var cancelables: Set<AnyCancellable> = []
+    private var cancellables: Set<AnyCancellable> = []
 
     // MARK: - Initializers
 
@@ -67,38 +67,26 @@ final class RestoreWalletFromSeedsProgressModel {
         
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
-                self?.resumeRestoringWallet()
+                self?.startRestoringWallet()
             }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
         
-        TariEventBus
-            .events(forType: .restoreWalletStatusUpdate)
-            .compactMap { $0.object as? RestoreWalletStatus }
+        WalletCallbacksManager.shared.walletRecoveryStatusUpdate
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(restoreStatus: $0) }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions
 
     func startRestoringWallet() {
         do {
-            let result = try TariLib.shared.tariWallet?.startRecovery()
-            if result == false {
+            let isSuccess = try Tari.shared.recovery.startRecovery(recoveredOutputMessage: localized("transaction.one_sided_payment.note.recovered"))
+            if !isSuccess {
                 handleStartRecoveryFailure()
             }
         } catch {
             handleStartRecoveryFailure()
-        }
-    }
-    
-    private func resumeRestoringWallet() {
-        WalletConnectivityManager.startWallet { [weak self] result in
-            switch result {
-            case .success:
-                self?.startRestoringWallet()
-            case .failure:
-                self?.handleStartRecoveryFailure()
-            }
         }
     }
 

@@ -66,8 +66,7 @@ final class SelectNetworkModel {
 
     func update(selectedIndex: Int) {
         guard viewModel.selectedIndex != selectedIndex else { return }
-        TariLib.shared.stopWallet()
-        NetworkManager.shared.selectedNetwork = networks[selectedIndex]
+        Tari.shared.select(network: networks[selectedIndex])
         AppRouter.transitionToSplashScreen()
     }
 }

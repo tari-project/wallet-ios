@@ -52,6 +52,9 @@ final class HomeViewModel {
     // MARK: - View Model
     
     @Published private(set) var connectionStatusImage: UIImage?
+    @Published private(set) var balance: String = ""
+    @Published private(set) var availableBalance: String = ""
+    @Published private(set) var isNetworkCompatible: Bool = true
     
     // MARK: - Properties
     
@@ -61,29 +64,58 @@ final class HomeViewModel {
     
     init() {
         setupCallbacks()
+        checkNetworkCompatibility()
     }
     
     // MARK: - Setups
     
     private func setupCallbacks() {
-        ConnectionMonitor.shared.$status
-            .compactMap { $0 }
-            .sink { [weak self] in self?.handle(connectionStatus: $0) }
+        
+        let monitor = Tari.shared.connectionMonitor
+        
+        Publishers.CombineLatest4(monitor.$networkConnection, monitor.$torConnection, monitor.$baseNodeConnection, monitor.$syncStatus)
+            .sink { [weak self] in self?.handle(networkConnection: $0, torConnection: $1, baseNodeConnection: $2, syncStatus: $3) }
             .store(in: &cancellables)
+        
+        Tari.shared.walletBalance.$balance
+            .sink { [weak self] in self?.handle(walletBalance: $0) }
+            .store(in: &cancellables)
+    }
+    
+    // MARK: - Actions
+    
+    func updateCompatibleNetworkName() {
+        _ = try? Tari.shared.keyValues.set(key: .network, value: NetworkManager.shared.selectedNetwork.name)
+    }
+    
+    func deleteWallet() {
+        Tari.shared.deleteWallet()
+        BackupScheduler.shared.stopObserveEvents()
+    }
+    
+    private func checkNetworkCompatibility() {
+        guard let persistedNetworkName = try? Tari.shared.keyValues.value(key: .network), persistedNetworkName == NetworkManager.shared.selectedNetwork.name else {
+            isNetworkCompatible = false
+            return
+        }
+        
+        isNetworkCompatible = true
     }
     
     // MARK: - Helpers
     
-    private func handle(connectionStatus: ConnectionMonitor.StatusModel) {
+    private func handle(networkConnection: NetworkMonitor.Status, torConnection: TorManager.ConnectionStatus, baseNodeConnection: BaseNodeConnectivityStatus, syncStatus: TariValidationService.SyncStatus) {
         
-        switch (connectionStatus.networkConnection, connectionStatus.torConnection, connectionStatus.baseNodeConnectivity, connectionStatus.syncStatus) {
+        switch (networkConnection, torConnection, baseNodeConnection, syncStatus) {
         case (.disconnected, _, _, _):
             connectionStatusImage = offlineIcon
         case (.connected, .disconnected, _, _):
             connectionStatusImage = offlineIcon
-        case (.connected, .failed, _, _):
+        case (.connected, .disconnecting, _, _):
             connectionStatusImage = offlineIcon
         case (.connected, .connecting, _, _):
+            connectionStatusImage = limitedConnectionIcon
+        case (.connected, .portsOpen, _, _):
             connectionStatusImage = limitedConnectionIcon
         case (.connected, .connected, .offline, _):
             connectionStatusImage = limitedConnectionIcon
@@ -91,12 +123,17 @@ final class HomeViewModel {
             connectionStatusImage = limitedConnectionIcon
         case (.connected, .connected, .online, .idle):
             connectionStatusImage = limitedConnectionIcon
-        case (.connected, .connected, .online, .failure):
+        case (.connected, .connected, .online, .failed):
             connectionStatusImage = limitedConnectionIcon
-        case (.connected, .connected, .online, .pending):
+        case (.connected, .connected, .online, .syncing):
             connectionStatusImage = onlineIcon
-        case (.connected, .connected, .online, .success):
+        case (.connected, .connected, .online, .synced):
             connectionStatusImage = onlineIcon
         }
+    }
+    
+    private func handle(walletBalance: WalletBalance) {
+        balance = MicroTari(walletBalance.available + walletBalance.incoming).formatted
+        availableBalance = MicroTari(walletBalance.available).formatted
     }
 }

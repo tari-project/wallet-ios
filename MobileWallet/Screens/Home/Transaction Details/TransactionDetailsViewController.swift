@@ -71,8 +71,6 @@ final class TransactionDetailsViewController: UIViewController {
         super.viewDidLoad()
         setupCallbacks()
         hideKeyboardWhenTappedAroundOrSwipedDown()
-        model.fetchData()
-        
         Tracker.shared.track("/home/tx_details", "Transaction Details")
     }
     
@@ -81,44 +79,54 @@ final class TransactionDetailsViewController: UIViewController {
     private func setupCallbacks() {
         
         model.$title
+            .receive(on: DispatchQueue.main)
             .assign(to: \.title, on: mainView.navigationBar)
             .store(in: &cancellables)
         
         Publishers.Zip(model.$subtitle, model.$isFailure)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.navigationBar.update(subtitle: $0, isCompact: $1) }
             .store(in: &cancellables)
         
         model.$transactionState
+            .receive(on: DispatchQueue.main)
             .assign(to: \.transactionState, on: mainView)
             .store(in: &cancellables)
         
         model.$amount
+            .receive(on: DispatchQueue.main)
             .assign(to: \.text, on: mainView.valueView.valueLabel)
             .store(in: &cancellables)
         
         model.$fee
+            .receive(on: DispatchQueue.main)
             .assign(to: \.fee, on: mainView.valueView)
             .store(in: &cancellables)
         
         model.$transactionDirection
+            .receive(on: DispatchQueue.main)
             .assign(to: \.title, on: mainView.contactView)
             .store(in: &cancellables)
         
         model.$emojiIdViewModel
+            .receive(on: DispatchQueue.main)
             .assign(to: \.emojiIdViewModel, on: mainView.contactView.contentView)
             .store(in: &cancellables)
         
         model.$isContactSectionVisible
             .map { !$0 }
+            .receive(on: DispatchQueue.main)
             .assign(to: \.isHidden, on: mainView.contactView)
             .store(in: &cancellables)
         
         model.$isAddContactButtonVisible
             .map { !$0 }
+            .receive(on: DispatchQueue.main)
             .assign(to: \.isHidden, on: mainView.contactView.contentView.addContactButton)
             .store(in: &cancellables)
         
         model.$isNameSectionVisible
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.mainView.contactNameView.isHidden = !$0
                 self?.mainView.noteSeparatorView.isHidden = !$0
@@ -128,20 +136,23 @@ final class TransactionDetailsViewController: UIViewController {
             .store(in: &cancellables)
         
         model.$userAlias
+            .receive(on: DispatchQueue.main)
             .assign(to: \.text, on: mainView.contactNameView.contentView.textField)
             .store(in: &cancellables)
         
         model.$note
+            .receive(on: DispatchQueue.main)
             .assign(to: \.note, on: mainView.noteView.contentView)
             .store(in: &cancellables)
         
         model.$gifMedia
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .assign(to: \.gifMedia, on: mainView.noteView.contentView)
             .store(in: &cancellables)
         
         model.$wasTransactionCanceled
             .filter { $0 }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 UINotificationFeedbackGenerator().notificationOccurred(.success)
                 self?.navigationController?.popToRootViewController(animated: true)
@@ -150,6 +161,7 @@ final class TransactionDetailsViewController: UIViewController {
         
         model.$isBlockExplorerActionAvailable
             .map { !$0 }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.mainView.blockExplorerSeparatorView.isHidden = $0
                 self?.mainView.blockExplorerView.isHidden = $0
@@ -158,11 +170,13 @@ final class TransactionDetailsViewController: UIViewController {
         
         model.$linkToOpen
             .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
             .sink { WebBrowserPresenter.open(url: $0) }
             .store(in: &cancellables)
         
         model.$errorModel
             .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
         
@@ -203,12 +217,17 @@ final class TransactionDetailsViewController: UIViewController {
     }
     
     private func showTransactionCancellationConfirmation() {
-        let controller = UIAlertController(title: localized("tx_detail.tx_cancellation.title"), message: localized("tx_detail.tx_cancellation.message"), preferredStyle: .alert)
-        controller.addAction(UIAlertAction(title: localized("tx_detail.tx_cancellation.yes"), style: .destructive, handler: { [weak self] _ in
-            self?.model.cancelTransactionRequest()
-        }))
-        controller.addAction(UIAlertAction(title: localized("tx_detail.tx_cancellation.no"), style: .cancel))
         
-        present(controller, animated: true)
+        let model = PopUpDialogModel(
+            title: localized("tx_detail.tx_cancellation.title"),
+            message: localized("tx_detail.tx_cancellation.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("tx_detail.tx_cancellation.yes"), type: .destructive, callback: { [weak self] in self?.model.cancelTransactionRequest() }),
+                PopUpDialogButtonModel(title: localized("tx_detail.tx_cancellation.no"), type: .text)
+            ],
+            hapticType: .none
+        )
+        
+        PopUpPresenter.showPopUp(model: model)
     }
 }

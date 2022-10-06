@@ -166,37 +166,13 @@ class BackupWalletSettingsViewController: SettingsParentTableViewController {
     }
 
     private func createWalletBackup() {
-        if TariLib.shared.walletState != .started {
-            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
-                [weak self]
-                (sender) in
-                guard let self = self else { return }
-                let walletState = sender!.object as! TariLib.WalletState
-                switch walletState {
-                case .started:
-                    TariEventBus.unregister(self, eventType: .walletStateChanged)
-                    do {
-                        let password = AppKeychainWrapper.loadBackupPasswordFromKeychain()
-                        try ICloudBackup.shared.createWalletBackup(password: password)
-                    } catch {
-                        self.failedToCreateBackup(error: error)
-                    }
-                    self.reloadTableViewWithAnimation()
-                case .startFailed:
-                    TariEventBus.unregister(self, eventType: .walletStateChanged)
-                default:
-                    break
-                }
-            }
-        } else {
-            do {
-                let password = AppKeychainWrapper.loadBackupPasswordFromKeychain()
-                try ICloudBackup.shared.createWalletBackup(password: password)
-            } catch {
-                failedToCreateBackup(error: error)
-            }
-            reloadTableViewWithAnimation()
+        do {
+            let password = AppKeychainWrapper.loadBackupPasswordFromKeychain()
+            try ICloudBackup.shared.createWalletBackup(password: password)
+        } catch {
+            failedToCreateBackup(error: error)
         }
+        reloadTableViewWithAnimation()
     }
 
     override func failedToCreateBackup(error: Error) {
