@@ -65,8 +65,6 @@ enum AppRouter {
     
     static func transitionToOnboardingScreen(startFromLocalAuth: Bool) {
         
-        Tracker.shared.track("/onboarding/create_wallet", "Onboarding - Create Wallet")
-        
         let controller = WalletCreationViewController()
         controller.startFromLocalAuth = startFromLocalAuth
         

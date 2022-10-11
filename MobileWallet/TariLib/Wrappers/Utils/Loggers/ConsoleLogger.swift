@@ -1,10 +1,10 @@
-//  Tracker.swift
-
+//  ConsoleLogger.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/03/26
+	Created by Adrian Truszczynski on 11/10/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,34 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
-import MatomoTracker
+import os
 
-class Tracker {
-    private static let matomoUrl = "https://matomo.tari.com/matomo.php"
-    private static let matomoSiteId = "2"
+final class ConsoleLogger {}
 
-    private let matomoTracker: MatomoTracker
-
-    static let shared = Tracker()
-
-    private init() {
-        matomoTracker = MatomoTracker(siteId: Tracker.matomoSiteId, baseURL: URL(string: Tracker.matomoUrl)!)
-
-        if TariSettings.shared.environment != .production {
-            TariLogger.warn("Opting out of tracking")
-            matomoTracker.isOptedOut = true
-        }
-    }
-
-    func track(_ page: String, _ title: String) {
-        TariLogger.verbose("Tracking: \(page)")
-        let view: [String] = page.components(separatedBy: "?")
-        matomoTracker.track(view: view)
-    }
-
-    func track(eventWithCategory category: String, action: String, name: String? = nil) {
-        TariLogger.verbose("Tracking: \(action)")
-        matomoTracker.track(eventWithCategory: category, action: action, name: name, url: nil)
+extension ConsoleLogger: Logable {
+    
+    func log(message: String, domain: Logger.Domain, logLevel: Logger.Level) {
+        let formattedMessage = LogFormatter.formattedMessage(message: message, domain: domain, logLevel: logLevel, showPrefix: false)
+        os_log("%@", formattedMessage)
     }
 }

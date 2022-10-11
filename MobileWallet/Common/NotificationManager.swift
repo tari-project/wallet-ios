@@ -108,35 +108,33 @@ final class NotificationManager {
         }
 
         guard !hasRegisteredToken else {
-            TariLogger.verbose("Already registered for push notifications")
+            Logger.log(message: "Already registered for push notifications", domain: .general, level: .info)
             completionHandler?(true)
             return
         }
 
-        notificationCenter.requestAuthorization(options: options) { _, error in
-            guard error == nil else {
-                TariLogger.error("NotificationManager request authorization", error: error)
-                completionHandler?(false)
+        notificationCenter.requestAuthorization(options: options) { [weak self] _, error in
+            guard let error else {
+                self?.registerWithAPNS(completionHandler)
                 return
             }
-
-            self.registerWithAPNS(completionHandler)
+            Logger.log(message: "NotificationManager request authorization: \(error.localizedDescription)", domain: .general, level: .error)
+            completionHandler?(false)
         }
     }
 
     private func registerWithAPNS(_ completionHandler: ((Bool) -> Void)? = nil) {
-        TariLogger.verbose("Checking notification settings")
+        Logger.log(message: "Checking notification settings", domain: .general, level: .info)
         notificationCenter.getNotificationSettings { (settings) in
             if settings.authorizationStatus == .authorized {
                 completionHandler?(true)
-
-                TariLogger.info("Notifications authorized")
+                Logger.log(message: "Notifications authorized", domain: .general, level: .info)
                 DispatchQueue.main.async {
-                    TariLogger.info("Registering for remote notifications with Apple")
+                    Logger.log(message: "Registering for remote notifications with Apple", domain: .general, level: .info)
                     UIApplication.shared.registerForRemoteNotifications()
                 }
             } else {
-                TariLogger.warn("Notifications not authorized")
+                Logger.log(message: "Notifications not authorized", domain: .general, level: .warning)
                 completionHandler?(false)
             }
         }
@@ -164,7 +162,7 @@ final class NotificationManager {
 
         notificationCenter.add(request) { (error) in
             if let error = error {
-                TariLogger.error("Scheduling local push notification", error: error)
+                Logger.log(message: "Scheduling local push notification: \(error)", domain: .general, level: .error)
                 onCompletion?(false)
             } else {
                 onCompletion?(true)
@@ -184,7 +182,7 @@ final class NotificationManager {
     func registerDeviceToken(_ deviceToken: Data) {
         let apnsDeviceToken = deviceToken.map {String(format: "%02.2hhx", $0)}.joined()
 
-        TariLogger.verbose("Registering device token with public key")
+        Logger.log(message: "Registering device token with public key", domain: .general, level: .verbose)
 
         do {
             let messageData = try sign(message: apnsDeviceToken)
@@ -201,12 +199,12 @@ final class NotificationManager {
                 requestPayload: requestPayload,
                 onSuccess: {
                     UserDefaults.standard.set(true, forKey: NotificationManager.hasRegisteredTokenKey)
-                    TariLogger.info("Registered device token")
+                    Logger.log(message: "Registered device token", domain: .general, level: .info)
                 }) { (error) in
-                    TariLogger.error("Failed to register device token", error: error)
+                    Logger.log(message: "Failed to register device token: \(error.localizedDescription)", domain: .general, level: .error)
                 }
         } catch {
-            TariLogger.error("Failed to register device token. Will attempt again later.", error: error)
+            Logger.log(message: "Failed to register device token. Will attempt again later: \(error.localizedDescription)", domain: .general, level: .error)
         }
     }
 

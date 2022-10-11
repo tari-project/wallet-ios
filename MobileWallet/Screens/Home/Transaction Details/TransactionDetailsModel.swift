@@ -282,7 +282,7 @@ final class TransactionDetailsModel {
         GiphyCore.shared.gifByID(gifID) { [weak self] response, error in
             
             if let error = error {
-                TariLogger.error("Failed to load gif", error: error)
+                Logger.log(message: "Failed to load gif: \(error.localizedDescription)", domain: .general, level: .error)
                 return
             }
             

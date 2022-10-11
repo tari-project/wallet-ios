@@ -182,6 +182,10 @@ final class Tari: MainServiceable {
         NetworkManager.shared.selectedNetwork = network
     }
     
+    func log(message: String) {
+        try? walletManager.log(message: message)
+    }
+    
     private func connect() {
         Task {
             try? await torManager.reinitiateConnection()

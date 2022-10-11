@@ -106,7 +106,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         let archiveName = "\(dateString)-bug-report.zip"
 
         guard let archiveURL = FileManager.default.documentDirectory()?.appendingPathComponent(archiveName) else {
-            TariLogger.error("Failed to create archive URL")
+            Logger.log(message: "Failed to create archive URL", domain: .general, level: .error)
             throw DebugErrors.zipURL
         }
 
@@ -122,13 +122,13 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         do {
             try FileManager().zipItem(at: sourceURL, to: archiveURL)
         } catch {
-            TariLogger.error("Creation of ZIP archive failed with error", error: error)
+            Logger.log(message: "Creation of ZIP archive failed with error: \(error.localizedDescription)", domain: .general, level: .error)
             throw DebugErrors.createArchive
         }
 
         // Add log file entries
         guard let archive = Archive(url: archiveURL, accessMode: .update) else {
-            TariLogger.error("Failed to access archive")
+            Logger.log(message: "Failed to access archive", domain: .general, level: .error)
             throw DebugErrors.zipArchive
         }
 
@@ -169,8 +169,6 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         } else {
             shareFeedback()
         }
-
-        TariLogger.info("Feedback shared")
     }
 
     private func shareFeedback() {

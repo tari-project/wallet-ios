@@ -74,7 +74,6 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
         super.viewDidLoad()
         runBackgroundAnimation()
         setupBindings()
-        Tracker.shared.track("/home/send_tari/finalize", "Send Tari - Finalize")
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -118,7 +118,6 @@ final class HomeViewController: UIViewController {
         setupFloatingPanel()
         setupCallbacks()
         setupKeyServer()
-        Tracker.shared.track("/home", "Home - Transaction List")
         NotificationManager.shared.requestAuthorization()
     }
     
@@ -306,13 +305,13 @@ final class HomeViewController: UIViewController {
         do {
             keyServer = try KeyServer()
         } catch {
-            TariLogger.error("Failed to initialise KeyServer")
+            Logger.log(message: "Failed to initialise KeyServer", domain: .general, level: .error)
         }
     }
 
     private func requestKeyServerTokens() {
         guard let keyServer = keyServer else {
-            TariLogger.error("No KeyServer initialised")
+            Logger.log(message: "No KeyServer initialised", domain: .general, level: .error)
             return
         }
         
@@ -355,7 +354,7 @@ final class HomeViewController: UIViewController {
     // If we have a second stored utxo, import it
     private func checkImportSecondUtxo() {
         guard let keyServer = keyServer else {
-            TariLogger.error("No KeyServer initialised")
+            Logger.log(message: "No KeyServer initialised", domain: .general, level: .error)
             return
         }
         
@@ -364,7 +363,7 @@ final class HomeViewController: UIViewController {
                 PopUpPresenter.showStorePopUp()
             }
         } catch {
-            TariLogger.error("Failed to import 2nd UTXO", error: error)
+            Logger.log(message: "Failed to import 2nd UTXO: \(error.localizedDescription)", domain: .general, level: .error)
         }
     }
 
@@ -681,6 +680,6 @@ private extension PopUpPresenter {
     private static func openStoreWebpage() {
         guard let url = URL(string: TariSettings.shared.storeUrl) else { return }
         WebBrowserPresenter.open(url: url)
-        TariLogger.verbose("Opened store link")
+        Logger.log(message: "Opened store link", domain: .general, level: .verbose)
     }
 }

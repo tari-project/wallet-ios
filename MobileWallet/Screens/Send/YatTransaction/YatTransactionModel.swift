@@ -125,7 +125,7 @@ final class YatTransactionModel {
         }
         
         play(fileData: cachedFileData)
-        TariLogger.info("Play Yat visualisation from local cache")
+        Logger.log(message: "Play Yat visualisation from local cache", domain: .general, level: .info)
     }
     
     private func download(assetURL: URL) {
@@ -143,7 +143,7 @@ final class YatTransactionModel {
     private func save(videoData: Data, name: String) {
         guard let fileData = cacheManager.save(data: videoData, name: name) else { return }
         play(fileData: fileData)
-        TariLogger.info("Play Yat visualisation from web")
+        Logger.log(message:"Play Yat visualisation from web", domain: .general, level: .info)
     }
     
     private func play(fileData: YatCacheManager.FileData) {

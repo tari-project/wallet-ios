@@ -41,12 +41,13 @@
 import UIKit
 import CoreData
 import AVFoundation
-import Sentry
 import GiphyUISDK
 import GiphyCoreSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    
+    private let statusLoggerManager = StatusLoggerManager()
 
     func application(
         _ application: UIApplication,
@@ -54,7 +55,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     ) -> Bool {
         // Override point for customization after application launch.
         handleCommandLineArgs()
-        setupSentryCrashReporting()
 
         UNUserNotificationCenter.current().delegate = self
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
@@ -64,41 +64,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         if let giphyApiKey = TariSettings.shared.giphyApiKey {
             Giphy.configure(apiKey: giphyApiKey)
         }
-
+        
+        AppConfigurator.configureLoggers()
+        
         return true
-    }
-
-    private func setupSentryCrashReporting() {
-        guard TariSettings.shared.environment != .debug,
-              let sentryPublicDSN = TariSettings.shared.sentryPublicDSN else {
-            return
-        }
-        SentrySDK.start(options: [
-            "dsn": sentryPublicDSN,
-            "debug": false
-        ])
-        TariLogger.info("Sentry crash reporting has been started.")
-
-        TariLogger.breadcrumbCallback = { (message, loggerLevel) in
-            var sentryLevel: SentryLevel = .debug
-            switch loggerLevel {
-            case .error:
-                sentryLevel = .error
-            case .info:
-                sentryLevel = .info
-            case .warning:
-                sentryLevel = .warning
-            default:
-                sentryLevel = .debug
-            }
-
-            let crumb = Breadcrumb(
-                level: sentryLevel,
-                category: "TariLogger \(loggerLevel.rawValue)"
-            )
-            crumb.message = message
-            return SentrySDK.addBreadcrumb(crumb: crumb)
-        }
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -137,7 +106,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let hexString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        TariLogger.info("Registed for push notifications with token \(hexString).")
+        Logger.log(message: "Registed for push notifications with token \(hexString).", domain: .general, level: .info)
         NotificationManager.shared.registerDeviceToken(deviceToken)
     }
 
@@ -145,7 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _ application: UIApplication,
         didFailToRegisterForRemoteNotificationsWithError error: Error
     ) {
-        TariLogger.error("Failed to register for push notifications", error: error)
+        Logger.log(message: "Failed to register for push notifications: \(error.localizedDescription)", domain: .general, level: .error)
     }
 
     func application(_ application: UIApplication, shouldAllowExtensionPointIdentifier extensionPointIdentifier: UIApplication.ExtensionPointIdentifier) -> Bool {

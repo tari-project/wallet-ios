@@ -1,10 +1,10 @@
-//  ErrorView.swift
-
+//  CrashLogger.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/04/06
+	Created by Adrian Truszczynski on 11/10/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,42 +38,41 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import Sentry
 
-final class ErrorView: UIView {
-    private let padding: CGFloat = 14
-    private let label = UILabel()
-    var message = "" {
-        didSet {
-            label.text = message
-            if message.isEmpty {
-                alpha = 0.0
-            } else {
-                alpha = 1.0
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-            
-        }
+final class CrashLogger {
+    
+    init() {
+        guard let sentryPublicDSN = TariSettings.shared.sentryPublicDSN else { return }
+        let options = Options()
+        options.dsn = sentryPublicDSN
+        SentrySDK.start(options: options)
     }
+}
 
-    override func draw(_ rect: CGRect) {
-        alpha = 0.0
-        backgroundColor = .clear
+extension CrashLogger: Logable {
+    
+    func log(message: String, domain: Logger.Domain, logLevel: Logger.Level) {
+        
+        let breadcrumb = Breadcrumb(level: logLevel.sentryLevel, category: domain.name)
+        breadcrumb.message = message
+        
+        SentrySDK.addBreadcrumb(crumb: breadcrumb)
+    }
+}
 
-        layer.cornerRadius = 4
-        layer.masksToBounds = true
-        layer.borderWidth = 1
-        layer.borderColor = Theme.shared.colors.warningBoxBorder!.cgColor
-
-        label.textAlignment = .center
-        label.textColor = Theme.shared.colors.warningBoxBorder
-        label.font = Theme.shared.fonts.warningBoxTitleLabel
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        addSubview(label)
-        label.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
-        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
-        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
+private extension Logger.Level {
+    
+    var sentryLevel: SentryLevel {
+        switch self {
+        case .verbose:
+            return .debug
+        case .info:
+            return .info
+        case .warning:
+            return .warning
+        case .error:
+            return .error
+        }
     }
 }

@@ -254,7 +254,7 @@ class DebugLogsTableViewController: UITableViewController {
 
                 labelText = "\(labelText) - \(formattedSize)"
             } catch {
-                TariLogger.error("Failed to get log file size", error: error)
+                Logger.log(message: "Failed to get log file size: \(error.localizedDescription)", domain: .general, level: .error)
             }
 
             cell.textLabel?.text = labelText

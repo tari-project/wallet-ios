@@ -49,7 +49,7 @@ private func totalBytes(files: [URL]) -> UInt64 {
                 total = total + fileSize
             }
         } catch {
-            TariLogger.error("Failed to get log file size", error: error)
+            Logger.log(message: "Failed to get log file size: \(error.localizedDescription)", domain: .general, level: .error)
         }
     }
 
@@ -74,7 +74,7 @@ private func bugReportZipFilesCleanup() {
             }
         }
     } catch {
-        TariLogger.error("Cannot cleanup the old zip files from bug reports files", error: error)
+        Logger.log(message: "Cannot cleanup the old zip files from bug reports files: \(error.localizedDescription)", domain: .general, level: .error)
     }
 }
 

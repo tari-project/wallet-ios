@@ -57,6 +57,6 @@ enum ToastPresenter {
         
         SwiftEntryKit.display(entry: toast, using: attributes)
         UIApplication.shared.hideKeyboard()
-        TariLogger.verbose("Success Toast: title=\(title)")
+        Logger.log(message: "Success Toast: \(title)", domain: .userInterface, level: .info)
     }
 }

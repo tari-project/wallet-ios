@@ -122,7 +122,6 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
         setup()
         hideKeyboardWhenTappedAroundOrSwipedDown(view: attachmentContainer)
         displayAliasOrEmojiId()
-        Tracker.shared.track("/home/send_tari/add_note", "Send Tari - Add Note")
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -286,12 +285,6 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
 
     private func onSlideToEndAction() {
         dismissKeyboard()
-
-        Tracker.shared.track(
-            eventWithCategory: "Transaction",
-            action: "Transaction Initiated"
-        )
-
         sendTx(recipientPublicKey: paymentInfo.publicKey, amount: amount, feePerGram: feePerGram)
     }
 
@@ -515,7 +508,7 @@ extension AddNoteViewController: UITextViewDelegate {
         // Limit to the size of a tx note
         let charLimit = 280
         if trimmedText.count > charLimit {
-            TariLogger.warn("Limitting tx note to \(charLimit) chars")
+            Logger.log(message: "Limitting tx note to \(charLimit) chars", domain: .general, level: .warning)
             trimmedText = String(trimmedText.prefix(charLimit))
             textView.text = trimmedText
         }
