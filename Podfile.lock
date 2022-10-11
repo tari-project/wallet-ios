@@ -16,9 +16,6 @@ PODS:
     - libwebp/demux
   - libwebp/webp (1.2.0)
   - lottie-ios (3.2.3)
-  - MatomoTracker (7.4.1):
-    - MatomoTracker/Core (= 7.4.1)
-  - MatomoTracker/Core (7.4.1)
   - OpenSSL-Universal (1.1.1200)
   - PINCache (3.0.3):
     - PINCache/Arc-exception-safe (= 3.0.3)
@@ -30,9 +27,9 @@ PODS:
   - PINOperation (1.2.1)
   - QuickLayout (3.0.0)
   - ReachabilitySwift (5.0.0)
-  - Sentry (5.0.0):
-    - Sentry/Core (= 5.0.0)
-  - Sentry/Core (5.0.0)
+  - Sentry (7.27.1):
+    - Sentry/Core (= 7.27.1)
+  - Sentry/Core (7.27.1)
   - SwiftEntryKit (1.2.3):
     - QuickLayout (= 3.0.0)
   - SwiftKeychainWrapper (3.4.0)
@@ -47,10 +44,9 @@ DEPENDENCIES:
   - Giphy (= 2.0.0)
   - IPtProxy (~> 0.1.0)
   - lottie-ios
-  - MatomoTracker (~> 7.2)
   - OpenSSL-Universal
   - ReachabilitySwift
-  - Sentry (from `https://github.com/getsentry/sentry-cocoa.git`, tag `5.0.0`)
+  - Sentry (from `https://github.com/getsentry/sentry-cocoa.git`, tag `7.27.1`)
   - SwiftEntryKit (= 1.2.3)
   - SwiftKeychainWrapper (= 3.4.0)
   - SwiftLint
@@ -66,7 +62,6 @@ SPEC REPOS:
     - IPtProxy
     - libwebp
     - lottie-ios
-    - MatomoTracker
     - OpenSSL-Universal
     - PINCache
     - PINOperation
@@ -82,12 +77,12 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   Sentry:
     :git: https://github.com/getsentry/sentry-cocoa.git
-    :tag: 5.0.0
+    :tag: 7.27.1
 
 CHECKOUT OPTIONS:
   Sentry:
     :git: https://github.com/getsentry/sentry-cocoa.git
-    :tag: 5.0.0
+    :tag: 7.27.1
 
 SPEC CHECKSUMS:
   DeepDiff: e5ae6c50d0321568e4508cec5930b9f10bb293fc
@@ -96,13 +91,12 @@ SPEC CHECKSUMS:
   IPtProxy: 15e1c3b6d828bc4e7dadaaeedc7ddf1377a48ca8
   libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
-  MatomoTracker: 24a846c9d3aa76933183fe9d47fd62c9efa863fb
   OpenSSL-Universal: 3b8c0d6268fbd5d3ac44f97338e2fd16a73d9dbf
   PINCache: 7a8fc1a691173d21dbddbf86cd515de6efa55086
   PINOperation: 00c935935f1e8cf0d1e2d6b542e75b88fc3e5e20
   QuickLayout: 07b45a72b10083fee3f095990cfed1c1e7b27f0a
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Sentry: 1279f37a5691c19b1b761f7e260bba5dab7c2311
+  Sentry: bc644307e2eb6a4c9c55cf117a80b895bb2a25a7
   SwiftEntryKit: 340713c2e4a6662c5149629990bf1088bf5f0389
   SwiftKeychainWrapper: 6fc49fbf7d4a6b0772917acb0e53a1639f6078d6
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
@@ -110,6 +104,6 @@ SPEC CHECKSUMS:
   YatLib: cd443f044b7ddc58bd17e2406e3ecaf6688880a6
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: 2b231cf5cd04a848e11ec65d46873048d9159ff2
+PODFILE CHECKSUM: ad1d533fb59b5ed5c6db9a6ed46527db9ec1f7c3
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3

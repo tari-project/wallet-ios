@@ -142,8 +142,7 @@ final class WalletTransactionsManager {
                 
                 self?.sendPushNotificationToRecipient(recipientHex: recipientHex)
                 
-                TariLogger.info("Transaction send successful.")
-                Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Accepted")
+                Logger.log(message: "Transaction send successful", domain: .general, level: .info)
                 result(.success)
             }
             .store(in: &cancellables)
@@ -154,11 +153,11 @@ final class WalletTransactionsManager {
         do {
             try NotificationManager.shared.sendToRecipient(
                 recipientHex: recipientHex,
-                onSuccess: { TariLogger.info("Recipient has been notified") },
-                onError: { TariLogger.error("Failed to notify recipient", error: $0) }
+                onSuccess: { Logger.log(message: "Recipient has been notified", domain: .general, level: .info) },
+                onError: { Logger.log(message: "Failed to notify recipient: \($0.localizedDescription)", domain: .general, level: .error) }
             )
         } catch {
-            TariLogger.error("Failed to notify recipient", error: error)
+            Logger.log(message: "Failed to notify recipient: \(error.localizedDescription)", domain: .general, level: .error)
         }
     }
 }

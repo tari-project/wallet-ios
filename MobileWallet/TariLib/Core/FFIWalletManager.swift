@@ -503,4 +503,13 @@ final class FFIWalletManager {
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
     }
+    
+    func log(message: String) throws {
+        
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        log_debug_message(message, errorCodePointer)
+        
+        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+    }
 }

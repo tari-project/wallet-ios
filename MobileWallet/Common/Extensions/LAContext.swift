@@ -97,7 +97,7 @@ extension LAContext {
                     } else {
                         if !showFailedDialog { return }
                         let localizedReason = error?.localizedDescription ?? localized("authentication.fail.description")
-                        TariLogger.error("Biometrics auth failed", error: error)
+                        Logger.log(message: "Biometrics auth failed: \(error?.localizedDescription)", domain: .general, level: .error)
                         self.authenticationFailedAlertOptions(reason: localizedReason, onSuccess: onSuccess)
                     }
                 }

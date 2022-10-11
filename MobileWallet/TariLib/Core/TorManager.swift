@@ -205,7 +205,6 @@ final class TorManager {
             do {
                 try controller.connect()
             } catch {
-                TariLogger.tor("Tor controller connection", error: error)
                 throw TorError.connectionFailed(error: error)
             }
         }
@@ -214,10 +213,6 @@ final class TorManager {
     private func setupRetry() {
         
         let retryAction = DispatchWorkItem { [weak self] in
-            #if DEBUG
-            TariLogger.tor("Triggering Tor connection retry.")
-            #endif
-            
             self?.controller?.setConfForKey("DisableNetwork", withValue: "1")
             self?.controller?.setConfForKey("DisableNetwork", withValue: "0")
             
@@ -276,9 +271,6 @@ final class TorManager {
     }
     
     private func bridges() -> [String] {
-        #if DEBUG
-        TariLogger.tor("bridgesId=\(usedBridgesConfiguration.bridgesType)")
-        #endif
         switch usedBridgesConfiguration.bridgesType {
         case .custom:
             return usedBridgesConfiguration.customBridges ?? []
@@ -309,10 +301,7 @@ final class TorManager {
         let cookie = try cookie()
         
         controller?.authenticate(with: cookie) { [weak self] isSuccess, error in
-            guard isSuccess else {
-                TariLogger.tor("Didn't connect to control port.", error: error)
-                return
-            }
+            guard isSuccess else { return }
             self?.connectionStatus = .portsOpen
             self?.observeCircuit()
             self?.observeStatusEvents()
@@ -326,9 +315,6 @@ final class TorManager {
             self.connectionStatus = .connected
             self.controller?.removeObserver(observer)
             self.cancelRetry()
-            #if DEBUG
-            TariLogger.tor("Connection established!")
-            #endif
         }
     }
     
@@ -363,8 +349,6 @@ final class TorManager {
         
         configuration.cookieAuthentication = true
         configuration.dataDirectory = dataDirectoryUrl
-        
-        TariLogger.tor("dataDir=\(dataDirectoryUrl)")
         
         #if DEBUG
         let log_loc = "notice stdout"

@@ -1,10 +1,10 @@
-//  ErrorView.swift
-
+//  Logger.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/04/06
+	Created by Adrian Truszczynski on 07/10/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,42 +38,61 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+protocol Logable {
+    func log(message: String, domain: Logger.Domain, logLevel: Logger.Level)
+}
 
-final class ErrorView: UIView {
-    private let padding: CGFloat = 14
-    private let label = UILabel()
-    var message = "" {
-        didSet {
-            label.text = message
-            if message.isEmpty {
-                alpha = 0.0
-            } else {
-                alpha = 1.0
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-            
-        }
+extension Logable {
+    static var tag: String { String(describing: self) }
+}
+
+final class Logger {
+ 
+    enum Level: CaseIterable {
+        case verbose
+        case info
+        case warning
+        case error
     }
+    
+    enum Domain: CaseIterable {
+        case general
+        case connection
+        case navigation
+        case userInterface
+    }
+    
+    static var domains: [Domain] = []
+    private static var loggers: [String: Logable] = [:]
+    
+    static func attach(logger: Logable) {
+        loggers[type(of: logger).tag] = logger
+    }
+    
+    static func log(message: String, domain: Domain, level: Level, tags: [String]? = nil) {
+        
+        loggers
+            .filter {
+                guard let tags = tags else { return true }
+                return tags.contains($0.key)
+            }
+            .map(\.value)
+            .forEach { $0.log(message: message, domain: domain, logLevel: level) }
+    }
+}
 
-    override func draw(_ rect: CGRect) {
-        alpha = 0.0
-        backgroundColor = .clear
-
-        layer.cornerRadius = 4
-        layer.masksToBounds = true
-        layer.borderWidth = 1
-        layer.borderColor = Theme.shared.colors.warningBoxBorder!.cgColor
-
-        label.textAlignment = .center
-        label.textColor = Theme.shared.colors.warningBoxBorder
-        label.font = Theme.shared.fonts.warningBoxTitleLabel
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        addSubview(label)
-        label.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
-        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
-        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
+extension Logger.Domain {
+    
+    var name: String {
+        switch self {
+        case .general:
+            return "General"
+        case .connection:
+            return "Connection"
+        case .navigation:
+            return "Navigation"
+        case .userInterface:
+            return "UI"
+        }
     }
 }

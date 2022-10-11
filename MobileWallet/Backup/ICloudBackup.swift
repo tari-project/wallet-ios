@@ -293,7 +293,7 @@ class ICloudBackup: NSObject {
             do {
                 try FileManager.default.removeBackup(getLastWalletBackup())
             } catch {
-                TariLogger.error("Failed to remove wallet backup", error: error)
+                Logger.log(message: "Failed to remove wallet backup: \(error.localizedDescription)", domain: .general, level: .error)
             }
         }
     }
@@ -479,7 +479,7 @@ extension ICloudBackup {
             return
         }
 
-        TariLogger.info("Starting iCloud backup in the background")
+        Logger.log(message: "Starting iCloud backup in the background", domain: .general, level: .info)
 
         // Perform the task on a background queue.
         DispatchQueue.global().async { [weak self] in
@@ -494,7 +494,7 @@ extension ICloudBackup {
             do {
                 try self.createWalletBackup(password: password)
             } catch {
-                TariLogger.error("Failed to create wallet backup", error: error)
+                Logger.log(message: "Failed to create wallet backup: \(error.localizedDescription)", domain: .general, level: .error)
                 self.endBackgroundBackupTask()
             }
         }
@@ -515,7 +515,7 @@ extension ICloudBackup {
             body: body,
             identifier: NotificationManager.NotificationIdentifier.backgroundBackupTask.rawValue
         ) { (_) in
-            TariLogger.info("User reminded to open the app as a background backup did not complete.")
+            Logger.log(message: "User reminded to open the app as a background backup did not complete.", domain: .general, level: .info)
             self.endBackgroundBackupTask()
         }
     }

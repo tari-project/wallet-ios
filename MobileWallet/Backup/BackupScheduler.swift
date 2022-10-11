@@ -134,7 +134,7 @@ extension BackupScheduler: ICloudBackupObserver {
             identifier: NotificationManager.NotificationIdentifier.scheduledBackupFailure.rawValue
         ) {
             (_) in
-            TariLogger.info("Scheduled backup has failed.")
+            Logger.log(message: "Scheduled backup has failed.", domain: .general, level: .info)
             self.scheduledBackupStarted = false
         }
     }

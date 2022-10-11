@@ -108,7 +108,6 @@ final class WalletCreationViewController: UIViewController {
         state = .localAuthentication
         prepareSubviews(for: .localAuthentication)
         showLocalAuthentication()
-        Tracker.shared.track("/local_auth", "Local Authentication")
     }
 
     // MARK: - Actions
@@ -196,7 +195,6 @@ final class WalletCreationViewController: UIViewController {
                     self?.updateConstraintsAnimationView(animation: .none)
                     self?.showYourEmoji()
                 })
-                Tracker.shared.track("/onboarding/create_emoji_id", "Onboarding - Create Emoji Id")
             }
         case .showEmojiId:
             TariSettings.shared.walletSettings.configurationState = .initialized
@@ -215,7 +213,6 @@ final class WalletCreationViewController: UIViewController {
 
     private func runNotificationRequest() {
         NotificationManager.shared.requestAuthorization { _ in
-            Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
             DispatchQueue.main.async {
                 AppRouter.transitionToHomeScreen()
             }

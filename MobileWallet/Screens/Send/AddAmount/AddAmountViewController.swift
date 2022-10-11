@@ -176,8 +176,6 @@ final class AddAmountViewController: UIViewController {
             let tariAmount = MicroTari(amount)
             addCharacter(tariAmount.formattedPrecise)
         }
-
-        Tracker.shared.track("/home/send_tari/add_amount", "Send Tari - Add Amount")
         
         setupOneSidedPaymentElements()
         setupSliderBar()

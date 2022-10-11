@@ -70,7 +70,7 @@ struct BackgroundTaskManager {
         do {
             try BGTaskScheduler.shared.submit(taskRequest)
         } catch {
-            TariLogger.error("Scheduling task to schedule reminder notifications", error: error)
+            Logger.log(message: "Scheduling task to schedule reminder notifications: \(error.localizedDescription)", domain: .general, level: .error)
         }
     }
 

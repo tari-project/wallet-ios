@@ -1,10 +1,10 @@
-//  ErrorView.swift
-
+//  LogFormatter.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/04/06
+	Created by Adrian Truszczynski on 11/10/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,42 +38,47 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-
-final class ErrorView: UIView {
-    private let padding: CGFloat = 14
-    private let label = UILabel()
-    var message = "" {
-        didSet {
-            label.text = message
-            if message.isEmpty {
-                alpha = 0.0
-            } else {
-                alpha = 1.0
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-            
+enum LogFormatter {
+    
+    private static let appNamePrefix = "[Aurora]"
+    private static let domainNameLength = Logger.Domain.allCases.map { $0.name.count }.max() ?? 0
+    private static let levelNameLength = Logger.Level.allCases.map { $0.name.count }.max() ?? 0
+    
+    static func formattedMessage(message: String, domain: Logger.Domain, logLevel: Logger.Level, showPrefix: Bool) -> String {
+        
+        let domainName = domain.name.fixedLength(domainNameLength)
+        let logLevelName = logLevel.name.fixedLength(levelNameLength)
+        var components = [domainName, logLevelName, message]
+        
+        if showPrefix {
+            components.insert(appNamePrefix, at: 0)
         }
+        
+        return components.joined(separator: " | ")
     }
+}
 
-    override func draw(_ rect: CGRect) {
-        alpha = 0.0
-        backgroundColor = .clear
+private extension String {
+    
+    func fixedLength(_ length: Int) -> Self {
+        var result = prefix(length)
+        while result.count < length { result += " " }
+        return String(result)
+    }
+}
 
-        layer.cornerRadius = 4
-        layer.masksToBounds = true
-        layer.borderWidth = 1
-        layer.borderColor = Theme.shared.colors.warningBoxBorder!.cgColor
-
-        label.textAlignment = .center
-        label.textColor = Theme.shared.colors.warningBoxBorder
-        label.font = Theme.shared.fonts.warningBoxTitleLabel
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        addSubview(label)
-        label.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
-        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
-        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
+private extension Logger.Level {
+    
+    var name: String {
+        switch self {
+        case .verbose:
+            return "VERBOSE"
+        case .info:
+            return "INFO"
+        case .warning:
+            return "WARNING"
+        case .error:
+            return "ERROR"
+        }
     }
 }

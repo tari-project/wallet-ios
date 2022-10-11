@@ -67,7 +67,6 @@ final class AddRecipientViewController: UIViewController {
         setupViews()
         setupFeedbacks()
         hideKeyboardWhenTappedAroundOrSwipedDown()
-        Tracker.shared.track("/home/send_tari/add_recipient", "Send Tari - Add Recipient")
     }
     
     override func viewWillAppear(_ animated: Bool) {

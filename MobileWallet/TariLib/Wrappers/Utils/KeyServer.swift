@@ -96,7 +96,7 @@ final class KeyServer {
         guard let url = url else { return }
 
         guard KeyServer.isRequestInProgress == false else {
-            TariLogger.warn("Key server request already in progress")
+            Logger.log(message: "Key server request already in progress", domain: .general, level: .warning)
             return
         }
 
@@ -283,7 +283,7 @@ final class KeyServer {
         do {
             return try Tari.shared.transactions.completed.contains { try $0.isOutboundTransaction }
         } catch {
-            TariLogger.error("Failed to load completed tx", error: error)
+            Logger.log(message: "Failed to load completed tx: \(error.localizedDescription)", domain: .general, level: .error)
         }
         
         return false
@@ -295,7 +295,7 @@ final class KeyServer {
         
         do {
             let utxo = try PropertyListDecoder().decode(UTXO.self, from: data)
-            TariLogger.info("Importing stored 2nd utxo")
+            Logger.log(message: "Importing stored 2nd utxo", domain: .general, level: .info)
             
             try importUtxo(
                 sourcePublicKeyHex: utxo.sourcePublicKeyHex,
@@ -311,12 +311,12 @@ final class KeyServer {
             UserDefaults.standard.removeObject(forKey: KeyServer.secondUtxoStorageKey)
             onComplete()
         } catch {
-            TariLogger.error("Unable to load stored UTXO", error: error)
+            Logger.log(message: "Unable to load stored UTXO: \(error.localizedDescription)", domain: .general, level: .error)
         }
     }
 
     private func storeUtxo(utxo: UTXO) throws {
-        TariLogger.verbose("Storing UTXO for later use")
+        Logger.log(message: "Storing UTXO for later use", domain: .general, level: .info)
         UserDefaults.standard.set(try? PropertyListEncoder().encode(utxo), forKey: KeyServer.secondUtxoStorageKey)
     }
 }

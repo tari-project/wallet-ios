@@ -71,7 +71,6 @@ final class TransactionDetailsViewController: UIViewController {
         super.viewDidLoad()
         setupCallbacks()
         hideKeyboardWhenTappedAroundOrSwipedDown()
-        Tracker.shared.track("/home/tx_details", "Transaction Details")
     }
     
     // MARK: - Setups

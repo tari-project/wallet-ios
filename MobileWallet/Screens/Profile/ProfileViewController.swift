@@ -60,7 +60,6 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBindings()
-        Tracker.shared.track("/home/profile", "Profile - Wallet Info")
     }
     
     override func viewWillAppear(_ animated: Bool) {
