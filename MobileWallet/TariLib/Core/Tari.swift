@@ -220,9 +220,6 @@ final class Tari: MainServiceable {
             try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: nil, networkName: selectedNetwork.name)
             try Tari.shared.encryption.apply()
         }
-        
-        transactions = TariTransactionsService(walletManager: walletManager, services: self)
-        walletBalance = TariBalanceService(walletManager: walletManager, services: self)
     }
     
     private func waitForTor() async {
