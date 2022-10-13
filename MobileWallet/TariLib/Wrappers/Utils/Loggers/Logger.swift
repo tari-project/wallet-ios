@@ -60,6 +60,7 @@ final class Logger {
         case connection
         case navigation
         case userInterface
+        case debug
     }
     
     static var domains: [Domain] = []
@@ -93,6 +94,8 @@ extension Logger.Domain {
             return "Navigation"
         case .userInterface:
             return "UI"
+        case .debug:
+            return "Debug"
         }
     }
 }
