@@ -187,7 +187,7 @@ final class TorManager {
             }
             
             DispatchQueue.main.async { [weak self] in
-                Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) {
+                Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { [weak self] in
                     guard self?.torThread == nil || (self?.torThread?.isFinished == true && self?.torThread?.isExecuting == false) else { return }
                     $0.invalidate()
                     self?.torThread = nil
@@ -229,7 +229,7 @@ final class TorManager {
     }
     
     private func startIObfs4Proxy() {
-        IPtProxyStartObfs4Proxy()
+        IPtProxyStartObfs4Proxy(nil, false, false, nil)
     }
     
     private func updateAndValidate(bridgesConfiguration: BridgesConfiguration) {

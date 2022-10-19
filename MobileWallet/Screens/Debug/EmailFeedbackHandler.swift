@@ -167,7 +167,7 @@ final class EmailFeedbackHandler: NSObject {
         var phoneDetails: [(key: String, value: String)] = []
 
         phoneDetails.append((key: "Network", value: NetworkManager.shared.selectedNetwork.name))
-        phoneDetails.append((key: "Phone", value: UIDevice.current.model.rawValue))
+        phoneDetails.append((key: "Phone", value: UIDevice.current.rawModel))
         phoneDetails.append((key: "iOS", value: UIDevice.current.systemVersion))
 
         if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {

@@ -49,7 +49,7 @@ enum LogFormatter {
         
         let domainName = formattedDomainName(domain: domain, includePrefix: showPrefix)
         let logLevelName = logLevel.name.fixedLength(levelNameLength)
-        var components = [domainName, logLevelName, message]
+        let components = [domainName, logLevelName, message]
         
         return components.joined(separator: separator)
     }

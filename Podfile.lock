@@ -1,30 +1,19 @@
 PODS:
-  - DeepDiff (2.3.1)
   - FloatingPanel (1.7.5)
-  - Giphy (2.0.0):
-    - DeepDiff
+  - Giphy (2.1.22):
     - libwebp
-    - PINCache
-  - IPtProxy (0.1.0)
-  - libwebp (1.2.0):
-    - libwebp/demux (= 1.2.0)
-    - libwebp/mux (= 1.2.0)
-    - libwebp/webp (= 1.2.0)
-  - libwebp/demux (1.2.0):
+  - IPtProxy (1.8.0)
+  - libwebp (1.2.3):
+    - libwebp/demux (= 1.2.3)
+    - libwebp/mux (= 1.2.3)
+    - libwebp/webp (= 1.2.3)
+  - libwebp/demux (1.2.3):
     - libwebp/webp
-  - libwebp/mux (1.2.0):
+  - libwebp/mux (1.2.3):
     - libwebp/demux
-  - libwebp/webp (1.2.0)
+  - libwebp/webp (1.2.3)
   - lottie-ios (3.2.3)
   - OpenSSL-Universal (1.1.1200)
-  - PINCache (3.0.3):
-    - PINCache/Arc-exception-safe (= 3.0.3)
-    - PINCache/Core (= 3.0.3)
-  - PINCache/Arc-exception-safe (3.0.3):
-    - PINCache/Core
-  - PINCache/Core (3.0.3):
-    - PINOperation (~> 1.2.1)
-  - PINOperation (1.2.1)
   - QuickLayout (3.0.0)
   - ReachabilitySwift (5.0.0)
   - Sentry (7.27.1):
@@ -41,8 +30,8 @@ PODS:
 
 DEPENDENCIES:
   - FloatingPanel (= 1.7.5)
-  - Giphy (= 2.0.0)
-  - IPtProxy (~> 0.1.0)
+  - Giphy (= 2.1.22)
+  - IPtProxy (= 1.8.0)
   - lottie-ios
   - OpenSSL-Universal
   - ReachabilitySwift
@@ -56,15 +45,12 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - DeepDiff
     - FloatingPanel
     - Giphy
     - IPtProxy
     - libwebp
     - lottie-ios
     - OpenSSL-Universal
-    - PINCache
-    - PINOperation
     - QuickLayout
     - ReachabilitySwift
     - SwiftEntryKit
@@ -85,15 +71,12 @@ CHECKOUT OPTIONS:
     :tag: 7.27.1
 
 SPEC CHECKSUMS:
-  DeepDiff: e5ae6c50d0321568e4508cec5930b9f10bb293fc
   FloatingPanel: bb17fd6fc7ae519f877f7bd30f4f6115a78acf07
-  Giphy: 41adc93795979bd5a7e5a4ad27f52107d824fb1f
-  IPtProxy: 15e1c3b6d828bc4e7dadaaeedc7ddf1377a48ca8
-  libwebp: e90b9c01d99205d03b6bb8f2c8c415e5a4ef66f0
+  Giphy: 6757d929878ef45f70ed62a02a2c9a03994e7b6c
+  IPtProxy: e180e0f4381a893b52ae12626fbd0d40cbabe746
+  libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   OpenSSL-Universal: 3b8c0d6268fbd5d3ac44f97338e2fd16a73d9dbf
-  PINCache: 7a8fc1a691173d21dbddbf86cd515de6efa55086
-  PINOperation: 00c935935f1e8cf0d1e2d6b542e75b88fc3e5e20
   QuickLayout: 07b45a72b10083fee3f095990cfed1c1e7b27f0a
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Sentry: bc644307e2eb6a4c9c55cf117a80b895bb2a25a7
@@ -104,6 +87,6 @@ SPEC CHECKSUMS:
   YatLib: cd443f044b7ddc58bd17e2406e3ecaf6688880a6
   ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
 
-PODFILE CHECKSUM: ad1d533fb59b5ed5c6db9a6ed46527db9ec1f7c3
+PODFILE CHECKSUM: cda7af281b97b707a29ec2fe797ff57617a1987a
 
 COCOAPODS: 1.11.3

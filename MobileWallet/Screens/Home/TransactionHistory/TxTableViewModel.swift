@@ -39,7 +39,6 @@
 */
 
 import GiphyUISDK
-import GiphyCoreSDK
 
 class TxTableViewModel: NSObject {
     typealias Value = (microTari: MicroTari?, isOutboundTransaction: Bool, isCancelled: Bool, isPending: Bool)

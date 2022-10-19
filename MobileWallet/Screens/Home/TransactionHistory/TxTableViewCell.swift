@@ -40,7 +40,6 @@
 
 import UIKit
 import GiphyUISDK
-import GiphyCoreSDK
 
 class TxTableViewCell: UITableViewCell {
     private let avatarContainer = UIView()

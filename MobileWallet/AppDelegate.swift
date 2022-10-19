@@ -42,7 +42,6 @@ import UIKit
 import CoreData
 import AVFoundation
 import GiphyUISDK
-import GiphyCoreSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {

@@ -39,7 +39,7 @@
 */
 
 import Combine
-import GiphyCoreSDK
+import GiphyUISDK
 
 final class TransactionDetailsModel {
     

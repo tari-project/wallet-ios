@@ -40,7 +40,7 @@
 
 import UIKit
 
-protocol PasswordFieldDelegate: class {
+protocol PasswordFieldDelegate: AnyObject {
     func passwordFieldDidChange(_ passwordField: PasswordField)
 }
 
