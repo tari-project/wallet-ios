@@ -638,6 +638,27 @@
 "about.label.creative_commons" = "The following icons are licensed under";
 "about.button.creative_commons" = "Creative Commons 3.0:";
 
+/* Debug */
+
+"debug.popup.title" = "Debug Menu";
+"debug.popup.options.logs"= "View logs";
+"debug.popup.options.bug_report"= "Report a bug";
+"debug.popup.options.connection_status"= "View connection status";
+"debug.logs.list.title" = "Debug Logs";
+"debug.logs.list.error.message.unable_to_load" = "Unable to load log files. Please try again later or send us a bug report.";
+"debug.logs.details.error.message.cant_open_file" = "Unable to open file. Please try again later.";
+"debug.logs.details.filters.title" = "Filter";
+"debug.logs.details.filters.buttons.apply" = "Apply Filter";
+"debug.logs.details.filters.label.info" = "Info";
+"debug.logs.details.filters.label.warning" = "Warning";
+"debug.logs.details.filters.label.error" = "Error";
+"debug.logs.details.filters.label.debug" = "Debug";
+"debug.logs.details.filters.label.aurora_general" = "Aurora - General";
+"debug.logs.details.filters.label.aurora_connection" = "Aurora - Connection";
+"debug.logs.details.filters.label.aurora_navigation" = "Aurora - Navigation";
+"debug.logs.details.filters.label.aurora_ui" = "Aurora - UI";
+"debug.logs.details.filters.label.aurora_debug" = "Aurora - Debug";
+
 /* Errors */
 
 "error.generic.title" = "Error";

@@ -333,7 +333,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case .about:
                 onAboutAction()
             case .reportBug:
-                onSendFeedback()
+                EmailFeedbackHandler.shared.show(presenter: self)
             default:
                 onLinkAction(indexPath: indexPath)
             }

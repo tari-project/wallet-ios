@@ -1,8 +1,8 @@
-//  LogFormatter.swift
+//  LogsListModel.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/10/2022
+	Created by Adrian Truszczynski on 17/10/2022
 	Using Swift 5.0
 	Running on macOS 12.6
 
@@ -38,50 +38,47 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum LogFormatter {
+final class LogsListModel {
     
-    private static let appNamePrefix = "[Aurora]"
-    private static let separator = " | "
-    private static let domainNameLength = Logger.Domain.allCases.map { $0.name.count }.max() ?? 0
-    private static let levelNameLength = Logger.Level.allCases.map { $0.name.count }.max() ?? 0
+    // MARK: - View Model
     
-    static func formattedMessage(message: String, domain: Logger.Domain, logLevel: Logger.Level, showPrefix: Bool) -> String {
-        
-        let domainName = formattedDomainName(domain: domain, includePrefix: showPrefix)
-        let logLevelName = logLevel.name.fixedLength(levelNameLength)
-        var components = [domainName, logLevelName, message]
-        
-        return components.joined(separator: separator)
-    }
+    @Published private(set) var logTitles: [String] = []
+    @Published private(set) var selectedRowFileURL: URL?
+    @Published private(set) var errorMessage: MessageModel?
     
-    static func formattedDomainName(domain: Logger.Domain, includePrefix: Bool) -> String {
-        let domainName = domain.name.fixedLength(domainNameLength)
-        guard includePrefix else { return domainName }
-        return [appNamePrefix, domainName].joined(separator: separator)
-    }
-}
-
-private extension String {
+    // MARK: - Properties
     
-    func fixedLength(_ length: Int) -> Self {
-        var result = prefix(length)
-        while result.count < length { result += " " }
-        return String(result)
-    }
-}
-
-private extension Logger.Level {
+    private var logsURLs: [URL] = []
     
-    var name: String {
-        switch self {
-        case .verbose:
-            return "VERBOSE"
-        case .info:
-            return "INFO"
-        case .warning:
-            return "WARNING"
-        case .error:
-            return "ERROR"
+    // MARK: - Actions
+    
+    func refreshLogsList() {
+        do {
+            logsURLs = try Tari.shared.logsURLs
+            logTitles = try logsURLs.map { [unowned self] in try self.title(fileURL: $0) }
+        } catch {
+            errorMessage = MessageModel(title: localized("error.generic.title"), message: localized("debug.logs.list.error.message.unable_to_load"), type: .error)
         }
+    }
+    
+    func select(row: Int) {
+        selectedRowFileURL = logsURLs[row]
+    }
+    
+    // MARK: - Handlers
+    
+    private func title(fileURL: URL) throws -> String {
+        
+        let filename = fileURL.lastPathComponent
+        let fileAttibutes = try FileManager.default.attributesOfItem(atPath: fileURL.path)
+        var formattedFileSize: String?
+        
+        if let fileSize = fileAttibutes[.size] as? Int64 {
+            formattedFileSize = ByteCountFormatter.string(fromByteCount: fileSize, countStyle: .file)
+        }
+        
+        return [filename, formattedFileSize]
+            .compactMap { $0 }
+            .joined(separator: " - ")
     }
 }

@@ -39,16 +39,23 @@
 */
 
 import UIKit
+import TariCommon
 
 protocol NavigationBarProtocol: AnyObject {
     var title: String? { get set }
 }
 
 class NavigationBar: UIView, NavigationBarProtocol {
+    
     enum VerticalPositioning: Equatable {
         case standart
         case center
         case custom(_ value: CGFloat)
+    }
+    
+    enum BackButtonType {
+        case back
+        case close
     }
 
     var emojiIdView: EmojiIdView! = EmojiIdView()
@@ -64,6 +71,16 @@ class NavigationBar: UIView, NavigationBarProtocol {
             rightButton.isHidden = false
         }
     }
+    
+    @View private var buttonImageView: UIImageView = {
+        let view = UIImageView()
+        view.isUserInteractionEnabled = false
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
+    
+    private var buttonImageViewWidhtConstraint: NSLayoutConstraint?
+    private var buttonImageViewHeightConstraint: NSLayoutConstraint?
 
     var title: String? {
         get {
@@ -91,6 +108,10 @@ class NavigationBar: UIView, NavigationBarProtocol {
             }
             layoutIfNeeded()
         }
+    }
+    
+    var backButtonType: BackButtonType = .back {
+        didSet { updateBackButton() }
     }
 
     private var topPositioningConstraint: NSLayoutConstraint?
@@ -144,16 +165,25 @@ class NavigationBar: UIView, NavigationBarProtocol {
         backButton.widthAnchor.constraint(equalToConstant: 45).isActive = true
         backButton.addTarget(self, action: #selector(backAction(_sender:)), for: .touchUpInside)
 
-        let imageView = UIImageView(image: Theme.shared.images.backArrow)
-        backButton.addSubview(imageView)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.leadingAnchor.constraint(equalTo: backButton.leadingAnchor).isActive = true
-        imageView.heightAnchor.constraint(equalToConstant: 13).isActive = true
-        imageView.widthAnchor.constraint(equalToConstant: 8).isActive = true
-        imageView.centerYAnchor.constraint(equalTo: backButton.centerYAnchor).isActive = true
-        imageView.isUserInteractionEnabled = false
+        backButton.addSubview(buttonImageView)
+        
+        let buttonImageViewWidhtConstraint = buttonImageView.widthAnchor.constraint(equalToConstant: 0.0)
+        let buttonImageViewHeightConstraint = buttonImageView.heightAnchor.constraint(equalToConstant: 0.0)
+        self.buttonImageViewWidhtConstraint = buttonImageViewWidhtConstraint
+        self.buttonImageViewHeightConstraint = buttonImageViewHeightConstraint
+        
+        let constraints = [
+            buttonImageView.leadingAnchor.constraint(equalTo: backButton.leadingAnchor),
+            buttonImageView.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
+            buttonImageViewWidhtConstraint,
+            buttonImageViewHeightConstraint
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+
         // Style
         backButton.backgroundColor = .clear
+        backButtonType = .back
     }
 
     private func setupRightButton() {
@@ -184,6 +214,24 @@ class NavigationBar: UIView, NavigationBarProtocol {
         progressView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         progressView.topAnchor.constraint(equalTo: bottomAnchor).isActive = true
         progressView.heightAnchor.constraint(equalToConstant: 4.0).isActive = true
+    }
+    
+    private func updateBackButton() {
+        
+        let image: UIImage?
+        
+        switch backButtonType {
+        case .back:
+            image = Theme.shared.images.backArrow
+            buttonImageViewHeightConstraint?.constant = 13.0
+            buttonImageViewWidhtConstraint?.constant = 8.0
+        case .close:
+            image = Theme.shared.images.close
+            buttonImageViewHeightConstraint?.constant = 13.0
+            buttonImageViewWidhtConstraint?.constant = 13.0
+        }
+        
+        buttonImageView.image = image
     }
     
     func showEmojiId(emojiID: String, hex: String, presenterController: UIViewController) {

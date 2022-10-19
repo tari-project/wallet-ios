@@ -1,10 +1,10 @@
-//  PopUpSelectionView.swift
+//  PopUpButtonsTableView.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 28/06/2022
+	Created by Adrian Truszczynski on 18/10/2022
 	Using Swift 5.0
-	Running on macOS 12.3
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -41,9 +41,9 @@
 import UIKit
 import TariCommon
 
-final class PopUpSelectionView: UIView {
+final class PopUpButtonsTableView: UIView {
     
-    private struct Model: Identifiable, Hashable {
+    struct Model: Identifiable, Hashable {
         let id: UUID
         let title: String
     }
@@ -52,13 +52,21 @@ final class PopUpSelectionView: UIView {
     
     @View private var tableView: PopUpTableView = {
         let view = PopUpTableView()
-        view.register(type: PopUpSelectionCell.self)
+        view.register(type: PopUpButtonCell.self)
+        return view
+    }()
+    
+    @View private var footerLabel: UILabel = {
+        let view = UILabel()
+        view.textColor = .tari.greys.mediumDarkGrey
+        view.textAlignment = .center
+        view.font = .Avenir.medium.withSize(15.0)
         return view
     }()
     
     // MARK: - Properties
     
-    private(set) var selectedIndex: Int = 0
+    var onSelectedRow: ((IndexPath) -> Void)?
     private var dataSource: UITableViewDiffableDataSource<Int, Model>?
     
     // MARK: - Initialisers
@@ -77,42 +85,37 @@ final class PopUpSelectionView: UIView {
     
     private func setupConstraints() {
         
-        addSubview(tableView)
+        [tableView, footerLabel].forEach { addSubview($0) }
         
         let constraints = [
             tableView.topAnchor.constraint(equalTo: topAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            footerLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 20.0),
+            footerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8.0),
+            footerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8.0),
+            footerLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0.0)
         ]
-       
+        
         NSLayoutConstraint.activate(constraints)
     }
     
     private func setupCallbacks() {
         
-        let dataSource = UITableViewDiffableDataSource<Int, Model>(tableView: tableView) { [weak self] tableView, indexPath, model in
-            guard let self = self else { return UITableViewCell() }
-            let cell = tableView.dequeueReusableCell(type: PopUpSelectionCell.self, indexPath: indexPath)
+        dataSource = UITableViewDiffableDataSource<Int, Model>(tableView: tableView) { tableView, indexPath, model in
+            let cell = tableView.dequeueReusableCell(type: PopUpButtonCell.self, indexPath: indexPath)
             cell.text = model.title
-            cell.isSelected = indexPath.row == self.selectedIndex
             return cell
         }
         
-        self.dataSource = dataSource
-        
-        tableView.onSelectRow = { [weak self] selectedIndexPath in
-            self?.tableView.visibleCells.forEach { $0.isSelected = false }
-            self?.tableView.cellForRow(at: selectedIndexPath)?.isSelected = true
-            self?.selectedIndex = selectedIndexPath.row
+        tableView.onSelectRow = { [weak self] in
+            self?.onSelectedRow?($0)
         }
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
     
-    func update(options: [String], selectedIndex: Int) {
-        
-        self.selectedIndex = selectedIndex
+    func update(options: [String]) {
         
         let models = options.map { Model(id: UUID(), title: $0) }
         
@@ -122,25 +125,21 @@ final class PopUpSelectionView: UIView {
         
         dataSource?.apply(snapshot, animatingDifferences: false)
     }
+    
+    func update(footer: String?) {
+        footerLabel.text = footer
+    }
 }
 
-private class PopUpSelectionCell: UITableViewCell {
+private final class PopUpButtonCell: UITableViewCell {
     
     // MARK: - Subviews
     
     @View private var label: UILabel = {
         let view = UILabel()
         view.textColor = .tari.greys.black
+        view.textAlignment = .center
         view.font = .Avenir.medium.withSize(15.0)
-        return view
-    }()
-    
-    @View private var tickIcon: UIImageView = {
-        let view = UIImageView()
-        view.image = Theme.shared.images.utxoTick
-        view.tintColor = .tari.purple
-        view.contentMode = .scaleAspectFit
-        view.alpha = 0.0
         return view
     }()
     
@@ -149,10 +148,6 @@ private class PopUpSelectionCell: UITableViewCell {
     var text: String? {
         get { label.text }
         set { label.text = newValue }
-    }
-    
-    override var isSelected: Bool {
-        didSet { tickIcon.alpha = isSelected ? 1.0 : 0.0 }
     }
     
     // MARK: - Initialisers
@@ -175,17 +170,13 @@ private class PopUpSelectionCell: UITableViewCell {
     
     private func setupConstraints() {
         
-        [label, tickIcon].forEach(contentView.addSubview)
+        contentView.addSubview(label)
         
         let constraints = [
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 22.0),
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30.0),
-            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -22.0),
-            tickIcon.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 8.0),
-            tickIcon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20.0),
-            tickIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            tickIcon.widthAnchor.constraint(equalToConstant: 14.0),
-            tickIcon.heightAnchor.constraint(equalToConstant: 14.0)
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30.0),
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -22.0)
         ]
         
         NSLayoutConstraint.activate(constraints)
