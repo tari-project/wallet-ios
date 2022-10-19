@@ -53,8 +53,14 @@ enum ErrorMessageManager {
         switch error {
         case let error as WalletError:
             return model(walletError: error)
-        case let error as SeedWords.Error:
+        case let error as FFIWalletManager.GeneralError:
+            return model(internalWalletError: error)
+        case let error as SeedWords.InternalError:
             return model(seedWordsError: error)
+        case let error as TorManager.TorError:
+            return model(torError: error)
+        case let error as TariFaucetService.InternalError:
+            return model(faucetError: error)
         default:
             return genericErrorModel
         }
@@ -76,7 +82,7 @@ enum ErrorMessageManager {
         return MessageModel(title: genericErrorModel.title, message: message?.appending(signature: walletError.signature), type: .error)
     }
     
-    private static func model(seedWordsError: SeedWords.Error) -> MessageModel {
+    private static func model(seedWordsError: SeedWords.InternalError) -> MessageModel {
         
         let message: String
         
@@ -92,6 +98,46 @@ enum ErrorMessageManager {
         }
         
         return MessageModel(title: localized("restore_from_seed_words.error.title"), message: message.appending(signature: seedWordsError.signature), type: .error)
+    }
+    
+    private static func model(torError: TorManager.TorError) -> MessageModel {
+        
+        let message: String
+        
+        switch torError {
+        case .connectionFailed:
+            message = localized("Onion_Error.error.invalid_bridges")
+        case .missingCookie:
+            message = localized("Onion_Error.error.missing_cookie_file")
+        case .connectionTimeout:
+            message = localized("Onion_Error.error.connectionError")
+        }
+        
+        return MessageModel(title: localized("Onion_Error.error.title.onionError"), message: message, type: .error)
+    }
+    
+    private static func model(internalWalletError: FFIWalletManager.GeneralError) -> MessageModel {
+
+        let message: String
+        
+        switch internalWalletError {
+        case .unableToCreateWallet:
+            message = localized("wallet.error.wallet_not_initialized")
+        }
+        
+        return MessageModel(title: genericErrorModel.title, message: message, type: .error)
+    }
+    
+    private static func model(faucetError: TariFaucetService.InternalError) -> MessageModel {
+        
+        let message: String
+        
+        switch faucetError {
+        case .invalidSignatureAndNonceString:
+            message = localized("wallet.error.invalid_signature")
+        }
+        
+        return MessageModel(title: genericErrorModel.title, message: message, type: .error)
     }
 }
 

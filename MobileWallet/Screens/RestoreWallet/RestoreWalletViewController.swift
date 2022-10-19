@@ -147,7 +147,6 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
                     return
                 }
 
-                TariLib.shared.startWallet(seedWords: nil)
                 self?.pendingView.hidePendingView { [weak self] in
                     self?.returnToSplashScreen()
                 }

@@ -81,9 +81,9 @@ class TxGifManager {
         let downloadOperation = GiphyCore.shared.gifByID(gifID) { [weak self] (response, error) in
             self?.operations.removeValue(forKey: gifID)
 
-            guard error == nil else {
-                TariLogger.error("Failed to load gif", error: error)
-                self?.completions[gifID]?.forEach({ $0(.failure(error!)) })
+            if let error {
+                Logger.log(message: "Failed to load gif: \(error.localizedDescription)", domain: .general, level: .error)
+                self?.completions[gifID]?.forEach({ $0(.failure(error)) })
                 self?.completions.removeValue(forKey: gifID)
                 return
             }

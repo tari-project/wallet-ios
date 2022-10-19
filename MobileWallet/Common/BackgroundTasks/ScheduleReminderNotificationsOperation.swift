@@ -49,7 +49,7 @@ class ScheduleReminderNotificationsOperation: Operation {
         }
 
         guard let setAt = ReminderNotifications.shared.shouldScheduleRemindersUpdatedAt else {
-            TariLogger.warn("Nothing to schedule")
+            Logger.log(message: "Nothing to schedule", domain: .general, level: .warning)
             onComplete(true)
             return
         }
@@ -57,7 +57,7 @@ class ScheduleReminderNotificationsOperation: Operation {
         NotificationManager.shared.cancelAllFutureReminderNotifications()
 
         guard let firstReminder = ReminderNotifications.recipientReminderNotifications.first else {
-            TariLogger.warn("No recipient reminder notifications setup")
+            Logger.log(message: "No recipient reminder notifications setup", domain: .general, level: .warning)
             return
         }
 
@@ -65,7 +65,7 @@ class ScheduleReminderNotificationsOperation: Operation {
         let intervalOffset = Date().timeIntervalSince(setAt)
 
         guard intervalOffset < firstReminder.deliverAfter else {
-            TariLogger.warn("Background refresh did not run in time. Too late to schedule reminders.")
+            Logger.log(message: "Background refresh did not run in time. Too late to schedule reminders.", domain: .general, level: .warning)
             return
         }
 
@@ -84,7 +84,7 @@ class ScheduleReminderNotificationsOperation: Operation {
                 }
         }
 
-        TariLogger.info("Reminders scheduled")
+        Logger.log(message: "Reminders scheduled", domain: .general, level: .info)
     }
 
     private func onComplete(_ success: Bool) {

@@ -138,7 +138,7 @@ final class ErrorMessageManagerTests: XCTestCase {
     
     func testErrorModelForSeedWordsError() {
         
-        let seedWordsError = SeedWords.Error.invalidSeedPhrase
+        let seedWordsError = SeedWords.InternalError.invalidSeedPhrase
         
         let expectedTitle = localized("restore_from_seed_words.error.title")
         let expectedMessage = localized("restore_from_seed_words.error.description.invalid_seed_word") + "\n" + localized("error.code.prefix") + " " + seedWordsError.signature

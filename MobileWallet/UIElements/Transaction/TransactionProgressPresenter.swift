@@ -69,10 +69,8 @@ enum TransactionProgressPresenter {
         switch transactionError {
         case .noInternetConnection:
             PopUpPresenter.show(message: MessageModel(title: localized("sending_tari.error.interwebs_connection.title"), message: localized("sending_tari.error.interwebs_connection.description"), type: .error))
-            Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Tor Issue")
-        case .timeout, .transactionError, .unsucessfulTransaction, .unableToStartWallet:
+        case .timeout, .transactionError, .unsucessfulTransaction:
             PopUpPresenter.show(message: MessageModel(title: localized("sending_tari.error.no_connection.title"), message: localized("sending_tari.error.no_connection.description"), type: .error))
-            Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Failed - Node Issue")
         }
     }
 }

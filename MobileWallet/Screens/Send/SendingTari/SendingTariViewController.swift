@@ -74,7 +74,6 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
         super.viewDidLoad()
         runBackgroundAnimation()
         setupBindings()
-        Tracker.shared.track("/home/send_tari/finalize", "Send Tari - Finalize")
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -95,7 +94,7 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
         
         model.$stateModel
             .compactMap { $0 }
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.updateViews(model: $0) }
             .store(in: &cancelables)
         

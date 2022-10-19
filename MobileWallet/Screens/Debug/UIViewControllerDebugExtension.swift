@@ -87,7 +87,7 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
             footer.append("<br/>\(key): \(value)")
         }
         footer.append("<br/>")
-        footer.append(LegacyConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "<br/>"))
+        footer.append(Tari.shared.connectionMonitor.formattedDisplayItems.joined(separator: "<br/>"))
         footer.append("</i></p>")
 
         return footer
@@ -106,34 +106,34 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         let archiveName = "\(dateString)-bug-report.zip"
 
         guard let archiveURL = FileManager.default.documentDirectory()?.appendingPathComponent(archiveName) else {
-            TariLogger.error("Failed to create archive URL")
+            Logger.log(message: "Failed to create archive URL", domain: .general, level: .error)
             throw DebugErrors.zipURL
         }
 
         // ZIP db files only if this is debug
         // An archive needs to be created first before multipl files can be appended.
         // If this is mainnet then just the current log file gets created and the rest will get appended below.
-        var sourceURL = URL(fileURLWithPath: TariLib.shared.logFilePath)
+        var sourceURL = URL(fileURLWithPath: Tari.shared.logFilePath)
         // Only allow attaching DB files in debug and testflight
         if TariSettings.shared.environment != .production {
-            sourceURL = TariLib.shared.connectedDatabaseDirectory
+            sourceURL = Tari.shared.connectedDatabaseDirectory
         }
 
         do {
             try FileManager().zipItem(at: sourceURL, to: archiveURL)
         } catch {
-            TariLogger.error("Creation of ZIP archive failed with error", error: error)
+            Logger.log(message: "Creation of ZIP archive failed with error: \(error.localizedDescription)", domain: .general, level: .error)
             throw DebugErrors.createArchive
         }
 
         // Add log file entries
         guard let archive = Archive(url: archiveURL, accessMode: .update) else {
-            TariLogger.error("Failed to access archive")
+            Logger.log(message: "Failed to access archive", domain: .general, level: .error)
             throw DebugErrors.zipArchive
         }
 
         var limit = 5
-        try TariLib.shared.allLogFiles.forEach { (logFile) in
+        try Tari.shared.logsURLs.forEach { (logFile) in
             guard limit > 0 else {
                 return
             }
@@ -169,8 +169,6 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
         } else {
             shareFeedback()
         }
-
-        TariLogger.info("Feedback shared")
     }
 
     private func shareFeedback() {
@@ -283,12 +281,21 @@ extension UIViewController: MFMailComposeViewControllerDelegate {
     private func showConnectionStatusPopUp() {
         
         let headerSection = PopUpComponentsFactory.makeHeaderView(title: "Connection status")
-        let contentSection = PopUpComponentsFactory.makeContentView(message: LegacyConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n\n"))
+        let contentSection = PopUpComponentsFactory.makeContentView(message: Tari.shared.connectionMonitor.formattedDisplayItems.joined(separator: "\n\n"))
         
-        let event = TariEventBus.events(forType: .connectionMonitorStatusChanged)
-            .sink { [weak contentSection] _ in contentSection?.label.text = LegacyConnectionMonitor.shared.state.formattedDisplayItems.joined(separator: "\n\n") }
+        let events = [
+            Tari.shared.connectionMonitor.$networkConnection.map { _ in Void() }.eraseToAnyPublisher(),
+            Tari.shared.connectionMonitor.$torConnection.map { _ in Void() }.eraseToAnyPublisher(),
+            Tari.shared.connectionMonitor.$torBootstrapProgress.map { _ in Void() }.eraseToAnyPublisher(),
+            Tari.shared.connectionMonitor.$baseNodeConnection.map { _ in Void() }.eraseToAnyPublisher(),
+            Tari.shared.connectionMonitor.$syncStatus.map { _ in Void() }.eraseToAnyPublisher()
+        ]
+            .map { $0
+                .receive(on: DispatchQueue.main)
+                .sink { [weak contentSection] _ in contentSection?.label.text = Tari.shared.connectionMonitor.formattedDisplayItems.joined(separator: "\n\n") }
+            }
         
-        let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { event.cancel() })])
+        let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { events.forEach { $0.cancel() } })])
         
         let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
         PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))

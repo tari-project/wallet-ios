@@ -126,18 +126,20 @@ extension PopUpPresenter {
     }
     
     private static func log(message: MessageModel) {
-        var log = "Pop-up Title=\(message.title)"
+        var log = "Pop-up Title: \(message.title)"
         
         if let description = message.message {
-            log += " Message=\(description)"
+            log += " Message: \(description)"
         }
         
         switch message.type {
         case .normal:
-            TariLogger.info(log)
+            log += " Type: Normal"
         case .error:
-            TariLogger.error(log)
+            log += " Type: Error"
         }
+        
+        Logger.log(message: log, domain: .userInterface, level: .info)
     }
     
     // MARK: - Helpers

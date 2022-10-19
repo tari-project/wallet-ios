@@ -46,7 +46,6 @@ final class WalletTransactionsManager {
         case transactionError(error: Error)
         case unsucessfulTransaction
         case noInternetConnection
-        case unableToStartWallet
         case timeout
     }
 
@@ -57,7 +56,7 @@ final class WalletTransactionsManager {
 
     // MARK: - Properties
 
-    private let connectionTimeout: TimeInterval = 30.0
+    private let connectionTimeout: DispatchQueue.SchedulerTimeType.Stride = .seconds(30)
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Actions
@@ -72,7 +71,7 @@ final class WalletTransactionsManager {
                 if !isOneSidedPayment {
                     subject.send(.transaction)
                 }
-                self?.verifyWalletStateAndSendTransactionToBlockchain(publicKey: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment) { result in
+                self?.sendTransactionToBlockchain(publicKey: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment) { result in
                     switch result {
                     case .success:
                         subject.send(completion: .finished)
@@ -90,107 +89,75 @@ final class WalletTransactionsManager {
 
     private func waitForConnection(result: @escaping (Result<Void, TransactionError>) -> Void) {
 
-        let connectionState = LegacyConnectionMonitor.shared.state
-
-        switch connectionState.reachability {
-        case .offline, .unknown:
+        guard case .connected = Tari.shared.connectionMonitor.networkConnection else {
             result(.failure(.noInternetConnection))
-        case .wifi, .cellular:
-            break
+            return
         }
-
-        let startDate = Date()
-
-        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] timer in
-
-            if connectionState.torStatus == .connected, connectionState.torBootstrapProgress == 100 {
-                timer.invalidate()
-                result(.success)
-            }
-
-            guard let self = self, -startDate.timeIntervalSinceNow > self.connectionTimeout else { return }
-
-            timer.invalidate()
-            result(.failure(.timeout))
-        }
-    }
-
-    private func verifyWalletStateAndSendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
-
-        var cancel: AnyCancellable?
-
-        cancel = TariLib.shared.walletStatePublisher
-            .receive(on: RunLoop.main)
-            .sink { [weak self] walletState in
-                switch walletState {
-                case .started:
-                    cancel?.cancel()
-                    self?.sendTransactionToBlockchain(publicKey: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment, result: result)
-                case .startFailed:
-                    cancel?.cancel()
-                    result(.failure(.unableToStartWallet))
-                case .notReady, .starting:
-                    break
-                }
-            }
-
-        cancel?.store(in: &cancellables)
+        
+        Publishers.CombineLatest(Tari.shared.connectionMonitor.$torConnection, Tari.shared.connectionMonitor.$isTorBootstrapCompleted)
+            .filter { $0 == .connected && $1 }
+            .timeout(connectionTimeout, scheduler: DispatchQueue.global())
+            .first()
+            .sink(
+                receiveCompletion: {
+                    guard case .failure = $0 else { return }
+                    result(.failure(.timeout))
+                },
+                receiveValue: { _ in result(.success) }
+            )
+            .store(in: &cancellables)
     }
 
     private func sendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
-        
-        guard let wallet = TariLib.shared.tariWallet else { return }
 
         do {
-            let transactionID = try wallet.sendTx(destination: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
+            let transactionID = try Tari.shared.transactions.send(
+                toPublicKey: publicKey,
+                amount: amount.rawValue,
+                feePerGram: feePerGram.rawValue,
+                message: message,
+                isOneSidedPayment: isOneSidedPayment
+            )
 
             guard !isOneSidedPayment else {
                 result(.success)
                 return
             }
-            startListeningForWalletEvents(transactionID: transactionID, publicKey: publicKey, result: result)
+            startListeningForWalletEvents(transactionID: transactionID, recipientHex: try publicKey.byteVector.hex, result: result)
         } catch {
             result(.failure(.transactionError(error: error)))
         }
     }
 
-    private func startListeningForWalletEvents(transactionID: UInt64, publicKey: PublicKey, result: @escaping (Result<Void, TransactionError>) -> Void) {
+    private func startListeningForWalletEvents(transactionID: UInt64, recipientHex: String, result: @escaping (Result<Void, TransactionError>) -> Void) {
         
-        TariEventBus.events(forType: .transactionSendResult)
-            .compactMap { $0.object as? TransactionResult }
-            .filter { $0.id == transactionID }
+        WalletCallbacksManager.shared.transactionSendResult
+            .filter { $0.identifier == transactionID }
+            .first()
             .sink { [weak self] in
-                
-                self?.cancelWalletEvents()
-                
                 guard $0.status.isSuccess else {
                     result(.failure(.unsucessfulTransaction))
                     return
                 }
                 
-                self?.sendPushNotificationToRecipient(publicKey: publicKey)
+                self?.sendPushNotificationToRecipient(recipientHex: recipientHex)
                 
-                TariLogger.info("Transaction send successful.")
-                Tracker.shared.track(eventWithCategory: "Transaction", action: "Transaction Accepted")
+                Logger.log(message: "Transaction send successful", domain: .general, level: .info)
                 result(.success)
             }
             .store(in: &cancellables)
     }
 
-    private func sendPushNotificationToRecipient(publicKey: PublicKey) {
+    private func sendPushNotificationToRecipient(recipientHex: String) {
 
         do {
             try NotificationManager.shared.sendToRecipient(
-                publicKey,
-                onSuccess: { TariLogger.info("Recipient has been notified") },
-                onError: { TariLogger.error("Failed to notify recipient", error: $0) }
+                recipientHex: recipientHex,
+                onSuccess: { Logger.log(message: "Recipient has been notified", domain: .general, level: .info) },
+                onError: { Logger.log(message: "Failed to notify recipient: \($0.localizedDescription)", domain: .general, level: .error) }
             )
         } catch {
-            TariLogger.error("Failed to notify recipient", error: error)
+            Logger.log(message: "Failed to notify recipient: \(error.localizedDescription)", domain: .general, level: .error)
         }
-    }
-
-    private func cancelWalletEvents() {
-        cancellables.forEach { $0.cancel() }
     }
 }

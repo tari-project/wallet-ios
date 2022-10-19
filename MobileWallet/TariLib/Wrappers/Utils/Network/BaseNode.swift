@@ -42,7 +42,7 @@ struct BaseNode: Equatable {
 
     // MARK: - Subelements
 
-    enum Error: Swift.Error {
+    enum InternalError: Error {
         case invalidPeerString
     }
 
@@ -59,7 +59,7 @@ struct BaseNode: Equatable {
 
     init(name: String, peer: String) throws {
         let peerComponents = peer.components(separatedBy: "::")
-        guard peerComponents.count == 2 else { throw Error.invalidPeerString }
+        guard peerComponents.count == 2 else { throw InternalError.invalidPeerString }
         try self.init(name: name, hex: peerComponents[0], address: peerComponents[1])
     }
 
@@ -78,7 +78,7 @@ struct BaseNode: Equatable {
     private func validateData() throws {
         let regex = try NSRegularExpression(pattern: "[a-z0-9]{64}::\\/onion3\\/[a-z0-9]{56}:[0-9]{2,6}")
         let range = NSRange(location: 0, length: peer.utf16.count)
-        guard regex.matches(in: peer, options: [], range: range).count == 1 else { throw Error.invalidPeerString }
+        guard regex.matches(in: peer, options: [], range: range).count == 1 else { throw InternalError.invalidPeerString }
     }
 }
 

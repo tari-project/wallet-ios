@@ -46,14 +46,14 @@ enum MicroTariErrors: Error {
 
 struct MicroTari {
     private static let conversion = 1000000
-    public static let ROUNDED_FRACTION_DIGITS = 2
-    public static let MAX_FRACTION_DIGITS = 6
+    public static let roundedFractionDigits = 2
+    public static let maxFractionDigits = 6
 
     private static let defaultFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
-        formatter.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
+        formatter.minimumFractionDigits = MicroTari.roundedFractionDigits
+        formatter.maximumFractionDigits = MicroTari.roundedFractionDigits
         formatter.negativePrefix = "-"
         formatter.roundingMode = .down
         return formatter
@@ -62,8 +62,8 @@ struct MicroTari {
     private static let withOperatorFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
-        formatter.maximumFractionDigits = MicroTari.MAX_FRACTION_DIGITS
+        formatter.minimumFractionDigits = MicroTari.roundedFractionDigits
+        formatter.maximumFractionDigits = MicroTari.maxFractionDigits
         formatter.positivePrefix = "+ "
         formatter.negativePrefix = "- "
         return formatter
@@ -72,8 +72,8 @@ struct MicroTari {
     private static let preciseFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.minimumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
-        formatter.maximumFractionDigits = MicroTari.MAX_FRACTION_DIGITS
+        formatter.minimumFractionDigits = MicroTari.roundedFractionDigits
+        formatter.maximumFractionDigits = MicroTari.maxFractionDigits
         formatter.negativePrefix = "- "
         return formatter
     }()
@@ -82,7 +82,7 @@ struct MicroTari {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.minimumFractionDigits = 0
-        formatter.maximumFractionDigits = MicroTari.ROUNDED_FRACTION_DIGITS
+        formatter.maximumFractionDigits = MicroTari.roundedFractionDigits
         formatter.negativePrefix = "-"
         return formatter
     }()

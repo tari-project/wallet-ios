@@ -94,17 +94,10 @@ final class SendingTariModel {
     // MARK: - Setups
     
     private func setupCallbacks() {
-
-        if #available(iOS 14.0, *) {
-            $state
-                .compactMap { [weak self] in self?.stateModel(forState:$0) }
-                .assign(to: &$stateModel)
-        } else {
-            $state
-                .compactMap { [weak self] in self?.stateModel(forState:$0) }
-                .assign(to: \.stateModel, on: self)
-                .store(in: &cancellables)
-        }
+        $state
+            .compactMap { [weak self] in self?.stateModel(forState:$0) }
+            .assign(to: \.stateModel, on: self)
+            .store(in: &cancellables)
     }
     
     // MARK: - Actions

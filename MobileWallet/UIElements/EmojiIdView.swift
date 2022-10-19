@@ -112,21 +112,15 @@ final class EmojiIdView: UIView {
         prepareCondensedEmojiId(textCentered: textCentered, width: initialWidth, height: initialHeight)
         prepareExpandedEmojiId(height: initialHeight)
     }
-
-    func setupView(pubKey: PublicKey,
-                   textCentered: Bool,
-                   inViewController vc: UIViewController? = nil,
-                   initialWidth: CGFloat = CGFloat(185),
-                   initialHeight: CGFloat = CGFloat(40),
-                   showContainerViewBlur: Bool = true,
-                   cornerRadius: CGFloat = 6.0) {
-        self.backgroundColor = .clear
+    
+    func setup(emojiID: String, hex: String, textCentered: Bool, inViewController vc: UIViewController? = nil, initialWidth: CGFloat = 185.0, initialHeight: CGFloat = 40.0, showContainerViewBlur: Bool = true, cornerRadius: CGFloat = 6.0) {
+        backgroundColor = .clear
         self.cornerRadius = cornerRadius
         blackoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap(_:))))
         superVC = vc
         superVC?.navigationController?.navigationBar.layer.zPosition = 0
-        emojiText = pubKey.emojis.0
-        pubKeyHex = pubKey.hex.0
+        emojiText = emojiID
+        pubKeyHex = hex
         blackoutWhileExpanded = showContainerViewBlur
         // tap gesture
         self.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))

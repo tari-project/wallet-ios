@@ -128,8 +128,7 @@ private class RefreshingInnerView: UIView {
             statusLabel.text = localized("refresh_view.waiting_for_sender")
             statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         case .txCompleted(let confirmationCount):
-            guard let wallet = TariLib.shared.tariWallet,
-                let requiredConfirmationCount = try? wallet.getRequiredConfirmationCount() else {
+            guard let requiredConfirmationCount = try? Tari.shared.transactions.requiredConfirmationsCount else {
                 statusLabel.text = localized("refresh_view.final_processing")
                 break
             }

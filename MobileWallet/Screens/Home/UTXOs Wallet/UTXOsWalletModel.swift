@@ -153,10 +153,6 @@ final class UTXOsWalletModel {
     
     private func breakCoinPreview(breakCount: Int, models: [UtxoModel]) -> BreakPreviewData? {
         
-        guard let wallet = TariLib.shared.tariWallet else {
-            return nil
-        }
-        
         let amount = models
             .map(\.amount)
             .reduce(0, +)
@@ -164,7 +160,7 @@ final class UTXOsWalletModel {
         let commitments = models.map(\.commitment)
         
         do {
-            let result = try wallet.previewCoinSplit(commitments: commitments, splitsCount: UInt(breakCount), feePerGram: Wallet.defaultFeePerGram.rawValue)
+            let result = try Tari.shared.utxos.coinBreakPreview(commitments: commitments, splitsCount: UInt(breakCount))
             let breakAmount = (amount - result.fee) / UInt64(breakCount)
             
             let amountText = MicroTari(amount).formattedPrecise
@@ -193,15 +189,10 @@ final class UTXOsWalletModel {
     
     private func performBreakAction(breakCount: Int, models: [UtxoModel]) {
         
-        guard let wallet = TariLib.shared.tariWallet else {
-            errorMessage = ErrorMessageManager.errorModel(forError: nil)
-            return
-        }
-        
         let commitments = models.map(\.commitment)
         
         do {
-            _ = try wallet.coinSplit(commitments: commitments, splitsCount: UInt(breakCount), feePerGram: Wallet.defaultFeePerGram.rawValue)
+            try Tari.shared.utxos.breakCoins(commitments: commitments, splitsCount: UInt(breakCount))
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
         }
@@ -209,16 +200,12 @@ final class UTXOsWalletModel {
     
     func combineCoinsFeePreview() -> String? {
         
-        guard let wallet = TariLib.shared.tariWallet else {
-            return nil
-        }
-        
         let commitments = utxoModels
             .filter { self.selectedIDs.contains($0.uuid) }
             .map(\.commitment)
         
         do {
-            let result = try wallet.previewCoinsJoin(commitments: commitments, feePerGram: Wallet.defaultFeePerGram.rawValue)
+            let result = try Tari.shared.utxos.combineCoinsPreview(commitments: commitments)
             return MicroTari(result.fee).formattedPrecise
         } catch {
             return nil
@@ -227,17 +214,12 @@ final class UTXOsWalletModel {
     
     func performCombineAction() {
         
-        guard let wallet = TariLib.shared.tariWallet else {
-            errorMessage = ErrorMessageManager.errorModel(forError: nil)
-            return
-        }
-        
         let commitments = utxoModels
             .filter { self.selectedIDs.contains($0.uuid) }
             .map(\.commitment)
         
         do {
-            _ = try wallet.coinsJoin(commitments: commitments, feePerGram: Wallet.defaultFeePerGram.rawValue)
+            try Tari.shared.utxos.combineCoins(commitments: commitments)
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
         }
@@ -255,15 +237,10 @@ final class UTXOsWalletModel {
     
     private func fetchUTXOs(sortMethod: SortMethod) {
         
-        guard let wallet = TariLib.shared.tariWallet else {
-            errorMessage = ErrorMessageManager.errorModel(forError: nil)
-            return
-        }
-        
         isLoadingData = true
         
         do {
-            let utxosData = try wallet.allUtxos()
+            let utxosData = try Tari.shared.utxos.allUtxos
                 .reduce(into: UTXOsData()) { result, model in
                     guard let status = FFIUtxoStatus(rawValue: model.status)?.walletUtxoStatus else { return }
                     
@@ -391,8 +368,6 @@ extension FFIUtxoStatus {
             return nil
         }
     }
-    
-    var isVisibleUtxoStatus: Bool { walletUtxoStatus != nil }
 }
 
 private struct UTXOsData {
