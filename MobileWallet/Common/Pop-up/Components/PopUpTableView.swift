@@ -1,8 +1,8 @@
-//  LogFormatter.swift
+//  PopUpTableView.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/10/2022
+	Created by Adrian Truszczynski on 19/10/2022
 	Using Swift 5.0
 	Running on macOS 12.6
 
@@ -38,50 +38,60 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum LogFormatter {
+import UIKit
+
+final class PopUpTableView: UITableView {
     
-    private static let appNamePrefix = "[Aurora]"
-    private static let separator = " | "
-    private static let domainNameLength = Logger.Domain.allCases.map { $0.name.count }.max() ?? 0
-    private static let levelNameLength = Logger.Level.allCases.map { $0.name.count }.max() ?? 0
+    // MARK: - Properties
     
-    static func formattedMessage(message: String, domain: Logger.Domain, logLevel: Logger.Level, showPrefix: Bool) -> String {
-        
-        let domainName = formattedDomainName(domain: domain, includePrefix: showPrefix)
-        let logLevelName = logLevel.name.fixedLength(levelNameLength)
-        var components = [domainName, logLevelName, message]
-        
-        return components.joined(separator: separator)
+    var onSelectRow: ((IndexPath) -> Void)?
+    
+    private var heightConstraint: NSLayoutConstraint?
+    
+    // MARK: - Initialisers
+    
+    init() {
+        super.init(frame: .zero, style: .plain)
+        setupView()
+        setupConstraints()
+        setupCallbacks()
     }
     
-    static func formattedDomainName(domain: Logger.Domain, includePrefix: Bool) -> String {
-        let domainName = domain.name.fixedLength(domainNameLength)
-        guard includePrefix else { return domainName }
-        return [appNamePrefix, domainName].joined(separator: separator)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+    
+    private func setupView() {
+        bounces = false
+        rowHeight = UITableView.automaticDimension
+        separatorColor = .tari.greys.mediumLightGrey
+        separatorInset = UIEdgeInsets(top: 0.0, left: 25.0, bottom: 0.0, right: 25.0)
+    }
+    
+    private func setupConstraints() {
+        heightConstraint = heightAnchor.constraint(equalToConstant: 0.0)
+        heightConstraint?.isActive = true
+    }
+    
+    private func setupCallbacks() {
+        delegate = self
+    }
+    
+    // MARK: - Layout
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layoutIfNeeded()
+        heightConstraint?.constant = contentSize.height
     }
 }
 
-private extension String {
+extension PopUpTableView: UITableViewDelegate {
     
-    func fixedLength(_ length: Int) -> Self {
-        var result = prefix(length)
-        while result.count < length { result += " " }
-        return String(result)
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        onSelectRow?(indexPath)
     }
 }
 
-private extension Logger.Level {
-    
-    var name: String {
-        switch self {
-        case .verbose:
-            return "VERBOSE"
-        case .info:
-            return "INFO"
-        case .warning:
-            return "WARNING"
-        case .error:
-            return "ERROR"
-        }
-    }
-}

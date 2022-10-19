@@ -1,8 +1,8 @@
-//  LogFormatter.swift
+//  LogsListView.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/10/2022
+	Created by Adrian Truszczynski on 17/10/2022
 	Using Swift 5.0
 	Running on macOS 12.6
 
@@ -38,50 +38,50 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum LogFormatter {
-    
-    private static let appNamePrefix = "[Aurora]"
-    private static let separator = " | "
-    private static let domainNameLength = Logger.Domain.allCases.map { $0.name.count }.max() ?? 0
-    private static let levelNameLength = Logger.Level.allCases.map { $0.name.count }.max() ?? 0
-    
-    static func formattedMessage(message: String, domain: Logger.Domain, logLevel: Logger.Level, showPrefix: Bool) -> String {
-        
-        let domainName = formattedDomainName(domain: domain, includePrefix: showPrefix)
-        let logLevelName = logLevel.name.fixedLength(levelNameLength)
-        var components = [domainName, logLevelName, message]
-        
-        return components.joined(separator: separator)
-    }
-    
-    static func formattedDomainName(domain: Logger.Domain, includePrefix: Bool) -> String {
-        let domainName = domain.name.fixedLength(domainNameLength)
-        guard includePrefix else { return domainName }
-        return [appNamePrefix, domainName].joined(separator: separator)
-    }
-}
+import UIKit
+import TariCommon
 
-private extension String {
+final class LogsListView: BaseNavigationContentView {
     
-    func fixedLength(_ length: Int) -> Self {
-        var result = prefix(length)
-        while result.count < length { result += " " }
-        return String(result)
+    // MARK: - Subviews
+    
+    @View private(set) var tableView: UITableView = {
+        let view = UITableView()
+        view.rowHeight = UITableView.automaticDimension
+        return view
+    }()
+    
+    // MARK: - Initialisers
+    
+    override init() {
+        super.init()
+        setupViews()
+        setupConstraints()
     }
-}
-
-private extension Logger.Level {
     
-    var name: String {
-        switch self {
-        case .verbose:
-            return "VERBOSE"
-        case .info:
-            return "INFO"
-        case .warning:
-            return "WARNING"
-        case .error:
-            return "ERROR"
-        }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+    
+    private func setupViews() {
+        backgroundColor = .tari.white
+        navigationBar.title = localized("debug.logs.list.title")
+        navigationBar.backButtonType = .close
+    }
+    
+    private func setupConstraints() {
+        
+        addSubview(tableView)
+        
+        let constraints = [
+            tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
 }
