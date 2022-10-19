@@ -40,7 +40,8 @@
 
 import UIKit
 
-class CustomTabBar: UITabBar {
+final class CustomTabBar: UITabBar {
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -52,10 +53,18 @@ class CustomTabBar: UITabBar {
     }
 
     func setup() {
-        unselectedItemTintColor = .black
-        tintColor = Theme.shared.colors.homeScreenBackground
-        barTintColor = .white
-        barStyle = .black
+        
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .white
+        appearance.stackedLayoutAppearance.normal.iconColor = .tari.greys.black
+        appearance.stackedLayoutAppearance.selected.iconColor = .tari.purple
+        
+        standardAppearance = appearance
+        
+        if #available(iOS 15.0, *) {
+            scrollEdgeAppearance = appearance
+        }
 
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
@@ -64,7 +73,7 @@ class CustomTabBar: UITabBar {
         layer.masksToBounds = false
     }
 
-    override open func sizeThatFits(_ size: CGSize) -> CGSize {
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
         super.sizeThatFits(size)
         var sizeThatFits = super.sizeThatFits(size)
         let bottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0

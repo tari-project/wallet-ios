@@ -117,7 +117,7 @@ class NavigationBar: UIView, NavigationBarProtocol {
     }
 
     func setProgress(_ progress: Float) {
-        self.progressView.setProgress(progress, animated: true)
+        self.progressView.setProgress(progress, animated: !isHidden)
     }
 
     private func setupTitle() {
@@ -185,13 +185,9 @@ class NavigationBar: UIView, NavigationBarProtocol {
         progressView.topAnchor.constraint(equalTo: bottomAnchor).isActive = true
         progressView.heightAnchor.constraint(equalToConstant: 4.0).isActive = true
     }
-
-    func showEmojiId(_ publicKey: PublicKey, inViewController: UIViewController) throws {
-        let ( _, emojisError) = publicKey.emojis
-        guard emojisError == nil else { throw emojisError! }
-        emojiIdView.setupView(pubKey: publicKey,
-                              textCentered: true,
-                              inViewController: inViewController)
+    
+    func showEmojiId(emojiID: String, hex: String, presenterController: UIViewController) {
+        emojiIdView.setup(emojiID: emojiID, hex: hex, textCentered: true, inViewController: presenterController)
 
         emojiIdView.tapToExpand = { expanded in
             UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in

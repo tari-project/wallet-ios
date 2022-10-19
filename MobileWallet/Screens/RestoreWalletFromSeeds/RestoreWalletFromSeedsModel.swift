@@ -126,12 +126,11 @@ final class RestoreWalletFromSeedsModel {
             .map { $0.title }
         
         do {
-            let walletSeedWords = try SeedWords(words: seedWords)
-            try TariLib.shared.createNewWallet(seedWords: walletSeedWords)
+            try Tari.shared.restoreWallet(seedWords: seedWords)
             viewModel.isEmptyWalletCreated = true
-        } catch let error as SeedWords.Error {
+        } catch let error as SeedWords.InternalError {
             handle(seedWordsError: error)
-        } catch let error as WalletErrors {
+        } catch let error as WalletError {
             handle(walletError: error)
         } catch {
             handleUnknownError()
@@ -158,7 +157,8 @@ final class RestoreWalletFromSeedsModel {
     }
     
     private func fetchAvailableSeedWords() {
-        availableAutocompletionTokens = (try? SeedWordsMnemonicWordList(language: .english)?.seedWords.map { TokenViewModel(id: UUID(), title: $0) }) ?? []
+        let seedWords = (try? Tari.shared.recovery.allSeedWords(forLanguage: .english)) ?? []
+        availableAutocompletionTokens = seedWords.map { TokenViewModel(id: UUID(), title: $0) }
     }
     
     private func appendModelsBeforeEditingModel(models: [SeedWordModel]) {
@@ -181,20 +181,17 @@ final class RestoreWalletFromSeedsModel {
         viewModel.updatedInputText = lastToken
     }
 
-    private func handle(seedWordsError: SeedWords.Error) {
+    private func handle(seedWordsError: SeedWords.InternalError) {
         viewModel.error = ErrorMessageManager.errorModel(forError: seedWordsError)
     }
 
-    private func handle(walletError: WalletErrors) {
+    private func handle(walletError: WalletError) {
         
-        guard let description = walletError.errorDescription else {
-            handleUnknownError()
-            return
-        }
+        let message = ErrorMessageManager.errorMessage(forError: walletError)
         
         viewModel.error = MessageModel(
             title: localized("restore_from_seed_words.error.title"),
-            message: description,
+            message: message,
             type: .error
         )
     }

@@ -118,12 +118,12 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
             .store(in: &cancelables)
         
         model.viewModel.$seedWordModels
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .assign(to: \.seedWords, on: mainView.tokenView)
             .store(in: &cancelables)
         
         mainView.tokenView.$inputText
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .assign(to: \.inputText, on: model)
             .store(in: &cancelables)
         
@@ -155,9 +155,8 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
 
         let overlay = RestoreWalletFromSeedsProgressViewController()
 
-        overlay.onSuccess = { [weak self, weak overlay] in
-            overlay?.dismiss(animated: true)
-            self?.navigationController?.popToRootViewController(animated: true)
+        overlay.onSuccess = {
+            AppRouter.transitionToSplashScreen()
         }
 
         show(overlay: overlay)

@@ -60,7 +60,6 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBindings()
-        Tracker.shared.track("/home/profile", "Profile - Wallet Info")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -74,41 +73,41 @@ final class ProfileViewController: UIViewController {
         
         model.$qrCodeImage
             .compactMap { $0 }
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .assign(to: \.qrCodeImage, on: mainView)
             .store(in: &cancellables)
         
         model.$emojiData
             .compactMap { $0 }
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.update(emojiID: $0.emojiID, hex: $0.hex, copyText: $0.copyText, tooltopText: $0.tooltipText) }
             .store(in: &cancellables)
         
         model.$description
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .assign(to: \.text, on: mainView.middleLabel)
             .store(in: &cancellables)
         
         model.$isReconnectButtonVisible
             .map { !$0 }
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .assign(to: \.isHidden, on: mainView.reconnectYatButton)
             .store(in: &cancellables)
         
-        model.$error
+        model.$errorMessage
             .compactMap { $0 }
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.show(error: $0) }
             .store(in: &cancellables)
         
         model.$yatButtonState
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(yatButtonState: $0) }
             .store(in: &cancellables)
         
         model.$yatPublicKey
             .compactMap { $0 }
-            .receive(on: RunLoop.main)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.showYatOnboardingFlow(publicKey: $0) }
             .store(in: &cancellables)
         

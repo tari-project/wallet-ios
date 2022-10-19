@@ -122,7 +122,6 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
         setup()
         hideKeyboardWhenTappedAroundOrSwipedDown(view: attachmentContainer)
         displayAliasOrEmojiId()
-        Tracker.shared.track("/home/send_tari/add_note", "Send Tari - Add Note")
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -147,24 +146,24 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
     }
 
     private func displayAliasOrEmojiId() {
-        guard let wallet = TariLib.shared.tariWallet else {
-            return
-        }
-
+        
+        var alias: String?
+        
         do {
-            guard let contact = try wallet.contacts.0?.find(publicKey: paymentInfo.publicKey) else { return }
-            if contact.alias.0.trimmingCharacters(in: .whitespaces).isEmpty {
-                try navigationBar.showEmojiId(paymentInfo.publicKey, inViewController: self)
-            } else {
-                navigationBar.title = contact.alias.0
-            }
+            alias = try Tari.shared.contacts.findContact(hex: try paymentInfo.publicKey.byteVector.hex)?.alias
         } catch {
+        }
+        
+        guard let alias = alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
             do {
-                try navigationBar.showEmojiId(paymentInfo.publicKey, inViewController: self)
+                try navigationBar.showEmojiId(emojiID: paymentInfo.publicKey.emojis, hex: paymentInfo.publicKey.byteVector.hex, presenterController: self)
             } catch {
                 PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
             }
+            return
         }
+        
+        navigationBar.title = alias
     }
 
     func updateTitleColorAndSetSendButtonState() {
@@ -286,22 +285,10 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
 
     private func onSlideToEndAction() {
         dismissKeyboard()
-
-        Tracker.shared.track(
-            eventWithCategory: "Transaction",
-            action: "Transaction Initiated"
-        )
-
-        guard let wallet = TariLib.shared.tariWallet else {
-            PopUpPresenter.show(message: MessageModel(title: localized("wallet.error.title"), message: localized("wallet.error.wallet_not_initialized"), type: .error))
-            sendButton.resetStateWithAnimation(true)
-            return
-        }
-
-        sendTx(wallet, recipientPublicKey: paymentInfo.publicKey, amount: amount, feePerGram: feePerGram)
+        sendTx(recipientPublicKey: paymentInfo.publicKey, amount: amount, feePerGram: feePerGram)
     }
 
-    private func sendTx(_ wallet: Wallet, recipientPublicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari) {
+    private func sendTx(recipientPublicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari) {
         
         var message = noteText
         
@@ -521,7 +508,7 @@ extension AddNoteViewController: UITextViewDelegate {
         // Limit to the size of a tx note
         let charLimit = 280
         if trimmedText.count > charLimit {
-            TariLogger.warn("Limitting tx note to \(charLimit) chars")
+            Logger.log(message: "Limitting tx note to \(charLimit) chars", domain: .general, level: .warning)
             trimmedText = String(trimmedText.prefix(charLimit))
             textView.text = trimmedText
         }

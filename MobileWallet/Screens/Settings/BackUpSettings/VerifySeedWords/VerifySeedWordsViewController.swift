@@ -70,13 +70,7 @@ final class VerifySeedWordsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if #available(iOS 15, *) {} else {
-            model.fetchData()
-        }
+        model.fetchData()
     }
     
     // MARK: - Setups

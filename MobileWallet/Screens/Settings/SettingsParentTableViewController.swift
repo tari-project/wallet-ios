@@ -61,25 +61,7 @@ class SettingsParentTableViewController: SettingsParentViewController {
     }
 
     @objc private func willEnterForeground() {
-        if TariLib.shared.walletState != .started {
-            TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
-                [weak self]
-                (sender) in
-                guard let self = self else { return }
-                let walletState = sender!.object as! TariLib.WalletState
-                switch walletState {
-                case .started:
-                    TariEventBus.unregister(self, eventType: .walletStateChanged)
-                    self.reloadTableViewWithAnimation()
-                case .startFailed:
-                    TariEventBus.unregister(self, eventType: .walletStateChanged)
-                default:
-                    break
-                }
-            }
-        } else {
-            reloadTableViewWithAnimation()
-        }
+        reloadTableViewWithAnimation()
     }
 
     func updateMarks() {
@@ -152,31 +134,5 @@ extension SettingsParentTableViewController {
         tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-    }
-}
-
-extension SettingsParentTableViewController: OnionConnectorDelegate {
-    func onTorConnProgress(_ progress: Int) {
-        navigationBar.setProgress(Float(progress) / 100.0)
-    }
-
-    func onTorConnDifficulties(error: OnionError) {
-        PopUpPresenter.show(message: MessageModel(title: error.failureReason ?? localized("Onion_Error.error.title.onionError"), message: error.localizedDescription, type: .error))
-    }
-
-    @objc func onTorConnFinished(_ configuration: BridgesConfuguration) {
-        OnionConnector.shared.removeObserver(self)
-        navigationBar.setProgress(1.0)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.navigationBar.progressView.isHidden = true
-            self.view.isUserInteractionEnabled = true
-            self.tableView.reloadData()
-        }
-    }
-
-    @objc func onTorConnDifficulties() {
-        OnionConnector.shared.removeObserver(self)
-        navigationBar.progressView.isHidden = true
-        view.isUserInteractionEnabled = true
     }
 }

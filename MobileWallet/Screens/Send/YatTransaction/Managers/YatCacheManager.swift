@@ -92,7 +92,7 @@ final class YatCacheManager {
             try data.write(to: fileURL)
             return FileData(url: fileURL, identifier: components.identifier)
         } catch {
-            TariLogger.error("Unable to cache Yat Visualisation", error: error)
+            Logger.log(message: "Unable to cache Yat Visualisation: \(error.localizedDescription)", domain: .general, level: .error)
             return nil
         }
     }

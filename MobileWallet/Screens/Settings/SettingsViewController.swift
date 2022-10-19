@@ -211,7 +211,11 @@ class SettingsViewController: SettingsParentTableViewController {
 
     private func onConnectYatAction() {
         
-        guard let publicKey = TariLib.shared.tariWallet?.publicKey.0?.hex.0 else {
+        let publicKey: String
+        
+        do {
+            publicKey = try Tari.shared.walletPublicKey.byteVector.hex
+        } catch {
             showNoConnectionError()
             return
         }
@@ -393,7 +397,7 @@ extension SettingsViewController {
 
     private func update(baseNode: BaseNode) {
         do {
-            try TariLib.shared.update(baseNode: baseNode, syncAfterSetting: true)
+            try Tari.shared.connection.select(baseNode: baseNode)
             UIPasteboard.general.string = ""
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("settings.pasteboard.custom_base_node.error.title"), message: localized("settings.pasteboard.custom_base_node.error.message"), type: .error))

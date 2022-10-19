@@ -43,7 +43,7 @@ import Lottie
 import LocalAuthentication
 import AVFoundation
 
-class WalletCreationViewController: UIViewController {
+final class WalletCreationViewController: UIViewController {
     typealias LottieAnimation = Animation.LottieAnimation
 
     // MARK: - States
@@ -108,7 +108,6 @@ class WalletCreationViewController: UIViewController {
         state = .localAuthentication
         prepareSubviews(for: .localAuthentication)
         showLocalAuthentication()
-        Tracker.shared.track("/local_auth", "Local Authentication")
     }
 
     // MARK: - Actions
@@ -196,10 +195,9 @@ class WalletCreationViewController: UIViewController {
                     self?.updateConstraintsAnimationView(animation: .none)
                     self?.showYourEmoji()
                 })
-                Tracker.shared.track("/onboarding/create_emoji_id", "Onboarding - Create Emoji Id")
             }
         case .showEmojiId:
-            TariSettings.shared.walletSettings.configationState = .initialized
+            TariSettings.shared.walletSettings.configurationState = .initialized
             hideSubviews { [weak self] in
                 self?.emojiIdView.shrink(animated: false)
                 self?.prepareSubviews(for: .localAuthentication)
@@ -216,23 +214,7 @@ class WalletCreationViewController: UIViewController {
     private func runNotificationRequest() {
         NotificationManager.shared.requestAuthorization { _ in
             DispatchQueue.main.async {
-                Tracker.shared.track("/onboarding/enable_push_notif", "Onboarding - Enable Push Notifications")
-
-                let nav = AlwaysPoppableNavigationController()
-                let tabBarController = MenuTabBarController()
-                nav.setViewControllers([tabBarController], animated: false)
-
-                if let window = UIApplication.shared.keyWindow {
-                    let overlayView = UIScreen.main.snapshotView(afterScreenUpdates: false)
-                    tabBarController.view.addSubview(overlayView)
-                    window.rootViewController = nav
-
-                    UIView.animate(withDuration: 0.4, delay: 0, options: .transitionCrossDissolve, animations: {
-                        overlayView.alpha = 0
-                    }, completion: { _ in
-                        overlayView.removeFromSuperview()
-                    })
-                }
+                AppRouter.transitionToHomeScreen()
             }
         }
     }
@@ -242,7 +224,7 @@ class WalletCreationViewController: UIViewController {
     }
 
     private func successAuth() {
-        TariSettings.shared.walletSettings.configationState = .authorized
+        TariSettings.shared.walletSettings.configurationState = .authorized
         hideSubviews { [weak self] in
             self?.prepareSubviews(for: .enableNotifications)
             self?.showEnableNotifications()
@@ -421,10 +403,11 @@ extension WalletCreationViewController {
         stackView.setCustomSpacing(16, after: secondLabel)
 
         continueButton.setTitle(localized("common.continue"), for: .normal)
-
-        if let pubKey = TariLib.shared.tariWallet?.publicKey.0 {
-            emojiIdView.setupView(
-                pubKey: pubKey,
+        
+        if let walletPublicKey = try? Tari.shared.walletPublicKey, let emojiID = try? walletPublicKey.emojis, let hex = try? walletPublicKey.byteVector.hex {
+            emojiIdView.setup(
+                emojiID: emojiID,
+                hex: hex,
                 textCentered: true,
                 inViewController: self,
                 showContainerViewBlur: false

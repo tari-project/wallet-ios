@@ -61,7 +61,7 @@ final class AddBaseNodeModel {
         }
 
         do {
-            try BaseNodeManager.addBaseNode(name: viewModel.name, peer: viewModel.peer)
+            try Tari.shared.connection.addBaseNode(name: viewModel.name, peer: viewModel.peer)
             viewModel.isFinished = true
             viewModel.errorMessage = nil
         } catch {

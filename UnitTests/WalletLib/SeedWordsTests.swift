@@ -46,11 +46,11 @@ final class SeedWordsTests: XCTestCase {
     func testWalletSeedInitializationWithSuccess() {
         
         let inputSeedWords = [
-            "abandon", "oven", "excuse", "sustain", "next",
-            "story", "fruit", "tool", "ramp", "milk",
-            "student", "snake", "hat", "table", "hospital",
-            "pipe", "business", "farm", "ensure", "approve",
-            "uniform", "fish", "wild", "wagon"
+            "abandon", "crop", "company", "buddy", "drink",
+            "sniff", "second", "list", "zebra", "bacon",
+            "genuine", "industry", "unfold", "scissors", "write",
+            "wage", "swear", "actor", "squeeze", "share",
+            "replace", "sand", "travel", "goat"
         ]
         
         let seedWords = try? SeedWords(words: inputSeedWords)
@@ -61,18 +61,18 @@ final class SeedWordsTests: XCTestCase {
     func testWalletSeedInitliaziationWithInvalidWord() {
         
         let inputSeedWords = [
-            "abandon", "oven", "excuse", "sustain", "next",
-            "story", "fruit", "tool", "IAMERROR", "milk",
-            "student", "snake", "hat", "table", "hospital",
-            "pipe", "business", "farm", "ensure", "approve",
-            "uniform", "fish", "wild", "wagon"
+            "abandon", "crop", "company", "buddy", "drink",
+            "sniff", "second", "list", "IAMERROR", "bacon",
+            "genuine", "industry", "unfold", "scissors", "write",
+            "wage", "swear", "actor", "squeeze", "share",
+            "replace", "sand", "travel", "goat"
         ]
         
         var seedWords: SeedWords?
         
         do {
             seedWords = try SeedWords(words: inputSeedWords)
-        } catch SeedWords.Error.invalidSeedWord {
+        } catch SeedWords.InternalError.invalidSeedWord {
         } catch {
             XCTFail("Unexpected error")
         }
@@ -83,15 +83,15 @@ final class SeedWordsTests: XCTestCase {
     func testWalletSeedInitliaziationWithNotEnoughtSeedWords() {
         
         let inputSeedWords = [
-            "abandon", "oven", "excuse", "sustain", "next",
-            "story", "fruit", "tool", "ramp", "milk"
+            "abandon", "crop", "company", "buddy", "drink",
+            "sniff", "second", "list", "zebra", "bacon"
         ]
         
         var seedWords: SeedWords?
         
         do {
             seedWords = try SeedWords(words: inputSeedWords)
-        } catch SeedWords.Error.phraseIsTooShort {
+        } catch SeedWords.InternalError.phraseIsTooShort {
         } catch {
             XCTFail("Unexpected error")
         }
@@ -102,18 +102,18 @@ final class SeedWordsTests: XCTestCase {
     func testWalletSeedInitliaziationWithTooManySeedWords() {
         
         let inputSeedWords = [
-            "abandon", "oven", "excuse", "sustain", "next",
-            "story", "fruit", "tool", "ramp", "milk",
-            "student", "snake", "hat", "table", "hospital",
-            "pipe", "business", "farm", "ensure", "approve",
-            "uniform", "fish", "wild", "wagon", "abandon"
+            "abandon", "crop", "company", "buddy", "drink",
+            "sniff", "second", "list", "zebra", "bacon",
+            "genuine", "industry", "unfold", "scissors", "write",
+            "wage", "swear", "actor", "squeeze", "share",
+            "replace", "sand", "travel", "goat", "abandon"
         ]
         
         var seedWords: SeedWords?
         
         do {
             seedWords = try SeedWords(words: inputSeedWords)
-        } catch SeedWords.Error.phraseIsTooLong {
+        } catch SeedWords.InternalError.phraseIsTooLong {
         } catch {
             XCTFail("Unexpected error")
         }

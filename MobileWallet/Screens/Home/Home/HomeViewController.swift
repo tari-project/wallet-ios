@@ -59,22 +59,15 @@ final class HomeViewController: UIViewController {
     
     private let model = HomeViewModel()
     private let mainView = HomeView()
-    private let tapOnKeyWindowGestureRecognizer = UITapGestureRecognizer()
     
     private var hapticEnabled = false
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
 
     private var keyServer: KeyServer?
-    private var selectedTx: TxProtocol?
-
-    private var lastFPCPosition: FloatingPanel.FloatingPanelPosition = .half
-
-    private var balanceRefreshIsWaitingForWallet = false
-    private var tableDataReloadIsWaitingForWallet = false
-    private var networkCompatibilityCheckIsWaitingForWallet = false
+    private var isNetworkCompatibilityChecked = false
 
     private var isFirstIntroToWallet: Bool {
-        TariSettings.shared.walletSettings.configationState != .ready
+        TariSettings.shared.walletSettings.configurationState != .ready
     }
     
     private var isTxViewFullScreen: Bool = false {
@@ -87,7 +80,7 @@ final class HomeViewController: UIViewController {
     private var grabberWidthConstraint: NSLayoutConstraint?
     override var navBarHeight: CGFloat { (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0.0) + 56.0 }
     
-    private var cancelables: Set<AnyCancellable> = []
+    private var cancellables: Set<AnyCancellable> = []
     
     private lazy var txsTableVC: TxsListViewController = {
         let txController = TxsListViewController()
@@ -104,13 +97,14 @@ final class HomeViewController: UIViewController {
         return view
     }()
 
-    
     private var isGrabberVisible: Bool = true {
         didSet {
             grabberWidthConstraint?.constant = isGrabberVisible ? 55.0 : 0.0
             grabberHandle.alpha = isGrabberVisible ? 1.0 : 0.0
         }
     }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle { isTxViewFullScreen ? .darkContent : .lightContent }
     
     // MARK: - View Lifecycle
     
@@ -124,7 +118,14 @@ final class HomeViewController: UIViewController {
         setupFloatingPanel()
         setupCallbacks()
         setupKeyServer()
-        Tracker.shared.track("/home", "Home - Transaction List")
+        NotificationManager.shared.requestAuthorization()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        ShortcutsManager.executeQueuedShortcut()
+        checkImportSecondUtxo()
+        checkIncompatibleNetwork()
     }
     
     // MARK: - Setups
@@ -186,12 +187,22 @@ final class HomeViewController: UIViewController {
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.connectionStatusIcon = $0 }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
+        
+        model.$balance
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.update(balance: $0) }
+            .store(in: &cancellables)
+        
+        model.$availableBalance
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.update(avaiableToSpendAmount: $0) }
+            .store(in: &cancellables)
         
         mainView.onOnCloseButtonTap = { [weak self] in
             self?.txsTableVC.tableView.scrollToTop(animated: true)
             self?.floatingPanelController.move(to: .half, animated: true)
-            self?.animateNavBar(progress: 0.0, buttonAction: true)
+            self?.animateNavBar(progress: 0.0)
             self?.updateTracking(progress: 0.0)
         }
 
@@ -206,90 +217,31 @@ final class HomeViewController: UIViewController {
         mainView.utxosWalletButton.onTap = { [weak self] in
             self?.moveToUtxosWallet()
         }
-        
-        TariEventBus.onMainThread(self, eventType: .balanceUpdate) { [weak self] _ in
-            self?.safeRefreshBalance()
-        }
-        
-        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
-            .sink { [weak self] _ in self?.onAppMovedToForeground() }
-            .store(in: &cancelables)
     }
     
     // MARK: - Actions
     
-    private func showConectionStatusPopUp() {
-        ConnectionMonitor.shared.showDetailsPopup()
-    }
-    
-    private func onAppMovedToForeground() {
-        guard TariLib.shared.walletState != .started else {
-            txsTableVC.tableView.beginRefreshing()
+    private func checkIncompatibleNetwork() {
+        
+        guard !isNetworkCompatibilityChecked else { return }
+        isNetworkCompatibilityChecked = true
+        
+        guard model.isNetworkCompatible else {
+            showIncompatibleNetworkDialog()
             return
         }
-        tableDataReloadIsWaitingForWallet = true
+        
+        checkBackupPrompt(delay: 0)
     }
     
-    // MARK: - Other
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        TariEventBus.onMainThread(self, eventType: .walletStateChanged) {
-            [weak self]
-            (sender) in
-            let walletState = sender!.object as! TariLib.WalletState
-            guard let self = self else { return }
-
-            switch walletState {
-            case .started:
-                if self.balanceRefreshIsWaitingForWallet {
-                    self.balanceRefreshIsWaitingForWallet = false
-                    self.safeRefreshBalance()
-                }
-                if self.tableDataReloadIsWaitingForWallet {
-                    self.tableDataReloadIsWaitingForWallet = false
-                    self.txsTableVC.tableView.beginRefreshing()
-                }
-                if self.networkCompatibilityCheckIsWaitingForWallet {
-                    self.networkCompatibilityCheckIsWaitingForWallet = false
-                    self.safeCheckIncompatibleNetwork()
-                }
-            default:
-                break
-            }
-        }
-        safeRefreshBalance()
-        ShortcutsManager.executeQueuedShortcut()
-        checkImportSecondUtxo()
-        safeCheckIncompatibleNetwork()
-    }
-
-    private func safeCheckIncompatibleNetwork() {
-        if TariLib.shared.walletState != .started {
-            networkCompatibilityCheckIsWaitingForWallet = true
-            return
-        }
-        do {
-            let persistedNetwork = try TariLib.shared.tariWallet?.getKeyValue(key: TariLib.KeyValueStorageKeys.network.rawValue)
-            if persistedNetwork != NetworkManager.shared.selectedNetwork.name {
-                // incompatible network
-                displayIncompatibleNetworkDialog()
-            } else {
-                checkBackupPrompt(delay: 0)
-            }
-        } catch {
-            // no-op
-        }
-    }
-
-    private func displayIncompatibleNetworkDialog() {
+    private func showIncompatibleNetworkDialog() {
         let popUpModel = PopUpDialogModel(
             title: localized("incompatible_network.title"),
             message: localized("incompatible_network.description"),
             buttons: [
                 PopUpDialogButtonModel(title: localized("incompatible_network.confirm"), type: .normal, callback: { [weak self] in self?.deleteWallet() }),
                 PopUpDialogButtonModel(title: localized("incompatible_network.cancel"), type: .text, callback: { [weak self] in
-                    try? TariLib.shared.setCurrentNetworkKeyValue()
+                    self?.model.updateCompatibleNetworkName()
                     self?.checkBackupPrompt(delay: 2.0)
                 })
             ],
@@ -297,42 +249,69 @@ final class HomeViewController: UIViewController {
         )
         PopUpPresenter.showPopUp(model: popUpModel)
     }
-
+    
     private func deleteWallet() {
-        TariLib.shared.deleteWallet()
-        BackupScheduler.shared.stopObserveEvents()
-        // go back to splash screen
-        let navigationController = AlwaysPoppableNavigationController(
-            rootViewController: SplashViewController()
+        model.deleteWallet()
+        AppRouter.transitionToSplashScreen()
+    }
+    
+    private func showConectionStatusPopUp() {
+        Tari.shared.connectionMonitor.showDetailsPopup()
+    }
+    
+    private func update(balance: String) {
+        
+        let balanceLabelAttributedText = NSMutableAttributedString(
+            string: balance,
+            attributes: [
+                .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel,
+                .foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!
+            ]
         )
-        navigationController.setNavigationBarHidden(
-            true,
-            animated: false
+        
+        let lastNumberOfDigitsToFormat = MicroTari.roundedFractionDigits + 1
+        
+        balanceLabelAttributedText.addAttributes(
+            [
+                .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
+                .foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
+                .baselineOffset: 5.0
+            ],
+            range: NSRange(location: balance.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat)
         )
-        UIApplication.shared.windows.first?.rootViewController = navigationController
-        UIApplication.shared.windows.first?.makeKeyAndVisible()
-    }
 
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        TariEventBus.unregister(self)
+        balanceLabelAttributedText.addAttributes(
+            [NSAttributedString.Key.kern: 1.1],
+            range: NSRange(location: balance.count - lastNumberOfDigitsToFormat - 1 ,length: 1)
+        )
+        
+        mainView.balanceValueLabel.attributedText = balanceLabelAttributedText
+        checkBackupPrompt(delay: 2)
     }
+    
+    private func update(avaiableToSpendAmount: String) {
+        
+        let text = NSAttributedString(string: avaiableToSpendAmount, attributes: [
+            .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
+            .foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel ?? UIColor()
+        ])
 
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return isTxViewFullScreen ? .darkContent : .lightContent
+        mainView.avaiableFoundsValueLabel.attributedText = text
     }
+    
+    // MARK: - Other
 
     private func setupKeyServer() {
         do {
             keyServer = try KeyServer()
         } catch {
-            TariLogger.error("Failed to initialise KeyServer")
+            Logger.log(message: "Failed to initialise KeyServer", domain: .general, level: .error)
         }
     }
 
     private func requestKeyServerTokens() {
         guard let keyServer = keyServer else {
-            TariLogger.error("No KeyServer initialised")
+            Logger.log(message: "No KeyServer initialised", domain: .general, level: .error)
             return
         }
         
@@ -358,8 +337,10 @@ final class HomeViewController: UIViewController {
                         ],
                         hapticType: .none
                     )
-                    
+                
+                DispatchQueue.main.async {
                     PopUpPresenter.showPopUp(model: popUpModel)
+                }
             }) { (error) in
                 DispatchQueue.main.async {
                     PopUpPresenter.show(message: MessageModel(title: errorTitle, message: localized("home.request_drop.error.description"), type: .error))
@@ -373,7 +354,7 @@ final class HomeViewController: UIViewController {
     // If we have a second stored utxo, import it
     private func checkImportSecondUtxo() {
         guard let keyServer = keyServer else {
-            TariLogger.error("No KeyServer initialised")
+            Logger.log(message: "No KeyServer initialised", domain: .general, level: .error)
             return
         }
         
@@ -382,76 +363,8 @@ final class HomeViewController: UIViewController {
                 PopUpPresenter.showStorePopUp()
             }
         } catch {
-            TariLogger.error("Failed to import 2nd UTXO", error: error)
+            Logger.log(message: "Failed to import 2nd UTXO: \(error.localizedDescription)", domain: .general, level: .error)
         }
-    }
-
-    private func safeRefreshBalance() {
-
-        guard TariLib.shared.walletState == .started else {
-            balanceRefreshIsWaitingForWallet = true
-            return
-        }
-
-        do {
-            try refreshBalance()
-            try updateAvaiableToSpendAmount()
-        } catch {
-            PopUpPresenter.show(message: MessageModel(title: localized("home.error.update_balance"), message: nil, type: .error))
-        }
-    }
-
-    private func refreshBalance() throws {
-        
-        let formattedValue = try TariLib.shared.tariWallet!.totalBalance.formatted
-        let balanceLabelAttributedText = NSMutableAttributedString(
-            string: formattedValue,
-            attributes: [
-                .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel,
-                .foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!
-            ]
-        )
-
-        let lastNumberOfDigitsToFormat = MicroTari.ROUNDED_FRACTION_DIGITS + 1
-        balanceLabelAttributedText.addAttributes(
-            [
-                .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
-                .foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
-                .baselineOffset: 5.0
-            ],
-            range: NSRange(
-                location: formattedValue.count - lastNumberOfDigitsToFormat,
-                length: lastNumberOfDigitsToFormat
-            )
-        )
-
-        balanceLabelAttributedText.addAttributes(
-            [NSAttributedString.Key.kern: 1.1],
-            range: NSRange(
-                location: formattedValue.count - lastNumberOfDigitsToFormat - 1,
-                length: 1
-            )
-        )
-
-        mainView.balanceValueLabel.attributedText = balanceLabelAttributedText
-
-        checkBackupPrompt(delay: 2)
-    }
-
-    private func updateAvaiableToSpendAmount() throws {
-        
-        let formattedValue = try TariLib.shared.tariWallet!.availableBalance.formatted
-        let text = NSMutableAttributedString(string: formattedValue)
-
-        text.addAttributes(
-            [
-                .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
-                .foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!
-            ],
-            range: NSRange(location: 0, length: formattedValue.count)
-        )
-
-        mainView.avaiableFoundsValueLabel.attributedText = text
     }
 
     private func showHideFullScreen() {
@@ -492,7 +405,7 @@ final class HomeViewController: UIViewController {
 
             // User swipes down for the first time
             if isFirstIntroToWallet {
-                TariSettings.shared.walletSettings.configationState = .ready
+                TariSettings.shared.walletSettings.configurationState = .ready
             }
 
             navigationController?.setNavigationBarHidden(true, animated: true)
@@ -530,12 +443,8 @@ final class HomeViewController: UIViewController {
 // MARK: - TxTableDelegateMethods
 extension HomeViewController: TxsTableViewDelegate {
     
-    func onTxSelect(_ tx: Any) {
-        selectedTx = tx as? TxProtocol
-        
-        guard let transaction = selectedTx else { return }
-        
-        let controller = TransactionDetailsConstructor.buildScene(transaction: transaction)
+    func onTxSelect(_ tx: Transaction) {
+        let controller = TransactionDetailsConstructor.buildScene(transaction: tx)
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -583,7 +492,6 @@ extension HomeViewController: FloatingPanelControllerDelegate {
     }
 
     func floatingPanelWillBeginDragging(_ vc: FloatingPanelController) {
-        lastFPCPosition = vc.position
         txsTableVC.tableView.lockScrollView()
         self.impactFeedbackGenerator.prepare()
     }
@@ -669,7 +577,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         return progress
     }
 
-    private func animateNavBar(progress: CGFloat, buttonAction: Bool = false) {
+    private func animateNavBar(progress: CGFloat) {
         if progress >= 0.0 && progress <= 1.0 {
             mainView.toolbarBottomConstraint?.constant = navBarHeight * progress
             UIView.animate(
@@ -741,6 +649,7 @@ private extension PopUpPresenter {
         
         headerSection.imageHeight = 180.0
         headerSection.imageView.image = Theme.shared.images.storeModal
+        headerSection.label.attributedText = storePopUpTitle()
         
         let contentSection = PopUpComponentsFactory.makeContentView(message: localized("store_modal.description", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol))
         let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [
@@ -771,6 +680,6 @@ private extension PopUpPresenter {
     private static func openStoreWebpage() {
         guard let url = URL(string: TariSettings.shared.storeUrl) else { return }
         WebBrowserPresenter.open(url: url)
-        TariLogger.verbose("Opened store link")
+        Logger.log(message: "Opened store link", domain: .general, level: .verbose)
     }
 }

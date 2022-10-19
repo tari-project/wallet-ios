@@ -104,11 +104,6 @@ struct Colors: Loopable {
 
     let checkBoxBorderColor = UIColor(named: "CheckboxBorderColor")
 
-    // Splash
-    let splashTitle = UIColor(named: "SplashTitle")
-    let splashSubtitle = UIColor(named: "SplashSubtitle")
-    let splashVersionLabel = UIColor(named: "SplashVersionLabel")
-
     // SplashCreatingWallet
     let creatingWalletFirstLabel = UIColor(named: "CreatingWalletBlackLabel")
     let creatingWalletSecondLabel = UIColor(named: "CreatingWalletBlackLabel")
@@ -143,7 +138,6 @@ struct Colors: Loopable {
     let settingsPasswordWarning = UIColor(named: "SettingsPasswordWarning")
 
     // Home screen
-    let homeScreenBackground = UIColor(named: "HomeScreenBackground")
     let homeScreenTotalBalanceLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
     let homeScreenTotalBalanceValueLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
     let floatingPanelGrabber = UIColor(named: "FloatingPanelGrabber")
@@ -376,14 +370,9 @@ struct Images: Loopable {
 }
 
 struct Fonts: Loopable {
-    let splashVersionFooterLabel = UIFont.Avenir.heavy.withSize(9.0)
+    
     let actionButton = UIFont.Avenir.heavy.withSize(16.0)
     let copiedLabel = UIFont.Avenir.black.withSize(13.0)
-
-    // Splash
-    let splashTitleLabel = UIFont.Avenir.black.withSize(30.0)
-    let splashSubtitleLabel = UIFont.Avenir.medium.withSize(14.0)
-    let splashDisclaimerLabel = UIFont.Avenir.medium.withSize(12.0)
 
     // SplashCreatingWallet
     let createWalletFirstLabel = UIFont.Avenir.black.withSize(18.0)

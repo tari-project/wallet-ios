@@ -147,7 +147,6 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
                     return
                 }
 
-                TariLib.shared.startWallet(seedWords: nil)
                 self?.pendingView.hidePendingView { [weak self] in
                     self?.returnToSplashScreen()
                 }
@@ -156,15 +155,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     private func returnToSplashScreen() {
-        let navigationController = AlwaysPoppableNavigationController(
-            rootViewController: SplashViewController()
-        )
-        navigationController.setNavigationBarHidden(
-            true,
-            animated: false
-        )
-        UIApplication.shared.windows.first?.rootViewController = navigationController
-        UIApplication.shared.windows.first?.makeKeyAndVisible()
+        AppRouter.transitionToSplashScreen()
     }
 }
 

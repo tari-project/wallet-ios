@@ -47,13 +47,13 @@ final class SelectBaseNodeViewController: SettingsParentTableViewController {
 
     private let model = SelectBaseNodeModel()
     private var dataSource: UITableViewDiffableDataSource<Int, SelectBaseNodeModel.NodeModel>?
-    private var cancelables: Set<AnyCancellable> = []
+    private var cancellables: Set<AnyCancellable> = []
 
     // MARK: - View lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupFeedbacks()
+        setupCallbacks()
 
     }
 
@@ -81,7 +81,7 @@ final class SelectBaseNodeViewController: SettingsParentTableViewController {
         tableView.register(type: SelectBaseNodeCell.self)
     }
 
-    private func setupFeedbacks() {
+    private func setupCallbacks() {
 
         tableView.delegate = self
 
@@ -108,14 +108,20 @@ final class SelectBaseNodeViewController: SettingsParentTableViewController {
 
         tableView.dataSource = dataSource
 
-        model.viewModel.$nodes
+        model.$nodes
             .sink { [weak self] models in
                 var snapshot = NSDiffableDataSourceSnapshot<Int, SelectBaseNodeModel.NodeModel>()
                 snapshot.appendSections([0])
                 snapshot.appendItems(models, toSection: 0)
                 self?.dataSource?.apply(snapshot, animatingDifferences: false)
             }
-            .store(in: &cancelables)
+            .store(in: &cancellables)
+        
+        model.$errorMessaage
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { PopUpPresenter.show(message: $0) }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions

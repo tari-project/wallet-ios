@@ -67,7 +67,6 @@ final class AddRecipientViewController: UIViewController {
         setupViews()
         setupFeedbacks()
         hideKeyboardWhenTappedAroundOrSwipedDown()
-        Tracker.shared.track("/home/send_tari/add_recipient", "Send Tari - Add Recipient")
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -222,8 +221,8 @@ final class AddRecipientViewController: UIViewController {
     }
     
     private func handleDeeplink() {
-        guard let deeplink = deeplink, let publicKey = try? PublicKey(hex: deeplink.receiverPublicKey) else { return }
-        model.searchText.send(publicKey.emojis.0)
+        guard let deeplink = deeplink, let emojiID = try? PublicKey(hex: deeplink.receiverPublicKey).emojis else { return }
+        model.searchText.send(emojiID)
     }
 }
 

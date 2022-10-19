@@ -54,11 +54,11 @@ class MenuTabBarController: UITabBarController {
     var transactionsViewController = TransactionsViewController()
     var profileViewController = ProfileViewController()
     var settingsViewController = SettingsViewController()
-    let customTabBar = CustomTabBar(frame: .null)
+    let customTabBar = CustomTabBar()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setValue(CustomTabBar(), forKey: "tabBar")
+        setValue(customTabBar, forKey: "tabBar")
         self.delegate = self
 
         homeViewController.tabBarItem.image = Theme.shared.images.homeItem

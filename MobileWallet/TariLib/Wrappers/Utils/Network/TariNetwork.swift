@@ -90,22 +90,24 @@ extension TariNetwork {
 
 extension TariNetwork {
 
-    static var all: [TariNetwork] { [dibbler].compactMap { $0 } }
+    static var all: [TariNetwork] { [esmeralda].compactMap { $0 } }
     
-    static var dibbler: Self {
+    static var esmeralda: Self {
         makeNetwork(
-            name: "dibbler",
-            presentedName: "Dibbler (\(localized("common.recommended")))",
+            name: "esmeralda",
+            presentedName: "Esmeralda (\(localized("common.recommended")))",
             isMainNet: false,
             rawBaseNodes: [
-                "london": "c2eca9cf32261a1343e21ed718e79f25bfc74386e9305350b06f62047f519347::/onion3/6yxqk2ybo43u73ukfhyc42qn25echn4zegjpod2ccxzr2jd5atipwzqd:18141",
-                "ireland": "42fcde82b44af1de95a505d858cb31a422c56c4ac4747fbf3da47d648d4fc346::/onion3/2l3e7ysmihc23zybapdrsbcfg6omtjtfkvwj65dstnfxkwtai2fawtyd:18141",
-                "ncal": "50e6aa8f6c50f1b9d9b3d438dfd2a29cfe1f3e3a650bd9e6b1e10f96b6c38f4d::/onion3/7s6y3cz5bnewlj5ypm7sekhgvqjyrq4bpaj5dyvvo7vxydj7hsmyf5ad:18141",
-                "nvir": "36a9df45e1423b5315ffa7a91521924210c8e1d1537ad0968450f20f21e5200d::/onion3/v24qfheti2rztlwzgk6v4kdbes3ra7mo3i2fobacqkbfrk656e3uvnid:18141",
-                "oregon": "be128d570e8ec7b15c101ee1a56d6c56dd7d109199f0bd02f182b71142b8675f::/onion3/ha422qsy743ayblgolui5pg226u42wfcklhc5p7nbhiytlsp4ir2syqd:18141",
-                "seoul": "3e0321c0928ca559ab3c0a396272dfaea705efce88440611a38ff3898b097217::/onion3/sl5ledjoaisst6d4fh7kde746dwweuge4m4mf5nkzdhmy57uwgtb7qqd:18141"
+                "london": "083ff333ad7e0e9f3678b67378ec339074474342a6357de64a76bdf15e4c955b::/onion3/ldgdytcrwzfbmbpz3dmyi6yzqzqbeamitpb2saxzxmp52qywlmsg4vyd:18141",
+                "ireland": "747d45b8416ffe605d17958d36747eab7d3f5fc3d671e1b1b4884b2a44b98365::/onion3/n35n5fikcqqhhhjcdzpqul5v74mu7k6nikpafmlnwgiapphiw45tmryd:18141",
+                "ncal": "ea420ae2948739bc35907b8ab5a2d41526ccef22ec92f8f8e2bb398500bf435a::/onion3/uybnlnzve4j4w2lj5bdoe2uurwsbjm73ck2cotlnknhu2l7msn26oeyd:18141",
+                "nvir": "f688c69f2397dc0d4ad18168cd6ad13f93241a665acf19ab7f358fd661ac3d1c::/onion3/qejny5yprzidxt4rhstjmhsyfmeq4yb4r6tnn3pqowjr7e7roxcpxsqd:18141",
+                "oregon": "8648575c606269b032f43cd0d54728628ddb911e636bd65ea36e867a5ffd3643::/onion3/5d2owx6uoqcsoapprattb4fmektm3rcpfyzmmwmf64dsu55mhcqef2yd:18141",
+                "seoul": "78b2c0bda70fd12a9987757ffc2851e197080af804353e8e025d28c785b6b447::/onion3/ysj76foyp7qkl7d5x63hyocmp5ydwcgkb25oalo23kj2vvx7zjvofqad:18141",
+                "area7": "ced769f66b4398ea62eb9f74a08b5ebfdc1a51554a695c0aff4b949fea875b61::/onion3/m4koteatwthmozsbg54y6c4io26d4md6ub5l3rnco4s7a4qu2xkvonyd:18141",
+                "area8": "40717ea5146cf6183c07469d188792b12a57b9da2e5af5bc50df270ff789257f::/onion3/qhmrwr2h3fnszwc4udhlgfpealm7mvw64enqghullrarc633fzmd6zqd:18141"
             ],
-            faucetURL: URL(string: "https://dibbler-faucet.tari.com")
+            faucetURL: URL(string: "https://esmeralda-faucet.tari.com")
         )
     }
 

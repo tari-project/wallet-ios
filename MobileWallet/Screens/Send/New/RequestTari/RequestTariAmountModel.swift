@@ -112,7 +112,7 @@ final class RequestTariAmountModel {
     // MARK: - Factories
     
     private func makeDeeplink() -> URL? {
-        guard let publicKey = TariLib.shared.tariWallet?.publicKey.0?.hex.0, let tariAmount = try? MicroTari(tariValue: amountFormatter.amount) else { return nil }
+        guard let publicKey = try? Tari.shared.walletPublicKey.byteVector.hex, let tariAmount = try? MicroTari(tariValue: amountFormatter.amount) else { return nil }
         let model = TransactionsSendDeeplink(receiverPublicKey: publicKey, amount: tariAmount.rawValue, note: nil)
         return try? DeepLinkFormatter.deeplink(model: model)
     }

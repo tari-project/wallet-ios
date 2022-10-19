@@ -50,7 +50,7 @@ final class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleP
 
     func update(subtitle: String?, isCompact: Bool) {
         subtitleLabel.text = subtitle
-        subtitleLabel.numberOfLines = isCompact ? 2 : 1
+        subtitleLabel.numberOfLines = isCompact ? 3 : 1
         subtitleLabel.font = isCompact ? .Avenir.medium.withSize(12.0) : .Avenir.medium.withSize(13.0)
     }
     
@@ -74,6 +74,8 @@ final class NavigationBarWithSubtitle: NavigationBar, NavigationBarWithSubtitleP
         addSubview(subtitleLabel)
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
         subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 9.0).isActive = true
+        subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8.0).isActive = true
+        subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8.0).isActive = true
         subtitleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
 
         // Style

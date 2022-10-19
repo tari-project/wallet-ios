@@ -51,7 +51,6 @@ final class ErrorView: UIView {
             } else {
                 alpha = 1.0
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
-                TariLogger.error(message)
             }
             
         }

@@ -39,8 +39,9 @@
 */
 
 import UIKit
+import Combine
 
-class CustomBridgesViewController: SettingsParentTableViewController {
+final class CustomBridgesViewController: SettingsParentTableViewController, CustomBridgesHandable {
 
     private enum Section: Int, CaseIterable {
         case requestBridges
@@ -61,7 +62,7 @@ class CustomBridgesViewController: SettingsParentTableViewController {
         }
     }
 
-    private weak var bridgesConfiguration: BridgesConfuguration?
+    private weak var bridgesConfiguration: BridgesConfiguration?
     private let examplePlaceHolderString = "Available formates:\n• obfs4 <IP ADDRESS>:<PORT> <FINGERPRINT> cert=<CERTIFICATE> iat-mode=<value>\nexample:\nobfs4 192.95.36.142:443 CDF2E852BF539B82BD10E27E9115A31734E378C2 cert=qUVQ0srL1JI/vO6V6m/24anYXiJD3QP2HgzUKQtQ7GRqqUvs7P+tG43RtAqdhLOALP7DJQ iat-mode=1\n\n • <IP ADDRESS>:<PORT> <FINGERPRINT>\nexample:\n78.156.103.189:9301 2BD90810282F8B331FC7D47705167166253E1442"
     private let customBridgeField = UITextView()
     private lazy var detector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
@@ -74,8 +75,10 @@ class CustomBridgesViewController: SettingsParentTableViewController {
         SystemMenuTableViewCellItem(title: CustomBridgesTitle.scanQRCode.rawValue),
         SystemMenuTableViewCellItem(title: CustomBridgesTitle.uploadQRCode.rawValue)
     ]
+    
+    private var cancellables = Set<AnyCancellable>()
 
-    init(bridgesConfiguration: BridgesConfuguration) {
+    init(bridgesConfiguration: BridgesConfiguration) {
         self.bridgesConfiguration = bridgesConfiguration
         super.init(nibName: nil, bundle: nil)
     }
@@ -88,6 +91,9 @@ class CustomBridgesViewController: SettingsParentTableViewController {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        
+        setupCustomBridgeProgressHandler()
+            .store(in: &cancellables)
     }
 }
 
@@ -106,14 +112,14 @@ extension CustomBridgesViewController {
         navigationBar.rightButton.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
     }
 
-    override func onTorConnDifficulties() {
-        super.onTorConnDifficulties()
+    private func onTorConnDifficulties(error: Error) {
         applyConnectingStatus() // for returning to previous bridges configuration
         let backupConfiguration = OnionSettings.backupBridgesConfiguration
         let currentBridgesStr = backupConfiguration.customBridges?.joined(separator: "\n")
         bridgesConfiguration?.customBridges = backupConfiguration.customBridges
         bridgesConfiguration?.bridgesType = backupConfiguration.bridgesType
         customBridgeField.text = (currentBridgesStr?.isEmpty ?? true) ? examplePlaceHolderString : currentBridgesStr
+        onCustomBridgeFailureAction(error: error)
     }
 
     private func openScannerVC() {
@@ -131,21 +137,30 @@ extension CustomBridgesViewController {
     }
 
     private func connectAction() {
-        if bridgesConfiguration == nil { return }
+        
+        guard let bridgesConfiguration = bridgesConfiguration else { return }
         applyConnectingStatus()
 
-        bridgesConfiguration?.customBridges = customBridgeField.text
+        bridgesConfiguration.customBridges = customBridgeField.text
                 .components(separatedBy: "\n")
                 .map({ bridge in bridge.trimmingCharacters(in: .whitespacesAndNewlines) })
                 .filter({ bridge in !bridge.isEmpty && !bridge.hasPrefix("//") && !bridge.hasPrefix("#") })
 
-        bridgesConfiguration?.bridgesType = bridgesConfiguration?.customBridges?.isEmpty == true ? .none : .custom
-        OnionConnector.shared.bridgesConfiguration = bridgesConfiguration!
+        bridgesConfiguration.bridgesType = bridgesConfiguration.customBridges?.isEmpty == true ? .none : .custom
+        
         customBridgeField.resignFirstResponder()
+        
+        Task {
+            do {
+                try await Tari.shared.update(torBridgesConfiguration: bridgesConfiguration)
+                onCustomBridgeSuccessAction()
+            } catch {
+                onTorConnDifficulties(error: error)
+            }
+        }
     }
 
     private func applyConnectingStatus() {
-        OnionConnector.shared.addObserver(self)
         navigationBar.setProgress(0.0)
         navigationBar.progressView.isHidden = false
         navigationBar.rightButton.isEnabled = false

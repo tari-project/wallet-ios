@@ -45,9 +45,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-    func scene(_ scene: UIScene,
-               willConnectTo session: UISceneSession,
-               options connectionOptions: UIScene.ConnectionOptions) {
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
@@ -81,18 +79,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         setupYatIntegration()
-
-        guard let _ = (scene as? UIWindowScene) else { return }
-        if let windowScene = scene as? UIWindowScene {
-            let window = UIWindow(windowScene: windowScene)
-            let navigationController = AlwaysPoppableNavigationController(
-                rootViewController: SplashViewController()
-            )
-            navigationController.setNavigationBarHidden(true, animated: false)
-            window.rootViewController = navigationController
-            self.window = window
-            window.makeKeyAndVisible()
-        }
+        
+        guard let windowScene = scene as? UIWindowScene else { return }
+        window = UIWindow(windowScene: windowScene)
+        window?.makeKeyAndVisible()
+        AppRouter.transitionToSplashScreen(animated: false)
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
@@ -105,34 +96,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         ShortcutsManager.executeQueuedShortcut()
     }
 
-    private func onTorSuccess(_ onComplete: @escaping () -> Void) {
-        // Handle if tor ports opened later
-        TariEventBus.onMainThread(self, eventType: .torPortsOpened) { [weak self] (_) in
-            guard let self = self else { return }
-            TariEventBus.unregister(self, eventType: .torPortsOpened)
-            onComplete()
-        }
-        if TariLib.shared.torPortsOpened {
-            TariEventBus.unregister(self, eventType: .torPortsOpened)
-            onComplete()
-        }
-    }
-
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
 
         // Remove badges from push notifications
         UIApplication.shared.applicationIconBadgeNumber = 0
-        LegacyConnectionMonitor.shared.start()
-        TariLib.shared.startTor()
-        // Only starts the wallet if it was stopped. Else wallet is started on the splash screen.
-        if TariLib.shared.isWalletExist {
-            onTorSuccess {
-                guard TariLib.shared.walletState == .notReady else { return }
-                TariLib.shared.startWallet(seedWords: nil)
-            }
-        }
+        
         if UserDefaults.Key.backupOperationAborted.boolValue()
             && ICloudBackup.shared.iCloudBackupsIsOn
             && !ICloudBackup.shared.inProgress {
@@ -147,9 +117,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
-        LegacyConnectionMonitor.shared.stop()
-        TariLib.shared.stopWallet()
-        TariLib.shared.stopTor()
         ICloudBackup.shared.backgroundBackupWallet()
     }
 

@@ -53,8 +53,6 @@ struct TariSettings {
 
     let walletSettings = WalletSettingsManager()
 
-    let discoveryTimeoutSec: UInt64 = 20
-    let safMessageDurationSec: UInt64 = 10800
     let deeplinkURI = "tari"
 
     let iCloudContainerIdentifier = "iCloud.com.tari.wallet"
@@ -67,8 +65,8 @@ struct TariSettings {
     let storeUrl = "https://store.tarilabs.com/"
     let bugReportEmail = "bug_reports@tari.com"
     let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
-    let blockExplorerUrl = "https://explore.tari.com/"
-    let blockExplorerKernelUrl = "https://explore.tari.com/kernel/"
+    let blockExplorerUrl = "https://explore-esme.tari.com/"
+    let blockExplorerKernelUrl = "https://explore-esme.tari.com/kernel/"
 
     var pushServerApiKey: String?
     var sentryPublicDSN: String?
@@ -122,11 +120,11 @@ struct TariSettings {
     }
 
     private init() {
-        TariLogger.info("Init settings...")
-        TariLogger.warn("Environment: \(environment)")
+        Logger.log(message: "Init settings...", domain: .general, level: .info)
+        Logger.log(message: "Environment: \(environment)", domain: .general, level: .info)
 
         guard let envPath = Bundle.main.path(forResource: "env", ofType: "json") else {
-            TariLogger.error("Could not find envrionment file")
+            Logger.log(message: "Could not find envrionment file", domain: .general, level: .error)
             return
         }
 
@@ -138,18 +136,18 @@ struct TariSettings {
                 if let pushServerApiKey = jsonResult["pushServerApiKey"] as? String, !pushServerApiKey.isEmpty {
                     self.pushServerApiKey = pushServerApiKey
                 } else {
-                    TariLogger.warn("pushServerApiKey not set in env.json. Sending push notifications will be disabled.")
+                    Logger.log(message: "pushServerApiKey not set in env.json. Sending push notifications will be disabled.", domain: .general, level: .warning)
                 }
                 if let sentryPublicDSN = jsonResult["sentryPublicDSN"] as? String, !sentryPublicDSN.isEmpty {
                     self.sentryPublicDSN = sentryPublicDSN
                 } else {
-                    TariLogger.warn("sentryPublicDSN not set in env.json. Crash reporting will not work.")
+                    Logger.log(message: "sentryPublicDSN not set in env.json. Crash reporting will not work.", domain: .general, level: .warning)
                 }
 
                 if let giphyApiKey = jsonResult["giphyApiKey"] as? String, !giphyApiKey.isEmpty {
                     self.giphyApiKey = giphyApiKey
                 } else {
-                    TariLogger.warn("giphyApiKey not set in env.json. Appending gifs to transaction notes will not work.")
+                    Logger.log(message: "giphyApiKey not set in env.json. Appending gifs to transaction notes will not work.", domain: .general, level: .warning)
                 }
 
                 if let appleTeamID = jsonResult["appleTeamID"] as? String, !appleTeamID.isEmpty {
@@ -180,7 +178,7 @@ struct TariSettings {
                 }
             }
         } catch {
-            TariLogger.error("Could not load env vars", error: error)
+            Logger.log(message: "Could not load env vars: \(error)", domain: .general, level: .error)
         }
     }
 }
