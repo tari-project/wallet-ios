@@ -40,7 +40,7 @@
 
 import UIKit
 
-protocol WordsFlexViewDelegate: class {
+protocol WordsFlexViewDelegate: AnyObject {
     func didSelectWord(word: String, intId: Int, phraseView: WordsFlexView)
 }
 

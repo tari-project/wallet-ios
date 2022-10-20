@@ -166,9 +166,7 @@ class ICloudBackup: NSObject {
     override init() {
         super.init()
 
-        #if targetEnvironment(simulator)
-        return
-        #endif
+        guard !AppValues.isSimulator else { return }
 
         initialiseQuery()
         addNotificationObservers()

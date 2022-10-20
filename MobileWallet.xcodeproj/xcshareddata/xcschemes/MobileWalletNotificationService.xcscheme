@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1140"
+   LastUpgradeVersion = "1400"
    wasCreatedForAppExtension = "YES"
    version = "1.3">
    <BuildAction
@@ -47,7 +47,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3A1365B6272BE3AC00402389"
+               BlueprintIdentifier = "3A1365C3272BE66800402389"
                BuildableName = "UnitTests.xctest"
                BlueprintName = "UnitTests"
                ReferencedContainer = "container:MobileWallet.xcodeproj">

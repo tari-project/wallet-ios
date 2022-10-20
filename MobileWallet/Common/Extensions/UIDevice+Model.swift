@@ -1,10 +1,10 @@
-//  AlwaysPoppableNavigationController.swift
-
+//  UIDevice+Model.swift
+	
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 23.04.2020
+	Created by Adrian Truszczynski on 19/10/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -40,9 +40,17 @@
 
 import UIKit
 
-final class AlwaysPoppableNavigationController: UINavigationController {
-
-    override var childForStatusBarStyle: UIViewController? {
-        topViewController?.childForStatusBarStyle ?? topViewController
+extension UIDevice {
+    
+    var rawModel: String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        
+        return Mirror(reflecting: systemInfo.machine)
+            .children
+            .reduce("") { identifier, element in
+                guard let value = element.value as? Int8, value != 0 else { return identifier }
+                return identifier + String(UnicodeScalar(UInt8(value)))
+            }
     }
 }

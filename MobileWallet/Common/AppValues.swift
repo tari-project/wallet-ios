@@ -1,10 +1,10 @@
-//  AlwaysPoppableNavigationController.swift
-
+//  AppValues.swift
+	
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 23.04.2020
+	Created by Adrian Truszczynski on 19/10/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,11 +38,12 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-
-final class AlwaysPoppableNavigationController: UINavigationController {
-
-    override var childForStatusBarStyle: UIViewController? {
-        topViewController?.childForStatusBarStyle ?? topViewController
+enum AppValues {
+    static var isSimulator: Bool {
+        #if targetEnvironment(simulator)
+        return true
+        #else
+        return false
+        #endif
     }
 }

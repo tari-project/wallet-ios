@@ -77,11 +77,12 @@ extension LAContext {
     }
 
     func authenticateUser(reason: AuthenticateUserReason = .logIn, showFailedDialog: Bool = true, onSuccess: @escaping () -> Void) {
-        #if targetEnvironment(simulator)
+        
         // Skip auth on simulator, quicker for development
-        onSuccess()
-        return
-        #endif
+        guard !AppValues.isSimulator else {
+            onSuccess()
+            return
+        }
 
         switch biometricType {
         case .faceID, .touchID, .pin:
@@ -97,7 +98,7 @@ extension LAContext {
                     } else {
                         if !showFailedDialog { return }
                         let localizedReason = error?.localizedDescription ?? localized("authentication.fail.description")
-                        Logger.log(message: "Biometrics auth failed: \(error?.localizedDescription)", domain: .general, level: .error)
+                        Logger.log(message: "Biometrics auth failed: \(error?.localizedDescription ?? "N/A")", domain: .general, level: .error)
                         self.authenticationFailedAlertOptions(reason: localizedReason, onSuccess: onSuccess)
                     }
                 }
