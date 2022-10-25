@@ -58,7 +58,7 @@ final class TariValidationService: CoreTariService {
     
     @Published private(set) var status: SyncStatus = .idle
     
-    private var unverifiedTransactions: [TransactionType: UInt64] = [:]
+    private var unverifiedTransactions: Set<TransactionType> = []
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialiser
@@ -79,7 +79,9 @@ final class TariValidationService: CoreTariService {
             .store(in: &cancellables)
         
         WalletCallbacksManager.shared.transactionValidation
-            .sink { [weak self] in self?.handleTransactionValidation(type: .tx, identifier: $0.identifier, isSuccess: $0.isSuccess) }
+            .filter { $0.status != .alreadyBusy }
+            .map { ($0.identifier, $0.status == .success) }
+            .sink { [weak self] in self?.handleTransactionValidation(type: .tx, identifier: $0, isSuccess: $1) }
             .store(in: &cancellables)
     }
     
@@ -91,8 +93,9 @@ final class TariValidationService: CoreTariService {
     }
     
     func sync() throws {
-        unverifiedTransactions[.txo] = try walletManager.startTransactionOutputValidation()
-        unverifiedTransactions[.tx] = try walletManager.startTransactionValidation()
+        unverifiedTransactions = [.tx, .txo]
+        _ = try walletManager.startTransactionOutputValidation()
+        _ = try walletManager.startTransactionValidation()
         status = .syncing
     }
     
@@ -100,7 +103,7 @@ final class TariValidationService: CoreTariService {
     
     private func handleTransactionValidation(type: TransactionType, identifier: UInt64, isSuccess: Bool) {
         
-        guard unverifiedTransactions[type] == identifier else { return }
+        guard !unverifiedTransactions.isEmpty else { return }
         
         guard isSuccess else {
             unverifiedTransactions.removeAll()
@@ -108,11 +111,7 @@ final class TariValidationService: CoreTariService {
             return
         }
         
-        unverifiedTransactions[type] = nil
-        
-        if type == .tx {
-            restartTransactionBroadcast()
-        }
+        unverifiedTransactions.remove(type)
         
         guard unverifiedTransactions.isEmpty else { return }
         status = .synced
