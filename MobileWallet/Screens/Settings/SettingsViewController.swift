@@ -184,6 +184,11 @@ class SettingsViewController: SettingsParentTableViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
+    private func onReportBugAction() {
+        let controller = BugReportingConstructor.buildScene()
+        present(controller, animated: true)
+    }
+    
     private func onBridgeConfigurationAction() {
         let bridgesConfigurationViewController = BridgesConfigurationViewController()
         navigationController?.pushViewController(bridgesConfigurationViewController, animated: true)
@@ -333,7 +338,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case .about:
                 onAboutAction()
             case .reportBug:
-                EmailFeedbackHandler.shared.show(presenter: self)
+                onReportBugAction()
             default:
                 onLinkAction(indexPath: indexPath)
             }

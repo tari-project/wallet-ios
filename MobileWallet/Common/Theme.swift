@@ -552,6 +552,19 @@ extension UIColor {
             static var orange: UIColor? { UIColor(named: "Orange") }
             static var red: UIColor? { UIColor(named: "Red") }
         }
+        
+        enum backgrounds {
+            static var secondary: UIColor? { UIColor(named: "BackgroundsSecondary") }
+        }
+        
+        enum text {
+            static var heading: UIColor? { UIColor(named: "TextHeading") }
+            static var body: UIColor? { UIColor(named: "TextBody") }
+        }
+        
+        enum separators {
+            static var primary: UIColor? { UIColor(named: "SeparatorsPrimary") }
+        }
     }
 }
 

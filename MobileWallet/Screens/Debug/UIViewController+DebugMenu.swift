@@ -91,14 +91,15 @@ extension UIViewController {
     
     private func moveToLogsScene() {
         if navigationController?.topViewController is LogsListViewController { return }
-        let logsViewController = LogsListContructor.buildScene()
+        let logsViewController = LogsListConstructor.buildScene()
         let navigationController = AlwaysPoppableNavigationController(rootViewController: logsViewController)
         navigationController.setNavigationBarHidden(true, animated: false)
         present(navigationController, animated: true)
     }
     
     private func moveToReportBugScene() {
-        EmailFeedbackHandler.shared.show(presenter: self)
+        let controller = BugReportingConstructor.buildScene()
+        present(controller, animated: true)
     }
     
     private func showConnectionStatus() {

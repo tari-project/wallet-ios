@@ -26,7 +26,8 @@ PODS:
   - TariCommon (0.2.0)
   - YatLib (0.3.2):
     - TariCommon (~> 0.2.0)
-  - ZIPFoundation (0.9.12)
+  - Zip (2.1.2)
+  - ZIPFoundation (0.9.15)
 
 DEPENDENCIES:
   - FloatingPanel (= 1.7.5)
@@ -41,6 +42,7 @@ DEPENDENCIES:
   - SwiftLint
   - TariCommon (= 0.2.0)
   - YatLib (= 0.3.2)
+  - Zip (= 2.1.2)
   - ZIPFoundation (~> 0.9)
 
 SPEC REPOS:
@@ -58,6 +60,7 @@ SPEC REPOS:
     - SwiftLint
     - TariCommon
     - YatLib
+    - Zip
     - ZIPFoundation
 
 EXTERNAL SOURCES:
@@ -85,8 +88,9 @@ SPEC CHECKSUMS:
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
   TariCommon: 2c8bb97359f59d6b302d2e96c191ff95931da8ac
   YatLib: cd443f044b7ddc58bd17e2406e3ecaf6688880a6
-  ZIPFoundation: e27423c004a5a1410c15933407747374e7c6cb6e
+  Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
+  ZIPFoundation: 063163dc828bf699c5be160eb4f58f676322d94f
 
-PODFILE CHECKSUM: cda7af281b97b707a29ec2fe797ff57617a1987a
+PODFILE CHECKSUM: c0fd93f2a5652dd7730802890d5d8b29e06a2a5a
 
 COCOAPODS: 1.11.3
