@@ -38,7 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum LogsListContructor {
+enum LogsListConstructor {
     
     static func buildScene() -> LogsListViewController {
         let model = LogsListModel()

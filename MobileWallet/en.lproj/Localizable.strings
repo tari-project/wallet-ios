@@ -659,6 +659,17 @@
 "debug.logs.details.filters.label.aurora_ui" = "Aurora - UI";
 "debug.logs.details.filters.label.aurora_debug" = "Aurora - Debug";
 
+/* Bug Reporting */
+
+"bug_reporting.title" = "Report a Bug";
+"bug_reporting.label.header" = "Has something gone wrong? Please let us know!";
+"bug_reporting.text_field.name" = "Name (Optional)";
+"bug_reporting.text_field.email" = "E-mail (Optional)";
+"bug_reporting.label.message_header" = "What happened? (Crash / Strange behavior)";
+"bug_reporting.label.footer" = "With this bug report you will send us information about your device model, iOS version and recent logs.";
+"bug_reporting.button.send" = "Send";
+"bug_reporting.button.view_logs" = "View logs";
+
 /* Errors */
 
 "error.generic.title" = "Error";

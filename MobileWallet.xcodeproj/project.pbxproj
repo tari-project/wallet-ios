@@ -121,6 +121,10 @@
 		3A0124A527B3EDEB00A481F4 /* TransactionViewControllable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0124A427B3EDEB00A481F4 /* TransactionViewControllable.swift */; };
 		3A03682E27DF20E300F304A2 /* TransactionDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A03682D27DF20E300F304A2 /* TransactionDetailsViewController.swift */; };
 		3A03683127DF211D00F304A2 /* TransactionDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A03683027DF211D00F304A2 /* TransactionDetailsView.swift */; };
+		3A0391E4290BA37C00352D73 /* BugReportingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0391E3290BA37C00352D73 /* BugReportingViewController.swift */; };
+		3A0391E6290BA40E00352D73 /* BugReportingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0391E5290BA40E00352D73 /* BugReportingView.swift */; };
+		3A0391E8290BA45C00352D73 /* BugReportingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0391E7290BA45C00352D73 /* BugReportingModel.swift */; };
+		3A0391EA290BA47300352D73 /* BugReportingConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0391E9290BA47300352D73 /* BugReportingConstructor.swift */; };
 		3A03A600288932DE00788A02 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A03A5FF288932DE00788A02 /* SplashView.swift */; };
 		3A03A602288962FA00788A02 /* SplashViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A03A601288962FA00788A02 /* SplashViewModel.swift */; };
 		3A052BF427B2658500C93671 /* AppVersionFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A052BF327B2658500C93671 /* AppVersionFormatter.swift */; };
@@ -136,7 +140,6 @@
 		3A20A6B82722EE00002B15DB /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A20A6B72722EDFF002B15DB /* VideoView.swift */; };
 		3A21FC5128FFD7B8004B09A0 /* PopUpTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A21FC5028FFD7B8004B09A0 /* PopUpTableView.swift */; };
 		3A21FC5328FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A21FC5228FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift */; };
-		3A21FC5528FFEA76004B09A0 /* EmailFeedbackHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A21FC5428FFEA76004B09A0 /* EmailFeedbackHandler.swift */; };
 		3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */; };
 		3A237C7D27D8E141005FA6AB /* SeedWordsListConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */; };
 		3A2B95682864801D0085BE21 /* UTXOsWalletTileListLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2B95672864801D0085BE21 /* UTXOsWalletTileListLayout.swift */; };
@@ -206,7 +209,7 @@
 		3A7DAB9128FDAFD5002CC013 /* LogsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9028FDAFD5002CC013 /* LogsListView.swift */; };
 		3A7DAB9328FDB18A002CC013 /* LogsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9228FDB18A002CC013 /* LogsListModel.swift */; };
 		3A7DAB9528FDB220002CC013 /* LogsListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9428FDB220002CC013 /* LogsListCell.swift */; };
-		3A7DAB9728FDB6FD002CC013 /* LogsListContructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9628FDB6FD002CC013 /* LogsListContructor.swift */; };
+		3A7DAB9728FDB6FD002CC013 /* LogsListConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9628FDB6FD002CC013 /* LogsListConstructor.swift */; };
 		3A7DAB9A28FDC972002CC013 /* LogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9928FDC972002CC013 /* LogViewController.swift */; };
 		3A7DAB9C28FDC9D8002CC013 /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9B28FDC9D8002CC013 /* LogView.swift */; };
 		3A7DAB9E28FDC9E2002CC013 /* LogModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7DAB9D28FDC9E2002CC013 /* LogModel.swift */; };
@@ -254,6 +257,7 @@
 		3A8A03EB28F587FD003EC8FE /* AppConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A03EA28F587FD003EC8FE /* AppConfigurator.swift */; };
 		3A8A05562853270B00D48FCE /* UIImage+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A05552853270B00D48FCE /* UIImage+Utils.swift */; };
 		3A8A0558285370B200D48FCE /* UTXOsWalletTextTickButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A0557285370B200D48FCE /* UTXOsWalletTextTickButton.swift */; };
+		3A8CC6C2290BDC70008161DC /* BugReportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8CC6C1290BDC70008161DC /* BugReportService.swift */; };
 		3A90653829001A2B0084EE66 /* UIDevice+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A90653729001A2B0084EE66 /* UIDevice+Model.swift */; };
 		3A90653A29001D830084EE66 /* AppValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A90653929001D830084EE66 /* AppValues.swift */; };
 		3A93159B286C30AA0001660E /* LeftImageButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A93159A286C30AA0001660E /* LeftImageButton.swift */; };
@@ -538,6 +542,10 @@
 		3A0124A427B3EDEB00A481F4 /* TransactionViewControllable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewControllable.swift; sourceTree = "<group>"; };
 		3A03682D27DF20E300F304A2 /* TransactionDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsViewController.swift; sourceTree = "<group>"; };
 		3A03683027DF211D00F304A2 /* TransactionDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsView.swift; sourceTree = "<group>"; };
+		3A0391E3290BA37C00352D73 /* BugReportingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugReportingViewController.swift; sourceTree = "<group>"; };
+		3A0391E5290BA40E00352D73 /* BugReportingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugReportingView.swift; sourceTree = "<group>"; };
+		3A0391E7290BA45C00352D73 /* BugReportingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugReportingModel.swift; sourceTree = "<group>"; };
+		3A0391E9290BA47300352D73 /* BugReportingConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugReportingConstructor.swift; sourceTree = "<group>"; };
 		3A03A5FF288932DE00788A02 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		3A03A601288962FA00788A02 /* SplashViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewModel.swift; sourceTree = "<group>"; };
 		3A052BF327B2658500C93671 /* AppVersionFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionFormatter.swift; sourceTree = "<group>"; };
@@ -554,7 +562,6 @@
 		3A20A6B72722EDFF002B15DB /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		3A21FC5028FFD7B8004B09A0 /* PopUpTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpTableView.swift; sourceTree = "<group>"; };
 		3A21FC5228FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewDiffableDataSource+Update.swift"; sourceTree = "<group>"; };
-		3A21FC5428FFEA76004B09A0 /* EmailFeedbackHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailFeedbackHandler.swift; sourceTree = "<group>"; };
 		3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListModel.swift; sourceTree = "<group>"; };
 		3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListConstructor.swift; sourceTree = "<group>"; };
 		3A2B95672864801D0085BE21 /* UTXOsWalletTileListLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTileListLayout.swift; sourceTree = "<group>"; };
@@ -624,7 +631,7 @@
 		3A7DAB9028FDAFD5002CC013 /* LogsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListView.swift; sourceTree = "<group>"; };
 		3A7DAB9228FDB18A002CC013 /* LogsListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListModel.swift; sourceTree = "<group>"; };
 		3A7DAB9428FDB220002CC013 /* LogsListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListCell.swift; sourceTree = "<group>"; };
-		3A7DAB9628FDB6FD002CC013 /* LogsListContructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListContructor.swift; sourceTree = "<group>"; };
+		3A7DAB9628FDB6FD002CC013 /* LogsListConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogsListConstructor.swift; sourceTree = "<group>"; };
 		3A7DAB9928FDC972002CC013 /* LogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogViewController.swift; sourceTree = "<group>"; };
 		3A7DAB9B28FDC9D8002CC013 /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		3A7DAB9D28FDC9E2002CC013 /* LogModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogModel.swift; sourceTree = "<group>"; };
@@ -672,6 +679,7 @@
 		3A8A03EA28F587FD003EC8FE /* AppConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigurator.swift; sourceTree = "<group>"; };
 		3A8A05552853270B00D48FCE /* UIImage+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Utils.swift"; sourceTree = "<group>"; };
 		3A8A0557285370B200D48FCE /* UTXOsWalletTextTickButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTextTickButton.swift; sourceTree = "<group>"; };
+		3A8CC6C1290BDC70008161DC /* BugReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugReportService.swift; sourceTree = "<group>"; };
 		3A90653729001A2B0084EE66 /* UIDevice+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Model.swift"; sourceTree = "<group>"; };
 		3A90653929001D830084EE66 /* AppValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppValues.swift; sourceTree = "<group>"; };
 		3A93159A286C30AA0001660E /* LeftImageButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeftImageButton.swift; sourceTree = "<group>"; };
@@ -1030,10 +1038,8 @@
 		00C185BC238953B40096984E /* Debug */ = {
 			isa = PBXGroup;
 			children = (
-				3ABC7E9128FE796D00EAC852 /* PopUp Components */,
 				3A7DAB8C28FDAF58002CC013 /* Logs */,
 				3ABC7E9428FECFB200EAC852 /* UIViewController+DebugMenu.swift */,
-				3A21FC5428FFEA76004B09A0 /* EmailFeedbackHandler.swift */,
 			);
 			path = Debug;
 			sourceTree = "<group>";
@@ -1202,6 +1208,7 @@
 		3708D748247FCF0700807D72 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				3A0391E2290BA22400352D73 /* Bug Reporting */,
 				3A4949A3283FD5EF002768AE /* MoreSettings */,
 				3A39AF1A27B156CB00A32F46 /* Views */,
 				37C8BA4E24813F98005BBC05 /* SettingsParentTableViewController.swift */,
@@ -1358,6 +1365,17 @@
 			path = WaveEmojiAnimation;
 			sourceTree = "<group>";
 		};
+		3A0391E2290BA22400352D73 /* Bug Reporting */ = {
+			isa = PBXGroup;
+			children = (
+				3A0391E3290BA37C00352D73 /* BugReportingViewController.swift */,
+				3A0391E5290BA40E00352D73 /* BugReportingView.swift */,
+				3A0391E7290BA45C00352D73 /* BugReportingModel.swift */,
+				3A0391E9290BA47300352D73 /* BugReportingConstructor.swift */,
+			);
+			path = "Bug Reporting";
+			sourceTree = "<group>";
+		};
 		3A1325FF27EDE39F00289C8C /* Transaction */ = {
 			isa = PBXGroup;
 			children = (
@@ -1480,6 +1498,7 @@
 				3A386F3627A7FC6C0027FED4 /* ErrorMessageManager.swift */,
 				3A052BF927B2940900C93671 /* WalletTransactionsManager.swift */,
 				3AF97E6F27CFCA2000FF6A3F /* ShortcutsManager.swift */,
+				3A8CC6C1290BDC70008161DC /* BugReportService.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -1722,7 +1741,7 @@
 		3A7DAB8D28FDAF65002CC013 /* List */ = {
 			isa = PBXGroup;
 			children = (
-				3A7DAB9628FDB6FD002CC013 /* LogsListContructor.swift */,
+				3A7DAB9628FDB6FD002CC013 /* LogsListConstructor.swift */,
 				3A7DAB8E28FDAF9A002CC013 /* LogsListViewController.swift */,
 				3A7DAB9028FDAFD5002CC013 /* LogsListView.swift */,
 				3A7DAB9228FDB18A002CC013 /* LogsListModel.swift */,
@@ -1923,13 +1942,6 @@
 				3ABBC5DD2726B3A1001BB864 /* YatCacheManager.swift */,
 			);
 			path = Managers;
-			sourceTree = "<group>";
-		};
-		3ABC7E9128FE796D00EAC852 /* PopUp Components */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "PopUp Components";
 			sourceTree = "<group>";
 		};
 		3ABF91AA283FFA810001C766 /* Views */ = {
@@ -2499,7 +2511,6 @@
 			files = (
 				3A51B1AD28F00A4F0094FDD6 /* Logger.swift in Sources */,
 				3A7DABA028FDC9F3002CC013 /* LogConstructor.swift in Sources */,
-				3A21FC5528FFEA76004B09A0 /* EmailFeedbackHandler.swift in Sources */,
 				3A7DAB9A28FDC972002CC013 /* LogViewController.swift in Sources */,
 				3AE885082837857B0070D1AC /* CurrencyLabelView.swift in Sources */,
 				3A90653A29001D830084EE66 /* AppValues.swift in Sources */,
@@ -2520,6 +2531,7 @@
 				00DD160F241CD41D00C955B4 /* BaseNode.swift in Sources */,
 				3AF97E6527CF767D00FF6A3F /* TransactionsSendDeeplink.swift in Sources */,
 				3A35413626A738D4002AB5A8 /* RoundedInputField.swift in Sources */,
+				3A0391E8290BA45C00352D73 /* BugReportingModel.swift in Sources */,
 				3A7DAB9128FDAFD5002CC013 /* LogsListView.swift in Sources */,
 				3AE138D12804A8B300443D34 /* SuccessToast.swift in Sources */,
 				370E887824FEA54100576F61 /* NetworkTools.m in Sources */,
@@ -2608,6 +2620,7 @@
 				00665E7524E422C500030A13 /* CustomTabBar.swift in Sources */,
 				3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */,
 				3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */,
+				3A8CC6C2290BDC70008161DC /* BugReportService.swift in Sources */,
 				3A47ABCD27478208007F351B /* Tari.swift in Sources */,
 				3A8A03EB28F587FD003EC8FE /* AppConfigurator.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
@@ -2625,7 +2638,7 @@
 				00230AFA2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				3A8005C828EAF1AB0022A38A /* RestoreWalletStatus.swift in Sources */,
 				37CB9F8A2451A2AD00C495F2 /* String+Emoji.swift in Sources */,
-				3A7DAB9728FDB6FD002CC013 /* LogsListContructor.swift in Sources */,
+				3A7DAB9728FDB6FD002CC013 /* LogsListConstructor.swift in Sources */,
 				3AC6F11228E9C6590068E6FF /* WalletCallbacksManager.swift in Sources */,
 				3AEDBE4D27CE45C0006B0166 /* DeepLinkFormatter.swift in Sources */,
 				3ACDA70E26B0320900F138B8 /* RestoreWalletFromSeedsProgressModel.swift in Sources */,
@@ -2637,6 +2650,7 @@
 				3A6A03362802DC2B000432B4 /* PopUpDescriptionContentView.swift in Sources */,
 				3AF79D5E2727201A00613C24 /* ScrollableLabel.swift in Sources */,
 				3AE5E5682874696E00D3AF85 /* ValuePickerView.swift in Sources */,
+				3A0391E6290BA40E00352D73 /* BugReportingView.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
 				3A860BD2287DA2B800FC4F76 /* HomeViewModel.swift in Sources */,
 				00F53A642428E44700448466 /* StorageCleanup.swift in Sources */,
@@ -2763,7 +2777,9 @@
 				3ADEBF6626A5B5A500E87C84 /* AddBaseNodeView.swift in Sources */,
 				3AF985FA286B233100290387 /* PopUpSelectionView.swift in Sources */,
 				375DB1E0246E90D100B2BEF4 /* NavigationBar.swift in Sources */,
+				3A0391E4290BA37C00352D73 /* BugReportingViewController.swift in Sources */,
 				3708D752247FF7D000807D72 /* BackupWalletSettingsViewController.swift in Sources */,
+				3A0391EA290BA47300352D73 /* BugReportingConstructor.swift in Sources */,
 				3A70433D28E21CFB00207D6F /* CompletedTransaction.swift in Sources */,
 				3A72DC4526DFA26000E0BC43 /* TariNetwork.swift in Sources */,
 				004277F723E0628A00AE7BD9 /* UIViewController+Content.swift in Sources */,

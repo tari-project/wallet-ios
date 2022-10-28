@@ -1,8 +1,8 @@
-//  AppConfigurator.swift
+//  BugReportingModel.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/10/2022
+	Created by Adrian Truszczynski on 28/10/2022
 	Using Swift 5.0
 	Running on macOS 12.6
 
@@ -38,18 +38,27 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum AppConfigurator {
+final class BugReportingModel {
     
-    static func configureLoggers() {
-        
-        switch TariSettings.shared.environment {
-        case .debug:
-            Logger.attach(logger: ConsoleLogger())
-        case .testflight, .production:
-            break
+    // MARK: - View Model
+    
+    @Published private(set) var shouldEndFlow: Bool = false
+    @Published private(set) var errorMessage: MessageModel?
+    
+    // MARK: - Properties
+    
+    private let bugReportService = BugReportService()
+    
+    // MARK: - Actions
+    
+    func sendReport(name: String?, email: String?, message: String?) {
+        Task {
+            do {
+                try await bugReportService.send(name: name ?? "", email: email ?? "", message: message ?? "")
+                shouldEndFlow = true
+            } catch {
+                errorMessage = ErrorMessageManager.errorModel(forError: error)
+            }
         }
-        
-        Logger.attach(logger: FileLogger())
-        Logger.attach(logger: CrashLogger())
     }
 }
