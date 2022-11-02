@@ -48,13 +48,13 @@ enum LogFormatter {
         
         let domainName = domain.name.fixedLength(domainNameLength)
         let logLevelName = logLevel.name.fixedLength(levelNameLength)
-        var components = [domainName, logLevelName, message]
+        var message = [domainName, logLevelName, message].joined(separator: " | ")
         
         if showPrefix {
-            components.insert(appNamePrefix, at: 0)
+            message = appNamePrefix + " " + message
         }
         
-        return components.joined(separator: " | ")
+        return message
     }
 }
 

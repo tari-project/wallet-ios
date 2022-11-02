@@ -40,10 +40,5 @@
 
 struct TransactionValidationData {
     let identifier: UInt64
-    let isSuccess: Bool
-}
-
-struct TransactionOutputValidationData {
-    let identifier: UInt64
-    let status: TxoValidationStatus
+    let status: TransactionValidationStatus
 }

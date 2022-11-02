@@ -215,7 +215,7 @@
 		3A82455827E1EE38003B6B59 /* TransactionDetailsEmojiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82455727E1EE38003B6B59 /* TransactionDetailsEmojiView.swift */; };
 		3A82455A27E1EE93003B6B59 /* TransactionDetailsContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82455927E1EE93003B6B59 /* TransactionDetailsContactView.swift */; };
 		3A82455C27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A82455B27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift */; };
-		3A8473BF28EC51780015E63A /* TxoValidationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473BE28EC51780015E63A /* TxoValidationStatus.swift */; };
+		3A8473BF28EC51780015E63A /* TransactionValidationStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473BE28EC51780015E63A /* TransactionValidationStatus.swift */; };
 		3A8473C228EC556C0015E63A /* CoreTariService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C128EC556C0015E63A /* CoreTariService.swift */; };
 		3A8473C428EC55B10015E63A /* TariTransactionsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C328EC55B10015E63A /* TariTransactionsService.swift */; };
 		3A8473C628EC55DB0015E63A /* TariContactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473C528EC55DB0015E63A /* TariContactsService.swift */; };
@@ -628,7 +628,7 @@
 		3A82455727E1EE38003B6B59 /* TransactionDetailsEmojiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsEmojiView.swift; sourceTree = "<group>"; };
 		3A82455927E1EE93003B6B59 /* TransactionDetailsContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsContactView.swift; sourceTree = "<group>"; };
 		3A82455B27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsNoteView.swift; sourceTree = "<group>"; };
-		3A8473BE28EC51780015E63A /* TxoValidationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxoValidationStatus.swift; sourceTree = "<group>"; };
+		3A8473BE28EC51780015E63A /* TransactionValidationStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionValidationStatus.swift; sourceTree = "<group>"; };
 		3A8473C128EC556C0015E63A /* CoreTariService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreTariService.swift; sourceTree = "<group>"; };
 		3A8473C328EC55B10015E63A /* TariTransactionsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariTransactionsService.swift; sourceTree = "<group>"; };
 		3A8473C528EC55DB0015E63A /* TariContactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariContactsService.swift; sourceTree = "<group>"; };
@@ -1427,7 +1427,7 @@
 				3AF335DC28D78D1F00B48F33 /* Keys */,
 				3AF335DB28D789F000B48F33 /* Seed Words */,
 				3A312FEC28B6315A00A290D3 /* Transactions */,
-				3A8473BE28EC51780015E63A /* TxoValidationStatus.swift */,
+				3A8473BE28EC51780015E63A /* TransactionValidationStatus.swift */,
 			);
 			path = FFI;
 			sourceTree = "<group>";
@@ -2735,7 +2735,7 @@
 				3A4CE33626A1A04000ECF460 /* SelectBaseNodeViewController.swift in Sources */,
 				3AA9499E26BD3EAC007C550D /* HomeViewToolbar.swift in Sources */,
 				3A70434828E21F5600207D6F /* Transaction.swift in Sources */,
-				3A8473BF28EC51780015E63A /* TxoValidationStatus.swift in Sources */,
+				3A8473BF28EC51780015E63A /* TransactionValidationStatus.swift in Sources */,
 				37B444A9248949B800592D92 /* Checkbox.swift in Sources */,
 				BFF1ED9D2408111000CC9EF6 /* SendingTariViewController.swift in Sources */,
 				3AC877E4287415AD006F327B /* UTXOsWalletPlaceholderView.swift in Sources */,
@@ -2974,7 +2974,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.16.0;
+				MARKETING_VERSION = 0.16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3010,7 +3010,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.16.0;
+				MARKETING_VERSION = 0.16.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

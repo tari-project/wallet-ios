@@ -134,10 +134,10 @@ final class WalletCallbacksManager {
             .eraseToAnyPublisher()
     }()
     
-    let transactionOutputValidation: AnyPublisher<TransactionOutputValidationData, Never> = {
+    let transactionOutputValidation: AnyPublisher<TransactionValidationData, Never> = {
         NotificationCenter.default
             .publisher(for: .transactionOutputValidation)
-            .compactMap { $0.object as? TransactionOutputValidationData }
+            .compactMap { $0.object as? TransactionValidationData }
             .share()
             .eraseToAnyPublisher()
     }()

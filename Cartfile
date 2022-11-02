@@ -1,1 +1,1 @@
-binary "https://icepa.github.io/Tor.framework/Tor.json" == 406.5.1
+binary "https://raw.githubusercontent.com/iCepa/Tor.framework/deprecated_carthage/docs/Tor.json" == 406.5.1
