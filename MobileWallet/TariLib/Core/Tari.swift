@@ -134,12 +134,10 @@ final class Tari: MainServiceable {
         
         Publishers.CombineLatest(connectionMonitor.$baseNodeConnection, connectionMonitor.$syncStatus)
             .filter { $0 == .offline || $1 == .failed }
-            .sink { [weak self] _, _ in
-                try? self?.switchBaseNode()
-            }
+            .sink { [weak self] _, _ in try? self?.switchBaseNode() }
             .store(in: &cancellables)
         
-        walletManager.$baseNodeConnectionStatus
+        connectionMonitor.$baseNodeConnection
             .sink { [weak self] in
                 switch $0 {
                 case .offline:

@@ -1,4 +1,4 @@
-//  TxoValidationStatus.swift
+//  TransactionValidationStatus.swift
 	
 /*
 	Package MobileWallet
@@ -38,7 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum TxoValidationStatus: UInt64 {
+enum TransactionValidationStatus: UInt64 {
     case success
     case alreadyBusy
     case internalFailure

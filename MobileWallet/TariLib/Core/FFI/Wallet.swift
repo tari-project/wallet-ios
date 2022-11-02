@@ -96,8 +96,8 @@ final class Wallet {
         }
         
         let txoValidationCallback: @convention(c) (UInt64, UInt64) -> Void = { responseId, status in
-            guard let status = TxoValidationStatus(rawValue: status) else { return }
-            WalletCallbacksManager.shared.post(name: .transactionOutputValidation, object: TransactionOutputValidationData(identifier: responseId, status: status))
+            guard let status = TransactionValidationStatus(rawValue: status) else { return }
+            WalletCallbacksManager.shared.post(name: .transactionOutputValidation, object: TransactionValidationData(identifier: responseId, status: status))
         }
         
         let contactsLivenessDataUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void) = { _ in
@@ -110,8 +110,9 @@ final class Wallet {
             
         }
         
-        let trasactionValidationCompleteCallback: @convention(c) (UInt64, Bool) -> Void = { responseId, isSuccess in
-            WalletCallbacksManager.shared.post(name: .transactionValidation, object: TransactionValidationData(identifier: responseId, isSuccess: isSuccess))
+        let trasactionValidationCompleteCallback: @convention(c) (UInt64, UInt64) -> Void = { responseId, status in
+            guard let status = TransactionValidationStatus(rawValue: status) else { return }
+            WalletCallbacksManager.shared.post(name: .transactionValidation, object: TransactionValidationData(identifier: responseId, status: status))
         }
         
         let storedMessagesReceivedCallback: (@convention(c) () -> Void) = {

@@ -49,9 +49,13 @@ enum LogFormatter {
         
         let domainName = formattedDomainName(domain: domain, includePrefix: showPrefix)
         let logLevelName = logLevel.name.fixedLength(levelNameLength)
-        let components = [domainName, logLevelName, message]
+        var message = [domainName, logLevelName, message].joined(separator: " | ")
         
-        return components.joined(separator: separator)
+        if showPrefix {
+            message = appNamePrefix + " " + message
+        }
+        
+        return message
     }
     
     static func formattedDomainName(domain: Logger.Domain, includePrefix: Bool) -> String {
