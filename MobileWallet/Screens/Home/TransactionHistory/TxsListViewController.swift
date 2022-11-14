@@ -111,6 +111,7 @@ final class TxsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewSetup()
+        setupTransactionsCallbacks()
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 + CATransaction.animationDuration()) { [weak self] in
             self?.setupEvents()
         }
@@ -118,8 +119,6 @@ final class TxsListViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        setupTransactionsCallbacks()
         
         if backgroundType != .intro {
             safeRefreshTable()
