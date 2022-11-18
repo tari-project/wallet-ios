@@ -126,7 +126,7 @@ class ICloudBackup: NSObject {
     private var backgroundTaskIdentifier: UIBackgroundTaskIdentifier?
 
     private var connectedDatabaseDirectory = Tari.shared.connectedDatabaseDirectory
-    private var walletPublicKeyHex: String? { try? Tari.shared.walletPublicKey.byteVector.hex }
+    private var walletPublicKeyHex: String? { try? Tari.shared.walletAddress.byteVector.hex }
     private let fileName = "Tari-Aurora-Backup"
     private var observers = NSPointerArray.weakObjects()
 

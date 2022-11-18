@@ -92,14 +92,14 @@ final class PendingInboundTransaction: Transaction {
         }
     }
     
-    var publicKey: PublicKey {
+    var address: TariAddress {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = pending_inbound_transaction_get_source_public_key(pointer, errorCodePointer)
+            let result = pending_inbound_transaction_get_source_tari_address(pointer, errorCodePointer)
             
             guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-            return PublicKey(pointer: pointer)
+            return TariAddress(pointer: pointer)
         }
     }
     

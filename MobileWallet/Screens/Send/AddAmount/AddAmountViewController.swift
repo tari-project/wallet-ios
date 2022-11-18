@@ -190,8 +190,8 @@ final class AddAmountViewController: UIViewController {
 
     private func displayAliasOrEmojiId() {
         do {
-            guard let contact = try Tari.shared.contacts.findContact(hex: paymentInfo.publicKey.byteVector.hex) else {
-                navigationBar.showEmojiId(emojiID: try paymentInfo.publicKey.emojis, hex: try paymentInfo.publicKey.byteVector.hex, presenterController: self)
+            guard let contact = try Tari.shared.contacts.findContact(hex: paymentInfo.address.byteVector.hex) else {
+                navigationBar.showEmojiId(emojiID: try paymentInfo.address.emojis, hex: try paymentInfo.address.byteVector.hex, presenterController: self)
                 return
             }
             navigationBar.title = try contact.alias
@@ -494,7 +494,7 @@ final class AddAmountViewController: UIViewController {
         guard let amount = calculateAmount(), let feePerGram = feePerGram else { return }
         TransactionProgressPresenter.showTransactionProgress(
             presenter: self,
-            recipientPublicKey: paymentInfo.publicKey,
+            recipientAddress: paymentInfo.address,
             amount: amount,
             feePerGram: feePerGram,
             message: "",

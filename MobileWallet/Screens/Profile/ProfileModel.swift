@@ -66,13 +66,13 @@ final class ProfileModel {
     @Published private(set) var qrCodeImage: UIImage?
     @Published private(set) var errorMessage: MessageModel?
     @Published private(set) var yatButtonState: YatButtonState = .hidden
-    @Published private(set) var yatPublicKey: String?
+    @Published private(set) var yatAddress: String?
     
     // MARK: - Properties
     
     private var cancellables = Set<AnyCancellable>()
     
-    private var publicKey: PublicKey?
+    private var walletAddress: TariAddress?
     private var yat: String?
     private var isYatOutOfSync = false
     
@@ -109,14 +109,14 @@ final class ProfileModel {
     }
     
     func reconnectYat() {
-        yatPublicKey = try? publicKey?.byteVector.hex
+        yatAddress = try? walletAddress?.byteVector.hex
     }
     
     private func updateData() {
         do {
-            let walletPublicKey = try Tari.shared.walletPublicKey
-            let deeplinkData = try walletPublicKey.byteVector.hex.data(using: .utf8) ?? Data()
-            publicKey = walletPublicKey
+            let walletAddress = try Tari.shared.walletAddress
+            let deeplinkData = try walletAddress.byteVector.hex.data(using: .utf8) ?? Data()
+            self.walletAddress = walletAddress
             qrCodeImage = QRCodeFactory.makeQrCode(data: deeplinkData)
             updateYatIdData()
         } catch {
@@ -152,7 +152,7 @@ final class ProfileModel {
             return
         }
         
-        isYatOutOfSync = walletAddress != (try? publicKey?.byteVector.hex)
+        isYatOutOfSync = walletAddress != (try? self.walletAddress?.byteVector.hex)
     }
     
     private func handle(completion: Subscribers.Completion<APIError>) {
@@ -172,8 +172,8 @@ final class ProfileModel {
     private func updatePresentedData(yatButtonState: YatButtonState) throws {
         switch yatButtonState {
         case .hidden, .loading, .off:
-            guard let publicKey = publicKey else { return }
-            emojiData = EmojiData(emojiID: try publicKey.emojis, hex: try publicKey.byteVector.hex, copyText: localized("emoji.copy"), tooltipText: localized("emoji.hex_tip"))
+            guard let walletAddress = walletAddress else { return }
+            emojiData = EmojiData(emojiID: try walletAddress.emojis, hex: try walletAddress.byteVector.hex, copyText: localized("emoji.copy"), tooltipText: localized("emoji.hex_tip"))
             description = walletDescription
             isReconnectButtonVisible = false
         case .on:

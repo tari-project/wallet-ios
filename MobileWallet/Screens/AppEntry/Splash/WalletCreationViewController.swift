@@ -404,7 +404,7 @@ extension WalletCreationViewController {
 
         continueButton.setTitle(localized("common.continue"), for: .normal)
         
-        if let walletPublicKey = try? Tari.shared.walletPublicKey, let emojiID = try? walletPublicKey.emojis, let hex = try? walletPublicKey.byteVector.hex {
+        if let walletAddress = try? Tari.shared.walletAddress, let emojiID = try? walletAddress.emojis, let hex = try? walletAddress.byteVector.hex {
             emojiIdView.setup(
                 emojiID: emojiID,
                 hex: hex,

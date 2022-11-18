@@ -59,7 +59,7 @@ protocol Transaction {
     var status: TransactionStatus { get throws }
     var message: String { get throws }
     var timestamp: UInt64 { get throws }
-    var publicKey: PublicKey { get throws }
+    var address: TariAddress { get throws }
     var isCancelled: Bool { get }
     var isPending: Bool { get }
 }
