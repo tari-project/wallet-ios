@@ -72,14 +72,6 @@
 "transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
 "transaction.one_sided_payment.note.recovered" = "You recovered some funds";
 
-/* Tari key server error */
-"key_server.error.too_many_allocation_requests" = "You have made too many free tXTR requests.";
-"key_server.error.response_invalid" = "Invalid response from Tari key server.";
-"key_server.error.invalid_signature" = "Invalid signature sent to Tari key server.";
-"key_server.error.missing_response" = "Missing response from Tari key server.";
-"key_server.error.server" = "Tari faucet server error. Status code:";
-"key_server.error.unknown" = "Unknown Tari faucet error.";
-
 /* Authentication */
 "authentication.fail.title" = "Authentication failed";
 "authentication.fail.description" = "Failed to authenticate";
@@ -95,12 +87,6 @@
 "home.available_balance" = "Balance";
 "home.label.spendable" = "Available to spend";
 "home.error.update_balance" = "Balance update failed";
-"home.request_drop.title.with_param" = "You just got some %@!";
-"home.request_drop.description.with_param" = "Try sending a bit of %@ back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).";
-"home.request_drop.try_later" = "Try it later";
-"home.request_drop.error.title" = "Failed to claim %@";
-"home.request_drop.error.description" = "No free tXTR is available right now! Hang tight, we'll get you some tXTR the moment it is available.";
-"home.request_drop.error.generic" = "Could not setup key server.";
 "home.info.amount_help.title" = "Why is some of my balance not spendable right now?";
 "home.info.amount_help.description" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
 "home.info.amount_help.action_button" = "Go to TariLabs University";
@@ -317,7 +303,6 @@
 "wallet.error.generic_code" = "The application has encountered an error.\nError code:";
 "wallet.error.insufficient_funds" = "Insufficient funds. Available spendable Tari:";
 "wallet.error.invalid_public_key_hex" = "Invalid public key hex.";
-"wallet.error.invalid_signature" = "Invalid signature created";
 "wallet.error.wallet_not_initialized" = "Tari wallet not yet initialized";
 
 /* Store modal */
@@ -445,11 +430,6 @@
 "add_note.error.recipient_public_key.description" = "Recipient public key not set";
 "add_note.slide_to_send" = "Slide to Send";
 "add_note.search_giphy_button" = "SEARCH GIPHY";
-
-/* TariBot transaction */
-"taribot.message.prefix" = "Hello Tari from";
-"taribot.message1.with_param" = "💸 Here’s some %@!";
-"taribot.message2.with_params" = "Nice work! Here's more %1$@ to fill your coffers. Be sure to hit the store icon to see real, exclusive items you can redeem with your \"hard-earned\" %2$@.";
 
 /* Local reminder notifications */
 "scheduled_reminder.body.short" = "Open Tari Aurora";

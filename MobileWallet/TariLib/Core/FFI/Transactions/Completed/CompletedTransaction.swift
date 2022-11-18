@@ -58,8 +58,8 @@ final class CompletedTransaction: Transaction {
     
     // MARK: - Protocol
     
-    var publicKey: PublicKey {
-        get throws { try isOutboundTransaction ? destinationPublicKey : sourcePublicKey }
+    var address: TariAddress {
+        get throws { try isOutboundTransaction ? destination : source }
     }
     
     let isCancelled: Bool
@@ -133,25 +133,25 @@ final class CompletedTransaction: Transaction {
         }
     }
     
-    var sourcePublicKey: PublicKey {
+    var source: TariAddress {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = completed_transaction_get_source_public_key(pointer, errorCodePointer)
+            let result = completed_transaction_get_source_tari_address(pointer, errorCodePointer)
             
             guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-            return PublicKey(pointer: pointer)
+            return TariAddress(pointer: pointer)
         }
     }
     
-    var destinationPublicKey: PublicKey {
+    var destination: TariAddress {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = completed_transaction_get_destination_public_key(pointer, errorCodePointer)
+            let result = completed_transaction_get_destination_tari_address(pointer, errorCodePointer)
             
             guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-            return PublicKey(pointer: pointer)
+            return TariAddress(pointer: pointer)
         }
     }
     

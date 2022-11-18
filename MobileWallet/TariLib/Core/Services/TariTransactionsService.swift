@@ -162,7 +162,7 @@ final class TariTransactionsService: CoreTariService {
         try walletManager.cancelPendingTransaction(identifier: identifier)
     }
     
-    func send(toPublicKey publicKey: PublicKey, amount: UInt64, feePerGram: UInt64, message: String, isOneSidedPayment: Bool,
+    func send(toAddress address: TariAddress, amount: UInt64, feePerGram: UInt64, message: String, isOneSidedPayment: Bool,
               kernelsCount: UInt64 = Tari.defaultKernelCount, outputsCount: UInt64 = Tari.defaultOutputCount) throws -> UInt64 {
         
         let estimatedFee = try walletManager.feeEstimate(amount: amount, feePerGram: feePerGram, kernelsCount: kernelsCount, outputsCount: outputsCount)
@@ -173,7 +173,7 @@ final class TariTransactionsService: CoreTariService {
             throw InternalError.insufficientFunds(spendableMicroTari: availableBalance)
         }
         
-        return try walletManager.sendTransaction(publicKey: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
+        return try walletManager.sendTransaction(address: address, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
     }
 }
 

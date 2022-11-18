@@ -59,8 +59,6 @@ enum ErrorMessageManager {
             return model(seedWordsError: error)
         case let error as TorManager.TorError:
             return model(torError: error)
-        case let error as TariFaucetService.InternalError:
-            return model(faucetError: error)
         default:
             return genericErrorModel
         }
@@ -123,18 +121,6 @@ enum ErrorMessageManager {
         switch internalWalletError {
         case .unableToCreateWallet:
             message = localized("wallet.error.wallet_not_initialized")
-        }
-        
-        return MessageModel(title: genericErrorModel.title, message: message, type: .error)
-    }
-    
-    private static func model(faucetError: TariFaucetService.InternalError) -> MessageModel {
-        
-        let message: String
-        
-        switch faucetError {
-        case .invalidSignatureAndNonceString:
-            message = localized("wallet.error.invalid_signature")
         }
         
         return MessageModel(title: genericErrorModel.title, message: message, type: .error)

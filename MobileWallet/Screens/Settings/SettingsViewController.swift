@@ -216,17 +216,17 @@ class SettingsViewController: SettingsParentTableViewController {
 
     private func onConnectYatAction() {
         
-        let publicKey: String
+        let address: String
         
         do {
-            publicKey = try Tari.shared.walletPublicKey.byteVector.hex
+            address = try Tari.shared.walletAddress.byteVector.hex
         } catch {
             showNoConnectionError()
             return
         }
         
         Yat.integration.showOnboarding(onViewController: self, records: [
-            YatRecordInput(tag: .XTRAddress, value: publicKey)
+            YatRecordInput(tag: .XTRAddress, value: address)
         ])
     }
     

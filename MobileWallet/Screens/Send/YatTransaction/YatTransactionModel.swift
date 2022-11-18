@@ -52,7 +52,7 @@ enum YatTransactionViewState {
 final class YatTransactionModel {
     
     struct InputData {
-        let publicKey: PublicKey
+        let address: TariAddress
         let amount: MicroTari
         let feePerGram: MicroTari
         let message: String
@@ -155,7 +155,7 @@ final class YatTransactionModel {
     
     private func sendTransactionToBlockchain() {
         
-        walletTransactionsManager.performTransactionPublisher(publicKey: inputData.publicKey, amount: inputData.amount, feePerGram: inputData.feePerGram, message: inputData.message, isOneSidedPayment: inputData.isOneSidedPayment)
+        walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, feePerGram: inputData.feePerGram, message: inputData.message, isOneSidedPayment: inputData.isOneSidedPayment)
             .sink { [weak self] completion in
                 switch completion {
                 case .finished:

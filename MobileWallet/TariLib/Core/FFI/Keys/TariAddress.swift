@@ -1,10 +1,10 @@
-//  Contact.swift
-
+//  TariAddress.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2019/11/16
+	Created by Adrian Truszczynski on 17/11/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,29 +38,33 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class Contact {
+final class TariAddress {
+    
+    enum InternalError: Error {
+        case invalidHex
+    }
     
     // MARK: - Properties
     
     let pointer: OpaquePointer
     
-    var address: TariAddress {
+    var byteVector: ByteVector {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = contact_get_tari_address(pointer, errorCodePointer)
-            guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
-            return TariAddress(pointer: result)
+            let result = tari_address_get_bytes(pointer, errorCodePointer)
+            guard errorCode != 0, let result else { throw WalletError(code: errorCode) }
+            return ByteVector(pointer: result)
         }
     }
     
-    var alias: String {
+    var emojis: String {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = contact_get_alias(pointer, errorCodePointer)
-            guard errorCode == 0, let result = result, let alias = String(validatingUTF8: result) else { throw WalletError(code: errorCode) }
-            return alias
+            let result = tari_address_to_emoji_id(pointer, errorCodePointer)
+            guard errorCode != 0, let result else { throw WalletError(code: errorCode) }
+            return String(cString: result)
         }
     }
     
@@ -70,20 +74,40 @@ final class Contact {
         self.pointer = pointer
     }
     
-    convenience init(alias: String, addressPointer: OpaquePointer) throws {
+    init(hex: String) throws {
+        
+        guard hex.count == 64, hex.rangeOfCharacter(from: .hexadecimal) != nil else { throw InternalError.invalidHex }
         
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = contact_create(alias, addressPointer, errorCodePointer)
+        
+        let result = tari_address_from_hex(hex, errorCodePointer)
         
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
+        self.pointer = pointer
+    }
+    
+    init(emojiID: String) throws {
         
-        self.init(pointer: pointer)
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        
+        let result = emoji_id_to_tari_address(emojiID, errorCodePointer)
+
+        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
+        self.pointer = pointer
     }
     
     // MARK: - Deinitialiser
     
     deinit {
-        contact_destroy(pointer)
+        tari_address_destroy(pointer)
+    }
+}
+
+extension TariAddress: Equatable {
+    static func == (lhs: TariAddress, rhs: TariAddress) -> Bool {
+        guard let leftHex = try? lhs.byteVector.hex, let rightHex = try? rhs.byteVector.hex else { return false }
+        return leftHex == rightHex
     }
 }

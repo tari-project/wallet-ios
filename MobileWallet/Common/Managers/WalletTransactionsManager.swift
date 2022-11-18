@@ -61,7 +61,7 @@ final class WalletTransactionsManager {
 
     // MARK: - Actions
 
-    func performTransactionPublisher(publicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
+    func performTransactionPublisher(address: TariAddress, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
 
         let subject = CurrentValueSubject<State, TransactionError>(.connectionCheck)
 
@@ -71,7 +71,7 @@ final class WalletTransactionsManager {
                 if !isOneSidedPayment {
                     subject.send(.transaction)
                 }
-                self?.sendTransactionToBlockchain(publicKey: publicKey, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment) { result in
+                self?.sendTransactionToBlockchain(address: address, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment) { result in
                     switch result {
                     case .success:
                         subject.send(completion: .finished)
@@ -108,11 +108,11 @@ final class WalletTransactionsManager {
             .store(in: &cancellables)
     }
 
-    private func sendTransactionToBlockchain(publicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
+    private func sendTransactionToBlockchain(address: TariAddress, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
 
         do {
             let transactionID = try Tari.shared.transactions.send(
-                toPublicKey: publicKey,
+                toAddress: address,
                 amount: amount.rawValue,
                 feePerGram: feePerGram.rawValue,
                 message: message,
@@ -123,7 +123,7 @@ final class WalletTransactionsManager {
                 result(.success)
                 return
             }
-            startListeningForWalletEvents(transactionID: transactionID, recipientHex: try publicKey.byteVector.hex, result: result)
+            startListeningForWalletEvents(transactionID: transactionID, recipientHex: try address.byteVector.hex, result: result)
         } catch {
             result(.failure(.transactionError(error: error)))
         }

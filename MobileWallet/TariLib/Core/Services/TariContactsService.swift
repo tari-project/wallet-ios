@@ -51,6 +51,6 @@ final class TariContactsService: CoreTariService {
     }
     
     func findContact(hex: String) throws -> Contact? {
-        try allContacts.first { try $0.publicKey.byteVector.hex == hex }
+        try allContacts.first { try $0.address.byteVector.hex == hex }
     }
 }

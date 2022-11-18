@@ -66,7 +66,7 @@ final class Tari: MainServiceable {
     private(set) lazy var connection = TariConnectionService(walletManager: walletManager, services: self)
     private(set) lazy var contacts = TariContactsService(walletManager: walletManager, services: self)
     private(set) lazy var encryption = TariEncryptionService(walletManager: walletManager, services: self, passphrase: passphrase)
-    private(set) lazy var faucet = TariFaucetService(walletManager: walletManager, services: self)
+    private(set) lazy var messageSign = TariMessageSignService(walletManager: walletManager, services: self)
     private(set) lazy var fees = TariFeesService(walletManager: walletManager, services: self)
     private(set) lazy var keyValues = TariKeyValueService(walletManager: walletManager, services: self)
     private(set) lazy var recovery = TariRecoveryService(walletManager: walletManager, services: self)
@@ -82,8 +82,8 @@ final class Tari: MainServiceable {
         return "\(TariSettings.storageDirectory.path)/\(logFilePrefix)-\(dateString).txt"
     }()
     
-    var walletPublicKey: PublicKey {
-        get throws { try walletManager.walletPublicKey() }
+    var walletAddress: TariAddress {
+        get throws { try walletManager.walletAddress() }
     }
     
     var logsURLs: [URL] {

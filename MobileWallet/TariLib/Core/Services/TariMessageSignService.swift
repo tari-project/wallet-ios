@@ -1,10 +1,10 @@
-//  UTXO.swift
-
+//  TariMessageSignService.swift
+	
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/03/30
+	Created by Adrian Truszczynski on 04/10/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,13 +38,18 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct UTXO: Codable {
-    let privateKeyHex: String
-    let value: UInt64
-    let message: String
-    let sourcePublicKeyHex: String
-    let publicNonce: Data
-    let uValue: Data
-    let vValue: Data
-    let senderOffsetPublicKeyHex: String
+final class TariMessageSignService: CoreTariService {
+   
+   enum InternalError: Error {
+       case invalidSignatureAndNonceString
+   }
+   
+   // MARK: - Actions
+   
+   func sign(message: String) throws -> MessageMetadata {
+       let data = try walletManager.sign(message: message)
+       let components = data.components(separatedBy: "|")
+       guard components.count == 2 else { throw InternalError.invalidSignatureAndNonceString }
+       return MessageMetadata(hex: components[0], nonce: components[1])
+   }
 }

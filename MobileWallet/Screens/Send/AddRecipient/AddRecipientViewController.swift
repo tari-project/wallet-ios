@@ -221,7 +221,7 @@ final class AddRecipientViewController: UIViewController {
     }
     
     private func handleDeeplink() {
-        guard let deeplink = deeplink, let emojiID = try? PublicKey(hex: deeplink.receiverPublicKey).emojis else { return }
+        guard let deeplink = deeplink, let emojiID = try? TariAddress(hex: deeplink.receiverAddress).emojis else { return }
         model.searchText.send(emojiID)
     }
 }
