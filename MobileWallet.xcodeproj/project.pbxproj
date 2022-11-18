@@ -157,6 +157,8 @@
 		3A386F3727A7FC6C0027FED4 /* ErrorMessageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A386F3627A7FC6C0027FED4 /* ErrorMessageManager.swift */; };
 		3A39AF1C27B1570F00A32F46 /* SettingsViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A39AF1B27B1570F00A32F46 /* SettingsViewFooter.swift */; };
 		3A3E7AD6284E03140065F3C0 /* UTXOTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3E7AD5284E03140065F3C0 /* UTXOTileView.swift */; };
+		3A3E8BF12924F84300490E57 /* Constants.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3A3E8BF02924F84300490E57 /* Constants.plist */; };
+		3A3E8BF32924FB4C00490E57 /* MigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3E8BF22924FB4C00490E57 /* MigrationManager.swift */; };
 		3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4205912798001A00A8D49C /* AmountKeyboardView.swift */; };
 		3A420594279802E500A8D49C /* BaseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A420593279802E500A8D49C /* BaseButton.swift */; };
 		3A420597279803DF00A8D49C /* CharacterSet+CustomSets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A420596279803DF00A8D49C /* CharacterSet+CustomSets.swift */; };
@@ -578,6 +580,8 @@
 		3A386F3627A7FC6C0027FED4 /* ErrorMessageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorMessageManager.swift; sourceTree = "<group>"; };
 		3A39AF1B27B1570F00A32F46 /* SettingsViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewFooter.swift; sourceTree = "<group>"; };
 		3A3E7AD5284E03140065F3C0 /* UTXOTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOTileView.swift; sourceTree = "<group>"; };
+		3A3E8BF02924F84300490E57 /* Constants.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Constants.plist; sourceTree = "<group>"; };
+		3A3E8BF22924FB4C00490E57 /* MigrationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationManager.swift; sourceTree = "<group>"; };
 		3A4205912798001A00A8D49C /* AmountKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountKeyboardView.swift; sourceTree = "<group>"; };
 		3A420593279802E500A8D49C /* BaseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseButton.swift; sourceTree = "<group>"; };
 		3A420596279803DF00A8D49C /* CharacterSet+CustomSets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+CustomSets.swift"; sourceTree = "<group>"; };
@@ -1161,6 +1165,7 @@
 				00B4D6FB241B97CD00ED8318 /* Tari.entitlements */,
 				4C2C95B8237959B3005058AB /* MobileWallet-bridging-header.h */,
 				00E491AC2366E08F007B332D /* Info.plist */,
+				3A3E8BF02924F84300490E57 /* Constants.plist */,
 				00E491992366E08B007B332D /* AppDelegate.swift */,
 				00E4919B2366E08B007B332D /* SceneDelegate.swift */,
 				00E491A72366E08F007B332D /* Assets.xcassets */,
@@ -1494,6 +1499,7 @@
 				3A052BF927B2940900C93671 /* WalletTransactionsManager.swift */,
 				3AF97E6F27CFCA2000FF6A3F /* ShortcutsManager.swift */,
 				3A8CC6C1290BDC70008161DC /* BugReportService.swift */,
+				3A3E8BF22924FB4C00490E57 /* MigrationManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -2396,6 +2402,7 @@
 				BF5537B92412B9BB0071328C /* purple_orb.mp4 in Resources */,
 				00A6651F2437AD9A0046E730 /* SplashAnimation.json in Resources */,
 				BF0A779C241F904D00861A3E /* faceId@3x.png in Resources */,
+				3A3E8BF12924F84300490E57 /* Constants.plist in Resources */,
 				BF191A2923E5AFA200D33C85 /* img_0.png in Resources */,
 				0048AF43245ADCA300E1A359 /* env.json in Resources */,
 				00E491A82366E08F007B332D /* Assets.xcassets in Resources */,
@@ -2802,6 +2809,7 @@
 				3ABC7E9528FECFB200EAC852 /* UIViewController+DebugMenu.swift in Sources */,
 				3A8005C628EAF0A50022A38A /* TransactionSendResult.swift in Sources */,
 				3776080924B73500008167E8 /* Backup.swift in Sources */,
+				3A3E8BF32924FB4C00490E57 /* MigrationManager.swift in Sources */,
 				3A84CDD22846087D005F2F8D /* UTXOsWalletViewController.swift in Sources */,
 				3A42059D279804F300A8D49C /* AmountNumberFormatter.swift in Sources */,
 				3A7DAB8F28FDAF9A002CC013 /* LogsListViewController.swift in Sources */,
