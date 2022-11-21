@@ -25,21 +25,9 @@ else
     sudo gem install cocoapods
   fi
 fi
-# Check for carthage and install if missing.
-if hash carthage 2>/dev/null; then
-  echo "Cool, you have carthage installed."
-else
-  echo "You need carthage. Would you like it installed?"
-  read -e -p "y or n? " yn
-  if [[ "y" = "$yn" || "Y" = "$yn" ]]; then
-    brew install carthage
-  fi
-fi
+
 echo "\n\n***Updating pods***"
 pod install
-
-echo "\n\n***Updating carthage***"
-carthage update --platform iOS
 
 echo "\n\n***Updating Property Lists***"
 

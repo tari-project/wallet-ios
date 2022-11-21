@@ -5,6 +5,7 @@ inhibit_all_warnings!
 
 target 'MobileWallet' do
   pod 'SwiftLint'
+  pod 'Tor', '~> 407.11'
   pod 'FloatingPanel', '1.7.5'
   pod 'lottie-ios'
   pod 'SwiftEntryKit', '1.2.3'
@@ -24,6 +25,7 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
+      config.build_settings['ARCHS[sdk=iphonesimulator*]'] = 'x86_64'
     end
   end
 end
