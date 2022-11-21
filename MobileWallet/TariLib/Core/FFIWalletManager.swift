@@ -105,7 +105,7 @@ final class FFIWalletManager {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_get_tari_address(wallet.pointer, errorCodePointer)
-        guard errorCode != 0, let result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         return TariAddress(pointer: result)
     }
     

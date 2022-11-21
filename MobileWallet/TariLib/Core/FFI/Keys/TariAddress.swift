@@ -53,7 +53,7 @@ final class TariAddress {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = tari_address_get_bytes(pointer, errorCodePointer)
-            guard errorCode != 0, let result else { throw WalletError(code: errorCode) }
+            guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
             return ByteVector(pointer: result)
         }
     }
@@ -63,7 +63,7 @@ final class TariAddress {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = tari_address_to_emoji_id(pointer, errorCodePointer)
-            guard errorCode != 0, let result else { throw WalletError(code: errorCode) }
+            guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
             return String(cString: result)
         }
     }
