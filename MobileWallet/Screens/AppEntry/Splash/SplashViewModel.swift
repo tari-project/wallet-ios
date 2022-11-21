@@ -126,6 +126,7 @@ final class SplashViewModel {
             do {
                 status = StatusModel(status: .working, statusRepresentation: .content)
                 try await connectToWallet()
+                try MigrationManager.updateWalletVersion()
                 status = StatusModel(status: .success, statusRepresentation: .content)
             } catch {
                 handle(error: error)
@@ -134,7 +135,14 @@ final class SplashViewModel {
     }
     
     private func openWallet() {
+        
         Task {
+            
+            guard await validateWallet() else {
+                self.deleteWallet()
+                return
+            }
+            
             do {
                 let statusRepresentation = status?.statusRepresentation ?? .content
                 status = StatusModel(status: .working, statusRepresentation: statusRepresentation)
@@ -144,6 +152,18 @@ final class SplashViewModel {
                 self.handle(error: error)
             }
         }
+    }
+    
+    private func validateWallet() async -> Bool {
+        await withCheckedContinuation { continuation in
+            MigrationManager.validateWalletVersion { continuation.resume(returning: $0) }
+        }
+    }
+    
+    private func deleteWallet() {
+        Tari.shared.deleteWallet()
+        Tari.shared.canAutomaticalyReconnectWallet = false
+        status = StatusModel(status: .idle, statusRepresentation: .content)
     }
     
     private func connectToWallet() async throws {

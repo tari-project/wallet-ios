@@ -237,6 +237,12 @@
 "splash.action_sheet.select_network.title" = "Select Network";
 "splash.action_sheet.select_network.description" = "Please select the network to which you want to connect.";
 
+/* FFI Validation */
+"ffi_validation.error.title" = "Incompatible version detected";
+"ffi_validation.error.message" = "The data stored locally is incompatible with the current version of the App or with the network itself. We strongly recommend removing the wallet and creating a new one";
+"ffi_validation.error.button.delete" = "Delete the wallet";
+"ffi_validation.error.button.cancel" = "I still want to use the wallet";
+
 /* iCloudBackup error */
 "iCloud_backup.error.title.set_password" = "Failed to set backup password";
 "iCloud_backup.error.title.create_backup" = "Wallet Backup Incomplete";

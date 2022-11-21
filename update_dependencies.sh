@@ -40,3 +40,10 @@ pod install
 
 echo "\n\n***Updating carthage***"
 carthage update --platform iOS
+
+echo "\n\n***Updating Property Lists***"
+
+CONSTS_PLIST_PATH="./MobileWallet/Constants.plist"
+FFI_VERSION_KEY="FFI Version"
+
+plutil -replace "$FFI_VERSION_KEY" -string $FFI_VERSION $CONSTS_PLIST_PATH
