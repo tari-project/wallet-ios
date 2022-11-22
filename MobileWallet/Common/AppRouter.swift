@@ -55,8 +55,6 @@ enum AppRouter {
     
     static func transitionToSplashScreen(animated: Bool = true) {
         
-        BackupScheduler.shared.stopObserveEvents()
-        
         let navigationController = AlwaysPoppableNavigationController(rootViewController: SplashViewController())
         navigationController.setNavigationBarHidden(true, animated: false)
         

@@ -1,4 +1,4 @@
-//  GroupUserDefaults.swift
+//  UserDefaults.swift
 
 /*
 	Package MobileWallet
@@ -38,8 +38,21 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+private enum UserDefaultName: String, CaseIterable {
+    case selectedNetworkName
+    case networksSettings
+    case walletSettings
+}
+
 enum GroupUserDefaults {
-    @UserDefault(key: "selectedNetworkName", suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
-    @UserDefault(key: "networksSettings", suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
-    @UserDefault(key: "walletSettings", suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
+    @UserDefault(key: UserDefaultName.selectedNetworkName.rawValue, suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
+    @UserDefault(key: UserDefaultName.networksSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
+    @UserDefault(key: UserDefaultName.walletSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
+}
+
+
+extension UserDefaults {
+    func removeAll() {
+        UserDefaultName.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }
+    }
 }

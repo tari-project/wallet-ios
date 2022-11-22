@@ -38,13 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
-
 extension FileManager {
-
-    func documentDirectory() -> URL? {
-        urls(for: .documentDirectory, in: .userDomainMask).first
-    }
 
     enum ContentDateType {
         case created, modified, accessed
@@ -76,22 +70,5 @@ extension FileManager {
             return true
         }
         return files
-    }
-
-    func secureCopyItem(at srcURL: URL, to dstURL: URL) -> Bool {
-        do {
-            if fileExists(atPath: dstURL.path) {
-                try removeItem(at: dstURL)
-            }
-            try copyItem(at: srcURL, to: dstURL)
-        } catch let error {
-            print("Cannot copy item at \(srcURL) to \(dstURL): \(error)")
-            return false
-        }
-        return true
-    }
-
-    func removeBackup(_ backup: Backup) throws {
-        try removeItem(at: backup.url)
     }
 }

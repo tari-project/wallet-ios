@@ -1,10 +1,10 @@
-//  Backup.swift
-
+//  BackupStatus.swift
+	
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 09.07.2020
+	Created by Adrian Truszczynski on 08/11/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,38 +38,30 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+enum BackupStatus {
+    case disabled
+    case enabled
+    case inProgress(progress: Double)
+    case failed(error: Error?)
+}
 
-class Backup {
-
-    let url: URL
-    let folderPath: String
-    let dateCreation: Date
-    let dateCreationString: String
-    let isEncrypted: Bool
-
-    var isValid: Bool {
-        return !ICloudBackup.shared.inProgress && !ICloudBackup.shared.isLastBackupFailed && !BackupScheduler.shared.isBackupScheduled
-    }
-
-    init(url: URL) throws {
-        if try !url.checkResourceIsReachable() {
-            throw ICloudBackupError.backupUrlNotValid
+extension BackupStatus: Equatable {
+    
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        switch (lhs, rhs) {
+        case (.disabled, .disabled), (.enabled, .enabled), (.inProgress, .inProgress), (.failed, .failed):
+            return true
+        default:
+            return false
         }
-
-        self.url = url
-        folderPath = url.deletingLastPathComponent().path
-        isEncrypted = !url.absoluteString.contains(".zip")
-
-        guard let date = try url.resourceValues(forKeys: [.creationDateKey]).allValues.first?.value as? Date else {
-            throw ICloudBackupError.unableToDetermineDateOfBackup
-        }
-
-        dateCreation = date
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMM dd yyy 'at' h:mm a"
-        dateFormatter.timeZone = .current
-        dateCreationString = dateFormatter.string(from: date)
     }
-
+    
+    var isFailed: Bool {
+        switch self {
+        case .failed:
+            return true
+        default:
+            return false
+        }
+    }
 }

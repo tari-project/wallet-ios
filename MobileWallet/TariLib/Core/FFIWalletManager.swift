@@ -250,7 +250,7 @@ final class FFIWalletManager {
         return TariFeePerGramStats(pointer: pointer)
     }
     
-    func addBaseNodePeer(publicKeyPointer: OpaquePointer, address: String) throws -> Bool { // TODO: Check
+    func addBaseNodePeer(publicKeyPointer: OpaquePointer, address: String) throws -> Bool {
         
         let wallet = try exisingWallet
         
@@ -319,7 +319,7 @@ final class FFIWalletManager {
         return result
     }
     
-    func startRecovery(baseNodePublicKey: PublicKey, recoveredOutputMessage: String) throws -> Bool { // TODO: Check
+    func startRecovery(baseNodePublicKey: PublicKey, recoveredOutputMessage: String) throws -> Bool {
         
         let wallet = try exisingWallet
         

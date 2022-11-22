@@ -1,8 +1,8 @@
-//  AppConfigurator.swift
+//  ICloudBackupMetadataQuery.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/10/2022
+	Created by Adrian Truszczynski on 27/10/2022
 	Using Swift 5.0
 	Running on macOS 12.6
 
@@ -38,26 +38,12 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum AppConfigurator {
+final class ICloudBackupMetadataQuery: NSMetadataQuery {
     
-    static func configure() {
-        configureLoggers()
-        configureBackupManagers()
-    }
-    
-    private static func configureLoggers() {
-        switch TariSettings.shared.environment {
-        case .debug:
-            Logger.attach(logger: ConsoleLogger())
-        case .testflight, .production:
-            break
-        }
-        
-        Logger.attach(logger: FileLogger())
-        Logger.attach(logger: CrashLogger())
-    }
-    
-    private static func configureBackupManagers() {
-        BackupManager.shared.configure()
+    init(filenamePrefix: String) {
+        super.init()
+        operationQueue = .main
+        searchScopes = [NSMetadataQueryUbiquitousDataScope]
+        predicate = NSPredicate(format: "%K BEGINSWITH %@", NSMetadataItemFSNameKey, filenamePrefix)
     }
 }

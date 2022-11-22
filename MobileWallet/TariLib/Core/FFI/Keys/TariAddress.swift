@@ -76,7 +76,7 @@ final class TariAddress {
     
     init(hex: String) throws {
         
-        guard hex.count == 64, hex.rangeOfCharacter(from: .hexadecimal) != nil else { throw InternalError.invalidHex }
+        guard hex.count == 66, hex.rangeOfCharacter(from: .hexadecimal) != nil else { throw InternalError.invalidHex }
         
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)

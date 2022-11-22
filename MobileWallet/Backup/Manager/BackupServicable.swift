@@ -1,10 +1,10 @@
-//  UserDefaultsWrapper.swift
-
+//  BackupServicable.swift
+	
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 07.07.2020
+	Created by Adrian Truszczynski on 27/10/2022
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,28 +38,20 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+import Combine
 
-extension UserDefaults {
-    enum Key: String, CaseIterable {
-        case isLastBackupFailed
-        case backupOperationAborted
+enum BackupError: Error {
+    case passwordRequired
+    case noRemoteBackup
+}
 
-        func set<T>(_ value: T) {
-            UserDefaults.standard.set(value, forKey: rawValue)
-        }
-
-        func get<T>(_ type: T.Type) -> T? {
-            guard let value = UserDefaults.standard.value(forKey: rawValue) as? T else { return nil }
-            return value
-        }
-
-        func boolValue() -> Bool {
-            UserDefaults.standard.bool(forKey: rawValue)
-        }
-    }
-
-    func removeAll() {
-        UserDefaults.Key.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }
-    }
+protocol BackupServicable: AnyObject {
+    
+    var isOn: Bool { get set }
+    var password: String? { get set }
+    var backupStatus: AnyPublisher<BackupStatus, Never> { get }
+    var lastBackupTimestamp: AnyPublisher<Date?, Never> { get }
+    
+    func performBackup(forced: Bool)
+    func restoreBackup(password: String?) -> AnyPublisher<Void, Error>
 }

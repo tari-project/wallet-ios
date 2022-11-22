@@ -194,7 +194,7 @@ final class BugReportingView: BaseNavigationContentView {
             messageTextView.topAnchor.constraint(equalTo: messageHeaderLabel.bottomAnchor, constant: 10.0),
             messageTextView.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor, constant: 25.0),
             messageTextView.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor, constant: -25.0),
-            messageTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 200.0), // TODO: !
+            messageTextView.heightAnchor.constraint(greaterThanOrEqualToConstant: 200.0),
             footerLabel.topAnchor.constraint(equalTo: messageTextView.bottomAnchor, constant: 20.0),
             footerLabel.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor, constant: 25.0),
             footerLabel.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor, constant: -25.0),

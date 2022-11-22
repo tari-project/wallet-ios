@@ -54,6 +54,7 @@ final class TariBalanceService: CoreTariService {
     override init(walletManager: FFIWalletManager, services: MainServiceable) {
         super.init(walletManager: walletManager, services: services)
         setupCallbacks()
+        fetchData()
     }
     
     // MARK: - Setups
@@ -69,7 +70,15 @@ final class TariBalanceService: CoreTariService {
             .map { WalletBalance(available: $0.available, incoming: $0.incoming, outgoing: $0.outgoing, timeLocked: $0.timelocked) }
             .assignPublisher(to: \.balance, on: self)
             .store(in: &cancellables)
-        
+    }
+    
+    // MARK: - Actions
+    
+    func reset() {
+        fetchData()
+    }
+    
+    private func fetchData() {
         ffiBalance = try? walletManager.balance()
     }
 }

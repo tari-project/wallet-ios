@@ -41,6 +41,7 @@
 import UIKit
 import LocalAuthentication
 import YatLib
+import Combine
 
 class SettingsViewController: SettingsParentTableViewController {
     private let localAuth = LAContext()
@@ -109,8 +110,10 @@ class SettingsViewController: SettingsParentTableViewController {
             }
         }
     }
+    
+    private let backUpWalletItem = SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsWalletBackupsIcon, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
 
-    private let securitySectionItems: [SystemMenuTableViewCellItem] = [SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsWalletBackupsIcon, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)]
+    private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [backUpWalletItem]
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
@@ -142,15 +145,15 @@ class SettingsViewController: SettingsParentTableViewController {
         .disclaimer: URL(string: TariSettings.shared.disclaimer),
         .blockExplorer: URL(string: TariSettings.shared.blockExplorerUrl)
     ]
+    
+    private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        guard let backupItem = securitySectionItems.first(where: { $0.title == SettingsItemTitle.backUpWallet.rawValue }) else { return }
-        backUpWalletItem = backupItem
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = SettingsViewFooter()
+        setupCallbacks()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -172,10 +175,18 @@ class SettingsViewController: SettingsParentTableViewController {
         footerView.bounds.size.height = size.height
         tableView.tableFooterView = footerView
     }
+    
+    private func setupCallbacks() {
+        BackupManager.shared.$syncState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.updateItems(syncStatus: $0) }
+            .store(in: &cancellables)
+    }
 
     private func onBackupWalletAction() {
         localAuth.authenticateUser(reason: .userVerification, showFailedDialog: false) { [weak self] in
-            self?.navigationController?.pushViewController(BackupWalletSettingsViewController(), animated: true)
+            let controller = BackupWalletSettingsConstructor.buildScene()
+            self?.navigationController?.pushViewController(controller, animated: true)
         }
     }
     
@@ -233,6 +244,27 @@ class SettingsViewController: SettingsParentTableViewController {
     private func showNoConnectionError() {
         PopUpPresenter.show(message: MessageModel(title: localized("common.error"), message: localized("settings.error.connect_yats_no_connection"), type: .error))
     }
+    
+    private func updateItems(syncStatus: BackupManager.BackupSyncState) {
+        
+        backUpWalletItem.percent = 0.0
+        
+        switch syncStatus {
+        case .disabled:
+            backUpWalletItem.mark = .attention
+            backUpWalletItem.markDescription = ""
+        case .outOfSync:
+            backUpWalletItem.mark = .attention
+            backUpWalletItem.markDescription = localized("wallet_backup_state.out_to_date")
+        case let .inProgress(progress):
+            backUpWalletItem.mark = .progress
+            backUpWalletItem.percent = progress * 100.0
+            backUpWalletItem.markDescription = localized("wallet_backup_state.in_progress")
+        case .synced:
+            backUpWalletItem.mark = .success
+            backUpWalletItem.markDescription = localized("wallet_backup_state.up_to_date")
+        }
+    }
 }
 
 extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
@@ -278,29 +310,8 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         let sec = Section(rawValue: section)
 
         switch sec {
-        case .security, .advancedSettings, .yat:
+        case .security, .advancedSettings, .yat, .more:
             header.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        case .more:
-            let lastSuccessful = iCloudBackup.lastBackup != nil && !iCloudBackup.inProgress && !iCloudBackup.isLastBackupFailed
-            if lastSuccessful, let lastBackupString = ICloudBackup.shared.lastBackup?.dateCreationString {
-                header.heightAnchor.constraint(equalToConstant: 101).isActive = true
-
-                let lastBackupLabel =  UILabel()
-                lastBackupLabel.font = Theme.shared.fonts.settingsTableViewLastBackupDate
-                lastBackupLabel.textColor =  Theme.shared.colors.settingsTableViewLastBackupDate
-
-                lastBackupLabel.text = String(format: localized("settings.last_successful_backup.with_param"), lastBackupString)
-
-                header.addSubview(lastBackupLabel)
-
-                lastBackupLabel.translatesAutoresizingMaskIntoConstraints = false
-                lastBackupLabel.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 25).isActive = true
-                lastBackupLabel.trailingAnchor.constraint(equalTo: header.trailingAnchor, constant: -25).isActive = true
-                lastBackupLabel.topAnchor.constraint(equalTo: header.topAnchor, constant: 8).isActive = true
-                lastBackupLabel.lineBreakMode = .byTruncatingMiddle
-            } else {
-                header.heightAnchor.constraint(equalToConstant: 70).isActive = true
-            }
         default: break
         }
 

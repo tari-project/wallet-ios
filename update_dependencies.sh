@@ -43,8 +43,44 @@ carthage update --platform iOS
 
 echo "\n\n***Updating Property Lists***"
 
+# Info.plist
+
+INFO_PLIST_PATH="./MobileWallet/Info.plist"
+DROPBOX_KEY="Dropbox"
+
+API_KEY=$( jq -r '.dropboxApiKey' $FILE )
+ELEMENTS_COUNT=$( plutil -extract CFBundleURLTypes raw $INFO_PLIST_PATH )
+
+if [ $API_KEY != null ]; then
+  for (( i=0; i<$ELEMENTS_COUNT; i++ ))
+  do
+    KEY=$( plutil -extract CFBundleURLTypes.$i.CFBundleURLName raw $INFO_PLIST_PATH )
+    if [ $KEY == $DROPBOX_KEY ]; then
+        plutil -replace CFBundleURLTypes.$i.CFBundleURLSchemes -json "[\"db-$API_KEY\"]" $INFO_PLIST_PATH
+    fi
+  done
+fi
+
+# Constants.plist
+
 CONSTS_PLIST_PATH="./MobileWallet/Constants.plist"
 FFI_VERSION_KEY="FFI Version"
 
 plutil -create xml1 $CONSTS_PLIST_PATH
 plutil -replace "$FFI_VERSION_KEY" -string $FFI_VERSION $CONSTS_PLIST_PATH
+
+echo "\n\n***Updating Git Hooks***"
+
+PER_COMMIT_HOOK_PATH=".git/hooks/pre-commit"
+PRE_HOOK_SCRIPT_PATH="./pre_commit.sh"
+
+chmod 500 $PRE_HOOK_SCRIPT_PATH
+
+if ! [[ -f $PER_COMMIT_HOOK_PATH ]]; then
+  touch $PER_COMMIT_HOOK_PATH
+  chmod 700 $PER_COMMIT_HOOK_PATH
+fi
+
+if ! $( grep -Fxq $PRE_HOOK_SCRIPT_PATH $PER_COMMIT_HOOK_PATH ); then
+  echo $PRE_HOOK_SCRIPT_PATH >> $PER_COMMIT_HOOK_PATH
+fi
