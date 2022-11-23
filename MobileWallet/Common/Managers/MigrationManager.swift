@@ -91,7 +91,7 @@ enum MigrationManager {
             return false
         }
         
-        return walletVersion >= minValidVersion
+        return VersionValidator.compare(walletVersion, isHigherOrEqualTo: minValidVersion)
     }
     
     private static func showPopUp(completion: @escaping (Bool) -> Void) {

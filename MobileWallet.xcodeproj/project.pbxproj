@@ -198,6 +198,8 @@
 		3A70434628E21DD200207D6F /* PendingOutboundTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A70434528E21DD200207D6F /* PendingOutboundTransaction.swift */; };
 		3A70434828E21F5600207D6F /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A70434728E21F5600207D6F /* Transaction.swift */; };
 		3A7097CF27D0E29900641250 /* TariNetwork+Mocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A7097CE27D0E29900641250 /* TariNetwork+Mocks.swift */; };
+		3A70C4F4292E4C1700212026 /* VersionValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A70C4F3292E4C1700212026 /* VersionValidatorTests.swift */; };
+		3A70C4F7292E51D800212026 /* VersionValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A70C4F6292E51D800212026 /* VersionValidator.swift */; };
 		3A72DC3D26DFA02900E0BC43 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC3C26DFA02900E0BC43 /* NetworkManager.swift */; };
 		3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC4026DFA1E100E0BC43 /* NetworkSettings.swift */; };
 		3A72DC4526DFA26000E0BC43 /* TariNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A72DC4426DFA26000E0BC43 /* TariNetwork.swift */; };
@@ -621,6 +623,8 @@
 		3A70434528E21DD200207D6F /* PendingOutboundTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingOutboundTransaction.swift; sourceTree = "<group>"; };
 		3A70434728E21F5600207D6F /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
 		3A7097CE27D0E29900641250 /* TariNetwork+Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TariNetwork+Mocks.swift"; sourceTree = "<group>"; };
+		3A70C4F3292E4C1700212026 /* VersionValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionValidatorTests.swift; sourceTree = "<group>"; };
+		3A70C4F6292E51D800212026 /* VersionValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionValidator.swift; sourceTree = "<group>"; };
 		3A72DC3C26DFA02900E0BC43 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		3A72DC4026DFA1E100E0BC43 /* NetworkSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkSettings.swift; sourceTree = "<group>"; };
 		3A72DC4426DFA26000E0BC43 /* TariNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariNetwork.swift; sourceTree = "<group>"; };
@@ -922,6 +926,7 @@
 		00262EB2236F022000A6C8A0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				3A70C4F5292E51CF00212026 /* Tools */,
 				3A6A03312802DB64000432B4 /* Pop-up */,
 				3AE138CD2804A86A00443D34 /* Toasts */,
 				3AEDBE4B27CE454E006B0166 /* Deep Links */,
@@ -1396,6 +1401,7 @@
 				3AA2DD8F2796C98A00DC3CF7 /* AmountNumberFormatterTests.swift */,
 				3A87C3B827A96423007A553F /* ErrorMessageManagerTests.swift */,
 				3AEDBE5827CE4F80006B0166 /* DeepLinkFormatterTests.swift */,
+				3A70C4F3292E4C1700212026 /* VersionValidatorTests.swift */,
 			);
 			path = UnitTests;
 			sourceTree = "<group>";
@@ -1709,6 +1715,14 @@
 				3A7097CE27D0E29900641250 /* TariNetwork+Mocks.swift */,
 			);
 			path = Mocks;
+			sourceTree = "<group>";
+		};
+		3A70C4F5292E51CF00212026 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				3A70C4F6292E51D800212026 /* VersionValidator.swift */,
+			);
+			path = Tools;
 			sourceTree = "<group>";
 		};
 		3A72DC3B26DF9FF700E0BC43 /* Network */ = {
@@ -2529,6 +2543,7 @@
 				3A35413626A738D4002AB5A8 /* RoundedInputField.swift in Sources */,
 				3A0391E8290BA45C00352D73 /* BugReportingModel.swift in Sources */,
 				3A7DAB9128FDAFD5002CC013 /* LogsListView.swift in Sources */,
+				3A70C4F7292E51D800212026 /* VersionValidator.swift in Sources */,
 				3AE138D12804A8B300443D34 /* SuccessToast.swift in Sources */,
 				370E887824FEA54100576F61 /* NetworkTools.m in Sources */,
 				3A35412C26A72D9F002AB5A8 /* ViewIdentifiable.swift in Sources */,
@@ -2865,6 +2880,7 @@
 				3AA2DD902796C98A00DC3CF7 /* AmountNumberFormatterTests.swift in Sources */,
 				3A6734662742664C00F6203C /* YatCacheManagerTests.swift in Sources */,
 				3AF53B7E27311D1400C78562 /* SeedWordsTests.swift in Sources */,
+				3A70C4F4292E4C1700212026 /* VersionValidatorTests.swift in Sources */,
 				3A87C3B927A96423007A553F /* ErrorMessageManagerTests.swift in Sources */,
 				3AEDBE5927CE4F80006B0166 /* DeepLinkFormatterTests.swift in Sources */,
 			);
