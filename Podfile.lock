@@ -1,4 +1,5 @@
 PODS:
+  - Alamofire (5.4.4)
   - FloatingPanel (1.7.5)
   - Giphy (2.1.22):
     - libwebp
@@ -23,11 +24,12 @@ PODS:
     - QuickLayout (= 3.0.0)
   - SwiftKeychainWrapper (3.4.0)
   - SwiftLint (0.43.1)
+  - SwiftyDropbox (8.2.1):
+    - Alamofire (~> 5.4.3)
   - TariCommon (0.2.0)
   - YatLib (0.3.2):
     - TariCommon (~> 0.2.0)
   - Zip (2.1.2)
-  - ZIPFoundation (0.9.15)
 
 DEPENDENCIES:
   - FloatingPanel (= 1.7.5)
@@ -40,13 +42,14 @@ DEPENDENCIES:
   - SwiftEntryKit (= 1.2.3)
   - SwiftKeychainWrapper (= 3.4.0)
   - SwiftLint
+  - SwiftyDropbox (= 8.2.1)
   - TariCommon (= 0.2.0)
   - YatLib (= 0.3.2)
   - Zip (= 2.1.2)
-  - ZIPFoundation (~> 0.9)
 
 SPEC REPOS:
   trunk:
+    - Alamofire
     - FloatingPanel
     - Giphy
     - IPtProxy
@@ -58,10 +61,10 @@ SPEC REPOS:
     - SwiftEntryKit
     - SwiftKeychainWrapper
     - SwiftLint
+    - SwiftyDropbox
     - TariCommon
     - YatLib
     - Zip
-    - ZIPFoundation
 
 EXTERNAL SOURCES:
   Sentry:
@@ -74,6 +77,7 @@ CHECKOUT OPTIONS:
     :tag: 7.27.1
 
 SPEC CHECKSUMS:
+  Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
   FloatingPanel: bb17fd6fc7ae519f877f7bd30f4f6115a78acf07
   Giphy: 6757d929878ef45f70ed62a02a2c9a03994e7b6c
   IPtProxy: e180e0f4381a893b52ae12626fbd0d40cbabe746
@@ -86,11 +90,11 @@ SPEC CHECKSUMS:
   SwiftEntryKit: 340713c2e4a6662c5149629990bf1088bf5f0389
   SwiftKeychainWrapper: 6fc49fbf7d4a6b0772917acb0e53a1639f6078d6
   SwiftLint: 99f82d07b837b942dd563c668de129a03fc3fb52
+  SwiftyDropbox: f6c55aae36c4ea944fe6b35f807c19897f78b09b
   TariCommon: 2c8bb97359f59d6b302d2e96c191ff95931da8ac
   YatLib: cd443f044b7ddc58bd17e2406e3ecaf6688880a6
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
-  ZIPFoundation: 063163dc828bf699c5be160eb4f58f676322d94f
 
-PODFILE CHECKSUM: c0fd93f2a5652dd7730802890d5d8b29e06a2a5a
+PODFILE CHECKSUM: bfda0107ca37c6b600f92b861406add858cab7fa
 
 COCOAPODS: 1.11.3

@@ -64,16 +64,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             Giphy.configure(apiKey: giphyApiKey)
         }
         
-        AppConfigurator.configureLoggers()
+        AppConfigurator.configure()
         
         return true
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
-        if ICloudBackup.shared.inProgress || BackupScheduler.shared.isBackupScheduled {
-            UserDefaults.Key.backupOperationAborted.set(true)
-            ICloudBackup.shared.scheduleNotification()
-        }
+        BackupManager.shared.onTerminateAppAction()
     }
 
     // MARK: UISceneSession Lifecycle

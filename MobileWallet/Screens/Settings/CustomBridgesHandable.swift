@@ -43,7 +43,7 @@ import Combine
 
 protocol CustomBridgesHandable: UIViewController {
     var navigationBar: NavigationBar { get }
-    var tableView: UITableView { get }
+    var tableView: MenuTableView { get }
 }
 
 extension CustomBridgesHandable {

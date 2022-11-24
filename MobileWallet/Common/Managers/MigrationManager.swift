@@ -99,7 +99,7 @@ enum MigrationManager {
         let headerSection = PopUpComponentsFactory.makeHeaderView(title: localized("ffi_validation.error.title"))
         let contentSection = PopUpComponentsFactory.makeContentView(message: localized("ffi_validation.error.message"))
         let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [
-            PopUpDialogButtonModel(title: localized("ffi_validation.error.button.delete"), type: .destructive, callback: { completion(false) }), // TODO: Retain cycle?
+            PopUpDialogButtonModel(title: localized("ffi_validation.error.button.delete"), type: .destructive, callback: { completion(false) }),
             PopUpDialogButtonModel(title: localized("ffi_validation.error.button.cancel"), type: .text, callback: { completion(true) })
         ])
         

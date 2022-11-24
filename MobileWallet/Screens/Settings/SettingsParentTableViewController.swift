@@ -39,11 +39,11 @@
 */
 
 import UIKit
+import TariCommon
 
 class SettingsParentTableViewController: SettingsParentViewController {
-    let tableView = UITableView(frame: .zero, style: .grouped)
-
-    var backUpWalletItem: SystemMenuTableViewCellItem?
+    
+    @View private(set) var tableView = MenuTableView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,41 +63,11 @@ class SettingsParentTableViewController: SettingsParentViewController {
     @objc private func willEnterForeground() {
         reloadTableViewWithAnimation()
     }
-
-    func updateMarks() {
-        if iCloudBackup.inProgress {
-            backUpWalletItem?.mark = .progress
-            backUpWalletItem?.markDescription = ICloudBackupState.inProgress.rawValue
-            backUpWalletItem?.percent = iCloudBackup.progressValue
-            return
-        }
-
-        backUpWalletItem?.percent = 0.0
-        if BackupScheduler.shared.isBackupScheduled {
-            backUpWalletItem?.mark = .scheduled
-            backUpWalletItem?.markDescription = ICloudBackupState.scheduled.rawValue
-        } else {
-            backUpWalletItem?.mark = iCloudBackup.isValidBackupExists() ? .success : .attention
-            if iCloudBackup.isValidBackupExists() {
-                 backUpWalletItem?.markDescription = ICloudBackupState.upToDate.rawValue
-            } else {
-                backUpWalletItem?.markDescription = iCloudBackup.lastBackup != nil ? ICloudBackupState.outOfDate.rawValue : ""
-            }
-        }
-    }
 }
 
 extension SettingsParentTableViewController {
-    override func onUploadProgress(percent: Double, started: Bool, completed: Bool) {
-        super.onUploadProgress(percent: percent, started: started, completed: completed)
-        updateMarks()
-        if completed || started {
-            reloadTableViewWithAnimation()
-        }
-    }
 
     @objc func reloadTableViewWithAnimation() {
-        updateMarks()
         UIView.transition(
             with: tableView,
             duration: 0.5,
@@ -119,20 +89,16 @@ extension SettingsParentTableViewController {
     }
 
     func setupTableView() {
-        tableView.register(
-            SystemMenuTableViewCell.self,
-            forCellReuseIdentifier: String(describing: SystemMenuTableViewCell.self)
-        )
-        tableView.backgroundColor = .clear
-        tableView.showsVerticalScrollIndicator = false
-        tableView.separatorColor = Theme.shared.colors.settingsTableStyleBackground
-
+        tableView.register(type: SystemMenuTableViewCell.self)
         view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        
+        let constraints = [
+            tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+        ]
 
-        tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        NSLayoutConstraint.activate(constraints)
     }
 }

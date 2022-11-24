@@ -43,12 +43,12 @@ final class WalletSettingsManager {
     private var settings: WalletSettings {
 
         guard let networkName = GroupUserDefaults.selectedNetworkName else {
-            return WalletSettings(networkName: "", configurationState: .notConfigured, isCloudBackupEnabled: false, hasVerifiedSeedPhrase: false, yat: nil)
+            return WalletSettings(networkName: "", configurationState: .notConfigured, iCloudDocsBackupStatus: .disabled, dropboxBackupStatus: .disabled, hasVerifiedSeedPhrase: false, yat: nil)
         }
 
         guard let existingSettings = GroupUserDefaults.walletSettings?.first(where: { $0.networkName == networkName }) else {
             var settings = GroupUserDefaults.walletSettings ?? []
-            let newSettings = WalletSettings(networkName: networkName, configurationState: .notConfigured, isCloudBackupEnabled: false, hasVerifiedSeedPhrase: false, yat: nil)
+            let newSettings = WalletSettings(networkName: networkName, configurationState: .notConfigured, iCloudDocsBackupStatus: .disabled, dropboxBackupStatus: .disabled, hasVerifiedSeedPhrase: false, yat: nil)
             settings.append(newSettings)
             GroupUserDefaults.walletSettings = settings
             return newSettings
@@ -61,10 +61,15 @@ final class WalletSettingsManager {
         get { settings.configurationState }
         set { update(settings: settings.update(configurationState: newValue)) }
     }
-
-    var isCloudBackupEnabled: Bool {
-        get { settings.isCloudBackupEnabled }
-        set { update(settings: settings.update(isCloudBackupEnabled: newValue)) }
+    
+    var iCloudDocsBackupStatus: WalletSettings.BackupStatus {
+        get { settings.iCloudDocsBackupStatus }
+        set { update(settings: settings.update(iCloudDocsBackupStatus: newValue)) }
+    }
+    
+    var dropboxBackupStatus: WalletSettings.BackupStatus {
+        get { settings.dropboxBackupStatus }
+        set { update(settings: settings.update(dropboxBackupStatus: newValue)) }
     }
 
     var hasVerifiedSeedPhrase: Bool {

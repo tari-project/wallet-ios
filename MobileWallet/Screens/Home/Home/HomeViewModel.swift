@@ -90,7 +90,8 @@ final class HomeViewModel {
     
     func deleteWallet() {
         Tari.shared.deleteWallet()
-        BackupScheduler.shared.stopObserveEvents()
+        Tari.shared.canAutomaticalyReconnectWallet = false
+        BackupManager.shared.disableBackup()
     }
     
     private func checkNetworkCompatibility() {

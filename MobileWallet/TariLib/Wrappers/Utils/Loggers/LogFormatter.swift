@@ -46,16 +46,9 @@ enum LogFormatter {
     private static let levelNameLength = Logger.Level.allCases.map { $0.name.count }.max() ?? 0
     
     static func formattedMessage(message: String, domain: Logger.Domain, logLevel: Logger.Level, showPrefix: Bool) -> String {
-        
         let domainName = formattedDomainName(domain: domain, includePrefix: showPrefix)
         let logLevelName = logLevel.name.fixedLength(levelNameLength)
-        var message = [domainName, logLevelName, message].joined(separator: " | ")
-        
-        if showPrefix {
-            message = appNamePrefix + " " + message
-        }
-        
-        return message
+        return [domainName, logLevelName, message].joined(separator: " | ")
     }
     
     static func formattedDomainName(domain: Logger.Domain, includePrefix: Bool) -> String {

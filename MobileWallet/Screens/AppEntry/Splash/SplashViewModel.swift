@@ -100,7 +100,7 @@ final class SplashViewModel {
         $isWalletExist
             .dropFirst()
             .filter { !$0 }
-            .sink { _ in AppKeychainWrapper.removeBackupPasswordFromKeychain() }
+            .sink { _ in BackupManager.shared.password = nil }
             .store(in: &cancellables)
     }
     
@@ -138,15 +138,16 @@ final class SplashViewModel {
         
         Task {
             
-            guard await validateWallet() else {
-                self.deleteWallet()
-                return
-            }
-            
             do {
                 let statusRepresentation = status?.statusRepresentation ?? .content
                 status = StatusModel(status: .working, statusRepresentation: statusRepresentation)
                 try await connectToWallet()
+                
+                guard await validateWallet() else {
+                    self.deleteWallet()
+                    return
+                }
+                
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
             } catch {
                 self.handle(error: error)

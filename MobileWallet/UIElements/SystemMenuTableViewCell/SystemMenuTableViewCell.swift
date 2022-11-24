@@ -44,13 +44,14 @@ import TariCommon
 class SystemMenuTableViewCellItem: NSObject {
 
     let icon: UIImage?
-    var title: String
-
+    
+    @objc dynamic var title: String
+    @objc dynamic var subtitle: String?
     @objc dynamic var mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none
     @objc dynamic var markDescription: String = ""
     @objc dynamic var percent: Double = 0.0
 
-    @objc dynamic var isSwitchIsOn: Bool = false
+    @Published @objc dynamic var isSwitchIsOn: Bool = false
 
     private(set) var disableCellInProgress = true
     private(set) var hasSwitch = false
@@ -59,6 +60,7 @@ class SystemMenuTableViewCellItem: NSObject {
 
     init(icon: UIImage? = nil,
          title: String,
+         subtitle: String? = nil,
          mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none,
          hasArrow: Bool = true,
          disableCellInProgress: Bool = true,
@@ -68,6 +70,7 @@ class SystemMenuTableViewCellItem: NSObject {
 
         self.icon = icon
         self.title = title
+        self.subtitle = subtitle
         self.mark = mark
         self.hasArrow = hasArrow
         self.disableCellInProgress = disableCellInProgress
@@ -91,6 +94,7 @@ class SystemMenuTableViewCell: UITableViewCell {
     private weak var item: SystemMenuTableViewCellItem?
 
     @View private var iconImageView = UIImageView()
+    @View private var labelsStackView = UIStackView()
     
     private let arrow = UIImageView()
     private var arrowWidthConstraint: NSLayoutConstraint?
@@ -99,6 +103,7 @@ class SystemMenuTableViewCell: UITableViewCell {
     private var markImageViewTrailingConstraint: NSLayoutConstraint?
     private let markDescriptionLabel = UILabel()
     private let titleLabel = UILabel()
+    private let subtitleLabel = UILabel()
     private let progressView = CircularProgressView()
     private let switcher = UISwitch()
 
@@ -107,6 +112,8 @@ class SystemMenuTableViewCell: UITableViewCell {
     private var kvoPercentToken: NSKeyValueObservation?
     private var kvoMarkToken: NSKeyValueObservation?
     private var kvoMarkDescriptionToken: NSKeyValueObservation?
+    private var kvoTitleToken: NSKeyValueObservation?
+    private var kvoSubtitleToken: NSKeyValueObservation?
     private var kvoSwitchValueToken: NSKeyValueObservation?
     
     private var titleWithoutIconConstraint: NSLayoutConstraint?
@@ -200,6 +207,7 @@ class SystemMenuTableViewCell: UITableViewCell {
         arrow.isHidden = item.hasSwitch
         titleLabel.text = item.title
         titleLabel.textColor = tintColor
+        subtitleLabel.text = item.subtitle
         arrow.image = item.isDestructive ? Theme.shared.images.forwardArrowRed : Theme.shared.images.forwardArrow
         disableCellInProgress = item.disableCellInProgress
         mark = item.mark
@@ -218,6 +226,16 @@ class SystemMenuTableViewCell: UITableViewCell {
 
         kvoMarkDescriptionToken = item.observe(\.markDescription, options: .new) { [weak self] (item, _) in
             self?.markDescription = item.markDescription
+        }
+        
+        kvoTitleToken = item.observe(\.title, options: .new) { [weak self] item, _ in
+            DispatchQueue.main.async {
+                self?.titleLabel.text = item.title
+            }
+        }
+        
+        kvoSubtitleToken = item.observe(\.subtitle, options: .new) { [weak self] item, _ in
+            self?.subtitleLabel.text = item.subtitle
         }
 
         kvoSwitchValueToken = item.observe(\.isSwitchIsOn, options: .new) { [weak self] (item, change) in
@@ -249,13 +267,16 @@ class SystemMenuTableViewCell: UITableViewCell {
 extension SystemMenuTableViewCell {
     private func setupView() {
         contentView.backgroundColor = Theme.shared.colors.systemTableViewCellBackground
-
+        contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 65.0).isActive = true
+        
         setupArrow()
         setupSwitch()
         setupMark()
         setupMarkDescription()
         setupProgressView()
+        setupLabelsStackView()
         setupTitle()
+        setupDescriptionLabel()
         setupIconImageView()
     }
 
@@ -319,15 +340,24 @@ extension SystemMenuTableViewCell {
     private func setupTitle() {
         titleLabel.font = Theme.shared.fonts.systemTableViewCell
         titleLabel.adjustsFontSizeToFitWidth = true
-        contentView.addSubview(titleLabel)
-
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        let trailingAnchor = titleLabel.trailingAnchor.constraint(greaterThanOrEqualTo: markDescriptionLabel.leadingAnchor, constant: -20)
-        trailingAnchor.isActive = true
-        trailingAnchor.priority = .defaultLow
-
-        titleLabel.setContentHuggingPriority(.required, for: .horizontal)
+        labelsStackView.addArrangedSubview(titleLabel)
+    }
+    
+    private func setupDescriptionLabel() {
+        subtitleLabel.font = Theme.shared.fonts.systemTableViewCell
+        subtitleLabel.adjustsFontSizeToFitWidth = true
+        subtitleLabel.textColor = .tari.greys.mediumDarkGrey
+        labelsStackView.addArrangedSubview(subtitleLabel)
+    }
+    
+    private func setupLabelsStackView() {
+        
+        labelsStackView.axis = .vertical
+        
+        contentView.addSubview(labelsStackView)
+        
+        labelsStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
+        labelsStackView.trailingAnchor.constraint(lessThanOrEqualTo: markDescriptionLabel.leadingAnchor, constant: -8).isActive = true
     }
     
     private func setupIconImageView() {
@@ -358,8 +388,7 @@ extension SystemMenuTableViewCell {
 
         markDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         markDescriptionLabel.centerYAnchor.constraint(equalTo: markImageView.centerYAnchor).isActive = true
-        markDescriptionLabel.trailingAnchor.constraint(equalTo: markImageView.leadingAnchor, constant: -10).isActive = true
+        markDescriptionLabel.trailingAnchor.constraint(equalTo: switcher.leadingAnchor, constant: -8.0).isActive = true
 
-        markDescriptionLabel.setContentHuggingPriority(.required, for: .horizontal)
     }
 }

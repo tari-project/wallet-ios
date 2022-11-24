@@ -1,8 +1,8 @@
-//  AppConfigurator.swift
+//  BackupWalletSettingsConstructor.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/10/2022
+	Created by Adrian Truszczynski on 27/10/2022
 	Using Swift 5.0
 	Running on macOS 12.6
 
@@ -38,26 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum AppConfigurator {
+enum BackupWalletSettingsConstructor {
     
-    static func configure() {
-        configureLoggers()
-        configureBackupManagers()
-    }
-    
-    private static func configureLoggers() {
-        switch TariSettings.shared.environment {
-        case .debug:
-            Logger.attach(logger: ConsoleLogger())
-        case .testflight, .production:
-            break
-        }
-        
-        Logger.attach(logger: FileLogger())
-        Logger.attach(logger: CrashLogger())
-    }
-    
-    private static func configureBackupManagers() {
-        BackupManager.shared.configure()
+    static func buildScene() -> BackupWalletSettingsViewController {
+        let model = BackupWalletSettingsModel()
+        return BackupWalletSettingsViewController(model: model)
     }
 }

@@ -1,8 +1,8 @@
-//  AppConfigurator.swift
+//  MenuTableView.swift
 	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/10/2022
+	Created by Adrian Truszczynski on 08/11/2022
 	Using Swift 5.0
 	Running on macOS 12.6
 
@@ -38,26 +38,20 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum AppConfigurator {
+import UIKit
+
+final class MenuTableView: UITableView {
     
-    static func configure() {
-        configureLoggers()
-        configureBackupManagers()
+    init() {
+        super.init(frame: .zero, style: .grouped)
+        backgroundColor = .clear
+        showsVerticalScrollIndicator = false
+        separatorColor = Theme.shared.colors.settingsTableStyleBackground
+        rowHeight = UITableView.automaticDimension
+        register(type: SystemMenuTableViewCell.self)
     }
     
-    private static func configureLoggers() {
-        switch TariSettings.shared.environment {
-        case .debug:
-            Logger.attach(logger: ConsoleLogger())
-        case .testflight, .production:
-            break
-        }
-        
-        Logger.attach(logger: FileLogger())
-        Logger.attach(logger: CrashLogger())
-    }
-    
-    private static func configureBackupManagers() {
-        BackupManager.shared.configure()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }

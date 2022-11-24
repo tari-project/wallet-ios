@@ -38,8 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
 import UIKit
+import Combine
 
 class SecureBackupViewController: SettingsParentViewController {
     private let scrollView = UIScrollView()
@@ -55,7 +55,7 @@ class SecureBackupViewController: SettingsParentViewController {
 
     private let pendingView = PendingView(title: localized("backup_pending_view.title"),
                                           definition: localized("backup_pending_view.description"))
-    private var pendingViewTimer: Timer?
+    private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,40 +73,34 @@ class SecureBackupViewController: SettingsParentViewController {
             object: nil
         )
     }
-
+    
     @objc private func continueButtonAction() {
+        
+        guard let password = enterPasswordField.password else { return }
+        
         view.endEditing(true)
         continueButton.variation = .disabled
+        BackupManager.shared.password = password
+        
         pendingView.showPendingView { [weak self] in
-            guard
-                let self = self,
-                let password = self.enterPasswordField.password
-                else { return }
-            do {
-                try self.iCloudBackup.createWalletBackup(password: password)
-
-                self.pendingViewTimer = Timer.scheduledTimer(
-                    withTimeInterval: 3.0,
-                    repeats: true
-                ) { (_) in
-                    if !self.iCloudBackup.inProgress {
-                        self.finishPendingProcess()
-                    }
-                }
-                AppKeychainWrapper.setBackupPasswordToKeychain(password: password)
-            } catch {
-                self.failedToCreateBackup(error: error)
-            }
+            self?.performBackup()
         }
     }
-
-    override func failedToCreateBackup(error: Error) {
-        super.failedToCreateBackup(error: error)
-        finishPendingProcess()
+    
+    private func performBackup() {
+        
+        BackupManager.shared.$syncState
+            .dropFirst()
+            .filter { $0 == .synced || $0 == .outOfSync }
+            .first()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.finishPendingProcess() }
+            .store(in: &cancellables)
+        
+        BackupManager.shared.backupNow(onlyIfOutdated: false)
     }
 
     private func finishPendingProcess() {
-        pendingViewTimer?.invalidate()
         pendingView.hidePendingView(completion: { [weak self] in
             self?.returnToBackupSettingsScreen()
         })

@@ -45,3 +45,9 @@ extension Publisher where Failure == Never {
         sink { [weak object] in object?[keyPath: keyPath] = $0 }
     }
 }
+
+extension Publisher {
+    func onChangePublisher() -> AnyPublisher<Void, Failure> {
+        map { _ in Void() }.eraseToAnyPublisher()
+    }
+}

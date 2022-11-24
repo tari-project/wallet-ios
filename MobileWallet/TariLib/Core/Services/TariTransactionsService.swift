@@ -158,6 +158,10 @@ final class TariTransactionsService: CoreTariService {
     
     // MARK: - Actions
     
+    func reset() {
+        fetchData()
+    }
+    
     func cancelPendingTransaction(identifier: UInt64) throws -> Bool {
         try walletManager.cancelPendingTransaction(identifier: identifier)
     }
@@ -181,7 +185,7 @@ extension TariTransactionsService {
     
     var onUpdate: AnyPublisher<Void, Never> {
         Publishers.CombineLatest4($completed, $cancelled, $pendingInbound, $pendingOutbound)
-            .map { _ in Void() }
+            .onChangePublisher()
             .eraseToAnyPublisher()
     }
 }
