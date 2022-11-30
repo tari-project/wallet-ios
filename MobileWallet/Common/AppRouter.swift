@@ -53,9 +53,10 @@ enum AppRouter {
     
     // MARK: - Transitions
     
-    static func transitionToSplashScreen(animated: Bool = true) {
+    static func transitionToSplashScreen(animated: Bool = true, isWalletConnected: Bool = false) {
         
-        let navigationController = AlwaysPoppableNavigationController(rootViewController: SplashViewController())
+        let controller = SplashViewConstructor.buildScene(isWalletConnected: isWalletConnected)
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.setNavigationBarHidden(true, animated: false)
         
         transition(to: navigationController, type: animated ? .moveDown : .none)

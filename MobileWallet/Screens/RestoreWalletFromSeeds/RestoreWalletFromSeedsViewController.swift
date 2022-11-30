@@ -156,7 +156,8 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
         let overlay = RestoreWalletFromSeedsProgressViewController()
 
         overlay.onSuccess = {
-            AppRouter.transitionToSplashScreen()
+            try? MigrationManager.updateWalletVersion()
+            AppRouter.transitionToSplashScreen(isWalletConnected: true)
         }
 
         show(overlay: overlay)
