@@ -322,6 +322,7 @@
 		3ACDA85E2721794800F08C70 /* YatTransactionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACDA85D2721794800F08C70 /* YatTransactionModel.swift */; };
 		3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA428278EC9BF00EBED98 /* ProfileView.swift */; };
 		3ACFA42B278EC9F200EBED98 /* ProfileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */; };
+		3ACFA5EA2937532A00E1455A /* SplashViewConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFA5E92937532A00E1455A /* SplashViewConstructor.swift */; };
 		3ACFDD1D26E8C1A900C5E1EA /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */; };
 		3ACFECAA27ABD0B100FA9FE1 /* SendingTariProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ACFECA927ABD0B100FA9FE1 /* SendingTariProgressBar.swift */; };
 		3AD1306827D6290A003EC7FA /* SeedWordsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AD1306727D6290A003EC7FA /* SeedWordsListViewController.swift */; };
@@ -758,6 +759,7 @@
 		3ACDA85D2721794800F08C70 /* YatTransactionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YatTransactionModel.swift; sourceTree = "<group>"; };
 		3ACFA428278EC9BF00EBED98 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModel.swift; sourceTree = "<group>"; };
+		3ACFA5E92937532A00E1455A /* SplashViewConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewConstructor.swift; sourceTree = "<group>"; };
 		3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		3ACFECA927ABD0B100FA9FE1 /* SendingTariProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendingTariProgressBar.swift; sourceTree = "<group>"; };
 		3AD1306727D6290A003EC7FA /* SeedWordsListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListViewController.swift; sourceTree = "<group>"; };
@@ -884,6 +886,7 @@
 		0012562D2371D21E00A9C067 /* Splash */ = {
 			isa = PBXGroup;
 			children = (
+				3ACFA5E92937532A00E1455A /* SplashViewConstructor.swift */,
 				3A03A601288962FA00788A02 /* SplashViewModel.swift */,
 				0012562E2371D81500A9C067 /* SplashViewController.swift */,
 				3A03A5FF288932DE00788A02 /* SplashView.swift */,
@@ -2677,6 +2680,7 @@
 				3A7DAB9528FDB220002CC013 /* LogsListCell.swift in Sources */,
 				3AECD494284F46FD00D81C80 /* UIColor+Utils.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
+				3ACFA5EA2937532A00E1455A /* SplashViewConstructor.swift in Sources */,
 				3AB136D62906643700A5373D /* ICloudBackupService.swift in Sources */,
 				3A8473C428EC55B10015E63A /* TariTransactionsService.swift in Sources */,
 				3A386F3727A7FC6C0027FED4 /* ErrorMessageManager.swift in Sources */,
