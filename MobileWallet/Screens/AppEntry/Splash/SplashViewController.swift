@@ -46,12 +46,23 @@ final class SplashViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let model = SplashViewModel()
+    private let model: SplashViewModel
     private let mainView = SplashView()
     private let authenticationContext = LAContext()
     
     private var cancellables = Set<AnyCancellable>()
     private var animateTransitions = false
+    
+    // MARK: - Initialisers
+    
+    init(model: SplashViewModel) {
+        self.model = model
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     // MARK: - View Lifecycle
     
