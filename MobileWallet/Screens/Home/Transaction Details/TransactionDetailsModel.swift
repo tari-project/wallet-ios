@@ -39,7 +39,7 @@
 */
 
 import Combine
-import GiphyCoreSDK
+import GiphyUISDK
 
 final class TransactionDetailsModel {
     
@@ -150,8 +150,8 @@ final class TransactionDetailsModel {
         guard let alias = alias, !alias.isEmpty else { return }
         
         do {
-            let publicKey = try transaction.publicKey
-            let contact = try Contact(alias: alias, publicKeyPointer: publicKey.pointer)
+            let address = try transaction.address
+            let contact = try Contact(alias: alias, addressPointer: address.pointer)
             _ = try Tari.shared.contacts.upsert(contact: contact)
             userAliasUpdateSuccessCallback?()
             userAlias = alias
@@ -242,14 +242,14 @@ final class TransactionDetailsModel {
     }
     
     private func fetchEmojiIdViewModel() throws -> EmojiIdView.ViewModel {
-        let publicKey = try transaction.publicKey
-        let emojiID = try publicKey.emojis
-        let hex = try publicKey.byteVector.hex
+        let address = try transaction.address
+        let emojiID = try address.emojis
+        let hex = try address.byteVector.hex
         return EmojiIdView.ViewModel(emojiID: emojiID, hex: hex)
     }
     
     private func fetchUserAlias() throws -> String? {
-        let contact = try Tari.shared.contacts.findContact(hex: try transaction.publicKey.byteVector.hex)
+        let contact = try Tari.shared.contacts.findContact(hex: try transaction.address.byteVector.hex)
         return try contact?.alias
     }
     

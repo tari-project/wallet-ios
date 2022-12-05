@@ -66,10 +66,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             ShortcutsManager.handle(shortcut: shortcutItem)
         }
 
-        if ICloudBackup.shared.iCloudBackupsIsOn {
-            BackupScheduler.shared.startObserveEvents()
-        }
-
         if let appReturnLink = TariSettings.shared.yatReturnLink, let organizationName = TariSettings.shared.yatOrganizationName, let organizationKey = TariSettings.shared.yatOrganizationKey {
             Yat.configuration = YatConfiguration(appReturnLink: appReturnLink, organizationName: organizationName, organizationKey: organizationKey)
         }
@@ -90,6 +86,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let url = URLContexts.first?.url else { return }
         try? DeeplinkHandler.handle(deeplink: url)
         Yat.integration.handle(deeplink: url)
+        BackupManager.shared.handle(url: url)
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -97,27 +94,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
-
-        // Remove badges from push notifications
         UIApplication.shared.applicationIconBadgeNumber = 0
-        
-        if UserDefaults.Key.backupOperationAborted.boolValue()
-            && ICloudBackup.shared.iCloudBackupsIsOn
-            && !ICloudBackup.shared.inProgress {
-            BackupScheduler.shared.scheduleBackup(immediately: true)
-        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
-
-        // Save changes in the application's managed object context when the application transitions to the background.
         (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
-        ICloudBackup.shared.backgroundBackupWallet()
     }
 
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {

@@ -72,14 +72,6 @@
 "transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
 "transaction.one_sided_payment.note.recovered" = "You recovered some funds";
 
-/* Tari key server error */
-"key_server.error.too_many_allocation_requests" = "You have made too many free tXTR requests.";
-"key_server.error.response_invalid" = "Invalid response from Tari key server.";
-"key_server.error.invalid_signature" = "Invalid signature sent to Tari key server.";
-"key_server.error.missing_response" = "Missing response from Tari key server.";
-"key_server.error.server" = "Tari faucet server error. Status code:";
-"key_server.error.unknown" = "Unknown Tari faucet error.";
-
 /* Authentication */
 "authentication.fail.title" = "Authentication failed";
 "authentication.fail.description" = "Failed to authenticate";
@@ -95,12 +87,6 @@
 "home.available_balance" = "Balance";
 "home.label.spendable" = "Available to spend";
 "home.error.update_balance" = "Balance update failed";
-"home.request_drop.title.with_param" = "You just got some %@!";
-"home.request_drop.description.with_param" = "Try sending a bit of %@ back to Tari Bot. It’s always better to give than to receive (and you’ll see how the wallet works too).";
-"home.request_drop.try_later" = "Try it later";
-"home.request_drop.error.title" = "Failed to claim %@";
-"home.request_drop.error.description" = "No free tXTR is available right now! Hang tight, we'll get you some tXTR the moment it is available.";
-"home.request_drop.error.generic" = "Could not setup key server.";
 "home.info.amount_help.title" = "Why is some of my balance not spendable right now?";
 "home.info.amount_help.description" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
 "home.info.amount_help.action_button" = "Go to TariLabs University";
@@ -167,8 +153,9 @@
 /* BackupWalletSettings view */
 "backup_wallet_settings.title" = "Security";
 "backup_wallet_settings.item.icloud_backups" = "iCloud Backups";
+"backup_wallet_settings.item.dropbox_backups" = "Dropbox Backups";
 "backup_wallet_settings.item.change_password" = "Change your secure password";
-"backup_wallet_settings.item.secure_your_backup"  = "Secure your iCloud backup";
+"backup_wallet_settings.item.secure_your_backup"  = "Secure your backup with password";
 "backup_wallet_settings.item.backup_now" = "Back up now";
 "backup_wallet_settings.item.with_recovery_phrase" = "Write Down Seed Phrase";
 "backup_wallet_settings.header.title" = "Wallet Backups";
@@ -182,8 +169,8 @@
 /* SecureBackup view */
 "secure_backup.title" = "Security";
 "secure_backup.secure_your_backup" = "Secure Your Backup";
-"secure_backup.header" = "Secure your iCloud backup";
-"secure_backup.header_description_part1" = "Ensure your wallet is safe even if your iCloud is compromised. Select a password you will remember or";
+"secure_backup.header" = "Secure your backup";
+"secure_backup.header_description_part1" = "Ensure your wallet is safe even if your backup service is compromised. Select a password you will remember or";
 "secure_backup.header_description_part2" = " you will not be able to recover your wallet.";
 "secure_backup.enter_password_field.title" = "Create a Password";
 "secure_backup.enter_password_field.placeholder" = "Make it a strong one!";
@@ -251,24 +238,22 @@
 "splash.action_sheet.select_network.title" = "Select Network";
 "splash.action_sheet.select_network.description" = "Please select the network to which you want to connect.";
 
+/* FFI Validation */
+"ffi_validation.error.title" = "Incompatible version detected";
+"ffi_validation.error.message" = "The data stored locally is incompatible with the current version of the App or with the network itself. We strongly recommend removing the wallet and creating a new one";
+"ffi_validation.error.button.delete" = "Delete the wallet";
+"ffi_validation.error.button.cancel" = "I still want to use the wallet";
+
 /* iCloudBackup error */
-"iCloud_backup.error.title.set_password" = "Failed to set backup password";
-"iCloud_backup.error.title.create_backup" = "Wallet Backup Incomplete";
-"iCloud_backup.error.title.iCloud_synch" = "Warning. Failed upload wallet backup to iCloud";
-"iCloud_backup.error.title.restore_wallet" = "Failed to restore wallet";
 
 "iCloud_backup.error.container_not_found" = "Can't connect to iCloud Drive services. Make sure that you are signed in with your Apple ID on this device and that iCloud is enabled.";
 "iCloud_backup.error.unable_create_backup_folder" = "Unable to create backup folder";
-"iCloud_backup.error.zip" = "Failed to create wallet backup archive";
-"iCloud_backup.error.db_not_found" = "Unable to create wallet backup. File not found";
-"iCloud_backup.error.unzip" = "Unable to unarchive wallet from iCloud backup";
-"iCloud_backup.error.invalid_password" = "Unable to restore wallet. Password is invalid";
+"iCloud_backup.error.unable_create_backup_file" = "Failed to create and secure backup file";
+"iCloud_backup.error.unable_to_delete_backup" = "Unable to remove the copy of the backup file";
+"iCloud_backup.error.unable_to_copy_file" = "Unable to copy the backup file";
+"iCloud_backup.error.title.create_backup" = "Wallet Backup Incomplete";
+"iCloud_backup.error.title.restore_wallet" = "Failed to restore wallet";
 "iCloud_backup.error.no_backup_exists" = "You don't have any wallets backed up with iCloud";
-"iCloud_backup.error.keychain_password_failure" = "Failed to load password from keychain. Please, try to set new password for backup";
-"iCloud_backup.error.upload_to_iCloud_failure" = "Your wallet backup was created locally but not synchronized with iCloud due to problems with internet connection. Data will synchronized automatically with internet connection.";
-"iCloud_backup.error.no_internet_connection" = "Can't connect to iCloud Drive services. Please check your internet connection.";
-"iCloud_backup.error.unable_determine_backup_date" = "Unable to determine backup date";
-"iCloud_backup.error.backup_url_not_valid" = "Url of backup is not valid";
 
 /* Backup notification */
 "backup_local_notification.title" = "Wallet Backup Incomplete";
@@ -317,7 +302,6 @@
 "wallet.error.generic_code" = "The application has encountered an error.\nError code:";
 "wallet.error.insufficient_funds" = "Insufficient funds. Available spendable Tari:";
 "wallet.error.invalid_public_key_hex" = "Invalid public key hex.";
-"wallet.error.invalid_signature" = "Invalid signature created";
 "wallet.error.wallet_not_initialized" = "Tari wallet not yet initialized";
 
 /* Store modal */
@@ -417,6 +401,7 @@
 /* RestoreWallet view */
 "restore_wallet.title" = "Restore Your Wallet";
 "restore_wallet.item.iCloud_restore" = "Restore with iCloud";
+"restore_wallet.item.dropbox_restore" = "Restore with Dropbox";
 "restore_wallet.item.phrase_restore" = "Restore with recovery phrase";
 
 /* PasswordVerification view */
@@ -446,11 +431,6 @@
 "add_note.slide_to_send" = "Slide to Send";
 "add_note.search_giphy_button" = "SEARCH GIPHY";
 
-/* TariBot transaction */
-"taribot.message.prefix" = "Hello Tari from";
-"taribot.message1.with_param" = "💸 Here’s some %@!";
-"taribot.message2.with_params" = "Nice work! Here's more %1$@ to fill your coffers. Be sure to hit the store icon to see real, exclusive items you can redeem with your \"hard-earned\" %2$@.";
-
 /* Local reminder notifications */
 "scheduled_reminder.body.short" = "Open Tari Aurora";
 "scheduled_reminder.body.long.with_param" = "Someone sent you %@! Open Tari Aurora to receive it now or it will be returned to the sender.";
@@ -471,7 +451,6 @@
 "wallet_backup_state.up_to_date" = "Up to date";
 "wallet_backup_state.out_to_date" = "Out of date";
 "wallet_backup_state.in_progress" = "In progress";
-"wallet_backup_state.scheduled" = "Scheduled";
 
 /* Wallet backup prompts */
 "wallet_backup.prompt_1.title" = "Want to back up your wallet?";
@@ -638,6 +617,38 @@
 "about.label.creative_commons" = "The following icons are licensed under";
 "about.button.creative_commons" = "Creative Commons 3.0:";
 
+/* Debug */
+
+"debug.popup.title" = "Debug Menu";
+"debug.popup.options.logs"= "View logs";
+"debug.popup.options.bug_report"= "Report a bug";
+"debug.popup.options.connection_status"= "View connection status";
+"debug.logs.list.title" = "Debug Logs";
+"debug.logs.list.error.message.unable_to_load" = "Unable to load log files. Please try again later or send us a bug report.";
+"debug.logs.details.error.message.cant_open_file" = "Unable to open file. Please try again later.";
+"debug.logs.details.filters.title" = "Filter";
+"debug.logs.details.filters.buttons.apply" = "Apply Filter";
+"debug.logs.details.filters.label.info" = "Info";
+"debug.logs.details.filters.label.warning" = "Warning";
+"debug.logs.details.filters.label.error" = "Error";
+"debug.logs.details.filters.label.debug" = "Debug";
+"debug.logs.details.filters.label.aurora_general" = "Aurora - General";
+"debug.logs.details.filters.label.aurora_connection" = "Aurora - Connection";
+"debug.logs.details.filters.label.aurora_navigation" = "Aurora - Navigation";
+"debug.logs.details.filters.label.aurora_ui" = "Aurora - UI";
+"debug.logs.details.filters.label.aurora_debug" = "Aurora - Debug";
+
+/* Bug Reporting */
+
+"bug_reporting.title" = "Report a Bug";
+"bug_reporting.label.header" = "Has something gone wrong? Please let us know!";
+"bug_reporting.text_field.name" = "Name (Optional)";
+"bug_reporting.text_field.email" = "E-mail (Optional)";
+"bug_reporting.label.message_header" = "What happened? (Crash / Strange behavior)";
+"bug_reporting.label.footer" = "With this bug report you will send us information about your device model, iOS version and recent logs.";
+"bug_reporting.button.send" = "Send";
+"bug_reporting.button.view_logs" = "View logs";
+
 /* Errors */
 
 "error.generic.title" = "Error";
@@ -659,3 +670,13 @@
 "error.tx_rejection.5" = "This transaction was cancelled due to the funds not having reached their time-lock period yet.";
 "error.tx_rejection.6" = "The transaction failed to the invalid input data. This situation shouldn't happen. Please send a bug report or contact us directly.";
 "error.tx_rejection.7" = "The coinbase was abandoned.";
+
+/* Dropbox Backup Error */
+
+"error.dropbox_backup.unable_to_create_temp_folder" = "Internal Data Error. Please try again later or contact support.";
+"error.dropbox_backup.upload_failed" = "Unable to upload backup to Dropbox. Please try again later.";
+"error.dropbox_backup.download_failed" = "Unable to download the backup from Dropbox. Please try again later.";
+"error.dropbox_backup.delete_failed" = "The app was unable to remove the backup from your Dropbox account.";
+"error.dropbox_backup.auth_failed" = "Authorisation failed. Please check your account credentials and connection with the internet.";
+"error.dropbox_backup.no_backup" = "The app was unable to locate a valid backup on your Dropbox account.";
+"error.dropbox_backup.unknown" = "The app detected an unknown error during the backup process. Please get in touch with the support if this error appears again.";

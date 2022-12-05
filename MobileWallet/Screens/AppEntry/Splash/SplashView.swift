@@ -252,6 +252,7 @@ final class SplashView: UIView {
         if showInterface {
             walletCreatedLogoConstraint?.isActive = false
             idleLogoConstraint?.isActive = true
+            videoView.startPlayer()
         } else {
             idleLogoConstraint?.isActive = false
             walletCreatedLogoConstraint?.isActive = true

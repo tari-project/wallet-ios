@@ -40,6 +40,7 @@
 
 import UIKit
 import LocalAuthentication
+import Combine
 
 final class RestoreWalletViewController: SettingsParentTableViewController {
     private let localAuth = LAContext()
@@ -48,16 +49,21 @@ final class RestoreWalletViewController: SettingsParentTableViewController {
                                           definition: localized("restore_pending_view.description"))
     private let items: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue),
+        SystemMenuTableViewCellItem(title: RestoreCellTitle.dropboxRestore.rawValue),
         SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue)
     ]
+    
+    private var cancellables = Set<AnyCancellable>()
 
     private enum RestoreCellTitle: CaseIterable {
         case iCloudRestore
+        case dropboxRestore
         case phraseRestore
 
         var rawValue: String {
             switch self {
             case .iCloudRestore: return localized("restore_wallet.item.iCloud_restore")
+            case .dropboxRestore: return localized("restore_wallet.item.dropbox_restore")
             case .phraseRestore: return localized("restore_wallet.item.phrase_restore")
             }
         }
@@ -67,6 +73,13 @@ final class RestoreWalletViewController: SettingsParentTableViewController {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+    }
+    
+    // MARK: - Actions
+    
+    private func showPasswordScreen(onCompletion: @escaping ((String?) -> Void)) {
+        let controller = PasswordVerificationViewController(variation: .restore, restoreWalletAction: onCompletion)
+        navigationController?.pushViewController(controller, animated: true)
     }
 }
 
@@ -97,6 +110,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
         let item = RestoreCellTitle.allCases[indexPath.row + indexPath.section]
         switch item {
         case .iCloudRestore: oniCloudRestoreAction()
+        case .dropboxRestore: onDropboxRestoreAction()
         case .phraseRestore: onPhraseRestoreAction()
         }
     }
@@ -110,52 +124,87 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     private func oniCloudRestoreAction() {
-        localAuth.authenticateUser(reason: .userVerification) { [weak self] in
-            if self?.iCloudBackup.lastBackup?.isEncrypted == true {
-                self?.navigationController?.pushViewController(
-                    PasswordVerificationViewController(
-                        variation: .restore,
-                        restoreWalletAction: self?.restoreWallet(password:)
-                    ),
-                    animated: true
-                )
-            } else {
-                self?.restoreWallet(password: nil)
-            }
-        }
+        authenticateUserAndRestoreWallet(from: .iCloud)
+    }
+    
+    private func onDropboxRestoreAction() {
+        BackupManager.shared.dropboxPresentationController = self
+        authenticateUserAndRestoreWallet(from: .dropbox)
     }
 
     private func onPhraseRestoreAction() {
         let viewController = RestoreWalletFromSeedsViewController()
         navigationController?.pushViewController(viewController, animated: true)
     }
-
-    private func restoreWallet(password: String?) {
+    
+    private func authenticateUserAndRestoreWallet(from service: BackupManager.Service) {
+        localAuth.authenticateUser(reason: .userVerification) { [weak self] in
+            self?.restoreWallet(from: service, password: nil)
+        }
+    }
+    
+    private func restoreWallet(from service: BackupManager.Service, password: String?) {
+        
         pendingView.showPendingView { [weak self] in
-            ICloudBackup.shared.restoreWallet(password: password, completion: { [weak self] error in
-                if let error = error {
-                    PopUpPresenter.showMessageWithCloseButton(message: MessageModel(title: localized("iCloud_backup.error.title.restore_wallet"), message: error.localizedDescription, type: .error)) { [weak self] in
-                        self?.pendingView.hidePendingView { [weak self] in
-                            switch error {
-                            case ICloudBackupError.noICloudBackupExists:
-                                self?.returnToSplashScreen()
-                            default:
-                                break
-                            }
-                        }
+            
+            guard let self else { return }
+            
+            BackupManager.shared.backupService(service).restoreBackup(password: password)
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] completion in
+                    switch completion {
+                    case .finished:
+                        BackupManager.shared.password = password
+                        self?.endFlow(returnToSplashScreen: true)
+                    case let .failure(error):
+                        self?.handle(error: error, service: service)
                     }
-                    return
-                }
-
-                self?.pendingView.hidePendingView { [weak self] in
-                    self?.returnToSplashScreen()
-                }
-            })
+                } receiveValue: { _ in }
+                .store(in: &self.cancellables)
+        }
+    }
+    
+    private func showPasswordScreen(service: BackupManager.Service) {
+        pendingView.hidePendingView { [weak self] in
+            self?.showPasswordScreen { password in
+                self?.restoreWallet(from: service, password: password)
+            }
+        }
+    }
+    
+    private func endFlow(returnToSplashScreen: Bool) {
+        pendingView.hidePendingView { [weak self] in
+            guard returnToSplashScreen else { return }
+            self?.returnToSplashScreen()
         }
     }
 
     private func returnToSplashScreen() {
         AppRouter.transitionToSplashScreen()
+    }
+    
+    private func handle(error: Error, service: BackupManager.Service) {
+        
+        var errorMessage: String?
+        
+        switch error {
+        case let error as BackupError where error == .passwordRequired:
+            showPasswordScreen(service: service)
+            return
+        case let error as BackupError where error == .noRemoteBackup:
+            errorMessage = localized("iCloud_backup.error.no_backup_exists")
+        case let error as DropboxBackupError:
+            errorMessage = error.message
+        default:
+            errorMessage = ErrorMessageManager.errorMessage(forError: error)
+        }
+        
+        if let errorMessage {
+            let model = MessageModel(title: localized("iCloud_backup.error.title.restore_wallet"), message: errorMessage, type: .error)
+            PopUpPresenter.show(message: model)
+        }
+        
+        endFlow(returnToSplashScreen: false)
     }
 }
 

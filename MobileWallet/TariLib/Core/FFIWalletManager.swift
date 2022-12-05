@@ -100,12 +100,13 @@ final class FFIWalletManager {
     
     // MARK: - FFI Actions
     
-    func walletPublicKey() throws -> PublicKey {
+    func walletAddress() throws -> TariAddress {
         let wallet = try exisingWallet
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        guard let result = wallet_get_public_key(wallet.pointer, errorCodePointer) else { throw WalletError(code: errorCode) }
-        return PublicKey(pointer: result)
+        let result = wallet_get_tari_address(wallet.pointer, errorCodePointer)
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return TariAddress(pointer: result)
     }
     
     func walletContacts() throws -> Contacts {
@@ -306,13 +307,13 @@ final class FFIWalletManager {
         return result.pointee
     }
     
-    func sendTransaction(publicKey: PublicKey, amount: UInt64, feePerGram: UInt64, message: String, isOneSidedPayment: Bool) throws -> UInt64 {
+    func sendTransaction(address: TariAddress, amount: UInt64, feePerGram: UInt64, message: String, isOneSidedPayment: Bool) throws -> UInt64 {
         
         let wallet = try exisingWallet
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = wallet_send_transaction(wallet.pointer, publicKey.pointer, amount, nil, feePerGram, message, isOneSidedPayment, errorCodePointer)
+        let result = wallet_send_transaction(wallet.pointer, address.pointer, amount, nil, feePerGram, message, isOneSidedPayment, errorCodePointer)
         
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
@@ -349,44 +350,6 @@ final class FFIWalletManager {
         guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
         
         return String(cString: cString)
-    }
-    
-    func importExternalUtxoAsNonRewindable(amount: UInt64, spendingKey: PrivateKey, sourcePublicKey: PublicKey, metadataSignaturePointer: OpaquePointer, senderOffsetPublicKey: PublicKey, scriptPrivateKey: PrivateKey, message: String) throws -> UInt64 {
-        
-        let wallet = try exisingWallet
-        
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
-        let result = wallet_import_external_utxo_as_non_rewindable(
-            wallet.pointer,
-            amount,
-            spendingKey.pointer,
-            sourcePublicKey.pointer,
-            nil,
-            metadataSignaturePointer,
-            senderOffsetPublicKey.pointer,
-            scriptPrivateKey.pointer,
-            nil,
-            nil,
-            0,
-            message,
-            errorCodePointer
-        )
-     
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
-        return result
-    }
-    
-    func commitmentSignatureCreateFromBytes(publicNonceBytes: ByteVector, uBytes: ByteVector, vBytes: ByteVector) throws -> OpaquePointer {
-        
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
-        let result = commitment_signature_create_from_bytes(publicNonceBytes.pointer, uBytes.pointer, vBytes.pointer, errorCodePointer)
-        
-        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        return pointer
     }
     
     func applyEncryption(passphrase: String) throws {

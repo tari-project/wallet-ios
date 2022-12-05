@@ -46,7 +46,7 @@ protocol MainServiceable: AnyObject {
     var connection: TariConnectionService { get }
     var utxos: TariUTXOsService { get }
     var recovery: TariRecoveryService { get }
-    var faucet: TariFaucetService { get }
+    var messageSign: TariMessageSignService { get }
     var encryption: TariEncryptionService { get }
     var walletBalance: TariBalanceService { get }
 }

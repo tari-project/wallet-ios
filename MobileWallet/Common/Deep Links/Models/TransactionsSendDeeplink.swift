@@ -39,12 +39,12 @@
 */
 
 struct TransactionsSendDeeplink {
-    let receiverPublicKey: String
+    let receiverAddress: String
     let amount: UInt64?
     let note: String?
     
     enum CodingKeys: String, CodingKey {
-        case receiverPublicKey = "publicKey"
+        case receiverAddress = "publicKey"
         case amount
         case note
     }

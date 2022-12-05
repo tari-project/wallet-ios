@@ -57,15 +57,6 @@ final class PublicKey {
         }
     }
     
-    var emojis: String {
-        get throws {
-            var errorCode: Int32 = -1
-            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            guard let result = public_key_to_emoji_id(pointer, errorCodePointer) else { throw WalletError(code: errorCode) }
-            return String(cString: result)
-        }
-    }
-    
     // MARK: - Initialisers
     
     init(pointer: OpaquePointer) {
@@ -85,17 +76,6 @@ final class PublicKey {
         self.pointer = pointer
     }
     
-    init(emojiID: String) throws {
-        
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
-        let result = emoji_id_to_public_key(emojiID, errorCodePointer)
-        
-        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        self.pointer = pointer
-    }
-    
     // MARK: - Deinitialisers
     
     deinit {
@@ -109,8 +89,3 @@ extension PublicKey: Equatable {
         return leftHex == rightHex
     }
 }
-
-private extension CharacterSet {
-    static var hexadecimal: Self { CharacterSet(charactersIn: "0123456789abcdef") }
-}
-

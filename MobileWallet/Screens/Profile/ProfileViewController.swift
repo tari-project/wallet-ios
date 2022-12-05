@@ -105,7 +105,7 @@ final class ProfileViewController: UIViewController {
             .sink { [weak self] in self?.handle(yatButtonState: $0) }
             .store(in: &cancellables)
         
-        model.$yatPublicKey
+        model.$yatAddress
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.showYatOnboardingFlow(publicKey: $0) }

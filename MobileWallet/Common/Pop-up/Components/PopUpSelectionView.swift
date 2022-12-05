@@ -50,12 +50,8 @@ final class PopUpSelectionView: UIView {
     
     // MARK: - Subviews
     
-    @View private var tableView: UITableView = {
-        let view = UITableView()
-        view.bounces = false
-        view.rowHeight = UITableView.automaticDimension
-        view.separatorColor = .tari.greys.mediumLightGrey
-        view.separatorInset = UIEdgeInsets(top: 0.0, left: 25.0, bottom: 0.0, right: 25.0)
+    @View private var tableView: PopUpTableView = {
+        let view = PopUpTableView()
         view.register(type: PopUpSelectionCell.self)
         return view
     }()
@@ -64,7 +60,6 @@ final class PopUpSelectionView: UIView {
     
     private(set) var selectedIndex: Int = 0
     private var dataSource: UITableViewDiffableDataSource<Int, Model>?
-    private var heightConstraint: NSLayoutConstraint?
     
     // MARK: - Initialisers
     
@@ -84,15 +79,11 @@ final class PopUpSelectionView: UIView {
         
         addSubview(tableView)
         
-        let heightConstraint = tableView.heightAnchor.constraint(equalToConstant: 0.0)
-        self.heightConstraint = heightConstraint
-        
         let constraints = [
             tableView.topAnchor.constraint(equalTo: topAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            heightConstraint
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
        
         NSLayoutConstraint.activate(constraints)
@@ -109,7 +100,12 @@ final class PopUpSelectionView: UIView {
         }
         
         self.dataSource = dataSource
-        tableView.delegate = self
+        
+        tableView.onSelectRow = { [weak self] selectedIndexPath in
+            self?.tableView.visibleCells.forEach { $0.isSelected = false }
+            self?.tableView.cellForRow(at: selectedIndexPath)?.isSelected = true
+            self?.selectedIndex = selectedIndexPath.row
+        }
     }
     
     // MARK: - Actions
@@ -125,22 +121,6 @@ final class PopUpSelectionView: UIView {
         snapshot.appendItems(models)
         
         dataSource?.apply(snapshot, animatingDifferences: false)
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        tableView.reloadData()
-        tableView.layoutIfNeeded()
-        heightConstraint?.constant = tableView.contentSize.height
-    }
-}
-
-extension PopUpSelectionView: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.visibleCells.forEach { $0.isSelected = false }
-        tableView.cellForRow(at: indexPath)?.isSelected = true
-        selectedIndex = indexPath.row
     }
 }
 

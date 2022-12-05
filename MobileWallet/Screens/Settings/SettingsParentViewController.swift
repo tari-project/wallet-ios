@@ -43,26 +43,10 @@ import UIKit
 class SettingsParentViewController: UIViewController {
     let navigationBar = NavigationBar()
 
-    lazy var iCloudBackup: ICloudBackup = {
-           let backup = ICloudBackup.shared
-           backup.addObserver(self)
-           return backup
-    }()
-
     override func viewDidLoad() {
         super.viewDidLoad()
         styleNavigatorBar(isHidden: true)
         setupViews()
-    }
-}
-
-extension SettingsParentViewController: ICloudBackupObserver {
-    @objc func onUploadProgress(percent: Double, started: Bool, completed: Bool) {
-
-    }
-
-    @objc func failedToCreateBackup(error: Error) {
-
     }
 }
 

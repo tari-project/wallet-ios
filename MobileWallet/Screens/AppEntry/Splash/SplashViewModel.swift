@@ -73,11 +73,13 @@ final class SplashViewModel {
     
     // MARK: - Properties
     
+    private var isWalletConnected: Bool
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialisers
     
-    init() {
+    init(isWalletConnected: Bool) {
+        self.isWalletConnected = isWalletConnected
         status = StatusModel(status: .idle, statusRepresentation: Tari.shared.isWalletExist ? .logo : .content)
         setupCallbacks()
         setupData()
@@ -100,7 +102,7 @@ final class SplashViewModel {
         $isWalletExist
             .dropFirst()
             .filter { !$0 }
-            .sink { _ in AppKeychainWrapper.removeBackupPasswordFromKeychain() }
+            .sink { _ in BackupManager.shared.password = nil }
             .store(in: &cancellables)
     }
     
@@ -125,7 +127,8 @@ final class SplashViewModel {
         Task {
             do {
                 status = StatusModel(status: .working, statusRepresentation: .content)
-                try await connectToWallet()
+                try await connectToWallet(isWalletConnected: false)
+                try MigrationManager.updateWalletVersion()
                 status = StatusModel(status: .success, statusRepresentation: .content)
             } catch {
                 handle(error: error)
@@ -134,11 +137,20 @@ final class SplashViewModel {
     }
     
     private func openWallet() {
+        
         Task {
             do {
                 let statusRepresentation = status?.statusRepresentation ?? .content
                 status = StatusModel(status: .working, statusRepresentation: statusRepresentation)
-                try await connectToWallet()
+                
+                try await connectToWallet(isWalletConnected: isWalletConnected)
+                isWalletConnected = false
+                
+                guard await validateWallet() else {
+                    self.deleteWallet()
+                    return
+                }
+                
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
             } catch {
                 self.handle(error: error)
@@ -146,8 +158,24 @@ final class SplashViewModel {
         }
     }
     
-    private func connectToWallet() async throws {
-        try await Tari.shared.startWallet()
+    private func validateWallet() async -> Bool {
+        await withCheckedContinuation { continuation in
+            MigrationManager.validateWalletVersion { continuation.resume(returning: $0) }
+        }
+    }
+    
+    private func deleteWallet() {
+        Tari.shared.deleteWallet()
+        Tari.shared.canAutomaticalyReconnectWallet = false
+        status = StatusModel(status: .idle, statusRepresentation: .content)
+    }
+    
+    private func connectToWallet(isWalletConnected: Bool) async throws {
+        
+        if !isWalletConnected {
+            try await Tari.shared.startWallet()
+        }
+        
         try Tari.shared.keyValues.set(key: .network, value: NetworkManager.shared.selectedNetwork.name)
         Tari.shared.canAutomaticalyReconnectWallet = true
     }

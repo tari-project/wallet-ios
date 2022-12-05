@@ -90,7 +90,7 @@ enum DeeplinkHandler {
         }
         let note = queryItems["note"]
         
-        let deeplink = TransactionsSendDeeplink(receiverPublicKey: publicKey, amount: amount, note: note)
+        let deeplink = TransactionsSendDeeplink(receiverAddress: publicKey, amount: amount, note: note)
 
         guard let handler = handler else {
             AppRouter.moveToTransactionSend(deeplink: deeplink)

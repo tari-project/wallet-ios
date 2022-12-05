@@ -40,14 +40,24 @@
 
 enum AppConfigurator {
     
-    static func configureLoggers() {
+    static func configure() {
+        configureLoggers()
+        configureBackupManagers()
+    }
+    
+    private static func configureLoggers() {
         switch TariSettings.shared.environment {
         case .debug:
             Logger.attach(logger: ConsoleLogger())
         case .testflight, .production:
-            Logger.attach(logger: CrashLogger())
+            break
         }
         
         Logger.attach(logger: FileLogger())
+        Logger.attach(logger: CrashLogger())
+    }
+    
+    private static func configureBackupManagers() {
+        BackupManager.shared.configure()
     }
 }

@@ -35,30 +35,6 @@ struct Balance;
 
 struct ByteVector;
 
-/**
- * # Commitment Signatures
- *
- * Find out more about Commitment signatures [here](https://eprint.iacr.org/2020/061.pdf) and
- * [here](https://documents.uow.edu.au/~wsusilo/ZCMS_IJNS08.pdf).
- *
- * In short, a Commitment Signature is made up of the tuple _(R, u, v)_, where _R_ is a random Pedersen commitment (of
- * two secret nonces) and _u_ and _v_ are the two publicly known private signature keys. It demonstrates ownership of
- * a specific commitment.
- *
- * The Commitment Signature signes a challenge with the value commitment's value and blinding factor. The two nonces
- * should be completely random and never reused - that responsibility lies with the calling function.
- *   C = a*H + x*G          ... (Pedersen commitment to the value 'a' using blinding factor 'x')
- *   R = k_2*H + k_1*G      ... (a public (Pedersen) commitment nonce created with the two random nonces)
- *   u = k_1 + e.x          ... (the first publicly known private key of the signature signing with 'x')
- *   v = k_2 + e.a          ... (the second publicly known private key of the signature signing with 'a')
- *   signature = (R, u, v)  ... (the final signature tuple)
- *
- * Verification of the Commitment Signature (R, u, v) entails the following:
- *   S = v*H + u*G          ... (Pedersen commitment of the publicly known private signature keys)
- *   S =? R + e.C           ... (final verification)
- */
-struct CommitmentSignature_RistrettoPublicKey__RistrettoSecretKey;
-
 struct CompletedTransaction;
 
 struct Contact;
@@ -109,10 +85,12 @@ struct P2pConfig;
  *
  * let mut rng = rand::thread_rng();
  * let _p1 = RistrettoPublicKey::from_bytes(&[
- *     224, 196, 24, 247, 200, 217, 196, 205, 215, 57, 91, 147, 234, 18, 79, 58, 217, 144, 33, 187, 104, 29, 252, 51,
- *     2, 169, 217, 154, 46, 83, 230, 78,
+ *     224, 196, 24, 247, 200, 217, 196, 205, 215, 57, 91, 147, 234, 18, 79, 58, 217, 144, 33,
+ *     187, 104, 29, 252, 51, 2, 169, 217, 154, 46, 83, 230, 78,
  * ]);
- * let _p2 = RistrettoPublicKey::from_hex(&"e882b131016b52c1d3337080187cf768423efccbb517bb495ab812c4160ff44e");
+ * let _p2 = RistrettoPublicKey::from_hex(
+ *     &"e882b131016b52c1d3337080187cf768423efccbb517bb495ab812c4160ff44e",
+ * );
  * let sk = RistrettoSecretKey::random(&mut rng);
  * let _p3 = RistrettoPublicKey::from_secret_key(&sk);
  * ```
@@ -135,13 +113,16 @@ struct RistrettoPublicKey;
  *
  * let mut rng = rand::thread_rng();
  * let _k1 = RistrettoSecretKey::from_bytes(&[
- *     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ *     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+ *     0, 0,
  * ]);
  * let _k2 = RistrettoSecretKey::from_hex(&"100000002000000030000000040000000");
  * let _k3 = RistrettoSecretKey::random(&mut rng);
  * ```
  */
 struct RistrettoSecretKey;
+
+struct TariAddress;
 
 struct TariCompletedTransactions;
 
@@ -201,93 +182,7 @@ typedef struct RistrettoSecretKey PrivateKey;
 
 typedef PrivateKey TariPrivateKey;
 
-/**
- * # A Commitment signature implementation on Ristretto
- *
- * `RistrettoComSig` utilises the [curve25519-dalek](https://github.com/dalek-cryptography/curve25519-dalek1)
- * implementation of `ristretto255` to provide Commitment Signature functionality utlizing Schnorr signatures.
- *
- * ## Examples
- *
- * You can create a `RistrettoComSig` from it's component parts:
- *
- * ```edition2018
- * # use tari_crypto::ristretto::*;
- * # use tari_crypto::keys::*;
- * # use tari_crypto::commitment::HomomorphicCommitment;
- * # use tari_utilities::ByteArray;
- * # use tari_utilities::hex::Hex;
- *
- * let r_pub =
- *     HomomorphicCommitment::from_hex("8063d85e151abee630e643e2b3dc47bfaeb8aa859c9d10d60847985f286aad19").unwrap();
- * let u = RistrettoSecretKey::from_bytes(b"10000000000000000000000010000000").unwrap();
- * let v = RistrettoSecretKey::from_bytes(b"a00000000000000000000000a0000000").unwrap();
- * let sig = RistrettoComSig::new(r_pub, u, v);
- * ```
- *
- * or you can create a signature for a commitment by signing a message with knowledge of the commitment and then
- * verify it by calling the `verify_challenge` method:
- *
- * ```rust
- * # use tari_crypto::ristretto::*;
- * # use tari_crypto::keys::*;
- * # use tari_crypto::hash::blake2::Blake256;
- * # use digest::Digest;
- * # use tari_crypto::commitment::HomomorphicCommitmentFactory;
- * # use tari_crypto::ristretto::pedersen::*;
- * use tari_crypto::ristretto::pedersen::commitment_factory::PedersenCommitmentFactory;
- * use tari_utilities::hex::Hex;
- *
- * let mut rng = rand::thread_rng();
- * let a_val = RistrettoSecretKey::random(&mut rng);
- * let x_val = RistrettoSecretKey::random(&mut rng);
- * let a_nonce = RistrettoSecretKey::random(&mut rng);
- * let x_nonce = RistrettoSecretKey::random(&mut rng);
- * let e = Blake256::digest(b"Maskerade");
- * let factory = PedersenCommitmentFactory::default();
- * let commitment = factory.commit(&x_val, &a_val);
- * // println!("commitment: {:?}", commitment.to_hex());
- * let sig = RistrettoComSig::sign(&a_val, &x_val, &a_nonce, &x_nonce, &e, &factory).unwrap();
- * // println!("sig: R {:?} u {:?} v {:?}", sig.public_nonce().to_hex(), sig.u().to_hex(), sig.v().to_hex());
- * assert!(sig.verify_challenge(&commitment, &e, &factory));
- * ```
- *
- * # Verifying signatures
- *
- * Given a signature, (R,u,v), a commitment C and a Challenge, e, you can verify that the signature is valid by
- * calling the `verify_challenge` method:
- *
- * ```edition2018
- * # use tari_crypto::ristretto::*;
- * # use tari_crypto::keys::*;
- * # use tari_crypto::commitment::HomomorphicCommitment;
- * # use tari_crypto::ristretto::pedersen::*;
- * # use tari_crypto::hash::blake2::Blake256;
- * # use tari_utilities::hex::*;
- * # use tari_utilities::ByteArray;
- * # use digest::Digest;
- * use tari_crypto::ristretto::pedersen::commitment_factory::PedersenCommitmentFactory;
- *
- * let commitment =
- *     HomomorphicCommitment::from_hex("167c6df11bf8106e89328c297e57423dc2a9be53df1ee63f6e50b4610104ab4a").unwrap();
- * let r_nonce =
- *     HomomorphicCommitment::from_hex("4033e00996e61df2ea1abd1494b751b946663e21a20e2729c6592712beb15356").unwrap();
- * let u = RistrettoSecretKey::from_hex("f44bbc3374b172f77ffa8b904ddf0ad9f879b3e6183f9e440c57e7f01e851300").unwrap();
- * let v = RistrettoSecretKey::from_hex("fd54afb2d8008c8a3af10272b24161247b2b7ae11687813fe9fb03e34dd7f009").unwrap();
- * let sig = RistrettoComSig::new(r_nonce, u, v);
- * let e = Blake256::digest(b"Maskerade");
- * let factory = PedersenCommitmentFactory::default();
- * assert!(sig.verify_challenge(&commitment, &e, &factory));
- * ```
- */
-typedef struct CommitmentSignature_RistrettoPublicKey__RistrettoSecretKey RistrettoComSig;
-
-/**
- * Define the explicit Commitment Signature implementation for the Tari base layer.
- */
-typedef RistrettoComSig ComSignature;
-
-typedef ComSignature TariCommitmentSignature;
+typedef struct TariAddress TariWalletAddress;
 
 typedef struct Covenant TariCovenant;
 
@@ -640,39 +535,127 @@ TariPublicKey *public_key_from_hex(const char *key,
                                    int *error_out);
 
 /**
- * Creates a char array from a TariPublicKey in emoji format
+ * -------------------------------------------------------------------------------------------- ///
+ * -------------------------------- Tari Address ---------------------------------------------- ///
+ * Creates a TariWalletAddress from a ByteVector
  *
  * ## Arguments
- * `pk` - The pointer to a TariPublicKey
+ * `bytes` - The pointer to a ByteVector
+ * `error_out` - Pointer to an int which will be modified to an error code should one occur, may not be null. Functions
+ * as an out parameter.
+ *
+ * ## Returns
+ * `TariWalletAddress` - Returns a public key. Note that it will be ptr::null_mut() if bytes is null or
+ * if there was an error with the contents of bytes
+ *
+ * # Safety
+ * The ```public_key_destroy``` function must be called when finished with a TariWalletAddress to prevent a memory leak
+ */
+TariWalletAddress *tari_address_create(struct ByteVector *bytes,
+                                       int *error_out);
+
+/**
+ * Frees memory for a TariWalletAddress
+ *
+ * ## Arguments
+ * `pk` - The pointer to a TariWalletAddress
+ *
+ * ## Returns
+ * `()` - Does not return a value, equivalent to void in C
+ *
+ * # Safety
+ * None
+ */
+void tari_address_destroy(TariWalletAddress *address);
+
+/**
+ * Gets a ByteVector from a TariWalletAddress
+ *
+ * ## Arguments
+ * `address` - The pointer to a TariWalletAddress
+ * `error_out` - Pointer to an int which will be modified to an error code should one occur, may not be null. Functions
+ * as an out parameter.
+ *
+ * ## Returns
+ * `*mut ByteVector` - Returns a pointer to a ByteVector. Note that it returns ptr::null_mut() if address is null
+ *
+ * # Safety
+ * The ```byte_vector_destroy``` function must be called when finished with the ByteVector to prevent a memory leak.
+ */
+struct ByteVector *tari_address_get_bytes(TariWalletAddress *address,
+                                          int *error_out);
+
+/**
+ * Creates a TariWalletAddress from a TariPrivateKey
+ *
+ * ## Arguments
+ * `secret_key` - The pointer to a TariPrivateKey
+ * `network` - an u8 indicating the network
+ * `error_out` - Pointer to an int which will be modified to an error code should one occur, may not be null. Functions
+ * as an out parameter.
+ *
+ * ## Returns
+ * `*mut TariWalletAddress` - Returns a pointer to a TariWalletAddress
+ *
+ * # Safety
+ * The ```private_key_destroy``` method must be called when finished with a private key to prevent a memory leak
+ */
+TariWalletAddress *tari_address_from_private_key(TariPrivateKey *secret_key,
+                                                 unsigned int network,
+                                                 int *error_out);
+
+/**
+ * Creates a TariWalletAddress from a char array
+ *
+ * ## Arguments
+ * `address` - The pointer to a char array which is hex encoded
+ * `error_out` - Pointer to an int which will be modified to an error code should one occur, may not be null. Functions
+ * as an out parameter.
+ *
+ * ## Returns
+ * `*mut TariWalletAddress` - Returns a pointer to a TariWalletAddress. Note that it returns ptr::null_mut()
+ * if key is null or if there was an error creating the TariWalletAddress from key
+ *
+ * # Safety
+ * The ```public_key_destroy``` method must be called when finished with a TariWalletAddress to prevent a memory leak
+ */
+TariWalletAddress *tari_address_from_hex(const char *address,
+                                         int *error_out);
+
+/**
+ * Creates a char array from a TariWalletAddress in emoji format
+ *
+ * ## Arguments
+ * `address` - The pointer to a TariWalletAddress
  * `error_out` - Pointer to an int which will be modified to an error code should one occur, may not be null. Functions
  * as an out parameter.
  *
  * ## Returns
  * `*mut c_char` - Returns a pointer to a char array. Note that it returns empty
- * if emoji is null or if there was an error creating the emoji string from TariPublicKey
+ * if emoji is null or if there was an error creating the emoji string from TariWalletAddress
  *
  * # Safety
  * The ```string_destroy``` method must be called when finished with a string from rust to prevent a memory leak
  */
-char *public_key_to_emoji_id(TariPublicKey *pk,
-                             int *error_out);
+char *tari_address_to_emoji_id(TariWalletAddress *address,
+                               int *error_out);
 
 /**
- * Creates a TariPublicKey from a char array in emoji format
+ * Creates a TariWalletAddress from a char array in emoji format
  *
  * ## Arguments
- * `const *c_char` - The pointer to a TariPublicKey
+ * `const *c_char` - The pointer to a TariWalletAddress
  * `error_out` - Pointer to an int which will be modified to an error code should one occur, may not be null. Functions
  * as an out parameter.
  *
  * ## Returns
- * `*mut c_char` - Returns a pointer to a TariPublicKey. Note that it returns null on error.
+ * `*mut c_char` - Returns a pointer to a TariWalletAddress. Note that it returns null on error.
  *
  * # Safety
- * The ```public_key_destroy``` method must be called when finished with a TariPublicKey to prevent a memory leak
+ * The ```public_key_destroy``` method must be called when finished with a TariWalletAddress to prevent a memory leak
  */
-TariPublicKey *emoji_id_to_public_key(const char *emoji,
-                                      int *error_out);
+TariWalletAddress *emoji_id_to_tari_address(const char *emoji,
+                                            int *error_out);
 
 /**
  * -------------------------------------------------------------------------------------------- ///
@@ -685,7 +668,7 @@ TariPublicKey *emoji_id_to_public_key(const char *emoji,
  * as an out parameter.
  *
  * ## Returns
- * `*mut TariPrivateKey` - Returns a pointer to a TariPublicKey. Note that it returns ptr::null_mut()
+ * `*mut TariPrivateKey` - Returns a pointer to a TariPrivateKey. Note that it returns ptr::null_mut()
  * if bytes is null or if there was an error creating the TariPrivateKey from bytes
  *
  * # Safety
@@ -749,7 +732,7 @@ TariPrivateKey *private_key_generate(void);
  * as an out parameter.
  *
  * ## Returns
- * `*mut TariPrivateKey` - Returns a pointer to a TariPublicKey. Note that it returns ptr::null_mut()
+ * `*mut TariPrivateKey` - Returns a pointer to a TariPrivateKey. Note that it returns ptr::null_mut()
  * if key is null or if there was an error creating the TariPrivateKey from key
  *
  * # Safety
@@ -757,46 +740,6 @@ TariPrivateKey *private_key_generate(void);
  */
 TariPrivateKey *private_key_from_hex(const char *key,
                                      int *error_out);
-
-/**
- * -------------------------------------------------------------------------------------------- ///
- *
- * ------------------------------- Commitment Signature ---------------------------------------///
- * Creates a TariCommitmentSignature from `u`, `v` and `public_nonce` ByteVectors
- *
- * ## Arguments
- * `public_nonce_bytes` - The public nonce signature component as a ByteVector
- * `u_bytes` - The u signature component as a ByteVector
- * `v_bytes` - The v signature component as a ByteVector
- * `error_out` - Pointer to an int which will be modified to an error code should one occur, may not be null. Functions
- * as an out parameter.
- *
- * ## Returns
- * `TariCommitmentSignature` - Returns a commitment signature. Note that it will be ptr::null_mut() if any argument is
- * null or if there was an error with the contents of bytes
- *
- * # Safety
- * The ```commitment_signature_destroy``` function must be called when finished with a TariCommitmentSignature to
- * prevent a memory leak
- */
-TariCommitmentSignature *commitment_signature_create_from_bytes(const struct ByteVector *public_nonce_bytes,
-                                                                const struct ByteVector *u_bytes,
-                                                                const struct ByteVector *v_bytes,
-                                                                int *error_out);
-
-/**
- * Frees memory for a TariCommitmentSignature
- *
- * ## Arguments
- * `com_sig` - The pointer to a TariCommitmentSignature
- *
- * ## Returns
- * `()` - Does not return a value, equivalent to void in C
- *
- * # Safety
- * None
- */
-void commitment_signature_destroy(TariCommitmentSignature *com_sig);
 
 /**
  * -------------------------------------------------------------------------------------------- ///
@@ -890,8 +833,6 @@ void encrypted_value_destroy(TariEncryptedValue *encrypted_value);
  * `output_type` - The encoded value of the output type as a byte
  * `maturity` - The encoded value maturity as bytes
  * `metadata` - The metadata componenet as a ByteVector. It cannot be null
- * `unique_id` - The unique id componenet as a ByteVector. It can be null
- * `mparent_public_key` - The parent public key component as a ByteVector. It can be null
  * `error_out` - Pointer to an int which will be modified to an error code should one occur, may not be null. Functions
  * as an out parameter.
  *
@@ -1041,7 +982,7 @@ void seed_words_destroy(struct TariSeedWords *seed_words);
  *
  * ## Arguments
  * `alias` - The pointer to a char array
- * `public_key` - The pointer to a TariPublicKey
+ * `address` - The pointer to a TariWalletAddress
  * `error_out` - Pointer to an int which will be modified to an error code should one occur, may not be null. Functions
  * as an out parameter.
  *
@@ -1053,7 +994,7 @@ void seed_words_destroy(struct TariSeedWords *seed_words);
  * The ```contact_destroy``` method must be called when finished with a TariContact
  */
 TariContact *contact_create(const char *alias,
-                            TariPublicKey *public_key,
+                            TariWalletAddress *address,
                             int *error_out);
 
 /**
@@ -1075,7 +1016,7 @@ char *contact_get_alias(TariContact *contact,
                         int *error_out);
 
 /**
- * Gets the TariPublicKey of the TariContact
+ * Gets the TariWalletAddress of the TariContact
  *
  * ## Arguments
  * `contact` - The pointer to a TariContact
@@ -1083,14 +1024,14 @@ char *contact_get_alias(TariContact *contact,
  * as an out parameter.
  *
  * ## Returns
- * `*mut TariPublicKey` - Returns a pointer to a TariPublicKey. Note that it returns
+ * `*mut TariWalletAddress` - Returns a pointer to a TariWalletAddress. Note that it returns
  * ptr::null_mut() if contact is null
  *
  * # Safety
- * The ```public_key_destroy``` method must be called when finished with a TariPublicKey to prevent a memory leak
+ * The ```tari_address_destroy``` method must be called when finished with a TariWalletAddress to prevent a memory leak
  */
-TariPublicKey *contact_get_public_key(TariContact *contact,
-                                      int *error_out);
+TariWalletAddress *contact_get_tari_address(TariContact *contact,
+                                            int *error_out);
 
 /**
  * Frees memory for a TariContact
@@ -1170,15 +1111,15 @@ void contacts_destroy(struct TariContacts *contacts);
  * as an out parameter.
  *
  * ## Returns
- * `*mut TariPublicKey` - Returns a pointer to a TariPublicKey. Note that it returns ptr::null_mut() if
+ * `*mut TariWalletAddress` - Returns a pointer to a TariWalletAddress. Note that it returns ptr::null_mut() if
  * liveness_data is null.
  *
  * # Safety
  * The ```liveness_data_destroy``` method must be called when finished with a TariContactsLivenessData to prevent a
  * memory leak
  */
-TariPublicKey *liveness_data_get_public_key(TariContactsLivenessData *liveness_data,
-                                            int *error_out);
+TariWalletAddress *liveness_data_get_public_key(TariContactsLivenessData *liveness_data,
+                                                int *error_out);
 
 /**
  * Gets the latency in milli-seconds (ms) from a TariContactsLivenessData
@@ -1466,7 +1407,7 @@ unsigned long long completed_transaction_get_transaction_id(TariCompletedTransac
                                                             int *error_out);
 
 /**
- * Gets the destination TariPublicKey of a TariCompletedTransaction
+ * Gets the destination TariWalletAddress of a TariCompletedTransaction
  *
  * ## Arguments
  * `transaction` - The pointer to a TariCompletedTransaction
@@ -1474,14 +1415,14 @@ unsigned long long completed_transaction_get_transaction_id(TariCompletedTransac
  * as an out parameter.
  *
  * ## Returns
- * `*mut TariPublicKey` - Returns the destination TariPublicKey, note that it will be
+ * `*mut TariWalletAddress` - Returns the destination TariWalletAddress, note that it will be
  * ptr::null_mut() if transaction is null
  *
  * # Safety
- * The ```public_key_destroy``` method must be called when finished with a TariPublicKey to prevent a memory leak
+ * The ```tari_address_destroy``` method must be called when finished with a TariWalletAddress to prevent a memory leak
  */
-TariPublicKey *completed_transaction_get_destination_public_key(TariCompletedTransaction *transaction,
-                                                                int *error_out);
+TariWalletAddress *completed_transaction_get_destination_tari_address(TariCompletedTransaction *transaction,
+                                                                      int *error_out);
 
 /**
  * Gets the TariTransactionKernel of a TariCompletedTransaction
@@ -1504,7 +1445,7 @@ TariTransactionKernel *completed_transaction_get_transaction_kernel(TariComplete
                                                                     int *error_out);
 
 /**
- * Gets the source TariPublicKey of a TariCompletedTransaction
+ * Gets the source TariWalletAddress of a TariCompletedTransaction
  *
  * ## Arguments
  * `transaction` - The pointer to a TariCompletedTransaction
@@ -1512,14 +1453,14 @@ TariTransactionKernel *completed_transaction_get_transaction_kernel(TariComplete
  * as an out parameter.
  *
  * ## Returns
- * `*mut TariPublicKey` - Returns the source TariPublicKey, note that it will be
+ * `*mut TariWalletAddress` - Returns the source TariWalletAddress, note that it will be
  * ptr::null_mut() if transaction is null
  *
  * # Safety
- * The ```public_key_destroy``` method must be called when finished with a TariPublicKey to prevent a memory leak
+ * The ```tari_address_destroy``` method must be called when finished with a TariWalletAddress to prevent a memory leak
  */
-TariPublicKey *completed_transaction_get_source_public_key(TariCompletedTransaction *transaction,
-                                                           int *error_out);
+TariWalletAddress *completed_transaction_get_source_tari_address(TariCompletedTransaction *transaction,
+                                                                 int *error_out);
 
 /**
  * Gets the status of a TariCompletedTransaction
@@ -1712,7 +1653,7 @@ unsigned long long pending_outbound_transaction_get_transaction_id(TariPendingOu
                                                                    int *error_out);
 
 /**
- * Gets the destination TariPublicKey of a TariPendingOutboundTransaction
+ * Gets the destination TariWalletAddress of a TariPendingOutboundTransaction
  *
  * ## Arguments
  * `transaction` - The pointer to a TariPendingOutboundTransaction
@@ -1720,14 +1661,14 @@ unsigned long long pending_outbound_transaction_get_transaction_id(TariPendingOu
  * as an out parameter.
  *
  * ## Returns
- * `*mut TariPublicKey` - Returns the destination TariPublicKey, note that it will be
+ * `*mut TariWalletAddress` - Returns the destination TariWalletAddress, note that it will be
  * ptr::null_mut() if transaction is null
  *
  * # Safety
- * The ```public_key_destroy``` method must be called when finished with a TariPublicKey to prevent a memory leak
+ * The ```tari_address_destroy``` method must be called when finished with a TariWalletAddress to prevent a memory leak
  */
-TariPublicKey *pending_outbound_transaction_get_destination_public_key(TariPendingOutboundTransaction *transaction,
-                                                                       int *error_out);
+TariWalletAddress *pending_outbound_transaction_get_destination_tari_address(TariPendingOutboundTransaction *transaction,
+                                                                             int *error_out);
 
 /**
  * Gets the amount of a TariPendingOutboundTransaction
@@ -1859,7 +1800,7 @@ unsigned long long pending_inbound_transaction_get_transaction_id(TariPendingInb
                                                                   int *error_out);
 
 /**
- * Gets the source TariPublicKey of a TariPendingInboundTransaction
+ * Gets the source TariWalletAddress of a TariPendingInboundTransaction
  *
  * ## Arguments
  * `transaction` - The pointer to a TariPendingInboundTransaction
@@ -1867,14 +1808,15 @@ unsigned long long pending_inbound_transaction_get_transaction_id(TariPendingInb
  * as an out parameter.
  *
  * ## Returns
- * `*mut TariPublicKey` - Returns a pointer to the source TariPublicKey, note that it will be
+ * `*mut TariWalletAddress` - Returns a pointer to the source TariWalletAddress, note that it will be
  * ptr::null_mut() if transaction is null
  *
  * # Safety
- *  The ```public_key_destroy``` method must be called when finished with a TariPublicKey to prevent a memory leak
+ *  The ```tari_address_destroy``` method must be called when finished with a TariWalletAddress to prevent a memory
+ * leak
  */
-TariPublicKey *pending_inbound_transaction_get_source_public_key(TariPendingInboundTransaction *transaction,
-                                                                 int *error_out);
+TariWalletAddress *pending_inbound_transaction_get_source_tari_address(TariPendingInboundTransaction *transaction,
+                                                                       int *error_out);
 
 /**
  * Gets the amount of a TariPendingInboundTransaction
@@ -2660,7 +2602,7 @@ void balance_destroy(TariBalance *balance);
  *
  * ## Arguments
  * `wallet` - The TariWallet pointer
- * `dest_public_key` - The TariPublicKey pointer of the peer
+ * `destination` - The TariWalletAddress pointer of the peer
  * `amount` - The amount
  * `commitments` - A `TariVector` of "strings", tagged as `TariTypeTag::String`, containing commitment's hex values
  *   (see `Commitment::to_hex()`)
@@ -2676,7 +2618,7 @@ void balance_destroy(TariBalance *balance);
  * None
  */
 unsigned long long wallet_send_transaction(struct TariWallet *wallet,
-                                           TariPublicKey *dest_public_key,
+                                           TariWalletAddress *destination,
                                            unsigned long long amount,
                                            struct TariVector *commitments,
                                            unsigned long long fee_per_gram,
@@ -2933,7 +2875,7 @@ TariCompletedTransaction *wallet_get_cancelled_transaction_by_id(struct TariWall
                                                                  int *error_out);
 
 /**
- * Get the TariPublicKey from a TariWallet
+ * Get the TariWalletAddress from a TariWallet
  *
  * ## Arguments
  * `wallet` - The TariWallet pointer
@@ -2941,55 +2883,14 @@ TariCompletedTransaction *wallet_get_cancelled_transaction_by_id(struct TariWall
  * as an out parameter.
  *
  * ## Returns
- * `*mut TariPublicKey` - returns the public key, note that ptr::null_mut() is returned
+ * `*mut TariWalletAddress` - returns the address, note that ptr::null_mut() is returned
  * if wc is null
  *
  * # Safety
- * The ```public_key_destroy``` method must be called when finished with a TariPublicKey to prevent a memory leak
+ * The ```tari_address_destroy``` method must be called when finished with a TariWalletAddress to prevent a memory leak
  */
-TariPublicKey *wallet_get_public_key(struct TariWallet *wallet,
-                                     int *error_out);
-
-/**
- * Import an external UTXO into the wallet as a non-rewindable (i.e. non-recoverable) output. This will add a spendable
- * UTXO (as EncumberedToBeReceived) and create a faux completed transaction to record the event.
- *
- * ## Arguments
- * `wallet` - The TariWallet pointer
- * `amount` - The value of the UTXO in MicroTari
- * `spending_key` - The private spending key
- * `source_public_key` - The public key of the source of the transaction
- * `features` - Options for an output's structure or use
- * `metadata_signature` - UTXO signature with the script offset private key, k_O
- * `sender_offset_public_key` - Tari script offset pubkey, K_O
- * `script_private_key` - Tari script private key, k_S, is used to create the script signature
- * `covenant` - The covenant that will be executed when spending this output
- * `message` - The message that the transaction will have
- * `encrypted_value` - Encrypted value.
- * `minimum_value_promise` - The minimum value of the commitment that is proven by the range proof
- * `error_out` - Pointer to an int which will be modified to an error code should one occur, may not be null. Functions
- * as an out parameter.
- *
- * ## Returns
- * `c_ulonglong` -  Returns the TransactionID of the generated transaction, note that it will be zero if the
- * transaction is null
- *
- * # Safety
- * None
- */
-unsigned long long wallet_import_external_utxo_as_non_rewindable(struct TariWallet *wallet,
-                                                                 unsigned long long amount,
-                                                                 TariPrivateKey *spending_key,
-                                                                 TariPublicKey *source_public_key,
-                                                                 TariOutputFeatures *features,
-                                                                 TariCommitmentSignature *metadata_signature,
-                                                                 TariPublicKey *sender_offset_public_key,
-                                                                 TariPrivateKey *script_private_key,
-                                                                 TariCovenant *covenant,
-                                                                 TariEncryptedValue *encrypted_value,
-                                                                 unsigned long long minimum_value_promise,
-                                                                 const char *message,
-                                                                 int *error_out);
+TariWalletAddress *wallet_get_tari_address(struct TariWallet *wallet,
+                                           int *error_out);
 
 /**
  * Cancel a Pending Transaction

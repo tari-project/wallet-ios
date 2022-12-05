@@ -40,7 +40,6 @@
 
 import Foundation
 import GiphyUISDK
-import GiphyCoreSDK
 
 class TxGifManager {
     typealias OnCompletion = ((Result<GPHMedia, Error>) -> Void)

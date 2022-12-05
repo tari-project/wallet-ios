@@ -39,7 +39,6 @@
 */
 
 import GiphyUISDK
-import GiphyCoreSDK
 
 class TxTableViewModel: NSObject {
     typealias Value = (microTari: MicroTari?, isOutboundTransaction: Bool, isCancelled: Bool, isPending: Bool)
@@ -128,15 +127,15 @@ class TxTableViewModel: NSObject {
             return
         }
         
-        let publicKey = try transaction.publicKey
+        let address = try transaction.address
 
-        let emojis = try publicKey.emojis
+        let emojis = try address.emojis
         avatar = String(emojis.prefix(1))
 
         var alias = ""
         var aliasIsEmojis = false
         
-        if let contact = try Tari.shared.contacts.findContact(hex: try publicKey.byteVector.hex) {
+        if let contact = try Tari.shared.contacts.findContact(hex: try address.byteVector.hex) {
             alias = try contact.alias
         }
 

@@ -111,6 +111,7 @@ final class TxsListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewSetup()
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 + CATransaction.animationDuration()) { [weak self] in
             self?.setupEvents()
         }

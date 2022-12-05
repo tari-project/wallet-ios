@@ -44,13 +44,13 @@ final class Contact {
     
     let pointer: OpaquePointer
     
-    var publicKey: PublicKey {
+    var address: TariAddress {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-            let result = contact_get_public_key(pointer, errorCodePointer)
-            guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
-            return PublicKey(pointer: result)
+            let result = contact_get_tari_address(pointer, errorCodePointer)
+            guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+            return TariAddress(pointer: result)
         }
     }
     
@@ -70,11 +70,11 @@ final class Contact {
         self.pointer = pointer
     }
     
-    convenience init(alias: String, publicKeyPointer: OpaquePointer) throws {
+    convenience init(alias: String, addressPointer: OpaquePointer) throws {
         
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = contact_create(alias, publicKeyPointer, errorCodePointer)
+        let result = contact_create(alias, addressPointer, errorCodePointer)
         
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
         

@@ -41,7 +41,7 @@
 struct WalletSettings: Codable, Equatable {
 
     enum  WalletConfigurationState: Codable {
-        /// Wallet wasn't configure
+        /// Wallet wasn't configured
         case notConfigured
         /// Walet was created
         case initialized
@@ -50,10 +50,28 @@ struct WalletSettings: Codable, Equatable {
         /// Wallet screen was presented to the user
         case ready
     }
+    
+    enum BackupStatus: Codable {
+        
+        case disabled
+        case enabled(syncDate: Date?)
+        
+        static var enabled: Self { .enabled(syncDate: nil) }
+        
+        var isEnabled: Bool {
+            switch self {
+            case .enabled:
+                return true
+            case .disabled:
+                return false
+            }
+        }
+    }
 
     let networkName: String
     let configurationState: WalletConfigurationState
-    let isCloudBackupEnabled: Bool
+    let iCloudDocsBackupStatus: BackupStatus
+    let dropboxBackupStatus: BackupStatus
     let hasVerifiedSeedPhrase: Bool
     let yat: String?
 
@@ -61,8 +79,59 @@ struct WalletSettings: Codable, Equatable {
 }
 
 extension WalletSettings {
-    func update(configurationState: WalletConfigurationState) -> Self { Self(networkName: networkName, configurationState: configurationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
-    func update(isCloudBackupEnabled: Bool) -> Self { Self(networkName: networkName, configurationState: configurationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
-    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(networkName: networkName, configurationState: configurationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
-    func update(yat: String?) -> Self { Self(networkName: networkName, configurationState: configurationState, isCloudBackupEnabled: isCloudBackupEnabled, hasVerifiedSeedPhrase: hasVerifiedSeedPhrase, yat: yat) }
+    
+    func update(configurationState: WalletConfigurationState) -> Self {
+        Self(
+            networkName: networkName,
+            configurationState: configurationState,
+            iCloudDocsBackupStatus: iCloudDocsBackupStatus,
+            dropboxBackupStatus: dropboxBackupStatus,
+            hasVerifiedSeedPhrase: hasVerifiedSeedPhrase,
+            yat: yat
+        )
+    }
+    
+    func update(iCloudDocsBackupStatus: BackupStatus) -> Self {
+        Self(
+            networkName: networkName,
+            configurationState: configurationState,
+            iCloudDocsBackupStatus: iCloudDocsBackupStatus,
+            dropboxBackupStatus: dropboxBackupStatus,
+            hasVerifiedSeedPhrase: hasVerifiedSeedPhrase,
+            yat: yat
+        )
+    }
+    
+    func update(dropboxBackupStatus: BackupStatus) -> Self {
+        Self(
+            networkName: networkName,
+            configurationState: configurationState,
+            iCloudDocsBackupStatus: iCloudDocsBackupStatus,
+            dropboxBackupStatus: dropboxBackupStatus,
+            hasVerifiedSeedPhrase: hasVerifiedSeedPhrase,
+            yat: yat
+        )
+    }
+    
+    func update(hasVerifiedSeedPhrase: Bool) -> Self {
+        Self(
+            networkName: networkName,
+            configurationState: configurationState,
+            iCloudDocsBackupStatus: iCloudDocsBackupStatus,
+            dropboxBackupStatus: dropboxBackupStatus,
+            hasVerifiedSeedPhrase: hasVerifiedSeedPhrase,
+            yat: yat
+        )
+    }
+    
+    func update(yat: String?) -> Self {
+        Self(
+            networkName: networkName,
+            configurationState: configurationState,
+            iCloudDocsBackupStatus: iCloudDocsBackupStatus,
+            dropboxBackupStatus: dropboxBackupStatus,
+            hasVerifiedSeedPhrase: hasVerifiedSeedPhrase,
+            yat: yat
+        )
+    }
 }

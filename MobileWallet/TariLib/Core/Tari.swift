@@ -49,8 +49,11 @@ final class Tari: MainServiceable {
     static let defaultKernelCount = UInt64(1)
     static let defaultOutputCount = UInt64(2)
     
-    let databaseName = "tari_wallet"
+    private let databaseName = "tari_wallet"
+    
     var connectedDatabaseDirectory: URL { TariSettings.storageDirectory.appendingPathComponent("\(databaseName)_\(NetworkManager.shared.selectedNetwork.name)", isDirectory: true) }
+    var databaseURL: URL { connectedDatabaseDirectory.appendingPathComponent(databaseFilename) }
+    private var databaseFilename: String { databaseName + ".sqlite3" }
     
     private let logFilePrefix = "log"
     private let publicAddress = "/ip4/0.0.0.0/tcp/9838"
@@ -66,7 +69,7 @@ final class Tari: MainServiceable {
     private(set) lazy var connection = TariConnectionService(walletManager: walletManager, services: self)
     private(set) lazy var contacts = TariContactsService(walletManager: walletManager, services: self)
     private(set) lazy var encryption = TariEncryptionService(walletManager: walletManager, services: self, passphrase: passphrase)
-    private(set) lazy var faucet = TariFaucetService(walletManager: walletManager, services: self)
+    private(set) lazy var messageSign = TariMessageSignService(walletManager: walletManager, services: self)
     private(set) lazy var fees = TariFeesService(walletManager: walletManager, services: self)
     private(set) lazy var keyValues = TariKeyValueService(walletManager: walletManager, services: self)
     private(set) lazy var recovery = TariRecoveryService(walletManager: walletManager, services: self)
@@ -82,8 +85,8 @@ final class Tari: MainServiceable {
         return "\(TariSettings.storageDirectory.path)/\(logFilePrefix)-\(dateString).txt"
     }()
     
-    var walletPublicKey: PublicKey {
-        get throws { try walletManager.walletPublicKey() }
+    var walletAddress: TariAddress {
+        get throws { try walletManager.walletAddress() }
     }
     
     var logsURLs: [URL] {
@@ -170,9 +173,9 @@ final class Tari: MainServiceable {
     }
     
     func deleteWallet() {
-        disconnectWallet()
         try? deleteWalletDirectory()
         try? deleteLogs()
+        disconnectWallet()
     }
     
     func select(network: TariNetwork) {
@@ -211,8 +214,12 @@ final class Tari: MainServiceable {
             try createWalletDirectory()
         }
         
+        let logFilePath = logFilePath
+        Logger.log(message: "Log Path: \(logFilePath)", domain: .general, level: .info)
+        
         do {
             try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name)
+            resetServices()
         } catch {
             guard let error = error as? WalletError, error == WalletError.invalidPassphrase else { throw error }
             try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: nil, networkName: selectedNetwork.name)
@@ -228,6 +235,11 @@ final class Tari: MainServiceable {
                 .sink { _ in continuation.resume() }
                 .store(in: &cancellables)
         }
+    }
+    
+    private func resetServices() {
+        walletBalance.reset()
+        transactions.reset()
     }
     
     private func disconnectWallet() {

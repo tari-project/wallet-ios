@@ -41,7 +41,6 @@
 import UIKit
 import TariCommon
 import GiphyUISDK
-import GiphyCoreSDK
 
 final class TransactionDetailsNoteView: UIView {
     

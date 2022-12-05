@@ -40,9 +40,8 @@
 
 import UIKit
 import GiphyUISDK
-import GiphyCoreSDK
 
-final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDelegate, UIScrollViewDelegate {
+final class AddNoteViewController: UIViewController, UIScrollViewDelegate {
 
     private static var giphyKeywords = ["money", "money machine", "rich"]
     private static var giphyCurrentKeywordIndex = 0
@@ -150,13 +149,13 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
         var alias: String?
         
         do {
-            alias = try Tari.shared.contacts.findContact(hex: try paymentInfo.publicKey.byteVector.hex)?.alias
+            alias = try Tari.shared.contacts.findContact(hex: try paymentInfo.address.byteVector.hex)?.alias
         } catch {
         }
         
         guard let alias = alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
             do {
-                try navigationBar.showEmojiId(emojiID: paymentInfo.publicKey.emojis, hex: paymentInfo.publicKey.byteVector.hex, presenterController: self)
+                try navigationBar.showEmojiId(emojiID: paymentInfo.address.emojis, hex: paymentInfo.address.byteVector.hex, presenterController: self)
             } catch {
                 PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
             }
@@ -215,26 +214,10 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
         present(giphyModal, animated: true, completion: nil)
     }
 
-    func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
-        giphyModal.dismiss(animated: true, completion: nil)
-        attachment = media
-    }
-
-    func didSelectMedia(media: GPHMedia, cell: UICollectionViewCell) {
-        attachment = media
-    }
-
     @objc func removeAttachment() {
         attachment = nil
     }
-
-    func didDismiss(controller: GiphyViewController?) {}
-
-    func contentDidUpdate(resultCount: Int) {
-        searchGiphyButton.isHidden = false
-        poweredByGiphyImageView.isHidden = false
-    }
-
+    
     @objc private func moveSendButtonUp(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             let keyboardHeight = keyboardSize.height
@@ -285,10 +268,10 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
 
     private func onSlideToEndAction() {
         dismissKeyboard()
-        sendTx(recipientPublicKey: paymentInfo.publicKey, amount: amount, feePerGram: feePerGram)
+        sendTx(recipientAddress: paymentInfo.address, amount: amount, feePerGram: feePerGram)
     }
 
-    private func sendTx(recipientPublicKey: PublicKey, amount: MicroTari, feePerGram: MicroTari) {
+    private func sendTx(recipientAddress: TariAddress, amount: MicroTari, feePerGram: MicroTari) {
         
         var message = noteText
         
@@ -298,7 +281,7 @@ final class AddNoteViewController: UIViewController, GiphyDelegate, GPHGridDeleg
         
         TransactionProgressPresenter.showTransactionProgress(
             presenter: self,
-            recipientPublicKey: recipientPublicKey,
+            recipientAddress: recipientAddress,
             amount: amount,
             feePerGram: feePerGram,
             message: message,
@@ -426,7 +409,7 @@ extension AddNoteViewController {
         giphyVC.direction = .horizontal
         giphyVC.numberOfTracks = 1
         giphyVC.view.backgroundColor = .clear
-        giphyVC.imageType = .gif
+        giphyVC.imageFileExtensionForDynamicAssets = .gif
         giphyVC.direction = .horizontal
         giphyVC.rating = .ratedPG13
         giphyVC.fixedSizeCells = true
@@ -558,6 +541,35 @@ extension AddNoteViewController: UITextViewDelegate {
             textView.text = notePlaceholder
             textView.textColor = .lightGray
         }
+    }
+}
+
+extension AddNoteViewController: GiphyDelegate {
+    
+    func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
+        giphyModal.dismiss(animated: true, completion: nil)
+        attachment = media
+    }
+    
+    func didDismiss(controller: GiphyViewController?) {
+    }
+}
+
+extension AddNoteViewController: GPHGridDelegate {
+
+    func didSelectMedia(media: GPHMedia, cell: UICollectionViewCell) {
+        attachment = media
+    }
+    
+    func contentDidUpdate(resultCount: Int, error: Error?) {
+        searchGiphyButton.isHidden = false
+        poweredByGiphyImageView.isHidden = false
+    }
+    
+    func didSelectMoreByYou(query: String) {
+    }
+    
+    func didScroll(offset: CGFloat) {
     }
 }
 

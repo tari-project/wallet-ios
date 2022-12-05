@@ -63,7 +63,6 @@ final class HomeViewController: UIViewController {
     private var hapticEnabled = false
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
 
-    private var keyServer: KeyServer?
     private var isNetworkCompatibilityChecked = false
 
     private var isFirstIntroToWallet: Bool {
@@ -117,14 +116,12 @@ final class HomeViewController: UIViewController {
         setupViews()
         setupFloatingPanel()
         setupCallbacks()
-        setupKeyServer()
         NotificationManager.shared.requestAuthorization()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         ShortcutsManager.executeQueuedShortcut()
-        checkImportSecondUtxo()
         checkIncompatibleNetwork()
     }
     
@@ -301,72 +298,6 @@ final class HomeViewController: UIViewController {
     
     // MARK: - Other
 
-    private func setupKeyServer() {
-        do {
-            keyServer = try KeyServer()
-        } catch {
-            Logger.log(message: "Failed to initialise KeyServer", domain: .general, level: .error)
-        }
-    }
-
-    private func requestKeyServerTokens() {
-        guard let keyServer = keyServer else {
-            Logger.log(message: "No KeyServer initialised", domain: .general, level: .error)
-            return
-        }
-        
-        let errorTitle = localized("home.request_drop.error.title", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
-
-        do {
-            try keyServer.requestDrop(onSuccess: { () in
-                    let title = String(
-                        format: localized("home.request_drop.title.with_param"),
-                        NetworkManager.shared.selectedNetwork.tickerSymbol
-                    )
-                    let description = String(
-                        format: localized("home.request_drop.description.with_param"),
-                        NetworkManager.shared.selectedNetwork.tickerSymbol
-                    )
-                    
-                    let popUpModel = PopUpDialogModel(
-                        title: title,
-                        message: description,
-                        buttons: [
-                            PopUpDialogButtonModel(title: localized("common.send.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol), type: .normal, callback: { [weak self] in self?.onSend() }),
-                            PopUpDialogButtonModel(title: localized("home.request_drop.try_later"), type: .text)
-                        ],
-                        hapticType: .none
-                    )
-                
-                DispatchQueue.main.async {
-                    PopUpPresenter.showPopUp(model: popUpModel)
-                }
-            }) { (error) in
-                DispatchQueue.main.async {
-                    PopUpPresenter.show(message: MessageModel(title: errorTitle, message: localized("home.request_drop.error.description"), type: .error))
-                }
-            }
-        } catch {
-            PopUpPresenter.show(message: MessageModel(title: errorTitle, message: localized("home.request_drop.error.generic"), type: .error))
-        }
-    }
-
-    // If we have a second stored utxo, import it
-    private func checkImportSecondUtxo() {
-        guard let keyServer = keyServer else {
-            Logger.log(message: "No KeyServer initialised", domain: .general, level: .error)
-            return
-        }
-        
-        do {
-            try keyServer.importSecondUtxo {
-                PopUpPresenter.showStorePopUp()
-            }
-        } catch {
-            Logger.log(message: "Failed to import 2nd UTXO: \(error.localizedDescription)", domain: .general, level: .error)
-        }
-    }
-
     private func showHideFullScreen() {
         if isTxViewFullScreen {
             // Don't show header for first intro
@@ -395,13 +326,6 @@ final class HomeViewController: UIViewController {
                 }
             )
         } else {
-            let delayRequest = isFirstIntroToWallet ? 2.75 : 0.0
-
-            DispatchQueue.main.asyncAfter(
-                deadline: .now() + delayRequest
-            ) { [weak self] in
-                self?.requestKeyServerTokens()
-            }
 
             // User swipes down for the first time
             if isFirstIntroToWallet {

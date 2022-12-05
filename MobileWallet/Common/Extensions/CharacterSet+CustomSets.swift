@@ -46,4 +46,6 @@ extension CharacterSet {
         characterSet.insert(charactersIn: MicroTari.decimalSeparator)
         return characterSet
     }
+    
+    static var hexadecimal: Self { CharacterSet(charactersIn: "0123456789abcdef") }
 }
