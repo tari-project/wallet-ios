@@ -83,7 +83,6 @@ final class TransactionDetailsView: UIView {
     @View private(set) var blockExplorerSeparatorView = TransactionDetailsSeparatorView()
     @View private(set) var blockExplorerView = TransactionDetailsSectionView<TransactionDetailsBlockExplorerView>()
     
-    
     // MARK: - Properties
     
     var transactionState: AnimatedRefreshingViewState? {
