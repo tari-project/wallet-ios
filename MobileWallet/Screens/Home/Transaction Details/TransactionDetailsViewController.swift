@@ -79,12 +79,12 @@ final class TransactionDetailsViewController: UIViewController {
         
         model.$title
             .receive(on: DispatchQueue.main)
-            .assign(to: \.title, on: mainView.navigationBar)
+            .assign(to: \.title, on: mainView)
             .store(in: &cancellables)
         
-        Publishers.Zip(model.$subtitle, model.$isFailure)
+        model.$subtitle
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.navigationBar.update(subtitle: $0, isCompact: $1) }
+            .assign(to: \.subtitle, on: mainView)
             .store(in: &cancellables)
         
         model.$transactionState

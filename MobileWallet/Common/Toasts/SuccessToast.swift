@@ -47,7 +47,7 @@ final class SuccessToast: UIView {
     
     @View private(set) var label: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.successFeedbackPopupTitle
+        view.textColor = .static.white
         view.font = Theme.shared.fonts.feedbackPopupDescription
         view.textAlignment = .center
         view.numberOfLines = 0

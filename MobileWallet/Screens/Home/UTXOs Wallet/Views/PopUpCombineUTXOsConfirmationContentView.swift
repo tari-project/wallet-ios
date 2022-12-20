@@ -41,14 +41,13 @@
 import UIKit
 import TariCommon
 
-final class PopUpCombineUTXOsConfirmationContentView: UIView {
+final class PopUpCombineUTXOsConfirmationContentView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var messageLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
-        view.textColor = Theme.shared.colors.profileMiddleLabel
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -67,15 +66,15 @@ final class PopUpCombineUTXOsConfirmationContentView: UIView {
         didSet {
             guard let feeText = feeText else { return }
             let format = NSAttributedString(string: localized("utxos_wallet.pop_up.combine_confirmation.fee"))
-            let feeWithCurrencySymbol = feeText.withCurrencySymbol(imageBounds: CGRect(x: 0.0, y: 0.0, width: 8.0, height: 8.0), imageTintColor: .tari.greys.mediumDarkGrey)
+            let feeWithCurrencySymbol = feeText.withCurrencySymbol(imageBounds: CGRect(x: 0.0, y: 0.0, width: 8.0, height: 8.0))
             feeLabel.attributedText = NSAttributedString(format: format, arguments: feeWithCurrencySymbol)
         }
     }
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -100,6 +99,13 @@ final class PopUpCombineUTXOsConfirmationContentView: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        messageLabel.textColor = theme.text.body
     }
 }
 

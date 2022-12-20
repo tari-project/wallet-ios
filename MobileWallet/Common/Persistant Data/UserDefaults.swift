@@ -50,7 +50,6 @@ enum GroupUserDefaults {
     @UserDefault(key: UserDefaultName.walletSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
 }
 
-
 extension UserDefaults {
     func removeAll() {
         UserDefaultName.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }

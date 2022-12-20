@@ -42,13 +42,12 @@ import UIKit
 import TariCommon
 import GiphyUISDK
 
-final class TransactionDetailsNoteView: UIView {
+final class TransactionDetailsNoteView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var noteLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.txScreenTextLabel
         view.font = Theme.shared.fonts.txScreenTextLabel
         view.numberOfLines = 0
         return view
@@ -76,8 +75,8 @@ final class TransactionDetailsNoteView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -105,6 +104,11 @@ final class TransactionDetailsNoteView: UIView {
     }
     
     // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        noteLabel.textColor = theme.text.heading
+    }
     
     private func updateGifView() {
         

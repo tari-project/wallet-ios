@@ -42,7 +42,7 @@ import UIKit
 import TariCommon
 import Lottie
 
-final class AddAmountSpinnerView: UIView {
+final class AddAmountSpinnerView: DynamicThemeView {
     
     // MARK: - Subviews
     
@@ -60,15 +60,19 @@ final class AddAmountSpinnerView: UIView {
         let view = UILabel()
         view.text = localized("add_amount.spinner_view.label.calculating")
         view.textAlignment = .center
-        view.textColor = .tari.greys.mediumDarkGrey
         view.font = .Avenir.light.withSize(14.0)
         return view
     }()
     
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.body
+    }
+    
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     

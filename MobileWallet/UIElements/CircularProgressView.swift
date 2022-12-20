@@ -39,34 +39,13 @@
 */
 
 import UIKit
-class CircularProgressView: UIView {
+final class CircularProgressView: DynamicThemeView {
 
     private var circleLayer = CAShapeLayer()
     private var progressLayer = CAShapeLayer()
 
-    var circleLayerColor: UIColor = Theme.shared.colors.settingsTableStyleBackground! {
-        didSet {
-            circleLayer.strokeColor = circleLayerColor.cgColor
-        }
-    }
-
-    var circleLayerLineWidth: CGFloat = 4.0 {
-        didSet {
-            circleLayer.lineWidth = circleLayerLineWidth
-        }
-    }
-
-    var progressLayerColor: UIColor = Theme.shared.colors.checkBoxBorderColor! {
-        didSet {
-            progressLayer.strokeColor = progressLayerColor.cgColor
-        }
-    }
-
-    var progressLayerLineWidth: CGFloat = 2.0 {
-        didSet {
-            progressLayer.lineWidth = progressLayerLineWidth
-        }
-    }
+    private let circleLayerLineWidth: CGFloat = 4.0
+    private let progressLayerLineWidth: CGFloat = 2.0
 
     override func draw(_ rect: CGRect) {
         createCircularPath()
@@ -79,11 +58,9 @@ class CircularProgressView: UIView {
         circleLayer.fillColor = UIColor.clear.cgColor
         circleLayer.lineCap = .round
         circleLayer.lineWidth = circleLayerLineWidth
-        circleLayer.strokeColor = circleLayerColor.cgColor
 
         progressLayer.path = circularPath.cgPath
         progressLayer.fillColor = UIColor.clear.cgColor
-        progressLayer.strokeColor = progressLayerColor.cgColor
         progressLayer.lineCap = .round
         progressLayer.lineWidth = progressLayerLineWidth
         progressLayer.strokeEnd = 0
@@ -101,5 +78,11 @@ class CircularProgressView: UIView {
         circularProgressAnimation.isRemovedOnCompletion = false
         progressLayer.add(circularProgressAnimation, forKey: "progressAnim")
         progressLayer.strokeEnd = CGFloat(progress)
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        circleLayer.strokeColor = theme.backgrounds.secondary?.cgColor
+        progressLayer.strokeColor = theme.brand.purple?.cgColor
     }
 }

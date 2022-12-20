@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class TransactionDetailsContactView: UIView {
+final class TransactionDetailsContactView: DynamicThemeView {
     
     // MARK: - Constants
     
@@ -51,7 +51,6 @@ final class TransactionDetailsContactView: UIView {
     
     @View private(set) var textField: UITextField = {
         let view = UITextField()
-        view.textColor = Theme.shared.colors.txScreenTextLabel
         view.font = Theme.shared.fonts.txScreenTextLabel
         view.placeholder = localized("tx_detail.contect_name_placeholder")
         view.autocorrectionType = .no
@@ -74,8 +73,8 @@ final class TransactionDetailsContactView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupCallbacks()
         updateTextField()
@@ -110,12 +109,17 @@ final class TransactionDetailsContactView: UIView {
         }
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
     
     private func updateTextField() {
         editButton.isHidden = isEditingEnabled
         textField.isUserInteractionEnabled = isEditingEnabled
         _ = isEditingEnabled ? textField.becomeFirstResponder() : textField.resignFirstResponder()
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        textField.textColor = theme.text.body
     }
 }
 

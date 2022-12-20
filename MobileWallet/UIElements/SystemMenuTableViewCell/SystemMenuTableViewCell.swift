@@ -81,7 +81,7 @@ class SystemMenuTableViewCellItem: NSObject {
     }
 }
 
-class SystemMenuTableViewCell: UITableViewCell {
+class SystemMenuTableViewCell: DynamicThemeCell {
 
     @objc enum SystemMenuTableViewCellMark: Int {
         case none
@@ -119,6 +119,9 @@ class SystemMenuTableViewCell: UITableViewCell {
     private var titleWithoutIconConstraint: NSLayoutConstraint?
     private var titleWithIconConstraint: NSLayoutConstraint?
     
+    private var normalTintColor: UIColor?
+    private var destructiveTintColor: UIColor?
+    
     private var isIconVisible: Bool = false {
         didSet { updateIconImageViewElement() }
     }
@@ -132,27 +135,44 @@ class SystemMenuTableViewCell: UITableViewCell {
             case .none:
                 markImageView.image = nil
                 progressView.isHidden = true
-                markDescriptionLabel.textColor = .clear
                 switcher.isHidden = !(item?.hasSwitch ?? false)
             case .attention:
                 markImageView.image = Theme.shared.images.attentionIcon!
                 progressView.isHidden = true
-                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionWarning
             case .success:
                 markImageView.image = Theme.shared.images.successIcon!
                 progressView.isHidden = true
-                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionSuccess
             case .progress:
                 markImageView.image = nil
                 progressView.isHidden = false
                 isUserInteractionEnabled = disableCellInProgress ? false : true
-                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionInProgress
             case .scheduled:
                 markImageView.image = Theme.shared.images.scheduledIcon!
                 progressView.isHidden = true
-                markDescriptionLabel.textColor = Theme.shared.colors.settingsTableViewMarkDescriptionScheduled
             }
+            
+            updateMarkDescriptionLabelColor(theme: theme)
         }
+    }
+    
+    private func updateMarkDescriptionLabelColor(theme: ColorTheme) {
+        
+        let markDescriptionLabelColor: UIColor?
+        
+        switch mark {
+        case .none:
+            markDescriptionLabelColor = .clear
+        case .attention:
+            markDescriptionLabelColor = theme.system.red
+        case .success:
+            markDescriptionLabelColor = theme.system.green
+        case .progress:
+            markDescriptionLabelColor = theme.text.body
+        case .scheduled:
+            markDescriptionLabelColor = theme.system.blue
+        }
+        
+        markDescriptionLabel.textColor = markDescriptionLabelColor
     }
 
     private var markDescription: String = "" {
@@ -195,24 +215,23 @@ class SystemMenuTableViewCell: UITableViewCell {
             markImageViewTrailingConstraint?.constant = 0
             arrowWidthConstraint?.constant = 0
         }
-        
-        let tintColor = item.isDestructive ? Theme.shared.colors.warning : Theme.shared.colors.navigationBarTint
 
         iconImageView.image = item.icon
-        iconImageView.tintColor = tintColor
         isIconVisible = item.icon != nil
         
         switcher.isOn = item.isSwitchIsOn
         switcher.isHidden = !item.hasSwitch
         arrow.isHidden = item.hasSwitch
         titleLabel.text = item.title
-        titleLabel.textColor = tintColor
         subtitleLabel.text = item.subtitle
-        arrow.image = item.isDestructive ? Theme.shared.images.forwardArrowRed : Theme.shared.images.forwardArrow
+        arrow.image = Theme.shared.images.forwardArrow
+        
         disableCellInProgress = item.disableCellInProgress
         mark = item.mark
         markDescription = item.markDescription
         observe(item: item)
+        
+        updateTintColor()
     }
 
     private func observe(item: SystemMenuTableViewCellItem) {
@@ -255,6 +274,28 @@ class SystemMenuTableViewCell: UITableViewCell {
         titleWithoutIconConstraint?.isActive = false
         titleWithIconConstraint?.isActive = true
     }
+    
+    override func update(theme: ColorTheme) {
+        
+        contentView.backgroundColor = theme.backgrounds.primary
+        subtitleLabel.textColor = theme.text.body
+        normalTintColor = theme.text.heading
+        destructiveTintColor = theme.system.red
+        
+        updateTintColor()
+        updateMarkDescriptionLabelColor(theme: theme)
+    }
+    
+    private func updateTintColor() {
+        
+        let isDestructive = item?.isDestructive ?? false
+        let tintColor = isDestructive ? destructiveTintColor : normalTintColor
+        
+        iconImageView.tintColor = tintColor
+        titleLabel.textColor = tintColor
+        subtitleLabel.textColor = tintColor
+        arrow.tintColor = tintColor
+    }
 
     deinit {
         kvoPercentToken?.invalidate()
@@ -266,7 +307,6 @@ class SystemMenuTableViewCell: UITableViewCell {
 // MARK: Setup views
 extension SystemMenuTableViewCell {
     private func setupView() {
-        contentView.backgroundColor = Theme.shared.colors.systemTableViewCellBackground
         contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 65.0).isActive = true
         
         setupArrow()
@@ -346,7 +386,6 @@ extension SystemMenuTableViewCell {
     private func setupDescriptionLabel() {
         subtitleLabel.font = Theme.shared.fonts.systemTableViewCell
         subtitleLabel.adjustsFontSizeToFitWidth = true
-        subtitleLabel.textColor = .tari.greys.mediumDarkGrey
         labelsStackView.addArrangedSubview(subtitleLabel)
     }
     
@@ -389,6 +428,5 @@ extension SystemMenuTableViewCell {
         markDescriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         markDescriptionLabel.centerYAnchor.constraint(equalTo: markImageView.centerYAnchor).isActive = true
         markDescriptionLabel.trailingAnchor.constraint(equalTo: switcher.leadingAnchor, constant: -8.0).isActive = true
-
     }
 }

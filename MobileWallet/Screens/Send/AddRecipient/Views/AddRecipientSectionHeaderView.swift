@@ -41,14 +41,13 @@
 import UIKit
 import TariCommon
 
-final class AddRecipientSectionHeaderView: UITableViewHeaderFooterView {
+final class AddRecipientSectionHeaderView: DynamicThemeHeaderFooterView {
     
     // MARK: - Subviews
     
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.txDateValueLabel
-        view.textColor = Theme.shared.colors.txSmallSubheadingLabel
         return view
     }()
     
@@ -85,5 +84,12 @@ final class AddRecipientSectionHeaderView: UITableViewHeaderFooterView {
         ]
         
         NSLayoutConstraint.activate(constratins)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.lightText
     }
 }

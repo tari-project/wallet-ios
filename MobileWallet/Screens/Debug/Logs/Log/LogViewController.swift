@@ -40,6 +40,7 @@
 
 import UIKit
 import Combine
+import TariCommon
 
 final class LogViewController: UIViewController {
     
@@ -146,9 +147,7 @@ final class LogViewController: UIViewController {
     }
 }
 
-import TariCommon
-
-final class PopUpSwitchListView: UIView {
+private final class PopUpSwitchListView: UIView {
     
     // MARK: - Subviews
     
@@ -179,7 +178,7 @@ final class PopUpSwitchListView: UIView {
     
     private func setupConstraints() {
         
-        [tableView].forEach { addSubview($0) }
+        addSubview(tableView)
         
         let constraints = [
             tableView.topAnchor.constraint(equalTo: topAnchor),
@@ -231,22 +230,17 @@ final class PopUpSwitchListView: UIView {
     }
 }
 
-private class PopUpSwitchListViewCell: UITableViewCell {
+private class PopUpSwitchListViewCell: DynamicThemeCell {
     
     // MARK: - Subviews
     
     @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.black
         view.font = .Avenir.medium.withSize(15.0)
         return view
     }()
     
-    @View private var switchView: UISwitch = {
-        let view = UISwitch()
-        view.onTintColor = .tari.purple
-        return view
-    }()
+    @View private var switchView = UISwitch()
     
     // MARK: - Properties
     
@@ -269,6 +263,7 @@ private class PopUpSwitchListViewCell: UITableViewCell {
     
     private func setupView() {
         selectionStyle = .none
+        backgroundColor = .clear
     }
     
     private func setupConstraints() {
@@ -291,7 +286,13 @@ private class PopUpSwitchListViewCell: UITableViewCell {
         switchView.addTarget(self, action: #selector(onSwitch), for: .valueChanged)
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.heading
+        switchView.onTintColor = theme.brand.purple
+    }
     
     func update(title: String?, isSelected: Bool) {
         label.text = title

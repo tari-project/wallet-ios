@@ -42,7 +42,7 @@ import UIKit
 import TariCommon
 import Lottie
 
-final class SendingTariView: UIView {
+final class SendingTariView: DynamicThemeView {
     
     struct InputModel {
         let numberOfSections: Int
@@ -75,9 +75,8 @@ final class SendingTariView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
-        setupViews()
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -89,10 +88,6 @@ final class SendingTariView: UIView {
     
     func setup(model: InputModel) {
         progressBar.update(sections: model.numberOfSections)
-    }
-    
-    private func setupViews() {
-        backgroundColor = Theme.shared.colors.sendingTariBackground
     }
     
     private func setupConstraints() {
@@ -139,6 +134,23 @@ final class SendingTariView: UIView {
         }
     }
     
+    func hideAllComponents(delay: TimeInterval, completion: (() -> Void)? = nil) {
+        UIView.animate(withDuration: 1.0, delay: delay, options: [], animations: { [weak self] in
+            self?.firstLabel.alpha = 0.0
+            self?.secondLabel.alpha = 0.0
+            self?.progressBar.alpha = 0.0
+        }, completion: { _ in
+            completion?()
+        })
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+    }
+    
     func update(firstText: String?, secondText: String?, completion: (() -> Void)?) {
         
         firstLabel.update(text: firstText)
@@ -148,15 +160,5 @@ final class SendingTariView: UIView {
                 completion?()
             }
         }
-    }
-    
-    func hideAllComponents(delay: TimeInterval, completion: (() -> Void)? = nil) {
-        UIView.animate(withDuration: 1.0, delay: delay, options: [], animations: { [weak self] in
-            self?.firstLabel.alpha = 0.0
-            self?.secondLabel.alpha = 0.0
-            self?.progressBar.alpha = 0.0
-        }, completion: { _ in
-            completion?()
-        })
     }
 }

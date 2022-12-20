@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class PopUpImageHeaderView: UIView {
+final class PopUpImageHeaderView: DynamicThemeView {
     
     // MARK: - Subviews
     
@@ -53,7 +53,6 @@ final class PopUpImageHeaderView: UIView {
     
     @View private(set) var label: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.feedbackPopupTitle
         view.font = Theme.shared.fonts.feedbackPopupTitle
         view.textAlignment = .center
         view.numberOfLines = 0
@@ -70,8 +69,8 @@ final class PopUpImageHeaderView: UIView {
     
     // MARK: - Initialiserss
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -99,5 +98,12 @@ final class PopUpImageHeaderView: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.heading
     }
 }

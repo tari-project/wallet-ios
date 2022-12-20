@@ -41,21 +41,19 @@
 import UIKit
 import TariCommon
 
-final class SeedWordListElementView: UIView {
+final class SeedWordListElementView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var indexLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseCellNumber
-        view.textColor = Theme.shared.colors.cettingsSeedPhraseCellTitle?.withAlphaComponent(0.5)
         return view
     }()
     
     @View private var textLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseCellTitle
-        view.textColor = Theme.shared.colors.cettingsSeedPhraseCellTitle
         return view
     }()
     
@@ -73,8 +71,8 @@ final class SeedWordListElementView: UIView {
     
     // MARK: - Initalisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -100,5 +98,13 @@ final class SeedWordListElementView: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        indexLabel.textColor = theme.text.body?.withAlphaComponent(0.5)
+        textLabel.textColor = theme.text.body
     }
 }

@@ -41,20 +41,18 @@
 import UIKit
 import TariCommon
 
-final class AboutViewCell: UITableViewCell {
+final class AboutViewCell: DynamicThemeCell {
     
     // MARK: - Subviews
     
     @View private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.tintColor = .tari.greys.black
         return view
     }()
     
     @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.mediumDarkGrey
         view.font = .Avenir.light.withSize(14.0)
         view.numberOfLines = 2
         return view
@@ -96,6 +94,15 @@ final class AboutViewCell: UITableViewCell {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        iconView.tintColor = theme.text.heading
+        label.textColor = theme.text.heading
     }
     
     func update(icon: UIImage?, text: String?) {

@@ -98,12 +98,12 @@ private extension NetworkMonitor.Status {
         }
     }
     
-    var statusColor: UIColor? {
+    var status: StatusView.Status {
         switch self {
         case .disconnected:
-            return .tari.system.red
+            return .error
         case .connected:
-            return .tari.system.green
+            return .ok
         }
     }
 }
@@ -121,14 +121,14 @@ private extension TorManager.ConnectionStatus {
         }
     }
     
-    var statusColor: UIColor? {
+    var status: StatusView.Status {
         switch self {
         case .disconnected, .disconnecting:
-            return .tari.system.red
+            return .error
         case .connecting, .portsOpen:
-            return .tari.system.orange
+            return .warning
         case .connected:
-            return .tari.system.green
+            return .ok
         }
     }
 }
@@ -146,14 +146,14 @@ private extension BaseNodeConnectivityStatus {
         }
     }
     
-    var statusColor: UIColor? {
+    var status: StatusView.Status {
         switch self {
         case .offline:
-            return .tari.system.red
+            return .error
         case .connecting:
-            return .tari.system.orange
+            return .warning
         case .online:
-            return .tari.system.green
+            return .ok
         }
     }
 }
@@ -173,16 +173,16 @@ private extension TariValidationService.SyncStatus {
         }
     }
     
-    var statusColor: UIColor? {
+    var status: StatusView.Status {
         switch self {
         case .idle:
-            return .tari.system.red
+            return .error
         case .syncing:
-            return .tari.system.orange
+            return .warning
         case .synced:
-            return .tari.system.green
+            return .ok
         case .failed:
-            return .tari.system.red
+            return .error
         }
     }
 }
@@ -212,22 +212,22 @@ extension ConnectionMonitor {
         
         $networkConnection
             .receive(on: DispatchQueue.main)
-            .sink { [weak contentSection] in contentSection?.updateNetworkStatus(text: $0.statusName, statusColor: $0.statusColor) }
+            .sink { [weak contentSection] in contentSection?.updateNetworkStatus(text: $0.statusName, status: $0.status) }
             .store(in: &cancellables)
         
         $torConnection
             .receive(on: DispatchQueue.main)
-            .sink { [weak contentSection] in contentSection?.updateTorStatus(text: $0.statusName, statusColor: $0.statusColor) }
+            .sink { [weak contentSection] in contentSection?.updateTorStatus(text: $0.statusName, status: $0.status) }
             .store(in: &cancellables)
         
         $baseNodeConnection
             .receive(on: DispatchQueue.main)
-            .sink { [weak contentSection] in contentSection?.updateBaseNodeConnectionStatus(text: $0.statusName, statusColor: $0.statusColor) }
+            .sink { [weak contentSection] in contentSection?.updateBaseNodeConnectionStatus(text: $0.statusName, status: $0.status) }
             .store(in: &cancellables)
         
         $syncStatus
             .receive(on: DispatchQueue.main)
-            .sink { [weak contentSection] in contentSection?.updateBaseNodeSyncStatus(text: $0.statusName, statusColor: $0.statusColor) }
+            .sink { [weak contentSection] in contentSection?.updateBaseNodeSyncStatus(text: $0.statusName, status: $0.status) }
             .store(in: &cancellables)
         
         buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { PopUpPresenter.dismissPopup { cancellables.forEach { $0.cancel() }}}))

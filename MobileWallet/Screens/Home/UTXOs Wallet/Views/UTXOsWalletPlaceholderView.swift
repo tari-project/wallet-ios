@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class UTXOsWalletPlaceholderView: UIView {
+final class UTXOsWalletPlaceholderView: DynamicThemeView {
     
     // MARK: - Subviews
     
@@ -54,7 +54,7 @@ final class UTXOsWalletPlaceholderView: UIView {
     
     @View private var imageView: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.utxoWalletPlaceholder
+        view.image = Theme.shared.images.utxoWalletPlaceholder?.withRenderingMode(.alwaysTemplate)
         view.contentMode = .scaleAspectFit
         return view
     }()
@@ -62,7 +62,6 @@ final class UTXOsWalletPlaceholderView: UIView {
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.placeholder.label.title")
-        view.textColor = .tari.greys.black
         view.textAlignment = .center
         view.font = .Avenir.light.withSize(18.0)
         return view
@@ -71,7 +70,6 @@ final class UTXOsWalletPlaceholderView: UIView {
     @View private var subtitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.placeholder.label.subtitle")
-        view.textColor = .tari.greys.mediumDarkGrey
         view.textAlignment = .center
         view.font = .Avenir.medium.withSize(14.0)
         view.numberOfLines = 0
@@ -80,8 +78,8 @@ final class UTXOsWalletPlaceholderView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -106,5 +104,14 @@ final class UTXOsWalletPlaceholderView: UIView {
         ]
        
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        imageView.tintColor = theme.text.body
+        titleLabel.textColor = theme.text.heading
+        subtitleLabel.textColor = theme.text.body
     }
 }

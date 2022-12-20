@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class NetworkTrafficView: UIView {
+final class NetworkTrafficView: DynamicThemeView {
     
     enum Variant {
         case lowTraffic
@@ -54,7 +54,6 @@ final class NetworkTrafficView: UIView {
     @View private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.tintColor = .tari.greys.mediumDarkGrey
         return view
     }()
     
@@ -62,7 +61,6 @@ final class NetworkTrafficView: UIView {
         let view = UILabel()
         view.text = localized("add_amount.label.network_traffic")
         view.font = .Avenir.medium.withSize(14.0)
-        view.textColor = .tari.greys.mediumDarkGrey
         return view
     }()
     
@@ -74,8 +72,8 @@ final class NetworkTrafficView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         updateIcon()
     }
@@ -103,6 +101,12 @@ final class NetworkTrafficView: UIView {
     }
     
     // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        iconView.tintColor = theme.text.body
+        label.textColor = theme.text.body
+    }
     
     private func updateIcon() {
         switch variant {

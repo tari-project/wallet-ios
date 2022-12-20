@@ -47,7 +47,6 @@ final class ContextualButton: BaseButton {
     
     @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.black
         view.textAlignment = .right
         view.font = .Avenir.medium.withSize(17.0)
         return view
@@ -56,7 +55,6 @@ final class ContextualButton: BaseButton {
     @View private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.tintColor = .tari.greys.black
         return view
     }()
     
@@ -64,6 +62,13 @@ final class ContextualButton: BaseButton {
     
     var isExpanded: Bool = true {
         didSet { updateLayout() }
+    }
+    
+    override var tintColor: UIColor? {
+        didSet {
+            label.textColor = tintColor
+            iconView.tintColor = tintColor
+        }
     }
     
     private var labelLeadingConstraint: NSLayoutConstraint?

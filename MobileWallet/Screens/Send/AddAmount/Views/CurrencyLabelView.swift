@@ -47,7 +47,7 @@ final class CurrencyLabelView: UIView {
     
     @View private var currencyIcon: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.currencySymbol?.withRenderingMode(.alwaysTemplate)
+        view.image = Theme.shared.images.currencySymbol
         view.contentMode = .scaleAspectFit
         return view
     }()

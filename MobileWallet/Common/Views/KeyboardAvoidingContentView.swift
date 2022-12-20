@@ -41,7 +41,7 @@
 import UIKit
 import Combine
 
-class KeyboardAvoidingContentView: UIView {
+class KeyboardAvoidingContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
@@ -60,8 +60,8 @@ class KeyboardAvoidingContentView: UIView {
 
     // MARK: - Initializer
 
-    override init(frame: CGRect) {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupFeedbacks()
     }

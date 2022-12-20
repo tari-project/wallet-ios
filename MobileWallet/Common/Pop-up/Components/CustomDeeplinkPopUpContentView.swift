@@ -41,13 +41,12 @@
 import UIKit
 import TariCommon
 
-final class CustomDeeplinkPopUpContentView: UIView {
+final class CustomDeeplinkPopUpContentView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = Theme.shared.colors.profileBackground
         view.layer.cornerRadius = 10.0
         return view
     }()
@@ -55,7 +54,6 @@ final class CustomDeeplinkPopUpContentView: UIView {
     @View private var nameLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
-        view.textColor = Theme.shared.colors.profileMiddleLabel
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -65,7 +63,6 @@ final class CustomDeeplinkPopUpContentView: UIView {
         let view = UILabel()
         view.text = localized("add_base_node_overlay.label.peer")
         view.font = .Avenir.black.withSize(14.0)
-        view.textColor = Theme.shared.colors.profileMiddleLabel
         view.textAlignment = .center
         return view
     }()
@@ -73,7 +70,6 @@ final class CustomDeeplinkPopUpContentView: UIView {
     @View private var peerAddressLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
-        view.textColor = Theme.shared.colors.profileMiddleLabel
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -96,8 +92,8 @@ final class CustomDeeplinkPopUpContentView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupCallbacks()
         updateViews()
@@ -144,7 +140,15 @@ final class CustomDeeplinkPopUpContentView: UIView {
         }
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundView.backgroundColor = theme.backgrounds.secondary
+        nameLabel.textColor = theme.text.body
+        peerTitleLabel.textColor = theme.text.body
+        peerAddressLabel.textColor = theme.text.body
+    }
     
     func update(name: String, peer: String) {
         peerAddressLabel.text = peer

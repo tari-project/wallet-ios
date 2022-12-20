@@ -44,12 +44,11 @@ import Lottie
 enum ActionButtonVariation {
     case normal
     case destructive
-    case raised // Like normal but with a shadow
     case loading
     case disabled
 }
 
-final class ActionButton: BaseButton {
+final class ActionButton: DynamicThemeBaseButton {
     static let RADIUS_POINTS: CGFloat = 4.0
     static let HEIGHT: CGFloat = 53.0
 
@@ -57,13 +56,11 @@ final class ActionButton: BaseButton {
     private let pendingAnimationView = AnimationView()
 
     var variation: ActionButtonVariation = .normal {
-        didSet {
-            updateStyle()
-        }
+        didSet { updateStyle(theme: theme) }
     }
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init() {
+        super.init()
         commonSetup()
     }
 
@@ -73,15 +70,17 @@ final class ActionButton: BaseButton {
     }
 
     private func commonSetup() {
-        setTitleColor(Theme.shared.colors.actionButtonTitle, for: .normal)
-        setTitleColor(Theme.shared.colors.actionButtonTitleDisabled, for: .disabled)
         bounds = CGRect(x: bounds.maxX, y: bounds.maxY, width: bounds.width, height: ActionButton.HEIGHT)
         layer.cornerRadius = ActionButton.RADIUS_POINTS
         heightAnchor.constraint(equalToConstant: ActionButton.HEIGHT).isActive = true
-        backgroundColor = Theme.shared.colors.actionButtonBackgroundSimple
         titleLabel?.font = Theme.shared.fonts.actionButton
         titleLabel?.adjustsFontSizeToFitWidth = true
         contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 8.0, bottom: 0.0, right: 8.0)
+        
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        gradientLayer.locations = [0.0, 1.0]
+        layer.insertSublayer(gradientLayer, at: 0)
     }
 
     override func setImage(_ image: UIImage?, for state: UIControl.State) {
@@ -97,8 +96,8 @@ final class ActionButton: BaseButton {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
-        updateStyle()
+        gradientLayer.frame = bounds
+        updateStyle(theme: theme)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -126,49 +125,37 @@ final class ActionButton: BaseButton {
         }
     }
 
-     private func removeStyle() {
-        removeGradient()
+    private func removeStyle() {
+        gradientLayer.removeFromSuperlayer()
         pendingAnimationView.removeFromSuperview()
         titleLabel?.isHidden = false
-        backgroundColor = Theme.shared.colors.actionButtonBackgroundSimple
     }
-
-    private func applyShadow() {
-        layer.shadowColor = Theme.shared.colors.actionButtonShadow!.cgColor
-        layer.shadowOffset = CGSize(width: 10.0, height: 10.0)
-        layer.shadowRadius = 10
-        layer.shadowOpacity = 0.5
-        clipsToBounds = true
-        layer.masksToBounds = false
-    }
-
-    private func updateStyle() {
+    
+    private func updateStyle(theme: ColorTheme) {
         removeStyle()
+        
         switch variation {
         case .normal:
             isEnabled = true
-            applyGradient()
-            tintColor = Theme.shared.colors.actionButtonTitle
+            layer.insertSublayer(gradientLayer, at: 0)
+            imageView?.tintColor = theme.buttons.primaryText
         case .destructive:
             isEnabled = true
-            backgroundColor = Theme.shared.colors.warning
-            tintColor = Theme.shared.colors.actionButtonTitle
-        case .raised:
-            isEnabled = true
-            applyShadow()
-            applyGradient()
-            tintColor = Theme.shared.colors.actionButtonTitle
+            backgroundColor = theme.system.red
+            imageView?.tintColor = theme.buttons.primaryText
         case .loading:
             isEnabled = false
+            layer.insertSublayer(gradientLayer, at: 0)
             titleLabel?.isHidden = true
-            applyGradient()
+            imageView?.tintColor = .clear
             setupPendingAnimation()
-            tintColor = Theme.shared.colors.actionButtonTitle
         case .disabled:
             isEnabled = false
-            backgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled
-            tintColor = Theme.shared.colors.actionButtonTitleDisabled
+            backgroundColor = theme.buttons.disabled
+            imageView?.tintColor = theme.buttons.disabledText
         }
+        
+        gradientLayer.colors = [theme.buttons.primaryStart, theme.buttons.primaryEnd].compactMap { $0?.cgColor }
     }
 
     func animateIn() {
@@ -227,5 +214,12 @@ final class ActionButton: BaseButton {
         pendingAnimationView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
         pendingAnimationView.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        setTitleColor(theme.buttons.primaryText, for: .normal)
+        setTitleColor(theme.buttons.disabledText, for: .disabled)
+        updateStyle(theme: theme)
     }
 }

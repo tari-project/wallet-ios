@@ -41,13 +41,12 @@
 import UIKit
 import TariCommon
 
-final class TariPopUp: UIView {
+final class TariPopUp: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var backgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .white
         view.layer.cornerRadius = 26.0
         return view
     }()
@@ -63,7 +62,7 @@ final class TariPopUp: UIView {
     // MARK: - Initialisers
     
     init(headerSection: UIView?, contentSection: UIView?, buttonsSection: UIView?) {
-        super.init(frame: .zero)
+        super.init()
         setupConstraints(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
     }
     
@@ -113,6 +112,13 @@ final class TariPopUp: UIView {
         guard let viewOnTop = viewOnTop else { return }
         constraints.append(viewOnTop.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -22.0))
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundView.backgroundColor = theme.backgrounds.primary
     }
     
     // MARK: - Helpers

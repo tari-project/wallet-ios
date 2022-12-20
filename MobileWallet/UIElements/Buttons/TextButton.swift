@@ -46,18 +46,17 @@ enum TextButtonVariation {
     case warning
 }
 
-final class TextButton: BaseButton {
+final class TextButton: DynamicThemeBaseButton {
     
     private static let imageHorizontalSpaceing: CGFloat = 2.0
     var spacing: CGFloat = imageHorizontalSpaceing
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonSetup()
+    
+    private var variation: TextButtonVariation = .primary {
+        didSet { updateTextColor(theme: theme) }
     }
 
-    convenience init() {
-        self.init(frame: CGRect.zero)
+    override init() {
+        super.init()
         commonSetup()
     }
 
@@ -75,11 +74,10 @@ final class TextButton: BaseButton {
     }
 
     private func commonSetup() {
-        setVariation(.primary)
-
         if let label = titleLabel {
             label.heightAnchor.constraint(equalToConstant: label.font.pointSize * 1.2).isActive = true
         }
+        setVariation(variation)
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -105,22 +103,7 @@ final class TextButton: BaseButton {
     }
 
     func setVariation(_ variation: TextButtonVariation, font: UIFont? = Theme.shared.fonts.textButton) {
-        switch variation {
-        case .secondary:
-            setTitleColor(Theme.shared.colors.textButtonSecondary, for: .normal)
-            break
-        case .warning:
-            setTitleColor(Theme.shared.colors.warningButtonTitle, for: .normal)
-        default:
-            setTitleColor(Theme.shared.colors.textButton, for: .normal)
-            break
-        }
-
-        titleLabel?.font = font
-    }
-    
-    func update(textColor: UIColor?, font: UIFont?) {
-        setTitleColor(textColor, for: .normal)
+        self.variation = variation
         titleLabel?.font = font
     }
 
@@ -140,5 +123,20 @@ final class TextButton: BaseButton {
         transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
         titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
         imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+    }
+    
+    private func updateTextColor(theme: ColorTheme) {
+        switch variation {
+        case .primary:
+            setTitleColor(theme.text.body, for: .normal)
+        case .secondary:
+            setTitleColor(theme.text.links, for: .normal)
+        case .warning:
+            setTitleColor(theme.system.red, for: .normal)
+        }
     }
 }

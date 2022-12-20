@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class ValuePickerView: UIView {
+final class ValuePickerView: DynamicThemeView {
     
     // MARK: - Subviews
     
@@ -59,10 +59,8 @@ final class ValuePickerView: UIView {
     
     @View private var valueLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.black
         view.textAlignment = .center
         view.font = .Avenir.heavy.withSize(22.0)
-        view.backgroundColor = .tari.greys.mediumLightGrey
         return view
     }()
     
@@ -90,8 +88,8 @@ final class ValuePickerView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupCallbacks()
     }
@@ -146,12 +144,23 @@ final class ValuePickerView: UIView {
         }
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        valueLabel.textColor = theme.text.heading
+        valueLabel.backgroundColor = theme.backgrounds.secondary
+        updateButtonsColor(theme: theme)
+    }
+    
+    private func updateButtonsColor(theme: ColorTheme) {
+        minusButtonBackgroundView.backgroundColor = value == minValue ? theme.neutral.inactive  : theme.brand.purple
+        plusButtonBackgroundView.backgroundColor = value == maxValue ? theme.neutral.inactive : theme.brand.purple
+    }
     
     private func update(value: Int) {
         valueLabel.text = "\(value)"
-        minusButtonBackgroundView.backgroundColor = value == minValue ? .tari.greys.mediumLightGrey : .tari.purple
-        plusButtonBackgroundView.backgroundColor = value == maxValue ? .tari.greys.mediumLightGrey : .tari.purple
+        updateButtonsColor(theme: theme)
         onValueChanged?(value)
     }
 }

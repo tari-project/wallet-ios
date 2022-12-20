@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class TokensToolbar: UIToolbar {
+final class TokensToolbar: DynamicThemeToolbar {
     
     // MARK: - Subviews
     
@@ -54,7 +54,6 @@ final class TokensToolbar: UIToolbar {
     
     @View private var label: UILabel = {
         let label = UILabel()
-        label.textColor = Theme.shared.colors.textButton
         label.textAlignment = .center
         label.font = UIFont.Avenir.medium.withSize(16.0)
         return label
@@ -76,8 +75,8 @@ final class TokensToolbar: UIToolbar {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
         setupFeedback()
@@ -89,8 +88,13 @@ final class TokensToolbar: UIToolbar {
     
     private func setupViews() {
         collectionView.register(type: TokenView.self)
-        barTintColor = .white
         isTranslucent = true
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        barTintColor = theme.backgrounds.primary
+        label.textColor = theme.text.lightText
     }
     
     private func setupConstraints() {

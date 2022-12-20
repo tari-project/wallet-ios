@@ -84,7 +84,6 @@ extension SettingsParentTableViewController {
 extension SettingsParentTableViewController {
     override func setupViews() {
         super.setupViews()
-        view.backgroundColor = Theme.shared.colors.settingsTableStyleBackground
         setupTableView()
     }
 
@@ -94,9 +93,9 @@ extension SettingsParentTableViewController {
         
         let constraints = [
             tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)

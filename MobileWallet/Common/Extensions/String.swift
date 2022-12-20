@@ -96,15 +96,9 @@ extension String {
         return data
     }
     
-    func withCurrencySymbol(imageBounds: CGRect, imageTintColor: UIColor?) -> NSAttributedString {
+    func withCurrencySymbol(imageBounds: CGRect) -> NSAttributedString {
         
-        guard var symbol = Theme.shared.images.currencySymbol else { return NSAttributedString() }
-        
-        if let imageTintColor = imageTintColor {
-            symbol = symbol
-                .withRenderingMode(.alwaysTemplate)
-                .withTintColor(imageTintColor)
-        }
+        guard let symbol = Theme.shared.images.currencySymbol else { return NSAttributedString() }
         
         let currencySymbol = NSTextAttachment(image: symbol)
         currencySymbol.bounds = imageBounds

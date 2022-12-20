@@ -70,7 +70,6 @@ final class BackupWalletSettingsView: BaseNavigationContentView {
     
     private func setupViews() {
         navigationBar.title = localized("backup_wallet_settings.title")
-        backgroundColor = Theme.shared.colors.settingsTableStyleBackground
     }
     
     private func setupConstraints() {

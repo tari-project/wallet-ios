@@ -41,20 +41,16 @@
 import UIKit
 import TariCommon
 
-final class TransactionDetailsSeparatorView: UIView {
+final class TransactionDetailsSeparatorView: DynamicThemeView {
     
     // MARK: - Subviews
     
-    @View private var separatorView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Theme.shared.colors.txScreenDivider
-        return view
-    }()
+    @View private var separatorView = UIView()
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstaints()
     }
     
@@ -77,6 +73,13 @@ final class TransactionDetailsSeparatorView: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        separatorView.backgroundColor = theme.neutral.tertiary
     }
 }
 

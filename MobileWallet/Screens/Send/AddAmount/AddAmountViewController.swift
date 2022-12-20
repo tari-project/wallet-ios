@@ -42,22 +42,19 @@ import UIKit
 import TariCommon
 import Combine
 
-final class AddAmountViewController: UIViewController {
+final class AddAmountViewController: DynamicThemeViewController {
     
     private let paymentInfo: PaymentInfo
     private let deeplink: TransactionsSendDeeplink?
     
-    private var buttons = [UIButton]()
     private let navigationBar = NavigationBar()
-    private let continueButton = ActionButton(frame: .zero)
+    @View private var emojiIdView = EmojiIdView()
+    private let continueButton = ActionButton()
     private let amountLabel = AnimatedBalanceLabel()
-    private let keypadContainerStackView = UIStackView()
     private let warningView = UIView()
     private let balanceExceededLabel = UILabel()
     private let balancePendingLabel = UILabel()
-    private let walletBalanceIcon = UIImageView(
-        image: Theme.shared.images.currencySymbol?.withRenderingMode(.alwaysTemplate)
-    )
+    private let walletBalanceIcon = UIImageView(image: Theme.shared.images.currencySymbol)
     private let walletBalanceLabel = UILabel()
     private let walletBalanceTitleLabel = UILabel()
     private let walletBalanceStackView = UIStackView()
@@ -66,12 +63,18 @@ final class AddAmountViewController: UIViewController {
     private var balanceCheckTimer: Timer?
     private let gemImageString: NSAttributedString = {
         let gemAttachment = NSTextAttachment()
-        gemAttachment.image = Theme.shared.images.currencySymbol?.withTintColor(Theme.shared.colors.amountLabel!)
+        gemAttachment.image = Theme.shared.images.currencySymbol
         gemAttachment.bounds = CGRect(x: 0, y: 0, width: 21, height: 21)
         return NSAttributedString(attachment: gemAttachment)
     }()
     
     private let isSmallScreen: Bool = UIScreen.main.nativeBounds.height <= 1334.0
+    
+    @View var amountKeyboardView: AmountKeyboardView = {
+        let view = AmountKeyboardView()
+        view.setup(keys: .amountKeyboard)
+        return view
+    }()
     
     @View private var feeSpinnerView: AddAmountSpinnerView = AddAmountSpinnerView()
     
@@ -87,7 +90,7 @@ final class AddAmountViewController: UIViewController {
     
     @View private var feeButton: TextButton = {
         let view = TextButton()
-        view.update(textColor: .tari.greys.mediumDarkGrey, font: .Avenir.medium.withSize(14.0))
+        view.setVariation(.primary, font: .Avenir.medium.withSize(14.0))
         view.spacing = 3.0
         view.setRightImage(Theme.shared.images.helpButton)
         return view
@@ -106,20 +109,14 @@ final class AddAmountViewController: UIViewController {
         let view = UILabel()
         view.text = localized("add_amount.label.one_sided_payment")
         view.font = .Avenir.medium.withSize(16.0)
-        view.textColor = Theme.shared.colors.navigationBarTint
         return view
     }()
-    
-    @View private var oneSidedPaymentSwitch: UISwitch = {
-        let view = UISwitch()
-        view.onTintColor = Theme.shared.colors.actionButtonBackgroundSimple
-        return view
-    }()
+        
+    @View private var oneSidedPaymentSwitch = UISwitch()
     
     @View private var oneSidedPaymentHelpButton: BaseButton = {
         let view = BaseButton()
         view.setImage(Theme.shared.images.helpButton, for: .normal)
-        view.tintColor = Theme.shared.colors.textButton
         return view
     }()
     
@@ -149,6 +146,7 @@ final class AddAmountViewController: UIViewController {
     private var feePerGram: MicroTari? { transactionFeesManager.feesData?.feesPerGram.fee(forIndex: selectedFeeIndex) }
     @Published private var fee: MicroTari?
     
+    private var isBalanceExceeded = false
     private var cancellables = Set<AnyCancellable>()
     
     init(paymentInfo: PaymentInfo, deeplink: TransactionsSendDeeplink?) {
@@ -163,9 +161,6 @@ final class AddAmountViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = Theme.shared.colors.appBackground
-        overrideUserInterfaceStyle = .light
         setup()
         displayAliasOrEmojiId()
         updateLabelText()
@@ -191,7 +186,7 @@ final class AddAmountViewController: UIViewController {
     private func displayAliasOrEmojiId() {
         do {
             guard let contact = try Tari.shared.contacts.findContact(hex: paymentInfo.address.byteVector.hex) else {
-                navigationBar.showEmojiId(emojiID: try paymentInfo.address.emojis, hex: try paymentInfo.address.byteVector.hex, presenterController: self)
+                emojiIdView.setup(emojiID: try paymentInfo.address.emojis, hex: try paymentInfo.address.byteVector.hex, textCentered: true, inViewController: self)
                 return
             }
             navigationBar.title = try contact.alias
@@ -228,24 +223,6 @@ final class AddAmountViewController: UIViewController {
             updateNextStepElements(isEnabled: true)
         }
         showTxFee(fee)
-    }
-
-    @objc private func keypadButtonTapped(_ sender: UIButton) {
-        if sender.tag != 12 {
-            let value: String = {
-                if sender.tag < 10 {
-                    return String(sender.tag)
-                } else if sender.tag == 11 {
-                    return "0"
-                } else {
-                    return String(MicroTari.decimalSeparator)
-                }
-            }()
-
-            addCharacter(value)
-        } else {
-            deleteCharacter()
-        }
     }
 
     // Shouldn't ever really be used but just in case
@@ -286,6 +263,36 @@ final class AddAmountViewController: UIViewController {
             updateLabelText()
         }
     }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        view.backgroundColor = theme.backgrounds.primary
+        oneSidedPaymentLabel.textColor = theme.text.heading
+        oneSidedPaymentSwitch.onTintColor = theme.brand.purple
+        oneSidedPaymentHelpButton.tintColor = theme.text.body
+        warningView.layer.borderColor = theme.system.red?.cgColor
+        walletBalanceTitleLabel.textColor = theme.text.body
+        balanceExceededLabel.textColor = theme.system.red
+        balancePendingLabel.textColor = theme.system.red
+        
+        updateAmountLabelColor(theme: theme)
+        updateWalletBalanceViews(theme: theme)
+    }
+    
+    private func updateAmountLabelColor(theme: ColorTheme) {
+
+        guard let attributedText = amountLabel.attributedText, let color = theme.text.heading else { return }
+
+        let amountText = NSMutableAttributedString(attributedString: attributedText)
+        amountText.addAttributes([.foregroundColor : color], range: NSRange(location: 0, length: amountText.length))
+        
+        amountLabel.attributedText = amountText
+    }
+    
+    private func updateWalletBalanceViews(theme: ColorTheme) {
+        walletBalanceIcon.tintColor = isBalanceExceeded ? theme.system.red : theme.text.heading
+        walletBalanceLabel.textColor = isBalanceExceeded ? theme.system.red : theme.text.heading
+    }
 
     private func updateLabelText() {
         
@@ -293,15 +300,13 @@ final class AddAmountViewController: UIViewController {
         
         let amountAttributedText = NSMutableAttributedString(
             string: convertRawToFormattedString() ?? "0",
-            attributes: [
-                .font: font,
-                .foregroundColor: Theme.shared.colors.amountLabel!
-            ]
+            attributes: [.font: font,]
         )
 
         amountAttributedText.insert(gemImageString, at: 0)
         amountAttributedText.insert(NSAttributedString(string: "  "), at: 1)
         amountLabel.attributedText = amountAttributedText
+        updateAmountLabelColor(theme: theme)
 
         let isValidValue = isValidNumber(string: rawInput, finalNumber: true)
 
@@ -395,8 +400,6 @@ final class AddAmountViewController: UIViewController {
         warningView.layer.borderWidth = 1
         walletBalanceLabel.text = balance
         walletBalanceTitleLabel.isHidden = true
-        walletBalanceIcon.tintColor = Theme.shared.colors.warningBoxBorder
-        walletBalanceLabel.textColor = Theme.shared.colors.warningBoxBorder
 
         let animation = CABasicAnimation(keyPath: "position")
         animation.duration = animationDuration / 4
@@ -405,6 +408,9 @@ final class AddAmountViewController: UIViewController {
         animation.fromValue = CGPoint(x: amountLabel.center.x - 10, y: amountLabel.center.y)
         animation.toValue = CGPoint(x: amountLabel.center.x + 10, y: amountLabel.center.y)
         amountLabel.layer.add(animation, forKey: "position")
+        
+        isBalanceExceeded = true
+        updateWalletBalanceViews(theme: theme)
     }
 
     private func showAvailableBalance() {
@@ -418,8 +424,9 @@ final class AddAmountViewController: UIViewController {
         balanceExceededLabel.isHidden = true
         balancePendingLabel.isHidden = true
         walletBalanceTitleLabel.isHidden = false
-        walletBalanceIcon.tintColor = Theme.shared.colors.amountAvailableBalance
-        walletBalanceLabel.textColor = Theme.shared.colors.amountAvailableBalance
+        
+        isBalanceExceeded = false
+        updateWalletBalanceViews(theme: theme)
     }
 
     private func showTxFee(_ fee: MicroTari) {
@@ -527,13 +534,18 @@ final class AddAmountViewController: UIViewController {
 extension AddAmountViewController {
     private func setup() {
         // navigationBar
+        navigationBar.isSeparatorVisible = false
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(navigationBar)
-        navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        navigationBar.heightAnchor.constraint(equalToConstant: 44).isActive = true
+        navigationBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
 
+        navigationBar.addSubview(emojiIdView)
+        
+        emojiIdView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor).isActive = true
+        emojiIdView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor).isActive = true
+        
         // contiue button
         view.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
@@ -573,7 +585,7 @@ extension AddAmountViewController {
         amountContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         amountContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
         amountContainer.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
-        amountContainer.bottomAnchor.constraint(equalTo: keypadContainerStackView.topAnchor).isActive = true
+        amountContainer.bottomAnchor.constraint(equalTo: amountKeyboardView.topAnchor).isActive = true
 
         let amountHeight: CGFloat = isSmallScreen ? 50.0 : 75.0
         
@@ -600,7 +612,6 @@ extension AddAmountViewController {
         warningView.layer.cornerRadius = 12
         warningView.layer.masksToBounds = true
         warningView.layer.borderWidth = 0
-        warningView.layer.borderColor = Theme.shared.colors.warningBoxBorder?.cgColor
         warningView.setContentCompressionResistancePriority(.required, for: .vertical)
 
         let warningStackView = UIStackView()
@@ -621,23 +632,19 @@ extension AddAmountViewController {
         walletBalanceIcon.widthAnchor.constraint(equalToConstant: 11).isActive = true
         walletBalanceIcon.heightAnchor.constraint(equalToConstant: 11).isActive = true
         walletBalanceIcon.contentMode = .scaleAspectFit
-        walletBalanceIcon.tintColor = Theme.shared.colors.warningBoxBorder
         walletBalanceStackView.addArrangedSubview(walletBalanceIcon)
         walletBalanceStackView.addArrangedSubview(walletBalanceLabel)
         walletBalanceLabel.font = Theme.shared.fonts.warningBoxTitleLabel
-        walletBalanceLabel.textColor = Theme.shared.colors.warningBoxBorder
         walletBalanceLabel.text = "0.0"
 
         warningStackView.addArrangedSubview(walletBalanceTitleLabel)
         walletBalanceTitleLabel.font = Theme.shared.fonts.amountWarningLabel
-        walletBalanceTitleLabel.textColor = Theme.shared.colors.amountAvailableBalance
         walletBalanceTitleLabel.text = localized("common.wallet_balance")
         walletBalanceTitleLabel.numberOfLines = 1
         walletBalanceTitleLabel.textAlignment = .center
 
         warningStackView.addArrangedSubview(balanceExceededLabel)
         balanceExceededLabel.font = Theme.shared.fonts.amountWarningLabel
-        balanceExceededLabel.textColor = Theme.shared.colors.amountWarningLabel
         balanceExceededLabel.text = localized("add_amount.warning.not_enough_tari")
         balanceExceededLabel.numberOfLines = 0
         balanceExceededLabel.textAlignment = .center
@@ -645,7 +652,6 @@ extension AddAmountViewController {
 
         warningStackView.addArrangedSubview(balancePendingLabel)
         balancePendingLabel.font = Theme.shared.fonts.amountWarningLabel
-        balancePendingLabel.textColor = Theme.shared.colors.amountWarningLabel
         balancePendingLabel.numberOfLines = 0
         balancePendingLabel.textAlignment = .center
         balancePendingLabel.lineBreakMode = .byWordWrapping
@@ -676,62 +682,21 @@ extension AddAmountViewController {
     }
 
     private func setupKeypad() {
-        view.addSubview(keypadContainerStackView)
-        keypadContainerStackView.translatesAutoresizingMaskIntoConstraints = false
-        keypadContainerStackView.axis = .vertical
-        keypadContainerStackView.distribution = .equalSpacing
-        keypadContainerStackView.spacing = min(26, view.frame.height * 0.032)
-        keypadContainerStackView.backgroundColor = .clear
-        keypadContainerStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-
-        let keypadContainerStackViewConstraint = keypadContainerStackView.bottomAnchor.constraint(
-            equalTo: continueButton.topAnchor,
-            constant: -10
-        )
-        keypadContainerStackViewConstraint.priority = UILayoutPriority(rawValue: 249)
-        keypadContainerStackViewConstraint.isActive = true
-
-        let keypadContainerStackViewSecondConstraint = keypadContainerStackView.bottomAnchor.constraint(
-            equalTo: continueButton.topAnchor,
-            constant: -40
-        )
-        keypadContainerStackViewSecondConstraint.priority = UILayoutPriority(rawValue: 250)
-        keypadContainerStackViewSecondConstraint.isActive = true
-
-        keypadContainerStackView.leftAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.leftAnchor,
-            constant: Theme.shared.sizes.appSidePadding
-        ).isActive = true
-        keypadContainerStackView.rightAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.rightAnchor,
-            constant: -Theme.shared.sizes.appSidePadding
-        ).isActive = true
-
-        let rows = [UIStackView(), UIStackView(), UIStackView(), UIStackView()]
-        rows.forEach({
-            $0.axis = .horizontal
-            $0.distribution = .fillEqually
-            keypadContainerStackView.addArrangedSubview($0)
-        })
-
-        for i in 0..<12 {
-            let button = UIButton(type: .system)
-            button.addTarget(self, action: #selector(keypadButtonTapped(_:)), for: .touchUpInside)
-            button.tag = i + 1
-            button.setTitleColor(Theme.shared.colors.keypadButton, for: .normal)
-            button.tintColor = Theme.shared.colors.keypadButton
-            button.titleLabel?.font = Theme.shared.fonts.keypadButton
-            rows[i / (rows.count - 1)].addArrangedSubview(button)
-            button.heightAnchor.constraint(equalToConstant: isSmallScreen ? 23.0 : 35.0).isActive = true
-
-            if i < 9 {
-                button.setTitle("\(i + 1)", for: .normal)
-            } else if i == 9 {
-                button.setTitle(String(MicroTari.decimalSeparator), for: .normal)
-            } else if i == 10 {
-                button.setTitle("0", for: .normal)
-            } else if i == 11 {
-                button.setImage(Theme.shared.images.delete, for: .normal)
+        view.addSubview(amountKeyboardView)
+        
+        let constraints = [
+            amountKeyboardView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            amountKeyboardView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+        
+        amountKeyboardView.onKeyTap = { [weak self] in
+            switch $0 {
+            case let .key(character):
+                self?.addCharacter(character)
+            case .delete:
+                self?.deleteCharacter()
             }
         }
     }
@@ -747,7 +712,7 @@ extension AddAmountViewController {
         let margin = isSmallScreen ? 8.0 : 20.0
         
         let constraints = [
-            oneSidedPaymentStackView.topAnchor.constraint(equalTo: keypadContainerStackView.bottomAnchor, constant: margin),
+            oneSidedPaymentStackView.topAnchor.constraint(equalTo: amountKeyboardView.bottomAnchor, constant: margin),
             oneSidedPaymentStackView.bottomAnchor.constraint(equalTo: continueButton.topAnchor, constant: -margin),
             oneSidedPaymentStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             oneSidedPaymentHelpButton.heightAnchor.constraint(equalToConstant: 44.0),

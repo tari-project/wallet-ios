@@ -40,228 +40,16 @@
 
 import UIKit
 
-protocol Loopable {
-    func allProperties() throws -> [String: Any?]
-}
-
-extension Loopable {
-    func allProperties() throws -> [String: Any?] {
-        var result: [String: Any?] = [:]
-        let mirror = Mirror(reflecting: self)
-
-        // Optional check to make sure we're iterating over a struct or class
-        guard let style = mirror.displayStyle, style == .struct || style == .class else {
-            throw NSError()
-        }
-
-        for (property, value) in mirror.children {
-            guard let property = property else {
-                continue
-            }
-
-            result[property] = value
-        }
-
-        return result
-    }
-}
-
 struct Theme {
     static let shared = Theme()
 
     // NOTE: Any new theme properties must be added to tests to ensure all assets are included before deployment
     let fonts = Fonts()
-    let colors = Colors()
     let images = Images()
     let sizes = Sizes()
-    let transitions = Transitions()
 }
 
-struct Colors: Loopable {
-    // common
-    let warning = UIColor(named: "Warning")
-
-    let gradientStartColor = UIColor(named: "GradientStartColor")
-    let gradientEndColor = UIColor(named: "GradientEndColor")
-
-    let accessAnimationViewShadow = UIColor(named: "AccessAnimationViewShadow")
-
-    let actionButtonBackgroundSimple = UIColor(named: "ActionButtonBackgroundSimple")
-    let actionButtonTitle = UIColor(named: "ActionButtonTitle")
-
-    let loadingGifButtonTitleLoadingState = UIColor(named: "LoadingGifButtonTitleLoadingState")
-    let loadingGifButtonTitleRetryState = UIColor(named: "LoadingGifButtonTitleRetryState")
-
-    let actionButtonBackgroundDisabled = UIColor(named: "ActionButtonBackgroundDisabled")
-    let actionButtonTitleDisabled = UIColor(named: "ActionButtonTitleDisabled")
-
-    let txTableBackground = UIColor(named: "TxTableBackground")
-    let splashBackground = UIColor(named: "SplashBackground")
-    let appBackground = UIColor(named: "AppBackground")
-
-    let inputPlaceholder = UIColor(named: "Placeholder")
-    let systemTableViewCellBackground = UIColor(named: "SystemMenuTableViewCellBackground")
-
-    let checkBoxBorderColor = UIColor(named: "CheckboxBorderColor")
-
-    // SplashCreatingWallet
-    let creatingWalletFirstLabel = UIColor(named: "CreatingWalletBlackLabel")
-    let creatingWalletSecondLabel = UIColor(named: "CreatingWalletBlackLabel")
-    let creatingWalletThirdLabel = UIColor(named: "CreatingWalletOtherLabel")
-    let creatingWalletBackground = UIColor(named: "CreatingWalletBackground")
-    let creatingWalletEmojisLabelBackground = UIColor(named: "CreatingWalletEmojisLabel")
-    let tapToSeeFullEmoji = UIColor(named: "CreatingWalletTapToSeeFullEmoji")
-    let tapToSeeFullEmojiBackground = UIColor(named: "CreatingWalletTapToSeeFullEmojiIDBackground")
-
-    // Profile
-    let profileTitleTextColor = UIColor(named: "ProfileTitleTextBlack")
-    let profileMiddleLabel = UIColor(named: "ProfileMiddleLabel")
-    let profileQRShadow = UIColor(named: "ProfileQRShadow")
-    let profileBackground = UIColor(named: "ProfileBackground")
-
-    // Settings
-    let settingsTableStyleBackground = UIColor(named: "SettingsTableStyleBackground")
-    let settingsDoneButtonTitle = UIColor(named: "SettingsDoneButtonTitle")
-    let settingsNavBarSeparator = UIColor(named: "SettingsNavBarSeparator")
-    let settingsViewDescription = UIColor(named: "SettingsViewDescription")
-    let cettingsSeedPhraseCellTitle = UIColor(named: "SettingsSeedPhraseCell")
-    let settingsSeedPhraseAgreement = UIColor(named: "SettingsSeedPhraseAgreement")
-    let settingsRecoveryPhraseWorldText = UIColor(named: "SettingsRecoveryPhraseWorldText")
-    let settingsRecoveryPhraseWorldBorder = UIColor(named: "SettingsRecoveryPhraseWorldBorder")
-    let settingsVerificationPhraseViewBackground = UIColor(named: "SettingsVerificationPhraseViewBackground")
-    let settingsFillablePhraseViewDescription = UIColor(named: "SettingsFillablePhraseViewDescription")
-    let settingsTableViewLastBackupDate = UIColor(named: "SettingsTableViewLastBackupDate")
-    let settingsTableViewMarkDescriptionSuccess = UIColor(named: "SettingsTableViewMarkDescriptionSuccess")
-    let settingsTableViewMarkDescriptionWarning = UIColor(named: "SettingsTableViewMarkDescriptionWarning")
-    let settingsTableViewMarkDescriptionInProgress = UIColor(named: "SettingsTableViewMarkDescriptionInProgress")
-    let settingsTableViewMarkDescriptionScheduled = UIColor(named: "SettingsTableViewMarkDescriptionScheduled")
-    let settingsPasswordWarning = UIColor(named: "SettingsPasswordWarning")
-
-    // Home screen
-    let homeScreenTotalBalanceLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
-    let homeScreenTotalBalanceValueLabel = UIColor(named: "HomeScreenTotalBalanceLabel")
-    let floatingPanelGrabber = UIColor(named: "FloatingPanelGrabber")
-    let qrButtonBackground = UIColor(named: "QRButtonBackground")
-    let txListNavBar = UIColor(named: "TxsListNavBar")
-
-    let auroraGradient1 = UIColor(named: "auroraGradient1")
-    let auroraGradient2 = UIColor(named: "auroraGradient2")
-    let auroraGradient3 = UIColor(named: "auroraGradient3")
-    let auroraGradient4 = UIColor(named: "auroraGradient4")
-    let auroraGradient5 = UIColor(named: "auroraGradient5")
-    let auroraGradient6 = UIColor(named: "auroraGradient6")
-    let auroraGradient7 = UIColor(named: "auroraGradient7")
-    let auroraGradient8 = UIColor(named: "auroraGradient8")
-    let auroraGradient9 = UIColor(named: "auroraGradient9")
-
-    // Tx cell
-    let txCellAlias = UIColor(named: "TxCellContactAlias")
-    let txCellNote = UIColor(named: "TxCellNote")
-    let txCellValueNegativeBackground = UIColor(named: "TxCellValueNegativeBackground")
-    let txCellValuePositiveBackground = UIColor(named: "TxCellValuePositiveBackground")
-    let txCellValueCancelledBackground = UIColor(named: "TxCellValueCancelledBackground")
-    let txCellValuePendingBackground = UIColor(named: "TxCellValuePendingBackground")
-    let txCellValueNegativeText = UIColor(named: "TxCellValueNegativeText")
-    let txCellValuePositiveText = UIColor(named: "TxCellValuePositiveText")
-    let txCellValueCancelledText = UIColor(named: "TxCellValueCancelledText")
-    let txCellValuePendingText = UIColor(named: "TxCellValuePendingText")
-    let txSmallSubheadingLabel = UIColor(named: "SmallSubheading")
-    let txCellStatusLabel = UIColor(named: "TxCellStatus")
-    let txCellBorder = UIColor(named: "TxCellBorder")
-
-    // Sending Tari
-    let sendingTariTitle = UIColor(named: "SendingTariTitleText")
-    let sendingTariBackground = UIColor(named: "SendingTariBackground")
-    let sendingTariPassiveProgressBackground = UIColor(named: "SendingTariPassiveProgressBackground")
-    let sendingTariActiveProgressBackground = UIColor(named: "SendingTariActiveProgressBackground")
-    let sendingTariProgress = UIColor(named: "SendingTariProgress")
-
-    // Navigation bar
-    let navigationBarTint = UIColor(named: "Heading")
-    let navigationBarBackground = UIColor(named: "NavBarBackground")
-    let navigationBarPurple = UIColor(named: "NavigationBarPurple")
-
-    // Tx view
-    let txViewValueLabel = UIColor(named: "Heading")
-    let txViewValueContainer = UIColor(named: "TxViewValueBackground")
-    let txScreenDivider = UIColor(named: "DividerColor")
-    let txScreenSubheadingLabel = UIColor(named: "SmallSubheading")
-    let txScreenTextLabel = UIColor(named: "SmallText")
-    let txScreenEmptyTitleLabel = UIColor(named: "Heading")
-
-    // Shadows
-    let actionButtonShadow = UIColor(named: "ActionButtonShadow")
-    let defaultShadow = UIColor(named: "DefaultShadow")
-
-    // Feedback
-    let feedbackPopupBackground = UIColor(named: "FeedbackScreenBackground")
-    let feedbackPopupTitle = UIColor(named: "Heading")
-    let feedbackPopupDescription = UIColor(named: "SmallSubheading")
-    let successFeedbackPopupBackground = UIColor(named: "SuccessFeedbackBackground")
-    let successFeedbackPopupTitle = UIColor(named: "SuccessFeedbackText")
-
-    // Emoji button
-    let emojiButtonShadow = UIColor(named: "EmojiButtonShadow")
-    let emojiButtonBackground = UIColor(named: "AppBackground")
-    let emojiButtonClip = UIColor(named: "EmojiClip")
-
-    // Simple text button
-    let textButton = UIColor(named: "TextButton")
-    let textButtonSecondary = UIColor(named: "TextButtonSecondary")
-    let warningButtonTitle = UIColor(named: "Warning")
-
-    // Add recipient view
-    let contactCellAlias = UIColor(named: "TableCellContactAlias")
-    let contactCellImageBackground = UIColor(named: "TableCellContactImageBackground")
-    let contactCellImage = UIColor(named: "TableCellContactImage")
-
-    // Amount screen
-    let amountAvailableBalance = UIColor(named: "AddAmountAvailableBalance")
-    let keypadButton = UIColor(named: "KeypadButton")
-    let warningBoxBorder = UIColor(named: "Warning")
-    let amountWarningLabel = UIColor(named: "AmountWarningLabel")
-    let amountLabel = UIColor(named: "InputText")
-
-    // Add note screen
-    let addNoteTitleLabel = UIColor(named: "Heading")
-    let addNoteTitleLabelGray = UIColor(named: "SmallSubheading")
-    let addNoteInputView = UIColor(named: "InputText")
-    let searchGiphyButtonBackground = UIColor(named: "SearchGiphyButtonBackground")
-    let searchGiphyButtonTitle = UIColor(named: "SearchGiphyButtonTitle")
-
-    // EmoticonView
-    let emoticonBlackBackgroundAlpha = UIColor(named: "EmoticonBlackBackgroundAlpha")
-
-    // ScannerView
-    let scannerTitle = UIColor(named: "ScannerTitle")
-
-    // EmoticonView
-    let emojisSeparator = UIColor(named: "CreatingWalletEmojiSeparator")
-    let emojisSeparatorExpanded = UIColor(named: "CreatingWalletEmojiSeparatorExpanded")
-
-    // Refresh view
-    let refreshViewLabelLoading = UIColor(named: "RefreshViewLabelLoading")
-    let refreshViewLabelSuccess = UIColor(named: "RefreshViewLabelSuccess")
-
-    // Restore pending view
-    let restorePendingViewTitle = UIColor(named: "RestorePendingViewTitle")
-    let restorePendingViewDescription = UIColor(named: "RestorePendingViewDescription")
-    let restorePendingViewProgressView = UIColor(named: "RestorePendingViewProgressView")
-
-    // Connection Status
-    let connectionStatusOk = UIColor(named: "ConnectionStatusOk")
-    let connectionStatusWarning = UIColor(named: "ConnectionStatusWarning")
-    let connectionStatusError = UIColor(named: "ConnectionStatusError")
-
-    // Restore Wallet From Seed Words
-    let restoreFromSeedWordsTextColor = UIColor(named: "RestoreFromSeedWordsTextColor")
-    let tokenCollectionViewBackground = UIColor(named: "TokenCollectionViewBackground")
-    let tokenBorderColor = UIColor(named: "TokenBorderColor")
-    let restoreFromSeedWordsProgressOverlayTitle = UIColor(named: "RestoreFromSeedWordsProgressOverlayTitle")
-    let restoreFromSeedWordsProgressOverlayDescription = UIColor(named: "RestoreFromSeedWordsProgressOverlayDescription")
-}
-
-struct Images: Loopable {
+struct Images {
     // Create Wallet
     let createWalletTouchID = UIImage(named: "fingerprint")
     let createWalletFaceID = UIImage(named: "faceId")
@@ -369,7 +157,7 @@ struct Images: Loopable {
     let connectionIndicatorDisconnectedIcon = UIImage(named: "network-off")
 }
 
-struct Fonts: Loopable {
+struct Fonts {
     
     let actionButton = UIFont.Avenir.heavy.withSize(16.0)
     let copiedLabel = UIFont.Avenir.black.withSize(13.0)
@@ -509,67 +297,19 @@ struct Sizes {
     // TODO move other constants here
 }
 
-struct Transitions {
-    var pullDownOpen: CATransition {
-        let transition = CATransition()
-        transition.duration = 0.5
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.push
-        transition.subtype = CATransitionSubtype.fromBottom
-
-        return transition
-    }
-
-    var pushUpClose: CATransition {
-        let transition = CATransition()
-        transition.duration = 0.3
-        transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-        transition.type = CATransitionType.reveal
-        transition.subtype = CATransitionSubtype.fromTop
-
-        return transition
-    }
-}
-
-// MARK: - New Color Pallete
+// MARK: - Color Pallete
 
 extension UIColor {
-    enum tari {
+    
+    enum `static` {
         static var white: UIColor? { UIColor(named: "White") }
-        static var darkGrey: UIColor? { UIColor(named: "DarkGrey") }
+        static var black: UIColor? { UIColor(named: "Black") }
         static var purple: UIColor? { UIColor(named: "Purple") }
-        
-        enum greys {
-            static var grey: UIColor? { UIColor(named: "Grey") }
-            static var mediumLightGrey: UIColor? { UIColor(named: "MediumLightGrey") }
-            static var mediumGrey: UIColor? { UIColor(named: "MediumGrey") }
-            static var mediumDarkGrey: UIColor? { UIColor(named: "MediumDarkGrey") }
-            static var black: UIColor? { UIColor(named: "Black") }
-        }
-        
-        enum system {
-            static var green: UIColor? { UIColor(named: "Green") }
-            static var orange: UIColor? { UIColor(named: "Orange") }
-            static var red: UIColor? { UIColor(named: "Red") }
-        }
-        
-        enum backgrounds {
-            static var secondary: UIColor? { UIColor(named: "BackgroundsSecondary") }
-        }
-        
-        enum text {
-            static var heading: UIColor? { UIColor(named: "TextHeading") }
-            static var body: UIColor? { UIColor(named: "TextBody") }
-        }
-        
-        enum separators {
-            static var primary: UIColor? { UIColor(named: "SeparatorsPrimary") }
-        }
+        static var mediumGrey: UIColor? { UIColor(named: "MediumGrey") }
+        static var popupOverlay: UIColor? { .black.withAlphaComponent(0.7) }
     }
 }
 
 extension Shadow {
-    static var box: Self { Self(color: .tari.greys.black, opacity: 0.1, radius: 13.5, offset: CGSize(width: 6.75, height: 6.75)) }
-    static var selection: Self { Self(color: .tari.greys.grey, opacity: 1.0, radius: 10.0, offset: CGSize(width: 2.0, height: 2.0)) }
     static var none: Self { Self(color: nil, opacity: 0.0, radius: 0.0, offset: .zero) }
 }

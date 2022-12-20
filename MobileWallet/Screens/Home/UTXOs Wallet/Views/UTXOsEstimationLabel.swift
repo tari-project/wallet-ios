@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class UTXOsEstimationLabel: UIView {
+final class UTXOsEstimationLabel: DynamicThemeView {
     
     // MARK: - Subviews
     
@@ -49,7 +49,6 @@ final class UTXOsEstimationLabel: UIView {
         let view = UILabel()
         view.numberOfLines = 0
         view.textAlignment = .center
-        view.textColor = .tari.greys.mediumDarkGrey
         view.font = .Avenir.medium.withSize(12.0)
         return view
     }()
@@ -63,8 +62,8 @@ final class UTXOsEstimationLabel: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
     }
@@ -76,7 +75,6 @@ final class UTXOsEstimationLabel: UIView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = Theme.shared.colors.profileBackground
         layer.cornerRadius = 5.0
     }
     
@@ -92,5 +90,13 @@ final class UTXOsEstimationLabel: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.secondary
+        label.textColor = theme.text.body
     }
 }

@@ -48,6 +48,7 @@ final class LogsListView: BaseNavigationContentView {
     @View private(set) var tableView: UITableView = {
         let view = UITableView()
         view.rowHeight = UITableView.automaticDimension
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -66,7 +67,6 @@ final class LogsListView: BaseNavigationContentView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = .tari.white
         navigationBar.title = localized("debug.logs.list.title")
         navigationBar.backButtonType = .close
     }

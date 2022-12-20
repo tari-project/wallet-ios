@@ -42,7 +42,7 @@ import UIKit
 import TariCommon
 import Combine
 
-final class PopUpUTXOsBreakContentView: UIView {
+final class PopUpUTXOsBreakContentView: DynamicThemeView {
     
     // MARK: - Constants
     
@@ -54,7 +54,6 @@ final class PopUpUTXOsBreakContentView: UIView {
     @View private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.pop_up.break.description")
-        view.textColor = .tari.greys.mediumDarkGrey
         view.textAlignment = .center
         view.font = .Avenir.medium.withSize(14.0)
         view.numberOfLines = 0
@@ -72,7 +71,6 @@ final class PopUpUTXOsBreakContentView: UIView {
         let view = UISlider()
         view.minimumValue = Float(minimumValue)
         view.maximumValue = Float(maximumValue)
-        view.tintColor = .tari.purple
         return view
     }()
     
@@ -89,18 +87,18 @@ final class PopUpUTXOsBreakContentView: UIView {
         let imageBounds = CGRect(x: 0.0, y: 0.0, width: 8.0, height: 8.0)
         
         let format = NSAttributedString(string: localized("utxos_wallet.pop_up.break.estimation"))
-        let amount = amount.withCurrencySymbol(imageBounds: imageBounds, imageTintColor: .tari.greys.mediumDarkGrey)
+        let amount = amount.withCurrencySymbol(imageBounds: imageBounds)
         let breakCount = NSAttributedString(string: breakCount)
-        let breakAmount = breakAmount.withCurrencySymbol(imageBounds: imageBounds, imageTintColor: .tari.greys.mediumDarkGrey)
-        let fee = fee.withCurrencySymbol(imageBounds: imageBounds, imageTintColor: .tari.greys.mediumDarkGrey)
+        let breakAmount = breakAmount.withCurrencySymbol(imageBounds: imageBounds)
+        let fee = fee.withCurrencySymbol(imageBounds: imageBounds)
         
         estimationLabel.attributedText = NSAttributedString(format: format, arguments: amount, breakCount, breakAmount, fee)
     }
     
     // MARK: - Initalisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupCallbacks()
     }
@@ -148,6 +146,15 @@ final class PopUpUTXOsBreakContentView: UIView {
         valuePicker.onValueChanged = { [weak self] in
             self?.value = $0
         }
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        descriptionLabel.textColor = theme.text.body
+        valueSlider.tintColor = theme.brand.purple
+        valueSlider.maximumTrackTintColor = theme.neutral.inactive
     }
     
     // MARK: - Action Targets

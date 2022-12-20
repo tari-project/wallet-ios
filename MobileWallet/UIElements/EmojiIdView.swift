@@ -38,7 +38,7 @@
 
 import UIKit
 
-final class EmojiIdView: UIView {
+final class EmojiIdView: DynamicThemeView {
     
     struct ViewModel {
         let emojiID: String
@@ -48,7 +48,7 @@ final class EmojiIdView: UIView {
     weak var blackoutParent: UIView?
     private lazy var blackoutView: UIView = {
         let view = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = .static.popupOverlay
         guard let bounds =  UIApplication.shared.keyWindow?.bounds else { return view }
         view.frame = bounds
         view.alpha = 0.0
@@ -84,6 +84,10 @@ final class EmojiIdView: UIView {
     private var pubKeyHex: String?
 
     private var tapActionIsDisabled = false
+    
+    private weak var copiedLabel: UILabel?
+    private weak var containerView: UIView?
+    private weak var greenView: UIView?
 
     var cornerRadius: CGFloat = 6.0 {
         didSet {
@@ -93,6 +97,35 @@ final class EmojiIdView: UIView {
     }
 
     private var superVC: UIViewController?
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        condensedEmojiIdContainer.apply(shadow: theme.shadows.box)
+        condensedEmojiIdLabel.backgroundColor = theme.backgrounds.primary
+        condensedEmojiIdLabel.textColor = theme.text.lightText
+        
+        expandedEmojiIdScrollView.backgroundColor = theme.backgrounds.primary
+        expandedEmojiIdLabel.backgroundColor = theme.backgrounds.primary
+        expandedEmojiIdLabel.textColor = theme.neutral.inactive
+        
+        updateTipView(theme: theme)
+        updateCopyView(theme: theme)
+    }
+    
+    private func updateTipView(theme: ColorTheme) {
+        hexPubKeyTipView?.backgroundColor = theme.backgrounds.primary
+        hexPubKeyTipLabel?.textColor = theme.text.body
+    }
+    
+    private func updateCopyView(theme: ColorTheme) {
+        copiedLabel?.textColor = theme.text.links
+        containerView?.layer.borderColor = theme.system.green?.cgColor
+        containerView?.backgroundColor = .static.white?.withAlphaComponent(0.75)
+        greenView?.backgroundColor = theme.system.green?.withAlphaComponent(0.12)
+    }
     
     func update(viewModel: ViewModel, textCentered: Bool = true) {
         emojiText = viewModel.emojiID
@@ -145,18 +178,12 @@ final class EmojiIdView: UIView {
         labelInitialWidth = condensedEmojiIdContainer.widthAnchor.constraint(equalToConstant: initialWidth)
         labelInitialWidth?.isActive = true
         condensedEmojiIdContainer.heightAnchor.constraint(equalToConstant: height).isActive = true
-        condensedEmojiIdContainer.layer.shadowColor = Theme.shared.colors.emojiButtonShadow!.cgColor
-        condensedEmojiIdContainer.layer.shadowOffset = .zero
-        condensedEmojiIdContainer.layer.shadowRadius = cornerRadius * 1.2
-        condensedEmojiIdContainer.layer.shadowOpacity = 1.0
         condensedEmojiIdContainer.clipsToBounds = true
         condensedEmojiIdContainer.layer.masksToBounds = false
         condensedEmojiIdContainer.addSubview(condensedEmojiIdLabel)
 
         condensedEmojiIdLabel.layer.masksToBounds = true
-        condensedEmojiIdLabel.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
         condensedEmojiIdLabel.textAlignment = .center
-        condensedEmojiIdLabel.textColor = Theme.shared.colors.emojisSeparator!
         condensedEmojiIdLabel.text = getCondensedEmojiId() + " "
         condensedEmojiIdLabel.letterSpacing(value: 1.6)
         condensedEmojiIdLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -173,7 +200,6 @@ final class EmojiIdView: UIView {
 
     private func prepareExpandedEmojiId(height: CGFloat) {
         // prepare expanded emoji id scroll view
-        expandedEmojiIdScrollView.backgroundColor = UIColor.white
         expandedEmojiIdScrollView.layer.cornerRadius = cornerRadius * 1.2
         expandedEmojiIdScrollView.clipsToBounds = true
         expandedEmojiIdScrollView.layer.masksToBounds = true
@@ -189,9 +215,7 @@ final class EmojiIdView: UIView {
         expandedEmojiIdLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.tap(_:))))
         expandedEmojiIdLabel.isUserInteractionEnabled = true
         expandedEmojiIdLabel.layer.masksToBounds = true
-        expandedEmojiIdLabel.backgroundColor = Theme.shared.colors.creatingWalletEmojisLabelBackground
         expandedEmojiIdLabel.textAlignment = .center
-        expandedEmojiIdLabel.textColor = Theme.shared.colors.emojisSeparator!
         expandedEmojiIdLabel.text = getExpandedEmojiId() + " "
         expandedEmojiIdLabel.font = UIFont.systemFont(ofSize: 14.0)
         expandedEmojiIdLabel.letterSpacing(value: 1.6)
@@ -460,7 +484,6 @@ extension EmojiIdView {
         parentView.addSubview(tipView)
         parentView.bringSubviewToFront(tipView)
 
-        tipView.backgroundColor = UIColor.white
         tipView.layer.cornerRadius = 4
 
         tipView.translatesAutoresizingMaskIntoConstraints = false
@@ -480,7 +503,6 @@ extension EmojiIdView {
         tipView.isHidden = tooltipText == nil
         tipLabel.text =  tooltipText
         tipLabel.font = Theme.shared.fonts.profileMiddleLabel
-        tipLabel.textColor = Theme.shared.colors.profileMiddleLabel!
         tipLabel.translatesAutoresizingMaskIntoConstraints = false
         tipView.addSubview(tipLabel)
         tipLabel.interlineSpacing(spacingValue: 2)
@@ -512,6 +534,8 @@ extension EmojiIdView {
             options: .curveEaseInOut) {
             parentView.layoutIfNeeded()
         }
+        
+        update(theme: theme)
     }
 
     private func hideCopyEmojiIdButton(completion: (() -> Void)? = nil) {
@@ -616,7 +640,6 @@ private class EmojiMenuView: UIView {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
 }
 
 // MARK: "COPIED" function & view
@@ -648,27 +671,30 @@ extension EmojiIdView {
         containerView.isUserInteractionEnabled = true
         containerView.alpha = 0.0
         containerView.layer.borderWidth = 2
-        containerView.layer.borderColor = Theme.shared.colors.txCellValuePositiveText?.cgColor
-        containerView.backgroundColor = UIColor.white.withAlphaComponent(0.75)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.layer.cornerRadius = cornerRadius
         containerView.frame = containerFrame
         // green background
         let greenView = UIView()
-        greenView.backgroundColor = Theme.shared.colors.txCellValuePositiveText?.withAlphaComponent(0.12)
         greenView.translatesAutoresizingMaskIntoConstraints = false
         greenView.frame = subviewFrame
         // label
         let copiedLabel = UILabel()
         copiedLabel.text = localized("emoji.copied")
         copiedLabel.font = Theme.shared.fonts.copiedLabel
-        copiedLabel.textColor = Theme.shared.colors.textButtonSecondary
         // copiedLabel.translatesAutoresizingMaskIntoConstraints = false
         copiedLabel.frame = subviewFrame
         copiedLabel.textAlignment = .center
         // add subviews
         containerView.addSubview(greenView)
         containerView.addSubview(copiedLabel)
+        
+        self.copiedLabel = copiedLabel
+        self.containerView = containerView
+        self.greenView = greenView
+        
+        updateCopyView(theme: theme)
+        
         UIApplication.shared.keyWindow?.addSubview(containerView)
         UIApplication.shared.keyWindow?.bringSubviewToFront(containerView)
 
@@ -689,5 +715,4 @@ extension EmojiIdView {
             }
         }
     }
-
 }

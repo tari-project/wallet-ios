@@ -41,12 +41,11 @@
 import UIKit
 import TariCommon
 
-final class PopUpUtxoDetailsContentView: UIView {
+final class PopUpUtxoDetailsContentView: DynamicThemeView {
     
     struct Model {
         let amount: String
-        let statusColor: UIColor?
-        let statusText: String
+        let status: UtxoStatus
         let commitment: String
         let blockHeight: String?
         let date: String?
@@ -56,7 +55,6 @@ final class PopUpUtxoDetailsContentView: UIView {
     
     @View private var amountLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
-        view.textColor = .tari.greys.black
         view.font = .Avenir.heavy.withSize(26.0)
         view.iconHeight = 13.0
         return view
@@ -74,10 +72,14 @@ final class PopUpUtxoDetailsContentView: UIView {
     @View private var blockHeightRow = PopUpUtxoContentRowView()
     @View private var dateRow = PopUpUtxoContentRowView()
     
+    // MARK: - Status
+    
+    private var status: UtxoStatus?
+    
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -106,25 +108,39 @@ final class PopUpUtxoDetailsContentView: UIView {
     
     // MARK: - Updates
     
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        amountLabel.textColor = theme.text.heading
+        updateStatusColor(theme: theme)
+    }
+    
     func update(model: Model) {
+        
+        status = model.status
+        
         amountLabel.text = model.amount
-        statusRow.update(title: localized("utxos_wallet.pop_up.details.label.status"), value: model.statusText, statusColor: model.statusColor)
-        commitmentRow.update(title: localized("utxos_wallet.pop_up.details.label.commitment"), value: model.commitment, statusColor: nil)
-        blockHeightRow.update(title: localized("utxos_wallet.pop_up.details.label.block_height"), value: model.blockHeight, statusColor: nil)
-        dateRow.update(title: localized("utxos_wallet.pop_up.details.label.date"), value: model.date, statusColor: nil)
+        statusRow.update(title: localized("utxos_wallet.pop_up.details.label.status"), value: model.status.name)
+        commitmentRow.update(title: localized("utxos_wallet.pop_up.details.label.commitment"), value: model.commitment)
+        blockHeightRow.update(title: localized("utxos_wallet.pop_up.details.label.block_height"), value: model.blockHeight)
+        dateRow.update(title: localized("utxos_wallet.pop_up.details.label.date"), value: model.date)
         
         blockHeightRow.isHidden = model.blockHeight == nil
         dateRow.isHidden = model.date == nil
+        
+        updateStatusColor(theme: theme)
+    }
+    
+    private func updateStatusColor(theme: ColorTheme) {
+        statusRow.statusColor = status?.color(theme: theme)
     }
 }
 
-private class PopUpUtxoContentRowView: UIView {
+private class PopUpUtxoContentRowView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var titleLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.black
         view.font = .Avenir.heavy.withSize(12.0)
         return view
     }()
@@ -140,21 +156,30 @@ private class PopUpUtxoContentRowView: UIView {
     @View private var statusView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 5.0
+        view.isHidden = true
         return view
     }()
     
     @View private var valueLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.mediumDarkGrey
         view.font = .Avenir.medium.withSize(12.0)
         view.numberOfLines = 2
         return view
     }()
     
+    // MARK: - Properties
+    
+    var statusColor: UIColor? {
+        didSet {
+            statusView.isHidden = statusColor == nil
+            statusView.backgroundColor = statusColor
+        }
+    }
+    
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -184,12 +209,16 @@ private class PopUpUtxoContentRowView: UIView {
         NSLayoutConstraint.activate(constraints)
     }
     
-    // MARK: - Update
+    // MARK: - Updates
     
-    func update(title: String?, value: String?, statusColor: UIColor?) {
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        titleLabel.textColor = theme.text.heading
+        valueLabel.textColor = theme.text.body
+    }
+    
+    func update(title: String?, value: String?) {
         titleLabel.text = title
         valueLabel.text = value
-        statusView.isHidden = statusColor == nil
-        statusView.backgroundColor = statusColor
     }
 }

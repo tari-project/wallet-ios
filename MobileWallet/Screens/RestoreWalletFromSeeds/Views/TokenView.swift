@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class TokenView: UICollectionViewCell {
+final class TokenView: DynamicThemeCollectionCell {
 
     // MARK: - Subviews
 
@@ -72,13 +72,15 @@ final class TokenView: UICollectionViewCell {
     }
     
     var isValid: Bool = true {
-        didSet {
-            layer.borderColor = isValid ? Theme.shared.colors.tokenBorderColor?.cgColor : Theme.shared.colors.settingsTableViewMarkDescriptionWarning?.cgColor
-            label.textColor = isValid ? Theme.shared.colors.restoreFromSeedWordsTextColor : Theme.shared.colors.settingsTableViewMarkDescriptionWarning
-            deleteIconView.tintColor = isValid ? Theme.shared.colors.restoreFromSeedWordsTextColor : Theme.shared.colors.settingsTableViewMarkDescriptionWarning
-        }
+        didSet { updateColors() }
     }
     
+    private var validBorderColor: UIColor?
+    private var invalidBorderColor: UIColor?
+    private var validTextColor: UIColor?
+    private var invalidTextColor: UIColor?
+    private var validIconTintColor: UIColor?
+    private var invalidIconTintColor: UIColor?
     private var deleteIconLeadingConstraint: NSLayoutConstraint?
 
     // MARK: - Initializers
@@ -96,7 +98,6 @@ final class TokenView: UICollectionViewCell {
     // MARK: - Setups
 
     private func setupViews() {
-        backgroundColor = .white
         layer.cornerRadius = 5.0
         layer.borderWidth = 1.0
         isValid = true
@@ -125,5 +126,27 @@ final class TokenView: UICollectionViewCell {
         ]
 
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        backgroundColor = theme.backgrounds.primary
+        validBorderColor = theme.neutral.tertiary
+        invalidBorderColor = theme.system.red
+        validTextColor = theme.text.body
+        invalidTextColor = theme.system.red
+        validIconTintColor = theme.text.body
+        invalidIconTintColor = theme.system.red
+        
+        updateColors()
+    }
+    
+    private func updateColors() {
+        layer.borderColor = isValid ? validBorderColor?.cgColor : invalidBorderColor?.cgColor
+        label.textColor = isValid ? validTextColor : invalidTextColor
+        deleteIconView.tintColor = isValid ? validIconTintColor : invalidIconTintColor
     }
 }

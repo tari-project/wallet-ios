@@ -41,13 +41,12 @@
 import UIKit
 import TariCommon
 
-final class LogsListCell: UITableViewCell {
+final class LogsListCell: DynamicThemeCell {
     
     // MARK: - Subviews
     
     @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.black
         view.font = .Avenir.medium.withSize(15.0)
         return view
     }()
@@ -75,6 +74,7 @@ final class LogsListCell: UITableViewCell {
     
     private func setupViews() {
         selectionStyle = .none
+        backgroundColor = .clear
     }
     
     private func setupConstraints() {
@@ -94,6 +94,12 @@ final class LogsListCell: UITableViewCell {
     }
     
     // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.heading
+        arrowImageView.tintColor = theme.text.heading
+    }
     
     func update(title: String) {
         label.text = title

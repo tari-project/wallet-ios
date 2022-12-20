@@ -265,8 +265,7 @@ final class UTXOsWalletViewController: UIViewController {
         
         let contentModel = PopUpUtxoDetailsContentView.Model(
             amount: model.amountText,
-            statusColor: model.status.color,
-            statusText: model.status.name,
+            status: model.status,
             commitment: model.commitment,
             blockHeight: model.blockHeight,
             date: date.isEmpty ? nil : date
@@ -361,10 +360,9 @@ final class UTXOsWalletViewController: UIViewController {
                 UTXOTileView.Model(
                     uuid: $0.uuid,
                     amountText: $0.amountText,
-                    backgroundColor: .tari.purple?.colorVariant(text: $0.commitment),
+                    hash: $0.commitment,
                     height: $0.tileHeight,
-                    statusIcon: $0.status.icon,
-                    statusColor: $0.status.color,
+                    status: $0.status,
                     date: $0.date,
                     isSelectable: $0.isSelectable
                 )
@@ -377,7 +375,7 @@ final class UTXOsWalletViewController: UIViewController {
                 UTXOsWalletTextListViewCell.Model(
                     id: $0.uuid,
                     amount: $0.amountWithCurrency,
-                    statusColor: $0.status.color,
+                    status: $0.status,
                     statusText: [$0.status.name, $0.date, $0.time].compactMap { $0 }.joined(separator: " | "),
                     hash: $0.commitment,
                     isSelectable: $0.isSelectable)

@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class ContextualButtonsOverlay: UIView {
+final class ContextualButtonsOverlay: DynamicThemeView {
     
     struct ButtonModel {
         let text: String?
@@ -53,6 +53,7 @@ final class ContextualButtonsOverlay: UIView {
     
     private let animationTime: TimeInterval = 0.3
     private let buttonsCollapseDelay: TimeInterval = 3.0
+    private let separatorTag = 1
     
     // MARK: - Subviews
     
@@ -65,7 +66,6 @@ final class ContextualButtonsOverlay: UIView {
     
     @View private var contentView: UIView = {
         let view = UIView()
-        view.backgroundColor = .tari.greys.mediumLightGrey?.withAlphaComponent(0.8)
         view.layer.cornerRadius = 10.0
         return view
     }()
@@ -76,8 +76,8 @@ final class ContextualButtonsOverlay: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
     }
@@ -165,6 +165,8 @@ final class ContextualButtonsOverlay: UIView {
         }
         .dropLast()
         .forEach { stackView.addArrangedSubview($0) }
+        
+        updateElementsColors(theme: theme)
     }
     
     private func showButtons() {
@@ -198,11 +200,30 @@ final class ContextualButtonsOverlay: UIView {
         )
     }
     
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        contentView.backgroundColor = theme.components.overlay?.withAlphaComponent(0.9)
+        updateElementsColors(theme: theme)
+    }
+    
+    private func updateElementsColors(theme: ColorTheme) {
+        
+        stackView.arrangedSubviews
+            .compactMap { $0 as? ContextualButton }
+            .forEach { $0.tintColor = theme.text.heading }
+        
+        stackView.arrangedSubviews
+            .filter { $0.tag == separatorTag }
+            .forEach { $0.backgroundColor = theme.neutral.secondary }
+    }
+    
     // MARK: - Factories
     
     private func makeSeparator() -> UIView {
         let view = UIView()
-        view.backgroundColor = .tari.greys.mediumDarkGrey
+        view.tag = separatorTag
         view.heightAnchor.constraint(equalToConstant: 1.0).isActive = true
         return view
     }

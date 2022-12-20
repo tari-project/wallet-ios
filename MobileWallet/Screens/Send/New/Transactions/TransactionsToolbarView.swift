@@ -41,14 +41,13 @@
 import UIKit
 import TariCommon
 
-final class TransactionsToolbarView: UIView {
+final class TransactionsToolbarView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var sendButton: BaseButton = {
         let view = BaseButton()
         view.setTitle(localized("transactions.toolbar.send"), for: .normal)
-        view.setTitleColor(.black, for: .normal)
         view.titleLabel?.font = UIFont.Avenir.medium.withSize(16.0)
         return view
     }()
@@ -56,16 +55,11 @@ final class TransactionsToolbarView: UIView {
     @View private var requestButton: BaseButton = {
         let view = BaseButton()
         view.setTitle(localized("transactions.toolbar.request"), for: .normal)
-        view.setTitleColor(.black, for: .normal)
         view.titleLabel?.font = UIFont.Avenir.medium.withSize(16.0)
         return view
     }()
     
-    @View private var selectorLineView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Theme.shared.colors.refreshViewLabelLoading
-        return view
-    }()
+    @View private var selectorLineView = UIView()
     
     @View private var stackView: UIStackView = {
         let view = UIStackView()
@@ -73,6 +67,13 @@ final class TransactionsToolbarView: UIView {
         view.alignment = .fill
         return view
     }()
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        sendButton.setTitleColor(theme.text.heading, for: .normal)
+        requestButton.setTitleColor(theme.text.heading, for: .normal)
+        selectorLineView.backgroundColor = theme.brand.purple
+    }
     
     // MARK: - Properties
     
@@ -86,8 +87,8 @@ final class TransactionsToolbarView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupCallbacks()
     }
@@ -128,14 +129,6 @@ final class TransactionsToolbarView: UIView {
             .forEach { index, button in
                 button.onTap = { [weak self] in self?.onButtonTap?(index) }
             }
-    }
-    
-    private func makeButton(title: String, index: Int) -> BaseButton {
-        let button = BaseButton()
-        button.setTitle(title, for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.onTap = { [weak self] in self?.onButtonTap?(index) }
-        return button
     }
     
     // MARK: - Update

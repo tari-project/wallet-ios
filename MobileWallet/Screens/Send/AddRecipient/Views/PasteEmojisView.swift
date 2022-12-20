@@ -40,15 +40,14 @@
 
 import UIKit
 
-class PasteEmojisView: UIView {
+class PasteEmojisView: DynamicThemeView {
     private let textButton = TextButton()
     private let scrollView = UIScrollView()
     private let emojiLabel = UILabelWithPadding()
     private var onPressCallback: (() -> Void)?
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        backgroundColor = Theme.shared.colors.appBackground
+    override init() {
+        super.init()
 
         textButton.setVariation(.secondary)
         textButton.translatesAutoresizingMaskIntoConstraints = false
@@ -63,11 +62,6 @@ class PasteEmojisView: UIView {
         scrollView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -4).isActive = true
         scrollView.heightAnchor.constraint(equalToConstant: CGFloat(30)).isActive = true
-        
-        layer.shadowOpacity = 0.1
-        layer.shadowOffset = CGSize(width: 0, height: 5)
-        layer.shadowRadius = 10
-        layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
     }
 
     required init?(coder: NSCoder) {
@@ -85,7 +79,6 @@ class PasteEmojisView: UIView {
         emojiLabel.textAlignment = .center
         emojiLabel.letterSpacing(value: 1.6)
         emojiLabel.translatesAutoresizingMaskIntoConstraints = false
-        emojiLabel.textColor = Theme.shared.colors.emojisSeparatorExpanded
         emojiLabel.sizeToFit()
         addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector (onTap(_:))))
         emojiLabel.frame = CGRect(
@@ -106,5 +99,12 @@ class PasteEmojisView: UIView {
         if let callBack = onPressCallback {
             callBack()
         }
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        apply(shadow: theme.shadows.box)
+        emojiLabel.textColor = theme.neutral.secondary
     }
 }

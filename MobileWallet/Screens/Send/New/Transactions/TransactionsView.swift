@@ -41,19 +41,17 @@
 import UIKit
 import TariCommon
 
-final class TransactionsView: UIView {
+final class TransactionsView: BaseNavigationContentView {
     
     // MARK: - Subviews
     
-    @View var navigationBar = NavigationBar()
     @View var toolbar = TransactionsToolbarView()
     @View var contentView = UIView()
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
-        setupViews()
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -63,19 +61,11 @@ final class TransactionsView: UIView {
     
     // MARK: - Setups
     
-    private func setupViews() {
-        backgroundColor = .white
-    }
-    
     private func setupConstraints() {
         
-        [navigationBar, toolbar, contentView].forEach(addSubview)
+        [toolbar, contentView].forEach(addSubview)
         
         let constraints = [
-            navigationBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            navigationBar.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            navigationBar.heightAnchor.constraint(equalToConstant: 44.0),
             toolbar.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             toolbar.leadingAnchor.constraint(equalTo: leadingAnchor),
             toolbar.trailingAnchor.constraint(equalTo: trailingAnchor),

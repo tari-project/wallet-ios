@@ -42,17 +42,14 @@ import UIKit
 import Combine
 import TariCommon
 
-final class AddRecipientView: UIView {
+final class AddRecipientView: DynamicThemeView {
     
     // MARK: - Subviews
     
-    @View private var searchContentView: UIView = {
+    @View private(set) var searchContentView: UIView = {
         let view = UIView()
-        view.backgroundColor = Theme.shared.colors.navigationBarBackground
         view.layer.shadowOpacity = 0.0
-        view.layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
-        view.layer.shadowRadius = 10.0
-        view.layer.shadowColor = Theme.shared.colors.defaultShadow?.cgColor
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -76,7 +73,7 @@ final class AddRecipientView: UIView {
     
     @View private var dimView: UIView = {
         let view = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = .static.popupOverlay
         view.alpha = 0.0
         return view
     }()
@@ -97,7 +94,7 @@ final class AddRecipientView: UIView {
     }
     
     var isSearchTextDimmed: Bool = false {
-        didSet { searchView.textField.textColor = isSearchTextDimmed ? Theme.shared.colors.emojisSeparatorExpanded : .black }
+        didSet { updateSearchViewColor(theme: theme) }
     }
     
     var isSearchFieldContainsValidAddress: Bool = false {
@@ -140,8 +137,8 @@ final class AddRecipientView: UIView {
     
     // MARK: - Initializers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
         setupFeedbacks()
@@ -155,7 +152,6 @@ final class AddRecipientView: UIView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = Theme.shared.colors.appBackground
         hideContinueButton()
         updateSearchFieldState()
     }
@@ -269,6 +265,22 @@ final class AddRecipientView: UIView {
             self?.pasteEmojisView.alpha = 0.0
             self?.layoutIfNeeded()
         }
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        updateSearchViewColor(theme: theme)
+        
+        let searchContentViewShadowOpacity = searchContentView.layer.shadowOpacity
+        searchContentView.apply(shadow: theme.shadows.box)
+        searchContentView.layer.shadowOpacity = searchContentViewShadowOpacity
+    }
+    
+    private func updateSearchViewColor(theme: ColorTheme) {
+        searchView.textField.textColor = isSearchTextDimmed ? theme.text.lightText : theme.text.heading
     }
     
     private func updateSearchViewShadow() {

@@ -41,15 +41,13 @@
 import UIKit
 import TariCommon
 
-final class UTXOsWalletTopBar: UIView {
+final class UTXOsWalletTopBar: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var filterButton: LeftImageButton = {
         let view = LeftImageButton()
         view.iconView.image = Theme.shared.images.utxoFaucet
-        view.iconView.tintColor = .black
-        view.label.textColor = .black
         view.label.font = .Avenir.roman.withSize(14.0)
         view.iconSize = CGSize(width: 14.0, height: 14.0)
         view.internalPadding = 12.0
@@ -59,7 +57,6 @@ final class UTXOsWalletTopBar: UIView {
     @View private var editButton: BaseButton = {
         let view = BaseButton()
         view.titleLabel?.font = .Avenir.roman.withSize(14.0)
-        view.setTitleColor(.tari.purple, for: .normal)
         return view
     }()
     
@@ -83,8 +80,8 @@ final class UTXOsWalletTopBar: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupCallbacks()
         update(isEditingEnabled: false)
@@ -95,7 +92,7 @@ final class UTXOsWalletTopBar: UIView {
     }
     
     var backgroundAlpha: CGFloat = 0.0 {
-        didSet { backgroundColor = .tari.white?.withAlphaComponent(backgroundAlpha) }
+        didSet { updateBackground() }
     }
     
     private var heightConstraint: NSLayoutConstraint?
@@ -133,10 +130,25 @@ final class UTXOsWalletTopBar: UIView {
         }
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        filterButton.iconView.tintColor = theme.icons.default
+        filterButton.label.textColor = theme.text.heading
+        editButton.setTitleColor(theme.icons.active, for: .normal)
+        
+        updateBackground(theme: theme)
+    }
     
     private func update(isEditingEnabled: Bool) {
         let title = isEditingEnabled ? localized("common.cancel") : localized("utxos_wallet.button.edit_mode.select")
         editButton.setTitle(title, for: .normal)
+    }
+    
+    private func updateBackground(theme: ColorTheme? = nil) {
+        let theme = theme ?? self.theme
+        backgroundColor = theme.backgrounds.primary?.withAlphaComponent(backgroundAlpha)
     }
 }
