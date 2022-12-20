@@ -42,16 +42,14 @@ import UIKit
 import TariCommon
 import Lottie
 
-final class ProfileView: UIView {
+final class ProfileView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var navigationBar: NavigationBar = {
         let view = NavigationBar()
-        view.backButton.isHidden = true
-        view.verticalPositioning = .center
+        view.backButtonType = .none
         view.title = localized("profile_view.title")
-        view.backgroundColor =  Theme.shared.colors.profileBackground
         return view
     }()
     
@@ -69,7 +67,6 @@ final class ProfileView: UIView {
     @View var middleLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.profileMiddleLabel
-        view.textColor = Theme.shared.colors.profileMiddleLabel
         view.textAlignment = .center
         view.numberOfLines = 2
         view.adjustsFontSizeToFitWidth = true
@@ -78,19 +75,13 @@ final class ProfileView: UIView {
     
     @View var reconnectYatButton: TextButton = {
         let view = TextButton()
-        view.setVariation(.secondary)
         view.setTitle(localized("profile_view.button.recconect_yat"), for: .normal)
         return view
     }()
     
     @View private var qrContainer: UIView = {
         let view = UIView()
-        view.backgroundColor = Theme.shared.colors.appBackground
         view.layer.cornerRadius = 10.0
-        view.layer.shadowOpacity = 0.5
-        view.layer.shadowOffset = CGSize(width: 20.0, height: 20.0)
-        view.layer.shadowRadius = 3.0
-        view.layer.shadowColor = Theme.shared.colors.profileQRShadow?.cgColor
         view.layer.shouldRasterize = true
         view.layer.rasterizationScale = UIScreen.main.scale
         return view
@@ -102,11 +93,17 @@ final class ProfileView: UIView {
         didSet { qrImageView.image = qrCodeImage }
     }
     
+    var isYatButtonOn: Bool = false {
+        didSet { updateYatButton(isOn: isYatButtonOn) }
+    }
+    
+    private var yatButtonOnTintColor: UIColor?
+    private var yatButtonOffTintColor: UIColor?
+    
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
-        setupViews()
+    override init() {
+        super.init()
         setupConstraints()
         
         yatButton.imageView?.contentMode = .scaleAspectFit
@@ -118,20 +115,15 @@ final class ProfileView: UIView {
     
     // MARK: - Setups
     
-    private func setupViews() {
-        backgroundColor = Theme.shared.colors.profileBackground
-    }
-    
     private func setupConstraints() {
         
         [navigationBar, emojiIdView, yatButton, yatSpinnerView, middleLabel, reconnectYatButton, qrContainer].forEach(addSubview)
         qrContainer.addSubview(qrImageView)
         
         var constraints = [
-            navigationBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            navigationBar.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            navigationBar.heightAnchor.constraint(equalToConstant: 44.0),
+            navigationBar.topAnchor.constraint(equalTo: topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: trailingAnchor),
             emojiIdView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 25.0),
             emojiIdView.widthAnchor.constraint(equalToConstant: 185.0),
             emojiIdView.heightAnchor.constraint(equalToConstant: 38.0),
@@ -177,16 +169,31 @@ final class ProfileView: UIView {
     
     // MARK: - Updates
     
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        backgroundColor = theme.backgrounds.secondary
+        middleLabel.textColor = theme.text.body
+        reconnectYatButton.setTitleColor(theme.text.links, for: .normal)
+        yatButtonOnTintColor = theme.icons.active
+        yatButtonOffTintColor = theme.icons.inactive
+        qrContainer.backgroundColor = theme.components.qrBackground
+        qrContainer.apply(shadow: theme.shadows.box)
+        
+        updateYatButton(isOn: isYatButtonOn)
+    }
+    
     func update(emojiID: String, hex: String?, copyText: String, tooltopText: String?) {
         emojiIdView.copyText = copyText
         emojiIdView.tooltipText = tooltopText
         emojiIdView.update(viewModel: EmojiIdView.ViewModel(emojiID: emojiID, hex: hex))
     }
     
-    func updateYatButton(isOn: Bool) {
+    private func updateYatButton(isOn: Bool) {
         yatButton.isHidden = false
         let icon = isOn ? Theme.shared.images.yatButtonOn : Theme.shared.images.yatButtonOff
         yatButton.setImage(icon, for: .normal)
+        yatButton.tintColor = isOn ? yatButtonOnTintColor : yatButtonOffTintColor
         yatSpinnerView.isHidden = true
         yatSpinnerView.stop()
     }

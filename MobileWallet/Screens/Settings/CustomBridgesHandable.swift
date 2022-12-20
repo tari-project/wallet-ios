@@ -52,20 +52,22 @@ extension CustomBridgesHandable {
         Tari.shared.connectionMonitor.$torBootstrapProgress
             .map { Float($0) / 100.0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.navigationBar.setProgress($0) }
+            .sink { [weak self] in self?.navigationBar.progress = $0 }
     }
     
     func onCustomBridgeSuccessAction() {
-        navigationBar.setProgress(1.0)
+        
+        navigationBar.progress = 1.0
+        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.navigationBar.progressView.isHidden = true
+            self.navigationBar.progress = nil
             self.view.isUserInteractionEnabled = true
             self.tableView.reloadData()
         }
     }
     
     func onCustomBridgeFailureAction(error: Error) {
-        navigationBar.progressView.isHidden = true
+        navigationBar.progress = nil
         view.isUserInteractionEnabled = true
         let errorMessage = ErrorMessageManager.errorModel(forError: error)
         PopUpPresenter.show(message: errorMessage)

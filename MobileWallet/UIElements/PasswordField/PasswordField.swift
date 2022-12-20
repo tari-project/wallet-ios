@@ -44,7 +44,7 @@ protocol PasswordFieldDelegate: AnyObject {
     func passwordFieldDidChange(_ passwordField: PasswordField)
 }
 
-class PasswordField: UIView, UITextFieldDelegate {
+final class PasswordField: DynamicThemeView, UITextFieldDelegate {
     private let minPasswordLength = 6
 
     var password: String? {
@@ -88,6 +88,7 @@ class PasswordField: UIView, UITextFieldDelegate {
     private let titleLabel = UILabel()
     private let warningLabel = UILabel()
     private let textField = UITextField()
+    private let separatorLine = UIView()
 
     enum PasswordFieldState {
         case normal
@@ -100,8 +101,6 @@ class PasswordField: UIView, UITextFieldDelegate {
         didSet {
             switch state {
             case .normal:
-                titleLabel.textColor = .black
-                textField.textColor = .black
                 warningLabel.isHidden = true
                 return
             case .passwordShortLength:
@@ -113,16 +112,19 @@ class PasswordField: UIView, UITextFieldDelegate {
             }
 
             warningLabel.isHidden = false
-            titleLabel.textColor = Theme.shared.colors.settingsPasswordWarning
-            textField.textColor = Theme.shared.colors.settingsPasswordWarning
+
+            updateLabelsTextColor()
         }
     }
 
     weak var delegate: PasswordFieldDelegate?
     weak var paredPasswordField: PasswordField?
+    
+    private var textColor: UIColor?
+    private var warningTextColor: UIColor?
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init() {
+        super.init()
         setupSubviews()
     }
 
@@ -164,7 +166,6 @@ class PasswordField: UIView, UITextFieldDelegate {
     }
 
     private func setupSubviews() {
-        backgroundColor = Theme.shared.colors.appBackground
         state = .normal
         setupTitle()
         setupTextField()
@@ -185,7 +186,6 @@ class PasswordField: UIView, UITextFieldDelegate {
         addSubview(textField)
 
         textField.isSecureTextEntry = true
-        textField.textColor = .black
         textField.delegate = self
 
         textField.addTarget(self, action: #selector(textFieldDidChange(_:)),
@@ -199,10 +199,8 @@ class PasswordField: UIView, UITextFieldDelegate {
     }
 
     private func setupLine() {
-        let separatorLine = UIView()
         addSubview(separatorLine)
 
-        separatorLine.backgroundColor = Theme.shared.colors.settingsNavBarSeparator
         separatorLine.translatesAutoresizingMaskIntoConstraints = false
 
         separatorLine.heightAnchor.constraint(equalToConstant: 1.0).isActive = true
@@ -216,8 +214,6 @@ class PasswordField: UIView, UITextFieldDelegate {
         addSubview(warningLabel)
         warningLabel.isHidden = true
         warningLabel.font = Theme.shared.fonts.settingsPasswordWarning
-        warningLabel.textColor = Theme.shared.colors.settingsPasswordWarning
-        warningLabel.backgroundColor = backgroundColor
         warningLabel.textAlignment = .right
 
         warningLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -244,5 +240,22 @@ class PasswordField: UIView, UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        warningLabel.textColor = theme.system.red
+        separatorLine.backgroundColor = theme.neutral.tertiary
+        textColor = theme.text.heading
+        warningTextColor = theme.system.red
+        
+        updateLabelsTextColor()
+    }
+    
+    private func updateLabelsTextColor() {
+        let textColor = state == .normal ? textColor : warningTextColor
+        titleLabel.textColor = textColor
+        textField.textColor = textColor
     }
 }

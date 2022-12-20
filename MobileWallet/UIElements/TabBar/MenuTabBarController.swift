@@ -88,7 +88,7 @@ class MenuTabBarController: UITabBarController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        styleNavigatorBar(isHidden: true)
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
 
     func setTab(_ tab: Tab) {

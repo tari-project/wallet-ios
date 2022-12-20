@@ -42,13 +42,12 @@ import UIKit
 import TariCommon
 import Combine
 
-final class UTXOsWalletTextListView: UIView {
+final class UTXOsWalletTextListView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var tableView: UITableView = {
         let view = UITableView()
-        view.separatorColor = .tari.greys.mediumLightGrey
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 30.0, bottom: 0.0, right: 30.0)
         view.backgroundColor = .clear
         view.register(type: UTXOsWalletTextListViewCell.self)
@@ -70,8 +69,8 @@ final class UTXOsWalletTextListView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupCallbacks()
     }
@@ -135,7 +134,12 @@ final class UTXOsWalletTextListView: UIView {
         tableView.delegate = self
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        tableView.separatorColor = theme.neutral.secondary
+    }
     
     private func update(selectedElements: Set<UUID>) {
         tableView.visibleCells

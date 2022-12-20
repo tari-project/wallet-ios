@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class RequestTariAmountView: UIView {
+final class RequestTariAmountView: DynamicThemeView {
     
     // MARK: - Subviews
     
@@ -67,7 +67,6 @@ final class RequestTariAmountView: UIView {
     @View var shareButton: ActionButton = {
         let view = ActionButton()
         view.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
-        view.tintColor = .white
         view.imageEdgeInsets = .zero
         return view
     }()
@@ -90,8 +89,8 @@ final class RequestTariAmountView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
     }
@@ -103,7 +102,6 @@ final class RequestTariAmountView: UIView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = .white
         update(amount: "0")
         areButtonsEnabled = false
     }
@@ -160,19 +158,22 @@ final class RequestTariAmountView: UIView {
     
     // MARK: - Updates
     
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        updateAmountLabelColor(theme: theme)
+    }
+    
     private func update(amount: String) {
         
         let amountAttributedText = NSMutableAttributedString(
             string: amount,
-            attributes: [
-                NSAttributedString.Key.font: Theme.shared.fonts.amountLabel,
-                NSAttributedString.Key.foregroundColor: Theme.shared.colors.amountLabel!
-            ]
+            attributes: [.font: Theme.shared.fonts.amountLabel]
         )
         
         let gemImageString: NSAttributedString = {
             let gemAttachment = NSTextAttachment()
-            gemAttachment.image = Theme.shared.images.currencySymbol?.withTintColor(Theme.shared.colors.amountLabel!)
+            gemAttachment.image = Theme.shared.images.currencySymbol
             gemAttachment.bounds = CGRect(x: 0.0, y: 0.0, width: 21.0, height: 21.0)
             return NSAttributedString(attachment: gemAttachment)
         }()
@@ -181,5 +182,17 @@ final class RequestTariAmountView: UIView {
         amountAttributedText.insert(NSAttributedString(string: "  "), at: 1)
         
         amountLabel.attributedText = amountAttributedText
+        
+        updateAmountLabelColor(theme: theme)
+    }
+    
+    private func updateAmountLabelColor(theme: ColorTheme) {
+
+        guard let attributedText = amountLabel.attributedText, let color = theme.text.heading else { return }
+
+        let amountText = NSMutableAttributedString(attributedString: attributedText)
+        amountText.addAttributes([.foregroundColor : color], range: NSRange(location: 0, length: amountText.length))
+        
+        amountLabel.attributedText = amountText
     }
 }

@@ -39,16 +39,15 @@
 */
 
 import UIKit
+import TariCommon
 
-final class TransactionsListHeaderView: UITableViewHeaderFooterView {
+final class TransactionsListHeaderView: DynamicThemeHeaderFooterView {
 
     // MARK: - Subviews
 
-    private let titleLabel: UILabel = {
+    @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.txSectionTitleLabel
-        view.textColor = Theme.shared.colors.txCellNote
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
@@ -84,5 +83,12 @@ final class TransactionsListHeaderView: UITableViewHeaderFooterView {
         ]
 
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        titleLabel.textColor = theme.text.heading
     }
 }

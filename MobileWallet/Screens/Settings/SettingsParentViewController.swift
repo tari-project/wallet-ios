@@ -39,65 +39,49 @@
 */
 
 import UIKit
+import TariCommon
 
-class SettingsParentViewController: UIViewController {
-    let navigationBar = NavigationBar()
+class SettingsParentViewController: DynamicThemeViewController {
+    
+    @View private(set) var navigationBar: NavigationBar = {
+        let view = NavigationBar()
+        view.title = localized("settings.title")
+        return view
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        styleNavigatorBar(isHidden: true)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+        setupConstraints()
         setupViews()
+    }
+    
+    private func setupConstraints() {
+        
+        view.addSubview(navigationBar)
+        
+        let constraints = [
+            navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        view.backgroundColor = theme.backgrounds.primary
     }
 }
 
 extension SettingsParentViewController {
+    
     @objc func setupViews() {
-        view.backgroundColor = Theme.shared.colors.appBackground
         setupNavigationBar()
         setupNavigationBarSeparator()
     }
-
-    @objc func setupNavigationBar() {
-        navigationBar.title = localized("settings.title")
-        navigationBar.verticalPositioning = .custom(24)
-        navigationBar.backgroundColor = Theme.shared.colors.navigationBarBackground
-
-        view.addSubview(navigationBar)
-        navigationBar.translatesAutoresizingMaskIntoConstraints = false
-
-        navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-
-        if modalPresentationStyle == .popover {
-            navigationBar.heightAnchor.constraint(equalToConstant: 58).isActive = true
-        } else {
-            navigationBar.heightAnchor.constraint(equalToConstant: 50).isActive = true
-            navigationBar.verticalPositioning = .center
-        }
-
-        let stubView = UIView()
-        stubView.backgroundColor = navigationBar.backgroundColor
-        view.addSubview(stubView)
-        stubView.translatesAutoresizingMaskIntoConstraints = false
-
-        stubView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        stubView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        stubView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        stubView.bottomAnchor.constraint(equalTo: navigationBar.topAnchor).isActive = true
-    }
-
-    @objc func setupNavigationBarSeparator() {
-        let separator = UIView()
-        separator.backgroundColor = Theme.shared.colors.settingsNavBarSeparator
-
-        navigationBar.addSubview(separator)
-
-        separator.translatesAutoresizingMaskIntoConstraints = false
-
-        separator.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
-        separator.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        separator.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
-    }
+    
+    @objc func setupNavigationBar() {}
+    @objc func setupNavigationBarSeparator() {}
 }

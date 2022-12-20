@@ -43,7 +43,7 @@ import Lottie
 import LocalAuthentication
 import AVFoundation
 
-final class WalletCreationViewController: UIViewController {
+final class WalletCreationViewController: DynamicThemeViewController {
     typealias LottieAnimation = Animation.LottieAnimation
 
     // MARK: - States
@@ -71,6 +71,8 @@ final class WalletCreationViewController: UIViewController {
     private var animationViewWidthConstraint: NSLayoutConstraint?
 
     private let emojiIdView = EmojiIdView()
+    private let tapToSeeButton = UIButton()
+    private let tapToSeeArrow = UIImageView()
     private let tapToSeeButtonContainer = UIView()
 
     private let firstLabel = TransitionLabel()
@@ -85,7 +87,7 @@ final class WalletCreationViewController: UIViewController {
 
     private let localAuth = LAContext()
 
-    private let radialGradient: RadialGradientView = RadialGradientView(insideColor: Theme.shared.colors.accessAnimationViewShadow!, outsideColor: Theme.shared.colors.creatingWalletBackground!)
+    private let radialGradient = RadialGradientView()
 
     // MARK: - Override functions
     override func viewDidLoad() {
@@ -229,6 +231,18 @@ final class WalletCreationViewController: UIViewController {
             self?.prepareSubviews(for: .enableNotifications)
             self?.showEnableNotifications()
         }
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        view.backgroundColor = theme.backgrounds.secondary
+        firstLabel.textColor = theme.text.heading
+        secondLabel.textColor = theme.text.heading
+        thirdLabel.textColor = theme.text.heading
+        tapToSeeButton.backgroundColor = theme.backgrounds.primary
+        tapToSeeButton.setTitleColor(theme.brand.purple, for: .normal)
+        tapToSeeArrow.tintColor = theme.backgrounds.primary
+        radialGradient.setupLayer(insideColor: theme.brand.purple?.withAlphaComponent(0.5), outsideColor: .clear)
     }
 }
 
@@ -388,7 +402,6 @@ extension WalletCreationViewController {
         let thisIsYourEmojiString = localized("wallet_creation.emoji_state.first_label")
         let attributedString = NSMutableAttributedString(string: thisIsYourEmojiString, attributes: [
             .font: Theme.shared.fonts.createWalletEmojiIDFirstText,
-            .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
             .kern: -0.33
         ])
         attributedString.addAttribute(
@@ -421,7 +434,6 @@ extension WalletCreationViewController {
         let secondLabelString = localized("wallet_creation.secure_your_wallet")
         let attributedString = NSMutableAttributedString(string: secondLabelString, attributes: [
             .font: Theme.shared.fonts.createWalletEmojiIDSecondText,
-            .foregroundColor: Theme.shared.colors.creatingWalletSecondLabel!,
             .kern: -0.33
         ])
         self.secondLabel.attributedText = attributedString
@@ -474,8 +486,6 @@ extension WalletCreationViewController {
         setupRadialGradientView()
         setupContinueButton()
         setupPendingAnimation()
-
-        view.backgroundColor = Theme.shared.colors.creatingWalletBackground
     }
 
     private func setupStackView() {
@@ -534,7 +544,6 @@ extension WalletCreationViewController {
     private func setupThirdLabel() {
         thirdLabel.alpha = 0.0
         thirdLabel.font = Theme.shared.fonts.createWalletThirdLabel
-        thirdLabel.textColor = Theme.shared.colors.creatingWalletThirdLabel
         thirdLabel.textAlignment = .center
         thirdLabel.numberOfLines = 0
         stackView.addArrangedSubview(thirdLabel)
@@ -637,32 +646,28 @@ extension WalletCreationViewController {
         tapToSeeButtonContainer.heightAnchor.constraint(equalToConstant: 38).isActive = true
         tapToSeeButtonContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0).isActive = true
 
-        let button = UIButton()
-        button.layer.cornerRadius = 4.0
-        button.layer.masksToBounds = true
-        button.backgroundColor = Theme.shared.colors.tapToSeeFullEmojiBackground!
-        button.setTitle(localized("wallet_creation.button.tap_to_see_full_emoji"), for: .normal)
-        button.addTarget(self, action: #selector(tapToSeeButtonAction(_ :)), for: .touchUpInside)
-        button.setTitleColor(Theme.shared.colors.tapToSeeFullEmoji!, for: .normal)
-        button.titleLabel?.font = Theme.shared.fonts.tapToSeeFullEmojiLabel
+        tapToSeeButton.layer.cornerRadius = 4.0
+        tapToSeeButton.layer.masksToBounds = true
+        tapToSeeButton.setTitle(localized("wallet_creation.button.tap_to_see_full_emoji"), for: .normal)
+        tapToSeeButton.addTarget(self, action: #selector(tapToSeeButtonAction(_ :)), for: .touchUpInside)
+        tapToSeeButton.titleLabel?.font = Theme.shared.fonts.tapToSeeFullEmojiLabel
 
-        tapToSeeButtonContainer.addSubview(button)
+        tapToSeeButtonContainer.addSubview(tapToSeeButton)
 
-        button.translatesAutoresizingMaskIntoConstraints = false
+        tapToSeeButton.translatesAutoresizingMaskIntoConstraints = false
 
-        button.topAnchor.constraint(equalTo: tapToSeeButtonContainer.topAnchor).isActive = true
-        button.widthAnchor.constraint(equalTo: tapToSeeButtonContainer.widthAnchor).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 33).isActive = true
-        button.centerXAnchor.constraint(equalTo: tapToSeeButtonContainer.centerXAnchor).isActive = true
+        tapToSeeButton.topAnchor.constraint(equalTo: tapToSeeButtonContainer.topAnchor).isActive = true
+        tapToSeeButton.widthAnchor.constraint(equalTo: tapToSeeButtonContainer.widthAnchor).isActive = true
+        tapToSeeButton.heightAnchor.constraint(equalToConstant: 33).isActive = true
+        tapToSeeButton.centerXAnchor.constraint(equalTo: tapToSeeButtonContainer.centerXAnchor).isActive = true
 
-        let arrow = UIImageView()
-        arrow.image = Theme.shared.images.createWalletDownArrow!
-        tapToSeeButtonContainer.addSubview(arrow)
+        tapToSeeArrow.image = Theme.shared.images.createWalletDownArrow
+        tapToSeeButtonContainer.addSubview(tapToSeeArrow)
 
-        arrow.translatesAutoresizingMaskIntoConstraints = false
-        arrow.topAnchor.constraint(equalTo: button.bottomAnchor).isActive = true
-        arrow.widthAnchor.constraint(equalToConstant: 7).isActive = true
-        arrow.heightAnchor.constraint(equalToConstant: 5).isActive = true
-        arrow.centerXAnchor.constraint(equalTo: button.centerXAnchor, constant: 0).isActive = true
+        tapToSeeArrow.translatesAutoresizingMaskIntoConstraints = false
+        tapToSeeArrow.topAnchor.constraint(equalTo: tapToSeeButton.bottomAnchor).isActive = true
+        tapToSeeArrow.widthAnchor.constraint(equalToConstant: 7).isActive = true
+        tapToSeeArrow.heightAnchor.constraint(equalToConstant: 5).isActive = true
+        tapToSeeArrow.centerXAnchor.constraint(equalTo: tapToSeeButton.centerXAnchor, constant: 0).isActive = true
     }
 }

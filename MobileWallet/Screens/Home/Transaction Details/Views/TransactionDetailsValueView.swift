@@ -41,15 +41,14 @@
 import UIKit
 import TariCommon
 
-final class TransactionDetailsValueView: UIView {
+final class TransactionDetailsValueView: DynamicThemeView {
 
     // MARK: - Subviews
     
     @View private var currencyImageView: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.currencySymbol?.withRenderingMode(.alwaysTemplate)
+        view.image = Theme.shared.images.currencySymbol
         view.contentMode = .scaleAspectFit
-        view.tintColor = Theme.shared.colors.txViewValueLabel
         return view
     }()
     
@@ -57,7 +56,6 @@ final class TransactionDetailsValueView: UIView {
         let view = UILabel()
         view.minimumScaleFactor = 0.2
         view.font = Theme.shared.fonts.txScreenCurrencyValueLabel
-        view.textColor = Theme.shared.colors.txViewValueLabel
         view.adjustsFontSizeToFitWidth = true
         return view
     }()
@@ -65,7 +63,6 @@ final class TransactionDetailsValueView: UIView {
     @View private var feeLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.txFeeLabel
-        view.textColor = Theme.shared.colors.txViewValueLabel
         return view
     }()
     
@@ -88,9 +85,8 @@ final class TransactionDetailsValueView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
-        setupViews()
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -99,10 +95,6 @@ final class TransactionDetailsValueView: UIView {
     }
     
     // MARK: - Setups
-    
-    private func setupViews() {
-        backgroundColor = Theme.shared.colors.txViewValueContainer
-    }
     
     private func setupConstraints() {
         
@@ -131,7 +123,15 @@ final class TransactionDetailsValueView: UIView {
         NSLayoutConstraint.activate(constraints)
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.secondary
+        currencyImageView.tintColor = theme.icons.default
+        valueLabel.textColor = theme.text.heading
+        feeLabel.textColor = theme.text.heading
+    }
     
     private func updateFeeElements() {
         feeLabel.text = fee

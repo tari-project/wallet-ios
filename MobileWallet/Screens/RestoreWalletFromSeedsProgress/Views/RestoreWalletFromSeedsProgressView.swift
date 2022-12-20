@@ -41,7 +41,7 @@
 import UIKit
 import Lottie
 
-final class RestoreWalletFromSeedsProgressView: UIView {
+final class RestoreWalletFromSeedsProgressView: DynamicThemeView {
 
     // MARK: - Subviews
 
@@ -55,7 +55,6 @@ final class RestoreWalletFromSeedsProgressView: UIView {
 
     private let titleLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.restoreFromSeedWordsProgressOverlayTitle
         view.font = Theme.shared.fonts.restoreFromSeedWordsProgressOverlayTitle
         view.textAlignment = .center
         view.text = localized("restore_from_seed_words.progress_overlay.label.title")
@@ -65,7 +64,6 @@ final class RestoreWalletFromSeedsProgressView: UIView {
 
     private let descriptionLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.restoreFromSeedWordsProgressOverlayDescription
         view.font = Theme.shared.fonts.restoreFromSeedWordsProgressOverlayDescription
         view.textAlignment = .center
         view.numberOfLines = 0
@@ -76,7 +74,6 @@ final class RestoreWalletFromSeedsProgressView: UIView {
 
     let statusLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.restoreFromSeedWordsProgressOverlayTitle
         view.font = Theme.shared.fonts.restoreFromSeedWordsProgressOverlayDescription
         view.adjustsFontSizeToFitWidth = true
         view.textAlignment = .center
@@ -86,7 +83,6 @@ final class RestoreWalletFromSeedsProgressView: UIView {
 
     let progressLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.restoreFromSeedWordsProgressOverlayTitle
         view.font = Theme.shared.fonts.restoreFromSeedWordsProgressOverlayTitle
         view.textAlignment = .center
         view.translatesAutoresizingMaskIntoConstraints = false
@@ -111,9 +107,8 @@ final class RestoreWalletFromSeedsProgressView: UIView {
 
     // MARK: - Initializers
 
-    init() {
-        super.init(frame: .zero)
-        setupViews()
+    override init() {
+        super.init()
         setupConstraints()
     }
 
@@ -122,10 +117,6 @@ final class RestoreWalletFromSeedsProgressView: UIView {
     }
 
     // MARK: - Setups
-
-    private func setupViews() {
-        backgroundColor = Theme.shared.colors.appBackground
-    }
 
     private func setupConstraints() {
 
@@ -165,18 +156,14 @@ final class RestoreWalletFromSeedsProgressView: UIView {
         NSLayoutConstraint.activate(constraints + mainContentConstraints)
     }
 
-    // MARK: - Actions
-
-    private func updateLogoView() {
-        logoView.removeGradient()
-        logoView.applyGradient()
-        logoView.layer.cornerRadius = min(bounds.height, bounds.width) / 2.0
-    }
-
-    // MARK: - Layout
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        updateLogoView()
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        titleLabel.textColor = theme.text.body
+        descriptionLabel.textColor = theme.text.body
+        statusLabel.textColor = theme.text.heading
+        progressLabel.textColor = theme.text.heading
     }
 }

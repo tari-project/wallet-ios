@@ -41,13 +41,12 @@
 import UIKit
 import TariCommon
 
-class TransactionDetailsSectionView<T: UIView>: UIView {
+final class TransactionDetailsSectionView<T: UIView>: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var titleLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.txScreenSubheadingLabel
         view.font = Theme.shared.fonts.txScreenSubheadingLabel
         return view
     }()
@@ -63,8 +62,8 @@ class TransactionDetailsSectionView<T: UIView>: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -89,5 +88,12 @@ class TransactionDetailsSectionView<T: UIView>: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        titleLabel.textColor = theme.text.body
     }
 }

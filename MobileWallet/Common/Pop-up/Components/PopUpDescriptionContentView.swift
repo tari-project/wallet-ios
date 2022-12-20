@@ -41,14 +41,13 @@
 import UIKit
 import TariCommon
 
-final class PopUpDescriptionContentView: UIView {
+final class PopUpDescriptionContentView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private(set) var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
-        view.textColor = Theme.shared.colors.profileMiddleLabel
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -56,8 +55,8 @@ final class PopUpDescriptionContentView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -79,5 +78,12 @@ final class PopUpDescriptionContentView: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.body
     }
 }

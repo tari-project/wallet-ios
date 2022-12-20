@@ -41,16 +41,19 @@
 import UIKit
 import Lottie
 
-class PendingView: UIView {
+final class PendingView: DynamicThemeView {
 
     private let containerStackView = UIStackView()
     private let title: String?
     private let definition: String?
 
+    private let titleLabel = UILabel()
+    private let descriptionLabel = UILabel()
+    
     init(title: String?, definition: String?) {
         self.title = title
         self.definition = definition
-        super.init(frame: .zero)
+        super.init()
         setupSubviews()
     }
 
@@ -94,7 +97,6 @@ class PendingView: UIView {
     }
 
     private func setupSubviews() {
-        backgroundColor = Theme.shared.colors.appBackground
         setupContainerView()
         setupPendingAnimation()
     }
@@ -114,8 +116,8 @@ class PendingView: UIView {
         containerStackView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -25).isActive = true
 
         setupImageView()
-        setupTitle()
-        setupDescription()
+        setupTitleLabel(titleLabel)
+        setupDescriptionLabel(descriptionLabel)
     }
 
     private func setupImageView() {
@@ -129,25 +131,21 @@ class PendingView: UIView {
         containerStackView.setCustomSpacing(30.0, after: imageView)
     }
 
-    private func setupTitle() {
-        let title = UILabel()
-
+    private func setupTitleLabel(_ title: UILabel) {
         title.text = self.title
         title.font = Theme.shared.fonts.restorePendingViewTitle
-        title.textColor = Theme.shared.colors.restorePendingViewTitle
 
         containerStackView.addArrangedSubview(title)
         containerStackView.setCustomSpacing(10.0, after: title)
     }
 
-    private func setupDescription() {
+    private func setupDescriptionLabel(_ description: UILabel) {
         let description = UILabel()
         description.numberOfLines = 0
         description.textAlignment = .center
 
         description.text = self.definition
         description.font = Theme.shared.fonts.restorePendingViewDescription
-        description.textColor = Theme.shared.colors.restorePendingViewDescription
 
         containerStackView.addArrangedSubview(description)
     }
@@ -165,5 +163,12 @@ class PendingView: UIView {
         pendingAnimationView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30).isActive = true
 
         pendingAnimationView.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        titleLabel.textColor = theme.text.heading
+        descriptionLabel.textColor = theme.text.body
     }
 }

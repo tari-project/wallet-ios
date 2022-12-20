@@ -69,9 +69,8 @@ final class SelectBaseNodeViewController: SettingsParentTableViewController {
 
         navigationBar.title = localized("select_base_node.title")
         navigationBar.rightButton.setImage(UIImage(systemName: "plus.bubble"), for: .normal)
-        navigationBar.rightButton.tintColor = Theme.shared.colors.navigationBarPurple
 
-        navigationBar.rightButtonAction = { [weak self] in
+        navigationBar.onRightButtonAction = { [weak self] in
             self?.presentAddBaseNodeScreen()
         }
     }

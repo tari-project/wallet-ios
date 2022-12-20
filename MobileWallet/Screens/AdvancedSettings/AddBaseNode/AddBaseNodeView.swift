@@ -40,7 +40,7 @@
 
 import UIKit
 
-final class AddBaseNodeView: UIView {
+final class AddBaseNodeView: DynamicThemeView {
 
     // MARK: - Subviews
 
@@ -77,6 +77,13 @@ final class AddBaseNodeView: UIView {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.secondary
+        nameTitleLabel.textColor = theme.text.heading
+        peerTitleLabel.textColor = theme.text.heading
+    }
 
     private let saveButton: ActionButton = {
         let view = ActionButton()
@@ -109,9 +116,8 @@ final class AddBaseNodeView: UIView {
 
     // MARK: - Initializers
 
-    init() {
-        super.init(frame: .zero)
-        setupView()
+    override init() {
+        super.init()
         setupConstraints()
         setupFeedbacks()
     }
@@ -121,10 +127,6 @@ final class AddBaseNodeView: UIView {
     }
 
     // MARK: - Setups
-
-    private func setupView() {
-        backgroundColor = Theme.shared.colors.settingsTableStyleBackground
-    }
 
     private func setupConstraints() {
 

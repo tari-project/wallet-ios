@@ -41,14 +41,13 @@
 import UIKit
 import TariCommon
 
-final class PopUpHeaderView: UIView {
+final class PopUpHeaderView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private(set) var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.light.withSize(18.0)
-        view.textColor = .black
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -56,8 +55,8 @@ final class PopUpHeaderView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -65,7 +64,7 @@ final class PopUpHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: Setups
+    // MARK: - Setups
     
     private func setupConstraints() {
         
@@ -79,5 +78,12 @@ final class PopUpHeaderView: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.heading
     }
 }

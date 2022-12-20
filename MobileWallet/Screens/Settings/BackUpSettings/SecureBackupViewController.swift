@@ -55,6 +55,10 @@ class SecureBackupViewController: SettingsParentViewController {
 
     private let pendingView = PendingView(title: localized("backup_pending_view.title"),
                                           definition: localized("backup_pending_view.description"))
+    
+    private var descriptionTextColor: UIColor?
+    private var descriptionBoldTextColor: UIColor?
+    
     private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
@@ -114,6 +118,16 @@ class SecureBackupViewController: SettingsParentViewController {
                 }
             })
         }
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        headerLabel.textColor = theme.text.heading
+        descriptionTextColor = theme.text.body
+        descriptionBoldTextColor = theme.text.heading
+        
+        updateDescriptionLabel()
     }
 }
 
@@ -187,20 +201,26 @@ extension SecureBackupViewController {
     }
 
     private func setupDescriptionLabel() {
+        descriptionLabel.font = Theme.shared.fonts.settingsViewHeaderDescription
+        descriptionLabel.numberOfLines = 0
+
+        stackView.addArrangedSubview(descriptionLabel)
+        stackView.setCustomSpacing(25, after: descriptionLabel)
+    }
+    
+    private func updateDescriptionLabel() {
+        
+        guard let descriptionTextColor, let descriptionBoldTextColor else { return }
+        
         let atttributedPart1 = localized("secure_backup.header_description_part1")
         let atttributedPart2 = localized("secure_backup.header_description_part2")
 
         let attributedString = NSMutableAttributedString(string: atttributedPart1 + atttributedPart2)
 
-        attributedString.addAttributes([NSAttributedString.Key.foregroundColor: Theme.shared.colors.settingsViewDescription!], range: NSRange(location: 0, length: atttributedPart1.count))
-        attributedString.addAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], range: NSRange(location: atttributedPart1.count, length: atttributedPart2.count))
-
-        descriptionLabel.font = Theme.shared.fonts.settingsViewHeaderDescription
+        attributedString.addAttributes([.foregroundColor: descriptionTextColor], range: NSRange(location: 0, length: atttributedPart1.count))
+        attributedString.addAttributes([.foregroundColor: descriptionBoldTextColor], range: NSRange(location: atttributedPart1.count, length: atttributedPart2.count))
+        
         descriptionLabel.attributedText = attributedString
-        descriptionLabel.numberOfLines = 0
-
-        stackView.addArrangedSubview(descriptionLabel)
-        stackView.setCustomSpacing(25, after: descriptionLabel)
     }
 
     private func setupScrollView() {

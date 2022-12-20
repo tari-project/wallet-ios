@@ -169,16 +169,11 @@ class TxTableViewModel: NSObject {
             string: title,
             attributes: [
                 .font: Theme.shared.fonts.txCellUsernameLabel,
-                .foregroundColor: Theme.shared.colors.txCellAlias!
             ]
         )
         
         let range = NSRange(location: startIndex, length: alias.count)
         attributedTitle.addAttribute(.font, value: Theme.shared.fonts.txCellUsernameLabelHeavy, range: range)
-        
-        if isAliasEmojiID {
-            attributedTitle.addAttribute(.foregroundColor, value: Theme.shared.colors.emojisSeparator!, range: range)
-        }
         
         return attributedTitle
     }

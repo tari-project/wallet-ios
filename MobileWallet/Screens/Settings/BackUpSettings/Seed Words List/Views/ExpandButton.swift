@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class ExpandButton: BaseButton {
+final class ExpandButton: DynamicThemeView {
     
     // MARK: - Constants
     
@@ -49,19 +49,21 @@ final class ExpandButton: BaseButton {
     
     // MARK: - Subviews
     
+    @View private var button = BaseButton()
+    
     @View private var topArrowView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.expandButtonArrow
-        view.tintColor = Theme.shared.colors.checkBoxBorderColor
         return view
     }()
     
     @View private var bottomArrowView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.expandButtonArrow
-        view.tintColor = Theme.shared.colors.checkBoxBorderColor
         return view
     }()
+    
+    var onTap: (() -> Void)?
     
     // MARK: - Properties
     
@@ -71,10 +73,11 @@ final class ExpandButton: BaseButton {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
+        setupCallbacks()
         updateArrows()
     }
     
@@ -85,14 +88,13 @@ final class ExpandButton: BaseButton {
     // MARK: - Setups
     
     private func setupViews() {
-        layer.borderColor = Theme.shared.colors.checkBoxBorderColor?.cgColor
         layer.borderWidth = totalHeight / 23.0
         layer.cornerRadius = totalHeight / 2.0
     }
     
     private func setupConstraints() {
         
-        [topArrowView, bottomArrowView].forEach(addSubview)
+        [topArrowView, bottomArrowView, button].forEach(addSubview)
         
         let padding = (2.8 / 23.0) * totalHeight
         let arrowHeight = (10.3 / 23.0) * totalHeight
@@ -106,6 +108,10 @@ final class ExpandButton: BaseButton {
             bottomArrowView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding),
             bottomArrowView.heightAnchor.constraint(equalToConstant: arrowHeight),
             bottomArrowView.widthAnchor.constraint(equalToConstant: arrowHeight),
+            button.topAnchor.constraint(equalTo: topAnchor),
+            button.leadingAnchor.constraint(equalTo: leadingAnchor),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor),
+            button.bottomAnchor.constraint(equalTo: bottomAnchor),
             heightAnchor.constraint(equalToConstant: totalHeight),
             widthAnchor.constraint(equalToConstant: totalHeight)
         ]
@@ -113,7 +119,19 @@ final class ExpandButton: BaseButton {
         NSLayoutConstraint.activate(constraints)
     }
     
-    // MARK: - Actions
+    private func setupCallbacks() {
+        button.onTap = { [weak self] in self?.onTap?() }
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        layer.borderColor = theme.icons.active?.cgColor
+        topArrowView.tintColor = theme.icons.active
+        bottomArrowView.tintColor = theme.icons.active
+    }
     
     private func updateArrows() {
         

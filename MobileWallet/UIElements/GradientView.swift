@@ -41,17 +41,8 @@
 import UIKit
 
 struct GradientLocationData {
-    let color: UIColor
+    let color: UIColor?
     let location: Double
-}
-
-extension Array where Element == GradientLocationData {
-    static var standardGradient: Self {
-        [
-            Element(color: Theme.shared.colors.gradientStartColor!, location: 0.0),
-            Element(color: Theme.shared.colors.gradientEndColor!, location: 1.0),
-        ]
-    }
 }
 
 final class GradientView: UIView {
@@ -67,7 +58,7 @@ final class GradientView: UIView {
     
     // MARK: - Properties
     
-    var locations: [GradientLocationData] = .standardGradient {
+    var locations: [GradientLocationData] = [] {
         didSet { updateGradient() }
     }
     
@@ -97,7 +88,8 @@ final class GradientView: UIView {
             .map { NSNumber(value: $0) }
         
         gradientLayer.colors = locations
-            .map(\.color.cgColor)
+            .compactMap { $0.color }
+            .map(\.cgColor)
     }
     
     private func updateOrientation() {

@@ -41,22 +41,17 @@
 import UIKit
 import TariCommon
 
-final class QRCodePresentationView: UIView {
+final class QRCodePresentationView: DynamicThemeView {
     
     // MARK: - Subviews
     
     @View private var contentView: UIView = {
         let view = UIView()
-        view.backgroundColor = Theme.shared.colors.appBackground
         view.layer.cornerRadius = 26.0
         return view
     }()
     
-    @View var qrCodeView: QRCodeView = {
-        let view = QRCodeView()
-        view.apply(shadow: .box)
-        return view
-    }()
+    @View var qrCodeView = QRCodeView()
     
     @View var shareButton: ActionButton = {
         let view = ActionButton()
@@ -67,7 +62,7 @@ final class QRCodePresentationView: UIView {
     @View var closeButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("request.qr_code.buttons.close"), for: .normal)
-        view.setTitleColor(Theme.shared.colors.refreshViewLabelLoading, for: .normal)
+        view.setVariation(.warning)
         return view
     }()
     
@@ -78,8 +73,8 @@ final class QRCodePresentationView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
     }
@@ -91,7 +86,7 @@ final class QRCodePresentationView: UIView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = .black.withAlphaComponent(0.3)
+        backgroundColor = .static.popupOverlay
     }
     
     private func setupConstraints() {
@@ -144,5 +139,13 @@ final class QRCodePresentationView: UIView {
         UIView.animate(withDuration: 0.3) { [weak self] in
             self?.layoutIfNeeded()
         }
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        contentView.backgroundColor = theme.backgrounds.primary
+        qrCodeView.apply(shadow: theme.shadows.box)
     }
 }

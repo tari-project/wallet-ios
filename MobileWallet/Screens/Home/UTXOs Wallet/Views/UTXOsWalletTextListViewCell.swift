@@ -41,12 +41,12 @@
 import UIKit
 import TariCommon
 
-final class UTXOsWalletTextListViewCell: UITableViewCell {
+final class UTXOsWalletTextListViewCell: DynamicThemeCell {
     
     struct Model: Identifiable, Hashable {
         var id: UUID
         let amount: String
-        let statusColor: UIColor?
+        let status: UtxoStatus
         let statusText: String?
         let hash: String
         let isSelectable: Bool
@@ -62,14 +62,12 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     
     @View private var amountLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.black
         view.font = .Avenir.heavy.withSize(15.0)
         return view
     }()
     
     @View private var hashLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.mediumDarkGrey
         view.font = .Avenir.roman.withSize(12.0)
         return view
     }()
@@ -78,12 +76,11 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     
     @View private var statusLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.mediumDarkGrey
         view.font = .Avenir.roman.withSize(12.0)
         return view
     }()
     
-    @View private var tickView = UTXOsWalletTextTickButton()
+    @View private var tickView = UTXOsWalletTickButton()
     
     // MARK: - Properties
     
@@ -93,6 +90,7 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     
     private(set) var elementID: UUID?
     
+    private var status: UtxoStatus = .mined
     private var isSelectable = false
     private var leadingConstraint: NSLayoutConstraint?
     private var leadingConstraintInEditing: NSLayoutConstraint?
@@ -113,7 +111,7 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     
     private func setupViews() {
         selectionStyle = .none
-        backgroundColor = .white
+        backgroundColor = .clear
     }
     
     private func setupConstraints() {
@@ -157,13 +155,23 @@ final class UTXOsWalletTextListViewCell: UITableViewCell {
     
     // MARK: - Actions
     
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        statusCircleView.backgroundColor = status.color(theme: theme)
+        amountLabel.textColor = theme.text.heading
+        hashLabel.textColor = theme.text.body
+        statusLabel.textColor = theme.text.body
+    }
+    
     func update(model: Model) {
         elementID = model.id
         isSelectable = model.isSelectable
         amountLabel.text = model.amount
         hashLabel.text = model.hash
-        statusCircleView.backgroundColor = model.statusColor
         statusLabel.text = model.statusText
+        
+        status = model.status
+        update(theme: theme)
     }
     
     func updateTickBox(isVisible: Bool, animated: Bool) {

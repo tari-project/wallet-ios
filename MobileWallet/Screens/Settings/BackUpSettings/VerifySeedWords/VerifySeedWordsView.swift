@@ -51,23 +51,19 @@ final class VerifySeedWordsView: BaseNavigationContentView {
     @View private var headerLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
-        view.textColor = Theme.shared.colors.settingsViewDescription
         view.text = localized("verify_phrase.header")
         return view
     }()
-    
     
     @View private(set) var tokensView = TokenCollectionView()
     
     @View private var errorLabel: UILabel = {
         let view = UILabel()
         view.text = localized("verify_phrase.warning")
-        view.textColor = Theme.shared.colors.warningBoxBorder
         view.font = Theme.shared.fonts.warningBoxTitleLabel
         view.textAlignment = .center
         view.layer.cornerRadius = 4.0
         view.layer.borderWidth = 1.0
-        view.layer.borderColor = Theme.shared.colors.warningBoxBorder?.cgColor
         view.transform = CGAffineTransform(scaleX: 0.0001, y: 0.0001)
         return view
     }()
@@ -84,14 +80,15 @@ final class VerifySeedWordsView: BaseNavigationContentView {
         view.numberOfLines = 0
         view.text = localized("verify_phrase.container_description")
         view.font = Theme.shared.fonts.settingsFillablePhraseViewDescription
-        view.textColor = Theme.shared.colors.settingsFillablePhraseViewDescription
         view.textAlignment = .center
         return view
     }()
     
-    @View private(set) var selectableTokensView: TokenCollectionView = {
-        let view = TokenCollectionView()
-        view.backgroundColor = .clear
+    @View private(set) var selectableTokensView = TokenCollectionView()
+    
+    @View private(set) var continueButton: ActionButton = {
+        let view = ActionButton()
+        view.setTitle(localized("verify_phrase.complete"), for: .normal)
         return view
     }()
     
@@ -108,12 +105,6 @@ final class VerifySeedWordsView: BaseNavigationContentView {
     var isSuccessViewVisible: Bool = false {
         didSet { updateScale(view: successImageView, isVisible: isSuccessViewVisible) }
     }
-    
-    @View private(set) var continueButton: ActionButton = {
-        let view = ActionButton()
-        view.setTitle(localized("verify_phrase.complete"), for: .normal)
-        return view
-    }()
     
     // MARK: - Initialisers
     
@@ -140,7 +131,7 @@ final class VerifySeedWordsView: BaseNavigationContentView {
         [headerLabel, tokensView, tokensViewInfoLabel, successImageView, errorLabel, selectableTokensView, continueButton].forEach(contentView.addSubview)
         
         let scrollViewConstants = [
-            scrollView.topAnchor.constraint(equalTo: separator.bottomAnchor),
+            scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -186,7 +177,17 @@ final class VerifySeedWordsView: BaseNavigationContentView {
         scrollView.contentSize.height = contentView.bounds.height
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        headerLabel.textColor = theme.text.body
+        errorLabel.textColor = theme.system.red
+        errorLabel.layer.borderColor = theme.system.red?.cgColor
+        tokensViewInfoLabel.textColor = theme.text.body
+        selectableTokensView.backgroundColor = .clear
+    }
     
     private func updateInfoLabel() {
         UIView.animate(withDuration: 0.4, delay: 0.0, options: [.beginFromCurrentState]) {

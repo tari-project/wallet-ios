@@ -48,7 +48,6 @@ final class SeedWordsListView: BaseNavigationContentView {
     @View private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
-        view.textColor = Theme.shared.colors.settingsViewDescription
         view.text = localized("seed_phrase.header")
         view.numberOfLines = 0
         return view
@@ -56,7 +55,6 @@ final class SeedWordsListView: BaseNavigationContentView {
     
     @View private var seedWordsBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = Theme.shared.colors.settingsVerificationPhraseViewBackground
         view.clipsToBounds = true
         view.layer.cornerRadius = 10.0
         return view
@@ -86,7 +84,6 @@ final class SeedWordsListView: BaseNavigationContentView {
         let view = UILabel()
         view.text = localized("seed_phrase.agreement")
         view.font = Theme.shared.fonts.settingsSeedPhraseAgreement
-        view.textColor = Theme.shared.colors.settingsSeedPhraseAgreement
         view.numberOfLines = 0
         return view
     }()
@@ -151,7 +148,6 @@ final class SeedWordsListView: BaseNavigationContentView {
     
     private func setupViews() {
         navigationBar.title = localized("seed_phrase.title")
-        backgroundColor = Theme.shared.colors.appBackground
         seedWordsBackgroundView.layer.mask = fadeOutMask
     }
     
@@ -240,6 +236,14 @@ final class SeedWordsListView: BaseNavigationContentView {
     
     // MARK: - Updates
     
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        descriptionLabel.textColor = theme.text.body
+        seedWordsBackgroundView.backgroundColor = theme.backgrounds.secondary
+        agreementLabel.textColor = theme.text.body
+    }
+    
     private func updateSeedWords() {
 
         firstSeedWordsStackView.arrangedSubviews.forEach(firstSeedWordsStackView.removeArrangedSubview)
@@ -292,7 +296,7 @@ final class SeedWordsListView: BaseNavigationContentView {
     
     private func updateExpandButton() {
         let isButtonVisible = isListExpanded || !isContentFitSpace
-        expandListButton.isHidden = !isButtonVisible
+       expandListButton.isHidden = !isButtonVisible
     }
     
     // MARK: - Action Targets

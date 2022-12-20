@@ -41,14 +41,13 @@
 import UIKit
 import TariCommon
 
-final class PopUpHeaderWithSubtitle: UIView {
+final class PopUpHeaderWithSubtitle: DynamicThemeView {
     
     // MARK: - Subview
     
     @View private(set) var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.light.withSize(18.0)
-        view.textColor = .black
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -57,7 +56,6 @@ final class PopUpHeaderWithSubtitle: UIView {
     @View private(set) var subtitleLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
-        view.textColor = Theme.shared.colors.profileMiddleLabel
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
@@ -65,8 +63,8 @@ final class PopUpHeaderWithSubtitle: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -92,5 +90,12 @@ final class PopUpHeaderWithSubtitle: UIView {
         
         NSLayoutConstraint.activate(constraints)
     }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        titleLabel.textColor = theme.text.heading
+        subtitleLabel.textColor = theme.text.body
+    }
 }
-

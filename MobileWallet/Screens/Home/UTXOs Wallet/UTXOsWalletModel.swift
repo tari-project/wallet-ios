@@ -41,12 +41,12 @@
 import UIKit
 import Combine
 
+enum UtxoStatus {
+    case mined
+    case unconfirmed
+}
+
 final class UTXOsWalletModel {
-    
-    enum UtxoStatus {
-        case mined
-        case unconfirmed
-    }
     
     enum SortMethod: Int, CaseIterable {
         case amountAscending
@@ -311,7 +311,7 @@ extension UTXOsWalletModel.UtxoModel {
     var amountWithCurrency: String { "\(amountText) \(NetworkManager.shared.selectedNetwork.tickerSymbol)" }
 }
 
-extension UTXOsWalletModel.UtxoStatus {
+extension UtxoStatus {
     
     var name: String {
         switch self {
@@ -331,12 +331,12 @@ extension UTXOsWalletModel.UtxoStatus {
         }
     }
     
-    var color: UIColor? {
+    func color(theme: ColorTheme) -> UIColor? {
         switch self {
         case .mined:
-            return .tari.system.green
+            return theme.system.green
         case .unconfirmed:
-            return .tari.system.orange
+            return theme.system.orange
         }
     }
 }
@@ -358,7 +358,7 @@ private enum FFIUtxoStatus: UInt8 {
 
 extension FFIUtxoStatus {
     
-    var walletUtxoStatus: UTXOsWalletModel.UtxoStatus? {
+    var walletUtxoStatus: UtxoStatus? {
         switch self {
         case .unspend:
             return .mined
@@ -371,7 +371,7 @@ extension FFIUtxoStatus {
 }
 
 private struct UTXOsData {
-    var data: [(model: TariUtxo, status: UTXOsWalletModel.UtxoStatus)] = []
+    var data: [(model: TariUtxo, status: UtxoStatus)] = []
     var maxAmount: UInt64 = 0
     var minAmount: UInt64 = .max
 }

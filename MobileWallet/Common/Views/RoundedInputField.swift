@@ -40,12 +40,12 @@
 
 import UIKit
 
-final class RoundedInputField: UITextField {
+final class RoundedInputField: DynamicThemeTextField {
 
     // MARK: - Initializers
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init() {
+        super.init()
         setupView()
     }
 
@@ -56,8 +56,14 @@ final class RoundedInputField: UITextField {
     // MARK: - Setups
 
     private func setupView() {
-        backgroundColor = Theme.shared.colors.appBackground
         layer.cornerRadius = 10.0
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
     }
 
     // MARK: - Layout

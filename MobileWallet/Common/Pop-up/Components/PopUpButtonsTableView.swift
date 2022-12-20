@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class PopUpButtonsTableView: UIView {
+final class PopUpButtonsTableView: DynamicThemeView {
     
     struct Model: Identifiable, Hashable {
         let id: UUID
@@ -58,7 +58,6 @@ final class PopUpButtonsTableView: UIView {
     
     @View private var footerLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.mediumDarkGrey
         view.textAlignment = .center
         view.font = .Avenir.medium.withSize(15.0)
         return view
@@ -71,8 +70,8 @@ final class PopUpButtonsTableView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
         setupCallbacks()
     }
@@ -115,6 +114,11 @@ final class PopUpButtonsTableView: UIView {
     
     // MARK: - Updates
     
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        footerLabel.textColor = theme.text.body
+    }
+    
     func update(options: [String]) {
         
         let models = options.map { Model(id: UUID(), title: $0) }
@@ -131,13 +135,12 @@ final class PopUpButtonsTableView: UIView {
     }
 }
 
-private final class PopUpButtonCell: UITableViewCell {
+private final class PopUpButtonCell: DynamicThemeCell {
     
     // MARK: - Subviews
     
     @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.black
         view.textAlignment = .center
         view.font = .Avenir.medium.withSize(15.0)
         return view
@@ -166,6 +169,7 @@ private final class PopUpButtonCell: UITableViewCell {
     
     private func setupViews() {
         selectionStyle = .none
+        backgroundColor = .clear
     }
     
     private func setupConstraints() {
@@ -180,5 +184,12 @@ private final class PopUpButtonCell: UITableViewCell {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.heading
     }
 }

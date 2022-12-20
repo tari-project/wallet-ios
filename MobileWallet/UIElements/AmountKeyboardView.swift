@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class AmountKeyboardView: UIView {
+final class AmountKeyboardView: DynamicThemeView {
     
     enum Key {
         case key(_ character: String)
@@ -72,8 +72,8 @@ final class AmountKeyboardView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -106,6 +106,8 @@ final class AmountKeyboardView: UIView {
                 stackView.addArrangedSubview(button)
             }
             .forEach(stackView.addArrangedSubview)
+        
+        update(theme: theme)
     }
     
     private func setupConstraints() {
@@ -122,6 +124,21 @@ final class AmountKeyboardView: UIView {
         NSLayoutConstraint.activate(constraints)
     }
     
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        stackView.arrangedSubviews
+            .compactMap { $0 as? UIStackView }
+            .flatMap { $0.arrangedSubviews }
+            .compactMap { $0 as? BaseButton }
+            .forEach {
+                $0.setTitleColor(theme.text.heading, for: .normal)
+                $0.tintColor = theme.text.heading
+            }
+    }
+    
     // MARK: - Factories
     
     private func makeRow() -> UIStackView {
@@ -134,10 +151,7 @@ final class AmountKeyboardView: UIView {
     private func makeButton(key: AmountKeyboardView.Key) -> BaseButton {
         let button = BaseButton(type: .system)
         
-        button.setTitleColor(Theme.shared.colors.keypadButton, for: .normal)
-        button.tintColor = Theme.shared.colors.keypadButton
         button.titleLabel?.font = Theme.shared.fonts.keypadButton
-        
         button.onTap = { [weak self] in self?.onKeyTap?(key) }
         
         switch key {

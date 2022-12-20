@@ -40,12 +40,12 @@
 
 import UIKit
 
-final class RoundedTextView: UITextView {
+final class RoundedTextView: DynamicThemeTextView {
 
     // MARK: - Initializers
 
-    override init(frame: CGRect, textContainer: NSTextContainer?) {
-        super.init(frame: frame, textContainer: textContainer)
+    override init() {
+        super.init()
         setupView()
     }
 
@@ -56,9 +56,16 @@ final class RoundedTextView: UITextView {
     // MARK: - Setups
 
     private func setupView() {
-        backgroundColor = Theme.shared.colors.appBackground
+        
         layer.cornerRadius = 10.0
         textContainerInset = UIEdgeInsets(top: 12.0, left: 12.0, bottom: 12.0, right: 12.0)
         textContainer.lineFragmentPadding = 0.0
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
     }
 }

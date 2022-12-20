@@ -75,34 +75,6 @@ extension UIViewController {
         navigationItem.leftBarButtonItem = closeButtonItem
     }
 
-    func styleNavigatorBar(isHidden: Bool, animated: Bool = false) {
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .done, target: nil, action: nil)
-
-        if let navController = navigationController {
-            let navBar = navController.navigationBar
-
-            navBar.barTintColor = Theme.shared.colors.navigationBarBackground
-            navBar.titleTextAttributes = [NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle]
-            navBar.setBackgroundImage(UIImage(color: Theme.shared.colors.navigationBarBackground!), for: .default)
-            navBar.isTranslucent = true
-            navBar.tintColor = Theme.shared.colors.navigationBarTint
-
-            navBar.titleTextAttributes = [
-                NSAttributedString.Key.foregroundColor: Theme.shared.colors.navigationBarTint!,
-                NSAttributedString.Key.font: Theme.shared.fonts.navigationBarTitle
-            ]
-
-            // Remove border
-            navBar.shadowImage = UIImage()
-
-            // TODO fix size
-            navBar.backIndicatorImage = Theme.shared.images.backArrow
-            navBar.backIndicatorTransitionMaskImage = Theme.shared.images.backArrow
-
-            navController.setNavigationBarHidden(isHidden, animated: animated)
-        }
-    }
-
     func add(childController controller: UIViewController, containerView: UIView) {
 
         addChild(controller)

@@ -55,20 +55,17 @@ enum AnimatedRefreshingViewState: Equatable {
     case txCompleted(confirmationCount: UInt64)
 }
 
-private class RefreshingInnerView: UIView {
+private class RefreshingInnerView: DynamicThemeView {
     private let statusLabel = UILabel()
     private let emojiLabel = UILabel()
     private let spinner = UIActivityIndicatorView()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
+    
+    private var type: AnimatedRefreshingViewState = .loading
 
     func setupView(_ type: AnimatedRefreshingViewState) {
+        
+        self.type = type
+        
         emojiLabel.removeFromSuperview()
         statusLabel.removeFromSuperview()
         spinner.removeFromSuperview()
@@ -97,36 +94,29 @@ private class RefreshingInnerView: UIView {
             emojiLabel.text = "⏳"
             spinner.startAnimating()
             statusLabel.text = localized("refresh_view.checking")
-            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .receiving:
             emojiLabel.text = "🤝"
             spinner.startAnimating()
             statusLabel.text = localized("refresh_view.receiving_new_txs")
-            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .completing:
             emojiLabel.text = "🤝"
             spinner.startAnimating()
             statusLabel.text = localized("refresh_view.completing_txs")
-            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .updating:
             emojiLabel.text = "🤝"
             spinner.startAnimating()
             statusLabel.text = localized("refresh_view.updating_txs")
-            statusLabel.textColor = Theme.shared.colors.refreshViewLabelLoading
         case .success:
             statusLabel.text = localized("refresh_view.success")
             spinner.stopAnimating()
-            statusLabel.textColor = Theme.shared.colors.refreshViewLabelSuccess
         case .txWaitingForRecipient:
             emojiLabel.text = ""
             spinner.stopAnimating()
             statusLabel.text = localized("refresh_view.waiting_for_recipient")
-            statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         case .txWaitingForSender:
             emojiLabel.text = ""
             spinner.stopAnimating()
             statusLabel.text = localized("refresh_view.waiting_for_sender")
-            statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         case .txCompleted(let confirmationCount):
             guard let requiredConfirmationCount = try? Tari.shared.transactions.requiredConfirmationsCount else {
                 statusLabel.text = localized("refresh_view.final_processing")
@@ -139,12 +129,30 @@ private class RefreshingInnerView: UIView {
                 confirmationCount,
                 requiredConfirmationCount + 1
             )
-            statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         }
+        
+        update(theme: theme)
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        let color: UIColor?
+        
+        switch type {
+        case .loading, .receiving, .completing, .updating:
+            color = theme.brand.purple
+        case .success:
+            color = theme.system.green
+        case .txWaitingForRecipient, .txWaitingForSender, .txCompleted:
+            color = theme.system.yellow
+        }
+        
+        statusLabel.textColor = color
     }
 }
 
-class AnimatedRefreshingView: UIView {
+class AnimatedRefreshingView: DynamicThemeView {
     private let cornerRadius: CGFloat = 20
     static let containerHeight: CGFloat = 48
 
@@ -163,24 +171,11 @@ class AnimatedRefreshingView: UIView {
 
     var stateType: StateType = .none
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-
     func setupView(_ type: AnimatedRefreshingViewState,
                    visible: Bool = false) {
         currentState = type
-        backgroundColor = Theme.shared.colors.appBackground
 
         layer.cornerRadius = cornerRadius
-        layer.shadowOpacity = 0.2
-        layer.shadowOffset = CGSize(width: 0, height: 2)
-        layer.shadowRadius = 3
-        layer.shadowColor = Theme.shared.colors.defaultShadow?.cgColor
 
         currentInnerView.setupView(type)
         setupInnerView(currentInnerView)
@@ -401,5 +396,12 @@ class AnimatedRefreshingView: UIView {
                 completion?()
             }
         }
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        backgroundColor = theme.backgrounds.primary
+        apply(shadow: theme.shadows.box)
     }
 }

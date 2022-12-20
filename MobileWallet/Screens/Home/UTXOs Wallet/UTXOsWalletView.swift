@@ -69,13 +69,6 @@ final class UTXOsWalletView: BaseNavigationContentView {
     // MARK: - Suviews
     
     @View private var contextualButtonsOverlay = ContextualButtonsOverlay()
-    
-    @View private var switchListButton: BaseButton = {
-        let view = BaseButton()
-        view.tintColor = .tari.greys.black
-        return view
-    }()
-    
     @View private var topToolbar = UTXOsWalletTopBar()
     @View private var tileList = UTXOsWalletTileListView()
     
@@ -128,7 +121,6 @@ final class UTXOsWalletView: BaseNavigationContentView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = Theme.shared.colors.profileBackground
         navigationBar.title = localized("utxos_wallet.title")
         topToolbar.height = topBarHeight
         tileList.verticalContentInset = topBarHeight
@@ -138,13 +130,8 @@ final class UTXOsWalletView: BaseNavigationContentView {
     private func setupConstraints() {
         
         [loadingView, placeholderView, tileList, textList, topToolbar, contextualButtonsOverlay].forEach(addSubview)
-        navigationBar.addSubview(switchListButton)
         
         let constraints = [
-            switchListButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -30.0),
-            switchListButton.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor),
-            switchListButton.heightAnchor.constraint(equalToConstant: 30.0),
-            switchListButton.widthAnchor.constraint(equalToConstant: 30.0),
             topToolbar.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             topToolbar.leadingAnchor.constraint(equalTo: leadingAnchor),
             topToolbar.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -202,7 +189,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
             }
             .store(in: &cancellables)
         
-        switchListButton.onTap = { [weak self] in
+        navigationBar.onRightButtonAction = { [weak self] in
             guard let self = self else { return }
             switch self.selectedListType {
             case .text:
@@ -256,7 +243,12 @@ final class UTXOsWalletView: BaseNavigationContentView {
             .store(in: &cancellables)
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.secondary
+    }
     
     func updateTileList(models: [UTXOTileView.Model]) {
         tileList.models = models
@@ -271,7 +263,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
         let isDataVisible = visibleContentType == .tilesList || visibleContentType == .textList
         
         UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState]) {
-            self.switchListButton.alpha = isDataVisible ? 1.0 : 0.0
+            self.navigationBar.rightButton.alpha = isDataVisible ? 1.0 : 0.0
             self.topToolbar.alpha = isDataVisible ? 1.0 : 0.0
             self.loadingView.alpha = visibleContentType == .loadingScreen ? 1.0 : 0.0
             self.placeholderView.alpha = visibleContentType == .placeholder ? 1.0 : 0.0
@@ -283,9 +275,9 @@ final class UTXOsWalletView: BaseNavigationContentView {
     private func updateListSwitchIcon(selectedListType: ListType) {
         switch selectedListType {
         case .tiles:
-            switchListButton.setImage(Theme.shared.images.utxoTextListIcon, for: .normal)
+            navigationBar.rightButton.setImage(Theme.shared.images.utxoTextListIcon, for: .normal)
         case .text:
-            switchListButton.setImage(Theme.shared.images.utxoTileViewIcon, for: .normal)
+            navigationBar.rightButton.setImage(Theme.shared.images.utxoTileViewIcon, for: .normal)
         }
     }
     

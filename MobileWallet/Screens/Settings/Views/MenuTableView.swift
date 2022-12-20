@@ -40,18 +40,21 @@
 
 import UIKit
 
-final class MenuTableView: UITableView {
+final class MenuTableView: DynamicThemeTableView {
     
     init() {
         super.init(frame: .zero, style: .grouped)
-        backgroundColor = .clear
         showsVerticalScrollIndicator = false
-        separatorColor = Theme.shared.colors.settingsTableStyleBackground
         rowHeight = UITableView.automaticDimension
         register(type: SystemMenuTableViewCell.self)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func update(theme: ColorTheme) {
+        backgroundColor = theme.backgrounds.secondary
+        separatorColor = theme.neutral.secondary
     }
 }

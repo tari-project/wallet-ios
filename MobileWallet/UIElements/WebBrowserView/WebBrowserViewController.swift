@@ -1,69 +1,79 @@
 //  WebBrowserViewController.swift
 
 /*
-	Package MobileWallet
-	Created by S.Shovkoplyas on 20.05.2020
-	Using Swift 5.0
-	Running on macOS 10.15
+    Package MobileWallet
+    Created by S.Shovkoplyas on 20.05.2020
+    Using Swift 5.0
+    Running on macOS 10.15
 
-	Copyright 2019 The Tari Project
+    Copyright 2019 The Tari Project
 
-	Redistribution and use in source and binary forms, with or
-	without modification, are permitted provided that the
-	following conditions are met:
+    Redistribution and use in source and binary forms, with or
+    without modification, are permitted provided that the
+    following conditions are met:
 
-	1. Redistributions of source code must retain the above copyright notice,
-	this list of conditions and the following disclaimer.
+    1. Redistributions of source code must retain the above copyright notice,
+    this list of conditions and the following disclaimer.
 
-	2. Redistributions in binary form must reproduce the above
-	copyright notice, this list of conditions and the following disclaimer in the
-	documentation and/or other materials provided with the distribution.
+    2. Redistributions in binary form must reproduce the above
+    copyright notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
 
-	3. Neither the name of the copyright holder nor the names of
-	its contributors may be used to endorse or promote products
-	derived from this software without specific prior written permission.
+    3. Neither the name of the copyright holder nor the names of
+    its contributors may be used to endorse or promote products
+    derived from this software without specific prior written permission.
 
-	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
-	CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
-	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+    CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+    CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+    SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+    HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+    CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+    OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 import WebKit
+import TariCommon
 
-class WebBrowserViewController: UIViewController {
+class WebBrowserViewController: DynamicThemeViewController {
     private enum UniversalLinkAppPrefix: String, CaseIterable {
         case telegram = "https://t.me"
     }
 
     private let webView = WKWebView()
-    private let navigationBar = UIView()
+    
+    @View private var navigationBar: NavigationBar = {
+        let view = NavigationBar()
+        return view
+    }()
+    
     private let navigationPanel = UIView()
-
-    private var titleLabel = UILabel()
-
     private let backButton = UIButton()
     private let forwardButton = UIButton()
+    
+    @View private var grabber: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 2.5
+        return view
+    }()
 
     private var lastContentOffset: CGFloat = 0
     private var navigationPanelHeightConstraint: NSLayoutConstraint?
     private var scrollDirection: ScrollDirection = .none
 
-    var url: URL?
+    var url: URL? {
+        didSet { openURL() }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
-        openURL()
         updateButtons()
         hideNavigationPanel()
     }
@@ -87,15 +97,19 @@ class WebBrowserViewController: UIViewController {
         }
     }
 
-}
-
-// MARK: - Actions
-extension WebBrowserViewController {
-    @objc private func xMarkAction() {
-        dismiss(animated: true, completion: nil)
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        view.backgroundColor = theme.backgrounds.primary
+        webView.backgroundColor = theme.backgrounds.secondary
+        backButton.tintColor = theme.icons.default
+        forwardButton.tintColor = theme.icons.default
+        grabber.backgroundColor = theme.icons.inactive
     }
-
-    @objc private func shareAction(sender: AnyObject) {
+    
+    // MARK: - Actions
+    
+    private func showShareDialog() {
         guard let currentUrl = webView.url else { return }
         let activityViewController = UIActivityViewController(activityItems: [currentUrl], applicationActivities: nil)
 
@@ -107,6 +121,10 @@ extension WebBrowserViewController {
 
         present(activityViewController, animated: true)
     }
+}
+
+// MARK: - Actions
+extension WebBrowserViewController {
 
     @objc private func backAction() {
         webView.goBack()
@@ -119,7 +137,7 @@ extension WebBrowserViewController {
 
 extension WebBrowserViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        titleLabel.text = webView.title
+        navigationBar.title = webView.title
         updateButtons()
     }
 
@@ -153,65 +171,27 @@ extension WebBrowserViewController: WKNavigationDelegate {
 extension WebBrowserViewController {
 
     private func setupViews() {
-        view.backgroundColor = .white
         setupGrabber()
         setupNavigationBar()
         setupBottomNavigationPanel()
         setupWebView()
     }
-
+    
     private func setupNavigationBar() {
-        navigationBar.backgroundColor = .white
-
+        
         view.addSubview(navigationBar)
-        navigationBar.translatesAutoresizingMaskIntoConstraints = false
-        navigationBar.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        navigationBar.heightAnchor.constraint(equalToConstant: 44.0).isActive = true
-        navigationBar.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        navigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 32.0).isActive = true
-
-        navigationBar.layer.shadowOffset = CGSize(width: 0, height: 10)
-        navigationBar.layer.shadowRadius = 5
-        navigationBar.layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
-        navigationBar.layer.shadowOpacity = 0.1
-
-        let xMarkButton = UIButton()
-        if modalPresentationStyle != .popover {
-            xMarkButton.isHidden = true
-        }
-        xMarkButton.addTarget(self, action: #selector(xMarkAction), for: .touchUpInside)
-        xMarkButton.setImage(Theme.shared.images.close, for: .normal)
-
-        navigationBar.addSubview(xMarkButton)
-
-        xMarkButton.translatesAutoresizingMaskIntoConstraints = false
-        xMarkButton.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor).isActive = true
-        xMarkButton.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor, constant: 20.0).isActive = true
-        xMarkButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        xMarkButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
-
-        let shareButton = UIButton()
-        shareButton.addTarget(self, action: #selector(shareAction(sender:)), for: .touchUpInside)
-        shareButton.setImage(Theme.shared.images.share, for: .normal)
-
-        navigationBar.addSubview(shareButton)
-
-        shareButton.translatesAutoresizingMaskIntoConstraints = false
-        shareButton.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor).isActive = true
-        shareButton.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -20.0).isActive = true
-        shareButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
-        shareButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
-
-        titleLabel.font = Theme.shared.fonts.navigationBarTitle
-        titleLabel.textColor = Theme.shared.colors.navigationBarTint
-        titleLabel.textAlignment = .center
-
-        navigationBar.addSubview(titleLabel)
-
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.centerYAnchor.constraint(equalTo: navigationBar.centerYAnchor).isActive = true
-        titleLabel.trailingAnchor.constraint(equalTo: shareButton.leadingAnchor, constant: -15.0).isActive = true
-        titleLabel.leadingAnchor.constraint(equalTo: xMarkButton.trailingAnchor, constant: 15.0).isActive = true
+        
+        navigationBar.backButtonType = modalPresentationStyle == .popover ? .close : .none
+        navigationBar.rightButton.setImage(Theme.shared.images.share, for: .normal)
+        navigationBar.onRightButtonAction = { [weak self] in self?.showShareDialog() }
+        
+        let constraints = [
+            navigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 32.0),
+            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
 
     private func setupBottomNavigationPanel() {
@@ -251,7 +231,6 @@ extension WebBrowserViewController {
         webView.navigationDelegate = self
         webView.scrollView.delegate = self
 
-        webView.backgroundColor = Theme.shared.colors.appBackground
         view.addSubview(webView)
         view.bringSubviewToFront(navigationBar)
 
@@ -264,13 +243,9 @@ extension WebBrowserViewController {
 
     private func setupGrabber() {
         if modalPresentationStyle != .popover { return }
-        let grabber = UIView()
-        grabber.backgroundColor = .lightGray
-        grabber.layer.cornerRadius = 2.5
-
+        
         view.addSubview(grabber)
 
-        grabber.translatesAutoresizingMaskIntoConstraints = false
         grabber.heightAnchor.constraint(equalToConstant: 5).isActive = true
         grabber.widthAnchor.constraint(equalToConstant: 44).isActive = true
         grabber.topAnchor.constraint(equalTo: view.topAnchor, constant: 23.0).isActive = true

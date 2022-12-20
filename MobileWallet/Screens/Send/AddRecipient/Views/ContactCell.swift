@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class ContactCell: UITableViewCell {
+final class ContactCell: DynamicThemeCell {
     
     // MARK: - Views
     
@@ -49,7 +49,6 @@ final class ContactCell: UITableViewCell {
     
     @View private var aliasLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.contactCellAlias
         view.font = Theme.shared.fonts.contactCellAlias
         return view
     }()
@@ -67,9 +66,7 @@ final class ContactCell: UITableViewCell {
     }
     
     var isEmojiID: Bool = false {
-        didSet {
-            aliasLabel.textColor = isEmojiID ? Theme.shared.colors.emojisSeparator : Theme.shared.colors.contactCellAlias
-        }
+        didSet { updateAliasLabelColors(theme: theme) }
     }
     
     // MARK: - Initializers
@@ -109,6 +106,17 @@ final class ContactCell: UITableViewCell {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        updateAliasLabelColors(theme: theme)
+    }
+    
+    private func updateAliasLabelColors(theme: ColorTheme) {
+        aliasLabel.textColor = isEmojiID ? theme.text.lightText : theme.text.heading
     }
     
     // MARK: - States

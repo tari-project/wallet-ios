@@ -49,7 +49,7 @@ enum ScrollDirection {
     case down
 }
 
-final class HomeViewController: UIViewController {
+final class HomeViewController: DynamicThemeViewController {
     
     // MARK: - Constants
     
@@ -92,7 +92,6 @@ final class HomeViewController: UIViewController {
     @View private var grabberHandle: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 2.5
-        view.backgroundColor = Theme.shared.colors.floatingPanelGrabber
         return view
     }()
 
@@ -113,8 +112,8 @@ final class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupViews()
         setupFloatingPanel()
+        setupViews()
         setupCallbacks()
         NotificationManager.shared.requestAuthorization()
     }
@@ -130,7 +129,7 @@ final class HomeViewController: UIViewController {
     private func setupViews() {
         mainView.toolbarHeightConstraint?.constant = navBarHeight
         mainView.updateViewsOrder()
-        styleNavigatorBar(isHidden: true)
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
 
     private func setupFloatingPanel() {
@@ -139,8 +138,8 @@ final class HomeViewController: UIViewController {
 
         floatingPanelController.set(contentViewController: txsTableVC)
         floatingPanelController.surfaceView.cornerRadius = HomeViewController.panelBorderCornerRadius
-        floatingPanelController.surfaceView.shadowColor = .black
-        floatingPanelController.surfaceView.shadowRadius = 22
+        floatingPanelController.surfaceView.shadowColor = .static.black ?? .clear
+        floatingPanelController.surfaceView.shadowRadius = 22.0
         floatingPanelController.surfaceView.contentInsets = HomeViewFloatingPanelLayout.bottomHalfSurfaceViewInsets
 
         setupGrabber(floatingPanelController)
@@ -258,11 +257,13 @@ final class HomeViewController: UIViewController {
     
     private func update(balance: String) {
         
+        guard let textColor = UIColor.static.white else { return }
+        
         let balanceLabelAttributedText = NSMutableAttributedString(
             string: balance,
             attributes: [
                 .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabel,
-                .foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!
+                .foregroundColor: textColor
             ]
         )
         
@@ -271,7 +272,7 @@ final class HomeViewController: UIViewController {
         balanceLabelAttributedText.addAttributes(
             [
                 .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
-                .foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel!,
+                .foregroundColor: textColor,
                 .baselineOffset: 5.0
             ],
             range: NSRange(location: balance.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat)
@@ -290,10 +291,18 @@ final class HomeViewController: UIViewController {
         
         let text = NSAttributedString(string: avaiableToSpendAmount, attributes: [
             .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
-            .foregroundColor: Theme.shared.colors.homeScreenTotalBalanceValueLabel ?? UIColor()
+            .foregroundColor: UIColor.static.white ?? UIColor()
         ])
 
         mainView.avaiableFoundsValueLabel.attributedText = text
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        floatingPanelController.surfaceView.backgroundColor = theme.backgrounds.primary
+        grabberHandle.backgroundColor = theme.icons.inactive
     }
     
     // MARK: - Other
@@ -466,7 +475,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
         if progress > 0.5 {
             floatingPanelController.surfaceView.shadowColor = .clear
         } else {
-            floatingPanelController.surfaceView.shadowColor = .black
+            floatingPanelController.surfaceView.shadowColor = .static.black ?? .clear
         }
     }
 

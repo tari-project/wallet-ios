@@ -40,11 +40,11 @@
 
 import UIKit
 
-class PulseButton: UIButton {
+class PulseButton: DynamicThemeBaseButton {
     private let RADIUS_POINTS: CGFloat = 12.0
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init() {
+        super.init()
         commonSetup()
     }
 
@@ -58,7 +58,6 @@ class PulseButton: UIButton {
         layer.cornerRadius = RADIUS_POINTS
         backgroundColor = .clear
         setTitle("", for: .normal)
-        tintColor = Theme.shared.colors.actionButtonBackgroundSimple
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -83,5 +82,10 @@ class PulseButton: UIButton {
             self.alpha = 1
             self.transform = CGAffineTransform(scaleX: 1, y: 1)
         })
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        tintColor = theme.brand.purple
     }
 }

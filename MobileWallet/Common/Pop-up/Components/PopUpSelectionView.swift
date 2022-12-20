@@ -124,13 +124,12 @@ final class PopUpSelectionView: UIView {
     }
 }
 
-private class PopUpSelectionCell: UITableViewCell {
+private class PopUpSelectionCell: DynamicThemeCell {
     
     // MARK: - Subviews
     
     @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.greys.black
         view.font = .Avenir.medium.withSize(15.0)
         return view
     }()
@@ -138,7 +137,6 @@ private class PopUpSelectionCell: UITableViewCell {
     @View private var tickIcon: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.utxoTick
-        view.tintColor = .tari.purple
         view.contentMode = .scaleAspectFit
         view.alpha = 0.0
         return view
@@ -171,6 +169,7 @@ private class PopUpSelectionCell: UITableViewCell {
     
     private func setupViews() {
         selectionStyle = .none
+        backgroundColor = .clear
     }
     
     private func setupConstraints() {
@@ -189,5 +188,13 @@ private class PopUpSelectionCell: UITableViewCell {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.heading
+        tickIcon.tintColor = theme.brand.purple
     }
 }

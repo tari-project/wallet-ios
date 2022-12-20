@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class TokenInputView: UICollectionViewCell {
+final class TokenInputView: DynamicThemeCollectionCell {
 
     // MARK: - Subviews
     
@@ -50,7 +50,6 @@ final class TokenInputView: UICollectionViewCell {
     @View var textField: ObservableTextField = {
         let view = ObservableTextField()
         view.font = Theme.shared.fonts.restoreFromSeedWordsToken
-        view.textColor = Theme.shared.colors.restoreFromSeedWordsTextColor
         view.autocorrectionType = .no
         view.autocapitalizationType = .none
         view.spellCheckingType = .no
@@ -113,6 +112,13 @@ final class TokenInputView: UICollectionViewCell {
             self?.textField.text = $0 + " "
             self?.onTextChangeAction()
         }
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        textField.textColor = theme.text.body
     }
 
     // MARK: - First Responder

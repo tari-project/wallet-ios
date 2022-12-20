@@ -64,7 +64,11 @@ enum PopUpPresenter {
     private static let defaultAttributes: EKAttributes = {
         var attributes = EKAttributes.bottomFloat
         attributes.entryBackground = .clear
-        attributes.screenBackground = .color(color: EKColor(Theme.shared.colors.feedbackPopupBackground ?? UIColor()))
+        
+        if let overlayColor = UIColor.static.popupOverlay {
+            attributes.screenBackground = .color(color: EKColor(overlayColor))
+        }
+        
         attributes.positionConstraints.size = EKAttributes.PositionConstraints.Size(width: .offset(value: sideOffset), height: .intrinsic)
         attributes.positionConstraints.verticalOffset = verticalOffset
         attributes.screenInteraction = .absorbTouches

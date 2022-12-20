@@ -45,26 +45,15 @@ final class RadialGradientView: UIView {
     // MARK: - Properties
     
     override class var layerClass: AnyClass { CAGradientLayer.self }
-
-    // MARK: - Initializers
-    
-    init(insideColor: UIColor, outsideColor: UIColor) {
-        super.init(frame: .zero)
-        setupLayer(insideColor: insideColor, outsideColor: outsideColor)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     // MARK: - Setups
     
-    private func setupLayer(insideColor: UIColor, outsideColor: UIColor) {
+    func setupLayer(insideColor: UIColor?, outsideColor: UIColor?) {
         
         guard let gradientLayer = layer as? CAGradientLayer else { return }
         
         gradientLayer.type = .radial
-        gradientLayer.colors = [insideColor.cgColor, outsideColor.cgColor]
+        gradientLayer.colors = [insideColor, outsideColor].compactMap { $0?.cgColor }
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
         gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
     }
