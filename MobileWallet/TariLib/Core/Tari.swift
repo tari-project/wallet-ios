@@ -68,7 +68,6 @@ final class Tari: MainServiceable {
     
     private(set) lazy var connection = TariConnectionService(walletManager: walletManager, services: self)
     private(set) lazy var contacts = TariContactsService(walletManager: walletManager, services: self)
-    private(set) lazy var encryption = TariEncryptionService(walletManager: walletManager, services: self, passphrase: passphrase)
     private(set) lazy var messageSign = TariMessageSignService(walletManager: walletManager, services: self)
     private(set) lazy var fees = TariFeesService(walletManager: walletManager, services: self)
     private(set) lazy var keyValues = TariKeyValueService(walletManager: walletManager, services: self)
@@ -223,7 +222,7 @@ final class Tari: MainServiceable {
         } catch {
             guard let error = error as? WalletError, error == WalletError.invalidPassphrase else { throw error }
             try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: nil, networkName: selectedNetwork.name)
-            try Tari.shared.encryption.apply()
+//            try Tari.shared.encryption.apply() // FIXME: Please align the backup flow with FFI Lib
         }
     }
     

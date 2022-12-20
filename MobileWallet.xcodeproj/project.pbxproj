@@ -245,7 +245,6 @@
 		3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CD28EC56480015E63A /* TariUTXOsService.swift */; };
 		3A8473D028EC56600015E63A /* TariRecoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CF28EC56600015E63A /* TariRecoveryService.swift */; };
 		3A8473D228EC568A0015E63A /* TariMessageSignService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D128EC568A0015E63A /* TariMessageSignService.swift */; };
-		3A8473D428EC56A90015E63A /* TariEncryptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D328EC56A90015E63A /* TariEncryptionService.swift */; };
 		3A8473D628EC56C90015E63A /* TariBalanceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D528EC56C90015E63A /* TariBalanceService.swift */; };
 		3A8473D828EC56EF0015E63A /* TariKeyValueService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D728EC56EF0015E63A /* TariKeyValueService.swift */; };
 		3A8473DA28EC57AA0015E63A /* Publisher+Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D928EC57AA0015E63A /* Publisher+Binding.swift */; };
@@ -692,7 +691,6 @@
 		3A8473CD28EC56480015E63A /* TariUTXOsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariUTXOsService.swift; sourceTree = "<group>"; };
 		3A8473CF28EC56600015E63A /* TariRecoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariRecoveryService.swift; sourceTree = "<group>"; };
 		3A8473D128EC568A0015E63A /* TariMessageSignService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariMessageSignService.swift; sourceTree = "<group>"; };
-		3A8473D328EC56A90015E63A /* TariEncryptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariEncryptionService.swift; sourceTree = "<group>"; };
 		3A8473D528EC56C90015E63A /* TariBalanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariBalanceService.swift; sourceTree = "<group>"; };
 		3A8473D728EC56EF0015E63A /* TariKeyValueService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariKeyValueService.swift; sourceTree = "<group>"; };
 		3A8473D928EC57AA0015E63A /* Publisher+Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Binding.swift"; sourceTree = "<group>"; };
@@ -1894,7 +1892,6 @@
 				3A8473CD28EC56480015E63A /* TariUTXOsService.swift */,
 				3A8473CF28EC56600015E63A /* TariRecoveryService.swift */,
 				3A8473D128EC568A0015E63A /* TariMessageSignService.swift */,
-				3A8473D328EC56A90015E63A /* TariEncryptionService.swift */,
 				3A8473D528EC56C90015E63A /* TariBalanceService.swift */,
 				3A8473D728EC56EF0015E63A /* TariKeyValueService.swift */,
 			);
@@ -2865,7 +2862,6 @@
 				37D3D4ED251C970F00D24149 /* TxGifManager.swift in Sources */,
 				3A62674A26D76EC4007F9895 /* SelectNetworkModel.swift in Sources */,
 				3A35413E26A73939002AB5A8 /* RoundedTextView.swift in Sources */,
-				3A8473D428EC56A90015E63A /* TariEncryptionService.swift in Sources */,
 				3ACDA85A2721578700F08C70 /* YatTransactionViewController.swift in Sources */,
 				3ABC7E9328FE864100EAC852 /* PopUpButtonsTableView.swift in Sources */,
 				3AC877E628741680006F327B /* UTXOsWalletLoadingView.swift in Sources */,
