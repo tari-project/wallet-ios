@@ -1,10 +1,10 @@
-//  UserDefaults.swift
-
+//  UserSettingsManager.swift
+	
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 16/07/2021
+	Created by Browncoat on 18/12/2022
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,22 +38,25 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-private enum UserDefaultName: String, CaseIterable {
-    case selectedNetworkName
-    case networksSettings
-    case walletSettings
-    case userSettings
-}
-
-enum GroupUserDefaults {
-    @UserDefault(key: UserDefaultName.selectedNetworkName.rawValue, suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
-    @UserDefault(key: UserDefaultName.networksSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
-    @UserDefault(key: UserDefaultName.walletSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
-    @UserDefault(key: UserDefaultName.userSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var userSettings: UserSettings?
-}
-
-extension UserDefaults {
-    func removeAll() {
-        UserDefaultName.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }
+enum UserSettingsManager {
+    
+    static var colorScheme: UserSettings.ColorScheme {
+        get { userSettings.colorScheme }
+        set {
+            var userSettings = userSettings
+            userSettings.colorScheme = newValue
+            GroupUserDefaults.userSettings = userSettings
+        }
+    }
+    
+    private static var userSettings: UserSettings {
+        
+        guard let settings = GroupUserDefaults.userSettings else {
+            let newSettings = UserSettings.default
+            GroupUserDefaults.userSettings = newSettings
+            return newSettings
+        }
+        
+        return settings
     }
 }
