@@ -182,18 +182,20 @@ final class BackupWalletSettingsViewController: UIViewController {
         
         var items = [seedWordsItem]
         
-        if !AppValues.isSimulator {
+        if !AppValues.isSimulator, AppConfigurator.isBackupEnabled {
             items.append(iCloudItem)
         }
 
-        items.append(dropboxItem)
+        if AppConfigurator.isBackupEnabled {
+            items.append(dropboxItem)
+        }
 
-        if isPasswordItemVisible {
+        if isPasswordItemVisible, AppConfigurator.isBackupEnabled {
             passwordItem.title = isBackupSecuredByPassword ? localized("backup_wallet_settings.item.change_password") : localized("backup_wallet_settings.item.secure_your_backup")
             items.append(passwordItem)
         }
 
-        if isBackupNowItemVisible {
+        if isBackupNowItemVisible, AppConfigurator.isBackupEnabled {
             items.append(backupNowItem)
         }
         

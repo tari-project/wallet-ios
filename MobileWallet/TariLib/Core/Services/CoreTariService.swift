@@ -47,7 +47,6 @@ protocol MainServiceable: AnyObject {
     var utxos: TariUTXOsService { get }
     var recovery: TariRecoveryService { get }
     var messageSign: TariMessageSignService { get }
-    var encryption: TariEncryptionService { get }
     var walletBalance: TariBalanceService { get }
 }
 

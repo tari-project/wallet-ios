@@ -352,30 +352,6 @@ final class FFIWalletManager {
         return String(cString: cString)
     }
     
-    func applyEncryption(passphrase: String) throws {
-        
-        let wallet = try exisingWallet
-        
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
-        wallet_apply_encryption(wallet.pointer, passphrase, errorCodePointer)
-        
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
-    }
-    
-    func removeEncryption() throws {
-        
-        let wallet = try exisingWallet
-        
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
-        wallet_remove_encryption(wallet.pointer, errorCodePointer)
-        
-        guard errorCode == 0 else { throw WalletError(code: errorCode) }
-    }
-    
     func requiredConfirmationsCount() throws -> UInt64 {
         
         let wallet = try exisingWallet

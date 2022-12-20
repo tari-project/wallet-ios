@@ -52,9 +52,9 @@ enum BackupFilesManager {
     
     static func prepareBackup(workingDirectoryName: String, password: String?) async throws -> URL {
         let workingDirectory = try prepareWorkingDirectory(name: workingDirectoryName)
-        try Tari.shared.encryption.remove()
+//        try Tari.shared.encryption.remove() // FIXME: Please align the backup flow with FFI Lib
         let fileURL = try copyDatabase(workingDirectory: workingDirectory)
-        try Tari.shared.encryption.apply()
+//        try Tari.shared.encryption.apply() // FIXME: Please align the backup flow with FFI Lib
         let zipFileURL = workingDirectory.appendingPathComponent(unencryptedFileName)
         try await zipDatabase(inputURL: fileURL, outputURL: zipFileURL)
         
