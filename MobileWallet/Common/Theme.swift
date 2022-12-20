@@ -130,6 +130,7 @@ struct Images {
     let settingsVisitTariIcon = UIImage(named: "icon-visit-tari")
     let settingsWalletBackupsIcon = UIImage(named: "icon-wallet-backups")
     let settingsYatIcon = UIImage(named: "icon-yat")
+    let settingColorThemeIcon = UIImage(named: "icon-theme")
     
     // Connection Details Icons
     let connectionInternetIcon = UIImage(named: "icon-internet")
@@ -155,6 +156,13 @@ struct Images {
     let connectionIndicatorConnectedIcon = UIImage(named: "network-full")
     let connectionIndicatorLimitedConnectonIcon = UIImage(named: "network-limited")
     let connectionIndicatorDisconnectedIcon = UIImage(named: "network-off")
+    
+    // Color Themes
+    
+    let colorThemeSystem = UIImage(named: "Themes/System")
+    let colorThemeLight = UIImage(named: "Themes/Light")
+    let colorThemeDark = UIImage(named: "Themes/Dark")
+    let colorThemePurple = UIImage(named: "Themes/Purple")
 }
 
 struct Fonts {

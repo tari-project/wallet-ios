@@ -43,6 +43,7 @@ import UIKit
 final class ThemeCoordinator {
     
     enum ColorScheme {
+        case system
         case light
         case dark
         case tariPurple
@@ -56,15 +57,44 @@ final class ThemeCoordinator {
         didSet {
             theme = theme(colorScheme: colorScheme)
             updateColorMode(colorScheme: colorScheme)
+            updateUserDefaults(colorScheme: colorScheme)
         }
     }
     
     @Published private(set) var theme: ColorTheme = .light
+    private var uiStyle: UIUserInterfaceStyle = UIScreen.main.traitCollection.userInterfaceStyle
     
     // MARK: - Initialisers
     
-    private init() {}
+    private init() {
+        setupColorScheme()
+    }
     
+    // MARK: - Setups
+    
+    func configure(window: TariWindow) {
+        setupCallbacks(window: window)
+    }
+    
+    private func setupColorScheme() {
+        switch UserSettingsManager.colorScheme {
+        case .system:
+            colorScheme = .system
+        case .light:
+            colorScheme = .light
+        case .dark:
+            colorScheme = .dark
+        case .purple:
+            colorScheme = .tariPurple
+        }
+    }
+    
+    private func setupCallbacks(window: TariWindow) {
+    
+        window.onUpdateUIStyle = { [weak self] in
+            self?.handle(uiStyle: $0)
+        }
+    }
     
     // MARK: - Actions
     
@@ -77,15 +107,40 @@ final class ThemeCoordinator {
             return .dark
         case .tariPurple:
             return .tariPurple
+        case .system:
+            return uiStyle == .dark ? .dark : .light
+        }
+    }
+    
+    private func updateUserDefaults(colorScheme: ColorScheme) {
+        switch colorScheme {
+        case .system:
+            UserSettingsManager.colorScheme = .system
+        case .light:
+            UserSettingsManager.colorScheme = .light
+        case .dark:
+            UserSettingsManager.colorScheme = .dark
+        case .tariPurple:
+            UserSettingsManager.colorScheme = .purple
         }
     }
     
     private func updateColorMode(colorScheme: ColorScheme) {
         switch colorScheme {
+        case .system:
+            UIApplication.shared.windows.forEach { $0.overrideUserInterfaceStyle = .unspecified }
         case .light:
             UIApplication.shared.windows.forEach { $0.overrideUserInterfaceStyle = .light }
         case .dark, .tariPurple:
             UIApplication.shared.windows.forEach { $0.overrideUserInterfaceStyle = .dark }
         }
+    }
+    
+    // MARK: = Handlers
+    
+    private func handle(uiStyle: UIUserInterfaceStyle) {
+        self.uiStyle = uiStyle
+        guard colorScheme == .system else { return }
+        theme = theme(colorScheme: .system)
     }
 }

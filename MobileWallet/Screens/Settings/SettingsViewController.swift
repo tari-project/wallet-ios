@@ -84,6 +84,7 @@ final class SettingsViewController: SettingsParentTableViewController {
 
         case connectYats
 
+        case selectTheme
         case torBridgeConfiguration
         case selectNetwork
         case selectBaseNode
@@ -93,6 +94,7 @@ final class SettingsViewController: SettingsParentTableViewController {
             switch self {
             case .backUpWallet: return localized("settings.item.wallet_backups")
 
+            case .selectTheme: return localized("settings.item.select_theme")
             case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
             case .selectNetwork: return localized("settings.item.select_network")
             case .selectBaseNode: return localized("settings.item.select_base_node")
@@ -117,6 +119,7 @@ final class SettingsViewController: SettingsParentTableViewController {
     private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [backUpWalletItem]
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsNetworkIcon, title: SettingsItemTitle.selectNetwork.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBaseNodeIcon, title: SettingsItemTitle.selectBaseNode.rawValue),
@@ -199,6 +202,11 @@ final class SettingsViewController: SettingsParentTableViewController {
     private func onReportBugAction() {
         let controller = BugReportingConstructor.buildScene()
         present(controller, animated: true)
+    }
+    
+    private func onSelectThemeAction() {
+        let controller = ThemeSettingsConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     private func onBridgeConfigurationAction() {
@@ -357,12 +365,14 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         case .advancedSettings:
             switch indexPath.row {
             case 0:
-                onBridgeConfigurationAction()
+                onSelectThemeAction()
             case 1:
-                onSelectNetworkAction()
+                onBridgeConfigurationAction()
             case 2:
-                onSelectBaseNodeAction()
+                onSelectNetworkAction()
             case 3:
+                onSelectBaseNodeAction()
+            case 4:
                 onDeleteWalletAction()
             default:
                 break
