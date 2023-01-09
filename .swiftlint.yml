@@ -5,7 +5,6 @@ disabled_rules:
   - function_body_length
   - force_try
   - force_cast
-  - shorthand_operator
   - type_name
   - large_tuple
   - file_length

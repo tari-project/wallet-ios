@@ -46,7 +46,7 @@ private func totalBytes(files: [URL]) -> UInt64 {
         do {
             let attr = try FileManager.default.attributesOfItem(atPath: file.path)
             if let fileSize = attr[FileAttributeKey.size] as? UInt64 {
-                total = total + fileSize
+                total += fileSize
             }
         } catch {
             Logger.log(message: "Failed to get log file size: \(error.localizedDescription)", domain: .general, level: .error)

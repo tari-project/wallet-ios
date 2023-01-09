@@ -470,7 +470,7 @@ extension AddNoteViewController {
             language: .english
         )
         giphyVC.update()
-        AddNoteViewController.giphyCurrentKeywordIndex = AddNoteViewController.giphyCurrentKeywordIndex + 1
+        AddNoteViewController.giphyCurrentKeywordIndex += 1
     }
 
     private func showGiphyCarousel(animated: Bool = true) {
