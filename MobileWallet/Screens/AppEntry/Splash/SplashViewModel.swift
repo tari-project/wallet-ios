@@ -118,7 +118,11 @@ final class SplashViewModel {
     }
 
     func startWallet() {
-        Tari.shared.isWalletExist ? openWallet() : createWallet()
+        if Tari.shared.isWalletExist {
+            openWallet()
+        } else {
+            createWallet()
+        }
     }
 
     // MARK: - Actions

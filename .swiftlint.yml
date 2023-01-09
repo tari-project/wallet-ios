@@ -18,6 +18,5 @@ disabled_rules:
   - function_parameter_count
   - todo
   - nesting
-  - void_function_in_ternary
 excluded:
   - Pods
