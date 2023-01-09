@@ -19,6 +19,5 @@ disabled_rules:
   - todo
   - nesting
   - void_function_in_ternary
-  - operator_whitespace
 excluded:
   - Pods

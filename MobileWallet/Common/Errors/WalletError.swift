@@ -60,7 +60,7 @@ struct WalletError: CoreError {
 
     static var unknown: Self { WalletError(code: -1) }
 
-    static func ~=(lhs: Self, rhs: Error) -> Bool {
+    static func ~= (lhs: Self, rhs: Error) -> Bool {
         guard let rhs = rhs as? Self else { return false }
         return lhs == rhs
     }
