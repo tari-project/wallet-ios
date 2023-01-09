@@ -321,7 +321,6 @@ final class SlideView: DynamicThemeView {
         switch sender.state {
         case .began:
             impactFeedbackGenerator.prepare()
-            break
         case .changed:
             if translatedPoint >= xEndingPoint {
                 updateThumbnailXPosition(xEndingPoint)
@@ -334,7 +333,6 @@ final class SlideView: DynamicThemeView {
             }
             updateThumbnailXPosition(translatedPoint)
             textLabel.alpha = (xEndingPoint - translatedPoint) / xEndingPoint
-            break
         case .ended:
             if translatedPoint >= xEndingPoint / 2 {
                 textLabel.alpha = 0
@@ -355,7 +353,6 @@ final class SlideView: DynamicThemeView {
                 self.textLabel.alpha = 1
                 self.layoutIfNeeded()
             }
-            break
         default:
             break
         }

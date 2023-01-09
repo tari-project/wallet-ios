@@ -302,7 +302,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             cell.configure(moreSectionItems[indexPath.row])
         case .yat:
             cell.configure(yatSectionItems[indexPath.row])
-            break
         case .advancedSettings:
             cell.configure(advancedSettingsSectionItems[indexPath.row])
         }
