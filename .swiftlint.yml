@@ -19,7 +19,6 @@ disabled_rules:
   - unneeded_break_in_switch
   - todo
   - nesting
-  - unused_optional_binding
   - void_function_in_ternary
   - operator_whitespace
 excluded:

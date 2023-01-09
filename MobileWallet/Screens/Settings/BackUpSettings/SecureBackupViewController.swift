@@ -113,7 +113,7 @@ class SecureBackupViewController: SettingsParentViewController {
     private func returnToBackupSettingsScreen() {
         if let curentControllers = navigationController?.viewControllers {
             curentControllers.forEach({
-                if let _ = $0 as? BackupWalletSettingsViewController {
+                if $0 is BackupWalletSettingsViewController {
                     self.navigationController?.popToViewController($0, animated: true)
                 }
             })
