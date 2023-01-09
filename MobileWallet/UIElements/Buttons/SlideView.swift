@@ -163,11 +163,7 @@ final class SlideView: DynamicThemeView {
     private var topThumbnailViewConstraint: NSLayoutConstraint?
     private var trailingDraggedViewConstraint: NSLayoutConstraint?
     private var xPositionInThumbnailView: CGFloat = 0
-    private var xEndingPoint: CGFloat {
-        get {
-            return (self.view.frame.maxX - thumbnailImageView.bounds.width - thumbnailViewStartingDistance)
-        }
-    }
+    private var xEndingPoint: CGFloat { self.view.frame.maxX - thumbnailImageView.bounds.width - thumbnailViewStartingDistance }
     private var isFinished: Bool = false
 
     override init() {

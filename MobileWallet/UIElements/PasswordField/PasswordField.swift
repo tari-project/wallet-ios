@@ -68,19 +68,17 @@ final class PasswordField: DynamicThemeView, UITextFieldDelegate {
     }
 
     var isWarning: Bool {
-        get {
-            if let password = self.password {
-                if !password.isEmpty {
-                    if password.count < minPasswordLength && !isConfirmationField {
-                        return true
-                    } else if password != paredPasswordField?.password && isConfirmationField {
-                        return true
-                    }
+        if let password = self.password {
+            if !password.isEmpty {
+                if password.count < minPasswordLength && !isConfirmationField {
+                    return true
+                } else if password != paredPasswordField?.password && isConfirmationField {
+                    return true
                 }
-                return false
             }
-            return true
+            return false
         }
+        return true
     }
 
     var isConfirmationField: Bool = false

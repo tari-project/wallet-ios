@@ -52,11 +52,7 @@ class TxTableViewModel: NSObject {
 
     private let gifID: String?
 
-    var hasGif: Bool {
-        get {
-            return gifID != nil
-        }
-    }
+    var hasGif: Bool { gifID != nil }
 
     var shouldUpdateCellSize: Bool = false
 

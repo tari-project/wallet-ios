@@ -21,7 +21,6 @@ disabled_rules:
   - nesting
   - unused_optional_binding
   - void_function_in_ternary
-  - implicit_getter
   - operator_whitespace
 excluded:
   - Pods
