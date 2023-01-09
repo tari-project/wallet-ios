@@ -68,9 +68,9 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
         let lowestHeight = UIScreen.main.bounds.height - 106.0 - (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0)
 
         switch position {
-            case .full: return topInset - 37 // A top inset from safe area
-            case .half: return lowestHeight // A bottom inset from the safe area
-            default: return nil // Or `case .hidden: return nil`
+        case .full: return topInset - 37 // A top inset from safe area
+        case .half: return lowestHeight // A bottom inset from the safe area
+        default: return nil // Or `case .hidden: return nil`
         }
     }
 }
