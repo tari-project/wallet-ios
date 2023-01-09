@@ -122,18 +122,18 @@ final class DeepLinkFormatterTests: XCTestCase {
     func testValidTransactionsSendDeeplinkDecoding() {
 
         let inputDeeplink = URL(string: "tari://test_network/transactions/send?publicKey=testpubkey&amount=123&note=Hello%20World!")!
-        let expectedResult = TransactionsSendDeeplink(receiverPublicKey: "testpubkey", amount: 123, note: "Hello World!")
+        let expectedResult = TransactionsSendDeeplink(receiverAddress: "testpubkey", amount: 123, note: "Hello World!")
 
         let result = try! DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: inputDeeplink)
 
-        XCTAssertEqual(result.receiverPublicKey, expectedResult.receiverPublicKey)
+        XCTAssertEqual(result.receiverAddress, expectedResult.receiverAddress)
         XCTAssertEqual(result.amount, expectedResult.amount)
         XCTAssertEqual(result.note, expectedResult.note)
     }
 
     func testValidTransactionsSendDeeplinkEncoding() {
 
-        let inputModel = TransactionsSendDeeplink(receiverPublicKey: "testpubkey", amount: 123, note: "Hello World!")
+        let inputModel = TransactionsSendDeeplink(receiverAddress: "testpubkey", amount: 123, note: "Hello World!")
         let expectedResult = URL(string: "tari://test_network/transactions/send?publicKey=testpubkey&amount=123&note=Hello%20World!")!
 
         let result = try! DeepLinkFormatter.deeplink(model: inputModel)

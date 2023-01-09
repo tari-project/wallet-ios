@@ -641,15 +641,3 @@ private final class TxsListIntroView: DynamicThemeView {
         waveAnimation.play { _ in completion?() }
     }
 }
-
-struct MockTx: Transaction {
-    var identifier: UInt64 = 1
-    var amount: UInt64 = 1234567
-    var isOutboundTransaction: Bool = false
-    var status: TransactionStatus = .broadcast
-    var message: String = "Test Message"
-    var timestamp: UInt64 = 12345678
-    var address: TariAddress = try! TariAddress(hex: "000000000000000000000000000000000000000000000000000000000000000026")
-    var isCancelled: Bool = false
-    var isPending: Bool = true
-}
