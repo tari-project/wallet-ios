@@ -1,5 +1,5 @@
 //  BackupServicable.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 27/10/2022
@@ -46,12 +46,12 @@ enum BackupError: Error {
 }
 
 protocol BackupServicable: AnyObject {
-    
+
     var isOn: Bool { get set }
     var password: String? { get set }
     var backupStatus: AnyPublisher<BackupStatus, Never> { get }
     var lastBackupTimestamp: AnyPublisher<Date?, Never> { get }
-    
+
     func performBackup(forced: Bool)
     func restoreBackup(password: String?) -> AnyPublisher<Void, Error>
 }

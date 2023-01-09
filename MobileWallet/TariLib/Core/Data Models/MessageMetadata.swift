@@ -1,5 +1,5 @@
 //  MessageMetadata.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 18/09/2022

@@ -39,11 +39,11 @@
 */
 
 final class Contact {
-    
+
     // MARK: - Properties
-    
+
     let pointer: OpaquePointer
-    
+
     var address: TariAddress {
         get throws {
             var errorCode: Int32 = -1
@@ -53,7 +53,7 @@ final class Contact {
             return TariAddress(pointer: result)
         }
     }
-    
+
     var alias: String {
         get throws {
             var errorCode: Int32 = -1
@@ -63,26 +63,26 @@ final class Contact {
             return alias
         }
     }
-    
+
     // MARK: - Initialisers
-    
+
     init(pointer: OpaquePointer) {
         self.pointer = pointer
     }
-    
+
     convenience init(alias: String, addressPointer: OpaquePointer) throws {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = contact_create(alias, addressPointer, errorCodePointer)
-        
+
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        
+
         self.init(pointer: pointer)
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         contact_destroy(pointer)
     }

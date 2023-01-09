@@ -64,13 +64,13 @@ class TxTableViewModel: NSObject {
     @objc dynamic private(set) var gif: GPHMedia?
     @objc dynamic private(set) var status: String = ""
     @objc dynamic private(set) var time: String
-    
+
     init(transaction: Transaction) throws {
         self.transaction = transaction
         self.id = try transaction.identifier
-        
+
         value = (microTari: MicroTari(try transaction.amount), isOutboundTransaction: try transaction.isOutboundTransaction, isCancelled: transaction.isCancelled, transaction.isPending)
-        
+
         if try transaction.isOneSidedPayment {
             message = localized("transaction.one_sided_payment.note.normal")
             gifID = nil
@@ -79,15 +79,15 @@ class TxTableViewModel: NSObject {
             message = msg
             gifID = giphyId
         }
-        
+
         time = try transaction.formattedTimestamp
-        
+
         super.init()
 
         try updateTitleAndAvatar()
         try updateStatus()
         updateMedia()
-        
+
         Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] (_) in
             self?.time = (try? transaction.formattedTimestamp) ?? ""
         }
@@ -107,26 +107,26 @@ class TxTableViewModel: NSObject {
     }
 
     func update(transaction: Transaction) throws {
-        
+
         guard try id == transaction.identifier else { return }
         self.transaction = transaction
-        
+
         value = (microTari: MicroTari(try transaction.amount), isOutboundTransaction: try transaction.isOutboundTransaction, isCancelled: transaction.isCancelled, transaction.isPending)
-        
+
         try updateTitleAndAvatar()
         try updateStatus()
         updateMedia()
     }
 
     private func updateTitleAndAvatar() throws {
-        
+
         guard try !transaction.isOneSidedPayment else {
             avatar = localized("transaction.one_sided_payment.avatar")
             let alias = localized("transaction.one_sided_payment.inbound_user_placeholder")
             title = attributed(title: localized("tx_list.inbound_pending_title", arguments: alias), withAlias: alias, isAliasEmojiID: false)
             return
         }
-        
+
         let address = try transaction.address
 
         let emojis = try address.emojis
@@ -134,7 +134,7 @@ class TxTableViewModel: NSObject {
 
         var alias = ""
         var aliasIsEmojis = false
-        
+
         if let contact = try Tari.shared.contacts.findContact(hex: try address.byteVector.hex) {
             alias = try contact.alias
         }
@@ -145,7 +145,7 @@ class TxTableViewModel: NSObject {
         }
 
         var titleText = ""
-        
+
         if try transaction.isOutboundTransaction {
             titleText = localized("tx_list.outbound_title", arguments: alias)
         } else {
@@ -154,27 +154,27 @@ class TxTableViewModel: NSObject {
 
         title = attributed(title: titleText, withAlias: alias, isAliasEmojiID: aliasIsEmojis)
     }
-    
+
     private func attributed(title: String, withAlias alias: String, isAliasEmojiID: Bool) -> NSAttributedString {
-        
+
         let title = title
             .replacingOccurrences(of: alias, with: " \(alias) ")
             .trimmingCharacters(in: .whitespaces)
-        
+
         guard let startIndex = title.indexDistance(of: alias) else {
             return NSAttributedString()
         }
-        
+
         let attributedTitle = NSMutableAttributedString(
             string: title,
             attributes: [
-                .font: Theme.shared.fonts.txCellUsernameLabel,
+                .font: Theme.shared.fonts.txCellUsernameLabel
             ]
         )
-        
+
         let range = NSRange(location: startIndex, length: alias.count)
         attributedTitle.addAttribute(.font, value: Theme.shared.fonts.txCellUsernameLabelHeavy, range: range)
-        
+
         return attributedTitle
     }
 

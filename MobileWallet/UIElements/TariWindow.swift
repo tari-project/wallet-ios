@@ -1,5 +1,5 @@
 //  TariWindow.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 20/12/2022
@@ -41,9 +41,9 @@
 import UIKit
 
 final class TariWindow: UIWindow {
-    
+
     var onUpdateUIStyle: ((UIUserInterfaceStyle) -> Void)?
-    
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         onUpdateUIStyle?(traitCollection.userInterfaceStyle)
     }

@@ -1,5 +1,5 @@
 //  TransactionDetailsView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 14/03/2022
@@ -42,23 +42,23 @@ import UIKit
 import TariCommon
 
 final class TransactionDetailsView: DynamicThemeView {
-    
+
     private enum NavigationBarState {
         case normal
         case transactionStatusVisible
         case transactionStatusAndCancelButtonVisible
     }
-    
+
     // MARK: - Constants
-    
+
     private let defaultNavigationBarHeight = 90.0
     private let statusCapsuleHeight = AnimatedRefreshingView.containerHeight + 10.0
     private let cancelButtonHeight = 25.0
-    
+
     // MARK: - Subviews
-    
+
     @View private var navigationBar = NavigationBar()
-    
+
     @View private var subtitleLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
@@ -67,24 +67,24 @@ final class TransactionDetailsView: DynamicThemeView {
         view.setContentCompressionResistancePriority(.required, for: .vertical)
         return view
     }()
-    
+
     @View private var transactionStateView = AnimatedRefreshingView()
-    
+
     @View private(set) var cancelButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("tx_detail.tx_cancellation.cancel"), for: .normal)
         view.setVariation(.warning, font: Theme.shared.fonts.textButtonCancel)
         return view
     }()
-    
+
     @View private var mainContentView = KeyboardAvoidingContentView()
-    
+
     @View private(set) var contentStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         return view
     }()
-    
+
     @View private(set) var valueView = TransactionDetailsValueView()
     @View private(set) var contactView = TransactionDetailsSectionView<TransactionDetailsEmojiView>()
     @View private(set) var contactNameView = TransactionDetailsSectionView<TransactionDetailsContactView>()
@@ -92,62 +92,62 @@ final class TransactionDetailsView: DynamicThemeView {
     @View private(set) var noteView = TransactionDetailsSectionView<TransactionDetailsNoteView>()
     @View private(set) var blockExplorerSeparatorView = TransactionDetailsSeparatorView()
     @View private(set) var blockExplorerView = TransactionDetailsSectionView<TransactionDetailsBlockExplorerView>()
-    
+
     // MARK: - Properties
-    
+
     var transactionState: AnimatedRefreshingViewState? {
         didSet { updateNavigationBar() }
     }
-    
+
     var title: String? {
         get { navigationBar.title }
         set { navigationBar.title = newValue }
     }
-    
+
     var subtitle: String? {
         get { subtitleLabel.text }
         set { subtitleLabel.text = newValue }
     }
-    
+
     private var stackViewBottomConstraints: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
         updateNavigationBar()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         contactNameView.title = localized("tx_detail.contact_name")
         noteView.title = localized("tx_detail.note")
         blockExplorerView.title = localized("tx_detail.block_explorer.description")
         transactionStateView.isHidden = true
     }
-    
+
     private func setupConstraints() {
-        
+
         [mainContentView, navigationBar].forEach(addSubview)
         mainContentView.contentView.addSubview(contentStackView)
-        
+
         @View var stackView = UIStackView()
         stackView.axis = .vertical
-        
+
         [subtitleLabel, stackView].forEach(navigationBar.bottomContentView.addSubview)
         [transactionStateView, cancelButton].forEach(stackView.addArrangedSubview)
         [valueView, contactView, contactNameView, noteSeparatorView, noteView, blockExplorerSeparatorView, blockExplorerView].forEach(contentStackView.addArrangedSubview)
-        
+
         let stackViewBottomConstraints = stackView.bottomAnchor.constraint(equalTo: navigationBar.bottomContentView.bottomAnchor, constant: -8.0)
         self.stackViewBottomConstraints = stackViewBottomConstraints
-        
+
         let constraints = [
             navigationBar.topAnchor.constraint(equalTo: topAnchor),
             navigationBar.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -170,37 +170,37 @@ final class TransactionDetailsView: DynamicThemeView {
             transactionStateView.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor, constant: 22.0),
             transactionStateView.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -22.0),
             transactionStateView.heightAnchor.constraint(equalToConstant: 48.0),
-            cancelButton.heightAnchor.constraint(equalToConstant: 44.0),
+            cancelButton.heightAnchor.constraint(equalToConstant: 44.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         subtitleLabel.textColor = theme.text.heading
         backgroundColor = theme.backgrounds.primary
     }
-    
+
     private func updateNavigationBar() {
-        
+
         guard let state = transactionState else {
             updateNavigationBarElements(state: .normal)
             return
         }
-        
+
         transactionStateView.setupView(state, visible: true)
-        
-        guard state == .txWaitingForRecipient else  {
+
+        guard state == .txWaitingForRecipient else {
             updateNavigationBarElements(state: .transactionStatusVisible)
             return
         }
-        
+
         updateNavigationBarElements(state: .transactionStatusAndCancelButtonVisible)
     }
-    
+
     private func updateNavigationBarElements(state: NavigationBarState) {
         switch state {
         case .normal:

@@ -1,5 +1,5 @@
 //  PopUpPresenter+CommonPopUps.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/04/2022
@@ -48,19 +48,19 @@ struct PopUpDialogModel {
 }
 
 struct PopUpDialogButtonModel {
-    
+
     enum ButtonType {
         case normal
         case destructive
         case text
         case textDimmed
     }
-    
+
     let title: String
     let icon: UIImage?
     let type: ButtonType
     let callback: (() -> Void)?
-    
+
     init(title: String, icon: UIImage? = nil, type: ButtonType, callback: (() -> Void)? = nil) {
         self.title = title
         self.icon = icon
@@ -70,80 +70,80 @@ struct PopUpDialogButtonModel {
 }
 
 struct MessageModel {
-    
+
     enum MessageType {
         case normal
         case error
     }
-    
+
     let title: String
     let message: String?
     let type: MessageType
 }
 
 extension PopUpPresenter {
-    
+
     static func show(message: MessageModel) {
         let model = PopUpDialogModel(title: message.title, message: message.message, buttons: [], hapticType: makeHapticType(model: message))
         showPopUp(model: model)
         log(message: message)
     }
-    
+
     static func showMessageWithCloseButton(message: MessageModel, onCloseButtonAction: (() -> Void)? = nil) {
-        
+
         let model = PopUpDialogModel(
             title: message.title,
             message: message.message,
             buttons: [PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: onCloseButtonAction)],
             hapticType: makeHapticType(model: message)
         )
-        
+
         showPopUp(model: model)
         log(message: message)
     }
-    
+
     static func showPopUp(model: PopUpDialogModel) {
-        
+
         var headerView: UIView?
         var contentView: UIView?
         var buttonsView: UIView?
-        
+
         if let title = model.title {
             headerView = PopUpComponentsFactory.makeHeaderView(title: title)
         }
-        
+
         if let message = model.message {
             contentView = PopUpComponentsFactory.makeContentView(message: message)
         }
-        
+
         if !model.buttons.isEmpty {
             buttonsView = PopUpComponentsFactory.makeButtonsView(models: model.buttons)
         }
-        
+
         let popUp = TariPopUp(headerSection: headerView, contentSection: contentView, buttonsSection: buttonsView)
         let configuration = makeConfiguration(model: model)
         show(popUp: popUp, configuration: configuration)
     }
-    
+
     private static func log(message: MessageModel) {
         var log = "Pop-up Title: \(message.title)"
-        
+
         if let description = message.message {
             log += " Message: \(description)"
         }
-        
+
         switch message.type {
         case .normal:
             log += " Type: Normal"
         case .error:
             log += " Type: Error"
         }
-        
+
         Logger.log(message: log, domain: .userInterface, level: .info)
     }
-    
+
     // MARK: - Helpers
-    
+
     private static func makeHapticType(model: MessageModel) -> Configuration.HapticType {
         switch model.type {
         case .error:
@@ -152,18 +152,18 @@ extension PopUpPresenter {
             return .none
         }
     }
-    
+
     private static func makeConfiguration(model: PopUpDialogModel) -> Configuration {
         model.buttons.isEmpty ? .message(hapticType: model.hapticType) : .dialog(hapticType: model.hapticType)
     }
 }
 
 extension PopUpPresenter.Configuration {
-    
+
     static func message(hapticType: Self.HapticType) -> Self {
         Self(displayDuration: 12.0, dismissOnTapOutsideOrSwipe: true, hapticType: hapticType)
     }
-    
+
     static func dialog(hapticType: Self.HapticType) -> Self {
         Self(displayDuration: nil, dismissOnTapOutsideOrSwipe: false, hapticType: hapticType)
     }

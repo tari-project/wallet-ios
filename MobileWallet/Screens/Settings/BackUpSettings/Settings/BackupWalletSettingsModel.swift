@@ -1,5 +1,5 @@
 //  BackupWalletSettingsModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 20/10/2022
@@ -41,16 +41,16 @@
 import Combine
 
 final class BackupWalletSettingsModel {
-    
+
     enum BackupState {
         case off
         case upToDate
         case backupInProgress(progress: Double)
         case backupFailed
     }
-    
+
     // MARK: - View Model
-    
+
     @Published private(set) var isSeedWordListVerified: Bool = false
     @Published private(set) var iCloudBackupState: BackupState = .off
     @Published private(set) var iCloudLastBackupTime: String?
@@ -58,27 +58,27 @@ final class BackupWalletSettingsModel {
     @Published private(set) var dropboxLastBackupTime: String?
     @Published private(set) var isBackupSecuredByPassword: Bool = false
     @Published private(set) var isBackupOutOfSync: Bool = false
-    
+
     // MARK: - Properties
-    
+
     private let timestampFormatter = DateFormatter.backupTimestamp
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initializers
-    
+
     init() {
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         BackupManager.shared.$syncState
             .map { $0 == .outOfSync }
             .assignPublisher(to: \.isBackupOutOfSync, on: self)
             .store(in: &cancellables)
-         
+
         BackupManager.shared.backupService(.iCloud).backupStatus
             .map {
                 switch $0 {
@@ -95,7 +95,7 @@ final class BackupWalletSettingsModel {
             .removeDuplicates()
             .assignPublisher(to: \.iCloudBackupState, on: self)
             .store(in: &cancellables)
-        
+
         BackupManager.shared.backupService(.dropbox).backupStatus
             .map {
                 switch $0 {
@@ -112,41 +112,41 @@ final class BackupWalletSettingsModel {
             .removeDuplicates()
             .assignPublisher(to: \.dropboxBackupState, on: self)
             .store(in: &cancellables)
-        
+
         BackupManager.shared.backupService(.iCloud).lastBackupTimestamp
             .map { [weak self] in self?.lastBackupText(date: $0) }
             .assignPublisher(to: \.iCloudLastBackupTime, on: self)
             .store(in: &cancellables)
-        
+
         BackupManager.shared.backupService(.dropbox).lastBackupTimestamp
             .compactMap { [weak self] in self?.lastBackupText(date: $0) }
             .assignPublisher(to: \.dropboxLastBackupTime, on: self)
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     func refreshData() {
         isBackupSecuredByPassword = BackupManager.shared.password != nil
         isSeedWordListVerified = TariSettings.shared.walletSettings.hasVerifiedSeedPhrase
     }
-    
+
     func update(isCloudBackupOn: Bool) {
         BackupManager.shared.backupService(.iCloud).isOn = isCloudBackupOn
         guard !isCloudBackupOn else { return }
         try? BackupManager.shared.removeICloudRemoteBackup()
     }
-    
+
     func update(isDropboxBackupOn: Bool) {
         BackupManager.shared.backupService(.dropbox).isOn = isDropboxBackupOn
     }
-    
+
     func backupIfNeeded() {
         BackupManager.shared.backupNow(onlyIfOutdated: true)
     }
-    
+
     // MARK: - Helpers
-    
+
     private func lastBackupText(date: Date?) -> String? {
         guard let date else { return nil }
         let formattedDate = timestampFormatter.string(from: date)
@@ -155,7 +155,7 @@ final class BackupWalletSettingsModel {
 }
 
 extension BackupWalletSettingsModel.BackupState: Equatable {
-    
+
     var isOn: Bool {
         switch self {
         case .off:

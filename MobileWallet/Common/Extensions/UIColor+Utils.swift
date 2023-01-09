@@ -1,5 +1,5 @@
 //  UIColor+Utils.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 07/06/2022
@@ -41,29 +41,29 @@
 import UIKit
 
 extension UIColor {
-    
+
     func colorVariant(text: String) -> UIColor {
-        
+
         let delta: CGFloat = 0.1
-        
+
         var hue: CGFloat = -1
         var saturation: CGFloat = -1
         var brightness: CGFloat = -1
         var alpha: CGFloat = -1
-        
+
         getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha)
-        
+
         let hash = text.hash
-        
+
         let saturationRange = range(center: saturation, delta: delta)
         let brightnessRange = range(center: brightness, delta: delta)
-        
+
         let saturationScale = CGFloat((hash & 0xFF00) >> 8) / 256.0
         let brightnessScale = CGFloat((hash & 0xFF) >> 0) / 256.0
-        
+
         let saturationVariant = saturationRange.upperBound - (saturationRange.upperBound - saturationRange.lowerBound) * saturationScale
         let brightnessVariant = brightnessRange.upperBound - (brightnessRange.upperBound - brightnessRange.lowerBound) * brightnessScale
-        
+
         return UIColor(hue: hue, saturation: saturationVariant, brightness: brightnessVariant, alpha: alpha)
     }
 

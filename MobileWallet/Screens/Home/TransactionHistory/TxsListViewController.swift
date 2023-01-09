@@ -112,7 +112,7 @@ final class TxsListViewController: DynamicThemeViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewSetup()
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0 + CATransaction.animationDuration()) { [weak self] in
             self?.setupEvents()
         }
@@ -120,9 +120,9 @@ final class TxsListViewController: DynamicThemeViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         setupTransactionsCallbacks()
-        
+
         if backgroundType != .intro {
             safeRefreshTable()
         }
@@ -134,13 +134,13 @@ final class TxsListViewController: DynamicThemeViewController {
             animatedRefresher.stateType = .none
         }
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         cancelTransactionsCallbacks()
     }
 
-    func safeRefreshTable(_ completion:(() -> Void)? = nil) {
+    func safeRefreshTable(_ completion: (() -> Void)? = nil) {
         txDataUpdateQueue.async(flags: .barrier) {
             DispatchQueue.main.async { [weak self] in
                 self?.tableView.reloadData()
@@ -148,9 +148,9 @@ final class TxsListViewController: DynamicThemeViewController {
             }
         }
     }
-    
+
     private func setupTransactionsCallbacks() {
-        
+
         Publishers.CombineLatest(Tari.shared.transactions.$pendingInbound, Tari.shared.transactions.$pendingOutbound)
             .map { $0 as [Transaction] + $1 }
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
@@ -159,7 +159,7 @@ final class TxsListViewController: DynamicThemeViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.pendingTxModels = $0 }
             .store(in: &transactionModelsCancellables)
-        
+
         Publishers.CombineLatest(Tari.shared.transactions.$completed, Tari.shared.transactions.$cancelled)
             .map { $0 + $1 }
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
@@ -169,14 +169,14 @@ final class TxsListViewController: DynamicThemeViewController {
             .sink { [weak self] in self?.completedTxModels = $0 }
             .store(in: &transactionModelsCancellables)
     }
-    
+
     private func cancelTransactionsCallbacks() {
         transactionModelsCancellables.forEach { $0.cancel() }
         transactionModelsCancellables.removeAll()
     }
-    
+
     private func setupEvents() {
-        
+
         WalletCallbacksManager.shared.receivedTransaction
             .sink { [weak self] _ in
                 self?.safeRefreshTable()
@@ -184,15 +184,15 @@ final class TxsListViewController: DynamicThemeViewController {
                 self?.hasReceivedTxWhileUpdating = true
             }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.receivedTransactionReply
             .sink { [weak self] _ in self?.safeRefreshTable() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.receivedFinalizedTransaction
             .sink { [weak self] _ in self?.safeRefreshTable() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.transactionBroadcast
             .sink { [weak self] _ in
                 self?.safeRefreshTable()
@@ -200,7 +200,7 @@ final class TxsListViewController: DynamicThemeViewController {
                 self?.hasBroadcastTxWhileUpdating = true
             }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.transactionMined
             .sink { [weak self] _ in
                 self?.safeRefreshTable()
@@ -208,23 +208,23 @@ final class TxsListViewController: DynamicThemeViewController {
                 self?.hasMinedTxWhileUpdating = true
             }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.unconfirmedTransactionMined
             .sink { [weak self] _ in self?.safeRefreshTable() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.fauxTransactionConfirmed
             .sink { [weak self] _ in self?.safeRefreshTable() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.fauxTransactionUnconfirmed
             .sink { [weak self] _ in self?.safeRefreshTable() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.transactionSendResult
             .sink { [weak self] _ in self?.safeRefreshTable() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.transactionCancellation
             .sink { [weak self] _ in
                 self?.safeRefreshTable()
@@ -232,12 +232,12 @@ final class TxsListViewController: DynamicThemeViewController {
                 self?.hasCancelledTxWhileUpdating = true
             }
             .store(in: &cancellables)
-        
+
         Tari.shared.connectionMonitor.$syncStatus
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(syncStatus: $0) }
             .store(in: &cancellables)
-        
+
         NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
@@ -269,9 +269,9 @@ final class TxsListViewController: DynamicThemeViewController {
     private func tableViewModel(forIndexPath indexPath: IndexPath) -> TxTableViewModel {
         tableViewModels(forSection: indexPath.section)[indexPath.row]
     }
-    
+
     // MARK: - Handlers
-    
+
     private func handle(syncStatus: TariValidationService.SyncStatus) {
         switch syncStatus {
         case .idle:
@@ -284,15 +284,15 @@ final class TxsListViewController: DynamicThemeViewController {
             break
         }
     }
-    
+
     // MARK: - Animations
-    
+
     private func animateToSyncingState() {
         guard animatedRefresher.stateType == .none else { return }
         animatedRefresher.updateState(.loading, animated: false)
         animatedRefresher.animateIn()
     }
-    
+
     private func animateToSyncState() {
         animatedRefresher.stateType = .updateData
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in guard let self = self else { return }
@@ -446,7 +446,7 @@ extension TxsListViewController {
         tableView.backgroundView = TxsListEmptyView()
     }
 
-    private func removeBackgroundView(completion:(() -> Void)? = nil) {
+    private func removeBackgroundView(completion: (() -> Void)? = nil) {
         if tableView.backgroundView == nil {
             completion?()
             return
@@ -466,16 +466,16 @@ extension TxsListViewController {
     }
 
     private func setIntroView() {
-        
+
         let introView = TxsListIntroView()
-        
+
         introView.playAnimation { [weak self] in
             self?.backgroundType = .none
             DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
                 self?.tableView.reloadData()
             }
         }
-        
+
         tableView.backgroundView = introView
     }
 
@@ -525,9 +525,9 @@ extension TxsListViewController {
 }
 
 private final class TxsListEmptyView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
@@ -536,35 +536,35 @@ private final class TxsListEmptyView: DynamicThemeView {
         view.textAlignment = .center
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(label)
-        
+
         let constraints = [
             label.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -20.0),
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body
@@ -572,9 +572,9 @@ private final class TxsListEmptyView: DynamicThemeView {
 }
 
 private final class TxsListIntroView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("tx_list.intro")
@@ -582,7 +582,7 @@ private final class TxsListIntroView: DynamicThemeView {
         view.textAlignment = .center
         return view
     }()
-    
+
     @View private var messageLabel: UILabel = {
         let view = UILabel()
         view.text = localized("tx_list.intro_message")
@@ -590,31 +590,31 @@ private final class TxsListIntroView: DynamicThemeView {
         view.textAlignment = .center
         return view
     }()
-    
+
     @View private var waveAnimation: AnimationView = {
         let view = AnimationView()
         view.backgroundBehavior = .pauseAndRestore
         view.animation = Animation.named(.waveEmoji)
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [titleLabel, messageLabel, waveAnimation].forEach(addSubview)
-        
+
         let constraints = [
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
@@ -628,24 +628,23 @@ private final class TxsListIntroView: DynamicThemeView {
             waveAnimation.heightAnchor.constraint(equalToConstant: 70.0),
             waveAnimation.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         messageLabel.textColor = theme.text.lightText
     }
-    
+
     // MARK: - Actions
-    
+
     func playAnimation(completion: (() -> Void)?) {
         waveAnimation.play { _ in completion?() }
     }
 }
-
 
 struct MockTx: Transaction {
     var identifier: UInt64 = 1

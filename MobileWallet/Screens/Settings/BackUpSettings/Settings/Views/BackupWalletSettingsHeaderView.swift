@@ -1,5 +1,5 @@
 //  BackupWalletSettingsHeaderView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 27/10/2022
@@ -42,14 +42,14 @@ import UIKit
 import TariCommon
 
 final class BackupWalletSettingsHeaderView: DynamicThemeView {
-    
+
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsViewHeader
         view.text = localized("backup_wallet_settings.header.title")
         return view
     }()
-    
+
     @View private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
@@ -57,20 +57,20 @@ final class BackupWalletSettingsHeaderView: DynamicThemeView {
         view.text = localized("backup_wallet_settings.header.description")
         return view
     }()
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setupConstraints() {
-        
+
         [titleLabel, descriptionLabel].forEach { addSubview($0) }
-        
+
         let constraints = [
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 30.0),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
@@ -80,10 +80,10 @@ final class BackupWalletSettingsHeaderView: DynamicThemeView {
             descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
             descriptionLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.heading

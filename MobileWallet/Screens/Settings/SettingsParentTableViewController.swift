@@ -42,7 +42,7 @@ import UIKit
 import TariCommon
 
 class SettingsParentTableViewController: SettingsParentViewController {
-    
+
     @View private(set) var tableView = MenuTableView()
 
     override func viewDidLoad() {
@@ -90,7 +90,7 @@ extension SettingsParentTableViewController {
     func setupTableView() {
         tableView.register(type: SystemMenuTableViewCell.self)
         view.addSubview(tableView)
-        
+
         let constraints = [
             tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),

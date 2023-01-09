@@ -1,5 +1,5 @@
 //  BugReportingView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 28/10/2022
@@ -42,11 +42,11 @@ import UIKit
 import TariCommon
 
 final class BugReportingView: BaseNavigationContentView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var mainContentView = KeyboardAvoidingContentView()
-    
+
     @View private var headerLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.header")
@@ -54,25 +54,25 @@ final class BugReportingView: BaseNavigationContentView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     @View private var nameTextField: UITextField = {
         let view = UITextField()
         view.font = .Avenir.medium.withSize(14.0)
         view.returnKeyType = .done
         return view
     }()
-    
+
     @View private var nameTextFieldSeparator = UIView()
-    
+
     @View private var emailTextField: UITextField = {
         let view = UITextField()
         view.font = .Avenir.medium.withSize(14.0)
         view.returnKeyType = .done
         return view
     }()
-    
+
     @View private var emailTextFieldSeparator = UIView()
-    
+
     @View private var messageHeaderLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.message_header")
@@ -80,7 +80,7 @@ final class BugReportingView: BaseNavigationContentView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     @View private var messageTextView: UITextView = {
         let view = UITextView()
         view.layer.cornerRadius = 10.0
@@ -89,7 +89,7 @@ final class BugReportingView: BaseNavigationContentView {
         view.returnKeyType = .done
         return view
     }()
-    
+
     @View private var footerLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.footer")
@@ -97,58 +97,58 @@ final class BugReportingView: BaseNavigationContentView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     @View private var sendButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("bug_reporting.button.send"), for: .normal)
         return view
     }()
-    
+
     @View private var logsButton: TextButton = {
         let view = TextButton()
         view.setVariation(.secondary)
         view.setTitle(localized("bug_reporting.button.view_logs"), for: .normal)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var name: String? { nameTextField.text }
     var email: String? { emailTextField.text }
     var message: String? { messageTextView.text }
-    
+
     var isProcessing: Bool = false {
         didSet { updateSendButton() }
     }
-    
+
     var onSendButtonTap: (() -> Void)?
     var onShowLogsButtonTap: (() -> Void)?
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         navigationBar.title = localized("bug_reporting.title")
         navigationBar.backButtonType = .close
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(mainContentView)
         [headerLabel, nameTextField, nameTextFieldSeparator, emailTextField, emailTextFieldSeparator, messageHeaderLabel, messageTextView, footerLabel, sendButton, logsButton].forEach { mainContentView.contentView.addSubview($0) }
-        
+
         let constraints = [
             mainContentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             mainContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -189,34 +189,34 @@ final class BugReportingView: BaseNavigationContentView {
             logsButton.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor, constant: -25.0),
             logsButton.bottomAnchor.constraint(equalTo: mainContentView.contentView.bottomAnchor, constant: -30.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
-        
+
         sendButton.onTap = { [weak self] in
             self?.onSendButtonTap?()
         }
-        
+
         logsButton.onTap = { [weak self] in
             self?.onShowLogsButtonTap?()
         }
-        
+
         nameTextField.delegate = self
         emailTextField.delegate = self
         messageTextView.delegate = self
     }
-    
+
     // MARK: - Updates
-    
+
     private func updateSendButton() {
         sendButton.variation = isProcessing ? .loading : .normal
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         headerLabel.textColor = theme.text.heading
         nameTextField.textColor = theme.text.heading
         nameTextFieldSeparator.backgroundColor = theme.neutral.secondary
@@ -226,18 +226,16 @@ final class BugReportingView: BaseNavigationContentView {
         messageTextView.backgroundColor = theme.backgrounds.secondary
         messageTextView.textColor = theme.text.heading
         footerLabel.textColor = theme.text.body
-        
-        
-        
+
         guard let placeholderColor = theme.text.lightText else { return }
-        
-        nameTextField.attributedPlaceholder = NSAttributedString(string: localized("bug_reporting.text_field.name"), attributes: [.foregroundColor : placeholderColor])
-        emailTextField.attributedPlaceholder = NSAttributedString(string: localized("bug_reporting.text_field.email"), attributes: [.foregroundColor : placeholderColor])
+
+        nameTextField.attributedPlaceholder = NSAttributedString(string: localized("bug_reporting.text_field.name"), attributes: [.foregroundColor: placeholderColor])
+        emailTextField.attributedPlaceholder = NSAttributedString(string: localized("bug_reporting.text_field.email"), attributes: [.foregroundColor: placeholderColor])
     }
 }
 
 extension BugReportingView: UITextFieldDelegate {
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -245,11 +243,11 @@ extension BugReportingView: UITextFieldDelegate {
 }
 
 extension BugReportingView: UITextViewDelegate {
-    
+
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         guard text == "\n" else { return true }
         textView.resignFirstResponder()
         return false
-        
+
     }
 }

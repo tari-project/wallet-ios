@@ -1,5 +1,5 @@
 //  AddRecipientSectionHeaderView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 18/10/2021
@@ -42,39 +42,39 @@ import UIKit
 import TariCommon
 
 final class AddRecipientSectionHeaderView: DynamicThemeHeaderFooterView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.txDateValueLabel
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var text: String? {
         get { label.text }
         set { label.text = newValue }
     }
-    
+
     // MARK: - Initializers
-    
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(label)
-        
+
         let constratins = [
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
@@ -82,12 +82,12 @@ final class AddRecipientSectionHeaderView: DynamicThemeHeaderFooterView {
             label.heightAnchor.constraint(equalToConstant: label.font.pointSize * 1.3),
             heightAnchor.constraint(equalToConstant: 35.0)
         ]
-        
+
         NSLayoutConstraint.activate(constratins)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.lightText

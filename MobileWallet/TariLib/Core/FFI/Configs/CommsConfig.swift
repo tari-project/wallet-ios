@@ -39,13 +39,13 @@
 */
 
 final class CommsConfig {
-    
+
     // MARK: - Properties
 
     let pointer: OpaquePointer
 
     // MARK: - Initialisers
-    
+
     init(publicAddress: String, transport: TransportConfig, databaseName: String, databaseFolderPath: String, discoveryTimeoutInSecs: UInt64, safMessageDurationInSec: UInt64) throws {
 
         var errorCode: Int32 = -1
@@ -56,7 +56,7 @@ final class CommsConfig {
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         pointer = result
     }
-    
+
     // MARK: - Deinitialiser
 
     deinit {

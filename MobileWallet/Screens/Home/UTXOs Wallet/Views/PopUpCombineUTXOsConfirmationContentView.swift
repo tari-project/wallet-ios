@@ -1,5 +1,5 @@
 //  PopUpCombineUTXOsConfirmationContentView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 08/07/2022
@@ -42,9 +42,9 @@ import UIKit
 import TariCommon
 
 final class PopUpCombineUTXOsConfirmationContentView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var messageLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
@@ -52,16 +52,16 @@ final class PopUpCombineUTXOsConfirmationContentView: DynamicThemeView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     @View private var feeLabel = UTXOsEstimationLabel()
-    
+
     // MARK: - Properties
-    
+
     var messageText: String? {
         get { messageLabel.text }
         set { messageLabel.text = newValue }
     }
-    
+
     var feeText: String? {
         didSet {
             guard let feeText = feeText else { return }
@@ -70,24 +70,24 @@ final class PopUpCombineUTXOsConfirmationContentView: DynamicThemeView {
             feeLabel.attributedText = NSAttributedString(format: format, arguments: feeWithCurrencySymbol)
         }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [messageLabel, feeLabel].forEach(addSubview)
-        
+
         let constraints = [
             messageLabel.topAnchor.constraint(equalTo: topAnchor),
             messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15.0),
@@ -97,15 +97,14 @@ final class PopUpCombineUTXOsConfirmationContentView: DynamicThemeView {
             feeLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
             feeLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         messageLabel.textColor = theme.text.body
     }
 }
-

@@ -1,5 +1,5 @@
 //  VideoView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 22/10/2021
@@ -42,52 +42,52 @@ import UIKit
 import AVFoundation
 
 final class VideoView: UIView {
-    
+
     // MARK: - Subviews
-    
+
     private let videoLayer = AVPlayerLayer()
-    
+
     // MARK: - Properties
-    
+
     var url: URL? {
         didSet { startPlayer() }
     }
-    
+
     var videoGravity: AVLayerVideoGravity {
         get { videoLayer.videoGravity }
         set { videoLayer.videoGravity = newValue }
     }
-    
+
     private var looper: AVPlayerLooper?
-    
+
     // MARK: - Initializers
-    
+
     init() {
         super.init(frame: .zero)
         layer.addSublayer(videoLayer)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Actions
-    
+
     func startPlayer() {
-        
+
         guard let url = url else { return }
-        
+
         let player = AVQueuePlayer()
         let item = AVPlayerItem(url: url)
         looper = AVPlayerLooper(player: player, templateItem: item)
-        
+
         videoLayer.player = player
-        
+
         player.play()
     }
-    
+
     // MARK: - Layout
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         videoLayer.frame = bounds

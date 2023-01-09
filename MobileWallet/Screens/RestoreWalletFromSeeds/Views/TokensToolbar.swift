@@ -1,5 +1,5 @@
 //  TokensToolbar.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/11/2021
@@ -42,65 +42,65 @@ import UIKit
 import TariCommon
 
 final class TokensToolbar: DynamicThemeToolbar {
-    
+
     // MARK: - Subviews
-    
+
     @View var collectionView: UICollectionView = {
         let view = UICollectionView(frame: .zero, collectionViewLayout: TokensToolbarFlowLayout())
         view.backgroundColor = .clear
         view.showsHorizontalScrollIndicator = false
         return view
     }()
-    
+
     @View private var label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = UIFont.Avenir.medium.withSize(16.0)
         return label
     }()
-    
+
     // MARK: - Properties
-    
+
     var tokenModels: [TokenViewModel] = [] {
         didSet { reloadData() }
     }
-    
+
     var text: String? {
         didSet { updateLabel() }
     }
-    
+
     var onTapOnToken: ((String) -> Void)?
-    
+
     private var dataSource: UICollectionViewDiffableDataSource<Int, TokenViewModel>?
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
         setupFeedback()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setupViews() {
         collectionView.register(type: TokenView.self)
         isTranslucent = true
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         barTintColor = theme.backgrounds.primary
         label.textColor = theme.text.lightText
     }
-    
+
     private func setupConstraints() {
-        
+
         [collectionView, label].forEach(addSubview)
-        
+
         let constraints = [
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -112,37 +112,36 @@ final class TokensToolbar: DynamicThemeToolbar {
             label.bottomAnchor.constraint(equalTo: bottomAnchor),
             heightAnchor.constraint(equalToConstant: 44.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupFeedback() {
-        
+
         dataSource = UICollectionViewDiffableDataSource<Int, TokenViewModel>(collectionView: collectionView) { collectionView, indexPath, model in
             let cell = collectionView.dequeueReusableCell(type: TokenView.self, indexPath: indexPath)
             cell.text = model.title
             cell.isDeleteIconVisible = false
             return cell
         }
-        
+
         collectionView.dataSource = dataSource
         collectionView.delegate = self
     }
-    
+
     // MARK: - Actions
-    
+
     private func reloadData() {
         var snapshot = NSDiffableDataSourceSnapshot<Int, TokenViewModel>()
         snapshot.appendSections([0])
         snapshot.appendItems(tokenModels)
         dataSource?.apply(snapshot, animatingDifferences: true)
     }
-    
-    
+
     private func updateLabel() {
-        
+
         let isTextVisible = text != nil
-        
+
         UIView.animate(withDuration: 0.3) {
             self.label.text = self.text
             self.label.alpha = isTextVisible ? 1.0 : 0.0

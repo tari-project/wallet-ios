@@ -1,5 +1,5 @@
 //  SettingsViewFooter.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 07/02/2022
@@ -42,36 +42,36 @@ import UIKit
 import TariCommon
 
 final class SettingsViewFooter: DynamicThemeView {
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.systemTableViewCell
         view.text = AppVersionFormatter.version
         return view
     }()
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(label)
-        
+
         let constraints = [
             label.topAnchor.constraint(equalTo: topAnchor, constant: 30.0),
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30.0),
             label.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body

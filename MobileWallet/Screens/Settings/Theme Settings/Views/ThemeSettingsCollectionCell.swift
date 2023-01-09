@@ -1,5 +1,5 @@
 //  ThemeSettingsCollectionCell.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 18/12/2022
@@ -42,47 +42,47 @@ import UIKit
 import TariCommon
 
 final class ThemeSettingsCollectionCell: DynamicThemeCollectionCell {
-    
+
     // MARK: - Subviews
-    
+
     @View private var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(15.0)
         view.textAlignment = .center
         return view
     }()
-    
+
     @View private var radioButton = RadioButtonView()
-    
+
     // MARK: - Properties
-    
+
     override var isSelected: Bool {
         didSet { radioButton.isSelected = isSelected }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [imageView, label, radioButton].forEach { contentView.addSubview($0) }
-        
+
         let constaints = [
             imageView.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
             imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -96,19 +96,19 @@ final class ThemeSettingsCollectionCell: DynamicThemeCollectionCell {
             radioButton.heightAnchor.constraint(equalToConstant: 16.0),
             radioButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0)
         ]
-        
+
         NSLayoutConstraint.activate(constaints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading
         radioButton.borderColor = theme.neutral.inactive
         radioButton.fillColor = theme.brand.purple
     }
-    
+
     func update(image: UIImage?, title: String?) {
         imageView.image = image
         label.text = title

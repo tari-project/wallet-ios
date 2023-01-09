@@ -1,5 +1,5 @@
 //  Result+Void.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/02/2022

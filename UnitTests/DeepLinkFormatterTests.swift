@@ -1,5 +1,5 @@
 //  DeepLinkFormatterTests.swift
-	
+
 /*
 	Package UnitTests
 	Created by Adrian Truszczynski on 01/03/2022
@@ -42,27 +42,27 @@ import XCTest
 @testable import Tari_Aurora
 
 final class DeepLinkFormatterTests: XCTestCase {
-    
+
     override func setUp() {
         super.setUp()
         NetworkManager.shared.selectedNetwork = .testNetwork
     }
-    
+
     // MARK: - General
-    
+
     func testDeeplinkWithInvalidNetworkName() {
-        
+
         let inputDeeplink = URL(string: "tari://invalid_network/transactions/send?publicKey=testpubkey&amount=123&note=Hello%20World!")!
-        
+
         var result: TransactionsSendDeeplink?
         var cachedError: DeepLinkError!
-        
+
         do {
             result = try DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: inputDeeplink)
         } catch {
             cachedError = error as? DeepLinkError
         }
-        
+
         XCTAssertNil(result)
         switch cachedError {
         case .invalidNetworkName:
@@ -71,20 +71,20 @@ final class DeepLinkFormatterTests: XCTestCase {
             XCTFail("Invalid error type")
         }
     }
-    
+
     func testDeeplinkWithInvalidCommandName() {
-        
+
         let inputDeeplink = URL(string: "tari://test_network/invalid_command/send?publicKey=testpubkey&amount=123&note=Hello%20World!")!
-        
+
         var result: TransactionsSendDeeplink?
         var cachedError: DeepLinkError!
-        
+
         do {
             result = try DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: inputDeeplink)
         } catch {
             cachedError = error as? DeepLinkError
         }
-        
+
         XCTAssertNil(result)
         switch cachedError {
         case .invalidCommandName:
@@ -93,21 +93,21 @@ final class DeepLinkFormatterTests: XCTestCase {
             XCTFail("Invalid error type")
         }
     }
-    
+
     func testDeeplinkWithInvalidValue() {
-        
+
         let inputDeeplink = URL(string: "tari://test_network/transactions/send?publicKey=testpubkey&amount=-123&note=Hello%20World!")!
         let invalidKey = "amount"
-        
+
         var result: TransactionsSendDeeplink?
         var cachedError: DeepLinkError!
-        
+
         do {
             result = try DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: inputDeeplink)
         } catch {
             cachedError = error as? DeepLinkError
         }
-        
+
         XCTAssertNil(result)
         switch cachedError {
         case let .unableToParse(key):
@@ -116,45 +116,45 @@ final class DeepLinkFormatterTests: XCTestCase {
             XCTFail("Invalid error type")
         }
     }
-    
+
     // MARK: - TransactionsSendDeeplink
-    
+
     func testValidTransactionsSendDeeplinkDecoding() {
-        
+
         let inputDeeplink = URL(string: "tari://test_network/transactions/send?publicKey=testpubkey&amount=123&note=Hello%20World!")!
         let expectedResult = TransactionsSendDeeplink(receiverPublicKey: "testpubkey", amount: 123, note: "Hello World!")
-        
+
         let result = try! DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: inputDeeplink)
-        
+
         XCTAssertEqual(result.receiverPublicKey, expectedResult.receiverPublicKey)
         XCTAssertEqual(result.amount, expectedResult.amount)
         XCTAssertEqual(result.note, expectedResult.note)
     }
-    
+
     func testValidTransactionsSendDeeplinkEncoding() {
-        
+
         let inputModel = TransactionsSendDeeplink(receiverPublicKey: "testpubkey", amount: 123, note: "Hello World!")
         let expectedResult = URL(string: "tari://test_network/transactions/send?publicKey=testpubkey&amount=123&note=Hello%20World!")!
-        
+
         let result = try! DeepLinkFormatter.deeplink(model: inputModel)
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testTransactionsSendDeeplinkDecodingWithMissingPublicKey() {
-        
+
         let inputDeeplink = URL(string: "tari://test_network/transactions/send?amount=123&note=Hello%20World!")!
         let invalidKey = "publicKey"
-        
+
         var result: TransactionsSendDeeplink?
         var cachedError: DeepLinkError!
-        
+
         do {
             result = try DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: inputDeeplink)
         } catch {
             cachedError = error as? DeepLinkError
         }
-        
+
         XCTAssertNil(result)
         switch cachedError {
         case let .unableToParse(key):
@@ -163,44 +163,44 @@ final class DeepLinkFormatterTests: XCTestCase {
             XCTFail("Invalid error type")
         }
     }
-    
+
     // MARK: - BaseNodesAddDeeplink
-    
+
     func testValidBaseNodesAddDeeplinkDecoding() {
-        
+
         let inputDeeplink = URL(string: "tari://test_network/base_nodes/add?name=test%20name&peer=onion3::test")!
         let expectedResult = BaseNodesAddDeeplink(name: "test name", peer: "onion3::test")
-        
+
         let result = try! DeepLinkFormatter.model(type: BaseNodesAddDeeplink.self, deeplink: inputDeeplink)
-        
+
         XCTAssertEqual(result.name, expectedResult.name)
         XCTAssertEqual(result.peer, expectedResult.peer)
     }
-    
+
     func testValidBaseNodesAddDeeplinkEncoding() {
-        
+
         let inputModel = BaseNodesAddDeeplink(name: "test name", peer: "onion3::test")
         let expectedResult = URL(string: "tari://test_network/base_nodes/add?name=test%20name&peer=onion3::test")!
-        
+
         let result = try! DeepLinkFormatter.deeplink(model: inputModel)
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testBaseNodesAddDeeplinkDecodingWithMissingName() {
-        
+
         let inputDeeplink = URL(string: "tari://test_network/base_nodes/add?peer=onion3::test")!
         let invalidKey = "name"
-        
+
         var result: BaseNodesAddDeeplink?
         var cachedError: DeepLinkError!
-        
+
         do {
             result = try DeepLinkFormatter.model(type: BaseNodesAddDeeplink.self, deeplink: inputDeeplink)
         } catch {
             cachedError = error as? DeepLinkError
         }
-        
+
         XCTAssertNil(result)
         switch cachedError {
         case let .unableToParse(key):
@@ -209,21 +209,21 @@ final class DeepLinkFormatterTests: XCTestCase {
             XCTFail("Invalid error type")
         }
     }
-    
+
     func testBaseNodesAddDeeplinkDecodingWithMissingPeer() {
-        
+
         let inputDeeplink = URL(string: "tari://test_network/base_nodes/add?name=test%20name")!
         let invalidKey = "peer"
-        
+
         var result: BaseNodesAddDeeplink?
         var cachedError: DeepLinkError!
-        
+
         do {
             result = try DeepLinkFormatter.model(type: BaseNodesAddDeeplink.self, deeplink: inputDeeplink)
         } catch {
             cachedError = error as? DeepLinkError
         }
-        
+
         XCTAssertNil(result)
         switch cachedError {
         case let .unableToParse(key):

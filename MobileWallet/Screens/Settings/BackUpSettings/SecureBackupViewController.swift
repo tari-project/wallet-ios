@@ -55,10 +55,10 @@ class SecureBackupViewController: SettingsParentViewController {
 
     private let pendingView = PendingView(title: localized("backup_pending_view.title"),
                                           definition: localized("backup_pending_view.description"))
-    
+
     private var descriptionTextColor: UIColor?
     private var descriptionBoldTextColor: UIColor?
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
@@ -77,22 +77,22 @@ class SecureBackupViewController: SettingsParentViewController {
             object: nil
         )
     }
-    
+
     @objc private func continueButtonAction() {
-        
+
         guard let password = enterPasswordField.password else { return }
-        
+
         view.endEditing(true)
         continueButton.variation = .disabled
         BackupManager.shared.password = password
-        
+
         pendingView.showPendingView { [weak self] in
             self?.performBackup()
         }
     }
-    
+
     private func performBackup() {
-        
+
         BackupManager.shared.$syncState
             .dropFirst()
             .filter { $0 == .synced || $0 == .outOfSync }
@@ -100,7 +100,7 @@ class SecureBackupViewController: SettingsParentViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in self?.finishPendingProcess() }
             .store(in: &cancellables)
-        
+
         BackupManager.shared.backupNow(onlyIfOutdated: false)
     }
 
@@ -119,14 +119,14 @@ class SecureBackupViewController: SettingsParentViewController {
             })
         }
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         headerLabel.textColor = theme.text.heading
         descriptionTextColor = theme.text.body
         descriptionBoldTextColor = theme.text.heading
-        
+
         updateDescriptionLabel()
     }
 }
@@ -207,11 +207,11 @@ extension SecureBackupViewController {
         stackView.addArrangedSubview(descriptionLabel)
         stackView.setCustomSpacing(25, after: descriptionLabel)
     }
-    
+
     private func updateDescriptionLabel() {
-        
+
         guard let descriptionTextColor, let descriptionBoldTextColor else { return }
-        
+
         let atttributedPart1 = localized("secure_backup.header_description_part1")
         let atttributedPart2 = localized("secure_backup.header_description_part2")
 
@@ -219,7 +219,7 @@ extension SecureBackupViewController {
 
         attributedString.addAttributes([.foregroundColor: descriptionTextColor], range: NSRange(location: 0, length: atttributedPart1.count))
         attributedString.addAttributes([.foregroundColor: descriptionBoldTextColor], range: NSRange(location: atttributedPart1.count, length: atttributedPart2.count))
-        
+
         descriptionLabel.attributedText = attributedString
     }
 

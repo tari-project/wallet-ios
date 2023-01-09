@@ -1,5 +1,5 @@
 //  TransactionSendResult.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 03/10/2022
@@ -39,7 +39,7 @@
 */
 
 final class TransactionSendResult {
-    
+
     enum Status: UInt32 {
         case queued
         case directSendSafSend
@@ -47,46 +47,46 @@ final class TransactionSendResult {
         case safSend
         case invalid
     }
-    
+
     enum InternalError: Error {
         case invalidStatus
     }
-    
+
     // MARK: - Properties
-    
+
     let identifier: UInt64
     let rawStatus: UInt32
     let status: Status
     private let pointer: OpaquePointer
-    
+
     // MARK: - Initialisers
-    
+
     init(identifier: UInt64, pointer: OpaquePointer) throws {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = transaction_send_status_decode(pointer, errorCodePointer)
-        
+
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         guard let status = Status(rawValue: result) else { throw InternalError.invalidStatus }
-        
+
         self.identifier = identifier
         self.rawStatus = result
         self.status = status
         self.pointer = pointer
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         transaction_send_status_destroy(pointer)
     }
 }
 
 extension TransactionSendResult.Status {
-    
+
     var isSuccess: Bool { isDirectSend || isSafSend || !isQueued }
-    
+
     private var isDirectSend: Bool {
         switch self {
         case .directSend, .directSendSafSend:
@@ -95,7 +95,7 @@ extension TransactionSendResult.Status {
             return false
         }
     }
-    
+
     private var isSafSend: Bool {
         switch self {
         case .directSendSafSend, .safSend:
@@ -104,7 +104,7 @@ extension TransactionSendResult.Status {
             return false
         }
     }
-    
+
     private var isQueued: Bool {
         switch self {
         case .queued:

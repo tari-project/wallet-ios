@@ -116,7 +116,7 @@ struct MicroTari {
     var formattedPrecise: String {
         return MicroTari.preciseFormatter.string(from: NSNumber(value: self.taris))!
     }
-    
+
     init() { self.init(0) }
 
     init(_ rawValue: UInt64) {

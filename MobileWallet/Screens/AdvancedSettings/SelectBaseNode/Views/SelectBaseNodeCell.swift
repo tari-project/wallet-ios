@@ -175,9 +175,9 @@ final class SelectBaseNodeCell: DynamicThemeCell {
             self.contentView.alpha = 1.0
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary

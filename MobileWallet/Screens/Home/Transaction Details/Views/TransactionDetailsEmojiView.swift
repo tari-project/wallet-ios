@@ -1,5 +1,5 @@
 //  TransactionDetailsEmojiView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 16/03/2022
@@ -42,41 +42,41 @@ import UIKit
 import TariCommon
 
 final class TransactionDetailsEmojiView: UIView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var emojiIdView = EmojiIdView()
-    
+
     @View private(set) var addContactButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("tx_detail.add_contact_name"), for: .normal)
         view.setVariation(.secondary)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var emojiIdViewModel: EmojiIdView.ViewModel? {
         didSet { updateEmojiIdView() }
     }
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero)
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [emojiIdView, addContactButton].forEach(addSubview)
-        
+
         let constraints = [
             heightAnchor.constraint(equalToConstant: 85.0),
             emojiIdView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
@@ -85,12 +85,12 @@ final class TransactionDetailsEmojiView: UIView {
             addContactButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
             addContactButton.centerYAnchor.constraint(equalTo: centerYAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Actions
-    
+
     private func updateEmojiIdView() {
         guard let emojiIdViewModel = emojiIdViewModel else { return }
         emojiIdView.update(viewModel: emojiIdViewModel, textCentered: false)

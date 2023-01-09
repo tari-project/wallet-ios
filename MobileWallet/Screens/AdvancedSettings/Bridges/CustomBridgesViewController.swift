@@ -42,7 +42,7 @@ import UIKit
 import Combine
 
 final class CustomBridgesViewController: SettingsParentTableViewController, CustomBridgesHandable {
-    
+
     private enum Section: Int, CaseIterable {
         case requestBridges
         case QRcode
@@ -67,7 +67,7 @@ final class CustomBridgesViewController: SettingsParentTableViewController, Cust
     private lazy var detector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
 
     private let headerView = CustomBridgesHeaderView()
-    
+
     private let requestBridgesSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: CustomBridgesTitle.requestBridgesFromTorproject.rawValue)
     ]
@@ -76,7 +76,7 @@ final class CustomBridgesViewController: SettingsParentTableViewController, Cust
         SystemMenuTableViewCellItem(title: CustomBridgesTitle.scanQRCode.rawValue),
         SystemMenuTableViewCellItem(title: CustomBridgesTitle.uploadQRCode.rawValue)
     ]
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     init(bridgesConfiguration: BridgesConfiguration) {
@@ -92,7 +92,7 @@ final class CustomBridgesViewController: SettingsParentTableViewController, Cust
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        
+
         setupCustomBridgeProgressHandler()
             .store(in: &cancellables)
     }
@@ -134,7 +134,7 @@ extension CustomBridgesViewController {
     }
 
     private func connectAction() {
-        
+
         guard let bridgesConfiguration = bridgesConfiguration else { return }
         applyConnectingStatus()
 
@@ -144,9 +144,9 @@ extension CustomBridgesViewController {
                 .filter({ bridge in !bridge.isEmpty && !bridge.hasPrefix("//") && !bridge.hasPrefix("#") })
 
         bridgesConfiguration.bridgesType = bridgesConfiguration.customBridges?.isEmpty == true ? .none : .custom
-        
+
         headerView.resignFirstResponder()
-        
+
         Task {
             do {
                 try await Tari.shared.update(torBridgesConfiguration: bridgesConfiguration)
@@ -240,10 +240,10 @@ extension CustomBridgesViewController: UITableViewDelegate, UITableViewDataSourc
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section != 0 { return nil }
-        
+
         let customBridgesText = bridgesConfiguration?.customBridges?.joined(separator: "\n")
         let text = (customBridgesText?.isEmpty ?? true) ? examplePlaceHolderString : customBridgesText
-        
+
         headerView.text = text
         headerView.textViewDelegate = self
 
@@ -296,7 +296,7 @@ extension CustomBridgesViewController: UITextViewDelegate {
         if textView.text == examplePlaceHolderString && !headerView.isTextViewActive {
             textView.text = ""
         }
-        
+
         headerView.isTextViewActive = true
     }
 
@@ -304,7 +304,7 @@ extension CustomBridgesViewController: UITextViewDelegate {
         if textView.text == "" {
             textView.text = examplePlaceHolderString
         }
-        
+
         headerView.isTextViewActive = false
     }
 }

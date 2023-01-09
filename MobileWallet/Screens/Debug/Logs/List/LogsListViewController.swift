@@ -1,5 +1,5 @@
 //  LogsListViewController.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2022
@@ -42,81 +42,81 @@ import UIKit
 import Combine
 
 final class LogsListViewController: UIViewController {
-    
+
     // MARK: - Properties
-    
+
     private let mainView = LogsListView()
     private let model: LogsListModel
     private var tableDataSource: UITableViewDiffableDataSource<Int, String>?
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init(model: LogsListModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTableView()
         setupCallbacks()
         model.refreshLogsList()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupTableView() {
         mainView.tableView.register(type: LogsListCell.self)
     }
-    
+
     private func setupCallbacks() {
-        
+
         model.$logTitles
             .sink { [weak self] in self?.update(items: $0) }
             .store(in: &cancellables)
-        
+
         model.$selectedRowFileURL
             .compactMap { $0 }
             .sink { [weak self] in self?.moveToLogDetails(url: $0) }
             .store(in: &cancellables)
-        
+
         model.$errorMessage
             .compactMap { $0 }
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
-        
+
         tableDataSource = UITableViewDiffableDataSource(tableView: mainView.tableView) { tableView, indexPath, model in
             let cell = tableView.dequeueReusableCell(type: LogsListCell.self, indexPath: indexPath)
             cell.update(title: model)
             return cell
         }
-        
+
         mainView.tableView.dataSource = tableDataSource
         mainView.tableView.delegate = self
     }
-    
+
     // MARK: - Actions
-    
+
     private func update(items: [String]) {
-        
+
         var snapshot = NSDiffableDataSourceSnapshot<Int, String>()
         snapshot.appendSections([0])
         snapshot.appendItems(items)
-        
+
         tableDataSource?.apply(snapshot)
     }
-    
+
     private func moveToLogDetails(url: URL) {
         let controller = LogConstructor.buildScene(fileURL: url)
         navigationController?.pushViewController(controller, animated: true)
@@ -124,7 +124,7 @@ final class LogsListViewController: UIViewController {
 }
 
 extension LogsListViewController: UITableViewDelegate {
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         model.select(row: indexPath.row)
     }

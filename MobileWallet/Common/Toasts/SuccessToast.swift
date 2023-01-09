@@ -1,5 +1,5 @@
 //  SuccessToast.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/04/2022
@@ -42,9 +42,9 @@ import UIKit
 import TariCommon
 
 final class SuccessToast: UIView {
-    
+
     // MARK: - Subviews
-    
+
     @View private(set) var label: UILabel = {
         let view = UILabel()
         view.textColor = .static.white
@@ -53,31 +53,31 @@ final class SuccessToast: UIView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero)
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(label)
-        
+
         let constraints = [
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
             label.centerYAnchor.constraint(equalTo: centerYAnchor),
             heightAnchor.constraint(equalToConstant: 40.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 }

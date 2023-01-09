@@ -1,5 +1,5 @@
 //  VersionValidatorTests.swift
-	
+
 /*
 	Package UnitTests
 	Created by Adrian Truszczynski on 23/11/2022
@@ -42,84 +42,84 @@ import XCTest
 @testable import Tari_Aurora
 
 final class VersionValidatorTests: XCTestCase {
-    
+
     func testFirstVersionIsHigher() {
-        
+
         let firstVersion = "1.23.45"
         let secondVersion = "1.23.01"
-        
+
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertTrue(result)
     }
-    
+
     func testFirstVersionIsHigherAndLonger() {
-        
+
         let firstVersion = "11.23.45"
         let secondVersion = "1.23.45"
-        
+
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertTrue(result)
     }
-    
+
     func testFirstVersionIsHigherAndShorter() {
-        
+
         let firstVersion = "1.23.45"
         let secondVersion = "1.23.001"
-        
+
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertTrue(result)
     }
-    
+
     func testFirstVersionHaveExtraComponent() {
-        
+
         let firstVersion = "1.23.45.1"
         let secondVersion = "1.23.45"
-        
+
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertTrue(result)
     }
-    
+
     func testSecondVersionIsHigher() {
-        
+
         let firstVersion = "1.23.01"
         let secondVersion = "1.23.45"
-        
+
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertFalse(result)
     }
-    
+
     func testSecondVersionIsHigherAndLonger() {
-        
+
         let firstVersion = "1.23.01"
         let secondVersion = "11.23.45"
-        
+
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertFalse(result)
     }
-    
+
     func testSecondVersionIsHigherAndShorter() {
-        
+
         let firstVersion = "1.23.001"
         let secondVersion = "1.23.45"
-        
+
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertFalse(result)
     }
-    
+
     func testSecondVersionHaveExtraComponent() {
-        
+
         let firstVersion = "1.23.45"
         let secondVersion = "1.23.45.1"
-        
+
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertFalse(result)
     }
-    
+
     func testVersionsAreEqual() {
-        
+
         let firstVersion = "1.23.45"
         let secondVersion = "1.23.45"
-        
+
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertTrue(result)
     }

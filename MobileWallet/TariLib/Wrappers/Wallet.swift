@@ -69,7 +69,7 @@ enum TrasactionSendStatus: UInt32 {
     case directSend
     case safSend
     case invalid
-    
+
     var isDirectSend: Bool {
         switch self {
         case .directSend, .directSendSafSend:
@@ -78,7 +78,7 @@ enum TrasactionSendStatus: UInt32 {
             return false
         }
     }
-    
+
     var isSafSend: Bool {
         switch self {
         case .directSendSafSend, .safSend:
@@ -87,7 +87,7 @@ enum TrasactionSendStatus: UInt32 {
             return false
         }
     }
-    
+
     var isQueued: Bool {
         switch self {
         case .queued:
@@ -96,7 +96,7 @@ enum TrasactionSendStatus: UInt32 {
             return false
         }
     }
-    
+
     var isSuccess: Bool { isDirectSend || isSafSend || !isQueued }
 }
 
@@ -207,7 +207,7 @@ final class Wallet {
     }
 
     private static func checkValidationResult(type: BaseNodeValidationType, responseId: UInt64, isSuccess: Bool) {
-        
+
         guard let currentStatus = baseNodeValidationStatusMap[type] else {
             TariLogger.info(
                 "\(type.rawValue) validation [\(responseId)] complete. Success: \(isSuccess)."
@@ -215,7 +215,7 @@ final class Wallet {
             )
             return
         }
-        
+
         if currentStatus.0 != responseId {
             TariLogger.info(
                 "\(type.rawValue) validation [\(responseId)] complete. Success: \(isSuccess)."
@@ -223,9 +223,9 @@ final class Wallet {
             )
             return
         }
-        
+
         TariLogger.info("\(type.rawValue) validation [\(responseId)] complete. Success: \(isSuccess).")
-        
+
         baseNodeValidationStatusMap[type] = (currentStatus.0, isSuccess)
         Wallet.checkBaseNodeSyncCompletion()
     }
@@ -309,40 +309,40 @@ final class Wallet {
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Transaction mined unconfirmed lib callback - \(confirmationCount) confirmations")
         }
-        
+
         let fauxTransactionConfirmed: (@convention(c) (OpaquePointer?) -> Void)? = { _ in
             TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
         }
-        
+
         let fauxTransactionUncorfirmed: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { _, _ in
             TariEventBus.postToMainThread(.requiresBackup)
             TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
         }
-        
+
         let transactionSendResultCallback: @convention(c) (UInt64, OpaquePointer?) -> Void = { transactionID, transactionSendStatusPointer in
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = transaction_send_status_decode(transactionSendStatusPointer, errorCodePointer)
             guard errorCode == 0, let status = TrasactionSendStatus(rawValue: result) else { return }
             TariEventBus.postToMainThread(.transactionSendResult, sender: TransactionResult(id: transactionID, status: status))
-            
+
             let message = "Store and forward lib callback. txID=\(transactionID)"
-            
+
             guard status.isSuccess else {
                 TariLogger.error("\(message) FAILURE")
                 return
             }
-            
+
             TariLogger.verbose("\(message) SUCCESS")
             TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariEventBus.postToMainThread(.requiresBackup)
         }
-        
-        let txCancellationCallback: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { valuePointer, rejectonReason in
+
+        let txCancellationCallback: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { valuePointer, _ in
             let cancelledTxId = CompletedTx(completedTxPointer: valuePointer!).id
             TariEventBus.postToMainThread(.txListUpdate)
             TariEventBus.postToMainThread(.txCancellation)
@@ -366,22 +366,22 @@ final class Wallet {
         let storedMessagesReceivedCallback: (@convention(c) () -> Void)? = {
             TariLogger.verbose("Stored messages received ✅")
         }
-        
+
         let contactsLivenessDataUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void) = { _ in
         }
 
         let balanceUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void)? = { valuePointer in
-            //Note context for this is unavailable withing the callback but we still need to free the object passed in form the library
-            let _ = Balance(pointer: valuePointer!)
+            // Note context for this is unavailable withing the callback but we still need to free the object passed in form the library
+            _ = Balance(pointer: valuePointer!)
             TariEventBus.postToMainThread(.balanceUpdate)
             TariLogger.verbose("Balance updated callback")
         }
-        
+
         let callbackConectivityStatus: (@convention(c) (UInt64) -> Void)? = { status in
             guard let status = BaseNodeConnectivityStatus(rawValue: status) else { return }
             TariEventBus.postToMainThread(.connectionStatusChanged, sender: status)
         }
-        
+
         dbPath = commsConfig.dbPath
         dbName = commsConfig.dbName
         logPath = loggingFilePath
@@ -424,7 +424,7 @@ final class Wallet {
             }
 
             var error: WalletError?
-            
+
             if errorCode > 0 {
                 error = WalletError(code: errorCode)
             }
@@ -667,10 +667,10 @@ final class Wallet {
 
         var errorCode: Int32 = -1
         let messagePointer = (utxo.message as NSString).utf8String
-        
+
         let metadataSignature = try makeCommitmentSignature(utxo: utxo)
         let senderOffsetPublicKey = try utxo.makeSenderOffsetPublicKey()
-        
+
         _ = withUnsafeMutablePointer(to: &errorCode, { error in
             wallet_import_external_utxo_as_non_rewindable(
                 pointer,
@@ -695,22 +695,22 @@ final class Wallet {
         TariEventBus.postToMainThread(.balanceUpdate)
         TariEventBus.postToMainThread(.txListUpdate)
     }
-    
+
     private func makeCommitmentSignature(utxo: UTXO) throws -> OpaquePointer {
-        
+
         let publicNonceVector = try ByteVector(byteArray: [UInt8](utxo.publicNonce))
         let uValueVector = try ByteVector(byteArray: [UInt8](utxo.uValue))
         let vValueVector = try ByteVector(byteArray: [UInt8](utxo.vValue))
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = commitment_signature_create_from_bytes(publicNonceVector.pointer, uValueVector.pointer, vValueVector.pointer, errorCodePointer)
-        
+
         guard errorCode == 0, let result = result else {
             throw WalletErrors.generic(errorCode)
         }
-        
+
         return result
     }
 
@@ -798,14 +798,14 @@ final class Wallet {
             throw WalletErrors.generic(errorCode)
         }
     }
-    
+
     func allUtxos() throws -> [TariUtxo] {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = wallet_get_all_utxos(pointer, errorCodePointer)
-        
+
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         return result.array()
     }
@@ -820,11 +820,10 @@ final class Wallet {
             throw WalletErrors.generic(errorCode)
         }
 
-        let bal = Balance(pointer: ptr!);
+        let bal = Balance(pointer: ptr!)
 
         let updatedBalance = WalletBalance(available: bal.available, incoming: bal.incoming, outgoing: bal.outgoing, timeLocked: bal.timelocked)
-        if walletBalance == updatedBalance
-        {
+        if walletBalance == updatedBalance {
             return walletBalance
         } else {
             walletBalance = updatedBalance
@@ -857,59 +856,59 @@ final class Wallet {
             return (publicKey: publicKey, timestamp: $0.timestamp.0)
         }
     }
-    
+
     func previewCoinSplit(commitments: [String], splitsCount: UInt, feePerGram: UInt64) throws -> TariCoinPreview {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let vector = TariVectorWrapper(type: TariTypeTag(0))
         try vector.add(commitments: commitments)
-        
+
         let result = wallet_preview_coin_split(pointer, vector.pointer, splitsCount, feePerGram, errorCodePointer)
-        
+
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         return result.pointee
     }
-    
+
     func coinSplit(commitments: [String], splitsCount: UInt, feePerGram: UInt64) throws -> UInt64 {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let vector = TariVectorWrapper(type: TariTypeTag(0))
         try vector.add(commitments: commitments)
-        
+
         let result = wallet_coin_split(pointer, vector.pointer, splitsCount, feePerGram, errorCodePointer)
-        
+
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
     }
-    
+
     func previewCoinsJoin(commitments: [String], feePerGram: UInt64) throws -> TariCoinPreview {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let vector = TariVectorWrapper(type: TariTypeTag(0))
         try vector.add(commitments: commitments)
-        
+
         let result = wallet_preview_coin_join(pointer, vector.pointer, feePerGram, errorCodePointer)
-        
+
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         return result.pointee
     }
-    
+
     func coinsJoin(commitments: [String], feePerGram: UInt64) throws -> UInt64 {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let vector = TariVectorWrapper(type: TariTypeTag(0))
         try vector.add(commitments: commitments)
-        
+
         let result = wallet_coin_join(pointer, vector.pointer, feePerGram, errorCodePointer)
-        
+
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
     }

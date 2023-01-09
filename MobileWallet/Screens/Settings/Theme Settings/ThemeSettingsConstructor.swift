@@ -1,5 +1,5 @@
 //  ThemeSettingsConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 18/12/2022
@@ -39,7 +39,7 @@
 */
 
 enum ThemeSettingsConstructor {
-    
+
     static func buildScene() -> ThemeSettingsViewController {
         let model = ThemeSettingsModel()
         return ThemeSettingsViewController(model: model)

@@ -1,5 +1,5 @@
 //  UTXOsWalletLoadingView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 05/07/2022
@@ -43,16 +43,16 @@ import TariCommon
 import Lottie
 
 final class UTXOsWalletLoadingView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 4.0
         return view
     }()
-    
+
     @View private var spinnerView: AnimationView = {
         let view = AnimationView()
         view.backgroundBehavior = .pauseAndRestore
@@ -61,7 +61,7 @@ final class UTXOsWalletLoadingView: DynamicThemeView {
         view.play()
         return view
     }()
-    
+
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.spinner.label.title")
@@ -69,36 +69,36 @@ final class UTXOsWalletLoadingView: DynamicThemeView {
         view.font = .Avenir.roman.withSize(14.0)
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(stackView)
         [spinnerView, titleLabel].forEach(stackView.addArrangedSubview)
-        
+
         let constraints = [
             spinnerView.heightAnchor.constraint(equalToConstant: 42.0),
             stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
+            stackView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.body

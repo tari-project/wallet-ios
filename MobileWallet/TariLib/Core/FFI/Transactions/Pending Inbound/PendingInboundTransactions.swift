@@ -1,5 +1,5 @@
 //  PendingInboundTransactions.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 25/08/2022
@@ -39,9 +39,9 @@
 */
 
 final class PendingInboundTransactions {
-    
+
     // MARK: - Properties
-    
+
     var count: UInt32 {
         get throws {
             var errorCode: Int32 = -1
@@ -51,28 +51,28 @@ final class PendingInboundTransactions {
             return result
         }
     }
-    
+
     private let pointer: OpaquePointer
-    
+
     // MARK: - Initialisers
-    
+
     init(pointer: OpaquePointer) {
         self.pointer = pointer
     }
-    
+
     // MARK: - Actions
-    
+
     func transaction(at index: UInt32) throws -> PendingInboundTransaction {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = pending_inbound_transactions_get_at(pointer, index, errorCodePointer)
-        
+
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
         return PendingInboundTransaction(pointer: pointer)
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         pending_inbound_transactions_destroy(pointer)
     }

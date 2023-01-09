@@ -92,9 +92,9 @@ final class HomeViewToolbar: DynamicThemeView {
     private func setupFeedbacks() {
         closeButton.addTarget(self, action: #selector(onCloseButtonTapAction), for: .touchUpInside)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary

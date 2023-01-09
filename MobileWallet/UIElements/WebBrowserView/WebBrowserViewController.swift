@@ -47,16 +47,16 @@ class WebBrowserViewController: DynamicThemeViewController {
     }
 
     private let webView = WKWebView()
-    
+
     @View private var navigationBar: NavigationBar = {
         let view = NavigationBar()
         return view
     }()
-    
+
     private let navigationPanel = UIView()
     private let backButton = UIButton()
     private let forwardButton = UIButton()
-    
+
     @View private var grabber: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 2.5
@@ -99,16 +99,16 @@ class WebBrowserViewController: DynamicThemeViewController {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         view.backgroundColor = theme.backgrounds.primary
         webView.backgroundColor = theme.backgrounds.secondary
         backButton.tintColor = theme.icons.default
         forwardButton.tintColor = theme.icons.default
         grabber.backgroundColor = theme.icons.inactive
     }
-    
+
     // MARK: - Actions
-    
+
     private func showShareDialog() {
         guard let currentUrl = webView.url else { return }
         let activityViewController = UIActivityViewController(activityItems: [currentUrl], applicationActivities: nil)
@@ -176,21 +176,21 @@ extension WebBrowserViewController {
         setupBottomNavigationPanel()
         setupWebView()
     }
-    
+
     private func setupNavigationBar() {
-        
+
         view.addSubview(navigationBar)
-        
+
         navigationBar.backButtonType = modalPresentationStyle == .popover ? .close : .none
         navigationBar.rightButton.setImage(Theme.shared.images.share, for: .normal)
         navigationBar.onRightButtonAction = { [weak self] in self?.showShareDialog() }
-        
+
         let constraints = [
             navigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 32.0),
             navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 
@@ -243,7 +243,7 @@ extension WebBrowserViewController {
 
     private func setupGrabber() {
         if modalPresentationStyle != .popover { return }
-        
+
         view.addSubview(grabber)
 
         grabber.heightAnchor.constraint(equalToConstant: 5).isActive = true

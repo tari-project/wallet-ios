@@ -1,5 +1,5 @@
 //  TariMessageSignService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022
@@ -39,13 +39,13 @@
 */
 
 final class TariMessageSignService: CoreTariService {
-   
+
    enum InternalError: Error {
        case invalidSignatureAndNonceString
    }
-   
+
    // MARK: - Actions
-   
+
    func sign(message: String) throws -> MessageMetadata {
        let data = try walletManager.sign(message: message)
        let components = data.components(separatedBy: "|")

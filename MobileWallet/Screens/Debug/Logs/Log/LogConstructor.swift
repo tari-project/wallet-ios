@@ -1,5 +1,5 @@
 //  LogConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2022
@@ -39,7 +39,7 @@
 */
 
 enum LogConstructor {
-    
+
     static func buildScene(fileURL: URL) -> LogViewController {
         let model = LogModel(fileURL: fileURL)
         return LogViewController(model: model)

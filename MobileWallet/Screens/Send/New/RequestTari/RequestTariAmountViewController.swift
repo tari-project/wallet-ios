@@ -1,5 +1,5 @@
 //  RequestTariAmountViewController.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 13/01/2022
@@ -42,49 +42,49 @@ import UIKit
 import Combine
 
 final class RequestTariAmountViewController: UIViewController {
-    
+
     // MARK: - Properties
-    
+
     private let mainView = RequestTariAmountView()
     private let model = RequestTariAmountModel()
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBindings()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupBindings() {
-        
+
         model.$amount
             .assign(to: \.amount, on: mainView)
             .store(in: &cancellables)
-        
+
         model.$isValidAmount
             .assign(to: \.areButtonsEnabled, on: mainView)
             .store(in: &cancellables)
-        
+
         model.$qrCode
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.showQrCode(image: $0) }
             .store(in: &cancellables)
-        
+
         model.$deeplink
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.showShareDialog(data: $0) }
             .store(in: &cancellables)
-        
+
         mainView.keyboard.onKeyTap = { [weak self] in
             switch $0 {
             case let .key(character):
@@ -93,31 +93,31 @@ final class RequestTariAmountViewController: UIViewController {
                 self?.model.deleteLastCharacter()
             }
         }
-        
+
         mainView.generateQrButton.onTap = { [weak self] in
             self?.model.generateQrRequest()
         }
-        
+
         mainView.shareButton.onTap = { [weak self] in
             self?.model.shareActionRequest()
         }
     }
-    
+
     // MARK: - Actions
-    
+
     private func showQrCode(image: UIImage) {
-        
+
         let controller = QRCodePresentationController(image: image)
-        
+
         controller.onShareButtonTap = { [weak controller, weak self] in
             controller?.dismiss(animated: true) {
                 self?.model.shareActionRequest()
             }
         }
-        
+
         present(controller, animated: true)
     }
-    
+
     private func showShareDialog(data: RequestTariAmountModel.DeeplinkData) {
         let controller = UIActivityViewController(activityItems: [data.message, data.deeplink], applicationActivities: nil)
         controller.popoverPresentationController?.sourceView = mainView.shareButton

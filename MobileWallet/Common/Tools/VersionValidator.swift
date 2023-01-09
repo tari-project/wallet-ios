@@ -1,5 +1,5 @@
 //  VersionValidator.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 23/11/2022
@@ -39,19 +39,19 @@
 */
 
 enum VersionValidator {
-    
+
     static func compare(_ firstVersion: String, isHigherOrEqualTo secondVersion: String) -> Bool {
-        
+
         var firstVersionComponents = firstVersion.split(separator: ".")
         var secondVersionComponents = secondVersion.split(separator: ".")
-        
+
         let componentsCount = max(firstVersionComponents.count, secondVersionComponents.count)
-        
+
         firstVersionComponents += Array(repeating: "", count: componentsCount - firstVersionComponents.count)
         secondVersionComponents += Array(repeating: "", count: componentsCount - secondVersionComponents.count)
-        
+
         let result = zip(firstVersionComponents, secondVersionComponents).first { $0 < $1 }
-                             
+
         return result == nil
     }
 }

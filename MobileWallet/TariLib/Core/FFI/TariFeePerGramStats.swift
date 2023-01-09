@@ -1,5 +1,5 @@
 //  TariFeePerGramStats.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 23/05/2022
@@ -39,9 +39,9 @@
 */
 
 final class TariFeePerGramStats {
-    
+
     // MARK: - Properties
-    
+
     var count: UInt32 {
         get throws {
             var errorCode: Int32 = -1
@@ -51,88 +51,88 @@ final class TariFeePerGramStats {
             return result
         }
     }
-    
+
     let pointer: OpaquePointer
-    
+
     // MARK: - Initialisers
-    
+
     init(walletPointer: OpaquePointer, count: UInt32) throws {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let pointer = wallet_get_fee_per_gram_stats(walletPointer, count, errorCodePointer)
-        
+
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         guard let pointer = pointer else { throw WalletError.unknown }
-        
+
         self.pointer = pointer
     }
-    
+
     init(pointer: OpaquePointer) {
         self.pointer = pointer
     }
-    
+
     // MARK: - Actions
-    
+
     func element(at index: UInt32) throws -> OpaquePointer {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = fee_per_gram_stats_get_at(pointer, index, errorCodePointer)
-        
+
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         guard let result = result else { throw WalletError.unknown }
         return result
     }
-    
+
     func order(feeParGramStatPointer: OpaquePointer) throws -> UInt64 {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = fee_per_gram_stat_get_order(feeParGramStatPointer, errorCodePointer)
-        
+
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
     }
-    
+
     func minFeePerGram(feeParGramStatPointer: OpaquePointer) throws -> UInt64 {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = fee_per_gram_stat_get_min_fee_per_gram(feeParGramStatPointer, errorCodePointer)
-        
+
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
     }
-    
+
     func avgFeePerGram(feeParGramStatPointer: OpaquePointer) throws -> UInt64 {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = fee_per_gram_stat_get_avg_fee_per_gram(feeParGramStatPointer, errorCodePointer)
-        
+
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
     }
-    
+
     func maxFeePerGram(feeParGramStatPointer: OpaquePointer) throws -> UInt64 {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = fee_per_gram_stat_get_max_fee_per_gram(feeParGramStatPointer, errorCodePointer)
-        
+
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
     }
-    
+
     // MARK: - Deinitialisers
-    
+
     deinit {
         fee_per_gram_stats_destroy(pointer)
     }

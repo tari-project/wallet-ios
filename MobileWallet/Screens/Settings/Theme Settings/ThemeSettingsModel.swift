@@ -1,5 +1,5 @@
 //  ThemeSettingsModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 18/12/2022
@@ -41,45 +41,45 @@
 import Combine
 
 final class ThemeSettingsModel {
-    
+
     enum Element {
         case system
         case light
         case dark
         case purple
     }
-    
+
     struct ElementModel: Identifiable {
         let id: UUID
         let element: Element
     }
-    
+
     // MARK: - View Model
-    
+
     @Published var elements: [ElementModel] = [
         ElementModel(id: UUID(), element: .system),
         ElementModel(id: UUID(), element: .light),
         ElementModel(id: UUID(), element: .dark),
         ElementModel(id: UUID(), element: .purple)
     ]
-    
+
     @Published var selectedIndex: Int = 0
-    
+
     // MARK: - Properties
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Actions
-    
+
     func select(elementIndex: Int) {
         let selectedElement = elements[elementIndex].element
         update(selectedElement: selectedElement)
     }
-    
+
     func reloadData() {
-        
+
         let selectedElement: Element
-        
+
         switch ThemeCoordinator.shared.colorScheme {
         case .system:
             selectedElement = .system
@@ -90,10 +90,10 @@ final class ThemeSettingsModel {
         case .tariPurple:
             selectedElement = .purple
         }
-        
+
         selectedIndex = elements.firstIndex { $0.element == selectedElement } ?? 0
     }
-    
+
     private func update(selectedElement: Element) {
         switch selectedElement {
         case .system:

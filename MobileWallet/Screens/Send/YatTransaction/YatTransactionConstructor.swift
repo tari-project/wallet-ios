@@ -1,5 +1,5 @@
 //  YatTransactionConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 25/10/2021
@@ -39,7 +39,7 @@
 */
 
 enum YatTransactionConstructor {
-    
+
     static func buildScene(inputData: YatTransactionModel.InputData) -> YatTransactionViewController {
         let model = YatTransactionModel(inputData: inputData)
         return YatTransactionViewController(model: model)

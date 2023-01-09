@@ -41,66 +41,66 @@
 import UIKit
 
 enum AppRouter {
-    
+
     private enum TransitionType {
         case moveDown
         case crossDissolve
         case none
     }
-    
+
     static var isNavigationReady: Bool { tabBar != nil }
     private static var tabBar: MenuTabBarController? { UIApplication.shared.menuTabBarController }
-    
+
     // MARK: - Transitions
-    
+
     static func transitionToSplashScreen(animated: Bool = true, isWalletConnected: Bool = false) {
-        
+
         let controller = SplashViewConstructor.buildScene(isWalletConnected: isWalletConnected)
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.setNavigationBarHidden(true, animated: false)
-        
+
         transition(to: navigationController, type: animated ? .moveDown : .none)
     }
-    
+
     static func transitionToOnboardingScreen(startFromLocalAuth: Bool) {
-        
+
         let controller = WalletCreationViewController()
         controller.startFromLocalAuth = startFromLocalAuth
-        
+
         transition(to: controller, type: .moveDown)
     }
-    
+
     static func transitionToHomeScreen() {
-        
+
         let tabBarController = MenuTabBarController()
         let navigationController = AlwaysPoppableNavigationController(rootViewController: tabBarController)
-        
+
         transition(to: navigationController, type: .crossDissolve)
     }
-    
+
     private static func transition(to controller: UIViewController, type: TransitionType) {
-        
+
         guard let window = UIApplication.shared.windows.first else { return }
-        
+
         guard type != .none else {
             window.rootViewController = controller
             return
         }
-        
+
         let snapshot = UIScreen.main.snapshotView(afterScreenUpdates: false)
         controller.view.addSubview(snapshot)
-        
+
         window.rootViewController = controller
-        
+
         UIView.animate(
             withDuration: 0.4,
             animations: { update(snapshot: snapshot, controller: controller, transitionType: type) },
             completion: { _ in snapshot.removeFromSuperview() }
         )
     }
-    
+
     private static func update(snapshot: UIView, controller: UIViewController, transitionType: TransitionType) {
-        
+
         switch transitionType {
         case .moveDown:
             snapshot.frame.origin.y = controller.view.bounds.maxY
@@ -110,13 +110,13 @@ enum AppRouter {
             return
         }
     }
-    
+
     // MARK: - TabBar Actions
-    
+
     static func moveToTransactionSend(deeplink: TransactionsSendDeeplink?) {
         tabBar?.homeViewController.onSend(deeplink: deeplink)
     }
-    
+
     static func moveToProfile() {
         tabBar?.setTab(.profile)
     }

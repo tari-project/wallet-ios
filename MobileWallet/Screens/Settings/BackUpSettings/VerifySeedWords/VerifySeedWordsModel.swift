@@ -1,5 +1,5 @@
 //  VerifySeedWordsModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 23/02/2022
@@ -41,13 +41,13 @@
 import Combine
 
 final class VerifySeedWordsModel {
-    
+
     struct InputData {
         let seedWords: [String]
     }
-    
+
     // MARK: - View Model
-    
+
     @Published var selectedTokenModels: [SeedWordModel] = []
     @Published var availableTokenModels: [SeedWordModel] = []
     @Published var isSelectedTokenTipVisible: Bool = true
@@ -55,71 +55,71 @@ final class VerifySeedWordsModel {
     @Published var isSuccessVisible: Bool = false
     @Published var isContinueButtonEnabled: Bool = false
     @Published var shouldEndFlow: Bool = false
-    
+
     // MARK: - Properties
-    
+
     private let inputData: InputData
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init(inputData: InputData) {
         self.inputData = inputData
         setupCallbacks()
     }
-    
+
     func fetchData() {
         availableTokenModels = inputData.seedWords
             .sorted()
             .map { SeedWordModel(id: UUID(), title: $0, state: .valid, visualTrait: .none) }
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         $selectedTokenModels
             .map(\.isEmpty)
             .assign(to: \.isSelectedTokenTipVisible, on: self)
             .store(in: &cancellables)
-        
+
         $selectedTokenModels
             .sink { [weak self] in self?.handle(selectedTokens: $0) }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     func selectToken(index: Int) {
         guard index < availableTokenModels.count else { return }
         let model = availableTokenModels[index]
         availableTokenModels[index] = model.update(visualTrait: .hidden)
         selectedTokenModels.append(model.update(visualTrait: .deleteIcon))
     }
-    
+
     func removeSelectedToken(index: Int) {
         guard index < selectedTokenModels.count else { return }
         let model = selectedTokenModels.remove(at: index)
         guard let availableTokenIndex = availableTokenModels.firstIndex(where: { $0.id == model.id }) else { return }
         availableTokenModels[availableTokenIndex] = availableTokenModels[availableTokenIndex].update(visualTrait: .none)
     }
-    
+
     func continueFlowRequest() {
         TariSettings.shared.walletSettings.hasVerifiedSeedPhrase = true
         shouldEndFlow = true
     }
-    
+
     private func handle(selectedTokens: [SeedWordModel]) {
-        
+
         guard selectedTokens.count == inputData.seedWords.count else {
             isErrorVisible = false
             isSuccessVisible = false
             isContinueButtonEnabled = false
             return
         }
-        
+
         let isValidCollection = selectedTokens.map({ $0.title }) == inputData.seedWords
-        
+
         isErrorVisible = !isValidCollection
         isSuccessVisible = isValidCollection
         isContinueButtonEnabled = isValidCollection
@@ -127,7 +127,7 @@ final class VerifySeedWordsModel {
 }
 
 private extension SeedWordModel {
-    
+
     func update(visualTrait: VisualTrait) -> Self {
         Self(id: id, title: title, state: state, visualTrait: visualTrait)
     }

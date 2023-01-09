@@ -1,5 +1,5 @@
 //  SendingTariConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/02/2022
@@ -39,7 +39,7 @@
 */
 
 enum SendingTariConstructor {
-    
+
     static func buildScene(inputData: SendingTariModel.InputData) -> SendingTariViewController {
         let model = SendingTariModel(inputData: inputData)
         let viewInputModel = SendingTariView.InputModel(numberOfSections: inputData.isOneSidedPayment ? 2 : 3)

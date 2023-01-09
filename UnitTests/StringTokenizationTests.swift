@@ -1,5 +1,5 @@
 //  StringTokenizationTests.swift
-	
+
 /*
 	Package MobileWalletTests
 	Created by Adrian Truszczynski on 28/07/2021
@@ -42,84 +42,84 @@
 import XCTest
 
 final class StringTokenizationTests: XCTestCase {
-    
+
     func testSingleWordTokenization() {
-        
+
         let inputString = "Hello"
         let expectedResult = ["Hello"]
-        
+
         let result = inputString.tokenize()
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testMultipleWordsTokenization() {
-        
+
         let inputString = "Hello World"
         let expectedResult = ["Hello", "World"]
-        
+
         let result = inputString.tokenize()
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testMultipleWordsWithGapsTokenization() {
-        
+
         let inputString = "Hello World  from   Tari"
         let expectedResult = ["Hello", "World", "from", "Tari"]
-        
+
         let result = inputString.tokenize()
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testMultipleWordsWithSpaceAtTheEndTokenization() {
-        
+
         let inputString = "Hello World "
         let expectedResult = ["Hello", "World", ""]
-        
+
         let result = inputString.tokenize()
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testMultipleWordsWithMultipleSpacesAtTheEndTokenization() {
-        
+
         let inputString = "Hello World   "
         let expectedResult = ["Hello", "World", ""]
-        
+
         let result = inputString.tokenize()
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testEmptyStringTokenization() {
-        
+
         let inputString = ""
         let expectedResult: [String] = []
-        
+
         let result = inputString.tokenize()
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testSingleSpaceStringTokenization() {
-        
+
         let inputString = " "
         let expectedResult: [String] = []
-        
+
         let result = inputString.tokenize()
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testMultipleSpacesStringTokenization() {
-        
+
         let inputString = "   "
         let expectedResult: [String] = []
-        
+
         let result = inputString.tokenize()
-        
+
         XCTAssertEqual(result, expectedResult)
     }
 }

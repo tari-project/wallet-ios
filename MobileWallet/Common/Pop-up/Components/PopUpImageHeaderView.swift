@@ -1,5 +1,5 @@
 //  PopUpImageHeaderView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/04/2022
@@ -42,15 +42,15 @@ import UIKit
 import TariCommon
 
 final class PopUpImageHeaderView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private(set) var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     @View private(set) var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.feedbackPopupTitle
@@ -58,35 +58,35 @@ final class PopUpImageHeaderView: DynamicThemeView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var imageHeight: CGFloat = 0.0 {
         didSet { imageHeightConstraint?.constant = imageHeight }
     }
-    
+
     private var imageHeightConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Initialiserss
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [imageView, label].forEach(addSubview)
-        
+
         let imageHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: 0.0)
         self.imageHeightConstraint = imageHeightConstraint
-        
+
         let constraints = [
             imageView.topAnchor.constraint(equalTo: topAnchor),
             imageHeightConstraint,
@@ -96,12 +96,12 @@ final class PopUpImageHeaderView: DynamicThemeView {
             label.trailingAnchor.constraint(equalTo: trailingAnchor),
             label.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading

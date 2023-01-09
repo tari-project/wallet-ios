@@ -1,5 +1,5 @@
 //  RestoreWalletStatus.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 03/10/2022

@@ -50,14 +50,14 @@ struct WalletSettings: Codable, Equatable {
         /// Wallet screen was presented to the user
         case ready
     }
-    
+
     enum BackupStatus: Codable {
-        
+
         case disabled
         case enabled(syncDate: Date?)
-        
+
         static var enabled: Self { .enabled(syncDate: nil) }
-        
+
         var isEnabled: Bool {
             switch self {
             case .enabled:
@@ -79,7 +79,7 @@ struct WalletSettings: Codable, Equatable {
 }
 
 extension WalletSettings {
-    
+
     func update(configurationState: WalletConfigurationState) -> Self {
         Self(
             networkName: networkName,
@@ -90,7 +90,7 @@ extension WalletSettings {
             yat: yat
         )
     }
-    
+
     func update(iCloudDocsBackupStatus: BackupStatus) -> Self {
         Self(
             networkName: networkName,
@@ -101,7 +101,7 @@ extension WalletSettings {
             yat: yat
         )
     }
-    
+
     func update(dropboxBackupStatus: BackupStatus) -> Self {
         Self(
             networkName: networkName,
@@ -112,7 +112,7 @@ extension WalletSettings {
             yat: yat
         )
     }
-    
+
     func update(hasVerifiedSeedPhrase: Bool) -> Self {
         Self(
             networkName: networkName,
@@ -123,7 +123,7 @@ extension WalletSettings {
             yat: yat
         )
     }
-    
+
     func update(yat: String?) -> Self {
         Self(
             networkName: networkName,

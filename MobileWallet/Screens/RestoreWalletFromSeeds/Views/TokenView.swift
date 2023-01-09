@@ -63,18 +63,18 @@ final class TokenView: DynamicThemeCollectionCell {
         get { label.text }
         set { label.text = newValue }
     }
-    
+
     var isDeleteIconVisible: Bool = true {
         didSet {
             deleteIconLeadingConstraint?.isActive = isDeleteIconVisible
             deleteIconView.isHidden = !isDeleteIconVisible
         }
     }
-    
+
     var isValid: Bool = true {
         didSet { updateColors() }
     }
-    
+
     private var validBorderColor: UIColor?
     private var invalidBorderColor: UIColor?
     private var validTextColor: UIColor?
@@ -106,10 +106,10 @@ final class TokenView: DynamicThemeCollectionCell {
     private func setupConstraints() {
 
         [label, deleteIconView].forEach(addSubview)
-        
+
         let labelTrailingConstraint = label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -13.0)
         labelTrailingConstraint.priority = .defaultHigh
-        
+
         let deleteIconLeadingConstraint = deleteIconView.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 5.0)
         self.deleteIconLeadingConstraint = deleteIconLeadingConstraint
 
@@ -127,12 +127,12 @@ final class TokenView: DynamicThemeCollectionCell {
 
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         backgroundColor = theme.backgrounds.primary
         validBorderColor = theme.neutral.tertiary
         invalidBorderColor = theme.system.red
@@ -140,10 +140,10 @@ final class TokenView: DynamicThemeCollectionCell {
         invalidTextColor = theme.system.red
         validIconTintColor = theme.text.body
         invalidIconTintColor = theme.system.red
-        
+
         updateColors()
     }
-    
+
     private func updateColors() {
         layer.borderColor = isValid ? validBorderColor?.cgColor : invalidBorderColor?.cgColor
         label.textColor = isValid ? validTextColor : invalidTextColor

@@ -1,5 +1,5 @@
 //  ScrollableLabel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 25/10/2021
@@ -42,25 +42,25 @@ import UIKit
 import TariCommon
 
 final class ScrollableLabel: UIView {
-    
+
     // MARK: - Constants
-    
+
     private let margin = 12.0
-    
+
     // MARK: - Subviews
-    
+
     @View var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.searchContactsInputBoxText
         return view
     }()
-    
+
     @View var scrollView: UIScrollView = {
         let view = UIScrollView()
         view.showsHorizontalScrollIndicator = false
         return view
     }()
-    
+
     private let maskLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
         layer.colors = [UIColor.clear.cgColor, UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
@@ -68,31 +68,31 @@ final class ScrollableLabel: UIView {
         layer.endPoint = CGPoint(x: 1.0, y: 0.5)
         return layer
     }()
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero)
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         backgroundColor = .white
         layer.mask = maskLayer
     }
-    
+
     private func setupConstraints() {
-        
+
         scrollView.addSubview(label)
         addSubview(scrollView)
-        
+
         let constraints = [
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -105,15 +105,15 @@ final class ScrollableLabel: UIView {
             label.heightAnchor.constraint(equalTo: heightAnchor),
             heightAnchor.constraint(equalToConstant: 46.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Layout
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         maskLayer.frame = bounds
         let startPoint = margin / bounds.width
         let endPoint = 1.0 - startPoint

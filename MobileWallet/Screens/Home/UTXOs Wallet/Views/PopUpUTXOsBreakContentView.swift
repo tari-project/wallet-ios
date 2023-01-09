@@ -1,5 +1,5 @@
 //  PopUpUTXOsBreakContentView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 05/07/2022
@@ -43,14 +43,14 @@ import TariCommon
 import Combine
 
 final class PopUpUTXOsBreakContentView: DynamicThemeView {
-    
+
     // MARK: - Constants
-    
+
     private static let minimumValue = 2
     private static let maximumValue = 50
-    
+
     // MARK: - Subviews
-    
+
     @View private var descriptionLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.pop_up.break.description")
@@ -59,60 +59,60 @@ final class PopUpUTXOsBreakContentView: DynamicThemeView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     @View private var valuePicker: ValuePickerView = {
         let view = ValuePickerView()
         view.minValue = minimumValue
         view.maxValue = maximumValue
         return view
     }()
-    
+
     @View private var valueSlider: UISlider = {
         let view = UISlider()
         view.minimumValue = Float(minimumValue)
         view.maximumValue = Float(maximumValue)
         return view
     }()
-    
+
     @View private var estimationLabel = UTXOsEstimationLabel()
-    
+
     // MARK: - Properties
-    
+
     @Published private(set) var value: Int = minimumValue
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     func update(amount: String, breakCount: String, breakAmount: String, fee: String) {
-        
+
         let imageBounds = CGRect(x: 0.0, y: 0.0, width: 8.0, height: 8.0)
-        
+
         let format = NSAttributedString(string: localized("utxos_wallet.pop_up.break.estimation"))
         let amount = amount.withCurrencySymbol(imageBounds: imageBounds)
         let breakCount = NSAttributedString(string: breakCount)
         let breakAmount = breakAmount.withCurrencySymbol(imageBounds: imageBounds)
         let fee = fee.withCurrencySymbol(imageBounds: imageBounds)
-        
+
         estimationLabel.attributedText = NSAttributedString(format: format, arguments: amount, breakCount, breakAmount, fee)
     }
-    
+
     // MARK: - Initalisers
-    
+
     override init() {
         super.init()
         setupConstraints()
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [descriptionLabel, valuePicker, valueSlider, estimationLabel].forEach(addSubview)
-        
+
         let constraints = [
             descriptionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
             descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
@@ -127,14 +127,14 @@ final class PopUpUTXOsBreakContentView: DynamicThemeView {
             estimationLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
             estimationLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
-        
+
         valueSlider.addTarget(self, action: #selector(sliderWalueChanged), for: .valueChanged)
-        
+
         $value
             .removeDuplicates()
             .sink { [weak self] in
@@ -142,23 +142,23 @@ final class PopUpUTXOsBreakContentView: DynamicThemeView {
                 self?.valuePicker.value = $0
             }
             .store(in: &cancellables)
-        
+
         valuePicker.onValueChanged = { [weak self] in
             self?.value = $0
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         descriptionLabel.textColor = theme.text.body
         valueSlider.tintColor = theme.brand.purple
         valueSlider.maximumTrackTintColor = theme.neutral.inactive
     }
-    
+
     // MARK: - Action Targets
-    
+
     @objc private func sliderWalueChanged(_ slider: UISlider) {
         value = Int(round(slider.value))
     }

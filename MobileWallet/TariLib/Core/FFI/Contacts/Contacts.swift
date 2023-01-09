@@ -39,9 +39,9 @@
 */
 
 final class Contacts {
-    
+
     // MARK: - Properties
-    
+
     var count: UInt32 {
         get throws {
             var errorCode: Int32 = -1
@@ -51,27 +51,27 @@ final class Contacts {
             return result
         }
     }
-    
+
     private let pointer: OpaquePointer
-    
+
     // MARK: - Initialisers
-    
+
     init(pointer: OpaquePointer) {
         self.pointer = pointer
     }
-    
+
     convenience init(walletPointer: OpaquePointer) throws {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = wallet_get_contacts(walletPointer, errorCodePointer)
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        
+
         self.init(pointer: pointer)
     }
-    
+
     // MARK: - Actions
-    
+
     func contact(index: UInt32) throws -> Contact {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
@@ -79,16 +79,16 @@ final class Contacts {
         guard let result = result else { throw WalletError(code: errorCode) }
         return Contact(pointer: result)
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         contacts_destroy(pointer)
     }
 }
 
 extension Contacts {
-    
+
     var all: [Contact] {
         get throws {
             let count = try count

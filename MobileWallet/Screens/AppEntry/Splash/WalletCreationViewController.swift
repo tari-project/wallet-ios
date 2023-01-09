@@ -232,7 +232,7 @@ final class WalletCreationViewController: DynamicThemeViewController {
             self?.showEnableNotifications()
         }
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         view.backgroundColor = theme.backgrounds.secondary
@@ -416,7 +416,7 @@ extension WalletCreationViewController {
         stackView.setCustomSpacing(16, after: secondLabel)
 
         continueButton.setTitle(localized("common.continue"), for: .normal)
-        
+
         if let walletAddress = try? Tari.shared.walletAddress, let emojiID = try? walletAddress.emojis, let hex = try? walletAddress.byteVector.hex {
             emojiIdView.setup(
                 emojiID: emojiID,

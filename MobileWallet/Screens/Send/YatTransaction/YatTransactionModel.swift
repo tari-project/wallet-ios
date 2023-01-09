@@ -1,5 +1,5 @@
 //  YatTransactionModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 21/10/2021
@@ -50,7 +50,7 @@ enum YatTransactionViewState {
 }
 
 final class YatTransactionModel {
-    
+
     struct InputData {
         let address: TariAddress
         let amount: MicroTari
@@ -59,52 +59,52 @@ final class YatTransactionModel {
         let yatID: String
         let isOneSidedPayment: Bool
     }
-    
+
     // MARK: - View Model
-    
+
     @Published private(set) var viewState: YatTransactionViewState = .idle
     @Published private(set) var error: WalletTransactionsManager.TransactionError?
-    
+
     // MARK: - Constants
-    
+
     private let connectionTimeout = 30
-    
+
     // MARK: - Properties
-    
+
     private let inputData: InputData
     private let cacheManager = YatCacheManager()
     private let walletTransactionsManager = WalletTransactionsManager()
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initializers
-    
+
     init(inputData: InputData) {
         self.inputData = inputData
     }
-    
+
     // MARK: - Actions
-    
+
     func start() {
         guard case .idle = viewState else { return }
-        
+
         setupInitialViewState()
         sendTransactionToBlockchain()
         fetchAnimation()
     }
-    
+
     private func setupInitialViewState() {
         let amount = "\(inputData.amount.formatted) \(NetworkManager.shared.selectedNetwork.tickerSymbol)"
         viewState = .initial(transaction: localized("yat_transaction.label.transaction.sending", arguments: amount), yatID: inputData.yatID)
     }
-    
+
     private func show(error: WalletTransactionsManager.TransactionError) {
         self.error = error
         viewState = .failed
     }
-    
+
     // MARK: - Yat Visualisation
-    
+
     private func fetchAnimation() {
         Yat.api.emojiID.loadJsonPublisher(eid: inputData.yatID, key: "VisualizerFileLocations")
             .map(\.data)
@@ -114,20 +114,20 @@ final class YatTransactionModel {
             )
             .store(in: &cancellables)
     }
-    
+
     private func handle(fileLocations: [String: CodableValue]) {
-        
+
         guard let path = fileLocations["v_video"] ?? fileLocations["video"], let rawPath = path.value as? String, let url = URL(string: rawPath) else { return }
-        
+
         guard let cachedFileData = cacheManager.fetchFileData(name: url.lastPathComponent) else {
             download(assetURL: url)
             return
         }
-        
+
         play(fileData: cachedFileData)
         Logger.log(message: "Play Yat visualisation from local cache", domain: .general, level: .info)
     }
-    
+
     private func download(assetURL: URL) {
         URLSession.shared.dataTaskPublisher(for: assetURL)
             .map(\.data)
@@ -139,22 +139,22 @@ final class YatTransactionModel {
             )
             .store(in: &cancellables)
     }
-    
+
     private func save(videoData: Data, name: String) {
         guard let fileData = cacheManager.save(data: videoData, name: name) else { return }
         play(fileData: fileData)
-        Logger.log(message:"Play Yat visualisation from web", domain: .general, level: .info)
+        Logger.log(message: "Play Yat visualisation from web", domain: .general, level: .info)
     }
-    
+
     private func play(fileData: YatCacheManager.FileData) {
         let scaleToFill = fileData.identifier == .verticalVideo
         viewState = .playVideo(url: fileData.url, scaleToFill: scaleToFill)
     }
-    
+
     // MARK: - Wallet
-    
+
     private func sendTransactionToBlockchain() {
-        
+
         walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, feePerGram: inputData.feePerGram, message: inputData.message, isOneSidedPayment: inputData.isOneSidedPayment)
             .sink { [weak self] completion in
                 switch completion {

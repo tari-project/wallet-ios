@@ -1,5 +1,5 @@
 //  ProfileView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 12/01/2022
@@ -43,19 +43,19 @@ import TariCommon
 import Lottie
 
 final class ProfileView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var navigationBar: NavigationBar = {
         let view = NavigationBar()
         view.backButtonType = .none
         view.title = localized("profile_view.title")
         return view
     }()
-    
+
     @View private var emojiIdView = EmojiIdView()
     @View var yatButton: BaseButton = BaseButton()
-    
+
     @View private var yatSpinnerView: AnimationView = {
         let view = AnimationView()
         view.animation = Animation.named(.pendingCircleAnimation)
@@ -63,7 +63,7 @@ final class ProfileView: DynamicThemeView {
         view.loopMode = .loop
         return view
     }()
-    
+
     @View var middleLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.profileMiddleLabel
@@ -72,13 +72,13 @@ final class ProfileView: DynamicThemeView {
         view.adjustsFontSizeToFitWidth = true
         return view
     }()
-    
+
     @View var reconnectYatButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("profile_view.button.recconect_yat"), for: .normal)
         return view
     }()
-    
+
     @View private var qrContainer: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 10.0
@@ -86,40 +86,40 @@ final class ProfileView: DynamicThemeView {
         view.layer.rasterizationScale = UIScreen.main.scale
         return view
     }()
-    
+
     @View private var qrImageView = UIImageView()
-    
+
     var qrCodeImage: UIImage? {
         didSet { qrImageView.image = qrCodeImage }
     }
-    
+
     var isYatButtonOn: Bool = false {
         didSet { updateYatButton(isOn: isYatButtonOn) }
     }
-    
+
     private var yatButtonOnTintColor: UIColor?
     private var yatButtonOffTintColor: UIColor?
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
-        
+
         yatButton.imageView?.contentMode = .scaleAspectFit
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [navigationBar, emojiIdView, yatButton, yatSpinnerView, middleLabel, reconnectYatButton, qrContainer].forEach(addSubview)
         qrContainer.addSubview(qrImageView)
-        
+
         var constraints = [
             navigationBar.topAnchor.constraint(equalTo: topAnchor),
             navigationBar.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -146,9 +146,9 @@ final class ProfileView: DynamicThemeView {
             qrImageView.leadingAnchor.constraint(equalTo: qrContainer.leadingAnchor, constant: 30.0),
             qrImageView.trailingAnchor.constraint(equalTo: qrContainer.trailingAnchor, constant: -30.0),
             qrImageView.bottomAnchor.constraint(equalTo: qrContainer.bottomAnchor, constant: -30.0),
-            qrImageView.topAnchor.constraint(equalTo: qrContainer.topAnchor, constant: 30.0),
+            qrImageView.topAnchor.constraint(equalTo: qrContainer.topAnchor, constant: 30.0)
         ]
-        
+
         if UIDevice.current.userInterfaceIdiom == .pad {
             constraints += [
                 qrContainer.topAnchor.constraint(equalTo: reconnectYatButton.bottomAnchor, constant: 100.0),
@@ -160,18 +160,18 @@ final class ProfileView: DynamicThemeView {
                 qrContainer.topAnchor.constraint(greaterThanOrEqualTo: reconnectYatButton.bottomAnchor, constant: 10.0),
                 qrContainer.topAnchor.constraint(lessThanOrEqualTo: reconnectYatButton.bottomAnchor, constant: 25.0),
                 qrContainer.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 22.0),
-                qrContainer.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -22.0),
+                qrContainer.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -22.0)
             ]
         }
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         backgroundColor = theme.backgrounds.secondary
         middleLabel.textColor = theme.text.body
         reconnectYatButton.setTitleColor(theme.text.links, for: .normal)
@@ -179,16 +179,16 @@ final class ProfileView: DynamicThemeView {
         yatButtonOffTintColor = theme.icons.inactive
         qrContainer.backgroundColor = theme.components.qrBackground
         qrContainer.apply(shadow: theme.shadows.box)
-        
+
         updateYatButton(isOn: isYatButtonOn)
     }
-    
+
     func update(emojiID: String, hex: String?, copyText: String, tooltopText: String?) {
         emojiIdView.copyText = copyText
         emojiIdView.tooltipText = tooltopText
         emojiIdView.update(viewModel: EmojiIdView.ViewModel(emojiID: emojiID, hex: hex))
     }
-    
+
     private func updateYatButton(isOn: Bool) {
         yatButton.isHidden = false
         let icon = isOn ? Theme.shared.images.yatButtonOn : Theme.shared.images.yatButtonOff
@@ -197,21 +197,21 @@ final class ProfileView: DynamicThemeView {
         yatSpinnerView.isHidden = true
         yatSpinnerView.stop()
     }
-    
+
     func showYatButtonSpinner() {
         yatButton.isHidden = true
         yatSpinnerView.isHidden = false
         yatSpinnerView.play()
     }
-    
+
     func hideYatButton() {
         yatButton.isHidden = true
         yatSpinnerView.isHidden = true
         yatSpinnerView.stop()
     }
-    
+
     // MARK: - Autolayout
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         let shadowFrame: CGRect = qrContainer.bounds.insetBy(dx: 4.0, dy: 4.0)

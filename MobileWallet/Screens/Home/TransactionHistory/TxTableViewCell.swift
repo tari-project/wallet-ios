@@ -172,16 +172,16 @@ class TxTableViewCell: DynamicThemeCell {
             statusLabelHeightHidden.isActive = false
         }
     }
-    
+
     private func updateValue(theme: ColorTheme? = nil) {
         guard let model else { return }
         setValue(microTari: model.value.microTari, isOutboundTransaction: model.value.isOutboundTransaction, isCancelled: model.value.isCancelled, isPending: model.value.isPending, theme: theme)
     }
 
     private func setValue(microTari: MicroTari?, isOutboundTransaction: Bool, isCancelled: Bool, isPending: Bool, theme: ColorTheme?) {
-        
+
         let theme = theme ?? self.theme
-        
+
         if let mt = microTari {
             if isCancelled {
                 valueLabel.text = mt.formattedPrecise
@@ -218,10 +218,10 @@ class TxTableViewCell: DynamicThemeCell {
 
         valueLabel.padding = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         backgroundColor = .clear
         avatarContainer.backgroundColor = theme.backgrounds.primary
         avatarContainer.apply(shadow: theme.shadows.box)
@@ -230,7 +230,7 @@ class TxTableViewCell: DynamicThemeCell {
         statusLabel.textColor = theme.system.yellow
         noteLabel.textColor = theme.text.heading
         separatorView.backgroundColor = theme.neutral.secondary
-        
+
         updateValue(theme: theme)
     }
 
@@ -270,7 +270,7 @@ extension TxTableViewCell {
         // MARK: - Label container
         labelsContainer.translatesAutoresizingMaskIntoConstraints = false
         separatorView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         contentView.addSubview(labelsContainer)
         labelsContainer.addSubview(separatorView)
 
@@ -280,9 +280,9 @@ extension TxTableViewCell {
             separatorView.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor),
             separatorView.heightAnchor.constraint(equalToConstant: 1.0)
         ]
-        
+
         NSLayoutConstraint.activate(separatorViewConstraints)
-        
+
         labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TxTableViewCell.topCellPadding).isActive = true
         labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25 + TxTableViewCell.topCellPadding).isActive = true
         labelsContainer.leadingAnchor.constraint(equalTo: avatarContainer.trailingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true

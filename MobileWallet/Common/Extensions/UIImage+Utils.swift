@@ -1,5 +1,5 @@
 //  UIImage+Utils.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/06/2022
@@ -41,7 +41,7 @@
 import UIKit
 
 extension UIImage {
-    
+
     var invertedMask: UIImage? {
         guard let ciImage = CIImage(image: self),
               let backgroundImage = CIFilter(name: "CIConstantColorGenerator", parameters: [kCIInputColorKey: CIColor.black])?.outputImage,
@@ -49,18 +49,18 @@ extension UIImage {
               let image = CIFilter(name: "CIBlendWithAlphaMask", parameters: [kCIInputImageKey: forgroundImage, kCIInputBackgroundImageKey: backgroundImage, kCIInputMaskImageKey: ciImage])?.outputImage,
               let cgImage = CIContext().createCGImage(image, from: CGRect(x: 0.0, y: 0.0, width: size.width * scale, height: size.height * scale))
         else { return nil }
-        
+
         return UIImage(cgImage: cgImage)
     }
-    
+
     func image(withSize updatedSize: CGSize) -> UIImage? {
-        
+
         let xOrigin = (updatedSize.width - size.width) / 2.0
         let yOrigin = (updatedSize.height - size.height) / 2.0
-        
+
         let format = UIGraphicsImageRendererFormat()
         format.scale = scale
-        
+
         return UIGraphicsImageRenderer(size: updatedSize, format: format).image { _ in
             draw(in: CGRect(origin: CGPoint(x: xOrigin, y: yOrigin), size: size))
         }

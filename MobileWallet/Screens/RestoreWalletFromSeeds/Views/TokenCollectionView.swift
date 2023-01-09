@@ -48,7 +48,7 @@ struct SeedWordModel: Identifiable, Hashable {
         case invalid
         case editing
     }
-    
+
     enum VisualTrait {
         case none
         case deleteIcon
@@ -74,7 +74,7 @@ final class TokenCollectionView: DynamicThemeView {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
     private weak var tokensToolbar: TokensToolbar? {
         didSet {
             updateAutocompletionTokens()
@@ -82,46 +82,46 @@ final class TokenCollectionView: DynamicThemeView {
             updateTokensToolbarVisibility()
         }
     }
-    
+
     private var textField: UITextField? {
         let inputView = collectionView.subviews.first { $0 is TokenInputView }
         return (inputView as? TokenInputView)?.textField
     }
 
     // MARK: - Properties
-    
+
     var seedWords: [SeedWordModel] = [] {
         didSet { reloadData() }
     }
-    
+
     var isTokenToolbarVisible: Bool = false {
         didSet { updateTokensToolbarVisibility() }
     }
-    
+
     var autocompletionTokens: [TokenViewModel] = [] {
         didSet { updateAutocompletionTokens() }
     }
-    
+
     var autocompletionMessage: String? {
         didSet { updateAutocompletionMessage() }
     }
-    
+
     var updatedInputText: String = "" {
         didSet {
             textField?.text = updatedInputText
             inputText = updatedInputText
         }
     }
-    
+
     var onRemovingCharacterAtFirstPosition: ((String) -> Void)?
     var onSelectSeedWord: ((_ row: Int) -> Void)?
     var onEndEditing: (() -> Void)?
-    
+
     private var dataSource: UICollectionViewDiffableDataSource<Int, SeedWordModel>?
     private var heightConstraint: NSLayoutConstraint?
-    
+
     @Published private(set) var inputText: String = ""
-    
+
     // MARK: - Initializers
 
     override init() {
@@ -145,7 +145,7 @@ final class TokenCollectionView: DynamicThemeView {
     private func setupConstraints() {
 
         addSubview(collectionView)
-        
+
         let heightConstraint = heightAnchor.constraint(equalToConstant: 0.0)
         heightConstraint.priority = .defaultLow
         self.heightConstraint = heightConstraint
@@ -166,7 +166,7 @@ final class TokenCollectionView: DynamicThemeView {
         let dataSource = UICollectionViewDiffableDataSource<Int, SeedWordModel>(collectionView: collectionView) { [weak self] collectionView, indexPath, model in
 
             guard let self = self else { return UICollectionViewCell() }
-            
+
             switch model.state {
             case .editing:
                 let cell = collectionView.dequeueReusableCell(type: TokenInputView.self, indexPath: indexPath)
@@ -181,7 +181,7 @@ final class TokenCollectionView: DynamicThemeView {
                 cell.isValid = model.state == .valid
                 cell.isDeleteIconVisible = model.visualTrait == .deleteIcon
                 cell.isHidden = model.visualTrait == .hidden
-                
+
                 return cell
             }
         }
@@ -191,17 +191,17 @@ final class TokenCollectionView: DynamicThemeView {
         collectionView.dataSource = dataSource
         collectionView.delegate = self
         collectionView.backgroundView?.addGestureRecognizer(tapGestureRecognizer)
-        
+
         self.dataSource = dataSource
     }
-    
+
     // MARK: - Actions
-    
+
     private func handleOnTextChange(text: String) {
         inputText = text
         collectionView.collectionViewLayout.invalidateLayout()
     }
-    
+
     private func handleRemovingCharacterAtFirstPosition(text: String) {
         onRemovingCharacterAtFirstPosition?(text)
     }
@@ -220,22 +220,22 @@ final class TokenCollectionView: DynamicThemeView {
             self.heightConstraint?.constant = self.collectionView.contentSize.height
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
     }
-    
+
     private func updateAutocompletionTokens() {
         tokensToolbar?.tokenModels = autocompletionTokens
     }
-    
+
     private func updateAutocompletionMessage() {
         tokensToolbar?.text = autocompletionMessage
     }
-    
+
     private func updateTokensToolbarVisibility() {
         tokensToolbar?.isHidden = !isTokenToolbarVisible
     }
@@ -254,7 +254,7 @@ final class TokenCollectionView: DynamicThemeView {
 }
 
 extension TokenCollectionView: UICollectionViewDelegate {
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         onSelectSeedWord?(indexPath.row)
     }

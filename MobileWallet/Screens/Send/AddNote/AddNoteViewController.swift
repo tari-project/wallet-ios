@@ -80,7 +80,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     var attachmentContainerHeightConstraint = NSLayoutConstraint()
     let attachmentView = GPHMediaView()
     let attachmentCancelView = UIView()
-    var attachment: GPHMedia? = nil {
+    var attachment: GPHMedia? {
         didSet {
             attachmentView.media = attachment
             if let media = attachment {
@@ -102,7 +102,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
             updateTitleColorAndSetSendButtonState()
         }
     }
-    
+
     init(paymentInfo: PaymentInfo, amount: MicroTari, feePerGram: MicroTari, isOneSidedPayment: Bool, deeplink: TransactionsSendDeeplink?) {
         self.paymentInfo = paymentInfo
         self.amount = amount
@@ -111,11 +111,11 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         self.deeplink = deeplink
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         scrollView.delegate = self
@@ -134,7 +134,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         noteInput.becomeFirstResponder()
 
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-        
+
         if let note = deeplink?.note {
             noteInput.text = note
             textViewDidChangeSelection(noteInput)
@@ -147,14 +147,14 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     }
 
     private func displayAliasOrEmojiId() {
-        
+
         var alias: String?
-        
+
         do {
             alias = try Tari.shared.contacts.findContact(hex: try paymentInfo.address.byteVector.hex)?.alias
         } catch {
         }
-        
+
         guard let alias = alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
             do {
                 emojiIdView.setup(emojiID: try paymentInfo.address.emojis, hex: try paymentInfo.address.byteVector.hex, textCentered: true, inViewController: self)
@@ -163,7 +163,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
             }
             return
         }
-        
+
         navigationBar.title = alias
     }
 
@@ -175,7 +175,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         }
         updateNoteViewElements(theme: theme)
     }
-    
+
     private func setup() {
         setupNavigationBar()
         setupSendButton()
@@ -217,7 +217,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     @objc func removeAttachment() {
         attachment = nil
     }
-    
+
     @objc private func moveSendButtonUp(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             let keyboardHeight = keyboardSize.height
@@ -268,13 +268,13 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     }
 
     private func sendTx(recipientAddress: TariAddress, amount: MicroTari, feePerGram: MicroTari) {
-        
+
         var message = noteText
-        
+
         if let attachment = attachment, let embedUrl = attachment.embedUrl {
             message += " \(embedUrl)"
         }
-        
+
         TransactionProgressPresenter.showTransactionProgress(
             presenter: self,
             recipientAddress: recipientAddress,
@@ -285,20 +285,20 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
             yatID: paymentInfo.yatID
         )
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         view.backgroundColor = theme.backgrounds.primary
-        
+
         searchGiphyButton.backgroundColor = theme.icons.default
         searchGiphyButton.tintColor = theme.neutral.primary
         searchGiphyButton.setTitleColor(theme.neutral.primary, for: .normal)
         poweredByGiphyImageView.tintColor = theme.text.body
-        
+
         updateNoteViewElements(theme: theme)
     }
-    
+
     private func updateNoteViewElements(theme: ColorTheme) {
         noteInput.textColor = noteText.isEmpty ? theme.text.body : theme.text.heading
         titleLabel.textColor = noteText.isEmpty && attachment == nil ? theme.text.heading : theme.text.body
@@ -307,12 +307,12 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
 
 extension AddNoteViewController {
     private func setupNavigationBar() {
-        
+
         view.addSubview(navigationBar)
         navigationBar.addSubview(emojiIdView)
-        
+
         navigationBar.isSeparatorVisible = false
-        
+
         let constraints = [
             navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
             navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -320,7 +320,7 @@ extension AddNoteViewController {
             emojiIdView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor),
             emojiIdView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 
@@ -345,7 +345,7 @@ extension AddNoteViewController {
 
         sendButton.showSliderText = true
         sendButton.labelText = localized("add_note.slide_to_send")
-        
+
         sendButton.onSlideToEnd = { [weak self] in
             self?.onSlideToEndAction()
         }
@@ -551,12 +551,12 @@ extension AddNoteViewController: UITextViewDelegate {
 }
 
 extension AddNoteViewController: GiphyDelegate {
-    
+
     func didSelectMedia(giphyViewController: GiphyViewController, media: GPHMedia) {
         giphyModal.dismiss(animated: true, completion: nil)
         attachment = media
     }
-    
+
     func didDismiss(controller: GiphyViewController?) {
     }
 }
@@ -566,15 +566,15 @@ extension AddNoteViewController: GPHGridDelegate {
     func didSelectMedia(media: GPHMedia, cell: UICollectionViewCell) {
         attachment = media
     }
-    
+
     func contentDidUpdate(resultCount: Int, error: Error?) {
         searchGiphyButton.isHidden = false
         poweredByGiphyImageView.isHidden = false
     }
-    
+
     func didSelectMoreByYou(query: String) {
     }
-    
+
     func didScroll(offset: CGFloat) {
     }
 }

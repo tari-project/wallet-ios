@@ -1,5 +1,5 @@
 //  UIDevice+Model.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/10/2022
@@ -41,11 +41,11 @@
 import UIKit
 
 extension UIDevice {
-    
+
     var rawModel: String {
         var systemInfo = utsname()
         uname(&systemInfo)
-        
+
         return Mirror(reflecting: systemInfo.machine)
             .children
             .reduce("") { identifier, element in

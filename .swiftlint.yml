@@ -1,0 +1,27 @@
+disabled_rules:
+  - line_length
+  - identifier_name
+  - type_body_length
+  - function_body_length
+  - force_try
+  - force_cast
+  - shorthand_operator
+  - type_name
+  - large_tuple
+  - file_length
+  - computed_accessors_order
+  - cyclomatic_complexity
+  - multiple_closures_with_trailing_closure
+  - closure_parameter_position
+  - switch_case_alignment
+  - for_where
+  - function_parameter_count
+  - unneeded_break_in_switch
+  - todo
+  - nesting
+  - unused_optional_binding
+  - void_function_in_ternary
+  - implicit_getter
+  - operator_whitespace
+excluded:
+  - Pods

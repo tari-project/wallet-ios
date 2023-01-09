@@ -33,9 +33,9 @@
 */
 
 final class EmojiSet {
-    
+
     // MARK: - Properties
-    
+
     var count: UInt32 {
         get throws {
             var errorCode: Int32 = -1
@@ -45,37 +45,37 @@ final class EmojiSet {
             return result
         }
     }
-    
+
     private let pointer: OpaquePointer
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         pointer = get_emoji_set()
     }
-    
+
     // MARK: - Actions
-    
+
     func emmojiSet(index: UInt32) throws -> ByteVector {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = emoji_set_get_at(pointer, index, errorCodePointer)
-        
+
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         return ByteVector(pointer: result)
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         emoji_set_destroy(pointer)
     }
 }
 
 extension EmojiSet {
-    
+
     var all: [ByteVector] {
         get throws {
             let count = try count

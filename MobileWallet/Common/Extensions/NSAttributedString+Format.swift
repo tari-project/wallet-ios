@@ -1,5 +1,5 @@
 //  NSAttributedString+Format.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 07/07/2022
@@ -39,17 +39,17 @@
 */
 
 extension NSAttributedString {
-    
+
     convenience init(format: NSAttributedString, arguments: NSAttributedString...) {
-        
+
         let mutableNSAttributedString = NSMutableAttributedString(attributedString: format)
-        
+
         arguments
             .forEach { attributedString in
                 let range = NSString(string: mutableNSAttributedString.string).range(of: "%@")
                 mutableNSAttributedString.replaceCharacters(in: range, with: attributedString)
             }
-        
+
         self.init(attributedString: mutableNSAttributedString)
     }
 }

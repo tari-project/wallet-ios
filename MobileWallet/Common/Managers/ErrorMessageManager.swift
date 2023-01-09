@@ -1,5 +1,5 @@
 //  ErrorMessageManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 31/01/2022
@@ -39,17 +39,17 @@
 */
 
 enum ErrorMessageManager {
-    
+
     // MARK: - Properties
-    
+
     private static var genericErrorModel: MessageModel { MessageModel(title: localized("error.generic.title"), message: localized("error.generic.description"), type: .error) }
-    
+
     // MARK: - Actions
-    
+
     static func errorModel(forError error: Error?) -> MessageModel {
-        
+
         guard let error = error else { return genericErrorModel }
-        
+
         switch error {
         case let error as WalletError:
             return model(walletError: error)
@@ -63,27 +63,27 @@ enum ErrorMessageManager {
             return genericErrorModel
         }
     }
-    
+
     static func errorMessage(forError error: Error?) -> String? { errorModel(forError: error).message }
-    
+
     // MARK: - Helpers
-    
+
     private static func model(walletError: WalletError) -> MessageModel {
-        
+
         let translationKey = "error.wallet.\(walletError.code)"
         var message: String? = localized(translationKey)
-        
+
         if message == translationKey {
             message = genericErrorModel.message
         }
-        
+
         return MessageModel(title: genericErrorModel.title, message: message?.appending(signature: walletError.signature), type: .error)
     }
-    
+
     private static func model(seedWordsError: SeedWords.InternalError) -> MessageModel {
-        
+
         let message: String
-        
+
         switch seedWordsError {
         case .invalidSeedPhrase, .invalidSeedWord:
             message = localized("restore_from_seed_words.error.description.invalid_seed_word")
@@ -94,14 +94,14 @@ enum ErrorMessageManager {
         case .unexpectedResult:
             message = localized("restore_from_seed_words.error.description.unknown_error")
         }
-        
+
         return MessageModel(title: localized("restore_from_seed_words.error.title"), message: message.appending(signature: seedWordsError.signature), type: .error)
     }
-    
+
     private static func model(torError: TorManager.TorError) -> MessageModel {
-        
+
         let message: String
-        
+
         switch torError {
         case .connectionFailed:
             message = localized("Onion_Error.error.invalid_bridges")
@@ -110,19 +110,19 @@ enum ErrorMessageManager {
         case .connectionTimeout:
             message = localized("Onion_Error.error.connectionError")
         }
-        
+
         return MessageModel(title: localized("Onion_Error.error.title.onionError"), message: message, type: .error)
     }
-    
+
     private static func model(internalWalletError: FFIWalletManager.GeneralError) -> MessageModel {
 
         let message: String
-        
+
         switch internalWalletError {
         case .unableToCreateWallet:
             message = localized("wallet.error.wallet_not_initialized")
         }
-        
+
         return MessageModel(title: genericErrorModel.title, message: message, type: .error)
     }
 }

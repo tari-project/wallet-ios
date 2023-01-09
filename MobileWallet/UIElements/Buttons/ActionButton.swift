@@ -76,7 +76,7 @@ final class ActionButton: DynamicThemeBaseButton {
         titleLabel?.font = Theme.shared.fonts.actionButton
         titleLabel?.adjustsFontSizeToFitWidth = true
         contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 8.0, bottom: 0.0, right: 8.0)
-        
+
         gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
         gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
         gradientLayer.locations = [0.0, 1.0]
@@ -130,10 +130,10 @@ final class ActionButton: DynamicThemeBaseButton {
         pendingAnimationView.removeFromSuperview()
         titleLabel?.isHidden = false
     }
-    
+
     private func updateStyle(theme: ColorTheme) {
         removeStyle()
-        
+
         switch variation {
         case .normal:
             isEnabled = true
@@ -154,7 +154,7 @@ final class ActionButton: DynamicThemeBaseButton {
             backgroundColor = theme.buttons.disabled
             imageView?.tintColor = theme.buttons.disabledText
         }
-        
+
         gradientLayer.colors = [theme.buttons.primaryStart, theme.buttons.primaryEnd].compactMap { $0?.cgColor }
     }
 
@@ -215,7 +215,7 @@ final class ActionButton: DynamicThemeBaseButton {
 
         pendingAnimationView.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         setTitleColor(theme.buttons.primaryText, for: .normal)

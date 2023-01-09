@@ -1,5 +1,5 @@
 //  QRCodePresenterController.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 18/01/2022
@@ -41,56 +41,56 @@
 import UIKit
 
 final class QRCodePresentationController: UIViewController {
-    
+
     // MARK: - Properties
-    
+
     private let mainView = QRCodePresentationView()
-    
+
     var onShareButtonTap: (() -> Void)?
-    
+
     // MARK: - Initialisers
-    
+
     init(image: UIImage) {
         super.init(nibName: nil, bundle: nil)
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
-        
+
         mainView.qrCodeView.image = image
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBindings()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         mainView.showContent()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         mainView.hideContent()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupBindings() {
-        
+
         mainView.shareButton.onTap = { [weak self] in
             self?.onShareButtonTap?()
         }
-        
+
         mainView.closeButton.onTap = { [weak self] in
             self?.dismiss(animated: true)
         }

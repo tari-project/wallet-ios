@@ -1,5 +1,5 @@
 //  TransactionDetailsSeparatorView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 24/03/2022
@@ -42,28 +42,28 @@ import UIKit
 import TariCommon
 
 final class TransactionDetailsSeparatorView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var separatorView = UIView()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstaints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstaints() {
-        
+
         addSubview(separatorView)
-        
+
         let constraints = [
             separatorView.topAnchor.constraint(equalTo: topAnchor),
             separatorView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
@@ -71,15 +71,14 @@ final class TransactionDetailsSeparatorView: DynamicThemeView {
             separatorView.bottomAnchor.constraint(equalTo: bottomAnchor),
             separatorView.heightAnchor.constraint(equalToConstant: 1.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         separatorView.backgroundColor = theme.neutral.tertiary
     }
 }
-

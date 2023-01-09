@@ -1,5 +1,5 @@
 //  UTXOsWalletPlaceholderView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 05/07/2022
@@ -42,23 +42,23 @@ import UIKit
 import TariCommon
 
 final class UTXOsWalletPlaceholderView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var stackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 10.0
         return view
     }()
-    
+
     @View private var imageView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.utxoWalletPlaceholder?.withRenderingMode(.alwaysTemplate)
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.placeholder.label.title")
@@ -66,7 +66,7 @@ final class UTXOsWalletPlaceholderView: DynamicThemeView {
         view.font = .Avenir.light.withSize(18.0)
         return view
     }()
-    
+
     @View private var subtitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.placeholder.label.subtitle")
@@ -75,39 +75,39 @@ final class UTXOsWalletPlaceholderView: DynamicThemeView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(stackView)
         [imageView, titleLabel, subtitleLabel].forEach(stackView.addArrangedSubview)
-        
+
         let constraints = [
             imageView.heightAnchor.constraint(equalToConstant: 120.0),
             stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
             stackView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, multiplier: 0.67),
             stackView.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, multiplier: 0.67)
-            
+
         ]
-       
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         imageView.tintColor = theme.text.body

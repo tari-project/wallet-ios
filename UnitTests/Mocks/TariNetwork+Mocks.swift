@@ -1,5 +1,5 @@
 //  TariNetwork+Mocks.swift
-	
+
 /*
 	Package UnitTests
 	Created by Adrian Truszczynski on 03/03/2022

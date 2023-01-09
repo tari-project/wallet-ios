@@ -140,7 +140,7 @@ private class BackupPrompts {
             guard UserDefaults.standard.bool(forKey: type.userDefaultsKey) == false else {
                 continue
             }
-            
+
             let incomingTransactionsCount = Tari.shared.transactions.pendingInbound.count + Tari.shared.transactions.completed.filter { (try? $0.isOutboundTransaction) == false }.count
             let balance = Tari.shared.walletBalance.balance.total
             let triggers = type.triggers
@@ -155,7 +155,7 @@ private class BackupPrompts {
 
             setAsShown(type)
             let content = type.content
-            
+
             let popUpModel = PopUpDialogModel(
                 title: content.title,
                 message: content.description,
@@ -165,7 +165,7 @@ private class BackupPrompts {
                 ],
                 hapticType: .none
             )
-            
+
             PopUpPresenter.showPopUp(model: popUpModel)
             break
         }

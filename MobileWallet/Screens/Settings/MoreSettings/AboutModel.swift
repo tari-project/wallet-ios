@@ -1,5 +1,5 @@
 //  AboutModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 26/05/2022
@@ -42,20 +42,20 @@ import UIKit
 import Combine
 
 final class AboutModel {
-    
+
     struct RowModel {
         let icon: UIImage?
         let title: String
     }
-    
+
     struct RowData {
         let model: RowModel
         let url: URL?
     }
-    
+
     @Published private(set) var rowModels: [RowModel] = []
     @Published private(set) var selectedURL: URL?
-    
+
     private let rowsData: [RowData] = [
         RowData(model: RowModel(icon: Theme.shared.images.settingsWalletBackupsIcon, title: "Locked Lock by BlackActurus from\nNounProject.com"), url: URL(string: "https://thenounproject.com/icon/locked-lock-3734872/")),
         RowData(model: RowModel(icon: Theme.shared.images.settingsAboutIcon, title: "About by Anggara Putra from\nNounProject.com"), url: URL(string: "https://thenounproject.com/icon/about-4860865/")),
@@ -71,17 +71,17 @@ final class AboutModel {
         RowData(model: RowModel(icon: Theme.shared.images.settingsBaseNodeIcon, title: "Networking by Design Circle from\nNounProject.com"), url: URL(string: "https://thenounproject.com/icon/networking-4213263/")),
         RowData(model: RowModel(icon: Theme.shared.images.settingsDeleteIcon, title: "Delete by Maya Nurhayati from\nNounProject.com"), url: URL(string: "https://thenounproject.com/icon/delete-4727971/"))
     ]
-    
+
     private let creativeCommonsURL = URL(string: "https://creativecommons.org/licenses/by/3.0/")
-    
+
     func generateData() {
         rowModels = rowsData.map { $0.model }
     }
-    
+
     func selectCrativeCommonButton() {
         selectedURL = creativeCommonsURL
     }
-    
+
     func select(index: Int) {
         selectedURL = rowsData[index].url
     }

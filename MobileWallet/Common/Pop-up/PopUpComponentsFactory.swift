@@ -1,5 +1,5 @@
 //  PopUpComponentsFactory.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/04/2022
@@ -39,19 +39,19 @@
 */
 
 enum PopUpComponentsFactory {
-    
+
     static func makeHeaderView(title: String) -> PopUpHeaderView {
         let view = PopUpHeaderView()
         view.label.text = title
         return view
     }
-    
+
     static func makeContentView(message: String) -> PopUpDescriptionContentView {
         let view = PopUpDescriptionContentView()
         view.label.text = message
         return view
     }
-    
+
     static func makeButtonsView(models: [PopUpDialogButtonModel]) -> PopUpButtonsView {
         let view = PopUpButtonsView()
         models

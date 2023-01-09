@@ -1,5 +1,5 @@
 //  CChar+Helpers.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 23/06/2022

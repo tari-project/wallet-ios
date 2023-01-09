@@ -58,9 +58,9 @@ final class RoundedInputField: DynamicThemeTextField {
     private func setupView() {
         layer.cornerRadius = 10.0
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary

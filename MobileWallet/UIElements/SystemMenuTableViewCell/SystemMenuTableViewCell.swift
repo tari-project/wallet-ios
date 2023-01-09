@@ -44,7 +44,7 @@ import TariCommon
 class SystemMenuTableViewCellItem: NSObject {
 
     let icon: UIImage?
-    
+
     @objc dynamic var title: String
     @objc dynamic var subtitle: String?
     @objc dynamic var mark: SystemMenuTableViewCell.SystemMenuTableViewCellMark = .none
@@ -95,7 +95,7 @@ class SystemMenuTableViewCell: DynamicThemeCell {
 
     @View private var iconImageView = UIImageView()
     @View private var labelsStackView = UIStackView()
-    
+
     private let arrow = UIImageView()
     private var arrowWidthConstraint: NSLayoutConstraint?
 
@@ -115,13 +115,13 @@ class SystemMenuTableViewCell: DynamicThemeCell {
     private var kvoTitleToken: NSKeyValueObservation?
     private var kvoSubtitleToken: NSKeyValueObservation?
     private var kvoSwitchValueToken: NSKeyValueObservation?
-    
+
     private var titleWithoutIconConstraint: NSLayoutConstraint?
     private var titleWithIconConstraint: NSLayoutConstraint?
-    
+
     private var normalTintColor: UIColor?
     private var destructiveTintColor: UIColor?
-    
+
     private var isIconVisible: Bool = false {
         didSet { updateIconImageViewElement() }
     }
@@ -150,15 +150,15 @@ class SystemMenuTableViewCell: DynamicThemeCell {
                 markImageView.image = Theme.shared.images.scheduledIcon!
                 progressView.isHidden = true
             }
-            
+
             updateMarkDescriptionLabelColor(theme: theme)
         }
     }
-    
+
     private func updateMarkDescriptionLabelColor(theme: ColorTheme) {
-        
+
         let markDescriptionLabelColor: UIColor?
-        
+
         switch mark {
         case .none:
             markDescriptionLabelColor = .clear
@@ -171,7 +171,7 @@ class SystemMenuTableViewCell: DynamicThemeCell {
         case .scheduled:
             markDescriptionLabelColor = theme.system.blue
         }
-        
+
         markDescriptionLabel.textColor = markDescriptionLabelColor
     }
 
@@ -218,19 +218,19 @@ class SystemMenuTableViewCell: DynamicThemeCell {
 
         iconImageView.image = item.icon
         isIconVisible = item.icon != nil
-        
+
         switcher.isOn = item.isSwitchIsOn
         switcher.isHidden = !item.hasSwitch
         arrow.isHidden = item.hasSwitch
         titleLabel.text = item.title
         subtitleLabel.text = item.subtitle
         arrow.image = Theme.shared.images.forwardArrow
-        
+
         disableCellInProgress = item.disableCellInProgress
         mark = item.mark
         markDescription = item.markDescription
         observe(item: item)
-        
+
         updateTintColor()
     }
 
@@ -246,13 +246,13 @@ class SystemMenuTableViewCell: DynamicThemeCell {
         kvoMarkDescriptionToken = item.observe(\.markDescription, options: .new) { [weak self] (item, _) in
             self?.markDescription = item.markDescription
         }
-        
+
         kvoTitleToken = item.observe(\.title, options: .new) { [weak self] item, _ in
             DispatchQueue.main.async {
                 self?.titleLabel.text = item.title
             }
         }
-        
+
         kvoSubtitleToken = item.observe(\.subtitle, options: .new) { [weak self] item, _ in
             self?.subtitleLabel.text = item.subtitle
         }
@@ -262,35 +262,35 @@ class SystemMenuTableViewCell: DynamicThemeCell {
             self?.switcher.setOn(item.isSwitchIsOn, animated: true)
         }
     }
-    
+
     private func updateIconImageViewElement() {
-        
+
         guard isIconVisible else {
             titleWithIconConstraint?.isActive = false
             titleWithoutIconConstraint?.isActive = true
             return
         }
-        
+
         titleWithoutIconConstraint?.isActive = false
         titleWithIconConstraint?.isActive = true
     }
-    
+
     override func update(theme: ColorTheme) {
-        
+
         contentView.backgroundColor = theme.backgrounds.primary
         subtitleLabel.textColor = theme.text.body
         normalTintColor = theme.text.heading
         destructiveTintColor = theme.system.red
-        
+
         updateTintColor()
         updateMarkDescriptionLabelColor(theme: theme)
     }
-    
+
     private func updateTintColor() {
-        
+
         let isDestructive = item?.isDestructive ?? false
         let tintColor = isDestructive ? destructiveTintColor : normalTintColor
-        
+
         iconImageView.tintColor = tintColor
         titleLabel.textColor = tintColor
         subtitleLabel.textColor = tintColor
@@ -308,7 +308,7 @@ class SystemMenuTableViewCell: DynamicThemeCell {
 extension SystemMenuTableViewCell {
     private func setupView() {
         contentView.heightAnchor.constraint(greaterThanOrEqualToConstant: 65.0).isActive = true
-        
+
         setupArrow()
         setupSwitch()
         setupMark()
@@ -382,41 +382,41 @@ extension SystemMenuTableViewCell {
         titleLabel.adjustsFontSizeToFitWidth = true
         labelsStackView.addArrangedSubview(titleLabel)
     }
-    
+
     private func setupDescriptionLabel() {
         subtitleLabel.font = Theme.shared.fonts.systemTableViewCell
         subtitleLabel.adjustsFontSizeToFitWidth = true
         labelsStackView.addArrangedSubview(subtitleLabel)
     }
-    
+
     private func setupLabelsStackView() {
-        
+
         labelsStackView.axis = .vertical
-        
+
         contentView.addSubview(labelsStackView)
-        
+
         labelsStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
         labelsStackView.trailingAnchor.constraint(lessThanOrEqualTo: markDescriptionLabel.leadingAnchor, constant: -8).isActive = true
     }
-    
+
     private func setupIconImageView() {
         contentView.addSubview(iconImageView)
-        
+
         iconImageView.image = Theme.shared.images.handWave
         iconImageView.contentMode = .scaleAspectFit
-        
+
         titleWithoutIconConstraint = titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0)
         titleWithIconConstraint = titleLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 16.0)
-        
+
         updateIconImageViewElement()
-        
+
         let constraints = [
             iconImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
             iconImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             iconImageView.heightAnchor.constraint(equalToConstant: 24.0),
-            iconImageView.widthAnchor.constraint(equalToConstant: 24.0),
+            iconImageView.widthAnchor.constraint(equalToConstant: 24.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 

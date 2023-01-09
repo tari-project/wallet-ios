@@ -1,5 +1,5 @@
 //  ThemeSettingsViewController.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 18/12/2022
@@ -42,48 +42,48 @@ import UIKit
 import Combine
 
 final class ThemeSettingsViewController: UIViewController {
-    
+
     // MARK: - Properties
-    
+
     private let mainView = ThemeSettingsView()
     private let model: ThemeSettingsModel
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initalisers
-    
+
     init(model: ThemeSettingsModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
         model.reloadData()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         Publishers.CombineLatest(model.$elements, model.$selectedIndex)
             .sink { [weak self] elements, selectedIndex in
                 let viewModels = elements.map { ThemeSettingsView.ViewModel(id: $0.id, image: $0.element.image, title: $0.element.title) }
                 self?.mainView.update(viewModels: viewModels, selectedIndex: selectedIndex)
             }
             .store(in: &cancellables)
-        
+
         mainView.onCellSelected = { [weak self] in
             self?.model.select(elementIndex: $0.row)
         }
@@ -91,7 +91,7 @@ final class ThemeSettingsViewController: UIViewController {
 }
 
 private extension ThemeSettingsModel.Element {
-    
+
     var image: UIImage? {
         switch self {
         case .system:
@@ -104,7 +104,7 @@ private extension ThemeSettingsModel.Element {
             return Theme.shared.images.colorThemePurple
         }
     }
-    
+
     var title: String? {
         switch self {
         case .system:

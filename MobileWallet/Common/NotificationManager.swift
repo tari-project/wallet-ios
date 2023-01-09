@@ -72,7 +72,7 @@ enum PushNotificationServerError: Error {
 }
 
 final class NotificationManager {
-    
+
     enum NotificationIdentifier: String {
         case standard = "Local Notification"
         case backgroundBackupTask = "background-backup-task"
@@ -80,7 +80,7 @@ final class NotificationManager {
     }
 
     static let shared = NotificationManager()
-    
+
     private static let hasRegisteredTokenKey = "hasRegisteredPushToken"
 
     private let notificationCenter = UNUserNotificationCenter.current()
@@ -88,11 +88,11 @@ final class NotificationManager {
 
     private var hasRegisteredToken: Bool { UserDefaults.standard.bool(forKey: NotificationManager.hasRegisteredTokenKey) }
     private var cancellables = Set<AnyCancellable>()
-    
+
     private init() {
         setupWalletStateHandler()
     }
-    
+
     func setupWalletStateHandler() {
         NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
             .filter { _ in Tari.shared.isWalletExist }
@@ -101,7 +101,7 @@ final class NotificationManager {
     }
 
     func requestAuthorization(_ completionHandler: ((Bool) -> Void)? = nil) {
-        
+
         if ProcessInfo.processInfo.arguments.contains("ui-test-mode") {
             completionHandler?(true)
             return
@@ -235,7 +235,7 @@ final class NotificationManager {
 
         pushServerRequest(path: "/cancel-reminders", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
     }
-    
+
     private func sign(message: String) throws -> (hex: String, metadata: MessageMetadata) {
         let hex = try Tari.shared.walletAddress.byteVector.hex
         guard let apiKey = TariSettings.shared.pushServerApiKey else { throw PushNotificationServerError.missingApiKey }

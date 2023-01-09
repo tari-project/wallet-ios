@@ -59,13 +59,13 @@ private class RefreshingInnerView: DynamicThemeView {
     private let statusLabel = UILabel()
     private let emojiLabel = UILabel()
     private let spinner = UIActivityIndicatorView()
-    
+
     private var type: AnimatedRefreshingViewState = .loading
 
     func setupView(_ type: AnimatedRefreshingViewState) {
-        
+
         self.type = type
-        
+
         emojiLabel.removeFromSuperview()
         statusLabel.removeFromSuperview()
         spinner.removeFromSuperview()
@@ -130,15 +130,15 @@ private class RefreshingInnerView: DynamicThemeView {
                 requiredConfirmationCount + 1
             )
         }
-        
+
         update(theme: theme)
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         let color: UIColor?
-        
+
         switch type {
         case .loading, .receiving, .completing, .updating:
             color = theme.brand.purple
@@ -147,7 +147,7 @@ private class RefreshingInnerView: DynamicThemeView {
         case .txWaitingForRecipient, .txWaitingForSender, .txCompleted:
             color = theme.system.yellow
         }
-        
+
         statusLabel.textColor = color
     }
 }
@@ -397,10 +397,10 @@ class AnimatedRefreshingView: DynamicThemeView {
             }
         }
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         backgroundColor = theme.backgrounds.primary
         apply(shadow: theme.shadows.box)
     }

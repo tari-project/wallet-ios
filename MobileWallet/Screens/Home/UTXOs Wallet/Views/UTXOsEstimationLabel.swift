@@ -1,5 +1,5 @@
 //  UTXOsEstimationLabel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 08/07/2022
@@ -42,9 +42,9 @@ import UIKit
 import TariCommon
 
 final class UTXOsEstimationLabel: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
@@ -52,48 +52,48 @@ final class UTXOsEstimationLabel: DynamicThemeView {
         view.font = .Avenir.medium.withSize(12.0)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var attributedText: NSAttributedString? {
         get { label.attributedText }
         set { label.attributedText = newValue }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         layer.cornerRadius = 5.0
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(label)
-        
+
         let constraints = [
             label.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2.0),
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2.0),
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary

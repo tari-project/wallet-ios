@@ -1,5 +1,5 @@
 //  Error+BackupErrors.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 15/11/2022
@@ -39,7 +39,7 @@
 */
 
 extension DropboxBackupError {
-    
+
     var message: String? {
         switch self {
         case .unableToCreateTempFolder:
@@ -65,7 +65,7 @@ extension DropboxBackupError {
 }
 
 extension ICloudBackupService.ICloudBackupError {
-    
+
     var message: String {
         switch self {
         case .noUbiquityContainer:

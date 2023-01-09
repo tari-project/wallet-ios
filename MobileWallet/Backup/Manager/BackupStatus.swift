@@ -1,5 +1,5 @@
 //  BackupStatus.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 08/11/2022
@@ -46,7 +46,7 @@ enum BackupStatus {
 }
 
 extension BackupStatus: Equatable {
-    
+
     static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
         case (.disabled, .disabled), (.enabled, .enabled), (.inProgress, .inProgress), (.failed, .failed):
@@ -55,7 +55,7 @@ extension BackupStatus: Equatable {
             return false
         }
     }
-    
+
     var isFailed: Bool {
         switch self {
         case .failed:

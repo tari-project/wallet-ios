@@ -1,5 +1,5 @@
 //  PopUpHeaderWithSubtitle.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/04/2022
@@ -42,9 +42,9 @@ import UIKit
 import TariCommon
 
 final class PopUpHeaderWithSubtitle: DynamicThemeView {
-    
+
     // MARK: - Subview
-    
+
     @View private(set) var titleLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.light.withSize(18.0)
@@ -52,7 +52,7 @@ final class PopUpHeaderWithSubtitle: DynamicThemeView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     @View private(set) var subtitleLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
@@ -60,24 +60,24 @@ final class PopUpHeaderWithSubtitle: DynamicThemeView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [titleLabel, subtitleLabel].forEach(addSubview)
-        
+
         let constraints = [
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.0),
@@ -87,12 +87,12 @@ final class PopUpHeaderWithSubtitle: DynamicThemeView {
             subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14.0),
             subtitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.heading

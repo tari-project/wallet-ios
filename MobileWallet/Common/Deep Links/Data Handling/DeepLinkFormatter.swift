@@ -1,5 +1,5 @@
 //  DeepLinkFormatter.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 01/03/2022
@@ -50,39 +50,39 @@ enum DeepLinkError: Error {
 }
 
 enum DeepLinkFormatter {
-    
+
     private static var validScheme: String { "tari" }
     private static var validNetworkName: String { NetworkManager.shared.selectedNetwork.name }
-    
+
     static func model<T: DeepLinkCodable>(type: T.Type, deeplink: URL) throws -> T {
         guard let networkName = deeplink.host, networkName == validNetworkName else { throw DeepLinkError.invalidNetworkName }
         guard deeplink.path == T.command else { throw DeepLinkError.invalidCommandName }
         let decoder = DeepLinkDataDecoder(deeplink: deeplink)
         return try T(from: decoder)
-        
+
     }
-    
+
     static func deeplink<T: DeepLinkCodable>(model: T, networkName: String = validNetworkName) throws -> URL? {
-        
+
         let encoder = DeepLinkDataEncoder()
-        
+
         do {
          try model.encode(to: encoder)
         } catch {
             throw DeepLinkError.unableToEncode(error: error)
         }
-        
+
         let query = encoder.query
-        
+
         var urlComponents = URLComponents()
         urlComponents.scheme = validScheme
         urlComponents.host = networkName
         urlComponents.path = T.command
-        
+
         if !query.isEmpty {
             urlComponents.query = query
         }
-        
+
         return urlComponents.url
     }
 }

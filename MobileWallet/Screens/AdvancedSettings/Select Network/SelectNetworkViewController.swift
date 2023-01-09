@@ -105,13 +105,13 @@ final class SelectNetworkViewController: SettingsParentTableViewController {
 }
 
 extension SelectNetworkViewController: UITableViewDelegate {
-    
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 65.0 }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
         guard model.viewModel.selectedIndex != indexPath.row else { return }
-        
+
         let popUpModel = PopUpDialogModel(
             title: localized("select_network.dialog.switch_network.title"),
             message: localized("select_network.dialog.switch_network.description"),
@@ -121,10 +121,10 @@ extension SelectNetworkViewController: UITableViewDelegate {
             ],
             hapticType: .none
         )
-        
+
         PopUpPresenter.showPopUp(model: popUpModel)
     }
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard section == 0 else { return nil }
         let headerView = tableView.dequeueReusableHeaderFooterView(type: SettingsHeaderView.self)

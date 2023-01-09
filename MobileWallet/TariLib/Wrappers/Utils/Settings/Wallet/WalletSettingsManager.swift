@@ -61,12 +61,12 @@ final class WalletSettingsManager {
         get { settings.configurationState }
         set { update(settings: settings.update(configurationState: newValue)) }
     }
-    
+
     var iCloudDocsBackupStatus: WalletSettings.BackupStatus {
         get { settings.iCloudDocsBackupStatus }
         set { update(settings: settings.update(iCloudDocsBackupStatus: newValue)) }
     }
-    
+
     var dropboxBackupStatus: WalletSettings.BackupStatus {
         get { settings.dropboxBackupStatus }
         set { update(settings: settings.update(dropboxBackupStatus: newValue)) }
@@ -76,7 +76,7 @@ final class WalletSettingsManager {
         get { settings.hasVerifiedSeedPhrase }
         set { update(settings: settings.update(hasVerifiedSeedPhrase: newValue)) }
     }
-    
+
     var connectedYat: String? {
         get { settings.yat }
         set { update(settings: settings.update(yat: newValue)) }

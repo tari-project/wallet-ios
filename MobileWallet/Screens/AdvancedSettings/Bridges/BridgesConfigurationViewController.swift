@@ -52,7 +52,7 @@ final class BridgesConfigurationViewController: SettingsParentTableViewControlle
     private enum Section: Int {
         case chooseBridge = 1
     }
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     private enum BridgesConfigurationItemTitle: CaseIterable {
@@ -85,7 +85,7 @@ final class BridgesConfigurationViewController: SettingsParentTableViewControlle
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        
+
         setupCustomBridgeProgressHandler()
             .store(in: &cancellables)
     }

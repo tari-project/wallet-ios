@@ -69,18 +69,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let appReturnLink = TariSettings.shared.yatReturnLink, let organizationName = TariSettings.shared.yatOrganizationName, let organizationKey = TariSettings.shared.yatOrganizationKey {
             Yat.configuration = YatConfiguration(appReturnLink: appReturnLink, organizationName: organizationName, organizationKey: organizationKey)
         }
-        
+
         if let yatWebServiceURL = TariSettings.shared.yatWebServiceURL, let yatApiURL = TariSettings.shared.yatApiURL {
             Yat.urls = YatURLs(webServiceURL: yatWebServiceURL, apiURL: yatApiURL)
         }
-        
+
         setupYatIntegration()
-        
+
         guard let windowScene = scene as? UIWindowScene else { return }
         let window = TariWindow(windowScene: windowScene)
         self.window = window
         window.makeKeyAndVisible()
-        
+
         ThemeCoordinator.shared.configure(window: window)
         AppRouter.transitionToSplashScreen(animated: false)
     }
@@ -108,7 +108,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
         ShortcutsManager.handle(shortcut: shortcutItem)
     }
-    
+
     private func setupYatIntegration() {
         Yat.integration.onYatConnected = {
             TariSettings.shared.walletSettings.connectedYat = $0

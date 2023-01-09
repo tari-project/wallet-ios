@@ -1,5 +1,5 @@
 //  BridgesConfigurationFooterView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 06/12/2022
@@ -42,9 +42,9 @@ import UIKit
 import TariCommon
 
 final class BridgesConfigurationFooterView: DynamicThemeHeaderFooterView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
@@ -52,36 +52,36 @@ final class BridgesConfigurationFooterView: DynamicThemeHeaderFooterView {
         view.text = localized("bridges_configuration.description.bridges")
         return view
     }()
-    
+
     // MARK: - Initialiser
-    
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         contentView.addSubview(label)
-        
+
         let constraints = [
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8.0),
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
             label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updated
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.lightText

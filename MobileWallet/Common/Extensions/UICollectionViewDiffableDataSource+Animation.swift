@@ -1,5 +1,5 @@
 //  UICollectionViewDiffableDataSource+Animation.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 28/03/2022

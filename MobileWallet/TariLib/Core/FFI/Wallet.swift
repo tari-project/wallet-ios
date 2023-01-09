@@ -1,5 +1,5 @@
 //  WalletV2.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 09/11/2021
@@ -39,46 +39,46 @@
 */
 
 final class Wallet {
-    
+
     // MARK: - Constants
-    
+
     private static let numberOfRollingLogFiles: UInt32 = 2
     private static let logFileSize: UInt32 = 10 * 1024 * 1024
     private static let isRecoveryInProgress: Bool = false
-    
+
     // MARK: - Properties
-    
+
     let pointer: OpaquePointer
-    
+
     // MARK: - Initialisers
-    
+
     init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String) throws {
-        
+
         let receivedTransactionCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
             WalletCallbacksManager.shared.post(name: .receivedTransaction, object: pointer)
         }
-        
+
         let receivedTransactionReplyCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
             WalletCallbacksManager.shared.post(name: .receivedTransactionReply, object: pointer)
         }
-        
+
         let receivedFinalizedTransactionCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
             WalletCallbacksManager.shared.post(name: .receivedFinalizedTransaction, object: pointer)
         }
-        
+
         let fauxTransactionConfirmedCallback: (@convention(c) (OpaquePointer?) -> Void)? = { pointer in
             WalletCallbacksManager.shared.post(name: .fauxTransactionConfirmed, object: pointer)
         }
-        
-        let fauxTransactionUncorfirmedCallback: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { pointer, reason in
+
+        let fauxTransactionUncorfirmedCallback: (@convention(c) (OpaquePointer?, UInt64) -> Void)? = { pointer, _ in
             WalletCallbacksManager.shared.post(name: .fauxTransactionUnconfirmed, object: pointer)
         }
-        
+
         let transactionSendResultCallback: (@convention(c) (UInt64, OpaquePointer?) -> Void) = { identifier, pointer in
             guard let pointer = pointer, let data = try? TransactionSendResult(identifier: identifier, pointer: pointer) else { return }
             WalletCallbacksManager.shared.post(name: .transactionSendResult, object: data)
         }
-        
+
         let transactionBroadcastCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
             WalletCallbacksManager.shared.post(name: .transactionBroadcast, object: pointer)
         }
@@ -86,49 +86,49 @@ final class Wallet {
         let transactionMinedCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
             WalletCallbacksManager.shared.post(name: .transactionMined, object: pointer)
         }
-        
-        let unconfirmedTransactionMinedCallback: @convention(c) (OpaquePointer?, UInt64) -> Void = { pointer, confirmationCount in
+
+        let unconfirmedTransactionMinedCallback: @convention(c) (OpaquePointer?, UInt64) -> Void = { pointer, _ in
             WalletCallbacksManager.shared.post(name: .unconfirmedTransactionMined, object: pointer)
         }
 
-        let transactionCancellationCallback: @convention(c) (OpaquePointer?, UInt64) -> Void = { pointer, rejectonReason in
+        let transactionCancellationCallback: @convention(c) (OpaquePointer?, UInt64) -> Void = { pointer, _ in
             WalletCallbacksManager.shared.post(name: .transactionCancellation, object: pointer)
         }
-        
+
         let txoValidationCallback: @convention(c) (UInt64, UInt64) -> Void = { responseId, status in
             guard let status = TransactionValidationStatus(rawValue: status) else { return }
             WalletCallbacksManager.shared.post(name: .transactionOutputValidation, object: TransactionValidationData(identifier: responseId, status: status))
         }
-        
+
         let contactsLivenessDataUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void) = { _ in
         }
-        
+
         let balanceUpdatedCallback: @convention(c) (OpaquePointer?) -> Void = { balancePointer in
             guard let balancePointer = balancePointer else { return }
             let balance = Balance(pointer: balancePointer)
             WalletCallbacksManager.shared.post(name: .walletBalanceUpdate, object: balance)
-            
+
         }
-        
+
         let trasactionValidationCompleteCallback: @convention(c) (UInt64, UInt64) -> Void = { responseId, status in
             guard let status = TransactionValidationStatus(rawValue: status) else { return }
             WalletCallbacksManager.shared.post(name: .transactionValidation, object: TransactionValidationData(identifier: responseId, status: status))
         }
-        
+
         let storedMessagesReceivedCallback: (@convention(c) () -> Void) = {
         }
-        
+
         let connectivityStatusCallback: (@convention(c) (UInt64) -> Void) = { rawStatus in
             guard let status = BaseNodeConnectivityStatus(rawValue: rawStatus) else { return }
             WalletCallbacksManager.shared.post(name: .baseNodeConnectionStatusUpdate, object: status)
         }
-        
+
         var isRecoveryInProgress = false
         var errorCode: Int32 = -1
-         
+
         let isRecoveryInProgressPointer = PointerHandler.pointer(for: &isRecoveryInProgress)
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = wallet_create(
             commsConfig.pointer,
             loggingFilePath,
@@ -156,13 +156,13 @@ final class Wallet {
             isRecoveryInProgressPointer,
             errorCodePointer
         )
-        
+
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         pointer = result
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         wallet_destroy(pointer)
     }

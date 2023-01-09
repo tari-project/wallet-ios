@@ -1,5 +1,5 @@
 //  WalletConnectivityManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 09/11/2021
@@ -41,9 +41,9 @@
 import Combine
 
 final class WalletConnectivityManager {
-    
+
     private static var cancellables = Set<AnyCancellable>()
-    
+
     static func connectWithTor(completion: @escaping () -> Void) {
         // Handle if tor ports opened later
         TariEventBus.onMainThread(self, eventType: .torPortsOpened) { _ in
@@ -55,14 +55,14 @@ final class WalletConnectivityManager {
             completion()
         }
     }
-    
+
     static func startWalletIfNeeded() {
         guard TariLib.shared.walletState == .notReady else { return }
         TariLib.shared.startWallet(seedWords: nil)
     }
-    
+
     static func waitForWallet(result: @escaping (Result<Void, WalletError>) -> Void) {
-        
+
         var cancel: AnyCancellable?
 
         cancel = TariLib.shared.walletStatePublisher
@@ -82,9 +82,9 @@ final class WalletConnectivityManager {
 
         cancel?.store(in: &cancellables)
     }
-    
+
     static func startWallet(result: @escaping (Result<Void, WalletError>) -> Void) {
-        
+
         let dispatchGroup = DispatchGroup()
         var startWalletResult: Result<Void, WalletError>?
 
@@ -113,7 +113,7 @@ final class WalletConnectivityManager {
                 result(.failure(error))
             }
         }
-        
+
         startWalletIfNeeded()
     }
 }

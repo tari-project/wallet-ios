@@ -1,5 +1,5 @@
 //  AppValues.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/10/2022

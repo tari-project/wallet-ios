@@ -1,5 +1,5 @@
 //  UTXOsWalletTopBar.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 24/06/2022
@@ -42,9 +42,9 @@ import UIKit
 import TariCommon
 
 final class UTXOsWalletTopBar: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var filterButton: LeftImageButton = {
         let view = LeftImageButton()
         view.iconView.image = Theme.shared.images.utxoFaucet
@@ -53,59 +53,59 @@ final class UTXOsWalletTopBar: DynamicThemeView {
         view.internalPadding = 12.0
         return view
     }()
-    
+
     @View private var editButton: BaseButton = {
         let view = BaseButton()
         view.titleLabel?.font = .Avenir.roman.withSize(14.0)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var filterButtonTitle: String? {
         get { filterButton.label.text }
         set { filterButton.label.text = newValue }
     }
-    
+
     var height: CGFloat = 0.0 {
         didSet { heightConstraint?.constant = height }
     }
-    
+
     var onFilterButtonTap: (() -> Void)?
     var onSelectButtonTap: (() -> Void)?
-    
+
     var isEditingEnabled: Bool = false {
         didSet { update(isEditingEnabled: isEditingEnabled) }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
         setupCallbacks()
         update(isEditingEnabled: false)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     var backgroundAlpha: CGFloat = 0.0 {
         didSet { updateBackground() }
     }
-    
+
     private var heightConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [filterButton, editButton].forEach(addSubview)
-        
+
         let heightConstraint = heightAnchor.constraint(equalToConstant: height)
         self.heightConstraint = heightConstraint
-        
+
         let constraints = [
             filterButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 32.0),
             filterButton.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -115,38 +115,38 @@ final class UTXOsWalletTopBar: DynamicThemeView {
             editButton.heightAnchor.constraint(equalToConstant: 44.0),
             heightConstraint
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
-        
+
         filterButton.onTap = { [weak self] in
             self?.onFilterButtonTap?()
         }
-        
+
         editButton.onTap = { [weak self] in
             self?.onSelectButtonTap?()
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         filterButton.iconView.tintColor = theme.icons.default
         filterButton.label.textColor = theme.text.heading
         editButton.setTitleColor(theme.icons.active, for: .normal)
-        
+
         updateBackground(theme: theme)
     }
-    
+
     private func update(isEditingEnabled: Bool) {
         let title = isEditingEnabled ? localized("common.cancel") : localized("utxos_wallet.button.edit_mode.select")
         editButton.setTitle(title, for: .normal)
     }
-    
+
     private func updateBackground(theme: ColorTheme? = nil) {
         let theme = theme ?? self.theme
         backgroundColor = theme.backgrounds.primary?.withAlphaComponent(backgroundAlpha)

@@ -1,5 +1,5 @@
 //  SeedWordsMnemonicWordList.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/11/2021
@@ -39,9 +39,9 @@
 */
 
 final class SeedWordsMnemonicWordList {
-    
+
     // MARK: - Properties
-    
+
     var listLength: UInt32 {
         get throws {
             var errorCode: Int32 = -1
@@ -51,54 +51,54 @@ final class SeedWordsMnemonicWordList {
             return result
         }
     }
-    
+
     private let pointer: OpaquePointer
-    
+
     // MARK: - Initialisators
-    
+
     init(language: String) throws {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = seed_words_get_mnemonic_word_list_for_language(language, errorCodePointer)
-        
+
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         pointer = result
     }
-    
+
     // MARK: - Actions
-    
+
     private func word(index: UInt32) throws -> String {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = seed_words_get_at(pointer, index, errorCodePointer)
-        
+
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         return String(cString: result)
     }
-    
+
     // MARK: - Deinitalisator
-    
+
     deinit {
         seed_words_destroy(pointer)
     }
 }
 
 extension SeedWordsMnemonicWordList {
-    
+
     enum Language: String {
         case english = "English"
         case spanish = "Spanish"
     }
-    
+
     var seedWords: [String] {
         get throws {
             let length = try listLength
             return try (0..<length).map { try word(index: $0) }
         }
     }
-    
+
     convenience init(language: Language) throws {
         try self.init(language: language.rawValue)
     }

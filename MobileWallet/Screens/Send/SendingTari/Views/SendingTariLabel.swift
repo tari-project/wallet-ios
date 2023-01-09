@@ -1,5 +1,5 @@
 //  SendingTariLabel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 09/02/2022
@@ -42,64 +42,64 @@ import UIKit
 import TariCommon
 
 final class SendingTariLabel: UIView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = " "
         view.textAlignment = .center
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var font: UIFont? {
         get { label.font }
         set { label.font = newValue }
     }
-    
+
     private var labelTopAnchor: NSLayoutConstraint?
     private var labelBottomAnchor: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero)
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         clipsToBounds = true
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(label)
-        
+
         let labelTopAnchor = label.topAnchor.constraint(equalTo: topAnchor)
         labelBottomAnchor = label.topAnchor.constraint(equalTo: bottomAnchor)
         self.labelTopAnchor = labelTopAnchor
-        
+
         let constraints = [
             labelTopAnchor,
             label.leadingAnchor.constraint(equalTo: leadingAnchor),
             label.trailingAnchor.constraint(equalTo: trailingAnchor),
             label.heightAnchor.constraint(equalTo: heightAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Actions
-    
+
     func update(text: String?, completion: (() -> Void)? = nil) {
         hideLabel { [weak self] in
             self?.label.text = text
@@ -108,7 +108,7 @@ final class SendingTariLabel: UIView {
             }
         }
     }
-    
+
     private func hideLabel(completion: @escaping () -> Void) {
         UIView.animate(withDuration: 1.0, delay: 0.0, options: [], animations: {
             self.label.alpha = 0.0
@@ -116,18 +116,18 @@ final class SendingTariLabel: UIView {
             completion()
         })
     }
-    
+
     private func showLabel(completion: @escaping () -> Void) {
-        
+
         labelTopAnchor?.isActive = false
         labelBottomAnchor?.isActive = true
         layoutIfNeeded()
-        
+
         label.alpha = 1.0
-        
+
         labelBottomAnchor?.isActive = false
         labelTopAnchor?.isActive = true
-        
+
         UIView.animate(withDuration: 0.5, delay: 0.0, options: [], animations: {
             self.layoutIfNeeded()
         }, completion: { _ in

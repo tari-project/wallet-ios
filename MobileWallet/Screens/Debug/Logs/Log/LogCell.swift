@@ -1,5 +1,5 @@
 //  LogCell.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2022
@@ -42,56 +42,56 @@ import UIKit
 import TariCommon
 
 final class LogCell: DynamicThemeCell {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
         view.numberOfLines = 0
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         selectionStyle = .none
         backgroundColor = .clear
     }
-    
+
     private func setupConstraints() {
-        
+
         contentView.addSubview(label)
-        
+
         let constraints = [
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8.0),
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20.0),
             label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20.0),
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body
     }
-    
+
     func update(text: String) {
         label.text = text
     }

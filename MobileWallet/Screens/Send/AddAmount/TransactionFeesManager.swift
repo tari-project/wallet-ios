@@ -1,5 +1,5 @@
 //  TransactionFeesManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 25/05/2022
@@ -39,68 +39,68 @@
 */
 
 final class TransactionFeesManager {
-    
+
     enum NetworkTraffic {
         case low
         case medium
         case high
         case unknown
     }
-    
+
     enum Status {
         case calculating
         case data(FeesData)
         case dataUnavailable
     }
-    
+
     struct FeeOptions {
         let slow: MicroTari
         let medium: MicroTari
         let fast: MicroTari
     }
-    
+
     struct FeesData {
         let networkTraffic: NetworkTraffic
         let feesPerGram: FeeOptions
         let fees: FeeOptions
     }
-    
+
     enum InternalError: Error {
         case unexpectedBlockCount
     }
-    
+
     // MARK: - Constants
-    
+
     private let timeout: TimeInterval = 3.0
     private let rawMaxAmountBuffer: UInt64 = 2000
-    
+
     // MARK: - Properties
-    
+
     var amount: MicroTari = MicroTari() {
         didSet { handleNewAmount() }
     }
-    
+
     @Published private(set) var feesStatus: Status = .calculating
     @Published private(set) var lastError: Error?
-    
+
     private(set) var feesData: FeesData?
     private var networkTraffic: NetworkTraffic?
     private var feesPerGram: FeeOptions?
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         updateData()
     }
-    
+
     // MARK: - Actions
-    
+
     private func updateData() {
-        
+
         fetchTrafficAndFeesPerGram { [weak self] result in
-            
+
             guard let self = self else { return }
-            
+
             switch result {
             case let .success((networkTraffic, feesPerGram)):
                 self.networkTraffic = networkTraffic
@@ -112,9 +112,9 @@ final class TransactionFeesManager {
             }
         }
     }
-    
+
     private func updateFees(networkTraffic: NetworkTraffic, feesPerGram: FeeOptions) {
-        
+
         do {
             let fees = try calculateFees(amount: amount, feesPerGram: feesPerGram)
             let feesData = FeesData(networkTraffic: networkTraffic, feesPerGram: feesPerGram, fees: fees)
@@ -125,7 +125,7 @@ final class TransactionFeesManager {
             self.feesStatus = .dataUnavailable
         }
     }
-    
+
     private func handleNewAmount() {
         guard let networkTraffic = networkTraffic, let feesPerGram = feesPerGram else {
             updateData()
@@ -133,42 +133,42 @@ final class TransactionFeesManager {
         }
         updateFees(networkTraffic: networkTraffic, feesPerGram: feesPerGram)
     }
-    
+
     private func fetchTrafficAndFeesPerGram(result: @escaping (Result<(NetworkTraffic, FeeOptions), Error>) -> Void) {
-        
+
         DispatchQueue.global().async { [weak self] in
-            
+
             guard let self = self else { return }
-            
+
             let dispatchGroup = DispatchGroup()
             dispatchGroup.enter()
-            
+
             var response: (NetworkTraffic, FeeOptions)?
-            
+
             DispatchQueue.global().async {
                 response = try? self.calculateTrafficAndFeesPerGram()
                 dispatchGroup.leave()
             }
-            
+
             _ = dispatchGroup.wait(timeout: .now() + self.timeout)
-            
+
             let finalResponse = response ?? (.unknown, FeeOptions(slow: Tari.defaultFeePerGram, medium: Tari.defaultFeePerGram, fast: Tari.defaultFeePerGram))
             result(.success(finalResponse))
         }
     }
-    
+
     private func calculateTrafficAndFeesPerGram() throws -> (NetworkTraffic, FeeOptions) {
-        
+
         let stats = try Tari.shared.fees.feePerGramStats(count: 3)
         let blocksCount = try stats.count
         let elementsCount = min(blocksCount, 3)
         let elements = try (0..<elementsCount).map { try stats.element(at: $0) }
-        
+
         let traffic: NetworkTraffic
         let slowOption: UInt64
         let mediumOption: UInt64
         let fastOption: UInt64
-        
+
         switch blocksCount {
         case 1:
             traffic = .low
@@ -188,22 +188,22 @@ final class TransactionFeesManager {
         default:
             throw InternalError.unexpectedBlockCount
         }
-        
+
         let feesPerGram = FeeOptions(slow: MicroTari(slowOption), medium: MicroTari(mediumOption), fast: MicroTari(fastOption))
-        
+
         return (traffic, feesPerGram)
     }
-    
+
     private func calculateFees(amount: MicroTari, feesPerGram: FeeOptions) throws -> FeeOptions {
-        
+
         let totalBalance = Tari.shared.walletBalance.balance.total
         let maxAmountRaw = totalBalance > rawMaxAmountBuffer ? totalBalance - rawMaxAmountBuffer : 0
         let amount = min(amount.rawValue, maxAmountRaw)
-        
+
         let slowOption = try Tari.shared.fees.estimateFee(amount: amount, feePerGram: feesPerGram.slow.rawValue)
         let mediumOption = try Tari.shared.fees.estimateFee(amount: amount, feePerGram: feesPerGram.medium.rawValue)
         let fastOption = try Tari.shared.fees.estimateFee(amount: amount, feePerGram: feesPerGram.fast.rawValue)
-        
+
         return FeeOptions(slow: MicroTari(slowOption), medium: MicroTari(mediumOption), fast: MicroTari(fastOption))
     }
 }

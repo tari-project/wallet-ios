@@ -1,5 +1,5 @@
 //  BackupFilesManager.swift
-    
+
 /*
     Package MobileWallet
     Created by Adrian Truszczynski on 15/04/2022
@@ -41,15 +41,15 @@
 import Zip
 
 enum BackupFilesManager {
-    
+
     static var encryptedFileName: String { "Tari-Aurora-Backup" + "-" + NetworkManager.shared.selectedNetwork.name }
     static var unencryptedFileName: String { encryptedFileName + ".zip" }
-    
+
     private static let internalWorkingDirectoryName = "Internal"
-    
+
     private static let workingDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("Backups")
     private static var fileDirectory: URL { Tari.shared.connectedDatabaseDirectory }
-    
+
     static func prepareBackup(workingDirectoryName: String, password: String?) async throws -> URL {
         let workingDirectory = try prepareWorkingDirectory(name: workingDirectoryName)
 //        try Tari.shared.encryption.remove() // FIXME: Please align the backup flow with FFI Lib
@@ -57,62 +57,62 @@ enum BackupFilesManager {
 //        try Tari.shared.encryption.apply() // FIXME: Please align the backup flow with FFI Lib
         let zipFileURL = workingDirectory.appendingPathComponent(unencryptedFileName)
         try await zipDatabase(inputURL: fileURL, outputURL: zipFileURL)
-        
+
         guard let password else { return zipFileURL }
-        
+
         let encryptedFileURL = workingDirectory.appendingPathComponent(encryptedFileName)
         try encryptFile(inputURL: zipFileURL, outputURL: encryptedFileURL, password: password)
-        
+
         return encryptedFileURL
     }
-    
+
     static func store(backup: URL, password: String?) async throws {
-        
+
         var zipURL = backup
-        
+
         if let password {
             zipURL = try prepareWorkingDirectory(name: internalWorkingDirectoryName).appendingPathComponent(unencryptedFileName)
             try decryptFile(inputURL: backup, outputURL: zipURL, password: password)
         }
-        
+
         try await unzipDatabase(inputURL: zipURL, outputURL: fileDirectory)
     }
-    
+
     private static func workingDirectoryURL(name: String) -> URL {
         workingDirectory.appendingPathComponent(name)
     }
-    
+
     static func prepareWorkingDirectory(name: String) throws -> URL {
-        
+
         try removeWorkingDirectory(workingDirectoryName: name)
         let directory = workingDirectoryURL(name: name)
-        
+
         if !FileManager.default.fileExists(atPath: directory.path) {
-            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true,attributes: nil)
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true, attributes: nil)
         }
-        
+
         return directory
     }
-    
+
     static func removeWorkingDirectory(workingDirectoryName: String) throws {
         let workingDirectory = workingDirectoryURL(name: workingDirectoryName)
         guard FileManager.default.fileExists(atPath: workingDirectory.path) else { return }
         try FileManager.default.removeItem(atPath: workingDirectory.path)
     }
-    
+
     private static func copyDatabase(workingDirectory: URL) throws -> URL {
-        
+
         let filename = Tari.shared.databaseURL.lastPathComponent
         let workingFileURL = workingDirectory.appendingPathComponent(filename)
-        
+
         if FileManager.default.fileExists(atPath: workingFileURL.path) {
             try FileManager.default.removeItem(at: workingFileURL)
         }
-        
+
         try FileManager.default.copyItem(at: Tari.shared.databaseURL, to: workingFileURL)
         return workingFileURL
     }
-    
+
     private static func zipDatabase(inputURL: URL, outputURL: URL) async throws {
         try await withCheckedThrowingContinuation { continuation in
             do {
@@ -125,9 +125,9 @@ enum BackupFilesManager {
             }
         }
     }
-    
+
     private static func unzipDatabase(inputURL: URL, outputURL: URL) async throws {
-        
+
         try await withCheckedThrowingContinuation { continuation in
             do {
                 try Zip.unzipFile(inputURL, destination: outputURL, overwrite: true, password: nil, progress: { progress in
@@ -139,14 +139,14 @@ enum BackupFilesManager {
             }
         }
     }
-    
+
     private static func encryptFile(inputURL: URL, outputURL: URL, password: String) throws {
         let encryption = try AESEncryption(keyString: password)
         let data = try Data(contentsOf: inputURL)
         let encryptedData = try encryption.encrypt(data)
         try encryptedData.write(to: outputURL)
     }
-    
+
     private static func decryptFile(inputURL: URL, outputURL: URL, password: String) throws {
         let encryption = try AESEncryption(keyString: password)
         let data = try Data(contentsOf: inputURL)

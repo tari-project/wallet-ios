@@ -39,7 +39,6 @@
 */
 
 import Foundation
-import Foundation
 import UIKit
 
 class AnimatedBalanceLabel: UIView {
