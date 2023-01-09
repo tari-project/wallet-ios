@@ -120,20 +120,16 @@ class TxTableViewCell: DynamicThemeCell {
             }
         }
 
-        kvoStatus = item.observe(\.status, options: .new) {
-            (_, _) in
-            DispatchQueue.main.async {
-                [weak self] in
+        kvoStatus = item.observe(\.status, options: .new) { (_, _) in
+            DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 self.setStatus(item.status)
                 self.updateValue()
             }
         }
 
-        kvoTime = item.observe(\.time, options: .new) {
-            (_, _) in
-            DispatchQueue.main.async {
-                [weak self] in
+        kvoTime = item.observe(\.time, options: .new) { (_, _) in
+            DispatchQueue.main.async { [weak self] in
                 self?.timeLabel.text = item.time
             }
         }

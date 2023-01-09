@@ -280,15 +280,12 @@ final class EmojiIdView: DynamicThemeView {
             )
 
             fadeView(view: expandedEmojiIdScrollView, fadeOut: false)
-            UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0) {
-                [weak self] in
+            UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0) { [weak self] in
                 self?.update(scrollViewFrame: scrollViewTargetFrame)
             }
-            UIView.animate(withDuration: 0.5, animations: {
-                [weak self] in
+            UIView.animate(withDuration: 0.5, animations: { [weak self] in
                 self?.expandedEmojiIdScrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
-            }) {
-                [weak self] (_) in
+            }) { [weak self] (_) in
                 self?.tapActionIsDisabled = false
             }
         } else {
@@ -322,8 +319,7 @@ final class EmojiIdView: DynamicThemeView {
         )
         // hide copy emoji id button & public key hex tip
         if blackoutWhileExpanded {
-            DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.30 : 0)) {
-                [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.30 : 0)) { [weak self] in
                 self?.hideExpandedViews(
                     animated: true,
                     scrollViewFrame: scrollViewFrame,
@@ -335,8 +331,7 @@ final class EmojiIdView: DynamicThemeView {
                 self?.hideHexPubKeyCopyTip()
             }
         } else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.30 : 0)) {
-                [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + ((scrolled && animated) ? 0.30 : 0)) { [weak self] in
                 self?.hideExpandedViews(
                     animated: animated,
                     scrollViewFrame: scrollViewFrame,
@@ -362,19 +357,16 @@ final class EmojiIdView: DynamicThemeView {
             return
         }
         if self.blackoutWhileExpanded {
-            self.fadeView(view: self.blackoutView, fadeOut: true) {
-                [weak self] in
+            self.fadeView(view: self.blackoutView, fadeOut: true) { [weak self] in
                 self?.blackoutView.removeFromSuperview()
             }
         }
         // fade out scroll view
-        self.fadeView(view: self.expandedEmojiIdScrollView, fadeOut: true) {
-            [weak self] in
+        self.fadeView(view: self.expandedEmojiIdScrollView, fadeOut: true) { [weak self] in
             self?.expandedEmojiIdScrollView.removeFromSuperview()
         }
         // fade in condensed emoji id
-        self.fadeView(view: self.condensedEmojiIdContainer, fadeOut: false) {
-            [weak self] in
+        self.fadeView(view: self.condensedEmojiIdContainer, fadeOut: false) { [weak self] in
             self?.tapActionIsDisabled = false
             if callTapCompletion == true {
                 self?.tapToExpand?(false)
@@ -431,8 +423,7 @@ extension EmojiIdView {
         emojiMenu.alpha = 0.0
         emojiMenu.title = copyText
 
-        emojiMenu.completion = {
-            [weak self] isLongPress in
+        emojiMenu.completion = { [weak self] isLongPress in
             guard let self = self else { return }
             self.tapActionIsDisabled = true
             if isLongPress {
@@ -441,8 +432,7 @@ extension EmojiIdView {
                 self.copyToClipboard(string: self.emojiText)
             }
             self.hideCopyEmojiIdButton()
-            self.showCopiedView {
-                [weak self] in
+            self.showCopiedView { [weak self] in
                 self?.shrink(callTapCompletion: true)
             }
         }
@@ -465,8 +455,7 @@ extension EmojiIdView {
             guard let self = self else { return }
             self.emojiMenu.alpha = 1.0
             self.emojiMenu.center.y += 4.0
-        }) {
-            (_) in
+        }) { (_) in
             completion?()
         }
 
@@ -552,9 +541,7 @@ extension EmojiIdView {
             delay: 0,
             options: .curveEaseInOut) {
             UIApplication.shared.keyWindow?.layoutIfNeeded()
-        } completion: {
-            [weak self]
-            (_) in
+        } completion: { [weak self] (_) in
             self?.hexPubKeyTipView?.removeFromSuperview()
             self?.hexPubKeyTipViewBottomConstraint = nil
             self?.hexPubKeyTipLabel = nil
@@ -706,8 +693,7 @@ extension EmojiIdView {
                            delay: 0.5,
                            animations: {
                 containerView.alpha = 0.0
-            }) {
-                (_) in
+            }) { (_) in
                 containerView.removeFromSuperview()
                 greenView.removeFromSuperview()
                 copiedLabel.removeFromSuperview()

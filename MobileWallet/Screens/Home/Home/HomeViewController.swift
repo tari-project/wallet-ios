@@ -314,8 +314,7 @@ final class HomeViewController: DynamicThemeViewController {
                 // Wait before auto pulling down
                 DispatchQueue.main.asyncAfter(
                     deadline: .now() + 3.0 + CATransaction.animationDuration()
-                ) {
-                    [weak self] in
+                ) { [weak self] in
                     guard let self = self else { return }
                     if self.isTxViewFullScreen {
                         self.floatingPanelController.move(to: .half, animated: true)
@@ -386,8 +385,7 @@ extension HomeViewController: TxsTableViewDelegate {
             if mainView.topToolbar.layer.shadowOpacity == 0.0 { return }
             UIView.animate(
                 withDuration: CATransaction.animationDuration(),
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     guard let self = self else { return }
                     self.mainView.topToolbar.layer.shadowOpacity = 0
                     self.view.layoutIfNeeded()
@@ -397,8 +395,7 @@ extension HomeViewController: TxsTableViewDelegate {
             if mainView.topToolbar.layer.shadowOpacity == 0.1 { return }
             UIView.animate(
                 withDuration: CATransaction.animationDuration(),
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     guard let self = self else { return }
                     self.mainView.topToolbar.layer.shadowOpacity = 0.1
                     self.view.layoutIfNeeded()
@@ -464,8 +461,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
                 withDuration: 0.1,
                 delay: 0,
                 options: .curveEaseIn,
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     guard let self = self else { return }
                     self.view.layoutIfNeeded()
                 }
@@ -517,8 +513,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
                 withDuration: CATransaction.animationDuration(),
                 delay: 0,
                 options: .curveEaseIn,
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     self?.mainView.dimmingLayer.opacity = Float(progress / 1.5)
                     self?.view.layoutIfNeeded()
                 }

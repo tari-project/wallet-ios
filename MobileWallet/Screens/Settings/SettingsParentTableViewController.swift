@@ -72,8 +72,7 @@ extension SettingsParentTableViewController {
             with: tableView,
             duration: 0.5,
             options: .transitionCrossDissolve,
-            animations: {
-                [weak self] in
+            animations: { [weak self] in
                 self?.tableView.reloadData()
             },
             completion: nil

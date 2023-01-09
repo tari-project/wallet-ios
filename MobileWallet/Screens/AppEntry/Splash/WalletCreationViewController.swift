@@ -120,16 +120,14 @@ final class WalletCreationViewController: DynamicThemeViewController {
         firstLabel.hideLabel(duration: duration)
         secondLabel.hideLabel(duration: duration)
 
-        UIView.animate(withDuration: duration, animations: {
-            [weak self] in
+        UIView.animate(withDuration: duration, animations: { [weak self] in
             guard let self = self else { return }
             self.thirdLabel.alpha = 0.0
             self.animationView.alpha = 0.0
             self.numpadImageView.alpha = 0.0
             self.emojiIdView.alpha = 0.0
             self.tapToSeeButtonContainer.alpha = 0.0
-            self.view.layoutIfNeeded()}, completion: {
-                [weak self] _ in
+            self.view.layoutIfNeeded()}, completion: { [weak self] _ in
                 guard let self = self else { return }
                 self.animationView.stop()
                 self.stackView.setCustomSpacing(0, after: self.emojiIdView)

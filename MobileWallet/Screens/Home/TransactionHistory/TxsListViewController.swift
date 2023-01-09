@@ -330,10 +330,8 @@ extension TxsListViewController {
     }
 
     private func endRefreshingWithSuccess() {
-        safeRefreshTable {
-            [weak self] in
-            self?.animatedRefresher.animateOut {
-                [weak self] in
+        safeRefreshTable { [weak self] in
+            self?.animatedRefresher.animateOut { [weak self] in
                 self?.animatedRefresher.stateType = .none
                 self?.hasReceivedTxWhileUpdating = false
                 self?.hasMinedTxWhileUpdating = false
@@ -454,12 +452,10 @@ extension TxsListViewController {
 
         UIView.animate(
             withDuration: CATransaction.animationDuration(),
-            animations: {
-                [weak self] in
+            animations: { [weak self] in
                 self?.tableView.backgroundView?.alpha = 0.0
             }
-        ) {
-            [weak self] (_) in
+        ) { [weak self] (_) in
             self?.tableView.backgroundView = nil
             completion?()
         }

@@ -200,8 +200,7 @@ class AnimatedRefreshingView: DynamicThemeView {
                 withDuration: withDuration,
                 delay: 0,
                 options: .curveEaseInOut,
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     guard let self = self else { return }
                     self.alpha = 1
                     self.layoutIfNeeded()
@@ -219,8 +218,7 @@ class AnimatedRefreshingView: DynamicThemeView {
                 withDuration: 0.5,
                 delay: 0,
                 options: .curveEaseInOut,
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     guard let self = self else { return }
                     self.alpha = 0
                     self.layoutIfNeeded()
@@ -258,10 +256,8 @@ class AnimatedRefreshingView: DynamicThemeView {
                                        hasCancelledTx: Bool,
                                        completion: @escaping () -> Void) {
         if hasReceivedTx || hasMinedTx {
-            updateState(.receiving) {
-                [weak self] in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) {
-                    [weak self] in
+            updateState(.receiving) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) { [weak self] in
                     self?.showCompletingTxsState(
                         hasBroadcastTx: hasBroadcastTx,
                         hasCancelledTx: hasCancelledTx,
@@ -282,10 +278,8 @@ class AnimatedRefreshingView: DynamicThemeView {
                                         hasCancelledTx: Bool,
                                         completion: @escaping () -> Void) {
         if hasBroadcastTx {
-            updateState(.completing) {
-                [weak self] in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) {
-                    [weak self] in
+            updateState(.completing) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) { [weak self] in
                     self?.showUpdatingTxsState(
                         hasCancelledTx: hasCancelledTx,
                         completion: completion
@@ -303,10 +297,8 @@ class AnimatedRefreshingView: DynamicThemeView {
     private func showUpdatingTxsState(hasCancelledTx: Bool,
                                       completion: @escaping () -> Void) {
         if hasCancelledTx {
-            updateState(.updating) {
-                [weak self] in
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) {
-                    [weak self] in
+            updateState(.updating) { [weak self] in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.25) { [weak self] in
                     self?.showSuccessState(completion: completion)
                 }
             }
@@ -332,8 +324,7 @@ class AnimatedRefreshingView: DynamicThemeView {
         if isUpdatingState {
             DispatchQueue.main.asyncAfter(
                 deadline: .now() + 0.5 + CATransaction.animationDuration()
-            ) {
-                [weak self] in
+            ) { [weak self] in
                 self?.updateState(newState)
             }
             return
@@ -368,8 +359,7 @@ class AnimatedRefreshingView: DynamicThemeView {
                 withDuration: (animated ? 0.5 : 0.0),
                 delay: 0,
                 options: .curveEaseInOut,
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     guard let self = self else { return }
                     self.currentInnerView.alpha = 0
                     newInnerView.alpha = 1
@@ -379,8 +369,7 @@ class AnimatedRefreshingView: DynamicThemeView {
                     self.currentInnerViewBottomAnchor.constant = -shiftUpPoints
                     self.layoutIfNeeded()
                 }
-            ) {
-                [weak self] (_) in
+            ) { [weak self] (_) in
                 guard let self = self else { return }
                 self.isUpdatingState = false
                 self.currentInnerView.removeFromSuperview()
