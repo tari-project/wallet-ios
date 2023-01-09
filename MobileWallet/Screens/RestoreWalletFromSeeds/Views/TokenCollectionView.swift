@@ -61,7 +61,7 @@ struct SeedWordModel: Identifiable, Hashable {
     let visualTrait: VisualTrait
 }
 
-final class TokenCollectionView: UIView {
+final class TokenCollectionView: DynamicThemeView {
 
     // MARK: - Subviews
 
@@ -124,8 +124,8 @@ final class TokenCollectionView: UIView {
     
     // MARK: - Initializers
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
         setupFeedbacks()
@@ -138,7 +138,6 @@ final class TokenCollectionView: UIView {
     // MARK: - Setups
 
     private func setupViews() {
-        backgroundColor = Theme.shared.colors.tokenCollectionViewBackground
         layer.cornerRadius = 10.0
         collectionView.backgroundView = UIView()
     }
@@ -220,6 +219,13 @@ final class TokenCollectionView: UIView {
             self.collectionView.scrollToBottom(animated: true)
             self.heightConstraint?.constant = self.collectionView.contentSize.height
         }
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.secondary
     }
     
     private func updateAutocompletionTokens() {

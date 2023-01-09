@@ -47,7 +47,6 @@ final class TransactionDetailsModel {
     
     @Published private(set) var title: String?
     @Published private(set) var subtitle: String?
-    @Published private(set) var isFailure: Bool = false
     @Published private(set) var transactionState: AnimatedRefreshingViewState?
     @Published private(set) var amount: String?
     @Published private(set) var fee: String?
@@ -198,8 +197,6 @@ final class TransactionDetailsModel {
         if let completedTransaction = transaction as? CompletedTransaction, let description = try completedTransaction.rejectionReason.description {
             failureReason = description
         }
-        
-        isFailure = failureReason != nil
         
         return [failureReason, formattedDate]
             .compactMap { $0 }

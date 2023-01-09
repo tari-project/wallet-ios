@@ -91,6 +91,34 @@ class PasswordVerificationViewController: SettingsParentViewController {
         case .change: changePasswordAction()
         }
     }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        updateDescriptionLabel(theme: theme)
+    }
+    
+    private func updateDescriptionLabel(theme: ColorTheme) {
+
+        guard let mainTextColor = theme.text.body, let boldTextColor = theme.text.heading else { return }
+        
+        let attributedString: NSMutableAttributedString
+        
+        switch variation {
+        case .change:
+            attributedString = NSMutableAttributedString(string: localized("password_verification.description.enter_current_password"))
+            attributedString.addAttribute(.foregroundColor, value: mainTextColor, range: NSRange(location: 0, length: attributedString.length))
+        case .restore:
+            let atttributedPart1 = localized("password_verification.description.enter_backup_password.part1")
+            let atttributedPart2 = localized("password_verification.description.enter_backup_password.part2")
+            attributedString = NSMutableAttributedString(string: atttributedPart1 + atttributedPart2)
+            attributedString.addAttribute(.foregroundColor, value: mainTextColor, range: NSRange(location: 0, length: atttributedPart1.count))
+            attributedString.addAttribute(.foregroundColor, value: boldTextColor, range: NSRange(location: atttributedPart1.count, length: atttributedPart2.count))
+        }
+
+        attributedString.addAttributes([NSAttributedString.Key.kern: -0.26], range: NSRange(location: 0, length: attributedString.length))
+        
+        descriptionLabel.attributedText = attributedString
+    }
 }
 
 extension PasswordVerificationViewController {
@@ -122,39 +150,14 @@ extension PasswordVerificationViewController {
     }
 
     private func setupDescriptionLabel() {
-        let attributedString: NSMutableAttributedString
-
-        switch variation {
-        case .change:
-            attributedString = NSMutableAttributedString(
-                string: localized("password_verification.description.enter_current_password")
-            )
-            attributedString.addAttributes(
-                [NSAttributedString.Key.foregroundColor: Theme.shared.colors.settingsViewDescription!],
-                range: NSRange(location: 0, length: attributedString.length)
-            )
-        case .restore:
-            let atttributedPart1 = localized("password_verification.description.enter_backup_password.part1")
-            let atttributedPart2 = localized("password_verification.description.enter_backup_password.part2")
-            attributedString = NSMutableAttributedString(string: atttributedPart1 + atttributedPart2)
-            attributedString.addAttributes(
-                [NSAttributedString.Key.foregroundColor: Theme.shared.colors.settingsViewDescription!],
-                range: NSRange(location: 0, length: atttributedPart1.count)
-            )
-            attributedString.addAttributes(
-                [NSAttributedString.Key.foregroundColor: UIColor.black],
-                range: NSRange(location: atttributedPart1.count, length: atttributedPart2.count)
-            )
-        }
-
-        attributedString.addAttributes([NSAttributedString.Key.kern: -0.26], range: NSRange(location: 0, length: attributedString.length))
 
         descriptionLabel.font = Theme.shared.fonts.settingsViewHeaderDescription
-        descriptionLabel.attributedText = attributedString
         descriptionLabel.numberOfLines = 0
 
         stackView.addArrangedSubview(descriptionLabel)
         stackView.setCustomSpacing(25, after: descriptionLabel)
+        
+        updateDescriptionLabel(theme: theme)
     }
 
     private func setupPasswordField() {

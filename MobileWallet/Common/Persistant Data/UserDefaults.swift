@@ -42,14 +42,15 @@ private enum UserDefaultName: String, CaseIterable {
     case selectedNetworkName
     case networksSettings
     case walletSettings
+    case userSettings
 }
 
 enum GroupUserDefaults {
     @UserDefault(key: UserDefaultName.selectedNetworkName.rawValue, suiteName: TariSettings.groupIndentifier) static var selectedNetworkName: String?
     @UserDefault(key: UserDefaultName.networksSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
     @UserDefault(key: UserDefaultName.walletSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
+    @UserDefault(key: UserDefaultName.userSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var userSettings: UserSettings?
 }
-
 
 extension UserDefaults {
     func removeAll() {

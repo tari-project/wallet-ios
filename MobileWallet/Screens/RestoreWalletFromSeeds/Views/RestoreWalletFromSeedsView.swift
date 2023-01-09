@@ -48,7 +48,6 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
 
     @View private var descriptionLabel: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.restoreFromSeedWordsTextColor
         view.font = Theme.shared.fonts.restoreFormSeedWordsDescription
         view.text = localized("restore_from_seed_words.label.description")
         view.numberOfLines = 0
@@ -72,9 +71,8 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
 
     // MARK: - Initializers
 
-    init() {
-        super.init(frame: .zero)
-        setupViews()
+    override init() {
+        super.init()
         setupConstraints()
     }
 
@@ -83,10 +81,6 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
     }
 
     // MARK: - Setups
-
-    private func setupViews() {
-        backgroundColor = Theme.shared.colors.appBackground
-    }
 
     private func setupConstraints() {
 
@@ -112,7 +106,13 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
         NSLayoutConstraint.activate(constraints)
     }
 
-    // MARK: - Actions
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        descriptionLabel.textColor = theme.text.body
+    }
 
     func update(buttonIsEnabledStatus: Bool) {
         submitButton.variation = buttonIsEnabledStatus ? .normal : .disabled

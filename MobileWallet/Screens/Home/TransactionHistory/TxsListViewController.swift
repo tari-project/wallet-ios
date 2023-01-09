@@ -41,13 +41,14 @@
 import UIKit
 import Lottie
 import Combine
+import TariCommon
 
 protocol TxsTableViewDelegate: AnyObject {
     func onTxSelect(_: Transaction)
     func onScrollTopHit(_: Bool)
 }
 
-final class TxsListViewController: UIViewController {
+final class TxsListViewController: DynamicThemeViewController {
 
     private enum Section {
         case pending
@@ -439,27 +440,10 @@ extension TxsListViewController {
 
         tableView.contentInset = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
         tableView.backgroundColor = .clear
-
-        view.backgroundColor = Theme.shared.colors.txTableBackground
     }
 
     private func setEmptyView() {
-        let emptyView = UIView(frame: CGRect(x: tableView.center.x, y: tableView.center.y, width: tableView.bounds.size.width, height: tableView.bounds.size.height))
-        let messageLabel = UILabel()
-        messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        emptyView.addSubview(messageLabel)
-
-        messageLabel.numberOfLines = 0
-        messageLabel.text = localized("tx_list.empty")
-        messageLabel.textAlignment = .center
-        messageLabel.textColor = Theme.shared.colors.txSmallSubheadingLabel
-        messageLabel.font = Theme.shared.fonts.txListEmptyMessageLabel
-
-        messageLabel.centerYAnchor.constraint(equalTo: emptyView.centerYAnchor, constant: -20).isActive = true
-        messageLabel.centerXAnchor.constraint(equalTo: emptyView.centerXAnchor).isActive = true
-        messageLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: messageLabel.font.pointSize * 1.2).isActive = true
-
-        tableView.backgroundView = emptyView
+        tableView.backgroundView = TxsListEmptyView()
     }
 
     private func removeBackgroundView(completion:(() -> Void)? = nil) {
@@ -482,79 +466,16 @@ extension TxsListViewController {
     }
 
     private func setIntroView() {
-        let introView = UIView(
-            frame: CGRect(
-                x: tableView.center.x,
-                y: tableView.center.y,
-                width: tableView.bounds.size.width,
-                height: tableView.bounds.size.height
-            )
-        )
-
-        let titleLabel = UILabel()
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        introView.addSubview(titleLabel)
-
-        let titleText = localized("tx_list.intro")
-
-        let attributedTitle = NSMutableAttributedString(
-            string: titleText,
-            attributes: [NSAttributedString.Key.font: Theme.shared.fonts.introTitle]
-        )
-
-        titleLabel.attributedText = attributedTitle
-        titleLabel.textAlignment = .center
-        titleLabel.centerYAnchor.constraint(
-            equalTo: introView.centerYAnchor
-        ).isActive = true
-        titleLabel.centerXAnchor.constraint(
-            equalTo: introView.centerXAnchor
-        ).isActive = true
-
-        titleLabel.heightAnchor.constraint(
-            greaterThanOrEqualToConstant: titleLabel.font.pointSize * 1.2
-        ).isActive = true
-
-        let messageLabel = UILabel()
-        messageLabel.translatesAutoresizingMaskIntoConstraints = false
-        introView.addSubview(messageLabel)
-
-        messageLabel.text = localized("tx_list.intro_message")
-        messageLabel.textAlignment = .center
-        messageLabel.textColor = Theme.shared.colors.txSmallSubheadingLabel
-        messageLabel.font = Theme.shared.fonts.txListEmptyMessageLabel
-
-        messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15).isActive = true
-        messageLabel.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
-        messageLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: messageLabel.font.pointSize * 1.2).isActive = true
-
-        let waveAnimation = AnimationView()
-        waveAnimation.backgroundBehavior = .pauseAndRestore
-        waveAnimation.animation = Animation.named(.waveEmoji)
-        introView.addSubview(waveAnimation)
-
-        waveAnimation.translatesAutoresizingMaskIntoConstraints = false
-        waveAnimation.widthAnchor.constraint(equalToConstant: 70).isActive = true
-        waveAnimation.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        waveAnimation.centerXAnchor.constraint(equalTo: introView.centerXAnchor).isActive = true
-        waveAnimation.bottomAnchor.constraint(equalTo: titleLabel.topAnchor).isActive = true
-
-        waveAnimation.play(
-            fromProgress: 0,
-            toProgress: 1,
-            loopMode: .playOnce,
-            completion: {
-                [weak self] _ in
-                self?.backgroundType = .none
-                DispatchQueue.main.asyncAfter(
-                    deadline: .now() + CATransaction.animationDuration()
-                ) {
-                    [weak self] in
-                    self?.tableView.reloadData()
-                }
+        
+        let introView = TxsListIntroView()
+        
+        introView.playAnimation { [weak self] in
+            self?.backgroundType = .none
+            DispatchQueue.main.asyncAfter(deadline: .now() + CATransaction.animationDuration()) { [weak self] in
+                self?.tableView.reloadData()
             }
-        )
-
+        }
+        
         tableView.backgroundView = introView
     }
 
@@ -601,4 +522,139 @@ extension TxsListViewController {
     @objc private func refresh(_ sender: AnyObject) {
         syncBaseNode()
     }
+}
+
+private final class TxsListEmptyView: DynamicThemeView {
+    
+    // MARK: - Subviews
+    
+    @View private var label: UILabel = {
+        let view = UILabel()
+        view.numberOfLines = 0
+        view.text = localized("tx_list.empty")
+        view.font = Theme.shared.fonts.txListEmptyMessageLabel
+        view.textAlignment = .center
+        return view
+    }()
+    
+    // MARK: - Initialisers
+    
+    override init() {
+        super.init()
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+    
+    private func setupConstraints() {
+        
+        addSubview(label)
+        
+        let constraints = [
+            label.centerYAnchor.constraint(equalTo: centerYAnchor, constant: -20.0),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.body
+    }
+}
+
+private final class TxsListIntroView: DynamicThemeView {
+    
+    // MARK: - Subviews
+    
+    @View private var titleLabel: UILabel = {
+        let view = UILabel()
+        view.text = localized("tx_list.intro")
+        view.font = Theme.shared.fonts.introTitle
+        view.textAlignment = .center
+        return view
+    }()
+    
+    @View private var messageLabel: UILabel = {
+        let view = UILabel()
+        view.text = localized("tx_list.intro_message")
+        view.font = Theme.shared.fonts.txListEmptyMessageLabel
+        view.textAlignment = .center
+        return view
+    }()
+    
+    @View private var waveAnimation: AnimationView = {
+        let view = AnimationView()
+        view.backgroundBehavior = .pauseAndRestore
+        view.animation = Animation.named(.waveEmoji)
+        return view
+    }()
+    
+    // MARK: - Initialisers
+    
+    override init() {
+        super.init()
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+    
+    private func setupConstraints() {
+        
+        [titleLabel, messageLabel, waveAnimation].forEach(addSubview)
+        
+        let constraints = [
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor),
+            messageLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 15.0),
+            messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
+            messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            messageLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: messageLabel.font.pointSize * 1.2),
+            waveAnimation.bottomAnchor.constraint(equalTo: titleLabel.topAnchor),
+            waveAnimation.widthAnchor.constraint(equalToConstant: 70.0),
+            waveAnimation.heightAnchor.constraint(equalToConstant: 70.0),
+            waveAnimation.centerXAnchor.constraint(equalTo: centerXAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        messageLabel.textColor = theme.text.lightText
+    }
+    
+    // MARK: - Actions
+    
+    func playAnimation(completion: (() -> Void)?) {
+        waveAnimation.play { _ in completion?() }
+    }
+}
+
+
+struct MockTx: Transaction {
+    var identifier: UInt64 = 1
+    var amount: UInt64 = 1234567
+    var isOutboundTransaction: Bool = false
+    var status: TransactionStatus = .broadcast
+    var message: String = "Test Message"
+    var timestamp: UInt64 = 12345678
+    var address: TariAddress = try! TariAddress(hex: "000000000000000000000000000000000000000000000000000000000000000026")
+    var isCancelled: Bool = false
+    var isPending: Bool = true
 }

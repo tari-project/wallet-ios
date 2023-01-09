@@ -42,8 +42,9 @@ import UIKit
 import LocalAuthentication
 import YatLib
 import Combine
+import TariCommon
 
-class SettingsViewController: SettingsParentTableViewController {
+final class SettingsViewController: SettingsParentTableViewController {
     private let localAuth = LAContext()
 
     private enum Section: Int, CaseIterable {
@@ -83,6 +84,7 @@ class SettingsViewController: SettingsParentTableViewController {
 
         case connectYats
 
+        case selectTheme
         case torBridgeConfiguration
         case selectNetwork
         case selectBaseNode
@@ -92,6 +94,7 @@ class SettingsViewController: SettingsParentTableViewController {
             switch self {
             case .backUpWallet: return localized("settings.item.wallet_backups")
 
+            case .selectTheme: return localized("settings.item.select_theme")
             case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
             case .selectNetwork: return localized("settings.item.select_network")
             case .selectBaseNode: return localized("settings.item.select_base_node")
@@ -116,6 +119,7 @@ class SettingsViewController: SettingsParentTableViewController {
     private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [backUpWalletItem]
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
+        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsNetworkIcon, title: SettingsItemTitle.selectNetwork.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBaseNodeIcon, title: SettingsItemTitle.selectBaseNode.rawValue),
@@ -198,6 +202,11 @@ class SettingsViewController: SettingsParentTableViewController {
     private func onReportBugAction() {
         let controller = BugReportingConstructor.buildScene()
         present(controller, animated: true)
+    }
+    
+    private func onSelectThemeAction() {
+        let controller = ThemeSettingsConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
     }
     
     private func onBridgeConfigurationAction() {
@@ -305,25 +314,18 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = UIView()
-        header.backgroundColor = .clear
+        
         let sec = Section(rawValue: section)
 
         switch sec {
         case .security, .advancedSettings, .yat, .more:
-            header.heightAnchor.constraint(equalToConstant: 70).isActive = true
-        default: break
+            break
+        default:
+            return nil
         }
 
-        let label = UILabel()
-        label.font = Theme.shared.fonts.settingsViewHeader
-        label.text = SettingsHeaderTitle.allCases[section].rawValue
-
-        header.addSubview(label)
-
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.leadingAnchor.constraint(equalTo: header.leadingAnchor, constant: 25).isActive = true
-        label.bottomAnchor.constraint(equalTo: header.bottomAnchor, constant: -15).isActive = true
+        let header = SettingsTableHeaderView()
+        header.label.text = SettingsHeaderTitle.allCases[section].rawValue
 
         return header
     }
@@ -363,12 +365,14 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         case .advancedSettings:
             switch indexPath.row {
             case 0:
-                onBridgeConfigurationAction()
+                onSelectThemeAction()
             case 1:
-                onSelectNetworkAction()
+                onBridgeConfigurationAction()
             case 2:
-                onSelectBaseNodeAction()
+                onSelectNetworkAction()
             case 3:
+                onSelectBaseNodeAction()
+            case 4:
                 onDeleteWalletAction()
             default:
                 break
@@ -383,16 +387,14 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
 extension SettingsViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
-        navigationBar.backButton.isHidden = true
+        navigationBar.backButtonType = .none
         if modalPresentationStyle != .popover { return }
-        navigationBar.rightButtonAction = { [weak self] in
+        navigationBar.onRightButtonAction = { [weak self] in
             self?.dismiss(animated: true, completion: nil)
         }
 
         let title = localized("settings.done")
         navigationBar.rightButton.setTitle(title, for: .normal)
-        navigationBar.rightButton.setTitleColor(Theme.shared.colors.settingsDoneButtonTitle, for: .normal)
-        navigationBar.rightButton.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
     }
 
     private func checkClipboardForBaseNode() {
@@ -418,5 +420,47 @@ extension SettingsViewController {
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("settings.pasteboard.custom_base_node.error.title"), message: localized("settings.pasteboard.custom_base_node.error.message"), type: .error))
         }
+    }
+}
+
+private final class SettingsTableHeaderView: DynamicThemeView {
+    
+    // MARK: - Subviews
+    
+    @View private(set) var label: UILabel = {
+        let view = UILabel()
+        view.font = Theme.shared.fonts.settingsViewHeader
+        return view
+    }()
+    
+    // MARK: - Initialisers
+    
+    override init() {
+        super.init()
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+    
+    private func setupConstraints() {
+        
+        addSubview(label)
+        
+        let constraints = [
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0),
+            heightAnchor.constraint(equalToConstant: 70.0)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.heading
     }
 }

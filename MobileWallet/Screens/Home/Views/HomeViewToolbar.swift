@@ -40,7 +40,7 @@
 
 import UIKit
 
-final class HomeViewToolbar: UIView {
+final class HomeViewToolbar: DynamicThemeView {
 
     var onOnCloseButtonTap: (() -> Void)?
 
@@ -48,7 +48,6 @@ final class HomeViewToolbar: UIView {
         let view = UILabel()
         view.text = localized("tx_list.title")
         view.font = Theme.shared.fonts.navigationBarTitle
-        view.textColor = Theme.shared.colors.txListNavBar
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -62,9 +61,8 @@ final class HomeViewToolbar: UIView {
 
     // MARK: - Initializers
 
-    init() {
-        super.init(frame: .zero)
-        setupViews()
+    override init() {
+        super.init()
         setupConstraints()
         setupFeedbacks()
     }
@@ -74,14 +72,6 @@ final class HomeViewToolbar: UIView {
     }
 
     // MARK: - Setups
-
-    private func setupViews() {
-        backgroundColor = Theme.shared.colors.navigationBarBackground
-        layer.shadowOpacity = 0.0
-        layer.shadowOffset = CGSize(width: 0.0, height: 5.0)
-        layer.shadowRadius = 10.0
-        layer.shadowColor = Theme.shared.colors.defaultShadow?.cgColor
-    }
 
     private func setupConstraints() {
 
@@ -101,6 +91,16 @@ final class HomeViewToolbar: UIView {
 
     private func setupFeedbacks() {
         closeButton.addTarget(self, action: #selector(onCloseButtonTapAction), for: .touchUpInside)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        titleLabel.textColor = theme.text.heading
+        closeButton.tintColor = theme.icons.default
+        apply(shadow: theme.shadows.box)
     }
 
     // MARK: - Target - Actions

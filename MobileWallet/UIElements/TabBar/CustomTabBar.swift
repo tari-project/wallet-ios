@@ -40,10 +40,10 @@
 
 import UIKit
 
-final class CustomTabBar: UITabBar {
+final class CustomTabBar: DynamicThemeTabBar {
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init() {
+        super.init()
         setup()
     }
 
@@ -53,19 +53,6 @@ final class CustomTabBar: UITabBar {
     }
 
     func setup() {
-        
-        let appearance = UITabBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = .white
-        appearance.stackedLayoutAppearance.normal.iconColor = .tari.greys.black
-        appearance.stackedLayoutAppearance.selected.iconColor = .tari.purple
-        
-        standardAppearance = appearance
-        
-        if #available(iOS 15.0, *) {
-            scrollEdgeAppearance = appearance
-        }
-
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
         layer.shadowRadius = 8
@@ -79,5 +66,20 @@ final class CustomTabBar: UITabBar {
         let bottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
         sizeThatFits.height = 59 + bottomInset
         return sizeThatFits
+    }
+    
+    override func update(theme: ColorTheme) {
+        
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = theme.backgrounds.primary
+        appearance.stackedLayoutAppearance.normal.iconColor = theme.icons.default
+        appearance.stackedLayoutAppearance.selected.iconColor = theme.icons.active
+        
+        standardAppearance = appearance
+        
+        if #available(iOS 15.0, *) {
+            scrollEdgeAppearance = appearance
+        }
     }
 }

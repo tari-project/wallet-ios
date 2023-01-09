@@ -40,8 +40,9 @@
 
 import UIKit
 import GiphyUISDK
+import TariCommon
 
-final class AddNoteViewController: UIViewController, UIScrollViewDelegate {
+final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDelegate {
 
     private static var giphyKeywords = ["money", "money machine", "rich"]
     private static var giphyCurrentKeywordIndex = 0
@@ -53,7 +54,8 @@ final class AddNoteViewController: UIViewController, UIScrollViewDelegate {
     private let deeplink: TransactionsSendDeeplink?
 
     private let sidePadding = Theme.shared.sizes.appSidePadding
-    private let navigationBar = NavigationBar()
+    @View private var navigationBar = NavigationBar()
+    @View private var emojiIdView = EmojiIdView()
     fileprivate let scrollView = UIScrollView()
     fileprivate let stackView = UIStackView()
     fileprivate let sendButton = SlideView()
@@ -155,7 +157,7 @@ final class AddNoteViewController: UIViewController, UIScrollViewDelegate {
         
         guard let alias = alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
             do {
-                try navigationBar.showEmojiId(emojiID: paymentInfo.address.emojis, hex: paymentInfo.address.byteVector.hex, presenterController: self)
+                emojiIdView.setup(emojiID: try paymentInfo.address.emojis, hex: try paymentInfo.address.byteVector.hex, textCentered: true, inViewController: self)
             } catch {
                 PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
             }
@@ -168,16 +170,14 @@ final class AddNoteViewController: UIViewController, UIScrollViewDelegate {
     func updateTitleColorAndSetSendButtonState() {
         if noteText.isEmpty && attachment == nil {
             sendButton.isEnabled = false
-            titleLabel.textColor = Theme.shared.colors.addNoteTitleLabel
         } else {
             sendButton.isEnabled = true
-            titleLabel.textColor = Theme.shared.colors.addNoteTitleLabelGray
         }
+        updateNoteViewElements(theme: theme)
     }
-
+    
     private func setup() {
         setupNavigationBar()
-        view.backgroundColor = Theme.shared.colors.appBackground
         setupSendButton()
         setupGiphy()
 
@@ -259,11 +259,7 @@ final class AddNoteViewController: UIViewController, UIScrollViewDelegate {
     }
 
     private func onScrollTopHit(_ isAtTop: Bool) {
-        if isAtTop {
-            navigationBar.hideShadow()
-        } else {
-            navigationBar.showShadow()
-        }
+        navigationBar.isSeparatorVisible = !isAtTop
     }
 
     private func onSlideToEndAction() {
@@ -289,32 +285,48 @@ final class AddNoteViewController: UIViewController, UIScrollViewDelegate {
             yatID: paymentInfo.yatID
         )
     }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        view.backgroundColor = theme.backgrounds.primary
+        
+        searchGiphyButton.backgroundColor = theme.icons.default
+        searchGiphyButton.tintColor = theme.neutral.primary
+        searchGiphyButton.setTitleColor(theme.neutral.primary, for: .normal)
+        poweredByGiphyImageView.tintColor = theme.text.body
+        
+        updateNoteViewElements(theme: theme)
+    }
+    
+    private func updateNoteViewElements(theme: ColorTheme) {
+        noteInput.textColor = noteText.isEmpty ? theme.text.body : theme.text.heading
+        titleLabel.textColor = noteText.isEmpty && attachment == nil ? theme.text.heading : theme.text.body
+    }
 }
 
 extension AddNoteViewController {
     private func setupNavigationBar() {
-        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+        
         view.addSubview(navigationBar)
-        navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        navigationBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        navigationBar.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        navigationBar.heightAnchor.constraint(equalToConstant: 56).isActive = true
-
-        let stubView = UIView()
-        stubView.backgroundColor = navigationBar.backgroundColor
-        navigationBar.insertSubview(stubView, at: 0)
-        stubView.translatesAutoresizingMaskIntoConstraints = false
-
-        stubView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        stubView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        stubView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-        stubView.bottomAnchor.constraint(equalTo: navigationBar.topAnchor).isActive = true
+        navigationBar.addSubview(emojiIdView)
+        
+        navigationBar.isSeparatorVisible = false
+        
+        let constraints = [
+            navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            emojiIdView.centerXAnchor.constraint(equalTo: navigationBar.contentView.centerXAnchor),
+            emojiIdView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
     }
 
     fileprivate func setupNoteTitle() {
         stackView.addArrangedSubview(titleLabel)
         titleLabel.font = Theme.shared.fonts.addNoteTitleLabel
-        titleLabel.textColor = Theme.shared.colors.addNoteTitleLabel
         titleLabel.text = localized("add_note.title")
 
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -342,6 +354,7 @@ extension AddNoteViewController {
     fileprivate func setupNoteInput() {
         stackView.addArrangedSubview(noteInput)
         stackView.setCustomSpacing(20.0, after: noteInput)
+        noteInput.backgroundColor = .clear
         noteInput.delegate = self
         noteInput.isScrollEnabled = false
         noteInput.font = Theme.shared.fonts.addNoteInputView
@@ -351,7 +364,6 @@ extension AddNoteViewController {
         noteInput.widthAnchor.constraint(equalTo: stackView.widthAnchor).isActive = true
 
         noteInput.text = notePlaceholder
-        noteInput.textColor = .lightGray
     }
 
     private func setupMediaAttachment() {
@@ -426,9 +438,6 @@ extension AddNoteViewController {
         giphyVC.view.heightAnchor.constraint(equalToConstant: 64).isActive = true
 
         searchGiphyButton.setImage(Theme.shared.images.searchIcon, for: .normal)
-        searchGiphyButton.tintColor = Theme.shared.colors.searchGiphyButtonTitle
-        searchGiphyButton.backgroundColor = Theme.shared.colors.searchGiphyButtonBackground
-        searchGiphyButton.setTitleColor(Theme.shared.colors.searchGiphyButtonTitle, for: .normal)
         searchGiphyButton.titleLabel?.font = Theme.shared.fonts.searchGiphyButtonTitle
         searchGiphyButton.setTitle(localized("add_note.search_giphy_button"), for: .normal)
         searchGiphyButton.translatesAutoresizingMaskIntoConstraints = false
@@ -501,7 +510,6 @@ extension AddNoteViewController: UITextViewDelegate {
 
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if textView.text.count == 1 && text.isEmpty {
-            textView.textColor = .lightGray
             textView.text = notePlaceholder
             let newPosition = textView.beginningOfDocument
             textView.selectedTextRange = textView.textRange(from: newPosition, to: newPosition)
@@ -514,7 +522,6 @@ extension AddNoteViewController: UITextViewDelegate {
             if text.isEmpty {
                 return false
             }
-            textView.textColor = .black
             textView.text = ""
             return true
         }
@@ -539,7 +546,6 @@ extension AddNoteViewController: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
             textView.text = notePlaceholder
-            textView.textColor = .lightGray
         }
     }
 }

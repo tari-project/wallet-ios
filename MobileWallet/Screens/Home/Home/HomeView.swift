@@ -42,7 +42,7 @@ import UIKit
 import TariCommon
 import Combine
 
-final class HomeView: UIView {
+final class HomeView: DynamicThemeView {
 
     // MARK: - Subviews
 
@@ -55,18 +55,7 @@ final class HomeView: UIView {
 
     private let gradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()
-        layer.locations = [0.0, 0.06, 0.18, 0.3, 0.39, 0.51, 0.68, 0.89, 1.0]
-        layer.colors = [
-            Theme.shared.colors.auroraGradient1!.cgColor,
-            Theme.shared.colors.auroraGradient2!.cgColor,
-            Theme.shared.colors.auroraGradient3!.cgColor,
-            Theme.shared.colors.auroraGradient4!.cgColor,
-            Theme.shared.colors.auroraGradient5!.cgColor,
-            Theme.shared.colors.auroraGradient6!.cgColor,
-            Theme.shared.colors.auroraGradient7!.cgColor,
-            Theme.shared.colors.auroraGradient8!.cgColor,
-            Theme.shared.colors.auroraGradient9!.cgColor
-        ]
+        layer.locations = [0.0, 0.3]
         return layer
     }()
 
@@ -74,7 +63,7 @@ final class HomeView: UIView {
         let view = UILabel()
         view.text = localized("home.available_balance")
         view.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
-        view.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
+        view.textColor = .static.white
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -82,6 +71,7 @@ final class HomeView: UIView {
     private let tariIconView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.currencySymbol
+        view.tintColor = .static.white
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -98,7 +88,7 @@ final class HomeView: UIView {
         let view = UILabel()
         view.text = localized("home.label.spendable")
         view.font = Theme.shared.fonts.homeScreenTotalBalanceLabel
-        view.textColor = Theme.shared.colors.homeScreenTotalBalanceLabel
+        view.textColor = .static.white
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -115,7 +105,7 @@ final class HomeView: UIView {
         let view = BaseButton()
         view.translatesAutoresizingMaskIntoConstraints = false
         view.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
-        view.tintColor = .white
+        view.tintColor = .static.white
         return view
     }()
     
@@ -124,7 +114,7 @@ final class HomeView: UIView {
     @View var utxosWalletButton: BaseButton = {
         let view = BaseButton()
         view.setImage(Theme.shared.images.homeWalletIcon, for: .normal)
-        view.tintColor = .tari.white
+        view.tintColor = .static.white
         return view
     }()
 
@@ -162,8 +152,8 @@ final class HomeView: UIView {
 
     // MARK: - Initializers
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupLayers()
         setupConstraints()
         setupCallbacks()
@@ -234,6 +224,15 @@ final class HomeView: UIView {
         amountHelpButton.onTap = { [weak self] in
             self?.onAmountHelpButtonTap?()
         }
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        gradientLayer.colors = [theme.buttons.primaryStart, theme.buttons.primaryEnd]
+            .compactMap { $0?.cgColor }
     }
 
     // MARK: - Layout

@@ -46,7 +46,7 @@ enum MigrationManager {
     
     // MARK: - Properties
     
-    private static let minValidVersion = "0.41.0"
+    private static let minValidVersion = "0.43.2"
     
     private static var currentWalletVersion: String {
         

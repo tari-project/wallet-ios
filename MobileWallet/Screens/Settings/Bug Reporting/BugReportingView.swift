@@ -50,7 +50,6 @@ final class BugReportingView: BaseNavigationContentView {
     @View private var headerLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.header")
-        view.textColor = .tari.text.heading
         view.font = .Avenir.medium.withSize(13.0)
         view.numberOfLines = 0
         return view
@@ -58,38 +57,25 @@ final class BugReportingView: BaseNavigationContentView {
     
     @View private var nameTextField: UITextField = {
         let view = UITextField()
-        view.placeholder = localized("bug_reporting.text_field.name")
         view.font = .Avenir.medium.withSize(14.0)
-        view.textColor = .tari.text.heading
         view.returnKeyType = .done
         return view
     }()
     
-    @View private var nameTextFieldSeparator: UIView = {
-        let view = UIView()
-        view.backgroundColor = .tari.separators.primary
-        return view
-    }()
+    @View private var nameTextFieldSeparator = UIView()
     
     @View private var emailTextField: UITextField = {
         let view = UITextField()
-        view.placeholder = localized("bug_reporting.text_field.email")
         view.font = .Avenir.medium.withSize(14.0)
-        view.textColor = .tari.text.heading
         view.returnKeyType = .done
         return view
     }()
     
-    @View private var emailTextFieldSeparator: UIView = {
-        let view = UIView()
-        view.backgroundColor = .tari.separators.primary
-        return view
-    }()
+    @View private var emailTextFieldSeparator = UIView()
     
     @View private var messageHeaderLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.message_header")
-        view.textColor = .tari.text.heading
         view.font = .Avenir.medium.withSize(13.0)
         view.numberOfLines = 0
         return view
@@ -97,9 +83,7 @@ final class BugReportingView: BaseNavigationContentView {
     
     @View private var messageTextView: UITextView = {
         let view = UITextView()
-        view.backgroundColor = .tari.backgrounds.secondary
         view.layer.cornerRadius = 10.0
-        view.textColor = .tari.text.heading
         view.font = .Avenir.medium.withSize(13.0)
         view.textContainerInset = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
         view.returnKeyType = .done
@@ -109,7 +93,6 @@ final class BugReportingView: BaseNavigationContentView {
     @View private var footerLabel: UILabel = {
         let view = UILabel()
         view.text = localized("bug_reporting.label.footer")
-        view.textColor = .tari.text.body
         view.font = .Avenir.medium.withSize(14.0)
         view.numberOfLines = 0
         return view
@@ -229,6 +212,27 @@ final class BugReportingView: BaseNavigationContentView {
     
     private func updateSendButton() {
         sendButton.variation = isProcessing ? .loading : .normal
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        headerLabel.textColor = theme.text.heading
+        nameTextField.textColor = theme.text.heading
+        nameTextFieldSeparator.backgroundColor = theme.neutral.secondary
+        emailTextField.textColor = theme.text.heading
+        emailTextFieldSeparator.backgroundColor = theme.neutral.secondary
+        messageHeaderLabel.textColor = theme.text.heading
+        messageTextView.backgroundColor = theme.backgrounds.secondary
+        messageTextView.textColor = theme.text.heading
+        footerLabel.textColor = theme.text.body
+        
+        
+        
+        guard let placeholderColor = theme.text.lightText else { return }
+        
+        nameTextField.attributedPlaceholder = NSAttributedString(string: localized("bug_reporting.text_field.name"), attributes: [.foregroundColor : placeholderColor])
+        emailTextField.attributedPlaceholder = NSAttributedString(string: localized("bug_reporting.text_field.email"), attributes: [.foregroundColor : placeholderColor])
     }
 }
 

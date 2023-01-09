@@ -49,7 +49,7 @@ enum SlideViewVariation {
     case loading
 }
 
-final class SlideView: UIView {
+final class SlideView: DynamicThemeView {
     static private let thumbnailMargin: CGFloat = 10
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
     static private let thumbnailShadowRadius: Float = 0.5
@@ -77,12 +77,6 @@ final class SlideView: UIView {
         let view = SlideViewRoundImageView()
         view.isUserInteractionEnabled = true
         view.contentMode = .center
-
-        view.layer.shadowOpacity = thumbnailShadowRadius
-        view.layer.shadowOffset = CGSize(width: 0, height: 0)
-        view.layer.shadowRadius = SlideView.thumbnailMargin
-        view.layer.shadowColor = Theme.shared.colors.gradientEndColor!.cgColor
-
         view.image = Theme.shared.images.forwardArrow
         return view
     }()
@@ -149,29 +143,7 @@ final class SlideView: UIView {
             draggedView.layer.cornerRadius = sliderCornerRadius
         }
     }
-    public var sliderBackgroundColor: UIColor = .clear {
-        didSet {
-            sliderHolderView.backgroundColor = sliderBackgroundColor
-            sliderTextLabel.textColor = sliderBackgroundColor
-        }
-    }
-
-    public var textColor: UIColor = Theme.shared.colors.actionButtonTitle! {
-        didSet {
-            textLabel.textColor = textColor
-        }
-    }
-
-    public var slidingColor: UIColor = .clear {
-        didSet {
-            draggedView.backgroundColor = slidingColor
-        }
-    }
-    public var thumbnailColor: UIColor = Theme.shared.colors.actionButtonTitle! {
-        didSet {
-            thumbnailImageView.backgroundColor = thumbnailColor
-        }
-    }
+    
     public var labelText: String = "Slide" {
         didSet {
             textLabel.text = labelText
@@ -198,8 +170,8 @@ final class SlideView: UIView {
     }
     private var isFinished: Bool = false
 
-    override public init(frame: CGRect) {
-        super.init(frame: frame)
+    override init() {
+        super.init()
         setupView()
     }
     private var panGestureRecognizer: UIPanGestureRecognizer!
@@ -296,24 +268,43 @@ final class SlideView: UIView {
     }
 
     private func setStyle() {
-        thumbnailImageView.backgroundColor = thumbnailColor
+        
         textLabel.text = labelText
         textLabel.font = textFont
-        textLabel.textColor = textColor
         textLabel.textAlignment = .center
 
         sliderTextLabel.text = labelText
         sliderTextLabel.font = textFont
-        sliderTextLabel.textColor = sliderBackgroundColor
         sliderTextLabel.textAlignment = .center
         sliderTextLabel.isHidden = !showSliderText
 
-        sliderHolderView.backgroundColor = sliderBackgroundColor
         sliderHolderView.layer.cornerRadius = sliderCornerRadius
-        draggedView.backgroundColor = slidingColor
+        draggedView.backgroundColor = .clear
         draggedView.layer.cornerRadius = sliderCornerRadius
         draggedView.clipsToBounds = true
         draggedView.layer.masksToBounds = true
+        draggedView.layer.cornerRadius = sliderCornerRadius
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        gradientBackgroundView.locations = [
+            GradientLocationData(color: theme.buttons.primaryStart, location: 0.0),
+            GradientLocationData(color: theme.buttons.primaryEnd, location: 1.0)
+        ]
+        
+        updateSliderState(theme: theme)
+    }
+    
+    private func updateSliderState(theme: ColorTheme) {
+        sliderTextLabel.textColor = isEnabled ? .clear : theme.buttons.disabled
+        sliderHolderView.backgroundColor = isEnabled ? .clear : theme.buttons.disabled
+        textLabel.textColor = isEnabled ? .static.white : theme.buttons.disabledText
+        
+        thumbnailImageView.backgroundColor = isEnabled ? theme.buttons.primaryText : theme.buttons.disabledText
+        thumbnailImageView.tintColor = isEnabled ? theme.brand.purple : theme.buttons.disabled
+        thumbnailImageView.apply(shadow: isEnabled ? theme.shadows.box : .none)
     }
 
     private func isTapOnThumbnailViewWithPoint(_ point: CGPoint) -> Bool {
@@ -411,20 +402,8 @@ final class SlideView: UIView {
     }
 
     private func updateIsEnabledStyle() {
-        if isEnabled {
-            sliderBackgroundColor = .clear
-            textColor = Theme.shared.colors.actionButtonTitle!
-            thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonBackgroundSimple!)
-            thumbnailImageView.layer.shadowOpacity = SlideView.thumbnailShadowRadius
-            gradientBackgroundView.isHidden = false
-            
-        } else {
-            sliderBackgroundColor = Theme.shared.colors.actionButtonBackgroundDisabled!
-            textColor = Theme.shared.colors.actionButtonTitleDisabled!
-            thumbnailImageView.image = thumbnailImageView.image?.withTintColor(Theme.shared.colors.actionButtonTitleDisabled!)
-            thumbnailImageView.layer.shadowOpacity = 0
-            gradientBackgroundView.isHidden = true
-        }
+        gradientBackgroundView.isHidden = !isEnabled
+        updateSliderState(theme: theme)
     }
 }
 

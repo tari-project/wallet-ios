@@ -81,33 +81,6 @@ extension UIView {
         addSubview(border)
     }
 
-    func applyGradient(animated: Bool = false) {
-        let gradient = CAGradientLayer()
-        gradient.frame = bounds
-        gradient.colors = [
-            Theme.shared.colors.gradientStartColor!.cgColor,
-            Theme.shared.colors.gradientEndColor!.cgColor
-        ]
-        gradient.locations = [0, 1]
-        gradient.cornerRadius = layer.cornerRadius
-        gradient.name = "GradientLayer"
-
-        gradient.endPoint = CGPoint(x: 1, y: 0.5)
-        gradient.startPoint = CGPoint(x: 0, y: 0.5)
-
-        layer.insertSublayer(gradient, at: 0)
-    }
-
-    func removeGradient() {
-        if let sublayers = layer.sublayers {
-            for sublayer in sublayers {
-                if sublayer.name == "GradientLayer" {
-                    sublayer.removeFromSuperlayer()
-                }
-            }
-        }
-    }
-
     func apply(shadow: Shadow) {
         layer.shadowColor = shadow.color?.cgColor
         layer.shadowOpacity = shadow.opacity

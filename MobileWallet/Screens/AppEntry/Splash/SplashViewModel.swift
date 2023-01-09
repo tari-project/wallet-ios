@@ -139,6 +139,7 @@ final class SplashViewModel {
     private func openWallet() {
         
         Task {
+            
             do {
                 let statusRepresentation = status?.statusRepresentation ?? .content
                 status = StatusModel(status: .working, statusRepresentation: statusRepresentation)

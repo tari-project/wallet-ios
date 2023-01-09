@@ -38,115 +38,27 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
-import SwiftUI
+import UIKit
+import TariCommon
 
-class DeleteWalletViewController: UIViewController {
+class DeleteWalletViewController: SettingsParentTableViewController {
 
-    let navigationBar = NavigationBar()
-    let tableView = UITableView(frame: .zero, style: .grouped)
     let menuItem = SystemMenuTableViewCellItem(
         title: localized("settings.item.delete_wallet"),
         hasArrow: false,
         isDestructive: true
     )
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupViews()
-    }
-
-    private func setupViews() {
-        view.backgroundColor = Theme.shared.colors.settingsTableStyleBackground
-        setupNavigationBar()
-        setupNavigationBarSeparator()
-        setupTableView()
-    }
-
-    private func setupNavigationBar() {
-        navigationBar.title = localized("delete_wallet.title")
-        navigationBar.verticalPositioning = .custom(24)
-        navigationBar.backgroundColor = Theme.shared.colors.navigationBarBackground
-
-        view.addSubview(navigationBar)
-        navigationBar.translatesAutoresizingMaskIntoConstraints = false
-
-        navigationBar.topAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.topAnchor
-        ).isActive = true
-        navigationBar.leadingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.leadingAnchor
-        ).isActive = true
-        navigationBar.trailingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.trailingAnchor
-        ).isActive = true
-
-        if modalPresentationStyle == .popover {
-            navigationBar.heightAnchor.constraint(
-                equalToConstant: 58
-            ).isActive = true
-        } else {
-            navigationBar.heightAnchor.constraint(
-                equalToConstant: 50
-            ).isActive = true
-            navigationBar.verticalPositioning = .center
-        }
-
-        let stubView = UIView()
-        stubView.backgroundColor = navigationBar.backgroundColor
-        view.addSubview(stubView)
-        stubView.translatesAutoresizingMaskIntoConstraints = false
-
-        stubView.topAnchor.constraint(
-            equalTo: view.topAnchor
-        ).isActive = true
-        stubView.leadingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.leadingAnchor
-        ).isActive = true
-        stubView.trailingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.trailingAnchor
-        ).isActive = true
-        stubView.bottomAnchor.constraint(
-            equalTo: navigationBar.topAnchor
-        ).isActive = true
-    }
-
-    private func setupNavigationBarSeparator() {
-        let separator = UIView()
-        separator.backgroundColor = Theme.shared.colors.settingsNavBarSeparator
-        navigationBar.addSubview(separator)
-        separator.translatesAutoresizingMaskIntoConstraints = false
-        separator.bottomAnchor.constraint(
-            equalTo: navigationBar.bottomAnchor
-        ).isActive = true
-        separator.leadingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.leadingAnchor
-        ).isActive = true
-        separator.trailingAnchor.constraint(
-            equalTo: view.safeAreaLayoutGuide.trailingAnchor
-        ).isActive = true
-        separator.heightAnchor.constraint(equalToConstant: 1).isActive = true
-    }
-
-    private func setupTableView() {
-        tableView.register(
-            SystemMenuTableViewCell.self,
-            forCellReuseIdentifier: String(describing: SystemMenuTableViewCell.self)
-        )
-        tableView.backgroundColor = .clear
-        tableView.showsVerticalScrollIndicator = false
-        tableView.separatorColor = Theme.shared.colors.settingsTableStyleBackground
-
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
-
+    override func setupViews() {
+        super.setupViews()
+        tableView.register(type: SystemMenuTableViewCell.self)
         tableView.delegate = self
         tableView.dataSource = self
+    }
+
+    override func setupNavigationBar() {
+        super.setupNavigationBar()
+        navigationBar.title = localized("delete_wallet.title")
     }
 
     private func displayWarningDialog() {
@@ -190,36 +102,8 @@ extension DeleteWalletViewController: UITableViewDelegate, UITableViewDataSource
         return cell
     }
 
-    func tableView(_ tableView: UITableView,
-                   viewForHeaderInSection section: Int) -> UIView? {
-        let header = UIView()
-        header.backgroundColor = .clear
-
-        let warningLabel =  UILabel()
-        warningLabel.numberOfLines = 0
-
-        warningLabel.font = Theme.shared.fonts.settingsTableViewLastBackupDate
-        warningLabel.textColor = Theme.shared.colors.settingsViewDescription
-        warningLabel.text = localized("delete_wallet.warning")
-        header.addSubview(warningLabel)
-        warningLabel.translatesAutoresizingMaskIntoConstraints = false
-        warningLabel.leadingAnchor.constraint(
-            equalTo: header.leadingAnchor,
-            constant: Theme.shared.sizes.appSidePadding
-        ).isActive = true
-        warningLabel.trailingAnchor.constraint(
-            equalTo: header.trailingAnchor,
-            constant: -Theme.shared.sizes.appSidePadding
-        ).isActive = true
-        warningLabel.topAnchor.constraint(
-            equalTo: header.topAnchor,
-            constant: Theme.shared.sizes.appSidePadding
-        ).isActive = true
-        header.bottomAnchor.constraint(
-            equalTo: warningLabel.bottomAnchor,
-            constant: Theme.shared.sizes.appSidePadding
-        ).isActive = true
-        return header
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        DeleteWalletHeaderView()
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
@@ -239,4 +123,51 @@ extension DeleteWalletViewController: UITableViewDelegate, UITableViewDataSource
         return nil
     }
 
+}
+
+private final class DeleteWalletHeaderView: DynamicThemeHeaderFooterView {
+    
+    // MARK: - Subiews
+    
+    @View private var label: UILabel = {
+        let view = UILabel()
+        view.font = Theme.shared.fonts.settingsTableViewLastBackupDate
+        view.text = localized("delete_wallet.warning")
+        view.numberOfLines = 0
+        return view
+    }()
+    
+    // MARK: - Initialisers
+    
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        setupConstraints()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Setups
+    
+    private func setupConstraints() {
+        
+        contentView.addSubview(label)
+        
+        let constraints = [
+            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 22.0),
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -22.0)
+        ]
+        
+        NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.body
+    }
 }

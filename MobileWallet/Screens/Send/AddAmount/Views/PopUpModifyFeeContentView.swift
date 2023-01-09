@@ -41,16 +41,15 @@
 import UIKit
 import TariCommon
 
-final class PopUpModifyFeeContentView: UIView {
+final class PopUpModifyFeeContentView: DynamicThemeView {
     
     // MARK: - Subviews
     
-    @View private(set) var segmentedControl = TariSegmentedControl(icons: [Theme.shared.images.speedometerLow, Theme.shared.images.speedometerMid, Theme.shared.images.speedometerHigh], tintColor: .tari.greys.black)
+    @View private(set) var segmentedControl = TariSegmentedControl(icons: [Theme.shared.images.speedometerLow, Theme.shared.images.speedometerMid, Theme.shared.images.speedometerHigh])
     
     @View private var estimatedFeeTitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("add_amount.pop_up.adjust_fee.label.estimated_fee")
-        view.textColor = .tari.darkGrey
         view.textAlignment = .center
         view.font = .Avenir.medium.withSize(14.0)
         return view
@@ -58,7 +57,6 @@ final class PopUpModifyFeeContentView: UIView {
     
     @View private var estimatedFeeValueLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
-        view.textColor = .tari.darkGrey
         view.font = .Avenir.medium.withSize(26.0)
         view.iconHeight = 13.0
         return view
@@ -73,8 +71,8 @@ final class PopUpModifyFeeContentView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -100,5 +98,13 @@ final class PopUpModifyFeeContentView: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        estimatedFeeTitleLabel.textColor = theme.text.heading
+        estimatedFeeValueLabel.textColor = theme.text.heading
     }
 }

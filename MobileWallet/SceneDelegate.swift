@@ -43,7 +43,7 @@ import YatLib
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
-    var window: UIWindow?
+    var window: TariWindow?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -77,8 +77,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         setupYatIntegration()
         
         guard let windowScene = scene as? UIWindowScene else { return }
-        window = UIWindow(windowScene: windowScene)
-        window?.makeKeyAndVisible()
+        let window = TariWindow(windowScene: windowScene)
+        self.window = window
+        window.makeKeyAndVisible()
+        
+        ThemeCoordinator.shared.configure(window: window)
         AppRouter.transitionToSplashScreen(animated: false)
     }
 
@@ -95,6 +98,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_ scene: UIScene) {
         UIApplication.shared.applicationIconBadgeNumber = 0
+        LogFilesManager.cleanupLogs()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

@@ -41,14 +41,13 @@
 import UIKit
 import TariCommon
 
-final class SettingsHeaderView: UITableViewHeaderFooterView {
+final class SettingsHeaderView: DynamicThemeHeaderFooterView {
     
     // MARK: - Subviews
     
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
-        view.textColor = Theme.shared.colors.settingsViewDescription
         view.numberOfLines = 0
         return view
     }()
@@ -86,5 +85,12 @@ final class SettingsHeaderView: UITableViewHeaderFooterView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.body
     }
 }

@@ -46,7 +46,7 @@ enum LoadinGIFButtonVariation {
     case loading
 }
 
-class LoadingGIFButton: UIButton {
+class LoadingGIFButton: DynamicThemeBaseButton {
     static let HEIGHT: CGFloat = 20.0
     private let pendingAnimationView = AnimationView()
 
@@ -56,8 +56,8 @@ class LoadingGIFButton: UIButton {
         }
     }
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init() {
+        super.init()
         commonSetup()
     }
 
@@ -67,8 +67,6 @@ class LoadingGIFButton: UIButton {
     }
 
     private func commonSetup() {
-        setTitleColor(Theme.shared.colors.loadingGifButtonTitleRetryState, for: .normal)
-        setTitleColor(Theme.shared.colors.loadingGifButtonTitleLoadingState, for: .disabled)
         let loadingTitile = localized("loading_gif_button.title.loading")
         let retryTitle = localized("loading_gif_button.title.retry")
         setTitle(loadingTitile, for: .disabled)
@@ -107,5 +105,11 @@ class LoadingGIFButton: UIButton {
         pendingAnimationView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
         pendingAnimationView.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        setTitleColor(theme.text.links, for: .normal)
+        setTitleColor(theme.buttons.disabledText, for: .disabled)
     }
 }

@@ -49,12 +49,12 @@ final class LogView: BaseNavigationContentView {
     @View private(set) var tableView: UITableView = {
         let view = UITableView()
         view.rowHeight = UITableView.automaticDimension
+        view.backgroundColor = .clear
         return view
     }()
     
     @View private var overlayBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .tari.white?.withAlphaComponent(0.5)
         view.alpha = 0.0
         return view
     }()
@@ -97,9 +97,7 @@ final class LogView: BaseNavigationContentView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = .tari.white
         navigationBar.rightButton.setImage(Theme.shared.images.utxoFaucet, for: .normal)
-        navigationBar.rightButton.tintColor = .tari.greys.black
     }
     
     private func setupConstraints() {
@@ -124,12 +122,18 @@ final class LogView: BaseNavigationContentView {
     }
     
     private func setupCallbacks() {
-        navigationBar.rightButtonAction = { [weak self] in
+        navigationBar.onRightButtonAction = { [weak self] in
             self?.onFilterButtonTap?()
         }
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        tableView.separatorColor = theme.neutral.secondary
+        overlayBackgroundView.backgroundColor = theme.backgrounds.primary?.withAlphaComponent(0.5)
+    }
     
     private func updateSpinnerState() {
         UIView.animate(withDuration: 0.3) {

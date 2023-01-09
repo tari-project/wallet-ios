@@ -40,7 +40,7 @@
 
 import UIKit
 
-final class ErrorView: UIView {
+final class ErrorView: DynamicThemeView {
     private let padding: CGFloat = 14
     private let label = UILabel()
     var message = "" {
@@ -63,10 +63,8 @@ final class ErrorView: UIView {
         layer.cornerRadius = 4
         layer.masksToBounds = true
         layer.borderWidth = 1
-        layer.borderColor = Theme.shared.colors.warningBoxBorder!.cgColor
 
         label.textAlignment = .center
-        label.textColor = Theme.shared.colors.warningBoxBorder
         label.font = Theme.shared.fonts.warningBoxTitleLabel
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
@@ -75,5 +73,11 @@ final class ErrorView: UIView {
         label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
         label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
         label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.system.red
+        layer.borderColor =  theme.system.red?.cgColor
     }
 }

@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class ProgressBar: UIView {
+final class ProgressBar: DynamicThemeView {
     
     enum State {
         case disabled
@@ -51,11 +51,7 @@ final class ProgressBar: UIView {
     
     // MARK: - Subviews
     
-    @View private var bar: UIView = {
-        let view = UIView()
-        view.backgroundColor = Theme.shared.colors.sendingTariProgress
-        return view
-    }()
+    @View private var bar = UIView()
     
     // MARK: - Properties
     
@@ -66,8 +62,8 @@ final class ProgressBar: UIView {
     
     // MARK: - Initalisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
     }
@@ -100,20 +96,28 @@ final class ProgressBar: UIView {
         NSLayoutConstraint.activate(constraints)
     }
     
-    // MARK: - Actions
+    // MARK: - Updates
     
-    func update(state: State, completion: (() -> Void)?) {
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        bar.backgroundColor = theme.brand.purple
         
+        updateBackgroundColor(theme: theme)
+    }
+    
+    private func updateBackgroundColor(theme: ColorTheme) {
         switch state {
         case .disabled:
-            backgroundColor = Theme.shared.colors.sendingTariPassiveProgressBackground
-            bar.isHidden = true
+            backgroundColor = theme.neutral.inactive
         case .off, .on:
-            backgroundColor = Theme.shared.colors.sendingTariActiveProgressBackground
-            bar.isHidden = false
+            backgroundColor = theme.brand.purple?.withAlphaComponent(0.5)
         }
-        
+    }
+    
+    func update(state: State, completion: (() -> Void)?) {
         self.state = state
+        bar.isHidden = state == .disabled
+        updateBackgroundColor(theme: theme)
         animateBar(isOn: state == .on, completion: completion)
     }
     

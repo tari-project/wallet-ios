@@ -41,266 +41,191 @@
 import UIKit
 import TariCommon
 
-protocol NavigationBarProtocol: AnyObject {
-    var title: String? { get set }
-}
-
-class NavigationBar: UIView, NavigationBarProtocol {
-    
-    enum VerticalPositioning: Equatable {
-        case standart
-        case center
-        case custom(_ value: CGFloat)
-    }
+final class NavigationBar: DynamicThemeView {
     
     enum BackButtonType {
         case back
         case close
-    }
-
-    var emojiIdView: EmojiIdView! = EmojiIdView()
-
-    let titleLabel = UILabel()
-    let backButton = UIButton()
-    var backButtonAction: (() -> Void)?
-
-    let rightButton = UIButton()
-    let progressView = UIProgressView()
-    var rightButtonAction: (() -> Void)? {
-        didSet {
-            rightButton.isHidden = false
-        }
+        case none
     }
     
-    @View private var buttonImageView: UIImageView = {
-        let view = UIImageView()
-        view.isUserInteractionEnabled = false
-        view.contentMode = .scaleAspectFit
+    // MARK: - Subviews
+    
+    @View private(set) var contentView = UIView()
+    
+    @View private var titleLabel: UILabel = {
+        let view = UILabel()
+        view.font = Theme.shared.fonts.navigationBarTitle
+        view.textAlignment = .center
         return view
     }()
     
-    private var buttonImageViewWidhtConstraint: NSLayoutConstraint?
-    private var buttonImageViewHeightConstraint: NSLayoutConstraint?
-
+    @View private var backButton = BaseButton()
+    @View private var separator = UIView()
+    
+    @View private(set) var rightButton: BaseButton = {
+        let view = BaseButton()
+        view.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
+        view.titleEdgeInsets = UIEdgeInsets(top: 0.0, left: -8.0, bottom: 0.0, right: 8.0)
+        return view
+    }()
+    
+    @View private(set) var bottomContentView = UIView()
+    
+    @View private var progressView: UIProgressView = {
+        let view = UIProgressView()
+        view.isHidden = true
+        return view
+    }()
+    
+    // MARK: - Properties
+    
     var title: String? {
-        get {
-            titleLabel.text
-        }
-        set {
-            titleLabel.text = newValue
-        }
-    }
-
-    var verticalPositioning: VerticalPositioning = .standart {
-        didSet {
-            switch verticalPositioning {
-            case .standart:
-                topPositioningConstraint?.constant = 16
-                centerPositioningConstraint?.isActive = false
-                topPositioningConstraint?.isActive = true
-            case .center:
-                topPositioningConstraint?.isActive = false
-                centerPositioningConstraint?.isActive = true
-            case .custom(let value):
-                topPositioningConstraint?.constant = value
-                centerPositioningConstraint?.isActive = false
-                topPositioningConstraint?.isActive = true
-            }
-            layoutIfNeeded()
-        }
+        get { titleLabel.text }
+        set { titleLabel.text = newValue }
     }
     
     var backButtonType: BackButtonType = .back {
-        didSet { updateBackButton() }
+        didSet { updateLeftButton() }
     }
-
-    private var topPositioningConstraint: NSLayoutConstraint?
-    private var centerPositioningConstraint: NSLayoutConstraint?
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        clipsToBounds = true
-        backgroundColor = Theme.shared.colors.appBackground
-        setupTitle()
-        setupBackButton()
-        setupRightButton()
-        setupProgressView()
-        clipsToBounds = false
-
-        layer.shadowOpacity = 0
-        layer.shadowOffset = CGSize(width: 0, height: 5)
-        layer.shadowRadius = 10
-        layer.shadowColor = Theme.shared.colors.defaultShadow!.cgColor
+    
+    var progress: Float? = nil {
+        didSet {
+            guard let progress else {
+                progressView.isHidden = true
+                return
+            }
+            
+            progressView.isHidden = false
+            progressView.setProgress(progress, animated: oldValue != nil)
+        }
     }
-
+    
+    var isSeparatorVisible: Bool {
+        get { !separator.isHidden }
+        set { separator.isHidden = !newValue }
+    }
+    
+    var onBackButtonAction: (() -> Void)?
+    var onRightButtonAction: (() -> Void)?
+    
+    override init() {
+        super.init()
+        setupConstraints()
+        setupCallbacks()
+        updateLeftButton()
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    func setProgress(_ progress: Float) {
-        self.progressView.setProgress(progress, animated: !isHidden)
-    }
-
-    private func setupTitle() {
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(titleLabel)
-        centerPositioningConstraint = titleLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
-        topPositioningConstraint = titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 16.0)
-        topPositioningConstraint?.isActive = true
-        titleLabel.heightAnchor.constraint(equalToConstant: 22.0).isActive = true
-        titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-
-        // Style
-        titleLabel.font = Theme.shared.fonts.navigationBarTitle
-        titleLabel.textColor = Theme.shared.colors.navigationBarTint
-        titleLabel.textAlignment = .center
-    }
-
-    private func setupBackButton() {
-        addSubview(backButton)
-        backButton.translatesAutoresizingMaskIntoConstraints = false
-        backButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
-        backButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0).isActive = true
-        backButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
-        backButton.widthAnchor.constraint(equalToConstant: 45).isActive = true
-        backButton.addTarget(self, action: #selector(backAction(_sender:)), for: .touchUpInside)
-
-        backButton.addSubview(buttonImageView)
+    
+    // MARK: - Subviews
+    
+    private func setupConstraints() {
         
-        let buttonImageViewWidhtConstraint = buttonImageView.widthAnchor.constraint(equalToConstant: 0.0)
-        let buttonImageViewHeightConstraint = buttonImageView.heightAnchor.constraint(equalToConstant: 0.0)
-        self.buttonImageViewWidhtConstraint = buttonImageViewWidhtConstraint
-        self.buttonImageViewHeightConstraint = buttonImageViewHeightConstraint
+        [contentView, bottomContentView, separator, progressView].forEach(addSubview)
+        [backButton, titleLabel, rightButton].forEach(contentView.addSubview)
+        
+        rightButton.setContentHuggingPriority(.required, for: .horizontal)
+        
+        let bottomContentViewHeightConstraint = bottomContentView.heightAnchor.constraint(equalToConstant: 0.0)
+        bottomContentViewHeightConstraint.priority = .defaultHigh
         
         let constraints = [
-            buttonImageView.leadingAnchor.constraint(equalTo: backButton.leadingAnchor),
-            buttonImageView.centerYAnchor.constraint(equalTo: backButton.centerYAnchor),
-            buttonImageViewWidhtConstraint,
-            buttonImageViewHeightConstraint
+            contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contentView.heightAnchor.constraint(equalToConstant: 44.0),
+            backButton.topAnchor.constraint(equalTo: contentView.topAnchor),
+            backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            backButton.widthAnchor.constraint(equalToConstant: 44.0),
+            backButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: backButton.trailingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: rightButton.leadingAnchor),
+            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            rightButton.topAnchor.constraint(equalTo: contentView.topAnchor),
+            rightButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            rightButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 44.0),
+            rightButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            bottomContentView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
+            bottomContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            bottomContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            bottomContentViewHeightConstraint,
+            separator.topAnchor.constraint(equalTo: bottomContentView.bottomAnchor),
+            separator.leadingAnchor.constraint(equalTo: leadingAnchor),
+            separator.trailingAnchor.constraint(equalTo: trailingAnchor),
+            separator.bottomAnchor.constraint(equalTo: bottomAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 1.0),
+            progressView.topAnchor.constraint(equalTo: bottomAnchor),
+            progressView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            progressView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            progressView.heightAnchor.constraint(equalToConstant: 2.0)
         ]
         
         NSLayoutConstraint.activate(constraints)
-
-        // Style
-        backButton.backgroundColor = .clear
-        backButtonType = .back
-    }
-
-    private func setupRightButton() {
-        rightButton.isHidden = true
-        rightButton.titleLabel?.adjustsFontSizeToFitWidth = true
-
-        addSubview(rightButton)
-
-        rightButton.translatesAutoresizingMaskIntoConstraints = false
-        rightButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor).isActive = true
-        let trailing = rightButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15.0)
-        trailing.isActive = true
-        trailing.priority = .defaultLow
-        rightButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
-        rightButton.leadingAnchor.constraint(greaterThanOrEqualTo: titleLabel.trailingAnchor, constant: 15).isActive = true
-        rightButton.addTarget(self, action: #selector(rightButtonAction(_sender:)), for: .touchUpInside)
-    }
-
-    private func setupProgressView() {
-        progressView.progressTintColor = Theme.shared.colors.navigationBarPurple
-        progressView.progress = 0.5
-        progressView.isHidden = true
-
-        addSubview(progressView)
-        progressView.translatesAutoresizingMaskIntoConstraints = false
-
-        progressView.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
-        progressView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-        progressView.topAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        progressView.heightAnchor.constraint(equalToConstant: 4.0).isActive = true
     }
     
-    private func updateBackButton() {
+    private func setupCallbacks() {
+        backButton.onTap = { [weak self] in self?.handleBackButtonAction() }
+        rightButton.onTap = { [weak self] in self?.onRightButtonAction?() }
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        backButton.tintColor = theme.icons.default
+        titleLabel.textColor = theme.text.heading
+        separator.backgroundColor = theme.neutral.tertiary
+        progressView.tintColor = theme.brand.purple
+        
+        rightButton.tintColor = theme.icons.default
+        rightButton.setTitleColor(theme.icons.default, for: .normal)
+        rightButton.setTitleColor(theme.icons.default?.withAlphaComponent(0.5), for: .highlighted)
+        rightButton.setTitleColor(theme.icons.inactive, for: .disabled)
+    }
+    
+    private func updateLeftButton() {
         
         let image: UIImage?
         
         switch backButtonType {
         case .back:
             image = Theme.shared.images.backArrow
-            buttonImageViewHeightConstraint?.constant = 13.0
-            buttonImageViewWidhtConstraint?.constant = 8.0
         case .close:
             image = Theme.shared.images.close
-            buttonImageViewHeightConstraint?.constant = 13.0
-            buttonImageViewWidhtConstraint?.constant = 13.0
+        case .none:
+            image = nil
         }
         
-        buttonImageView.image = image
+        backButton.setImage(image, for: .normal)
     }
     
-    func showEmojiId(emojiID: String, hex: String, presenterController: UIViewController) {
-        emojiIdView.setup(emojiID: emojiID, hex: hex, textCentered: true, inViewController: presenterController)
-
-        emojiIdView.tapToExpand = { expanded in
-            UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
-                self?.backButton.alpha = expanded ? 0.0 : 1.0
-            }
+    // MARK: - Actions
+    
+    private func handleBackButtonAction() {
+        
+        guard backButtonType != .none else { return }
+        
+        guard onBackButtonAction == nil else {
+            onBackButtonAction?()
+            return
         }
-        addSubview(emojiIdView)
-        emojiIdView.translatesAutoresizingMaskIntoConstraints = false
-        emojiIdView.topAnchor.constraint(
-            equalTo: safeAreaLayoutGuide.topAnchor,
-            constant: 27
-        ).isActive = true
-        emojiIdView.leadingAnchor.constraint(
-            equalTo: leadingAnchor,
-            constant: Theme.shared.sizes.appSidePadding
-        ).isActive = true
-        emojiIdView.trailingAnchor.constraint(
-            equalTo: trailingAnchor,
-            constant: -Theme.shared.sizes.appSidePadding
-        ).isActive = true
-    }
-
-    func hideEmoji(animated: Bool = true) {
-        UIView.animate(withDuration: animated ? CATransaction.animationDuration() : 0.0, animations: {
-            [weak self] in
-            self?.emojiIdView.alpha = 0.0
-        }) { [weak self] _ in
-            self?.emojiIdView.removeFromSuperview()
-            self?.emojiIdView = nil
+        
+        let topController = UIApplication.shared.topController()
+        
+        guard let navigationController = topController as? UINavigationController else {
+            topController?.dismiss(animated: true)
+            return
         }
-    }
-
-    func showShadow(animated: Bool = true) {
-        UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
-            guard let self = self else { return }
-            self.layer.shadowOpacity = 0.1
+        
+        guard navigationController.viewControllers.first == navigationController.topViewController else {
+            navigationController.popViewController(animated: true)
+            return
         }
-    }
-
-    func hideShadow(animated: Bool = true) {
-        UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
-            guard let self = self else { return }
-            self.layer.shadowOpacity = 0.0
-        }
-    }
-
-    @objc public func backAction(_sender: UIButton) {
-        if backButtonAction != nil {
-            backButtonAction?()
-        } else {
-            let topController = UIApplication.shared.topController()
-            guard let navigationController = topController as? UINavigationController else {
-                topController?.dismiss(animated: true)
-                return
-            }
-            if navigationController.viewControllers.first == navigationController.topViewController {
-                navigationController.dismiss(animated: true)
-            } else {
-                navigationController.popViewController(animated: true)
-            }
-            hideEmoji(animated: false)
-        }
-    }
-
-    @objc public func rightButtonAction(_sender: UIButton) {
-        rightButtonAction?()
+        
+        navigationController.dismiss(animated: true)
     }
 }

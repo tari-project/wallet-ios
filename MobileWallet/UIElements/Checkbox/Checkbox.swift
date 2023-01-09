@@ -41,7 +41,7 @@
 import UIKit
 import Lottie
 
-class CheckBox: UIButton {
+final class CheckBox: DynamicThemeBaseButton {
     private let borderLayer = CALayer()
 
     private let animationView = AnimationView()
@@ -59,8 +59,8 @@ class CheckBox: UIButton {
         }
     }
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init() {
+        super.init()
         addTarget(self, action: #selector(self.buttonClicked), for: .touchUpInside)
         setupAnimationView()
         clipsToBounds = false
@@ -72,7 +72,6 @@ class CheckBox: UIButton {
         borderLayer.masksToBounds = true
 
         borderLayer.borderWidth = 2
-        borderLayer.borderColor = Theme.shared.colors.checkBoxBorderColor?.cgColor
         layer.insertSublayer(borderLayer, at: 0)
     }
 
@@ -98,5 +97,10 @@ class CheckBox: UIButton {
         animationView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 2.72).isActive = true
         animationView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         animationView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        borderLayer.borderColor = theme.brand.purple?.cgColor
     }
 }

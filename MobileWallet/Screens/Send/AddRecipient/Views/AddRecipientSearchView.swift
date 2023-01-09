@@ -41,11 +41,11 @@
 import UIKit
 import TariCommon
 
-final class AddRecipientSearchView: UIView {
+final class AddRecipientSearchView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View var textField: UITextField = {
+    @View private(set) var textField: UITextField = {
         let view = UITextField()
         view.placeholder = localized("add_recipient.inputbox.placeholder")
         view.font = Theme.shared.fonts.searchContactsInputBoxText
@@ -57,14 +57,13 @@ final class AddRecipientSearchView: UIView {
     @View private var yatIconView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.yatLogo?.withAlignmentRectInsets(UIEdgeInsets(top: -7.0, left: -11.0, bottom: -7.0, right: 0.0))
-        view.tintColor = .black
         view.contentMode = .scaleAspectFit
         return view
     }()
     
-    @View var yatPreviewButton = PulseButton()
+    @View private(set) var yatPreviewButton = PulseButton()
 
-    @View var qrButton: PulseButton = {
+    @View private(set) var qrButton: PulseButton = {
         let view = PulseButton()
         view.setImage(Theme.shared.images.qrButton, for: .normal)
         return view
@@ -94,8 +93,8 @@ final class AddRecipientSearchView: UIView {
     
     // MARK: - Initialisers
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
     }
@@ -107,12 +106,14 @@ final class AddRecipientSearchView: UIView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = Theme.shared.colors.appBackground
-        layer.cornerRadius = 6.0
-        layer.shadowOpacity = 0.15
-        layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
-        layer.shadowRadius = 6.0
-        layer.shadowColor = Theme.shared.colors.defaultShadow?.cgColor
+        backgroundColor = .clear
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        yatIconView.tintColor = theme.icons.default
+        apply(shadow: theme.shadows.box)
     }
     
     private func setupConstraints() {

@@ -60,10 +60,8 @@ final class AboutView: BaseNavigationContentView {
     
     // MARK: - Subviews
     
-    @View private var tableView: UITableView = {
-        let view = UITableView(frame: .zero, style: .grouped)
-        view.sectionHeaderHeight = UITableView.automaticDimension
-        view.estimatedSectionHeaderHeight = 44.0
+    @View private var tableView: MenuTableView = {
+        let view = MenuTableView()
         view.register(type: AboutViewCell.self)
         view.separatorStyle = .none
         return view
@@ -89,7 +87,6 @@ final class AboutView: BaseNavigationContentView {
     // MARK: - Setups
     
     private func setupViews() {
-        tableView.backgroundColor = .tari.white
         navigationBar.title = localized("about.title")
     }
     

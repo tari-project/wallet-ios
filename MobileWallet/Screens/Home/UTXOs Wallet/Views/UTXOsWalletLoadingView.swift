@@ -42,7 +42,7 @@ import UIKit
 import TariCommon
 import Lottie
 
-final class UTXOsWalletLoadingView: UIView {
+final class UTXOsWalletLoadingView: DynamicThemeView {
     
     // MARK: - Subviews
     
@@ -65,7 +65,6 @@ final class UTXOsWalletLoadingView: UIView {
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("utxos_wallet.spinner.label.title")
-        view.textColor = .tari.greys.mediumDarkGrey
         view.textAlignment = .center
         view.font = .Avenir.roman.withSize(14.0)
         return view
@@ -73,8 +72,8 @@ final class UTXOsWalletLoadingView: UIView {
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -96,5 +95,12 @@ final class UTXOsWalletLoadingView: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        titleLabel.textColor = theme.text.body
     }
 }

@@ -42,7 +42,7 @@ import UIKit
 import TariCommon
 import Combine
 
-final class TariSegmentedControl: UIView {
+final class TariSegmentedControl: DynamicThemeView {
     
     // MARK: - Constants
     
@@ -53,16 +53,11 @@ final class TariSegmentedControl: UIView {
     
     @View private var selectionView: UIView = {
         let view = UIView()
-        view.backgroundColor = .tari.white
-        view.apply(shadow: .box)
         view.layer.cornerRadius = 7.0
         return view
     }()
     
-    @View private var stackView: UIStackView = {
-        let view = UIStackView()
-        return view
-    }()
+    @View private var stackView = UIStackView()
     
     // MARK: - Properties
     
@@ -73,9 +68,9 @@ final class TariSegmentedControl: UIView {
     
     // MARK: - Initialisers
     
-    init(icons: [UIImage?], tintColor: UIColor? = nil) {
-        super.init(frame: .zero)
-        setupViews(icons: icons, tintColor: tintColor)
+    init(icons: [UIImage?]) {
+        super.init()
+        setupViews(icons: icons)
         setupConstraints()
         setupCallbacks()
     }
@@ -86,19 +81,17 @@ final class TariSegmentedControl: UIView {
     
     // MARK: - Setups
     
-    private func setupViews(icons: [UIImage?], tintColor: UIColor?) {
+    private func setupViews(icons: [UIImage?]) {
         
-        backgroundColor = .tari.greys.mediumLightGrey
         layer.cornerRadius = 9.0
         
         icons
             .enumerated()
-            .compactMap { [weak self] in self?.makeButton(icon: $1, tintColor: tintColor, index: $0) }
+            .compactMap { [weak self] in self?.makeButton(icon: $1, index: $0) }
             .forEach { [weak self] in self?.stackView.addArrangedSubview($0) }
         
         guard stackView.arrangedSubviews.count > 0 else { return }
         selectedIndex = 0
-        
     }
     
     private func setupConstraints() {
@@ -126,6 +119,16 @@ final class TariSegmentedControl: UIView {
             .store(in: &cancellables)
     }
     
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.neutral.inactive
+        selectionView.backgroundColor = theme.backgrounds.primary
+        selectionView.apply(shadow: theme.shadows.box)
+        stackView.arrangedSubviews.forEach { $0.tintColor = theme.icons.default }
+    }
+    
     // MARK: - Actions
     
     private func moveSelectionView(toIndex index: Int) {
@@ -150,12 +153,11 @@ final class TariSegmentedControl: UIView {
     
     // MARK: - Factories
     
-    private func makeButton(icon: UIImage?, tintColor: UIColor?, index: Int) -> UIButton {
+    private func makeButton(icon: UIImage?, index: Int) -> UIButton {
         
         let button = BaseButton()
         
         button.setImage(icon, for: .normal)
-        button.tintColor = tintColor
         button.onTap = { [weak self] in self?.selectedIndex = index }
         
         let constraints = [

@@ -41,18 +41,17 @@
 import UIKit
 import TariCommon
 
-final class SettingsViewFooter: UIView {
+final class SettingsViewFooter: DynamicThemeView {
     
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.systemTableViewCell
-        view.textColor = Theme.shared.colors.txCellAlias
         view.text = AppVersionFormatter.version
         return view
     }()
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -71,5 +70,10 @@ final class SettingsViewFooter: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.body
     }
 }

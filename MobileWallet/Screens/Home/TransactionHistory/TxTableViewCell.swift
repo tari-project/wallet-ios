@@ -41,7 +41,7 @@
 import UIKit
 import GiphyUISDK
 
-class TxTableViewCell: UITableViewCell {
+class TxTableViewCell: DynamicThemeCell {
     private let avatarContainer = UIView()
     private let labelsContainer = UIView()
     private let avatarLabel = UILabel()
@@ -54,6 +54,7 @@ class TxTableViewCell: UITableViewCell {
     private let valueLabel = UILabelWithPadding()
     private var attachmentView: GPHMediaView?
     private let loadingGifButton = LoadingGIFButton()
+    private let separatorView = UIView()
 
     var updateCell: (() -> Void)?
     weak var model: TxTableViewModel?
@@ -84,21 +85,16 @@ class TxTableViewCell: UITableViewCell {
     }
 
     func configure(with model: TxTableViewModel) {
-        setStatus(model.status)
-        setValue(
-            microTari: model.value.microTari,
-            isOutboundTransaction: model.value.isOutboundTransaction,
-            isCancelled: model.value.isCancelled,
-            isPending: model.value.isPending
-        )
 
         if model.id == self.model?.id { return }
 
+        setStatus(model.status)
         self.model = model
         avatarLabel.text = model.avatar
         noteLabel.text = model.message
         titleLabel.attributedText = model.title
         timeLabel.text = model.time
+        updateValue()
 
         if model.hasGif {
             loadingGifButton.isHidden = false
@@ -128,14 +124,9 @@ class TxTableViewCell: UITableViewCell {
             (_, _) in
             DispatchQueue.main.async {
                 [weak self] in
-                guard let self = self, let model = self.model else { return }
+                guard let self = self else { return }
                 self.setStatus(item.status)
-                self.setValue(
-                    microTari: model.value.microTari,
-                    isOutboundTransaction: model.value.isOutboundTransaction,
-                    isCancelled: model.value.isCancelled,
-                    isPending: model.value.isPending
-                )
+                self.updateValue()
             }
         }
 
@@ -181,32 +172,40 @@ class TxTableViewCell: UITableViewCell {
             statusLabelHeightHidden.isActive = false
         }
     }
+    
+    private func updateValue(theme: ColorTheme? = nil) {
+        guard let model else { return }
+        setValue(microTari: model.value.microTari, isOutboundTransaction: model.value.isOutboundTransaction, isCancelled: model.value.isCancelled, isPending: model.value.isPending, theme: theme)
+    }
 
-    private func setValue(microTari: MicroTari?, isOutboundTransaction: Bool, isCancelled: Bool, isPending: Bool) {
+    private func setValue(microTari: MicroTari?, isOutboundTransaction: Bool, isCancelled: Bool, isPending: Bool, theme: ColorTheme?) {
+        
+        let theme = theme ?? self.theme
+        
         if let mt = microTari {
             if isCancelled {
                 valueLabel.text = mt.formattedPrecise
-                valueLabel.backgroundColor = Theme.shared.colors.txCellValueCancelledBackground
-                valueLabel.textColor = Theme.shared.colors.txCellValueCancelledText
+                valueLabel.backgroundColor = theme.backgrounds.secondary
+                valueLabel.textColor = theme.text.lightText
             } else if isOutboundTransaction {
                 valueLabel.text = mt.formattedWithNegativeOperator
-                valueLabel.backgroundColor = Theme.shared.colors.txCellValueNegativeBackground
-                valueLabel.textColor = Theme.shared.colors.txCellValueNegativeText
+                valueLabel.backgroundColor = theme.system.lightRed
+                valueLabel.textColor = theme.system.red
             } else {
                 valueLabel.text = mt.formattedWithOperator
-                valueLabel.backgroundColor = Theme.shared.colors.txCellValuePositiveBackground
-                valueLabel.textColor = Theme.shared.colors.txCellValuePositiveText
+                valueLabel.backgroundColor = theme.system.lightGreen
+                valueLabel.textColor = theme.system.green
             }
 
             if isPending && !isCancelled {
-                valueLabel.backgroundColor = Theme.shared.colors.txCellValuePendingBackground
-                valueLabel.textColor = Theme.shared.colors.txCellValuePendingText
+                valueLabel.backgroundColor = theme.system.lightYellow
+                valueLabel.textColor = theme.system.yellow
             }
         } else {
             // Unlikely to happen scenario
             valueLabel.text = "0"
-            valueLabel.backgroundColor = Theme.shared.colors.txTableBackground
-            valueLabel.textColor = Theme.shared.colors.txScreenTextLabel
+            valueLabel.backgroundColor = theme.backgrounds.primary
+            valueLabel.textColor = theme.text.heading
         }
         // fix to 2 decimal places
         if let text = valueLabel.text, let distance = text.indexDistance(of: MicroTari.decimalSeparator) {
@@ -219,6 +218,21 @@ class TxTableViewCell: UITableViewCell {
 
         valueLabel.padding = UIEdgeInsets(top: 4, left: 6, bottom: 4, right: 6)
     }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        backgroundColor = .clear
+        avatarContainer.backgroundColor = theme.backgrounds.primary
+        avatarContainer.apply(shadow: theme.shadows.box)
+        titleLabel.textColor = theme.text.body
+        timeLabel.textColor = theme.text.lightText
+        statusLabel.textColor = theme.system.yellow
+        noteLabel.textColor = theme.text.heading
+        separatorView.backgroundColor = theme.neutral.secondary
+        
+        updateValue(theme: theme)
+    }
 
     deinit {
         stopObservation()
@@ -228,7 +242,6 @@ class TxTableViewCell: UITableViewCell {
 // MARK: setup subviews
 extension TxTableViewCell {
     private func viewSetup() {
-        contentView.backgroundColor = Theme.shared.colors.txTableBackground
         selectionStyle = .none
 
         setupAvatar()
@@ -238,8 +251,6 @@ extension TxTableViewCell {
     private func setupAvatar() {
         contentView.addSubview(avatarContainer)
 
-        avatarContainer.backgroundColor = Theme.shared.colors.txTableBackground
-
         avatarContainer.translatesAutoresizingMaskIntoConstraints = false
 
         let size: CGFloat = 42
@@ -248,12 +259,6 @@ extension TxTableViewCell {
         avatarContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TxTableViewCell.topCellPadding).isActive = true
         avatarContainer.layer.cornerRadius = size / 2
-
-        avatarContainer.layer.shadowOpacity = 0.13
-        avatarContainer.layer.shadowOffset = CGSize(width: 10, height: 10)
-        avatarContainer.layer.shadowRadius = 10
-        avatarContainer.layer.shadowColor = Theme.shared.colors.defaultShadow?.cgColor
-
         avatarLabel.translatesAutoresizingMaskIntoConstraints = false
         avatarContainer.addSubview(avatarLabel)
         avatarLabel.font = UIFont.systemFont(ofSize: size * 0.55)
@@ -264,9 +269,20 @@ extension TxTableViewCell {
     private func setupLabels() {
         // MARK: - Label container
         labelsContainer.translatesAutoresizingMaskIntoConstraints = false
+        separatorView.translatesAutoresizingMaskIntoConstraints = false
+        
         contentView.addSubview(labelsContainer)
+        labelsContainer.addSubview(separatorView)
 
-        labelsContainer.addBottomBorder(with: Theme.shared.colors.txCellBorder, andWidth: 1)
+        let separatorViewConstraints = [
+            separatorView.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor),
+            separatorView.trailingAnchor.constraint(equalTo: labelsContainer.trailingAnchor),
+            separatorView.bottomAnchor.constraint(equalTo: labelsContainer.bottomAnchor),
+            separatorView.heightAnchor.constraint(equalToConstant: 1.0)
+        ]
+        
+        NSLayoutConstraint.activate(separatorViewConstraints)
+        
         labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TxTableViewCell.topCellPadding).isActive = true
         labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25 + TxTableViewCell.topCellPadding).isActive = true
         labelsContainer.leadingAnchor.constraint(equalTo: avatarContainer.trailingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
@@ -304,7 +320,6 @@ extension TxTableViewCell {
         // MARK: - Time
         labelsContainer.addSubview(timeLabel)
         timeLabel.font = Theme.shared.fonts.txDateValueLabel
-        timeLabel.textColor = Theme.shared.colors.txSmallSubheadingLabel
         timeLabel.translatesAutoresizingMaskIntoConstraints = false
         timeLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5).isActive = true
         timeLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
@@ -313,7 +328,6 @@ extension TxTableViewCell {
         // MARK: - Status
         labelsContainer.addSubview(statusLabel)
         statusLabel.font = Theme.shared.fonts.txCellStatusLabel
-        statusLabel.textColor = Theme.shared.colors.txCellStatusLabel
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         statusLabel.topAnchor.constraint(equalTo: timeLabel.bottomAnchor, constant: 5).isActive = true
         statusLabel.leadingAnchor.constraint(equalTo: labelsContainer.leadingAnchor).isActive = true
@@ -323,7 +337,6 @@ extension TxTableViewCell {
         // MARK: - TX note
         labelsContainer.addSubview(noteLabel)
         noteLabel.font = Theme.shared.fonts.txCellDescriptionLabel
-        noteLabel.textColor = Theme.shared.colors.txCellNote
         noteLabel.lineBreakMode = .byWordWrapping
         noteLabel.numberOfLines = 0
         noteLabel.translatesAutoresizingMaskIntoConstraints = false

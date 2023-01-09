@@ -40,7 +40,7 @@
 
 import UIKit
 
-final class SelectBaseNodeCell: UITableViewCell {
+final class SelectBaseNodeCell: DynamicThemeCell {
 
     enum AccessoryType {
         case none, tick, deleteButton
@@ -58,7 +58,6 @@ final class SelectBaseNodeCell: UITableViewCell {
     private let subtitleLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.systemTableViewCellMarkDescriptionSmall
-        view.textColor = Theme.shared.colors.txSmallSubheadingLabel
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
@@ -81,8 +80,6 @@ final class SelectBaseNodeCell: UITableViewCell {
     private let deleteButton: UIButton = {
         let view = UIButton()
         view.titleLabel?.font = UIFont.Avenir.heavy.withSize(14.0)
-        view.setTitleColor(Theme.shared.colors.navigationBarPurple, for: .normal)
-        view.setTitleColor(Theme.shared.colors.navigationBarPurple?.withAlphaComponent(0.5), for: .highlighted)
         view.setTitle(localized("select_base_node.cell.delete"), for: .normal)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -177,5 +174,16 @@ final class SelectBaseNodeCell: UITableViewCell {
         UIView.animate(withDuration: CATransaction.animationDuration(), delay: 0.0, options: .curveEaseIn) {
             self.contentView.alpha = 1.0
         }
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        titleLabel.textColor = theme.text.heading
+        subtitleLabel.textColor = theme.text.body
+        deleteButton.setTitleColor(theme.system.red, for: .normal)
+        deleteButton.setTitleColor(theme.system.red?.withAlphaComponent(0.5), for: .highlighted)
     }
 }

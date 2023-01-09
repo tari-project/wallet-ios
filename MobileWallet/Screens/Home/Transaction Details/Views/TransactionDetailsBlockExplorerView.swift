@@ -41,14 +41,13 @@
 import UIKit
 import TariCommon
 
-final class TransactionDetailsBlockExplorerView: BaseButton {
+final class TransactionDetailsBlockExplorerView: DynamicThemeBaseButton {
     
     // MARK: - Subviews
     
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = localized("tx_detail.block_explorer.description")
-        view.textColor = Theme.shared.colors.txScreenTextLabel
         view.font = Theme.shared.fonts.txScreenTextLabel
         return view
     }()
@@ -62,8 +61,8 @@ final class TransactionDetailsBlockExplorerView: BaseButton {
     
     // MARK: - Initialisations
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -89,5 +88,13 @@ final class TransactionDetailsBlockExplorerView: BaseButton {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Update
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.heading
+        accessoryView.tintColor = theme.icons.default
     }
 }

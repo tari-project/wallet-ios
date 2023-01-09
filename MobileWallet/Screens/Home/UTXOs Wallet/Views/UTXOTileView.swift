@@ -41,15 +41,14 @@
 import UIKit
 import TariCommon
 
-final class UTXOTileView: UICollectionViewCell {
+final class UTXOTileView: DynamicThemeCollectionCell {
     
     struct Model: Hashable {
         let uuid: UUID
         let amountText: String
-        let backgroundColor: UIColor?
+        let hash: String
         let height: CGFloat
-        let statusIcon: UIImage?
-        let statusColor: UIColor?
+        let status: UtxoStatus
         let date: String?
         let isSelectable: Bool
     }
@@ -69,15 +68,15 @@ final class UTXOTileView: UICollectionViewCell {
     
     @View private var amountContentView = UIView()
     
-    @View private var tickView: UTXOsWalletTileTickView = {
-        let view = UTXOsWalletTileTickView()
+    @View private var tickView: UTXOsWalletTickButton = {
+        let view = UTXOsWalletTickButton()
         view.alpha = 0.0
         return view
     }()
     
     @View private var amountLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
-        view.textColor = .tari.white
+        view.textColor = .static.white
         view.font = .Avenir.black.withSize(30.0)
         view.secondaryFont = .Avenir.black.withSize(12.0)
         view.separator = Locale.current.decimalSeparator
@@ -87,7 +86,7 @@ final class UTXOTileView: UICollectionViewCell {
     
     @View private var dateLabel: UILabel = {
         let view = UILabel()
-        view.textColor = .tari.white
+        view.textColor = .static.white
         view.font = .Avenir.medium.withSize(12.0)
         return view
     }()
@@ -95,7 +94,7 @@ final class UTXOTileView: UICollectionViewCell {
     @View private var statusIcon: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.tintColor = .tari.white
+        view.tintColor = .static.white
         return view
     }()
     
@@ -104,6 +103,8 @@ final class UTXOTileView: UICollectionViewCell {
     // MARK: - Properties
     
     private(set) var elementID: UUID?
+    private var colorHash: String?
+    private var status: UtxoStatus = .mined
     
     var isTickSelected: Bool = false {
         didSet { update(selectionState: isTickSelected) }
@@ -129,11 +130,12 @@ final class UTXOTileView: UICollectionViewCell {
     
     func update(model: Model) {
         elementID = model.uuid
-        backgroundContentView.backgroundColor = model.backgroundColor
+        colorHash = model.hash
+        status = model.status
         amountLabel.text = model.amountText
         dateLabel.text = model.date
-        statusIcon.image = model.statusIcon
-        cornerRoundedShapeLayer.fillColor = model.statusColor?.cgColor
+        statusIcon.image = model.status.icon
+        updateViewStatus(theme: theme)
     }
     
     private func setupViews() {
@@ -185,6 +187,25 @@ final class UTXOTileView: UICollectionViewCell {
         [tapGesture, longPressGesture].forEach(addGestureRecognizer)
     }
     
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        updateViewStatus(theme: theme)
+        updateSelectionState(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+    }
+    
+    private func updateViewStatus(theme: ColorTheme) {
+        backgroundContentView.backgroundColor = theme.brand.purple?.colorVariant(text: colorHash ?? "")
+        cornerRoundedShapeLayer.fillColor = status.color(theme: theme)?.cgColor
+    }
+    
+    private func updateSelectionState(theme: ColorTheme) {
+        let shadow = isTickSelected ? theme.shadows.box : .none
+        apply(shadow: shadow)
+    }
+    
     private func updateCornerShape() {
         
         backgroundContentView.layoutIfNeeded()
@@ -202,14 +223,10 @@ final class UTXOTileView: UICollectionViewCell {
         cornerRoundedShapeLayer.path = bezierPath.cgPath
     }
     
-    // MARK: - Actions
-    
     private func update(selectionState: Bool) {
         
         UIView.animate(withDuration: 0.3) {
-            let shadow: Shadow = selectionState ? .selection : .none
-            self.apply(shadow: shadow)
-            self.backgroundColor = selectionState ? .tari.white : .clear
+            self.updateSelectionState(theme: self.theme)
         }
         
         tickView.isSelected = selectionState

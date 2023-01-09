@@ -41,20 +41,18 @@
 import UIKit
 import TariCommon
 
-final class AboutViewHeader: UITableViewHeaderFooterView {
+final class AboutViewHeader: DynamicThemeHeaderFooterView {
     
     // MARK: - Subviews
     
     @View private var tintedBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .tari.white
         return view
     }()
     
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = localized("about.label.creative_commons")
-        view.textColor = .tari.greys.mediumDarkGrey
         view.font = .Avenir.light.withSize(14.0)
         return view
     }()
@@ -109,6 +107,14 @@ final class AboutViewHeader: UITableViewHeaderFooterView {
         button.onTap = { [weak self] in
             self?.onButtonTap?()
         }
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        tintedBackgroundView.backgroundColor = theme.backgrounds.primary
+        label.textColor = theme.text.heading
     }
 }
 

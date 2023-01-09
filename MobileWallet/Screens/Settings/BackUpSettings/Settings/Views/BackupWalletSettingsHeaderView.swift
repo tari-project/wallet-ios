@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class BackupWalletSettingsHeaderView: UIView {
+final class BackupWalletSettingsHeaderView: DynamicThemeView {
     
     @View private var titleLabel: UILabel = {
         let view = UILabel()
@@ -54,13 +54,12 @@ final class BackupWalletSettingsHeaderView: UIView {
         let view = UILabel()
         view.numberOfLines = 0
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
-        view.textColor = Theme.shared.colors.settingsViewDescription
         view.text = localized("backup_wallet_settings.header.description")
         return view
     }()
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -83,5 +82,11 @@ final class BackupWalletSettingsHeaderView: UIView {
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        titleLabel.textColor = theme.text.heading
+        descriptionLabel.textColor = theme.text.body
     }
 }

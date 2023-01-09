@@ -124,31 +124,35 @@ final class PopUpNetworkStatusContentView: UIView {
     
     // MARK: - Updates
     
-    func updateNetworkStatus(text: String, statusColor: UIColor?) {
-        networkStatusView.update(text: text, statusColor: statusColor)
+    func updateNetworkStatus(text: String, status: StatusView.Status) {
+        networkStatusView.update(text: text, status: status)
     }
     
-    func updateTorStatus(text: String, statusColor: UIColor?) {
-        torStatusView.update(text: text, statusColor: statusColor)
+    func updateTorStatus(text: String, status: StatusView.Status) {
+        torStatusView.update(text: text, status: status)
     }
     
-    func updateBaseNodeConnectionStatus(text: String, statusColor: UIColor?) {
-        baseNodeConnectionStatusView.update(text: text, statusColor: statusColor)
+    func updateBaseNodeConnectionStatus(text: String, status: StatusView.Status) {
+        baseNodeConnectionStatusView.update(text: text, status: status)
     }
     
-    func updateBaseNodeSyncStatus(text: String, statusColor: UIColor?) {
-        baseNodeSyncStatusView.update(text: text, statusColor: statusColor)
+    func updateBaseNodeSyncStatus(text: String, status: StatusView.Status) {
+        baseNodeSyncStatusView.update(text: text, status: status)
     }
 }
 
-private class StatusView: UIView {
+final class StatusView: DynamicThemeView {
+    
+    enum Status {
+        case error
+        case warning
+        case ok
+    }
     
     // MARK: - Subviews
     
     @View private var iconViewBackgroundView: UIView = {
         let view = UIView()
-        view.backgroundColor = .tari.white
-        view.apply(shadow: .box)
         view.layer.cornerRadius = 24.0
         return view
     }()
@@ -156,7 +160,6 @@ private class StatusView: UIView {
     @View private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
-        view.tintColor = .tari.greys.black
         return view
     }()
     
@@ -169,16 +172,19 @@ private class StatusView: UIView {
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
-        view.textColor = .tari.greys.grey
         view.textAlignment = .center
         view.numberOfLines = 0
         return view
     }()
     
+    // MARK: - Properties
+    
+    private var status: Status = .error
+    
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -219,12 +225,35 @@ private class StatusView: UIView {
     
     // MARK: - Updates
     
-    func update(text: String, statusColor: UIColor?) {
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        iconViewBackgroundView.backgroundColor = theme.backgrounds.primary
+        iconViewBackgroundView.apply(shadow: theme.shadows.box)
+        iconView.tintColor = theme.icons.active
+        label.textColor = theme.text.body
+        
+        updateBackgroundColor(theme: theme)
+    }
+    
+    func update(text: String, status: Status) {
         label.text = text
-        statusDotView.backgroundColor = statusColor
+        self.status = status
+        updateBackgroundColor(theme: theme)
     }
     
     func update(icon: UIImage?) {
         iconView.image = icon
+    }
+    
+    private func updateBackgroundColor(theme: ColorTheme) {
+        switch status {
+        case .error:
+            statusDotView.backgroundColor = theme.system.red
+        case .warning:
+            statusDotView.backgroundColor = theme.system.orange
+        case .ok:
+            statusDotView.backgroundColor = theme.system.green
+        }
     }
 }

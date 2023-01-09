@@ -196,6 +196,7 @@
 
 "settings.last_successful_backup.with_param" = "Last successful backup: %@";
 
+"settings.item.select_theme" = "Select Theme";
 "settings.item.wallet_backups" = "Wallet Backups";
 "settings.item.bridge_configuration" = "Bridge Configuration";
 "settings.item.select_network" = "Select Network";
@@ -648,6 +649,14 @@
 "bug_reporting.label.footer" = "With this bug report you will send us information about your device model, iOS version and recent logs.";
 "bug_reporting.button.send" = "Send";
 "bug_reporting.button.view_logs" = "View logs";
+
+/* Theme Switcher */
+
+"theme_switcher.title" = "Select Theme";
+"theme_switcher.element.title.system" = "System";
+"theme_switcher.element.title.light" = "Light";
+"theme_switcher.element.title.dark" = "Dark";
+"theme_switcher.element.title.purple" = "Purple";
 
 /* Errors */
 

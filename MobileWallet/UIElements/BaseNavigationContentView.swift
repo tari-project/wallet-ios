@@ -41,34 +41,16 @@
 import UIKit
 import TariCommon
 
-class BaseNavigationContentView: UIView {
+class BaseNavigationContentView: DynamicThemeView {
     
     // MARK: - Subview
     
-    @View private var statusBarBackgroundView: UIView = {
-        let view = UIView()
-        view.backgroundColor = Theme.shared.colors.navigationBarBackground
-        return view
-    }()
-    
-    @View private(set) var navigationBar: NavigationBar = {
-       let view = NavigationBar()
-        view.verticalPositioning = .custom(24)
-        view.backgroundColor = Theme.shared.colors.navigationBarBackground
-        return view
-    }()
-    
-    @View private(set) var separator: UIView = {
-        let view = UIView()
-        view.backgroundColor = Theme.shared.colors.settingsNavBarSeparator
-        return view
-    }()
+    @View private(set) var navigationBar = NavigationBar()
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
-        setupViews()
+    override init() {
+        super.init()
         setupConstraints()
     }
     
@@ -78,30 +60,23 @@ class BaseNavigationContentView: UIView {
     
     // MARK: - Setups
     
-    private func setupViews() {
-        backgroundColor = Theme.shared.colors.appBackground
-        navigationBar.verticalPositioning = .center
-    }
-    
     private func setupConstraints() {
         
-        [statusBarBackgroundView, navigationBar, separator].forEach(addSubview)
+        addSubview(navigationBar)
         
         let constraints = [
-            statusBarBackgroundView.topAnchor.constraint(equalTo: topAnchor),
-            statusBarBackgroundView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            statusBarBackgroundView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            statusBarBackgroundView.bottomAnchor.constraint(equalTo: navigationBar.topAnchor),
-            navigationBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-            navigationBar.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            navigationBar.heightAnchor.constraint(equalToConstant: 50.0),
-            separator.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            separator.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-            separator.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-            separator.heightAnchor.constraint(equalToConstant: 1.0)
+            navigationBar.topAnchor.constraint(equalTo: topAnchor),
+            navigationBar.leadingAnchor.constraint(equalTo: leadingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: trailingAnchor)
         ]
         
         NSLayoutConstraint.activate(constraints)
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
     }
 }

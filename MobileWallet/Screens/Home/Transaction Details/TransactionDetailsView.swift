@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class TransactionDetailsView: UIView {
+final class TransactionDetailsView: DynamicThemeView {
     
     private enum NavigationBarState {
         case normal
@@ -57,7 +57,17 @@ final class TransactionDetailsView: UIView {
     
     // MARK: - Subviews
     
-    @View private(set) var navigationBar = NavigationBarWithSubtitle()
+    @View private var navigationBar = NavigationBar()
+    
+    @View private var subtitleLabel: UILabel = {
+        let view = UILabel()
+        view.numberOfLines = 0
+        view.font = .Avenir.medium.withSize(13.0)
+        view.textAlignment = .center
+        view.setContentCompressionResistancePriority(.required, for: .vertical)
+        return view
+    }()
+    
     @View private var transactionStateView = AnimatedRefreshingView()
     
     @View private(set) var cancelButton: TextButton = {
@@ -83,21 +93,28 @@ final class TransactionDetailsView: UIView {
     @View private(set) var blockExplorerSeparatorView = TransactionDetailsSeparatorView()
     @View private(set) var blockExplorerView = TransactionDetailsSectionView<TransactionDetailsBlockExplorerView>()
     
-    
     // MARK: - Properties
     
     var transactionState: AnimatedRefreshingViewState? {
         didSet { updateNavigationBar() }
     }
     
-    private var navigationBarHeightConstraint: NSLayoutConstraint?
-    private var transactionStateViewBottomConstraint: NSLayoutConstraint?
-    private var cancelButtonBottomConstraint: NSLayoutConstraint?
+    var title: String? {
+        get { navigationBar.title }
+        set { navigationBar.title = newValue }
+    }
+    
+    var subtitle: String? {
+        get { subtitleLabel.text }
+        set { subtitleLabel.text = newValue }
+    }
+    
+    private var stackViewBottomConstraints: NSLayoutConstraint?
     
     // MARK: - Initialisers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
         updateNavigationBar()
@@ -110,7 +127,6 @@ final class TransactionDetailsView: UIView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = Theme.shared.colors.appBackground
         contactNameView.title = localized("tx_detail.contact_name")
         noteView.title = localized("tx_detail.note")
         blockExplorerView.title = localized("tx_detail.block_explorer.description")
@@ -122,30 +138,20 @@ final class TransactionDetailsView: UIView {
         [mainContentView, navigationBar].forEach(addSubview)
         mainContentView.contentView.addSubview(contentStackView)
         
-        [transactionStateView, cancelButton].forEach(navigationBar.addSubview)
-        [valueView, contactView, contactNameView, TransactionDetailsSeparatorView(), noteView, TransactionDetailsSeparatorView(), blockExplorerView].forEach(contentStackView.addArrangedSubview)
+        @View var stackView = UIStackView()
+        stackView.axis = .vertical
         
-        let navigationBarHeightConstraint = navigationBar.heightAnchor.constraint(equalToConstant: 0.0)
-        let transactionStateViewBottomConstraint = transactionStateView.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: -8.0)
-        let cancelButtonBottomConstraint = cancelButton.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)
+        [subtitleLabel, stackView].forEach(navigationBar.bottomContentView.addSubview)
+        [transactionStateView, cancelButton].forEach(stackView.addArrangedSubview)
+        [valueView, contactView, contactNameView, noteSeparatorView, noteView, blockExplorerSeparatorView, blockExplorerView].forEach(contentStackView.addArrangedSubview)
         
-        self.navigationBarHeightConstraint = navigationBarHeightConstraint
-        self.transactionStateViewBottomConstraint = transactionStateViewBottomConstraint
-        self.cancelButtonBottomConstraint = cancelButtonBottomConstraint
+        let stackViewBottomConstraints = stackView.bottomAnchor.constraint(equalTo: navigationBar.bottomContentView.bottomAnchor, constant: -8.0)
+        self.stackViewBottomConstraints = stackViewBottomConstraints
         
         let constraints = [
-            navigationBar.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            navigationBar.topAnchor.constraint(equalTo: topAnchor),
             navigationBar.leadingAnchor.constraint(equalTo: leadingAnchor),
             navigationBar.trailingAnchor.constraint(equalTo: trailingAnchor),
-            navigationBarHeightConstraint,
-            transactionStateView.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor, constant: 22.0),
-            transactionStateView.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -22.0),
-            transactionStateViewBottomConstraint,
-            transactionStateView.heightAnchor.constraint(equalToConstant: 48.0),
-            cancelButton.topAnchor.constraint(equalTo: transactionStateView.bottomAnchor),
-            cancelButton.centerXAnchor.constraint(equalTo: navigationBar.centerXAnchor),
-            cancelButton.heightAnchor.constraint(equalToConstant: 44.0),
-            cancelButtonBottomConstraint,
             mainContentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             mainContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             mainContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -153,13 +159,30 @@ final class TransactionDetailsView: UIView {
             contentStackView.topAnchor.constraint(equalTo: mainContentView.contentView.topAnchor),
             contentStackView.leadingAnchor.constraint(equalTo: mainContentView.contentView.leadingAnchor),
             contentStackView.trailingAnchor.constraint(equalTo: mainContentView.contentView.trailingAnchor),
-            contentStackView.bottomAnchor.constraint(equalTo: mainContentView.contentView.bottomAnchor)
+            contentStackView.bottomAnchor.constraint(equalTo: mainContentView.contentView.bottomAnchor),
+            subtitleLabel.topAnchor.constraint(equalTo: navigationBar.bottomContentView.topAnchor),
+            subtitleLabel.leadingAnchor.constraint(equalTo: navigationBar.bottomContentView.leadingAnchor, constant: 8.0),
+            subtitleLabel.trailingAnchor.constraint(equalTo: navigationBar.bottomContentView.trailingAnchor, constant: -8.0),
+            stackView.topAnchor.constraint(equalTo: subtitleLabel.bottomAnchor, constant: 8.0),
+            stackView.leadingAnchor.constraint(equalTo: navigationBar.bottomContentView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: navigationBar.bottomContentView.trailingAnchor),
+            stackViewBottomConstraints,
+            transactionStateView.leadingAnchor.constraint(equalTo: navigationBar.leadingAnchor, constant: 22.0),
+            transactionStateView.trailingAnchor.constraint(equalTo: navigationBar.trailingAnchor, constant: -22.0),
+            transactionStateView.heightAnchor.constraint(equalToConstant: 48.0),
+            cancelButton.heightAnchor.constraint(equalToConstant: 44.0),
         ]
         
         NSLayoutConstraint.activate(constraints)
     }
     
     // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        subtitleLabel.textColor = theme.text.heading
+        backgroundColor = theme.backgrounds.primary
+    }
     
     private func updateNavigationBar() {
         
@@ -181,23 +204,17 @@ final class TransactionDetailsView: UIView {
     private func updateNavigationBarElements(state: NavigationBarState) {
         switch state {
         case .normal:
-            navigationBarHeightConstraint?.constant = defaultNavigationBarHeight
-            transactionStateViewBottomConstraint?.isActive = false
-            cancelButtonBottomConstraint?.isActive = false
             transactionStateView.isHidden = true
             cancelButton.isHidden = true
+            stackViewBottomConstraints?.constant = -8.0
         case .transactionStatusVisible:
-            navigationBarHeightConstraint?.constant = defaultNavigationBarHeight + statusCapsuleHeight
-            transactionStateViewBottomConstraint?.isActive = true
-            cancelButtonBottomConstraint?.isActive = false
             transactionStateView.isHidden = false
             cancelButton.isHidden = true
+            stackViewBottomConstraints?.constant = -8.0
         case .transactionStatusAndCancelButtonVisible:
-            navigationBarHeightConstraint?.constant = defaultNavigationBarHeight + statusCapsuleHeight + cancelButtonHeight
-            transactionStateViewBottomConstraint?.isActive = false
-            cancelButtonBottomConstraint?.isActive = true
             transactionStateView.isHidden = false
             cancelButton.isHidden = false
+            stackViewBottomConstraints?.constant = 0.0
         }
     }
 }

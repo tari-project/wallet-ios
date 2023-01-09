@@ -129,9 +129,9 @@ final class ProfileViewController: UIViewController {
         case .loading:
             mainView.showYatButtonSpinner()
         case .off:
-            mainView.updateYatButton(isOn: false)
+            mainView.isYatButtonOn = false
         case .on:
-            mainView.updateYatButton(isOn: true)
+            mainView.isYatButtonOn = true
         }
     }
     

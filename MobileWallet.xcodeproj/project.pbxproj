@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -46,7 +46,6 @@
 		00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD80D237DA07400EBF5E6 /* ByteVector.swift */; };
 		00BBD812237E9EE200EBF5E6 /* PrivateKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD811237E9EE200EBF5E6 /* PrivateKey.swift */; };
 		00BBD81A237EB31900EBF5E6 /* CommsConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00BBD819237EB31900EBF5E6 /* CommsConfig.swift */; };
-		00BCE487240D5C4100B181F3 /* Tor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BCE486240D5C4100B181F3 /* Tor.framework */; };
 		00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */; };
 		00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 00DC2E21238554FD00036DDC /* libsqlite3.tbd */; };
 		00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00DD160A241CCE0600C955B4 /* TariSettings.swift */; };
@@ -90,7 +89,6 @@
 		37875E4824D8787A00C0595B /* TxTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37875E4724D8787A00C0595B /* TxTableViewModel.swift */; };
 		378B4BD02498F83000C00CCF /* PendingCircleAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 378B4BCF2498F83000C00CCF /* PendingCircleAnimation.json */; };
 		378EE9A3250126BE009615B5 /* CustomBridgesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 378EE9A2250126BE009615B5 /* CustomBridgesViewController.swift */; };
-		379D27AF244EF25000F1AD98 /* NavigationBarWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */; };
 		37ABB69024781CE800F08163 /* UILabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37ABB68F24781CE800F08163 /* UILabel.swift */; };
 		37ABB69424781F8600F08163 /* UILabelWithPadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37ABB69324781F8600F08163 /* UILabelWithPadding.swift */; };
 		37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */; };
@@ -108,7 +106,6 @@
 		37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E4B62A24501FB200FA302B /* HomeViewController.swift */; };
 		37EE027E248A4DCC00E25D69 /* CheckboxDeselectAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37EE027C248A4DCB00E25D69 /* CheckboxDeselectAnimation.json */; };
 		37EE027F248A4DCC00E25D69 /* CheckboxSelectAnimation.json in Resources */ = {isa = PBXBuildFile; fileRef = 37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */; };
-		37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37EE28592485649800335EDC /* WordsFlexView.swift */; };
 		3A01248127B39FC000A481F4 /* SendingTariLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A01248027B39FC000A481F4 /* SendingTariLabel.swift */; };
 		3A01248327B3BD0700A481F4 /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A01248227B3BD0700A481F4 /* ProgressBar.swift */; };
 		3A0124A527B3EDEB00A481F4 /* TransactionViewControllable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A0124A427B3EDEB00A481F4 /* TransactionViewControllable.swift */; };
@@ -248,7 +245,6 @@
 		3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CD28EC56480015E63A /* TariUTXOsService.swift */; };
 		3A8473D028EC56600015E63A /* TariRecoveryService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473CF28EC56600015E63A /* TariRecoveryService.swift */; };
 		3A8473D228EC568A0015E63A /* TariMessageSignService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D128EC568A0015E63A /* TariMessageSignService.swift */; };
-		3A8473D428EC56A90015E63A /* TariEncryptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D328EC56A90015E63A /* TariEncryptionService.swift */; };
 		3A8473D628EC56C90015E63A /* TariBalanceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D528EC56C90015E63A /* TariBalanceService.swift */; };
 		3A8473D828EC56EF0015E63A /* TariKeyValueService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D728EC56EF0015E63A /* TariKeyValueService.swift */; };
 		3A8473DA28EC57AA0015E63A /* Publisher+Binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8473D928EC57AA0015E63A /* Publisher+Binding.swift */; };
@@ -267,7 +263,7 @@
 		3A890EC929262744000F5DA6 /* TariAddress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A890EC829262744000F5DA6 /* TariAddress.swift */; };
 		3A8A03EB28F587FD003EC8FE /* AppConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A03EA28F587FD003EC8FE /* AppConfigurator.swift */; };
 		3A8A05562853270B00D48FCE /* UIImage+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A05552853270B00D48FCE /* UIImage+Utils.swift */; };
-		3A8A0558285370B200D48FCE /* UTXOsWalletTextTickButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A0557285370B200D48FCE /* UTXOsWalletTextTickButton.swift */; };
+		3A8A0558285370B200D48FCE /* UTXOsWalletTickButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8A0557285370B200D48FCE /* UTXOsWalletTickButton.swift */; };
 		3A8CC6C2290BDC70008161DC /* BugReportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A8CC6C1290BDC70008161DC /* BugReportService.swift */; };
 		3A90653829001A2B0084EE66 /* UIDevice+Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A90653729001A2B0084EE66 /* UIDevice+Model.swift */; };
 		3A90653A29001D830084EE66 /* AppValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A90653929001D830084EE66 /* AppValues.swift */; };
@@ -295,7 +291,6 @@
 		3AB136D62906643700A5373D /* ICloudBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB136D52906643700A5373D /* ICloudBackupService.swift */; };
 		3AB2172E272BE7D3007139F1 /* NetworkManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2172D272BE7D3007139F1 /* NetworkManagerTests.swift */; };
 		3AB21730272BEC7A007139F1 /* StringTokenizationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB2172F272BEC7A007139F1 /* StringTokenizationTests.swift */; };
-		3AB8B911285202D200E66D5C /* UTXOsWalletTileTickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AB8B910285202D200E66D5C /* UTXOsWalletTileTickView.swift */; };
 		3ABBBA7C2850771C00A3108D /* UTXOsWalletTextListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBBA7B2850771C00A3108D /* UTXOsWalletTextListView.swift */; };
 		3ABBBA7E2850815C00A3108D /* UTXOsWalletTileListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBBA7D2850815C00A3108D /* UTXOsWalletTileListView.swift */; };
 		3ABBBA8028508AB000A3108D /* UTXOsWalletTextListViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABBBA7F28508AB000A3108D /* UTXOsWalletTextListViewCell.swift */; };
@@ -348,7 +343,6 @@
 		3AE1D58227E0A8C8001A46C4 /* TransactionDetailsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE1D58127E0A8C8001A46C4 /* TransactionDetailsConstructor.swift */; };
 		3AE5E5662874656200D3AF85 /* PopUpUTXOsBreakContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5E5652874656200D3AF85 /* PopUpUTXOsBreakContentView.swift */; };
 		3AE5E5682874696E00D3AF85 /* ValuePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5E5672874696E00D3AF85 /* ValuePickerView.swift */; };
-		3AE5E56A287469E500D3AF85 /* TextCapsule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5E569287469E500D3AF85 /* TextCapsule.swift */; };
 		3AE88506283785100070D1AC /* PopUpModifyFeeContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE88505283785100070D1AC /* PopUpModifyFeeContentView.swift */; };
 		3AE885082837857B0070D1AC /* CurrencyLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE885072837857B0070D1AC /* CurrencyLabelView.swift */; };
 		3AE8850A28378B8C0070D1AC /* NetworkTrafficView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE8850928378B8C0070D1AC /* NetworkTrafficView.swift */; };
@@ -386,6 +380,21 @@
 		4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
 		4CD20A362407967B007B64D8 /* TransportConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportConfig.swift */; };
 		4CDEC323273A5E3600999DCB /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDEC322273A5E3500999DCB /* Balance.swift */; };
+		5410F5D12951F04B006976DC /* TariWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5410F5D02951F04B006976DC /* TariWindow.swift */; };
+		543DF19A293F37E70031EA70 /* CustomBridgesHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */; };
+		543DF19C293F3DA90031EA70 /* BridgesConfigurationFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */; };
+		545A9D14294F6ED3008D24A6 /* ThemeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */; };
+		545A9D16294F6EEA008D24A6 /* ThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D15294F6EEA008D24A6 /* ThemeSettingsView.swift */; };
+		545A9D18294F6F50008D24A6 /* ThemeSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D17294F6F50008D24A6 /* ThemeSettingsModel.swift */; };
+		545A9D1A294F6F6B008D24A6 /* ThemeSettingsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D19294F6F6B008D24A6 /* ThemeSettingsConstructor.swift */; };
+		545A9D1D294F9305008D24A6 /* ThemeSettingsCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D1C294F9305008D24A6 /* ThemeSettingsCollectionCell.swift */; };
+		545A9D1F294F9323008D24A6 /* RadioButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D1E294F9323008D24A6 /* RadioButtonView.swift */; };
+		545A9D21294F9CCE008D24A6 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D20294F9CCE008D24A6 /* UserSettings.swift */; };
+		545A9D24294F9E77008D24A6 /* UserSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D23294F9E77008D24A6 /* UserSettingsManager.swift */; };
+		5491696E2940F78000783E54 /* LogFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5491696D2940F78000783E54 /* LogFilesManager.swift */; };
+		54DE32D02930BE3D0060108A /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32CF2930BE3D0060108A /* ColorTheme.swift */; };
+		54DE32D22930BE7F0060108A /* ThemeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */; };
+		54DE32D42930C2640060108A /* DynamicThemeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D32930C2640060108A /* DynamicThemeView.swift */; };
 		A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
 		A0779C612552C1AF00614EF3 /* DeleteWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */; };
 		BF0A7766241EEA0A00861A3E /* FaceID.json in Resources */ = {isa = PBXBuildFile; fileRef = BF0A7765241EEA0A00861A3E /* FaceID.json */; };
@@ -479,7 +488,6 @@
 		00BBD80D237DA07400EBF5E6 /* ByteVector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteVector.swift; sourceTree = "<group>"; };
 		00BBD811237E9EE200EBF5E6 /* PrivateKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivateKey.swift; sourceTree = "<group>"; };
 		00BBD819237EB31900EBF5E6 /* CommsConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommsConfig.swift; sourceTree = "<group>"; };
-		00BCE486240D5C4100B181F3 /* Tor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Tor.framework; path = Carthage/Build/iOS/Tor.framework; sourceTree = "<group>"; };
 		00C520AE2469716E0077BF7F /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "usr/lib/libc++.1.tbd"; sourceTree = SDKROOT; };
 		00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedRefreshingView.swift; sourceTree = "<group>"; };
 		00DC2E21238554FD00036DDC /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -526,7 +534,6 @@
 		37875E4724D8787A00C0595B /* TxTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TxTableViewModel.swift; sourceTree = "<group>"; };
 		378B4BCF2498F83000C00CCF /* PendingCircleAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = PendingCircleAnimation.json; sourceTree = "<group>"; };
 		378EE9A2250126BE009615B5 /* CustomBridgesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBridgesViewController.swift; sourceTree = "<group>"; };
-		379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationBarWithSubtitle.swift; sourceTree = "<group>"; };
 		37ABB68F24781CE800F08163 /* UILabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabel.swift; sourceTree = "<group>"; };
 		37ABB69324781F8600F08163 /* UILabelWithPadding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabelWithPadding.swift; sourceTree = "<group>"; };
 		37AFE264245193CA006EA270 /* AlwaysPoppableNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AlwaysPoppableNavigationController.swift; sourceTree = "<group>"; };
@@ -544,7 +551,6 @@
 		37E4B62A24501FB200FA302B /* HomeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		37EE027C248A4DCB00E25D69 /* CheckboxDeselectAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheckboxDeselectAnimation.json; sourceTree = "<group>"; };
 		37EE027D248A4DCB00E25D69 /* CheckboxSelectAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = CheckboxSelectAnimation.json; sourceTree = "<group>"; };
-		37EE28592485649800335EDC /* WordsFlexView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordsFlexView.swift; sourceTree = "<group>"; };
 		3A01248027B39FC000A481F4 /* SendingTariLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendingTariLabel.swift; sourceTree = "<group>"; };
 		3A01248227B3BD0700A481F4 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		3A0124A427B3EDEB00A481F4 /* TransactionViewControllable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionViewControllable.swift; sourceTree = "<group>"; };
@@ -685,7 +691,6 @@
 		3A8473CD28EC56480015E63A /* TariUTXOsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariUTXOsService.swift; sourceTree = "<group>"; };
 		3A8473CF28EC56600015E63A /* TariRecoveryService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariRecoveryService.swift; sourceTree = "<group>"; };
 		3A8473D128EC568A0015E63A /* TariMessageSignService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariMessageSignService.swift; sourceTree = "<group>"; };
-		3A8473D328EC56A90015E63A /* TariEncryptionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariEncryptionService.swift; sourceTree = "<group>"; };
 		3A8473D528EC56C90015E63A /* TariBalanceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariBalanceService.swift; sourceTree = "<group>"; };
 		3A8473D728EC56EF0015E63A /* TariKeyValueService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariKeyValueService.swift; sourceTree = "<group>"; };
 		3A8473D928EC57AA0015E63A /* Publisher+Binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Binding.swift"; sourceTree = "<group>"; };
@@ -704,7 +709,7 @@
 		3A890EC829262744000F5DA6 /* TariAddress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariAddress.swift; sourceTree = "<group>"; };
 		3A8A03EA28F587FD003EC8FE /* AppConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigurator.swift; sourceTree = "<group>"; };
 		3A8A05552853270B00D48FCE /* UIImage+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Utils.swift"; sourceTree = "<group>"; };
-		3A8A0557285370B200D48FCE /* UTXOsWalletTextTickButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTextTickButton.swift; sourceTree = "<group>"; };
+		3A8A0557285370B200D48FCE /* UTXOsWalletTickButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTickButton.swift; sourceTree = "<group>"; };
 		3A8CC6C1290BDC70008161DC /* BugReportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BugReportService.swift; sourceTree = "<group>"; };
 		3A90653729001A2B0084EE66 /* UIDevice+Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Model.swift"; sourceTree = "<group>"; };
 		3A90653929001D830084EE66 /* AppValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppValues.swift; sourceTree = "<group>"; };
@@ -732,7 +737,6 @@
 		3AB136D52906643700A5373D /* ICloudBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ICloudBackupService.swift; sourceTree = "<group>"; };
 		3AB2172D272BE7D3007139F1 /* NetworkManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetworkManagerTests.swift; sourceTree = "<group>"; };
 		3AB2172F272BEC7A007139F1 /* StringTokenizationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringTokenizationTests.swift; sourceTree = "<group>"; };
-		3AB8B910285202D200E66D5C /* UTXOsWalletTileTickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTileTickView.swift; sourceTree = "<group>"; };
 		3ABBBA7B2850771C00A3108D /* UTXOsWalletTextListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTextListView.swift; sourceTree = "<group>"; };
 		3ABBBA7D2850815C00A3108D /* UTXOsWalletTileListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTileListView.swift; sourceTree = "<group>"; };
 		3ABBBA7F28508AB000A3108D /* UTXOsWalletTextListViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTextListViewCell.swift; sourceTree = "<group>"; };
@@ -785,7 +789,6 @@
 		3AE1D58127E0A8C8001A46C4 /* TransactionDetailsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsConstructor.swift; sourceTree = "<group>"; };
 		3AE5E5652874656200D3AF85 /* PopUpUTXOsBreakContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpUTXOsBreakContentView.swift; sourceTree = "<group>"; };
 		3AE5E5672874696E00D3AF85 /* ValuePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValuePickerView.swift; sourceTree = "<group>"; };
-		3AE5E569287469E500D3AF85 /* TextCapsule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextCapsule.swift; sourceTree = "<group>"; };
 		3AE88505283785100070D1AC /* PopUpModifyFeeContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpModifyFeeContentView.swift; sourceTree = "<group>"; };
 		3AE885072837857B0070D1AC /* CurrencyLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyLabelView.swift; sourceTree = "<group>"; };
 		3AE8850928378B8C0070D1AC /* NetworkTrafficView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkTrafficView.swift; sourceTree = "<group>"; };
@@ -825,6 +828,21 @@
 		4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtari_wallet_ffi.a; path = MobileWallet/TariLib/libtari_wallet_ffi.a; sourceTree = "<group>"; };
 		4CD20A352407967B007B64D8 /* TransportConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportConfig.swift; sourceTree = "<group>"; };
 		4CDEC322273A5E3500999DCB /* Balance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
+		5410F5D02951F04B006976DC /* TariWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariWindow.swift; sourceTree = "<group>"; };
+		543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBridgesHeaderView.swift; sourceTree = "<group>"; };
+		543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgesConfigurationFooterView.swift; sourceTree = "<group>"; };
+		545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsViewController.swift; sourceTree = "<group>"; };
+		545A9D15294F6EEA008D24A6 /* ThemeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsView.swift; sourceTree = "<group>"; };
+		545A9D17294F6F50008D24A6 /* ThemeSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsModel.swift; sourceTree = "<group>"; };
+		545A9D19294F6F6B008D24A6 /* ThemeSettingsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsConstructor.swift; sourceTree = "<group>"; };
+		545A9D1C294F9305008D24A6 /* ThemeSettingsCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsCollectionCell.swift; sourceTree = "<group>"; };
+		545A9D1E294F9323008D24A6 /* RadioButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButtonView.swift; sourceTree = "<group>"; };
+		545A9D20294F9CCE008D24A6 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
+		545A9D23294F9E77008D24A6 /* UserSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsManager.swift; sourceTree = "<group>"; };
+		5491696D2940F78000783E54 /* LogFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFilesManager.swift; sourceTree = "<group>"; };
+		54DE32CF2930BE3D0060108A /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
+		54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeCoordinator.swift; sourceTree = "<group>"; };
+		54DE32D32930C2640060108A /* DynamicThemeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicThemeView.swift; sourceTree = "<group>"; };
 		A01F54A7255EAB7E00F49AFA /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
 		A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteWalletViewController.swift; sourceTree = "<group>"; };
 		BF0A7765241EEA0A00861A3E /* FaceID.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = FaceID.json; sourceTree = "<group>"; };
@@ -869,7 +887,6 @@
 				0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */,
 				4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */,
 				123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */,
-				00BCE487240D5C4100B181F3 /* Tor.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -952,6 +969,7 @@
 		00262EB2236F022000A6C8A0 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				54DE32CE2930BE170060108A /* Theme */,
 				3A70C4F5292E51CF00212026 /* Tools */,
 				3A6A03312802DB64000432B4 /* Pop-up */,
 				3AE138CD2804A86A00443D34 /* Toasts */,
@@ -1096,10 +1114,8 @@
 				00325EC9239E4A1000F76918 /* FadedOverlayView.swift */,
 				3A13260227EDE42A00289C8C /* GradientView.swift */,
 				375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */,
-				379D27AE244EF25000F1AD98 /* NavigationBarWithSubtitle.swift */,
 				3A4205A027980FFA00A8D49C /* QRCodeView.swift */,
 				37ABB69324781F8600F08163 /* UILabelWithPadding.swift */,
-				37EE28592485649800335EDC /* WordsFlexView.swift */,
 				00E2BCB8236B5BC000C2A105 /* Buttons */,
 				37B444A72489436100592D92 /* Checkbox */,
 				00E2BCB0236B44DB00C2A105 /* FloatingPanel */,
@@ -1112,6 +1128,7 @@
 				371A081624728FCB00F97713 /* TransitionUILabel */,
 				375AFDCD2475380B00C62CA1 /* WebBrowserView */,
 				3AFC3D5F288EC3FA0046D386 /* UnselectableTextView.swift */,
+				5410F5D02951F04B006976DC /* TariWindow.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -1218,7 +1235,6 @@
 				371189722488FF11004D0CE3 /* CloudKit.framework */,
 				0070A7BB2379847100C25E1C /* LocalAuthentication.framework */,
 				F28D9135828811CA84244432 /* Pods_MobileWallet.framework */,
-				00BCE486240D5C4100B181F3 /* Tor.framework */,
 				00C520AE2469716E0077BF7F /* libc++.1.tbd */,
 				4C2C95C6237962CB005058AB /* libc++.tbd */,
 				00DC2E21238554FD00036DDC /* libsqlite3.tbd */,
@@ -1237,6 +1253,7 @@
 		3708D748247FCF0700807D72 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				545A9D12294F6EBD008D24A6 /* Theme Settings */,
 				3A0391E2290BA22400352D73 /* Bug Reporting */,
 				3A4949A3283FD5EF002768AE /* MoreSettings */,
 				3A39AF1A27B156CB00A32F46 /* Views */,
@@ -1264,12 +1281,11 @@
 		370E885D24FE6E9A00576F61 /* AdvancedSettings */ = {
 			isa = PBXGroup;
 			children = (
+				543DF198293F37DB0031EA70 /* Bridges */,
 				3AFC6E012745050500A20287 /* Views */,
 				3A62674426D76E52007F9895 /* Select Network */,
 				3A4CE33426A1A02700ECF460 /* SelectBaseNode */,
 				3ADEBF6026A59A4700E87C84 /* AddBaseNode */,
-				370E886024FE7AE800576F61 /* BridgesConfigurationViewController.swift */,
-				378EE9A2250126BE009615B5 /* CustomBridgesViewController.swift */,
 			);
 			path = AdvancedSettings;
 			sourceTree = "<group>";
@@ -1531,6 +1547,7 @@
 				3AF97E6F27CFCA2000FF6A3F /* ShortcutsManager.swift */,
 				3A8CC6C1290BDC70008161DC /* BugReportService.swift */,
 				3A3E8BF22924FB4C00490E57 /* MigrationManager.swift */,
+				5491696D2940F78000783E54 /* LogFilesManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -1559,15 +1576,13 @@
 				3A3E7AD5284E03140065F3C0 /* UTXOTileView.swift */,
 				3ABBBA7B2850771C00A3108D /* UTXOsWalletTextListView.swift */,
 				3ABBBA7F28508AB000A3108D /* UTXOsWalletTextListViewCell.swift */,
-				3AB8B910285202D200E66D5C /* UTXOsWalletTileTickView.swift */,
-				3A8A0557285370B200D48FCE /* UTXOsWalletTextTickButton.swift */,
+				3A8A0557285370B200D48FCE /* UTXOsWalletTickButton.swift */,
 				3ADF96CB28585E2400A3C888 /* ContextualButtonsOverlay.swift */,
 				3ADF96CD2858A93000A3C888 /* ContextualButton.swift */,
 				3AEE7AA2286599E6000F84ED /* UTXOsWalletTopBar.swift */,
 				3AC877E3287415AD006F327B /* UTXOsWalletPlaceholderView.swift */,
 				3AC877E528741680006F327B /* UTXOsWalletLoadingView.swift */,
 				3AE5E5672874696E00D3AF85 /* ValuePickerView.swift */,
-				3AE5E569287469E500D3AF85 /* TextCapsule.swift */,
 				3A7E06D9287831BD00D15190 /* UTXOsEstimationLabel.swift */,
 				3AE5E5652874656200D3AF85 /* PopUpUTXOsBreakContentView.swift */,
 				3A7E06DB287831D800D15190 /* PopUpCombineUTXOsConfirmationContentView.swift */,
@@ -1652,6 +1667,7 @@
 		3A4CE33326A18E3A00ECF460 /* Persistant Data */ = {
 			isa = PBXGroup;
 			children = (
+				545A9D22294F9E66008D24A6 /* User Settings */,
 				37B48A8224B3968F00F8A8D2 /* AppKeychainWrapper.swift */,
 				3A4CE32F26A18DFC00ECF460 /* UserDefaults.swift */,
 			);
@@ -1876,7 +1892,6 @@
 				3A8473CD28EC56480015E63A /* TariUTXOsService.swift */,
 				3A8473CF28EC56600015E63A /* TariRecoveryService.swift */,
 				3A8473D128EC568A0015E63A /* TariMessageSignService.swift */,
-				3A8473D328EC56A90015E63A /* TariEncryptionService.swift */,
 				3A8473D528EC56C90015E63A /* TariBalanceService.swift */,
 				3A8473D728EC56EF0015E63A /* TariKeyValueService.swift */,
 			);
@@ -1946,7 +1961,6 @@
 		3AA271722790221C0076E51F /* New */ = {
 			isa = PBXGroup;
 			children = (
-				3AC8C25B27999C7E00334F26 /* Reusable Controllers */,
 				3AA27175279024670076E51F /* Transactions */,
 				3AA271782790284E0076E51F /* RequestTari */,
 			);
@@ -2043,13 +2057,6 @@
 				3AC05F9A26C3F302002742C6 /* TransactionsListHeaderView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		3AC8C25B27999C7E00334F26 /* Reusable Controllers */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "Reusable Controllers";
 			sourceTree = "<group>";
 		};
 		3ACDA6FD26AFD6B800F138B8 /* Protocols */ = {
@@ -2271,6 +2278,57 @@
 			path = TariLib;
 			sourceTree = "<group>";
 		};
+		543DF198293F37DB0031EA70 /* Bridges */ = {
+			isa = PBXGroup;
+			children = (
+				370E886024FE7AE800576F61 /* BridgesConfigurationViewController.swift */,
+				378EE9A2250126BE009615B5 /* CustomBridgesViewController.swift */,
+				543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */,
+				543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */,
+			);
+			path = Bridges;
+			sourceTree = "<group>";
+		};
+		545A9D12294F6EBD008D24A6 /* Theme Settings */ = {
+			isa = PBXGroup;
+			children = (
+				545A9D1B294F92F8008D24A6 /* Views */,
+				545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */,
+				545A9D15294F6EEA008D24A6 /* ThemeSettingsView.swift */,
+				545A9D17294F6F50008D24A6 /* ThemeSettingsModel.swift */,
+				545A9D19294F6F6B008D24A6 /* ThemeSettingsConstructor.swift */,
+			);
+			path = "Theme Settings";
+			sourceTree = "<group>";
+		};
+		545A9D1B294F92F8008D24A6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				545A9D1C294F9305008D24A6 /* ThemeSettingsCollectionCell.swift */,
+				545A9D1E294F9323008D24A6 /* RadioButtonView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		545A9D22294F9E66008D24A6 /* User Settings */ = {
+			isa = PBXGroup;
+			children = (
+				545A9D20294F9CCE008D24A6 /* UserSettings.swift */,
+				545A9D23294F9E77008D24A6 /* UserSettingsManager.swift */,
+			);
+			path = "User Settings";
+			sourceTree = "<group>";
+		};
+		54DE32CE2930BE170060108A /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				54DE32CF2930BE3D0060108A /* ColorTheme.swift */,
+				54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */,
+				54DE32D32930C2640060108A /* DynamicThemeView.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
 		71F4BDBF8B1AF18134115485 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -2413,7 +2471,6 @@
 				00E491922366E08B007B332D /* Sources */,
 				00E491932366E08B007B332D /* Frameworks */,
 				00E491942366E08B007B332D /* Resources */,
-				00E491E823670555007B332D /* Carthage */,
 				1D2ED85D52528FD37F207E5E /* [CP] Embed Pods Frameworks */,
 				00C520A7246965260077BF7F /* Embed Foundation Extensions */,
 			);
@@ -2529,26 +2586,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		00E491E823670555007B332D /* Carthage */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/Tor.framework",
-			);
-			name = Carthage;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
 		1D2ED85D52528FD37F207E5E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2606,11 +2643,13 @@
 				0087A1A923F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				3AE1D58227E0A8C8001A46C4 /* TransactionDetailsConstructor.swift in Sources */,
 				3A03683127DF211D00F304A2 /* TransactionDetailsView.swift in Sources */,
+				545A9D1A294F6F6B008D24A6 /* ThemeSettingsConstructor.swift in Sources */,
 				3A82455827E1EE38003B6B59 /* TransactionDetailsEmojiView.swift in Sources */,
 				3AF97E7027CFCA2000FF6A3F /* ShortcutsManager.swift in Sources */,
 				3ACDA70926B031CB00F138B8 /* RestoreWalletFromSeedsProgressView.swift in Sources */,
 				3A87403A2788438E00D80823 /* FFIWalletManager.swift in Sources */,
 				3A7DABA228FDD0A8002CC013 /* LogCell.swift in Sources */,
+				54DE32D22930BE7F0060108A /* ThemeCoordinator.swift in Sources */,
 				001F6CE42380253B00FA7002 /* Contact.swift in Sources */,
 				3AF97E6927CF76C800FF6A3F /* DeeplinkHandler.swift in Sources */,
 				00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
@@ -2622,6 +2661,7 @@
 				3A7DAB9128FDAFD5002CC013 /* LogsListView.swift in Sources */,
 				3A70C4F7292E51D800212026 /* VersionValidator.swift in Sources */,
 				3AE138D12804A8B300443D34 /* SuccessToast.swift in Sources */,
+				5410F5D12951F04B006976DC /* TariWindow.swift in Sources */,
 				370E887824FEA54100576F61 /* NetworkTools.m in Sources */,
 				3A35412C26A72D9F002AB5A8 /* ViewIdentifiable.swift in Sources */,
 				3A70433F28E21D3600207D6F /* CompletedTransactionKernel.swift in Sources */,
@@ -2672,9 +2712,11 @@
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				3A70434128E21D7A00207D6F /* PendingInboundTransaction.swift in Sources */,
 				3A2F30B428F5940A0095E25D /* ConsoleLogger.swift in Sources */,
+				545A9D1F294F9323008D24A6 /* RadioButtonView.swift in Sources */,
 				3ABF91A9283FFA790001C766 /* AboutModel.swift in Sources */,
 				3A35413126A72DEE002AB5A8 /* SelectBaseNodeCell.swift in Sources */,
 				3A8473D228EC568A0015E63A /* TariMessageSignService.swift in Sources */,
+				543DF19C293F3DA90031EA70 /* BridgesConfigurationFooterView.swift in Sources */,
 				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				3A82455627E1EE0D003B6B59 /* TransactionDetailsSectionView.swift in Sources */,
 				3A7DAB9528FDB220002CC013 /* LogsListCell.swift in Sources */,
@@ -2730,6 +2772,7 @@
 				00E2BCA9236AB28200C2A105 /* TxTableViewCell.swift in Sources */,
 				3708D756247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
 				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
+				545A9D18294F6F50008D24A6 /* ThemeSettingsModel.swift in Sources */,
 				3ABF91A7283FFA6E0001C766 /* AboutView.swift in Sources */,
 				00230AFA2376C6DE00F23E34 /* Sequence.swift in Sources */,
 				3A8005C828EAF1AB0022A38A /* RestoreWalletStatus.swift in Sources */,
@@ -2752,6 +2795,7 @@
 				3A860BD2287DA2B800FC4F76 /* HomeViewModel.swift in Sources */,
 				00F53A642428E44700448466 /* StorageCleanup.swift in Sources */,
 				370E886324FE974100576F61 /* OnionSettings.swift in Sources */,
+				545A9D16294F6EEA008D24A6 /* ThemeSettingsView.swift in Sources */,
 				0087A1B223F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
 				378EE9A3250126BE009615B5 /* CustomBridgesViewController.swift in Sources */,
 				0053873024065F6C00901A68 /* SlideView.swift in Sources */,
@@ -2802,9 +2846,9 @@
 				3AD1306827D6290A003EC7FA /* SeedWordsListViewController.swift in Sources */,
 				3AF56BBB28B774C0004E8E43 /* PendingInboundTransactions.swift in Sources */,
 				A0779C612552C1AF00614EF3 /* DeleteWalletViewController.swift in Sources */,
-				37EE285A2485649800335EDC /* WordsFlexView.swift in Sources */,
 				3ADA05F127A41D44007F5677 /* PointerHandler.swift in Sources */,
 				3A890EC929262744000F5DA6 /* TariAddress.swift in Sources */,
+				545A9D14294F6ED3008D24A6 /* ThemeSettingsViewController.swift in Sources */,
 				3ABBC5DE2726B3A1001BB864 /* YatCacheManager.swift in Sources */,
 				3ADEBF6A26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */,
 				3A420597279803DF00A8D49C /* CharacterSet+CustomSets.swift in Sources */,
@@ -2818,7 +2862,6 @@
 				37D3D4ED251C970F00D24149 /* TxGifManager.swift in Sources */,
 				3A62674A26D76EC4007F9895 /* SelectNetworkModel.swift in Sources */,
 				3A35413E26A73939002AB5A8 /* RoundedTextView.swift in Sources */,
-				3A8473D428EC56A90015E63A /* TariEncryptionService.swift in Sources */,
 				3ACDA85A2721578700F08C70 /* YatTransactionViewController.swift in Sources */,
 				3ABC7E9328FE864100EAC852 /* PopUpButtonsTableView.swift in Sources */,
 				3AC877E628741680006F327B /* UTXOsWalletLoadingView.swift in Sources */,
@@ -2826,7 +2869,6 @@
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
 				3A90653829001A2B0084EE66 /* UIDevice+Model.swift in Sources */,
 				3A983A5E27C64B0500F0AB61 /* VerifySeedWordsModel.swift in Sources */,
-				3AE5E56A287469E500D3AF85 /* TextCapsule.swift in Sources */,
 				3A6A033E2802DEEB000432B4 /* PopUpPresenter+CommonPopUps.swift in Sources */,
 				3ADEBF5D26A54FA500E87C84 /* SelectBaseNodeModel.swift in Sources */,
 				3A8005CB28EAF3A90022A38A /* TransactionValidationData.swift in Sources */,
@@ -2835,12 +2877,14 @@
 				3AA2E2212885755A00D30B62 /* NetworkMonitor.swift in Sources */,
 				3A03A600288932DE00788A02 /* SplashView.swift in Sources */,
 				3A052BFA27B2940900C93671 /* WalletTransactionsManager.swift in Sources */,
+				54DE32D42930C2640060108A /* DynamicThemeView.swift in Sources */,
 				3AE8850A28378B8C0070D1AC /* NetworkTrafficView.swift in Sources */,
 				00262EB4236F024400A6C8A0 /* Theme.swift in Sources */,
 				3A93159B286C30AA0001660E /* LeftImageButton.swift in Sources */,
 				3AC8C25D27999CAC00334F26 /* PageViewController.swift in Sources */,
 				00B084C5249E4F6900F7B9BD /* SeedWords.swift in Sources */,
 				00FB43D824BC937D0031D53E /* BackupPrompts.swift in Sources */,
+				545A9D1D294F9305008D24A6 /* ThemeSettingsCollectionCell.swift in Sources */,
 				37E0B008249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
 				3A8473C228EC556C0015E63A /* CoreTariService.swift in Sources */,
@@ -2861,6 +2905,7 @@
 				37547D522460165500EB59CC /* UIApplication+KeyWindow.swift in Sources */,
 				3A87C3B727A9409E007A553F /* WalletError.swift in Sources */,
 				00A994332396434B007D9990 /* PulseButton.swift in Sources */,
+				545A9D21294F9CCE008D24A6 /* UserSettings.swift in Sources */,
 				3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */,
 				3A84CDD42846088D005F2F8D /* UTXOsWalletView.swift in Sources */,
 				3A2C0B8727DA22970018C5A8 /* SeedWordListElementView.swift in Sources */,
@@ -2869,7 +2914,6 @@
 				3A5A3D5829016DE300B689C6 /* BackupWalletSettingsViewController.swift in Sources */,
 				3A94DB21283E7CEF00B0A740 /* TransactionFeesManager.swift in Sources */,
 				3ACC4F602876D2F100632F64 /* NSAttributedString+Format.swift in Sources */,
-				3AB8B911285202D200E66D5C /* UTXOsWalletTileTickView.swift in Sources */,
 				3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */,
 				3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */,
 				00A66523243B3E380046E730 /* ErrorView.swift in Sources */,
@@ -2887,6 +2931,7 @@
 				3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */,
 				0087A1AF23F4235400B89EE7 /* ContactCell.swift in Sources */,
 				370E887224FEA32600576F61 /* Ipv6Tester.swift in Sources */,
+				543DF19A293F37E70031EA70 /* CustomBridgesHeaderView.swift in Sources */,
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
 				3A7DAB9328FDB18A002CC013 /* LogsListModel.swift in Sources */,
 				3AEE7AA3286599E6000F84ED /* UTXOsWalletTopBar.swift in Sources */,
@@ -2895,6 +2940,7 @@
 				3A42059A279804B300A8D49C /* QRCodeFactory.swift in Sources */,
 				3ACFDD1D26E8C1A900C5E1EA /* AppInfo.swift in Sources */,
 				3A983A5C27C62A5700F0AB61 /* VerifySeedWordsView.swift in Sources */,
+				5491696E2940F78000783E54 /* LogFilesManager.swift in Sources */,
 				3AA2717A279028BF0076E51F /* RequestTariAmountViewController.swift in Sources */,
 				3A5A3D5C290178EB00B689C6 /* BackupWalletSettingsModel.swift in Sources */,
 				3AE5E5662874656200D3AF85 /* PopUpUTXOsBreakContentView.swift in Sources */,
@@ -2918,7 +2964,7 @@
 				3A5A3D55290152E300B689C6 /* BackupManager.swift in Sources */,
 				3ADA73DF270A02DF00D50E3B /* WalletSettingsManager.swift in Sources */,
 				3AE138D52804ACE100443D34 /* WebBrowserPresenter.swift in Sources */,
-				3A8A0558285370B200D48FCE /* UTXOsWalletTextTickButton.swift in Sources */,
+				3A8A0558285370B200D48FCE /* UTXOsWalletTickButton.swift in Sources */,
 				3730E15124C884D500827DFA /* MenuTabBarController.swift in Sources */,
 				3A6A033A2802DCE7000432B4 /* TariPopUp.swift in Sources */,
 				371A0818247290C000F97713 /* TransitionLabel.swift in Sources */,
@@ -2931,13 +2977,13 @@
 				3AA2DD962796F72100DC3CF7 /* QRCodePresentationView.swift in Sources */,
 				3AFAC360271C6B4D008AA842 /* ContactAvatarView.swift in Sources */,
 				3A8826C527F1B8320037F779 /* UICollectionViewDiffableDataSource+Animation.swift in Sources */,
-				379D27AF244EF25000F1AD98 /* NavigationBarWithSubtitle.swift in Sources */,
 				3A5E881E26BA9CF10029BB8B /* HomeView.swift in Sources */,
 				3ACFA42B278EC9F200EBED98 /* ProfileModel.swift in Sources */,
 				3A6A03382802DC85000432B4 /* PopUpButtonsView.swift in Sources */,
 				376C62AE247574850091BB28 /* Animation+EnumInit.swift in Sources */,
 				3ABBBA7C2850771C00A3108D /* UTXOsWalletTextListView.swift in Sources */,
 				3ACDA70526B031A400F138B8 /* RestoreWalletFromSeedsProgressViewController.swift in Sources */,
+				545A9D24294F9E77008D24A6 /* UserSettingsManager.swift in Sources */,
 				3A3D70BB291A637100A8CD7A /* MenuTableView.swift in Sources */,
 				3A21FC5128FFD7B8004B09A0 /* PopUpTableView.swift in Sources */,
 				BFAB5D1123FDEA69009E8563 /* EmojiIdView.swift in Sources */,
@@ -2952,6 +2998,7 @@
 				3A3E7AD6284E03140065F3C0 /* UTXOTileView.swift in Sources */,
 				3A420594279802E500A8D49C /* BaseButton.swift in Sources */,
 				3ABBBA7E2850815C00A3108D /* UTXOsWalletTileListView.swift in Sources */,
+				54DE32D02930BE3D0060108A /* ColorTheme.swift in Sources */,
 				376B502324924BB700278ACC /* PendingView.swift in Sources */,
 				3A01248127B39FC000A481F4 /* SendingTariLabel.swift in Sources */,
 			);
@@ -3138,7 +3185,6 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWallet/Info.plist;
@@ -3150,7 +3196,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.17.0;
+				MARKETING_VERSION = 0.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3174,7 +3220,6 @@
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = MobileWallet/Info.plist;
@@ -3186,7 +3231,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.17.0;
+				MARKETING_VERSION = 0.18.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";

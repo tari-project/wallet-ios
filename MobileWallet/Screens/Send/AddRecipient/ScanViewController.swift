@@ -243,16 +243,16 @@ class ScanViewController: UIViewController {
             title = localized("scan_view.scan_qr_to_set_bridges")
         }
         self.titleLabel.text = title
-        self.titleLabel.textColor = Theme.shared.colors.scannerTitle
+        self.titleLabel.textColor = .static.white
         self.titleLabel.font = Theme.shared.fonts.scannerTitleLabel
-        topLeftWhiteView.addTopBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
-        topLeftWhiteView.addLeftBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
-        topRightWhiteView.addTopBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
-        topRightWhiteView.addRightBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
-        bottomLeftWhiteView.addLeftBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
-        bottomLeftWhiteView.addBottomBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
-        bottomRightWhiteView.addBottomBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
-        bottomRightWhiteView.addRightBorder(with: Theme.shared.colors.qrButtonBackground, andWidth: 11)
+        topLeftWhiteView.addTopBorder(with: .static.white, andWidth: 11)
+        topLeftWhiteView.addLeftBorder(with: .static.white, andWidth: 11)
+        topRightWhiteView.addTopBorder(with: .static.white, andWidth: 11)
+        topRightWhiteView.addRightBorder(with: .static.white, andWidth: 11)
+        bottomLeftWhiteView.addLeftBorder(with: .static.white, andWidth: 11)
+        bottomLeftWhiteView.addBottomBorder(with: .static.white, andWidth: 11)
+        bottomRightWhiteView.addBottomBorder(with: .static.white, andWidth: 11)
+        bottomRightWhiteView.addRightBorder(with: .static.white, andWidth: 11)
     }
 
     private func setupScanner() {

@@ -41,7 +41,7 @@
 import UIKit
 import TariCommon
 
-final class ContactAvatarView: UIView {
+final class ContactAvatarView: DynamicThemeView {
     
     // MARK: - Subviews
     
@@ -54,11 +54,17 @@ final class ContactAvatarView: UIView {
     
     @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = Theme.shared.colors.contactCellImage
         view.font = Theme.shared.fonts.contactCellAliasLetter
         return view
     }()
 
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        
+        backgroundColor = theme.neutral.tertiary
+        placeholderImageView.tintColor = theme.text.body
+        label.textColor = theme.text.body
+    }
     
     // MARK: - Properties
     
@@ -72,8 +78,8 @@ final class ContactAvatarView: UIView {
     
     // MARK: - Initializers
     
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
     }
@@ -85,7 +91,6 @@ final class ContactAvatarView: UIView {
     // MARK: - Setups
     
     private func setupViews() {
-        backgroundColor = Theme.shared.colors.contactCellImageBackground
         layer.cornerRadius = 12.0
         clipsToBounds = true
     }

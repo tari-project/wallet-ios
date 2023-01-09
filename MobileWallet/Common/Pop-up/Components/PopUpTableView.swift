@@ -40,7 +40,7 @@
 
 import UIKit
 
-final class PopUpTableView: UITableView {
+final class PopUpTableView: DynamicThemeTableView {
     
     // MARK: - Properties
     
@@ -66,8 +66,8 @@ final class PopUpTableView: UITableView {
     private func setupView() {
         bounces = false
         rowHeight = UITableView.automaticDimension
-        separatorColor = .tari.greys.mediumLightGrey
         separatorInset = UIEdgeInsets(top: 0.0, left: 25.0, bottom: 0.0, right: 25.0)
+        backgroundColor = .clear
     }
     
     private func setupConstraints() {
@@ -77,6 +77,13 @@ final class PopUpTableView: UITableView {
     
     private func setupCallbacks() {
         delegate = self
+    }
+    
+    // MARK: - Updates
+    
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        separatorColor = theme.neutral.secondary
     }
     
     // MARK: - Layout

@@ -81,6 +81,11 @@ final class BackupManager {
     // MARK: - Setups
     
     func configure() {
+        
+        if !AppConfigurator.isBackupEnabled {
+            allServices.forEach { $0.isOn = false }
+        }
+        
         setupServices()
         setupCallbacks()
     }
