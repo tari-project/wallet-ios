@@ -63,7 +63,16 @@ final class CustomBridgesViewController: SettingsParentTableViewController, Cust
     }
 
     private weak var bridgesConfiguration: BridgesConfiguration?
-    private let examplePlaceHolderString = "Available formates:\n• obfs4 <IP ADDRESS>:<PORT> <FINGERPRINT> cert=<CERTIFICATE> iat-mode=<value>\nexample:\nobfs4 192.95.36.142:443 CDF2E852BF539B82BD10E27E9115A31734E378C2 cert=qUVQ0srL1JI/vO6V6m/24anYXiJD3QP2HgzUKQtQ7GRqqUvs7P+tG43RtAqdhLOALP7DJQ iat-mode=1\n\n • <IP ADDRESS>:<PORT> <FINGERPRINT>\nexample:\n78.156.103.189:9301 2BD90810282F8B331FC7D47705167166253E1442"
+    private let examplePlaceHolderString = """
+    Available formates:
+    • obfs4 <IP ADDRESS>:<PORT> <FINGERPRINT> cert=<CERTIFICATE> iat-mode=<value>
+    example:
+    obfs4 192.95.36.142:443 CDF2E852BF539B82BD10E27E9115A31734E378C2 cert=qUVQ0srL1JI/vO6V6m/24anYXiJD3QP2HgzUKQtQ7GRqqUvs7P+tG43RtAqdhLOALP7DJQ iat-mode=1
+
+    • <IP ADDRESS>:<PORT> <FINGERPRINT>
+    example:
+    78.156.103.189:9301 2BD90810282F8B331FC7D47705167166253E1442
+    """
     private lazy var detector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
 
     private let headerView = CustomBridgesHeaderView()

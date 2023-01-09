@@ -1,5 +1,8 @@
-disabled_rules:
-  - line_length
+line_length:
+  - 245
+  - 250
+
+disabled_rules:  
   - identifier_name
   - type_body_length
   - function_body_length
