@@ -1,5 +1,5 @@
 //  ValuePickerView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 05/07/2022
@@ -42,68 +42,68 @@ import UIKit
 import TariCommon
 
 final class ValuePickerView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var minusButtonBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 9.0
         return view
     }()
-    
+
     @View private var minusButton: BaseButton = {
         let view = BaseButton()
         view.setImage(Theme.shared.images.utxoWalletPickerMinus, for: .normal)
         return view
     }()
-    
+
     @View private var valueLabel: UILabel = {
         let view = UILabel()
         view.textAlignment = .center
         view.font = .Avenir.heavy.withSize(22.0)
         return view
     }()
-    
+
     @View private var plusButtonBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 9.0
         return view
     }()
-    
+
     @View private var plusButton: BaseButton = {
         let view = BaseButton()
         view.setImage(Theme.shared.images.utxoWalletPickerPlus, for: .normal)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var minValue: Int = 0
     var maxValue: Int = 0
     var onValueChanged: ((Int) -> Void)?
-    
+
     var value: Int = 0 {
         didSet { update(value: value) }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [minusButtonBackgroundView, plusButtonBackgroundView, minusButton, valueLabel, plusButton].forEach(addSubview)
-        
+
         let constraints = [
             minusButtonBackgroundView.centerXAnchor.constraint(equalTo: minusButton.centerXAnchor),
             minusButtonBackgroundView.centerYAnchor.constraint(equalTo: minusButton.centerYAnchor),
@@ -127,37 +127,37 @@ final class ValuePickerView: DynamicThemeView {
             plusButton.bottomAnchor.constraint(equalTo: bottomAnchor),
             heightAnchor.constraint(equalToConstant: 34.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
-        
+
         minusButton.onTap = { [weak self] in
             guard let self = self else { return }
             self.value = max(self.minValue, self.value - 1)
         }
-        
+
         plusButton.onTap = { [weak self] in
             guard let self = self else { return }
             self.value = min(self.maxValue, self.value + 1)
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         valueLabel.textColor = theme.text.heading
         valueLabel.backgroundColor = theme.backgrounds.secondary
         updateButtonsColor(theme: theme)
     }
-    
+
     private func updateButtonsColor(theme: ColorTheme) {
         minusButtonBackgroundView.backgroundColor = value == minValue ? theme.neutral.inactive  : theme.brand.purple
         plusButtonBackgroundView.backgroundColor = value == maxValue ? theme.neutral.inactive : theme.brand.purple
     }
-    
+
     private func update(value: Int) {
         valueLabel.text = "\(value)"
         updateButtonsColor(theme: theme)

@@ -39,13 +39,13 @@
 */
 
 final class TransportConfig {
-    
+
     // MARK: - Properties
 
     let pointer: OpaquePointer
 
     // MARK: - Initialisers
-    
+
     init(controlServerAddress: String?, torPort: UInt16, torCookie: ByteVector, socksUsername: String?, socksPassword: String?) throws {
 
         var errorCode: Int32 = -1
@@ -56,7 +56,7 @@ final class TransportConfig {
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         pointer = result
     }
-    
+
     // MARK: - Deinitialiser
 
     deinit {

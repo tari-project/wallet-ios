@@ -108,9 +108,9 @@ final class HomeView: DynamicThemeView {
         view.tintColor = .static.white
         return view
     }()
-    
+
     @View private var connectionStatusButton: BaseButton = BaseButton()
-    
+
     @View var utxosWalletButton: BaseButton = {
         let view = BaseButton()
         view.setImage(Theme.shared.images.homeWalletIcon, for: .normal)
@@ -125,7 +125,7 @@ final class HomeView: DynamicThemeView {
     }()
 
     // MARK: - Properties
-    
+
     var connectionStatusIcon: UIImage? {
         get { connectionStatusButton.image(for: .normal) }
         set {
@@ -139,7 +139,7 @@ final class HomeView: DynamicThemeView {
         get { topToolbar.onOnCloseButtonTap }
         set { topToolbar.onOnCloseButtonTap = newValue }
     }
-    
+
     var onConnectionStatusButtonTap: (() -> Void)? {
         get { connectionStatusButton.onTap }
         set { connectionStatusButton.onTap = newValue }
@@ -219,18 +219,18 @@ final class HomeView: DynamicThemeView {
 
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
         amountHelpButton.onTap = { [weak self] in
             self?.onAmountHelpButtonTap?()
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         gradientLayer.colors = [theme.buttons.primaryStart, theme.buttons.primaryEnd]
             .compactMap { $0?.cgColor }
     }

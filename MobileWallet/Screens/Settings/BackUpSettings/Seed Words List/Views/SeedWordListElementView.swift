@@ -1,5 +1,5 @@
 //  SeedWordListElementView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/03/2022
@@ -42,50 +42,50 @@ import UIKit
 import TariCommon
 
 final class SeedWordListElementView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var indexLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseCellNumber
         return view
     }()
-    
+
     @View private var textLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseCellTitle
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var index: String? {
         get { indexLabel.text }
         set { indexLabel.text = newValue }
     }
-    
+
     var text: String? {
         get { textLabel.text }
         set { textLabel.text = newValue }
     }
-    
+
     // MARK: - Initalisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [indexLabel, textLabel].forEach(addSubview)
-        
+
         let constraints = [
             indexLabel.topAnchor.constraint(equalTo: topAnchor),
             indexLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -94,14 +94,14 @@ final class SeedWordListElementView: DynamicThemeView {
             textLabel.topAnchor.constraint(equalTo: topAnchor),
             textLabel.leadingAnchor.constraint(equalTo: indexLabel.trailingAnchor, constant: 2.0),
             textLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            textLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
+            textLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         indexLabel.textColor = theme.text.body?.withAlphaComponent(0.5)

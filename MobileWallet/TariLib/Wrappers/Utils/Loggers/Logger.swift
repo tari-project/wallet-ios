@@ -1,5 +1,5 @@
 //  Logger.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 07/10/2022
@@ -47,14 +47,14 @@ extension Logable {
 }
 
 final class Logger {
- 
+
     enum Level: CaseIterable {
         case verbose
         case info
         case warning
         case error
     }
-    
+
     enum Domain: CaseIterable {
         case general
         case connection
@@ -62,16 +62,16 @@ final class Logger {
         case userInterface
         case debug
     }
-    
+
     static var domains: [Domain] = []
     private static var loggers: [String: Logable] = [:]
-    
+
     static func attach(logger: Logable) {
         loggers[type(of: logger).tag] = logger
     }
-    
+
     static func log(message: String, domain: Domain, level: Level, tags: [String]? = nil) {
-        
+
         loggers
             .filter {
                 guard let tags = tags else { return true }
@@ -83,7 +83,7 @@ final class Logger {
 }
 
 extension Logger.Domain {
-    
+
     var name: String {
         switch self {
         case .general:

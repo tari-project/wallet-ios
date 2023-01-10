@@ -66,7 +66,7 @@ class UILabelWithPadding: UILabel {
     }
 
     override open var intrinsicContentSize: CGSize {
-        guard let _ = self.text else {
+        guard text != nil else {
             return super.intrinsicContentSize
         }
 

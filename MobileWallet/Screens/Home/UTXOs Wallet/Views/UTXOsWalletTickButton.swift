@@ -1,5 +1,5 @@
 //  UTXOsWalletTickButton.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/06/2022
@@ -41,42 +41,42 @@
 import UIKit
 
 final class UTXOsWalletTickButton: DynamicThemeBaseButton {
-    
+
     // MARK: - Properties
-    
+
     override var isSelected: Bool {
         didSet { update(selectionState: isSelected) }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupView()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupView() {
         layer.cornerRadius = 4.0
         layer.borderWidth = 1.0
         isUserInteractionEnabled = false
         update(selectionState: isSelected)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         imageView?.tintColor = theme.brand.purple
         layer.borderColor = theme.icons.inactive?.cgColor
     }
-    
+
     private func update(selectionState: Bool) {
         setImage(selectionState ? Theme.shared.images.utxoTick : nil, for: .normal)
     }

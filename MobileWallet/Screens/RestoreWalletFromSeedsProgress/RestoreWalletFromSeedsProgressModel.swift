@@ -64,13 +64,13 @@ final class RestoreWalletFromSeedsProgressModel {
     // MARK: - Setups
 
     private func registerOnRestoreProgressCallbacks() {
-        
+
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in
                 self?.startRestoringWallet()
             }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.walletRecoveryStatusUpdate
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(restoreStatus: $0) }

@@ -1,5 +1,5 @@
 //  CompletedTransactions.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 24/08/2022
@@ -39,41 +39,41 @@
 */
 
 final class CompletedTransactions {
-    
+
     // MARK: - Properties
-    
+
     var count: UInt32 {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = completed_transactions_get_length(pointer, errorCodePointer)
-            
+
             guard errorCode == 0 else { throw WalletError(code: errorCode) }
             return result
         }
     }
-    
+
     private let pointer: OpaquePointer
-    
+
     // MARK: - Initialiser
-    
+
     init(pointer: OpaquePointer) {
         self.pointer = pointer
     }
-    
+
     // MARK: - Actions
-    
+
     func transaction(at index: UInt32, isCancelled: Bool) throws -> CompletedTransaction {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = completed_transactions_get_at(pointer, index, errorCodePointer)
-        
+
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
         return CompletedTransaction(pointer: pointer, isCancelled: isCancelled)
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         completed_transactions_destroy(pointer)
     }

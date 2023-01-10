@@ -1,5 +1,5 @@
 //  AboutViewController.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 26/05/2022
@@ -42,40 +42,40 @@ import UIKit
 import Combine
 
 final class AboutViewController: UIViewController {
-    
+
     private let mainView = AboutView()
     private let model = AboutModel()
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
         model.generateData()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         model.$rowModels
             .map { $0.map { AboutView.CellModel(icon: $0.icon, text: $0.title) }}
             .sink { [weak self] in self?.mainView.cellModels = $0 }
             .store(in: &cancellables)
-        
+
         model.$selectedURL
             .compactMap { $0 }
             .sink { WebBrowserPresenter.open(url: $0) }
             .store(in: &cancellables)
-        
+
         mainView.onTapOnCreativeCommonsButton = { [weak self] in
             self?.model.selectCrativeCommonButton()
         }
-        
+
         mainView.onSelectRow = { [weak self] in
             self?.model.select(index: $0)
         }

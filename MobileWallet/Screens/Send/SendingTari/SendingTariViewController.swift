@@ -42,83 +42,83 @@ import UIKit
 import Combine
 
 final class SendingTariViewController: UIViewController, TransactionViewControllable {
-    
+
     // MARK: - Properties
-    
+
     var onCompletion: ((WalletTransactionsManager.TransactionError?) -> Void)?
-    
+
     private let mainView = SendingTariView()
     private let model: SendingTariModel
-    
+
     private var cancelables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init(model: SendingTariModel, viewInputModel: SendingTariView.InputModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
         mainView.setup(model: viewInputModel)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         runBackgroundAnimation()
         setupBindings()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
         mainView.playInitialAnimation()
         model.start()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.interactivePopGestureRecognizer?.isEnabled = true
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupBindings() {
-        
+
         model.$stateModel
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.updateViews(model: $0) }
             .store(in: &cancelables)
-        
+
         NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
             .sink { [weak self] _ in self?.runBackgroundAnimation() }
             .store(in: &cancelables)
     }
-    
+
     func updateViews(model: SendingTariModel.StateModel) {
         self.updateLabels { [weak self] in
             self?.runProgressAnimation(stepIndex: model.stepIndex)
         }
     }
-    
+
     // MARK: - Actions
-    
+
     private func runBackgroundAnimation() {
         mainView.videoBackgroundView.startPlayer()
     }
-    
+
     private func runProgressAnimation(stepIndex: Int) {
-        
+
         guard let state = mainView.progressBar.state(forSection: stepIndex) else { return }
-        
+
         switch state {
         case .disabled, .off:
             updateProgressBar(state: .on, stepIndex: stepIndex)
@@ -126,14 +126,14 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
             handleProgressSectionOnState(stepIndex: stepIndex)
         }
     }
-        
+
     private func handleProgressSectionOnState(stepIndex: Int) {
-        
+
         guard !model.isNextStepAvailable else {
             model.moveToNextStep()
             return
         }
-        
+
         guard let onCompletion = model.onCompletion else {
             updateProgressBar(state: .off, stepIndex: stepIndex)
             return
@@ -146,44 +146,44 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
             endFlow(withError: error)
         }
     }
-    
+
     private func updateProgressBar(state: ProgressBar.State, stepIndex: Int) {
         mainView.progressBar.update(state: state, forSection: stepIndex) { [weak self] in
             self?.runProgressAnimation(stepIndex: stepIndex)
         }
     }
-    
+
     private func updateLabels(completion: @escaping () -> Void) {
         mainView.update(firstText: model.stateModel?.firstText, secondText: model.stateModel?.secondText) {
             completion()
         }
     }
-    
+
     private func endFlowWithSuccess() {
-        
+
         let dispatchGroup = DispatchGroup()
-        
+
         dispatchGroup.enter()
         mainView.playSuccessAnimation { dispatchGroup.leave() }
-        
+
         dispatchGroup.enter()
         mainView.hideAllComponents(delay: 3.7) { dispatchGroup.leave() }
-        
+
         dispatchGroup.notify(queue: .main) { [weak self] in
             self?.onCompletion?(nil)
         }
     }
-    
+
     private func endFlow(withError error: WalletTransactionsManager.TransactionError) {
-        
+
         let dispatchGroup = DispatchGroup()
-        
+
         dispatchGroup.enter()
         mainView.playFailureAnimation { dispatchGroup.leave() }
-        
+
         dispatchGroup.enter()
         mainView.hideAllComponents(delay: 0.0) { dispatchGroup.leave() }
-        
+
         dispatchGroup.notify(queue: .main) { [weak self] in
             self?.onCompletion?(error)
         }

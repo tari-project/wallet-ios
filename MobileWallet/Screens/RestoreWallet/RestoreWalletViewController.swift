@@ -52,7 +52,7 @@ final class RestoreWalletViewController: SettingsParentTableViewController { // 
 //        SystemMenuTableViewCellItem(title: RestoreCellTitle.dropboxRestore.rawValue),
         SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue)
     ]
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     private enum RestoreCellTitle: CaseIterable {
@@ -74,9 +74,9 @@ final class RestoreWalletViewController: SettingsParentTableViewController { // 
         tableView.delegate = self
         tableView.dataSource = self
     }
-    
+
     // MARK: - Actions
-    
+
     private func showPasswordScreen(onCompletion: @escaping ((String?) -> Void)) {
         let controller = PasswordVerificationViewController(variation: .restore, restoreWalletAction: onCompletion)
         navigationController?.pushViewController(controller, animated: true)
@@ -126,7 +126,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     private func oniCloudRestoreAction() {
         authenticateUserAndRestoreWallet(from: .iCloud)
     }
-    
+
     private func onDropboxRestoreAction() {
         BackupManager.shared.dropboxPresentationController = self
         authenticateUserAndRestoreWallet(from: .dropbox)
@@ -136,19 +136,19 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
         let viewController = RestoreWalletFromSeedsViewController()
         navigationController?.pushViewController(viewController, animated: true)
     }
-    
+
     private func authenticateUserAndRestoreWallet(from service: BackupManager.Service) {
         localAuth.authenticateUser(reason: .userVerification) { [weak self] in
             self?.restoreWallet(from: service, password: nil)
         }
     }
-    
+
     private func restoreWallet(from service: BackupManager.Service, password: String?) {
-        
+
         pendingView.showPendingView { [weak self] in
-            
+
             guard let self else { return }
-            
+
             BackupManager.shared.backupService(service).restoreBackup(password: password)
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] completion in
@@ -163,7 +163,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
                 .store(in: &self.cancellables)
         }
     }
-    
+
     private func showPasswordScreen(service: BackupManager.Service) {
         pendingView.hidePendingView { [weak self] in
             self?.showPasswordScreen { password in
@@ -171,7 +171,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
             }
         }
     }
-    
+
     private func endFlow(returnToSplashScreen: Bool) {
         pendingView.hidePendingView { [weak self] in
             guard returnToSplashScreen else { return }
@@ -182,11 +182,11 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     private func returnToSplashScreen() {
         AppRouter.transitionToSplashScreen()
     }
-    
+
     private func handle(error: Error, service: BackupManager.Service) {
-        
+
         var errorMessage: String?
-        
+
         switch error {
         case let error as BackupError where error == .passwordRequired:
             showPasswordScreen(service: service)
@@ -198,12 +198,12 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
         default:
             errorMessage = ErrorMessageManager.errorMessage(forError: error)
         }
-        
+
         if let errorMessage {
             let model = MessageModel(title: localized("iCloud_backup.error.title.restore_wallet"), message: errorMessage, type: .error)
             PopUpPresenter.show(message: model)
         }
-        
+
         endFlow(returnToSplashScreen: false)
     }
 }

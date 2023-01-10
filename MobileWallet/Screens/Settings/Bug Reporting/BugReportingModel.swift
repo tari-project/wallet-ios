@@ -1,5 +1,5 @@
 //  BugReportingModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 28/10/2022
@@ -39,18 +39,18 @@
 */
 
 final class BugReportingModel {
-    
+
     // MARK: - View Model
-    
+
     @Published private(set) var shouldEndFlow: Bool = false
     @Published private(set) var errorMessage: MessageModel?
-    
+
     // MARK: - Properties
-    
+
     private let bugReportService = BugReportService()
-    
+
     // MARK: - Actions
-    
+
     func sendReport(name: String?, email: String?, message: String?) {
         Task {
             do {

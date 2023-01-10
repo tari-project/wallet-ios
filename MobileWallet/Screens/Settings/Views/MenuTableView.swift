@@ -1,5 +1,5 @@
 //  MenuTableView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 08/11/2022
@@ -41,18 +41,18 @@
 import UIKit
 
 final class MenuTableView: DynamicThemeTableView {
-    
+
     init() {
         super.init(frame: .zero, style: .grouped)
         showsVerticalScrollIndicator = false
         rowHeight = UITableView.automaticDimension
         register(type: SystemMenuTableViewCell.self)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func update(theme: ColorTheme) {
         backgroundColor = theme.backgrounds.secondary
         separatorColor = theme.neutral.secondary

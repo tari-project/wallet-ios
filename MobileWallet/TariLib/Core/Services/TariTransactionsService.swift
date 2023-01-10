@@ -1,5 +1,5 @@
 //  TariTransactionsService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022
@@ -41,23 +41,23 @@
 import Combine
 
 final class TariTransactionsService: CoreTariService {
-    
+
     enum InternalError: Error {
         case insufficientFunds(spendableMicroTari: UInt64)
     }
-    
+
     // MARK: - Properties
-    
+
     @Published private(set) var completed: [CompletedTransaction] = []
     @Published private(set) var cancelled: [CompletedTransaction] = []
     @Published private(set) var pendingInbound: [PendingInboundTransaction] = []
     @Published private(set) var pendingOutbound: [PendingOutboundTransaction] = []
     @Published private(set) var error: Error?
-    
+
     var requiredConfirmationsCount: UInt64 {
         get throws { try walletManager.requiredConfirmationsCount() }
     }
-    
+
     private var completedTransactions: [CompletedTransaction] {
         get throws {
             let transactions = try walletManager.completedTransactions()
@@ -65,7 +65,7 @@ final class TariTransactionsService: CoreTariService {
             return try (0..<count).map { try transactions.transaction(at: $0, isCancelled: false) }
         }
     }
-    
+
     private var cancelledTransactions: [CompletedTransaction] {
         get throws {
             let transactions = try walletManager.cancelledTransactions()
@@ -73,7 +73,7 @@ final class TariTransactionsService: CoreTariService {
             return try (0..<count).map { try transactions.transaction(at: $0, isCancelled: true) }
         }
     }
-    
+
     private var pendingInboundTransactions: [PendingInboundTransaction] {
         get throws {
             let transactions = try walletManager.pendingInboundTransactions()
@@ -81,7 +81,7 @@ final class TariTransactionsService: CoreTariService {
             return try (0..<count).map { try transactions.transaction(at: $0) }
         }
     }
-    
+
     private var pendingOutboundTransactions: [PendingOutboundTransaction] {
         get throws {
             let transactions = try walletManager.pendingOutboundTransactions()
@@ -89,19 +89,19 @@ final class TariTransactionsService: CoreTariService {
             return try (0..<count).map { try transactions.transaction(at: $0) }
         }
     }
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialiser
-    
+
     override init(walletManager: FFIWalletManager, services: MainServiceable) {
         super.init(walletManager: walletManager, services: services)
         fetchData()
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func fetchData() {
         do {
             completed = try completedTransactions
@@ -112,77 +112,77 @@ final class TariTransactionsService: CoreTariService {
             self.error = error
         }
     }
-    
+
     private func setupCallbacks() {
-        
+
         WalletCallbacksManager.shared.receivedTransaction
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.receivedTransactionReply
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.receivedFinalizedTransaction
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.transactionBroadcast
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.transactionMined
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.unconfirmedTransactionMined
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.fauxTransactionConfirmed
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.fauxTransactionUnconfirmed
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.transactionSendResult
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.transactionCancellation
             .sink { [weak self] _ in self?.fetchData() }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     func reset() {
         fetchData()
     }
-    
+
     func cancelPendingTransaction(identifier: UInt64) throws -> Bool {
         try walletManager.cancelPendingTransaction(identifier: identifier)
     }
-    
+
     func send(toAddress address: TariAddress, amount: UInt64, feePerGram: UInt64, message: String, isOneSidedPayment: Bool,
               kernelsCount: UInt64 = Tari.defaultKernelCount, outputsCount: UInt64 = Tari.defaultOutputCount) throws -> UInt64 {
-        
+
         let estimatedFee = try walletManager.feeEstimate(amount: amount, feePerGram: feePerGram, kernelsCount: kernelsCount, outputsCount: outputsCount)
         let total = estimatedFee + amount
         let availableBalance = services.walletBalance.balance.available
-        
+
         guard availableBalance >= total else {
             throw InternalError.insufficientFunds(spendableMicroTari: availableBalance)
         }
-        
+
         return try walletManager.sendTransaction(address: address, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
     }
 }
 
 extension TariTransactionsService {
-    
+
     var onUpdate: AnyPublisher<Void, Never> {
         Publishers.CombineLatest4($completed, $cancelled, $pendingInbound, $pendingOutbound)
             .onChangePublisher()

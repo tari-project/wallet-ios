@@ -1,5 +1,5 @@
 //  ToastPresenter.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/04/2022
@@ -41,21 +41,21 @@
 import SwiftEntryKit
 
 enum ToastPresenter {
-    
+
     static func show(title: String) {
-        
+
         guard let toastColor: UIColor = .static.purple else { return }
-        
+
         let toast = SuccessToast()
         toast.label.text = title
-        
+
         var attributes = EKAttributes.topToast
         attributes.entryBackground = .color(color: EKColor(toastColor))
         attributes.screenBackground = .clear
         attributes.displayDuration = 2.0
         attributes.hapticFeedbackType = .success
         attributes.screenInteraction = .forward
-        
+
         SwiftEntryKit.display(entry: toast, using: attributes)
         UIApplication.shared.hideKeyboard()
         Logger.log(message: "Success Toast: \(title)", domain: .userInterface, level: .info)

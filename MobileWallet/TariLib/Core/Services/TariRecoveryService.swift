@@ -1,5 +1,5 @@
 //  TariRecoveryService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022
@@ -39,20 +39,20 @@
 */
 
 final class TariRecoveryService: CoreTariService {
-    
+
     // MARK: - Properties
-    
+
     var seedWords: [String] {
         get throws { try walletManager.seedWords().all }
     }
-    
+
     // MARK: - Actions
-    
+
     func startRecovery(recoveredOutputMessage: String) throws -> Bool {
         let publicKey = NetworkManager.shared.selectedNetwork.selectedBaseNode.publicKey
         return try walletManager.startRecovery(baseNodePublicKey: publicKey, recoveredOutputMessage: recoveredOutputMessage)
     }
-    
+
     func allSeedWords(forLanguage language: SeedWordsMnemonicWordList.Language) throws -> [String] {
         try SeedWordsMnemonicWordList(language: language).seedWords
     }

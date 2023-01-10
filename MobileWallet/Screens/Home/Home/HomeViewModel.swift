@@ -1,5 +1,5 @@
 //  HomeViewModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 12/07/2022
@@ -42,71 +42,71 @@ import UIKit
 import Combine
 
 final class HomeViewModel {
-    
+
     // MARK: - Constants
-    
+
     private let offlineIcon = Theme.shared.images.connectionIndicatorDisconnectedIcon
     private let limitedConnectionIcon = Theme.shared.images.connectionIndicatorLimitedConnectonIcon
     private let onlineIcon = Theme.shared.images.connectionIndicatorConnectedIcon
-    
+
     // MARK: - View Model
-    
+
     @Published private(set) var connectionStatusImage: UIImage?
     @Published private(set) var balance: String = ""
     @Published private(set) var availableBalance: String = ""
     @Published private(set) var isNetworkCompatible: Bool = true
-    
+
     // MARK: - Properties
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         setupCallbacks()
         checkNetworkCompatibility()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         let monitor = Tari.shared.connectionMonitor
-        
+
         Publishers.CombineLatest4(monitor.$networkConnection, monitor.$torConnection, monitor.$baseNodeConnection, monitor.$syncStatus)
             .sink { [weak self] in self?.handle(networkConnection: $0, torConnection: $1, baseNodeConnection: $2, syncStatus: $3) }
             .store(in: &cancellables)
-        
+
         Tari.shared.walletBalance.$balance
             .sink { [weak self] in self?.handle(walletBalance: $0) }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     func updateCompatibleNetworkName() {
         _ = try? Tari.shared.keyValues.set(key: .network, value: NetworkManager.shared.selectedNetwork.name)
     }
-    
+
     func deleteWallet() {
         Tari.shared.deleteWallet()
         Tari.shared.canAutomaticalyReconnectWallet = false
         BackupManager.shared.disableBackup()
     }
-    
+
     private func checkNetworkCompatibility() {
         guard let persistedNetworkName = try? Tari.shared.keyValues.value(key: .network), persistedNetworkName == NetworkManager.shared.selectedNetwork.name else {
             isNetworkCompatible = false
             return
         }
-        
+
         isNetworkCompatible = true
     }
-    
+
     // MARK: - Helpers
-    
+
     private func handle(networkConnection: NetworkMonitor.Status, torConnection: TorManager.ConnectionStatus, baseNodeConnection: BaseNodeConnectivityStatus, syncStatus: TariValidationService.SyncStatus) {
-        
+
         switch (networkConnection, torConnection, baseNodeConnection, syncStatus) {
         case (.disconnected, _, _, _):
             connectionStatusImage = offlineIcon
@@ -132,7 +132,7 @@ final class HomeViewModel {
             connectionStatusImage = onlineIcon
         }
     }
-    
+
     private func handle(walletBalance: WalletBalance) {
         balance = MicroTari(walletBalance.available + walletBalance.incoming).formatted
         availableBalance = MicroTari(walletBalance.available).formatted

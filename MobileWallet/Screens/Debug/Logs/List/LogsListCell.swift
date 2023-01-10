@@ -1,5 +1,5 @@
 //  LogsListCell.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2022
@@ -42,45 +42,45 @@ import UIKit
 import TariCommon
 
 final class LogsListCell: DynamicThemeCell {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(15.0)
         return view
     }()
-    
+
     @View private var arrowImageView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.forwardArrow
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         selectionStyle = .none
         backgroundColor = .clear
     }
-    
+
     private func setupConstraints() {
-        
+
         [label, arrowImageView].forEach { contentView.addSubview($0) }
-        
+
         let constraints = [
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 22.0),
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
@@ -89,18 +89,18 @@ final class LogsListCell: DynamicThemeCell {
             arrowImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20.0),
             arrowImageView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading
         arrowImageView.tintColor = theme.text.heading
     }
-    
+
     func update(title: String) {
         label.text = title
     }

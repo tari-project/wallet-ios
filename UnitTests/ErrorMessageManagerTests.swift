@@ -1,5 +1,5 @@
 //  ErrorMessageManagerTests.swift
-	
+
 /*
 	Package UnitTests
 	Created by Adrian Truszczynski on 01/02/2022
@@ -46,105 +46,105 @@ private struct DummyError: Error {
 }
 
 final class ErrorMessageManagerTests: XCTestCase {
-    
+
     func testCustomMessageForValidError() {
-        
+
         let errorWithCustomMessage = WalletError.invalidPassphrase
         let expectedMessage = localized("error.wallet.428") + "\n" + localized("error.code.prefix") + " " + errorWithCustomMessage.signature
-        
+
         let message = ErrorMessageManager.errorMessage(forError: errorWithCustomMessage)
-        
+
         XCTAssertEqual(message, expectedMessage)
     }
-    
+
     func testGenericMessageForValidError() {
-        
+
         let errorWithGenericMessage = WalletError(code: 42)
         let expectedMessage = localized("error.generic.description") + "\n" + localized("error.code.prefix") + " " + errorWithGenericMessage.signature
-        
+
         let message = ErrorMessageManager.errorMessage(forError: errorWithGenericMessage)
-        
+
         XCTAssertEqual(message, expectedMessage)
     }
-    
+
     func testMessageForInvalidError() {
-        
+
         let error = DummyError(code: 42)
         let expectedMessage = localized("error.generic.description")
-        
+
         let message = ErrorMessageManager.errorMessage(forError: error)
-        
+
         XCTAssertEqual(message, expectedMessage)
     }
-    
+
     func testMessageForNil() {
-        
+
         let expectedMessage = localized("error.generic.description")
-        
+
         let message = ErrorMessageManager.errorMessage(forError: nil)
-        
+
         XCTAssertEqual(message, expectedMessage)
     }
-    
+
     func testCustomErrorModelForValidError() {
-        
+
         let errorWithCustomMessage = WalletError.invalidPassphrase
-        
+
         let expectedTitle = localized("error.generic.title")
         let expectedMessage = localized("error.wallet.428") + "\n" + localized("error.code.prefix") + " " + errorWithCustomMessage.signature
-        
+
         let model = ErrorMessageManager.errorModel(forError: errorWithCustomMessage)
-        
+
         XCTAssertEqual(model.title, expectedTitle)
         XCTAssertEqual(model.message, expectedMessage)
     }
-    
+
     func testGenericErrorModelForValidError() {
-        
+
         let errorWithGenericMessage = WalletError(code: 42)
-        
+
         let expectedTitle = localized("error.generic.title")
         let expectedMessage = localized("error.generic.description") + "\n" + localized("error.code.prefix") + " " + errorWithGenericMessage.signature
-        
+
         let model = ErrorMessageManager.errorModel(forError: errorWithGenericMessage)
-        
+
         XCTAssertEqual(model.title, expectedTitle)
         XCTAssertEqual(model.message, expectedMessage)
     }
-    
+
     func testErrorModelForInvalidError() {
-        
+
         let error = DummyError(code: 42)
-        
+
         let expectedTitle = localized("error.generic.title")
         let expectedMessage = localized("error.generic.description")
-        
+
         let model = ErrorMessageManager.errorModel(forError: error)
-        
+
         XCTAssertEqual(model.title, expectedTitle)
         XCTAssertEqual(model.message, expectedMessage)
     }
-    
+
     func testErrorModelForNil() {
-        
+
         let expectedTitle = localized("error.generic.title")
         let expectedMessage = localized("error.generic.description")
-        
+
         let model = ErrorMessageManager.errorModel(forError: nil)
-        
+
         XCTAssertEqual(model.title, expectedTitle)
         XCTAssertEqual(model.message, expectedMessage)
     }
-    
+
     func testErrorModelForSeedWordsError() {
-        
+
         let seedWordsError = SeedWords.InternalError.invalidSeedPhrase
-        
+
         let expectedTitle = localized("restore_from_seed_words.error.title")
         let expectedMessage = localized("restore_from_seed_words.error.description.invalid_seed_word") + "\n" + localized("error.code.prefix") + " " + seedWordsError.signature
-        
+
         let model = ErrorMessageManager.errorModel(forError: seedWordsError)
-        
+
         XCTAssertEqual(model.title, expectedTitle)
         XCTAssertEqual(model.message, expectedMessage)
     }

@@ -46,7 +46,7 @@ final class SeedWords {
         case unexpectedResult
         case phraseIsTooShort
         case phraseIsTooLong
-        
+
         var code: Int { rawValue }
         var domain: String { "SWE" }
     }
@@ -59,9 +59,9 @@ final class SeedWords {
     }
 
     // MARK: - Properties
-    
+
     let pointer: OpaquePointer
-    
+
     var count: UInt32 {
         get throws {
             var errorCode: Int32 = -1
@@ -75,33 +75,33 @@ final class SeedWords {
     // MARK: - Initializers
 
     init(walletPointer: OpaquePointer) throws {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = wallet_get_seed_words(walletPointer, errorCodePointer)
-        
+
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         pointer = result
     }
-    
+
     init() {
         pointer = seed_words_create()
     }
-    
+
     // MARK: - Actions
-    
+
     func push(word: String) throws -> PushWordResult {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
         let result = seed_words_push_word(pointer, word, errorCodePointer)
-        
+
         guard errorCode == 0, let pushResult = PushWordResult(rawValue: result) else { throw WalletError(code: errorCode) }
         return pushResult
     }
 
     // MARK: - Actions
-    
+
     func word(index: UInt32) throws -> String {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
@@ -118,18 +118,18 @@ final class SeedWords {
 }
 
 extension SeedWords {
-    
+
     var all: [String] {
         get throws {
             let count = try count
             return try (0..<count).map { try word(index: $0) }
         }
     }
-    
+
     convenience init(words: [String]) throws {
         self.init()
         let lastIndex = words.count - 1
-        
+
         try words
             .enumerated()
             .forEach {
@@ -137,9 +137,9 @@ extension SeedWords {
                 try validate(result: result, index: $0.offset, lastIndex: lastIndex)
             }
     }
-    
+
     private func validate(result: PushWordResult, index: Int, lastIndex: Int) throws {
-        
+
         switch result {
         case .invalidSeedWord:
             throw InternalError.invalidSeedWord

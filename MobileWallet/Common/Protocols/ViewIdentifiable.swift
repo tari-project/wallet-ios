@@ -55,7 +55,7 @@ extension UITableView {
     func register<T: UITableViewCell>(type: T.Type) {
         register(type, forCellReuseIdentifier: type.identifier)
     }
-    
+
     func register<T: UITableViewHeaderFooterView>(headerFooterType: T.Type) {
         register(headerFooterType, forHeaderFooterViewReuseIdentifier: headerFooterType.identifier)
     }
@@ -63,7 +63,7 @@ extension UITableView {
     func dequeueReusableCell<T: UITableViewCell>(type: T.Type, indexPath: IndexPath) -> T {
         dequeueReusableCell(withIdentifier: type.identifier, for: indexPath) as? T ?? T(style: .default, reuseIdentifier: type.identifier)
     }
-    
+
     func dequeueReusableHeaderFooterView<T: UITableViewHeaderFooterView>(type: T.Type) -> T {
         dequeueReusableHeaderFooterView(withIdentifier: type.identifier) as? T ?? T(reuseIdentifier: type.identifier)
     }

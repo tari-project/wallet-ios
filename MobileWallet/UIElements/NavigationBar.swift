@@ -42,96 +42,96 @@ import UIKit
 import TariCommon
 
 final class NavigationBar: DynamicThemeView {
-    
+
     enum BackButtonType {
         case back
         case close
         case none
     }
-    
+
     // MARK: - Subviews
-    
+
     @View private(set) var contentView = UIView()
-    
+
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.navigationBarTitle
         view.textAlignment = .center
         return view
     }()
-    
+
     @View private var backButton = BaseButton()
     @View private var separator = UIView()
-    
+
     @View private(set) var rightButton: BaseButton = {
         let view = BaseButton()
         view.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
         view.titleEdgeInsets = UIEdgeInsets(top: 0.0, left: -8.0, bottom: 0.0, right: 8.0)
         return view
     }()
-    
+
     @View private(set) var bottomContentView = UIView()
-    
+
     @View private var progressView: UIProgressView = {
         let view = UIProgressView()
         view.isHidden = true
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var title: String? {
         get { titleLabel.text }
         set { titleLabel.text = newValue }
     }
-    
+
     var backButtonType: BackButtonType = .back {
         didSet { updateLeftButton() }
     }
-    
-    var progress: Float? = nil {
+
+    var progress: Float? {
         didSet {
             guard let progress else {
                 progressView.isHidden = true
                 return
             }
-            
+
             progressView.isHidden = false
             progressView.setProgress(progress, animated: oldValue != nil)
         }
     }
-    
+
     var isSeparatorVisible: Bool {
         get { !separator.isHidden }
         set { separator.isHidden = !newValue }
     }
-    
+
     var onBackButtonAction: (() -> Void)?
     var onRightButtonAction: (() -> Void)?
-    
+
     override init() {
         super.init()
         setupConstraints()
         setupCallbacks()
         updateLeftButton()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Subviews
-    
+
     private func setupConstraints() {
-        
+
         [contentView, bottomContentView, separator, progressView].forEach(addSubview)
         [backButton, titleLabel, rightButton].forEach(contentView.addSubview)
-        
+
         rightButton.setContentHuggingPriority(.required, for: .horizontal)
-        
+
         let bottomContentViewHeightConstraint = bottomContentView.heightAnchor.constraint(equalToConstant: 0.0)
         bottomContentViewHeightConstraint.priority = .defaultHigh
-        
+
         let constraints = [
             contentView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -162,17 +162,17 @@ final class NavigationBar: DynamicThemeView {
             progressView.trailingAnchor.constraint(equalTo: trailingAnchor),
             progressView.heightAnchor.constraint(equalToConstant: 2.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
         backButton.onTap = { [weak self] in self?.handleBackButtonAction() }
         rightButton.onTap = { [weak self] in self?.onRightButtonAction?() }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
@@ -180,17 +180,17 @@ final class NavigationBar: DynamicThemeView {
         titleLabel.textColor = theme.text.heading
         separator.backgroundColor = theme.neutral.tertiary
         progressView.tintColor = theme.brand.purple
-        
+
         rightButton.tintColor = theme.icons.default
         rightButton.setTitleColor(theme.icons.default, for: .normal)
         rightButton.setTitleColor(theme.icons.default?.withAlphaComponent(0.5), for: .highlighted)
         rightButton.setTitleColor(theme.icons.inactive, for: .disabled)
     }
-    
+
     private func updateLeftButton() {
-        
+
         let image: UIImage?
-        
+
         switch backButtonType {
         case .back:
             image = Theme.shared.images.backArrow
@@ -199,33 +199,33 @@ final class NavigationBar: DynamicThemeView {
         case .none:
             image = nil
         }
-        
+
         backButton.setImage(image, for: .normal)
     }
-    
+
     // MARK: - Actions
-    
+
     private func handleBackButtonAction() {
-        
+
         guard backButtonType != .none else { return }
-        
+
         guard onBackButtonAction == nil else {
             onBackButtonAction?()
             return
         }
-        
+
         let topController = UIApplication.shared.topController()
-        
+
         guard let navigationController = topController as? UINavigationController else {
             topController?.dismiss(animated: true)
             return
         }
-        
+
         guard navigationController.viewControllers.first == navigationController.topViewController else {
             navigationController.popViewController(animated: true)
             return
         }
-        
+
         navigationController.dismiss(animated: true)
     }
 }

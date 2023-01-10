@@ -1,5 +1,5 @@
 //  BugReportingConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 28/10/2022
@@ -39,7 +39,7 @@
 */
 
 enum BugReportingConstructor {
-    
+
     static func buildScene() -> BugReportingViewController {
         let model = BugReportingModel()
         return BugReportingViewController(model: model)

@@ -1,5 +1,5 @@
 //  ProgressBar.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 09/02/2022
@@ -42,69 +42,69 @@ import UIKit
 import TariCommon
 
 final class ProgressBar: DynamicThemeView {
-    
+
     enum State {
         case disabled
         case off
         case on
     }
-    
+
     // MARK: - Subviews
-    
+
     @View private var bar = UIView()
-    
+
     // MARK: - Properties
-    
+
     private(set) var state: State = .disabled
-    
+
     private var barTrailingOffConstraint: NSLayoutConstraint?
     private var barTrailingOnConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Initalisers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         update(state: .disabled, completion: nil)
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(bar)
-        
+
         let barTrailingOffConstraint = bar.trailingAnchor.constraint(equalTo: leadingAnchor)
         barTrailingOnConstraint = bar.trailingAnchor.constraint(equalTo: trailingAnchor)
         self.barTrailingOffConstraint = barTrailingOffConstraint
-        
+
         let constraints = [
             bar.topAnchor.constraint(equalTo: topAnchor),
             bar.leadingAnchor.constraint(equalTo: leadingAnchor),
             barTrailingOffConstraint,
             bar.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         bar.backgroundColor = theme.brand.purple
-        
+
         updateBackgroundColor(theme: theme)
     }
-    
+
     private func updateBackgroundColor(theme: ColorTheme) {
         switch state {
         case .disabled:
@@ -113,16 +113,16 @@ final class ProgressBar: DynamicThemeView {
             backgroundColor = theme.brand.purple?.withAlphaComponent(0.5)
         }
     }
-    
+
     func update(state: State, completion: (() -> Void)?) {
         self.state = state
         bar.isHidden = state == .disabled
         updateBackgroundColor(theme: theme)
         animateBar(isOn: state == .on, completion: completion)
     }
-    
+
     private func animateBar(isOn: Bool, completion: (() -> Void)?) {
-        
+
         if isOn {
             barTrailingOffConstraint?.isActive = false
             barTrailingOnConstraint?.isActive = true
@@ -130,16 +130,15 @@ final class ProgressBar: DynamicThemeView {
             barTrailingOnConstraint?.isActive = false
             barTrailingOffConstraint?.isActive = true
         }
-        
+
         UIView.animate(withDuration: 0.85, delay: 0.1, options: [], animations: {
             self.layoutIfNeeded()
         }, completion: { _ in
             completion?()
         })
     }
-    
+
     // MARK: - Content Size
-    
+
     override var intrinsicContentSize: CGSize { CGSize(width: 55.0, height: 4.0) }
 }
-

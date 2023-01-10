@@ -1,5 +1,5 @@
 //  DropboxBackupManager.swift
-    
+
 /*
     Package MobileWallet
     Created by Adrian Truszczynski on 14/04/2022
@@ -54,23 +54,23 @@ enum DropboxBackupError: Error {
 }
 
 final class DropboxBackupService {
-    
+
     enum Status {
         case idle
         case progress(value: Double)
         case done
     }
-    
+
     private enum DataTask {
         case upload
         case download
     }
-    
+
     private enum BackupType {
         case encrypted
         case unencrypted
     }
-    
+
     private enum InternalError: Error {
         case noClient
         case unableToAuthenticateUser
@@ -78,39 +78,39 @@ final class DropboxBackupService {
     }
 
     // MARK: - Constants
-    
+
     private let maxSmallFileSize: UInt64 = 12 * 1024 * 1024
     private let remoteFolderPath = "/backup"
     private let localWorkingDirectoryName = "Dropbox"
 
     // MARK: - Properties
-    
+
     @Published private var syncDate: Date?
     @Published private var syncStatus: BackupStatus = .disabled
-    
+
     weak var presentingController: UIViewController?
     var isSyncedSuccessfully: Bool { syncDate != nil }
-    
+
     private var backupPassword: String?
     private var dataTask: DataTask?
     private var backgroundTaskID: UIBackgroundTaskIdentifier?
     private var restoreCompletionSubject: PassthroughSubject<Void, DropboxBackupError>?
     private var cancellables = Set<AnyCancellable>()
-    
+
     private var dropboxClient: DropboxClient {
         get throws {
             guard let client = DropboxClientsManager.authorizedClient else { throw InternalError.noClient }
             return client
         }
     }
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         updateDropboxState()
         setupCallbacks()
     }
-    
+
     private func updateDropboxState() {
         switch TariSettings.shared.walletSettings.dropboxBackupStatus {
         case let .enabled(syncDate):
@@ -121,16 +121,16 @@ final class DropboxBackupService {
             syncDate = nil
         }
     }
-    
+
     // MARK: - Setups
-    
+
     func setupConfiguration() {
         guard let apiKey = TariSettings.shared.dropboxApiKey else { return }
         DropboxClientsManager.setupWithAppKey(apiKey)
     }
-    
+
     private func setupCallbacks() {
-        
+
         $syncDate
             .compactMap { $0 }
             .sink {
@@ -138,7 +138,7 @@ final class DropboxBackupService {
                 TariSettings.shared.walletSettings.dropboxBackupStatus = .enabled(syncDate: $0)
             }
             .store(in: &cancellables)
-        
+
         $syncStatus
             .dropFirst()
             .map { $0 != .disabled }
@@ -155,18 +155,18 @@ final class DropboxBackupService {
                 default:
                     break
                 }
-                
+
             }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Integration
-    
+
     func handle(url: URL) {
-        
+
         DropboxClientsManager.handleRedirectURL(url) { [weak self] result in
             guard let dataTask = self?.dataTask, let result = result else { return }
-            
+
             switch result {
             case .success:
                 switch dataTask {
@@ -180,42 +180,42 @@ final class DropboxBackupService {
             case .cancel:
                 self?.handle(loginError: .authenticationCancelledByUser, task: dataTask)
             }
-            
+
             self?.dataTask = nil
         }
     }
-    
+
     private func handle(loginError: DropboxBackupError, task: DataTask) {
-        
+
         switch task {
         case .download:
             restoreCompletionSubject?.send(completion: .failure(loginError))
         case .upload:
             syncStatus = .failed(error: loginError)
         }
-        
+
         syncStatus = .disabled
     }
-    
+
     // MARK: - Actions
-    
+
     func turnOn() {
         guard syncStatus == .disabled else { return }
         syncStatus = .enabled
         createBackup()
     }
-    
+
     func turnOff() {
         syncStatus = .disabled
         logOut()
     }
-    
+
     func createBackup(password: String?) {
-        
+
         guard syncStatus != .disabled else { return }
-        
+
         backgroundTaskID = UIApplication.shared.beginBackgroundTask()
-        
+
         Task { [weak self] in
             do {
                 _ = try dropboxClient
@@ -229,25 +229,25 @@ final class DropboxBackupService {
             } catch {
                 self?.syncStatus = .failed(error: DropboxBackupError.unknown)
             }
-            
+
             self?.endBackgroundTask()
         }
     }
-    
+
     private func downloadBackup(password: String?) {
-        
+
         Task {
             do {
                 _ = try dropboxClient
-                
+
                 guard let backupType = try await checkMetadata() else {
                     throw DropboxBackupError.noBackupToRestore
                 }
-                
+
                 if backupType == .encrypted, password == nil {
                     throw DropboxBackupError.backupPasswordRequired
                 }
-                
+
                 let backupURL = try await downloadFile(backupType: backupType)
                 try await BackupFilesManager.store(backup: backupURL, password: password)
                 syncStatus = .enabled
@@ -262,27 +262,27 @@ final class DropboxBackupService {
                 syncStatus = .disabled
                 restoreCompletionSubject?.send(completion: .failure(.unknown))
             }
-            
+
             try BackupFilesManager.removeWorkingDirectory(workingDirectoryName: localWorkingDirectoryName)
         }
     }
-    
+
     func logOut() {
         DropboxClientsManager.unlinkClients()
         syncStatus = .disabled
     }
-    
+
     private func createBackup() {
         createBackup(password: backupPassword)
     }
-    
+
     // MARK: - Account
-    
+
     private func signIn(task: DataTask) {
-        
+
         guard let presentingController = presentingController else { return }
         dataTask = task
-        
+
         DispatchQueue.main.async {
             DropboxClientsManager.authorizeFromControllerV2(
                 UIApplication.shared,
@@ -293,9 +293,9 @@ final class DropboxBackupService {
             )
         }
     }
-    
+
     // MARK: - Folders
-    
+
     private func createFolderIfNeeded() async throws {
         do {
             try await createFolder()
@@ -305,68 +305,68 @@ final class DropboxBackupService {
             throw error
         }
     }
-    
+
     private func createFolder() async throws {
-        
+
         let client = try dropboxClient
-        
+
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
-            
-            client.files.createFolderV2(path: self.remoteFolderPath).response(queue: nil) { result, error in
-                
+
+            client.files.createFolderV2(path: self.remoteFolderPath).response(queue: nil) { _, error in
+
                 guard let error = error else {
                     continuation.resume(with: .success(()))
                     return
                 }
-                
+
                 let dropboxError = self.map(createFoldersError: error)
-                
+
                 continuation.resume(with: .failure(dropboxError))
             }
         }
     }
-    
+
     // MARK: - Upload
-    
+
     private func uploadFile(password: String?) async throws {
-        
+
         syncStatus = .inProgress(progress: 0.0)
-        
+
         try await createFolderIfNeeded()
         try BackupFilesManager.removeWorkingDirectory(workingDirectoryName: localWorkingDirectoryName)
         let backupURL = try await BackupFilesManager.prepareBackup(workingDirectoryName: localWorkingDirectoryName, password: password)
         try await upload(fileURL: backupURL)
         try BackupFilesManager.removeWorkingDirectory(workingDirectoryName: localWorkingDirectoryName)
     }
-    
+
     private func upload(fileURL: URL) async throws {
-        
+
         let fileAttributes = try FileManager.default.attributesOfItem(atPath: fileURL.path)
-        
+
         guard let fileSize = fileAttributes[FileAttributeKey.size] as? UInt64, fileSize <= maxSmallFileSize else {
             try await uploadLargeFile(fileURL: fileURL)
             return
         }
-        
+
         try await uploadSmallFile(fileURL: fileURL)
     }
-    
+
     private func uploadSmallFile(fileURL: URL) async throws {
-        
+
         let client = try dropboxClient
-        
+
         return try await withCheckedThrowingContinuation { [weak self] continuation in
-            
+
             guard let self = self else { return }
             let remoteFilePath = makeRemoteFilePath(fileName: fileURL.lastPathComponent)
-            
+
             client.files.upload(path: remoteFilePath, mode: .overwrite, input: fileURL)
                 .progress {
                     self.syncStatus = .inProgress(progress: $0.fractionCompleted)
                 }
                 .response { _, error in
-                    
+
                     guard let error = error else {
                         continuation.resume(with: .success(()))
                         return
@@ -377,63 +377,63 @@ final class DropboxBackupService {
                 }
         }
     }
-    
+
     private func uploadLargeFile(fileURL: URL) async throws {
-        
+
         let client = try dropboxClient
-        
+
         return try await withCheckedThrowingContinuation { [weak self] continuation in
-            
+
             guard let self = self else { return }
             let remoteFilePath = makeRemoteFilePath(fileName: fileURL.lastPathComponent)
-            
+
             var completedProgress: Double = 0.0
             var currentPartProgress: Double = 0.0
-            
+
             let info = [fileURL: Files.CommitInfo(path: remoteFilePath, mode: .overwrite)]
-            
+
             client.files.batchUploadFiles(fileUrlsToCommitInfo: info, queue: nil, progressBlock: { [weak self] progress in
-                
+
                 let progressValue = Double(progress.completedUnitCount) / Double(progress.totalUnitCount)
-                
+
                 if progressValue < currentPartProgress {
                     completedProgress += currentPartProgress
                     currentPartProgress = 0.0
                 } else {
                     currentPartProgress = progressValue
                 }
-                
+
                 let totalProgress = completedProgress + currentPartProgress
                 self?.syncStatus = .inProgress(progress: totalProgress)
-                
-            }, responseBlock: { files, error, errors in
-                
+
+            }, responseBlock: { _, error, _ in
+
                 guard let error = error else {
                     continuation.resume(with: .success(()))
                     return
                 }
-                
+
                 let dropboxError = self.map(pollError: error)
                 continuation.resume(with: .failure(dropboxError))
             })
         }
     }
-    
+
     // MARK: - Download
-    
+
     private func checkMetadata() async throws -> BackupType? {
-        
+
         let client = try dropboxClient
-        
+
         return try await withCheckedThrowingContinuation { [weak self] continuation in
-            
+
             let group = DispatchGroup()
-            
+
             var encryptedFileTimestamp: Date?
             var encryptedFileError: CallError<Files.GetMetadataError>?
             var unencryptedFileTimestamp: Date?
             var unencryptedFileError: CallError<Files.GetMetadataError>?
-            
+
             group.enter()
             client.files
                 .getMetadata(path: makeRemoteFilePath(fileName: BackupFilesManager.encryptedFileName))
@@ -442,7 +442,7 @@ final class DropboxBackupService {
                     encryptedFileError = error
                     group.leave()
             }
-            
+
             group.enter()
             client.files
                 .getMetadata(path: makeRemoteFilePath(fileName: BackupFilesManager.unencryptedFileName))
@@ -451,19 +451,19 @@ final class DropboxBackupService {
                     unencryptedFileError = error
                     group.leave()
             }
-            
+
             group.notify(queue: .main) { [weak self] in
-                
+
                 let error = [encryptedFileError, unencryptedFileError]
                     .compactMap { $0 }
-                    .compactMap { self?.map(metadataError:$0) }
+                    .compactMap { self?.map(metadataError: $0) }
                     .first
-                
+
                 if let error = error {
                     continuation.resume(with: .failure(error))
                     return
                 }
-                
+
                 switch (encryptedFileTimestamp, unencryptedFileTimestamp) {
                 case (nil, nil):
                     continuation.resume(with: .success(nil))
@@ -479,28 +479,28 @@ final class DropboxBackupService {
                     }
                     continuation.resume(with: .success(.encrypted))
                 }
-                
+
             }
         }
     }
-    
+
     private func downloadFile(backupType: BackupType) async throws -> URL {
-        
+
         let client = try dropboxClient
         let remoteFilePath = makeRemoteFilePath(backupType: backupType)
-        
+
         return try await withCheckedThrowingContinuation { [weak self] continuation in
-            
+
             guard let self = self else { return }
             let temporaryBackupURL: URL
-            
+
             do {
                 temporaryBackupURL = try self.makeTemporaryBackupURL(backupType: backupType)
             } catch {
                 continuation.resume(with: .failure(DropboxBackupError.unableToCreateTempFolder))
                 return
             }
-            
+
             client.files
                 .download(path: remoteFilePath, overwrite: true) { _, _ in temporaryBackupURL }
                 .response { _, error in
@@ -508,25 +508,25 @@ final class DropboxBackupService {
                         continuation.resume(with: .success(temporaryBackupURL))
                         return
                     }
-                    
+
                     let dropboxError = self.map(downloadError: error)
                     continuation.resume(with: .failure(dropboxError))
                 }
         }
     }
-    
+
     // MARK: - Helpers
-    
+
     private func makeRemoteFilePath(fileName: String) -> String { "\(remoteFolderPath)/\(fileName)" }
     private func makeRemoteFilePath(backupType: BackupType) -> String { "\(remoteFolderPath)/\(makeFilename(backupType: backupType))" }
-    
+
     private func makeTemporaryBackupURL(backupType: BackupType) throws -> URL {
         try BackupFilesManager.removeWorkingDirectory(workingDirectoryName: localWorkingDirectoryName)
         let workingDirectory = try BackupFilesManager.prepareWorkingDirectory(name: localWorkingDirectoryName)
         let filename = makeFilename(backupType: backupType)
         return workingDirectory.appendingPathComponent(filename)
     }
-    
+
     private func makeFilename(backupType: BackupType) -> String {
         switch backupType {
         case .encrypted:
@@ -535,19 +535,19 @@ final class DropboxBackupService {
             return BackupFilesManager.unencryptedFileName
         }
     }
-    
+
     private func endBackgroundTask() {
         guard let backgroundTaskID = backgroundTaskID else { return }
         UIApplication.shared.endBackgroundTask(backgroundTaskID)
         self.backgroundTaskID = nil
     }
-    
+
     // MARK: - Error Mappers
-    
+
     private func map(createFoldersError: CallError<Files.CreateFolderError>) -> Error {
-        
+
         switch createFoldersError {
-            
+
         case let .routeError(error, _, _, _):
             switch error.unboxed {
             case .path:
@@ -559,14 +559,14 @@ final class DropboxBackupService {
             return DropboxBackupError.unknown
         }
     }
-    
+
     private func map(metadataError: CallError<Files.GetMetadataError>) -> DropboxBackupError? {
         guard case let .routeError(error, _, _, _) = metadataError, case let .path(lookUpError) = error.unboxed, case .notFound = lookUpError else {
             return .downloadFailed
         }
         return nil
     }
-    
+
     private func map(uploadError: CallError<Files.UploadError>) -> DropboxBackupError { .uploadFailed }
     private func map(pollError: CallError<Async.PollError>) -> DropboxBackupError { .uploadFailed }
     private func map(downloadError: CallError<Files.DownloadError>) -> DropboxBackupError { .downloadFailed }
@@ -574,39 +574,39 @@ final class DropboxBackupService {
 }
 
 extension DropboxBackupService: BackupServicable {
-    
+
     var password: String? {
         get { backupPassword }
         set { backupPassword = newValue }
     }
-    
+
     var isOn: Bool {
         get { syncStatus != .disabled }
         set { newValue ? turnOn() : turnOff() }
     }
-    
+
     var backupStatus: AnyPublisher<BackupStatus, Never> {
         $syncStatus.eraseToAnyPublisher()
     }
-    
+
     var lastBackupTimestamp: AnyPublisher<Date?, Never> {
         $syncDate.eraseToAnyPublisher()
     }
-    
+
     func performBackup(forced: Bool) {
         guard isOn else { return }
         guard forced || syncStatus.isFailed else { return }
         createBackup(password: backupPassword)
     }
-    
+
     func restoreBackup(password: String?) -> AnyPublisher<Void, Error> {
-        
+
         defer { downloadBackup(password: password) }
-        
+
         let subject = PassthroughSubject<Void, DropboxBackupError>()
-        
+
         restoreCompletionSubject = subject
-        
+
         return subject
             .mapError {
                 guard $0 == .backupPasswordRequired else { return $0 }

@@ -45,35 +45,6 @@ import XCTest
 
 final class MobileWalletTests: XCTestCase {
 
-    func testThemeAssets() {
-        let colors = Theme.shared.colors
-        let fonts = Theme.shared.fonts
-        let images = Theme.shared.images
-        
-        do {
-            for color in try colors.allProperties() {
-                if color.value as? UIColor == nil {
-                    XCTFail("Failed to find color asset in theme for property: \"\(color.key)\"")
-                }
-            }
-            
-            for font in try fonts.allProperties() {
-                if font.value as? UIFont == nil {
-                    XCTFail("Failed to find font asset in theme for property: \"\(font.key)\"")
-                }
-            }
-            
-            for image in try images.allProperties() {
-                if image.value as? UIImage == nil {
-                    XCTFail("Failed to find image asset in theme for property: \"\(image.key)\"")
-                }
-            }
-
-        } catch {
-            XCTFail("Failed to iterate through theme assets")
-        }
-    }
-    
     func testRelativeDayValue() {
         /*
          Today Date Test
@@ -96,7 +67,7 @@ final class MobileWalletTests: XCTestCase {
         let yesterday = Calendar.current.date(byAdding: Calendar.Component.day, value: -1, to: Date())!
         let yesterdayDateValue = yesterday.relativeDayFromToday()
         XCTAssertEqual(yesterdayDateValue, "Yesterday", "Test Failed. Value returned from Relative Day value should have been - Yesterday")
-        
+
         /*
          Explicit Date Test
         */

@@ -1,5 +1,5 @@
 //  ContextualButton.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 14/06/2022
@@ -42,52 +42,52 @@ import UIKit
 import TariCommon
 
 final class ContextualButton: BaseButton {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.textAlignment = .right
         view.font = .Avenir.medium.withSize(17.0)
         return view
     }()
-    
+
     @View private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var isExpanded: Bool = true {
         didSet { updateLayout() }
     }
-    
+
     override var tintColor: UIColor? {
         didSet {
             label.textColor = tintColor
             iconView.tintColor = tintColor
         }
     }
-    
+
     private var labelLeadingConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero)
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [label, iconView].forEach(addSubview)
 
         let labelLeadingConstraint = label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15.0)
@@ -107,14 +107,14 @@ final class ContextualButton: BaseButton {
 
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Actions
-    
+
     func update(text: String?, icon: UIImage?) {
         label.text = text
         iconView.image = icon
     }
-    
+
     private func updateLayout() {
         labelLeadingConstraint?.isActive = isExpanded
         label.alpha = isExpanded ? 1.0 : 0.0

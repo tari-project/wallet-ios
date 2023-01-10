@@ -77,7 +77,7 @@ final class AddBaseNodeView: DynamicThemeView {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary

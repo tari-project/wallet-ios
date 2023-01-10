@@ -1,5 +1,5 @@
 //  BaseButton.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/01/2022
@@ -41,30 +41,30 @@
 import UIKit
 
 class BaseButton: UIButton {
-    
+
     // MARK: - Properties
-    
+
     var onTap: (() -> Void)?
-    
+
     // MARK: - Initialisers
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
         addTarget(self, action: #selector(onTapAction), for: .touchUpInside)
     }
-    
+
     // MARK: - Action-Targets
-    
+
     @objc private func onTapAction() {
         onTap?()
     }

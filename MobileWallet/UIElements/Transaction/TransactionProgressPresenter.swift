@@ -1,5 +1,5 @@
 //  TransactionProgressPresenter.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 25/03/2022
@@ -41,11 +41,11 @@
 import UIKit
 
 enum TransactionProgressPresenter {
-    
+
     static func showTransactionProgress(presenter: UIViewController, recipientAddress: TariAddress, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, yatID: String?) {
-        
+
         let controller: TransactionViewControllable
-        
+
         if let yatID = yatID {
             let inputData = YatTransactionModel.InputData(address: recipientAddress, amount: amount, feePerGram: feePerGram, message: message, yatID: yatID, isOneSidedPayment: isOneSidedPayment)
             controller = YatTransactionConstructor.buildScene(inputData: inputData)
@@ -55,7 +55,7 @@ enum TransactionProgressPresenter {
             controller = SendingTariConstructor.buildScene(inputData: inputData)
             presenter.navigationController?.pushViewController(controller, animated: false)
         }
-        
+
         controller.onCompletion = { [weak presenter] error in
             presenter?.navigationController?.dismiss(animated: true) {
                 UIApplication.shared.menuTabBarController?.setTab(.home)
@@ -64,7 +64,7 @@ enum TransactionProgressPresenter {
             }
         }
     }
-    
+
     private static func show(transactionError: WalletTransactionsManager.TransactionError) {
         switch transactionError {
         case .noInternetConnection:

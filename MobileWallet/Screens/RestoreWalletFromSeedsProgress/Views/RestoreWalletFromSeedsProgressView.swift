@@ -157,7 +157,7 @@ final class RestoreWalletFromSeedsProgressView: DynamicThemeView {
     }
 
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary

@@ -68,19 +68,17 @@ final class PasswordField: DynamicThemeView, UITextFieldDelegate {
     }
 
     var isWarning: Bool {
-        get {
-            if let password = self.password {
-                if !password.isEmpty {
-                    if password.count < minPasswordLength && !isConfirmationField {
-                        return true
-                    } else if password != paredPasswordField?.password && isConfirmationField {
-                        return true
-                    }
+        if let password = self.password {
+            if !password.isEmpty {
+                if password.count < minPasswordLength && !isConfirmationField {
+                    return true
+                } else if password != paredPasswordField?.password && isConfirmationField {
+                    return true
                 }
-                return false
             }
-            return true
+            return false
         }
+        return true
     }
 
     var isConfirmationField: Bool = false
@@ -119,7 +117,7 @@ final class PasswordField: DynamicThemeView, UITextFieldDelegate {
 
     weak var delegate: PasswordFieldDelegate?
     weak var paredPasswordField: PasswordField?
-    
+
     private var textColor: UIColor?
     private var warningTextColor: UIColor?
 
@@ -241,18 +239,18 @@ final class PasswordField: DynamicThemeView, UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         warningLabel.textColor = theme.system.red
         separatorLine.backgroundColor = theme.neutral.tertiary
         textColor = theme.text.heading
         warningTextColor = theme.system.red
-        
+
         updateLabelsTextColor()
     }
-    
+
     private func updateLabelsTextColor() {
         let textColor = state == .normal ? textColor : warningTextColor
         titleLabel.textColor = textColor

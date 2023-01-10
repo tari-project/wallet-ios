@@ -1,5 +1,5 @@
 //  LogModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2022
@@ -51,19 +51,19 @@ struct LogFilterModel: Identifiable, Hashable {
 }
 
 final class LogModel {
-    
+
     // MARK: - View Model
-    
+
     @Published private(set) var filename: String = ""
     @Published private(set) var logLineModels: [LogLineModel] = []
-    @Published private(set) var filterModels: [LogFilterModel]? = nil
+    @Published private(set) var filterModels: [LogFilterModel]?
     @Published private(set) var isUpdateInProgress: Bool = false
     @Published private(set) var errorMessage: MessageModel?
-    
+
     // MARK: - Properties
-    
+
     private let fileURL: URL
-    
+
     private lazy var updatedFilterModels = [
         LogFilterModel(id: UUID(), title: localized("debug.logs.details.filters.label.info"), isSelected: true, filterKey: "INFO"),
         LogFilterModel(id: UUID(), title: localized("debug.logs.details.filters.label.warning"), isSelected: true, filterKey: "WARN"),
@@ -73,33 +73,33 @@ final class LogModel {
         LogFilterModel(id: UUID(), title: localized("debug.logs.details.filters.label.aurora_connection"), isSelected: true, filterKey: filterKey(domain: .connection)),
         LogFilterModel(id: UUID(), title: localized("debug.logs.details.filters.label.aurora_navigation"), isSelected: true, filterKey: filterKey(domain: .navigation)),
         LogFilterModel(id: UUID(), title: localized("debug.logs.details.filters.label.aurora_ui"), isSelected: true, filterKey: filterKey(domain: .userInterface)),
-        LogFilterModel(id: UUID(), title: localized("debug.logs.details.filters.label.aurora_debug"), isSelected: true, filterKey: filterKey(domain: .debug)),
+        LogFilterModel(id: UUID(), title: localized("debug.logs.details.filters.label.aurora_debug"), isSelected: true, filterKey: filterKey(domain: .debug))
     ]
-    
+
     private var selectedUUIDs: [UUID] = []
-    
+
     // MARK: - Initialisers
-    
+
     init(fileURL: URL) {
         self.fileURL = fileURL
         filename = fileURL.lastPathComponent
     }
-    
+
     // MARK: - Actions
-    
+
     func refreshData() {
         isUpdateInProgress = true
         DispatchQueue.global().async {
             self.updateVisibleLogLines()
         }
     }
-    
+
     private func updateVisibleLogLines() {
         do {
             let selectedKeywords = updatedFilterModels
                 .filter(\.isSelected)
                 .map(\.filterKey)
-            
+
             logLineModels = try String(contentsOf: fileURL)
                 .components(separatedBy: .newlines)
                 .map { $0.trimmingCharacters(in: .whitespaces) }
@@ -109,22 +109,22 @@ final class LogModel {
         } catch {
             errorMessage = MessageModel(title: localized("error.generic.title"), message: localized("debug.logs.details.error.message.cant_open_file"), type: .error)
         }
-        
+
         isUpdateInProgress = false
     }
-    
+
     func generateFilterModels() {
         filterModels = updatedFilterModels
     }
-    
+
     func applyFilters(selectedUUIDs: Set<UUID>) {
         updatedFilterModels = updatedFilterModels
             .map { LogFilterModel(id: $0.id, title: $0.title, isSelected: selectedUUIDs.contains($0.id), filterKey: $0.filterKey) }
         refreshData()
     }
-    
+
     // MARK: - Helpers
-    
+
     private func filterKey(domain: Logger.Domain) -> String {
         LogFormatter.formattedDomainName(domain: domain, includePrefix: true)
     }

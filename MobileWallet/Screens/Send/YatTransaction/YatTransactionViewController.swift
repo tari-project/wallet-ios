@@ -1,5 +1,5 @@
 //  YatTransactionViewController.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 21/10/2021
@@ -42,50 +42,50 @@ import UIKit
 import Combine
 
 final class YatTransactionViewController: UIViewController, TransactionViewControllable {
-    
+
     var onCompletion: ((WalletTransactionsManager.TransactionError?) -> Void)?
-    
+
     private let mainView = YatTransactionView()
     private let model: YatTransactionModel
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     init(model: YatTransactionModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
         modalPresentationStyle = .overFullScreen
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupFeedbacks()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         model.start()
     }
-    
+
     private func setupFeedbacks() {
-        
+
         model.$viewState
             .receive(on: DispatchQueue.main)
             .assign(to: \.state, on: mainView)
             .store(in: &cancellables)
-        
+
         mainView.onCompletion = { [weak self] in
             self?.dismiss(animated: false, completion: nil)
             self?.onCompletion?(self?.model.error)
         }
-        
+
         NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
             .sink { [weak self] _ in self?.mainView.refreshViews() }
             .store(in: &cancellables)

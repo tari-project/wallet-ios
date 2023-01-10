@@ -1,5 +1,5 @@
 //  TransactionsViewController.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 13/01/2022
@@ -42,50 +42,50 @@ import UIKit
 import Combine
 
 final class TransactionsViewController: UIViewController {
-    
+
     // MARK: - Properties
-    
+
     private let pageViewController = PageViewController()
     private let mainView = TransactionsView()
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupPageController()
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupPageController() {
         pageViewController.controllers = [AddRecipientViewController(), RequestTariAmountViewController()]
         add(childController: pageViewController, containerView: mainView.contentView)
     }
-    
+
     private func setupCallbacks() {
-        
+
         mainView.toolbar.onButtonTap = { [weak self] in
             self?.pageViewController.move(toIndex: $0)
         }
-        
+
         pageViewController.$pageIndex
             .sink { [weak self] in self?.handle(pageIndex: $0) }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     private func handle(pageIndex: CGFloat) {
-        
+
         let roundedIndex = round(pageIndex)
-        
+
         switch roundedIndex {
         case 0:
             mainView.navigationBar.title = localized("add_recipient.title")
@@ -94,12 +94,12 @@ final class TransactionsViewController: UIViewController {
         default:
             break
         }
-        
+
         mainView.toolbar.indexPosition = pageIndex
     }
-    
+
     // MARK: - Deeplinks
-    
+
     func update(deeplink: TransactionsSendDeeplink) {
         let controller = pageViewController.controllers.compactMap { $0 as? AddRecipientViewController }.first
         controller?.deeplink = deeplink

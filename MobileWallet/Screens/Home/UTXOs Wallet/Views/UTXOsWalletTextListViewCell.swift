@@ -1,5 +1,5 @@
 //  UTXOsWalletTextListViewCell.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 08/06/2022
@@ -42,7 +42,7 @@ import UIKit
 import TariCommon
 
 final class UTXOsWalletTextListViewCell: DynamicThemeCell {
-    
+
     struct Model: Identifiable, Hashable {
         var id: UUID
         let amount: String
@@ -51,80 +51,79 @@ final class UTXOsWalletTextListViewCell: DynamicThemeCell {
         let hash: String
         let isSelectable: Bool
     }
-    
+
     // MARK: - Subviews
-    
+
     @View private var backgroundContentView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
         return view
     }()
-    
+
     @View private var amountLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.heavy.withSize(15.0)
         return view
     }()
-    
+
     @View private var hashLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.roman.withSize(12.0)
         return view
     }()
-    
+
     @View private var statusCircleView: UIView = UIView()
-    
+
     @View private var statusLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.roman.withSize(12.0)
         return view
     }()
-    
+
     @View private var tickView = UTXOsWalletTickButton()
-    
+
     // MARK: - Properties
-    
+
     var isTickSelected: Bool = false {
         didSet { update(selectionState: isTickSelected) }
     }
-    
+
     private(set) var elementID: UUID?
-    
+
     private var status: UtxoStatus = .mined
     private var isSelectable = false
     private var leadingConstraint: NSLayoutConstraint?
     private var leadingConstraintInEditing: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         selectionStyle = .none
         backgroundColor = .clear
     }
-    
+
     private func setupConstraints() {
-        
+
         [backgroundContentView, tickView].forEach(contentView.addSubview)
         [amountLabel, statusCircleView, statusLabel, hashLabel].forEach(backgroundContentView.addSubview)
-        
+
         let leadingConstraint = backgroundContentView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30.0)
         leadingConstraintInEditing = backgroundContentView.leadingAnchor.constraint(equalTo: tickView.trailingAnchor, constant: 10.0)
-        
+
         self.leadingConstraint = leadingConstraint
-        
-        
+
         let constraints = [
             backgroundContentView.topAnchor.constraint(equalTo: contentView.topAnchor),
             leadingConstraint,
@@ -149,12 +148,12 @@ final class UTXOsWalletTextListViewCell: DynamicThemeCell {
             hashLabel.trailingAnchor.constraint(equalTo: backgroundContentView.trailingAnchor, constant: -30.0),
             hashLabel.bottomAnchor.constraint(equalTo: backgroundContentView.bottomAnchor, constant: -15.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Actions
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         statusCircleView.backgroundColor = status.color(theme: theme)
@@ -162,20 +161,20 @@ final class UTXOsWalletTextListViewCell: DynamicThemeCell {
         hashLabel.textColor = theme.text.body
         statusLabel.textColor = theme.text.body
     }
-    
+
     func update(model: Model) {
         elementID = model.id
         isSelectable = model.isSelectable
         amountLabel.text = model.amount
         hashLabel.text = model.hash
         statusLabel.text = model.statusText
-        
+
         status = model.status
         update(theme: theme)
     }
-    
+
     func updateTickBox(isVisible: Bool, animated: Bool) {
-        
+
         if isVisible {
             leadingConstraint?.isActive = false
             leadingConstraintInEditing?.isActive = true
@@ -183,26 +182,26 @@ final class UTXOsWalletTextListViewCell: DynamicThemeCell {
             leadingConstraintInEditing?.isActive = false
             leadingConstraint?.isActive = true
         }
-        
+
         UIView.animate(withDuration: animated ? 0.3 : 0.0) {
             self.tickView.alpha = isVisible ? 1.0 : 0.0
             self.layoutIfNeeded()
         }
     }
-    
+
     func updateBackground(isSemitransparent: Bool, animated: Bool) {
-        
+
         UIView.animate(withDuration: animated ? 0.3 : 0.0) {
             self.contentView.alpha = isSemitransparent ? 0.6 : 1.0
         }
     }
-    
+
     private func update(selectionState: Bool) {
         tickView.isSelected = selectionState
     }
-    
+
     // MARK: - Layout
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         statusCircleView.layer.cornerRadius = statusCircleView.bounds.height / 2.0

@@ -39,7 +39,6 @@
 */
 
 import Foundation
-import Foundation
 import UIKit
 
 class AnimatedBalanceLabel: UIView {
@@ -119,6 +118,7 @@ class AnimatedBalanceLabel: UIView {
 
     private var _attributedText: NSAttributedString?
     var attributedText: NSAttributedString? {
+        get { _attributedText }
         set {
             if let newValue = newValue, !attributedTextFitsInWidth(attributedText: newValue, width: bounds.width), bounds.width >= 0 {
                 self._attributedText = attributedTextFittingInWidth(attributedText: newValue, width: bounds.width)
@@ -126,9 +126,6 @@ class AnimatedBalanceLabel: UIView {
                 self._attributedText = newValue
             }
             updateDisplayedText()
-        }
-        get {
-            return _attributedText
         }
     }
 

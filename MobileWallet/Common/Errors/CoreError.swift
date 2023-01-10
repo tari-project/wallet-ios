@@ -1,5 +1,5 @@
 //  CoreError.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 01/02/2022
@@ -44,8 +44,8 @@ protocol CoreError: Error, Equatable {
 }
 
 extension CoreError {
-    
+
     var signature: String { "\(domain)-\(code)" }
-    
+
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.code == rhs.code }
 }

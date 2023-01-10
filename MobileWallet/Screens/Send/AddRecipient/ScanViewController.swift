@@ -336,10 +336,10 @@ class ScanViewController: UIViewController {
 // MARK: - AVCaptureMetadataOutputObjectsDelegate
 extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
-        
+
         guard let metadata = metadataObjects.first as? AVMetadataMachineReadableCodeObject, let rawDeeplink = metadata.stringValue else { return }
         captureSession.stopRunning()
-        
+
         switch scanResourceType {
         case .publicKey:
             do {
@@ -350,7 +350,7 @@ extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
             } catch {
                 dismiss(animated: true)
             }
-            
+
         case .bridges:
             guard let bridges = rawDeeplink.findBridges() else {
                 PopUpPresenter.show(message: MessageModel(title: localized("scan_view.error.title"), message: localized("scan_view.error.bridges.description"), type: .error))
@@ -364,12 +364,12 @@ extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
 }
 
 extension ScanViewController: DeeplinkHandlable {
-    
+
     func handle(deeplink: TransactionsSendDeeplink) {
         actionDelegate?.onScan(deeplink: deeplink)
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         dismiss(animated: true)
     }
-    
+
     func handle(deeplink: BaseNodesAddDeeplink) {}
 }

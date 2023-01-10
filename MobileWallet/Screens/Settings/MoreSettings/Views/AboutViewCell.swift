@@ -1,5 +1,5 @@
 //  AboutViewCell.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 26/05/2022
@@ -42,45 +42,45 @@ import UIKit
 import TariCommon
 
 final class AboutViewCell: DynamicThemeCell {
-    
+
     // MARK: - Subviews
-    
+
     @View private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.light.withSize(14.0)
         view.numberOfLines = 2
         return view
     }()
-    
+
     // MARK: - initialisers
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
-        
+
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         selectionStyle = .none
     }
-    
+
     private func setupConstraints() {
-        
+
         [iconView, label].forEach(contentView.addSubview)
-        
+
         let constraints = [
             iconView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
             iconView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -92,19 +92,19 @@ final class AboutViewCell: DynamicThemeCell {
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -5.0),
             heightAnchor.constraint(greaterThanOrEqualToConstant: 48.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         iconView.tintColor = theme.text.heading
         label.textColor = theme.text.heading
     }
-    
+
     func update(icon: UIImage?, text: String?) {
         iconView.image = icon
         label.text = text

@@ -1,5 +1,5 @@
 //  PopUpTableView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/10/2022
@@ -41,53 +41,53 @@
 import UIKit
 
 final class PopUpTableView: DynamicThemeTableView {
-    
+
     // MARK: - Properties
-    
+
     var onSelectRow: ((IndexPath) -> Void)?
-    
+
     private var heightConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero, style: .plain)
         setupView()
         setupConstraints()
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupView() {
         bounces = false
         rowHeight = UITableView.automaticDimension
         separatorInset = UIEdgeInsets(top: 0.0, left: 25.0, bottom: 0.0, right: 25.0)
         backgroundColor = .clear
     }
-    
+
     private func setupConstraints() {
         heightConstraint = heightAnchor.constraint(equalToConstant: 0.0)
         heightConstraint?.isActive = true
     }
-    
+
     private func setupCallbacks() {
         delegate = self
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         separatorColor = theme.neutral.secondary
     }
-    
+
     // MARK: - Layout
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         layoutIfNeeded()
@@ -96,9 +96,8 @@ final class PopUpTableView: DynamicThemeTableView {
 }
 
 extension PopUpTableView: UITableViewDelegate {
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         onSelectRow?(indexPath)
     }
 }
-

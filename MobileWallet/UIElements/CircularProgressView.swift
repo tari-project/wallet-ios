@@ -79,7 +79,7 @@ final class CircularProgressView: DynamicThemeView {
         progressLayer.add(circularProgressAnimation, forKey: "progressAnim")
         progressLayer.strokeEnd = CGFloat(progress)
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         circleLayer.strokeColor = theme.backgrounds.secondary?.cgColor

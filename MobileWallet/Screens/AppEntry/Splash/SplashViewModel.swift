@@ -1,5 +1,5 @@
 //  SplashViewModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 21/07/2022
@@ -41,88 +41,92 @@
 import Combine
 
 final class SplashViewModel {
-    
+
     private enum InternalError: Error {
         case disconnectedFromTor
     }
-    
+
     enum Status {
         case idle
         case working
         case success
     }
-    
+
     enum StatusRepresentation {
         case content
         case logo
     }
-    
+
     struct StatusModel {
         let status: Status
         let statusRepresentation: StatusRepresentation
     }
-    
+
     // MARK: - View Model
-    
+
     @Published private(set) var status: StatusModel?
     @Published private(set) var networkName: String?
     @Published private(set) var appVersion: String?
     @Published private(set) var allNetworkNames: [String] = []
     @Published private(set) var isWalletExist: Bool = false
     @Published private(set) var errorMessage: MessageModel?
-    
+
     // MARK: - Properties
-    
+
     private var isWalletConnected: Bool
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init(isWalletConnected: Bool) {
         self.isWalletConnected = isWalletConnected
         status = StatusModel(status: .idle, statusRepresentation: Tari.shared.isWalletExist ? .logo : .content)
         setupCallbacks()
         setupData()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         NetworkManager.shared.$selectedNetwork
             .map(\.presentedName)
             .sink { [weak self] in self?.networkName = $0 }
             .store(in: &cancellables)
-        
+
         NetworkManager.shared.$selectedNetwork
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in self?.isWalletExist = Tari.shared.isWalletExist }
             .store(in: &cancellables)
-        
+
         $isWalletExist
             .dropFirst()
             .filter { !$0 }
             .sink { _ in BackupManager.shared.password = nil }
             .store(in: &cancellables)
     }
-    
+
     private func setupData() {
         appVersion = AppVersionFormatter.version
         allNetworkNames = TariNetwork.all.map { $0.presentedName }
     }
-    
+
     // MARK: - View Model Actions
-    
+
     func selectNetwork(onIndex index: Int) {
         NetworkManager.shared.selectedNetwork = TariNetwork.all[index]
     }
-    
+
     func startWallet() {
-        Tari.shared.isWalletExist ? openWallet() : createWallet()
+        if Tari.shared.isWalletExist {
+            openWallet()
+        } else {
+            createWallet()
+        }
     }
-    
+
     // MARK: - Actions
-    
+
     private func createWallet() {
         Task {
             do {
@@ -135,52 +139,52 @@ final class SplashViewModel {
             }
         }
     }
-    
+
     private func openWallet() {
-        
+
         Task {
-            
+
             do {
                 let statusRepresentation = status?.statusRepresentation ?? .content
                 status = StatusModel(status: .working, statusRepresentation: statusRepresentation)
-                
+
                 try await connectToWallet(isWalletConnected: isWalletConnected)
                 isWalletConnected = false
-                
+
                 guard await validateWallet() else {
                     self.deleteWallet()
                     return
                 }
-                
+
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
             } catch {
                 self.handle(error: error)
             }
         }
     }
-    
+
     private func validateWallet() async -> Bool {
         await withCheckedContinuation { continuation in
             MigrationManager.validateWalletVersion { continuation.resume(returning: $0) }
         }
     }
-    
+
     private func deleteWallet() {
         Tari.shared.deleteWallet()
         Tari.shared.canAutomaticalyReconnectWallet = false
         status = StatusModel(status: .idle, statusRepresentation: .content)
     }
-    
+
     private func connectToWallet(isWalletConnected: Bool) async throws {
-        
+
         if !isWalletConnected {
             try await Tari.shared.startWallet()
         }
-        
+
         try Tari.shared.keyValues.set(key: .network, value: NetworkManager.shared.selectedNetwork.name)
         Tari.shared.canAutomaticalyReconnectWallet = true
     }
-    
+
     private func handle(completion: Subscribers.Completion<Error>) -> Error? {
         switch completion {
         case .finished:
@@ -189,17 +193,17 @@ final class SplashViewModel {
             return error
         }
     }
-    
+
     private func handle(error: Error) {
-        
+
         status = StatusModel(status: .idle, statusRepresentation: .content)
-        
+
         guard let error = error as? InternalError else {
             let message = ErrorMessageManager.errorMessage(forError: error)
             errorMessage = MessageModel(title: localized("splash.wallet_error.title"), message: message, type: .error)
             return
         }
-        
+
         switch error {
         case .disconnectedFromTor:
             errorMessage = MessageModel(title: localized("tor.error.title"), message: localized("tor.error.description"), type: .error)

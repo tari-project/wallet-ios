@@ -49,7 +49,7 @@ final class PendingView: DynamicThemeView {
 
     private let titleLabel = UILabel()
     private let descriptionLabel = UILabel()
-    
+
     init(title: String?, definition: String?) {
         self.title = title
         self.definition = definition
@@ -164,7 +164,7 @@ final class PendingView: DynamicThemeView {
 
         pendingAnimationView.play(fromProgress: 0, toProgress: 1, loopMode: .loop)
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary

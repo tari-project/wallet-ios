@@ -1,5 +1,5 @@
 //  PopUpHeaderView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/04/2022
@@ -42,9 +42,9 @@ import UIKit
 import TariCommon
 
 final class PopUpHeaderView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private(set) var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.light.withSize(18.0)
@@ -52,36 +52,36 @@ final class PopUpHeaderView: DynamicThemeView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(label)
-        
+
         let constraints = [
             label.topAnchor.constraint(equalTo: topAnchor),
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28.0),
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -28.0),
             label.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading

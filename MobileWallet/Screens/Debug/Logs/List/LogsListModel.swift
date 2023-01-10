@@ -1,5 +1,5 @@
 //  LogsListModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2022
@@ -39,19 +39,19 @@
 */
 
 final class LogsListModel {
-    
+
     // MARK: - View Model
-    
+
     @Published private(set) var logTitles: [String] = []
     @Published private(set) var selectedRowFileURL: URL?
     @Published private(set) var errorMessage: MessageModel?
-    
+
     // MARK: - Properties
-    
+
     private var logsURLs: [URL] = []
-    
+
     // MARK: - Actions
-    
+
     func refreshLogsList() {
         do {
             logsURLs = try Tari.shared.logsURLs
@@ -60,23 +60,23 @@ final class LogsListModel {
             errorMessage = MessageModel(title: localized("error.generic.title"), message: localized("debug.logs.list.error.message.unable_to_load"), type: .error)
         }
     }
-    
+
     func select(row: Int) {
         selectedRowFileURL = logsURLs[row]
     }
-    
+
     // MARK: - Handlers
-    
+
     private func title(fileURL: URL) throws -> String {
-        
+
         let filename = fileURL.lastPathComponent
         let fileAttibutes = try FileManager.default.attributesOfItem(atPath: fileURL.path)
         var formattedFileSize: String?
-        
+
         if let fileSize = fileAttibutes[.size] as? Int64 {
             formattedFileSize = ByteCountFormatter.string(fromByteCount: fileSize, countStyle: .file)
         }
-        
+
         return [filename, formattedFileSize]
             .compactMap { $0 }
             .joined(separator: " - ")

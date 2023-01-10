@@ -1,5 +1,5 @@
 //  UserSettingsManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 18/12/2022
@@ -39,7 +39,7 @@
 */
 
 enum UserSettingsManager {
-    
+
     static var colorScheme: UserSettings.ColorScheme {
         get { userSettings.colorScheme }
         set {
@@ -48,15 +48,15 @@ enum UserSettingsManager {
             GroupUserDefaults.userSettings = userSettings
         }
     }
-    
+
     private static var userSettings: UserSettings {
-        
+
         guard let settings = GroupUserDefaults.userSettings else {
             let newSettings = UserSettings.default
             GroupUserDefaults.userSettings = newSettings
             return newSettings
         }
-        
+
         return settings
     }
 }

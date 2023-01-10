@@ -53,9 +53,9 @@ struct ContactsSectionItem {
 }
 
 struct ContactElementItem: Identifiable, Hashable {
-    
+
     let id: UUID
-    
+
     let title: String
     let initial: String
     let isEmojiID: Bool
@@ -83,9 +83,9 @@ final class AddRecipientModel {
     @Published private(set) var yatID: String?
     @Published private(set) var walletAddressPreview: String?
     let searchText = CurrentValueSubject<String, Never>("")
-    
+
     // MARK: - Properties
-    
+
     @Published private var address: TariAddress?
     private var contacts: [UUID: Contact] = [:]
     private var recentPublicKeys: [AddressMetadata] = []
@@ -99,44 +99,44 @@ final class AddRecipientModel {
         setupFeedbacks()
         fetchWalletContacts()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupFeedbacks() {
-        
+
         searchText
             .sink { [weak self] in self?.searchForContact(searchText: $0) }
             .store(in: &cancelables)
-        
+
         searchText
             .throttle(for: .milliseconds(750), scheduler: DispatchQueue.main, latest: true)
             .sink { [weak self] in self?.searchAddress(forYatID: $0) }
             .store(in: &cancelables)
-        
+
         $address
             .map { $0 != nil }
             .assign(to: \.canMoveToNextStep, on: self)
             .store(in: &cancelables)
     }
-    
+
     // MARK: - Actions - View Model
-    
+
     func confirmSelection() {
-        
+
         guard let address else {
             errorMessage = contactsSectionItems.isEmpty ? localized("add_recipient.inputbox.warning") : nil
             return
         }
-        
+
         errorMessage = nil
         verifiedPaymentInfo = PaymentInfo(address: address, yatID: yatID)
     }
-    
+
     func onSelectItem(atIndexPath indexPath: IndexPath) {
-        
+
         let address: TariAddress?
         let model = contactsSectionItems[indexPath.section].items[indexPath.row]
-        
+
         switch indexPath.section {
         case 0:
             address = recentPublicKeys.first { $0.uuid == model.id }?.address
@@ -145,36 +145,35 @@ final class AddRecipientModel {
         default:
             return
         }
-        
+
         guard let address else {
             verifiedPaymentInfo = nil
             return
         }
-        
+
         verifiedPaymentInfo = PaymentInfo(address: address, yatID: yatID)
     }
-    
+
     func toogleYatPreview() {
         let isAddressVisible = walletAddressPreview != nil
         walletAddressPreview = isAddressVisible ? nil : try? address?.byteVector.hex
     }
 
     // MARK: - Actions - Contacts
-    
+
     private func fetchWalletContacts() {
-        
+
         let sortedContacts: [Contact]
-        
+
         do {
             sortedContacts = try Tari.shared.contacts.allContacts.sorted { try $0.alias.lowercased() < $1.alias.lowercased() }
         } catch {
             presentFetchContactsError()
             return
         }
-        
-        
+
         contacts = sortedContacts.reduce(into: [UUID: Contact]()) { $0[UUID()] = $1 }
-        
+
         do {
             recentPublicKeys = try fetchRecentPublicKeys().map { AddressMetadata(uuid: UUID(), address: $0) }
             allRecentContactsItems = try recentPublicKeys.map { try Tari.shared.contacts.findContact(hex: $0.address.byteVector.hex)?.viewItem(uuid: $0.uuid) ?? $0.address.viewItem(uuid: $0.uuid) }
@@ -182,14 +181,14 @@ final class AddRecipientModel {
         } catch {
             presentFetchContactsError()
         }
-        
+
         filterContacts(searchText: "")
     }
-    
+
     private func fetchRecentPublicKeys() throws -> [TariAddress] {
-        
+
         let transactions: [Transaction] = Tari.shared.transactions.completed + Tari.shared.transactions.pendingInbound + Tari.shared.transactions.pendingOutbound
-        
+
         let recentTransactions = try transactions
             .sorted { try $0.timestamp > $1.timestamp }
             .map { try $0.address }
@@ -198,7 +197,7 @@ final class AddRecipientModel {
                 result.append(address)
             }
             .prefix(3)
-        
+
         return Array(recentTransactions)
     }
 
@@ -206,19 +205,19 @@ final class AddRecipientModel {
         generateAddress(text: searchText)
         filterContacts(searchText: searchText)
     }
-    
+
     private func filterContacts(searchText: String) {
-        
+
         var recentContactsItems: [ContactElementItem] = []
         var contactsItems: [ContactElementItem] = []
         var contactsSectionItems: [ContactsSectionItem] = []
-        
+
         if searchText.isEmpty {
             recentContactsItems = allRecentContactsItems
             contactsItems = allContactsItems
         } else {
             let walletContacts = try? Tari.shared.contacts.allContacts
-            
+
             recentContactsItems = recentPublicKeys
                 .filter { addressMetadata in
                     (try? addressMetadata.address.emojis.localizedStandardContains(searchText)) == true
@@ -226,7 +225,7 @@ final class AddRecipientModel {
                 }
                 .map(\.uuid)
                 .compactMap { uuid in allRecentContactsItems.first { $0.id == uuid }}
-            
+
             contactsItems = contacts
                 .filter {
                     guard let alias = try? $0.value.alias else { return false }
@@ -235,26 +234,26 @@ final class AddRecipientModel {
                 .map(\.key)
                 .compactMap { uuid in allContactsItems.first { $0.id == uuid }}
         }
-        
+
         if !recentContactsItems.isEmpty {
             contactsSectionItems.append(ContactsSectionItem(title: localized("add_recipient.recent_txs"), items: recentContactsItems))
         }
-        
+
         if !contactsItems.isEmpty {
             contactsSectionItems.append(ContactsSectionItem(title: localized("add_recipient.my_contacts"), items: contactsItems))
         }
-        
+
         self.contactsSectionItems = contactsSectionItems
     }
-    
+
     private func presentFetchContactsError() {
         errorDialog = MessageModel(title: localized("add_recipient.error.load_contacts.title"), message: localized("add_recipient.error.load_contacts.description"), type: .error)
     }
-    
+
     // MARK: - Actions - Yat
 
     private func searchAddress(forYatID yatID: String) {
-        
+
         self.yatID = nil
         guard yatID.containsOnlyEmoji, (1...maxYatIDLenght).contains(yatID.count) else { return }
 
@@ -265,15 +264,15 @@ final class AddRecipientModel {
             )
             .store(in: &cancelables)
     }
-    
+
     private func handle(apiResponse: PaymentAddressResponse, yatID: String) {
         guard let walletAddress = apiResponse.result?[YatRecordTag.XTRAddress.rawValue]?.address else { return }
         generateAddress(text: walletAddress)
         self.yatID = yatID
     }
-    
+
     // MARK: - Actions - Public Key
-    
+
     private func generateAddress(text: String) {
         guard let address = try? makeAddress(text: text), verify(address: address) else {
             address = nil
@@ -281,12 +280,12 @@ final class AddRecipientModel {
         }
         self.address = address
     }
-    
+
     private func makeAddress(text: String) throws -> TariAddress {
         do { return try TariAddress(emojiID: text) } catch {}
         return try TariAddress(hex: text)
     }
-    
+
     private func verify(address: TariAddress) -> Bool {
         guard let hex = try? address.byteVector.hex, let userHex = try? Tari.shared.walletAddress.byteVector.hex, hex != userHex else {
             errorMessage = localized("add_recipient.warning.can_not_send_yourself.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
@@ -294,9 +293,9 @@ final class AddRecipientModel {
         }
         return true
     }
-    
+
     // MARK: - Actions - Pasteboard
-    
+
     func checkPasteboard() {
         guard let pasteboardText = UIPasteboard.general.string, let emojis = try? makeAddress(text: pasteboardText).emojis else { return }
         validatedPasteboardText = emojis
@@ -304,7 +303,7 @@ final class AddRecipientModel {
 }
 
 private extension Contact {
-    
+
     func viewItem(uuid: UUID) throws -> ContactElementItem {
         let alias = try alias
         let isEmojiID = alias.isEmpty
@@ -315,7 +314,7 @@ private extension Contact {
 }
 
 private extension TariAddress {
-    
+
     func viewItem(uuid: UUID) -> ContactElementItem {
         let title = (try? emojis.obfuscatedText) ?? ""
         return ContactElementItem(id: uuid, title: title, initial: "", isEmojiID: true)

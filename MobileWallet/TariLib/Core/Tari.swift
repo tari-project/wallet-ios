@@ -1,5 +1,5 @@
 //  Tari.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/11/2021
@@ -42,30 +42,30 @@ import Combine
 import UIKit
 
 final class Tari: MainServiceable {
-    
+
     // MARK: - Constants
-    
+
     static let defaultFeePerGram = MicroTari(10)
     static let defaultKernelCount = UInt64(1)
     static let defaultOutputCount = UInt64(2)
-    
+
     private let databaseName = "tari_wallet"
-    
+
     var connectedDatabaseDirectory: URL { TariSettings.storageDirectory.appendingPathComponent("\(databaseName)_\(NetworkManager.shared.selectedNetwork.name)", isDirectory: true) }
     var databaseURL: URL { connectedDatabaseDirectory.appendingPathComponent(databaseFilename) }
     private var databaseFilename: String { databaseName + ".sqlite3" }
-    
+
     private let logFilePrefix = "log"
     private let publicAddress = "/ip4/0.0.0.0/tcp/9838"
     private let discoveryTimeoutSec: UInt64 = 20
     private let safMessageDurationSec: UInt64 = 10800
-    
+
     // MARK: - Properties
-    
+
     static let shared = Tari()
-    
+
     let connectionMonitor = ConnectionMonitor()
-    
+
     private(set) lazy var connection = TariConnectionService(walletManager: walletManager, services: self)
     private(set) lazy var contacts = TariContactsService(walletManager: walletManager, services: self)
     private(set) lazy var messageSign = TariMessageSignService(walletManager: walletManager, services: self)
@@ -76,18 +76,18 @@ final class Tari: MainServiceable {
     private(set) lazy var utxos = TariUTXOsService(walletManager: walletManager, services: self)
     private(set) lazy var validation = TariValidationService(walletManager: walletManager, services: self)
     private(set) lazy var walletBalance = TariBalanceService(walletManager: walletManager, services: self)
-    
+
     private(set) lazy var logFilePath: String = {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd_HH-mm-ss"
         let dateString = dateFormatter.string(from: Date())
         return "\(TariSettings.storageDirectory.path)/\(logFilePrefix)-\(dateString).txt"
     }()
-    
+
     var walletAddress: TariAddress {
         get throws { try walletManager.walletAddress() }
     }
-    
+
     var logsURLs: [URL] {
         get throws {
             try FileManager.default.contentsOfDirectory(at: TariSettings.storageDirectory, includingPropertiesForKeys: nil)
@@ -95,16 +95,16 @@ final class Tari: MainServiceable {
                 .sorted { $0.path > $1.path }
         }
     }
-    
+
     var isWalletExist: Bool { (try? connectedDatabaseDirectory.checkResourceIsReachable()) ?? false }
     var torBridgesConfiguration: BridgesConfiguration { torManager.usedBridgesConfiguration }
-    
+
     var canAutomaticalyReconnectWallet: Bool = false
-    
+
     private let torManager = TorManager()
     private let walletManager = FFIWalletManager()
     private var cancellables = Set<AnyCancellable>()
-    
+
     private var passphrase: String {
         guard let passphrase = AppKeychainWrapper.dbPassphrase else {
             let newPassphrase = String.random(length: 32)
@@ -113,13 +113,13 @@ final class Tari: MainServiceable {
         }
         return passphrase
     }
-    
+
     func update(torBridgesConfiguration: BridgesConfiguration) async throws {
         try await torManager.update(bridgesConfiguration: torBridgesConfiguration)
     }
-     
+
     // MARK: - Initialisers
-    
+
     private init() {
         connectionMonitor.setupPublishers(
             torConnectionStatus: torManager.$connectionStatus.eraseToAnyPublisher(),
@@ -129,16 +129,16 @@ final class Tari: MainServiceable {
         )
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         Publishers.CombineLatest(connectionMonitor.$baseNodeConnection, connectionMonitor.$syncStatus)
             .filter { $0 == .offline || $1 == .failed }
             .sink { [weak self] _, _ in try? self?.switchBaseNode() }
             .store(in: &cancellables)
-        
+
         connectionMonitor.$baseNodeConnection
             .sink { [weak self] in
                 switch $0 {
@@ -151,41 +151,41 @@ final class Tari: MainServiceable {
                 }
             }
             .store(in: &cancellables)
-        
+
         NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)
             .sink { [weak self] _ in self?.connect() }
             .store(in: &cancellables)
-        
+
         NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
             .sink { [weak self] _ in self?.disconnect() }
             .store(in: &cancellables)
     }
     // MARK: - Actions
-    
+
     func startWallet() async throws {
         await waitForTor()
         try startWallet(seedWords: nil)
     }
-    
+
     func restoreWallet(seedWords: [String]) throws {
         try startWallet(seedWords: seedWords)
     }
-    
+
     func deleteWallet() {
         try? deleteWalletDirectory()
         try? deleteLogs()
         disconnectWallet()
     }
-    
+
     func select(network: TariNetwork) {
         disconnectWallet()
         NetworkManager.shared.selectedNetwork = network
     }
-    
+
     func log(message: String) {
         try? walletManager.log(message: message)
     }
-    
+
     private func connect() {
         Task {
             try? await torManager.reinitiateConnection()
@@ -193,29 +193,29 @@ final class Tari: MainServiceable {
             try? await startWallet()
         }
     }
-    
+
     private func disconnect() {
         walletManager.disconnectWallet()
         Task { await torManager.stop() }
     }
-    
+
     private func startWallet(seedWords: [String]?) throws {
-        
+
         let commsConfig = try makeCommsConfig()
         let selectedNetwork = NetworkManager.shared.selectedNetwork
         var walletSeedWords: SeedWords?
-        
+
         if let seedWords = seedWords {
             walletSeedWords = try SeedWords(words: seedWords)
         }
-        
+
         if !isWalletExist {
             try createWalletDirectory()
         }
-        
+
         let logFilePath = logFilePath
         Logger.log(message: "Log Path: \(logFilePath)", domain: .general, level: .info)
-        
+
         do {
             try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name)
             resetServices()
@@ -225,7 +225,7 @@ final class Tari: MainServiceable {
 //            try Tari.shared.encryption.apply() // FIXME: Please align the backup flow with FFI Lib
         }
     }
-    
+
     private func waitForTor() async {
         return await withCheckedContinuation { continuation in
             Tari.shared.connectionMonitor.$torConnection
@@ -235,23 +235,23 @@ final class Tari: MainServiceable {
                 .store(in: &cancellables)
         }
     }
-    
+
     private func resetServices() {
         walletBalance.reset()
         transactions.reset()
     }
-    
+
     private func disconnectWallet() {
         walletManager.disconnectWallet()
         UserDefaults.standard.removeAll()
         NetworkManager.shared.removeSelectedNetworkSettings()
     }
-    
+
     private func makeCommsConfig() throws -> CommsConfig {
-        
+
         let torCookie = try torManager.cookie()
         let transportType = try makeTransportType(torCookie: torCookie)
-        
+
         return try CommsConfig(
             publicAddress: publicAddress,
             transport: transportType,
@@ -261,9 +261,9 @@ final class Tari: MainServiceable {
             safMessageDurationInSec: safMessageDurationSec
         )
     }
-    
+
     private func makeTransportType(torCookie: Data) throws -> TransportConfig {
-        
+
         let torCookie = try ByteVector(data: torCookie)
 
         return try TransportConfig(
@@ -274,15 +274,15 @@ final class Tari: MainServiceable {
             socksPassword: nil
         )
     }
-    
+
     private func createWalletDirectory() throws {
         try FileManager.default.createDirectory(at: connectedDatabaseDirectory, withIntermediateDirectories: true, attributes: nil)
     }
-    
+
     private func deleteWalletDirectory() throws {
         try FileManager.default.removeItem(at: connectedDatabaseDirectory)
     }
-    
+
     private func deleteLogs() throws {
         try FileManager.default.contentsOfDirectory(at: TariSettings.storageDirectory, includingPropertiesForKeys: nil)
             .filter { $0.lastPathComponent.contains(logFilePrefix) }
@@ -290,7 +290,7 @@ final class Tari: MainServiceable {
     }
 
     private func switchBaseNode() throws {
-        
+
         let selectedBaseNode = NetworkManager.shared.selectedNetwork.selectedBaseNode
         guard NetworkManager.shared.selectedNetwork.baseNodes.contains(selectedBaseNode), NetworkManager.shared.selectedNetwork.baseNodes.count > 1 else { return }
 
@@ -299,7 +299,7 @@ final class Tari: MainServiceable {
         repeat {
             newBaseNode = try NetworkManager.shared.selectedNetwork.randomNode()
         } while newBaseNode == selectedBaseNode
-        
+
         try connection.select(baseNode: newBaseNode)
     }
 }

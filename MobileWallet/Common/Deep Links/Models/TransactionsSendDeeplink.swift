@@ -1,5 +1,5 @@
 //  TransactionsSendDeeplink.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 02/03/2022
@@ -42,7 +42,7 @@ struct TransactionsSendDeeplink {
     let receiverAddress: String
     let amount: UInt64?
     let note: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case receiverAddress = "publicKey"
         case amount

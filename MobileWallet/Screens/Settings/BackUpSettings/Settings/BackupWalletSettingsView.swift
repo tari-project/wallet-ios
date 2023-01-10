@@ -1,5 +1,5 @@
 //  BackupWalletSettingsView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 20/10/2022
@@ -42,63 +42,63 @@ import UIKit
 import TariCommon
 
 final class BackupWalletSettingsView: BaseNavigationContentView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var tableView = MenuTableView()
-    
+
     // MARK: - Properties
-    
+
     var onSelectRow: ((IndexPath) -> Void)?
-    
+
     private var dataSource: UITableViewDiffableDataSource<Int, SystemMenuTableViewCellItem>?
-    
+
     // MARK: - Initializers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         navigationBar.title = localized("backup_wallet_settings.title")
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(tableView)
-        
+
         let constraints = [
             tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
-        
+
         dataSource = UITableViewDiffableDataSource(tableView: tableView) { tableView, indexPath, model in
             let cell = tableView.dequeueReusableCell(type: SystemMenuTableViewCell.self, indexPath: indexPath)
             cell.configure(model)
             return cell
         }
-        
+
         tableView.delegate = self
     }
-    
+
     // MARK: - Actions
-    
+
     func update(models: [SystemMenuTableViewCellItem]) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, SystemMenuTableViewCellItem>()
         snapshot.appendSections([0])
@@ -108,11 +108,11 @@ final class BackupWalletSettingsView: BaseNavigationContentView {
 }
 
 extension BackupWalletSettingsView: UITableViewDelegate {
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         BackupWalletSettingsHeaderView()
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         onSelectRow?(indexPath)
     }

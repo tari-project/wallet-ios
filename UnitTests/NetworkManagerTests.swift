@@ -1,5 +1,5 @@
 //  NetworkManagerTests.swift
-	
+
 /*
 	Package MobileWalletTests
 	Created by Adrian Truszczynski on 31/08/2021
@@ -42,31 +42,31 @@ import XCTest
 @testable import Tari_Aurora
 
 final class NetworkManagerTests: XCTestCase {
-    
+
     // MARK: - Properties
-    
+
     private let defaultNetwork = TariNetwork.esmeralda
     private var networkManager: NetworkManager!
-    
+
     // MARK: - Setups
-    
+
     override func setUp() {
         super.setUp()
-        
+
         GroupUserDefaults.selectedNetworkName = nil
         GroupUserDefaults.networksSettings = nil
         networkManager = NetworkManager()
     }
-    
+
     // MARK: - Tests
-    
+
     func testInitiatingValuesInPersistantStore() {
         let selectedNetworkNameAfterChange = GroupUserDefaults.selectedNetworkName
         XCTAssertEqual(selectedNetworkNameAfterChange, defaultNetwork.name)
     }
-    
+
     // App currently doesn't support multiple networks. Please uncomment this test when support for multiple networks was restored.
-    
+
 //    func testSwitchNetwork() {
 //
 //        let networkAfterSwitch = TariNetwork.igor
@@ -80,22 +80,22 @@ final class NetworkManagerTests: XCTestCase {
 //        XCTAssertEqual(selectedNetworkNameBeforeSwitch, defaultNetwork.name)
 //        XCTAssertEqual(selectedNetworkNameAfterSwitch, networkAfterSwitch.name)
 //    }
-    
+
     func testSettingsInitalization() {
-        
+
         let networkSettingsBeforeChange = GroupUserDefaults.networksSettings
-        
+
         initialiseNetworkSettings()
-        
+
         let networkSettingsAfterChange = GroupUserDefaults.networksSettings
-        
+
         XCTAssertNil(networkSettingsBeforeChange)
         XCTAssertEqual(networkSettingsAfterChange!.count, 1)
         XCTAssertEqual(networkSettingsAfterChange!.first!.name, defaultNetwork.name)
     }
-    
+
     // App currently doesn't support multiple networks. Please uncomment this test when support for multiple networks was restored.
-    
+
 //    func testSettingsOnNetworkSwitching() {
 //
 //        initialiseNetworkSettings()
@@ -113,35 +113,35 @@ final class NetworkManagerTests: XCTestCase {
 //        XCTAssertEqual(networkSettingsAfterChange![0].name, defaultNetwork.name)
 //        XCTAssertEqual(networkSettingsAfterChange![1].name, networkAfterSwitch.name)
 //    }
-    
+
     func testSelectedBaseNodeUpdate() {
-        
+
         let baseNode = try! BaseNode(name: "Test Name", peer: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
-        
+
         networkManager.selectedNetwork.selectedBaseNode = baseNode
-        
+
         let selectedNetworkName = GroupUserDefaults.selectedNetworkName!
         let networkSettings = GroupUserDefaults.networksSettings!.first!
-        
+
         XCTAssertEqual(selectedNetworkName, networkManager.selectedNetwork.name)
         XCTAssertEqual(networkSettings.selectedBaseNode, baseNode)
     }
-    
+
     func testCustomBaseNodesUpdate() {
-        
+
         let baseNode = try! BaseNode(name: "Test Name", peer: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
-        
+
         networkManager.selectedNetwork.customBaseNodes = [baseNode]
-        
+
         let customBaseNodes = GroupUserDefaults.networksSettings!.first!.customBaseNodes
-        
+
         XCTAssertEqual(customBaseNodes.count, 1)
         XCTAssertEqual(customBaseNodes, networkManager.selectedNetwork.customBaseNodes)
         XCTAssertEqual(customBaseNodes.first!, baseNode)
     }
-    
+
     // MARK: - Helpers
-    
+
     private func initialiseNetworkSettings() {
         // User defaults are updated with every access to internal settings
         _ = networkManager.selectedNetwork.selectedBaseNode

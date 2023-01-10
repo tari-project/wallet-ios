@@ -1,5 +1,5 @@
 //  CoreTariService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022
@@ -51,10 +51,10 @@ protocol MainServiceable: AnyObject {
 }
 
 class CoreTariService {
-    
+
     unowned private(set) var walletManager: FFIWalletManager
     unowned private(set) var services: MainServiceable
-    
+
     init(walletManager: FFIWalletManager, services: MainServiceable) {
         self.walletManager = walletManager
         self.services = services

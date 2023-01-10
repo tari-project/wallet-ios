@@ -39,11 +39,11 @@
 */
 
 final class ByteVector {
-    
+
     // MARK: - Properties
-    
+
     let pointer: OpaquePointer
-    
+
     var count: UInt32 {
         get throws {
             var errorCode: Int32 = -1
@@ -53,45 +53,45 @@ final class ByteVector {
             return result
         }
     }
-    
+
     // MARK: - Constructors
-    
+
     init(pointer: OpaquePointer) {
         self.pointer = pointer
     }
-    
+
     convenience init(data: Data) throws {
-        
+
         let byteArray = [UInt8](data)
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = byte_vector_create(byteArray, UInt32(byteArray.count), errorCodePointer)
-        
+
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-        
+
         self.init(pointer: pointer)
     }
-    
+
     // MARK: - Actions
-    
+
     func byte(index: UInt32) throws -> UInt8 {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = byte_vector_get_at(pointer, index, errorCodePointer)
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
     }
-    
+
     deinit {
         byte_vector_destroy(pointer)
     }
 }
 
 extension ByteVector {
-    
+
     var hex: String {
         get throws {
             try bytes
@@ -99,18 +99,18 @@ extension ByteVector {
                 .joined()
         }
     }
-    
+
     var bytes: [UInt8] {
         get throws {
             let count = try count
             return try (0..<count).map { try byte(index: $0) }
         }
     }
-    
+
     var data: Data {
         get throws { Data(try bytes) }
     }
-    
+
     var string: String? {
         get throws { String(data: try data, encoding: .utf8) }
     }

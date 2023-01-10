@@ -1,5 +1,5 @@
 //  Transaction.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 26/09/2022
@@ -65,14 +65,14 @@ protocol Transaction {
 }
 
 extension Transaction {
-    
+
     var isOneSidedPayment: Bool {
         get throws {
             let status = try status
             return status == .fauxConfirmed || status == .fauxUnconfirmed
         }
     }
-    
+
     var formattedTimestamp: String {
         get throws { Date(timeIntervalSince1970: Double(try timestamp)).relativeDayFromToday() ?? "" }
     }

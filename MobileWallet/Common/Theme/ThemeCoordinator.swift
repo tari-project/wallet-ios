@@ -1,5 +1,5 @@
 //  ThemeCoordinator.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 25/11/2022
@@ -41,18 +41,18 @@
 import UIKit
 
 final class ThemeCoordinator {
-    
+
     enum ColorScheme {
         case system
         case light
         case dark
         case tariPurple
     }
-    
+
     // MARK: - Properties
-    
+
     static let shared = ThemeCoordinator()
-    
+
     var colorScheme: ColorScheme = .light {
         didSet {
             theme = theme(colorScheme: colorScheme)
@@ -60,22 +60,22 @@ final class ThemeCoordinator {
             updateUserDefaults(colorScheme: colorScheme)
         }
     }
-    
+
     @Published private(set) var theme: ColorTheme = .light
     private var uiStyle: UIUserInterfaceStyle = UIScreen.main.traitCollection.userInterfaceStyle
-    
+
     // MARK: - Initialisers
-    
+
     private init() {
         setupColorScheme()
     }
-    
+
     // MARK: - Setups
-    
+
     func configure(window: TariWindow) {
         setupCallbacks(window: window)
     }
-    
+
     private func setupColorScheme() {
         switch UserSettingsManager.colorScheme {
         case .system:
@@ -88,18 +88,18 @@ final class ThemeCoordinator {
             colorScheme = .tariPurple
         }
     }
-    
+
     private func setupCallbacks(window: TariWindow) {
-    
+
         window.onUpdateUIStyle = { [weak self] in
             self?.handle(uiStyle: $0)
         }
     }
-    
+
     // MARK: - Actions
-    
+
     private func theme(colorScheme: ColorScheme) -> ColorTheme {
-        
+
         switch colorScheme {
         case .light:
             return .light
@@ -111,7 +111,7 @@ final class ThemeCoordinator {
             return uiStyle == .dark ? .dark : .light
         }
     }
-    
+
     private func updateUserDefaults(colorScheme: ColorScheme) {
         switch colorScheme {
         case .system:
@@ -124,7 +124,7 @@ final class ThemeCoordinator {
             UserSettingsManager.colorScheme = .purple
         }
     }
-    
+
     private func updateColorMode(colorScheme: ColorScheme) {
         switch colorScheme {
         case .system:
@@ -135,9 +135,9 @@ final class ThemeCoordinator {
             UIApplication.shared.windows.forEach { $0.overrideUserInterfaceStyle = .dark }
         }
     }
-    
+
     // MARK: = Handlers
-    
+
     private func handle(uiStyle: UIUserInterfaceStyle) {
         self.uiStyle = uiStyle
         guard colorScheme == .system else { return }

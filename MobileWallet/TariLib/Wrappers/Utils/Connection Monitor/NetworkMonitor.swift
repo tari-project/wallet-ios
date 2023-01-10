@@ -1,5 +1,5 @@
 //  NetworkMonitor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 18/07/2022
@@ -42,38 +42,38 @@ import Network
 import Combine
 
 final class NetworkMonitor {
-    
+
     enum Status {
         case disconnected
         case connected(interface: String)
     }
-    
+
     private let monitor = NWPathMonitor()
-    
+
     @Published private(set) var status: Status = .disconnected
-    
+
     init() {
         setup()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setup() {
-        
+
         monitor.pathUpdateHandler = { [weak self] in
-            
+
             guard $0.status == .satisfied else {
                 self?.status = .disconnected
                 return
             }
-            
+
             self?.status = .connected(interface: $0.interfaceName)
         }
-        
+
         let queue = DispatchQueue(label: "NetworkMonitor Queue")
         monitor.start(queue: queue)
     }
-    
+
     deinit {
         monitor.cancel()
     }

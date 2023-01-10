@@ -55,7 +55,7 @@ final class SlideView: DynamicThemeView {
     static private let thumbnailShadowRadius: Float = 0.5
     static private let thumbnailCornerRadius: CGFloat = 0
     private let pendingAnimationView = AnimationView()
-    
+
     var onSlideToEnd: (() -> Void)?
 
     var variation: SlideViewVariation = .slide {
@@ -92,11 +92,11 @@ final class SlideView: DynamicThemeView {
         let view = UIView()
         return view
     }()
-    
+
     @View private var gradientBackgroundView = GradientView()
 
     // MARK: Public properties
-    
+
     public var animationVelocity: Double = 0.2
     public var sliderViewTopDistance: CGFloat = 0 {
         didSet {
@@ -143,7 +143,7 @@ final class SlideView: DynamicThemeView {
             draggedView.layer.cornerRadius = sliderCornerRadius
         }
     }
-    
+
     public var labelText: String = "Slide" {
         didSet {
             textLabel.text = labelText
@@ -163,11 +163,7 @@ final class SlideView: DynamicThemeView {
     private var topThumbnailViewConstraint: NSLayoutConstraint?
     private var trailingDraggedViewConstraint: NSLayoutConstraint?
     private var xPositionInThumbnailView: CGFloat = 0
-    private var xEndingPoint: CGFloat {
-        get {
-            return (self.view.frame.maxX - thumbnailImageView.bounds.width - thumbnailViewStartingDistance)
-        }
-    }
+    private var xEndingPoint: CGFloat { self.view.frame.maxX - thumbnailImageView.bounds.width - thumbnailViewStartingDistance }
     private var isFinished: Bool = false
 
     override init() {
@@ -256,19 +252,19 @@ final class SlideView: DynamicThemeView {
         pendingAnimationView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
         pendingAnimationView.isHidden = true
-        
+
         let constraints = [
             gradientBackgroundView.topAnchor.constraint(equalTo: view.topAnchor),
             gradientBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gradientBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             gradientBackgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 
     private func setStyle() {
-        
+
         textLabel.text = labelText
         textLabel.font = textFont
         textLabel.textAlignment = .center
@@ -285,23 +281,23 @@ final class SlideView: DynamicThemeView {
         draggedView.layer.masksToBounds = true
         draggedView.layer.cornerRadius = sliderCornerRadius
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         gradientBackgroundView.locations = [
             GradientLocationData(color: theme.buttons.primaryStart, location: 0.0),
             GradientLocationData(color: theme.buttons.primaryEnd, location: 1.0)
         ]
-        
+
         updateSliderState(theme: theme)
     }
-    
+
     private func updateSliderState(theme: ColorTheme) {
         sliderTextLabel.textColor = isEnabled ? .clear : theme.buttons.disabled
         sliderHolderView.backgroundColor = isEnabled ? .clear : theme.buttons.disabled
         textLabel.textColor = isEnabled ? .static.white : theme.buttons.disabledText
-        
+
         thumbnailImageView.backgroundColor = isEnabled ? theme.buttons.primaryText : theme.buttons.disabledText
         thumbnailImageView.tintColor = isEnabled ? theme.brand.purple : theme.buttons.disabled
         thumbnailImageView.apply(shadow: isEnabled ? theme.shadows.box : .none)
@@ -325,7 +321,6 @@ final class SlideView: DynamicThemeView {
         switch sender.state {
         case .began:
             impactFeedbackGenerator.prepare()
-            break
         case .changed:
             if translatedPoint >= xEndingPoint {
                 updateThumbnailXPosition(xEndingPoint)
@@ -338,7 +333,6 @@ final class SlideView: DynamicThemeView {
             }
             updateThumbnailXPosition(translatedPoint)
             textLabel.alpha = (xEndingPoint - translatedPoint) / xEndingPoint
-            break
         case .ended:
             if translatedPoint >= xEndingPoint / 2 {
                 textLabel.alpha = 0
@@ -359,7 +353,6 @@ final class SlideView: DynamicThemeView {
                 self.textLabel.alpha = 1
                 self.layoutIfNeeded()
             }
-            break
         default:
             break
         }

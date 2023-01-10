@@ -1,5 +1,5 @@
 //  PendingInboundTransaction.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 26/09/2022
@@ -41,89 +41,89 @@
 final class PendingInboundTransaction: Transaction {
 
     // MARK: - Protocol
-    
+
     var isOutboundTransaction: Bool { false }
     var isCancelled: Bool { false }
     var isPending: Bool { true }
-    
+
     // MARK: - Properties
-    
+
     var identifier: UInt64 {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = pending_inbound_transaction_get_transaction_id(pointer, errorCodePointer)
-            
+
             guard errorCode == 0 else { throw WalletError(code: errorCode) }
             return result
         }
     }
-    
+
     var amount: UInt64 {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = pending_inbound_transaction_get_amount(pointer, errorCodePointer)
-            
+
             guard errorCode == 0 else { throw WalletError(code: errorCode) }
             return result
         }
     }
-    
+
     var message: String {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = pending_inbound_transaction_get_message(pointer, errorCodePointer)
-            
+
             guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
             return String(cString: cString)
         }
     }
-    
+
     var timestamp: UInt64 {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = pending_inbound_transaction_get_timestamp(pointer, errorCodePointer)
-            
+
             guard errorCode == 0 else { throw WalletError(code: errorCode) }
             return result
         }
     }
-    
+
     var address: TariAddress {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = pending_inbound_transaction_get_source_tari_address(pointer, errorCodePointer)
-            
+
             guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
             return TariAddress(pointer: pointer)
         }
     }
-    
+
     var status: TransactionStatus {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = pending_inbound_transaction_get_status(pointer, errorCodePointer)
-            
+
             guard errorCode == 0, let status = TransactionStatus(rawValue: result) else { throw WalletError(code: errorCode) }
             return status
         }
     }
-    
+
     private let pointer: OpaquePointer
-    
+
     // MARK: - Initialiser
-    
+
     init(pointer: OpaquePointer) {
         self.pointer = pointer
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         pending_inbound_transaction_destroy(pointer)
     }

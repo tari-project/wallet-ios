@@ -39,11 +39,11 @@
 */
 
 final class PrivateKey {
-    
+
     // MARK: - Properties
-    
+
     let pointer: OpaquePointer
-    
+
     var bytes: ByteVector {
         get throws {
             var errorCode: Int32 = -1
@@ -53,31 +53,31 @@ final class PrivateKey {
             return ByteVector(pointer: result)
         }
     }
-    
+
     // MARK: - Initialisers
-    
+
     init(byteVector: ByteVector) throws {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = private_key_create(byteVector.pointer, errorCodePointer)
-        
+
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         pointer = result
     }
-    
+
     init(hex: String) throws {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = private_key_from_hex(hex, errorCodePointer)
-        
+
         guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
         pointer = result
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         private_key_destroy(pointer)
     }

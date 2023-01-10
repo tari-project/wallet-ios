@@ -46,7 +46,7 @@ final class SelectBaseNodeModel {
         let isSelected: Bool
         let canBeRemoved: Bool
     }
-    
+
     // MARK: - View Model
 
     @Published var nodes: [NodeModel] = []

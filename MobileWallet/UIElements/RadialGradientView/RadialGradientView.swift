@@ -43,21 +43,21 @@ import UIKit
 final class RadialGradientView: UIView {
 
     // MARK: - Properties
-    
+
     override class var layerClass: AnyClass { CAGradientLayer.self }
-    
+
     // MARK: - Setups
-    
+
     func setupLayer(insideColor: UIColor?, outsideColor: UIColor?) {
-        
+
         guard let gradientLayer = layer as? CAGradientLayer else { return }
-        
+
         gradientLayer.type = .radial
         gradientLayer.colors = [insideColor, outsideColor].compactMap { $0?.cgColor }
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
         gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
     }
-    
+
     // MARK: - Autolayout
 
     override func layoutSubviews() {

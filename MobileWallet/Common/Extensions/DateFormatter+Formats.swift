@@ -1,5 +1,5 @@
 //  DateFormatter+Formats.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 27/10/2022
@@ -39,7 +39,7 @@
 */
 
 extension DateFormatter {
-    
+
     static var backupTimestamp: Self {
         let formatter = Self()
         formatter.dateFormat = "MMM dd yyy 'at' h:mm a"

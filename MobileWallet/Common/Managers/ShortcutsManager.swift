@@ -1,5 +1,5 @@
 //  ShortcutsManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 02/03/2022
@@ -41,18 +41,18 @@
 import UIKit
 
 final class ShortcutsManager {
-    
+
     private enum ShortcutType: String {
         case showQR = "show-qr"
         case send = "send"
     }
-    
+
     private static var queuedShortcut: UIApplicationShortcutItem?
-    
+
     private init() {}
-    
+
     static func configureShortcuts() {
-        
+
         let qrCodeShortcutItem = UIApplicationShortcutItem(
             type: ShortcutType.showQR.rawValue,
             localizedTitle: localized("shortcut.show_my_qr"),
@@ -60,7 +60,7 @@ final class ShortcutsManager {
             icon: UIApplicationShortcutIcon(templateImageName: "qr"),
             userInfo: nil
         )
-        
+
         let sendShortcutItem = UIApplicationShortcutItem(
             type: ShortcutType.send.rawValue,
             localizedTitle: localized("common.send.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol),
@@ -68,21 +68,21 @@ final class ShortcutsManager {
             icon: UIApplicationShortcutIcon(templateImageName: "Gem"),
             userInfo: nil
         )
-        
+
         UIApplication.shared.shortcutItems = [qrCodeShortcutItem, sendShortcutItem]
     }
-    
+
     static func handle(shortcut: UIApplicationShortcutItem) {
-        
+
         guard let type = ShortcutType(rawValue: shortcut.type) else { return }
-        
+
         guard AppRouter.isNavigationReady else {
             queuedShortcut = shortcut
             return
         }
-        
+
         queuedShortcut = nil
-        
+
         switch type {
         case .showQR:
             AppRouter.moveToProfile()
@@ -90,7 +90,7 @@ final class ShortcutsManager {
             AppRouter.moveToTransactionSend(deeplink: nil)
         }
     }
-    
+
     static func executeQueuedShortcut() {
         guard let shortcut = queuedShortcut else { return }
         handle(shortcut: shortcut)

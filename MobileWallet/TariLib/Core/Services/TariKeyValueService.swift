@@ -1,5 +1,5 @@
 //  TariKeyValueService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022
@@ -39,16 +39,16 @@
 */
 
 final class TariKeyValueService: CoreTariService {
-    
+
     enum Key: String {
         case network = "SU7FM2O6Q3BU4XVN7HDD"
         case version
     }
-    
+
     func value(key: Key) throws -> String {
         try walletManager.value(key: key.rawValue)
     }
-    
+
     @discardableResult func set(key: Key, value: String?) throws -> Bool {
         guard let value = value else {
             return try walletManager.clear(key: key.rawValue)

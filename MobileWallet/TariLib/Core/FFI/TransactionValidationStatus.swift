@@ -1,5 +1,5 @@
 //  TransactionValidationStatus.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022

@@ -95,18 +95,18 @@ extension String {
         guard data.count > 0 else { return nil }
         return data
     }
-    
+
     func withCurrencySymbol(imageBounds: CGRect) -> NSAttributedString {
-        
+
         guard let symbol = Theme.shared.images.currencySymbol else { return NSAttributedString() }
-        
+
         let currencySymbol = NSTextAttachment(image: symbol)
         currencySymbol.bounds = imageBounds
-        
+
         let output = NSMutableAttributedString()
         output.append(NSAttributedString(attachment: currencySymbol))
         output.append(NSAttributedString(string: " " + self))
-        
+
         return output
     }
 }

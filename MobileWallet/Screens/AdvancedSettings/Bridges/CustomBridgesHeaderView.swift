@@ -1,5 +1,5 @@
 //  CustomBridgesHeaderView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 06/12/2022
@@ -42,73 +42,73 @@ import UIKit
 import TariCommon
 
 final class CustomBridgesHeaderView: DynamicThemeHeaderFooterView {
-    
+
     // MARK: - Subiews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsTableViewLastBackupDate
         view.text = localized("custom_bridges.item.paste_bridges")
         return view
     }()
-    
+
     @View private var textView: UITextView = {
         let view = UITextView()
         view.textContainerInset = UIEdgeInsets(top: 15.0, left: 20.0, bottom: 15.0, right: 20.0)
         return view
     }()
-    
+
     private let toolbar = UIToolbar()
-    
+
     // MARK: - Properties
-    
+
     var text: String? {
         get { textView.attributedText.string }
         set { updateTextViewToAttrbutedText(with: newValue) }
     }
-    
+
     var textViewDelegate: UITextViewDelegate? {
         get { textView.delegate }
         set { textView.delegate = newValue }
     }
-    
+
     var isTextViewActive: Bool = false {
         didSet { updateTextViewColors() }
     }
-    
+
     private var inactiveTextColor: UIColor?
     private var activeTextColor: UIColor?
-    
+
     // MARK: - Initialisers
-    
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
-        
+
         toolbar.items = [
             UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil),
             UIBarButtonItem(title: localized("settings.done"), style: UIBarButtonItem.Style.done, target: textView, action: #selector(UITextField.resignFirstResponder))
         ]
-        
+
         toolbar.sizeToFit()
-        
+
         textView.inputAccessoryView = toolbar
     }
-    
+
     private func setupConstraints() {
-        
+
         [label, textView].forEach(contentView.addSubview)
-        
+
         let constraints = [
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
             label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
@@ -119,29 +119,29 @@ final class CustomBridgesHeaderView: DynamicThemeHeaderFooterView {
             textView.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 15.0),
             textView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -35.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         label.textColor = theme.text.heading
         textView.backgroundColor = theme.backgrounds.primary
         inactiveTextColor = theme.text.lightText
         activeTextColor = theme.text.heading
-        
+
         updateTextViewColors()
     }
-    
+
     private func updateTextViewColors() {
         textView.textColor = isTextViewActive ? activeTextColor : inactiveTextColor
     }
-    
+
     private func updateTextViewToAttrbutedText(with string: String?) {
-        
+
         let string = string ?? ""
         let attributedString: NSMutableAttributedString = NSMutableAttributedString(string: string)
 
@@ -152,7 +152,7 @@ final class CustomBridgesHeaderView: DynamicThemeHeaderFooterView {
 
         textView.attributedText = attributedString
         textViewDelegate?.textViewDidChange?(textView)
-        
+
         updateTextViewColors()
     }
 }

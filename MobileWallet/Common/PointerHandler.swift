@@ -1,5 +1,5 @@
 //  PointerHandler.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 28/01/2022
@@ -41,7 +41,7 @@
 import Foundation
 
 enum PointerHandler {
-    
+
     static func pointer<T>(for value: inout T) -> UnsafeMutablePointer<T> {
         withUnsafeMutablePointer(to: &value) { $0 }
     }

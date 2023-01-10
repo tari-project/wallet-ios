@@ -1,5 +1,5 @@
 //  UTXOsWalletModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 31/05/2022
@@ -47,7 +47,7 @@ enum UtxoStatus {
 }
 
 final class UTXOsWalletModel {
-    
+
     enum SortMethod: Int, CaseIterable {
         case amountAscending
         case amountDescending
@@ -67,113 +67,113 @@ final class UTXOsWalletModel {
         let blockHeight: String?
         let isSelectable: Bool
     }
-    
+
     struct BreakPreviewData {
         let amount: String
         let breakCount: String
         let breakAmount: String
         let fee: String
     }
-    
+
     // MARK: - Constants
-    
+
     private let minTileHeight: CGFloat = 100.0
     private let maxTileHeight: CGFloat = 300.0
-    
+
     // MARK: - Model
-    
+
     @Published var sortMethod: SortMethod = .amountDescending
-    
+
     @Published private(set) var utxoModels: [UtxoModel] = []
     @Published private(set) var isLoadingData: Bool = false
     @Published private(set) var selectedIDs: Set<UUID> = []
     @Published private(set) var utxoDetails: UtxoModel?
     @Published private(set) var errorMessage: MessageModel?
-    
+
     // MARK: - Properties
-    
+
     private let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
         formatter.timeStyle = .none
         return formatter
     }()
-    
+
     private let timeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .none
         formatter.timeStyle = .short
         return formatter
     }()
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
         $sortMethod
             .removeDuplicates()
             .sink { [weak self] in self?.fetchUTXOs(sortMethod: $0) }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Model Actions
-    
+
     func toogleState(elementID: UUID) {
-        
+
         guard let model = utxoModels.first(where: { $0.uuid == elementID }), model.status == .mined else { return }
-        
+
         guard selectedIDs.contains(elementID) else {
             selectedIDs.update(with: elementID)
             return
         }
-        
+
         selectedIDs.remove(elementID)
     }
-    
+
     func deselectAllElements() {
         selectedIDs = []
     }
-    
+
     func breakCoinPreview(breakCount: Int, elementID: UUID) -> BreakPreviewData? {
         guard let model = utxoModels.first(where: { $0.uuid == elementID }) else { return nil }
         return breakCoinPreview(breakCount: breakCount, models: [model])
     }
-    
+
     func breakCoinPreviewForSelectedElements(breakCount: Int) -> BreakPreviewData? {
         let models = utxoModels.filter { self.selectedIDs.contains($0.uuid) }
         return breakCoinPreview(breakCount: breakCount, models: models)
     }
-    
+
     private func breakCoinPreview(breakCount: Int, models: [UtxoModel]) -> BreakPreviewData? {
-        
+
         let amount = models
             .map(\.amount)
             .reduce(0, +)
-        
+
         let commitments = models.map(\.commitment)
-        
+
         do {
             let result = try Tari.shared.utxos.coinBreakPreview(commitments: commitments, splitsCount: UInt(breakCount))
             let breakAmount = (amount - result.fee) / UInt64(breakCount)
-            
+
             let amountText = MicroTari(amount).formattedPrecise
             let breakAmountText = MicroTari(breakAmount).formattedPrecise
             let feeText = MicroTari(result.fee).formattedPrecise
-            
+
             return BreakPreviewData(amount: amountText, breakCount: "\(breakCount)", breakAmount: breakAmountText, fee: feeText)
-            
+
         } catch {
             return nil
         }
     }
-    
+
     func performBreakAction(breakCount: Int, elementID: UUID) {
         guard let model = utxoModels.first(where: { $0.uuid == elementID }) else {
             errorMessage = ErrorMessageManager.errorModel(forError: nil)
@@ -181,29 +181,29 @@ final class UTXOsWalletModel {
         }
         performBreakAction(breakCount: breakCount, models: [model])
     }
-    
+
     func performBreakActionForSelectedElements(breakCount: Int) {
         let models = utxoModels.filter { self.selectedIDs.contains($0.uuid) }
         performBreakAction(breakCount: breakCount, models: models)
     }
-    
+
     private func performBreakAction(breakCount: Int, models: [UtxoModel]) {
-        
+
         let commitments = models.map(\.commitment)
-        
+
         do {
             try Tari.shared.utxos.breakCoins(commitments: commitments, splitsCount: UInt(breakCount))
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
         }
     }
-    
+
     func combineCoinsFeePreview() -> String? {
-        
+
         let commitments = utxoModels
             .filter { self.selectedIDs.contains($0.uuid) }
             .map(\.commitment)
-        
+
         do {
             let result = try Tari.shared.utxos.combineCoinsPreview(commitments: commitments)
             return MicroTari(result.fee).formattedPrecise
@@ -211,52 +211,52 @@ final class UTXOsWalletModel {
             return nil
         }
     }
-    
+
     func performCombineAction() {
-        
+
         let commitments = utxoModels
             .filter { self.selectedIDs.contains($0.uuid) }
             .map(\.commitment)
-        
+
         do {
             try Tari.shared.utxos.combineCoins(commitments: commitments)
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
         }
     }
-    
+
     func reloadData() {
         fetchUTXOs(sortMethod: sortMethod)
     }
-    
+
     func requestDetails(elementID: UUID) {
         utxoDetails = utxoModels.first { $0.uuid == elementID }
     }
-    
+
     // MARK: - Actions
-    
+
     private func fetchUTXOs(sortMethod: SortMethod) {
-        
+
         isLoadingData = true
-        
+
         do {
             let utxosData = try Tari.shared.utxos.allUtxos
                 .reduce(into: UTXOsData()) { result, model in
                     guard let status = FFIUtxoStatus(rawValue: model.status)?.walletUtxoStatus else { return }
-                    
+
                     result.minAmount = min(model.value, result.minAmount)
                     result.maxAmount = max(model.value, result.maxAmount)
                     result.data.append((model: model, status: status))
                 }
-            
+
             guard !utxosData.data.isEmpty else {
                 isLoadingData = false
                 return
             }
-            
+
             let minAmount = utxosData.minAmount
             let heightScale: CGFloat
-            
+
             if utxosData.minAmount == utxosData.maxAmount {
                 heightScale = 1.0
             } else {
@@ -264,7 +264,7 @@ final class UTXOsWalletModel {
                 let heightDiff = maxTileHeight - minTileHeight
                 heightScale = heightDiff / CGFloat(amountDiff)
             }
-            
+
             utxoModels = utxosData.data
                 .sorted {
                     switch sortMethod {
@@ -280,7 +280,7 @@ final class UTXOsWalletModel {
                 }
                 .compactMap { [weak self] in
                     guard let self = self else { return nil }
-                    
+
                     let tileHeight = CGFloat($0.model.value - minAmount) * heightScale + minTileHeight
                     let timestamp = Date(timeIntervalSince1970: TimeInterval($0.model.mined_timestamp) / 1000.0)
                     let date = timestamp > Date(timeIntervalSince1970: 0) ? self.dateFormatter.string(from: timestamp) : nil
@@ -299,7 +299,7 @@ final class UTXOsWalletModel {
                         isSelectable: $0.status == .mined
                     )
                 }
-            
+
             isLoadingData = false
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
@@ -312,7 +312,7 @@ extension UTXOsWalletModel.UtxoModel {
 }
 
 extension UtxoStatus {
-    
+
     var name: String {
         switch self {
         case .mined:
@@ -321,7 +321,7 @@ extension UtxoStatus {
             return localized("utxos_wallet.tile.label.state.unconfirmed")
         }
     }
-    
+
     var icon: UIImage? {
         switch self {
         case .mined:
@@ -330,7 +330,7 @@ extension UtxoStatus {
             return Theme.shared.images.utxoStatusHourglass
         }
     }
-    
+
     func color(theme: ColorTheme) -> UIColor? {
         switch self {
         case .mined:
@@ -357,7 +357,7 @@ private enum FFIUtxoStatus: UInt8 {
 }
 
 extension FFIUtxoStatus {
-    
+
     var walletUtxoStatus: UtxoStatus? {
         switch self {
         case .unspend:

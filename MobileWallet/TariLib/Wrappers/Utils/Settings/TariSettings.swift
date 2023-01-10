@@ -177,7 +177,7 @@ struct TariSettings {
                 if let yatApiURL = jsonResult["yatApiURL"] as? String, !yatApiURL.isEmpty, let url = URL(string: yatApiURL) {
                     self.yatApiURL = url
                 }
-                
+
                 dropboxApiKey = jsonResult["dropboxApiKey"] as? String
             }
         } catch {

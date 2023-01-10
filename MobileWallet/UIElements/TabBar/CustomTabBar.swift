@@ -41,7 +41,7 @@
 import UIKit
 
 final class CustomTabBar: DynamicThemeTabBar {
-    
+
     override init() {
         super.init()
         setup()
@@ -67,17 +67,17 @@ final class CustomTabBar: DynamicThemeTabBar {
         sizeThatFits.height = 59 + bottomInset
         return sizeThatFits
     }
-    
+
     override func update(theme: ColorTheme) {
-        
+
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = theme.backgrounds.primary
         appearance.stackedLayoutAppearance.normal.iconColor = theme.icons.default
         appearance.stackedLayoutAppearance.selected.iconColor = theme.icons.active
-        
+
         standardAppearance = appearance
-        
+
         if #available(iOS 15.0, *) {
             scrollEdgeAppearance = appearance
         }

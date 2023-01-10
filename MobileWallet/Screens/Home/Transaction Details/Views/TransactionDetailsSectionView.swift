@@ -1,5 +1,5 @@
 //  TransactionDetailsSectionView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 16/03/2022
@@ -42,41 +42,41 @@ import UIKit
 import TariCommon
 
 final class TransactionDetailsSectionView<T: UIView>: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var titleLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.txScreenSubheadingLabel
         return view
     }()
-    
+
     @View private(set) var contentView = T()
-    
+
     // MARK: - Properties
-    
+
     var title: String? {
         get { titleLabel.text }
         set { titleLabel.text = newValue }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [titleLabel, contentView].forEach(addSubview)
-        
+
         let constraints = [
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20.0),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
@@ -86,12 +86,12 @@ final class TransactionDetailsSectionView<T: UIView>: DynamicThemeView {
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.body

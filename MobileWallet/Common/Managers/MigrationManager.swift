@@ -1,5 +1,5 @@
 //  MigrationManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 16/11/2022
@@ -39,17 +39,17 @@
 */
 
 enum MigrationManager {
-    
+
     enum MigrationError: Error {
         case noCurrentWalletVersion
     }
-    
+
     // MARK: - Properties
-    
+
     private static let minValidVersion = "0.43.2"
-    
+
     private static var currentWalletVersion: String {
-        
+
         get throws {
             guard
                 let path = Bundle.main.path(forResource: "Constants", ofType: "plist"),
@@ -62,47 +62,47 @@ enum MigrationManager {
             return value
         }
     }
-    
+
     // MARK: - Actions
-    
+
     static func validateWalletVersion(completion: @escaping (Bool) -> Void) {
-        
+
         guard !isWalletHasValidVersion() else {
             completion(true)
             return
         }
-        
+
         DispatchQueue.main.async {
             showPopUp { completion($0) }
         }
     }
-    
+
     static func updateWalletVersion() throws {
         try Tari.shared.keyValues.set(key: .version, value: currentWalletVersion)
     }
-    
+
     private static func isWalletHasValidVersion() -> Bool {
-        
+
         let walletVersion: String
-        
+
         do {
             walletVersion = try Tari.shared.keyValues.value(key: .version)
         } catch {
             return false
         }
-        
+
         return VersionValidator.compare(walletVersion, isHigherOrEqualTo: minValidVersion)
     }
-    
+
     private static func showPopUp(completion: @escaping (Bool) -> Void) {
-        
+
         let headerSection = PopUpComponentsFactory.makeHeaderView(title: localized("ffi_validation.error.title"))
         let contentSection = PopUpComponentsFactory.makeContentView(message: localized("ffi_validation.error.message"))
         let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [
             PopUpDialogButtonModel(title: localized("ffi_validation.error.button.delete"), type: .destructive, callback: { completion(false) }),
             PopUpDialogButtonModel(title: localized("ffi_validation.error.button.cancel"), type: .text, callback: { completion(true) })
         ])
-        
+
         let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
         PopUpPresenter.show(popUp: popUp)
     }

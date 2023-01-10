@@ -1,5 +1,5 @@
 //  TransactionDetailsModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 15/03/2022
@@ -42,9 +42,9 @@ import Combine
 import GiphyUISDK
 
 final class TransactionDetailsModel {
-    
+
     // MARK: - View Model
-    
+
     @Published private(set) var title: String?
     @Published private(set) var subtitle: String?
     @Published private(set) var transactionState: AnimatedRefreshingViewState?
@@ -62,29 +62,29 @@ final class TransactionDetailsModel {
     @Published private(set) var errorModel: MessageModel?
     @Published private(set) var isBlockExplorerActionAvailable: Bool = false
     @Published private(set) var linkToOpen: URL?
-    
+
     var userAliasUpdateSuccessCallback: (() -> Void)?
-    
+
     // MARK: - Properties
-    
+
     private var transaction: Transaction
     private var transactionNounce: String?
     private var transactionSignature: String?
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init(transaction: Transaction) {
         self.transaction = transaction
         setupCallbacks()
         fetchData()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         let events = [
             WalletCallbacksManager.shared.receivedTransactionReply,
             WalletCallbacksManager.shared.receivedFinalizedTransaction,
@@ -92,7 +92,7 @@ final class TransactionDetailsModel {
             WalletCallbacksManager.shared.unconfirmedTransactionMined,
             WalletCallbacksManager.shared.transactionMined
         ]
-        
+
         events.forEach {
             $0
                 .filter { [unowned self] in (try? $0.identifier) == (try? self.transaction.identifier) }
@@ -100,11 +100,11 @@ final class TransactionDetailsModel {
                 .store(in: &cancellables)
         }
     }
-    
+
     // MARK: - Actions
-    
+
     private func fetchData() {
-        
+
         do {
             title = try fetchTitle()
             transactionState = try fetchTransactionState()
@@ -119,15 +119,15 @@ final class TransactionDetailsModel {
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.error.load_tx.title"), message: localized("tx_detail.error.load_tx.description"), type: .error)
         }
-        
+
         handleTransactionKernel()
-        
+
         isAddContactButtonVisible = userAlias == nil
         isNameSectionVisible = userAlias != nil
     }
-    
+
     func cancelTransactionRequest() {
-        
+
         do {
             guard try transaction.status == .pending, try transaction.isOutboundTransaction else {
                 errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: localized("tx_detail.tx_cancellation.error.description"), type: .error)
@@ -138,16 +138,16 @@ final class TransactionDetailsModel {
             errorModel = MessageModel(title: localized("tx_detail.tx_cancellation.error.title"), message: nil, type: .error)
         }
     }
-    
+
     func addContactAliasRequest() {
         isAddContactButtonVisible = false
         isNameSectionVisible = true
     }
-    
+
     func update(alias: String?) {
-        
+
         guard let alias = alias, !alias.isEmpty else { return }
-        
+
         do {
             let address = try transaction.address
             let contact = try Contact(alias: alias, addressPointer: address.pointer)
@@ -159,23 +159,23 @@ final class TransactionDetailsModel {
             resetAlias()
         }
     }
-    
+
     func resetAlias() {
         userAlias = userAlias
     }
-    
+
     func requestLinkToBlockExplorer() {
         linkToOpen = fetchLinkToOpen()
     }
-    
+
     // MARK: - Helpers
-    
+
     private func fetchTitle() throws -> String? {
-        
+
         if transaction.isCancelled {
             return localized("tx_detail.payment_cancelled")
         }
-        
+
         switch try transaction.status {
         case .txNullError, .completed, .broadcast, .minedUnconfirmed, .pending, .unknown:
             return localized("tx_detail.payment_in_progress")
@@ -183,32 +183,32 @@ final class TransactionDetailsModel {
             return try transaction.isOutboundTransaction ? localized("tx_detail.payment_sent") : localized("tx_detail.payment_received")
         }
     }
-    
+
     private func fetchSubtitle() throws -> String {
-        
+
         var formattedDate: String?
-        
+
         if let timestamp = try? transaction.timestamp {
             formattedDate = Date(timeIntervalSince1970: TimeInterval(timestamp)).formattedDisplay()
         }
-        
+
         var failureReason: String?
-        
+
         if let completedTransaction = transaction as? CompletedTransaction, let description = try completedTransaction.rejectionReason.description {
             failureReason = description
         }
-        
+
         return [failureReason, formattedDate]
             .compactMap { $0 }
             .joined(separator: "\n")
     }
-    
+
     private func fetchTransactionState() throws -> AnimatedRefreshingViewState? {
-        
+
         guard !transaction.isCancelled else {
             return nil
         }
-        
+
         switch try transaction.status {
         case .pending:
             return try transaction.isOutboundTransaction ? .txWaitingForRecipient : .txWaitingForSender
@@ -223,89 +223,89 @@ final class TransactionDetailsModel {
             return nil
         }
     }
-    
+
     private func fetchTransactionDirection() throws -> String? {
         try transaction.isOutboundTransaction ? localized("tx_detail.to") : localized("tx_detail.from")
     }
-    
+
     private func fetchAmount() throws -> String {
         let amount = try transaction.amount
         return MicroTari(amount).formattedPrecise
     }
-    
+
     private func fetchFee() throws -> String? {
         guard try transaction.isOutboundTransaction, let fee = try (transaction as? CompletedTransaction)?.fee ?? (transaction as? PendingOutboundTransaction)?.fee else { return nil }
         return MicroTari(fee).formattedWithOperator
     }
-    
+
     private func fetchEmojiIdViewModel() throws -> EmojiIdView.ViewModel {
         let address = try transaction.address
         let emojiID = try address.emojis
         let hex = try address.byteVector.hex
         return EmojiIdView.ViewModel(emojiID: emojiID, hex: hex)
     }
-    
+
     private func fetchUserAlias() throws -> String? {
         let contact = try Tari.shared.contacts.findContact(hex: try transaction.address.byteVector.hex)
         return try contact?.alias
     }
-    
+
     private func handle(transaction: Transaction) {
         self.transaction = transaction
         fetchData()
     }
-    
+
     private func handleMessage() throws {
-        
+
         guard try !transaction.isOneSidedPayment else {
             note = localized("transaction.one_sided_payment.note.normal")
             gifMedia = nil
             return
         }
-        
+
         let message = try transaction.message
         let giphyLinkPrefix = "https://giphy.com/embed/"
-        
+
         guard let endIndex = message.range(of: giphyLinkPrefix)?.lowerBound else {
             note = message
             gifMedia = nil
             return
         }
-        
+
         let messageNote = message[..<endIndex].trimmingCharacters(in: .whitespaces)
         let link = message[endIndex...].trimmingCharacters(in: .whitespaces)
         let gifID = link.replacingOccurrences(of: giphyLinkPrefix, with: "")
-        
+
         GiphyCore.shared.gifByID(gifID) { [weak self] response, error in
-            
+
             if let error = error {
                 Logger.log(message: "Failed to load gif: \(error.localizedDescription)", domain: .general, level: .error)
                 return
             }
-            
+
             guard let data = response?.data else { return }
             self?.gifMedia = data
         }
-        
+
         note = messageNote
     }
-    
+
     private func handleTransactionKernel() {
-        
+
         defer {
             isBlockExplorerActionAvailable = transactionNounce != nil && transactionSignature != nil
         }
-        
+
         guard let kernel = try? (transaction as? CompletedTransaction)?.transactionKernel else {
             transactionNounce = nil
             transactionSignature = nil
             return
         }
-        
+
         transactionNounce = try? kernel.excessPublicNonceHex
         transactionSignature = try? kernel.excessSignatureHex
     }
-    
+
     private func fetchLinkToOpen() -> URL? {
         guard let transactionNounce = transactionNounce, let transactionSignature = transactionSignature else { return nil }
         let request = [transactionNounce, transactionSignature].joined(separator: "/")
@@ -314,7 +314,7 @@ final class TransactionDetailsModel {
 }
 
 private extension CompletedTransaction.RejectionReason {
-    
+
     var description: String? {
         switch self {
         case .notCancelled:

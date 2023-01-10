@@ -1,5 +1,5 @@
 //  AppVersionFormatter.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 08/02/2022
@@ -39,7 +39,7 @@
 */
 
 enum AppVersionFormatter {
-    
+
     static var version: String? {
         guard let version = AppInfo.appVersion, let build = AppInfo.buildVestion else { return nil }
         let networkName = NetworkManager.shared.selectedNetwork.name.uppercased()

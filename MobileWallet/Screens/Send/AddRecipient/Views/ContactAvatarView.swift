@@ -1,5 +1,5 @@
 //  ContactAvatarView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2021
@@ -42,16 +42,16 @@ import UIKit
 import TariCommon
 
 final class ContactAvatarView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var placeholderImageView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.unknownUser
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.contactCellAliasLetter
@@ -60,14 +60,14 @@ final class ContactAvatarView: DynamicThemeView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         backgroundColor = theme.neutral.tertiary
         placeholderImageView.tintColor = theme.text.body
         label.textColor = theme.text.body
     }
-    
+
     // MARK: - Properties
-    
+
     var text: String = "" {
         didSet {
             label.text = text
@@ -75,30 +75,30 @@ final class ContactAvatarView: DynamicThemeView {
             placeholderImageView.isHidden = !text.isEmpty
         }
     }
-    
+
     // MARK: - Initializers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         layer.cornerRadius = 12.0
         clipsToBounds = true
     }
-    
+
     private func setupConstraints() {
-        
+
         [placeholderImageView, label].forEach(addSubview)
-        
+
         let constraints = [
             placeholderImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             placeholderImageView.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -109,7 +109,7 @@ final class ContactAvatarView: DynamicThemeView {
             heightAnchor.constraint(equalToConstant: 44.0),
             widthAnchor.constraint(equalToConstant: 44.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 }

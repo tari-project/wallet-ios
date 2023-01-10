@@ -1,5 +1,5 @@
 //  RadioButtonView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 18/12/2022
@@ -42,65 +42,65 @@ import UIKit
 import TariCommon
 
 final class RadioButtonView: UIView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var dotView: UIView = {
         let view = UIView()
         view.isHidden = true
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var borderColor: UIColor? {
         didSet { layer.borderColor = borderColor?.cgColor }
     }
-    
+
     var fillColor: UIColor? {
         didSet { dotView.backgroundColor = fillColor }
     }
-    
+
     var isSelected: Bool = false {
         didSet {
             dotView.isHidden = !isSelected
         }
     }
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero)
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         layer.borderWidth = 1.0
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(dotView)
-        
+
         let constraints = [
             dotView.topAnchor.constraint(equalTo: topAnchor, constant: 2.0),
             dotView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2.0),
             dotView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -2.0),
             dotView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -2.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Layout
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         layer.cornerRadius = bounds.width / 2.0

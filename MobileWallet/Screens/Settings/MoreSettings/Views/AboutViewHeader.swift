@@ -1,5 +1,5 @@
 //  AboutViewHeader.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 26/05/2022
@@ -42,50 +42,50 @@ import UIKit
 import TariCommon
 
 final class AboutViewHeader: DynamicThemeHeaderFooterView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var tintedBackgroundView: UIView = {
         let view = UIView()
         return view
     }()
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = localized("about.label.creative_commons")
         view.font = .Avenir.light.withSize(14.0)
         return view
     }()
-    
+
     @View private var button: TextButton = {
         let view = TextButton()
         view.setTitle(localized("about.button.creative_commons"), for: .normal)
         view.setVariation(.secondary, font: .Avenir.light.withSize(14.0))
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var onButtonTap: (() -> Void)?
-    
+
     // MARK: - Initialisers
-    
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         setupConstraint()
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraint() {
-        
+
         [tintedBackgroundView, label, button].forEach(addSubview)
-        
+
         let constraints = [
             tintedBackgroundView.topAnchor.constraint(equalTo: topAnchor),
             tintedBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -99,22 +99,21 @@ final class AboutViewHeader: DynamicThemeHeaderFooterView {
             button.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -25.0),
             button.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
         button.onTap = { [weak self] in
             self?.onButtonTap?()
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         tintedBackgroundView.backgroundColor = theme.backgrounds.primary
         label.textColor = theme.text.heading
     }
 }
-

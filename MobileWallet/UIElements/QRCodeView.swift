@@ -1,5 +1,5 @@
 //  QRCodeView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/01/2022
@@ -42,51 +42,51 @@ import UIKit
 import TariCommon
 
 final class QRCodeView: UIView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var imageView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var image: UIImage? {
         didSet { imageView.image = image }
     }
-    
+
     // MARK: - Initialiser
-    
+
     init() {
         super.init(frame: .zero)
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         backgroundColor = .white
         layer.cornerRadius = 7.0
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(imageView)
-        
+
         let constraints = [
             imageView.topAnchor.constraint(equalTo: topAnchor, constant: 17.0),
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 17.0),
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -17.0),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -17.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 }

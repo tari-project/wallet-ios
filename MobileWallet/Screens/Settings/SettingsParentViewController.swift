@@ -42,7 +42,7 @@ import UIKit
 import TariCommon
 
 class SettingsParentViewController: DynamicThemeViewController {
-    
+
     @View private(set) var navigationBar: NavigationBar = {
         let view = NavigationBar()
         view.title = localized("settings.title")
@@ -55,20 +55,20 @@ class SettingsParentViewController: DynamicThemeViewController {
         setupConstraints()
         setupViews()
     }
-    
+
     private func setupConstraints() {
-        
+
         view.addSubview(navigationBar)
-        
+
         let constraints = [
             navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
             navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         view.backgroundColor = theme.backgrounds.primary
@@ -76,12 +76,12 @@ class SettingsParentViewController: DynamicThemeViewController {
 }
 
 extension SettingsParentViewController {
-    
+
     @objc func setupViews() {
         setupNavigationBar()
         setupNavigationBarSeparator()
     }
-    
+
     @objc func setupNavigationBar() {}
     @objc func setupNavigationBarSeparator() {}
 }

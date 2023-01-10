@@ -1,5 +1,5 @@
 //  LogView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2022
@@ -43,22 +43,22 @@ import TariCommon
 import Lottie
 
 final class LogView: BaseNavigationContentView {
-    
+
     // MARK: - Subviews
-    
+
     @View private(set) var tableView: UITableView = {
         let view = UITableView()
         view.rowHeight = UITableView.automaticDimension
         view.backgroundColor = .clear
         return view
     }()
-    
+
     @View private var overlayBackgroundView: UIView = {
         let view = UIView()
         view.alpha = 0.0
         return view
     }()
-    
+
     @View private var spinnerView: AnimationView = {
         let view = AnimationView()
         view.backgroundBehavior = .pauseAndRestore
@@ -67,44 +67,44 @@ final class LogView: BaseNavigationContentView {
         view.play()
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var title: String? {
         get { navigationBar.title }
         set { navigationBar.title = newValue }
     }
-    
+
     var isSpinnerVisible: Bool = false {
         didSet { updateSpinnerState() }
     }
-    
+
     var onFilterButtonTap: (() -> Void)?
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         navigationBar.rightButton.setImage(Theme.shared.images.utxoFaucet, for: .normal)
     }
-    
+
     private func setupConstraints() {
-        
+
         [tableView, overlayBackgroundView].forEach { addSubview($0) }
         overlayBackgroundView.addSubview(spinnerView)
-        
+
         let constraints = [
             tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -117,24 +117,24 @@ final class LogView: BaseNavigationContentView {
             spinnerView.centerXAnchor.constraint(equalTo: overlayBackgroundView.centerXAnchor),
             spinnerView.centerYAnchor.constraint(equalTo: overlayBackgroundView.centerYAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
         navigationBar.onRightButtonAction = { [weak self] in
             self?.onFilterButtonTap?()
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         tableView.separatorColor = theme.neutral.secondary
         overlayBackgroundView.backgroundColor = theme.backgrounds.primary?.withAlphaComponent(0.5)
     }
-    
+
     private func updateSpinnerState() {
         UIView.animate(withDuration: 0.3) {
             self.overlayBackgroundView.alpha = self.isSpinnerVisible ? 1.0 : 0.0

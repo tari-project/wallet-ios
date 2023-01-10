@@ -99,13 +99,13 @@ struct Images {
 
     // Profile
     let settings = UIImage(named: "settings")
-    
+
     // Seed words list
     let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
-    
+
     // Home Icons
     let homeWalletIcon = UIImage(named: "icon-wallet")
-    
+
     // UTXOs Wallet Icons
     let utxoFaucet = UIImage(named: "icon-faucet")
     let utxoTileViewIcon = UIImage(named: "icon-blockview")
@@ -114,7 +114,7 @@ struct Images {
     let utxoActionJoin = UIImage(named: "icon-join")
     let utxoActionSplit = UIImage(named: "icon-split")
     let utxoActionJoinSplit = UIImage(named: "icon-join-split")
-    
+
     // Settings Icons
     let settingsAboutIcon = UIImage(named: "icon-about")
     let settingsBaseNodeIcon = UIImage(named: "icon-base-node")
@@ -131,34 +131,34 @@ struct Images {
     let settingsWalletBackupsIcon = UIImage(named: "icon-wallet-backups")
     let settingsYatIcon = UIImage(named: "icon-yat")
     let settingColorThemeIcon = UIImage(named: "icon-theme")
-    
+
     // Connection Details Icons
     let connectionInternetIcon = UIImage(named: "icon-internet")
     let connectionTorIcon = UIImage(named: "icon-tor")
     let connectionSyncIcon = UIImage(named: "icon-sync")
-    
+
     // UTXOs Wallet
-    
+
     let utxoTick = UIImage(named: "tick")
     let utxoWalletPlaceholder = UIImage(named: "UtxoWalletPlaceholder")
     let utxoWalletPickerMinus = UIImage(named: "ValuePickerMinus")
     let utxoWalletPickerPlus = UIImage(named: "ValuePickerPlus")
     let utxoSuccessImage = UIImage(named: "UtxoSuccess")
-    
+
     // Adjustable fees
-    
+
     let speedometerLow = UIImage(named: "speedometer-low")
     let speedometerMid = UIImage(named: "speedometer-mid")
     let speedometerHigh = UIImage(named: "speedometer-high")
-    
+
     // Connection Indicator
-    
+
     let connectionIndicatorConnectedIcon = UIImage(named: "network-full")
     let connectionIndicatorLimitedConnectonIcon = UIImage(named: "network-limited")
     let connectionIndicatorDisconnectedIcon = UIImage(named: "network-off")
-    
+
     // Color Themes
-    
+
     let colorThemeSystem = UIImage(named: "Themes/System")
     let colorThemeLight = UIImage(named: "Themes/Light")
     let colorThemeDark = UIImage(named: "Themes/Dark")
@@ -166,7 +166,7 @@ struct Images {
 }
 
 struct Fonts {
-    
+
     let actionButton = UIFont.Avenir.heavy.withSize(16.0)
     let copiedLabel = UIFont.Avenir.black.withSize(13.0)
 
@@ -308,7 +308,7 @@ struct Sizes {
 // MARK: - Color Pallete
 
 extension UIColor {
-    
+
     enum `static` {
         static var white: UIColor? { UIColor(named: "White") }
         static var black: UIColor? { UIColor(named: "Black") }

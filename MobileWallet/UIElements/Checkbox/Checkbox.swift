@@ -98,7 +98,7 @@ final class CheckBox: DynamicThemeBaseButton {
         animationView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         animationView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         borderLayer.borderColor = theme.brand.purple?.cgColor

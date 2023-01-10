@@ -1,5 +1,5 @@
 //  ICloudDocsDownloadService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 27/10/2022
@@ -41,12 +41,12 @@
 import Combine
 
 final class ICloudDocsDownloadService {
-    
+
     private enum Status: Equatable {
         case inProgress
         case failed(error: Error)
         case finished
-        
+
         static func == (lhs: ICloudDocsDownloadService.Status, rhs: ICloudDocsDownloadService.Status) -> Bool {
             switch (lhs, rhs) {
             case (.inProgress, .inProgress), (.failed, .failed), (.finished, .finished):
@@ -56,28 +56,28 @@ final class ICloudDocsDownloadService {
             }
         }
     }
-    
+
     // MARK: - Properties
-    
+
     @Published private var status: Status = .finished
-    
+
     private let filenamePrefix: String
     private let metadataQuery: ICloudBackupMetadataQuery
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init(filenamePrefix: String) {
         self.filenamePrefix = filenamePrefix
         metadataQuery = ICloudBackupMetadataQuery(filenamePrefix: filenamePrefix)
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         Publishers.Merge3(
             NotificationCenter.default.publisher(for: .NSMetadataQueryDidStartGathering, object: metadataQuery),
             NotificationCenter.default.publisher(for: .NSMetadataQueryGatheringProgress, object: metadataQuery),
@@ -87,13 +87,13 @@ final class ICloudDocsDownloadService {
         .sink { [weak self] in self?.handle(downloadQuery: $0) }
         .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     func downloadBackup() async throws {
-        
+
         status = .inProgress
-        
+
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self else { return }
             self.listenToUpdates()
@@ -114,31 +114,31 @@ final class ICloudDocsDownloadService {
                 .store(in: &self.cancellables)
         }
     }
-    
+
     private func listenToUpdates() {
         metadataQuery.operationQueue?.addOperation { [weak self] in
             self?.metadataQuery.start()
             self?.metadataQuery.enableUpdates()
         }
     }
-    
+
     private func stopListeningToUpdates() {
         metadataQuery.operationQueue?.addOperation { [weak self] in
             self?.metadataQuery.stop()
             self?.metadataQuery.disableUpdates()
         }
     }
-    
+
     private func download(fileURL: URL) throws {
         try FileManager.default.startDownloadingUbiquitousItem(at: fileURL)
     }
-    
+
     // MARK: - Handlers
-    
+
     private func handle(downloadQuery: NSMetadataQuery) {
-        
+
         guard !downloadQuery.results.isEmpty else { return }
-        
+
         let item = downloadQuery.results
             .compactMap { $0 as? NSMetadataItem }
             .filter {
@@ -146,19 +146,19 @@ final class ICloudDocsDownloadService {
                 return url.lastPathComponent.hasPrefix(filenamePrefix)
             }
             .last
-        
+
         guard let item, let url = item.value(forAttribute: NSMetadataItemURLKey) as? URL else { return }
-        
+
         do {
             try download(fileURL: url)
         } catch {
             status = .failed(error: error)
         }
-        
+
         guard let fileDownloaded = item.value(forAttribute: NSMetadataUbiquitousItemDownloadingStatusKey) as? String, fileDownloaded == NSMetadataUbiquitousItemDownloadingStatusCurrent else {
             return
         }
-        
+
         stopListeningToUpdates()
         status = .finished
     }
