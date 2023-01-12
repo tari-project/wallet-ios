@@ -58,7 +58,6 @@
 		00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 00E491A42366E08B007B332D /* MobileWallet.xcdatamodeld */; };
 		00E491A82366E08F007B332D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A72366E08F007B332D /* Assets.xcassets */; };
 		00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
-		00F53A642428E44700448466 /* StorageCleanup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00F53A632428E44700448466 /* StorageCleanup.swift */; };
 		00FB43D824BC937D0031D53E /* BackupPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FB43D724BC937D0031D53E /* BackupPrompts.swift */; };
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		37049270247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */; };
@@ -503,7 +502,6 @@
 		00E491A72366E08F007B332D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		00E491AA2366E08F007B332D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		00E491AC2366E08F007B332D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00F53A632428E44700448466 /* StorageCleanup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageCleanup.swift; sourceTree = "<group>"; };
 		00FB43D724BC937D0031D53E /* BackupPrompts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupPrompts.swift; sourceTree = "<group>"; };
 		3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletViewController.swift; sourceTree = "<group>"; };
 		37049273247EA9110034EE5D /* SystemMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMenuTableViewCell.swift; sourceTree = "<group>"; };
@@ -1018,7 +1016,6 @@
 				009DFCA62473E33F0061DBC9 /* DeepLinkParams.swift */,
 				006D211C23CEDF16007D1C10 /* MicroTari.swift */,
 				00230AF92376C6DD00F23E34 /* Sequence.swift */,
-				00F53A632428E44700448466 /* StorageCleanup.swift */,
 				3ACFDD1C26E8C1A900C5E1EA /* AppInfo.swift */,
 			);
 			name = Utils;
@@ -2813,7 +2810,6 @@
 				3A0391E6290BA40E00352D73 /* BugReportingView.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
 				3A860BD2287DA2B800FC4F76 /* HomeViewModel.swift in Sources */,
-				00F53A642428E44700448466 /* StorageCleanup.swift in Sources */,
 				370E886324FE974100576F61 /* OnionSettings.swift in Sources */,
 				545A9D16294F6EEA008D24A6 /* ThemeSettingsView.swift in Sources */,
 				0087A1B223F4235400B89EE7 /* AddRecipientViewController.swift in Sources */,
