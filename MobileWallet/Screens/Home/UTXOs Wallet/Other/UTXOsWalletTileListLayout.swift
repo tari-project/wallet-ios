@@ -42,6 +42,12 @@ import UIKit
 
 final class UTXOsWalletTileListLayout: UICollectionViewLayout {
 
+    private struct ColumnData {
+        let columnIndex: Int
+        var totalHeight: CGFloat
+        var attributes: [UICollectionViewLayoutAttributes]
+    }
+
     // MARK: - Constants
 
     private let horizontalMargin: CGFloat = 30.0
@@ -70,9 +76,7 @@ final class UTXOsWalletTileListLayout: UICollectionViewLayout {
 
         let columnWidth = (collectionViewContentSize.width - horizontalMargin * 2.0 - internalMargin * CGFloat(columnsCount - 1)) / CGFloat(columnsCount)
         let itemsCount = collectionView.numberOfItems(inSection: 0)
-
-        let initialData: [(columnIndex: Int, totalHeight: CGFloat, attributes: [UICollectionViewLayoutAttributes])] = (0..<columnsCount)
-            .map { ($0, verticalMargin, []) }
+        let initialData = (0..<columnsCount).map { ColumnData(columnIndex: $0, totalHeight: verticalMargin, attributes: []) }
 
         let data = (0..<itemsCount)
             .reduce(into: initialData) { [weak self] result, index in

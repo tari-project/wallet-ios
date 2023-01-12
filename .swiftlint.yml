@@ -6,17 +6,16 @@ type_body_length: # Target: 250/350
   - 400
   - 500
 
-function_body_length: # Target 50/100
+function_body_length: # Target: 50/100
   - 120
   - 220
 
-file_length: # Target 400/1000
+file_length: # Target: 400/1000
   - 910
   - 1510
 
 disabled_rules:  
   - identifier_name
-  - large_tuple
   - cyclomatic_complexity
   - multiple_closures_with_trailing_closure
   - function_parameter_count

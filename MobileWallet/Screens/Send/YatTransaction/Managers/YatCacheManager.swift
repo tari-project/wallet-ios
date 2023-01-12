@@ -112,8 +112,14 @@ final class YatCacheManager {
 
 private extension String {
 
-    var components: (assetName: String, hash: String, identifier: YatCacheManager.FileIdentifier, fileExtension: String)? {
+    struct Components {
+        let assetName: String
+        let hash: String
+        let identifier: YatCacheManager.FileIdentifier
+        let fileExtension: String
+    }
 
+    var components: Components? {
         var elements = split(separator: "-")
         guard elements.count >= 2 else { return nil }
         let lastElement = elements.removeLast()
@@ -130,6 +136,6 @@ private extension String {
         let hash = trailingElements.joined(separator: ".")
         let identifier = YatCacheManager.FileIdentifier(identifier: rawIdentifier)
 
-        return (assetName: assetName, hash: hash, identifier: identifier, fileExtension: String(fileExtension))
+        return Components(assetName: assetName, hash: hash, identifier: identifier, fileExtension: String(fileExtension))
     }
 }

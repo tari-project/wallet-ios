@@ -41,7 +41,13 @@
 import GiphyUISDK
 
 class TxTableViewModel: NSObject {
-    typealias Value = (microTari: MicroTari?, isOutboundTransaction: Bool, isCancelled: Bool, isPending: Bool)
+
+    struct Value {
+        let microTari: MicroTari?
+        let isOutboundTransaction: Bool
+        let isCancelled: Bool
+        let isPending: Bool
+    }
 
     let id: UInt64
     private(set) var transaction: Transaction
@@ -65,7 +71,7 @@ class TxTableViewModel: NSObject {
         self.transaction = transaction
         self.id = try transaction.identifier
 
-        value = (microTari: MicroTari(try transaction.amount), isOutboundTransaction: try transaction.isOutboundTransaction, isCancelled: transaction.isCancelled, transaction.isPending)
+        value = Value(microTari: MicroTari(try transaction.amount), isOutboundTransaction: try transaction.isOutboundTransaction, isCancelled: transaction.isCancelled, isPending: transaction.isPending)
 
         if try transaction.isOneSidedPayment {
             message = localized("transaction.one_sided_payment.note.normal")
@@ -107,7 +113,7 @@ class TxTableViewModel: NSObject {
         guard try id == transaction.identifier else { return }
         self.transaction = transaction
 
-        value = (microTari: MicroTari(try transaction.amount), isOutboundTransaction: try transaction.isOutboundTransaction, isCancelled: transaction.isCancelled, transaction.isPending)
+        value = Value(microTari: MicroTari(try transaction.amount), isOutboundTransaction: try transaction.isOutboundTransaction, isCancelled: transaction.isCancelled, isPending: transaction.isPending)
 
         try updateTitleAndAvatar()
         try updateStatus()
