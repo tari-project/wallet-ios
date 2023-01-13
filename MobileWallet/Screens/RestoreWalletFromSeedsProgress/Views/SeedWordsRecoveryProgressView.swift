@@ -1,4 +1,4 @@
-//  RestoreWalletFromSeedsProgressView.swift
+//  SeedWordsRecoveryProgressView.swift
 
 /*
 	Package MobileWallet
@@ -41,7 +41,7 @@
 import UIKit
 import Lottie
 
-final class RestoreWalletFromSeedsProgressView: DynamicThemeView {
+final class SeedWordsRecoveryProgressView: DynamicThemeView {
 
     // MARK: - Subviews
 

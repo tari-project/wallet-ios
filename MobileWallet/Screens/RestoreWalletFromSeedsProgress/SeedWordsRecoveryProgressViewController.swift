@@ -1,4 +1,4 @@
-//  RestoreWalletFromSeedsProgressViewController.swift
+//  SeedWordsRecoveryProgressViewController.swift
 
 /*
 	Package MobileWallet
@@ -41,14 +41,14 @@
 import UIKit
 import Combine
 
-final class RestoreWalletFromSeedsProgressViewController: UIViewController {
+final class SeedWordsRecoveryProgressViewController: UIViewController {
 
     // MARK: - Properties
 
     var onSuccess: (() -> Void)?
 
-    private let mainView = RestoreWalletFromSeedsProgressView()
-    private let model = RestoreWalletFromSeedsProgressModel()
+    private let mainView = SeedWordsRecoveryProgressView()
+    private let model = SeedWordsRecoveryProgressModel()
     private var cancelables: Set<AnyCancellable> = []
 
     // MARK: - View Lifecycle

@@ -91,10 +91,7 @@ extension DeleteWalletViewController: UITableViewDelegate, UITableViewDataSource
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: String(describing: SystemMenuTableViewCell.self),
-            for: indexPath
-        ) as! SystemMenuTableViewCell
+        let cell = tableView.dequeueReusableCell(type: SystemMenuTableViewCell.self, indexPath: indexPath)
         cell.configure(menuItem)
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = .zero

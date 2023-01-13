@@ -1,4 +1,4 @@
-//  RestoreWalletFromSeedsProgressModel.swift
+//  SeedWordsRecoveryProgressModel.swift
 
 /*
 	Package MobileWallet
@@ -41,7 +41,7 @@
 import Combine
 import UIKit
 
-final class RestoreWalletFromSeedsProgressModel {
+final class SeedWordsRecoveryProgressModel {
 
     final class ViewModel {
         @Published var status: String? = localized("restore_from_seed_words.progress_overlay.status.connecting")

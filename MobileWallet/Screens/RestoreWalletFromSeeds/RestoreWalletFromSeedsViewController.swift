@@ -153,7 +153,7 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
 
     private func showProgressOverlay() {
 
-        let overlay = RestoreWalletFromSeedsProgressViewController()
+        let overlay = SeedWordsRecoveryProgressViewController()
 
         overlay.onSuccess = {
             try? MigrationManager.updateWalletVersion()

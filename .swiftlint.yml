@@ -1,20 +1,27 @@
-line_length:
+line_length: # Target: 120/200
   - 245
-  - 250
+  - 325
+
+type_body_length: # Target: 250/350
+  - 400
+  - 500
+
+function_body_length: # Target: 50/100
+  - 120
+  - 220
+
+file_length: # Target: 400/1000
+  - 910
+  - 1510
 
 disabled_rules:  
   - identifier_name
-  - type_body_length
-  - function_body_length
-  - force_cast
-  - type_name
-  - large_tuple
-  - file_length
   - cyclomatic_complexity
   - multiple_closures_with_trailing_closure
   - function_parameter_count
   - todo
   - nesting
+
 excluded:
   - Pods
   - UnitTests

@@ -89,10 +89,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: String(describing: SystemMenuTableViewCell.self),
-            for: indexPath
-        ) as! SystemMenuTableViewCell
+        let cell = tableView.dequeueReusableCell(type: SystemMenuTableViewCell.self, indexPath: indexPath)
         let item = items[indexPath.row]
         cell.configure(item)
         cell.preservesSuperviewLayoutMargins = false

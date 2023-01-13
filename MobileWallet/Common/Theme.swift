@@ -308,14 +308,15 @@ struct Sizes {
 // MARK: - Color Pallete
 
 extension UIColor {
+    static var `static`: StaticColors.Type { StaticColors.self }
+}
 
-    enum `static` {
-        static var white: UIColor? { UIColor(named: "White") }
-        static var black: UIColor? { UIColor(named: "Black") }
-        static var purple: UIColor? { UIColor(named: "Purple") }
-        static var mediumGrey: UIColor? { UIColor(named: "MediumGrey") }
-        static var popupOverlay: UIColor? { .black.withAlphaComponent(0.7) }
-    }
+enum StaticColors {
+    static var white: UIColor? { UIColor(named: "White") }
+    static var black: UIColor? { UIColor(named: "Black") }
+    static var purple: UIColor? { UIColor(named: "Purple") }
+    static var mediumGrey: UIColor? { UIColor(named: "MediumGrey") }
+    static var popupOverlay: UIColor? { .black.withAlphaComponent(0.7) }
 }
 
 extension Shadow {
