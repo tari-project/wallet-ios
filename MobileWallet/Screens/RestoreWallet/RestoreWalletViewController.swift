@@ -43,6 +43,13 @@ import LocalAuthentication
 import Combine
 
 final class RestoreWalletViewController: SettingsParentTableViewController { // FIXME: Please align the backup flow with FFI Lib
+
+    private enum EndFlowAction {
+        case none
+        case navigateBack
+        case navigateBackAndStartWallet
+    }
+
     private let localAuth = LAContext()
 
     private let pendingView = PendingView(title: localized("restore_pending_view.title"),
@@ -152,7 +159,8 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
                     switch completion {
                     case .finished:
                         BackupManager.shared.password = password
-                        self?.endFlow(returnToSplashScreen: true)
+                        let action: EndFlowAction = password == nil ? .navigateBack : .navigateBackAndStartWallet
+                        self?.endFlow(action: action)
                     case let .failure(error):
                         self?.handle(error: error, service: service)
                     }
@@ -169,15 +177,21 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
         }
     }
 
-    private func endFlow(returnToSplashScreen: Bool) {
+    private func endFlow(action: EndFlowAction) {
         pendingView.hidePendingView { [weak self] in
-            guard returnToSplashScreen else { return }
-            self?.returnToSplashScreen()
+            self?.handle(endFlowAction: action)
         }
     }
 
-    private func returnToSplashScreen() {
-        AppRouter.transitionToSplashScreen()
+    private func handle(endFlowAction: EndFlowAction) {
+        switch endFlowAction {
+        case .none:
+            return
+        case .navigateBack:
+            AppRouter.transitionToSplashScreen(isWalletConnected: true)
+        case .navigateBackAndStartWallet:
+            AppRouter.transitionToSplashScreen()
+        }
     }
 
     private func handle(error: Error, service: BackupManager.Service) {
@@ -201,7 +215,7 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
             PopUpPresenter.show(message: model)
         }
 
-        endFlow(returnToSplashScreen: false)
+        endFlow(action: .none)
     }
 }
 

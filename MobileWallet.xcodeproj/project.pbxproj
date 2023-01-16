@@ -382,6 +382,8 @@
 		5410F5D12951F04B006976DC /* TariWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5410F5D02951F04B006976DC /* TariWindow.swift */; };
 		543DF19A293F37E70031EA70 /* CustomBridgesHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */; };
 		543DF19C293F3DA90031EA70 /* BridgesConfigurationFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */; };
+		544D9D4C296D9B2000D8ECEF /* UnblindedOutputs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544D9D4B296D9B2000D8ECEF /* UnblindedOutputs.swift */; };
+		544D9D4E296D9B3300D8ECEF /* UnblindedOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544D9D4D296D9B3300D8ECEF /* UnblindedOutput.swift */; };
 		545A9D14294F6ED3008D24A6 /* ThemeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */; };
 		545A9D16294F6EEA008D24A6 /* ThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D15294F6EEA008D24A6 /* ThemeSettingsView.swift */; };
 		545A9D18294F6F50008D24A6 /* ThemeSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D17294F6F50008D24A6 /* ThemeSettingsModel.swift */; };
@@ -391,6 +393,8 @@
 		545A9D21294F9CCE008D24A6 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D20294F9CCE008D24A6 /* UserSettings.swift */; };
 		545A9D24294F9E77008D24A6 /* UserSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D23294F9E77008D24A6 /* UserSettingsManager.swift */; };
 		5491696E2940F78000783E54 /* LogFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5491696D2940F78000783E54 /* LogFilesManager.swift */; };
+		549E0E0D29754E9C00828743 /* PartialBackupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549E0E0C29754E9B00828743 /* PartialBackupModel.swift */; };
+		54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */; };
 		54DE32D02930BE3D0060108A /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32CF2930BE3D0060108A /* ColorTheme.swift */; };
 		54DE32D22930BE7F0060108A /* ThemeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */; };
 		54DE32D42930C2640060108A /* DynamicThemeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D32930C2640060108A /* DynamicThemeView.swift */; };
@@ -829,6 +833,8 @@
 		5410F5D02951F04B006976DC /* TariWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariWindow.swift; sourceTree = "<group>"; };
 		543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBridgesHeaderView.swift; sourceTree = "<group>"; };
 		543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgesConfigurationFooterView.swift; sourceTree = "<group>"; };
+		544D9D4B296D9B2000D8ECEF /* UnblindedOutputs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnblindedOutputs.swift; sourceTree = "<group>"; };
+		544D9D4D296D9B3300D8ECEF /* UnblindedOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnblindedOutput.swift; sourceTree = "<group>"; };
 		545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsViewController.swift; sourceTree = "<group>"; };
 		545A9D15294F6EEA008D24A6 /* ThemeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsView.swift; sourceTree = "<group>"; };
 		545A9D17294F6F50008D24A6 /* ThemeSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsModel.swift; sourceTree = "<group>"; };
@@ -838,6 +844,8 @@
 		545A9D20294F9CCE008D24A6 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		545A9D23294F9E77008D24A6 /* UserSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsManager.swift; sourceTree = "<group>"; };
 		5491696D2940F78000783E54 /* LogFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFilesManager.swift; sourceTree = "<group>"; };
+		549E0E0C29754E9B00828743 /* PartialBackupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialBackupModel.swift; sourceTree = "<group>"; };
+		54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariUnspentOutputsService.swift; sourceTree = "<group>"; };
 		54DE32CF2930BE3D0060108A /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
 		54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeCoordinator.swift; sourceTree = "<group>"; };
 		54DE32D32930C2640060108A /* DynamicThemeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicThemeView.swift; sourceTree = "<group>"; };
@@ -1486,6 +1494,12 @@
 		3A312FEB28B6314A00A290D3 /* FFI */ = {
 			isa = PBXGroup;
 			children = (
+				3AF335DD28D7905C00B48F33 /* Configs */,
+				3AF335DA28D754EC00B48F33 /* Contacts */,
+				3AF335DC28D78D1F00B48F33 /* Keys */,
+				3AF335DB28D789F000B48F33 /* Seed Words */,
+				3A312FEC28B6315A00A290D3 /* Transactions */,
+				544D9D4A296D9B0000D8ECEF /* Unblinded Outputs */,
 				4CDEC322273A5E3500999DCB /* Balance.swift */,
 				3A8005CE28EAF9380022A38A /* BaseNodeConnectivityStatus.swift */,
 				00BBD80D237DA07400EBF5E6 /* ByteVector.swift */,
@@ -1494,13 +1508,8 @@
 				3A6F3FF7283BF980005D1793 /* TariFeePerGramStats.swift */,
 				3A78860D2872FB39003B1F9A /* TariVectorWrapper.swift */,
 				3A8005CA28EAF3A90022A38A /* TransactionValidationData.swift */,
-				3A4D90A3273A75FC00A23FA8 /* Wallet.swift */,
-				3AF335DD28D7905C00B48F33 /* Configs */,
-				3AF335DA28D754EC00B48F33 /* Contacts */,
-				3AF335DC28D78D1F00B48F33 /* Keys */,
-				3AF335DB28D789F000B48F33 /* Seed Words */,
-				3A312FEC28B6315A00A290D3 /* Transactions */,
 				3A8473BE28EC51780015E63A /* TransactionValidationStatus.swift */,
+				3A4D90A3273A75FC00A23FA8 /* Wallet.swift */,
 			);
 			path = FFI;
 			sourceTree = "<group>";
@@ -1688,6 +1697,7 @@
 				3A5A3D54290152E300B689C6 /* BackupManager.swift */,
 				3A530BCE290AEDB600C423C7 /* BackupServicable.swift */,
 				3A3D70B8291A625700A8CD7A /* BackupStatus.swift */,
+				549E0E0C29754E9B00828743 /* PartialBackupModel.swift */,
 			);
 			path = Manager;
 			sourceTree = "<group>";
@@ -1891,6 +1901,7 @@
 				3A8473D128EC568A0015E63A /* TariMessageSignService.swift */,
 				3A8473D528EC56C90015E63A /* TariBalanceService.swift */,
 				3A8473D728EC56EF0015E63A /* TariKeyValueService.swift */,
+				54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -2284,6 +2295,15 @@
 				543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */,
 			);
 			path = Bridges;
+			sourceTree = "<group>";
+		};
+		544D9D4A296D9B0000D8ECEF /* Unblinded Outputs */ = {
+			isa = PBXGroup;
+			children = (
+				544D9D4B296D9B2000D8ECEF /* UnblindedOutputs.swift */,
+				544D9D4D296D9B3300D8ECEF /* UnblindedOutput.swift */,
+			);
+			path = "Unblinded Outputs";
 			sourceTree = "<group>";
 		};
 		545A9D12294F6EBD008D24A6 /* Theme Settings */ = {
@@ -2720,6 +2740,7 @@
 				4CD20A362407967B007B64D8 /* TransportConfig.swift in Sources */,
 				00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */,
 				00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */,
+				549E0E0D29754E9C00828743 /* PartialBackupModel.swift in Sources */,
 				375AFDCF2475387700C62CA1 /* WebBrowserViewController.swift in Sources */,
 				3A8473D828EC56EF0015E63A /* TariKeyValueService.swift in Sources */,
 				3A874038278842F500D80823 /* TorManager.swift in Sources */,
@@ -2859,6 +2880,7 @@
 				3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */,
 				3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */,
 				3A1D8E4B28400AB8004129D5 /* AboutViewHeader.swift in Sources */,
+				54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */,
 				3AD1306827D6290A003EC7FA /* SeedWordsListViewController.swift in Sources */,
 				3AF56BBB28B774C0004E8E43 /* PendingInboundTransactions.swift in Sources */,
 				A0779C612552C1AF00614EF3 /* DeleteWalletViewController.swift in Sources */,
@@ -2870,6 +2892,7 @@
 				3A420597279803DF00A8D49C /* CharacterSet+CustomSets.swift in Sources */,
 				3ACDA70026AFF83D00F138B8 /* OverlayPresentable.swift in Sources */,
 				3A35413A26A738F5002AB5A8 /* ContentScrollView.swift in Sources */,
+				544D9D4E296D9B3300D8ECEF /* UnblindedOutput.swift in Sources */,
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
 				370E886124FE7AE800576F61 /* BridgesConfigurationViewController.swift in Sources */,
 				3A983A5A27C62A3900F0AB61 /* VerifySeedWordsViewController.swift in Sources */,
@@ -3002,6 +3025,7 @@
 				545A9D24294F9E77008D24A6 /* UserSettingsManager.swift in Sources */,
 				3A3D70BB291A637100A8CD7A /* MenuTableView.swift in Sources */,
 				3A21FC5128FFD7B8004B09A0 /* PopUpTableView.swift in Sources */,
+				544D9D4C296D9B2000D8ECEF /* UnblindedOutputs.swift in Sources */,
 				BFAB5D1123FDEA69009E8563 /* EmojiIdView.swift in Sources */,
 				A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */,
 				37AFE265245193CA006EA270 /* AlwaysPoppableNavigationController.swift in Sources */,

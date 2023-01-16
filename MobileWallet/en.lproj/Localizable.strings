@@ -689,3 +689,7 @@
 "error.dropbox_backup.auth_failed" = "Authorisation failed. Please check your account credentials and connection with the internet.";
 "error.dropbox_backup.no_backup" = "The app was unable to locate a valid backup on your Dropbox account.";
 "error.dropbox_backup.unknown" = "The app detected an unknown error during the backup process. Please get in touch with the support if this error appears again.";
+
+/* Cloud Backup */
+
+"backup.cloud.partial.recovery_message" = "Funds recovered from your previous wallet.";

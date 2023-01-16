@@ -67,7 +67,7 @@ final class PopUpImageHeaderView: DynamicThemeView {
 
     private var imageHeightConstraint: NSLayoutConstraint?
 
-    // MARK: - Initialiserss
+    // MARK: - Initialisers
 
     override init() {
         super.init()

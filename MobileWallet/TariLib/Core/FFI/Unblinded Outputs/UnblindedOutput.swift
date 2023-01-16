@@ -1,10 +1,10 @@
-//  CoreTariService.swift
+//  UnblindedOutput.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 04/10/2022
+	Created by Browncoat on 10/01/2023
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,26 +38,39 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-protocol MainServiceable: AnyObject {
-    var transactions: TariTransactionsService { get }
-    var contacts: TariContactsService { get }
-    var validation: TariValidationService { get }
-    var fees: TariFeesService { get }
-    var connection: TariConnectionService { get }
-    var utxos: TariUTXOsService { get }
-    var recovery: TariRecoveryService { get }
-    var messageSign: TariMessageSignService { get }
-    var walletBalance: TariBalanceService { get }
-    var unspentOutputsService: TariUnspentOutputsService { get }
-}
+final class UnblindedOutput {
 
-class CoreTariService {
+    // MARK: - Properties
 
-    unowned private(set) var walletManager: FFIWalletManager
-    unowned private(set) var services: MainServiceable
+    let pointer: OpaquePointer
 
-    init(walletManager: FFIWalletManager, services: MainServiceable) {
-        self.walletManager = walletManager
-        self.services = services
+    var json: String {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = tari_unblinded_output_to_json(pointer, errorCodePointer)
+            guard let result else { throw WalletError(code: errorCode) }
+            return String(cString: result)
+        }
+    }
+
+    // MARK: - Initialisers
+
+    init(pointer: OpaquePointer) {
+        self.pointer = pointer
+    }
+
+    init(json: String) throws {
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let result = create_tari_unblinded_output_from_json(json, errorCodePointer)
+        guard let result else { throw WalletError(code: errorCode) }
+        pointer = result
+    }
+
+    // MARK: - Deinitialiser
+
+    deinit {
+        tari_unblinded_output_destroy(pointer)
     }
 }

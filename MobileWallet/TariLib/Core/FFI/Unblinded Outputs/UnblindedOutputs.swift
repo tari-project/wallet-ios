@@ -1,10 +1,10 @@
-//  CoreTariService.swift
+//  UnblindedOutputs.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 04/10/2022
+	Created by Browncoat on 10/01/2023
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,26 +38,51 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-protocol MainServiceable: AnyObject {
-    var transactions: TariTransactionsService { get }
-    var contacts: TariContactsService { get }
-    var validation: TariValidationService { get }
-    var fees: TariFeesService { get }
-    var connection: TariConnectionService { get }
-    var utxos: TariUTXOsService { get }
-    var recovery: TariRecoveryService { get }
-    var messageSign: TariMessageSignService { get }
-    var walletBalance: TariBalanceService { get }
-    var unspentOutputsService: TariUnspentOutputsService { get }
+final class UnblindedOutputs {
+
+    // MARK: - Properties
+
+    private let pointer: OpaquePointer
+
+    var count: UInt32 {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = unblinded_outputs_get_length(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return result
+        }
+    }
+
+    // MARK: - Initialisers
+
+    init(pointer: OpaquePointer) {
+        self.pointer = pointer
+    }
+
+    // MARK: - Actions
+
+    func unblindedOutput(index: UInt32) throws -> UnblindedOutput {
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let result = unblinded_outputs_get_at(pointer, index, errorCodePointer)
+        guard let result else { throw WalletError(code: errorCode) }
+        return UnblindedOutput(pointer: result)
+    }
+
+    // MARK: - Deinitialiser
+
+    deinit {
+        unblinded_outputs_destroy(pointer)
+    }
 }
 
-class CoreTariService {
+extension UnblindedOutputs {
 
-    unowned private(set) var walletManager: FFIWalletManager
-    unowned private(set) var services: MainServiceable
-
-    init(walletManager: FFIWalletManager, services: MainServiceable) {
-        self.walletManager = walletManager
-        self.services = services
+    var all: [UnblindedOutput] {
+        get throws {
+            let count = try count
+            return try (0..<count).map { try unblindedOutput(index: $0) }
+        }
     }
 }

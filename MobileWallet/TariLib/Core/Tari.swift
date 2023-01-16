@@ -76,6 +76,7 @@ final class Tari: MainServiceable {
     private(set) lazy var utxos = TariUTXOsService(walletManager: walletManager, services: self)
     private(set) lazy var validation = TariValidationService(walletManager: walletManager, services: self)
     private(set) lazy var walletBalance = TariBalanceService(walletManager: walletManager, services: self)
+    private(set) lazy var unspentOutputsService = TariUnspentOutputsService(walletManager: walletManager, services: self)
 
     private(set) lazy var logFilePath: String = {
         let dateFormatter = DateFormatter()

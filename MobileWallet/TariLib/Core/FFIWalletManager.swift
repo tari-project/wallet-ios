@@ -451,4 +451,30 @@ final class FFIWalletManager {
 
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
     }
+
+    func unspentOutputs() throws -> UnblindedOutputs {
+
+        let wallet = try exisingWallet
+
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+
+        let result = wallet_get_unspent_outputs(wallet.pointer, errorCodePointer)
+
+        guard let result else { throw WalletError(code: errorCode) }
+        return UnblindedOutputs(pointer: result)
+    }
+
+    func importExternalUtxoAnNonRewindable(output: UnblindedOutput, sourceAddress: TariAddress, message: String) throws -> UInt64 {
+
+        let wallet = try exisingWallet
+
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+
+        let result = wallet_import_external_utxo_as_non_rewindable(wallet.pointer, output.pointer, sourceAddress.pointer, message, errorCodePointer)
+
+        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        return result
+    }
 }
