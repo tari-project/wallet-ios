@@ -43,40 +43,82 @@ import Zip
 enum BackupFilesManager {
 
     static var encryptedFileName: String { "Tari-Aurora-Backup" + "-" + NetworkManager.shared.selectedNetwork.name }
-    static var unencryptedFileName: String { encryptedFileName + ".zip" }
+    static var unencryptedFileName: String { encryptedFileName + ".json" }
 
     private static let internalWorkingDirectoryName = "Internal"
-
     private static let workingDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("Backups")
+    private static let jsonEncoder = JSONEncoder()
+    private static let jsonDecoder = JSONDecoder()
+
     private static var fileDirectory: URL { Tari.shared.connectedDatabaseDirectory }
 
+    // MARK: - Prepare Backup
+
     static func prepareBackup(workingDirectoryName: String, password: String?) async throws -> URL {
+
         let workingDirectory = try prepareWorkingDirectory(name: workingDirectoryName)
-//        try Tari.shared.encryption.remove() // FIXME: Please align the backup flow with FFI Lib
+
+        guard let password else {
+            return try preparePartialBackup(workingDirectory: workingDirectory)
+        }
+
         let fileURL = try copyDatabase(workingDirectory: workingDirectory)
-//        try Tari.shared.encryption.apply() // FIXME: Please align the backup flow with FFI Lib
         let zipFileURL = workingDirectory.appendingPathComponent(unencryptedFileName)
         try await zipDatabase(inputURL: fileURL, outputURL: zipFileURL)
-
-        guard let password else { return zipFileURL }
-
         let encryptedFileURL = workingDirectory.appendingPathComponent(encryptedFileName)
         try encryptFile(inputURL: zipFileURL, outputURL: encryptedFileURL, password: password)
 
         return encryptedFileURL
     }
 
+    private static func preparePartialBackup(workingDirectory: URL) throws -> URL {
+
+        let rawUTXOs = try Tari.shared.unspentOutputsService
+            .unspentOutputs()
+            .all
+            .map { try $0.json }
+
+        let model = PartialBackupModel(source: try Tari.shared.walletAddress.byteVector.hex, utxos: rawUTXOs)
+        let data = try jsonEncoder.encode(model)
+
+        let fileURL = workingDirectory.appendingPathComponent(unencryptedFileName)
+
+        FileManager.default.createFile(atPath: fileURL.path, contents: data)
+
+        return fileURL
+    }
+
+    // MARK: - Store Backup
+
     static func store(backup: URL, password: String?) async throws {
 
-        var zipURL = backup
-
-        if let password {
-            zipURL = try prepareWorkingDirectory(name: internalWorkingDirectoryName).appendingPathComponent(unencryptedFileName)
-            try decryptFile(inputURL: backup, outputURL: zipURL, password: password)
+        guard let password else {
+            try await storePartialBackup(backup: backup)
+            return
         }
 
+        let zipURL = try prepareWorkingDirectory(name: internalWorkingDirectoryName).appendingPathComponent(unencryptedFileName)
+        try decryptFile(inputURL: backup, outputURL: zipURL, password: password)
         try await unzipDatabase(inputURL: zipURL, outputURL: fileDirectory)
     }
+
+    private static func storePartialBackup(backup: URL) async throws {
+
+        let jsonData = try Data(contentsOf: backup)
+        let model = try jsonDecoder.decode(PartialBackupModel.self, from: jsonData)
+
+        try await Tari.shared.startWallet()
+
+        let sourceAddress = try TariAddress(hex: model.source)
+
+        try model.utxos
+            .map { try UnblindedOutput(json: $0) }
+            .forEach { _ = try Tari.shared.unspentOutputsService.store(unspentOutput: $0, sourceAddress: sourceAddress, message: localized("backup.cloud.partial.recovery_message")) }
+
+        try MigrationManager.updateWalletVersion()
+    }
+
+    // MARK: - Working Directory
 
     private static func workingDirectoryURL(name: String) -> URL {
         workingDirectory.appendingPathComponent(name)
@@ -99,6 +141,8 @@ enum BackupFilesManager {
         guard FileManager.default.fileExists(atPath: workingDirectory.path) else { return }
         try FileManager.default.removeItem(atPath: workingDirectory.path)
     }
+
+    // MARK: - File Actions
 
     private static func copyDatabase(workingDirectory: URL) throws -> URL {
 

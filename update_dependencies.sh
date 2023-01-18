@@ -1,6 +1,10 @@
 #!/bin/bash
 
 FILE=env.json
+WORKING_DIR=Temp
+HEADER_FILE_NAME=wallet.h
+LIB_FILE_NAME=libtari_wallet_ffi.a
+
 if test ! -f "$FILE"; then
     echo "$FILE does not exist. Creating default."
     cp env-example.json env.json
@@ -9,11 +13,15 @@ fi
 
 echo "\n\n***Pulling latest Tari lib build***"
 source dependencies.env
-FFI_FILE="libwallet-ios-$FFI_VERSION.tar.gz"
-curl -s "https://tari-binaries.s3.amazonaws.com/libwallet/$FFI_FILE" | tar xz
-mv "libwallet-ios-$FFI_VERSION/libtari_wallet_ffi.a" MobileWallet/TariLib/
-mv "libwallet-ios-$FFI_VERSION/wallet.h" MobileWallet/TariLib/
-rm -rf "libwallet-ios-$FFI_VERSION"
+
+rm -rf $WORKING_DIR
+mkdir $WORKING_DIR
+
+curl -L "https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/libtari_wallet_ffi.h" -o "./$WORKING_DIR/$HEADER_FILE_NAME"
+curl -L "https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/libtari_wallet_ffi.ios_universal.a" -o "./$WORKING_DIR/$LIB_FILE_NAME"
+
+mv $WORKING_DIR/* ./MobileWallet/TariLib
+rm -rf $WORKING_DIR
 
 # Check for cocoapods and install if missing.
 if hash pod 2>/dev/null; then

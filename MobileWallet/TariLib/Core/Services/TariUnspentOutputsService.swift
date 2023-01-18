@@ -1,10 +1,10 @@
-//  CoreTariService.swift
+//  TariUnspentOutputsService.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 04/10/2022
+	Created by Browncoat on 15/01/2023
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,26 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-protocol MainServiceable: AnyObject {
-    var transactions: TariTransactionsService { get }
-    var contacts: TariContactsService { get }
-    var validation: TariValidationService { get }
-    var fees: TariFeesService { get }
-    var connection: TariConnectionService { get }
-    var utxos: TariUTXOsService { get }
-    var recovery: TariRecoveryService { get }
-    var messageSign: TariMessageSignService { get }
-    var walletBalance: TariBalanceService { get }
-    var unspentOutputsService: TariUnspentOutputsService { get }
-}
+final class TariUnspentOutputsService: CoreTariService {
 
-class CoreTariService {
+    func unspentOutputs() throws -> UnblindedOutputs {
+        try walletManager.unspentOutputs()
+    }
 
-    unowned private(set) var walletManager: FFIWalletManager
-    unowned private(set) var services: MainServiceable
-
-    init(walletManager: FFIWalletManager, services: MainServiceable) {
-        self.walletManager = walletManager
-        self.services = services
+    func store(unspentOutput: UnblindedOutput, sourceAddress: TariAddress, message: String) throws -> UInt64 {
+        try walletManager.importExternalUtxoAnNonRewindable(output: unspentOutput, sourceAddress: sourceAddress, message: message)
     }
 }
