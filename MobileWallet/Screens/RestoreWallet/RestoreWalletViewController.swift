@@ -42,7 +42,7 @@ import UIKit
 import LocalAuthentication
 import Combine
 
-final class RestoreWalletViewController: SettingsParentTableViewController { // FIXME: Please align the backup flow with FFI Lib
+final class RestoreWalletViewController: SettingsParentTableViewController {
 
     private enum EndFlowAction {
         case none
@@ -55,22 +55,22 @@ final class RestoreWalletViewController: SettingsParentTableViewController { // 
     private let pendingView = PendingView(title: localized("restore_pending_view.title"),
                                           definition: localized("restore_pending_view.description"))
     private let items: [SystemMenuTableViewCellItem] = [
-//        SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue),
-//        SystemMenuTableViewCellItem(title: RestoreCellTitle.dropboxRestore.rawValue),
+        SystemMenuTableViewCellItem(title: RestoreCellTitle.iCloudRestore.rawValue),
+        SystemMenuTableViewCellItem(title: RestoreCellTitle.dropboxRestore.rawValue),
         SystemMenuTableViewCellItem(title: RestoreCellTitle.phraseRestore.rawValue)
     ]
 
     private var cancellables = Set<AnyCancellable>()
 
     private enum RestoreCellTitle: CaseIterable {
-//        case iCloudRestore
-//        case dropboxRestore
+        case iCloudRestore
+        case dropboxRestore
         case phraseRestore
 
         var rawValue: String {
             switch self {
-//            case .iCloudRestore: return localized("restore_wallet.item.iCloud_restore")
-//            case .dropboxRestore: return localized("restore_wallet.item.dropbox_restore")
+            case .iCloudRestore: return localized("restore_wallet.item.iCloud_restore")
+            case .dropboxRestore: return localized("restore_wallet.item.dropbox_restore")
             case .phraseRestore: return localized("restore_wallet.item.phrase_restore")
             }
         }
@@ -113,8 +113,8 @@ extension RestoreWalletViewController: UITableViewDelegate, UITableViewDataSourc
         tableView.deselectRow(at: indexPath, animated: false)
         let item = RestoreCellTitle.allCases[indexPath.row + indexPath.section]
         switch item {
-//        case .iCloudRestore: oniCloudRestoreAction()
-//        case .dropboxRestore: onDropboxRestoreAction()
+        case .iCloudRestore: oniCloudRestoreAction()
+        case .dropboxRestore: onDropboxRestoreAction()
         case .phraseRestore: onPhraseRestoreAction()
         }
     }

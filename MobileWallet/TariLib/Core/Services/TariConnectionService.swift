@@ -56,6 +56,10 @@ final class TariConnectionService: CoreTariService {
         }
     }
 
+    @discardableResult func selectCurrentNode() throws -> Bool {
+        try select(baseNode: NetworkManager.shared.selectedNetwork.selectedBaseNode)
+    }
+
     func addBaseNode(name: String, peer: String) throws {
         let baseNode = try BaseNode(name: name, peer: peer)
         NetworkManager.shared.selectedNetwork.customBaseNodes.append(baseNode)
