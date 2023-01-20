@@ -42,15 +42,24 @@ import Zip
 
 enum BackupFilesManager {
 
+    enum InternalError: Error {
+        case noPassphrase
+        case noDatabaseInBackup
+    }
+
     static var encryptedFileName: String { "Tari-Aurora-Backup" + "-" + NetworkManager.shared.selectedNetwork.name }
     static var unencryptedFileName: String { encryptedFileName + ".json" }
+    private static var zippedFileName: String { encryptedFileName + ".zip" }
 
+    private static let passphraseFileName = "passphrase"
     private static let internalWorkingDirectoryName = "Internal"
     private static let workingDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("Backups")
+
     private static let jsonEncoder = JSONEncoder()
     private static let jsonDecoder = JSONDecoder()
 
-    private static var fileDirectory: URL { Tari.shared.connectedDatabaseDirectory }
+    private static var databaseDirectory: URL { Tari.shared.connectedDatabaseDirectory }
+    private static var databaseURL: URL { Tari.shared.databaseURL }
 
     // MARK: - Prepare Backup
 
@@ -62,13 +71,7 @@ enum BackupFilesManager {
             return try preparePartialBackup(workingDirectory: workingDirectory)
         }
 
-        let fileURL = try copyDatabase(workingDirectory: workingDirectory)
-        let zipFileURL = workingDirectory.appendingPathComponent(unencryptedFileName)
-        try await zipDatabase(inputURL: fileURL, outputURL: zipFileURL)
-        let encryptedFileURL = workingDirectory.appendingPathComponent(encryptedFileName)
-        try encryptFile(inputURL: zipFileURL, outputURL: encryptedFileURL, password: password)
-
-        return encryptedFileURL
+        return try await prepareFullBackup(workingDirectory: workingDirectory, password: password)
     }
 
     private static func preparePartialBackup(workingDirectory: URL) throws -> URL {
@@ -88,21 +91,48 @@ enum BackupFilesManager {
         return fileURL
     }
 
-    // MARK: - Store Backup
+    private static func prepareFullBackup(workingDirectory: URL, password: String) async throws -> URL {
 
-    static func store(backup: URL, password: String?) async throws {
+        var filesToRemove = [URL]()
+
+        defer {
+            filesToRemove.forEach { try? FileManager.default.removeItem(at: $0) }
+        }
+
+        guard let passphrase = AppKeychainWrapper.dbPassphrase else { throw InternalError.noPassphrase }
+
+        let databaseURL = try exportDatabase(workingDirectory: workingDirectory)
+        let passphraseFileURL = workingDirectory.appendingPathComponent(passphraseFileName)
+        let pasphraseData = passphrase.data(using: .utf8)
+
+        FileManager.default.createFile(atPath: passphraseFileURL.path, contents: pasphraseData)
+
+        filesToRemove += [databaseURL, passphraseFileURL]
+
+        let zipFileURL = workingDirectory.appendingPathComponent(zippedFileName)
+        try await zip(inputURLs: [databaseURL, passphraseFileURL], outputURL: zipFileURL)
+
+        filesToRemove.append(zipFileURL)
+
+        let encryptedFileURL = workingDirectory.appendingPathComponent(encryptedFileName)
+        try encryptFile(inputURL: zipFileURL, outputURL: encryptedFileURL, password: password)
+
+        return encryptedFileURL
+    }
+
+    // MARK: - Recover Backup
+
+    static func recover(backup: URL, password: String?) async throws {
 
         guard let password else {
-            try await storePartialBackup(backup: backup)
+            try await recoverPartialBackup(backup: backup)
             return
         }
 
-        let zipURL = try prepareWorkingDirectory(name: internalWorkingDirectoryName).appendingPathComponent(unencryptedFileName)
-        try decryptFile(inputURL: backup, outputURL: zipURL, password: password)
-        try await unzipDatabase(inputURL: zipURL, outputURL: fileDirectory)
+        try await recoverFullBackup(backupURL: backup, password: password)
     }
 
-    private static func storePartialBackup(backup: URL) async throws {
+    private static func recoverPartialBackup(backup: URL) async throws {
 
         let jsonData = try Data(contentsOf: backup)
         let model = try jsonDecoder.decode(PartialBackupModel.self, from: jsonData)
@@ -116,6 +146,33 @@ enum BackupFilesManager {
             .forEach { _ = try Tari.shared.unspentOutputsService.store(unspentOutput: $0, sourceAddress: sourceAddress, message: localized("backup.cloud.partial.recovery_message")) }
 
         try MigrationManager.updateWalletVersion()
+    }
+
+    private static func recoverFullBackup(backupURL: URL, password: String) async throws {
+
+        defer {
+            try? removeWorkingDirectory(workingDirectoryName: internalWorkingDirectoryName)
+        }
+
+        let workingDirectory = try prepareWorkingDirectory(name: internalWorkingDirectoryName)
+        let zipURL = workingDirectory.appendingPathComponent(zippedFileName)
+
+        try decryptFile(inputURL: backupURL, outputURL: zipURL, password: password)
+        try await unzip(inputURL: zipURL, outputURL: workingDirectory)
+
+        let passphraseURL = workingDirectory.appendingPathComponent(passphraseFileName)
+        let passphrase = try String(contentsOf: passphraseURL, encoding: .utf8)
+
+        let databaseFileName = Tari.shared.databaseURL.lastPathComponent
+
+        let backupURL = try FileManager.default
+            .contentsOfDirectory(atURL: workingDirectory, sortedBy: .modified, ascending: false)
+            .first { $0.lastPathComponent == databaseFileName }
+
+        guard let backupURL else { throw InternalError.noDatabaseInBackup }
+
+        try importBackup(backupURL: backupURL)
+        AppKeychainWrapper.dbPassphrase = passphrase
     }
 
     // MARK: - Working Directory
@@ -144,7 +201,7 @@ enum BackupFilesManager {
 
     // MARK: - File Actions
 
-    private static func copyDatabase(workingDirectory: URL) throws -> URL {
+    private static func exportDatabase(workingDirectory: URL) throws -> URL {
 
         let filename = Tari.shared.databaseURL.lastPathComponent
         let workingFileURL = workingDirectory.appendingPathComponent(filename)
@@ -157,10 +214,20 @@ enum BackupFilesManager {
         return workingFileURL
     }
 
-    private static func zipDatabase(inputURL: URL, outputURL: URL) async throws {
+    private static func importBackup(backupURL: URL) throws {
+
+        if FileManager.default.fileExists(atPath: databaseURL.path) {
+            try FileManager.default.removeItem(at: databaseURL)
+        }
+
+        try FileManager.default.createDirectory(at: databaseDirectory, withIntermediateDirectories: true)
+        try FileManager.default.copyItem(at: backupURL, to: databaseURL)
+    }
+
+    private static func zip(inputURLs: [URL], outputURL: URL) async throws {
         try await withCheckedThrowingContinuation { continuation in
             do {
-                try Zip.zipFiles(paths: [inputURL], zipFilePath: outputURL, password: nil) { progress in
+                try Zip.zipFiles(paths: inputURLs, zipFilePath: outputURL, password: nil) { progress in
                     guard progress >= 1.0 else { return }
                     continuation.resume(with: .success(()))
                 }
@@ -170,7 +237,7 @@ enum BackupFilesManager {
         }
     }
 
-    private static func unzipDatabase(inputURL: URL, outputURL: URL) async throws {
+    private static func unzip(inputURL: URL, outputURL: URL) async throws {
 
         try await withCheckedThrowingContinuation { continuation in
             do {

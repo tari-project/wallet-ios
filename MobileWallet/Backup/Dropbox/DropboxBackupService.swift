@@ -249,7 +249,7 @@ final class DropboxBackupService {
                 }
 
                 let backupURL = try await downloadFile(backupType: backupType)
-                try await BackupFilesManager.store(backup: backupURL, password: password)
+                try await BackupFilesManager.recover(backup: backupURL, password: password)
                 syncStatus = .enabled
                 restoreCompletionSubject?.send(())
                 restoreCompletionSubject?.send(completion: .finished)

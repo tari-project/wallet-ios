@@ -180,7 +180,7 @@ final class ICloudBackupService {
 
     private func store(backupURL: URL, password: String?) async throws {
         do {
-            try await BackupFilesManager.store(backup: backupURL, password: password)
+            try await BackupFilesManager.recover(backup: backupURL, password: password)
         } catch {
             throw ICloudBackupError.unableToSaveBackup(error: error)
         }
