@@ -81,11 +81,6 @@ final class BackupManager {
     // MARK: - Setups
 
     func configure() {
-
-        if !AppConfigurator.isBackupEnabled {
-            allServices.forEach { $0.isOn = false }
-        }
-
         setupServices()
         setupCallbacks()
     }
@@ -193,6 +188,7 @@ final class BackupManager {
     }
 
     private func performBackup(forced: Bool) {
+        guard Tari.shared.isWalletConnected else { return }
         allServices.forEach { $0.performBackup(forced: forced) }
     }
 

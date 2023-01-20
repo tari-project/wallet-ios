@@ -123,13 +123,16 @@ enum BackupFilesManager {
     // MARK: - Recover Backup
 
     static func recover(backup: URL, password: String?) async throws {
-
-        guard let password else {
-            try await recoverPartialBackup(backup: backup)
-            return
+        do {
+            guard let password else {
+                try await recoverPartialBackup(backup: backup)
+                return
+            }
+            try await recoverFullBackup(backupURL: backup, password: password)
+        } catch {
+            Tari.shared.deleteWallet()
+            throw error
         }
-
-        try await recoverFullBackup(backupURL: backup, password: password)
     }
 
     private static func recoverPartialBackup(backup: URL) async throws {

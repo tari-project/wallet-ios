@@ -55,12 +55,6 @@ enum DropboxBackupError: Error {
 
 final class DropboxBackupService {
 
-    enum Status {
-        case idle
-        case progress(value: Double)
-        case done
-    }
-
     private enum DataTask {
         case upload
         case download
@@ -89,12 +83,11 @@ final class DropboxBackupService {
     @Published private var syncStatus: BackupStatus = .disabled
 
     weak var presentingController: UIViewController?
-    var isSyncedSuccessfully: Bool { syncDate != nil }
 
     private var backupPassword: String?
     private var dataTask: DataTask?
     private var backgroundTaskID: UIBackgroundTaskIdentifier?
-    private var restoreCompletionSubject: PassthroughSubject<Void, DropboxBackupError>?
+    private var restoreCompletionSubject: PassthroughSubject<Void, Error>?
     private var cancellables = Set<AnyCancellable>()
 
     private var dropboxClient: DropboxClient {
@@ -214,7 +207,7 @@ final class DropboxBackupService {
 
         guard syncStatus != .disabled else { return }
 
-        backgroundTaskID = UIApplication.shared.beginBackgroundTask()
+        startBackgroundTask()
 
         Task { [weak self] in
             do {
@@ -255,12 +248,9 @@ final class DropboxBackupService {
                 restoreCompletionSubject?.send(completion: .finished)
             } catch InternalError.noClient, InternalError.unableToAuthenticateUser {
                 signIn(task: .download)
-            } catch let error as DropboxBackupError {
-                syncStatus = .disabled
-                restoreCompletionSubject?.send(completion: .failure(error))
             } catch {
                 syncStatus = .disabled
-                restoreCompletionSubject?.send(completion: .failure(.unknown))
+                restoreCompletionSubject?.send(completion: .failure(error))
             }
 
             try BackupFilesManager.removeWorkingDirectory(workingDirectoryName: localWorkingDirectoryName)
@@ -367,13 +357,12 @@ final class DropboxBackupService {
                 }
                 .response { _, error in
 
-                    guard let error = error else {
+                    guard error != nil else {
                         continuation.resume(with: .success(()))
                         return
                     }
 
-                    let dropboxError = self.map(uploadError: error)
-                    continuation.resume(with: .failure(dropboxError))
+                    continuation.resume(with: .failure(DropboxBackupError.uploadFailed))
                 }
         }
     }
@@ -408,13 +397,12 @@ final class DropboxBackupService {
 
             }, responseBlock: { _, error, _ in
 
-                guard let error = error else {
+                guard error != nil else {
                     continuation.resume(with: .success(()))
                     return
                 }
 
-                let dropboxError = self.map(pollError: error)
-                continuation.resume(with: .failure(dropboxError))
+                continuation.resume(with: .failure(DropboxBackupError.uploadFailed))
             })
         }
     }
@@ -504,13 +492,12 @@ final class DropboxBackupService {
             client.files
                 .download(path: remoteFilePath, overwrite: true) { _, _ in temporaryBackupURL }
                 .response { _, error in
-                    guard let error = error else {
+                    guard error != nil else {
                         continuation.resume(with: .success(temporaryBackupURL))
                         return
                     }
 
-                    let dropboxError = self.map(downloadError: error)
-                    continuation.resume(with: .failure(dropboxError))
+                    continuation.resume(with: .failure(DropboxBackupError.downloadFailed))
                 }
         }
     }
@@ -536,8 +523,14 @@ final class DropboxBackupService {
         }
     }
 
+    private func startBackgroundTask() {
+        Tari.shared.isDisconnectionDisabled = true
+        backgroundTaskID = UIApplication.shared.beginBackgroundTask()
+    }
+
     private func endBackgroundTask() {
         guard let backgroundTaskID = backgroundTaskID else { return }
+        Tari.shared.isDisconnectionDisabled = false
         UIApplication.shared.endBackgroundTask(backgroundTaskID)
         self.backgroundTaskID = nil
     }
@@ -566,11 +559,6 @@ final class DropboxBackupService {
         }
         return nil
     }
-
-    private func map(uploadError: CallError<Files.UploadError>) -> DropboxBackupError { .uploadFailed }
-    private func map(pollError: CallError<Async.PollError>) -> DropboxBackupError { .uploadFailed }
-    private func map(downloadError: CallError<Files.DownloadError>) -> DropboxBackupError { .downloadFailed }
-    private func map(deleteError: CallError<Files.DeleteError>) -> DropboxBackupError { .deleteFailed }
 }
 
 extension DropboxBackupService: BackupServicable {
@@ -603,13 +591,13 @@ extension DropboxBackupService: BackupServicable {
 
         defer { downloadBackup(password: password) }
 
-        let subject = PassthroughSubject<Void, DropboxBackupError>()
+        let subject = PassthroughSubject<Void, Error>()
 
         restoreCompletionSubject = subject
 
         return subject
             .mapError {
-                guard $0 == .backupPasswordRequired else { return $0 }
+                guard let dropboxError = $0 as? DropboxBackupError, dropboxError == .backupPasswordRequired else { return $0 }
                 return BackupError.passwordRequired
             }
             .eraseToAnyPublisher()

@@ -40,8 +40,6 @@
 
 enum AppConfigurator {
 
-    static let isBackupEnabled = false // FIXME: Please align the backup flow with FFI Lib
-
     static func configure() {
         configureLoggers()
         configureBackupManagers()

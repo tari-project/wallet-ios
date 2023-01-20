@@ -98,9 +98,11 @@ final class Tari: MainServiceable {
     }
 
     var isWalletExist: Bool { (try? connectedDatabaseDirectory.checkResourceIsReachable()) ?? false }
+    var isWalletConnected: Bool { walletManager.isWalletConnected }
     var torBridgesConfiguration: BridgesConfiguration { torManager.usedBridgesConfiguration }
 
     var canAutomaticalyReconnectWallet: Bool = false
+    @Published var isDisconnectionDisabled: Bool = false
 
     private let torManager = TorManager()
     private let walletManager = FFIWalletManager()
@@ -158,14 +160,23 @@ final class Tari: MainServiceable {
             .store(in: &cancellables)
 
         NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification)
+            .filter { [weak self] _ in self?.isDisconnectionDisabled == false }
+            .sink { [weak self] _ in self?.disconnect() }
+            .store(in: &cancellables)
+
+        $isDisconnectionDisabled
+            .receive(on: DispatchQueue.main)
+            .filter { !$0 && UIApplication.shared.applicationState == .background }
             .sink { [weak self] _ in self?.disconnect() }
             .store(in: &cancellables)
     }
+
     // MARK: - Actions
 
     func startWallet() async throws {
         await waitForTor()
         try startWallet(seedWords: nil)
+        try connection.selectCurrentNode()
     }
 
     func restoreWallet(seedWords: [String]) throws {
@@ -201,7 +212,6 @@ final class Tari: MainServiceable {
     }
 
     private func startWallet(seedWords: [String]?) throws {
-
         let commsConfig = try makeCommsConfig()
         let selectedNetwork = NetworkManager.shared.selectedNetwork
         var walletSeedWords: SeedWords?
@@ -223,7 +233,6 @@ final class Tari: MainServiceable {
         } catch {
             guard let error = error as? WalletError, error == WalletError.invalidPassphrase else { throw error }
             try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: nil, networkName: selectedNetwork.name)
-//            try Tari.shared.encryption.apply() // FIXME: Please align the backup flow with FFI Lib
         }
     }
 
