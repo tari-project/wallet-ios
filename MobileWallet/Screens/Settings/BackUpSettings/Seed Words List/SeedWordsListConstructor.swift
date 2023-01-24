@@ -40,8 +40,8 @@
 
 enum SeedWordsListConstructor {
 
-    static func buildScene() -> SeedWordsListViewController {
+    static func buildScene(backButtonType: NavigationBar.BackButtonType) -> SeedWordsListViewController {
         let model = SeedWordsListModel()
-        return SeedWordsListViewController(model: model)
+        return SeedWordsListViewController(model: model, backButtonType: backButtonType)
     }
 }

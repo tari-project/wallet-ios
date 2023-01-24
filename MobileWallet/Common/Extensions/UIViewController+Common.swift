@@ -1,10 +1,10 @@
-//  BackupWalletSettingsConstructor.swift
+//  UIViewController+Common.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 27/10/2022
+	Created by Browncoat on 23/01/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,10 +38,17 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum BackupWalletSettingsConstructor {
+import UIKit
 
-    static func buildScene(backButtonType: NavigationBar.BackButtonType) -> BackupWalletSettingsViewController {
-        let model = BackupWalletSettingsModel()
-        return BackupWalletSettingsViewController(model: model, backButtonType: backButtonType)
+extension UIViewController {
+
+    var isModal: Bool {
+        if let navigationController = parent as? AlwaysPoppableNavigationController, navigationController.presentationController?.presentingViewController != nil {
+            return true
+        }
+        if parent == nil, presentationController?.presentingViewController != nil {
+            return true
+        }
+        return false
     }
 }

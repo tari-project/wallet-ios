@@ -189,7 +189,7 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private func onBackupWalletAction() {
         localAuth.authenticateUser(reason: .userVerification, showFailedDialog: false) { [weak self] in
-            let controller = BackupWalletSettingsConstructor.buildScene()
+            let controller = BackupWalletSettingsConstructor.buildScene(backButtonType: .back)
             self?.navigationController?.pushViewController(controller, animated: true)
         }
     }

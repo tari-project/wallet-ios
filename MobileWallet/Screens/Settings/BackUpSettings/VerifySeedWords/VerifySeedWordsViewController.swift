@@ -123,6 +123,12 @@ final class VerifySeedWordsViewController: UIViewController {
     // MARK: - Actions
 
     private func endFlow() {
+
+        guard !isModal else {
+            dismiss(animated: true)
+            return
+        }
+
         guard let controller = navigationController?.viewControllers.first(where: { $0 is BackupWalletSettingsViewController }) else { return }
         navigationController?.popToViewController(controller, animated: true)
     }

@@ -61,6 +61,15 @@ class SecureBackupViewController: SettingsParentViewController {
 
     private var cancellables = Set<AnyCancellable>()
 
+    init(backButtonType: NavigationBar.BackButtonType) {
+        super.init(nibName: nil, bundle: nil)
+        navigationBar.backButtonType = backButtonType
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         hideKeyboardWhenTappedAroundOrSwipedDown(view: scrollView)
@@ -111,6 +120,12 @@ class SecureBackupViewController: SettingsParentViewController {
     }
 
     private func returnToBackupSettingsScreen() {
+
+        guard !isModal else {
+            dismiss(animated: true)
+            return
+        }
+
         if let curentControllers = navigationController?.viewControllers {
             curentControllers.forEach({
                 if $0 is BackupWalletSettingsViewController {

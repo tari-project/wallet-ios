@@ -58,9 +58,10 @@ final class BackupWalletSettingsViewController: UIViewController {
 
     // MARK: - Initialisers
 
-    init(model: BackupWalletSettingsModel) {
+    init(model: BackupWalletSettingsModel, backButtonType: NavigationBar.BackButtonType) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
+        mainView.navigationBar.backButtonType = backButtonType
     }
 
     required init?(coder: NSCoder) {
@@ -239,12 +240,12 @@ final class BackupWalletSettingsViewController: UIViewController {
     // MARK: - Navigation
 
     private func moveToSeedWordsList() {
-        let controller = SeedWordsListConstructor.buildScene()
+        let controller = SeedWordsListConstructor.buildScene(backButtonType: .back)
         navigationController?.pushViewController(controller, animated: true)
     }
 
     private func moveToSetPasswordForm() {
-        let controller = model.isBackupSecuredByPassword ? PasswordVerificationViewController(variation: .change) : SecureBackupViewController()
+        let controller = model.isBackupSecuredByPassword ? PasswordVerificationViewController(variation: .change) : SecureBackupViewController(backButtonType: .back)
         navigationController?.pushViewController(controller, animated: true)
     }
 }

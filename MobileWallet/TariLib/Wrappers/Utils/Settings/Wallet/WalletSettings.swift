@@ -68,70 +68,36 @@ struct WalletSettings: Codable, Equatable {
         }
     }
 
+    enum WalletSecurityStage: Codable {
+        /// Seed Phrase Validated
+        case stage1A
+        /// Cloud Backup Enabled
+        case stage1B
+        /// Cloud Backup Encrypted
+        case stage2
+        /// Tokens Moved to Cold Wallet
+        case stage3
+    }
+
     let networkName: String
-    let configurationState: WalletConfigurationState
-    let iCloudDocsBackupStatus: BackupStatus
-    let dropboxBackupStatus: BackupStatus
-    let hasVerifiedSeedPhrase: Bool
-    let yat: String?
+    var configurationState: WalletConfigurationState
+    var iCloudDocsBackupStatus: BackupStatus
+    var dropboxBackupStatus: BackupStatus
+    var hasVerifiedSeedPhrase: Bool
+    var delayedWalletSecurityStagesTimestamps: [WalletSecurityStage: Date]
+    var yat: String?
 
     static func == (lhs: Self, rhs: Self) -> Bool { lhs.networkName == rhs.networkName }
 }
 
-extension WalletSettings {
+extension WalletSettings.BackupStatus {
 
-    func update(configurationState: WalletConfigurationState) -> Self {
-        Self(
-            networkName: networkName,
-            configurationState: configurationState,
-            iCloudDocsBackupStatus: iCloudDocsBackupStatus,
-            dropboxBackupStatus: dropboxBackupStatus,
-            hasVerifiedSeedPhrase: hasVerifiedSeedPhrase,
-            yat: yat
-        )
-    }
-
-    func update(iCloudDocsBackupStatus: BackupStatus) -> Self {
-        Self(
-            networkName: networkName,
-            configurationState: configurationState,
-            iCloudDocsBackupStatus: iCloudDocsBackupStatus,
-            dropboxBackupStatus: dropboxBackupStatus,
-            hasVerifiedSeedPhrase: hasVerifiedSeedPhrase,
-            yat: yat
-        )
-    }
-
-    func update(dropboxBackupStatus: BackupStatus) -> Self {
-        Self(
-            networkName: networkName,
-            configurationState: configurationState,
-            iCloudDocsBackupStatus: iCloudDocsBackupStatus,
-            dropboxBackupStatus: dropboxBackupStatus,
-            hasVerifiedSeedPhrase: hasVerifiedSeedPhrase,
-            yat: yat
-        )
-    }
-
-    func update(hasVerifiedSeedPhrase: Bool) -> Self {
-        Self(
-            networkName: networkName,
-            configurationState: configurationState,
-            iCloudDocsBackupStatus: iCloudDocsBackupStatus,
-            dropboxBackupStatus: dropboxBackupStatus,
-            hasVerifiedSeedPhrase: hasVerifiedSeedPhrase,
-            yat: yat
-        )
-    }
-
-    func update(yat: String?) -> Self {
-        Self(
-            networkName: networkName,
-            configurationState: configurationState,
-            iCloudDocsBackupStatus: iCloudDocsBackupStatus,
-            dropboxBackupStatus: dropboxBackupStatus,
-            hasVerifiedSeedPhrase: hasVerifiedSeedPhrase,
-            yat: yat
-        )
+    var isOn: Bool {
+        switch self {
+        case .enabled:
+            return true
+        case .disabled:
+            return false
+        }
     }
 }

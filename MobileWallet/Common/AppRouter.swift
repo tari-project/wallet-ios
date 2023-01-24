@@ -120,4 +120,34 @@ enum AppRouter {
     static func moveToProfile() {
         tabBar?.setTab(.profile)
     }
+
+    // MARK: - Modal Actions
+
+    static func presentVerifiySeedPhrase() {
+
+        let controller = SeedWordsListConstructor.buildScene(backButtonType: .close)
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+
+        navigationController.setNavigationBarHidden(true, animated: false)
+        tabBar?.present(navigationController, animated: true)
+    }
+
+    static func presentBackupSettings() {
+
+        let controller = BackupWalletSettingsConstructor.buildScene(backButtonType: .close)
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+
+        navigationController.setNavigationBarHidden(true, animated: false)
+        tabBar?.present(navigationController, animated: true)
+    }
+
+    static func presentBackupPasswordSettings() {
+
+        let controller = SecureBackupViewController(backButtonType: .close)
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+
+        navigationController.setNavigationBarHidden(true, animated: false)
+        navigationController.isModalInPresentation = true
+        tabBar?.present(navigationController, animated: true)
+    }
 }
