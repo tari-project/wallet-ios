@@ -60,6 +60,7 @@ final class Logger {
         case connection
         case navigation
         case userInterface
+        case stagedWalletSecurity
         case debug
     }
 
@@ -96,6 +97,8 @@ extension Logger.Domain {
             return "UI"
         case .debug:
             return "Debug"
+        case .stagedWalletSecurity:
+            return "Wallet Security"
         }
     }
 }

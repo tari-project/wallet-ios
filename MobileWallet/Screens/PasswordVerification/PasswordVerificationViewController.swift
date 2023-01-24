@@ -79,7 +79,7 @@ class PasswordVerificationViewController: SettingsParentViewController {
     private func changePasswordAction() {
         if let currentPassword = BackupManager.shared.password {
             if passwordField.checkPassword(currentPassword) {
-                navigationController?.pushViewController(SecureBackupViewController(), animated: true)
+                navigationController?.pushViewController(SecureBackupViewController(backButtonType: .back), animated: true)
             }
         }
     }

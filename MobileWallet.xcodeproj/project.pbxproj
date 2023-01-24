@@ -58,7 +58,6 @@
 		00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 00E491A42366E08B007B332D /* MobileWallet.xcdatamodeld */; };
 		00E491A82366E08F007B332D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A72366E08F007B332D /* Assets.xcassets */; };
 		00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
-		00FB43D824BC937D0031D53E /* BackupPrompts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00FB43D724BC937D0031D53E /* BackupPrompts.swift */; };
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		37049270247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */; };
 		37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37049273247EA9110034EE5D /* SystemMenuTableViewCell.swift */; };
@@ -394,6 +393,9 @@
 		545A9D24294F9E77008D24A6 /* UserSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D23294F9E77008D24A6 /* UserSettingsManager.swift */; };
 		5491696E2940F78000783E54 /* LogFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5491696D2940F78000783E54 /* LogFilesManager.swift */; };
 		549E0E0D29754E9C00828743 /* PartialBackupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549E0E0C29754E9B00828743 /* PartialBackupModel.swift */; };
+		54A6E9F0297F1F9900A60853 /* StagedWalletSecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9EF297F1F9900A60853 /* StagedWalletSecurityManager.swift */; };
+		54A6E9F2297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9F1297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift */; };
+		54A6E9F4297F260800A60853 /* UIViewController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9F3297F260800A60853 /* UIViewController+Common.swift */; };
 		54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */; };
 		54DE32D02930BE3D0060108A /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32CF2930BE3D0060108A /* ColorTheme.swift */; };
 		54DE32D22930BE7F0060108A /* ThemeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */; };
@@ -506,7 +508,6 @@
 		00E491A72366E08F007B332D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		00E491AA2366E08F007B332D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		00E491AC2366E08F007B332D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		00FB43D724BC937D0031D53E /* BackupPrompts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupPrompts.swift; sourceTree = "<group>"; };
 		3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RestoreWalletViewController.swift; sourceTree = "<group>"; };
 		37049273247EA9110034EE5D /* SystemMenuTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMenuTableViewCell.swift; sourceTree = "<group>"; };
 		3708D749247FCF2300807D72 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -845,6 +846,9 @@
 		545A9D23294F9E77008D24A6 /* UserSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsManager.swift; sourceTree = "<group>"; };
 		5491696D2940F78000783E54 /* LogFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFilesManager.swift; sourceTree = "<group>"; };
 		549E0E0C29754E9B00828743 /* PartialBackupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialBackupModel.swift; sourceTree = "<group>"; };
+		54A6E9EF297F1F9900A60853 /* StagedWalletSecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagedWalletSecurityManager.swift; sourceTree = "<group>"; };
+		54A6E9F1297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpStagedWalletSecurityHeaderView.swift; sourceTree = "<group>"; };
+		54A6E9F3297F260800A60853 /* UIViewController+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Common.swift"; sourceTree = "<group>"; };
 		54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariUnspentOutputsService.swift; sourceTree = "<group>"; };
 		54DE32CF2930BE3D0060108A /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
 		54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeCoordinator.swift; sourceTree = "<group>"; };
@@ -968,6 +972,7 @@
 				3A21FC5228FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift */,
 				3A90653729001A2B0084EE66 /* UIDevice+Model.swift */,
 				3A685425290AD04600032963 /* DateFormatter+Formats.swift */,
+				54A6E9F3297F260800A60853 /* UIViewController+Common.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1360,7 +1365,6 @@
 				3A530BCD290AEDA400C423C7 /* Manager */,
 				3AB136D42906642700A5373D /* ICloud */,
 				3A39E57029012BC9000BBEBF /* Dropbox */,
-				00FB43D724BC937D0031D53E /* BackupPrompts.swift */,
 				3AD308632923FDBB009A53CE /* Error+BackupErrors.swift */,
 			);
 			path = Backup;
@@ -1554,6 +1558,7 @@
 				3A8CC6C1290BDC70008161DC /* BugReportService.swift */,
 				3A3E8BF22924FB4C00490E57 /* MigrationManager.swift */,
 				5491696D2940F78000783E54 /* LogFilesManager.swift */,
+				54A6E9EF297F1F9900A60853 /* StagedWalletSecurityManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -1765,6 +1770,7 @@
 				3AF985F9286B233100290387 /* PopUpSelectionView.swift */,
 				3ABC7E9228FE864100EAC852 /* PopUpButtonsTableView.swift */,
 				3A21FC5028FFD7B8004B09A0 /* PopUpTableView.swift */,
+				54A6E9F1297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -2796,6 +2802,7 @@
 				00665E7524E422C500030A13 /* CustomTabBar.swift in Sources */,
 				3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */,
 				3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */,
+				54A6E9F4297F260800A60853 /* UIViewController+Common.swift in Sources */,
 				3A8CC6C2290BDC70008161DC /* BugReportService.swift in Sources */,
 				3A47ABCD27478208007F351B /* Tari.swift in Sources */,
 				3A8A03EB28F587FD003EC8FE /* AppConfigurator.swift in Sources */,
@@ -2896,6 +2903,7 @@
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
 				370E886124FE7AE800576F61 /* BridgesConfigurationViewController.swift in Sources */,
 				3A983A5A27C62A3900F0AB61 /* VerifySeedWordsViewController.swift in Sources */,
+				54A6E9F2297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift in Sources */,
 				00B4D6F8241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift in Sources */,
 				3A6A03342802DBB5000432B4 /* PopUpHeaderView.swift in Sources */,
 				37D3D4ED251C970F00D24149 /* TxGifManager.swift in Sources */,
@@ -2922,7 +2930,6 @@
 				3A93159B286C30AA0001660E /* LeftImageButton.swift in Sources */,
 				3AC8C25D27999CAC00334F26 /* PageViewController.swift in Sources */,
 				00B084C5249E4F6900F7B9BD /* SeedWords.swift in Sources */,
-				00FB43D824BC937D0031D53E /* BackupPrompts.swift in Sources */,
 				545A9D1D294F9305008D24A6 /* ThemeSettingsCollectionCell.swift in Sources */,
 				37E0B008249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
 				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
@@ -2972,6 +2979,7 @@
 				370E887224FEA32600576F61 /* Ipv6Tester.swift in Sources */,
 				543DF19A293F37E70031EA70 /* CustomBridgesHeaderView.swift in Sources */,
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
+				54A6E9F0297F1F9900A60853 /* StagedWalletSecurityManager.swift in Sources */,
 				3A7DAB9328FDB18A002CC013 /* LogsListModel.swift in Sources */,
 				3AEE7AA3286599E6000F84ED /* UTXOsWalletTopBar.swift in Sources */,
 				3AABFC9B28F5960100D87773 /* LogFormatter.swift in Sources */,

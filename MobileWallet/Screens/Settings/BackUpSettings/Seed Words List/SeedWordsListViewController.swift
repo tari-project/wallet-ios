@@ -52,9 +52,10 @@ final class SeedWordsListViewController: UIViewController {
 
     // MARK: - Initialisers
 
-    init(model: SeedWordsListModel) {
+    init(model: SeedWordsListModel, backButtonType: NavigationBar.BackButtonType) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
+        mainView.navigationBar.backButtonType = backButtonType
     }
 
     required init?(coder: NSCoder) {

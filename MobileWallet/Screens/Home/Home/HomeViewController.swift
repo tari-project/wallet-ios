@@ -116,6 +116,7 @@ final class HomeViewController: DynamicThemeViewController {
         setupViews()
         setupCallbacks()
         NotificationManager.shared.requestAuthorization()
+        StagedWalletSecurityManager.shared.start()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -226,8 +227,6 @@ final class HomeViewController: DynamicThemeViewController {
             showIncompatibleNetworkDialog()
             return
         }
-
-        checkBackupPrompt(delay: 0)
     }
 
     private func showIncompatibleNetworkDialog() {
@@ -238,7 +237,6 @@ final class HomeViewController: DynamicThemeViewController {
                 PopUpDialogButtonModel(title: localized("incompatible_network.confirm"), type: .normal, callback: { [weak self] in self?.deleteWallet() }),
                 PopUpDialogButtonModel(title: localized("incompatible_network.cancel"), type: .text, callback: { [weak self] in
                     self?.model.updateCompatibleNetworkName()
-                    self?.checkBackupPrompt(delay: 2.0)
                 })
             ],
             hapticType: .error
@@ -284,7 +282,6 @@ final class HomeViewController: DynamicThemeViewController {
         )
 
         mainView.balanceValueLabel.attributedText = balanceLabelAttributedText
-        checkBackupPrompt(delay: 2)
     }
 
     private func update(avaiableToSpendAmount: String) {

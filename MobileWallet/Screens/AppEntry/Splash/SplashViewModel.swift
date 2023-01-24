@@ -83,6 +83,7 @@ final class SplashViewModel {
         status = StatusModel(status: .idle, statusRepresentation: Tari.shared.isWalletExist ? .logo : .content)
         setupCallbacks()
         setupData()
+        StagedWalletSecurityManager.shared.stop()
     }
 
     // MARK: - Setups
