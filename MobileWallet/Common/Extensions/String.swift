@@ -109,6 +109,12 @@ extension String {
 
         return output
     }
+
+    func height(forWidth width: CGFloat, font: UIFont) -> CGFloat {
+        let rect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = self.boundingRect(with: rect, options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: [.font: font], context: nil)
+        return boundingBox.height
+    }
 }
 
 extension StringProtocol {

@@ -45,10 +45,10 @@ final class StagedWalletSecurityManager {
 
     // MARK: - Constants
 
-    private let minimumStageOneBalance: UInt64 = MicroTari(tariValue: 10000).rawValue
-    private let stageTwoThresholdBalance: UInt64 = MicroTari(tariValue: 100000).rawValue
-    private let safeHotWalletBalance: UInt64 = MicroTari(tariValue: 500000000).rawValue
-    private let maxHotWalletBalance: UInt64 = MicroTari(tariValue: 1000000000).rawValue
+    static let minimumStageOneBalance: MicroTari = MicroTari(tariValue: 10000)
+    static let stageTwoThresholdBalance: MicroTari = MicroTari(tariValue: 100000)
+    static let safeHotWalletBalance: MicroTari = MicroTari(tariValue: 500000000)
+    static let maxHotWalletBalance: MicroTari = MicroTari(tariValue: 1000000000)
 
     // MARK: - Properties
 
@@ -126,7 +126,7 @@ final class StagedWalletSecurityManager {
             messageBoldRanges: messageBoldRanges,
             mainActionTitle: localized("staged_wallet_security.stages.1a.buttons.navigate"),
             mainActionCallback: { AppRouter.presentVerifiySeedPhrase() },
-            helpActionCallback: {}
+            helpActionCallback: { [weak self] in self?.show(onbardingPage: .page1) }
         )
     }
 
@@ -137,7 +137,7 @@ final class StagedWalletSecurityManager {
             message: localized("staged_wallet_security.stages.1b.message"),
             mainActionTitle: localized("staged_wallet_security.stages.1b.buttons.navigate"),
             mainActionCallback: { AppRouter.presentBackupSettings() },
-            helpActionCallback: {}
+            helpActionCallback: { [weak self] in self?.show(onbardingPage: .page2) }
         )
     }
 
@@ -148,7 +148,7 @@ final class StagedWalletSecurityManager {
             message: localized("staged_wallet_security.stages.2.message"),
             mainActionTitle: localized("staged_wallet_security.stages.2.buttons.navigate"),
             mainActionCallback: { AppRouter.presentBackupPasswordSettings() },
-            helpActionCallback: {}
+            helpActionCallback: { [weak self] in self?.show(onbardingPage: .page3) }
         )
     }
 
@@ -171,6 +171,10 @@ final class StagedWalletSecurityManager {
             PopUpDialogButtonModel(title: localized("staged_wallet_security.buttons.remind_me_later"), type: .text)
         ])
 
+        headerSection.onHelpButtonPress = {
+            helpActionCallback()
+        }
+
         if messageBoldRanges.isEmpty {
             contentSection.label.text = message
         } else {
@@ -183,10 +187,27 @@ final class StagedWalletSecurityManager {
         PopUpPresenter.show(popUp: popUp)
     }
 
-    private func updateTimestamp(securityStage: WalletSettings.WalletSecurityStage) {
-        let newTimestamp = disabledTimestampSinceNow
-        disabledActionsTimestamps[securityStage] = newTimestamp
-        Logger.log(message: "Timestamp updated \(newTimestamp) for \(securityStage)", domain: .stagedWalletSecurity, level: .info)
+    private func show(onbardingPage viewModel: OnboardingPageView.ViewModel) {
+        PopUpPresenter.dismissPopup {
+            DispatchQueue.main.async {
+
+                let controller = OnboardingPageViewController()
+                controller.viewModel = viewModel
+
+                let parentController = ContentNavigationViewController()
+                parentController.add(childController: controller, containerView: parentController.contentView)
+                parentController.navigationBar.backButtonType = .close
+                parentController.navigationBar.isSeparatorVisible = false
+
+                parentController.onLayoutChange = { [weak controller, weak parentController] in
+                    guard let controller else { return }
+                    controller.contentHeight = parentController?.contentView.frame.height ?? 0.0
+                    controller.footerHeight = OnboardingPageView.ViewModel.calculateFooterHeight(forView: controller.view)
+                }
+
+                AppRouter.present(controller: parentController)
+            }
+        }
     }
 
     // MARK: - Handlers
@@ -201,17 +222,23 @@ final class StagedWalletSecurityManager {
         showPopUp(securityStage: securityStage)
     }
 
+    private func updateTimestamp(securityStage: WalletSettings.WalletSecurityStage) {
+        let newTimestamp = disabledTimestampSinceNow
+        disabledActionsTimestamps[securityStage] = newTimestamp
+        Logger.log(message: "Timestamp updated \(newTimestamp) for \(securityStage)", domain: .stagedWalletSecurity, level: .info)
+    }
+
     // MARK: - Helpers
 
     private func securityStage(balance: WalletBalance) -> WalletSettings.WalletSecurityStage? {
         switch balance.available {
-        case (minimumStageOneBalance + 1)... where !hasVerifiedSeedPhrase:
+        case (Self.minimumStageOneBalance.rawValue + 1)... where !hasVerifiedSeedPhrase:
             return .stage1A
-        case (minimumStageOneBalance + 1)... where !isBackupOn:
+        case (Self.minimumStageOneBalance.rawValue + 1)... where !isBackupOn:
             return .stage1B
-        case (stageTwoThresholdBalance + 1)... where !isBackupPasswordSet:
+        case (Self.stageTwoThresholdBalance.rawValue + 1)... where !isBackupPasswordSet:
             return .stage2
-        case (safeHotWalletBalance + 1)...:
+        case (Self.safeHotWalletBalance.rawValue + 1)...:
             return .stage3
         default:
             return nil

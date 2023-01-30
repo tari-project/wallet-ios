@@ -322,3 +322,16 @@ enum StaticColors {
 extension Shadow {
     static var none: Self { Self(color: nil, opacity: 0.0, radius: 0.0, offset: .zero) }
 }
+
+extension UIImage {
+
+    enum security {
+        enum onboarding {
+            static var background: UIImage? { UIImage(named: "Images/Security/Onboarding/Background") }
+            static var page1: UIImage? { UIImage(named: "Images/Security/Onboarding/Page1") }
+            static var page2: UIImage? { UIImage(named: "Images/Security/Onboarding/Page2") }
+            static var page3: UIImage? { UIImage(named: "Images/Security/Onboarding/Page3") }
+            static var page4: UIImage? { UIImage(named: "Images/Security/Onboarding/Page4") }
+        }
+    }
+}

@@ -50,6 +50,12 @@ final class PageViewController: UIViewController {
         didSet { move(toIndex: 0) }
     }
 
+    private var scrollView: UIScrollView? {
+        pageViewController.view.subviews
+           .compactMap { $0 as? UIScrollView }
+           .first
+    }
+
     private var currentIndex = 0
 
     @Published private(set) var pageIndex: CGFloat = 0.0
@@ -69,14 +75,8 @@ final class PageViewController: UIViewController {
     }
 
     private func setupCallbacks() {
-
         pageViewController.dataSource = self
         pageViewController.delegate = self
-
-        let scrollView = pageViewController.view.subviews
-            .compactMap { $0 as? UIScrollView }
-            .first
-
         scrollView?.delegate = self
     }
 
@@ -84,6 +84,8 @@ final class PageViewController: UIViewController {
 
     func move(toIndex index: Int) {
         guard let controller = controller(forIndex: index) else { return }
+        scrollView?.panGestureRecognizer.isEnabled = false
+        scrollView?.panGestureRecognizer.isEnabled = true
         pageViewController.setViewControllers([controller], direction: index > currentIndex ? .forward : .reverse, animated: true) { [weak self] _ in
             self?.currentIndex = index
         }
