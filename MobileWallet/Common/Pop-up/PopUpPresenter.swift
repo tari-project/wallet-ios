@@ -74,6 +74,7 @@ enum PopUpPresenter {
         attributes.screenInteraction = .absorbTouches
         attributes.entryInteraction = .forward
         attributes.displayDuration = .infinity
+        attributes.precedence = .enqueue(priority: .normal)
         return attributes
     }()
 
