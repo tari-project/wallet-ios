@@ -52,6 +52,7 @@ final class BackupWalletSettingsViewController: UIViewController {
     private let dropboxItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.dropbox_backups"), hasArrow: false, hasSwitch: true)
     private let passwordItem = SystemMenuTableViewCellItem(title: "")
     private let backupNowItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.backup_now"), hasArrow: false)
+    private let onboardingItem = SystemMenuTableViewCellItem(title: localized("backup_wallet_settings.item.onboarding"))
 
     private var items: [SystemMenuTableViewCellItem] = []
     private var cancellables = Set<AnyCancellable>()
@@ -141,6 +142,8 @@ final class BackupWalletSettingsViewController: UIViewController {
                 self.moveToSetPasswordForm()
             case self.backupNowItem:
                 self.model.backupIfNeeded()
+            case self.onboardingItem:
+                self.moveToOnboarding()
             default:
                 break
             }
@@ -198,6 +201,8 @@ final class BackupWalletSettingsViewController: UIViewController {
             items.append(backupNowItem)
         }
 
+        items.append(onboardingItem)
+
         self.items = items
         mainView.update(models: items)
     }
@@ -247,5 +252,10 @@ final class BackupWalletSettingsViewController: UIViewController {
     private func moveToSetPasswordForm() {
         let controller = model.isBackupSecuredByPassword ? PasswordVerificationViewController(variation: .change) : SecureBackupViewController(backButtonType: .back)
         navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func moveToOnboarding() {
+        let controller = OnboardingViewController()
+        present(controller, animated: true)
     }
 }
