@@ -123,6 +123,10 @@ enum AppRouter {
 
     // MARK: - Modal Actions
 
+    static func present(controller: UIViewController) {
+        tabBar?.present(controller, animated: true)
+    }
+
     static func presentVerifiySeedPhrase() {
 
         let controller = SeedWordsListConstructor.buildScene(backButtonType: .close)

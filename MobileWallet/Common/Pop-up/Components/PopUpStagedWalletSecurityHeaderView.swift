@@ -67,6 +67,8 @@ final class PopUpStagedWalletSecurityHeaderView: DynamicThemeView {
         return view
     }()
 
+    var onHelpButtonPress: (() -> Void)?
+
     // MARK: - Initialisers
 
     init(title: String, subtitle: String) {
@@ -74,6 +76,7 @@ final class PopUpStagedWalletSecurityHeaderView: DynamicThemeView {
         titleLabel.text = title
         subtitleLabel.text = subtitle
         setupConstraints()
+        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -104,6 +107,12 @@ final class PopUpStagedWalletSecurityHeaderView: DynamicThemeView {
         ]
 
         NSLayoutConstraint.activate(constraints)
+    }
+
+    private func setupCallbacks() {
+        helpButton.onTap = { [weak self] in
+            self?.onHelpButtonPress?()
+        }
     }
 
     // MARK: - Updates

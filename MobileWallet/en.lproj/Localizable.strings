@@ -6,6 +6,7 @@
 "common.recommended" = "Recommended";
 "common.close" = "Close";
 "common.apply" = "Apply";
+"common.next" = "Next";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -158,6 +159,7 @@
 "backup_wallet_settings.item.secure_your_backup"  = "Secure your backup with password";
 "backup_wallet_settings.item.backup_now" = "Back up now";
 "backup_wallet_settings.item.with_recovery_phrase" = "Write Down Seed Phrase";
+"backup_wallet_settings.item.onboarding" = "Learn More";
 "backup_wallet_settings.header.title" = "Wallet Backups";
 "backup_wallet_settings.header.description" = "By backing up your wallet, you’ll ensure that you don’t lose your tXTR if your phone is lost or broken.";
 
@@ -475,6 +477,37 @@
 "staged_wallet_security.stages.3.message" = "Your mobile wallet holds way more funds than would normally be considered safe to walk around with in your pocket.\n\nYou should really consider sweeping most of your balance into a cold- or hardware wallet.";
 "staged_wallet_security.stages.3.buttons.navigate" = "Set Up My Cold Wallet Address";
 "staged_wallet_security.buttons.remind_me_later" = "Remind me later";
+
+/* Staged wallet security - Onboarding */
+
+"onboarding.staged_wallet_security.page1.title.part1" = "Write down your";
+"onboarding.staged_wallet_security.page1.title.part2.bold" = "seed words";
+"onboarding.staged_wallet_security.page1.message.part1" = "The safety of your wallet is very important to us. To keep your coins safe, you should write down the";
+"onboarding.staged_wallet_security.page1.message.part2.bold" = "seed words";
+"onboarding.staged_wallet_security.page1.message.part3" = "(please don't make a screenshot, it isn't safe to keep them that way) and keep them in a safe place.\n\nThe seed words are used to recover your wallet if you should ever lose access to it.";
+"onboarding.staged_wallet_security.page1.action_button" = "View My Seed Words";
+"onboarding.staged_wallet_security.page2.title.part1" = "Backup to the";
+"onboarding.staged_wallet_security.page2.title.part2.bold" = "cloud";
+"onboarding.staged_wallet_security.page2.message.part1" = "An easy way to recover your coins and transaction list is to keep a";
+"onboarding.staged_wallet_security.page2.message.part2.bold" = "backup";
+"onboarding.staged_wallet_security.page2.message.part3" = "of your wallet in the";
+"onboarding.staged_wallet_security.page2.message.part4.bold" = "cloud";
+"onboarding.staged_wallet_security.page2.message.part5" = ".\n\nTo do that, the only thing that you need to do is go to the settings menu, select the cloud service that you want to use, and authorize the app to send backups to that service.";
+"onboarding.staged_wallet_security.page2.action_button" = "Go To Cloud Backups";
+"onboarding.staged_wallet_security.page3.title.part1" = "Create a";
+"onboarding.staged_wallet_security.page3.title.part2.bold" = "password";
+"onboarding.staged_wallet_security.page3.message.part1" = "To improve your cloud backups’ security, you should consider encrypting your backups with a password.\n\nRemember that you should use a";
+"onboarding.staged_wallet_security.page3.message.part2.bold" = "password";
+"onboarding.staged_wallet_security.page3.message.part3" = "that's long, contains letters, numbers, special characters and isn't used anywhere else. You can also change your password later directly from the settings menu.";
+"onboarding.staged_wallet_security.page3.action_button" = "Set My Password";
+"onboarding.staged_wallet_security.page4.title.part1" = "Backup and recovery options";
+"onboarding.staged_wallet_security.page4.title.part2.bold" = "help keep your coins safe";
+"onboarding.staged_wallet_security.page4.message" = "Try to keep your seed words and backups in a safe place. We also strongly recommend keeping a few copies of your seed words in different places and changing the backup password regularly.";
+"onboarding.staged_wallet_security.page4.action_button" = "Let’s Do This!";
+"onboarding.staged_wallet_security.footer.part1" = "Aurora helps you secure your funds";
+"onboarding.staged_wallet_security.footer.part2.highlighted" = "when you need it";
+"onboarding.staged_wallet_security.footer.part3.any_funds" = ". This step is triggered when you receive funds for the first time.";
+"onboarding.staged_wallet_security.footer.part3.threshold" = ". This step is triggered when your balance exceeds %@ for the first time.";
 
 /* Loading gif button */
 "loading_gif_button.title.loading" = "Loading GIF";
