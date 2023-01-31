@@ -50,8 +50,13 @@ enum VersionValidator {
         firstVersionComponents += Array(repeating: "", count: componentsCount - firstVersionComponents.count)
         secondVersionComponents += Array(repeating: "", count: componentsCount - secondVersionComponents.count)
 
-        let result = zip(firstVersionComponents, secondVersionComponents).first { $0 < $1 }
+        let result: Bool? = zip(firstVersionComponents, secondVersionComponents)
+            .compactMap {
+                guard $0 != $1 else { return nil }
+                return $0 > $1
+            }
+            .first
 
-        return result == nil
+        return result ?? true
     }
 }
