@@ -89,7 +89,7 @@ final class BugReportService {
         let attachement = Attachment(path: attachementURL.path, filename: "\(uuid).zip")
 
         let eventID = SentrySDK.capture(message: uuid) { scope in
-            scope.add(attachement)
+            scope.addAttachment(attachement)
         }
 
         let userFeedback = UserFeedback(eventId: eventID)

@@ -57,7 +57,7 @@ extension CrashLogger: Logable {
         let breadcrumb = Breadcrumb(level: logLevel.sentryLevel, category: domain.name)
         breadcrumb.message = message
 
-        SentrySDK.addBreadcrumb(crumb: breadcrumb)
+        SentrySDK.addBreadcrumb(breadcrumb)
     }
 }
 
