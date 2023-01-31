@@ -79,6 +79,15 @@ final class VersionValidatorTests: XCTestCase {
         XCTAssertTrue(result)
     }
 
+    func testFirstVersionWithHigherMajorLowerMinor() {
+
+        let firstVersion = "1.24.01"
+        let secondVersion = "1.23.02"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertTrue(result)
+    }
+
     func testSecondVersionIsHigher() {
 
         let firstVersion = "1.23.01"
@@ -110,6 +119,15 @@ final class VersionValidatorTests: XCTestCase {
 
         let firstVersion = "1.23.45"
         let secondVersion = "1.23.45.1"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertFalse(result)
+    }
+
+    func testSecondVersionWithHigherMajorLowerMinor() {
+
+        let firstVersion = "1.23.02"
+        let secondVersion = "1.24.01"
 
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertFalse(result)
