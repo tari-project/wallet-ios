@@ -178,10 +178,10 @@ private class PopUpSelectionCell: DynamicThemeCell {
 
         let constraints = [
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 22.0),
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30.0),
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -22.0),
             tickIcon.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 8.0),
-            tickIcon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20.0),
+            tickIcon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             tickIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             tickIcon.widthAnchor.constraint(equalToConstant: 14.0),
             tickIcon.heightAnchor.constraint(equalToConstant: 14.0)

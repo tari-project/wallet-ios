@@ -80,11 +80,11 @@ final class PopUpHeaderWithSubtitle: DynamicThemeView {
 
         let constraints = [
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.0),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14.0),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12.0),
-            subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.0),
-            subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14.0),
+            subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             subtitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 

@@ -187,11 +187,11 @@ final class UTXOsWalletViewController: UIViewController {
         return model.breakCoinPreview(breakCount: breakCount, elementID: enforcedElementID)
     }
 
-    private func performSplitAction(breakCount: Int, enforcedElementID: UUID?) {
+    private func performSplitAction(breakCount: Int, enforcedElementID: UUID?) -> Bool {
         guard let enforcedElementID = enforcedElementID else {
             return model.performBreakActionForSelectedElements(breakCount: breakCount)
         }
-        model.performBreakAction(breakCount: breakCount, elementID: enforcedElementID)
+        return model.performBreakAction(breakCount: breakCount, elementID: enforcedElementID)
     }
 
     // MARK: - Actions - Break Pop Ups
@@ -204,7 +204,7 @@ final class UTXOsWalletViewController: UIViewController {
 
     private func showSplitConfirmationDialog(breakCount: Int, enforceElementID: UUID?) {
         showConfirmationDialog(message: localized("utxos_wallet.pop_up.break_confirmation.message")) { [weak self] in
-            self?.performSplitAction(breakCount: breakCount, enforcedElementID: enforceElementID)
+            guard self?.performSplitAction(breakCount: breakCount, enforcedElementID: enforceElementID) == true else { return }
             self?.showSplitSuccessDialog()
         }
     }
@@ -217,18 +217,20 @@ final class UTXOsWalletViewController: UIViewController {
 
     private func showJoinConfimationDialog() {
 
-        let headerSection = PopUpHeaderView()
+        let headerSection = PopUpComponentsFactory.makeHeaderView(title: localized("utxos_wallet.pop_up.confirmation.title"))
         let contentSection = PopUpCombineUTXOsConfirmationContentView()
-        let buttonsSection = PopUpButtonsView()
+        let buttonsSection = PopUpComponentsFactory.makeButtonsView(
+            models: [
+                PopUpDialogButtonModel(title: localized("utxos_wallet.pop_up.confirmation.button.ok"), type: .normal, callback: { [weak self] in
+                    guard self?.model.performCombineAction() == true else { return }
+                    self?.showJoinSuccessDialog()
+                }),
+                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text)
+            ]
+        )
 
-        headerSection.label.text = localized("utxos_wallet.pop_up.confirmation.title")
         contentSection.messageText = localized("utxos_wallet.pop_up.combine_confirmation.message")
         contentSection.feeText = model.combineCoinsFeePreview() ?? ""
-        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("utxos_wallet.pop_up.confirmation.button.ok"), type: .normal, callback: { [weak self] in
-            self?.model.performCombineAction()
-            self?.showJoinSuccessDialog()
-        }))
-        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
 
         let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
         PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
@@ -248,7 +250,7 @@ final class UTXOsWalletViewController: UIViewController {
 
     private func showJoinSplitConfirmationDialog(breakCount: Int) {
         showConfirmationDialog(message: localized("utxos_wallet.pop_up.combine_break_confirmation.message")) { [weak self] in
-            self?.model.performBreakActionForSelectedElements(breakCount: breakCount)
+            guard self?.model.performBreakActionForSelectedElements(breakCount: breakCount) == true else { return }
             self?.showJoinSplitSuccessDialog()
         }
     }
@@ -277,7 +279,11 @@ final class UTXOsWalletViewController: UIViewController {
         contentSection.update(model: contentModel)
 
         if model.isSelectable {
-            buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("utxos_wallet.pop_up.details.button.break"), type: .normal, callback: { [weak self] in self?.showSplitDialog(enforceElementID: uuid) }))
+            buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("utxos_wallet.pop_up.details.button.break"), type: .normal, callback: { [weak self] in
+                PopUpPresenter.dismissPopup {
+                    self?.showSplitDialog(enforceElementID: uuid)
+                }
+            }))
         }
         buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
 

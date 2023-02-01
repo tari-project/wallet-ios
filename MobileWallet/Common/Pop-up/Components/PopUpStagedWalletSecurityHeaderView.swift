@@ -93,14 +93,14 @@ final class PopUpStagedWalletSecurityHeaderView: DynamicThemeView {
         let margin: CGFloat = 4.0
 
         let constraints = [
-            titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: 0.0),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0 + buttonWidth + margin),
+            titleLabel.topAnchor.constraint(equalTo: topAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: buttonWidth + margin),
             subtitleLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20.0),
-            subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
-            subtitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -0.0),
+            subtitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            subtitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            subtitleLabel.bottomAnchor.constraint(equalTo: bottomAnchor),
             helpButton.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: margin),
-            helpButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            helpButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             helpButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
             helpButton.heightAnchor.constraint(equalToConstant: buttonWidth),
             helpButton.widthAnchor.constraint(equalToConstant: buttonWidth)

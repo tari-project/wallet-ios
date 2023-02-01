@@ -90,12 +90,12 @@ final class PopUpCombineUTXOsConfirmationContentView: DynamicThemeView {
 
         let constraints = [
             messageLabel.topAnchor.constraint(equalTo: topAnchor),
-            messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15.0),
-            messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15.0),
+            messageLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            messageLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             feeLabel.topAnchor.constraint(equalTo: messageLabel.bottomAnchor, constant: 10.0),
-            feeLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            feeLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
-            feeLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0.0)
+            feeLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            feeLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            feeLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)

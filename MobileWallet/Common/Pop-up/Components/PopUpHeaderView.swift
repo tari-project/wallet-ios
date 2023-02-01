@@ -72,8 +72,8 @@ final class PopUpHeaderView: DynamicThemeView {
 
         let constraints = [
             label.topAnchor.constraint(equalTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 28.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -28.0),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor),
             label.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
