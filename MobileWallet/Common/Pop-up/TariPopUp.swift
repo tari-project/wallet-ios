@@ -118,7 +118,7 @@ final class TariPopUp: DynamicThemeView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        backgroundView.backgroundColor = theme.backgrounds.primary
+        backgroundView.backgroundColor = theme.components.overlay
     }
 
     // MARK: - Helpers
