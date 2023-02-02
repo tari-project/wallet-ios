@@ -186,15 +186,6 @@ final class SplashViewModel {
         Tari.shared.canAutomaticalyReconnectWallet = true
     }
 
-    private func handle(completion: Subscribers.Completion<Error>) -> Error? {
-        switch completion {
-        case .finished:
-            return nil
-        case let .failure(error):
-            return error
-        }
-    }
-
     private func handle(error: Error) {
 
         status = StatusModel(status: .idle, statusRepresentation: .content)

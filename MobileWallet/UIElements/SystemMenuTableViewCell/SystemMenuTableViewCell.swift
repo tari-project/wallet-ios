@@ -53,10 +53,10 @@ class SystemMenuTableViewCellItem: NSObject {
 
     @Published @objc dynamic var isSwitchIsOn: Bool = false
 
-    private(set) var disableCellInProgress = true
-    private(set) var hasSwitch = false
-    private(set) var hasArrow = true
-    private(set) var isDestructive = false
+    let disableCellInProgress: Bool
+    let hasSwitch: Bool
+    let hasArrow: Bool
+    let isDestructive: Bool
 
     init(icon: UIImage? = nil,
          title: String,

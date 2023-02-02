@@ -65,92 +65,92 @@ final class SlideView: DynamicThemeView {
     }
 
     // MARK: All Views
-    public let textLabel: UILabel = {
+    let textLabel: UILabel = {
         let label = UILabel.init()
         return label
     }()
-    public let sliderTextLabel: UILabel = {
+    let sliderTextLabel: UILabel = {
         let label = UILabel()
         return label
     }()
-    public let thumbnailImageView: UIImageView = {
+    let thumbnailImageView: UIImageView = {
         let view = SlideViewRoundImageView()
         view.isUserInteractionEnabled = true
         view.contentMode = .center
         view.image = Theme.shared.images.forwardArrow
         return view
     }()
-    public let sliderHolderView: UIView = {
+    let sliderHolderView: UIView = {
         let view = UIView()
         return view
     }()
-    public let draggedView: UIView = {
+    let draggedView: UIView = {
         let view = UIView()
         return view
     }()
-    public let view: UIView = {
+    let view: UIView = {
         let view = UIView()
         return view
     }()
 
     @View private var gradientBackgroundView = GradientView()
 
-    // MARK: Public properties
+    // MARK: properties
 
-    public var animationVelocity: Double = 0.2
-    public var sliderViewTopDistance: CGFloat = 0 {
+    var animationVelocity: Double = 0.2
+    var sliderViewTopDistance: CGFloat = 0 {
         didSet {
             topSliderConstraint?.constant = sliderViewTopDistance
             layoutIfNeeded()
         }
     }
 
-    public var thumbnailViewTopDistance: CGFloat = SlideView.thumbnailMargin {
+    var thumbnailViewTopDistance: CGFloat = SlideView.thumbnailMargin {
         didSet {
             topThumbnailViewConstraint?.constant = thumbnailViewTopDistance
             layoutIfNeeded()
         }
     }
-    public var thumbnailViewStartingDistance: CGFloat = SlideView.thumbnailMargin {
+    var thumbnailViewStartingDistance: CGFloat = SlideView.thumbnailMargin {
         didSet {
             leadingThumbnailViewConstraint?.constant = thumbnailViewStartingDistance
             trailingDraggedViewConstraint?.constant = thumbnailViewStartingDistance
             setNeedsLayout()
         }
     }
-    public var textLabelLeadingDistance: CGFloat = SlideView.thumbnailMargin {
+    var textLabelLeadingDistance: CGFloat = SlideView.thumbnailMargin {
         didSet {
             leadingTextLabelConstraint?.constant = textLabelLeadingDistance
             setNeedsLayout()
         }
     }
-    public var isEnabled: Bool = true {
+    var isEnabled: Bool = true {
         didSet {
             animationChangedEnabledBlock?(isEnabled)
             updateIsEnabledStyle()
         }
     }
-    public var showSliderText: Bool = true {
+    var showSliderText: Bool = true {
         didSet {
             sliderTextLabel.isHidden = !showSliderText
         }
     }
-    public var animationChangedEnabledBlock: ((Bool) -> Void)?
+    var animationChangedEnabledBlock: ((Bool) -> Void)?
     // MARK: Default styles
-    public var sliderCornerRadius: CGFloat = 0 {
+    var sliderCornerRadius: CGFloat = 0 {
         didSet {
             sliderHolderView.layer.cornerRadius = sliderCornerRadius
             draggedView.layer.cornerRadius = sliderCornerRadius
         }
     }
 
-    public var labelText: String = "Slide" {
+    var labelText: String = "Slide" {
         didSet {
             textLabel.text = labelText
             sliderTextLabel.text = labelText
         }
     }
-    public var textFont: UIFont = Theme.shared.fonts.actionButton {
+    var textFont: UIFont = Theme.shared.fonts.actionButton {
         didSet {
             textLabel.font = textFont
             sliderTextLabel.font = textFont
@@ -172,7 +172,7 @@ final class SlideView: DynamicThemeView {
     }
     private var panGestureRecognizer: UIPanGestureRecognizer!
 
-    required public init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
         setupView()
     }
@@ -358,7 +358,7 @@ final class SlideView: DynamicThemeView {
         }
     }
     // Others
-    public func resetStateWithAnimation(_ animated: Bool) {
+    func resetStateWithAnimation(_ animated: Bool) {
         let action = {
             self.leadingThumbnailViewConstraint?.constant = self.thumbnailViewStartingDistance
             self.textLabel.alpha = 1

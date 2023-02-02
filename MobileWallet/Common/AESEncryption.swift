@@ -41,11 +41,6 @@
 import Foundation
 import CommonCrypto
 
-protocol Cryptable {
-    func encrypt(_ data: Data) throws -> Data
-    func decrypt(_ data: Data) throws -> Data
-}
-
 enum AESError: Error {
     case generic(_ description: String)
     case invalidKeySize
@@ -90,7 +85,7 @@ struct AESEncryption {
     }
 }
 
-extension AESEncryption: Cryptable {
+extension AESEncryption {
     func encrypt(_ data: Data) throws -> Data {
         let salt = try generateSalt()
         let key = try createKey(password: keyString, salt: salt)

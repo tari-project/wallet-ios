@@ -77,7 +77,7 @@ final class HomeViewController: DynamicThemeViewController {
     }
 
     private var grabberWidthConstraint: NSLayoutConstraint?
-    override var navBarHeight: CGFloat { (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0.0) + 56.0 }
+    private var navBarHeight: CGFloat { (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0.0) + 56.0 }
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -117,6 +117,8 @@ final class HomeViewController: DynamicThemeViewController {
         setupCallbacks()
         NotificationManager.shared.requestAuthorization()
         StagedWalletSecurityManager.shared.start()
+
+        PopUpPresenter.showStorePopUp() // TODO: Remove
     }
 
     override func viewDidAppear(_ animated: Bool) {

@@ -40,13 +40,13 @@
 
 import UIKit
 
-class UILabelWithPadding: UILabel {
+final class UILabelWithPadding: UILabel {
 
      private struct AssociatedKeys {
         static var padding = UIEdgeInsets()
     }
 
-    public var padding: UIEdgeInsets? {
+    var padding: UIEdgeInsets? {
         get {
             return objc_getAssociatedObject(self, &AssociatedKeys.padding) as? UIEdgeInsets
         }
@@ -57,7 +57,7 @@ class UILabelWithPadding: UILabel {
         }
     }
 
-    override open func draw(_ rect: CGRect) {
+    override func draw(_ rect: CGRect) {
         if let insets = padding {
             self.drawText(in: rect.inset(by: insets))
         } else {
@@ -65,7 +65,7 @@ class UILabelWithPadding: UILabel {
         }
     }
 
-    override open var intrinsicContentSize: CGSize {
+    override var intrinsicContentSize: CGSize {
         guard text != nil else {
             return super.intrinsicContentSize
         }

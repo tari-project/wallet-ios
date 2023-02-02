@@ -579,13 +579,13 @@ extension AddNoteViewController: GPHGridDelegate {
     }
 }
 
-public class TariGiphyTheme: GPHTheme {
-    public override init() {
+final class TariGiphyTheme: GPHTheme {
+    override init() {
         super.init()
         self.type = .light
     }
 
-    public override var textFieldFont: UIFont? {
+    override var textFieldFont: UIFont? {
         return Theme.shared.fonts.searchContactsInputBoxText
     }
 }

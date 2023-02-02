@@ -49,12 +49,6 @@ final class TransactionDetailsView: DynamicThemeView {
         case transactionStatusAndCancelButtonVisible
     }
 
-    // MARK: - Constants
-
-    private let defaultNavigationBarHeight = 90.0
-    private let statusCapsuleHeight = AnimatedRefreshingView.containerHeight + 10.0
-    private let cancelButtonHeight = 25.0
-
     // MARK: - Subviews
 
     @View private var navigationBar = NavigationBar()

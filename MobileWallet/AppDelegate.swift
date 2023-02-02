@@ -44,9 +44,7 @@ import AVFoundation
 import GiphyUISDK
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-
-    private let statusLoggerManager = StatusLoggerManager()
+final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     func application(
         _ application: UIApplication,

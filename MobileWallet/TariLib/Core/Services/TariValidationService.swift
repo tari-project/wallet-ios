@@ -74,14 +74,14 @@ final class TariValidationService: CoreTariService {
 
         WalletCallbacksManager.shared.transactionOutputValidation
             .filter { $0.status != .alreadyBusy }
-            .map { ($0.identifier, $0.status == .success) }
-            .sink { [weak self] in self?.handleTransactionValidation(type: .txo, identifier: $0, isSuccess: $1) }
+            .map { $0.status == .success }
+            .sink { [weak self] in self?.handleTransactionValidation(type: .txo, isSuccess: $0) }
             .store(in: &cancellables)
 
         WalletCallbacksManager.shared.transactionValidation
             .filter { $0.status != .alreadyBusy }
-            .map { ($0.identifier, $0.status == .success) }
-            .sink { [weak self] in self?.handleTransactionValidation(type: .tx, identifier: $0, isSuccess: $1) }
+            .map { $0.status == .success }
+            .sink { [weak self] in self?.handleTransactionValidation(type: .tx, isSuccess: $0) }
             .store(in: &cancellables)
     }
 
@@ -101,7 +101,7 @@ final class TariValidationService: CoreTariService {
 
     // MARK: - Handlers
 
-    private func handleTransactionValidation(type: TransactionType, identifier: UInt64, isSuccess: Bool) {
+    private func handleTransactionValidation(type: TransactionType, isSuccess: Bool) {
 
         guard !unverifiedTransactions.isEmpty else { return }
 
@@ -115,9 +115,5 @@ final class TariValidationService: CoreTariService {
 
         guard unverifiedTransactions.isEmpty else { return }
         status = .synced
-    }
-
-    private func restartTransactionBroadcast() {
-        _ = try? walletManager.restartTransactionBroadcast()
     }
 }

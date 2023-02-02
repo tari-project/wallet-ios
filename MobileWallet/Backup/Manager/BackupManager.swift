@@ -64,9 +64,6 @@ final class BackupManager {
         set { dropboxBackupService.presentingController = newValue }
     }
 
-    var isAnyServiceOn: Bool { allServices.first { $0.isOn } != nil }
-    var isAnyServiceSynced: Bool { allServices.compactMap { $0.lastBackupTimestamp }.isEmpty == false }
-
     @Published var password: String? = AppKeychainWrapper.backupPassword
     @Published private(set) var syncState: BackupSyncState = .outOfSync
 

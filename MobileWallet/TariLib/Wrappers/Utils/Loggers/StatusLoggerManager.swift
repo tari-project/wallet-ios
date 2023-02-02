@@ -42,9 +42,12 @@ import Combine
 
 final class StatusLoggerManager {
 
+    static let shared = StatusLoggerManager()
     private var cancellables = Set<AnyCancellable>()
 
-    init() {
+    private init() {}
+
+    func configure() {
         setupCallbacks()
     }
 
