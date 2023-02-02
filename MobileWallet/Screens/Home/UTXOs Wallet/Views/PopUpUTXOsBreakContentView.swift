@@ -115,16 +115,16 @@ final class PopUpUTXOsBreakContentView: DynamicThemeView {
 
         let constraints = [
             descriptionLabel.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
-            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
+            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             valuePicker.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 22.0),
             valuePicker.centerXAnchor.constraint(equalTo: centerXAnchor),
             valueSlider.topAnchor.constraint(equalTo: valuePicker.bottomAnchor, constant: 10.0),
-            valueSlider.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            valueSlider.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
+            valueSlider.leadingAnchor.constraint(equalTo: leadingAnchor),
+            valueSlider.trailingAnchor.constraint(equalTo: trailingAnchor),
             estimationLabel.topAnchor.constraint(equalTo: valueSlider.bottomAnchor, constant: 22.0),
-            estimationLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            estimationLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            estimationLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            estimationLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
             estimationLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 

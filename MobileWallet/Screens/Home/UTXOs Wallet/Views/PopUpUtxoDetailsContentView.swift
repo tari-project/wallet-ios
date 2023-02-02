@@ -98,8 +98,8 @@ final class PopUpUtxoDetailsContentView: DynamicThemeView {
             amountLabel.topAnchor.constraint(equalTo: topAnchor),
             amountLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             rowsStackView.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 20.0),
-            rowsStackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            rowsStackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            rowsStackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            rowsStackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             rowsStackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 

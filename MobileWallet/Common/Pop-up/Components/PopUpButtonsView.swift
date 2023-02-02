@@ -71,8 +71,8 @@ final class PopUpButtonsView: UIView {
 
         let constraints = [
             stackView.topAnchor.constraint(equalTo: topAnchor),
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 

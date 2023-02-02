@@ -91,9 +91,9 @@ final class PopUpButtonsTableView: DynamicThemeView {
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             footerLabel.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 20.0),
-            footerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8.0),
-            footerLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8.0),
-            footerLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0.0)
+            footerLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
+            footerLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            footerLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)

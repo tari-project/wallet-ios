@@ -174,27 +174,29 @@ final class UTXOsWalletModel {
         }
     }
 
-    func performBreakAction(breakCount: Int, elementID: UUID) {
+    func performBreakAction(breakCount: Int, elementID: UUID) -> Bool {
         guard let model = utxoModels.first(where: { $0.uuid == elementID }) else {
             errorMessage = ErrorMessageManager.errorModel(forError: nil)
-            return
+            return false
         }
-        performBreakAction(breakCount: breakCount, models: [model])
+        return performBreakAction(breakCount: breakCount, models: [model])
     }
 
-    func performBreakActionForSelectedElements(breakCount: Int) {
+    func performBreakActionForSelectedElements(breakCount: Int) -> Bool {
         let models = utxoModels.filter { self.selectedIDs.contains($0.uuid) }
-        performBreakAction(breakCount: breakCount, models: models)
+        return performBreakAction(breakCount: breakCount, models: models)
     }
 
-    private func performBreakAction(breakCount: Int, models: [UtxoModel]) {
+    private func performBreakAction(breakCount: Int, models: [UtxoModel]) -> Bool {
 
         let commitments = models.map(\.commitment)
 
         do {
             try Tari.shared.utxos.breakCoins(commitments: commitments, splitsCount: UInt(breakCount))
+            return true
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
+            return false
         }
     }
 
@@ -212,7 +214,7 @@ final class UTXOsWalletModel {
         }
     }
 
-    func performCombineAction() {
+    func performCombineAction() -> Bool {
 
         let commitments = utxoModels
             .filter { self.selectedIDs.contains($0.uuid) }
@@ -220,8 +222,10 @@ final class UTXOsWalletModel {
 
         do {
             try Tari.shared.utxos.combineCoins(commitments: commitments)
+            return true
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
+            return false
         }
     }
 

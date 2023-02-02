@@ -72,8 +72,8 @@ final class PopUpDescriptionContentView: DynamicThemeView {
 
         let constraints = [
             label.topAnchor.constraint(equalTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 15.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -15.0),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor),
             label.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
