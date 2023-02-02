@@ -230,7 +230,7 @@ final class StatusView: DynamicThemeView {
 
         iconViewBackgroundView.backgroundColor = theme.backgrounds.primary
         iconViewBackgroundView.apply(shadow: theme.shadows.box)
-        iconView.tintColor = theme.icons.active
+        iconView.tintColor = theme.icons.default
         label.textColor = theme.text.body
 
         updateBackgroundColor(theme: theme)
