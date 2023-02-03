@@ -46,8 +46,8 @@ enum MicroTariErrors: Error {
 
 struct MicroTari {
     private static let conversion = 1000000
-    public static let roundedFractionDigits = 2
-    public static let maxFractionDigits = 6
+    static let roundedFractionDigits = 2
+    static let maxFractionDigits = 6
 
     private static let defaultFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -87,11 +87,11 @@ struct MicroTari {
         return formatter
     }()
 
-    public static var groupingSeparator: String {
+    static var groupingSeparator: String {
         return defaultFormatter.groupingSeparator
     }
 
-    public static var decimalSeparator: String {
+    static var decimalSeparator: String {
         return defaultFormatter.decimalSeparator
     }
 
@@ -147,27 +147,27 @@ struct MicroTari {
         self.rawValue = rawVal
     }
 
-    public static func toTariNumber(_ number: NSNumber) -> UInt64 {
+    static func toTariNumber(_ number: NSNumber) -> UInt64 {
         return number.uint64Value * UInt64(conversion)
     }
 }
 
 extension MicroTari {
-    public static func convertToNumber(_ number: String) -> NSNumber? {
+    static func convertToNumber(_ number: String) -> NSNumber? {
         return defaultFormatter.number(from: number)
     }
 
-    public static func convertToString(_ number: NSNumber, minimumFractionDigits: Int) -> String? {
+    static func convertToString(_ number: NSNumber, minimumFractionDigits: Int) -> String? {
         editFormatter.minimumFractionDigits = minimumFractionDigits
         return editFormatter.string(from: number)
     }
 
-    public static func checkValue(_ value: NSNumber) -> Bool {
+    static func checkValue(_ value: NSNumber) -> Bool {
         let convertedValue = value.decimalValue * Decimal(MicroTari.conversion)
         return convertedValue.isLessThanOrEqualTo(Decimal(UInt64.max))
     }
 
-    public static func checkValue(_ value: String) -> Bool {
+    static func checkValue(_ value: String) -> Bool {
         guard let number = convertToNumber(value) else { return false }
         return checkValue(number)
     }

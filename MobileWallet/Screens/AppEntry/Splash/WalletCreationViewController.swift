@@ -174,7 +174,7 @@ final class WalletCreationViewController: DynamicThemeViewController {
         )
     }
 
-    @objc public func tapToSeeButtonAction(_ sender: UIButton) {
+    @objc func tapToSeeButtonAction(_ sender: UIButton) {
         emojiIdView.expand()
         tapToExpandAction()
     }

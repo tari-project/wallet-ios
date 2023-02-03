@@ -51,9 +51,6 @@ struct Theme {
 
 struct Images {
     // Create Wallet
-    let createWalletTouchID = UIImage(named: "fingerprint")
-    let createWalletFaceID = UIImage(named: "faceId")
-    let createWalletNofications = UIImage(named: "bell7")
     let createWalletDownArrow = UIImage(named: "notch_down")
     let createWalletNumpad = UIImage(named: "numpad")
 
@@ -69,15 +66,10 @@ struct Images {
     let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
     let forwardArrow = UIImage(named: "ForwardArrow")
-    let forwardArrowRed = UIImage(named: "ForwardArrowRed")
-    let downArrow = UIImage(named: "DownArrow")
     let close = UIImage(named: "Close")
     let share = UIImage(named: "share")
     let txFee = UIImage(named: "TxFee")
-    let profileIcon = UIImage(named: "profileIcon")
     let storeIcon = UIImage(named: "store-icon")
-    let storeButton = UIImage(named: "store-button")
-    let giftButton = UIImage(named: "gift-button")
     let storeModal = UIImage(named: "store-modal")
     let unknownUser = UIImage(named: "unknownUser")
     let handWave = UIImage(named: "HandWave")
@@ -96,9 +88,6 @@ struct Images {
     // Amount
     let delete = UIImage(named: "numpad-delete")
     let helpButton = UIImage(named: "QuestionMark")
-
-    // Profile
-    let settings = UIImage(named: "settings")
 
     // Seed words list
     let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
@@ -171,7 +160,6 @@ struct Fonts {
     let copiedLabel = UIFont.Avenir.black.withSize(13.0)
 
     // SplashCreatingWallet
-    let createWalletFirstLabel = UIFont.Avenir.black.withSize(18.0)
     let createWalletSecondLabelFirstText = UIFont.Avenir.black.withSize(18.0)
     let createWalletSecondLabelSecondText = UIFont.Avenir.roman.withSize(18.0)
     let createWalletThirdLabel = UIFont.Avenir.medium.withSize(13.0)
@@ -181,12 +169,8 @@ struct Fonts {
     let createWalletNotificationsSecondLabel = UIFont.Avenir.black.withSize(18.0)
     let createWalletNotificationsThirdLabel = UIFont.Avenir.medium.withSize(14.0)
     let tapToSeeFullEmojiLabel = UIFont.Avenir.heavy.withSize(12.0)
-    let restoreWalletButton = UIFont.Avenir.medium.withSize(13.0)
 
     // Profile
-    let profileTitleLightLabel = UIFont.Avenir.light.withSize(18.0)
-    let profileTitleRegularLabel = UIFont.Avenir.black.withSize(18.0)
-    let profileCopyEmojiButton = UIFont.Avenir.medium.withSize(12.0)
     let profileMiddleLabel = UIFont.Avenir.medium.withSize(14.0)
 
     // Home screen
@@ -209,8 +193,6 @@ struct Fonts {
     let txScreenCurrencyValueLabel = UIFont.Avenir.black.withSize(90.0)
     let txScreenSubheadingLabel = UIFont.Avenir.medium.withSize(13.0)
     let txScreenTextLabel = UIFont.Avenir.roman.withSize(14.0)
-    let txScreenTxIDLabel = UIFont.Avenir.roman.withSize(13.0)
-    let txListEmptyTitleLabel = UIFont.Avenir.black.withSize(33.0)
     let txListEmptyMessageLabel = UIFont.Avenir.medium.withSize(14.0)
     let txFeeLabel = UIFont.Avenir.heavy.withSize(14.0)
     let txFeeButton = UIFont.Avenir.roman.withSize(13.0)
@@ -227,7 +209,6 @@ struct Fonts {
     let feedbackPopupTitle = UIFont.Avenir.light.withSize(18.0)
     let feedbackPopupHeavy = UIFont.Avenir.black.withSize(18.0)
     let feedbackPopupDescription = UIFont.Avenir.medium.withSize(14.0)
-    let feedbackPopupDescriptionBold = UIFont.Avenir.black.withSize(14.0)
 
     // Simple text button
     let textButton = UIFont.Avenir.medium.withSize(14.0)
@@ -235,7 +216,6 @@ struct Fonts {
     let textButtonCancel = UIFont.Avenir.medium.withSize(12.0)
 
     // Intro to wallet
-    let introTitleBold = UIFont.Avenir.black.withSize(18.0)
     let introTitle = UIFont.Avenir.light.withSize(18.0)
 
     // Add recipient view
@@ -281,14 +261,11 @@ struct Fonts {
 
     let settingsSeedPhraseDescription = UIFont.Avenir.medium.withSize(14.0)
     let settingsSeedPhraseAgreement = UIFont.Avenir.medium.withSize(12.0)
-    let settingsRecoveryPhraseWorld = UIFont.Avenir.heavy.withSize(14.0)
     let settingsFillablePhraseViewDescription = UIFont.Avenir.medium.withSize(12.0)
 
     let settingsPasswordTitle = UIFont.Avenir.medium.withSize(13.0)
     let settingsPasswordPlaceholder = UIFont.Avenir.roman.withSize(14.0)
     let settingsPasswordWarning = UIFont.Avenir.heavy.withSize(13.0)
-
-    let tooltip = UIFont.Avenir.heavy.withSize(12.0)
 
     // Text Field
     let textField = UIFont.Avenir.light.withSize(14.0)

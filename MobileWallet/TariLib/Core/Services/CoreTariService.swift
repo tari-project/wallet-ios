@@ -39,16 +39,8 @@
 */
 
 protocol MainServiceable: AnyObject {
-    var transactions: TariTransactionsService { get }
-    var contacts: TariContactsService { get }
     var validation: TariValidationService { get }
-    var fees: TariFeesService { get }
-    var connection: TariConnectionService { get }
-    var utxos: TariUTXOsService { get }
-    var recovery: TariRecoveryService { get }
-    var messageSign: TariMessageSignService { get }
     var walletBalance: TariBalanceService { get }
-    var unspentOutputsService: TariUnspentOutputsService { get }
 }
 
 class CoreTariService {

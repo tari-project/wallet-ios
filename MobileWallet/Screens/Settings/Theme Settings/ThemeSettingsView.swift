@@ -129,10 +129,6 @@ final class ThemeSettingsView: BaseNavigationContentView {
 
     // MARK: - Updates
 
-    func select(index: Int) {
-        collectionView.selectItem(at: IndexPath(row: index, section: 0), animated: false, scrollPosition: .top)
-    }
-
     func update(viewModels: [ViewModel], selectedIndex: Int) {
 
         var snapshot = NSDiffableDataSourceSnapshot<Int, ViewModel>()

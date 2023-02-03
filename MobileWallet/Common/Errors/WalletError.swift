@@ -48,15 +48,8 @@ struct WalletError: CoreError {
     }
 
     static var notEnoughFunds: Self { WalletError(code: 101) }
-    static var databaseDataError: Self { WalletError(code: 114) }
     static var fundsPending: Self { WalletError(code: 115) }
-    static var transactionNotFound: Self { WalletError(code: 204) }
-    static var contactNotFound: Self { WalletError(code: 401) }
-    static var invalidPassphraseEncryptionCypher: Self { WalletError(code: 420) }
-    static var valuesNotFound: Self { WalletError(code: 424) }
     static var invalidPassphrase: Self { WalletError(code: 428) }
-    static var seedWordsInvalidData: Self { WalletError(code: 429) }
-    static var seedWordsVersionMismatch: Self { WalletError(code: 430) }
 
     static var unknown: Self { WalletError(code: -1) }
 

@@ -60,16 +60,6 @@ final class Contacts {
         self.pointer = pointer
     }
 
-    convenience init(walletPointer: OpaquePointer) throws {
-        var errorCode: Int32 = -1
-        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-
-        let result = wallet_get_contacts(walletPointer, errorCodePointer)
-        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
-
-        self.init(pointer: pointer)
-    }
-
     // MARK: - Actions
 
     func contact(index: UInt32) throws -> Contact {

@@ -42,7 +42,7 @@ enum AppConfigurator {
 
     static func configure() {
         configureLoggers()
-        configureBackupManagers()
+        configureManagers()
     }
 
     private static func configureLoggers() {
@@ -57,7 +57,8 @@ enum AppConfigurator {
         Logger.attach(logger: CrashLogger())
     }
 
-    private static func configureBackupManagers() {
+    private static func configureManagers() {
         BackupManager.shared.configure()
+        StatusLoggerManager.shared.configure()
     }
 }

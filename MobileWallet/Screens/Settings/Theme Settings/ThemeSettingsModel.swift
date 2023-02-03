@@ -38,8 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Combine
-
 final class ThemeSettingsModel {
 
     enum Element {
@@ -64,10 +62,6 @@ final class ThemeSettingsModel {
     ]
 
     @Published var selectedIndex: Int = 0
-
-    // MARK: - Properties
-
-    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Actions
 

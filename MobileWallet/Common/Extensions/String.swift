@@ -46,10 +46,6 @@ extension String {
         return self.enumerated().map({String($0.element) + (($0.offset != self.count - 1 && $0.offset % n ==  n - 1) ? "\(separatorString)" : "")}).joined()
     }
 
-    mutating func insertedSeparator(_ separatorString: String, atEvery n: Int) {
-        self = insertSeparator(separatorString, atEvery: n)
-    }
-
     func findBridges() -> String? {
         if let data = replacingOccurrences(of: "'", with: "\"").data(using: .utf8),
             let newBridges = try? JSONSerialization.jsonObject(with: data, options: []) as? [String] {
@@ -80,22 +76,6 @@ extension String {
         return result
     }
 
-    var hexData: Data? {
-
-        var data = Data(capacity: count / 2)
-
-        guard let regex = try? NSRegularExpression(pattern: "[0-9a-f]{1,2}", options: .caseInsensitive) else { return nil }
-
-        regex.enumerateMatches(in: self, range: NSRange(startIndex..., in: self)) { match, _, _ in
-            let byteString = (self as NSString).substring(with: match!.range)
-            let num = UInt8(byteString, radix: 16)!
-            data.append(num)
-        }
-
-        guard data.count > 0 else { return nil }
-        return data
-    }
-
     func withCurrencySymbol(imageBounds: CGRect) -> NSAttributedString {
 
         guard let symbol = Theme.shared.images.currencySymbol else { return NSAttributedString() }
@@ -118,9 +98,6 @@ extension String {
 }
 
 extension StringProtocol {
-    func indexDistance(of element: Element) -> Int? {
-        firstIndex(of: element)?.distance(in: self)
-    }
 
     func indexDistance<S: StringProtocol>(of string: S) -> Int? {
         range(of: string)?.lowerBound.distance(in: self)

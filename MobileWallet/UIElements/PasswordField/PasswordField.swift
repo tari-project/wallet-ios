@@ -186,7 +186,7 @@ final class PasswordField: DynamicThemeView, UITextFieldDelegate {
         textField.isSecureTextEntry = true
         textField.delegate = self
 
-        textField.addTarget(self, action: #selector(textFieldDidChange(_:)),
+        textField.addTarget(self, action: #selector(textFieldDidChange),
         for: .editingChanged)
 
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -219,7 +219,7 @@ final class PasswordField: DynamicThemeView, UITextFieldDelegate {
         warningLabel.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     }
 
-    @objc func textFieldDidChange(_ textField: UITextField) {
+    @objc private func textFieldDidChange() {
         delegate?.passwordFieldDidChange(self)
         if !isConfirmationField {
             paredPasswordField?.didStartEditingPassword()
