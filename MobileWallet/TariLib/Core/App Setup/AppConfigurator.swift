@@ -1,5 +1,5 @@
 //  AppConfigurator.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/10/2022
@@ -39,14 +39,12 @@
 */
 
 enum AppConfigurator {
-    
-    static let isBackupEnabled = false // FIXME: Please align the backup flow with FFI Lib
-    
+
     static func configure() {
         configureLoggers()
-        configureBackupManagers()
+        configureManagers()
     }
-    
+
     private static func configureLoggers() {
         switch TariSettings.shared.environment {
         case .debug:
@@ -54,12 +52,13 @@ enum AppConfigurator {
         case .testflight, .production:
             break
         }
-        
+
         Logger.attach(logger: FileLogger())
         Logger.attach(logger: CrashLogger())
     }
-    
-    private static func configureBackupManagers() {
+
+    private static func configureManagers() {
         BackupManager.shared.configure()
+        StatusLoggerManager.shared.configure()
     }
 }

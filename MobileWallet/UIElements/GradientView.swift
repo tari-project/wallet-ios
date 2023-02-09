@@ -1,5 +1,5 @@
 //  GradientView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 25/03/2022
@@ -46,52 +46,52 @@ struct GradientLocationData {
 }
 
 final class GradientView: UIView {
-    
+
     enum Orientation {
         case horizontal
         case vertical
     }
-    
+
     // MARK: - Subviews
-    
+
     private let gradientLayer = CAGradientLayer()
-    
+
     // MARK: - Properties
-    
+
     var locations: [GradientLocationData] = [] {
         didSet { updateGradient() }
     }
-    
+
     var orientation: Orientation = .vertical {
         didSet { updateOrientation() }
     }
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero)
         layer.addSublayer(gradientLayer)
         updateGradient()
         updateOrientation()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Actions
-    
+
     private func updateGradient() {
-        
+
         gradientLayer.locations = locations
             .map(\.location)
             .map { NSNumber(value: $0) }
-        
+
         gradientLayer.colors = locations
             .compactMap { $0.color }
             .map(\.cgColor)
     }
-    
+
     private func updateOrientation() {
         switch orientation {
         case .horizontal:
@@ -102,9 +102,9 @@ final class GradientView: UIView {
             gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
         }
     }
-    
+
     // MARK: - Layout
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         gradientLayer.frame = bounds

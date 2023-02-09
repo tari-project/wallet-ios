@@ -93,7 +93,7 @@ final class WalletTransactionsManager {
             result(.failure(.noInternetConnection))
             return
         }
-        
+
         Publishers.CombineLatest(Tari.shared.connectionMonitor.$torConnection, Tari.shared.connectionMonitor.$isTorBootstrapCompleted)
             .filter { $0 == .connected && $1 }
             .timeout(connectionTimeout, scheduler: DispatchQueue.global())
@@ -130,7 +130,7 @@ final class WalletTransactionsManager {
     }
 
     private func startListeningForWalletEvents(transactionID: UInt64, recipientHex: String, result: @escaping (Result<Void, TransactionError>) -> Void) {
-        
+
         WalletCallbacksManager.shared.transactionSendResult
             .filter { $0.identifier == transactionID }
             .first()
@@ -139,9 +139,9 @@ final class WalletTransactionsManager {
                     result(.failure(.unsucessfulTransaction))
                     return
                 }
-                
+
                 self?.sendPushNotificationToRecipient(recipientHex: recipientHex)
-                
+
                 Logger.log(message: "Transaction send successful", domain: .general, level: .info)
                 result(.success)
             }

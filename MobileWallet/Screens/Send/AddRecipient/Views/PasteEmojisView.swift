@@ -100,7 +100,7 @@ class PasteEmojisView: DynamicThemeView {
             callBack()
         }
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary

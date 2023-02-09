@@ -84,9 +84,9 @@ final class TransactionsListHeaderView: DynamicThemeHeaderFooterView {
 
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         titleLabel.textColor = theme.text.heading

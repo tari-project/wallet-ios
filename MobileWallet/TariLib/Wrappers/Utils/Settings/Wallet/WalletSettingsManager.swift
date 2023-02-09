@@ -43,12 +43,12 @@ final class WalletSettingsManager {
     private var settings: WalletSettings {
 
         guard let networkName = GroupUserDefaults.selectedNetworkName else {
-            return WalletSettings(networkName: "", configurationState: .notConfigured, iCloudDocsBackupStatus: .disabled, dropboxBackupStatus: .disabled, hasVerifiedSeedPhrase: false, yat: nil)
+            return makeWalletSettings(networkName: "")
         }
 
         guard let existingSettings = GroupUserDefaults.walletSettings?.first(where: { $0.networkName == networkName }) else {
             var settings = GroupUserDefaults.walletSettings ?? []
-            let newSettings = WalletSettings(networkName: networkName, configurationState: .notConfigured, iCloudDocsBackupStatus: .disabled, dropboxBackupStatus: .disabled, hasVerifiedSeedPhrase: false, yat: nil)
+            let newSettings = makeWalletSettings(networkName: networkName)
             settings.append(newSettings)
             GroupUserDefaults.walletSettings = settings
             return newSettings
@@ -59,27 +59,68 @@ final class WalletSettingsManager {
 
     var configurationState: WalletSettings.WalletConfigurationState {
         get { settings.configurationState }
-        set { update(settings: settings.update(configurationState: newValue)) }
+        set {
+            var settings = settings
+            settings.configurationState = newValue
+            update(settings: settings)
+        }
     }
-    
+
     var iCloudDocsBackupStatus: WalletSettings.BackupStatus {
         get { settings.iCloudDocsBackupStatus }
-        set { update(settings: settings.update(iCloudDocsBackupStatus: newValue)) }
+        set {
+            var settings = settings
+            settings.iCloudDocsBackupStatus = newValue
+            update(settings: settings)
+        }
     }
-    
+
     var dropboxBackupStatus: WalletSettings.BackupStatus {
         get { settings.dropboxBackupStatus }
-        set { update(settings: settings.update(dropboxBackupStatus: newValue)) }
+        set {
+            var settings = settings
+            settings.dropboxBackupStatus = newValue
+            update(settings: settings)
+        }
     }
 
     var hasVerifiedSeedPhrase: Bool {
         get { settings.hasVerifiedSeedPhrase }
-        set { update(settings: settings.update(hasVerifiedSeedPhrase: newValue)) }
+        set {
+            var settings = settings
+            settings.hasVerifiedSeedPhrase = newValue
+            update(settings: settings)
+        }
     }
-    
+
+    var delayedWalletSecurityStagesTimestamps: [WalletSettings.WalletSecurityStage: Date] {
+        get { settings.delayedWalletSecurityStagesTimestamps }
+        set {
+            var settings = settings
+            settings.delayedWalletSecurityStagesTimestamps = newValue
+            update(settings: settings)
+        }
+    }
+
     var connectedYat: String? {
         get { settings.yat }
-        set { update(settings: settings.update(yat: newValue)) }
+        set {
+            var settings = settings
+            settings.yat = newValue
+            update(settings: settings)
+        }
+    }
+
+    private func makeWalletSettings(networkName: String) -> WalletSettings {
+        WalletSettings(
+            networkName: networkName,
+            configurationState: .notConfigured,
+            iCloudDocsBackupStatus: .disabled,
+            dropboxBackupStatus: .disabled,
+            hasVerifiedSeedPhrase: false,
+            delayedWalletSecurityStagesTimestamps: [:],
+            yat: nil
+        )
     }
 
     private func update(settings: WalletSettings) {

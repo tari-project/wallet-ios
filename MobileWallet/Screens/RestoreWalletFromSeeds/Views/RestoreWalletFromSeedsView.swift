@@ -62,7 +62,7 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
         view.setTitle(localized("restore_from_seed_words.button.select_base_node"), for: .normal)
         return view
     }()
-    
+
     @View private(set) var submitButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("restore_from_seed_words.button.submit"), for: .normal)
@@ -107,7 +107,7 @@ final class RestoreWalletFromSeedsView: KeyboardAvoidingContentView {
     }
 
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary

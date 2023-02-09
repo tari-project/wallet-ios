@@ -1,5 +1,5 @@
 //  QRCodePresentationView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 18/01/2022
@@ -42,63 +42,63 @@ import UIKit
 import TariCommon
 
 final class QRCodePresentationView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var contentView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 26.0
         return view
     }()
-    
+
     @View var qrCodeView = QRCodeView()
-    
+
     @View var shareButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("request.qr_code.buttons.share"), for: .normal)
         return view
     }()
-    
+
     @View var closeButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("request.qr_code.buttons.close"), for: .normal)
         view.setVariation(.warning)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     private var contentViewTopConstraint: NSLayoutConstraint?
     private var contentViewBottomConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         backgroundColor = .static.popupOverlay
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(contentView)
         [qrCodeView, shareButton, closeButton].forEach(contentView.addSubview)
-        
+
         let contentViewTopConstraint = contentView.topAnchor.constraint(equalTo: bottomAnchor)
-        
+
         self.contentViewTopConstraint = contentViewTopConstraint
         contentViewBottomConstraint = contentView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -18.0)
-        
+
         let constraints = [
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.0),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14.0),
@@ -115,34 +115,34 @@ final class QRCodePresentationView: DynamicThemeView {
             closeButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15.0),
             closeButton.widthAnchor.constraint(equalToConstant: 165.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Actions
-    
+
     func showContent() {
-        
+
         contentViewTopConstraint?.isActive = false
         contentViewBottomConstraint?.isActive = true
-        
+
         UIView.animate(withDuration: 0.3) { [weak self] in
             self?.layoutIfNeeded()
         }
     }
-    
+
     func hideContent() {
-        
+
         contentViewBottomConstraint?.isActive = false
         contentViewTopConstraint?.isActive = true
-        
+
         UIView.animate(withDuration: 0.3) { [weak self] in
             self?.layoutIfNeeded()
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         contentView.backgroundColor = theme.backgrounds.primary

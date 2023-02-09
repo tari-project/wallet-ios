@@ -1,5 +1,5 @@
 //  BugReportService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 28/10/2022
@@ -42,11 +42,11 @@ import Zip
 import Sentry
 
 final class BugReportService {
-    
+
     private let workingDirectory = FileManager.default.temporaryDirectory.appendingPathComponent("BugReport")
-    
+
     // MARK: - Actions
-    
+
     func send(name: String, email: String, message: String) async throws {
         try clearWorkingDirectory()
         try createWoringDirectory()
@@ -54,14 +54,14 @@ final class BugReportService {
         sendBugReport(name: name, email: email, message: message, attachementURL: attachementURL)
         try clearWorkingDirectory()
     }
-    
+
     private func prepareAttachement() async throws -> URL {
-        
+
         let zipName = "BugReport.zip"
-        
+
         let logsURLs = try Tari.shared.logsURLs.prefix(5)
         let localFileURL = workingDirectory.appendingPathComponent(zipName)
-        
+
         return try await withCheckedThrowingContinuation { continuation in
             do {
                 try Zip.zipFiles(paths: Array(logsURLs), zipFilePath: localFileURL, password: nil, compression: .BestCompression) { progress in
@@ -73,30 +73,30 @@ final class BugReportService {
             }
         }
     }
-    
+
     private func clearWorkingDirectory() throws {
         guard FileManager.default.fileExists(atPath: workingDirectory.path) else { return }
         try FileManager.default.removeItem(at: workingDirectory)
     }
-    
+
     private func createWoringDirectory() throws {
         try FileManager.default.createDirectory(at: workingDirectory, withIntermediateDirectories: true)
     }
-    
+
     private func sendBugReport(name: String, email: String, message: String, attachementURL: URL) {
-        
+
         let uuid = UUID().uuidString
         let attachement = Attachment(path: attachementURL.path, filename: "\(uuid).zip")
-        
+
         let eventID = SentrySDK.capture(message: uuid) { scope in
-            scope.add(attachement)
+            scope.addAttachment(attachement)
         }
-        
+
         let userFeedback = UserFeedback(eventId: eventID)
         userFeedback.name = name
         userFeedback.email = email
         userFeedback.comments = message
-        
+
         SentrySDK.capture(userFeedback: userFeedback)
     }
 }

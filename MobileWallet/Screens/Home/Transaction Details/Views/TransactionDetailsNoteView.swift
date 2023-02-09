@@ -1,5 +1,5 @@
 //  TransactionDetailsNoteView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 16/03/2022
@@ -43,53 +43,53 @@ import TariCommon
 import GiphyUISDK
 
 final class TransactionDetailsNoteView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var noteLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.txScreenTextLabel
         view.numberOfLines = 0
         return view
     }()
-    
+
     @View private var gifView: GPHMediaView = {
         let view = GPHMediaView()
         view.layer.cornerRadius = 20.0
         view.clipsToBounds = true
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var note: String? {
         get { noteLabel.text }
         set { noteLabel.text = newValue }
     }
-    
+
     var gifMedia: GPHMedia? {
         didSet { updateGifView() }
     }
-    
+
     private var gifViewHeightConstraints: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [noteLabel, gifView].forEach(addSubview)
-        
+
         let constraints = [
             noteLabel.topAnchor.constraint(equalTo: topAnchor, constant: 11.0),
             noteLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
@@ -99,28 +99,28 @@ final class TransactionDetailsNoteView: DynamicThemeView {
             gifView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
             gifView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -11.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         noteLabel.textColor = theme.text.heading
     }
-    
+
     private func updateGifView() {
-        
+
         gifView.media = gifMedia
         gifViewHeightConstraints?.isActive = false
-        
+
         if let media = gifMedia {
             gifViewHeightConstraints = gifView.heightAnchor.constraint(equalTo: gifView.widthAnchor, multiplier: 1.0 / media.aspectRatio)
         } else {
             gifViewHeightConstraints = gifView.heightAnchor.constraint(equalToConstant: 0.0)
         }
-        
+
         gifViewHeightConstraints?.isActive = true
     }
 }

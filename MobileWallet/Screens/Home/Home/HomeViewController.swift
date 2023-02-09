@@ -50,16 +50,16 @@ enum ScrollDirection {
 }
 
 final class HomeViewController: DynamicThemeViewController {
-    
+
     // MARK: - Constants
-    
+
     private static let panelBorderCornerRadius: CGFloat = 15.0
 
     // MARK: - Properties
-    
+
     private let model = HomeViewModel()
     private let mainView = HomeView()
-    
+
     private var hapticEnabled = false
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
 
@@ -68,27 +68,27 @@ final class HomeViewController: DynamicThemeViewController {
     private var isFirstIntroToWallet: Bool {
         TariSettings.shared.walletSettings.configurationState != .ready
     }
-    
+
     private var isTxViewFullScreen: Bool = false {
         didSet {
             showHideFullScreen()
             setNeedsStatusBarAppearanceUpdate()
         }
     }
-    
+
     private var grabberWidthConstraint: NSLayoutConstraint?
-    override var navBarHeight: CGFloat { (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0.0) + 56.0 }
-    
+    private var navBarHeight: CGFloat { (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0.0) + 56.0 }
+
     private var cancellables: Set<AnyCancellable> = []
-    
+
     private lazy var txsTableVC: TxsListViewController = {
         let txController = TxsListViewController()
         txController.backgroundType =  isFirstIntroToWallet ? .intro : .empty
         return txController
     }()
-    
+
     private let floatingPanelController = FloatingPanelController()
-    
+
     @View private var grabberHandle: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 2.5
@@ -101,11 +101,11 @@ final class HomeViewController: DynamicThemeViewController {
             grabberHandle.alpha = isGrabberVisible ? 1.0 : 0.0
         }
     }
-    
+
     override var preferredStatusBarStyle: UIStatusBarStyle { isTxViewFullScreen ? .darkContent : .lightContent }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
@@ -116,16 +116,19 @@ final class HomeViewController: DynamicThemeViewController {
         setupViews()
         setupCallbacks()
         NotificationManager.shared.requestAuthorization()
+        StagedWalletSecurityManager.shared.start()
+
+        PopUpPresenter.showStorePopUp() // TODO: Remove
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         ShortcutsManager.executeQueuedShortcut()
         checkIncompatibleNetwork()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         mainView.toolbarHeightConstraint?.constant = navBarHeight
         mainView.updateViewsOrder()
@@ -158,43 +161,43 @@ final class HomeViewController: DynamicThemeViewController {
     }
 
     private func setupGrabber(_ floatingPanelController: FloatingPanelController) {
-        
+
         floatingPanelController.surfaceView.grabberHandle.isHidden = true
         floatingPanelController.surfaceView.addSubview(grabberHandle)
-        
+
         let grabberWidthConstraint = grabberHandle.widthAnchor.constraint(equalToConstant: 0.0)
         self.grabberWidthConstraint = grabberWidthConstraint
-        
+
         let constraints = [
             grabberHandle.centerXAnchor.constraint(equalTo: floatingPanelController.surfaceView.grabberHandle.centerXAnchor),
             grabberHandle.topAnchor.constraint(equalTo: floatingPanelController.surfaceView.topAnchor, constant: 20.0),
             grabberWidthConstraint,
             grabberHandle.heightAnchor.constraint(equalToConstant: 5.0)
         ]
-        
+
         isGrabberVisible = true
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
-        
+
         model.$connectionStatusImage
             .removeDuplicates()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.connectionStatusIcon = $0 }
             .store(in: &cancellables)
-        
+
         model.$balance
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.update(balance: $0) }
             .store(in: &cancellables)
-        
+
         model.$availableBalance
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.update(avaiableToSpendAmount: $0) }
             .store(in: &cancellables)
-        
+
         mainView.onOnCloseButtonTap = { [weak self] in
             self?.txsTableVC.tableView.scrollToTop(animated: true)
             self?.floatingPanelController.move(to: .half, animated: true)
@@ -205,31 +208,29 @@ final class HomeViewController: DynamicThemeViewController {
         mainView.onAmountHelpButtonTap = { [weak self] in
             self?.showHelpDialog()
         }
-        
+
         mainView.onConnectionStatusButtonTap = { [weak self] in
             self?.showConectionStatusPopUp()
         }
-        
+
         mainView.utxosWalletButton.onTap = { [weak self] in
             self?.moveToUtxosWallet()
         }
     }
-    
+
     // MARK: - Actions
-    
+
     private func checkIncompatibleNetwork() {
-        
+
         guard !isNetworkCompatibilityChecked else { return }
         isNetworkCompatibilityChecked = true
-        
+
         guard model.isNetworkCompatible else {
             showIncompatibleNetworkDialog()
             return
         }
-        
-        checkBackupPrompt(delay: 0)
     }
-    
+
     private func showIncompatibleNetworkDialog() {
         let popUpModel = PopUpDialogModel(
             title: localized("incompatible_network.title"),
@@ -238,27 +239,26 @@ final class HomeViewController: DynamicThemeViewController {
                 PopUpDialogButtonModel(title: localized("incompatible_network.confirm"), type: .normal, callback: { [weak self] in self?.deleteWallet() }),
                 PopUpDialogButtonModel(title: localized("incompatible_network.cancel"), type: .text, callback: { [weak self] in
                     self?.model.updateCompatibleNetworkName()
-                    self?.checkBackupPrompt(delay: 2.0)
                 })
             ],
             hapticType: .error
         )
         PopUpPresenter.showPopUp(model: popUpModel)
     }
-    
+
     private func deleteWallet() {
         model.deleteWallet()
         AppRouter.transitionToSplashScreen()
     }
-    
+
     private func showConectionStatusPopUp() {
         Tari.shared.connectionMonitor.showDetailsPopup()
     }
-    
+
     private func update(balance: String) {
-        
+
         guard let textColor = UIColor.static.white else { return }
-        
+
         let balanceLabelAttributedText = NSMutableAttributedString(
             string: balance,
             attributes: [
@@ -266,9 +266,9 @@ final class HomeViewController: DynamicThemeViewController {
                 .foregroundColor: textColor
             ]
         )
-        
+
         let lastNumberOfDigitsToFormat = MicroTari.roundedFractionDigits + 1
-        
+
         balanceLabelAttributedText.addAttributes(
             [
                 .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
@@ -280,15 +280,14 @@ final class HomeViewController: DynamicThemeViewController {
 
         balanceLabelAttributedText.addAttributes(
             [NSAttributedString.Key.kern: 1.1],
-            range: NSRange(location: balance.count - lastNumberOfDigitsToFormat - 1 ,length: 1)
+            range: NSRange(location: balance.count - lastNumberOfDigitsToFormat - 1, length: 1)
         )
-        
+
         mainView.balanceValueLabel.attributedText = balanceLabelAttributedText
-        checkBackupPrompt(delay: 2)
     }
-    
+
     private func update(avaiableToSpendAmount: String) {
-        
+
         let text = NSAttributedString(string: avaiableToSpendAmount, attributes: [
             .font: Theme.shared.fonts.homeScreenTotalBalanceValueLabelDecimals,
             .foregroundColor: UIColor.static.white ?? UIColor()
@@ -296,15 +295,15 @@ final class HomeViewController: DynamicThemeViewController {
 
         mainView.avaiableFoundsValueLabel.attributedText = text
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         floatingPanelController.surfaceView.backgroundColor = theme.backgrounds.primary
         grabberHandle.backgroundColor = theme.icons.inactive
     }
-    
+
     // MARK: - Other
 
     private func showHideFullScreen() {
@@ -314,8 +313,7 @@ final class HomeViewController: DynamicThemeViewController {
                 // Wait before auto pulling down
                 DispatchQueue.main.asyncAfter(
                     deadline: .now() + 3.0 + CATransaction.animationDuration()
-                ) {
-                    [weak self] in
+                ) { [weak self] in
                     guard let self = self else { return }
                     if self.isTxViewFullScreen {
                         self.floatingPanelController.move(to: .half, animated: true)
@@ -358,7 +356,7 @@ final class HomeViewController: DynamicThemeViewController {
     }
 
     func onSend(deeplink: TransactionsSendDeeplink? = nil) {
-        
+
         let sendVC = TransactionsViewController()
         let navigationController = AlwaysPoppableNavigationController(rootViewController: sendVC)
         navigationController.setNavigationBarHidden(true, animated: false)
@@ -375,7 +373,7 @@ final class HomeViewController: DynamicThemeViewController {
 
 // MARK: - TxTableDelegateMethods
 extension HomeViewController: TxsTableViewDelegate {
-    
+
     func onTxSelect(_ tx: Transaction) {
         let controller = TransactionDetailsConstructor.buildScene(transaction: tx)
         navigationController?.pushViewController(controller, animated: true)
@@ -386,8 +384,7 @@ extension HomeViewController: TxsTableViewDelegate {
             if mainView.topToolbar.layer.shadowOpacity == 0.0 { return }
             UIView.animate(
                 withDuration: CATransaction.animationDuration(),
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     guard let self = self else { return }
                     self.mainView.topToolbar.layer.shadowOpacity = 0
                     self.view.layoutIfNeeded()
@@ -397,8 +394,7 @@ extension HomeViewController: TxsTableViewDelegate {
             if mainView.topToolbar.layer.shadowOpacity == 0.1 { return }
             UIView.animate(
                 withDuration: CATransaction.animationDuration(),
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     guard let self = self else { return }
                     self.mainView.topToolbar.layer.shadowOpacity = 0.1
                     self.view.layoutIfNeeded()
@@ -464,8 +460,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
                 withDuration: 0.1,
                 delay: 0,
                 options: .curveEaseIn,
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     guard let self = self else { return }
                     self.view.layoutIfNeeded()
                 }
@@ -517,8 +512,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
                 withDuration: CATransaction.animationDuration(),
                 delay: 0,
                 options: .curveEaseIn,
-                animations: {
-                    [weak self] in
+                animations: { [weak self] in
                     self?.mainView.dimmingLayer.opacity = Float(progress / 1.5)
                     self?.view.layoutIfNeeded()
                 }
@@ -549,9 +543,9 @@ extension HomeViewController: FloatingPanelControllerDelegate {
             txsTableVC.tableView.unlockScrollView()
         }
     }
-    
-    private func showHelpDialog()  {
-        
+
+    private func showHelpDialog() {
+
         let popUpModel = PopUpDialogModel(
             title: localized("home.info.amount_help.title"),
             message: localized("home.info.amount_help.description"),
@@ -564,10 +558,10 @@ extension HomeViewController: FloatingPanelControllerDelegate {
             ],
             hapticType: .none
         )
-        
+
         PopUpPresenter.showPopUp(model: popUpModel)
     }
-    
+
     private func moveToUtxosWallet() {
         let controller = UTXOsWalletConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
@@ -575,27 +569,27 @@ extension HomeViewController: FloatingPanelControllerDelegate {
 }
 
 private extension PopUpPresenter {
-    
+
     static func showStorePopUp() {
-        
+
         let headerSection = PopUpImageHeaderView()
-        
+
         headerSection.imageHeight = 180.0
         headerSection.imageView.image = Theme.shared.images.storeModal
         headerSection.label.attributedText = storePopUpTitle()
-        
+
         let contentSection = PopUpComponentsFactory.makeContentView(message: localized("store_modal.description", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol))
         let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [
             PopUpDialogButtonModel(title: localized("store_modal.action"), icon: Theme.shared.images.storeIcon, type: .normal, callback: { openStoreWebpage() }),
             PopUpDialogButtonModel(title: localized("store_modal.cancel"), type: .text)
         ])
-        
+
         let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
         popUp.topOffset = 86.0
-        
+
         show(popUp: popUp, configuration: .dialog(hapticType: .none))
     }
-    
+
     private static func storePopUpTitle() -> NSAttributedString {
 
         let boldedText = localized("store_modal.title.part.2")
@@ -609,7 +603,7 @@ private extension PopUpPresenter {
 
         return title
     }
-    
+
     private static func openStoreWebpage() {
         guard let url = URL(string: TariSettings.shared.storeUrl) else { return }
         WebBrowserPresenter.open(url: url)

@@ -1,5 +1,5 @@
 //  LogFormatter.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/10/2022
@@ -39,18 +39,18 @@
 */
 
 enum LogFormatter {
-    
+
     private static let appNamePrefix = "[Aurora]"
     private static let separator = " | "
     private static let domainNameLength = Logger.Domain.allCases.map { $0.name.count }.max() ?? 0
     private static let levelNameLength = Logger.Level.allCases.map { $0.name.count }.max() ?? 0
-    
+
     static func formattedMessage(message: String, domain: Logger.Domain, logLevel: Logger.Level, showPrefix: Bool) -> String {
         let domainName = formattedDomainName(domain: domain, includePrefix: showPrefix)
         let logLevelName = logLevel.name.fixedLength(levelNameLength)
         return [domainName, logLevelName, message].joined(separator: " | ")
     }
-    
+
     static func formattedDomainName(domain: Logger.Domain, includePrefix: Bool) -> String {
         let domainName = domain.name.fixedLength(domainNameLength)
         guard includePrefix else { return domainName }
@@ -59,7 +59,7 @@ enum LogFormatter {
 }
 
 private extension String {
-    
+
     func fixedLength(_ length: Int) -> Self {
         var result = prefix(length)
         while result.count < length { result += " " }
@@ -68,7 +68,7 @@ private extension String {
 }
 
 private extension Logger.Level {
-    
+
     var name: String {
         switch self {
         case .verbose:

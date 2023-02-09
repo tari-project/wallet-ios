@@ -52,7 +52,7 @@ final class ErrorView: DynamicThemeView {
                 alpha = 1.0
                 UINotificationFeedbackGenerator().notificationOccurred(.error)
             }
-            
+
         }
     }
 
@@ -74,7 +74,7 @@ final class ErrorView: DynamicThemeView {
         label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
         label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.system.red

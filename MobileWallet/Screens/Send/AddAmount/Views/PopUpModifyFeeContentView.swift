@@ -1,5 +1,5 @@
 //  PopUpModifyFeeContentView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 20/05/2022
@@ -42,11 +42,11 @@ import UIKit
 import TariCommon
 
 final class PopUpModifyFeeContentView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private(set) var segmentedControl = TariSegmentedControl(icons: [Theme.shared.images.speedometerLow, Theme.shared.images.speedometerMid, Theme.shared.images.speedometerHigh])
-    
+
     @View private var estimatedFeeTitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("add_amount.pop_up.adjust_fee.label.estimated_fee")
@@ -54,38 +54,38 @@ final class PopUpModifyFeeContentView: DynamicThemeView {
         view.font = .Avenir.medium.withSize(14.0)
         return view
     }()
-    
+
     @View private var estimatedFeeValueLabel: CurrencyLabelView = {
         let view = CurrencyLabelView()
         view.font = .Avenir.medium.withSize(26.0)
         view.iconHeight = 13.0
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var estimatedFee: String? {
         get { estimatedFeeValueLabel.text }
         set { estimatedFeeValueLabel.text = newValue }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [segmentedControl, estimatedFeeTitleLabel, estimatedFeeValueLabel].forEach(addSubview)
-        
+
         let constraints = [
             segmentedControl.topAnchor.constraint(equalTo: topAnchor),
             segmentedControl.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -96,12 +96,12 @@ final class PopUpModifyFeeContentView: DynamicThemeView {
             estimatedFeeValueLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             estimatedFeeValueLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         estimatedFeeTitleLabel.textColor = theme.text.heading

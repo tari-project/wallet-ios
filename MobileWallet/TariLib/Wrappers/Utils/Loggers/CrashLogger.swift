@@ -1,5 +1,5 @@
 //  CrashLogger.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/10/2022
@@ -41,7 +41,7 @@
 import Sentry
 
 final class CrashLogger {
-    
+
     init() {
         guard let sentryPublicDSN = TariSettings.shared.sentryPublicDSN else { return }
         let options = Options()
@@ -51,18 +51,18 @@ final class CrashLogger {
 }
 
 extension CrashLogger: Logable {
-    
+
     func log(message: String, domain: Logger.Domain, logLevel: Logger.Level) {
-        
+
         let breadcrumb = Breadcrumb(level: logLevel.sentryLevel, category: domain.name)
         breadcrumb.message = message
-        
-        SentrySDK.addBreadcrumb(crumb: breadcrumb)
+
+        SentrySDK.addBreadcrumb(breadcrumb)
     }
 }
 
 private extension Logger.Level {
-    
+
     var sentryLevel: SentryLevel {
         switch self {
         case .verbose:

@@ -1,5 +1,5 @@
 //  AddAmountSpinnerView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 27/05/2022
@@ -43,9 +43,9 @@ import TariCommon
 import Lottie
 
 final class AddAmountSpinnerView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     private let spinnerView: AnimationView = {
         let view = AnimationView()
         view.backgroundBehavior = .pauseAndRestore
@@ -55,7 +55,7 @@ final class AddAmountSpinnerView: DynamicThemeView {
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = localized("add_amount.spinner_view.label.calculating")
@@ -63,29 +63,29 @@ final class AddAmountSpinnerView: DynamicThemeView {
         view.font = .Avenir.light.withSize(14.0)
         return view
     }()
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [spinnerView, label].forEach(addSubview)
-        
+
         let constraints = [
             spinnerView.topAnchor.constraint(equalTo: topAnchor, constant: 5.0),
             spinnerView.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -96,7 +96,7 @@ final class AddAmountSpinnerView: DynamicThemeView {
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
             label.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -5.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 }

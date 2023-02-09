@@ -1,5 +1,5 @@
 //  WalletBalance.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 03/10/2022
@@ -39,16 +39,15 @@
 */
 
 struct WalletBalance: Equatable {
-    
+
     let available: UInt64
     let incoming: UInt64
     let outgoing: UInt64
     let timeLocked: UInt64
-    
+
     static var zero: Self { Self(available: 0, incoming: 0, outgoing: 0, timeLocked: 0) }
 }
 
 extension WalletBalance {
     var total: UInt64 { available + incoming }
 }
-

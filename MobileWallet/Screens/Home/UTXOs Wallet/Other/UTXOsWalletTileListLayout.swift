@@ -1,5 +1,5 @@
 //  UTXOsWalletTileListLayout.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 23/06/2022
@@ -41,44 +41,48 @@
 import UIKit
 
 final class UTXOsWalletTileListLayout: UICollectionViewLayout {
-    
+
+    private struct ColumnData {
+        let columnIndex: Int
+        var totalHeight: CGFloat
+        var attributes: [UICollectionViewLayoutAttributes]
+    }
+
     // MARK: - Constants
-    
+
     private let horizontalMargin: CGFloat = 30.0
     private let verticalMargin: CGFloat = 12.0
     private let internalMargin: CGFloat = 12.0
-    
+
     // MARK: - Properties
-    
+
     var columnsCount = 0
     var onCheckHeightAtIndex: ((Int) -> CGFloat)?
-    
+
     private var allAttributes: [UICollectionViewLayoutAttributes] = []
     private var totalHeight: CGFloat = 0
-    
+
     // MARK: - Actions
-    
+
     override var collectionViewContentSize: CGSize {
         guard let collectionView = collectionView else { return .zero }
         return CGSize(width: collectionView.bounds.width, height: totalHeight)
     }
-    
+
     override func prepare() {
         super.prepare()
-        
+
         guard let collectionView = collectionView, collectionView.numberOfSections > 0 else { return }
-        
+
         let columnWidth = (collectionViewContentSize.width - horizontalMargin * 2.0 - internalMargin * CGFloat(columnsCount - 1)) / CGFloat(columnsCount)
         let itemsCount = collectionView.numberOfItems(inSection: 0)
-        
-        let initialData: [(columnIndex: Int, totalHeight: CGFloat, attributes: [UICollectionViewLayoutAttributes])] = (0..<columnsCount)
-            .map { ($0, verticalMargin, []) }
-        
+        let initialData = (0..<columnsCount).map { ColumnData(columnIndex: $0, totalHeight: verticalMargin, attributes: []) }
+
         let data = (0..<itemsCount)
             .reduce(into: initialData) { [weak self] result, index in
-                
+
                 guard let columnIndex = result.min(by: { $0.totalHeight < $1.totalHeight })?.columnIndex, let height = self?.onCheckHeightAtIndex?(index) else { return }
-                
+
                 let attributes = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: index, section: 0))
                 attributes.frame = CGRect(
                     x: horizontalMargin + columnWidth * CGFloat(columnIndex) + internalMargin * CGFloat(columnIndex),
@@ -86,19 +90,19 @@ final class UTXOsWalletTileListLayout: UICollectionViewLayout {
                     width: columnWidth,
                     height: height
                 )
-                
+
                 result[columnIndex].totalHeight += height + verticalMargin
                 result[columnIndex].attributes.append(attributes)
             }
-        
+
         allAttributes = data.flatMap { $0.attributes }
         totalHeight = data.map { $0.totalHeight }.max() ?? 0.0
     }
-    
+
     override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         allAttributes.filter { $0.frame.intersects(rect) }
     }
-    
+
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         allAttributes.first { $0.indexPath == indexPath }
     }

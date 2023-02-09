@@ -1,5 +1,5 @@
 //  CharacterSet+CustomSets.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/01/2022
@@ -38,14 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
 extension CharacterSet {
-    
+
     static var digitsAndDecimalSeparator: Self {
         var characterSet = Self.decimalDigits
         characterSet.insert(charactersIn: MicroTari.decimalSeparator)
         return characterSet
     }
-    
+
     static var hexadecimal: Self { CharacterSet(charactersIn: "0123456789abcdef") }
 }

@@ -1,5 +1,5 @@
 //  NetworkTrafficView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 20/05/2022
@@ -42,52 +42,52 @@ import UIKit
 import TariCommon
 
 final class NetworkTrafficView: DynamicThemeView {
-    
+
     enum Variant {
         case lowTraffic
         case mediumTraffic
         case highTraffic
     }
-    
+
     // MARK: - Subviews
-    
+
     @View private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = localized("add_amount.label.network_traffic")
         view.font = .Avenir.medium.withSize(14.0)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var variant: Variant = .lowTraffic {
         didSet { updateIcon() }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
         updateIcon()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [iconView, label].forEach(addSubview)
-        
+
         let constraints = [
             iconView.leadingAnchor.constraint(equalTo: leadingAnchor),
             iconView.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -96,18 +96,18 @@ final class NetworkTrafficView: DynamicThemeView {
             label.trailingAnchor.constraint(equalTo: trailingAnchor),
             heightAnchor.constraint(equalToConstant: 21.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         iconView.tintColor = theme.text.body
         label.textColor = theme.text.body
     }
-    
+
     private func updateIcon() {
         switch variant {
         case .lowTraffic:

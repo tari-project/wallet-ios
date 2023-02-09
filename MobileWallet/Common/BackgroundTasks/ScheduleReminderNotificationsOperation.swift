@@ -76,7 +76,7 @@ class ScheduleReminderNotificationsOperation: Operation {
                 body: reminderDetails.body,
                 identifier: reminderDetails.identifier,
                 timeInterval: reminderDetails.deliverAfter - intervalOffset) { [weak self] (_) in
-                    numberOfSetNotifications = numberOfSetNotifications + 1
+                    numberOfSetNotifications += 1
                     // Know for certain all notifications have been scheduled
                     if numberOfSetNotifications >= ReminderNotifications.recipientReminderNotifications.count {
                         self?.onComplete(true)

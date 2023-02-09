@@ -1,5 +1,5 @@
 //  TariUTXOsService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022
@@ -39,29 +39,29 @@
 */
 
 final class TariUTXOsService: CoreTariService {
-    
+
     // MARK: - Properties
-    
+
     var allUtxos: [TariUtxo] {
         get throws { try walletManager.utxos() }
     }
-    
+
     // MARK: - Actions
-    
+
     func coinBreakPreview(commitments: [String], splitsCount: UInt, feePerGram: UInt64 = Tari.defaultFeePerGram.rawValue) throws -> TariCoinPreview {
         try walletManager.coinSplitPreview(commitments: commitments, splitsCount: splitsCount, feePerGram: feePerGram)
     }
-    
+
     func combineCoinsPreview(commitments: [String], feePerGram: UInt64 = Tari.defaultFeePerGram.rawValue) throws -> TariCoinPreview {
         try walletManager.coinsJoinPreview(commitments: commitments, feePerGram: feePerGram)
     }
-    
+
     func breakCoins(commitments: [String], splitsCount: UInt, feePerGram: UInt64 = Tari.defaultFeePerGram.rawValue) throws {
         let commitmentsVector = TariVectorWrapper(type: TariTypeTag(0))
         try commitmentsVector.add(commitments: commitments)
         _ = try walletManager.coinSplit(commitments: commitmentsVector, splitsCount: splitsCount, feePerGram: feePerGram)
     }
-    
+
     func combineCoins(commitments: [String], feePerGram: UInt64 = Tari.defaultFeePerGram.rawValue) throws {
         let commitmentsVector = TariVectorWrapper(type: TariTypeTag(0))
         try commitmentsVector.add(commitments: commitments)

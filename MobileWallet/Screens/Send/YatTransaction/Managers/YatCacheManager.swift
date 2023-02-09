@@ -1,5 +1,5 @@
 //  YatCacheManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 25/10/2021
@@ -41,51 +41,51 @@
 import Foundation
 
 final class YatCacheManager {
-    
+
     struct FileData {
         let url: URL
         let identifier: FileIdentifier
     }
-    
+
     enum FileIdentifier: String {
         case verticalVideo = "vert"
         case normalVideo = ""
-        
+
         init(identifier: String) {
             self = Self(rawValue: identifier) ?? .normalVideo
         }
     }
-    
+
     // MARK: - Properties
-    
+
     private var cacheURL: URL? { FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first?.appendingPathComponent("YatVisualisations", isDirectory: true) }
-    
+
     // MARK: - Actions
-    
+
     func fetchFileData(name: String) -> FileData? {
-        
+
         guard let cacheURL = cacheURL, let requestedFileComponents = name.components,
               let fileURL = try? FileManager.default.contentsOfDirectory(atURL: cacheURL, sortedBy: .created).first(where: { $0.lastPathComponent.hasPrefix(requestedFileComponents.assetName) }),
               let cachedFileComponents = fileURL.absoluteString.components else {
                   return nil
               }
-        
+
         if requestedFileComponents.hash != cachedFileComponents.hash {
             return nil
         }
-        
+
         if requestedFileComponents.identifier == .verticalVideo, cachedFileComponents.identifier == .normalVideo {
             return nil
         }
-        
+
         return FileData(url: fileURL, identifier: cachedFileComponents.identifier)
     }
-    
+
     func save(data: Data, name: String) -> FileData? {
-        
+
         guard let cacheURL = cacheURL, let components = name.components else { return nil }
         createDirectoryIfNeeded()
-        
+
         do {
             try removeObsoleteData(prefix: components.assetName)
             let fileURL = cacheURL.appendingPathComponent(name)
@@ -96,12 +96,12 @@ final class YatCacheManager {
             return nil
         }
     }
-    
+
     private func createDirectoryIfNeeded() {
         guard let cacheURL = cacheURL, !FileManager.default.fileExists(atPath: cacheURL.path) else { return }
         try? FileManager.default.createDirectory(at: cacheURL, withIntermediateDirectories: true)
     }
-    
+
     private func removeObsoleteData(prefix: String) throws {
         guard let cacheURL = cacheURL else { return }
         let allFiles = try FileManager.default.contentsOfDirectory(atURL: cacheURL, sortedBy: .modified)
@@ -111,9 +111,15 @@ final class YatCacheManager {
 }
 
 private extension String {
-    
-    var components: (assetName: String, hash: String, identifier: YatCacheManager.FileIdentifier, fileExtension: String)? {
-        
+
+    struct Components {
+        let assetName: String
+        let hash: String
+        let identifier: YatCacheManager.FileIdentifier
+        let fileExtension: String
+    }
+
+    var components: Components? {
         var elements = split(separator: "-")
         guard elements.count >= 2 else { return nil }
         let lastElement = elements.removeLast()
@@ -122,14 +128,14 @@ private extension String {
         let assetName = elements.joined(separator: "-")
         let fileExtension = trailingElements.removeLast()
         var rawIdentifier: String = ""
-        
+
         if trailingElements.count == 2 {
             rawIdentifier = String(trailingElements.removeLast())
         }
-        
+
         let hash = trailingElements.joined(separator: ".")
         let identifier = YatCacheManager.FileIdentifier(identifier: rawIdentifier)
-        
-        return (assetName: assetName, hash: hash, identifier: identifier, fileExtension: String(fileExtension))
+
+        return Components(assetName: assetName, hash: hash, identifier: identifier, fileExtension: String(fileExtension))
     }
 }

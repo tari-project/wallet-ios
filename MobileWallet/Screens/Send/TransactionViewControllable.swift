@@ -1,5 +1,5 @@
 //  TransactionViewControllable.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 09/02/2022

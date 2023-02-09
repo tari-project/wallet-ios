@@ -42,7 +42,7 @@ enum AppKeychainWrapper {
 
     private static let passwordKey = "BackupPasswordKey"
     private static let dbPassphraseKey = "DBPassphraseKey"
-    
+
     static var backupPassword: String? {
         get { TariSettings.sharedKeychainGroup.string(forKey: passwordKey) }
         set {

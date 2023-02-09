@@ -1,5 +1,5 @@
 //  TariContactsService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022
@@ -39,17 +39,17 @@
 */
 
 final class TariContactsService: CoreTariService {
-    
+
     // MARK: - Properties
-    
+
     var allContacts: [Contact] {
         get throws { try walletManager.walletContacts().all }
     }
-    
+
     @discardableResult func upsert(contact: Contact) throws -> Bool {
         try walletManager.upsert(contact: contact)
     }
-    
+
     func findContact(hex: String) throws -> Contact? {
         try allContacts.first { try $0.address.byteVector.hex == hex }
     }

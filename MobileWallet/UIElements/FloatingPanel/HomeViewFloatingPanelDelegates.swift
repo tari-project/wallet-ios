@@ -54,23 +54,23 @@ class HomeViewFloatingPanelLayout: FloatingPanelLayout {
         return .fromSuperview
     }
 
-    public var initialPosition: FloatingPanelPosition {
+    var initialPosition: FloatingPanelPosition {
         return .hidden
     }
 
-    public var supportedPositions: Set<FloatingPanelPosition> {
+    var supportedPositions: Set<FloatingPanelPosition> {
         return [.full, .half]
     }
 
-    public func insetFor(position: FloatingPanelPosition) -> CGFloat? {
+    func insetFor(position: FloatingPanelPosition) -> CGFloat? {
         let topInset: CGFloat = navBarHeight
         // Raising the lowest postion of the panel slightly for phones without the notch
         let lowestHeight = UIScreen.main.bounds.height - 106.0 - (UIApplication.shared.keyWindow?.safeAreaInsets.top ?? 0)
 
         switch position {
-            case .full: return topInset - 37 // A top inset from safe area
-            case .half: return lowestHeight // A bottom inset from the safe area
-            default: return nil // Or `case .hidden: return nil`
+        case .full: return topInset - 37 // A top inset from safe area
+        case .half: return lowestHeight // A bottom inset from the safe area
+        default: return nil // Or `case .hidden: return nil`
         }
     }
 }

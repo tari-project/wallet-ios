@@ -1,5 +1,5 @@
 //  LogFilesManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 07/12/2022
@@ -39,21 +39,21 @@
 */
 
 enum LogFilesManager {
-    
+
     private struct Metadata {
         let url: URL
         let modificationDate: Date
     }
-    
+
     // MARK: - Constants
-    
+
     private static let minFilesCount = 5
     private static var maxModificationDate: Date { Date(timeIntervalSinceNow: -60 * 60 * 24 * 7) }
-    
+
     // MARK: - Actions
-    
+
     static func cleanupLogs() {
-        
+
         do {
             try Tari.shared.logsURLs
                 .map { Metadata(url: $0, modificationDate: modificationDate(url: $0)) }
@@ -66,7 +66,7 @@ enum LogFilesManager {
             Logger.log(message: "Unable to clenup logs", domain: .general, level: .warning)
         }
     }
-    
+
     private static func modificationDate(url: URL) -> Date {
         let date = try? FileManager.default.attributesOfItem(atPath: url.path)[.modificationDate] as? Date
         return date ?? Date(timeIntervalSince1970: 0)

@@ -1,5 +1,5 @@
 //  SendingTariModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/02/2022
@@ -41,7 +41,7 @@
 import Combine
 
 final class SendingTariModel {
-    
+
     struct InputData {
         let address: TariAddress
         let amount: MicroTari
@@ -49,78 +49,78 @@ final class SendingTariModel {
         let message: String
         let isOneSidedPayment: Bool
     }
-    
+
     struct StateModel {
         let firstText: String
         let secondText: String
         let stepIndex: Int
     }
-    
+
     enum Completion {
         case success
         case failure(WalletTransactionsManager.TransactionError)
     }
-    
+
     private enum State: Comparable {
         case connectionCheck
         case discovery
         case sent
     }
-    
+
     // MARK: - View Model
-    
+
     @Published var stateModel: StateModel?
     @Published var onCompletion: Completion?
     var isNextStepAvailable: Bool { !stateQueue.isEmpty }
-    
+
     // MARK: - Properties
-    
+
     @Published private var state: State = .connectionCheck
-    
+
     private let inputData: InputData
     private let walletTransactionsManager = WalletTransactionsManager()
-    
+
     private var stateQueue: [State] = []
     private var transactionID: UInt64?
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init(inputData: InputData) {
         self.inputData = inputData
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
         $state
-            .compactMap { [weak self] in self?.stateModel(forState:$0) }
+            .compactMap { [weak self] in self?.stateModel(forState: $0) }
             .assign(to: \.stateModel, on: self)
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     func start() {
         guard state == .connectionCheck else { return }
         sendTransactionToBlockchain()
     }
-    
+
     func moveToNextStep() {
         guard isNextStepAvailable else { return }
         state = stateQueue.removeFirst()
     }
-    
+
     private func addStateToQueue(state: State) {
         guard state > self.state else { return }
         var queue = Set(stateQueue)
         queue.insert(state)
         stateQueue = queue.sorted()
     }
-    
+
     private func sendTransactionToBlockchain() {
-        
+
         walletTransactionsManager.performTransactionPublisher(address: inputData.address, amount: inputData.amount, feePerGram: inputData.feePerGram, message: inputData.message, isOneSidedPayment: inputData.isOneSidedPayment)
             .sink { [weak self] completion in
                 switch completion {
@@ -139,14 +139,14 @@ final class SendingTariModel {
             }
             .store(in: &cancellables)
     }
-    
+
     private func finalizeTransaction() {
         addStateToQueue(state: .sent)
         onCompletion = .success
     }
-    
+
     // MARK: - Handlers
-    
+
     private func stateModel(forState state: State) -> StateModel? {
         switch state {
         case .connectionCheck:

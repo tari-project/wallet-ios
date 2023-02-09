@@ -1,5 +1,5 @@
 //  TariAddress.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/11/2022
@@ -39,15 +39,15 @@
 */
 
 final class TariAddress {
-    
+
     enum InternalError: Error {
         case invalidHex
     }
-    
+
     // MARK: - Properties
-    
+
     let pointer: OpaquePointer
-    
+
     var byteVector: ByteVector {
         get throws {
             var errorCode: Int32 = -1
@@ -57,7 +57,7 @@ final class TariAddress {
             return ByteVector(pointer: result)
         }
     }
-    
+
     var emojis: String {
         get throws {
             var errorCode: Int32 = -1
@@ -67,39 +67,39 @@ final class TariAddress {
             return String(cString: result)
         }
     }
-    
+
     // MARK: - Initialisers
-    
+
     init(pointer: OpaquePointer) {
         self.pointer = pointer
     }
-    
+
     init(hex: String) throws {
-        
+
         guard hex.count == 66, hex.rangeOfCharacter(from: .hexadecimal) != nil else { throw InternalError.invalidHex }
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = tari_address_from_hex(hex, errorCodePointer)
-        
+
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
         self.pointer = pointer
     }
-    
+
     init(emojiID: String) throws {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = emoji_id_to_tari_address(emojiID, errorCodePointer)
 
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
         self.pointer = pointer
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         tari_address_destroy(pointer)
     }

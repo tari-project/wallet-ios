@@ -1,5 +1,5 @@
 //  PageViewController.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 20/01/2022
@@ -41,56 +41,58 @@
 import UIKit
 
 final class PageViewController: UIViewController {
-    
+
     // MARK: - Properties
-    
+
     private let pageViewController = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
-    
+
     var controllers: [UIViewController] = [] {
         didSet { move(toIndex: 0) }
     }
-    
+
+    private var scrollView: UIScrollView? {
+        pageViewController.view.subviews
+           .compactMap { $0 as? UIScrollView }
+           .first
+    }
+
     private var currentIndex = 0
-    
+
     @Published private(set) var pageIndex: CGFloat = 0.0
-    
+
     // MARK: - View Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         add(childController: pageViewController, containerView: view)
     }
-    
-    private func setupCallbacks()  {
-        
+
+    private func setupCallbacks() {
         pageViewController.dataSource = self
         pageViewController.delegate = self
-        
-        let scrollView = pageViewController.view.subviews
-            .compactMap { $0 as? UIScrollView }
-            .first
-        
         scrollView?.delegate = self
     }
-    
+
     // MARK: - Actions
-    
+
     func move(toIndex index: Int) {
         guard let controller = controller(forIndex: index) else { return }
+        scrollView?.panGestureRecognizer.isEnabled = false
+        scrollView?.panGestureRecognizer.isEnabled = true
         pageViewController.setViewControllers([controller], direction: index > currentIndex ? .forward : .reverse, animated: true) { [weak self] _ in
             self?.currentIndex = index
         }
     }
-    
+
     // MARK: - Helpers
-    
+
     private func controller(forIndex index: Int) -> UIViewController? {
         guard index >= 0, index < controllers.count else { return nil }
         return controllers[index]
@@ -98,12 +100,12 @@ final class PageViewController: UIViewController {
 }
 
 extension PageViewController: UIPageViewControllerDataSource {
-    
+
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         guard let index = controllers.firstIndex(of: viewController) else { return nil }
         return controller(forIndex: index - 1)
     }
-    
+
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         guard let index = controllers.firstIndex(of: viewController) else { return nil }
         return controller(forIndex: index + 1)
@@ -111,7 +113,7 @@ extension PageViewController: UIPageViewControllerDataSource {
 }
 
 extension PageViewController: UIPageViewControllerDelegate {
-    
+
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         guard completed, let controller = pageViewController.viewControllers?.first, let index = controllers.firstIndex(of: controller) else { return }
         currentIndex = index
@@ -119,9 +121,9 @@ extension PageViewController: UIPageViewControllerDelegate {
 }
 
 extension PageViewController: UIScrollViewDelegate {
-    
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        
+
         let offset = scrollView.contentOffset.x
         let bounds = scrollView.bounds.width
         let index = CGFloat(currentIndex)

@@ -1,5 +1,5 @@
 //  StatusLoggerManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/10/2022
@@ -41,39 +41,42 @@
 import Combine
 
 final class StatusLoggerManager {
-    
+
+    static let shared = StatusLoggerManager()
     private var cancellables = Set<AnyCancellable>()
-    
-    init() {
+
+    private init() {}
+
+    func configure() {
         setupCallbacks()
     }
-    
+
     private func setupCallbacks() {
-        
+
         Tari.shared.connectionMonitor.$baseNodeConnection
             .sink { Logger.log(message: "Base Node Connection: \($0)", domain: .connection, level: .verbose) }
             .store(in: &cancellables)
-        
+
         Tari.shared.connectionMonitor.$syncStatus
             .sink { Logger.log(message: "Sync Status: \($0)", domain: .connection, level: .verbose) }
             .store(in: &cancellables)
-        
+
         Tari.shared.connectionMonitor.$torConnection
             .sink { Logger.log(message: "Tor Connection Status: \($0)", domain: .connection, level: .verbose) }
             .store(in: &cancellables)
-        
+
         Tari.shared.connectionMonitor.$networkConnection
             .sink { Logger.log(message: "Network Connection Status: \($0)", domain: .connection, level: .verbose) }
             .store(in: &cancellables)
-        
+
         Tari.shared.connectionMonitor.$torBootstrapProgress
             .sink { Logger.log(message: "Tor Bootstrap Progress: \($0)", domain: .connection, level: .verbose) }
             .store(in: &cancellables)
-        
+
         Tari.shared.connectionMonitor.$isTorBootstrapCompleted
             .removeDuplicates()
             .sink { Logger.log(message: "Is Tor Bootstrap Progress Completed: \($0)", domain: .connection, level: .verbose) }
             .store(in: &cancellables)
-        
+
     }
 }

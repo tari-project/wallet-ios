@@ -53,8 +53,6 @@ struct TariSettings {
 
     let walletSettings = WalletSettingsManager()
 
-    let deeplinkURI = "tari"
-
     let iCloudContainerIdentifier = "iCloud.com.tari.wallet"
 
     let tariUrl = "https://www.tari.com/"
@@ -63,7 +61,6 @@ struct TariSettings {
     let userAgreementUrl = "https://www.tari.com/user_agreement/"
     let privacyPolicyUrl = "https://www.tari.com/privacy_policy/"
     let storeUrl = "https://store.tarilabs.com/"
-    let bugReportEmail = "bug_reports@tari.com"
     let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
     let blockExplorerUrl = "https://explore-esme.tari.com/"
     let blockExplorerKernelUrl = "https://explore-esme.tari.com/kernel/"
@@ -84,15 +81,9 @@ struct TariSettings {
     #if DEBUG
     // Used for showing a little extra detail in the UI to help debugging
     private let isDebug = true
-    let txTimeToExpire: TimeInterval = 60 * 60 * 24 * 1 // 1 day
     #else
     private let isDebug = false
-    let txTimeToExpire: TimeInterval = 60 * 60 * 24 * 3 // 3 days
     #endif
-
-    var isUnitTesting: Bool {
-        return ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
-    }
 
     static let sharedKeychainGroup = KeychainWrapper(
         serviceName: "tari",
@@ -102,13 +93,6 @@ struct TariSettings {
     static let storageDirectory: URL = FileManager.default.containerURL(
         forSecurityApplicationGroupIdentifier: groupIndentifier
     )!
-    static let testStoragePath: String = {
-        let folderPath = storageDirectory.appendingPathComponent("test_tari_wallet").path
-        if FileManager.default.fileExists(atPath: folderPath) {
-            try? FileManager.default.removeItem(atPath: folderPath)
-        }
-        return folderPath
-    }()
 
     var environment: AppEnvironment {
         if isDebug {
@@ -177,7 +161,7 @@ struct TariSettings {
                 if let yatApiURL = jsonResult["yatApiURL"] as? String, !yatApiURL.isEmpty, let url = URL(string: yatApiURL) {
                     self.yatApiURL = url
                 }
-                
+
                 dropboxApiKey = jsonResult["dropboxApiKey"] as? String
             }
         } catch {

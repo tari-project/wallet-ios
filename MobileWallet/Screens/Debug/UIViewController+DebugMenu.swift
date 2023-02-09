@@ -1,5 +1,5 @@
 //  UIViewController+DebugMenu.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 13/10/2022
@@ -41,42 +41,42 @@
 import UIKit
 
 extension UIViewController {
-    
+
     // MARK: - Motion
-    
+
     open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
         super.motionBegan(motion, with: event)
         guard motion == .motionShake else { return }
         handleShakeGesture()
     }
-    
+
     // MARK: - Actions
-    
+
     private func handleShakeGesture() {
-        
+
         let headerSection = PopUpHeaderView()
         let contentSection = PopUpButtonsTableView()
         let buttonsSection = PopUpButtonsView()
-        
+
         headerSection.label.text = localized("debug.popup.title")
-        
+
         contentSection.update(options: [
             localized("debug.popup.options.logs"),
             localized("debug.popup.options.bug_report"),
             localized("debug.popup.options.connection_status")
         ])
-        
+
         contentSection.onSelectedRow = { [weak self] in self?.handle(selectedIndexPath: $0) }
         contentSection.update(footer: AppVersionFormatter.version)
         buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
-        
+
         PopUpPresenter.show(popUp: TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection), configuration: .dialog(hapticType: .none))
     }
-    
+
     private func handle(selectedIndexPath: IndexPath) {
-        
+
         PopUpPresenter.dismissPopup()
-        
+
         switch selectedIndexPath.row {
         case 0:
             moveToLogsScene()
@@ -88,7 +88,7 @@ extension UIViewController {
             break
         }
     }
-    
+
     private func moveToLogsScene() {
         if navigationController?.topViewController is LogsListViewController { return }
         let logsViewController = LogsListConstructor.buildScene()
@@ -96,12 +96,12 @@ extension UIViewController {
         navigationController.setNavigationBarHidden(true, animated: false)
         present(navigationController, animated: true)
     }
-    
+
     private func moveToReportBugScene() {
         let controller = BugReportingConstructor.buildScene()
         present(controller, animated: true)
     }
-    
+
     private func showConnectionStatus() {
         Tari.shared.connectionMonitor.showDetailsPopup()
     }

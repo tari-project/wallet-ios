@@ -1,5 +1,5 @@
 //  VerifySeedWordsViewController.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 23/02/2022
@@ -42,87 +42,93 @@ import UIKit
 import Combine
 
 final class VerifySeedWordsViewController: UIViewController {
-    
+
     // MARK: - Properties
-    
+
     private let mainView = VerifySeedWordsView()
     private let model: VerifySeedWordsModel
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
-    
+
     init(model: VerifySeedWordsModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
         model.fetchData()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         model.$selectedTokenModels
             .assign(to: \.seedWords, on: mainView.tokensView)
             .store(in: &cancellables)
-        
+
         model.$availableTokenModels
             .assign(to: \.seedWords, on: mainView.selectableTokensView)
             .store(in: &cancellables)
-        
+
         model.$isSelectedTokenTipVisible
             .assign(to: \.isInfoLabelVisible, on: mainView)
             .store(in: &cancellables)
-        
+
         model.$isSuccessVisible
             .assign(to: \.isSuccessViewVisible, on: mainView)
             .store(in: &cancellables)
-        
+
         model.$isErrorVisible
             .assign(to: \.isErrorVisible, on: mainView)
             .store(in: &cancellables)
-        
+
         model.$isContinueButtonEnabled
             .map { $0 ? .normal : .disabled }
             .assign(to: \.variation, on: mainView.continueButton)
             .store(in: &cancellables)
-        
+
         model.$shouldEndFlow
             .filter { $0 }
             .sink { [weak self] _ in self?.endFlow() }
             .store(in: &cancellables)
-        
+
         mainView.tokensView.onSelectSeedWord = { [weak self] in
             self?.model.removeSelectedToken(index: $0)
         }
-        
+
         mainView.selectableTokensView.onSelectSeedWord = { [weak self] in
             self?.model.selectToken(index: $0)
         }
-        
+
         mainView.continueButton.onTap = { [weak self] in
             self?.model.continueFlowRequest()
         }
     }
-    
+
     // MARK: - Actions
-    
+
     private func endFlow() {
+
+        guard !isModal else {
+            dismiss(animated: true)
+            return
+        }
+
         guard let controller = navigationController?.viewControllers.first(where: { $0 is BackupWalletSettingsViewController }) else { return }
         navigationController?.popToViewController(controller, animated: true)
     }

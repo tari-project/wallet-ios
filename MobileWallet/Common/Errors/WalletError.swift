@@ -1,5 +1,5 @@
 //  WalletError.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 01/02/2022
@@ -39,28 +39,21 @@
 */
 
 struct WalletError: CoreError {
-    
+
     let code: Int
     var domain: String { "FFI" }
-    
+
     init(code: Int32) {
         self.code = Int(code)
     }
-    
+
     static var notEnoughFunds: Self { WalletError(code: 101) }
-    static var databaseDataError: Self { WalletError(code: 114) }
     static var fundsPending: Self { WalletError(code: 115) }
-    static var transactionNotFound: Self { WalletError(code: 204) }
-    static var contactNotFound: Self { WalletError(code: 401) }
-    static var invalidPassphraseEncryptionCypher: Self { WalletError(code: 420) }
-    static var valuesNotFound: Self { WalletError(code: 424) }
     static var invalidPassphrase: Self { WalletError(code: 428) }
-    static var seedWordsInvalidData: Self { WalletError(code: 429) }
-    static var seedWordsVersionMismatch: Self { WalletError(code: 430) }
-    
+
     static var unknown: Self { WalletError(code: -1) }
-    
-    static func ~=(lhs: Self, rhs: Error) -> Bool {
+
+    static func ~= (lhs: Self, rhs: Error) -> Bool {
         guard let rhs = rhs as? Self else { return false }
         return lhs == rhs
     }

@@ -1,5 +1,5 @@
 //  AmountNumberFormatterTests.swift
-	
+
 /*
 	Package UnitTests
 	Created by Adrian Truszczynski on 18/01/2022
@@ -42,20 +42,20 @@
 import XCTest
 
 final class AmountNumberFormatterTests: XCTestCase {
-    
+
     private var formatter: AmountNumberFormatter!
-    
+
     override func setUp() {
         super.setUp()
         formatter = AmountNumberFormatter()
     }
-    
+
     // MARK: - Tests
-    
+
     func testAddingValueCharacters() {
-        
+
         let expectedResult = "123.456"
-        
+
         formatter.append(string: "1")
         formatter.append(string: "2")
         formatter.append(string: "3")
@@ -63,41 +63,41 @@ final class AmountNumberFormatterTests: XCTestCase {
         formatter.append(string: "4")
         formatter.append(string: "5")
         formatter.append(string: "6")
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testAddingValueString() {
-        
+
         let expectedResult = "123.456"
-        
+
         formatter.append(string: "123.456")
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testAddingDecimalSeparatorAsFirstCharacter() {
-        
+
         let expectedResult = "0.123"
-        
+
         formatter.append(string: ".")
         formatter.append(string: "1")
         formatter.append(string: "2")
         formatter.append(string: "3")
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testAddingCharactersOverLimit() {
-        
+
         let expectedResult = "1.123456"
-        
+
         formatter.append(string: "1")
         formatter.append(string: ".")
         formatter.append(string: "1")
@@ -109,27 +109,27 @@ final class AmountNumberFormatterTests: XCTestCase {
         formatter.append(string: "7")
         formatter.append(string: "8")
         formatter.append(string: "9")
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testAddingTooLongValueString() {
-        
+
         let expectedResult = "0"
-        
+
         formatter.append(string: "1.123456789")
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testAddingMultipleDecimalSeparatorCharacters() {
-        
+
         let expectedResult = "123.456"
-        
+
         formatter.append(string: "1")
         formatter.append(string: "2")
         formatter.append(string: "3")
@@ -138,27 +138,27 @@ final class AmountNumberFormatterTests: XCTestCase {
         formatter.append(string: "5")
         formatter.append(string: ".")
         formatter.append(string: "6")
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testAddingStringWithMultipleDecimalSeparators() {
-        
+
         let expectedResult = "0"
-        
+
         formatter.append(string: "123.45.6")
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testAddingInvalidCharacter() {
-        
+
         let expectedResult = "123.456"
-        
+
         formatter.append(string: "1")
         formatter.append(string: "2")
         formatter.append(string: "3")
@@ -167,58 +167,56 @@ final class AmountNumberFormatterTests: XCTestCase {
         formatter.append(string: "5")
         formatter.append(string: "X")
         formatter.append(string: "6")
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testAddingInvalidString() {
-        
+
         let expectedResult = "0"
-        
+
         formatter.append(string: "123.45X6")
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testRemovingCharacter() {
-        
+
         let expectedResult = "123.45"
-        
+
         formatter.append(string: "123.456")
         formatter.removeLast()
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
+
     func testRemovingAllCharacters() {
-        
+
         let expectedResult = "0"
-        
+
         formatter.append(string: "123.456")
         (0..<7).forEach { _ in self.formatter.removeLast() }
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
-    
-    
-    
+
     func testRemovingMoreThanExistingCharacters() {
-        
+
         let expectedResult = "0"
-        
+
         formatter.append(string: "123.456")
         (0..<50).forEach { _ in self.formatter.removeLast() }
-        
+
         let result = formatter.amount
-        
+
         XCTAssertEqual(result, expectedResult)
     }
 }

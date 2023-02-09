@@ -43,109 +43,109 @@ import LocalAuthentication
 import Combine
 
 final class SplashViewController: UIViewController {
-    
+
     // MARK: - Properties
-    
+
     private let model: SplashViewModel
     private let mainView = SplashView()
     private let authenticationContext = LAContext()
-    
+
     private var cancellables = Set<AnyCancellable>()
     private var animateTransitions = false
-    
+
     // MARK: - Initialisers
-    
+
     init(model: SplashViewModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         model.$status
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(status: $0) }
             .store(in: &cancellables)
-        
+
         model.$networkName
             .compactMap { $0 }
             .map { localized("splash.button.select_network", arguments: $0) }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.selectNetworkButtonTitle = $0 }
             .store(in: &cancellables)
-        
+
         model.$appVersion
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.versionText = $0 }
             .store(in: &cancellables)
-        
+
         model.$isWalletExist
             .map { $0 ? localized("splash.button.open_wallet") : localized("splash.button.create_wallet") }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.createWalletButtonTitle = $0 }
             .store(in: &cancellables)
-        
+
         model.$errorMessage
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
-        
+
         mainView.onCreateWalletButtonTap = { [weak self] in
             self?.model.startWallet()
         }
-        
+
         mainView.onSelectNetworkButtonTap = { [weak self] in
             self?.showNetworkListPopup()
         }
-        
+
         mainView.onRestoreWalletButtonTap = { [weak self] in
             self?.moveToRestoreWalletScreen()
         }
     }
-    
+
     private func showNetworkListPopup() {
-        
+
         let headerSection = PopUpHeaderWithSubtitle()
-        
+
         headerSection.titleLabel.text = localized("splash.action_sheet.select_network.title")
         headerSection.subtitleLabel.text = localized("splash.action_sheet.select_network.description")
-        
+
         var buttonsModels = model.allNetworkNames
             .enumerated()
             .map { [weak self] index, networkName in
                 PopUpDialogButtonModel(title: networkName, type: .normal, callback: { self?.model.selectNetwork(onIndex: index) })
             }
-        
+
         buttonsModels.append(PopUpDialogButtonModel(title: localized("common.cancel"), type: .text))
-        
+
         let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: buttonsModels)
-        
+
         let popUp = TariPopUp(headerSection: headerSection, contentSection: nil, buttonsSection: buttonsSection)
-        
+
         PopUpPresenter.show(popUp: popUp)
     }
-    
+
     // MARK: - Actions
-    
+
     private func moveToNextScreen() {
         switch TariSettings.shared.walletSettings.configurationState {
         case .notConfigured:
@@ -156,27 +156,27 @@ final class SplashViewController: UIViewController {
             moveToHomeScreen()
         }
     }
-    
+
     private func moveToRestoreWalletScreen() {
         navigationController?.pushViewController(RestoreWalletViewController(), animated: true)
     }
-    
+
     private func moveToOnboardingScreen(startFromLocalAuth: Bool) {
         mainView.playLogoAnimation {
             AppRouter.transitionToOnboardingScreen(startFromLocalAuth: startFromLocalAuth)
         }
     }
-    
+
     private func moveToHomeScreen() {
         authenticationContext.authenticateUser { [weak self] in
             self?.mainView.playLogoAnimation { AppRouter.transitionToHomeScreen() }
         }
     }
-    
+
     // MARK: - Helpers
-    
+
     private func handle(status: SplashViewModel.StatusModel) {
-        
+
         switch (status.status, status.statusRepresentation) {
         case (.idle, .content):
             mainView.isCreateWalletButtonSpinnerVisible = false
@@ -195,7 +195,7 @@ final class SplashViewController: UIViewController {
         case (.success, .logo):
             moveToNextScreen()
         }
-        
+
         guard !animateTransitions else { return }
         animateTransitions = true
     }

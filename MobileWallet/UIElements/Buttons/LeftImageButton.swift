@@ -1,5 +1,5 @@
 //  LeftImageButton.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 29/06/2022
@@ -42,22 +42,22 @@ import UIKit
 import TariCommon
 
 final class LeftImageButton: BaseButton {
-    
+
     // MARK: - Subviews
-    
+
     @View private(set) var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     @View private(set) var label: UILabel = {
         let view = UILabel()
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var borderPadding: UIEdgeInsets = .zero {
         didSet {
             topConstraint?.constant = borderPadding.top
@@ -66,18 +66,18 @@ final class LeftImageButton: BaseButton {
             bottomConstraint?.constant = borderPadding.bottom
         }
     }
-    
+
     var internalPadding: CGFloat = 0.0 {
         didSet { internalPaddingConstraint?.constant = internalPadding }
     }
-    
+
     var iconSize: CGSize = .zero {
         didSet {
             iconWidthConstraint?.constant = iconSize.width
             iconHeightConstraint?.constant = iconSize.height
         }
     }
-    
+
     private var topConstraint: NSLayoutConstraint?
     private var leadingConstraint: NSLayoutConstraint?
     private var trailingConstraint: NSLayoutConstraint?
@@ -85,24 +85,24 @@ final class LeftImageButton: BaseButton {
     private var internalPaddingConstraint: NSLayoutConstraint?
     private var iconWidthConstraint: NSLayoutConstraint?
     private var iconHeightConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero)
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [iconView, label].forEach(addSubview)
-        
+
         let topConstraint = label.topAnchor.constraint(greaterThanOrEqualTo: topAnchor)
         let leadingConstraint = iconView.leadingAnchor.constraint(equalTo: leadingAnchor)
         let trailingConstraint = label.trailingAnchor.constraint(equalTo: trailingAnchor)
@@ -110,7 +110,7 @@ final class LeftImageButton: BaseButton {
         let internalPaddingConstraint = label.leadingAnchor.constraint(equalTo: iconView.trailingAnchor)
         let iconWidthConstraint = iconView.widthAnchor.constraint(equalToConstant: 0.0)
         let iconHeightConstraint = iconView.heightAnchor.constraint(equalToConstant: 0.0)
-        
+
         self.topConstraint = topConstraint
         self.leadingConstraint = leadingConstraint
         self.trailingConstraint = trailingConstraint
@@ -118,7 +118,7 @@ final class LeftImageButton: BaseButton {
         self.internalPaddingConstraint = internalPaddingConstraint
         self.iconHeightConstraint = iconHeightConstraint
         self.iconWidthConstraint = iconWidthConstraint
-        
+
         let constraints = [
             topConstraint,
             leadingConstraint,
@@ -130,7 +130,7 @@ final class LeftImageButton: BaseButton {
             iconView.centerYAnchor.constraint(equalTo: centerYAnchor),
             label.centerYAnchor.constraint(equalTo: centerYAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 }

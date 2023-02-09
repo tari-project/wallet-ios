@@ -44,7 +44,7 @@ import TariCommon
 final class TokenInputView: DynamicThemeCollectionCell {
 
     // MARK: - Subviews
-    
+
     @View var toolbar = TokensToolbar()
 
     @View var textField: ObservableTextField = {
@@ -81,7 +81,7 @@ final class TokenInputView: DynamicThemeCollectionCell {
     }
 
     // MARK: - Setups
-    
+
     private func setupViews() {
         textField.inputAccessoryView = toolbar
     }
@@ -103,19 +103,19 @@ final class TokenInputView: DynamicThemeCollectionCell {
     private func setupFeedbacks() {
         textField.addTarget(self, action: #selector(onTextChangeAction), for: .editingChanged)
         textField.delegate = self
-        
+
         textField.onRemovingCharacterAtFirstPosition = { [weak self] in
             self?.onRemovingCharacterAtFirstPosition?($0)
         }
-        
+
         toolbar.onTapOnToken = { [weak self] in
             self?.textField.text = $0 + " "
             self?.onTextChangeAction()
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         textField.textColor = theme.text.body
@@ -138,7 +138,7 @@ final class TokenInputView: DynamicThemeCollectionCell {
 }
 
 extension TokenInputView: UITextFieldDelegate {
-    
+
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         _ = resignFirstResponder()
         return true

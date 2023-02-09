@@ -88,11 +88,4 @@ extension Date {
 
         return dateFormatter.string(from: self)
     }
-
-    /*
-     Adjust a date by number of days
-    */
-    func shiftDateBy(days: Int) -> Date {
-        return Calendar.current.date(byAdding: Calendar.Component.day, value: days, to: self)!
-    }
 }

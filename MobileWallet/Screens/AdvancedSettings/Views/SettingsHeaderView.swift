@@ -1,5 +1,5 @@
 //  SettingsHeaderView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/11/2021
@@ -42,53 +42,53 @@ import UIKit
 import TariCommon
 
 final class SettingsHeaderView: DynamicThemeHeaderFooterView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
         view.numberOfLines = 0
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var text: String? {
         get { label.text }
         set { label.text = newValue }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         translatesAutoresizingMaskIntoConstraints = false
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         contentView.addSubview(label)
-        
+
         let constraints = [
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 25.0),
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
             label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body

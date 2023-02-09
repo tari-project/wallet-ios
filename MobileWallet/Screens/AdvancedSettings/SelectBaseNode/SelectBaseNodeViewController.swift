@@ -115,7 +115,7 @@ final class SelectBaseNodeViewController: SettingsParentTableViewController {
                 self?.dataSource?.apply(snapshot, animatingDifferences: false)
             }
             .store(in: &cancellables)
-        
+
         model.$errorMessaage
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)

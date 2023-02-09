@@ -1,5 +1,5 @@
 //  SeedWordsListModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 09/03/2022
@@ -41,18 +41,18 @@
 import Combine
 
 final class SeedWordsListModel {
-    
+
     // MARK: - View Model
-    
+
     @Published var seedWords: [String] = []
     @Published var isContinueButtonEnabled: Bool = false
-    
+
     // MARK: - Actions
-    
+
     func fetchSeedWords() {
         seedWords = (try? Tari.shared.recovery.seedWords) ?? []
     }
-    
+
     func update(checkBoxStatus: Bool) {
         isContinueButtonEnabled = checkBoxStatus
     }

@@ -43,85 +43,85 @@ import Combine
 import YatLib
 
 final class ProfileViewController: UIViewController {
-    
+
     // MARK: - Properties
-    
+
     private let mainView = ProfileView()
     private let model = ProfileModel()
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBindings()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         model.updateYatIdData()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupBindings() {
-        
+
         model.$qrCodeImage
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .assign(to: \.qrCodeImage, on: mainView)
             .store(in: &cancellables)
-        
+
         model.$emojiData
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.update(emojiID: $0.emojiID, hex: $0.hex, copyText: $0.copyText, tooltopText: $0.tooltipText) }
             .store(in: &cancellables)
-        
+
         model.$description
             .receive(on: DispatchQueue.main)
             .assign(to: \.text, on: mainView.middleLabel)
             .store(in: &cancellables)
-        
+
         model.$isReconnectButtonVisible
             .map { !$0 }
             .receive(on: DispatchQueue.main)
             .assign(to: \.isHidden, on: mainView.reconnectYatButton)
             .store(in: &cancellables)
-        
+
         model.$errorMessage
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.show(error: $0) }
             .store(in: &cancellables)
-        
+
         model.$yatButtonState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(yatButtonState: $0) }
             .store(in: &cancellables)
-        
+
         model.$yatAddress
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.showYatOnboardingFlow(publicKey: $0) }
             .store(in: &cancellables)
-        
+
         mainView.yatButton.onTap = { [weak self] in
             self?.model.toggleVisibleData()
         }
-        
+
         mainView.reconnectYatButton.onTap = { [weak self] in
             self?.model.reconnectYat()
         }
     }
-    
+
     // MARK: - Actions
-    
+
     private func handle(yatButtonState: ProfileModel.YatButtonState) {
         switch yatButtonState {
         case  .hidden:
@@ -134,11 +134,11 @@ final class ProfileViewController: UIViewController {
             mainView.isYatButtonOn = true
         }
     }
-    
+
     private func show(error: MessageModel) {
         PopUpPresenter.show(message: error)
     }
-    
+
     private func showYatOnboardingFlow(publicKey: String) {
         Yat.integration.showOnboarding(onViewController: self, records: [
             YatRecordInput(tag: .XTRAddress, value: publicKey)

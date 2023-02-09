@@ -1,5 +1,5 @@
 //  SendingTariView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/02/2022
@@ -43,57 +43,57 @@ import TariCommon
 import Lottie
 
 final class SendingTariView: DynamicThemeView {
-    
+
     struct InputModel {
         let numberOfSections: Int
     }
-    
+
     // MARK: - Subviews
-    
+
     @View private(set) var videoBackgroundView: VideoView = {
         let view = VideoView()
         view.url = Bundle.main.url(forResource: "sending-background", withExtension: "mp4")
         view.videoGravity = .resizeAspectFill
         return view
     }()
-    
+
     @View private var logoView = AnimationView(name: "sendingTariAnimation")
-    
+
     @View private var firstLabel: SendingTariLabel = {
         let view = SendingTariLabel()
         view.font = Theme.shared.fonts.sendingTariTitleLabelFirst
         return view
     }()
-    
+
     @View private var secondLabel: SendingTariLabel = {
         let view = SendingTariLabel()
         view.font = Theme.shared.fonts.sendingTariTitleLabelSecond
         return view
     }()
-    
+
     @View private(set) var progressBar = SendingTariProgressBar()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     func setup(model: InputModel) {
         progressBar.update(sections: model.numberOfSections)
     }
-    
+
     private func setupConstraints() {
-        
+
         [videoBackgroundView, logoView, firstLabel, secondLabel, progressBar].forEach(addSubview)
-        
+
         let constraints = [
             videoBackgroundView.topAnchor.constraint(equalTo: topAnchor),
             videoBackgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -112,28 +112,28 @@ final class SendingTariView: DynamicThemeView {
             progressBar.topAnchor.constraint(equalTo: secondLabel.bottomAnchor, constant: 40.0),
             progressBar.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Actions
-    
+
     func playInitialAnimation() {
         logoView.play(fromProgress: 0.0, toProgress: 0.2)
     }
-    
+
     func playSuccessAnimation(completion: (() -> Void)? = nil) {
         logoView.play(fromProgress: 0.2, toProgress: 1.0) { _ in
             completion?()
         }
     }
-    
+
     func playFailureAnimation(completion: (() -> Void)? = nil) {
         logoView.play(fromProgress: 0.2, toProgress: 0.0) { _ in
             completion?()
         }
     }
-    
+
     func hideAllComponents(delay: TimeInterval, completion: (() -> Void)? = nil) {
         UIView.animate(withDuration: 1.0, delay: delay, options: [], animations: { [weak self] in
             self?.firstLabel.alpha = 0.0
@@ -143,18 +143,18 @@ final class SendingTariView: DynamicThemeView {
             completion?()
         })
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
     }
-    
+
     func update(firstText: String?, secondText: String?, completion: (() -> Void)?) {
-        
+
         firstLabel.update(text: firstText)
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             self.secondLabel.update(text: secondText) {
                 completion?()

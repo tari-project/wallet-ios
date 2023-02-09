@@ -62,7 +62,7 @@ class DeleteWalletViewController: SettingsParentTableViewController {
     }
 
     private func displayWarningDialog() {
-        
+
         let popUpModel = PopUpDialogModel(
             title: localized("delete_wallet.dialog.title"),
             message: localized("delete_wallet.dialog.description"),
@@ -72,7 +72,7 @@ class DeleteWalletViewController: SettingsParentTableViewController {
             ],
             hapticType: .error
         )
-        
+
         PopUpPresenter.showPopUp(model: popUpModel)
     }
 
@@ -91,10 +91,7 @@ extension DeleteWalletViewController: UITableViewDelegate, UITableViewDataSource
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: String(describing: SystemMenuTableViewCell.self),
-            for: indexPath
-        ) as! SystemMenuTableViewCell
+        let cell = tableView.dequeueReusableCell(type: SystemMenuTableViewCell.self, indexPath: indexPath)
         cell.configure(menuItem)
         cell.preservesSuperviewLayoutMargins = false
         cell.separatorInset = .zero
@@ -126,9 +123,9 @@ extension DeleteWalletViewController: UITableViewDelegate, UITableViewDataSource
 }
 
 private final class DeleteWalletHeaderView: DynamicThemeHeaderFooterView {
-    
+
     // MARK: - Subiews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsTableViewLastBackupDate
@@ -136,36 +133,36 @@ private final class DeleteWalletHeaderView: DynamicThemeHeaderFooterView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         contentView.addSubview(label)
-        
+
         let constraints = [
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 22.0),
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0),
             label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -22.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.body

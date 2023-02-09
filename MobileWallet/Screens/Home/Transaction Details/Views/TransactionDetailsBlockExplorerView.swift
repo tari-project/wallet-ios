@@ -1,5 +1,5 @@
 //  TransactionDetailsBlockExplorerView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 24/03/2022
@@ -42,40 +42,40 @@ import UIKit
 import TariCommon
 
 final class TransactionDetailsBlockExplorerView: DynamicThemeBaseButton {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.text = localized("tx_detail.block_explorer.description")
         view.font = Theme.shared.fonts.txScreenTextLabel
         return view
     }()
-    
+
     @View private var accessoryView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.forwardArrow
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     // MARK: - Initialisations
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [label, accessoryView].forEach(addSubview)
-        
+
         let constraints = [
             label.topAnchor.constraint(equalTo: topAnchor, constant: 11.0),
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
@@ -86,12 +86,12 @@ final class TransactionDetailsBlockExplorerView: DynamicThemeBaseButton {
             accessoryView.widthAnchor.constraint(equalToConstant: 13.0),
             accessoryView.centerYAnchor.constraint(equalTo: centerYAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Update
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading

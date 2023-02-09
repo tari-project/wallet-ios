@@ -59,7 +59,7 @@ class PasswordVerificationViewController: SettingsParentViewController {
 
     private var secureButtonBottomConstraint: NSLayoutConstraint?
 
-    init(variation: PasswordVerificationScreenStyle, restoreWalletAction:((_ password: String?) -> Void)? = nil) {
+    init(variation: PasswordVerificationScreenStyle, restoreWalletAction: ((_ password: String?) -> Void)? = nil) {
         self.variation = variation
         self.restoreWalletAction = restoreWalletAction
         super.init(nibName: nil, bundle: nil)
@@ -79,7 +79,7 @@ class PasswordVerificationViewController: SettingsParentViewController {
     private func changePasswordAction() {
         if let currentPassword = BackupManager.shared.password {
             if passwordField.checkPassword(currentPassword) {
-                navigationController?.pushViewController(SecureBackupViewController(), animated: true)
+                navigationController?.pushViewController(SecureBackupViewController(backButtonType: .back), animated: true)
             }
         }
     }
@@ -91,18 +91,18 @@ class PasswordVerificationViewController: SettingsParentViewController {
         case .change: changePasswordAction()
         }
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         updateDescriptionLabel(theme: theme)
     }
-    
+
     private func updateDescriptionLabel(theme: ColorTheme) {
 
         guard let mainTextColor = theme.text.body, let boldTextColor = theme.text.heading else { return }
-        
+
         let attributedString: NSMutableAttributedString
-        
+
         switch variation {
         case .change:
             attributedString = NSMutableAttributedString(string: localized("password_verification.description.enter_current_password"))
@@ -116,7 +116,7 @@ class PasswordVerificationViewController: SettingsParentViewController {
         }
 
         attributedString.addAttributes([NSAttributedString.Key.kern: -0.26], range: NSRange(location: 0, length: attributedString.length))
-        
+
         descriptionLabel.attributedText = attributedString
     }
 }
@@ -156,7 +156,7 @@ extension PasswordVerificationViewController {
 
         stackView.addArrangedSubview(descriptionLabel)
         stackView.setCustomSpacing(25, after: descriptionLabel)
-        
+
         updateDescriptionLabel(theme: theme)
     }
 

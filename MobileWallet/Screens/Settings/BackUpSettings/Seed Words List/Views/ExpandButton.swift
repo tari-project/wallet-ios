@@ -1,5 +1,5 @@
 //  ExpandButton.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/03/2022
@@ -42,37 +42,37 @@ import UIKit
 import TariCommon
 
 final class ExpandButton: DynamicThemeView {
-    
+
     // MARK: - Constants
-    
+
     private let totalHeight: CGFloat = 32.0
-    
+
     // MARK: - Subviews
-    
+
     @View private var button = BaseButton()
-    
+
     @View private var topArrowView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.expandButtonArrow
         return view
     }()
-    
+
     @View private var bottomArrowView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.expandButtonArrow
         return view
     }()
-    
+
     var onTap: (() -> Void)?
-    
+
     // MARK: - Properties
-    
+
     var areArrowsPointedInside: Bool = false {
         didSet { updateArrows() }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupViews()
@@ -80,25 +80,25 @@ final class ExpandButton: DynamicThemeView {
         setupCallbacks()
         updateArrows()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         layer.borderWidth = totalHeight / 23.0
         layer.cornerRadius = totalHeight / 2.0
     }
-    
+
     private func setupConstraints() {
-        
+
         [topArrowView, bottomArrowView, button].forEach(addSubview)
-        
+
         let padding = (2.8 / 23.0) * totalHeight
         let arrowHeight = (10.3 / 23.0) * totalHeight
-        
+
         let constraints = [
             topArrowView.topAnchor.constraint(equalTo: topAnchor, constant: padding),
             topArrowView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding),
@@ -115,29 +115,29 @@ final class ExpandButton: DynamicThemeView {
             heightAnchor.constraint(equalToConstant: totalHeight),
             widthAnchor.constraint(equalToConstant: totalHeight)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
         button.onTap = { [weak self] in self?.onTap?() }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         layer.borderColor = theme.icons.active?.cgColor
         topArrowView.tintColor = theme.icons.active
         bottomArrowView.tintColor = theme.icons.active
     }
-    
+
     private func updateArrows() {
-        
+
         let topArrowAngle: CGFloat = areArrowsPointedInside ? .pi : 0.0
         let bottomArrowAngle: CGFloat = areArrowsPointedInside ? 0.0 : .pi
-        
+
         topArrowView.transform = CGAffineTransform(rotationAngle: topArrowAngle)
         bottomArrowView.transform = CGAffineTransform(rotationAngle: bottomArrowAngle)
     }

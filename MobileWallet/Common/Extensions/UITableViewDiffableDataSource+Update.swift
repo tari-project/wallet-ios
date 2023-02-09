@@ -1,5 +1,5 @@
 //  UITableViewDiffableDataSource+Update.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/10/2022
@@ -41,7 +41,7 @@
 import UIKit
 
 extension UITableViewDiffableDataSource {
-    
+
     func apply(snapshot: NSDiffableDataSourceSnapshot<SectionIdentifierType, ItemIdentifierType>, completion: (() -> Void)? = nil) {
         if #available(iOS 15.0, *) {
             applySnapshotUsingReloadData(snapshot, completion: completion)

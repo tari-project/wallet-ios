@@ -1,5 +1,5 @@
 //  BugReportingViewController.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 28/10/2022
@@ -42,78 +42,78 @@ import UIKit
 import Combine
 
 final class BugReportingViewController: UIViewController {
-    
+
     // MARK: - Properties
-    
+
     private let model: BugReportingModel
     private let mainView = BugReportingView()
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init(model: BugReportingModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - View Lifecycle
-    
+
     override func loadView() {
         view = mainView
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         mainView.onSendButtonTap = { [weak self] in
             self?.sendReport()
         }
-        
+
         mainView.onShowLogsButtonTap = { [weak self] in
             self?.showLogs()
         }
-        
+
         model.$shouldEndFlow
             .filter { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in self?.endFlow() }
             .store(in: &cancellables)
-        
+
         model.$errorMessage
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(errorMessage: $0) }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     private func sendReport() {
         mainView.isProcessing = true
         model.sendReport(name: mainView.name, email: mainView.email, message: mainView.message)
     }
-    
+
     private func showLogs() {
         let controller = LogsListConstructor.buildScene()
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.setNavigationBarHidden(true, animated: false)
         present(navigationController, animated: true)
     }
-    
+
     private func endFlow() {
         dismiss(animated: true)
     }
-    
+
     private func handle(errorMessage: MessageModel) {
         PopUpPresenter.show(message: errorMessage)
         mainView.isProcessing = false

@@ -1,5 +1,5 @@
 //  TariPopUp.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/04/2022
@@ -42,99 +42,99 @@ import UIKit
 import TariCommon
 
 final class TariPopUp: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var backgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 26.0
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var topOffset: CGFloat = 0.0 {
         didSet { backgroundViewTopConstraint?.constant = topOffset }
     }
-    
+
     var backgroundViewTopConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     init(headerSection: UIView?, contentSection: UIView?, buttonsSection: UIView?) {
         super.init()
         setupConstraints(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints(headerSection: UIView?, contentSection: UIView?, buttonsSection: UIView?) {
-        
+
         addSubview(backgroundView)
-        
+
         let backgroundViewTopConstraint = backgroundView.topAnchor.constraint(equalTo: topAnchor)
         self.backgroundViewTopConstraint = backgroundViewTopConstraint
-        
+
         var constraints = [
             backgroundViewTopConstraint,
             backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         var viewOnTop: UIView?
-        
+
         if let headerSection = headerSection {
             constraints += makeConstraints(forView: headerSection, viewOnTop: viewOnTop)
             viewOnTop = headerSection
             headerSection.translatesAutoresizingMaskIntoConstraints = false
             addSubview(headerSection)
         }
-        
+
         if let contentSection = contentSection {
             constraints += makeConstraints(forView: contentSection, viewOnTop: viewOnTop)
             viewOnTop = contentSection
             contentSection.translatesAutoresizingMaskIntoConstraints = false
             addSubview(contentSection)
         }
-        
+
         if let buttonsSection = buttonsSection {
             constraints += makeConstraints(forView: buttonsSection, viewOnTop: viewOnTop)
             viewOnTop = buttonsSection
             buttonsSection.translatesAutoresizingMaskIntoConstraints = false
             addSubview(buttonsSection)
         }
-        
+
         guard let viewOnTop = viewOnTop else { return }
         constraints.append(viewOnTop.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -22.0))
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        backgroundView.backgroundColor = theme.backgrounds.primary
+        backgroundView.backgroundColor = theme.components.overlay
     }
-    
+
     // MARK: - Helpers
-    
+
     private func makeConstraints(forView view: UIView, viewOnTop: UIView?) -> [NSLayoutConstraint] {
         let anchor = viewOnTop?.bottomAnchor ?? topAnchor
         var constraints = [
             view.topAnchor.constraint(equalTo: anchor, constant: 22.0),
             view.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
-            view.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
+            view.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0)
         ]
-        
+
         if UIDevice.current.userInterfaceIdiom == .pad {
             constraints.append(view.widthAnchor.constraint(equalToConstant: 350.0))
         }
-        
+
         return constraints
     }
 }

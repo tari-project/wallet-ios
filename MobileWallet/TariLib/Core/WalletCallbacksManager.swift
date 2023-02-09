@@ -1,5 +1,5 @@
 //  WalletCallbacksManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 02/10/2022
@@ -42,9 +42,9 @@ import Combine
 import Foundation
 
 final class WalletCallbacksManager {
-    
+
     // MARK: - Wallet Callbacks
-    
+
     let receivedTransaction: AnyPublisher<PendingInboundTransaction, Never> = {
         NotificationCenter.default
             .publisher(for: .receivedTransaction)
@@ -53,7 +53,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let receivedTransactionReply: AnyPublisher<CompletedTransaction, Never> = {
         NotificationCenter.default
             .publisher(for: .receivedTransactionReply)
@@ -62,7 +62,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let receivedFinalizedTransaction: AnyPublisher<CompletedTransaction, Never> = {
         NotificationCenter.default
             .publisher(for: .receivedFinalizedTransaction)
@@ -71,7 +71,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let transactionBroadcast: AnyPublisher<CompletedTransaction, Never> = {
         NotificationCenter.default
             .publisher(for: .transactionBroadcast)
@@ -80,7 +80,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let transactionMined: AnyPublisher<CompletedTransaction, Never> = {
         NotificationCenter.default
             .publisher(for: .transactionMined)
@@ -89,7 +89,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let unconfirmedTransactionMined: AnyPublisher<CompletedTransaction, Never> = {
         NotificationCenter.default
             .publisher(for: .unconfirmedTransactionMined)
@@ -98,7 +98,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let fauxTransactionConfirmed: AnyPublisher<CompletedTransaction, Never> = {
         NotificationCenter.default
             .publisher(for: .fauxTransactionConfirmed)
@@ -107,7 +107,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let fauxTransactionUnconfirmed: AnyPublisher<CompletedTransaction, Never> = {
         NotificationCenter.default
             .publisher(for: .fauxTransactionUnconfirmed)
@@ -116,7 +116,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let transactionSendResult: AnyPublisher<TransactionSendResult, Never> = {
         NotificationCenter.default
             .publisher(for: .transactionSendResult)
@@ -124,7 +124,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let transactionCancellation: AnyPublisher<CompletedTransaction, Never> = {
         NotificationCenter.default
             .publisher(for: .transactionCancellation)
@@ -133,7 +133,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let transactionOutputValidation: AnyPublisher<TransactionValidationData, Never> = {
         NotificationCenter.default
             .publisher(for: .transactionOutputValidation)
@@ -141,7 +141,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let walletBalanceUpdatePublisher: AnyPublisher<Balance, Never> = {
         NotificationCenter.default
             .publisher(for: .walletBalanceUpdate)
@@ -149,7 +149,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let transactionValidation: AnyPublisher<TransactionValidationData, Never> = {
         NotificationCenter.default
             .publisher(for: .transactionValidation)
@@ -157,7 +157,7 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     let baseNodeConnectionStatus: AnyPublisher<BaseNodeConnectivityStatus, Never> = {
         NotificationCenter.default
             .publisher(for: .baseNodeConnectionStatusUpdate)
@@ -165,9 +165,9 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     // MARK: - Recovery Callbacks
-    
+
     let walletRecoveryStatusUpdate: AnyPublisher<RestoreWalletStatus, Never> = {
         NotificationCenter.default
             .publisher(for: .walletRecoveryStatusUpdate)
@@ -175,18 +175,18 @@ final class WalletCallbacksManager {
             .share()
             .eraseToAnyPublisher()
     }()
-    
+
     // MARK: - Properties
-    
+
     static let shared: WalletCallbacksManager = WalletCallbacksManager()
     private let queue = DispatchQueue(label: "com.tari.events", attributes: [])
-    
+
     // MARK: - Initialisers
-    
+
     private init() {}
-    
+
     // MARK: - Actions
-    
+
     func post(name: Notification.Name, object: Any?) {
         queue.async {
             NotificationCenter.default.post(name: name, object: object)
@@ -195,9 +195,9 @@ final class WalletCallbacksManager {
 }
 
 extension Notification.Name {
-    
+
     // MARK: - Wallet Callbacks
-    
+
     static let receivedTransaction = Self(rawValue: "com.tari.wallet.received_transaction")
     static let receivedTransactionReply = Self(rawValue: "com.tari.wallet.received_transaction_replay")
     static let receivedFinalizedTransaction = Self(rawValue: "com.tari.wallet.received_finalized_transaction")
@@ -212,8 +212,8 @@ extension Notification.Name {
     static let walletBalanceUpdate = Self(rawValue: "com.tari.wallet.balance_update")
     static let transactionValidation = Self(rawValue: "com.tari.wallet.transaction_validation")
     static let baseNodeConnectionStatusUpdate = Self(rawValue: "com.tari.wallet.base_node_connection_status_update")
-    
+
     // MARK: - Recovery Callbacks
-    
+
     static let walletRecoveryStatusUpdate = Self(rawValue: "com.tari.recovery.status_update")
 }

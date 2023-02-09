@@ -1,5 +1,5 @@
 //  UTXOsWalletTextListView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 08/06/2022
@@ -43,9 +43,9 @@ import TariCommon
 import Combine
 
 final class UTXOsWalletTextListView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var tableView: UITableView = {
         let view = UITableView()
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 30.0, bottom: 0.0, right: 30.0)
@@ -53,54 +53,54 @@ final class UTXOsWalletTextListView: DynamicThemeView {
         view.register(type: UTXOsWalletTextListViewCell.self)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     @Published var models: [UTXOsWalletTextListViewCell.Model] = []
     @Published var verticalContentInset: CGFloat = 0.0
     @Published var isEditingEnabled: Bool = false
     @Published var selectedElements: Set<UUID> = []
     @Published private(set) var verticalContentOffset: CGFloat = 0.0
-    
+
     var onTapOnCell: ((UUID) -> Void)?
-    
+
     private var dataSource: UITableViewDiffableDataSource<Int, UTXOsWalletTextListViewCell.Model>?
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(tableView)
-        
+
         let constraints = [
             tableView.topAnchor.constraint(equalTo: topAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
-        
+
         $models
             .sink { [weak self] in self?.updateCells(models: $0) }
             .store(in: &cancellables)
-        
+
         $verticalContentInset
             .map { UIEdgeInsets(top: $0, left: 0.0, bottom: 0.0, right: 0.0) }
             .sink { [weak self] in
@@ -108,39 +108,39 @@ final class UTXOsWalletTextListView: DynamicThemeView {
                 self?.tableView.scrollToTop(animated: false)
             }
             .store(in: &cancellables)
-        
+
         $isEditingEnabled
             .sink { [weak self] in self?.updateCellsState(isEditing: $0) }
             .store(in: &cancellables)
-        
+
         $selectedElements
             .sink { [weak self] in self?.update(selectedElements: $0) }
             .store(in: &cancellables)
-        
+
         dataSource = UITableViewDiffableDataSource(tableView: tableView) { [weak self] tableView, indexPath, model in
-            
+
             guard let self = self else { return UITableViewCell() }
-            
+
             let cell = tableView.dequeueReusableCell(type: UTXOsWalletTextListViewCell.self, indexPath: indexPath)
-            
+
             cell.update(model: model)
             cell.update(isSelectable: model.isSelectable, isEditingEnabled: self.isEditingEnabled, animated: false)
             cell.isTickSelected = self.selectedElements.contains(model.id)
-            
+
             return cell
         }
-        
+
         dataSource?.defaultRowAnimation = .fade
         tableView.delegate = self
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         tableView.separatorColor = theme.neutral.secondary
     }
-    
+
     private func update(selectedElements: Set<UUID>) {
         tableView.visibleCells
             .compactMap { $0 as? UTXOsWalletTextListViewCell }
@@ -149,14 +149,14 @@ final class UTXOsWalletTextListView: DynamicThemeView {
                 $0.isTickSelected = selectedElements.contains(elementID)
             }
     }
-    
+
     private func updateCells(models: [UTXOsWalletTextListViewCell.Model]) {
         var snapshot = NSDiffableDataSourceSnapshot<Int, UTXOsWalletTextListViewCell.Model>()
         snapshot.appendSections([0])
         snapshot.appendItems(models, toSection: 0)
         dataSource?.apply(snapshot)
     }
-    
+
     private func updateCellsState(isEditing: Bool) {
         tableView.visibleCells
             .compactMap { $0 as? UTXOsWalletTextListViewCell }
@@ -168,18 +168,18 @@ final class UTXOsWalletTextListView: DynamicThemeView {
 }
 
 extension UTXOsWalletTextListView: UITableViewDelegate {
-    
+
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         verticalContentOffset = scrollView.contentOffset.y
     }
-    
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         onTapOnCell?(models[indexPath.row].id)
     }
 }
 
 private extension UTXOsWalletTextListViewCell {
-    
+
     func update(isSelectable: Bool, isEditingEnabled: Bool, animated: Bool) {
         updateTickBox(isVisible: isSelectable && isEditingEnabled, animated: animated)
         updateBackground(isSemitransparent: !isSelectable && isEditingEnabled, animated: animated)

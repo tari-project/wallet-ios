@@ -1,5 +1,5 @@
 //  WebBrowserPresenter.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/04/2022
@@ -41,7 +41,7 @@
 import UIKit
 
 enum WebBrowserPresenter {
-    
+
     static func open(url: URL) {
         DispatchQueue.main.async {
             guard let topController = UIApplication.shared.topController() else { return }

@@ -158,10 +158,9 @@ private class Transition: NSObject, UIViewControllerAnimatedTransitioning {
     }
 
     func getIndex(forViewController vc: UIViewController) -> Int? {
-        guard let vcs = self.viewControllers else { return nil }
-        for (index, thisVC) in vcs.enumerated() {
-            if thisVC == vc { return index }
-        }
-        return nil
+        viewControllers?
+            .enumerated()
+            .first { $0.element == vc }
+            .map { $0.offset }
     }
 }

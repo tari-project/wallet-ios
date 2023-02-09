@@ -1,5 +1,5 @@
 //  CustomBridgesHandable.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 02/10/2022
@@ -47,25 +47,25 @@ protocol CustomBridgesHandable: UIViewController {
 }
 
 extension CustomBridgesHandable {
-    
+
     func setupCustomBridgeProgressHandler() -> AnyCancellable {
         Tari.shared.connectionMonitor.$torBootstrapProgress
             .map { Float($0) / 100.0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.navigationBar.progress = $0 }
     }
-    
+
     func onCustomBridgeSuccessAction() {
-        
+
         navigationBar.progress = 1.0
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             self.navigationBar.progress = nil
             self.view.isUserInteractionEnabled = true
             self.tableView.reloadData()
         }
     }
-    
+
     func onCustomBridgeFailureAction(error: Error) {
         navigationBar.progress = nil
         view.isUserInteractionEnabled = true

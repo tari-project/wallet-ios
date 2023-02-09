@@ -1,5 +1,5 @@
 //  ICloudBackupManager.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 24/10/2022
@@ -41,7 +41,7 @@
 import Combine
 
 final class ICloudBackupService {
-    
+
     enum ICloudBackupError: Error {
         case noUbiquityContainer
         case unableToCreateBackup(error: Error)
@@ -51,20 +51,20 @@ final class ICloudBackupService {
         case unableToDownloadBackup(error: Error)
         case unableToSaveBackup(error: Error)
     }
-    
+
     // MARK: - Properties
-    
+
     private let remoteDirectoryName = "Tari-Wallet-Backups"
-    
+
     private let backupUploadService = ICloudDocsUploadService(filenamePrefix: BackupFilesManager.encryptedFileName)
     private let backupDownloadService = ICloudDocsDownloadService(filenamePrefix: BackupFilesManager.encryptedFileName)
-    
+
     @Published private var backupStatusValue: BackupStatus = .disabled
     @Published private var syncDate: Date?
-    
+
     private var backupPassword: String?
     private var cancellables = Set<AnyCancellable>()
-    
+
     private var ubiquityContainerURL: URL {
         get throws {
             guard let url = FileManager.default.url(forUbiquityContainerIdentifier: TariSettings.shared.iCloudContainerIdentifier)?.appendingPathComponent(remoteDirectoryName) else {
@@ -73,18 +73,18 @@ final class ICloudBackupService {
             return url
         }
     }
-    
+
     // MARK: - Initalisers
-    
+
     init() {
         setupInitialData()
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupInitialData() {
-        
+
         switch TariSettings.shared.walletSettings.iCloudDocsBackupStatus {
         case .disabled:
             updateBackupStatus(isOn: false, syncDate: nil)
@@ -92,34 +92,34 @@ final class ICloudBackupService {
             updateBackupStatus(isOn: true, syncDate: syncDate)
         }
     }
-    
+
     private func setupCallbacks() {
-        
+
         backupUploadService.$status
             .sink { [weak self] in self?.handle(uploadStatus: $0) }
             .store(in: &cancellables)
-        
+
         $backupStatusValue
             .sink { [weak self] in self?.handle(backupStatus: $0) }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     func removeRemoteBackup() throws {
         let remoteDirectoryURL = try ubiquityContainerURL
         try remove(fileURL: remoteDirectoryURL)
     }
-    
+
     private func updateBackupStatus(isOn: Bool, syncDate: Date?) {
         backupStatusValue = isOn ? .enabled : .disabled
         self.syncDate = syncDate
     }
-    
+
     private func uploadBackup(password: String?) async throws {
-        
+
         backupStatusValue = .inProgress(progress: 0.0)
-        
+
         let remoteDirectoryURL = try ubiquityContainerURL
         let remoteFileName = password != nil ? BackupFilesManager.encryptedFileName : BackupFilesManager.unencryptedFileName
         let remoteFileURL = remoteDirectoryURL.appendingPathComponent(remoteFileName)
@@ -130,18 +130,18 @@ final class ICloudBackupService {
         try remove(fileURL: localFileURL)
         backupUploadService.uploadBackup()
     }
-    
+
     private func downloadBackup(password: String?) async throws {
-        
+
         let remoteDirectoryURL = try ubiquityContainerURL
-        
+
         let remoteFileName = password != nil ? BackupFilesManager.encryptedFileName : BackupFilesManager.unencryptedFileName
         let remoteFileURL = remoteDirectoryURL.appendingPathComponent(remoteFileName)
-        
+
         try await downloadRemoteBackup()
         try await store(backupURL: remoteFileURL, password: password)
     }
-    
+
     private func prepareBackup(password: String?) async throws -> URL {
         do {
             return try await BackupFilesManager.prepareBackup(workingDirectoryName: "iCloud", password: password)
@@ -149,18 +149,18 @@ final class ICloudBackupService {
             throw ICloudBackupError.unableToCreateBackup(error: error)
         }
     }
-    
+
     private func createFolderStructure(url: URL) throws {
-        
+
         guard !FileManager.default.fileExists(atPath: url.path) else { return }
-        
+
         do {
             try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
         } catch {
             throw ICloudBackupError.unableToCreateFolderStructure(error: error)
         }
     }
-    
+
     private func remove(fileURL: URL) throws {
         do {
             guard FileManager.default.fileExists(atPath: fileURL.path) else { return }
@@ -169,7 +169,7 @@ final class ICloudBackupService {
             throw ICloudBackupError.unableToDeleteFile(error: error)
         }
     }
-    
+
     private func copy(from fromURL: URL, to toURL: URL) throws {
         do {
             try FileManager.default.copyItem(at: fromURL, to: toURL)
@@ -177,15 +177,15 @@ final class ICloudBackupService {
             throw ICloudBackupError.unableToCopyFile(error: error)
         }
     }
-    
+
     private func store(backupURL: URL, password: String?) async throws {
         do {
-            try await BackupFilesManager.store(backup: backupURL, password: password)
+            try await BackupFilesManager.recover(backup: backupURL, password: password)
         } catch {
             throw ICloudBackupError.unableToSaveBackup(error: error)
         }
     }
-    
+
     private func downloadRemoteBackup() async throws {
         do {
             try await backupDownloadService.downloadBackup()
@@ -193,21 +193,21 @@ final class ICloudBackupService {
             throw ICloudBackupError.unableToDownloadBackup(error: error)
         }
     }
-    
+
     private func checkIsPasswordRequired(password: String?) async throws {
         let remoteDirectoryURL = try ubiquityContainerURL
-        
+
         let backupURL = try FileManager.default.contentsOfDirectory(atURL: remoteDirectoryURL, sortedBy: .modified)
             .filter { $0.lastPathComponent == BackupFilesManager.encryptedFileName || $0.lastPathComponent == BackupFilesManager.unencryptedFileName }
             .last
-        
+
         guard let backupURL else { throw BackupError.noRemoteBackup }
         guard backupURL.lastPathComponent == BackupFilesManager.encryptedFileName, password == nil else { return }
         throw BackupError.passwordRequired
     }
-    
+
     // MARK: - Handlers
-    
+
     private func handle(backupStatus: BackupStatus) {
         switch backupStatus {
         case .disabled:
@@ -219,7 +219,7 @@ final class ICloudBackupService {
             break
         }
     }
-    
+
     private func handle(uploadStatus: ICloudDocsUploadService.Status) {
         switch uploadStatus {
         case let .inProgress(progress):
@@ -240,7 +240,7 @@ extension ICloudBackupService: BackupServicable {
         get { backupPassword }
         set { backupPassword = newValue }
     }
-    
+
     var isOn: Bool {
         get { backupStatusValue != .disabled }
         set {
@@ -250,15 +250,15 @@ extension ICloudBackupService: BackupServicable {
             performBackup(forced: true)
         }
     }
-    
+
     var backupStatus: AnyPublisher<BackupStatus, Never> { $backupStatusValue.eraseToAnyPublisher() }
     var lastBackupTimestamp: AnyPublisher<Date?, Never> { $syncDate.eraseToAnyPublisher() }
-    
+
     func performBackup(forced: Bool) {
-        
+
         guard !AppValues.isSimulator, isOn else { return }
         guard forced || backupStatusValue.isFailed else { return }
-        
+
         Task {
             do {
                 try await uploadBackup(password: backupPassword)
@@ -267,18 +267,18 @@ extension ICloudBackupService: BackupServicable {
             }
         }
     }
-    
+
     func restoreBackup(password: String?) -> AnyPublisher<Void, Error> {
-        
+
         let subject = PassthroughSubject<Void, Error>()
-        
+
         defer {
             Task {
                 do {
                     let remoteDirectoryURL = try ubiquityContainerURL
                     try createFolderStructure(url: remoteDirectoryURL)
                     try await checkIsPasswordRequired(password: password)
-                    try await downloadBackup(password:password)
+                    try await downloadBackup(password: password)
                     subject.send(())
                     subject.send(completion: .finished)
                 } catch {
@@ -286,7 +286,7 @@ extension ICloudBackupService: BackupServicable {
                 }
             }
         }
-        
+
         return subject.eraseToAnyPublisher()
     }
 }

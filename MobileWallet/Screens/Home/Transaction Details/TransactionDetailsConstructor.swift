@@ -1,5 +1,5 @@
 //  TransactionDetailsConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 15/03/2022
@@ -39,7 +39,7 @@
 */
 
 enum TransactionDetailsConstructor {
-    
+
     static func buildScene(transaction: Transaction) -> TransactionDetailsViewController {
         let model = TransactionDetailsModel(transaction: transaction)
         return TransactionDetailsViewController(model: model)

@@ -1,5 +1,5 @@
 //  FileLogger.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/10/2022
@@ -41,7 +41,7 @@
 final class FileLogger {}
 
 extension FileLogger: Logable {
-    
+
     func log(message: String, domain: Logger.Domain, logLevel: Logger.Level) {
         let formattedMessage = LogFormatter.formattedMessage(message: message, domain: domain, logLevel: logLevel, showPrefix: true)
         Tari.shared.log(message: formattedMessage)

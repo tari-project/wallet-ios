@@ -1,5 +1,5 @@
 //  BaseNodesAddDeeplink.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 02/03/2022

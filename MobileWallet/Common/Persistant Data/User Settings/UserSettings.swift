@@ -1,5 +1,5 @@
 //  UserSettings.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 18/12/2022
@@ -38,17 +38,15 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-
-
 struct UserSettings: Codable {
-    
+
     enum ColorScheme: Codable {
         case system
         case light
         case dark
         case purple
     }
-    
+
     var colorScheme: ColorScheme
 }
 

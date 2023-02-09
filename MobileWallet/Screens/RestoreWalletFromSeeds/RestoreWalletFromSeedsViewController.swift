@@ -55,7 +55,7 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
         super.viewDidLoad()
         setupFeedbacks()
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         model.start()
@@ -67,9 +67,9 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
         super.setupViews()
         setupConstraints()
     }
-    
+
     private func setupConstraints() {
-        
+
         view.addSubview(mainView)
         mainView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -84,7 +84,7 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
     }
 
     private func setupFeedbacks() {
-    
+
         model.viewModel.$isEmptyWalletCreated
             .sink { [weak self] isEmptyWalletCreated in
                 guard isEmptyWalletCreated else { return }
@@ -100,49 +100,49 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
             .compactMap { $0 }
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancelables)
-        
+
         model.viewModel.$isAutocompletionAvailable
             .assign(to: \.isTokenToolbarVisible, on: mainView.tokenView)
             .store(in: &cancelables)
-        
+
         model.viewModel.$autocompletionTokens
             .assign(to: \.autocompletionTokens, on: mainView.tokenView)
             .store(in: &cancelables)
-        
+
         model.viewModel.$autocompletionMessage
             .assign(to: \.autocompletionMessage, on: mainView.tokenView)
             .store(in: &cancelables)
-        
+
         model.viewModel.$updatedInputText
             .assign(to: \.updatedInputText, on: mainView.tokenView)
             .store(in: &cancelables)
-        
+
         model.viewModel.$seedWordModels
             .receive(on: DispatchQueue.main)
             .assign(to: \.seedWords, on: mainView.tokenView)
             .store(in: &cancelables)
-        
+
         mainView.tokenView.$inputText
             .receive(on: DispatchQueue.main)
             .assign(to: \.inputText, on: model)
             .store(in: &cancelables)
-        
+
         mainView.tokenView.onSelectSeedWord = { [weak self] in
             self?.model.removeSeedWord(row: $0)
         }
-        
+
         mainView.tokenView.onRemovingCharacterAtFirstPosition = { [weak self] in
             self?.model.handleRemovingFirstCharacter(existingText: $0)
         }
-        
+
         mainView.tokenView.onEndEditing = { [weak self] in
             self?.model.handleEndEditing()
         }
 
-        mainView.selectBaseNodeButton.onTap =  { [weak self] in
+        mainView.selectBaseNodeButton.onTap = { [weak self] in
             self?.moveToSelectBaseNodeScene()
         }
-        
+
         mainView.submitButton.onTap = { [weak self] in
             _ = self?.mainView.resignFirstResponder()
             self?.model.startRestoringWallet()
@@ -153,7 +153,7 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
 
     private func showProgressOverlay() {
 
-        let overlay = RestoreWalletFromSeedsProgressViewController()
+        let overlay = SeedWordsRecoveryProgressViewController()
 
         overlay.onSuccess = {
             try? MigrationManager.updateWalletVersion()
@@ -162,7 +162,7 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
 
         show(overlay: overlay)
     }
-    
+
     private func moveToSelectBaseNodeScene() {
         navigationController?.pushViewController(SelectBaseNodeViewController(), animated: true)
     }

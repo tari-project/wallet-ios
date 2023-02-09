@@ -6,6 +6,7 @@
 "common.recommended" = "Recommended";
 "common.close" = "Close";
 "common.apply" = "Apply";
+"common.next" = "Next";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -158,6 +159,7 @@
 "backup_wallet_settings.item.secure_your_backup"  = "Secure your backup with password";
 "backup_wallet_settings.item.backup_now" = "Back up now";
 "backup_wallet_settings.item.with_recovery_phrase" = "Write Down Seed Phrase";
+"backup_wallet_settings.item.onboarding" = "Learn More";
 "backup_wallet_settings.header.title" = "Wallet Backups";
 "backup_wallet_settings.header.description" = "By backing up your wallet, you’ll ensure that you don’t lose your tXTR if your phone is lost or broken.";
 
@@ -453,24 +455,59 @@
 "wallet_backup_state.out_to_date" = "Out of date";
 "wallet_backup_state.in_progress" = "In progress";
 
-/* Wallet backup prompts */
-"wallet_backup.prompt_1.title" = "Want to back up your wallet?";
-"wallet_backup.prompt_1.title_bold" = "back up your wallet?";
-"wallet_backup.prompt_1.description" = "You can back up your wallet so that you don’t lose your tXTR if your phone is lost or broken. You can configure this in Settings anytime.";
-"wallet_backup.prompt_1.cta_button" = "Back Up Wallet";
-"wallet_backup.prompt_1.cancel_button" = "I'll do it later";
+/* Staged wallet security */
+"staged_wallet_security.stages.1a.title" = "🔑🔑🔑";
+"staged_wallet_security.stages.1a.subtitle" = "Write down your seed words";
+"staged_wallet_security.stages.1a.message.part1" = "You now have ";
+"staged_wallet_security.stages.1a.message.part2.bold" = "real";
+"staged_wallet_security.stages.1a.message.part3" = " money in your wallet.\n\n\If you accidentally delete your wallet app or lose your device, your funds are lost, and there is no way to recover them unless you have safely kept a copy of your ";
+"staged_wallet_security.stages.1a.message.part4.bold" = "seed phrase";
+"staged_wallet_security.stages.1a.message.part5" = " safe somewhere.\n\nClick 'Ok' to review and save the phrase now, or 'Remind me later' to do it at a more convenient time";
+"staged_wallet_security.stages.1a.buttons.navigate" = "Ok";
+"staged_wallet_security.stages.1b.title" = "🤑🤑🤑";
+"staged_wallet_security.stages.1b.subtitle" = "Make a cloud backup";
+"staged_wallet_security.stages.1b.message" = "Your wallet now holds a fair amount of value, which you probably don't want to lose. Unlike a physical wallet's notes, it's possible to make a copy of your wallet's contents that you can use to recover your funds in case you lose them.\n\nYou should think about making a copy of your wallet's coins, which we will keep up to date after every transaction.\n\nIf you have a copy of your seed phrase saved somewhere safe, and don't want to back up your coins into the cloud, you can skip this step.";
+"staged_wallet_security.stages.1b.buttons.navigate" = "Backup My Coins";
+"staged_wallet_security.stages.2.title" = "😎💰💰💰😎";
+"staged_wallet_security.stages.2.subtitle" = "Encrypt your wallet with a password";
+"staged_wallet_security.stages.2.message" = "It's awesome that you're using [this Tari wallet] so much! You're a high-roller, so it's time to add another layer of security to your wallet backups.\n\nYour funds will be safer if we encrypt your cloud backups with an additional password of your own choosing.\n\nYou need to make sure that this password is very strong and that YOU DO NOT FORGET it!\n\n(Whatever happens, you can always restore from your seed phrase, so make sure you're still keeping this safe and secreted away).\n\nAs an added benefit, password-encrypted backups allow us to backup your transaction history as well!";
+"staged_wallet_security.stages.2.buttons.navigate" = "Upgrade My Backups";
+"staged_wallet_security.stages.3.title" = "🐋🐋🐋🐋🐋";
+"staged_wallet_security.stages.3.subtitle" = "❗❗❗ Whale alert ❗❗❗";
+"staged_wallet_security.stages.3.message" = "Your mobile wallet holds way more funds than would normally be considered safe to walk around with in your pocket.\n\nYou should really consider sweeping most of your balance into a cold- or hardware wallet.";
+"staged_wallet_security.stages.3.buttons.navigate" = "Set Up My Cold Wallet Address";
+"staged_wallet_security.buttons.remind_me_later" = "Remind me later";
 
-"wallet_backup.prompt_2.title" = "It’s time to back up your wallet";
-"wallet_backup.prompt_2.title_bold" = "back up your wallet";
-"wallet_backup.prompt_2.description" = "You have quite a bit of tXTR. You should back up your wallet now so that you don’t lose it all if your phone is lost or broken.";
-"wallet_backup.prompt_2.cta_button" = "Back Up Wallet";
-"wallet_backup.prompt_2.cancel_button" = "I'll do it later";
+/* Staged wallet security - Onboarding */
 
-"wallet_backup.prompt_3.title" = "Further secure your backups";
-"wallet_backup.prompt_3.title_bold" = "your backups";
-"wallet_backup.prompt_3.description" = "Given the amount of money in your wallet, you should password-protect your backups so they're safe even if your iCloud is compromised.";
-"wallet_backup.prompt_3.cta_button" = "Secure Backups";
-"wallet_backup.prompt_3.cancel_button" = "Not now";
+"onboarding.staged_wallet_security.page1.title.part1" = "Write down your";
+"onboarding.staged_wallet_security.page1.title.part2.bold" = "seed words";
+"onboarding.staged_wallet_security.page1.message.part1" = "The safety of your wallet is very important to us. To keep your coins safe, you should write down the";
+"onboarding.staged_wallet_security.page1.message.part2.bold" = "seed words";
+"onboarding.staged_wallet_security.page1.message.part3" = "(please don't make a screenshot, it isn't safe to keep them that way) and keep them in a safe place.\n\nThe seed words are used to recover your wallet if you should ever lose access to it.";
+"onboarding.staged_wallet_security.page1.action_button" = "View My Seed Words";
+"onboarding.staged_wallet_security.page2.title.part1" = "Backup to the";
+"onboarding.staged_wallet_security.page2.title.part2.bold" = "cloud";
+"onboarding.staged_wallet_security.page2.message.part1" = "An easy way to recover your coins and transaction list is to keep a";
+"onboarding.staged_wallet_security.page2.message.part2.bold" = "backup";
+"onboarding.staged_wallet_security.page2.message.part3" = "of your wallet in the";
+"onboarding.staged_wallet_security.page2.message.part4.bold" = "cloud";
+"onboarding.staged_wallet_security.page2.message.part5" = ".\n\nTo do that, the only thing that you need to do is go to the settings menu, select the cloud service that you want to use, and authorize the app to send backups to that service.";
+"onboarding.staged_wallet_security.page2.action_button" = "Go To Cloud Backups";
+"onboarding.staged_wallet_security.page3.title.part1" = "Create a";
+"onboarding.staged_wallet_security.page3.title.part2.bold" = "password";
+"onboarding.staged_wallet_security.page3.message.part1" = "To improve your cloud backups’ security, you should consider encrypting your backups with a password.\n\nRemember that you should use a";
+"onboarding.staged_wallet_security.page3.message.part2.bold" = "password";
+"onboarding.staged_wallet_security.page3.message.part3" = "that's long, contains letters, numbers, special characters and isn't used anywhere else. You can also change your password later directly from the settings menu.";
+"onboarding.staged_wallet_security.page3.action_button" = "Set My Password";
+"onboarding.staged_wallet_security.page4.title.part1" = "Backup and recovery options";
+"onboarding.staged_wallet_security.page4.title.part2.bold" = "help keep your coins safe";
+"onboarding.staged_wallet_security.page4.message" = "Try to keep your seed words and backups in a safe place. We also strongly recommend keeping a few copies of your seed words in different places and changing the backup password regularly.";
+"onboarding.staged_wallet_security.page4.action_button" = "Let’s Do This!";
+"onboarding.staged_wallet_security.footer.part1" = "Aurora helps you secure your funds";
+"onboarding.staged_wallet_security.footer.part2.highlighted" = "when you need it";
+"onboarding.staged_wallet_security.footer.part3.any_funds" = ". This step is triggered when you receive funds for the first time.";
+"onboarding.staged_wallet_security.footer.part3.threshold" = ". This step is triggered when your balance exceeds %@ for the first time.";
 
 /* Loading gif button */
 "loading_gif_button.title.loading" = "Loading GIF";
@@ -689,3 +726,7 @@
 "error.dropbox_backup.auth_failed" = "Authorisation failed. Please check your account credentials and connection with the internet.";
 "error.dropbox_backup.no_backup" = "The app was unable to locate a valid backup on your Dropbox account.";
 "error.dropbox_backup.unknown" = "The app detected an unknown error during the backup process. Please get in touch with the support if this error appears again.";
+
+/* Cloud Backup */
+
+"backup.cloud.partial.recovery_message" = "Funds recovered from your previous wallet.";

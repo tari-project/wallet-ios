@@ -1,5 +1,5 @@
 //  WalletSeedWordsTests.swift
-	
+
 /*
 	Package MobileWalletTests
 	Created by Adrian Truszczynski on 12/07/2021
@@ -42,9 +42,9 @@
 import XCTest
 
 final class SeedWordsTests: XCTestCase {
-    
+
     func testWalletSeedInitializationWithSuccess() {
-        
+
         let inputSeedWords = [
             "abandon", "crop", "company", "buddy", "drink",
             "sniff", "second", "list", "zebra", "bacon",
@@ -52,14 +52,14 @@ final class SeedWordsTests: XCTestCase {
             "wage", "swear", "actor", "squeeze", "share",
             "replace", "sand", "travel", "goat"
         ]
-        
+
         let seedWords = try? SeedWords(words: inputSeedWords)
-    
+
         XCTAssertNotNil(seedWords)
     }
 
     func testWalletSeedInitliaziationWithInvalidWord() {
-        
+
         let inputSeedWords = [
             "abandon", "crop", "company", "buddy", "drink",
             "sniff", "second", "list", "IAMERROR", "bacon",
@@ -67,40 +67,40 @@ final class SeedWordsTests: XCTestCase {
             "wage", "swear", "actor", "squeeze", "share",
             "replace", "sand", "travel", "goat"
         ]
-        
+
         var seedWords: SeedWords?
-        
+
         do {
             seedWords = try SeedWords(words: inputSeedWords)
         } catch SeedWords.InternalError.invalidSeedWord {
         } catch {
             XCTFail("Unexpected error")
         }
-        
+
         XCTAssertNil(seedWords)
     }
-    
+
     func testWalletSeedInitliaziationWithNotEnoughtSeedWords() {
-        
+
         let inputSeedWords = [
             "abandon", "crop", "company", "buddy", "drink",
             "sniff", "second", "list", "zebra", "bacon"
         ]
-        
+
         var seedWords: SeedWords?
-        
+
         do {
             seedWords = try SeedWords(words: inputSeedWords)
         } catch SeedWords.InternalError.phraseIsTooShort {
         } catch {
             XCTFail("Unexpected error")
         }
-        
+
         XCTAssertNil(seedWords)
     }
-    
+
     func testWalletSeedInitliaziationWithTooManySeedWords() {
-        
+
         let inputSeedWords = [
             "abandon", "crop", "company", "buddy", "drink",
             "sniff", "second", "list", "zebra", "bacon",
@@ -108,16 +108,16 @@ final class SeedWordsTests: XCTestCase {
             "wage", "swear", "actor", "squeeze", "share",
             "replace", "sand", "travel", "goat", "abandon"
         ]
-        
+
         var seedWords: SeedWords?
-        
+
         do {
             seedWords = try SeedWords(words: inputSeedWords)
         } catch SeedWords.InternalError.phraseIsTooLong {
         } catch {
             XCTFail("Unexpected error")
         }
-        
+
         XCTAssertNil(seedWords)
     }
 }

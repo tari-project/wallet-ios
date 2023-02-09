@@ -1,5 +1,5 @@
 //  TariVectorWrapper.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/07/2022
@@ -39,45 +39,45 @@
 */
 
 final class TariVectorWrapper {
-    
+
     // MARK: - Properties
-    
+
     let pointer: UnsafeMutablePointer<TariVector>
-    
+
     // MARK: - Initialisers
-    
+
     init(type: TariTypeTag) {
         pointer = create_tari_vector(type)
     }
-    
+
     // MARK: - Actions
-    
+
     func add(commitment: String) throws {
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         tari_vector_push_string(pointer, commitment, errorCodePointer)
-        
+
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         destroy_tari_vector(pointer)
     }
 }
 
 extension TariVectorWrapper {
-    
+
     func add(commitments: [String]) throws {
         try commitments.forEach { try self.add(commitment: $0) }
     }
 }
 
 extension UnsafeMutablePointer where Pointee == TariVector {
-    
+
     func array<T>() -> [T] {
         let pointer = pointee.ptr.bindMemory(to: T.self, capacity: Int(pointee.len))
         let buffer = UnsafeBufferPointer(start: pointer, count: Int(pointee.len))

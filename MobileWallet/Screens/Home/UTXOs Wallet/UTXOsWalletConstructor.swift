@@ -1,5 +1,5 @@
 //  UTXOsWalletConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 31/05/2022
@@ -39,7 +39,7 @@
 */
 
 enum UTXOsWalletConstructor {
-    
+
     static func buildScene() -> UTXOsWalletViewController {
         let model = UTXOsWalletModel()
         return UTXOsWalletViewController(model: model)

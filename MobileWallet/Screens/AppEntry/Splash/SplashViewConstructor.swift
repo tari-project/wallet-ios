@@ -1,5 +1,5 @@
 //  SplashViewConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 30/11/2022
@@ -39,7 +39,7 @@
 */
 
 enum SplashViewConstructor {
-    
+
     static func buildScene(isWalletConnected: Bool) -> SplashViewController {
         let model = SplashViewModel(isWalletConnected: isWalletConnected)
         return SplashViewController(model: model)

@@ -1,5 +1,5 @@
 //  PopUpNetworkStatusContentView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 15/07/2022
@@ -42,23 +42,23 @@ import UIKit
 import TariCommon
 
 final class PopUpNetworkStatusContentView: UIView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var topRowStackView: UIStackView = {
         let view = UIStackView()
         view.distribution = .equalSpacing
         view.spacing = 36.0
         return view
     }()
-    
+
     @View private var bottomRowStackView: UIStackView = {
         let view = UIStackView()
         view.distribution = .equalSpacing
         view.spacing = 36.0
         return view
     }()
-    
+
     @View private var columnStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
@@ -66,51 +66,51 @@ final class PopUpNetworkStatusContentView: UIView {
         view.spacing = 20.0
         return view
     }()
-    
+
     @View private var networkStatusView: StatusView = {
         let view = StatusView()
         view.update(icon: Theme.shared.images.connectionInternetIcon)
         return view
     }()
-    
+
     @View private var torStatusView: StatusView = {
         let view = StatusView()
         view.update(icon: Theme.shared.images.connectionTorIcon)
         return view
     }()
-    
+
     @View private var baseNodeConnectionStatusView: StatusView = {
         let view = StatusView()
         view.update(icon: Theme.shared.images.settingsBaseNodeIcon)
         return view
     }()
-    
+
     @View private var baseNodeSyncStatusView: StatusView = {
         let view = StatusView()
         view.update(icon: Theme.shared.images.connectionSyncIcon)
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero)
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(columnStackView)
         [topRowStackView, bottomRowStackView].forEach(columnStackView.addArrangedSubview)
         [networkStatusView, torStatusView].forEach(topRowStackView.addArrangedSubview)
         [baseNodeConnectionStatusView, baseNodeSyncStatusView].forEach(bottomRowStackView.addArrangedSubview)
-        
+
         let constraints = [
             columnStackView.topAnchor.constraint(equalTo: topAnchor),
             columnStackView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor),
@@ -118,57 +118,57 @@ final class PopUpNetworkStatusContentView: UIView {
             columnStackView.bottomAnchor.constraint(equalTo: bottomAnchor),
             columnStackView.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     func updateNetworkStatus(text: String, status: StatusView.Status) {
         networkStatusView.update(text: text, status: status)
     }
-    
+
     func updateTorStatus(text: String, status: StatusView.Status) {
         torStatusView.update(text: text, status: status)
     }
-    
+
     func updateBaseNodeConnectionStatus(text: String, status: StatusView.Status) {
         baseNodeConnectionStatusView.update(text: text, status: status)
     }
-    
+
     func updateBaseNodeSyncStatus(text: String, status: StatusView.Status) {
         baseNodeSyncStatusView.update(text: text, status: status)
     }
 }
 
 final class StatusView: DynamicThemeView {
-    
+
     enum Status {
         case error
         case warning
         case ok
     }
-    
+
     // MARK: - Subviews
-    
+
     @View private var iconViewBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 24.0
         return view
     }()
-    
+
     @View private var iconView: UIImageView = {
         let view = UIImageView()
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     @View private var statusDotView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 7.0
         return view
     }()
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
@@ -176,29 +176,29 @@ final class StatusView: DynamicThemeView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     private var status: Status = .error
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [iconViewBackgroundView, statusDotView, label].forEach(addSubview)
         iconViewBackgroundView.addSubview(iconView)
-        
+
         let constraints = [
             iconViewBackgroundView.topAnchor.constraint(equalTo: topAnchor),
             iconViewBackgroundView.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -219,33 +219,33 @@ final class StatusView: DynamicThemeView {
             widthAnchor.constraint(equalToConstant: 110.0),
             heightAnchor.constraint(equalToConstant: 94.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         iconViewBackgroundView.backgroundColor = theme.backgrounds.primary
         iconViewBackgroundView.apply(shadow: theme.shadows.box)
-        iconView.tintColor = theme.icons.active
+        iconView.tintColor = theme.icons.default
         label.textColor = theme.text.body
-        
+
         updateBackgroundColor(theme: theme)
     }
-    
+
     func update(text: String, status: Status) {
         label.text = text
         self.status = status
         updateBackgroundColor(theme: theme)
     }
-    
+
     func update(icon: UIImage?) {
         iconView.image = icon
     }
-    
+
     private func updateBackgroundColor(theme: ColorTheme) {
         switch status {
         case .error:

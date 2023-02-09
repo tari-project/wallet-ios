@@ -42,58 +42,58 @@ import UIKit
 import TariCommon
 
 final class ContactCell: DynamicThemeCell {
-    
+
     // MARK: - Views
-    
+
     @View private var contactAvatarView = ContactAvatarView()
-    
+
     @View private var aliasLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.contactCellAlias
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var initial: String {
         get { contactAvatarView.text }
         set { contactAvatarView.text = newValue }
     }
-    
+
     var aliasText: String? {
         get { aliasLabel.text }
         set { aliasLabel.text = newValue }
     }
-    
+
     var isEmojiID: Bool = false {
         didSet { updateAliasLabelColors(theme: theme) }
     }
-    
+
     // MARK: - Initializers
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         backgroundColor = .clear
         selectionStyle = .none
     }
-    
+
     private func setupConstraints() {
-        
+
         translatesAutoresizingMaskIntoConstraints = false
-        
+
         [contactAvatarView, aliasLabel].forEach(contentView.addSubview)
-        
+
         let constraints = [
             contactAvatarView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             contactAvatarView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0),
@@ -104,26 +104,26 @@ final class ContactCell: DynamicThemeCell {
             aliasLabel.heightAnchor.constraint(equalToConstant: aliasLabel.font.pointSize * 1.15),
             contentView.heightAnchor.constraint(equalToConstant: 70.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         updateAliasLabelColors(theme: theme)
     }
-    
+
     private func updateAliasLabelColors(theme: ColorTheme) {
         aliasLabel.textColor = isEmojiID ? theme.text.lightText : theme.text.heading
     }
-    
+
     // MARK: - States
-    
+
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: true)
-        
+
         UIView.animate(withDuration: 0.1, delay: 0.0, options: .curveEaseIn) {
             self.contentView.subviews.forEach { $0.alpha = self.isHighlighted ? 0.6 : 1.0 }
         }

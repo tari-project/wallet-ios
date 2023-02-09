@@ -1,5 +1,5 @@
 //  ICloudDocsUploadService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 09/11/2022
@@ -41,31 +41,31 @@
 import Combine
 
 final class ICloudDocsUploadService {
-    
+
     enum Status {
         case idle
         case inProgress(progress: Double)
         case finished
     }
-    
+
     // MARK: - Properties
-    
+
     @Published private(set) var status: Status = .idle
-    
+
     private let metadataQuery: ICloudBackupMetadataQuery
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialisers
-    
+
     init(filenamePrefix: String) {
         metadataQuery = ICloudBackupMetadataQuery(filenamePrefix: filenamePrefix)
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         Publishers.Merge(
             NotificationCenter.default.publisher(for: .NSMetadataQueryDidStartGathering, object: metadataQuery),
             NotificationCenter.default.publisher(for: .NSMetadataQueryDidUpdate, object: metadataQuery)
@@ -74,33 +74,33 @@ final class ICloudDocsUploadService {
         .sink { [weak self] in self?.handle(query: $0) }
         .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     func uploadBackup() {
         listenToUpdates()
     }
-    
+
     private func listenToUpdates() {
         metadataQuery.operationQueue?.addOperation { [weak self] in
             self?.metadataQuery.start()
             self?.metadataQuery.enableUpdates()
         }
     }
-    
+
     private func stopListeningToUpdates() {
         metadataQuery.operationQueue?.addOperation { [weak self] in
             self?.metadataQuery.stop()
             self?.metadataQuery.disableUpdates()
         }
     }
-    
+
     // MARK: - Handlers
-    
+
     private func handle(query: NSMetadataQuery) {
-        
+
         guard !query.results.isEmpty else { return }
-        
+
         let item = query.results
             .compactMap { $0 as? NSMetadataItem }
             .filter {
@@ -108,13 +108,13 @@ final class ICloudDocsUploadService {
                 return url.lastPathComponent.hasPrefix(BackupFilesManager.encryptedFileName)
             }
             .last
-        
+
         guard let item, let progress = item.value(forAttribute: NSMetadataUbiquitousItemPercentUploadedKey) as? Int, let isUploaded = item.value(forAttribute: NSMetadataUbiquitousItemIsUploadedKey) as? Bool else { return }
-        
+
         if progress > 0 {
             status = .inProgress(progress: Double(progress) / 100.0)
         }
-        
+
         if isUploaded {
             status = .finished
             stopListeningToUpdates()

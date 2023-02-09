@@ -39,15 +39,15 @@
 */
 
 final class PublicKey {
-    
+
     enum InternalError: Error {
         case invalidHex
     }
-    
+
     // MARK: - Properties
-    
+
     let pointer: OpaquePointer
-    
+
     var byteVector: ByteVector {
         get throws {
             var errorCode: Int32 = -1
@@ -56,28 +56,24 @@ final class PublicKey {
             return ByteVector(pointer: result)
         }
     }
-    
+
     // MARK: - Initialisers
-    
-    init(pointer: OpaquePointer) {
-        self.pointer = pointer
-    }
-    
+
     init(hex: String) throws {
-        
+
         guard hex.count == 64, hex.rangeOfCharacter(from: .hexadecimal) != nil else { throw InternalError.invalidHex }
-        
+
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        
+
         let result = public_key_from_hex(hex, errorCodePointer)
-        
+
         guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
         self.pointer = pointer
     }
-    
+
     // MARK: - Deinitialisers
-    
+
     deinit {
         public_key_destroy(pointer)
     }

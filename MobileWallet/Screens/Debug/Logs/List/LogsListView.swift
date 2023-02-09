@@ -1,5 +1,5 @@
 //  LogsListView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2022
@@ -42,46 +42,46 @@ import UIKit
 import TariCommon
 
 final class LogsListView: BaseNavigationContentView {
-    
+
     // MARK: - Subviews
-    
+
     @View private(set) var tableView: UITableView = {
         let view = UITableView()
         view.rowHeight = UITableView.automaticDimension
         view.backgroundColor = .clear
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         navigationBar.title = localized("debug.logs.list.title")
         navigationBar.backButtonType = .close
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(tableView)
-        
+
         let constraints = [
             tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 }

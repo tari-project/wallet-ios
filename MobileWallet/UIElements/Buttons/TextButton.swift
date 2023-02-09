@@ -47,10 +47,10 @@ enum TextButtonVariation {
 }
 
 final class TextButton: DynamicThemeBaseButton {
-    
+
     private static let imageHorizontalSpaceing: CGFloat = 2.0
     var spacing: CGFloat = imageHorizontalSpaceing
-    
+
     private var variation: TextButtonVariation = .primary {
         didSet { updateTextColor(theme: theme) }
     }
@@ -108,15 +108,15 @@ final class TextButton: DynamicThemeBaseButton {
     }
 
     func setRightImage(_ image: UIImage?) {
- 
+
         guard let image = image else { return }
-        
+
         if let color = titleColor(for: .normal) {
             setImage(image.withTintColor(color, renderingMode: .alwaysOriginal), for: .normal)
         } else {
             setImage(image, for: .normal)
         }
-        
+
         imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: spacing)
         titleEdgeInsets = UIEdgeInsets(top: 0, left: spacing, bottom: 0, right: 0)
 
@@ -124,11 +124,11 @@ final class TextButton: DynamicThemeBaseButton {
         titleLabel?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
         imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
     }
-    
+
     private func updateTextColor(theme: ColorTheme) {
         switch variation {
         case .primary:

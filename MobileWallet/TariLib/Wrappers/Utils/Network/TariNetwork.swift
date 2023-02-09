@@ -90,7 +90,7 @@ extension TariNetwork {
 extension TariNetwork {
 
     static var all: [TariNetwork] { [esmeralda].compactMap { $0 } }
-    
+
     static var esmeralda: Self {
         makeNetwork(
             name: "esmeralda",

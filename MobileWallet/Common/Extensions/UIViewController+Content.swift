@@ -65,16 +65,6 @@ extension UIViewController {
         view.endEditing(true)
     }
 
-    @objc var navBarHeight: CGFloat {
-        return (UIApplication.shared.keyWindow?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0.0) +
-            (self.navigationController?.navigationBar.frame.height ?? 0.0)
-    }
-
-    func setNavigationBarLeftCloseButton(action: Selector) {
-        let closeButtonItem = UIBarButtonItem.customNavBarItem(target: self, image: Theme.shared.images.close!, action: action)
-        navigationItem.leftBarButtonItem = closeButtonItem
-    }
-
     func add(childController controller: UIViewController, containerView: UIView) {
 
         addChild(controller)

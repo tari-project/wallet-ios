@@ -1,5 +1,5 @@
 //  VerifySeedWordsConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 23/02/2022
@@ -41,7 +41,7 @@
 import Foundation
 
 enum VerifySeedWordsConstructor {
-    
+
     static func buildScene(inputData: VerifySeedWordsModel.InputData) -> VerifySeedWordsViewController {
         let model = VerifySeedWordsModel(inputData: inputData)
         return VerifySeedWordsViewController(model: model)

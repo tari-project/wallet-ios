@@ -44,9 +44,7 @@ import AVFoundation
 import GiphyUISDK
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-    
-    private let statusLoggerManager = StatusLoggerManager()
+final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     func application(
         _ application: UIApplication,
@@ -63,9 +61,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         if let giphyApiKey = TariSettings.shared.giphyApiKey {
             Giphy.configure(apiKey: giphyApiKey)
         }
-        
+
         AppConfigurator.configure()
-        
+
         return true
     }
 

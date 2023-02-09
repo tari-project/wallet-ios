@@ -1,5 +1,5 @@
 //  TransactionsView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 13/01/2022
@@ -42,29 +42,29 @@ import UIKit
 import TariCommon
 
 final class TransactionsView: BaseNavigationContentView {
-    
+
     // MARK: - Subviews
-    
+
     @View var toolbar = TransactionsToolbarView()
     @View var contentView = UIView()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         [toolbar, contentView].forEach(addSubview)
-        
+
         let constraints = [
             toolbar.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             toolbar.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -75,7 +75,7 @@ final class TransactionsView: BaseNavigationContentView {
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 }

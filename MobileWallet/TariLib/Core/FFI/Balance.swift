@@ -39,11 +39,11 @@
 */
 
 final class Balance {
-    
+
     // MARK: - Properties
-    
+
     let pointer: OpaquePointer
-    
+
     var available: UInt64 {
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
@@ -77,7 +77,7 @@ final class Balance {
     }
 
     // MARK: - Initialisers
-    
+
     init (pointer: OpaquePointer) {
         self.pointer = pointer
     }

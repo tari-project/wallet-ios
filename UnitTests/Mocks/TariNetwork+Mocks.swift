@@ -1,5 +1,5 @@
 //  TariNetwork+Mocks.swift
-	
+
 /*
 	Package UnitTests
 	Created by Adrian Truszczynski on 03/03/2022
@@ -41,5 +41,5 @@
 @testable import Tari_Aurora
 
 extension TariNetwork {
-    static let testNetwork = TariNetwork(name: "test_network", presentedName: "Test Network", tickerSymbol: "Test Symbol", baseNodes: [], faucetURL: nil)
+    static let testNetwork = TariNetwork(name: "test_network", presentedName: "Test Network", tickerSymbol: "Test Symbol", baseNodes: [])
 }

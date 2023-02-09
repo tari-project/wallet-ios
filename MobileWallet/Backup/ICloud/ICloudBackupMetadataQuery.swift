@@ -1,5 +1,5 @@
 //  ICloudBackupMetadataQuery.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 27/10/2022
@@ -39,7 +39,7 @@
 */
 
 final class ICloudBackupMetadataQuery: NSMetadataQuery {
-    
+
     init(filenamePrefix: String) {
         super.init()
         operationQueue = .main

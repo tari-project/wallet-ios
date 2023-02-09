@@ -1,5 +1,5 @@
 //  TransactionDetailsValueView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 16/03/2022
@@ -44,14 +44,14 @@ import TariCommon
 final class TransactionDetailsValueView: DynamicThemeView {
 
     // MARK: - Subviews
-    
+
     @View private var currencyImageView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.currencySymbol
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     @View private(set) var valueLabel: UILabel = {
         let view = UILabel()
         view.minimumScaleFactor = 0.2
@@ -59,13 +59,13 @@ final class TransactionDetailsValueView: DynamicThemeView {
         view.adjustsFontSizeToFitWidth = true
         return view
     }()
-    
+
     @View private var feeLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.txFeeLabel
         return view
     }()
-    
+
     @View private(set) var feeButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("common.fee"), for: .normal)
@@ -73,37 +73,37 @@ final class TransactionDetailsValueView: DynamicThemeView {
         view.setRightImage(Theme.shared.images.txFee)
         return view
     }()
-    
+
     var fee: String? {
         didSet { updateFeeElements() }
     }
-    
+
     // MARK: - Properties
-    
+
     private var valueLabelBottomConstraint: NSLayoutConstraint?
     private var feeButtonBottomConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         let feeButtonBottomConstraint = feeButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30.0)
         self.feeButtonBottomConstraint = feeButtonBottomConstraint
         valueLabelBottomConstraint = valueLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30.0)
-        
+
         [currencyImageView, valueLabel, feeLabel, feeButton].forEach(addSubview)
-        
+
         let constraints = [
             currencyImageView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 22.0),
             currencyImageView.widthAnchor.constraint(equalToConstant: 21.0),
@@ -119,12 +119,12 @@ final class TransactionDetailsValueView: DynamicThemeView {
             feeButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             feeButtonBottomConstraint
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
@@ -132,15 +132,15 @@ final class TransactionDetailsValueView: DynamicThemeView {
         valueLabel.textColor = theme.text.heading
         feeLabel.textColor = theme.text.heading
     }
-    
+
     private func updateFeeElements() {
         feeLabel.text = fee
-        
+
         let isFeeVisible = fee != nil
-        
+
         feeLabel.isHidden = !isFeeVisible
         feeButton.isHidden = !isFeeVisible
-        
+
         if isFeeVisible {
             valueLabelBottomConstraint?.isActive = false
             feeButtonBottomConstraint?.isActive = true

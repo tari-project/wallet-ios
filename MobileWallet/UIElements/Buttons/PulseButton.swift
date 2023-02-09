@@ -83,7 +83,7 @@ class PulseButton: DynamicThemeBaseButton {
             self.transform = CGAffineTransform(scaleX: 1, y: 1)
         })
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         tintColor = theme.brand.purple

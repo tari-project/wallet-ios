@@ -1,5 +1,5 @@
 //  ColorTheme.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Browncoat on 25/11/2022
@@ -41,20 +41,20 @@
 import UIKit
 
 struct ColorTheme {
-    
+
     struct Brand {
         let purple: UIColor?
         let pink: UIColor?
         let darkBlue: UIColor?
     }
-    
+
     struct Neutral {
         var primary: UIColor?
         var secondary: UIColor?
         var tertiary: UIColor?
         var inactive: UIColor?
     }
-    
+
     struct Buttons {
         var primaryStart: UIColor?
         var primaryEnd: UIColor?
@@ -62,30 +62,30 @@ struct ColorTheme {
         var primaryText: UIColor?
         var disabledText: UIColor?
     }
-    
+
     struct Text {
         var heading: UIColor?
         var body: UIColor?
         var lightText: UIColor?
         var links: UIColor?
     }
-    
+
     struct Icons {
         var `default`: UIColor?
         var active: UIColor?
         var inactive: UIColor?
     }
-    
+
     struct Components {
         var qrBackground: UIColor?
         var overlay: UIColor?
     }
-    
+
     struct Backgrounds {
         var primary: UIColor?
         var secondary: UIColor?
     }
-    
+
     struct System {
         var red: UIColor?
         var orange: UIColor?
@@ -98,13 +98,13 @@ struct ColorTheme {
         var lightGreen: UIColor?
         var lightBlue: UIColor?
     }
-    
+
     struct Shadows {
         var box: Shadow
     }
-    
+
     // MARK: - Properties
-    
+
     let brand: Brand
     let neutral: Neutral
     let buttons: Buttons
@@ -117,7 +117,7 @@ struct ColorTheme {
 }
 
 extension ColorTheme {
-    
+
     static var light: Self {
         Self(
             brand: Brand(
@@ -174,7 +174,7 @@ extension ColorTheme {
             )
         )
     }
-    
+
     static var dark: Self {
         Self(
             brand: Brand(
@@ -231,7 +231,7 @@ extension ColorTheme {
             )
         )
     }
-    
+
     static var tariPurple: Self {
         Self(
             brand: Brand(

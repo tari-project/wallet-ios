@@ -113,7 +113,7 @@ final class SettingsViewController: SettingsParentTableViewController {
             }
         }
     }
-    
+
     private let backUpWalletItem = SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsWalletBackupsIcon, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
 
     private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [backUpWalletItem]
@@ -149,7 +149,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         .disclaimer: URL(string: TariSettings.shared.disclaimer),
         .blockExplorer: URL(string: TariSettings.shared.blockExplorerUrl)
     ]
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
@@ -165,21 +165,21 @@ final class SettingsViewController: SettingsParentTableViewController {
 
         checkClipboardForBaseNode()
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        
+
         guard let footerView = tableView.tableFooterView else { return }
-        
+
         let width = tableView.bounds.width
         let size = footerView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height))
-        
+
         guard footerView.bounds.height != size.height else { return }
-        
+
         footerView.bounds.size.height = size.height
         tableView.tableFooterView = footerView
     }
-    
+
     private func setupCallbacks() {
         BackupManager.shared.$syncState
             .receive(on: DispatchQueue.main)
@@ -189,11 +189,11 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private func onBackupWalletAction() {
         localAuth.authenticateUser(reason: .userVerification, showFailedDialog: false) { [weak self] in
-            let controller = BackupWalletSettingsConstructor.buildScene()
+            let controller = BackupWalletSettingsConstructor.buildScene(backButtonType: .back)
             self?.navigationController?.pushViewController(controller, animated: true)
         }
     }
-    
+
     private func onAboutAction() {
         let controller = AboutViewController()
         navigationController?.pushViewController(controller, animated: true)
@@ -203,12 +203,12 @@ final class SettingsViewController: SettingsParentTableViewController {
         let controller = BugReportingConstructor.buildScene()
         present(controller, animated: true)
     }
-    
+
     private func onSelectThemeAction() {
         let controller = ThemeSettingsConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
     }
-    
+
     private func onBridgeConfigurationAction() {
         let bridgesConfigurationViewController = BridgesConfigurationViewController()
         navigationController?.pushViewController(bridgesConfigurationViewController, animated: true)
@@ -229,35 +229,35 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private func onLinkAction(indexPath: IndexPath) {
         let item = SettingsItemTitle.allCases[indexPath.row + indexPath.section]
-        
+
         guard let link = links[item], let url = link else { return }
         WebBrowserPresenter.open(url: url)
     }
 
     private func onConnectYatAction() {
-        
+
         let address: String
-        
+
         do {
             address = try Tari.shared.walletAddress.byteVector.hex
         } catch {
             showNoConnectionError()
             return
         }
-        
+
         Yat.integration.showOnboarding(onViewController: self, records: [
             YatRecordInput(tag: .XTRAddress, value: address)
         ])
     }
-    
+
     private func showNoConnectionError() {
         PopUpPresenter.show(message: MessageModel(title: localized("common.error"), message: localized("settings.error.connect_yats_no_connection"), type: .error))
     }
-    
+
     private func updateItems(syncStatus: BackupManager.BackupSyncState) {
-        
+
         backUpWalletItem.percent = 0.0
-        
+
         switch syncStatus {
         case .disabled:
             backUpWalletItem.mark = .attention
@@ -302,7 +302,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             cell.configure(moreSectionItems[indexPath.row])
         case .yat:
             cell.configure(yatSectionItems[indexPath.row])
-            break
         case .advancedSettings:
             cell.configure(advancedSettingsSectionItems[indexPath.row])
         }
@@ -314,7 +313,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
+
         let sec = Section(rawValue: section)
 
         switch sec {
@@ -409,7 +408,7 @@ extension SettingsViewController {
             ],
             hapticType: .none
         )
-        
+
         PopUpPresenter.showPopUp(model: popUpModel)
     }
 
@@ -424,41 +423,41 @@ extension SettingsViewController {
 }
 
 private final class SettingsTableHeaderView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private(set) var label: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsViewHeader
         return view
     }()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(label)
-        
+
         let constraints = [
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0),
             heightAnchor.constraint(equalToConstant: 70.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading

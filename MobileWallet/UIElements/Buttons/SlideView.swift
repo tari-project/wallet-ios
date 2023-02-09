@@ -55,7 +55,7 @@ final class SlideView: DynamicThemeView {
     static private let thumbnailShadowRadius: Float = 0.5
     static private let thumbnailCornerRadius: CGFloat = 0
     private let pendingAnimationView = AnimationView()
-    
+
     var onSlideToEnd: (() -> Void)?
 
     var variation: SlideViewVariation = .slide {
@@ -65,92 +65,92 @@ final class SlideView: DynamicThemeView {
     }
 
     // MARK: All Views
-    public let textLabel: UILabel = {
+    let textLabel: UILabel = {
         let label = UILabel.init()
         return label
     }()
-    public let sliderTextLabel: UILabel = {
+    let sliderTextLabel: UILabel = {
         let label = UILabel()
         return label
     }()
-    public let thumbnailImageView: UIImageView = {
+    let thumbnailImageView: UIImageView = {
         let view = SlideViewRoundImageView()
         view.isUserInteractionEnabled = true
         view.contentMode = .center
         view.image = Theme.shared.images.forwardArrow
         return view
     }()
-    public let sliderHolderView: UIView = {
+    let sliderHolderView: UIView = {
         let view = UIView()
         return view
     }()
-    public let draggedView: UIView = {
+    let draggedView: UIView = {
         let view = UIView()
         return view
     }()
-    public let view: UIView = {
+    let view: UIView = {
         let view = UIView()
         return view
     }()
-    
+
     @View private var gradientBackgroundView = GradientView()
 
-    // MARK: Public properties
-    
-    public var animationVelocity: Double = 0.2
-    public var sliderViewTopDistance: CGFloat = 0 {
+    // MARK: properties
+
+    var animationVelocity: Double = 0.2
+    var sliderViewTopDistance: CGFloat = 0 {
         didSet {
             topSliderConstraint?.constant = sliderViewTopDistance
             layoutIfNeeded()
         }
     }
 
-    public var thumbnailViewTopDistance: CGFloat = SlideView.thumbnailMargin {
+    var thumbnailViewTopDistance: CGFloat = SlideView.thumbnailMargin {
         didSet {
             topThumbnailViewConstraint?.constant = thumbnailViewTopDistance
             layoutIfNeeded()
         }
     }
-    public var thumbnailViewStartingDistance: CGFloat = SlideView.thumbnailMargin {
+    var thumbnailViewStartingDistance: CGFloat = SlideView.thumbnailMargin {
         didSet {
             leadingThumbnailViewConstraint?.constant = thumbnailViewStartingDistance
             trailingDraggedViewConstraint?.constant = thumbnailViewStartingDistance
             setNeedsLayout()
         }
     }
-    public var textLabelLeadingDistance: CGFloat = SlideView.thumbnailMargin {
+    var textLabelLeadingDistance: CGFloat = SlideView.thumbnailMargin {
         didSet {
             leadingTextLabelConstraint?.constant = textLabelLeadingDistance
             setNeedsLayout()
         }
     }
-    public var isEnabled: Bool = true {
+    var isEnabled: Bool = true {
         didSet {
             animationChangedEnabledBlock?(isEnabled)
             updateIsEnabledStyle()
         }
     }
-    public var showSliderText: Bool = true {
+    var showSliderText: Bool = true {
         didSet {
             sliderTextLabel.isHidden = !showSliderText
         }
     }
-    public var animationChangedEnabledBlock: ((Bool) -> Void)?
+    var animationChangedEnabledBlock: ((Bool) -> Void)?
     // MARK: Default styles
-    public var sliderCornerRadius: CGFloat = 0 {
+    var sliderCornerRadius: CGFloat = 0 {
         didSet {
             sliderHolderView.layer.cornerRadius = sliderCornerRadius
             draggedView.layer.cornerRadius = sliderCornerRadius
         }
     }
-    
-    public var labelText: String = "Slide" {
+
+    var labelText: String = "Slide" {
         didSet {
             textLabel.text = labelText
             sliderTextLabel.text = labelText
         }
     }
-    public var textFont: UIFont = Theme.shared.fonts.actionButton {
+    var textFont: UIFont = Theme.shared.fonts.actionButton {
         didSet {
             textLabel.font = textFont
             sliderTextLabel.font = textFont
@@ -163,11 +163,7 @@ final class SlideView: DynamicThemeView {
     private var topThumbnailViewConstraint: NSLayoutConstraint?
     private var trailingDraggedViewConstraint: NSLayoutConstraint?
     private var xPositionInThumbnailView: CGFloat = 0
-    private var xEndingPoint: CGFloat {
-        get {
-            return (self.view.frame.maxX - thumbnailImageView.bounds.width - thumbnailViewStartingDistance)
-        }
-    }
+    private var xEndingPoint: CGFloat { self.view.frame.maxX - thumbnailImageView.bounds.width - thumbnailViewStartingDistance }
     private var isFinished: Bool = false
 
     override init() {
@@ -176,7 +172,7 @@ final class SlideView: DynamicThemeView {
     }
     private var panGestureRecognizer: UIPanGestureRecognizer!
 
-    required public init?(coder aDecoder: NSCoder) {
+    required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)!
         setupView()
     }
@@ -256,19 +252,19 @@ final class SlideView: DynamicThemeView {
         pendingAnimationView.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
 
         pendingAnimationView.isHidden = true
-        
+
         let constraints = [
             gradientBackgroundView.topAnchor.constraint(equalTo: view.topAnchor),
             gradientBackgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             gradientBackgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             gradientBackgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
 
     private func setStyle() {
-        
+
         textLabel.text = labelText
         textLabel.font = textFont
         textLabel.textAlignment = .center
@@ -285,23 +281,23 @@ final class SlideView: DynamicThemeView {
         draggedView.layer.masksToBounds = true
         draggedView.layer.cornerRadius = sliderCornerRadius
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         gradientBackgroundView.locations = [
             GradientLocationData(color: theme.buttons.primaryStart, location: 0.0),
             GradientLocationData(color: theme.buttons.primaryEnd, location: 1.0)
         ]
-        
+
         updateSliderState(theme: theme)
     }
-    
+
     private func updateSliderState(theme: ColorTheme) {
         sliderTextLabel.textColor = isEnabled ? .clear : theme.buttons.disabled
         sliderHolderView.backgroundColor = isEnabled ? .clear : theme.buttons.disabled
         textLabel.textColor = isEnabled ? .static.white : theme.buttons.disabledText
-        
+
         thumbnailImageView.backgroundColor = isEnabled ? theme.buttons.primaryText : theme.buttons.disabledText
         thumbnailImageView.tintColor = isEnabled ? theme.brand.purple : theme.buttons.disabled
         thumbnailImageView.apply(shadow: isEnabled ? theme.shadows.box : .none)
@@ -325,7 +321,6 @@ final class SlideView: DynamicThemeView {
         switch sender.state {
         case .began:
             impactFeedbackGenerator.prepare()
-            break
         case .changed:
             if translatedPoint >= xEndingPoint {
                 updateThumbnailXPosition(xEndingPoint)
@@ -338,7 +333,6 @@ final class SlideView: DynamicThemeView {
             }
             updateThumbnailXPosition(translatedPoint)
             textLabel.alpha = (xEndingPoint - translatedPoint) / xEndingPoint
-            break
         case .ended:
             if translatedPoint >= xEndingPoint / 2 {
                 textLabel.alpha = 0
@@ -359,13 +353,12 @@ final class SlideView: DynamicThemeView {
                 self.textLabel.alpha = 1
                 self.layoutIfNeeded()
             }
-            break
         default:
             break
         }
     }
     // Others
-    public func resetStateWithAnimation(_ animated: Bool) {
+    func resetStateWithAnimation(_ animated: Bool) {
         let action = {
             self.leadingThumbnailViewConstraint?.constant = self.thumbnailViewStartingDistance
             self.textLabel.alpha = 1

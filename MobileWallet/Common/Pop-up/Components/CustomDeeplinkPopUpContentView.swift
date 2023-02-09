@@ -1,5 +1,5 @@
 //  CustomDeeplinkPopUpContentView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/04/2022
@@ -42,15 +42,15 @@ import UIKit
 import TariCommon
 
 final class CustomDeeplinkPopUpContentView: DynamicThemeView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var backgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 10.0
         return view
     }()
-    
+
     @View private var nameLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
@@ -58,7 +58,7 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     @View private var peerTitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("add_base_node_overlay.label.peer")
@@ -66,7 +66,7 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
         view.textAlignment = .center
         return view
     }()
-    
+
     @View private var peerAddressLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(14.0)
@@ -74,45 +74,45 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
         view.numberOfLines = 0
         return view
     }()
-    
+
     @View private var showHideButton: TextButton = {
         let view = TextButton()
         view.setVariation(.secondary)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     private var isExpanded: Bool = false {
         didSet { updateViews() }
     }
-    
+
     private var buttonTopConstraintWhenViewCollapsed: NSLayoutConstraint?
     private var buttonTopConstraintWhenViewExpanded: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
         setupCallbacks()
         updateViews()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         buttonTopConstraintWhenViewExpanded = showHideButton.topAnchor.constraint(equalTo: peerAddressLabel.bottomAnchor, constant: 12.0)
         buttonTopConstraintWhenViewCollapsed = showHideButton.topAnchor.constraint(equalTo: topAnchor)
-        
+
         [backgroundView, showHideButton].forEach(addSubview)
         [nameLabel, peerTitleLabel, peerAddressLabel].forEach(backgroundView.addSubview)
-        
+
         let constraints = [
             backgroundView.topAnchor.constraint(equalTo: topAnchor),
             backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -130,18 +130,18 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
             showHideButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -18.0),
             showHideButton.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
         showHideButton.onTap = { [weak self] in
             self?.isExpanded.toggle()
         }
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundView.backgroundColor = theme.backgrounds.secondary
@@ -149,22 +149,22 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
         peerTitleLabel.textColor = theme.text.body
         peerAddressLabel.textColor = theme.text.body
     }
-    
+
     func update(name: String, peer: String) {
         peerAddressLabel.text = peer
-        
+
         let namePrefix = localized("add_base_node_overlay.label.name")
         let nameText = NSMutableAttributedString(string: namePrefix + " " + name)
-        
-        nameText.setAttributes([.font : UIFont.Avenir.black.withSize(14.0)], range: NSRange(location: 0, length: namePrefix.count))
+
+        nameText.setAttributes([.font: UIFont.Avenir.black.withSize(14.0)], range: NSRange(location: 0, length: namePrefix.count))
         nameLabel.attributedText = nameText
     }
-    
+
     private func updateViews() {
-        
+
         let buttonTitle = isExpanded ? localized("add_base_node_overlay.button.hide_details") : localized("add_base_node_overlay.button.show_details")
         showHideButton.setTitle(buttonTitle, for: .normal)
-        
+
         if isExpanded {
             buttonTopConstraintWhenViewCollapsed?.isActive = false
             buttonTopConstraintWhenViewExpanded?.isActive = true
@@ -172,11 +172,10 @@ final class CustomDeeplinkPopUpContentView: DynamicThemeView {
             buttonTopConstraintWhenViewExpanded?.isActive = false
             buttonTopConstraintWhenViewCollapsed?.isActive = true
         }
-        
+
         UIView.animate(withDuration: 0.3) {
             self.backgroundView.alpha = self.isExpanded ? 1.0 : 0.0
             PopUpPresenter.layoutIfNeeded()
         }
     }
 }
- 

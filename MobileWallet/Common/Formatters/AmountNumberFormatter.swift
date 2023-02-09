@@ -1,5 +1,5 @@
 //  AmountNumberFormatter.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 19/01/2022
@@ -41,17 +41,17 @@
 import Combine
 
 final class AmountNumberFormatter {
-    
+
     // MARK: - Constants
-    
+
     private let maxFractionDigits: Int = 6
-    
+
     // MARK: - Properties
-    
+
     @Published private(set) var amount: String = "0"
     @Published private(set) var amountValue: Double = 0
     @Published private var rawAmount: String = "0"
-    
+
     private let formatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -59,18 +59,18 @@ final class AmountNumberFormatter {
         formatter.groupingSeparator = MicroTari.groupingSeparator
         return formatter
     }()
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     init() {
         setupBindings()
     }
-    
+
     private func setupBindings() {
-        
+
         let inputStream = $rawAmount
             .filter { [unowned self] in self.isValidNumber(string: $0) }
-        
+
         if #available(iOS 14.0, *) {
             inputStream
                 .compactMap { [weak self] in self?.format(string: $0) }
@@ -89,48 +89,48 @@ final class AmountNumberFormatter {
                 .store(in: &cancellables)
         }
     }
-    
+
     func append(string: String) {
-        
+
         guard string.rangeOfCharacter(from: .digitsAndDecimalSeparator.inverted) == nil else { return }
         if string.contains(MicroTari.decimalSeparator), rawAmount.contains(MicroTari.decimalSeparator) || string.filter({ String($0) == MicroTari.decimalSeparator }).count > 1 { return }
-        
+
         let updatedRawAmount: String
-        
+
         if rawAmount == "0", !string.hasPrefix(MicroTari.decimalSeparator) {
             updatedRawAmount = string
         } else {
             updatedRawAmount = rawAmount + string
         }
-        
+
         guard fractionDigits(in: updatedRawAmount) <= maxFractionDigits else { return }
         rawAmount = updatedRawAmount
     }
-    
+
     func removeLast() {
         guard rawAmount != "0" else { return }
         rawAmount.removeLast()
         guard rawAmount.isEmpty else { return }
         rawAmount = "0"
     }
-    
+
     private func format(string: String) -> String {
-        
+
         let haveDecimalSeparatorAsSuffix = string.hasSuffix(MicroTari.decimalSeparator)
-        
+
         formatter.minimumFractionDigits = fractionDigits(in: string)
-        
+
         guard let value = formatter.number(from: string), let formattedValue = formatter.string(from: value) else { return "0" }
         let suffix = haveDecimalSeparatorAsSuffix ? MicroTari.decimalSeparator : ""
-        
+
         return formattedValue + suffix
     }
-    
+
     private func isValidNumber(string: String) -> Bool {
         guard let value = formatter.number(from: string)?.doubleValue.micro else { return false }
         return UInt64(exactly: value) != nil
     }
-    
+
     private func fractionDigits(in string: String) -> Int {
         guard let index = string.indexDistance(of: MicroTari.decimalSeparator) else { return 0 }
         return max(string.count - index - 1, 0)

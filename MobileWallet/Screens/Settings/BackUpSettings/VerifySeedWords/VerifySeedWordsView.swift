@@ -1,5 +1,5 @@
 //  VerifySeedWordsView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 23/02/2022
@@ -42,21 +42,21 @@ import UIKit
 import TariCommon
 
 final class VerifySeedWordsView: BaseNavigationContentView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var scrollView = UIScrollView()
     @View private var contentView = UIView()
-    
+
     @View private var headerLabel: UILabel = {
         let view = UILabel()
         view.font = Theme.shared.fonts.settingsSeedPhraseDescription
         view.text = localized("verify_phrase.header")
         return view
     }()
-    
+
     @View private(set) var tokensView = TokenCollectionView()
-    
+
     @View private var errorLabel: UILabel = {
         let view = UILabel()
         view.text = localized("verify_phrase.warning")
@@ -67,14 +67,14 @@ final class VerifySeedWordsView: BaseNavigationContentView {
         view.transform = CGAffineTransform(scaleX: 0.0001, y: 0.0001)
         return view
     }()
-    
+
     @View private var successImageView: UIImageView = {
         let view = UIImageView()
         view.image =  Theme.shared.images.successIcon
         view.transform = CGAffineTransform(scaleX: 0.0001, y: 0.0001)
         return view
     }()
-    
+
     @View private(set) var tokensViewInfoLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
@@ -83,53 +83,53 @@ final class VerifySeedWordsView: BaseNavigationContentView {
         view.textAlignment = .center
         return view
     }()
-    
+
     @View private(set) var selectableTokensView = TokenCollectionView()
-    
+
     @View private(set) var continueButton: ActionButton = {
         let view = ActionButton()
         view.setTitle(localized("verify_phrase.complete"), for: .normal)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var isInfoLabelVisible: Bool = true {
         didSet { updateInfoLabel() }
     }
-    
+
     var isErrorVisible: Bool = false {
         didSet { updateScale(view: errorLabel, isVisible: isErrorVisible) }
     }
-    
+
     var isSuccessViewVisible: Bool = false {
         didSet { updateScale(view: successImageView, isVisible: isSuccessViewVisible) }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         navigationBar.title = localized("verify_phrase.title")
     }
-    
+
     private func setupConstraints() {
-        
+
         addSubview(scrollView)
         scrollView.addSubview(contentView)
         [headerLabel, tokensView, tokensViewInfoLabel, successImageView, errorLabel, selectableTokensView, continueButton].forEach(contentView.addSubview)
-        
+
         let scrollViewConstants = [
             scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -138,9 +138,9 @@ final class VerifySeedWordsView: BaseNavigationContentView {
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor),
+            contentView.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor)
         ]
-        
+
         let constraints = [
             headerLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20.0),
             headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
@@ -168,33 +168,33 @@ final class VerifySeedWordsView: BaseNavigationContentView {
             continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0),
             continueButton.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor, constant: -20.0)
         ]
-        
+
         NSLayoutConstraint.activate(scrollViewConstants + constraints)
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
         scrollView.contentSize.height = contentView.bounds.height
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        
+
         headerLabel.textColor = theme.text.body
         errorLabel.textColor = theme.system.red
         errorLabel.layer.borderColor = theme.system.red?.cgColor
         tokensViewInfoLabel.textColor = theme.text.body
         selectableTokensView.backgroundColor = .clear
     }
-    
+
     private func updateInfoLabel() {
         UIView.animate(withDuration: 0.4, delay: 0.0, options: [.beginFromCurrentState]) {
             self.tokensViewInfoLabel.alpha = self.isInfoLabelVisible ? 1.0 : 0.0
         }
     }
-    
+
     private func updateScale(view: UIView, isVisible: Bool) {
         UIView.animate(withDuration: 0.4, delay: 0.0, options: [.beginFromCurrentState]) {
             let scale = isVisible ? 1.0 : 0.0001

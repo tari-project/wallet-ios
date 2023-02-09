@@ -1,5 +1,5 @@
 //  TariValidationService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022
@@ -41,83 +41,79 @@
 import Combine
 
 final class TariValidationService: CoreTariService {
-    
+
     enum SyncStatus {
         case idle
         case syncing
         case synced
         case failed
     }
-    
+
     private enum TransactionType {
         case txo
         case tx
     }
-    
+
     // MARK: - Properties
-    
+
     @Published private(set) var status: SyncStatus = .idle
-    
+
     private var unverifiedTransactions: Set<TransactionType> = []
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialiser
-    
+
     override init(walletManager: FFIWalletManager, services: MainServiceable) {
         super.init(walletManager: walletManager, services: services)
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         WalletCallbacksManager.shared.transactionOutputValidation
             .filter { $0.status != .alreadyBusy }
-            .map { ($0.identifier, $0.status == .success) }
-            .sink { [weak self] in self?.handleTransactionValidation(type: .txo, identifier: $0, isSuccess: $1) }
+            .map { $0.status == .success }
+            .sink { [weak self] in self?.handleTransactionValidation(type: .txo, isSuccess: $0) }
             .store(in: &cancellables)
-        
+
         WalletCallbacksManager.shared.transactionValidation
             .filter { $0.status != .alreadyBusy }
-            .map { ($0.identifier, $0.status == .success) }
-            .sink { [weak self] in self?.handleTransactionValidation(type: .tx, identifier: $0, isSuccess: $1) }
+            .map { $0.status == .success }
+            .sink { [weak self] in self?.handleTransactionValidation(type: .tx, isSuccess: $0) }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     func reset() {
         unverifiedTransactions.removeAll()
         status = .idle
     }
-    
+
     func sync() throws {
         unverifiedTransactions = [.tx, .txo]
         _ = try walletManager.startTransactionOutputValidation()
         _ = try walletManager.startTransactionValidation()
         status = .syncing
     }
-    
+
     // MARK: - Handlers
-    
-    private func handleTransactionValidation(type: TransactionType, identifier: UInt64, isSuccess: Bool) {
-        
+
+    private func handleTransactionValidation(type: TransactionType, isSuccess: Bool) {
+
         guard !unverifiedTransactions.isEmpty else { return }
-        
+
         guard isSuccess else {
             unverifiedTransactions.removeAll()
             status = .failed
             return
         }
-        
+
         unverifiedTransactions.remove(type)
-        
+
         guard unverifiedTransactions.isEmpty else { return }
         status = .synced
-    }
-    
-    private func restartTransactionBroadcast() {
-        _ = try? walletManager.restartTransactionBroadcast()
     }
 }

@@ -1,5 +1,5 @@
 //  TariConnectionService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022
@@ -39,9 +39,9 @@
 */
 
 final class TariConnectionService: CoreTariService {
-    
+
     // MARK: - Actions
-    
+
     @discardableResult func select(baseNode: BaseNode) throws -> Bool {
         services.validation.reset()
         do {
@@ -55,7 +55,11 @@ final class TariConnectionService: CoreTariService {
             throw error
         }
     }
-    
+
+    @discardableResult func selectCurrentNode() throws -> Bool {
+        try select(baseNode: NetworkManager.shared.selectedNetwork.selectedBaseNode)
+    }
+
     func addBaseNode(name: String, peer: String) throws {
         let baseNode = try BaseNode(name: name, peer: peer)
         NetworkManager.shared.selectedNetwork.customBaseNodes.append(baseNode)

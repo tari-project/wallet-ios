@@ -1,5 +1,5 @@
 //  BackupWalletSettingsConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 27/10/2022
@@ -39,9 +39,9 @@
 */
 
 enum BackupWalletSettingsConstructor {
-    
-    static func buildScene() -> BackupWalletSettingsViewController {
+
+    static func buildScene(backButtonType: NavigationBar.BackButtonType) -> BackupWalletSettingsViewController {
         let model = BackupWalletSettingsModel()
-        return BackupWalletSettingsViewController(model: model)
+        return BackupWalletSettingsViewController(model: model, backButtonType: backButtonType)
     }
 }

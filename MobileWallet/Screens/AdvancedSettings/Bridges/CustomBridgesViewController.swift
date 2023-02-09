@@ -42,7 +42,7 @@ import UIKit
 import Combine
 
 final class CustomBridgesViewController: SettingsParentTableViewController, CustomBridgesHandable {
-    
+
     private enum Section: Int, CaseIterable {
         case requestBridges
         case QRcode
@@ -63,11 +63,20 @@ final class CustomBridgesViewController: SettingsParentTableViewController, Cust
     }
 
     private weak var bridgesConfiguration: BridgesConfiguration?
-    private let examplePlaceHolderString = "Available formates:\n• obfs4 <IP ADDRESS>:<PORT> <FINGERPRINT> cert=<CERTIFICATE> iat-mode=<value>\nexample:\nobfs4 192.95.36.142:443 CDF2E852BF539B82BD10E27E9115A31734E378C2 cert=qUVQ0srL1JI/vO6V6m/24anYXiJD3QP2HgzUKQtQ7GRqqUvs7P+tG43RtAqdhLOALP7DJQ iat-mode=1\n\n • <IP ADDRESS>:<PORT> <FINGERPRINT>\nexample:\n78.156.103.189:9301 2BD90810282F8B331FC7D47705167166253E1442"
+    private let examplePlaceHolderString = """
+    Available formates:
+    • obfs4 <IP ADDRESS>:<PORT> <FINGERPRINT> cert=<CERTIFICATE> iat-mode=<value>
+    example:
+    obfs4 192.95.36.142:443 CDF2E852BF539B82BD10E27E9115A31734E378C2 cert=qUVQ0srL1JI/vO6V6m/24anYXiJD3QP2HgzUKQtQ7GRqqUvs7P+tG43RtAqdhLOALP7DJQ iat-mode=1
+
+    • <IP ADDRESS>:<PORT> <FINGERPRINT>
+    example:
+    78.156.103.189:9301 2BD90810282F8B331FC7D47705167166253E1442
+    """
     private lazy var detector = CIDetector(ofType: CIDetectorTypeQRCode, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyHigh])
 
     private let headerView = CustomBridgesHeaderView()
-    
+
     private let requestBridgesSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(title: CustomBridgesTitle.requestBridgesFromTorproject.rawValue)
     ]
@@ -76,7 +85,7 @@ final class CustomBridgesViewController: SettingsParentTableViewController, Cust
         SystemMenuTableViewCellItem(title: CustomBridgesTitle.scanQRCode.rawValue),
         SystemMenuTableViewCellItem(title: CustomBridgesTitle.uploadQRCode.rawValue)
     ]
-    
+
     private var cancellables = Set<AnyCancellable>()
 
     init(bridgesConfiguration: BridgesConfiguration) {
@@ -92,7 +101,7 @@ final class CustomBridgesViewController: SettingsParentTableViewController, Cust
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        
+
         setupCustomBridgeProgressHandler()
             .store(in: &cancellables)
     }
@@ -134,7 +143,7 @@ extension CustomBridgesViewController {
     }
 
     private func connectAction() {
-        
+
         guard let bridgesConfiguration = bridgesConfiguration else { return }
         applyConnectingStatus()
 
@@ -144,9 +153,9 @@ extension CustomBridgesViewController {
                 .filter({ bridge in !bridge.isEmpty && !bridge.hasPrefix("//") && !bridge.hasPrefix("#") })
 
         bridgesConfiguration.bridgesType = bridgesConfiguration.customBridges?.isEmpty == true ? .none : .custom
-        
+
         headerView.resignFirstResponder()
-        
+
         Task {
             do {
                 try await Tari.shared.update(torBridgesConfiguration: bridgesConfiguration)
@@ -214,7 +223,7 @@ extension CustomBridgesViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: SystemMenuTableViewCell.self), for: indexPath) as! SystemMenuTableViewCell
+        let cell = tableView.dequeueReusableCell(type: SystemMenuTableViewCell.self, indexPath: indexPath)
         guard let section = Section(rawValue: indexPath.section) else { return cell }
 
         switch section {
@@ -240,10 +249,10 @@ extension CustomBridgesViewController: UITableViewDelegate, UITableViewDataSourc
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section != 0 { return nil }
-        
+
         let customBridgesText = bridgesConfiguration?.customBridges?.joined(separator: "\n")
         let text = (customBridgesText?.isEmpty ?? true) ? examplePlaceHolderString : customBridgesText
-        
+
         headerView.text = text
         headerView.textViewDelegate = self
 
@@ -296,7 +305,7 @@ extension CustomBridgesViewController: UITextViewDelegate {
         if textView.text == examplePlaceHolderString && !headerView.isTextViewActive {
             textView.text = ""
         }
-        
+
         headerView.isTextViewActive = true
     }
 
@@ -304,7 +313,7 @@ extension CustomBridgesViewController: UITextViewDelegate {
         if textView.text == "" {
             textView.text = examplePlaceHolderString
         }
-        
+
         headerView.isTextViewActive = false
     }
 }

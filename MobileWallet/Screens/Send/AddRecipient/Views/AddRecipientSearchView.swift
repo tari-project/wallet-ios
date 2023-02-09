@@ -1,5 +1,5 @@
 //  AddRecipientSearchView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 25/10/2021
@@ -53,14 +53,14 @@ final class AddRecipientSearchView: DynamicThemeView {
         view.leftViewMode = .always
         return view
     }()
-    
+
     @View private var yatIconView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.yatLogo?.withAlignmentRectInsets(UIEdgeInsets(top: -7.0, left: -11.0, bottom: -7.0, right: 0.0))
         view.contentMode = .scaleAspectFit
         return view
     }()
-    
+
     @View private(set) var yatPreviewButton = PulseButton()
 
     @View private(set) var qrButton: PulseButton = {
@@ -68,29 +68,29 @@ final class AddRecipientSearchView: DynamicThemeView {
         view.setImage(Theme.shared.images.qrButton, for: .normal)
         return view
     }()
-    
+
     @View private var contentView: UIStackView = {
         let view = UIStackView()
         view.axis = .horizontal
         return view
     }()
-    
+
     @View private var previewView = ScrollableLabel()
-    
+
     // MARK: - Properties
-    
+
     var isQrButtonVisible: Bool = true {
         didSet { updateViews() }
     }
-    
+
     var isPreviewButtonVisible: Bool = false {
         didSet { updateViews() }
     }
-    
+
     var previewText: String? {
         didSet { updatePreview() }
     }
-    
+
     // MARK: - Initialisers
 
     override init() {
@@ -98,29 +98,29 @@ final class AddRecipientSearchView: DynamicThemeView {
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         backgroundColor = .clear
     }
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         yatIconView.tintColor = theme.icons.default
         apply(shadow: theme.shadows.box)
     }
-    
+
     private func setupConstraints() {
-        
+
         [yatIconView, textField, yatPreviewButton, qrButton].forEach(contentView.addArrangedSubview)
         [contentView, previewView].forEach(addSubview)
-       
+
         let constraints = [
             contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -134,17 +134,17 @@ final class AddRecipientSearchView: DynamicThemeView {
             previewView.trailingAnchor.constraint(equalTo: textField.trailingAnchor),
             previewView.bottomAnchor.constraint(equalTo: textField.bottomAnchor)
         ]
-        
+
         updateViews()
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func updateViews() {
         qrButton.isHidden = !isQrButtonVisible
         yatPreviewButton.isHidden = !isPreviewButtonVisible
         yatIconView.isHidden = !isPreviewButtonVisible
     }
-    
+
     private func updatePreview() {
         previewView.isHidden = previewText == nil
         previewView.label.text = previewText
@@ -152,4 +152,3 @@ final class AddRecipientSearchView: DynamicThemeView {
         yatPreviewButton.setImage(UIImage(systemName: iconName), for: .normal)
     }
 }
-

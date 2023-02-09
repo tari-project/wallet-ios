@@ -1,5 +1,5 @@
 //  RequestTariAmountModel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/01/2022
@@ -42,36 +42,36 @@ import Combine
 import UIKit
 
 final class RequestTariAmountModel {
-    
+
     struct DeeplinkData {
         let message: String
         let deeplink: URL
     }
-    
+
     // MARK: - View Model
-    
+
     @Published private(set) var amount: String = ""
     @Published private(set) var isValidAmount: Bool = false
     @Published private(set) var deeplink: DeeplinkData?
     @Published private(set) var qrCode: UIImage?
-    
+
     // MARK: - Properties
-    
+
     private let amountFormatter = AmountNumberFormatter()
     private var cancellables = Set<AnyCancellable>()
-    
+
     init() {
         setupCallbacks()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         if #available(iOS 14.0, *) {
             amountFormatter.$amount
                 .assign(to: &$amount)
-            
+
             amountFormatter.$amountValue
                 .map { $0 > 0.0 }
                 .assign(to: &$isValidAmount)
@@ -79,38 +79,38 @@ final class RequestTariAmountModel {
             amountFormatter.$amount
                 .assign(to: \.amount, on: self)
                 .store(in: &cancellables)
-            
+
             amountFormatter.$amountValue
                 .map { $0 > 0.0 }
                 .assign(to: \.isValidAmount, on: self)
                 .store(in: &cancellables)
         }
     }
-    
+
     // MARK: - Actions
-    
+
     func updateAmount(key: String) {
         amountFormatter.append(string: key)
     }
-    
+
     func deleteLastCharacter() {
         amountFormatter.removeLast()
     }
-    
+
     func generateQrRequest() {
         guard let deeplink = makeDeeplink(), let deeplinkData = deeplink.absoluteString.data(using: .utf8), let qrCodeImage = QRCodeFactory.makeQrCode(data: deeplinkData) else { return }
         qrCode = qrCodeImage
     }
-    
+
     func shareActionRequest() {
         guard let deeplink = makeDeeplink() else { return }
         let amount = String(amountFormatter.amountValue)
         let message = localized("request.deeplink.message", arguments: amount)
         self.deeplink = DeeplinkData(message: message, deeplink: deeplink)
     }
-    
+
     // MARK: - Factories
-    
+
     private func makeDeeplink() -> URL? {
         guard let hex = try? Tari.shared.walletAddress.byteVector.hex, let tariAmount = try? MicroTari(tariValue: amountFormatter.amount) else { return nil }
         let model = TransactionsSendDeeplink(receiverAddress: hex, amount: tariAmount.rawValue, note: nil)

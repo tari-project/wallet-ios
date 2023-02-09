@@ -1,5 +1,5 @@
 //  SeedWordsListConstructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 09/03/2022
@@ -39,9 +39,9 @@
 */
 
 enum SeedWordsListConstructor {
-    
-    static func buildScene() -> SeedWordsListViewController {
+
+    static func buildScene(backButtonType: NavigationBar.BackButtonType) -> SeedWordsListViewController {
         let model = SeedWordsListModel()
-        return SeedWordsListViewController(model: model)
+        return SeedWordsListViewController(model: model, backButtonType: backButtonType)
     }
 }

@@ -1,5 +1,5 @@
 //  TariBalanceService.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 04/10/2022
@@ -41,43 +41,43 @@
 import Combine
 
 final class TariBalanceService: CoreTariService {
-    
+
     // MARK: - Properties
-    
+
     @Published private(set) var balance: WalletBalance = .zero
     @Published private var ffiBalance: Balance?
-    
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     // MARK: - Initialiser
-    
+
     override init(walletManager: FFIWalletManager, services: MainServiceable) {
         super.init(walletManager: walletManager, services: services)
         setupCallbacks()
         fetchData()
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupCallbacks() {
-        
+
         WalletCallbacksManager.shared.walletBalanceUpdatePublisher
             .sink { [weak self] in self?.ffiBalance = $0 }
             .store(in: &cancellables)
-        
+
         $ffiBalance
             .compactMap { $0 }
             .map { WalletBalance(available: $0.available, incoming: $0.incoming, outgoing: $0.outgoing, timeLocked: $0.timelocked) }
             .assignPublisher(to: \.balance, on: self)
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Actions
-    
+
     func reset() {
         fetchData()
     }
-    
+
     private func fetchData() {
         ffiBalance = try? walletManager.balance()
     }

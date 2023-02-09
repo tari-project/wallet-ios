@@ -1,5 +1,5 @@
 //  YatTransactionView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 21/10/2021
@@ -48,21 +48,21 @@ struct YatTransactionViewModel {
 }
 
 final class YatTransactionView: UIView {
-    
+
     // MARK: - Subviews
-    
+
     @View private var transactionLabel: UILabel = {
         let view = UILabel()
         view.numberOfLines = 0
         return view
     }()
-    
+
     @View private var videoView: VideoView = {
         let view = VideoView()
         view.alpha = 0.0
         return view
     }()
-    
+
     @View private var spinnerView: AnimationView = {
         let view = AnimationView()
         view.backgroundBehavior = .pauseAndRestore
@@ -71,7 +71,7 @@ final class YatTransactionView: UIView {
         view.play()
         return view
     }()
-    
+
     @View private var completionLabel: UILabel = {
         let view = UILabel()
         view.textColor = .white
@@ -80,21 +80,21 @@ final class YatTransactionView: UIView {
         view.transform = CGAffineTransform(scaleX: 10.0, y: 10.0)
         return view
     }()
-    
+
     private let bottomAlphaMask: CAGradientLayer = {
         let layer = CAGradientLayer()
         layer.colors = [UIColor.black.cgColor, UIColor.black.cgColor, UIColor.clear.cgColor]
         return layer
     }()
-    
+
     // MARK: - Properties
-    
+
     var state: YatTransactionViewState = .idle {
         didSet { handle(state: state) }
     }
-    
+
     var onCompletion: (() -> Void)?
-    
+
     private var hiddenScenePath: CGPath { UIBezierPath(ovalIn: CGRect(x: center.x, y: center.y, width: 0.0, height: 0.0)).cgPath }
     private var visibleScenePath: CGPath {
         let aSide = bounds.height * 0.5
@@ -102,37 +102,37 @@ final class YatTransactionView: UIView {
         let radius = sqrt(aSide * aSide + bSide * bSide)
         return UIBezierPath(ovalIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2.0, height: radius * 2.0)).cgPath
     }
-    
+
     private var transactionLabelCenterConstraint: NSLayoutConstraint?
     private var transactionLabelBottomConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Initalizers
-    
+
     init() {
         super.init(frame: .zero)
         setupViews()
         setupConstraints()
 
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         backgroundColor = .black
     }
-    
+
     private func setupConstraints() {
         [transactionLabel, videoView, spinnerView, completionLabel].forEach(addSubview)
-        
+
         let transactionLabelCenterConstraint = transactionLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
         self.transactionLabelBottomConstraint = transactionLabel.bottomAnchor.constraint(equalTo: spinnerView.topAnchor, constant: -18.0)
-        
+
         self.transactionLabelCenterConstraint = transactionLabelCenterConstraint
-        
+
         let constraints = [
             transactionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
             transactionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
@@ -149,16 +149,16 @@ final class YatTransactionView: UIView {
             completionLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
             completionLabel.centerYAnchor.constraint(equalTo: centerYAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Actions
-    
+
     func refreshViews() {
         videoView.startPlayer()
     }
-    
+
     private func handle(state: YatTransactionViewState) {
         switch state {
         case .idle:
@@ -173,20 +173,20 @@ final class YatTransactionView: UIView {
             showCompletionMessage(success: false)
         }
     }
-    
+
     private func startAnimation(transactionText: String, yatID: String) {
-        
+
         let text = localized("yat_transaction.label.transaction", arguments: transactionText, yatID)
         let transactionTextRange = (text as NSString).range(of: transactionText)
         let yatIdRange = (text as NSString).range(of: yatID)
-        
+
         let font = UIFont.Avenir.heavy.withSize(30.0)
-        
+
         let attributedText = NSMutableAttributedString(string: text.uppercased(), attributes: [
             .font: UIFont.Avenir.medium.withSize(30.0),
             .foregroundColor: UIColor.white.withAlphaComponent(0.4)
         ])
-        
+
         [transactionTextRange, yatIdRange]
             .compactMap { $0 }
             .forEach {
@@ -198,14 +198,14 @@ final class YatTransactionView: UIView {
                     range: $0
                 )
             }
-        
+
         transactionLabel.attributedText = attributedText
         transactionLabel.textAlignment = .center
         transactionLabel.lineBreakMode = .byWordWrapping
-        
+
         showScene()
     }
-    
+
     private func playVideo(url: URL, scaleToFill: Bool) {
 
         videoView.url = url
@@ -213,17 +213,17 @@ final class YatTransactionView: UIView {
         videoView.layer.mask = scaleToFill ? bottomAlphaMask : nil
         transactionLabelCenterConstraint?.isActive = false
         transactionLabelBottomConstraint?.isActive = true
-        
+
         UIView.animate(withDuration: 0.3) {
             self.videoView.alpha = 1.0
             self.layoutIfNeeded()
         }
     }
-    
+
     private func showCompletionMessage(success: Bool) {
-        
+
         completionLabel.text = success ? localized("yat_transaction.label.success") : localized("yat_transaction.label.failed")
-        
+
         UIView.animate(withDuration: 1.0, delay: 0.0, options: [], animations: {
             self.videoView.alpha = 0.0
             self.transactionLabel.alpha = 0.0
@@ -234,46 +234,46 @@ final class YatTransactionView: UIView {
             self.hideScene()
         })
     }
-    
+
     private func showScene() {
         animmateSceneSpace(fromPath: hiddenScenePath, toPath: visibleScenePath) { [weak self] in self?.removeMask() }
     }
-    
+
     private func hideScene() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
             self.animmateSceneSpace(fromPath: self.visibleScenePath, toPath: self.hiddenScenePath) { [weak self] in self?.onCompletion?() }
         }
     }
-    
+
     private func animmateSceneSpace(fromPath: CGPath, toPath: CGPath, completion: @escaping () -> Void) {
-        
+
         let maskLayer = CAShapeLayer()
-        
+
         maskLayer.path = fromPath
         layer.mask = maskLayer
-        
+
         let animation = CABasicAnimation(keyPath: "path")
         animation.duration = 0.3
         animation.fromValue = maskLayer.path
         animation.toValue = toPath
         animation.fillMode = .forwards
         animation.isRemovedOnCompletion = false
-        
+
         CATransaction.begin()
         CATransaction.setCompletionBlock(completion)
         maskLayer.add(animation, forKey: "path")
         CATransaction.commit()
     }
-    
+
     private func removeMask() {
         layer.mask = nil
     }
-    
+
     // MARK: - Layout
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         bottomAlphaMask.frame = videoView.bounds
         let startPoint = 100.0 / bottomAlphaMask.bounds.height
         bottomAlphaMask.locations = [0.0, startPoint, 1.0].map { NSNumber(value: $0) }

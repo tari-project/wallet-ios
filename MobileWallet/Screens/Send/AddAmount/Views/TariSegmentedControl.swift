@@ -1,5 +1,5 @@
 //  TariSegmentedControl.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 20/05/2022
@@ -43,61 +43,61 @@ import TariCommon
 import Combine
 
 final class TariSegmentedControl: DynamicThemeView {
-    
+
     // MARK: - Constants
-    
+
     private let elementSize = CGSize(width: 70.0, height: 50.0)
     private let padding: CGFloat = 2.0
-    
+
     // MARK: - Subviews
-    
+
     @View private var selectionView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 7.0
         return view
     }()
-    
+
     @View private var stackView = UIStackView()
-    
+
     // MARK: - Properties
-    
+
     @Published var selectedIndex: Int?
     private var cancellables = Set<AnyCancellable>()
-    
+
     private var selectionViewCenterXConstraint: NSLayoutConstraint?
-    
+
     // MARK: - Initialisers
-    
+
     init(icons: [UIImage?]) {
         super.init()
         setupViews(icons: icons)
         setupConstraints()
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews(icons: [UIImage?]) {
-        
+
         layer.cornerRadius = 9.0
-        
+
         icons
             .enumerated()
             .compactMap { [weak self] in self?.makeButton(icon: $1, index: $0) }
             .forEach { [weak self] in self?.stackView.addArrangedSubview($0) }
-        
+
         guard stackView.arrangedSubviews.count > 0 else { return }
         selectedIndex = 0
     }
-    
+
     private func setupConstraints() {
-        
+
         [selectionView, stackView].forEach(addSubview)
-        
+
         let constraints = [
             selectionView.widthAnchor.constraint(equalToConstant: elementSize.width - 2.0 * padding),
             selectionView.heightAnchor.constraint(equalToConstant: elementSize.height - 2.0 * padding),
@@ -107,20 +107,20 @@ final class TariSegmentedControl: DynamicThemeView {
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
-        
+
         $selectedIndex
             .compactMap { $0 }
             .sink { [weak self] in self?.moveSelectionView(toIndex: $0) }
             .store(in: &cancellables)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.neutral.inactive
@@ -128,18 +128,18 @@ final class TariSegmentedControl: DynamicThemeView {
         selectionView.apply(shadow: theme.shadows.box)
         stackView.arrangedSubviews.forEach { $0.tintColor = theme.icons.default }
     }
-    
+
     // MARK: - Actions
-    
+
     private func moveSelectionView(toIndex index: Int) {
-        
+
         guard index < stackView.arrangedSubviews.count else { return }
-        
+
         let view = stackView.arrangedSubviews[index]
         selectionViewCenterXConstraint?.isActive = false
         selectionViewCenterXConstraint = selectionView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         selectionViewCenterXConstraint?.isActive = true
-        
+
         UIView.animate(
             withDuration: 0.3,
             delay: 0.0,
@@ -150,23 +150,23 @@ final class TariSegmentedControl: DynamicThemeView {
             completion: { _ in }
         )
     }
-    
+
     // MARK: - Factories
-    
+
     private func makeButton(icon: UIImage?, index: Int) -> UIButton {
-        
+
         let button = BaseButton()
-        
+
         button.setImage(icon, for: .normal)
         button.onTap = { [weak self] in self?.selectedIndex = index }
-        
+
         let constraints = [
             button.widthAnchor.constraint(equalToConstant: elementSize.width),
             button.heightAnchor.constraint(equalToConstant: elementSize.height)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
-        
+
         return button
     }
 }

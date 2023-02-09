@@ -1,5 +1,5 @@
 //  BaseNavigationContentView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 07/06/2022
@@ -42,39 +42,39 @@ import UIKit
 import TariCommon
 
 class BaseNavigationContentView: DynamicThemeView {
-    
+
     // MARK: - Subview
-    
+
     @View private(set) var navigationBar = NavigationBar()
-    
+
     // MARK: - Initialisers
-    
+
     override init() {
         super.init()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(navigationBar)
-        
+
         let constraints = [
             navigationBar.topAnchor.constraint(equalTo: topAnchor),
             navigationBar.leadingAnchor.constraint(equalTo: leadingAnchor),
             navigationBar.trailingAnchor.constraint(equalTo: trailingAnchor)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary

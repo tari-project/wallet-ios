@@ -1,5 +1,5 @@
 //  LogsListContructor.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 17/10/2022
@@ -39,7 +39,7 @@
 */
 
 enum LogsListConstructor {
-    
+
     static func buildScene() -> LogsListViewController {
         let model = LogsListModel()
         return LogsListViewController(model: model)

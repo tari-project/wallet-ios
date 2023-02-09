@@ -1,5 +1,5 @@
 //  PopUpSelectionView.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 28/06/2022
@@ -42,55 +42,55 @@ import UIKit
 import TariCommon
 
 final class PopUpSelectionView: UIView {
-    
+
     private struct Model: Identifiable, Hashable {
         let id: UUID
         let title: String
     }
-    
+
     // MARK: - Subviews
-    
+
     @View private var tableView: PopUpTableView = {
         let view = PopUpTableView()
         view.register(type: PopUpSelectionCell.self)
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     private(set) var selectedIndex: Int = 0
     private var dataSource: UITableViewDiffableDataSource<Int, Model>?
-    
+
     // MARK: - Initialisers
-    
+
     init() {
         super.init(frame: .zero)
         setupConstraints()
         setupCallbacks()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupConstraints() {
-        
+
         addSubview(tableView)
-        
+
         let constraints = [
             tableView.topAnchor.constraint(equalTo: topAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
-       
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     private func setupCallbacks() {
-        
+
         let dataSource = UITableViewDiffableDataSource<Int, Model>(tableView: tableView) { [weak self] tableView, indexPath, model in
             guard let self = self else { return UITableViewCell() }
             let cell = tableView.dequeueReusableCell(type: PopUpSelectionCell.self, indexPath: indexPath)
@@ -98,42 +98,42 @@ final class PopUpSelectionView: UIView {
             cell.isSelected = indexPath.row == self.selectedIndex
             return cell
         }
-        
+
         self.dataSource = dataSource
-        
+
         tableView.onSelectRow = { [weak self] selectedIndexPath in
             self?.tableView.visibleCells.forEach { $0.isSelected = false }
             self?.tableView.cellForRow(at: selectedIndexPath)?.isSelected = true
             self?.selectedIndex = selectedIndexPath.row
         }
     }
-    
+
     // MARK: - Actions
-    
+
     func update(options: [String], selectedIndex: Int) {
-        
+
         self.selectedIndex = selectedIndex
-        
+
         let models = options.map { Model(id: UUID(), title: $0) }
-        
+
         var snapshot = NSDiffableDataSourceSnapshot<Int, Model>()
         snapshot.appendSections([0])
         snapshot.appendItems(models)
-        
+
         dataSource?.apply(snapshot, animatingDifferences: false)
     }
 }
 
 private class PopUpSelectionCell: DynamicThemeCell {
-    
+
     // MARK: - Subviews
-    
+
     @View private var label: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(15.0)
         return view
     }()
-    
+
     @View private var tickIcon: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.utxoTick
@@ -141,57 +141,57 @@ private class PopUpSelectionCell: DynamicThemeCell {
         view.alpha = 0.0
         return view
     }()
-    
+
     // MARK: - Properties
-    
+
     var text: String? {
         get { label.text }
         set { label.text = newValue }
     }
-    
+
     override var isSelected: Bool {
         didSet { tickIcon.alpha = isSelected ? 1.0 : 0.0 }
     }
-    
+
     // MARK: - Initialisers
-    
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Setups
-    
+
     private func setupViews() {
         selectionStyle = .none
         backgroundColor = .clear
     }
-    
+
     private func setupConstraints() {
-        
+
         [label, tickIcon].forEach(contentView.addSubview)
-        
+
         let constraints = [
             label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 22.0),
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30.0),
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -22.0),
             tickIcon.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 8.0),
-            tickIcon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20.0),
+            tickIcon.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             tickIcon.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             tickIcon.widthAnchor.constraint(equalToConstant: 14.0),
             tickIcon.heightAnchor.constraint(equalToConstant: 14.0)
         ]
-        
+
         NSLayoutConstraint.activate(constraints)
     }
-    
+
     // MARK: - Updates
-    
+
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading

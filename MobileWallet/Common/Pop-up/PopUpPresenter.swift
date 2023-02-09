@@ -1,5 +1,5 @@
 //  PopUpPresenter.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 10/04/2022
@@ -42,70 +42,71 @@ import UIKit
 import SwiftEntryKit
 
 enum PopUpPresenter {
-    
+
     struct Configuration {
-        
+
         enum HapticType {
             case success
             case error
             case none
         }
-        
+
         let displayDuration: TimeInterval?
         let dismissOnTapOutsideOrSwipe: Bool
         let hapticType: HapticType
     }
-    
+
     // MARK: - Properties
-    
+
     private static let sideOffset = 14.0
     private static let verticalOffset = hasNotch ? -14.0 : 14.0
-    
+
     private static let defaultAttributes: EKAttributes = {
         var attributes = EKAttributes.bottomFloat
         attributes.entryBackground = .clear
-        
+
         if let overlayColor = UIColor.static.popupOverlay {
             attributes.screenBackground = .color(color: EKColor(overlayColor))
         }
-        
+
         attributes.positionConstraints.size = EKAttributes.PositionConstraints.Size(width: .offset(value: sideOffset), height: .intrinsic)
         attributes.positionConstraints.verticalOffset = verticalOffset
         attributes.screenInteraction = .absorbTouches
         attributes.entryInteraction = .forward
         attributes.displayDuration = .infinity
+        attributes.precedence = .enqueue(priority: .normal)
         return attributes
     }()
-    
+
     // MARK: - Actions
-    
+
     static func show(popUp: TariPopUp, configuration: Configuration? = nil) {
-        
+
         var attributes = defaultAttributes
-        
+
         if let configuration = configuration {
             attributes.displayDuration = configuration.displayDuration ?? .infinity
             attributes.screenInteraction = configuration.dismissOnTapOutsideOrSwipe ? .dismiss : .absorbTouches
             attributes.scroll = configuration.dismissOnTapOutsideOrSwipe ? .enabled(swipeable: true, pullbackAnimation: .easeOut) : .disabled
             attributes.hapticFeedbackType = makeHapticFeedbackType(configuration: configuration)
         }
-        
+
         SwiftEntryKit.display(entry: popUp, using: attributes)
         UIApplication.shared.hideKeyboard()
     }
-    
+
     static func dismissPopup(onCompletion: (() -> Void)? = nil) {
-        SwiftEntryKit.dismiss() {
+        SwiftEntryKit.dismiss {
             onCompletion?()
         }
     }
-    
+
     static func layoutIfNeeded() {
         SwiftEntryKit.layoutIfNeeded()
     }
-    
+
     // MARK: - Helpers
-    
+
     private static func makeHapticFeedbackType(configuration: Configuration) -> EKAttributes.NotificationHapticFeedback {
         switch configuration.hapticType {
         case .none:

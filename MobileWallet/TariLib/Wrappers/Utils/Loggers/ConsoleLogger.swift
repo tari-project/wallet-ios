@@ -1,5 +1,5 @@
 //  ConsoleLogger.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 11/10/2022
@@ -43,7 +43,7 @@ import os
 final class ConsoleLogger {}
 
 extension ConsoleLogger: Logable {
-    
+
     func log(message: String, domain: Logger.Domain, logLevel: Logger.Level) {
         let formattedMessage = LogFormatter.formattedMessage(message: message, domain: domain, logLevel: logLevel, showPrefix: true)
         os_log("%@", formattedMessage)

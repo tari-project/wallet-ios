@@ -1,5 +1,5 @@
 //  CompletedTransactionKernel.swift
-	
+
 /*
 	Package MobileWallet
 	Created by Adrian Truszczynski on 26/09/2022
@@ -39,52 +39,52 @@
 */
 
 final class CompletedTransactionKernel {
-    
+
     // MARK: - Properties
-    
+
     var excessHex: String {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = transaction_kernel_get_excess_hex(pointer, errorCodePointer)
-            
+
             guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
             return String(cString: cString)
         }
     }
-    
+
     var excessPublicNonceHex: String {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = transaction_kernel_get_excess_public_nonce_hex(pointer, errorCodePointer)
-            
+
             guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
             return String(cString: cString)
         }
     }
-    
+
     var excessSignatureHex: String {
         get throws {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = transaction_kernel_get_excess_signature_hex(pointer, errorCodePointer)
-            
+
             guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
             return String(cString: cString)
         }
     }
-    
+
     private let pointer: OpaquePointer
-    
+
     // MARK: - Initialiser
-    
+
     init(pointer: OpaquePointer) {
         self.pointer = pointer
     }
-    
+
     // MARK: - Deinitialiser
-    
+
     deinit {
         transaction_kernel_destroy(pointer)
     }
