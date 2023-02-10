@@ -86,8 +86,6 @@ class TxTableViewCell: DynamicThemeCell {
 
     func configure(with model: TxTableViewModel) {
 
-        if model.id == self.model?.id { return }
-
         setStatus(model.status)
         self.model = model
         avatarLabel.text = model.avatar
