@@ -117,8 +117,6 @@ final class HomeViewController: DynamicThemeViewController {
         setupCallbacks()
         NotificationManager.shared.requestAuthorization()
         StagedWalletSecurityManager.shared.start()
-
-        PopUpPresenter.showStorePopUp() // TODO: Remove
     }
 
     override func viewDidAppear(_ animated: Bool) {
