@@ -107,6 +107,7 @@ final class AddRecipientSearchView: DynamicThemeView {
 
     private func setupViews() {
         backgroundColor = .clear
+        layer.cornerRadius = 6.0
     }
 
     override func update(theme: ColorTheme) {

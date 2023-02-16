@@ -69,7 +69,11 @@ final class AboutModel {
         RowData(model: RowModel(icon: Theme.shared.images.settingsBridgeConfigIcon, title: "Repair Tools by Design Circle from\nNounProject.com"), url: URL(string: "https://thenounproject.com/icon/repair-tools-4213156/")),
         RowData(model: RowModel(icon: Theme.shared.images.settingsNetworkIcon, title: "Internet Server by Design Circle from\nNounProject.com"), url: URL(string: "https://thenounproject.com/icon/internet-server-4213144/")),
         RowData(model: RowModel(icon: Theme.shared.images.settingsBaseNodeIcon, title: "Networking by Design Circle from\nNounProject.com"), url: URL(string: "https://thenounproject.com/icon/networking-4213263/")),
-        RowData(model: RowModel(icon: Theme.shared.images.settingsDeleteIcon, title: "Delete by Maya Nurhayati from\nNounProject.com"), url: URL(string: "https://thenounproject.com/icon/delete-4727971/"))
+        RowData(model: RowModel(icon: Theme.shared.images.settingsDeleteIcon, title: "Delete by Maya Nurhayati from\nNounProject.com"), url: URL(string: "https://thenounproject.com/icon/delete-4727971/")),
+        RowData(model: RowModel(icon: .security.onboarding.page1, title: "Write by Mada Creative from NounProject.com"), url: URL(string: "https://thenounproject.com/icon/write-4207866/")),
+        RowData(model: RowModel(icon: .security.onboarding.page2, title: "Cloud by Tippawan Sookruay from NounProject.com"), url: URL(string: "https://thenounproject.com/icon/cloud-3384041/")),
+        RowData(model: RowModel(icon: .security.onboarding.page3, title: "Password by Tippawan Sookruay from NounProject.com"), url: URL(string: "https://thenounproject.com/icon/password-3384056/")),
+        RowData(model: RowModel(icon: .security.onboarding.page4, title: "Key by Tippawan Sookruay from NounProject.com"), url: URL(string: "https://thenounproject.com/icon/key-3384048/"))
     ]
 
     private let creativeCommonsURL = URL(string: "https://creativecommons.org/licenses/by/3.0/")
