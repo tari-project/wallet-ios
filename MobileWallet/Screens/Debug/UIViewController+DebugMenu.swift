@@ -44,8 +44,8 @@ extension UIViewController {
 
     // MARK: - Motion
 
-    open override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
-        super.motionBegan(motion, with: event)
+    open override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        super.motionEnded(motion, with: event)
         guard motion == .motionShake else { return }
         handleShakeGesture()
     }
