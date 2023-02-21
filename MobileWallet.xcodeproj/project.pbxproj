@@ -369,7 +369,6 @@
 		49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */; };
 		4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C2C95C6237962CB005058AB /* libc++.tbd */; };
 		4C363B762574F15E00D99868 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C363B372574EFE500D99868 /* OpenSSL.xcframework */; };
-		4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */; };
 		4CD20A362407967B007B64D8 /* TransportConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportConfig.swift */; };
 		4CDEC323273A5E3600999DCB /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDEC322273A5E3500999DCB /* Balance.swift */; };
 		5410F5D12951F04B006976DC /* TariWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5410F5D02951F04B006976DC /* TariWindow.swift */; };
@@ -386,6 +385,7 @@
 		545A9D1F294F9323008D24A6 /* RadioButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D1E294F9323008D24A6 /* RadioButtonView.swift */; };
 		545A9D21294F9CCE008D24A6 /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D20294F9CCE008D24A6 /* UserSettings.swift */; };
 		545A9D24294F9E77008D24A6 /* UserSettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D23294F9E77008D24A6 /* UserSettingsManager.swift */; };
+		545B80A2298D40CF00405AE9 /* libtari_wallet_ffi_ios.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 545B80A1298D40CF00405AE9 /* libtari_wallet_ffi_ios.xcframework */; };
 		546B03232983B49400DBED8E /* StylizedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03222983B49400DBED8E /* StylizedLabel.swift */; };
 		546B03262983E92700DBED8E /* ContentNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03252983E92700DBED8E /* ContentNavigationViewController.swift */; };
 		546B03282983F2F700DBED8E /* OnboardingPagerElementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03272983F2F700DBED8E /* OnboardingPagerElementView.swift */; };
@@ -825,7 +825,6 @@
 		4C2C95B8237959B3005058AB /* MobileWallet-bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWallet-bridging-header.h"; sourceTree = "<group>"; };
 		4C2C95C6237962CB005058AB /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		4C363B372574EFE500D99868 /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = "Pods/OpenSSL-Universal/Frameworks/OpenSSL.xcframework"; sourceTree = "<group>"; };
-		4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libtari_wallet_ffi.a; path = MobileWallet/TariLib/libtari_wallet_ffi.a; sourceTree = "<group>"; };
 		4CD20A352407967B007B64D8 /* TransportConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportConfig.swift; sourceTree = "<group>"; };
 		4CDEC322273A5E3500999DCB /* Balance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
 		5410F5D02951F04B006976DC /* TariWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariWindow.swift; sourceTree = "<group>"; };
@@ -842,6 +841,7 @@
 		545A9D1E294F9323008D24A6 /* RadioButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButtonView.swift; sourceTree = "<group>"; };
 		545A9D20294F9CCE008D24A6 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		545A9D23294F9E77008D24A6 /* UserSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsManager.swift; sourceTree = "<group>"; };
+		545B80A1298D40CF00405AE9 /* libtari_wallet_ffi_ios.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libtari_wallet_ffi_ios.xcframework; path = MobileWallet/TariLib/libtari_wallet_ffi_ios.xcframework; sourceTree = "<group>"; };
 		546B03222983B49400DBED8E /* StylizedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylizedLabel.swift; sourceTree = "<group>"; };
 		546B03252983E92700DBED8E /* ContentNavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentNavigationViewController.swift; sourceTree = "<group>"; };
 		546B03272983F2F700DBED8E /* OnboardingPagerElementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPagerElementView.swift; sourceTree = "<group>"; };
@@ -896,9 +896,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				545B80A2298D40CF00405AE9 /* libtari_wallet_ffi_ios.xcframework in Frameworks */,
 				4C363B762574F15E00D99868 /* OpenSSL.xcframework in Frameworks */,
 				371189732488FF11004D0CE3 /* CloudKit.framework in Frameworks */,
-				4CCF87ED23E8273900C8CDB1 /* libtari_wallet_ffi.a in Frameworks */,
 				00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */,
 				0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */,
 				4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */,
@@ -1243,8 +1243,8 @@
 		27F235021D9E2060A3CBB465 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				545B80A1298D40CF00405AE9 /* libtari_wallet_ffi_ios.xcframework */,
 				4C363B372574EFE500D99868 /* OpenSSL.xcframework */,
-				4CCF87EC23E8273900C8CDB1 /* libtari_wallet_ffi.a */,
 				371189722488FF11004D0CE3 /* CloudKit.framework */,
 				0070A7BB2379847100C25E1C /* LocalAuthentication.framework */,
 				F28D9135828811CA84244432 /* Pods_MobileWallet.framework */,

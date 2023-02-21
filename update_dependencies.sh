@@ -2,8 +2,10 @@
 
 FILE=env.json
 WORKING_DIR=Temp
-HEADER_FILE_NAME=wallet.h
-LIB_FILE_NAME=libtari_wallet_ffi.a
+FRAMEWORK_ZIP_FILE_NAME=libtari_wallet_ffi.ios-xcframework.zip
+FRAMEWORK_DIRECTORY=libwallet-ios-xcframework
+FRAMEWORK_FILE_NAME=libtari_wallet_ffi_ios.xcframework
+PROJECT_FRAMEWORK_DIRECTORY=./MobileWallet/TariLib
 
 if test ! -f "$FILE"; then
     echo "$FILE does not exist. Creating default."
@@ -17,10 +19,12 @@ source dependencies.env
 rm -rf $WORKING_DIR
 mkdir $WORKING_DIR
 
-curl -L "https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/libtari_wallet_ffi.h" -o "./$WORKING_DIR/$HEADER_FILE_NAME"
-curl -L "https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/libtari_wallet_ffi.ios_universal.a" -o "./$WORKING_DIR/$LIB_FILE_NAME"
+curl -L "https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/$FRAMEWORK_ZIP_FILE_NAME" -o "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME"
+unzip "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME" -d "./$WORKING_DIR"
+rm -f "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME"
 
-mv $WORKING_DIR/* ./MobileWallet/TariLib
+rm -rf $PROJECT_FRAMEWORK_DIRECTORY/$FRAMEWORK_FILE_NAME
+mv $WORKING_DIR/$FRAMEWORK_DIRECTORY/$FRAMEWORK_FILE_NAME $PROJECT_FRAMEWORK_DIRECTORY
 rm -rf $WORKING_DIR
 
 # Check for cocoapods and install if missing.
