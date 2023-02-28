@@ -311,4 +311,17 @@ extension UIImage {
             static var page4: UIImage? { UIImage(named: "Images/Security/Onboarding/Page4") }
         }
     }
+
+    enum icons {
+
+        enum star {
+            static var border: UIImage? { UIImage(named: "Icons/Star/Border") }
+            static var filled: UIImage? { UIImage(named: "Icons/Star/Filled") }
+        }
+
+        static var link: UIImage? { UIImage(named: "Icons/Link") }
+        static var profile: UIImage? { UIImage(named: "Icons/Profile") }
+        static var send: UIImage? { UIImage(named: "Icons/Send") }
+        static var unlink: UIImage? { UIImage(named: "Icons/Unlink") }
+    }
 }

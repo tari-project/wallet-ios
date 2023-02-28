@@ -372,11 +372,21 @@
 		4CD20A362407967B007B64D8 /* TransportConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportConfig.swift */; };
 		4CDEC323273A5E3600999DCB /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDEC322273A5E3500999DCB /* Balance.swift */; };
 		5410F5D12951F04B006976DC /* TariWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5410F5D02951F04B006976DC /* TariWindow.swift */; };
+		5421551029A4AE37000A3F49 /* ContactBookContactListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */; };
+		5421551229A4AE4B000A3F49 /* ContactBookContactListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */; };
+		5421551429A4AE92000A3F49 /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421551329A4AE92000A3F49 /* SearchTextField.swift */; };
 		543DF19A293F37E70031EA70 /* CustomBridgesHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */; };
 		543DF19C293F3DA90031EA70 /* BridgesConfigurationFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */; };
 		5443954629800F1600786682 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5443954529800F1600786682 /* OnboardingViewController.swift */; };
 		544D9D4C296D9B2000D8ECEF /* UnblindedOutputs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544D9D4B296D9B2000D8ECEF /* UnblindedOutputs.swift */; };
 		544D9D4E296D9B3300D8ECEF /* UnblindedOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544D9D4D296D9B3300D8ECEF /* UnblindedOutput.swift */; };
+		5453241A29A60C6E009281A7 /* TariPagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453241929A60C6E009281A7 /* TariPagerViewController.swift */; };
+		5453241C29A60CA0009281A7 /* TariPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453241B29A60CA0009281A7 /* TariPagerView.swift */; };
+		5453241E29A67FFF009281A7 /* ContactCapsuleMenuBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453241D29A67FFF009281A7 /* ContactCapsuleMenuBackground.swift */; };
+		5453242029A68310009281A7 /* PageToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453241F29A68310009281A7 /* PageToolbarView.swift */; };
+		5453242229A68CA0009281A7 /* RoundedButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453242129A68CA0009281A7 /* RoundedButton.swift */; };
+		5453242429A68D14009281A7 /* TariGradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453242329A68D14009281A7 /* TariGradientView.swift */; };
+		5453242629A68D7D009281A7 /* RoundedAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5453242529A68D7D009281A7 /* RoundedAvatarView.swift */; };
 		545A9D14294F6ED3008D24A6 /* ThemeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */; };
 		545A9D16294F6EEA008D24A6 /* ThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D15294F6EEA008D24A6 /* ThemeSettingsView.swift */; };
 		545A9D18294F6F50008D24A6 /* ThemeSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 545A9D17294F6F50008D24A6 /* ThemeSettingsModel.swift */; };
@@ -399,6 +409,13 @@
 		54AA5D5A298122B70031A396 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D59298122B70031A396 /* OnboardingView.swift */; };
 		54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */; };
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
+		54B7F4452996583800BB484B /* ContactBookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7F4442996583800BB484B /* ContactBookCell.swift */; };
+		54D419B32995092F00D496B4 /* ContactBookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B22995092F00D496B4 /* ContactBookModel.swift */; };
+		54D419B52995093800D496B4 /* ContactBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B42995093800D496B4 /* ContactBookViewController.swift */; };
+		54D419B72995094100D496B4 /* ContactBookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B62995094100D496B4 /* ContactBookView.swift */; };
+		54D419B92995094B00D496B4 /* ContactBookConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B82995094B00D496B4 /* ContactBookConstructor.swift */; };
+		54DDB18129A366700021DFD4 /* ContactCapsuleMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DDB18029A366700021DFD4 /* ContactCapsuleMenu.swift */; };
+		54DDB18329A373C90021DFD4 /* ContactBookMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DDB18229A373C90021DFD4 /* ContactBookMenuButton.swift */; };
 		54DE32D02930BE3D0060108A /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32CF2930BE3D0060108A /* ColorTheme.swift */; };
 		54DE32D22930BE7F0060108A /* ThemeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */; };
 		54DE32D42930C2640060108A /* DynamicThemeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D32930C2640060108A /* DynamicThemeView.swift */; };
@@ -828,11 +845,21 @@
 		4CD20A352407967B007B64D8 /* TransportConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportConfig.swift; sourceTree = "<group>"; };
 		4CDEC322273A5E3500999DCB /* Balance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
 		5410F5D02951F04B006976DC /* TariWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariWindow.swift; sourceTree = "<group>"; };
+		5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListViewController.swift; sourceTree = "<group>"; };
+		5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListView.swift; sourceTree = "<group>"; };
+		5421551329A4AE92000A3F49 /* SearchTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
 		543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBridgesHeaderView.swift; sourceTree = "<group>"; };
 		543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgesConfigurationFooterView.swift; sourceTree = "<group>"; };
 		5443954529800F1600786682 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		544D9D4B296D9B2000D8ECEF /* UnblindedOutputs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnblindedOutputs.swift; sourceTree = "<group>"; };
 		544D9D4D296D9B3300D8ECEF /* UnblindedOutput.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnblindedOutput.swift; sourceTree = "<group>"; };
+		5453241929A60C6E009281A7 /* TariPagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariPagerViewController.swift; sourceTree = "<group>"; };
+		5453241B29A60CA0009281A7 /* TariPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariPagerView.swift; sourceTree = "<group>"; };
+		5453241D29A67FFF009281A7 /* ContactCapsuleMenuBackground.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCapsuleMenuBackground.swift; sourceTree = "<group>"; };
+		5453241F29A68310009281A7 /* PageToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageToolbarView.swift; sourceTree = "<group>"; };
+		5453242129A68CA0009281A7 /* RoundedButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedButton.swift; sourceTree = "<group>"; };
+		5453242329A68D14009281A7 /* TariGradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariGradientView.swift; sourceTree = "<group>"; };
+		5453242529A68D7D009281A7 /* RoundedAvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedAvatarView.swift; sourceTree = "<group>"; };
 		545A9D13294F6ED3008D24A6 /* ThemeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsViewController.swift; sourceTree = "<group>"; };
 		545A9D15294F6EEA008D24A6 /* ThemeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsView.swift; sourceTree = "<group>"; };
 		545A9D17294F6F50008D24A6 /* ThemeSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsModel.swift; sourceTree = "<group>"; };
@@ -855,6 +882,13 @@
 		54AA5D59298122B70031A396 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
+		54B7F4442996583800BB484B /* ContactBookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookCell.swift; sourceTree = "<group>"; };
+		54D419B22995092F00D496B4 /* ContactBookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookModel.swift; sourceTree = "<group>"; };
+		54D419B42995093800D496B4 /* ContactBookViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookViewController.swift; sourceTree = "<group>"; };
+		54D419B62995094100D496B4 /* ContactBookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookView.swift; sourceTree = "<group>"; };
+		54D419B82995094B00D496B4 /* ContactBookConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookConstructor.swift; sourceTree = "<group>"; };
+		54DDB18029A366700021DFD4 /* ContactCapsuleMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCapsuleMenu.swift; sourceTree = "<group>"; };
+		54DDB18229A373C90021DFD4 /* ContactBookMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookMenuButton.swift; sourceTree = "<group>"; };
 		54DE32CF2930BE3D0060108A /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
 		54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeCoordinator.swift; sourceTree = "<group>"; };
 		54DE32D32930C2640060108A /* DynamicThemeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicThemeView.swift; sourceTree = "<group>"; };
@@ -1118,8 +1152,20 @@
 		00E2BCAF236B44CE00C2A105 /* UIElements */ = {
 			isa = PBXGroup;
 			children = (
-				546B03242983E91600DBED8E /* Navigation */,
+				00E2BCB8236B5BC000C2A105 /* Buttons */,
+				37B444A72489436100592D92 /* Checkbox */,
+				00E2BCB0236B44DB00C2A105 /* FloatingPanel */,
 				546B03212983B46E00DBED8E /* Labels */,
+				546B03242983E91600DBED8E /* Navigation */,
+				5453241829A60C60009281A7 /* Pager */,
+				3723A7A924ACD029003382EB /* PasswordField */,
+				37B48A7B24B31AB300F8A8D2 /* PendingView */,
+				37BB6969245705D20013AC4D /* RadialGradientView */,
+				37B48A7D24B31C2D00F8A8D2 /* SystemMenuTableViewCell */,
+				3730E14B24C8756100827DFA /* TabBar */,
+				3A1325FF27EDE39F00289C8C /* Transaction */,
+				371A081624728FCB00F97713 /* TransitionUILabel */,
+				375AFDCD2475380B00C62CA1 /* WebBrowserView */,
 				3A4205912798001A00A8D49C /* AmountKeyboardView.swift */,
 				00D988682449B04B000FDC9C /* AnimatedRefreshingView.swift */,
 				3AECD48F284F3BB300D81C80 /* BaseNavigationContentView.swift */,
@@ -1129,19 +1175,10 @@
 				3A13260227EDE42A00289C8C /* GradientView.swift */,
 				375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */,
 				3A4205A027980FFA00A8D49C /* QRCodeView.swift */,
-				00E2BCB8236B5BC000C2A105 /* Buttons */,
-				37B444A72489436100592D92 /* Checkbox */,
-				00E2BCB0236B44DB00C2A105 /* FloatingPanel */,
-				3723A7A924ACD029003382EB /* PasswordField */,
-				37B48A7B24B31AB300F8A8D2 /* PendingView */,
-				37BB6969245705D20013AC4D /* RadialGradientView */,
-				37B48A7D24B31C2D00F8A8D2 /* SystemMenuTableViewCell */,
-				3730E14B24C8756100827DFA /* TabBar */,
-				3A1325FF27EDE39F00289C8C /* Transaction */,
-				371A081624728FCB00F97713 /* TransitionUILabel */,
-				375AFDCD2475380B00C62CA1 /* WebBrowserView */,
-				3AFC3D5F288EC3FA0046D386 /* UnselectableTextView.swift */,
 				5410F5D02951F04B006976DC /* TariWindow.swift */,
+				3AFC3D5F288EC3FA0046D386 /* UnselectableTextView.swift */,
+				5453242329A68D14009281A7 /* TariGradientView.swift */,
+				5453242529A68D7D009281A7 /* RoundedAvatarView.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -1157,6 +1194,7 @@
 		00E2BCB5236B469C00C2A105 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				54D419B12995091B00D496B4 /* Contact Book */,
 				3ACDA70326B0317300F138B8 /* RestoreWalletFromSeedsProgress */,
 				3A4376E3269C0BF0006107B0 /* RestoreWalletFromSeeds */,
 				00BBD7FA237C462400EBF5E6 /* AppEntry */,
@@ -1187,13 +1225,14 @@
 		00E2BCB8236B5BC000C2A105 /* Buttons */ = {
 			isa = PBXGroup;
 			children = (
-				3A420593279802E500A8D49C /* BaseButton.swift */,
 				00E2BCB9236B5BE800C2A105 /* ActionButton.swift */,
+				3A420593279802E500A8D49C /* BaseButton.swift */,
+				3A93159A286C30AA0001660E /* LeftImageButton.swift */,
 				37875E4324D85C4300C0595B /* LoadingGIFButton.swift */,
 				00A994322396434B007D9990 /* PulseButton.swift */,
+				5453242129A68CA0009281A7 /* RoundedButton.swift */,
 				0053872F24065F6C00901A68 /* SlideView.swift */,
 				004277F223E0407900AE7BD9 /* TextButton.swift */,
-				3A93159A286C30AA0001660E /* LeftImageButton.swift */,
 			);
 			path = Buttons;
 			sourceTree = "<group>";
@@ -1548,6 +1587,7 @@
 				3A35413526A738D4002AB5A8 /* RoundedInputField.swift */,
 				3A35413D26A73939002AB5A8 /* RoundedTextView.swift */,
 				3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */,
+				5421551329A4AE92000A3F49 /* SearchTextField.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2294,6 +2334,15 @@
 			path = TariLib;
 			sourceTree = "<group>";
 		};
+		5421550E29A4AE28000A3F49 /* Contact List */ = {
+			isa = PBXGroup;
+			children = (
+				5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */,
+				5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */,
+			);
+			path = "Contact List";
+			sourceTree = "<group>";
+		};
 		543DF198293F37DB0031EA70 /* Bridges */ = {
 			isa = PBXGroup;
 			children = (
@@ -2325,6 +2374,16 @@
 				544D9D4D296D9B3300D8ECEF /* UnblindedOutput.swift */,
 			);
 			path = "Unblinded Outputs";
+			sourceTree = "<group>";
+		};
+		5453241829A60C60009281A7 /* Pager */ = {
+			isa = PBXGroup;
+			children = (
+				5453241929A60C6E009281A7 /* TariPagerViewController.swift */,
+				5453241B29A60CA0009281A7 /* TariPagerView.swift */,
+				5453241F29A68310009281A7 /* PageToolbarView.swift */,
+			);
+			path = Pager;
 			sourceTree = "<group>";
 		};
 		545A9D12294F6EBD008D24A6 /* Theme Settings */ = {
@@ -2373,6 +2432,30 @@
 				546B03252983E92700DBED8E /* ContentNavigationViewController.swift */,
 			);
 			path = Navigation;
+			sourceTree = "<group>";
+		};
+		54B7F4432996582B00BB484B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				54B7F4442996583800BB484B /* ContactBookCell.swift */,
+				54DDB18029A366700021DFD4 /* ContactCapsuleMenu.swift */,
+				54DDB18229A373C90021DFD4 /* ContactBookMenuButton.swift */,
+				5453241D29A67FFF009281A7 /* ContactCapsuleMenuBackground.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		54D419B12995091B00D496B4 /* Contact Book */ = {
+			isa = PBXGroup;
+			children = (
+				5421550E29A4AE28000A3F49 /* Contact List */,
+				54B7F4432996582B00BB484B /* Views */,
+				54D419B22995092F00D496B4 /* ContactBookModel.swift */,
+				54D419B42995093800D496B4 /* ContactBookViewController.swift */,
+				54D419B62995094100D496B4 /* ContactBookView.swift */,
+				54D419B82995094B00D496B4 /* ContactBookConstructor.swift */,
+			);
+			path = "Contact Book";
 			sourceTree = "<group>";
 		};
 		54DE32CE2930BE170060108A /* Theme */ = {
@@ -2715,6 +2798,7 @@
 				3A90653A29001D830084EE66 /* AppValues.swift in Sources */,
 				3A7E06DC287831D800D15190 /* PopUpCombineUTXOsConfirmationContentView.swift in Sources */,
 				3A6CD3B5279194980034DF81 /* RequestTariAmountView.swift in Sources */,
+				5421551429A4AE92000A3F49 /* SearchTextField.swift in Sources */,
 				3A72DC3D26DFA02900E0BC43 /* NetworkManager.swift in Sources */,
 				0087A1A923F4235400B89EE7 /* ScanViewController.swift in Sources */,
 				3AE1D58227E0A8C8001A46C4 /* TransactionDetailsConstructor.swift in Sources */,
@@ -2762,7 +2846,9 @@
 				00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */,
 				3AE88506283785100070D1AC /* PopUpModifyFeeContentView.swift in Sources */,
 				3ACDA85E2721794800F08C70 /* YatTransactionModel.swift in Sources */,
+				54DDB18129A366700021DFD4 /* ContactCapsuleMenu.swift in Sources */,
 				3A21FC5328FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift in Sources */,
+				5453242429A68D14009281A7 /* TariGradientView.swift in Sources */,
 				37B48A8324B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */,
 				54DEF9F32987DA8700C4B749 /* UIScreen+Tools.swift in Sources */,
 				00BBD801237C5B5200EBF5E6 /* CommandLineArgs.swift in Sources */,
@@ -2790,6 +2876,7 @@
 				3A983A6027C67C0500F0AB61 /* VerifySeedWordsConstructor.swift in Sources */,
 				0012562F2371D81500A9C067 /* SplashViewController.swift in Sources */,
 				3A70434128E21D7A00207D6F /* PendingInboundTransaction.swift in Sources */,
+				5421551229A4AE4B000A3F49 /* ContactBookContactListView.swift in Sources */,
 				3A2F30B428F5940A0095E25D /* ConsoleLogger.swift in Sources */,
 				545A9D1F294F9323008D24A6 /* RadioButtonView.swift in Sources */,
 				3ABF91A9283FFA790001C766 /* AboutModel.swift in Sources */,
@@ -2831,12 +2918,14 @@
 				3A8473C628EC55DB0015E63A /* TariContactsService.swift in Sources */,
 				3A2F30B628F594520095E25D /* FileLogger.swift in Sources */,
 				3A8473D028EC56600015E63A /* TariRecoveryService.swift in Sources */,
+				5421551029A4AE37000A3F49 /* ContactBookContactListViewController.swift in Sources */,
 				3AABFC9D28F59B2200D87773 /* StatusLoggerManager.swift in Sources */,
 				00665E7524E422C500030A13 /* CustomTabBar.swift in Sources */,
 				3A0EA97E26AA8E3C002612D4 /* TokenView.swift in Sources */,
 				3A74E7DB273BCFF000F290D2 /* SeedWordsMnemonicWordList.swift in Sources */,
 				54A6E9F4297F260800A60853 /* UIViewController+Common.swift in Sources */,
 				3A8CC6C2290BDC70008161DC /* BugReportService.swift in Sources */,
+				5453241C29A60CA0009281A7 /* TariPagerView.swift in Sources */,
 				3A47ABCD27478208007F351B /* Tari.swift in Sources */,
 				3A8A03EB28F587FD003EC8FE /* AppConfigurator.swift in Sources */,
 				00BBD80E237DA07400EBF5E6 /* ByteVector.swift in Sources */,
@@ -2870,6 +2959,7 @@
 				3A0391E6290BA40E00352D73 /* BugReportingView.swift in Sources */,
 				546B032A2983F33600DBED8E /* OnboardingPagerView.swift in Sources */,
 				001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */,
+				5453242029A68310009281A7 /* PageToolbarView.swift in Sources */,
 				3A860BD2287DA2B800FC4F76 /* HomeViewModel.swift in Sources */,
 				370E886324FE974100576F61 /* OnionSettings.swift in Sources */,
 				545A9D16294F6EEA008D24A6 /* ThemeSettingsView.swift in Sources */,
@@ -2889,6 +2979,7 @@
 				377C951E2522213800CC1696 /* TxsListViewController.swift in Sources */,
 				3AEDBE4F27CE46D6006B0166 /* DeeplinkDataDecoder.swift in Sources */,
 				3AD1306A27D62918003EC7FA /* SeedWordsListView.swift in Sources */,
+				54D419B32995092F00D496B4 /* ContactBookModel.swift in Sources */,
 				3A66109627AD07F10038EB5B /* SendingTariView.swift in Sources */,
 				3A4376E9269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */,
 				3ADF96CE2858A93000A3C888 /* ContextualButton.swift in Sources */,
@@ -2904,6 +2995,7 @@
 				37C8BA4F24813F98005BBC05 /* SettingsParentTableViewController.swift in Sources */,
 				3A8473C828EC55F50015E63A /* TariValidationService.swift in Sources */,
 				3AE8850C28378BF20070D1AC /* TariSegmentedControl.swift in Sources */,
+				54D419B72995094100D496B4 /* ContactBookView.swift in Sources */,
 				37E4B62B24501FB200FA302B /* HomeViewController.swift in Sources */,
 				3A87C3B527A94086007A553F /* CoreError.swift in Sources */,
 				3723A7AB24ACD03E003382EB /* PasswordField.swift in Sources */,
@@ -2937,11 +3029,14 @@
 				370E886124FE7AE800576F61 /* BridgesConfigurationViewController.swift in Sources */,
 				3A983A5A27C62A3900F0AB61 /* VerifySeedWordsViewController.swift in Sources */,
 				54A6E9F2297F1FBA00A60853 /* PopUpStagedWalletSecurityHeaderView.swift in Sources */,
+				54D419B52995093800D496B4 /* ContactBookViewController.swift in Sources */,
 				00B4D6F8241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift in Sources */,
 				3A6A03342802DBB5000432B4 /* PopUpHeaderView.swift in Sources */,
+				54D419B92995094B00D496B4 /* ContactBookConstructor.swift in Sources */,
 				37D3D4ED251C970F00D24149 /* TxGifManager.swift in Sources */,
 				3A62674A26D76EC4007F9895 /* SelectNetworkModel.swift in Sources */,
 				3A35413E26A73939002AB5A8 /* RoundedTextView.swift in Sources */,
+				5453241A29A60C6E009281A7 /* TariPagerViewController.swift in Sources */,
 				3ACDA85A2721578700F08C70 /* YatTransactionViewController.swift in Sources */,
 				3ABC7E9328FE864100EAC852 /* PopUpButtonsTableView.swift in Sources */,
 				3AC877E628741680006F327B /* UTXOsWalletLoadingView.swift in Sources */,
@@ -2969,6 +3064,7 @@
 				3A2B956A28648D860085BE21 /* CChar+Helpers.swift in Sources */,
 				3A0EA97A26AA8E1C002612D4 /* TokenCollectionView.swift in Sources */,
 				546B03282983F2F700DBED8E /* OnboardingPagerElementView.swift in Sources */,
+				5453242629A68D7D009281A7 /* RoundedAvatarView.swift in Sources */,
 				37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */,
 				3A96B9452733E9A90040E59F /* TokensToolbar.swift in Sources */,
 				00D988692449B04B000FDC9C /* AnimatedRefreshingView.swift in Sources */,
@@ -2985,8 +3081,10 @@
 				3A87C3B727A9409E007A553F /* WalletError.swift in Sources */,
 				00A994332396434B007D9990 /* PulseButton.swift in Sources */,
 				545A9D21294F9CCE008D24A6 /* UserSettings.swift in Sources */,
+				5453241E29A67FFF009281A7 /* ContactCapsuleMenuBackground.swift in Sources */,
 				3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */,
 				3A84CDD42846088D005F2F8D /* UTXOsWalletView.swift in Sources */,
+				5453242229A68CA0009281A7 /* RoundedButton.swift in Sources */,
 				3A2C0B8727DA22970018C5A8 /* SeedWordListElementView.swift in Sources */,
 				3A8473D628EC56C90015E63A /* TariBalanceService.swift in Sources */,
 				3A6F3FF8283BF980005D1793 /* TariFeePerGramStats.swift in Sources */,
@@ -3025,6 +3123,7 @@
 				3AA2717A279028BF0076E51F /* RequestTariAmountViewController.swift in Sources */,
 				3A5A3D5C290178EB00B689C6 /* BackupWalletSettingsModel.swift in Sources */,
 				3AE5E5662874656200D3AF85 /* PopUpUTXOsBreakContentView.swift in Sources */,
+				54B7F4452996583800BB484B /* ContactBookCell.swift in Sources */,
 				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
 				3A4BF7D027B57CE400CA499D /* SendingTariConstructor.swift in Sources */,
 				3A82455C27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift in Sources */,
@@ -3052,6 +3151,7 @@
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
 				3A03A602288962FA00788A02 /* SplashViewModel.swift in Sources */,
 				3A312FEE28B6316D00A290D3 /* CompletedTransactions.swift in Sources */,
+				54DDB18329A373C90021DFD4 /* ContactBookMenuButton.swift in Sources */,
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				3ADF96CC28585E2400A3C888 /* ContextualButtonsOverlay.swift in Sources */,
 				37ABB69024781CE800F08163 /* UILabel.swift in Sources */,
