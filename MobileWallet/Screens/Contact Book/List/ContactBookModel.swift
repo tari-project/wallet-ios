@@ -39,7 +39,6 @@
 */
 
 import Combine
-import UIKit
 
 struct ContactViewModel: Identifiable {
     let id: UUID
@@ -51,6 +50,19 @@ struct ContactViewModel: Identifiable {
 
 final class ContactBookModel {
 
+    enum MenuItem: UInt {
+        case send
+        case favorite
+        case link
+        case unlink
+        case details
+    }
+
+    enum Action {
+        case sendTokens(paymentInfo: PaymentInfo)
+        case showDetails(hexAddress: String)
+    }
+
     // MARK: - View Model
 
     @Published var searchText: String = ""
@@ -58,11 +70,12 @@ final class ContactBookModel {
     @Published private(set) var contacts: [ContactViewModel] = []
     @Published private(set) var favoriteContacts: [ContactViewModel] = []
     @Published private(set) var errorModel: MessageModel?
-    @Published private(set) var recipientPaymentInfo: PaymentInfo?
+    @Published private(set) var action: Action?
 
     // MARK: - Properties
 
-    @Published private var allContacts: [ContactViewModel] = []
+    @Published private var allContactModels: [ContactViewModel] = []
+    @Published private var walletContacts: [WalletContactsManager.ContactModel] = []
 
     private let walletContactsManager = WalletContactsManager()
     private var cancellables = Set<AnyCancellable>()
@@ -71,14 +84,13 @@ final class ContactBookModel {
 
     init() {
         setupCallbacks()
-        fetchContacts()
     }
 
     // MARK: - Setups
 
     private func setupCallbacks() {
 
-        let contactsPublisher = Publishers.CombineLatest($allContacts, $searchText)
+        let contactsPublisher = Publishers.CombineLatest($allContactModels, $searchText)
             .map { contacts, searchText in
                 guard !searchText.isEmpty else { return contacts }
                 return contacts.filter { $0.name.range(of: searchText, options: .caseInsensitive) != nil }
@@ -93,23 +105,28 @@ final class ContactBookModel {
             .map { $0.filter { $0.isFavorite }}
             .sink { [weak self] in self?.favoriteContacts = $0 }
             .store(in: &cancellables)
+
+        $walletContacts
+            .map { $0.map { ContactViewModel(id: UUID(), name: $0.alias ?? $0.emojiID, avatar: $0.emojiID.firstOrEmpty, emojiID: $0.emojiID, isFavorite: false) }}
+            .assign(to: \.allContactModels, on: self)
+            .store(in: &cancellables)
     }
 
-    private func fetchContacts() {
+    // MARK: - View Model
+
+    func fetchContacts() {
         do {
-            allContacts = try walletContactsManager.fetchAllModels()
+            walletContacts = try walletContactsManager.fetchAllModels()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
         }
     }
 
-    // MARK: - View Model
+    func performAction(contactID: UUID, menuItemID: UInt) {
 
-    func performAction(contactID: UUID, actionID: UInt) {
+        guard let contact = allContactModels.first(where: { $0.id == contactID }), let menuItem = MenuItem(rawValue: menuItemID) else { return }
 
-        guard let contact = allContacts.first(where: { $0.id == contactID }), let action = MenuAction(rawValue: actionID) else { return }
-
-        switch action {
+        switch menuItem {
         case .send:
             performSendAction(contact: contact)
         case .favorite:
@@ -119,6 +136,7 @@ final class ContactBookModel {
         case .unlink:
             return
         case .details:
+            performShowDetailsAction(contact: contact)
             return
         }
     }
@@ -128,83 +146,74 @@ final class ContactBookModel {
     private func performSendAction(contact: ContactViewModel) {
         do {
             let address = try TariAddress(emojiID: contact.emojiID)
-            recipientPaymentInfo = PaymentInfo(address: address, yatID: nil)
+            let paymentInfo = PaymentInfo(address: address, yatID: nil)
+            action = .sendTokens(paymentInfo: paymentInfo)
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
         }
+    }
+
+    private func performShowDetailsAction(contact: ContactViewModel) {
+        guard let walletContact = walletContacts.first(where: { $0.emojiID == contact.emojiID }) else { return }
+        action = .showDetails(hexAddress: walletContact.hex)
     }
 }
 
 final class WalletContactsManager {
 
-    func fetchAllModels() throws -> [ContactViewModel] {
+    struct ContactModel {
+        let alias: String?
+        let emojiID: String
+        let hex: String
+    }
 
-        var models: [ContactViewModel] = []
+    func fetchAllModels() throws -> [ContactModel] {
 
-        models += try fetchWalletContacts().map {
-            let emojis = try $0.address.emojis
-            return try ContactViewModel(id: UUID(), name: $0.alias, avatar: emojis.firstOrEmpty, emojiID: emojis, isFavorite: true)
-        }
+        var models: [ContactModel] = []
 
-        models += try fetchTariAddresses().map { ContactViewModel(id: UUID(), name: $0, avatar: $0.firstOrEmpty, emojiID: $0, isFavorite: true) }
+        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, emojiID: $0.address.emojis, hex: $0.address.byteVector.hex) }
+        models += try fetchTariAddresses().map { try ContactModel(alias: nil, emojiID: $0.emojis, hex: $0.byteVector.hex) }
 
         return models
-            .reduce(into: [ContactViewModel]()) { collection, model in
+            .reduce(into: [ContactModel]()) { collection, model in
                 guard collection.first(where: {$0.emojiID == model.emojiID }) == nil else { return }
                 collection.append(model)
             }
-            .sorted { $0.name < $1.name }
+            .sorted {
+
+                let firstAlias = $0.alias?.lowercased()
+                let secondAlias = $1.alias?.lowercased()
+
+                if let firstAlias, let secondAlias {
+                    return firstAlias < secondAlias
+                }
+
+                if firstAlias != nil {
+                    return true
+                }
+
+                if secondAlias != nil {
+                    return false
+                }
+
+                return $0.emojiID < $1.emojiID
+            }
     }
 
     private func fetchWalletContacts() throws -> [Contact] {
         try Tari.shared.contacts.allContacts
     }
 
-    private func fetchTariAddresses() throws -> [String] {
+    private func fetchTariAddresses() throws -> [TariAddress] {
 
         var transactions: [Transaction] = []
+
         transactions += Tari.shared.transactions.pendingInbound
         transactions += Tari.shared.transactions.pendingOutbound
         transactions += Tari.shared.transactions.cancelled
         transactions += Tari.shared.transactions.completed
 
         return try transactions
-            .map { try $0.address.emojis }
-    }
-}
-
-private extension String {
-
-    var firstOrEmpty: String {
-        guard let first else { return "" }
-        return String(first)
-    }
-}
-
-enum MenuAction: UInt {
-    case send
-    case favorite
-    case link
-    case unlink
-    case details
-}
-
-extension MenuAction {
-
-    var buttonViewModel: ContactCapsuleMenu.ButtonViewModel { ContactCapsuleMenu.ButtonViewModel(id: rawValue, icon: icon) }
-
-    private var icon: UIImage? {
-        switch self {
-        case .send:
-            return .icons.send
-        case .favorite:
-            return .icons.star.filled
-        case .link:
-            return .icons.link
-        case .unlink:
-            return .icons.unlink
-        case .details:
-            return .icons.profile
-        }
+            .map { try $0.address }
     }
 }

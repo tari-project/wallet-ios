@@ -1,10 +1,10 @@
-//  TariContactsService.swift
+//  ContactDetailsConstructor.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 04/10/2022
+	Created by Browncoat on 23/02/2023
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,23 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class TariContactsService: CoreTariService {
+enum ContactDetailsConstructor {
 
-    // MARK: - Properties
-
-    var allContacts: [Contact] {
-        get throws { try walletManager.walletContacts().all }
-    }
-
-    @discardableResult func upsert(contact: Contact) throws -> Bool {
-        try walletManager.upsert(contact: contact)
-    }
-
-    @discardableResult func remove(contact: Contact) throws -> Bool {
-        try walletManager.remove(contact: contact)
-    }
-
-    func findContact(hex: String) throws -> Contact? {
-        try allContacts.first { try $0.address.byteVector.hex == hex }
+    static func buildScene(hexAddress: String) -> ContactDetailsViewController {
+        let model = ContactDetailsModel(hex: hexAddress)
+        return ContactDetailsViewController(model: model)
     }
 }

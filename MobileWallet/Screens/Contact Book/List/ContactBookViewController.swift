@@ -77,6 +77,11 @@ final class ContactBookViewController: UIViewController {
         setupCallbacks()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        model.fetchContacts()
+    }
+
     // MARK: - Setups
 
     private func setupPages() {
@@ -95,10 +100,10 @@ final class ContactBookViewController: UIViewController {
 
         model.$contacts
             .map {
-                let actions: [MenuAction] = [.send, .favorite, .link, .details]
+                let actions: [ContactBookModel.MenuItem] = [.send, .favorite, .link, .details]
                 let menuItems = actions.map { $0.buttonViewModel }
-                return $0.map { ContactBookContactListView.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: $0.isFavorite, menuItems: menuItems)
-            }}
+                return $0.map { ContactBookContactListView.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: $0.isFavorite, menuItems: menuItems) }
+            }
             .sink { [weak self] in self?.contactsPageViewController.models = $0 }
             .store(in: &cancellables)
 
@@ -107,9 +112,9 @@ final class ContactBookViewController: UIViewController {
             .sink { [weak self] in self?.favoritesPageViewController.models = $0 }
             .store(in: &cancellables)
 
-        model.$recipientPaymentInfo
+        model.$action
             .compactMap { $0 }
-            .sink { [weak self] in self?.moveToSendTokensScreen(paymentInfo: $0) }
+            .sink { [weak self] in self?.handle(action: $0) }
             .store(in: &cancellables)
 
         model.$errorModel
@@ -122,18 +127,53 @@ final class ContactBookViewController: UIViewController {
             .store(in: &cancellables)
 
         contactsPageViewController.onButtonTap = { [weak self] in
-            self?.model.performAction(contactID: $0, actionID: $1)
+            self?.model.performAction(contactID: $0, menuItemID: $1)
         }
 
         favoritesPageViewController.onButtonTap = { [weak self] in
-            self?.model.performAction(contactID: $0, actionID: $1)
+            self?.model.performAction(contactID: $0, menuItemID: $1)
+        }
+    }
+
+    // MARK: - Handlers
+
+    private func handle(action: ContactBookModel.Action) {
+        switch action {
+        case let .sendTokens(paymentInfo):
+            moveToSendTokensScreen(paymentInfo: paymentInfo)
+        case let .showDetails(hexAddress):
+            moveToContactDetails(hexAddress: hexAddress)
         }
     }
 
     // MARK: - Actions
 
     private func moveToSendTokensScreen(paymentInfo: PaymentInfo) {
-        let controller = AddAmountViewController(paymentInfo: paymentInfo, deeplink: nil)
+        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+    }
+
+    private func moveToContactDetails(hexAddress: String) {
+        let controller = ContactDetailsConstructor.buildScene(hexAddress: hexAddress)
         navigationController?.pushViewController(controller, animated: true)
+    }
+}
+
+private extension ContactBookModel.MenuItem {
+
+    var buttonViewModel: ContactCapsuleMenu.ButtonViewModel { ContactCapsuleMenu.ButtonViewModel(id: rawValue, icon: icon) }
+
+    private var icon: UIImage? {
+        switch self {
+        case .send:
+            return .icons.send
+        case .favorite:
+            return .icons.star.filled
+        case .link:
+            return .icons.link
+        case .unlink:
+            return .icons.unlink
+        case .details:
+            return .icons.profile
+        }
     }
 }

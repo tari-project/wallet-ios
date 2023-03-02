@@ -111,7 +111,10 @@ final class ContactBookContactListView: DynamicThemeView {
             let cell = tableView.dequeueReusableCell(type: ContactBookCell.self, indexPath: indexPath)
             cell.update(name: model.name, avatar: model.avatar, isFavorite: model.isFavorite, menuItems: model.menuItems)
             cell.isExpanded = indexPath == self?.expandedIndex
-            cell.onButtonTap = { self?.onButtonTap?(model.id, $0) }
+            cell.onButtonTap = {
+                self?.onButtonTap?(model.id, $0)
+                self?.expandedIndex = nil
+            }
             cell.onExpand = { [weak self] in self?.expandedIndex = indexPath }
             return cell
         }

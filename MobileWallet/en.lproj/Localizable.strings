@@ -7,6 +7,8 @@
 "common.close" = "Close";
 "common.apply" = "Apply";
 "common.next" = "Next";
+"common.edit" = "Edit";
+"common.done" = "Done";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -737,3 +739,14 @@
 "contact_book.search_bar.placeholder" = "Find Contact";
 "contact_book.pager.tab.contacts" = "Contacts";
 "contact_book.pager.tab.favorites" = "Favorites";
+"contact_book.details.title" = "Contact Profile";
+"contact_book.details.menu.option.send" = "Send Tari";
+"contact_book.details.menu.option.add_to_favorites" = "Add to Favorites";
+"contact_book.details.menu.option.remove_from_favorites" = "Remove from Favorites";
+"contact_book.details.menu.option.delete" = "Delete Contact";
+"contact_book.details.menu.section.connected_wallets" = "Connected Wallets";
+"contact_book.details.popup.delete_contact.title" = "Delete Contact";
+"contact_book.details.popup.delete_contact.message" = "You are about to pernamently remove this contact. Are you sure?";
+"contact_book.details.popup.delete_contact.button.ok" = "Delete";
+"contact_book.details.edit_form.title" = "Edit Contact";
+"contact_book.details.edit_form.text_field.name" = "Name";

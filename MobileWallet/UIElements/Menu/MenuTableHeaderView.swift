@@ -1,10 +1,10 @@
-//  TariContactsService.swift
+//  MenuTableHeaderView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 04/10/2022
+	Created by Adrian Truszczyński on 27/02/2023
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,23 +38,47 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class TariContactsService: CoreTariService {
+import UIKit
+import TariCommon
 
-    // MARK: - Properties
+final class MenuTableHeaderView: DynamicThemeHeaderFooterView {
 
-    var allContacts: [Contact] {
-        get throws { try walletManager.walletContacts().all }
+    // MARK: - Subviews
+
+    @View private(set) var label: UILabel = {
+        let view = UILabel()
+        view.font = Theme.shared.fonts.settingsViewHeader
+        return view
+    }()
+
+    // MARK: - Initialisers
+
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        setupConstraints()
     }
 
-    @discardableResult func upsert(contact: Contact) throws -> Bool {
-        try walletManager.upsert(contact: contact)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    @discardableResult func remove(contact: Contact) throws -> Bool {
-        try walletManager.remove(contact: contact)
+    // MARK: - Setups
+
+    private func setupConstraints() {
+
+        addSubview(label)
+
+        let constraints = [
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0),
+            heightAnchor.constraint(equalToConstant: 70.0)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
     }
 
-    func findContact(hex: String) throws -> Contact? {
-        try allContacts.first { try $0.address.byteVector.hex == hex }
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.heading
     }
 }

@@ -1,0 +1,170 @@
+//  ContactBookFormView.swift
+
+/*
+	Package MobileWallet
+	Created by Adrian Truszczyński on 01/03/2023
+	Using Swift 5.0
+	Running on macOS 13.0
+
+	Copyright 2019 The Tari Project
+
+	Redistribution and use in source and binary forms, with or
+	without modification, are permitted provided that the
+	following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice,
+	this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above
+	copyright notice, this list of conditions and the following disclaimer in the
+	documentation and/or other materials provided with the distribution.
+
+	3. Neither the name of the copyright holder nor the names of
+	its contributors may be used to endorse or promote products
+	derived from this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+	CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+	INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+	CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+	NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+	HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+import UIKit
+import TariCommon
+import Combine
+
+final class ContactBookFormView: DynamicThemeView, FormShowable {
+
+    struct TextFieldViewModel {
+        let placeholder: String?
+        let text: String?
+        let callback: ((String) -> Void)?
+    }
+
+    // MARK: - Subviews
+
+    @View private var titleBar: NavigationBar = {
+        let view = NavigationBar()
+        view.backButtonType = .none
+        view.title = localized("contact_book.details.edit_form.title")
+        return view
+    }()
+
+    @View private var stackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .vertical
+        view.spacing = 20.0
+        return view
+    }()
+
+    // MARK: - Properties
+
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - FormShowable
+
+    var focusedView: UIView? { stackView.arrangedSubviews.first }
+    var initalReturkKeyType: UIReturnKeyType = .default
+    var onCloseAction: (() -> Void)?
+
+    // MARK: - Initialisers
+
+    init(textFieldsModels: [TextFieldViewModel]) {
+        super.init()
+        setupTitleBar()
+        setupConstraints()
+        setupCallbacks()
+        update(textFieldsModels: textFieldsModels)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Setups
+
+    private func setupTitleBar() {
+        titleBar.rightButton.setTitle(localized("common.done"), for: .normal)
+    }
+
+    private func setupConstraints() {
+
+        [titleBar, stackView].forEach(addSubview)
+
+        let constraints = [
+            titleBar.topAnchor.constraint(equalTo: topAnchor),
+            titleBar.leadingAnchor.constraint(equalTo: leadingAnchor),
+            titleBar.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: titleBar.bottomAnchor, constant: 26.0),
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 26.0),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -26.0),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -26.0)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    private func setupCallbacks() {
+        titleBar.onRightButtonAction = { [weak self] in
+            self?.onCloseAction?()
+        }
+    }
+
+    // MARK: - Updates
+
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+    }
+
+    private func update(textFieldsModels: [TextFieldViewModel]) {
+
+        let textFields = textFieldsModels
+            .enumerated()
+            .map { index, model in
+                let textField = FormTextField()
+
+                textField.publisher
+                    .sink { model.callback?($0) }
+                    .store(in: &cancellables)
+
+                textField.placeholder = model.placeholder
+                textField.text = model.text
+                textField.onReturnPressed = { [weak self] in
+                    self?.handleOnReturnPressedAction(index: index)
+                }
+
+                return textField
+            }
+
+        textFields
+            .forEach { [weak self] in
+                $0.returnKeyType = .next
+                self?.stackView.addArrangedSubview($0)
+            }
+
+        textFields.last?.returnKeyType = .done
+
+        initalReturkKeyType = textFields.count > 1 ? .next : .done
+    }
+
+    // MARK: - Actions
+
+    private func handleOnReturnPressedAction(index: Int) {
+        let nextIndex = index + 1
+        guard stackView.arrangedSubviews.count > nextIndex else {
+            onCloseAction?()
+            return
+        }
+        stackView.arrangedSubviews[nextIndex].becomeFirstResponder()
+    }
+}

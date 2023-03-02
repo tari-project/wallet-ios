@@ -154,4 +154,11 @@ enum AppRouter {
         navigationController.isModalInPresentation = true
         tabBar?.present(navigationController, animated: true)
     }
+
+    static func presentSendTransaction(paymentInfo: PaymentInfo) {
+        let controller = AddAmountViewController(paymentInfo: paymentInfo, deeplink: nil)
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+        navigationController.isNavigationBarHidden = true
+        tabBar?.presentOnFullScreen(navigationController)
+    }
 }
