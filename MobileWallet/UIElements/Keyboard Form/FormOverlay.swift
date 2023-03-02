@@ -1,10 +1,10 @@
-//  MenuTableView.swift
+//  FormOverlay.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 08/11/2022
+	Created by Adrian Truszczyński on 01/03/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -40,21 +40,58 @@
 
 import UIKit
 
-final class MenuTableView: DynamicThemeTableView {
+final class FormOverlay: UIViewController {
 
-    init() {
-        super.init(frame: .zero, style: .grouped)
-        showsVerticalScrollIndicator = false
-        rowHeight = UITableView.automaticDimension
-        register(type: SystemMenuTableViewCell.self)
+    // MARK: - Properties
+
+    private let mainView: FormOverlayView
+    var onClose: (() -> Void)?
+
+    // MARK: - Initialisers
+
+    init(formView: FormShowable) {
+        mainView = FormOverlayView(formView: formView)
+        super.init(nibName: nil, bundle: nil)
+        modalTransitionStyle = .crossDissolve
+        modalPresentationStyle = .overFullScreen
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func update(theme: ColorTheme) {
-        backgroundColor = theme.backgrounds.secondary
-        separatorColor = theme.neutral.secondary
+    // MARK: - View Lifecycle
+
+    override func loadView() {
+        super.loadView()
+        view = mainView
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        mainView.onCloseAction = { [weak self] in
+            self?.view.endEditing(true)
+            self?.dismiss(animated: true)
+            self?.onClose?()
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        mainView.becomeFirstResponder()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        mainView.formView.focusedView?.becomeFirstResponder()
+    }
+
+    // MARK: - Autolayout
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        mainView.inputAccessoryView?.setNeedsLayout()
+        mainView.inputAccessoryView?.layoutIfNeeded()
     }
 }

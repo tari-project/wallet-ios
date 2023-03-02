@@ -108,7 +108,11 @@ final class ContactCapsuleMenu: UIView {
 
     func update(buttons: [ButtonViewModel]) {
 
-        stackView.arrangedSubviews.forEach(stackView.removeArrangedSubview)
+        stackView.arrangedSubviews.forEach {
+            self.stackView.removeArrangedSubview($0)
+            guard $0 != avatarButton else { return }
+            $0.removeFromSuperview()
+        }
 
         var views: [UIView] = [avatarButton]
         views += buttons.map { self.makeButton(model: $0) }

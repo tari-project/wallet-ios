@@ -1,10 +1,10 @@
-//  TariContactsService.swift
+//  FormOverlayView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 04/10/2022
+	Created by Adrian Truszczyński on 01/03/2023
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,23 +38,60 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class TariContactsService: CoreTariService {
+import UIKit
+
+protocol FormShowable: UIView {
+    var focusedView: UIView? { get }
+    var initalReturkKeyType: UIReturnKeyType { get }
+    var onCloseAction: (() -> Void)? { get set }
+}
+
+final class FormOverlayView: UIView, UIKeyInput {
 
     // MARK: - Properties
 
-    var allContacts: [Contact] {
-        get throws { try walletManager.walletContacts().all }
+    var onCloseAction: (() -> Void)?
+
+    private(set) var formView: FormShowable
+
+    override var canBecomeFirstResponder: Bool { true }
+    override var canResignFirstResponder: Bool { true }
+    override var inputAccessoryView: UIView? { formView }
+
+    // MARK: - UIKeyInput
+
+    var returnKeyType: UIReturnKeyType = .default
+    var hasText: Bool { false }
+
+    func insertText(_ text: String) {}
+    func deleteBackward() {}
+
+    // MARK: - Initialisers
+
+    init(formView: FormShowable) {
+        self.formView = formView
+        formView.translatesAutoresizingMaskIntoConstraints = false
+        super.init(frame: .zero)
+        setupViews(formView: formView)
+        setupCallbacks()
+
     }
 
-    @discardableResult func upsert(contact: Contact) throws -> Bool {
-        try walletManager.upsert(contact: contact)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    @discardableResult func remove(contact: Contact) throws -> Bool {
-        try walletManager.remove(contact: contact)
+    // MARK: - Setups
+
+    private func setupViews(formView: FormShowable) {
+        backgroundColor = .static.black?.withAlphaComponent(0.7)
+        formView.translatesAutoresizingMaskIntoConstraints = false
+        returnKeyType = formView.initalReturkKeyType
     }
 
-    func findContact(hex: String) throws -> Contact? {
-        try allContacts.first { try $0.address.byteVector.hex == hex }
+    private func setupCallbacks() {
+        formView.onCloseAction = { [weak self] in
+            self?.onCloseAction?()
+        }
     }
 }

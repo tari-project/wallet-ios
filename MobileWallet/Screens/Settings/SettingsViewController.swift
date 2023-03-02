@@ -323,7 +323,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             return nil
         }
 
-        let header = SettingsTableHeaderView()
+        let header = MenuTableHeaderView()
         header.label.text = SettingsHeaderTitle.allCases[section].rawValue
 
         return header
@@ -419,47 +419,5 @@ extension SettingsViewController {
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("settings.pasteboard.custom_base_node.error.title"), message: localized("settings.pasteboard.custom_base_node.error.message"), type: .error))
         }
-    }
-}
-
-private final class SettingsTableHeaderView: DynamicThemeView {
-
-    // MARK: - Subviews
-
-    @View private(set) var label: UILabel = {
-        let view = UILabel()
-        view.font = Theme.shared.fonts.settingsViewHeader
-        return view
-    }()
-
-    // MARK: - Initialisers
-
-    override init() {
-        super.init()
-        setupConstraints()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Setups
-
-    private func setupConstraints() {
-
-        addSubview(label)
-
-        let constraints = [
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0),
-            heightAnchor.constraint(equalToConstant: 70.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
-
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-        label.textColor = theme.text.heading
     }
 }

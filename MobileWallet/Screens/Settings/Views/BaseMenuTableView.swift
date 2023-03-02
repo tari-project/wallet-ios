@@ -1,10 +1,10 @@
-//  TariContactsService.swift
+//  BaseMenuTableView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 04/10/2022
+	Created by Adrian Truszczynski on 08/11/2022
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 12.6
 
 	Copyright 2019 The Tari Project
 
@@ -38,23 +38,23 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class TariContactsService: CoreTariService {
+import UIKit
 
-    // MARK: - Properties
+final class BaseMenuTableView: DynamicThemeTableView {
 
-    var allContacts: [Contact] {
-        get throws { try walletManager.walletContacts().all }
+    init() {
+        super.init(frame: .zero, style: .grouped)
+        showsVerticalScrollIndicator = false
+        rowHeight = UITableView.automaticDimension
+        register(type: SystemMenuTableViewCell.self)
     }
 
-    @discardableResult func upsert(contact: Contact) throws -> Bool {
-        try walletManager.upsert(contact: contact)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    @discardableResult func remove(contact: Contact) throws -> Bool {
-        try walletManager.remove(contact: contact)
-    }
-
-    func findContact(hex: String) throws -> Contact? {
-        try allContacts.first { try $0.address.byteVector.hex == hex }
+    override func update(theme: ColorTheme) {
+        backgroundColor = theme.backgrounds.secondary
+        separatorColor = theme.neutral.secondary
     }
 }

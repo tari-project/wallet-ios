@@ -202,6 +202,18 @@ final class FFIWalletManager {
         return result
     }
 
+    func remove(contact: Contact) throws -> Bool {
+
+        let wallet = try exisingWallet
+
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let result = wallet_remove_contact(wallet.pointer, contact.pointer, errorCodePointer)
+
+        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        return result
+    }
+
     func startTransactionOutputValidation() throws -> UInt64 {
 
         let wallet = try exisingWallet
