@@ -98,22 +98,19 @@ final class ContactBookViewController: UIViewController {
 
     private func setupCallbacks() {
 
-        model.$contacts
-            .map {
-                let actions: [ContactBookModel.MenuItem] = [.send, .favorite, .link, .details]
-                let menuItems = actions.map { $0.buttonViewModel }
-                return $0.map { ContactBookContactListView.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: $0.isFavorite, menuItems: menuItems) }
-            }
+        model.$contactsList
+            .compactMap { [weak self] in self?.map(sections: $0) }
             .sink { [weak self] in self?.contactsPageViewController.models = $0 }
             .store(in: &cancellables)
 
-        model.$favoriteContacts
-            .map { $0.map { ContactBookContactListView.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: $0.isFavorite, menuItems: []) }}
+        model.$favoriteContactsList
+            .compactMap { [weak self] in self?.map(sections: $0) }
             .sink { [weak self] in self?.favoritesPageViewController.models = $0 }
             .store(in: &cancellables)
 
         model.$action
             .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(action: $0) }
             .store(in: &cancellables)
 
@@ -141,8 +138,18 @@ final class ContactBookViewController: UIViewController {
         switch action {
         case let .sendTokens(paymentInfo):
             moveToSendTokensScreen(paymentInfo: paymentInfo)
-        case let .showDetails(hexAddress):
-            moveToContactDetails(hexAddress: hexAddress)
+        case let .showDetails(model):
+            moveToContactDetails(model: model)
+        }
+    }
+
+    private func map(sections: [ContactBookModel.ContactSection]) -> [ContactBookContactListView.Section] {
+        sections.map {
+            let items = $0.viewModels.map {
+                let menuItems = $0.menuItems.map { $0.buttonViewModel }
+                return ContactBookContactListView.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: $0.isFavorite, menuItems: menuItems)
+            }
+            return ContactBookContactListView.Section(title: $0.title, items: items)
         }
     }
 
@@ -152,8 +159,8 @@ final class ContactBookViewController: UIViewController {
         AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
     }
 
-    private func moveToContactDetails(hexAddress: String) {
-        let controller = ContactDetailsConstructor.buildScene(hexAddress: hexAddress)
+    private func moveToContactDetails(model: ContactsManager.Model) {
+        let controller = ContactDetailsConstructor.buildScene(model: model)
         navigationController?.pushViewController(controller, animated: true)
     }
 }

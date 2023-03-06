@@ -44,11 +44,10 @@ final class ContactBookContactListViewController: UIViewController {
 
     // MARK: - Properties
 
-    var models: [ContactBookContactListView.ViewModel] {
+    var models: [ContactBookContactListView.Section] {
         get { mainView.viewModels }
         set { mainView.viewModels = newValue }
     }
-
     var onButtonTap: ((UUID, UInt) -> Void)?
 
     private let mainView = ContactBookContactListView()

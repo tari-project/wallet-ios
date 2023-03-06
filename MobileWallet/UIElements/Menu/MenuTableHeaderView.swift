@@ -51,6 +51,8 @@ final class MenuTableHeaderView: DynamicThemeHeaderFooterView {
         return view
     }()
 
+    @View private var backgroundContentView = UIView()
+
     // MARK: - Initialisers
 
     override init(reuseIdentifier: String?) {
@@ -66,9 +68,13 @@ final class MenuTableHeaderView: DynamicThemeHeaderFooterView {
 
     private func setupConstraints() {
 
-        addSubview(label)
+        [backgroundContentView, label].forEach(addSubview)
 
         let constraints = [
+            backgroundContentView.topAnchor.constraint(equalTo: topAnchor),
+            backgroundContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            backgroundContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            backgroundContentView.bottomAnchor.constraint(equalTo: bottomAnchor),
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0),
             heightAnchor.constraint(equalToConstant: 70.0)
@@ -80,5 +86,6 @@ final class MenuTableHeaderView: DynamicThemeHeaderFooterView {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading
+        backgroundContentView.backgroundColor = theme.backgrounds.primary
     }
 }

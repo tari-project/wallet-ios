@@ -65,7 +65,7 @@ final class MenuTabBarController: UITabBarController {
         storeViewController.tabBarItem.image = Theme.shared.images.ttlItem
         transactionsViewController.tabBarItem.image = Theme.shared.images.sendItem
         transactionsViewController.tabBarItem.tag = 1 // Using this to determine which icon to move upwards
-        contactBookViewController.tabBarItem.image = Theme.shared.images.profileItem
+        contactBookViewController.tabBarItem.image = .icons.tabBar.contactBook
         settingsViewController.tabBarItem.image = Theme.shared.images.settingsItem
 
         storeViewController.url = URL(string: TariSettings.shared.storeUrl)

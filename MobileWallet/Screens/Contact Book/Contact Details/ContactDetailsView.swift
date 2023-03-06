@@ -58,7 +58,12 @@ final class ContactDetailsView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var emojiIdView = EmojiIdView()
+    @View private var emojiIdView: EmojiIdView = {
+        let view = EmojiIdView()
+        view.isHidden = true
+        return view
+    }()
+
     @View private var tableView = MenuTableView()
 
     // MARK: - Properties
@@ -76,6 +81,7 @@ final class ContactDetailsView: BaseNavigationContentView {
     var emojiModel: EmojiIdView.ViewModel? {
         didSet {
             guard let emojiModel else { return }
+            emojiIdView.isHidden = emojiModel.emojiID.isEmpty
             emojiIdView.update(viewModel: emojiModel)
         }
     }
@@ -115,7 +121,7 @@ final class ContactDetailsView: BaseNavigationContentView {
 
         [avatarView, nameLabel, emojiIdView, tableView].forEach(addSubview)
 
-        let constraints = [ // TODO: Constants
+        let constraints = [
             avatarView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 21.0),
             avatarView.centerXAnchor.constraint(equalTo: centerXAnchor),
             avatarView.widthAnchor.constraint(equalToConstant: 90.0),

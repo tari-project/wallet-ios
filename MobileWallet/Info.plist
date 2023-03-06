@@ -52,6 +52,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Tari needs access to the camera to scan the QR</string>
+	<key>NSContactsUsageDescription</key>
+	<string>&lt;Fill It&gt;</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Enable Face ID to protect your wallet</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

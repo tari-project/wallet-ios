@@ -40,15 +40,20 @@
 
 import Combine
 
-struct ContactViewModel: Identifiable {
-    let id: UUID
-    let name: String
-    let avatar: String
-    let emojiID: String
-    let isFavorite: Bool
-}
-
 final class ContactBookModel {
+
+    struct ContactSection {
+       let title: String?
+       let viewModels: [ContactViewModel]
+    }
+
+    struct ContactViewModel: Identifiable {
+        let id: UUID
+        let name: String
+        let avatar: String
+        let isFavorite: Bool
+        let menuItems: [ContactBookModel.MenuItem]
+    }
 
     enum MenuItem: UInt {
         case send
@@ -60,24 +65,25 @@ final class ContactBookModel {
 
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
-        case showDetails(hexAddress: String)
+        case showDetails(model: ContactsManager.Model)
     }
 
     // MARK: - View Model
 
     @Published var searchText: String = ""
 
-    @Published private(set) var contacts: [ContactViewModel] = []
-    @Published private(set) var favoriteContacts: [ContactViewModel] = []
+    @Published private(set) var contactsList: [ContactSection] = []
+    @Published private(set) var favoriteContactsList: [ContactSection] = []
     @Published private(set) var errorModel: MessageModel?
     @Published private(set) var action: Action?
 
     // MARK: - Properties
 
-    @Published private var allContactModels: [ContactViewModel] = []
-    @Published private var walletContacts: [WalletContactsManager.ContactModel] = []
+    @Published private var allContactList: [ContactSection] = []
 
-    private let walletContactsManager = WalletContactsManager()
+    private let contactsManager = ContactsManager()
+
+    private var contacts: [ContactsManager.Model] = []
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -90,45 +96,64 @@ final class ContactBookModel {
 
     private func setupCallbacks() {
 
-        let contactsPublisher = Publishers.CombineLatest($allContactModels, $searchText)
-            .map { contacts, searchText in
-                guard !searchText.isEmpty else { return contacts }
-                return contacts.filter { $0.name.range(of: searchText, options: .caseInsensitive) != nil }
+        let contactsPublisher = Publishers.CombineLatest($allContactList, $searchText)
+            .map { sections, searchText in
+                guard !searchText.isEmpty else { return sections }
+                return sections.map { ContactSection(title: $0.title, viewModels: $0.viewModels.filter { $0.name.range(of: searchText, options: .caseInsensitive) != nil }) }
             }
             .share()
 
         contactsPublisher
-            .sink { [weak self] in self?.contacts = $0 }
+            .map { $0.filter { !$0.viewModels.isEmpty } }
+            .sink { [weak self] in self?.contactsList = $0 }
             .store(in: &cancellables)
 
         contactsPublisher
-            .map { $0.filter { $0.isFavorite }}
-            .sink { [weak self] in self?.favoriteContacts = $0 }
-            .store(in: &cancellables)
-
-        $walletContacts
-            .map { $0.map { ContactViewModel(id: UUID(), name: $0.alias ?? $0.emojiID, avatar: $0.emojiID.firstOrEmpty, emojiID: $0.emojiID, isFavorite: false) }}
-            .assign(to: \.allContactModels, on: self)
+            .map { $0.map { ContactSection(title: $0.title, viewModels: $0.viewModels.filter { $0.isFavorite }) }}
+            .map { $0.filter { !$0.viewModels.isEmpty } }
+            .sink { [weak self] in self?.favoriteContactsList = $0 }
             .store(in: &cancellables)
     }
 
     // MARK: - View Model
 
     func fetchContacts() {
-        do {
-            walletContacts = try walletContactsManager.fetchAllModels()
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
+
+        Task {
+            do {
+                try await contactsManager.fetchModels()
+
+                var sections: [ContactSection] = []
+
+                let internalContacts = contactsManager.internalModels
+                let externalContacts = contactsManager.externalModels
+
+                let internalContactSection = internalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: $0.menuItems) }
+                let externalContactSection = externalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: $0.menuItems) }
+
+                if !internalContactSection.isEmpty {
+                    sections.append(ContactSection(title: nil, viewModels: internalContactSection))
+                }
+
+                if !externalContactSection.isEmpty {
+                    sections.append(ContactSection(title: localized("contact_book.section.phone_contacts"), viewModels: externalContactSection))
+                }
+
+                contacts = internalContacts + externalContacts
+                allContactList = sections
+            } catch {
+                errorModel = ErrorMessageManager.errorModel(forError: error)
+            }
         }
     }
 
     func performAction(contactID: UUID, menuItemID: UInt) {
 
-        guard let contact = allContactModels.first(where: { $0.id == contactID }), let menuItem = MenuItem(rawValue: menuItemID) else { return }
+        guard let model = contacts.first(where: { $0.id == contactID }), let menuItem = MenuItem(rawValue: menuItemID) else { return }
 
         switch menuItem {
         case .send:
-            performSendAction(contact: contact)
+            performSendAction(model: model)
         case .favorite:
             return
         case .link:
@@ -136,84 +161,24 @@ final class ContactBookModel {
         case .unlink:
             return
         case .details:
-            performShowDetailsAction(contact: contact)
+            performShowDetailsAction(model: model)
             return
         }
     }
 
     // MARK: - Handlers
 
-    private func performSendAction(contact: ContactViewModel) {
+    private func performSendAction(model: ContactsManager.Model) {
+
         do {
-            let address = try TariAddress(emojiID: contact.emojiID)
-            let paymentInfo = PaymentInfo(address: address, yatID: nil)
+            guard let paymentInfo = try model.paymentInfo else { return }
             action = .sendTokens(paymentInfo: paymentInfo)
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
         }
     }
 
-    private func performShowDetailsAction(contact: ContactViewModel) {
-        guard let walletContact = walletContacts.first(where: { $0.emojiID == contact.emojiID }) else { return }
-        action = .showDetails(hexAddress: walletContact.hex)
-    }
-}
-
-final class WalletContactsManager {
-
-    struct ContactModel {
-        let alias: String?
-        let emojiID: String
-        let hex: String
-    }
-
-    func fetchAllModels() throws -> [ContactModel] {
-
-        var models: [ContactModel] = []
-
-        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, emojiID: $0.address.emojis, hex: $0.address.byteVector.hex) }
-        models += try fetchTariAddresses().map { try ContactModel(alias: nil, emojiID: $0.emojis, hex: $0.byteVector.hex) }
-
-        return models
-            .reduce(into: [ContactModel]()) { collection, model in
-                guard collection.first(where: {$0.emojiID == model.emojiID }) == nil else { return }
-                collection.append(model)
-            }
-            .sorted {
-
-                let firstAlias = $0.alias?.lowercased()
-                let secondAlias = $1.alias?.lowercased()
-
-                if let firstAlias, let secondAlias {
-                    return firstAlias < secondAlias
-                }
-
-                if firstAlias != nil {
-                    return true
-                }
-
-                if secondAlias != nil {
-                    return false
-                }
-
-                return $0.emojiID < $1.emojiID
-            }
-    }
-
-    private func fetchWalletContacts() throws -> [Contact] {
-        try Tari.shared.contacts.allContacts
-    }
-
-    private func fetchTariAddresses() throws -> [TariAddress] {
-
-        var transactions: [Transaction] = []
-
-        transactions += Tari.shared.transactions.pendingInbound
-        transactions += Tari.shared.transactions.pendingOutbound
-        transactions += Tari.shared.transactions.cancelled
-        transactions += Tari.shared.transactions.completed
-
-        return try transactions
-            .map { try $0.address }
+    private func performShowDetailsAction(model: ContactsManager.Model) {
+        action = .showDetails(model: model)
     }
 }

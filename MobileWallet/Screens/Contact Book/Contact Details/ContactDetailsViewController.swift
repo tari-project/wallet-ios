@@ -126,17 +126,25 @@ final class ContactDetailsViewController: UIViewController {
 
     private func showEditForm() {
 
-        var name: String?
+        var nameComponents: [String] = model.nameComponents
+        let models: [ContactBookFormView.TextFieldViewModel]
 
-        let models = [
-            ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.name"), text: model.name, callback: { name = $0 })
-        ]
+        if model.hasSplittedName {
+            models = [
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.first_name"), text: nameComponents[0], callback: { nameComponents[0] = $0 }),
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.last_name"), text: nameComponents[1], callback: { nameComponents[1] = $0 })
+            ]
+        } else {
+            models = [
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.name"), text: nameComponents[0], callback: { nameComponents[0] = $0 })
+            ]
+        }
 
         let formView = ContactBookFormView(textFieldsModels: models)
         let overlay = FormOverlay(formView: formView)
 
         overlay.onClose = { [weak self] in
-            self?.model.update(name: name)
+            self?.model.update(nameComponents: nameComponents)
         }
 
         present(overlay, animated: true)

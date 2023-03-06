@@ -62,9 +62,7 @@ final class ContactBookCell: DynamicThemeCell {
 
     // MARK: - Properties
 
-    var isExpanded: Bool = false {
-        didSet { updateCell(isExpanded: isExpanded) }
-    }
+    private(set) var isExpanded: Bool = false
 
     var onButtonTap: ((UInt) -> Void)?
     var onExpand: (() -> Void)?
@@ -126,12 +124,15 @@ final class ContactBookCell: DynamicThemeCell {
         favoriteView.isHidden = !isFavorite
     }
 
-    private func updateCell(isExpanded: Bool) {
+    func updateCell(isExpanded: Bool, withAnmiation: Bool) {
+
+        self.isExpanded = isExpanded
+
         if isExpanded {
-            avatarMenu.show()
+            avatarMenu.show(withAnmiation: withAnmiation)
             onExpand?()
         } else {
-            avatarMenu.hide()
+            avatarMenu.hide(withAnmiation: withAnmiation)
         }
     }
 }

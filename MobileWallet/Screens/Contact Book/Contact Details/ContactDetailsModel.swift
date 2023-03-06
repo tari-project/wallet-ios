@@ -57,7 +57,7 @@ final class ContactDetailsModel {
     struct ViewModel {
         let avatar: String
         let emojiID: String
-        let hex: String
+        let hex: String?
     }
 
     // MARK: - View Model
@@ -68,17 +68,24 @@ final class ContactDetailsModel {
     @Published private(set) var action: Action?
     @Published private(set) var errorModel: MessageModel?
 
+    var hasSplittedName: Bool { model.hasExternalModel }
+
+    var nameComponents: [String] {
+        guard let externalModel = model.externalModel else { return [model.name] }
+        return [externalModel.firstName, externalModel.lastName]
+    }
+
     // MARK: - Properties
 
-    @Published private var contact: Contact?
+    @Published private var model: ContactsManager.Model
 
-    private let hex: String
+    private let contactsManager = ContactsManager()
     private var cancellables = Set<AnyCancellable>()
 
-    init(hex: String) {
-        self.hex = hex
+    init(model: ContactsManager.Model) {
+        self.model = model
         setupCallbacks()
-        updateData()
+        updateData(model: model)
     }
 
     // MARK: - View Model
@@ -100,67 +107,56 @@ final class ContactDetailsModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-        $contact
-            .sink { [weak self] in self?.handle(contact: $0) }
+
+        $model
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.handle(model: $0) }
             .store(in: &cancellables)
     }
 
     // MARK: - Actions
 
-    func update(name: String?) {
+    func update(nameComponents: [String]) {
 
-        guard let name else { return }
-
-        let address: TariAddress
-
-        do {
-
-            if let contact {
-                address = try contact.address
-            } else {
-                address = try TariAddress(hex: hex)
+        Task {
+            do {
+                guard let model = try await contactsManager.update(nameComponents: nameComponents, contact: model) else { return }
+                self.model = model
+            } catch {
+                errorModel = ErrorMessageManager.errorModel(forError: error)
             }
-
-            let updatedContact = try Contact(alias: name, addressPointer: address.pointer)
-
-            try Tari.shared.contacts.upsert(contact: updatedContact)
-            contact = updatedContact
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
         }
     }
 
     func removeContact() {
         do {
-            guard let contact else { return }
-            try Tari.shared.contacts.remove(contact: contact)
+            try contactsManager.remove(contact: model)
             action = .endFlow
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
         }
     }
 
-    private func updateData() {
-        do {
-            let address = try TariAddress(hex: hex)
+    private func updateData(model: ContactsManager.Model) {
 
-            contact = try Tari.shared.contacts.findContact(hex: hex)
+        viewModel = ViewModel(avatar: model.avatar, emojiID: model.internalModel?.emojiID ?? "", hex: model.internalModel?.hex)
 
-            viewModel = ViewModel(
-                avatar: try address.emojis.firstOrEmpty,
-                emojiID: try address.emojis,
-                hex: hex
-            )
+        var mainMenuItems: [MenuItem] = []
 
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
+        if model.hasIntrenalModel {
+            mainMenuItems += [.send, .addToFavorites]
         }
+
+        if model.isInternalContact || model.hasExternalModel {
+            mainMenuItems.append(.removeContact)
+        }
+
+        self.mainMenuItems = mainMenuItems
     }
 
     private func performSendAction() {
         do {
-            let address = try TariAddress(hex: hex)
-            let paymentInfo = PaymentInfo(address: address, yatID: nil)
+            guard let paymentInfo = try model.paymentInfo else { return }
             action = .sendTokens(paymentInfo: paymentInfo)
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
@@ -169,16 +165,7 @@ final class ContactDetailsModel {
 
     // MARK: - Handlers
 
-    private func handle(contact: Contact?) {
-
-        name = try? contact?.alias
-
-        var mainMenuItems: [MenuItem] = [.send, .addToFavorites]
-
-        if contact != nil {
-            mainMenuItems.append(.removeContact)
-        }
-
-        self.mainMenuItems = mainMenuItems
+    private func handle(model: ContactsManager.Model) {
+        name = model.name
     }
 }
