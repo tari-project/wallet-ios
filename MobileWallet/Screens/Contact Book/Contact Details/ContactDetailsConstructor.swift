@@ -40,8 +40,8 @@
 
 enum ContactDetailsConstructor {
 
-    static func buildScene(hexAddress: String) -> ContactDetailsViewController {
-        let model = ContactDetailsModel(hex: hexAddress)
+    static func buildScene(model: ContactsManager.Model) -> ContactDetailsViewController {
+        let model = ContactDetailsModel(model: model)
         return ContactDetailsViewController(model: model)
     }
 }

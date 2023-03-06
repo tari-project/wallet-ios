@@ -43,6 +43,11 @@ import TariCommon
 
 final class ContactBookContactListView: DynamicThemeView {
 
+    struct Section {
+        let title: String?
+        let items: [ViewModel]
+    }
+
     struct ViewModel: Identifiable, Hashable {
         let id: UUID
         let name: String
@@ -59,14 +64,15 @@ final class ContactBookContactListView: DynamicThemeView {
         view.rowHeight = UITableView.automaticDimension
         view.keyboardDismissMode = .interactive
         view.register(type: ContactBookCell.self)
+        view.register(headerFooterType: MenuTableHeaderView.self)
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 22.0, bottom: 0.0, right: 22.0)
         return view
     }()
 
     // MARK: - Properties
 
-    var viewModels: [ViewModel] = [] {
-        didSet { update(viewModels: viewModels) }
+    var viewModels: [Section] = [] {
+        didSet { update(sections: viewModels) }
     }
 
     var onButtonTap: ((UUID, UInt) -> Void)?
@@ -110,12 +116,16 @@ final class ContactBookContactListView: DynamicThemeView {
         let dataSource = UITableViewDiffableDataSource<Int, ViewModel>(tableView: tableView) { [weak self] tableView, indexPath, model in
             let cell = tableView.dequeueReusableCell(type: ContactBookCell.self, indexPath: indexPath)
             cell.update(name: model.name, avatar: model.avatar, isFavorite: model.isFavorite, menuItems: model.menuItems)
-            cell.isExpanded = indexPath == self?.expandedIndex
+            cell.updateCell(isExpanded: indexPath == self?.expandedIndex, withAnmiation: false)
             cell.onButtonTap = {
                 self?.onButtonTap?(model.id, $0)
                 self?.expandedIndex = nil
             }
-            cell.onExpand = { [weak self] in self?.expandedIndex = indexPath }
+            cell.onExpand = { [weak self, tableView] in
+                guard let index = tableView.indexPath(for: cell) else { return }
+                self?.expandedIndex = index
+            }
+
             return cell
         }
 
@@ -143,20 +153,47 @@ final class ContactBookContactListView: DynamicThemeView {
         dataSource?.apply(snapshot: snapshot)
     }
 
+    private func update(sections: [Section]) {
+
+        var snapshot = NSDiffableDataSourceSnapshot<Int, ViewModel>()
+
+        sections
+            .enumerated()
+            .forEach {
+                snapshot.appendSections([$0])
+                snapshot.appendItems($1.items)
+            }
+
+        dataSource?.apply(snapshot: snapshot)
+    }
+
     private func updateCellsState() {
         tableView.visibleCells
             .compactMap { $0 as? ContactBookCell }
             .forEach { [weak self] in
                 guard let index = self?.tableView.indexPath(for: $0), index != self?.expandedIndex else { return }
-                $0.isExpanded = false
+                $0.updateCell(isExpanded: false, withAnmiation: false)
             }
     }
 }
 
 extension ContactBookContactListView: UITableViewDelegate {
 
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+
+        guard let title = viewModels[section].title else { return nil }
+
+        let headerView = tableView.dequeueReusableHeaderFooterView(type: MenuTableHeaderView.self)
+        headerView.label.text = title
+        return headerView
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        viewModels[section].title == nil ? 0.0 : UITableView.automaticDimension
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath) as? ContactBookCell
-        cell?.isExpanded.toggle()
+        guard let cell = tableView.cellForRow(at: indexPath) as? ContactBookCell else { return }
+        cell.updateCell(isExpanded: !cell.isExpanded, withAnmiation: true)
     }
 }

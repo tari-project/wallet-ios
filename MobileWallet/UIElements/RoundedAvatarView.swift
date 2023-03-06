@@ -51,7 +51,7 @@ final class RoundedAvatarView: RoundedButton {
 
     override init() {
         super.init()
-        titleLabel?.font = .Avenir.medium.withSize(24.0)
+        titleLabel?.font = .Avenir.medium.withSize(22.0)
     }
 
     required init?(coder: NSCoder) {
@@ -63,7 +63,7 @@ final class RoundedAvatarView: RoundedButton {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
-        setTitleColor(theme.text.heading, for: .normal)
+        setTitleColor(theme.text.lightText, for: .normal)
         apply(shadow: theme.shadows.box)
     }
 }

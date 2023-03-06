@@ -319,6 +319,10 @@ extension UIImage {
             static var filled: UIImage? { UIImage(named: "Icons/Star/Filled") }
         }
 
+        enum tabBar {
+            static var contactBook: UIImage? { UIImage(named: "Icons/TabBar/ContactBook")}
+        }
+
         static var link: UIImage? { UIImage(named: "Icons/Link") }
         static var profile: UIImage? { UIImage(named: "Icons/Profile") }
         static var send: UIImage? { UIImage(named: "Icons/Send") }

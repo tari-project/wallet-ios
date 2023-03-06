@@ -739,6 +739,7 @@
 "contact_book.search_bar.placeholder" = "Find Contact";
 "contact_book.pager.tab.contacts" = "Contacts";
 "contact_book.pager.tab.favorites" = "Favorites";
+"contact_book.section.phone_contacts" = "Phone Contacts";
 "contact_book.details.title" = "Contact Profile";
 "contact_book.details.menu.option.send" = "Send Tari";
 "contact_book.details.menu.option.add_to_favorites" = "Add to Favorites";
@@ -750,3 +751,5 @@
 "contact_book.details.popup.delete_contact.button.ok" = "Delete";
 "contact_book.details.edit_form.title" = "Edit Contact";
 "contact_book.details.edit_form.text_field.name" = "Name";
+"contact_book.details.edit_form.text_field.first_name" = "First Name";
+"contact_book.details.edit_form.text_field.last_name" = "Last Name";

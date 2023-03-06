@@ -122,25 +122,29 @@ final class ContactCapsuleMenu: UIView {
 
     // MARK: - Actions
 
-    func show() {
+    func show(withAnmiation animated: Bool) {
 
         stackView.arrangedSubviews
             .compactMap { $0 as? ContactBookMenuButton }
             .forEach { $0.show() }
 
-        UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.0, options: [.beginFromCurrentState]) {
+        let duration: TimeInterval = animated ? 0.3 : 0.0
+
+        UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.0, options: [.beginFromCurrentState]) {
             self.backgroundView.maskFrame = self.bounds
             self.layoutIfNeeded()
         }
     }
 
-    func hide() {
+    func hide(withAnmiation animated: Bool) {
 
         stackView.arrangedSubviews
             .compactMap { $0 as? ContactBookMenuButton }
             .forEach { $0.hide() }
 
-        UIView.animate(withDuration: 0.3, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.0, options: [.beginFromCurrentState]) {
+        let duration: TimeInterval = animated ? 0.3 : 0.0
+
+        UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.0, options: [.beginFromCurrentState]) {
             self.backgroundView.maskFrame = self.avatarViewFrame
             self.layoutIfNeeded()
         }
