@@ -40,11 +40,20 @@
 
 final class InternalContactsManager {
 
-    struct ContactModel {
+    struct ContactModel: Hashable {
+
         let alias: String?
         let emojiID: String
         let hex: String
         private(set) var contact: Contact?
+
+        static func == (lhs: InternalContactsManager.ContactModel, rhs: InternalContactsManager.ContactModel) -> Bool {
+            lhs.hex == rhs.hex
+        }
+
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(hex)
+        }
     }
 
     func fetchAllModels() throws -> [ContactModel] {

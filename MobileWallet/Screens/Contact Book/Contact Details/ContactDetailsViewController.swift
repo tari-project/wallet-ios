@@ -48,6 +48,7 @@ final class ContactDetailsViewController: UIViewController {
     private let mainView = ContactDetailsView()
     private let model: ContactDetailsModel
 
+    private var needUpdate = false
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -72,12 +73,18 @@ final class ContactDetailsViewController: UIViewController {
         setupCallbacks()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        updateData()
+    }
+
     // MARK: - Setups
 
     private func setupCallbacks() {
 
         model.$viewModel
             .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 self?.mainView.avatar = $0.avatar
                 self?.mainView.emojiModel = EmojiIdView.ViewModel(emojiID: $0.emojiID, hex: $0.hex)
@@ -85,10 +92,12 @@ final class ContactDetailsViewController: UIViewController {
             .store(in: &cancellables)
 
         model.$name
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.name = $0 }
             .store(in: &cancellables)
 
         model.$mainMenuItems
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in
                 let items = $0.map { $0.viewModel }
                 self?.mainView.tableViewSections = [MenuTableView.Section(title: nil, items: items)]
@@ -97,7 +106,14 @@ final class ContactDetailsViewController: UIViewController {
 
         model.$action
             .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(action: $0) }
+            .store(in: &cancellables)
+
+        model.$errorModel
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
 
         mainView.onSelectRow = { [weak self] in
@@ -115,6 +131,12 @@ final class ContactDetailsViewController: UIViewController {
         switch action {
         case let .sendTokens(paymentInfo):
             moveToSendTokensScreen(paymentInfo: paymentInfo)
+        case let .moveToLinkContactScreen(model):
+            moveToLinkContactScreen(model: model)
+        case let .showUnlinkConfirmationDialog(emojiID, name):
+            showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
+        case let .showUnlinkSuccessDialog(emojiID, name):
+            showUnlinkSuccessDialog(emojiID: emojiID, name: name)
         case .removeContactConfirmation:
             showRemoveContactConfirmationDialog()
         case .endFlow:
@@ -123,6 +145,14 @@ final class ContactDetailsViewController: UIViewController {
     }
 
     // MARK: - Actions
+
+    private func updateData() {
+        guard needUpdate else {
+            needUpdate = true
+            return
+        }
+        model.updateData()
+    }
 
     private func showEditForm() {
 
@@ -154,6 +184,11 @@ final class ContactDetailsViewController: UIViewController {
         AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
     }
 
+    private func moveToLinkContactScreen(model: ContactsManager.Model) {
+        let controller = LinkContactsConstructor.buildScene(contactModel: model)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
     private func showRemoveContactConfirmationDialog() {
 
         let model = PopUpDialogModel(
@@ -166,6 +201,16 @@ final class ContactDetailsViewController: UIViewController {
             hapticType: .none)
 
         PopUpPresenter.showPopUp(model: model)
+    }
+
+    private func showUnlinkConfirmationDialog(emojiID: String, name: String) {
+        PopUpPresenter.showUnlinkConfirmationDialog(emojiID: emojiID, name: name) { [weak self] in
+            self?.model.unlinkContact()
+        }
+    }
+
+    private func showUnlinkSuccessDialog(emojiID: String, name: String) {
+        PopUpPresenter.showUnlinkSuccessDialog(emojiID: emojiID, name: name)
     }
 
     private func endFlow() {
@@ -181,6 +226,10 @@ private extension ContactDetailsModel.MenuItem {
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.send"), isArrowVisible: true, isDestructive: false)
         case .addToFavorites:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.add_to_favorites"), isArrowVisible: false, isDestructive: false)
+        case .linkContact:
+            return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.link"), isArrowVisible: true, isDestructive: false)
+        case .unlinkContact:
+            return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.unlink"), isArrowVisible: true, isDestructive: false)
         case .removeContact:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.delete"), isArrowVisible: false, isDestructive: true)
         }

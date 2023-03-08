@@ -65,6 +65,9 @@ final class ContactBookModel {
 
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
+        case link(model: ContactsManager.Model)
+        case unlink(model: ContactsManager.Model)
+        case showUnlinkSuccess(emojiID: String, name: String)
         case showDetails(model: ContactsManager.Model)
     }
 
@@ -125,7 +128,7 @@ final class ContactBookModel {
 
                 var sections: [ContactSection] = []
 
-                let internalContacts = contactsManager.internalModels
+                let internalContacts = contactsManager.tariContactModels
                 let externalContacts = contactsManager.externalModels
 
                 let internalContactSection = internalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: $0.menuItems) }
@@ -157,12 +160,25 @@ final class ContactBookModel {
         case .favorite:
             return
         case .link:
-            return
+            performLinkAction(model: model)
         case .unlink:
-            return
+            performUnlinkAction(model: model)
         case .details:
             performShowDetailsAction(model: model)
             return
+        }
+    }
+
+    func unlink(contact: ContactsManager.Model) {
+
+        guard let emojiID = contact.internalModel?.emojiID, let name = contact.externalModel?.fullname else { return }
+
+        do {
+            try contactsManager.unlink(contact: contact)
+            fetchContacts()
+            action = .showUnlinkSuccess(emojiID: emojiID, name: name)
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
         }
     }
 
@@ -178,7 +194,15 @@ final class ContactBookModel {
         }
     }
 
+    private func performLinkAction(model: ContactsManager.Model) {
+        action = .link(model: model)
+    }
+
     private func performShowDetailsAction(model: ContactsManager.Model) {
         action = .showDetails(model: model)
+    }
+
+    private func performUnlinkAction(model: ContactsManager.Model) {
+        action = .unlink(model: model)
     }
 }

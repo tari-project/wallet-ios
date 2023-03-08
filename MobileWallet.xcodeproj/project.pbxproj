@@ -375,6 +375,10 @@
 		5421551029A4AE37000A3F49 /* ContactBookContactListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */; };
 		5421551229A4AE4B000A3F49 /* ContactBookContactListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */; };
 		5421551429A4AE92000A3F49 /* SearchTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421551329A4AE92000A3F49 /* SearchTextField.swift */; };
+		5430B97729B7400900C80AA2 /* LinkContactsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97629B7400900C80AA2 /* LinkContactsModel.swift */; };
+		5430B97929B7401200C80AA2 /* LinkContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97829B7401200C80AA2 /* LinkContactsViewController.swift */; };
+		5430B97B29B7401C00C80AA2 /* LinkContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */; };
+		5430B97D29B7402600C80AA2 /* LinkContactsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */; };
 		543DF19A293F37E70031EA70 /* CustomBridgesHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */; };
 		543DF19C293F3DA90031EA70 /* BridgesConfigurationFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */; };
 		5443954629800F1600786682 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5443954529800F1600786682 /* OnboardingViewController.swift */; };
@@ -424,6 +428,7 @@
 		54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */; };
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
 		54B7F4452996583800BB484B /* ContactBookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7F4442996583800BB484B /* ContactBookCell.swift */; };
+		54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */; };
 		54D419B32995092F00D496B4 /* ContactBookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B22995092F00D496B4 /* ContactBookModel.swift */; };
 		54D419B52995093800D496B4 /* ContactBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B42995093800D496B4 /* ContactBookViewController.swift */; };
 		54D419B72995094100D496B4 /* ContactBookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B62995094100D496B4 /* ContactBookView.swift */; };
@@ -862,6 +867,10 @@
 		5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListViewController.swift; sourceTree = "<group>"; };
 		5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListView.swift; sourceTree = "<group>"; };
 		5421551329A4AE92000A3F49 /* SearchTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTextField.swift; sourceTree = "<group>"; };
+		5430B97629B7400900C80AA2 /* LinkContactsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsModel.swift; sourceTree = "<group>"; };
+		5430B97829B7401200C80AA2 /* LinkContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsViewController.swift; sourceTree = "<group>"; };
+		5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsView.swift; sourceTree = "<group>"; };
+		5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsConstructor.swift; sourceTree = "<group>"; };
 		543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBridgesHeaderView.swift; sourceTree = "<group>"; };
 		543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgesConfigurationFooterView.swift; sourceTree = "<group>"; };
 		5443954529800F1600786682 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
@@ -911,6 +920,7 @@
 		54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
 		54B7F4442996583800BB484B /* ContactBookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookCell.swift; sourceTree = "<group>"; };
+		54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PopPresenter+ContactBook.swift"; sourceTree = "<group>"; };
 		54D419B22995092F00D496B4 /* ContactBookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookModel.swift; sourceTree = "<group>"; };
 		54D419B42995093800D496B4 /* ContactBookViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookViewController.swift; sourceTree = "<group>"; };
 		54D419B62995094100D496B4 /* ContactBookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookView.swift; sourceTree = "<group>"; };
@@ -2374,6 +2384,17 @@
 			path = "Contact List";
 			sourceTree = "<group>";
 		};
+		5430B97529B73FF600C80AA2 /* Link Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				5430B97629B7400900C80AA2 /* LinkContactsModel.swift */,
+				5430B97829B7401200C80AA2 /* LinkContactsViewController.swift */,
+				5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */,
+				5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */,
+			);
+			path = "Link Contacts";
+			sourceTree = "<group>";
+		};
 		543DF198293F37DB0031EA70 /* Bridges */ = {
 			isa = PBXGroup;
 			children = (
@@ -2541,9 +2562,11 @@
 		54D419B12995091B00D496B4 /* Contact Book */ = {
 			isa = PBXGroup;
 			children = (
+				5430B97529B73FF600C80AA2 /* Link Contacts */,
 				5455969929B0A67400D6719E /* Managers */,
 				5460258429A74D6C00CF5764 /* Contact Details */,
 				5460258329A74D3600CF5764 /* List */,
+				54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */,
 			);
 			path = "Contact Book";
 			sourceTree = "<group>";
@@ -3105,8 +3128,10 @@
 				3A7DAB9C28FDC9D8002CC013 /* LogView.swift in Sources */,
 				3A87E57F28409D630099EA0E /* AddAmountSpinnerView.swift in Sources */,
 				3A01248327B3BD0700A481F4 /* ProgressBar.swift in Sources */,
+				5430B97929B7401200C80AA2 /* LinkContactsViewController.swift in Sources */,
 				3AA2DD942796E8BA00DC3CF7 /* QRCodePresentationController.swift in Sources */,
 				3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */,
+				54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */,
 				3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */,
 				3A1D8E4B28400AB8004129D5 /* AboutViewHeader.swift in Sources */,
 				54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */,
@@ -3183,6 +3208,7 @@
 				5453241E29A67FFF009281A7 /* ContactCapsuleMenuBackground.swift in Sources */,
 				3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */,
 				3A84CDD42846088D005F2F8D /* UTXOsWalletView.swift in Sources */,
+				5430B97D29B7402600C80AA2 /* LinkContactsConstructor.swift in Sources */,
 				5453242229A68CA0009281A7 /* RoundedButton.swift in Sources */,
 				3A2C0B8727DA22970018C5A8 /* SeedWordListElementView.swift in Sources */,
 				3A8473D628EC56C90015E63A /* TariBalanceService.swift in Sources */,
@@ -3203,6 +3229,7 @@
 				3A70433D28E21CFB00207D6F /* CompletedTransaction.swift in Sources */,
 				3A72DC4526DFA26000E0BC43 /* TariNetwork.swift in Sources */,
 				004277F723E0628A00AE7BD9 /* UIViewController+Content.swift in Sources */,
+				5430B97729B7400900C80AA2 /* LinkContactsModel.swift in Sources */,
 				54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */,
 				3A2B95682864801D0085BE21 /* UTXOsWalletTileListLayout.swift in Sources */,
 				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
@@ -3267,6 +3294,7 @@
 				3A6A03382802DC85000432B4 /* PopUpButtonsView.swift in Sources */,
 				376C62AE247574850091BB28 /* Animation+EnumInit.swift in Sources */,
 				3ABBBA7C2850771C00A3108D /* UTXOsWalletTextListView.swift in Sources */,
+				5430B97B29B7401C00C80AA2 /* LinkContactsView.swift in Sources */,
 				3ACDA70526B031A400F138B8 /* SeedWordsRecoveryProgressViewController.swift in Sources */,
 				545A9D24294F9E77008D24A6 /* UserSettingsManager.swift in Sources */,
 				546CE7F429AF514A00264699 /* FormOverlay.swift in Sources */,

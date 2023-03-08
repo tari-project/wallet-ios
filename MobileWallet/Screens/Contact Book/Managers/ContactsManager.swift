@@ -48,7 +48,7 @@ final class ContactsManager {
 
         var name: String {
             guard let externalModel else { return internalModel?.alias ?? internalModel?.emojiID ?? "" }
-            return [externalModel.firstName, externalModel.lastName].joined(separator: " ")
+            return externalModel.fullname
         }
 
         var avatar: String {
@@ -62,27 +62,63 @@ final class ContactsManager {
         var isInternalContact: Bool { internalModel?.alias != nil }
         var hasIntrenalModel: Bool { internalModel != nil }
         var hasExternalModel: Bool { externalModel != nil }
+        var isLinkedContact: Bool { hasIntrenalModel && hasExternalModel }
     }
 
     // MARK: - Properties
 
-    @Published private(set) var internalModels: [Model] = []
+    @Published private(set) var tariContactModels: [Model] = []
     @Published private(set) var externalModels: [Model] = []
 
     private let internalContactsManager = InternalContactsManager()
     private let externalContactsManager = ExternalContactsManager()
 
-    private var internalContacts: [InternalContactsManager.ContactModel] = []
-    private var externalContacts: [ExternalContactsManager.ContactModel] = []
-
     // MARK: - Actions
 
     func fetchModels() async throws {
-        try await fetchContacts()
-        updateModels()
+
+        var internalContacts = try internalContactsManager.fetchAllModels()
+        let externalContacts = try await externalContactsManager.fetchAllModels()
+        var filteredExternalContacts = externalContacts
+
+        var tariContactModels = [Model]()
+
+        for index in 0..<externalContacts.count {
+
+            let externalContact = externalContacts[index]
+            guard let linkedEmojiID = externalContact.emojiID, let linkedContactIndex = internalContacts.firstIndex(where: { $0.emojiID == linkedEmojiID }) else { continue }
+            let internalContact = internalContacts[linkedContactIndex]
+
+            internalContacts.remove(at: linkedContactIndex)
+            filteredExternalContacts.remove(at: index)
+
+            tariContactModels.append(Model(internalModel: internalContact, externalModel: externalContact))
+        }
+
+        tariContactModels += internalContacts.map { Model(internalModel: $0, externalModel: nil) }
+
+        self.tariContactModels = tariContactModels.sorted { $0.name < $1.name }
+        externalModels = filteredExternalContacts.map { Model(internalModel: nil, externalModel: $0) }.sorted { $0.name < $1.name }
     }
 
-    func update(nameComponents: [String], contact: Model) async throws -> Model? {
+    func updatedModel(model: Model) -> Model {
+
+        if let externalModel = model.externalModel, let updatedModel = tariContactModels.first(where: { $0.externalModel == externalModel }) {
+            return updatedModel
+        }
+
+        if let externalModel = model.externalModel, let updatedModel = tariContactModels.first(where: { $0.externalModel == externalModel }) {
+            return updatedModel
+        }
+
+        if let internalModel = model.internalModel, let updatedModel = tariContactModels.first(where: { $0.internalModel == internalModel }) {
+            return updatedModel
+        }
+
+        return model
+    }
+
+    func update(nameComponents: [String], contact: Model) throws {
 
         let internalContact = contact.internalModel
         let externalContact = contact.externalModel
@@ -94,9 +130,6 @@ final class ContactsManager {
         if let externalContact, nameComponents.count == 2 {
             try externalContactsManager.update(firstName: nameComponents[0], lastName: nameComponents[1], contact: externalContact)
         }
-
-        try await fetchModels()
-        return try model(hex: internalContact?.contact?.address.byteVector.hex, externalContactIdentifier: externalContact?.contact.identifier)
     }
 
     func remove(contact: Model) throws {
@@ -110,27 +143,14 @@ final class ContactsManager {
         }
     }
 
-    private func fetchContacts() async throws {
-        internalContacts = try internalContactsManager.fetchAllModels()
-        externalContacts = try await externalContactsManager.fetchAllModels()
+    func link(internalContact: InternalContactsManager.ContactModel, externalContact: ExternalContactsManager.ContactModel) throws {
+        try externalContactsManager.link(hex: internalContact.hex, emojiID: internalContact.emojiID, contact: externalContact)
+        try internalContactsManager.update(name: externalContact.fullname, contact: internalContact)
     }
 
-    private func updateModels() {
-        internalModels = internalContacts.map { Model(internalModel: $0, externalModel: nil) }
-        externalModels = externalContacts.map { Model(internalModel: nil, externalModel: $0) }
-    }
-
-    private func model(hex: String?, externalContactIdentifier: String?) -> Model? {
-
-        if let hex, let model = internalModels.first(where: { $0.internalModel?.hex == hex }) {
-            return model
-        }
-
-        if let externalContactIdentifier, let model = externalModels.first(where: { $0.externalModel?.contact.identifier == externalContactIdentifier }) {
-            return model
-        }
-
-        return nil
+    func unlink(contact: Model) throws {
+        guard let externalContact = contact.externalModel else { return }
+        try externalContactsManager.unlink(contact: externalContact)
     }
 }
 

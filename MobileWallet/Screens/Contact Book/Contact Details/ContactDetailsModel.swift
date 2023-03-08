@@ -45,11 +45,16 @@ final class ContactDetailsModel {
     enum MenuItem: UInt {
         case send
         case addToFavorites
+        case linkContact
+        case unlinkContact
         case removeContact
     }
 
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
+        case moveToLinkContactScreen(model: ContactsManager.Model)
+        case showUnlinkConfirmationDialog(emojiID: String, name: String)
+        case showUnlinkSuccessDialog(emojiID: String, name: String)
         case removeContactConfirmation
         case endFlow
     }
@@ -85,7 +90,6 @@ final class ContactDetailsModel {
     init(model: ContactsManager.Model) {
         self.model = model
         setupCallbacks()
-        updateData(model: model)
     }
 
     // MARK: - View Model
@@ -97,6 +101,10 @@ final class ContactDetailsModel {
         switch menuItem {
         case .send:
             performSendAction()
+        case .linkContact:
+            action = .moveToLinkContactScreen(model: model)
+        case .unlinkContact:
+            prepareForUnkinkAction()
         case .addToFavorites:
             return
         case .removeContact:
@@ -109,22 +117,43 @@ final class ContactDetailsModel {
     private func setupCallbacks() {
 
         $model
-            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(model: $0) }
             .store(in: &cancellables)
     }
 
     // MARK: - Actions
 
-    func update(nameComponents: [String]) {
-
+    func updateData() {
         Task {
             do {
-                guard let model = try await contactsManager.update(nameComponents: nameComponents, contact: model) else { return }
-                self.model = model
+                try await contactsManager.fetchModels()
+                model = contactsManager.updatedModel(model: model)
             } catch {
                 errorModel = ErrorMessageManager.errorModel(forError: error)
             }
+        }
+    }
+
+    func update(nameComponents: [String]) {
+
+        do {
+            try contactsManager.update(nameComponents: nameComponents, contact: model)
+            updateData()
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
+        }
+    }
+
+    func unlinkContact() {
+
+        guard let emojiID = model.internalModel?.emojiID, let name = model.externalModel?.fullname else { return }
+
+        do {
+            try contactsManager.unlink(contact: model)
+            action = .showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+            updateData()
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
         }
     }
 
@@ -147,6 +176,12 @@ final class ContactDetailsModel {
             mainMenuItems += [.send, .addToFavorites]
         }
 
+        if model.isLinkedContact {
+            mainMenuItems.append(.unlinkContact)
+        } else {
+            mainMenuItems.append(.linkContact)
+        }
+
         if model.isInternalContact || model.hasExternalModel {
             mainMenuItems.append(.removeContact)
         }
@@ -163,9 +198,15 @@ final class ContactDetailsModel {
         }
     }
 
+    private func prepareForUnkinkAction() {
+        guard let emojiID = model.internalModel?.emojiID, let name = model.externalModel?.fullname else { return }
+        action = .showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
+    }
+
     // MARK: - Handlers
 
     private func handle(model: ContactsManager.Model) {
         name = model.name
+        updateData(model: model)
     }
 }
