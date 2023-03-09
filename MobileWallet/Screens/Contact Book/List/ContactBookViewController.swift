@@ -138,6 +138,12 @@ final class ContactBookViewController: UIViewController {
         switch action {
         case let .sendTokens(paymentInfo):
             moveToSendTokensScreen(paymentInfo: paymentInfo)
+        case let .link(model):
+            moveToLinkContactsScreen(model: model)
+        case let .unlink(model: model):
+            showUnlinkConfirmationDialog(model: model)
+        case let .showUnlinkSuccess(emojiID, name):
+            showUnlinkSuccessDialog(emojiID: emojiID, name: name)
         case let .showDetails(model):
             moveToContactDetails(model: model)
         }
@@ -147,7 +153,7 @@ final class ContactBookViewController: UIViewController {
         sections.map {
             let items = $0.viewModels.map {
                 let menuItems = $0.menuItems.map { $0.buttonViewModel }
-                return ContactBookContactListView.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: $0.isFavorite, menuItems: menuItems)
+                return ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: $0.isFavorite, menuItems: menuItems)
             }
             return ContactBookContactListView.Section(title: $0.title, items: items)
         }
@@ -159,9 +165,23 @@ final class ContactBookViewController: UIViewController {
         AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
     }
 
+    private func moveToLinkContactsScreen(model: ContactsManager.Model) {
+        let controller = LinkContactsConstructor.buildScene(contactModel: model)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
     private func moveToContactDetails(model: ContactsManager.Model) {
         let controller = ContactDetailsConstructor.buildScene(model: model)
         navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func showUnlinkConfirmationDialog(model: ContactsManager.Model) {
+        guard let emojiID = model.internalModel?.emojiID, let name = model.externalModel?.fullname else { return }
+        PopUpPresenter.showUnlinkConfirmationDialog(emojiID: emojiID, name: name, confirmationCallback: { [weak self] in self?.model.unlink(contact: model) })
+    }
+
+    private func showUnlinkSuccessDialog(emojiID: String, name: String) {
+        PopUpPresenter.showUnlinkSuccessDialog(emojiID: emojiID, name: name)
     }
 }
 

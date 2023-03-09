@@ -43,6 +43,14 @@ import TariCommon
 
 final class ContactBookCell: DynamicThemeCell {
 
+    struct ViewModel: Identifiable, Hashable {
+        let id: UUID
+        let name: String
+        let avatar: String
+        let isFavorite: Bool
+        let menuItems: [ContactCapsuleMenu.ButtonViewModel]
+    }
+
     // MARK: - Subviews
 
     @View private var avatarMenu = ContactCapsuleMenu()
@@ -114,14 +122,14 @@ final class ContactBookCell: DynamicThemeCell {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         nameLabel.textColor = theme.text.heading
+        favoriteView.tintColor = theme.brand.purple
     }
 
-    func update(name: String, avatar: String, isFavorite: Bool, menuItems: [ContactCapsuleMenu.ButtonViewModel]) {
-        nameLabel.text = name
-        avatarMenu.avatarButton.avatarText = avatar
-        avatarMenu.update(buttons: menuItems)
-        favoriteView.tintColor = theme.brand.purple
-        favoriteView.isHidden = !isFavorite
+    func update(viewModel: ViewModel) {
+        nameLabel.text = viewModel.name
+        avatarMenu.avatarButton.avatarText = viewModel.avatar
+        avatarMenu.update(buttons: viewModel.menuItems)
+        favoriteView.isHidden = !viewModel.isFavorite
     }
 
     func updateCell(isExpanded: Bool, withAnmiation: Bool) {

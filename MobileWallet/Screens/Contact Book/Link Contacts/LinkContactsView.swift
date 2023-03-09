@@ -1,8 +1,8 @@
-//  ContactBookContactListView.swift
+//  LinkContactsView.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 21/02/2023
+	Created by Adrian Truszczyński on 07/03/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -40,15 +40,25 @@
 
 import UIKit
 import TariCommon
+import Combine
 
-final class ContactBookContactListView: DynamicThemeView {
-
-    struct Section {
-        let title: String?
-        let items: [ContactBookCell.ViewModel]
-    }
+final class LinkContactsView: BaseNavigationContentView {
 
     // MARK: - Subviews
+
+    @View private(set) var infoLabel: UILabel = {
+        let view = UILabel()
+        view.textAlignment = .center
+        view.font = .Avenir.medium.withSize(14.0)
+        view.numberOfLines = 0
+        return view
+    }()
+
+    @View private(set) var searchTextField: SearchTextField = {
+        let view = SearchTextField()
+        view.placeholder = localized("contact_book.link_contacts.text_field.search")
+        return view
+    }()
 
     @View private var tableView: UITableView = {
         let view = UITableView()
@@ -56,31 +66,35 @@ final class ContactBookContactListView: DynamicThemeView {
         view.rowHeight = UITableView.automaticDimension
         view.keyboardDismissMode = .interactive
         view.register(type: ContactBookCell.self)
-        view.register(headerFooterType: MenuTableHeaderView.self)
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 22.0, bottom: 0.0, right: 22.0)
         return view
     }()
 
     // MARK: - Properties
 
-    var viewModels: [Section] = [] {
-        didSet { update(sections: viewModels) }
+    var name: String = "" {
+        didSet { updateInfoLabel(name: name) }
     }
 
-    var onButtonTap: ((UUID, UInt) -> Void)?
-
-    private var expandedIndex: IndexPath? {
-        didSet { updateCellsState() }
+    var viewModels: [ContactBookCell.ViewModel] = [] {
+        didSet { update(viewModels: viewModels) }
     }
+
+    var searchText: AnyPublisher<String, Never> { searchTextSubject.eraseToAnyPublisher() }
+    var onSelectRow: ((IndexPath) -> Void)?
 
     private var dataSource: UITableViewDiffableDataSource<Int, ContactBookCell.ViewModel>?
+    private let searchTextSubject = CurrentValueSubject<String, Never>("")
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
     override init() {
         super.init()
+        setupSubviews()
         setupConstraints()
         setupTableView()
+        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -89,12 +103,22 @@ final class ContactBookContactListView: DynamicThemeView {
 
     // MARK: - Setups
 
+    private func setupSubviews() {
+        navigationBar.title = localized("contact_book.link_contacts.title")
+    }
+
     private func setupConstraints() {
 
-        addSubview(tableView)
+        [infoLabel, searchTextField, tableView].forEach(addSubview)
 
         let constraints = [
-            tableView.topAnchor.constraint(equalTo: topAnchor),
+            infoLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 22.0),
+            infoLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
+            infoLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
+            searchTextField.topAnchor.constraint(equalTo: infoLabel.bottomAnchor, constant: 20.0),
+            searchTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
+            tableView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 20.0),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
@@ -105,77 +129,46 @@ final class ContactBookContactListView: DynamicThemeView {
 
     private func setupTableView() {
 
-        let dataSource = UITableViewDiffableDataSource<Int, ContactBookCell.ViewModel>(tableView: tableView) { [weak self] tableView, indexPath, model in
+        dataSource = UITableViewDiffableDataSource(tableView: tableView) { tableView, indexPath, model in
             let cell = tableView.dequeueReusableCell(type: ContactBookCell.self, indexPath: indexPath)
             cell.update(viewModel: model)
-            cell.updateCell(isExpanded: indexPath == self?.expandedIndex, withAnmiation: false)
-            cell.onButtonTap = {
-                self?.onButtonTap?(model.id, $0)
-                self?.expandedIndex = nil
-            }
-            cell.onExpand = { [weak self, tableView] in
-                guard let index = tableView.indexPath(for: cell) else { return }
-                self?.expandedIndex = index
-            }
-
             return cell
         }
 
-        tableView.delegate = self
         tableView.dataSource = dataSource
+        tableView.delegate = self
+    }
 
-        self.dataSource = dataSource
+    private func setupCallbacks() {
+        searchTextField.bind(withSubject: searchTextSubject, storeIn: &cancellables)
     }
 
     // MARK: - Updates
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        tableView.backgroundColor = theme.backgrounds.primary
-        tableView.separatorColor = theme.neutral.secondary
+        backgroundColor = theme.backgrounds.secondary
+        infoLabel.textColor = theme.text.body
     }
 
-    private func update(sections: [Section]) {
+    func updateInfoLabel(name: String) {
+        infoLabel.text = localized("contact_book.link_contacts.lables.info", arguments: name)
+    }
+
+    func update(viewModels: [ContactBookCell.ViewModel]) {
 
         var snapshot = NSDiffableDataSourceSnapshot<Int, ContactBookCell.ViewModel>()
 
-        sections
-            .enumerated()
-            .forEach {
-                snapshot.appendSections([$0])
-                snapshot.appendItems($1.items)
-            }
+        snapshot.appendSections([0])
+        snapshot.appendItems(viewModels)
 
         dataSource?.apply(snapshot: snapshot)
     }
-
-    private func updateCellsState() {
-        tableView.visibleCells
-            .compactMap { $0 as? ContactBookCell }
-            .forEach { [weak self] in
-                guard let index = self?.tableView.indexPath(for: $0), index != self?.expandedIndex else { return }
-                $0.updateCell(isExpanded: false, withAnmiation: false)
-            }
-    }
 }
 
-extension ContactBookContactListView: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-
-        guard let title = viewModels[section].title else { return nil }
-
-        let headerView = tableView.dequeueReusableHeaderFooterView(type: MenuTableHeaderView.self)
-        headerView.label.text = title
-        return headerView
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        viewModels[section].title == nil ? 0.0 : UITableView.automaticDimension
-    }
+extension LinkContactsView: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? ContactBookCell else { return }
-        cell.updateCell(isExpanded: !cell.isExpanded, withAnmiation: true)
+        onSelectRow?(indexPath)
     }
 }

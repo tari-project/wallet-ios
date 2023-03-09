@@ -42,10 +42,19 @@ import Contacts
 
 final class ExternalContactsManager {
 
-    struct ContactModel {
+    private static let serviceName = "Aurora"
+
+    struct ContactModel: Equatable {
         let firstName: String
         let lastName: String
         let contact: CNContact
+
+        var emojiID: String? { contact.socialProfiles.first { $0.value.service == serviceName }?.value.username }
+        var fullname: String { [firstName, lastName].joined(separator: " ") }
+
+        static func == (lhs: Self, rhs: Self) -> Bool {
+            lhs.contact.identifier == rhs.contact.identifier
+        }
     }
 
     // MARK: - Properties
@@ -56,7 +65,7 @@ final class ExternalContactsManager {
 
     func fetchAllModels() async throws -> [ContactModel] {
 
-        let keysToFetch: [CNKeyDescriptor] = [CNContactGivenNameKey, CNContactFamilyNameKey] as [CNKeyDescriptor]
+        let keysToFetch: [CNKeyDescriptor] = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactInstantMessageAddressesKey, CNContactSocialProfilesKey] as [CNKeyDescriptor]
         let request = CNContactFetchRequest(keysToFetch: keysToFetch)
 
         return try await withCheckedThrowingContinuation { continuation in
@@ -94,6 +103,35 @@ final class ExternalContactsManager {
 
         let request = CNSaveRequest()
         request.delete(mutableContact)
+
+        try store.execute(request)
+    }
+
+    func link(hex: String, emojiID: String, contact: ContactModel) throws {
+
+        guard let mutableContact = contact.contact.mutableCopy() as? CNMutableContact else { return }
+
+        let urlString = "tari://\(NetworkManager.shared.selectedNetwork.name)/transactions/send?publicKey=\(hex)"
+
+        var socialProfiles = mutableContact.socialProfiles.filter { $0.value.service != Self.serviceName }
+        socialProfiles.append(CNLabeledValue<CNSocialProfile>(label: nil, value: CNSocialProfile(urlString: urlString, username: emojiID, userIdentifier: nil, service: Self.serviceName)))
+
+        mutableContact.socialProfiles = socialProfiles
+
+        let request = CNSaveRequest()
+        request.update(mutableContact)
+
+        try store.execute(request)
+    }
+
+    func unlink(contact: ContactModel) throws {
+
+        guard let mutableContact = contact.contact.mutableCopy() as? CNMutableContact else { return }
+
+        mutableContact.socialProfiles = mutableContact.socialProfiles.filter { $0.value.service != Self.serviceName }
+
+        let request = CNSaveRequest()
+        request.update(mutableContact)
 
         try store.execute(request)
     }

@@ -9,6 +9,7 @@
 "common.next" = "Next";
 "common.edit" = "Edit";
 "common.done" = "Done";
+"common.confirm" = "Confirm";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -743,6 +744,8 @@
 "contact_book.details.title" = "Contact Profile";
 "contact_book.details.menu.option.send" = "Send Tari";
 "contact_book.details.menu.option.add_to_favorites" = "Add to Favorites";
+"contact_book.details.menu.option.link" = "Link Contact";
+"contact_book.details.menu.option.unlink" = "Unlink Contact";
 "contact_book.details.menu.option.remove_from_favorites" = "Remove from Favorites";
 "contact_book.details.menu.option.delete" = "Delete Contact";
 "contact_book.details.menu.section.connected_wallets" = "Connected Wallets";
@@ -753,3 +756,14 @@
 "contact_book.details.edit_form.text_field.name" = "Name";
 "contact_book.details.edit_form.text_field.first_name" = "First Name";
 "contact_book.details.edit_form.text_field.last_name" = "Last Name";
+"contact_book.link_contacts.title" = "Link Contact";
+"contact_book.link_contacts.lables.info" = "You can quickly associate an Emoji ID or Yat with a contact already present in your phone. Simply click on a name below and it will be linked to %@.";
+"contact_book.link_contacts.text_field.search" = "Find Contact";
+"contact_book.link_contacts.popup.confirmation.title" = "Link Contact";
+"contact_book.link_contacts.popup.confirmation.message" = "Click “confirm” below to link %@ to %@";
+"contact_book.link_contacts.popup.success.title" = "Success!";
+"contact_book.link_contacts.popup.success.message" = "You have successfully linked %@ to %@";
+"contact_book.unlink_contact.popup.confirmation.title" = "Unlink Contact";
+"contact_book.unlink_contact.popup.confirmation.message" = "Click “confirm” to unlink %@ from %@";
+"contact_book.unlink_contact.popup.success.title" = "Success!";
+"contact_book.unlink_contact.popup.success.message" = "You have successfully unlinked %@ from %@";
