@@ -51,13 +51,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Tari needs access to the camera to scan the QR</string>
+	<string></string>
 	<key>NSContactsUsageDescription</key>
-	<string>&lt;Fill It&gt;</string>
+	<string></string>
 	<key>NSFaceIDUsageDescription</key>
-	<string>Enable Face ID to protect your wallet</string>
+	<string></string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Tari needs permission to write media to photo library</string>
+	<string></string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.com.tari.wallet</key>

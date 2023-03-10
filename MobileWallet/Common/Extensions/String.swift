@@ -121,3 +121,11 @@ extension String.Index {
         string.distance(to: self)
     }
 }
+
+extension Array where Element == String.SubSequence {
+
+    var firstString: String? {
+        guard let first else { return nil }
+        return String(first)
+    }
+}

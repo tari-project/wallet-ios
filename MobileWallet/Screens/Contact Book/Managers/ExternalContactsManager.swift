@@ -42,14 +42,16 @@ import Contacts
 
 final class ExternalContactsManager {
 
-    private static let serviceName = "Aurora"
+    private static let auroraServiceName = "Aurora"
+    private static let yatServiceName = "Yat"
 
     struct ContactModel: Equatable {
         let firstName: String
         let lastName: String
         let contact: CNContact
+        let yat: String?
 
-        var emojiID: String? { contact.socialProfiles.first { $0.value.service == serviceName }?.value.username }
+        var emojiID: String? { contact.socialProfiles.first { $0.value.service == auroraServiceName }?.value.username }
         var fullname: String { [firstName, lastName].joined(separator: " ") }
 
         static func == (lhs: Self, rhs: Self) -> Bool {
@@ -74,7 +76,8 @@ final class ExternalContactsManager {
 
             do {
                 try store.enumerateContacts(with: request) { contact, _ in
-                    models.append(ContactModel(firstName: contact.givenName, lastName: contact.familyName, contact: contact))
+                    let yat = contact.socialProfiles.first { $0.value.service == Self.yatServiceName }?.value.username
+                    models.append(ContactModel(firstName: contact.givenName, lastName: contact.familyName, contact: contact, yat: yat))
                 }
             } catch {
                 continuation.resume(throwing: error)
@@ -84,12 +87,22 @@ final class ExternalContactsManager {
         }
     }
 
-    func update(firstName: String, lastName: String, contact: ContactModel) throws {
+    func update(firstName: String, lastName: String, yat: String, contact: ContactModel) throws {
 
         guard let mutableContact = contact.contact.mutableCopy() as? CNMutableContact else { return }
 
         mutableContact.givenName = firstName
         mutableContact.familyName = lastName
+
+        let urlString = "https://www.y.at"
+
+        var socialProfiles = mutableContact.socialProfiles.filter { $0.value.service != Self.yatServiceName }
+
+        if !yat.isEmpty {
+            socialProfiles.append(CNLabeledValue<CNSocialProfile>(label: nil, value: CNSocialProfile(urlString: urlString, username: yat, userIdentifier: nil, service: Self.yatServiceName)))
+        }
+
+        mutableContact.socialProfiles = socialProfiles
 
         let request = CNSaveRequest()
         request.update(mutableContact)
@@ -113,8 +126,8 @@ final class ExternalContactsManager {
 
         let urlString = "tari://\(NetworkManager.shared.selectedNetwork.name)/transactions/send?publicKey=\(hex)"
 
-        var socialProfiles = mutableContact.socialProfiles.filter { $0.value.service != Self.serviceName }
-        socialProfiles.append(CNLabeledValue<CNSocialProfile>(label: nil, value: CNSocialProfile(urlString: urlString, username: emojiID, userIdentifier: nil, service: Self.serviceName)))
+        var socialProfiles = mutableContact.socialProfiles.filter { $0.value.service != Self.auroraServiceName }
+        socialProfiles.append(CNLabeledValue<CNSocialProfile>(label: nil, value: CNSocialProfile(urlString: urlString, username: emojiID, userIdentifier: nil, service: Self.auroraServiceName)))
 
         mutableContact.socialProfiles = socialProfiles
 
@@ -128,7 +141,7 @@ final class ExternalContactsManager {
 
         guard let mutableContact = contact.contact.mutableCopy() as? CNMutableContact else { return }
 
-        mutableContact.socialProfiles = mutableContact.socialProfiles.filter { $0.value.service != Self.serviceName }
+        mutableContact.socialProfiles = mutableContact.socialProfiles.filter { $0.value.service != Self.auroraServiceName }
 
         let request = CNSaveRequest()
         request.update(mutableContact)

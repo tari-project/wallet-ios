@@ -43,6 +43,14 @@ import TariCommon
 
 final class ContactDetailsView: BaseNavigationContentView {
 
+    private enum IDElementsState {
+        case allHidden
+        case emojiOnly
+        case yatOnly
+        case yatHidden
+        case yatVisible
+    }
+
     // MARK: - Subviews
 
     @View private var avatarView: RoundedAvatarView = {
@@ -64,6 +72,20 @@ final class ContactDetailsView: BaseNavigationContentView {
         return view
     }()
 
+    @View private var yatLabel: UILabel = {
+        let view = UILabel()
+        view.textAlignment = .center
+        view.font = .Avenir.medium.withSize(20.0)
+        view.isHidden = true
+        return view
+    }()
+
+    @View private var yatButton: BaseButton = {
+        let view = BaseButton()
+        view.setImage(Theme.shared.images.yatButtonOn, for: .disabled)
+        return view
+    }()
+
     @View private var tableView = MenuTableView()
 
     // MARK: - Properties
@@ -79,11 +101,11 @@ final class ContactDetailsView: BaseNavigationContentView {
     }
 
     var emojiModel: EmojiIdView.ViewModel? {
-        didSet {
-            guard let emojiModel else { return }
-            emojiIdView.isHidden = emojiModel.emojiID.isEmpty
-            emojiIdView.update(viewModel: emojiModel)
-        }
+        didSet { updateEmojiView() }
+    }
+
+    var yat: String? {
+        didSet { updateYatView() }
     }
 
     var tableViewSections: [MenuTableView.Section] = [] {
@@ -96,6 +118,10 @@ final class ContactDetailsView: BaseNavigationContentView {
     }
 
     var onEditButtonTap: (() -> Void)?
+
+    private var idElementsState: IDElementsState = .allHidden {
+        didSet { handle(idElementsState: idElementsState) }
+    }
 
     // MARK: - Initalisers
 
@@ -119,7 +145,7 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        [avatarView, nameLabel, emojiIdView, tableView].forEach(addSubview)
+        [avatarView, nameLabel, emojiIdView, yatLabel, yatButton, tableView].forEach(addSubview)
 
         let constraints = [
             avatarView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 21.0),
@@ -133,6 +159,13 @@ final class ContactDetailsView: BaseNavigationContentView {
             emojiIdView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             emojiIdView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
             emojiIdView.heightAnchor.constraint(equalToConstant: 38.0),
+            yatLabel.leadingAnchor.constraint(equalTo: emojiIdView.leadingAnchor),
+            yatLabel.trailingAnchor.constraint(equalTo: emojiIdView.trailingAnchor),
+            yatLabel.centerYAnchor.constraint(equalTo: emojiIdView.centerYAnchor),
+            yatButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
+            yatButton.centerYAnchor.constraint(equalTo: emojiIdView.centerYAnchor),
+            yatButton.widthAnchor.constraint(equalToConstant: 24.0),
+            yatButton.heightAnchor.constraint(equalToConstant: 24.0),
             tableView.topAnchor.constraint(equalTo: emojiIdView.bottomAnchor, constant: 20.0),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -143,8 +176,13 @@ final class ContactDetailsView: BaseNavigationContentView {
     }
 
     private func setupCallbacks() {
+
         navigationBar.onRightButtonAction = { [weak self] in
             self?.onEditButtonTap?()
+        }
+
+        yatButton.onTap = { [weak self] in
+            self?.toggleYatButton()
         }
     }
 
@@ -154,9 +192,86 @@ final class ContactDetailsView: BaseNavigationContentView {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
         nameLabel.textColor = theme.text.heading
+        yatButton.enabledTintColor = theme.icons.active
+        yatButton.diabledTintColor = theme.icons.inactive
     }
 
     private func update(viewModel: [MenuTableView.Section]) {
         tableView.viewModel = viewModel
+    }
+
+    private func updateEmojiView() {
+        updateIDElementsState()
+        guard let emojiModel else { return }
+        emojiIdView.update(viewModel: emojiModel)
+    }
+
+    private func updateYatView() {
+        updateIDElementsState()
+        yatLabel.text = yat
+    }
+
+    private func updateIDElementsState() {
+        let isEmojiIdAAvailable = emojiModel?.emojiID != nil && emojiModel?.emojiID.isEmpty == false
+        let isYatAvailable = yat != nil && yat?.isEmpty == false
+
+        switch (isEmojiIdAAvailable, isYatAvailable) {
+        case (true, true):
+            idElementsState = .yatHidden
+        case (true, false):
+            idElementsState = .emojiOnly
+        case (false, true):
+            idElementsState = .yatOnly
+        case (false, false):
+            idElementsState = .allHidden
+        }
+
+    }
+
+    // MARK: - Handlers
+
+    private func handle(idElementsState: IDElementsState) {
+
+        switch idElementsState {
+        case .allHidden:
+            emojiIdView.isHidden = true
+            yatLabel.isHidden = true
+            yatButton.isHidden = true
+        case .emojiOnly:
+            emojiIdView.isHidden = false
+            yatLabel.isHidden = true
+            yatButton.isHidden = true
+        case .yatOnly:
+            emojiIdView.isHidden = true
+            yatLabel.isHidden = false
+            yatButton.isHidden = false
+            yatButton.isEnabled = false
+        case .yatHidden:
+            emojiIdView.isHidden = false
+            yatLabel.isHidden = true
+            yatButton.isHidden = false
+            yatButton.isEnabled = true
+            yatButton.setImage(Theme.shared.images.yatButtonOn, for: .normal)
+        case .yatVisible:
+            emojiIdView.isHidden = true
+            yatLabel.isHidden = false
+            yatButton.isHidden = false
+            yatButton.isEnabled = true
+            yatButton.setImage(Theme.shared.images.yatButtonOff, for: .normal)
+        }
+    }
+
+    // MARK: - Actions
+
+    private func toggleYatButton() {
+
+        switch idElementsState {
+        case .yatHidden:
+            idElementsState = .yatVisible
+        case .yatVisible:
+            idElementsState =  .yatHidden
+        case .allHidden, .emojiOnly, .yatOnly:
+            return
+        }
     }
 }
