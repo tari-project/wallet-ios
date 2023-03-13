@@ -46,6 +46,19 @@ class BaseButton: UIButton {
 
     var onTap: (() -> Void)?
 
+    var enabledTintColor: UIColor?
+    var diabledTintColor: UIColor?
+
+    override var isEnabled: Bool {
+        didSet {
+            if isEnabled, let enabledTintColor {
+                tintColor = enabledTintColor
+            } else if !isEnabled, let diabledTintColor {
+                tintColor = diabledTintColor
+            }
+        }
+    }
+
     // MARK: - Initialisers
 
     override init(frame: CGRect) {

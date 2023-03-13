@@ -39,8 +39,14 @@
 */
 
 import Combine
+import YatLib
 
 final class ContactDetailsModel {
+
+    struct MenuSection {
+        let title: String?
+        let items: [MenuItem]
+    }
 
     enum MenuItem: UInt {
         case send
@@ -48,6 +54,9 @@ final class ContactDetailsModel {
         case linkContact
         case unlinkContact
         case removeContact
+        case btcWallet
+        case ethWallet
+        case xmrWallet
     }
 
     enum Action {
@@ -67,9 +76,10 @@ final class ContactDetailsModel {
 
     // MARK: - View Model
 
-    @Published private(set) var viewModel: ViewModel?
     @Published private(set) var name: String?
-    @Published private(set) var mainMenuItems: [MenuItem] = []
+    @Published private(set) var viewModel: ViewModel?
+    @Published private(set) var yat: String?
+    @Published private(set) var menuSections: [MenuSection] = []
     @Published private(set) var action: Action?
     @Published private(set) var errorModel: MessageModel?
 
@@ -83,6 +93,9 @@ final class ContactDetailsModel {
     // MARK: - Properties
 
     @Published private var model: ContactsManager.Model
+    @Published private var connectedWallets: [YatRecordTag: String] = [:]
+    @Published private var mainMenuItems: [MenuItem] = []
+    @Published private var yatMenuItems: [MenuItem] = []
 
     private let contactsManager = ContactsManager()
     private var cancellables = Set<AnyCancellable>()
@@ -109,6 +122,12 @@ final class ContactDetailsModel {
             return
         case .removeContact:
             action = .removeContactConfirmation
+        case .btcWallet:
+            openAddress(type: .BTCAddress)
+        case .ethWallet:
+            openAddress(type: .ETHAddress)
+        case .xmrWallet:
+            openAddress(type: .XMRStandardAddress)
         }
     }
 
@@ -118,6 +137,20 @@ final class ContactDetailsModel {
 
         $model
             .sink { [weak self] in self?.handle(model: $0) }
+            .store(in: &cancellables)
+
+        $yat
+            .sink { [weak self] in self?.fetchYatData(yat: $0) }
+            .store(in: &cancellables)
+
+        $connectedWallets
+            .compactMap { [weak self] in self?.makeYatMenuItems(connectedWallets: $0) }
+            .assignPublisher(to: \.yatMenuItems, on: self)
+            .store(in: &cancellables)
+
+        Publishers.CombineLatest($mainMenuItems, $yatMenuItems)
+            .compactMap { [weak self] in self?.makeMenuSections(mainMenuItems: $0, yatMenuItems: $1) }
+            .assignPublisher(to: \.menuSections, on: self)
             .store(in: &cancellables)
     }
 
@@ -134,10 +167,10 @@ final class ContactDetailsModel {
         }
     }
 
-    func update(nameComponents: [String]) {
+    func update(nameComponents: [String], yat: String) {
 
         do {
-            try contactsManager.update(nameComponents: nameComponents, contact: model)
+            try contactsManager.update(nameComponents: nameComponents, yat: yat, contact: model)
             updateData()
         } catch {
             errorModel = ErrorMessageManager.errorModel(forError: error)
@@ -203,10 +236,122 @@ final class ContactDetailsModel {
         action = .showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
     }
 
+    private func openAddress(type: YatRecordTag) {
+
+        guard var address = connectedWallets[type] else { return }
+
+        let prefix: String
+
+        switch type {
+        case .BTCAddress:
+            prefix = "bitcoin:"
+        case .ETHAddress:
+            prefix = "ethereum:pay-"
+            if !address.hasPrefix("0x") {
+                address = "0x" + address
+            }
+        case .XMRStandardAddress:
+            prefix = "monero:"
+        default:
+            return
+        }
+
+        guard let url = URL(string: [prefix, address].joined()) else { return }
+
+        UIApplication.shared.open(url) { [weak self] isSuccess in
+            guard !isSuccess else { return }
+            self?.errorModel = MessageModel(title: localized("common.error"), message: localized("contact_book.details.popup.error.unable_to_open_url", arguments: type.walletName), type: .error)
+        }
+    }
+
+    // MARK: - Yat
+
+    private func fetchYatData(yat: String?) {
+
+        guard let yat, !yat.isEmpty else { return }
+
+        Yat.api.emojiID.lookupEmojiIDPublisher(emojiId: yat, tags: nil)
+            .sink { [weak self] in
+                self?.handle(yatCompletion: $0)
+            } receiveValue: { [weak self] in
+                self?.handle(yatResponse: $0)
+            }
+            .store(in: &cancellables)
+    }
+
+    private func handle(yatResponse: LookupResponse) {
+
+        guard let result = yatResponse.result else { return }
+
+        var connectedWallets = [YatRecordTag: String]()
+
+        connectedWallets[.BTCAddress] = result.first { $0.tag == YatRecordTag.BTCAddress.rawValue }?.data.split(separator: "|").firstString
+        connectedWallets[.ETHAddress] = result.first { $0.tag == YatRecordTag.ETHAddress.rawValue }?.data.split(separator: "|").firstString
+        connectedWallets[.XMRStandardAddress] = result.first { $0.tag == YatRecordTag.XMRStandardAddress.rawValue }?.data.split(separator: "|").firstString
+
+        self.connectedWallets = connectedWallets
+    }
+
+    private func handle(yatCompletion: Subscribers.Completion<APIError>) {
+        switch yatCompletion {
+        case .failure:
+            errorModel = MessageModel(title: localized("common.error"), message: localized("contact_book.details.popup.error.invalid_yat_response"), type: .error)
+        case .finished:
+            break
+        }
+    }
+
     // MARK: - Handlers
 
     private func handle(model: ContactsManager.Model) {
         name = model.name
+        yat = model.externalModel?.yat
         updateData(model: model)
+    }
+
+    private func makeMenuSections(mainMenuItems: [MenuItem], yatMenuItems: [MenuItem]) -> [MenuSection] {
+
+        var menuSections = [MenuSection(title: nil, items: mainMenuItems)]
+
+        if !yatMenuItems.isEmpty {
+            menuSections.append(MenuSection(title: localized("contact_book.details.menu.section.connected_wallets"), items: yatMenuItems))
+        }
+
+        return menuSections
+    }
+
+    private func makeYatMenuItems(connectedWallets: [YatRecordTag: String]) -> [MenuItem] {
+
+        var menuItems = [MenuItem]()
+
+        if connectedWallets[.BTCAddress] != nil {
+            menuItems.append(.btcWallet)
+        }
+
+        if connectedWallets[.ETHAddress] != nil {
+            menuItems.append(.ethWallet)
+        }
+
+        if connectedWallets[.XMRStandardAddress] != nil {
+            menuItems.append(.xmrWallet)
+        }
+
+        return menuItems
+    }
+}
+
+private extension YatRecordTag {
+
+    var walletName: String {
+        switch self {
+        case .BTCAddress:
+            return localized("contact_book.details.wallet.bitcoin")
+        case .ETHAddress:
+            return localized("contact_book.details.wallet.ethereum")
+        case .XMRStandardAddress:
+            return localized("contact_book.details.wallet.monero")
+        default:
+            return ""
+        }
     }
 }

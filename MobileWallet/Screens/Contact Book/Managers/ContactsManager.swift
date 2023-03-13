@@ -107,7 +107,7 @@ final class ContactsManager {
             return updatedModel
         }
 
-        if let externalModel = model.externalModel, let updatedModel = tariContactModels.first(where: { $0.externalModel == externalModel }) {
+        if let externalModel = model.externalModel, let updatedModel = externalModels.first(where: { $0.externalModel == externalModel }) {
             return updatedModel
         }
 
@@ -118,7 +118,7 @@ final class ContactsManager {
         return model
     }
 
-    func update(nameComponents: [String], contact: Model) throws {
+    func update(nameComponents: [String], yat: String, contact: Model) throws {
 
         let internalContact = contact.internalModel
         let externalContact = contact.externalModel
@@ -128,7 +128,7 @@ final class ContactsManager {
         }
 
         if let externalContact, nameComponents.count == 2 {
-            try externalContactsManager.update(firstName: nameComponents[0], lastName: nameComponents[1], contact: externalContact)
+            try externalContactsManager.update(firstName: nameComponents[0], lastName: nameComponents[1], yat: yat, contact: externalContact)
         }
     }
 

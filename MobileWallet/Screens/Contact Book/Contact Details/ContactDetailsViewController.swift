@@ -82,6 +82,11 @@ final class ContactDetailsViewController: UIViewController {
 
     private func setupCallbacks() {
 
+        model.$name
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.name = $0 }
+            .store(in: &cancellables)
+
         model.$viewModel
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
@@ -91,16 +96,15 @@ final class ContactDetailsViewController: UIViewController {
             }
             .store(in: &cancellables)
 
-        model.$name
+        model.$yat
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.name = $0 }
+            .sink { [weak self] in self?.mainView.yat = $0 }
             .store(in: &cancellables)
 
-        model.$mainMenuItems
+        model.$menuSections
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-                let items = $0.map { $0.viewModel }
-                self?.mainView.tableViewSections = [MenuTableView.Section(title: nil, items: items)]
+                self?.mainView.tableViewSections = $0.map { MenuTableView.Section(title: $0.title, items: $0.items.map { $0.viewModel }) }
             }
             .store(in: &cancellables)
 
@@ -157,12 +161,14 @@ final class ContactDetailsViewController: UIViewController {
     private func showEditForm() {
 
         var nameComponents: [String] = model.nameComponents
+        var yat: String = model.yat ?? ""
         let models: [ContactBookFormView.TextFieldViewModel]
 
         if model.hasSplittedName {
             models = [
                 ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.first_name"), text: nameComponents[0], callback: { nameComponents[0] = $0 }),
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.last_name"), text: nameComponents[1], callback: { nameComponents[1] = $0 })
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.last_name"), text: nameComponents[1], callback: { nameComponents[1] = $0 }),
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.yat"), text: yat, callback: { yat = $0 })
             ]
         } else {
             models = [
@@ -174,7 +180,7 @@ final class ContactDetailsViewController: UIViewController {
         let overlay = FormOverlay(formView: formView)
 
         overlay.onClose = { [weak self] in
-            self?.model.update(nameComponents: nameComponents)
+            self?.model.update(nameComponents: nameComponents, yat: yat)
         }
 
         present(overlay, animated: true)
@@ -232,6 +238,12 @@ private extension ContactDetailsModel.MenuItem {
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.unlink"), isArrowVisible: true, isDestructive: false)
         case .removeContact:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.delete"), isArrowVisible: false, isDestructive: true)
+        case .btcWallet:
+            return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.bitcoin"), isArrowVisible: true, isDestructive: false)
+        case .ethWallet:
+            return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.ethereum"), isArrowVisible: true, isDestructive: false)
+        case .xmrWallet:
+            return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.monero"), isArrowVisible: true, isDestructive: false)
         }
     }
 }

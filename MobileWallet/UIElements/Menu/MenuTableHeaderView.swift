@@ -86,6 +86,6 @@ final class MenuTableHeaderView: DynamicThemeHeaderFooterView {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         label.textColor = theme.text.heading
-        backgroundContentView.backgroundColor = theme.backgrounds.primary
+        backgroundContentView.backgroundColor = theme.backgrounds.secondary
     }
 }
