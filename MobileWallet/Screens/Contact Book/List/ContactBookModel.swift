@@ -77,8 +77,11 @@ final class ContactBookModel {
 
     @Published private(set) var contactsList: [ContactSection] = []
     @Published private(set) var favoriteContactsList: [ContactSection] = []
+    @Published private(set) var areContactsAvailable: Bool = false
+    @Published private(set) var areFavoriteContactsAvailable: Bool = false
     @Published private(set) var errorModel: MessageModel?
     @Published private(set) var action: Action?
+    @Published private(set) var isPermissionGranted: Bool = false
 
     // MARK: - Properties
 
@@ -98,6 +101,14 @@ final class ContactBookModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
+
+        $allContactList
+            .sink { [weak self] in
+                let models = $0.flatMap { $0.viewModels }
+                self?.areContactsAvailable = !models.isEmpty
+                self?.areFavoriteContactsAvailable = models.first { $0.isFavorite } != nil
+            }
+            .store(in: &cancellables)
 
         let contactsPublisher = Publishers.CombineLatest($allContactList, $searchText)
             .map { sections, searchText in
@@ -148,6 +159,8 @@ final class ContactBookModel {
                 errorModel = ErrorMessageManager.errorModel(forError: error)
             }
         }
+
+        isPermissionGranted = contactsManager.isPermissionGranted
     }
 
     func performAction(contactID: UUID, menuItemID: UInt) {

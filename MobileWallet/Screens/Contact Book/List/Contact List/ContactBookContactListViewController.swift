@@ -48,6 +48,27 @@ final class ContactBookContactListViewController: UIViewController {
         get { mainView.viewModels }
         set { mainView.viewModels = newValue }
     }
+
+    var placeholderViewModel: ContactBookListPlaceholder.ViewModel? {
+        get { mainView.placeholderViewModel }
+        set { mainView.placeholderViewModel = newValue }
+    }
+
+    var isPlaceholderVisible: Bool {
+        get { mainView.isPlaceholderVisible }
+        set { mainView.isPlaceholderVisible = newValue }
+    }
+
+    var isFooterVisible: Bool {
+        get { mainView.isFooterVisible }
+        set { mainView.isFooterVisible = newValue }
+    }
+
+    var onFooterTap: (() -> Void)? {
+        get { mainView.onTap }
+        set { mainView.onTap = newValue }
+    }
+
     var onButtonTap: ((UUID, UInt) -> Void)?
 
     private let mainView = ContactBookContactListView()

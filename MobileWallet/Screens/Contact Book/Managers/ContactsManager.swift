@@ -65,6 +65,10 @@ final class ContactsManager {
         var isLinkedContact: Bool { hasIntrenalModel && hasExternalModel }
     }
 
+    var isPermissionGranted: Bool {
+        externalContactsManager.isPermissionGranted
+    }
+
     // MARK: - Properties
 
     @Published private(set) var tariContactModels: [Model] = []
