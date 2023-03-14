@@ -82,7 +82,7 @@ final class LinkContactsViewController: UIViewController {
             .store(in: &cancellables)
 
         model.$models
-            .map { $0.map { ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: []) }}
+            .map { $0.map { ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: [], contactTypeImage: nil) }}
             .sink { [weak self] in self?.mainView.viewModels = $0 }
             .store(in: &cancellables)
 

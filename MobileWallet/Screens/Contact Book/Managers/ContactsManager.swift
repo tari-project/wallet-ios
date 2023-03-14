@@ -40,6 +40,13 @@
 
 final class ContactsManager {
 
+    enum ContactType {
+        case internalOrEmojiID
+        case external
+        case linked
+        case empty
+    }
+
     struct Model: Identifiable {
 
         let id: UUID = UUID()
@@ -59,10 +66,26 @@ final class ContactsManager {
                 .joined()
         }
 
-        var isInternalContact: Bool { internalModel?.alias != nil }
+        var isFFIContact: Bool { internalModel?.alias != nil }
         var hasIntrenalModel: Bool { internalModel != nil }
         var hasExternalModel: Bool { externalModel != nil }
-        var isLinkedContact: Bool { hasIntrenalModel && hasExternalModel }
+
+        var type: ContactType {
+
+            if hasIntrenalModel && hasExternalModel {
+                return .linked
+            }
+
+            if hasIntrenalModel {
+                return .internalOrEmojiID
+            }
+
+            if hasExternalModel {
+                return .external
+            }
+
+            return .empty
+        }
     }
 
     var isPermissionGranted: Bool {
@@ -164,7 +187,7 @@ extension ContactsManager.Model {
 
         var items: [ContactBookModel.MenuItem] = []
 
-        if isInternalContact {
+        if isFFIContact {
             items.append(.send)
         }
 

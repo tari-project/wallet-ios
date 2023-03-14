@@ -233,7 +233,7 @@ final class ContactBookViewController: UIViewController {
         sections.map {
             let items = $0.viewModels.map {
                 let menuItems = $0.menuItems.map { $0.buttonViewModel }
-                return ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: $0.isFavorite, menuItems: menuItems)
+                return ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: $0.isFavorite, menuItems: menuItems, contactTypeImage: $0.type.image)
             }
             return ContactBookContactListView.Section(title: $0.title, items: items)
         }

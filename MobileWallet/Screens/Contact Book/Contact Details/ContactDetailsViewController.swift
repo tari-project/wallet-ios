@@ -93,6 +93,7 @@ final class ContactDetailsViewController: UIViewController {
             .sink { [weak self] in
                 self?.mainView.avatar = $0.avatar
                 self?.mainView.emojiModel = EmojiIdView.ViewModel(emojiID: $0.emojiID, hex: $0.hex)
+                self?.mainView.updateFooter(image: $0.contactType.image, text: $0.contactType.text)
             }
             .store(in: &cancellables)
 

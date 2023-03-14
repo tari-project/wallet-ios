@@ -321,6 +321,12 @@ extension UIImage {
 
     enum icons {
 
+        enum contactTypes {
+            static var `internal`: UIImage? { UIImage(named: "Icons/Contact Types/Internal") }
+            static var external: UIImage? { UIImage(named: "Icons/Contact Types/External") }
+            static var linked: UIImage? { UIImage(named: "Icons/Contact Types/Linked") }
+        }
+
         enum star {
             static var border: UIImage? { UIImage(named: "Icons/Star/Border") }
             static var filled: UIImage? { UIImage(named: "Icons/Star/Filled") }

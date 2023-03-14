@@ -87,6 +87,7 @@ final class ContactDetailsView: BaseNavigationContentView {
     }()
 
     @View private var tableView = MenuTableView()
+    private var footer = ContactDetailsViewBottomView()
 
     // MARK: - Properties
 
@@ -141,6 +142,7 @@ final class ContactDetailsView: BaseNavigationContentView {
     private func setupViews() {
         navigationBar.title = localized("contact_book.details.title")
         navigationBar.rightButton.setTitle(localized("common.edit"), for: .normal)
+        tableView.tableFooterView = footer
     }
 
     private func setupConstraints() {
@@ -196,6 +198,10 @@ final class ContactDetailsView: BaseNavigationContentView {
         yatButton.diabledTintColor = theme.icons.inactive
     }
 
+    func updateFooter(image: UIImage?, text: String?) {
+        footer.update(image: image, text: text)
+    }
+
     private func update(viewModel: [MenuTableView.Section]) {
         tableView.viewModel = viewModel
     }
@@ -225,7 +231,6 @@ final class ContactDetailsView: BaseNavigationContentView {
         case (false, false):
             idElementsState = .allHidden
         }
-
     }
 
     // MARK: - Handlers
@@ -273,5 +278,82 @@ final class ContactDetailsView: BaseNavigationContentView {
         case .allHidden, .emojiOnly, .yatOnly:
             return
         }
+    }
+
+    // MARK: - Layout
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        tableView.updateFooterFrame()
+    }
+}
+
+private final class ContactDetailsViewBottomView: DynamicThemeView {
+
+    // MARK: - Subviews
+
+    @View private var contentView = UIView()
+
+    @View private var imageView: UIImageView = {
+        let view = UIImageView()
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
+
+    @View private var label: UILabel = {
+        let view = UILabel()
+        view.font = .Avenir.medium.withSize(15.0)
+        return view
+    }()
+
+    // MARK: - Initialisers
+
+    override init() {
+        super.init()
+        setupConstraints()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Setups
+
+    private func setupConstraints() {
+
+        addSubview(contentView)
+        [imageView, label].forEach(contentView.addSubview)
+
+        let constraints = [
+            contentView.topAnchor.constraint(equalTo: topAnchor),
+            contentView.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor),
+            contentView.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            contentView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            imageView.widthAnchor.constraint(equalToConstant: 12.0),
+            imageView.heightAnchor.constraint(equalToConstant: 12.0),
+            label.topAnchor.constraint(equalTo: contentView.topAnchor),
+            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 10.0),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    // MARK: - Updates
+
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        imageView.tintColor = theme.text.lightText
+        label.textColor = theme.text.lightText
+    }
+
+    func update(image: UIImage?, text: String?) {
+        imageView.image = image
+        label.text = text
     }
 }
