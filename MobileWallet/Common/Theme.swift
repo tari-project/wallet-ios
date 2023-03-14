@@ -312,6 +312,13 @@ extension UIImage {
         }
     }
 
+    enum contactBook {
+        enum placeholders {
+            static var contactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListPlaceholder") }
+            static var favoritesContactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListFavPlaceholder") }
+        }
+    }
+
     enum icons {
 
         enum star {

@@ -61,13 +61,38 @@ final class ContactBookContactListView: DynamicThemeView {
         return view
     }()
 
+    @View private var placeholderView: ContactBookListPlaceholder = {
+        let view = ContactBookListPlaceholder()
+        view.isHidden = true
+        return view
+    }()
+
+    private let tableFooterView = ContactBookContactListFooter()
+
     // MARK: - Properties
 
     var viewModels: [Section] = [] {
         didSet { update(sections: viewModels) }
     }
 
+    var placeholderViewModel: ContactBookListPlaceholder.ViewModel? {
+        didSet { update(placeholderViewModel: placeholderViewModel) }
+    }
+
+    var isPlaceholderVisible: Bool = false {
+        didSet { placeholderView.isHidden = !isPlaceholderVisible }
+    }
+
+    var isFooterVisible: Bool = false {
+        didSet { tableView.tableFooterView = isFooterVisible ? tableFooterView : nil }
+    }
+
     var onButtonTap: ((UUID, UInt) -> Void)?
+
+    var onTap: (() -> Void)? {
+        get { tableFooterView.onTap }
+        set { tableFooterView.onTap = newValue }
+    }
 
     private var expandedIndex: IndexPath? {
         didSet { updateCellsState() }
@@ -91,13 +116,17 @@ final class ContactBookContactListView: DynamicThemeView {
 
     private func setupConstraints() {
 
-        addSubview(tableView)
+        [tableView, placeholderView].forEach(addSubview)
 
         let constraints = [
             tableView.topAnchor.constraint(equalTo: topAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            placeholderView.topAnchor.constraint(equalTo: topAnchor),
+            placeholderView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            placeholderView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            placeholderView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -149,6 +178,11 @@ final class ContactBookContactListView: DynamicThemeView {
         dataSource?.apply(snapshot: snapshot)
     }
 
+    private func update(placeholderViewModel: ContactBookListPlaceholder.ViewModel?) {
+        guard let placeholderViewModel else { return }
+        placeholderView.update(viewModel: placeholderViewModel)
+    }
+
     private func updateCellsState() {
         tableView.visibleCells
             .compactMap { $0 as? ContactBookCell }
@@ -156,6 +190,13 @@ final class ContactBookContactListView: DynamicThemeView {
                 guard let index = self?.tableView.indexPath(for: $0), index != self?.expandedIndex else { return }
                 $0.updateCell(isExpanded: false, withAnmiation: false)
             }
+    }
+
+    // MARK: - Layout
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        tableView.updateFooterFrame()
     }
 }
 
@@ -177,5 +218,53 @@ extension ContactBookContactListView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? ContactBookCell else { return }
         cell.updateCell(isExpanded: !cell.isExpanded, withAnmiation: true)
+    }
+}
+
+private class ContactBookContactListFooter: UIView {
+
+    // MARK: - Subiews
+
+    @View private var button: TextButton = {
+        let view = TextButton()
+        view.setVariation(.secondary)
+        view.setTitle(localized("contact_book.section.list.placeholder.button"), for: .normal)
+        return view
+    }()
+
+    // MARK: - Initialisers
+
+    init() {
+        super.init(frame: .zero)
+        setupConstraints()
+        setupCallbacks()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Properties
+
+    var onTap: (() -> Void)?
+
+    // MARK: - Setups
+
+    private func setupConstraints() {
+
+        addSubview(button)
+
+        let constraints = [
+            button.topAnchor.constraint(equalTo: topAnchor),
+            button.leadingAnchor.constraint(equalTo: leadingAnchor),
+            button.trailingAnchor.constraint(equalTo: trailingAnchor),
+            button.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    private func setupCallbacks() {
+        button.onTap = { [weak self] in self?.onTap?() }
     }
 }

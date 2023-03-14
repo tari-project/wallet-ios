@@ -94,18 +94,50 @@ final class ContactBookViewController: UIViewController {
             TariPagerViewController.Page(title: localized("contact_book.pager.tab.contacts"), controller: contactsPageViewController),
             TariPagerViewController.Page(title: localized("contact_book.pager.tab.favorites"), controller: favoritesPageViewController)
         ]
+
+        favoritesPageViewController.placeholderViewModel = ContactBookListPlaceholder.ViewModel(
+            image: .contactBook.placeholders.favoritesContactsList,
+            titleComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.title.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.title.part2.bold"), style: .bold)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.message.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.message.part2.bold"), style: .bold),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.message.part3"), style: .normal)
+            ],
+            actionButtonTitle: nil,
+            actionButtonCallback: nil
+        )
     }
 
     private func setupCallbacks() {
 
         model.$contactsList
             .compactMap { [weak self] in self?.map(sections: $0) }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.contactsPageViewController.models = $0 }
             .store(in: &cancellables)
 
         model.$favoriteContactsList
             .compactMap { [weak self] in self?.map(sections: $0) }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.favoritesPageViewController.models = $0 }
+            .store(in: &cancellables)
+
+        model.$areContactsAvailable
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.contactsPageViewController.isPlaceholderVisible = !$0 }
+            .store(in: &cancellables)
+
+        model.$areFavoriteContactsAvailable
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.favoritesPageViewController.isPlaceholderVisible = !$0 }
+            .store(in: &cancellables)
+
+        model.$isPermissionGranted
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.updatePlaceholders(isPermissionGranted: $0) }
             .store(in: &cancellables)
 
         model.$action
@@ -116,10 +148,12 @@ final class ContactBookViewController: UIViewController {
 
         model.$errorModel
             .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
 
         mainView.searchText
+            .receive(on: DispatchQueue.main)
             .assign(to: \.searchText, on: model)
             .store(in: &cancellables)
 
@@ -130,6 +164,52 @@ final class ContactBookViewController: UIViewController {
         favoritesPageViewController.onButtonTap = { [weak self] in
             self?.model.performAction(contactID: $0, menuItemID: $1)
         }
+
+        contactsPageViewController.onFooterTap = { [weak self] in
+            self?.openAppSettings()
+        }
+    }
+
+    // MARK: - Updates
+
+    private func updatePlaceholders(isPermissionGranted: Bool) {
+
+        contactsPageViewController.isFooterVisible = !isPermissionGranted
+
+        guard isPermissionGranted else {
+
+            contactsPageViewController.placeholderViewModel = ContactBookListPlaceholder.ViewModel(
+                image: .contactBook.placeholders.contactsList,
+                titleComponents: [
+                    StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part1"), style: .normal),
+                    StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part2.bold"), style: .bold)
+                ],
+                messageComponents: [
+                    StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.without_permission.message.part1"), style: .normal),
+                    StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.without_permission.message.part2.bold"), style: .bold),
+                    StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.without_permission.message.part3"), style: .normal)
+                ],
+                actionButtonTitle: localized("contact_book.section.list.placeholder.button"),
+                actionButtonCallback: { [weak self] in self?.openAppSettings() }
+            )
+
+            return
+        }
+
+        contactsPageViewController.placeholderViewModel = ContactBookListPlaceholder.ViewModel(
+            image: .contactBook.placeholders.contactsList,
+            titleComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part2.bold"), style: .bold)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.message.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.message.part2.bold"), style: .bold),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.message.part3"), style: .normal)
+            ],
+            actionButtonTitle: nil,
+            actionButtonCallback: nil
+        )
     }
 
     // MARK: - Handlers
@@ -182,6 +262,11 @@ final class ContactBookViewController: UIViewController {
 
     private func showUnlinkSuccessDialog(emojiID: String, name: String) {
         PopUpPresenter.showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+    }
+
+    private func openAppSettings() {
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
     }
 }
 

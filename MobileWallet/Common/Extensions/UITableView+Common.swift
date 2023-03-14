@@ -1,8 +1,8 @@
-//  UIScreen+Tools.swift
+//  UITableView+Common.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 30/01/2023
+	Created by Adrian Truszczyński on 13/03/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -40,6 +40,18 @@
 
 import UIKit
 
-extension UIScreen {
-    static var isSmallScreen: Bool { UIScreen.main.nativeBounds.height <= 1334.0 }
+extension UITableView {
+
+    func updateFooterFrame() {
+
+        guard let tableFooterView else { return }
+
+        let width = bounds.width
+        let size = tableFooterView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height))
+
+        guard tableFooterView.bounds.height != size.height else { return }
+
+        tableFooterView.bounds.size.height = size.height
+        self.tableFooterView = tableFooterView
+    }
 }

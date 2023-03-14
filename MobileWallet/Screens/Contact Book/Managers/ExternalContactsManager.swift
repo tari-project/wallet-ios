@@ -61,11 +61,21 @@ final class ExternalContactsManager {
 
     // MARK: - Properties
 
+    var isPermissionGranted: Bool {
+        CNContactStore.authorizationStatus(for: .contacts) == .authorized
+    }
+
     private let store = CNContactStore()
 
     // MARK: - Actions
 
     func fetchAllModels() async throws -> [ContactModel] {
+
+        do {
+            try await store.requestAccess(for: .contacts)
+        } catch {
+            return []
+        }
 
         let keysToFetch: [CNKeyDescriptor] = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactInstantMessageAddressesKey, CNContactSocialProfilesKey] as [CNKeyDescriptor]
         let request = CNContactFetchRequest(keysToFetch: keysToFetch)
@@ -79,11 +89,10 @@ final class ExternalContactsManager {
                     let yat = contact.socialProfiles.first { $0.value.service == Self.yatServiceName }?.value.username
                     models.append(ContactModel(firstName: contact.givenName, lastName: contact.familyName, contact: contact, yat: yat))
                 }
+                continuation.resume(with: .success(models))
             } catch {
                 continuation.resume(throwing: error)
             }
-
-            continuation.resume(with: .success(models))
         }
     }
 
