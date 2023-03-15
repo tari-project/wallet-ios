@@ -371,6 +371,7 @@
 		4C363B762574F15E00D99868 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C363B372574EFE500D99868 /* OpenSSL.xcframework */; };
 		4CD20A362407967B007B64D8 /* TransportConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportConfig.swift */; };
 		4CDEC323273A5E3600999DCB /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDEC322273A5E3500999DCB /* Balance.swift */; };
+		540CB6EE29C1D519003FACEF /* SettingsProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6ED29C1D519003FACEF /* SettingsProfileCell.swift */; };
 		5410F5D12951F04B006976DC /* TariWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5410F5D02951F04B006976DC /* TariWindow.swift */; };
 		5421551029A4AE37000A3F49 /* ContactBookContactListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */; };
 		5421551229A4AE4B000A3F49 /* ContactBookContactListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */; };
@@ -867,6 +868,7 @@
 		4C363B372574EFE500D99868 /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = "Pods/OpenSSL-Universal/Frameworks/OpenSSL.xcframework"; sourceTree = "<group>"; };
 		4CD20A352407967B007B64D8 /* TransportConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportConfig.swift; sourceTree = "<group>"; };
 		4CDEC322273A5E3500999DCB /* Balance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
+		540CB6ED29C1D519003FACEF /* SettingsProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsProfileCell.swift; sourceTree = "<group>"; };
 		5410F5D02951F04B006976DC /* TariWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariWindow.swift; sourceTree = "<group>"; };
 		5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListViewController.swift; sourceTree = "<group>"; };
 		5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListView.swift; sourceTree = "<group>"; };
@@ -1662,6 +1664,7 @@
 			children = (
 				3A39AF1B27B1570F00A32F46 /* SettingsViewFooter.swift */,
 				3A3D70BA291A637100A8CD7A /* BaseMenuTableView.swift */,
+				540CB6ED29C1D519003FACEF /* SettingsProfileCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2928,6 +2931,7 @@
 				3A51B1AD28F00A4F0094FDD6 /* Logger.swift in Sources */,
 				3A7DABA028FDC9F3002CC013 /* LogConstructor.swift in Sources */,
 				3A7DAB9A28FDC972002CC013 /* LogViewController.swift in Sources */,
+				540CB6EE29C1D519003FACEF /* SettingsProfileCell.swift in Sources */,
 				3AE885082837857B0070D1AC /* CurrencyLabelView.swift in Sources */,
 				5460258C29A74DC100CF5764 /* ContactDetailsConstructor.swift in Sources */,
 				3A90653A29001D830084EE66 /* AppValues.swift in Sources */,
