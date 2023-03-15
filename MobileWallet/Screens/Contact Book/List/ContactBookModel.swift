@@ -53,6 +53,7 @@ final class ContactBookModel {
         let avatar: String
         let isFavorite: Bool
         let menuItems: [ContactBookModel.MenuItem]
+        let type: ContactsManager.ContactType
     }
 
     enum MenuItem: UInt {
@@ -142,8 +143,8 @@ final class ContactBookModel {
                 let internalContacts = contactsManager.tariContactModels
                 let externalContacts = contactsManager.externalModels
 
-                let internalContactSection = internalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: $0.menuItems) }
-                let externalContactSection = externalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: $0.menuItems) }
+                let internalContactSection = internalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
+                let externalContactSection = externalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
 
                 if !internalContactSection.isEmpty {
                     sections.append(ContactSection(title: nil, viewModels: internalContactSection))

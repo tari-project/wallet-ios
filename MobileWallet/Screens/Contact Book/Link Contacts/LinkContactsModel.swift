@@ -77,7 +77,7 @@ final class LinkContactsModel {
 
     private func setupData() {
 
-        if contactModel.hasIntrenalModel, contactModel.hasExternalModel {
+        if contactModel.type == .linked {
             errorModel = ErrorMessageManager.errorModel(forError: nil)
             return
         }
@@ -95,11 +95,13 @@ final class LinkContactsModel {
     }
 
     private func updateModels() {
-
-        if contactModel.hasIntrenalModel {
+        switch contactModel.type {
+        case .internalOrEmojiID:
             allModels = contactsManager.externalModels
-        } else {
-            allModels = contactsManager.tariContactModels.filter { !$0.hasExternalModel }
+        case .external:
+            allModels = contactsManager.tariContactModels.filter { $0.type == .internalOrEmojiID }
+        case .linked, .empty:
+            allModels = []
         }
     }
 

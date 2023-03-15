@@ -790,3 +790,6 @@
 "contact_book.unlink_contact.popup.confirmation.message" = "Click “confirm” to unlink %@ from %@";
 "contact_book.unlink_contact.popup.success.title" = "Success!";
 "contact_book.unlink_contact.popup.success.message" = "You have successfully unlinked %@ from %@";
+"contact_book.contact_type.internal" = "Tari Contact";
+"contact_book.contact_type.external" = "External Contact";
+"contact_book.contact_type.linked" = "Linked Contact";

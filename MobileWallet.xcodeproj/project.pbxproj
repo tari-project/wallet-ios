@@ -419,6 +419,7 @@
 		547A85D529AD23D800D94985 /* MenuTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D429AD23D800D94985 /* MenuTableView.swift */; };
 		547A85D729AD248400D94985 /* MenuTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D629AD248400D94985 /* MenuTableHeaderView.swift */; };
 		548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */; };
+		54909AAF29C05822002D1070 /* ContactType+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54909AAE29C05822002D1070 /* ContactType+Data.swift */; };
 		5491696E2940F78000783E54 /* LogFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5491696D2940F78000783E54 /* LogFilesManager.swift */; };
 		549E0E0D29754E9C00828743 /* PartialBackupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549E0E0C29754E9B00828743 /* PartialBackupModel.swift */; };
 		54A6E9F0297F1F9900A60853 /* StagedWalletSecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9EF297F1F9900A60853 /* StagedWalletSecurityManager.swift */; };
@@ -914,6 +915,7 @@
 		547A85D429AD23D800D94985 /* MenuTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableView.swift; sourceTree = "<group>"; };
 		547A85D629AD248400D94985 /* MenuTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableHeaderView.swift; sourceTree = "<group>"; };
 		548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Common.swift"; sourceTree = "<group>"; };
+		54909AAE29C05822002D1070 /* ContactType+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactType+Data.swift"; sourceTree = "<group>"; };
 		5491696D2940F78000783E54 /* LogFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFilesManager.swift; sourceTree = "<group>"; };
 		549E0E0C29754E9B00828743 /* PartialBackupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialBackupModel.swift; sourceTree = "<group>"; };
 		54A6E9EF297F1F9900A60853 /* StagedWalletSecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StagedWalletSecurityManager.swift; sourceTree = "<group>"; };
@@ -2557,6 +2559,14 @@
 			path = Menu;
 			sourceTree = "<group>";
 		};
+		54909AAD29C05805002D1070 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				54909AAE29C05822002D1070 /* ContactType+Data.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		54B7F4432996582B00BB484B /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -2571,6 +2581,7 @@
 		54D419B12995091B00D496B4 /* Contact Book */ = {
 			isa = PBXGroup;
 			children = (
+				54909AAD29C05805002D1070 /* Extensions */,
 				5430B97529B73FF600C80AA2 /* Link Contacts */,
 				5455969929B0A67400D6719E /* Managers */,
 				5460258429A74D6C00CF5764 /* Contact Details */,
@@ -3142,6 +3153,7 @@
 				5430B97929B7401200C80AA2 /* LinkContactsViewController.swift in Sources */,
 				3AA2DD942796E8BA00DC3CF7 /* QRCodePresentationController.swift in Sources */,
 				548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */,
+				54909AAF29C05822002D1070 /* ContactType+Data.swift in Sources */,
 				3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */,
 				54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */,
 				3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */,

@@ -72,6 +72,7 @@ final class ContactDetailsModel {
         let avatar: String
         let emojiID: String
         let hex: String?
+        let contactType: ContactsManager.ContactType
     }
 
     // MARK: - View Model
@@ -201,7 +202,7 @@ final class ContactDetailsModel {
 
     private func updateData(model: ContactsManager.Model) {
 
-        viewModel = ViewModel(avatar: model.avatar, emojiID: model.internalModel?.emojiID ?? "", hex: model.internalModel?.hex)
+        viewModel = ViewModel(avatar: model.avatar, emojiID: model.internalModel?.emojiID ?? "", hex: model.internalModel?.hex, contactType: model.type)
 
         var mainMenuItems: [MenuItem] = []
 
@@ -209,13 +210,13 @@ final class ContactDetailsModel {
             mainMenuItems += [.send, .addToFavorites]
         }
 
-        if model.isLinkedContact {
+        if model.type == .linked {
             mainMenuItems.append(.unlinkContact)
         } else {
             mainMenuItems.append(.linkContact)
         }
 
-        if model.isInternalContact || model.hasExternalModel {
+        if model.isFFIContact || model.hasExternalModel {
             mainMenuItems.append(.removeContact)
         }
 
