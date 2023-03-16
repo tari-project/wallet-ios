@@ -48,7 +48,7 @@ final class ProfileView: DynamicThemeView {
 
     @View private var navigationBar: NavigationBar = {
         let view = NavigationBar()
-        view.backButtonType = .none
+        view.backButtonType = .back
         view.title = localized("profile_view.title")
         return view
     }()
