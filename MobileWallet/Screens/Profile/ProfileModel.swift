@@ -115,7 +115,8 @@ final class ProfileModel {
     private func updateData() {
         do {
             let walletAddress = try Tari.shared.walletAddress
-            let deeplinkData = try walletAddress.byteVector.hex.data(using: .utf8) ?? Data()
+            let deeplinkModel = try TransactionsSendDeeplink(receiverAddress: walletAddress.byteVector.hex, amount: nil, note: nil)
+            let deeplinkData = try DeepLinkFormatter.deeplink(model: deeplinkModel)?.absoluteString.data(using: .utf8) ?? Data()
             self.walletAddress = walletAddress
             qrCodeImage = QRCodeFactory.makeQrCode(data: deeplinkData)
             updateYatIdData()
