@@ -179,6 +179,11 @@ final class ContactsManager {
         guard let externalContact = contact.externalModel else { return }
         try externalContactsManager.unlink(contact: externalContact)
     }
+
+    func createInternalModel(name: String, address: TariAddress) throws -> Model {
+        let internalModel = try internalContactsManager.create(name: name, address: address)
+        return Model(internalModel: internalModel, externalModel: nil)
+    }
 }
 
 extension ContactsManager.Model {

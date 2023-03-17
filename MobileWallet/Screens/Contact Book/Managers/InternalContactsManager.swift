@@ -89,6 +89,12 @@ final class InternalContactsManager {
             }
     }
 
+    func create(name: String, address: TariAddress) throws -> ContactModel {
+        let contact = try Contact(alias: name, addressPointer: address.pointer)
+        try Tari.shared.contacts.upsert(contact: contact)
+        return try ContactModel(alias: name, emojiID: address.emojis, hex: address.byteVector.hex, contact: contact)
+    }
+
     func update(name: String, contact: ContactModel) throws {
         guard let existingContact = contact.contact else { return }
         let address = try TariAddress(emojiID: existingContact.address.emojis)

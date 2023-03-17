@@ -157,6 +157,10 @@ final class ContactBookViewController: UIViewController {
             .assign(to: \.searchText, on: model)
             .store(in: &cancellables)
 
+        mainView.onAddContactButtonTap = { [weak self] in
+            self?.moveToAddContactScreen()
+        }
+
         contactsPageViewController.onButtonTap = { [weak self] in
             self?.model.performAction(contactID: $0, menuItemID: $1)
         }
@@ -240,6 +244,11 @@ final class ContactBookViewController: UIViewController {
     }
 
     // MARK: - Actions
+
+    private func moveToAddContactScreen() {
+        let controller = AddContactConstructor.bulidScene()
+        navigationController?.pushViewController(controller, animated: true)
+    }
 
     private func moveToSendTokensScreen(paymentInfo: PaymentInfo) {
         AppRouter.presentSendTransaction(paymentInfo: paymentInfo)

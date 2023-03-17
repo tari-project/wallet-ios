@@ -55,6 +55,7 @@ final class ContactBookView: BaseNavigationContentView {
     // MARK: - Properties
 
     var searchText: AnyPublisher<String, Never> { searchTextSubject.eraseToAnyPublisher() }
+    var onAddContactButtonTap: (() -> Void)?
 
     private let searchTextSubject = CurrentValueSubject<String, Never>("")
     private var cancellables = Set<AnyCancellable>()
@@ -91,6 +92,7 @@ final class ContactBookView: BaseNavigationContentView {
     private func setupSuviews() {
         navigationBar.title = localized("contact_book.title")
         navigationBar.backButtonType = .none
+        navigationBar.rightButton.setImage(.contactBook.addContact, for: .normal)
     }
 
     private func setupConstraints() {
@@ -101,14 +103,18 @@ final class ContactBookView: BaseNavigationContentView {
             searchTextField.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 20.0),
             searchTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0)
-
         ]
 
         NSLayoutConstraint.activate(constraints)
     }
 
     private func setupCallbacks() {
+
         searchTextField.bind(withSubject: searchTextSubject, storeIn: &cancellables)
+
+        navigationBar.onRightButtonAction = { [weak self] in
+            self?.onAddContactButtonTap?()
+        }
     }
 
     // MARK: - Updates

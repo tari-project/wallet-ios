@@ -372,6 +372,10 @@
 		4CD20A362407967B007B64D8 /* TransportConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportConfig.swift */; };
 		4CDEC323273A5E3600999DCB /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDEC322273A5E3500999DCB /* Balance.swift */; };
 		540CB6EE29C1D519003FACEF /* SettingsProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6ED29C1D519003FACEF /* SettingsProfileCell.swift */; };
+		540CB6F129C1DDCC003FACEF /* AddContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F029C1DDCC003FACEF /* AddContactModel.swift */; };
+		540CB6F329C1DE26003FACEF /* AddContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F229C1DE26003FACEF /* AddContactViewController.swift */; };
+		540CB6F529C1DE42003FACEF /* AddContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F429C1DE42003FACEF /* AddContactView.swift */; };
+		540CB6F729C1DE83003FACEF /* AddContactConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F629C1DE83003FACEF /* AddContactConstructor.swift */; };
 		5410F5D12951F04B006976DC /* TariWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5410F5D02951F04B006976DC /* TariWindow.swift */; };
 		5421551029A4AE37000A3F49 /* ContactBookContactListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */; };
 		5421551229A4AE4B000A3F49 /* ContactBookContactListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */; };
@@ -437,6 +441,7 @@
 		54D419B52995093800D496B4 /* ContactBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B42995093800D496B4 /* ContactBookViewController.swift */; };
 		54D419B72995094100D496B4 /* ContactBookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B62995094100D496B4 /* ContactBookView.swift */; };
 		54D419B92995094B00D496B4 /* ContactBookConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B82995094B00D496B4 /* ContactBookConstructor.swift */; };
+		54DD2E8629C37A7600C8C0D9 /* UINavigationController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DD2E8529C37A7600C8C0D9 /* UINavigationController+Common.swift */; };
 		54DDB18129A366700021DFD4 /* ContactCapsuleMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DDB18029A366700021DFD4 /* ContactCapsuleMenu.swift */; };
 		54DDB18329A373C90021DFD4 /* ContactBookMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DDB18229A373C90021DFD4 /* ContactBookMenuButton.swift */; };
 		54DE32D02930BE3D0060108A /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32CF2930BE3D0060108A /* ColorTheme.swift */; };
@@ -869,6 +874,10 @@
 		4CD20A352407967B007B64D8 /* TransportConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransportConfig.swift; sourceTree = "<group>"; };
 		4CDEC322273A5E3500999DCB /* Balance.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Balance.swift; sourceTree = "<group>"; };
 		540CB6ED29C1D519003FACEF /* SettingsProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsProfileCell.swift; sourceTree = "<group>"; };
+		540CB6F029C1DDCC003FACEF /* AddContactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactModel.swift; sourceTree = "<group>"; };
+		540CB6F229C1DE26003FACEF /* AddContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactViewController.swift; sourceTree = "<group>"; };
+		540CB6F429C1DE42003FACEF /* AddContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactView.swift; sourceTree = "<group>"; };
+		540CB6F629C1DE83003FACEF /* AddContactConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactConstructor.swift; sourceTree = "<group>"; };
 		5410F5D02951F04B006976DC /* TariWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariWindow.swift; sourceTree = "<group>"; };
 		5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListViewController.swift; sourceTree = "<group>"; };
 		5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListView.swift; sourceTree = "<group>"; };
@@ -934,6 +943,7 @@
 		54D419B42995093800D496B4 /* ContactBookViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookViewController.swift; sourceTree = "<group>"; };
 		54D419B62995094100D496B4 /* ContactBookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookView.swift; sourceTree = "<group>"; };
 		54D419B82995094B00D496B4 /* ContactBookConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookConstructor.swift; sourceTree = "<group>"; };
+		54DD2E8529C37A7600C8C0D9 /* UINavigationController+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Common.swift"; sourceTree = "<group>"; };
 		54DDB18029A366700021DFD4 /* ContactCapsuleMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCapsuleMenu.swift; sourceTree = "<group>"; };
 		54DDB18229A373C90021DFD4 /* ContactBookMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookMenuButton.swift; sourceTree = "<group>"; };
 		54DE32CF2930BE3D0060108A /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
@@ -1059,6 +1069,7 @@
 				54A6E9F3297F260800A60853 /* UIViewController+Common.swift */,
 				54DEF9F22987DA8700C4B749 /* UIScreen+Tools.swift */,
 				548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */,
+				54DD2E8529C37A7600C8C0D9 /* UINavigationController+Common.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2388,6 +2399,17 @@
 			path = TariLib;
 			sourceTree = "<group>";
 		};
+		540CB6EF29C1DDBF003FACEF /* Add Contact */ = {
+			isa = PBXGroup;
+			children = (
+				540CB6F029C1DDCC003FACEF /* AddContactModel.swift */,
+				540CB6F229C1DE26003FACEF /* AddContactViewController.swift */,
+				540CB6F429C1DE42003FACEF /* AddContactView.swift */,
+				540CB6F629C1DE83003FACEF /* AddContactConstructor.swift */,
+			);
+			path = "Add Contact";
+			sourceTree = "<group>";
+		};
 		5421550E29A4AE28000A3F49 /* Contact List */ = {
 			isa = PBXGroup;
 			children = (
@@ -2584,6 +2606,7 @@
 		54D419B12995091B00D496B4 /* Contact Book */ = {
 			isa = PBXGroup;
 			children = (
+				540CB6EF29C1DDBF003FACEF /* Add Contact */,
 				54909AAD29C05805002D1070 /* Extensions */,
 				5430B97529B73FF600C80AA2 /* Link Contacts */,
 				5455969929B0A67400D6719E /* Managers */,
@@ -3190,12 +3213,14 @@
 				5453241A29A60C6E009281A7 /* TariPagerViewController.swift in Sources */,
 				3ACDA85A2721578700F08C70 /* YatTransactionViewController.swift in Sources */,
 				3ABC7E9328FE864100EAC852 /* PopUpButtonsTableView.swift in Sources */,
+				540CB6F129C1DDCC003FACEF /* AddContactModel.swift in Sources */,
 				3AC877E628741680006F327B /* UTXOsWalletLoadingView.swift in Sources */,
 				37547D5624601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
 				3A983A5E27C64B0500F0AB61 /* VerifySeedWordsModel.swift in Sources */,
 				3A6A033E2802DEEB000432B4 /* PopUpPresenter+CommonPopUps.swift in Sources */,
 				3ADEBF5D26A54FA500E87C84 /* SelectBaseNodeModel.swift in Sources */,
+				540CB6F729C1DE83003FACEF /* AddContactConstructor.swift in Sources */,
 				3A8005CB28EAF3A90022A38A /* TransactionValidationData.swift in Sources */,
 				005387242405136700901A68 /* AddNoteViewController.swift in Sources */,
 				3AE9F4E42795A260006101D1 /* RequestTariAmountModel.swift in Sources */,
@@ -3263,6 +3288,7 @@
 				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
 				3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */,
 				0087A1AF23F4235400B89EE7 /* ContactCell.swift in Sources */,
+				540CB6F329C1DE26003FACEF /* AddContactViewController.swift in Sources */,
 				370E887224FEA32600576F61 /* Ipv6Tester.swift in Sources */,
 				543DF19A293F37E70031EA70 /* CustomBridgesHeaderView.swift in Sources */,
 				5455969B29B0A6B500D6719E /* InternalContactsManager.swift in Sources */,
@@ -3313,6 +3339,7 @@
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				3ADF96CC28585E2400A3C888 /* ContextualButtonsOverlay.swift in Sources */,
 				37ABB69024781CE800F08163 /* UILabel.swift in Sources */,
+				54DD2E8629C37A7600C8C0D9 /* UINavigationController+Common.swift in Sources */,
 				3AA2DD962796F72100DC3CF7 /* QRCodePresentationView.swift in Sources */,
 				3AFAC360271C6B4D008AA842 /* ContactAvatarView.swift in Sources */,
 				3A8826C527F1B8320037F779 /* UICollectionViewDiffableDataSource+Animation.swift in Sources */,
@@ -3337,6 +3364,7 @@
 				37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */,
 				3A7E06DA287831BD00D15190 /* UTXOsEstimationLabel.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
+				540CB6F529C1DE42003FACEF /* AddContactView.swift in Sources */,
 				3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */,
 				3A3E7AD6284E03140065F3C0 /* UTXOTileView.swift in Sources */,
 				3A420594279802E500A8D49C /* BaseButton.swift in Sources */,

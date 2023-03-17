@@ -792,3 +792,8 @@
 "contact_book.contact_type.internal" = "Tari Contact";
 "contact_book.contact_type.external" = "External Contact";
 "contact_book.contact_type.linked" = "Linked Contact";
+"contact_book.add_contact.title" = "Add Contact";
+"contact_book.add_contact.validation_error.invalid_emoji_id" = "Invalid emoji ID entered. Please verify the ID and try again.";
+"contact_book.add_contact.validation_error.no_name" = "Please enter a name in order to create a contact.";
+"contact_book.add_contact.text_field.search.placeholder" = "Enter Emoji ID";
+"contact_book.add_contact.text_field.name.placeholder" = "Name";
