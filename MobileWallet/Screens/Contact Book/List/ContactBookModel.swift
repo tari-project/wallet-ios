@@ -38,6 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import UIKit
 import Combine
 
 final class ContactBookModel {
@@ -51,6 +52,7 @@ final class ContactBookModel {
         let id: UUID
         let name: String
         let avatar: String
+        let avatarImage: UIImage?
         let isFavorite: Bool
         let menuItems: [ContactBookModel.MenuItem]
         let type: ContactsManager.ContactType
@@ -143,8 +145,8 @@ final class ContactBookModel {
                 let internalContacts = contactsManager.tariContactModels
                 let externalContacts = contactsManager.externalModels
 
-                let internalContactSection = internalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
-                let externalContactSection = externalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
+                let internalContactSection = internalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
+                let externalContactSection = externalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
 
                 if !internalContactSection.isEmpty {
                     sections.append(ContactSection(title: nil, viewModels: internalContactSection))
@@ -159,9 +161,9 @@ final class ContactBookModel {
             } catch {
                 errorModel = ErrorMessageManager.errorModel(forError: error)
             }
-        }
 
-        isPermissionGranted = contactsManager.isPermissionGranted
+            isPermissionGranted = contactsManager.isPermissionGranted
+        }
     }
 
     func performAction(contactID: UUID, menuItemID: UInt) {
@@ -185,7 +187,7 @@ final class ContactBookModel {
 
     func unlink(contact: ContactsManager.Model) {
 
-        guard let emojiID = contact.internalModel?.emojiID, let name = contact.externalModel?.fullname else { return }
+        guard let emojiID = contact.internalModel?.emojiID.obfuscatedText, let name = contact.externalModel?.fullname else { return }
 
         do {
             try contactsManager.unlink(contact: contact)

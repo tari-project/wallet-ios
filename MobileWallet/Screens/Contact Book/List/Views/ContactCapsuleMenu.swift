@@ -51,7 +51,7 @@ final class ContactCapsuleMenu: UIView {
     // MARK: - Subviews
 
     @View private var backgroundView = ContactCapsuleMenuBackground()
-    @View private(set) var avatarButton = RoundedAvatarView()
+    @View private(set) var avatarView = RoundedAvatarView()
 
     @View private var stackView: UIStackView = {
         let view = UIStackView()
@@ -62,7 +62,7 @@ final class ContactCapsuleMenu: UIView {
     // MARK: - Properties
 
     var onButtonTap: ((UInt) -> Void)?
-    private var avatarViewFrame: CGRect { CGRect(origin: stackView.frame.origin, size: avatarButton.frame.size) }
+    private var avatarViewFrame: CGRect { CGRect(origin: stackView.frame.origin, size: avatarView.frame.size) }
 
     // MARK: - Initialisers
 
@@ -88,8 +88,8 @@ final class ContactCapsuleMenu: UIView {
             backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            avatarButton.widthAnchor.constraint(equalToConstant: 44.0),
-            avatarButton.heightAnchor.constraint(equalToConstant: 44.0),
+            avatarView.widthAnchor.constraint(equalToConstant: 44.0),
+            avatarView.heightAnchor.constraint(equalToConstant: 44.0),
             stackView.topAnchor.constraint(equalTo: topAnchor, constant: 8.0),
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8.0),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8.0),
@@ -110,11 +110,11 @@ final class ContactCapsuleMenu: UIView {
 
         stackView.arrangedSubviews.forEach {
             self.stackView.removeArrangedSubview($0)
-            guard $0 != avatarButton else { return }
+            guard $0 != avatarView else { return }
             $0.removeFromSuperview()
         }
 
-        var views: [UIView] = [avatarButton]
+        var views: [UIView] = [avatarView]
         views += buttons.map { self.makeButton(model: $0) }
 
         views.forEach(stackView.addArrangedSubview)
@@ -129,10 +129,10 @@ final class ContactCapsuleMenu: UIView {
             .forEach { $0.show() }
 
         let duration: TimeInterval = animated ? 0.3 : 0.0
+        layoutIfNeeded()
 
         UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.0, options: [.beginFromCurrentState]) {
             self.backgroundView.maskFrame = self.bounds
-            self.layoutIfNeeded()
         }
     }
 
@@ -146,7 +146,6 @@ final class ContactCapsuleMenu: UIView {
 
         UIView.animate(withDuration: duration, delay: 0.0, usingSpringWithDamping: 0.6, initialSpringVelocity: 0.0, options: [.beginFromCurrentState]) {
             self.backgroundView.maskFrame = self.avatarViewFrame
-            self.layoutIfNeeded()
         }
     }
 

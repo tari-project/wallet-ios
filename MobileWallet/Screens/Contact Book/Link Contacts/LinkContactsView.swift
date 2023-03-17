@@ -46,10 +46,11 @@ final class LinkContactsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private(set) var infoLabel: UILabel = {
-        let view = UILabel()
+    @View private(set) var infoLabel: StylizedLabel = {
+        let view = StylizedLabel()
         view.textAlignment = .center
-        view.font = .Avenir.medium.withSize(14.0)
+        view.normalFont = .Avenir.medium.withSize(14.0)
+        view.boldFont = .Avenir.heavy.withSize(14.0)
         view.numberOfLines = 0
         return view
     }()
@@ -148,11 +149,17 @@ final class LinkContactsView: BaseNavigationContentView {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
+        tableView.backgroundColor = theme.backgrounds.primary
+        tableView.separatorColor = theme.neutral.secondary
         infoLabel.textColor = theme.text.body
     }
 
     func updateInfoLabel(name: String) {
-        infoLabel.text = localized("contact_book.link_contacts.lables.info", arguments: name)
+        infoLabel.textComponents = [
+            StylizedLabel.StylizedText(text: localized("contact_book.link_contacts.lables.info.part1") + " ", style: .normal),
+            StylizedLabel.StylizedText(text: name, style: .bold),
+            StylizedLabel.StylizedText(text: ".", style: .normal)
+        ]
     }
 
     func update(viewModels: [ContactBookCell.ViewModel]) {

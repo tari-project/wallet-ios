@@ -448,6 +448,7 @@
 		54DE32D22930BE7F0060108A /* ThemeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */; };
 		54DE32D42930C2640060108A /* DynamicThemeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DE32D32930C2640060108A /* DynamicThemeView.swift */; };
 		54DEF9F32987DA8700C4B749 /* UIScreen+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DEF9F22987DA8700C4B749 /* UIScreen+Tools.swift */; };
+		54E1CB1E29C7292700E6777C /* EmojiTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E1CB1D29C7292700E6777C /* EmojiTextField.swift */; };
 		54F23DE729BBA0C3001E39A2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 54F23DE629BBA0C3001E39A2 /* InfoPlist.strings */; };
 		A01F54A8255EAB7E00F49AFA /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01F54A7255EAB7E00F49AFA /* Localization.swift */; };
 		A0779C612552C1AF00614EF3 /* DeleteWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */; };
@@ -950,6 +951,7 @@
 		54DE32D12930BE7F0060108A /* ThemeCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeCoordinator.swift; sourceTree = "<group>"; };
 		54DE32D32930C2640060108A /* DynamicThemeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicThemeView.swift; sourceTree = "<group>"; };
 		54DEF9F22987DA8700C4B749 /* UIScreen+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScreen+Tools.swift"; sourceTree = "<group>"; };
+		54E1CB1D29C7292700E6777C /* EmojiTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiTextField.swift; sourceTree = "<group>"; };
 		54F23DE629BBA0C3001E39A2 /* InfoPlist.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = InfoPlist.strings; sourceTree = "<group>"; };
 		A01F54A7255EAB7E00F49AFA /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
 		A0779C602552C1AF00614EF3 /* DeleteWalletViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteWalletViewController.swift; sourceTree = "<group>"; };
@@ -1241,6 +1243,7 @@
 				3AFC3D5F288EC3FA0046D386 /* UnselectableTextView.swift */,
 				5453242329A68D14009281A7 /* TariGradientView.swift */,
 				5453242529A68D7D009281A7 /* RoundedAvatarView.swift */,
+				54E1CB1D29C7292700E6777C /* EmojiTextField.swift */,
 			);
 			path = UIElements;
 			sourceTree = "<group>";
@@ -3339,6 +3342,7 @@
 				00E2BCB2236B455900C2A105 /* HomeViewFloatingPanelDelegates.swift in Sources */,
 				3ADF96CC28585E2400A3C888 /* ContextualButtonsOverlay.swift in Sources */,
 				37ABB69024781CE800F08163 /* UILabel.swift in Sources */,
+				54E1CB1E29C7292700E6777C /* EmojiTextField.swift in Sources */,
 				54DD2E8629C37A7600C8C0D9 /* UINavigationController+Common.swift in Sources */,
 				3AA2DD962796F72100DC3CF7 /* QRCodePresentationView.swift in Sources */,
 				3AFAC360271C6B4D008AA842 /* ContactAvatarView.swift in Sources */,

@@ -84,17 +84,17 @@ final class ThemeSettingsCollectionCell: DynamicThemeCollectionCell {
         [imageView, label, radioButton].forEach { contentView.addSubview($0) }
 
         let constaints = [
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
-            imageView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            imageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
+            imageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             imageView.heightAnchor.constraint(equalToConstant: 200.0),
             label.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 5.0),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor),
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             radioButton.topAnchor.constraint(equalTo: label.bottomAnchor, constant: 5.0),
-            radioButton.centerXAnchor.constraint(equalTo: centerXAnchor),
+            radioButton.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             radioButton.widthAnchor.constraint(equalToConstant: 16.0),
             radioButton.heightAnchor.constraint(equalToConstant: 16.0),
-            radioButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0)
+            radioButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0)
         ]
 
         NSLayoutConstraint.activate(constaints)

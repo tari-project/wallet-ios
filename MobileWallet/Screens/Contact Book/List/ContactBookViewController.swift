@@ -237,7 +237,7 @@ final class ContactBookViewController: UIViewController {
         sections.map {
             let items = $0.viewModels.map {
                 let menuItems = $0.menuItems.map { $0.buttonViewModel }
-                return ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: $0.isFavorite, menuItems: menuItems, contactTypeImage: $0.type.image)
+                return ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatarText: $0.avatar, avatarImage: $0.avatarImage, isFavorite: $0.isFavorite, menuItems: menuItems, contactTypeImage: $0.type.image)
             }
             return ContactBookContactListView.Section(title: $0.title, items: items)
         }
@@ -265,7 +265,7 @@ final class ContactBookViewController: UIViewController {
     }
 
     private func showUnlinkConfirmationDialog(model: ContactsManager.Model) {
-        guard let emojiID = model.internalModel?.emojiID, let name = model.externalModel?.fullname else { return }
+        guard let emojiID = model.internalModel?.emojiID.obfuscatedText, let name = model.externalModel?.fullname else { return }
         PopUpPresenter.showUnlinkConfirmationDialog(emojiID: emojiID, name: name, confirmationCallback: { [weak self] in self?.model.unlink(contact: model) })
     }
 

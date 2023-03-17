@@ -39,6 +39,7 @@
 */
 
 import Contacts
+import UIKit
 
 final class ExternalContactsManager {
 
@@ -50,6 +51,11 @@ final class ExternalContactsManager {
         let lastName: String
         let contact: CNContact
         let yat: String?
+
+        var avatar: UIImage? {
+            guard let data = contact.thumbnailImageData, let image = UIImage(data: data) else { return nil }
+            return image
+        }
 
         var emojiID: String? { contact.socialProfiles.first { $0.value.service == auroraServiceName }?.value.username }
         var fullname: String { [firstName, lastName].joined(separator: " ") }
@@ -77,7 +83,7 @@ final class ExternalContactsManager {
             return []
         }
 
-        let keysToFetch: [CNKeyDescriptor] = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactInstantMessageAddressesKey, CNContactSocialProfilesKey] as [CNKeyDescriptor]
+        let keysToFetch: [CNKeyDescriptor] = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactInstantMessageAddressesKey, CNContactSocialProfilesKey, CNContactThumbnailImageDataKey] as [CNKeyDescriptor]
         let request = CNContactFetchRequest(keysToFetch: keysToFetch)
 
         return try await withCheckedThrowingContinuation { continuation in

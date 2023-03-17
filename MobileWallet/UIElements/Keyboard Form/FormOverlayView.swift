@@ -70,11 +70,9 @@ final class FormOverlayView: UIView, UIKeyInput {
 
     init(formView: FormShowable) {
         self.formView = formView
-        formView.translatesAutoresizingMaskIntoConstraints = false
         super.init(frame: .zero)
         setupViews(formView: formView)
         setupCallbacks()
-
     }
 
     required init?(coder: NSCoder) {

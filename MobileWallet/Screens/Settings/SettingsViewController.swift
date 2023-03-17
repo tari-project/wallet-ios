@@ -294,7 +294,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath == profileIndexPath {
             let cell = tableView.dequeueReusableCell(type: SettingsProfileCell.self, indexPath: indexPath)
             do {
-                let emojiID = try Tari.shared.walletAddress.emojis
+                let emojiID = try Tari.shared.walletAddress.emojis.obfuscatedText
                 cell.update(avatar: emojiID.firstOrEmpty, emojiID: emojiID)
             } catch {
                 let message = ErrorMessageManager.errorModel(forError: error)

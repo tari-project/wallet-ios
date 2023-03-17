@@ -46,8 +46,8 @@ final class FormTextField: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var textField: UITextField = {
-        let view = UITextField()
+    @View private var textField: EmojiTextField = {
+        let view = EmojiTextField()
         view.font = .Avenir.medium.withSize(14.0)
         return view
     }()
@@ -73,6 +73,11 @@ final class FormTextField: DynamicThemeView {
 
     var publisher: AnyPublisher<String, Never> {
         textField.textPublisher()
+    }
+
+    var isEmojiKeyboardVisible: Bool {
+        get { textField.isEmojiKeyboardVisible }
+        set { textField.isEmojiKeyboardVisible = newValue }
     }
 
     var onReturnPressed: (() -> Void)?

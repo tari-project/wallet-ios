@@ -41,10 +41,35 @@
 import UIKit
 
 struct PopUpDialogModel {
-    let title: String?
-    let message: String?
+    let titleComponents: [StylizedLabel.StylizedText]
+    let messageComponents: [StylizedLabel.StylizedText]
     let buttons: [PopUpDialogButtonModel]
     let hapticType: PopUpPresenter.Configuration.HapticType
+
+    init(titleComponents: [StylizedLabel.StylizedText], messageComponents: [StylizedLabel.StylizedText], buttons: [PopUpDialogButtonModel], hapticType: PopUpPresenter.Configuration.HapticType) {
+        self.titleComponents = titleComponents
+        self.messageComponents = messageComponents
+        self.buttons = buttons
+        self.hapticType = hapticType
+    }
+
+    init(title: String?, message: String?, buttons: [PopUpDialogButtonModel], hapticType: PopUpPresenter.Configuration.HapticType) {
+
+        if let title {
+            titleComponents = [StylizedLabel.StylizedText(text: title, style: .normal)]
+        } else {
+            titleComponents = []
+        }
+
+        if let message {
+            messageComponents = [StylizedLabel.StylizedText(text: message, style: .normal)]
+        } else {
+            messageComponents = []
+        }
+
+        self.buttons = buttons
+        self.hapticType = hapticType
+    }
 }
 
 struct PopUpDialogButtonModel {
@@ -108,12 +133,16 @@ extension PopUpPresenter {
         var contentView: UIView?
         var buttonsView: UIView?
 
-        if let title = model.title {
-            headerView = PopUpComponentsFactory.makeHeaderView(title: title)
+        if !model.titleComponents.isEmpty {
+            let view = PopUpHeaderView()
+            view.label.textComponents = model.titleComponents
+            headerView = view
         }
 
-        if let message = model.message {
-            contentView = PopUpComponentsFactory.makeContentView(message: message)
+        if !model.messageComponents.isEmpty {
+            let view = PopUpDescriptionContentView()
+            view.label.textComponents = model.messageComponents
+            contentView = view
         }
 
         if !model.buttons.isEmpty {

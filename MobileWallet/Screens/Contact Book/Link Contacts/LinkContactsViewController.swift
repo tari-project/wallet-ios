@@ -82,7 +82,7 @@ final class LinkContactsViewController: UIViewController {
             .store(in: &cancellables)
 
         model.$models
-            .map { $0.map { ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, isFavorite: false, menuItems: [], contactTypeImage: nil) }}
+            .map { $0.map { ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatarText: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: [], contactTypeImage: nil) }}
             .sink { [weak self] in self?.mainView.viewModels = $0 }
             .store(in: &cancellables)
 
@@ -124,8 +124,13 @@ final class LinkContactsViewController: UIViewController {
     private func showConfirmationDialog(emojiID: String, name: String) {
 
         let model = PopUpDialogModel(
-            title: localized("contact_book.link_contacts.popup.confirmation.title"),
-            message: localized("contact_book.link_contacts.popup.confirmation.message", arguments: emojiID, name),
+            titleComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.link_contacts.popup.confirmation.title"), style: .normal)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.link_contacts.popup.confirmation.message.part1", arguments: emojiID), style: .normal),
+                StylizedLabel.StylizedText(text: name, style: .bold)
+            ],
             buttons: [
                 PopUpDialogButtonModel(title: localized("common.confirm"), type: .normal, callback: { [weak self] in self?.model.linkContacts() }),
                 PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { [weak self] in self?.model.cancelLinkContacts() })
@@ -139,8 +144,13 @@ final class LinkContactsViewController: UIViewController {
     private func showSuccessDialog(emojiID: String, name: String) {
 
         let model = PopUpDialogModel(
-            title: localized("contact_book.link_contacts.popup.success.title"),
-            message: localized("contact_book.link_contacts.popup.success.message", arguments: emojiID, name),
+            titleComponents: [StylizedLabel.StylizedText(
+                text: localized("contact_book.link_contacts.popup.success.title"), style: .normal)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.link_contacts.popup.success.message.part1", arguments: emojiID), style: .normal),
+                StylizedLabel.StylizedText(text: name, style: .bold)
+            ],
             buttons: [
                 PopUpDialogButtonModel(title: localized("common.close"), type: .text)
             ],

@@ -60,6 +60,7 @@ final class MenuTabBarController: UITabBarController {
         super.viewDidLoad()
         setValue(customTabBar, forKey: "tabBar")
         self.delegate = self
+        tabBar.isTranslucent = false
 
         homeViewController.tabBarItem.image = Theme.shared.images.homeItem
         storeViewController.tabBarItem.image = Theme.shared.images.ttlItem

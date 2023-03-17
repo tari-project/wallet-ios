@@ -43,8 +43,13 @@ extension PopUpPresenter {
     static func showUnlinkConfirmationDialog(emojiID: String, name: String, confirmationCallback: @escaping () -> Void) {
 
         let model = PopUpDialogModel(
-            title: localized("contact_book.unlink_contact.popup.confirmation.title"),
-            message: localized("contact_book.unlink_contact.popup.confirmation.message", arguments: emojiID, name),
+            titleComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.confirmation.title"), style: .normal)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.confirmation.message.part1", arguments: emojiID), style: .normal),
+                StylizedLabel.StylizedText(text: name, style: .bold)
+            ],
             buttons: [
                 PopUpDialogButtonModel(title: localized("common.confirm"), type: .normal, callback: { confirmationCallback() }),
                 PopUpDialogButtonModel(title: localized("common.cancel"), type: .text)
@@ -58,8 +63,13 @@ extension PopUpPresenter {
     static func showUnlinkSuccessDialog(emojiID: String, name: String) {
 
         let model = PopUpDialogModel(
-            title: localized("contact_book.unlink_contact.popup.success.title"),
-            message: localized("contact_book.unlink_contact.popup.success.message", arguments: emojiID, name),
+            titleComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.success.title"), style: .normal)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.unlink_contact.popup.success.message.part1", arguments: emojiID), style: .normal),
+                StylizedLabel.StylizedText(text: name, style: .bold)
+            ],
             buttons: [
                 PopUpDialogButtonModel(title: localized("common.close"), type: .text)
             ],

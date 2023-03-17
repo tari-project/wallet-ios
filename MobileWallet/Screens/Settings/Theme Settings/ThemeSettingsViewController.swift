@@ -78,6 +78,7 @@ final class ThemeSettingsViewController: UIViewController {
     private func setupCallbacks() {
 
         Publishers.CombineLatest(model.$elements, model.$selectedIndex)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] elements, selectedIndex in
                 let viewModels = elements.map { ThemeSettingsView.ViewModel(id: $0.id, image: $0.element.image, title: $0.element.title) }
                 self?.mainView.update(viewModels: viewModels, selectedIndex: selectedIndex)

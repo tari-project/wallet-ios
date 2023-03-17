@@ -104,7 +104,7 @@ final class SettingsProfileCell: DynamicThemeCell {
     }
 
     func update(avatar: String?, emojiID: String?) {
-        avatarView.avatarText = avatar
+        avatarView.avatar = .text(avatar)
         label.text = emojiID
     }
 }

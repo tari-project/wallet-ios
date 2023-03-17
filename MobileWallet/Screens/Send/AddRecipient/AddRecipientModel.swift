@@ -320,10 +320,3 @@ private extension TariAddress {
         return ContactElementItem(id: uuid, title: title, initial: "", isEmojiID: true)
     }
 }
-
-private extension String {
-    var obfuscatedText: String {
-        guard count >= 9 else { return self }
-        return "\(prefix(3))•••\(suffix(3))"
-    }
-}

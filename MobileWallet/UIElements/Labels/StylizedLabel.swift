@@ -105,10 +105,10 @@ final class StylizedLabel: UILabel {
             result.append(NSAttributedString(string: stylizedText.text))
 
             if let font {
-                result.addAttribute(.font, value: font, range: NSRange(location: location, length: stylizedText.text.count))
+                result.addAttribute(.font, value: font, range: NSRange(location: location, length: stylizedText.text.utf16.count))
             }
             if let textColor {
-                result.addAttribute(.foregroundColor, value: textColor, range: NSRange(location: location, length: stylizedText.text.count))
+                result.addAttribute(.foregroundColor, value: textColor, range: NSRange(location: location, length: stylizedText.text.utf16.count))
             }
         }
     }
