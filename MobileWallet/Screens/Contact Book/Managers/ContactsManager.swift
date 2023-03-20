@@ -198,11 +198,11 @@ extension ContactsManager.Model {
 
         var items: [ContactBookModel.MenuItem] = []
 
-        if isFFIContact {
+        if hasIntrenalModel {
             items.append(.send)
         }
 
-        if hasIntrenalModel {
+        if isFFIContact {
             items.append(.favorite)
         }
 

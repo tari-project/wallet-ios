@@ -160,32 +160,42 @@ final class TxsListViewController: DynamicThemeViewController {
         Publishers.CombineLatest(Tari.shared.transactions.$pendingInbound, Tari.shared.transactions.$pendingOutbound)
             .map { $0 as [Transaction] + $1 }
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
-            .tryCompactMap { [weak self] in try $0.map {
-                let contact = try self?.contact(transaction: $0)
-                return try TxTableViewModel(transaction: $0, contact: contact)
-            }}
-            .replaceError(with: [TxTableViewModel]())
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.pendingTxModels = $0
-                self?.safeRefreshTable()
-            }
+            .replaceError(with: [Transaction]())
+            .sink { [weak self] in self?.handle(transaction: $0, areCompletedTransactions: false) }
             .store(in: &transactionModelsCancellables)
 
         Publishers.CombineLatest(Tari.shared.transactions.$completed, Tari.shared.transactions.$cancelled)
             .map { $0 + $1 }
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
-            .tryCompactMap { [weak self] in try $0.map {
-                let contact = try self?.contact(transaction: $0)
-                return try TxTableViewModel(transaction: $0, contact: contact)
-            }}
-            .replaceError(with: [TxTableViewModel]())
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in
-                self?.completedTxModels = $0
-                self?.safeRefreshTable()
-            }
+            .replaceError(with: [Transaction]())
+            .sink { [weak self] in self?.handle(transaction: $0, areCompletedTransactions: true) }
             .store(in: &transactionModelsCancellables)
+    }
+
+    private func handle(transaction: [Transaction], areCompletedTransactions: Bool) {
+        Task {
+            do {
+                try await contactsManager.fetchModels()
+                let models = try makeTxViewModels(transactions: transaction)
+                update(models: models, areCompletedTransactions: areCompletedTransactions)
+                safeRefreshTable()
+            } catch {}
+        }
+    }
+
+    private func makeTxViewModels(transactions: [Transaction]) throws -> [TxTableViewModel] {
+        return try transactions.map {
+            let contact = try self.contact(transaction: $0)
+            return try TxTableViewModel(transaction: $0, contact: contact)
+        }
+    }
+
+    private func update(models: [TxTableViewModel], areCompletedTransactions: Bool) {
+        if areCompletedTransactions {
+            completedTxModels = models
+        } else {
+            pendingTxModels = models
+        }
     }
 
     private func contact(transaction: Transaction) throws -> ContactsManager.Model? {
