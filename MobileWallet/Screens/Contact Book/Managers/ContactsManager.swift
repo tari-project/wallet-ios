@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import UIKit
+
 final class ContactsManager {
 
     enum ContactType {
@@ -54,7 +56,7 @@ final class ContactsManager {
         let externalModel: ExternalContactsManager.ContactModel?
 
         var name: String {
-            guard let externalModel else { return internalModel?.alias ?? internalModel?.emojiID ?? "" }
+            guard let externalModel else { return internalModel?.alias ?? internalModel?.emojiID.obfuscatedText ?? "" }
             return externalModel.fullname
         }
 
@@ -64,6 +66,10 @@ final class ContactsManager {
                 .compactMap { $0.first }
                 .map { String($0) }
                 .joined()
+        }
+
+        var avatarImage: UIImage? {
+            externalModel?.avatar
         }
 
         var isFFIContact: Bool { internalModel?.alias != nil }

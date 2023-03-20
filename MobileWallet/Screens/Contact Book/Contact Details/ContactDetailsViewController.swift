@@ -82,6 +82,11 @@ final class ContactDetailsViewController: UIViewController {
 
     private func setupCallbacks() {
 
+        model.$editButtonName
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.navigationBar.rightButton.setTitle($0, for: .normal) }
+            .store(in: &cancellables)
+
         model.$name
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.name = $0 }
@@ -91,7 +96,13 @@ final class ContactDetailsViewController: UIViewController {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in
-                self?.mainView.avatar = $0.avatar
+
+                if let avatarImage = $0.avatarImage {
+                    self?.mainView.avatar = .image(avatarImage)
+                } else {
+                    self?.mainView.avatar = .text($0.avatarText)
+                }
+
                 self?.mainView.emojiModel = EmojiIdView.ViewModel(emojiID: $0.emojiID, hex: $0.hex)
                 self?.mainView.updateFooter(image: $0.contactType.image, text: $0.contactType.text)
             }
@@ -167,13 +178,13 @@ final class ContactDetailsViewController: UIViewController {
 
         if model.hasSplittedName {
             models = [
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.first_name"), text: nameComponents[0], callback: { nameComponents[0] = $0 }),
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.last_name"), text: nameComponents[1], callback: { nameComponents[1] = $0 }),
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.yat"), text: yat, callback: { yat = $0 })
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.first_name"), text: nameComponents[0], isEmojiKeyboardVisible: false, callback: { nameComponents[0] = $0 }),
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.last_name"), text: nameComponents[1], isEmojiKeyboardVisible: false, callback: { nameComponents[1] = $0 }),
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.yat"), text: yat, isEmojiKeyboardVisible: true, callback: { yat = $0 })
             ]
         } else {
             models = [
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.name"), text: nameComponents[0], callback: { nameComponents[0] = $0 })
+                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.name"), text: nameComponents[0], isEmojiKeyboardVisible: false, callback: { nameComponents[0] = $0 })
             ]
         }
 

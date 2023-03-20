@@ -52,7 +52,8 @@ class TxTableViewModel: NSObject {
     let id: UInt64
     private(set) var transaction: Transaction
     private(set) var title = NSAttributedString()
-    private(set) var avatar: String = ""
+    private(set) var avatarText: String = ""
+    private(set) var avatarImage: UIImage?
     private(set) var message: String
     private(set) var value: Value
 
@@ -67,8 +68,11 @@ class TxTableViewModel: NSObject {
     @objc dynamic private(set) var status: String = ""
     @objc dynamic private(set) var time: String
 
-    init(transaction: Transaction) throws {
+    private let contact: ContactsManager.Model?
+
+    init(transaction: Transaction, contact: ContactsManager.Model?) throws {
         self.transaction = transaction
+        self.contact = contact
         self.id = try transaction.identifier
 
         value = Value(microTari: MicroTari(try transaction.amount), isOutboundTransaction: try transaction.isOutboundTransaction, isCancelled: transaction.isCancelled, isPending: transaction.isPending)
@@ -123,30 +127,17 @@ class TxTableViewModel: NSObject {
     private func updateTitleAndAvatar() throws {
 
         guard try !transaction.isOneSidedPayment else {
-            avatar = localized("transaction.one_sided_payment.avatar")
+            avatarText = localized("transaction.one_sided_payment.avatar")
             let alias = localized("transaction.one_sided_payment.inbound_user_placeholder")
-            title = attributed(title: localized("tx_list.inbound_pending_title", arguments: alias), withAlias: alias, isAliasEmojiID: false)
+            title = attributed(title: localized("tx_list.inbound_pending_title", arguments: alias), withAlias: alias)
             return
         }
 
-        let address = try transaction.address
-
-        let emojis = try address.emojis
-        avatar = String(emojis.prefix(1))
-
-        var alias = ""
-        var aliasIsEmojis = false
-
-        if let contact = try Tari.shared.contacts.findContact(hex: try address.byteVector.hex) {
-            alias = try contact.alias
-        }
-
-        if alias.isEmpty {
-            alias = "\(String(emojis.prefix(2)))•••\(String(emojis.suffix(2)))"
-            aliasIsEmojis = true
-        }
+        avatarText = contact?.avatar ?? ""
+        avatarImage = contact?.avatarImage
 
         var titleText = ""
+        let alias = contact?.name ?? ""
 
         if try transaction.isOutboundTransaction {
             titleText = localized("tx_list.outbound_title", arguments: alias)
@@ -154,10 +145,10 @@ class TxTableViewModel: NSObject {
             titleText = try transaction.status == .pending ? localized("tx_list.inbound_pending_title", arguments: alias) : localized("tx_list.inbound_title", arguments: alias)
         }
 
-        title = attributed(title: titleText, withAlias: alias, isAliasEmojiID: aliasIsEmojis)
+        title = attributed(title: titleText, withAlias: alias)
     }
 
-    private func attributed(title: String, withAlias alias: String, isAliasEmojiID: Bool) -> NSAttributedString {
+    private func attributed(title: String, withAlias alias: String) -> NSAttributedString {
 
         let title = title
             .replacingOccurrences(of: alias, with: " \(alias) ")

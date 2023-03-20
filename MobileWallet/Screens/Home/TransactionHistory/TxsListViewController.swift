@@ -73,7 +73,10 @@ final class TxsListViewController: DynamicThemeViewController {
     weak var actionDelegate: TxsTableViewDelegate?
 
     let tableView = UITableView(frame: .zero, style: .grouped)
+
     private let animatedRefresher = AnimatedRefreshingView()
+    private let contactsManager = ContactsManager()
+
     private let refreshTimeoutPeriodSecs = 40.0
 
     private var pendingTxModels = [TxTableViewModel]()
@@ -121,7 +124,10 @@ final class TxsListViewController: DynamicThemeViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        setupTransactionsCallbacks()
+        Task {
+            try? await contactsManager.fetchModels()
+            setupTransactionsCallbacks()
+        }
 
         if backgroundType != .intro {
             safeRefreshTable()
@@ -140,7 +146,7 @@ final class TxsListViewController: DynamicThemeViewController {
         cancelTransactionsCallbacks()
     }
 
-    func safeRefreshTable(_ completion: (() -> Void)? = nil) {
+    private func safeRefreshTable(_ completion: (() -> Void)? = nil) {
         txDataUpdateQueue.async(flags: .barrier) {
             DispatchQueue.main.async { [weak self] in
                 self?.tableView.reloadData()
@@ -154,20 +160,37 @@ final class TxsListViewController: DynamicThemeViewController {
         Publishers.CombineLatest(Tari.shared.transactions.$pendingInbound, Tari.shared.transactions.$pendingOutbound)
             .map { $0 as [Transaction] + $1 }
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
-            .tryMap { try $0.map { try TxTableViewModel(transaction: $0) }}
-            .replaceError(with: [])
+            .tryCompactMap { [weak self] in try $0.map {
+                let contact = try self?.contact(transaction: $0)
+                return try TxTableViewModel(transaction: $0, contact: contact)
+            }}
+            .replaceError(with: [TxTableViewModel]())
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.pendingTxModels = $0 }
+            .sink { [weak self] in
+                self?.pendingTxModels = $0
+                self?.safeRefreshTable()
+            }
             .store(in: &transactionModelsCancellables)
 
         Publishers.CombineLatest(Tari.shared.transactions.$completed, Tari.shared.transactions.$cancelled)
             .map { $0 + $1 }
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
-            .tryMap { try $0.map { try TxTableViewModel(transaction: $0) }}
-            .replaceError(with: [])
+            .tryCompactMap { [weak self] in try $0.map {
+                let contact = try self?.contact(transaction: $0)
+                return try TxTableViewModel(transaction: $0, contact: contact)
+            }}
+            .replaceError(with: [TxTableViewModel]())
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.completedTxModels = $0 }
+            .sink { [weak self] in
+                self?.completedTxModels = $0
+                self?.safeRefreshTable()
+            }
             .store(in: &transactionModelsCancellables)
+    }
+
+    private func contact(transaction: Transaction) throws -> ContactsManager.Model? {
+        let emojis = try transaction.address.emojis
+        return contactsManager.tariContactModels.first { $0.internalModel?.emojiID == emojis }
     }
 
     private func cancelTransactionsCallbacks() {

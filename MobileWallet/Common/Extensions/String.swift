@@ -47,6 +47,11 @@ extension String {
         return String(first)
     }
 
+    var obfuscatedText: String {
+        guard count >= 9 else { return self }
+        return "\(prefix(3))•••\(suffix(3))"
+    }
+
     func insertSeparator(_ separatorString: String, atEvery n: Int) -> String {
         guard 0 < n else { return self }
         return self.enumerated().map({String($0.element) + (($0.offset != self.count - 1 && $0.offset % n ==  n - 1) ? "\(separatorString)" : "")}).joined()

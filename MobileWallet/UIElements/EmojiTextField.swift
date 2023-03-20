@@ -1,10 +1,10 @@
-//  PopUpHeaderView.swift
+//  EmojiTextField.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 10/04/2022
+	Created by Adrian Truszczyński on 19/03/2023
 	Using Swift 5.0
-	Running on macOS 12.3
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -39,52 +39,15 @@
 */
 
 import UIKit
-import TariCommon
 
-final class PopUpHeaderView: DynamicThemeView {
+final class EmojiTextField: UITextField {
 
-    // MARK: - Subviews
+    var isEmojiKeyboardVisible: Bool = false
 
-    @View private(set) var label: StylizedLabel = {
-        let view = StylizedLabel()
-        view.normalFont = .Avenir.light.withSize(18.0)
-        view.separator = " "
-        view.textAlignment = .center
-        view.numberOfLines = 0
-        return view
-    }()
+    override var textInputContextIdentifier: String? { "" }
 
-    // MARK: - Initialisers
-
-    override init() {
-        super.init()
-        setupConstraints()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Setups
-
-    private func setupConstraints() {
-
-        addSubview(label)
-
-        let constraints = [
-            label.topAnchor.constraint(equalTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
-
-    // MARK: - Updates
-
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-        label.textColor = theme.text.heading
+    override var textInputMode: UITextInputMode? {
+        guard isEmojiKeyboardVisible else { return nil }
+        return .activeInputModes.first { $0.primaryLanguage == "emoji" }
     }
 }

@@ -38,13 +38,67 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class RoundedAvatarView: RoundedButton {
+import UIKit
+import TariCommon
+
+final class RoundedAvatarView: DynamicThemeView {
+
+    enum Avatar {
+        case text(_: String?)
+        case image(_: UIImage?)
+        case empty
+    }
+
+    // MARK: - Subviews
+
+    @View private var label: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        return label
+    }()
+
+    @View private var imageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
 
     // MARK: - Properties
 
-    var avatarText: String? {
-        get { title(for: .normal) }
-        set { setTitle(newValue, for: .normal) }
+    var avatar: Avatar = .empty {
+        didSet { update(avatar: avatar) }
+    }
+
+    // MARK: - Initialisers
+
+    override init() {
+        super.init()
+        setupConstraints()
+        imageView.clipsToBounds = true
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Setups
+
+    private func setupConstraints() {
+
+        [label, imageView].forEach(addSubview)
+
+        let constraints = [
+            label.topAnchor.constraint(equalTo: topAnchor),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor),
+            imageView.topAnchor.constraint(equalTo: topAnchor),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            imageView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
     }
 
     // MARK: - Updates
@@ -52,8 +106,22 @@ final class RoundedAvatarView: RoundedButton {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
-        setTitleColor(theme.text.lightText, for: .normal)
+        label.textColor = theme.text.lightText
         apply(shadow: theme.shadows.box)
+    }
+
+    private func update(avatar: Avatar) {
+        switch avatar {
+        case let .text(text):
+            label.text = text
+            imageView.image = nil
+        case let .image(image):
+            label.text = nil
+            imageView.image = image
+        case .empty:
+            label.text = nil
+            imageView.image = nil
+        }
     }
 
     // MARK: - Layout
@@ -61,6 +129,8 @@ final class RoundedAvatarView: RoundedButton {
     override func layoutSubviews() {
         super.layoutSubviews()
         let size = frame.height / 2.0
-        titleLabel?.font = .Avenir.medium.withSize(size)
+        layer.cornerRadius = size
+        imageView.layer.cornerRadius = size
+        label.font = .Avenir.medium.withSize(size)
     }
 }

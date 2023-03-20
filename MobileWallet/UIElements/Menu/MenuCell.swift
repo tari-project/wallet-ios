@@ -108,6 +108,7 @@ final class MenuCell: DynamicThemeCell {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         updateTintColor(theme: theme)
+        backgroundColor = theme.backgrounds.primary
     }
 
     private func updateTintColor(theme: ColorTheme) {

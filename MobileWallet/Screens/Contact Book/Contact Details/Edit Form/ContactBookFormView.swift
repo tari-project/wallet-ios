@@ -47,6 +47,7 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
     struct TextFieldViewModel {
         let placeholder: String?
         let text: String?
+        let isEmojiKeyboardVisible: Bool
         let callback: ((String) -> Void)?
     }
 
@@ -139,6 +140,7 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
                 textField.placeholder = model.placeholder
                 textField.text = model.text
+                textField.isEmojiKeyboardVisible = model.isEmojiKeyboardVisible
                 textField.onReturnPressed = { [weak self] in
                     self?.handleOnReturnPressedAction(index: index)
                 }
@@ -166,5 +168,14 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
             return
         }
         stackView.arrangedSubviews[nextIndex].becomeFirstResponder()
+    }
+
+    override var intrinsicContentSize: CGSize {
+
+        guard #available(iOS 16.0, *) else {
+            return sizeThatFits(CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude))
+        }
+
+        return super.intrinsicContentSize
     }
 }

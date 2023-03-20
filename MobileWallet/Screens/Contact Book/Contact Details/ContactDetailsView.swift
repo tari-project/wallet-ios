@@ -53,11 +53,7 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var avatarView: RoundedAvatarView = {
-        let view = RoundedAvatarView()
-        view.titleLabel?.font = .Avenir.medium.withSize(46.0)
-        return view
-    }()
+    @View private var avatarView = RoundedAvatarView()
 
     @View private var nameLabel: UILabel = {
         let view = UILabel()
@@ -91,9 +87,14 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     // MARK: - Properties
 
-    var avatar: String? {
-        get { avatarView.title(for: .normal) }
-        set { avatarView.setTitle(newValue, for: .normal) }
+    var editButtonName: String? {
+        get { navigationBar.rightButton.title(for: .normal) }
+        set { navigationBar.rightButton.setTitle(newValue, for: .normal) }
+    }
+
+    var avatar: RoundedAvatarView.Avatar {
+        get { avatarView.avatar }
+        set { avatarView.avatar = newValue }
     }
 
     var name: String? {
@@ -141,7 +142,6 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     private func setupViews() {
         navigationBar.title = localized("contact_book.details.title")
-        navigationBar.rightButton.setTitle(localized("common.edit"), for: .normal)
         tableView.tableFooterView = footer
     }
 
@@ -348,8 +348,8 @@ private final class ContactDetailsViewBottomView: DynamicThemeView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        imageView.tintColor = theme.text.lightText
-        label.textColor = theme.text.lightText
+        imageView.tintColor = theme.text.body
+        label.textColor = theme.text.body
     }
 
     func update(image: UIImage?, text: String?) {

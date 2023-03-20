@@ -69,7 +69,8 @@ final class ContactDetailsModel {
     }
 
     struct ViewModel {
-        let avatar: String
+        let avatarText: String?
+        let avatarImage: UIImage?
         let emojiID: String
         let hex: String?
         let contactType: ContactsManager.ContactType
@@ -77,6 +78,7 @@ final class ContactDetailsModel {
 
     // MARK: - View Model
 
+    @Published private(set) var editButtonName: String?
     @Published private(set) var name: String?
     @Published private(set) var viewModel: ViewModel?
     @Published private(set) var yat: String?
@@ -180,7 +182,7 @@ final class ContactDetailsModel {
 
     func unlinkContact() {
 
-        guard let emojiID = model.internalModel?.emojiID, let name = model.externalModel?.fullname else { return }
+        guard let emojiID = model.internalModel?.emojiID.obfuscatedText, let name = model.externalModel?.fullname else { return }
 
         do {
             try contactsManager.unlink(contact: model)
@@ -202,7 +204,10 @@ final class ContactDetailsModel {
 
     private func updateData(model: ContactsManager.Model) {
 
-        viewModel = ViewModel(avatar: model.avatar, emojiID: model.internalModel?.emojiID ?? "", hex: model.internalModel?.hex, contactType: model.type)
+        let avatarImage = model.avatarImage
+        let avatarText = avatarImage == nil ? model.avatar : nil
+
+        viewModel = ViewModel(avatarText: avatarText, avatarImage: avatarImage, emojiID: model.internalModel?.emojiID ?? "", hex: model.internalModel?.hex, contactType: model.type)
 
         var mainMenuItems: [MenuItem] = []
 
@@ -233,7 +238,7 @@ final class ContactDetailsModel {
     }
 
     private func prepareForUnkinkAction() {
-        guard let emojiID = model.internalModel?.emojiID, let name = model.externalModel?.fullname else { return }
+        guard let emojiID = model.internalModel?.emojiID.obfuscatedText, let name = model.externalModel?.fullname else { return }
         action = .showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
     }
 
@@ -305,7 +310,15 @@ final class ContactDetailsModel {
     // MARK: - Handlers
 
     private func handle(model: ContactsManager.Model) {
-        name = model.name
+
+        if model.type == .internalOrEmojiID, !model.isFFIContact {
+            name = nil
+            editButtonName = localized("common.add")
+        } else {
+            name = model.name
+            editButtonName = localized("common.edit")
+        }
+
         yat = model.externalModel?.yat
         updateData(model: model)
     }

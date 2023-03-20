@@ -46,7 +46,8 @@ final class ContactBookCell: DynamicThemeCell {
     struct ViewModel: Identifiable, Hashable {
         let id: UUID
         let name: String
-        let avatar: String
+        let avatarText: String
+        let avatarImage: UIImage?
         let isFavorite: Bool
         let menuItems: [ContactCapsuleMenu.ButtonViewModel]
         let contactTypeImage: UIImage?
@@ -116,15 +117,15 @@ final class ContactBookCell: DynamicThemeCell {
             avatarMenu.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
             avatarMenu.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0),
             avatarMenu.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
-            contactTypeBackgroundView.trailingAnchor.constraint(equalTo: avatarMenu.avatarButton.trailingAnchor),
-            contactTypeBackgroundView.bottomAnchor.constraint(equalTo: avatarMenu.avatarButton.bottomAnchor),
+            contactTypeBackgroundView.trailingAnchor.constraint(equalTo: avatarMenu.avatarView.trailingAnchor),
+            contactTypeBackgroundView.bottomAnchor.constraint(equalTo: avatarMenu.avatarView.bottomAnchor),
             contactTypeBackgroundView.widthAnchor.constraint(equalToConstant: 16.0),
             contactTypeBackgroundView.heightAnchor.constraint(equalToConstant: 16.0),
             contactTypeView.topAnchor.constraint(equalTo: contactTypeBackgroundView.topAnchor, constant: 3.0),
             contactTypeView.leadingAnchor.constraint(equalTo: contactTypeBackgroundView.leadingAnchor, constant: 3.0),
             contactTypeView.trailingAnchor.constraint(equalTo: contactTypeBackgroundView.trailingAnchor, constant: -3.0),
             contactTypeView.bottomAnchor.constraint(equalTo: contactTypeBackgroundView.bottomAnchor, constant: -3.0),
-            nameLabel.leadingAnchor.constraint(equalTo: avatarMenu.avatarButton.trailingAnchor, constant: 10.0),
+            nameLabel.leadingAnchor.constraint(equalTo: avatarMenu.avatarView.trailingAnchor, constant: 10.0),
             nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             favoriteView.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 10.0),
             favoriteView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
@@ -150,7 +151,13 @@ final class ContactBookCell: DynamicThemeCell {
 
     func update(viewModel: ViewModel) {
         nameLabel.text = viewModel.name
-        avatarMenu.avatarButton.avatarText = viewModel.avatar
+
+        if let avatarImage = viewModel.avatarImage {
+            avatarMenu.avatarView.avatar = .image(avatarImage)
+        } else {
+            avatarMenu.avatarView.avatar = .text(viewModel.avatarText)
+        }
+
         avatarMenu.update(buttons: viewModel.menuItems)
         favoriteView.isHidden = !viewModel.isFavorite
         contactTypeView.image = viewModel.contactTypeImage
