@@ -55,9 +55,14 @@ final class ContactsManager {
         let internalModel: InternalContactsManager.ContactModel?
         let externalModel: ExternalContactsManager.ContactModel?
 
-        var name: String {
-            guard let externalModel else { return internalModel?.alias ?? internalModel?.emojiID.obfuscatedText ?? "" }
-            return externalModel.fullname
+        var name: String { nameComponents.joined(separator: " ") }
+
+        var nameComponents: [String] {
+            guard let externalModel else {
+                let name = internalModel?.alias ?? internalModel?.emojiID.obfuscatedText ?? ""
+                return [name]
+            }
+            return [externalModel.firstName, externalModel.lastName]
         }
 
         var avatar: String {
@@ -72,6 +77,7 @@ final class ContactsManager {
             externalModel?.avatar
         }
 
+        var isFavorite: Bool { internalModel?.isFavorite ?? false }
         var isFFIContact: Bool { internalModel?.alias != nil }
         var hasIntrenalModel: Bool { internalModel != nil }
         var hasExternalModel: Bool { externalModel != nil }
@@ -151,13 +157,13 @@ final class ContactsManager {
         return model
     }
 
-    func update(nameComponents: [String], yat: String, contact: Model) throws {
+    func update(nameComponents: [String], isFavorite: Bool, yat: String, contact: Model) throws {
 
         let internalContact = contact.internalModel
         let externalContact = contact.externalModel
 
         if let internalContact {
-            try internalContactsManager.update(name: nameComponents.joined(separator: " "), contact: internalContact)
+            try internalContactsManager.update(name: nameComponents.joined(separator: " "), isFavorite: isFavorite, contact: internalContact)
         }
 
         if let externalContact, nameComponents.count == 2 {
@@ -178,7 +184,7 @@ final class ContactsManager {
 
     func link(internalContact: InternalContactsManager.ContactModel, externalContact: ExternalContactsManager.ContactModel) throws {
         try externalContactsManager.link(hex: internalContact.hex, emojiID: internalContact.emojiID, contact: externalContact)
-        try internalContactsManager.update(name: externalContact.fullname, contact: internalContact)
+        try internalContactsManager.update(name: externalContact.fullname, isFavorite: internalContact.isFavorite, contact: internalContact)
     }
 
     func unlink(contact: Model) throws {
@@ -186,8 +192,8 @@ final class ContactsManager {
         try externalContactsManager.unlink(contact: externalContact)
     }
 
-    func createInternalModel(name: String, address: TariAddress) throws -> Model {
-        let internalModel = try internalContactsManager.create(name: name, address: address)
+    func createInternalModel(name: String, isFavorite: Bool, address: TariAddress) throws -> Model {
+        let internalModel = try internalContactsManager.create(name: name, isFavorite: isFavorite, address: address)
         return Model(internalModel: internalModel, externalModel: nil)
     }
 }
@@ -202,8 +208,8 @@ extension ContactsManager.Model {
             items.append(.send)
         }
 
-        if isFFIContact {
-            items.append(.favorite)
+        if isFFIContact, let internalModel {
+            items.append(internalModel.isFavorite ? .removeFromFavorites : .addToFavorites)
         }
 
         if hasIntrenalModel, hasExternalModel {

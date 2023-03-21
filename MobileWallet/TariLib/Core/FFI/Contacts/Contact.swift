@@ -59,8 +59,18 @@ final class Contact {
             var errorCode: Int32 = -1
             let errorCodePointer = PointerHandler.pointer(for: &errorCode)
             let result = contact_get_alias(pointer, errorCodePointer)
-            guard errorCode == 0, let result = result, let alias = String(validatingUTF8: result) else { throw WalletError(code: errorCode) }
+            guard errorCode == 0, let result, let alias = String(validatingUTF8: result) else { throw WalletError(code: errorCode) }
             return alias
+        }
+    }
+
+    var isFavorite: Bool {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = contact_get_favourite(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return result
         }
     }
 
@@ -70,15 +80,15 @@ final class Contact {
         self.pointer = pointer
     }
 
-    convenience init(alias: String, addressPointer: OpaquePointer) throws {
+    convenience init(alias: String, isFavorite: Bool, addressPointer: OpaquePointer) throws {
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = contact_create(alias, addressPointer, errorCodePointer)
+        let result = contact_create(alias, addressPointer, isFavorite, errorCodePointer)
 
-        guard errorCode == 0, let pointer = result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
 
-        self.init(pointer: pointer)
+        self.init(pointer: result)
     }
 
     // MARK: - Deinitialiser
