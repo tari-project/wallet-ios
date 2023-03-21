@@ -43,11 +43,6 @@ import TariCommon
 
 final class PageToolbarView: DynamicThemeView {
 
-    struct TabViewModel {
-        let title: String
-        let callback: (() -> Void)?
-    }
-
     // MARK: - Subviews
 
     @View private var selectorLineView = UIView()

@@ -11,9 +11,7 @@
 		001F6CDC238011CA00FA7002 /* PublicKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CDB238011CA00FA7002 /* PublicKey.swift */; };
 		001F6CE02380198D00FA7002 /* Contacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CDF2380198D00FA7002 /* Contacts.swift */; };
 		001F6CE42380253B00FA7002 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CE32380253B00FA7002 /* Contact.swift */; };
-		00230B0923770CEA00F23E34 /* CALayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00230B0823770CEA00F23E34 /* CALayer.swift */; };
 		00262EB4236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
-		00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00325EC9239E4A1000F76918 /* FadedOverlayView.swift */; };
 		0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		004277F323E0407900AE7BD9 /* TextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277F223E0407900AE7BD9 /* TextButton.swift */; };
 		004277F723E0628A00AE7BD9 /* UIViewController+Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */; };
@@ -25,7 +23,6 @@
 		006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */ = {isa = PBXBuildFile; fileRef = 006D211C23CEDF16007D1C10 /* MicroTari.swift */; };
 		0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0070A7BB2379847100C25E1C /* LocalAuthentication.framework */; };
 		0072BF24247E735700BD28FB /* ReminderNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0072BF23247E735700BD28FB /* ReminderNotifications.swift */; };
-		0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0074619A239A57B000F00966 /* UIBarButtonItem.swift */; };
 		0087A1A923F4235400B89EE7 /* ScanViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A523F4235400B89EE7 /* ScanViewController.swift */; };
 		0087A1AF23F4235400B89EE7 /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A723F4235400B89EE7 /* ContactCell.swift */; };
 		0087A1B223F4235400B89EE7 /* AddRecipientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0087A1A823F4235400B89EE7 /* AddRecipientViewController.swift */; };
@@ -34,7 +31,6 @@
 		00A66523243B3E380046E730 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66522243B3E380046E730 /* ErrorView.swift */; };
 		00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A66526243C766D0046E730 /* ConnectionMonitor.swift */; };
 		00A994332396434B007D9990 /* PulseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00A994322396434B007D9990 /* PulseButton.swift */; };
-		00B084C0249E471800F7B9BD /* EmojiSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084BF249E471800F7B9BD /* EmojiSet.swift */; };
 		00B084C5249E4F6900F7B9BD /* SeedWords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B084C4249E4F6900F7B9BD /* SeedWords.swift */; };
 		00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F5241B778D00ED8318 /* BackgroundTaskManager.swift */; };
 		00B4D6F8241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00B4D6F7241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift */; };
@@ -507,9 +503,7 @@
 		001F6CDB238011CA00FA7002 /* PublicKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKey.swift; sourceTree = "<group>"; };
 		001F6CDF2380198D00FA7002 /* Contacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contacts.swift; sourceTree = "<group>"; };
 		001F6CE32380253B00FA7002 /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
-		00230B0823770CEA00F23E34 /* CALayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CALayer.swift; sourceTree = "<group>"; };
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
-		00325EC9239E4A1000F76918 /* FadedOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadedOverlayView.swift; sourceTree = "<group>"; };
 		0039B1B123FA925500F91E0F /* PasteEmojisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteEmojisView.swift; sourceTree = "<group>"; };
 		004277F223E0407900AE7BD9 /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
 		004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Content.swift"; sourceTree = "<group>"; };
@@ -521,7 +515,6 @@
 		006D211C23CEDF16007D1C10 /* MicroTari.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MicroTari.swift; sourceTree = "<group>"; };
 		0070A7BB2379847100C25E1C /* LocalAuthentication.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = LocalAuthentication.framework; path = System/Library/Frameworks/LocalAuthentication.framework; sourceTree = SDKROOT; };
 		0072BF23247E735700BD28FB /* ReminderNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotifications.swift; sourceTree = "<group>"; };
-		0074619A239A57B000F00966 /* UIBarButtonItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIBarButtonItem.swift; sourceTree = "<group>"; };
 		0087A1A523F4235400B89EE7 /* ScanViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScanViewController.swift; sourceTree = "<group>"; };
 		0087A1A723F4235400B89EE7 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
 		0087A1A823F4235400B89EE7 /* AddRecipientViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRecipientViewController.swift; sourceTree = "<group>"; };
@@ -530,7 +523,6 @@
 		00A66522243B3E380046E730 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		00A66526243C766D0046E730 /* ConnectionMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionMonitor.swift; sourceTree = "<group>"; };
 		00A994322396434B007D9990 /* PulseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseButton.swift; sourceTree = "<group>"; };
-		00B084BF249E471800F7B9BD /* EmojiSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiSet.swift; sourceTree = "<group>"; };
 		00B084C4249E4F6900F7B9BD /* SeedWords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWords.swift; sourceTree = "<group>"; };
 		00B4D6F5241B778D00ED8318 /* BackgroundTaskManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskManager.swift; sourceTree = "<group>"; };
 		00B4D6F7241B77A900ED8318 /* ScheduleReminderNotificationsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleReminderNotificationsOperation.swift; sourceTree = "<group>"; };
@@ -1043,14 +1035,12 @@
 			isa = PBXGroup;
 			children = (
 				376C62AD247574850091BB28 /* Animation+EnumInit.swift */,
-				00230B0823770CEA00F23E34 /* CALayer.swift */,
 				00BBD808237D80C800EBF5E6 /* Date.swift */,
 				373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */,
 				BF8316FC23EF7EAA00235403 /* LAContext.swift */,
 				0042780223E8421100AE7BD9 /* String.swift */,
 				37CB9F892451A2AD00C495F2 /* String+Emoji.swift */,
 				37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */,
-				0074619A239A57B000F00966 /* UIBarButtonItem.swift */,
 				37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */,
 				37ABB68F24781CE800F08163 /* UILabel.swift */,
 				37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */,
@@ -1235,7 +1225,6 @@
 				3AECD48F284F3BB300D81C80 /* BaseNavigationContentView.swift */,
 				373CCDBC2490B66E00D0A2C9 /* CircularProgressView.swift */,
 				BFAB5D1023FDEA69009E8563 /* EmojiIdView.swift */,
-				00325EC9239E4A1000F76918 /* FadedOverlayView.swift */,
 				3A13260227EDE42A00289C8C /* GradientView.swift */,
 				375DB1DF246E90D100B2BEF4 /* NavigationBar.swift */,
 				3A4205A027980FFA00A8D49C /* QRCodeView.swift */,
@@ -1615,7 +1604,6 @@
 				4CDEC322273A5E3500999DCB /* Balance.swift */,
 				3A8005CE28EAF9380022A38A /* BaseNodeConnectivityStatus.swift */,
 				00BBD80D237DA07400EBF5E6 /* ByteVector.swift */,
-				00B084BF249E471800F7B9BD /* EmojiSet.swift */,
 				3A8005C728EAF1AB0022A38A /* RestoreWalletStatus.swift */,
 				3A6F3FF7283BF980005D1793 /* TariFeePerGramStats.swift */,
 				3A78860D2872FB39003B1F9A /* TariVectorWrapper.swift */,
@@ -2977,7 +2965,6 @@
 				54DE32D22930BE7F0060108A /* ThemeCoordinator.swift in Sources */,
 				001F6CE42380253B00FA7002 /* Contact.swift in Sources */,
 				3AF97E6927CF76C800FF6A3F /* DeeplinkHandler.swift in Sources */,
-				00325ECA239E4A1000F76918 /* FadedOverlayView.swift in Sources */,
 				00DD160F241CD41D00C955B4 /* BaseNode.swift in Sources */,
 				3AF97E6527CF767D00FF6A3F /* TransactionsSendDeeplink.swift in Sources */,
 				3A35413626A738D4002AB5A8 /* RoundedInputField.swift in Sources */,
@@ -3000,7 +2987,6 @@
 				547A85D529AD23D800D94985 /* MenuTableView.swift in Sources */,
 				3AF51819270D7EFC00746884 /* AddRecipientModel.swift in Sources */,
 				37ABB69424781F8600F08163 /* UILabelWithPadding.swift in Sources */,
-				0074619B239A57B000F00966 /* UIBarButtonItem.swift in Sources */,
 				3A6A033C2802DD34000432B4 /* PopUpPresenter.swift in Sources */,
 				3ABBBA8028508AB000A3108D /* UTXOsWalletTextListViewCell.swift in Sources */,
 				3A8473CA28EC56180015E63A /* TariFeesService.swift in Sources */,
@@ -3145,7 +3131,6 @@
 				3AC6F11428E9D8840068E6FF /* CustomBridgesHandable.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				3A62674626D76E6B007F9895 /* SelectNetworkViewController.swift in Sources */,
-				00B084C0249E471800F7B9BD /* EmojiSet.swift in Sources */,
 				3AA00E97271D5ECA00977C36 /* AddRecipientSectionHeaderView.swift in Sources */,
 				377C951E2522213800CC1696 /* TxsListViewController.swift in Sources */,
 				3AEDBE4F27CE46D6006B0166 /* DeeplinkDataDecoder.swift in Sources */,
@@ -3310,7 +3295,6 @@
 				3A5A3D5C290178EB00B689C6 /* BackupWalletSettingsModel.swift in Sources */,
 				3AE5E5662874656200D3AF85 /* PopUpUTXOsBreakContentView.swift in Sources */,
 				54B7F4452996583800BB484B /* ContactBookCell.swift in Sources */,
-				00230B0923770CEA00F23E34 /* CALayer.swift in Sources */,
 				3A4BF7D027B57CE400CA499D /* SendingTariConstructor.swift in Sources */,
 				3A82455C27E1EEE3003B6B59 /* TransactionDetailsNoteView.swift in Sources */,
 				3A82455A27E1EE93003B6B59 /* TransactionDetailsContactView.swift in Sources */,

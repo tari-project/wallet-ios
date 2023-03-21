@@ -75,8 +75,6 @@ final class AddContactModel {
     private var address: TariAddress?
     @Published private var errors = Set<DataValidationError>([.noEmojiID])
 
-    var formattedSearchText: String = ""
-
     private let contactsManager = ContactsManager()
     private var cancellables = Set<AnyCancellable>()
 

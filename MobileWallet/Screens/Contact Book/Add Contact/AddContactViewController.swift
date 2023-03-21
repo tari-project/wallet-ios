@@ -89,6 +89,11 @@ final class AddContactViewController: UIViewController {
             .sink { [weak self] in self?.handle(action: $0) }
             .store(in: &cancellables)
 
+        model.$errorMessage
+            .compactMap { $0 }
+            .sink { PopUpPresenter.show(message: $0) }
+            .store(in: &cancellables)
+
         mainView.searchView.textField.bind(withSubject: model.searchTextSubject, storeIn: &cancellables)
 
         mainView.contactName
