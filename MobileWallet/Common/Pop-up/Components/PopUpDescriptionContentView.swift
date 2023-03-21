@@ -47,6 +47,7 @@ final class PopUpDescriptionContentView: DynamicThemeView {
 
     @View private(set) var label: StylizedLabel = {
         let view = StylizedLabel()
+        view.font = .Avenir.medium.withSize(14.0)
         view.normalFont = .Avenir.medium.withSize(14.0)
         view.boldFont = .Avenir.heavy.withSize(14.0)
         view.separator = " "

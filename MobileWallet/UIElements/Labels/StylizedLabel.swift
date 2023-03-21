@@ -55,6 +55,10 @@ final class StylizedLabel: UILabel {
 
     // MARK: - Properties
 
+    override var text: String? {
+        didSet { textComponents = [] }
+    }
+
     var normalFont: UIFont? {
         didSet { updateText() }
     }
@@ -81,7 +85,9 @@ final class StylizedLabel: UILabel {
 
     // MARK: - Updates
 
-    private func updateText() {
+    private func updateText(function: String = #function) {
+
+        guard !textComponents.isEmpty else { return }
 
         attributedText = textComponents.reduce(into: NSMutableAttributedString()) { result, stylizedText in
 
