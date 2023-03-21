@@ -209,17 +209,21 @@ final class ContactDetailsModel {
 
         viewModel = ViewModel(avatarText: avatarText, avatarImage: avatarImage, emojiID: model.internalModel?.emojiID ?? "", hex: model.internalModel?.hex, contactType: model.type)
 
-        var mainMenuItems: [MenuItem] = []
-
-        if model.hasIntrenalModel {
-            mainMenuItems += [.send, .addToFavorites]
-        }
-
-        if model.type == .linked {
-            mainMenuItems.append(.unlinkContact)
-        } else {
-            mainMenuItems.append(.linkContact)
-        }
+        var mainMenuItems: [MenuItem] = model.menuItems
+            .compactMap {
+                switch $0 {
+                case .send:
+                    return .send
+                case .favorite:
+                    return .addToFavorites
+                case .link:
+                    return .linkContact
+                case .unlink:
+                    return .unlinkContact
+                case .details:
+                    return nil
+                }
+            }
 
         if model.isFFIContact || model.hasExternalModel {
             mainMenuItems.append(.removeContact)
