@@ -178,13 +178,33 @@ final class ContactDetailsViewController: UIViewController {
 
         if model.hasSplittedName {
             models = [
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.first_name"), text: nameComponents[0], isEmojiKeyboardVisible: false, callback: { nameComponents[0] = $0 }),
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.last_name"), text: nameComponents[1], isEmojiKeyboardVisible: false, callback: { nameComponents[1] = $0 }),
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.yat"), text: yat, isEmojiKeyboardVisible: true, callback: { yat = $0 })
+                ContactBookFormView.TextFieldViewModel(
+                    placeholder: localized("contact_book.details.edit_form.text_field.first_name"),
+                    text: nameComponents[0],
+                    isEmojiKeyboardVisible: false,
+                    callback: { nameComponents[0] = $0 }
+                ),
+                ContactBookFormView.TextFieldViewModel(
+                    placeholder: localized("contact_book.details.edit_form.text_field.last_name"),
+                    text: nameComponents[1],
+                    isEmojiKeyboardVisible: false,
+                    callback: { nameComponents[1] = $0 }
+                ),
+                ContactBookFormView.TextFieldViewModel(
+                    placeholder: localized("contact_book.details.edit_form.text_field.yat"),
+                    text: yat,
+                    isEmojiKeyboardVisible: true,
+                    callback: { yat = $0 }
+                )
             ]
         } else {
             models = [
-                ContactBookFormView.TextFieldViewModel(placeholder: localized("contact_book.details.edit_form.text_field.name"), text: nameComponents[0], isEmojiKeyboardVisible: false, callback: { nameComponents[0] = $0 })
+                ContactBookFormView.TextFieldViewModel(
+                    placeholder: localized("contact_book.details.edit_form.text_field.name"),
+                    text: nameComponents[0],
+                    isEmojiKeyboardVisible: false,
+                    callback: { nameComponents[0] = $0 }
+                )
             ]
         }
 

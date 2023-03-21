@@ -44,16 +44,16 @@ struct PopUpDialogModel {
     let titleComponents: [StylizedLabel.StylizedText]
     let messageComponents: [StylizedLabel.StylizedText]
     let buttons: [PopUpDialogButtonModel]
-    let hapticType: PopUpPresenter.Configuration.HapticType
+    let hapticType: PopUpPresenter.HapticType
 
-    init(titleComponents: [StylizedLabel.StylizedText], messageComponents: [StylizedLabel.StylizedText], buttons: [PopUpDialogButtonModel], hapticType: PopUpPresenter.Configuration.HapticType) {
+    init(titleComponents: [StylizedLabel.StylizedText], messageComponents: [StylizedLabel.StylizedText], buttons: [PopUpDialogButtonModel], hapticType: PopUpPresenter.HapticType) {
         self.titleComponents = titleComponents
         self.messageComponents = messageComponents
         self.buttons = buttons
         self.hapticType = hapticType
     }
 
-    init(title: String?, message: String?, buttons: [PopUpDialogButtonModel], hapticType: PopUpPresenter.Configuration.HapticType) {
+    init(title: String?, message: String?, buttons: [PopUpDialogButtonModel], hapticType: PopUpPresenter.HapticType) {
 
         if let title {
             titleComponents = [StylizedLabel.StylizedText(text: title, style: .normal)]
@@ -173,7 +173,7 @@ extension PopUpPresenter {
 
     // MARK: - Helpers
 
-    private static func makeHapticType(model: MessageModel) -> Configuration.HapticType {
+    private static func makeHapticType(model: MessageModel) -> HapticType {
         switch model.type {
         case .error:
             return .error
@@ -189,11 +189,11 @@ extension PopUpPresenter {
 
 extension PopUpPresenter.Configuration {
 
-    static func message(hapticType: Self.HapticType) -> Self {
+    static func message(hapticType: PopUpPresenter.HapticType) -> Self {
         Self(displayDuration: 12.0, dismissOnTapOutsideOrSwipe: true, hapticType: hapticType)
     }
 
-    static func dialog(hapticType: Self.HapticType) -> Self {
+    static func dialog(hapticType: PopUpPresenter.HapticType) -> Self {
         Self(displayDuration: nil, dismissOnTapOutsideOrSwipe: false, hapticType: hapticType)
     }
 }

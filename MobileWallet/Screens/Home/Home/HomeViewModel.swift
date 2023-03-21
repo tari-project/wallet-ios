@@ -108,27 +108,19 @@ final class HomeViewModel {
     private func handle(networkConnection: NetworkMonitor.Status, torConnection: TorManager.ConnectionStatus, baseNodeConnection: BaseNodeConnectivityStatus, syncStatus: TariValidationService.SyncStatus) {
 
         switch (networkConnection, torConnection, baseNodeConnection, syncStatus) {
-        case (.disconnected, _, _, _):
+        case (.disconnected, _, _, _),
+            (.connected, .disconnected, _, _),
+            (.connected, .disconnecting, _, _):
             connectionStatusImage = offlineIcon
-        case (.connected, .disconnected, _, _):
-            connectionStatusImage = offlineIcon
-        case (.connected, .disconnecting, _, _):
-            connectionStatusImage = offlineIcon
-        case (.connected, .connecting, _, _):
+        case (.connected, .connecting, _, _),
+            (.connected, .portsOpen, _, _),
+            (.connected, .connected, .offline, _),
+            (.connected, .connected, .connecting, _),
+            (.connected, .connected, .online, .idle),
+            (.connected, .connected, .online, .failed):
             connectionStatusImage = limitedConnectionIcon
-        case (.connected, .portsOpen, _, _):
-            connectionStatusImage = limitedConnectionIcon
-        case (.connected, .connected, .offline, _):
-            connectionStatusImage = limitedConnectionIcon
-        case (.connected, .connected, .connecting, _):
-            connectionStatusImage = limitedConnectionIcon
-        case (.connected, .connected, .online, .idle):
-            connectionStatusImage = limitedConnectionIcon
-        case (.connected, .connected, .online, .failed):
-            connectionStatusImage = limitedConnectionIcon
-        case (.connected, .connected, .online, .syncing):
-            connectionStatusImage = onlineIcon
-        case (.connected, .connected, .online, .synced):
+        case (.connected, .connected, .online, .syncing),
+            (.connected, .connected, .online, .synced):
             connectionStatusImage = onlineIcon
         }
     }

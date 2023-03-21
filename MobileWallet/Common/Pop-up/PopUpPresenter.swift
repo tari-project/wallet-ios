@@ -43,14 +43,13 @@ import SwiftEntryKit
 
 enum PopUpPresenter {
 
+    enum HapticType {
+        case success
+        case error
+        case none
+    }
+
     struct Configuration {
-
-        enum HapticType {
-            case success
-            case error
-            case none
-        }
-
         let displayDuration: TimeInterval?
         let dismissOnTapOutsideOrSwipe: Bool
         let hapticType: HapticType

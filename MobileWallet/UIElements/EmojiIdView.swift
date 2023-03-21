@@ -133,7 +133,8 @@ final class EmojiIdView: DynamicThemeView {
         setupView(textCentered: textCentered)
     }
 
-    private func setupView(textCentered: Bool = true, inViewController vc: UIViewController? = nil, initialWidth: CGFloat = CGFloat(185), initialHeight: CGFloat = CGFloat(40), showContainerViewBlur: Bool = true, cornerRadius: CGFloat = 6.0) {
+    private func setupView(textCentered: Bool = true, inViewController vc: UIViewController? = nil,
+                           initialWidth: CGFloat = 185.0, initialHeight: CGFloat = 40.0, showContainerViewBlur: Bool = true, cornerRadius: CGFloat = 6.0) {
         self.backgroundColor = .clear
         self.cornerRadius = cornerRadius
         blackoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap(_:))))
@@ -146,7 +147,8 @@ final class EmojiIdView: DynamicThemeView {
         prepareExpandedEmojiId(height: initialHeight)
     }
 
-    func setup(emojiID: String, hex: String, textCentered: Bool, inViewController vc: UIViewController? = nil, initialWidth: CGFloat = 185.0, initialHeight: CGFloat = 40.0, showContainerViewBlur: Bool = true, cornerRadius: CGFloat = 6.0) {
+    func setup(emojiID: String, hex: String, textCentered: Bool, inViewController vc: UIViewController? = nil,
+               initialWidth: CGFloat = 185.0, initialHeight: CGFloat = 40.0, showContainerViewBlur: Bool = true, cornerRadius: CGFloat = 6.0) {
         backgroundColor = .clear
         self.cornerRadius = cornerRadius
         blackoutView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tap(_:))))

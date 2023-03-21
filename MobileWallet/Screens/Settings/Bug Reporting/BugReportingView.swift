@@ -147,7 +147,8 @@ final class BugReportingView: BaseNavigationContentView {
     private func setupConstraints() {
 
         addSubview(mainContentView)
-        [headerLabel, nameTextField, nameTextFieldSeparator, emailTextField, emailTextFieldSeparator, messageHeaderLabel, messageTextView, footerLabel, sendButton, logsButton].forEach { mainContentView.contentView.addSubview($0) }
+        [headerLabel, nameTextField, nameTextFieldSeparator, emailTextField, emailTextFieldSeparator, messageHeaderLabel, messageTextView, footerLabel, sendButton, logsButton]
+            .forEach { mainContentView.contentView.addSubview($0) }
 
         let constraints = [
             mainContentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
