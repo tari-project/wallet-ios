@@ -244,6 +244,8 @@ private extension ContactDetailsModel.MenuItem {
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.send"), isArrowVisible: true, isDestructive: false)
         case .addToFavorites:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.add_to_favorites"), isArrowVisible: false, isDestructive: false)
+        case .removeFromFavorites:
+            return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.remove_from_favorites"), isArrowVisible: false, isDestructive: false)
         case .linkContact:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.link"), isArrowVisible: true, isDestructive: false)
         case .unlinkContact:

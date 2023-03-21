@@ -758,6 +758,7 @@
 "contact_book.details.title" = "Contact Profile";
 "contact_book.details.menu.option.send" = "Send Tari";
 "contact_book.details.menu.option.add_to_favorites" = "Add to Favorites";
+"contact_book.details.menu.option.remove_from_favorites" = "Remove from Favorites";
 "contact_book.details.menu.option.link" = "Link Contact";
 "contact_book.details.menu.option.unlink" = "Unlink Contact";
 "contact_book.details.menu.option.remove_from_favorites" = "Remove from Favorites";

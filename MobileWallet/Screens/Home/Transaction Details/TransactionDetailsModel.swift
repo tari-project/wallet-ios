@@ -150,7 +150,15 @@ final class TransactionDetailsModel {
 
         do {
             let address = try transaction.address
-            let contact = try Contact(alias: alias, addressPointer: address.pointer)
+            let isFavorite: Bool
+
+            if let existingContact = try Tari.shared.contacts.findContact(hex: address.byteVector.hex) {
+                isFavorite = try existingContact.isFavorite
+            } else {
+                isFavorite = false
+            }
+
+            let contact = try Contact(alias: alias, isFavorite: isFavorite, addressPointer: address.pointer)
             _ = try Tari.shared.contacts.upsert(contact: contact)
             userAliasUpdateSuccessCallback?()
             userAlias = alias

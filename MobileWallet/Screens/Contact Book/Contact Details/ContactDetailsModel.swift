@@ -51,6 +51,7 @@ final class ContactDetailsModel {
     enum MenuItem: UInt {
         case send
         case addToFavorites
+        case removeFromFavorites
         case linkContact
         case unlinkContact
         case removeContact
@@ -87,11 +88,7 @@ final class ContactDetailsModel {
     @Published private(set) var errorModel: MessageModel?
 
     var hasSplittedName: Bool { model.hasExternalModel }
-
-    var nameComponents: [String] {
-        guard let externalModel = model.externalModel else { return [model.name] }
-        return [externalModel.firstName, externalModel.lastName]
-    }
+    var nameComponents: [String] { model.nameComponents }
 
     // MARK: - Properties
 
@@ -122,7 +119,9 @@ final class ContactDetailsModel {
         case .unlinkContact:
             prepareForUnkinkAction()
         case .addToFavorites:
-            return
+            update(isFavorite: true)
+        case .removeFromFavorites:
+            update(isFavorite: false)
         case .removeContact:
             action = .removeContactConfirmation
         case .btcWallet:
@@ -171,13 +170,7 @@ final class ContactDetailsModel {
     }
 
     func update(nameComponents: [String], yat: String) {
-
-        do {
-            try contactsManager.update(nameComponents: nameComponents, yat: yat, contact: model)
-            updateData()
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
-        }
+        update(nameComponents: nameComponents, isFavorite: model.isFavorite, yat: yat)
     }
 
     func unlinkContact() {
@@ -202,6 +195,19 @@ final class ContactDetailsModel {
         }
     }
 
+    private func update(isFavorite: Bool) {
+        update(nameComponents: model.nameComponents, isFavorite: isFavorite, yat: yat ?? "")
+    }
+
+    private func update(nameComponents: [String], isFavorite: Bool, yat: String) {
+        do {
+            try contactsManager.update(nameComponents: nameComponents, isFavorite: isFavorite, yat: yat, contact: model)
+            updateData()
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
+        }
+    }
+
     private func updateData(model: ContactsManager.Model) {
 
         let avatarImage = model.avatarImage
@@ -214,8 +220,10 @@ final class ContactDetailsModel {
                 switch $0 {
                 case .send:
                     return .send
-                case .favorite:
-                    return .addToFavorites
+                case .addToFavorites:
+                     return .addToFavorites
+                case .removeFromFavorites:
+                    return .removeFromFavorites
                 case .link:
                     return .linkContact
                 case .unlink:

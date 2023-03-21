@@ -287,8 +287,10 @@ private extension ContactBookModel.MenuItem {
         switch self {
         case .send:
             return .icons.send
-        case .favorite:
+        case .addToFavorites:
             return .icons.star.filled
+        case .removeFromFavorites:
+            return .icons.star.border
         case .link:
             return .icons.link
         case .unlink:

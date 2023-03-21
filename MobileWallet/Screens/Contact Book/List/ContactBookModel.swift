@@ -60,7 +60,8 @@ final class ContactBookModel {
 
     enum MenuItem: UInt {
         case send
-        case favorite
+        case addToFavorites
+        case removeFromFavorites
         case link
         case unlink
         case details
@@ -145,7 +146,7 @@ final class ContactBookModel {
                 let internalContacts = contactsManager.tariContactModels
                 let externalContacts = contactsManager.externalModels
 
-                let internalContactSection = internalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
+                let internalContactSection = internalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: $0.isFavorite, menuItems: $0.menuItems, type: $0.type) }
                 let externalContactSection = externalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
 
                 if !internalContactSection.isEmpty {
@@ -158,6 +159,7 @@ final class ContactBookModel {
 
                 contacts = internalContacts + externalContacts
                 allContactList = sections
+
             } catch {
                 errorModel = ErrorMessageManager.errorModel(forError: error)
             }
@@ -173,8 +175,10 @@ final class ContactBookModel {
         switch menuItem {
         case .send:
             performSendAction(model: model)
-        case .favorite:
-            return
+        case .addToFavorites:
+            update(isFavorite: true, contact: model)
+        case .removeFromFavorites:
+            update(isFavorite: false, contact: model)
         case .link:
             performLinkAction(model: model)
         case .unlink:
@@ -198,10 +202,18 @@ final class ContactBookModel {
         }
     }
 
+    private func update(isFavorite: Bool, contact: ContactsManager.Model) {
+        do {
+            try contactsManager.update(nameComponents: contact.nameComponents, isFavorite: isFavorite, yat: contact.externalModel?.yat ?? "", contact: contact)
+            fetchContacts()
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
+        }
+    }
+
     // MARK: - Handlers
 
     private func performSendAction(model: ContactsManager.Model) {
-
         do {
             guard let paymentInfo = try model.paymentInfo else { return }
             action = .sendTokens(paymentInfo: paymentInfo)

@@ -45,6 +45,7 @@ final class InternalContactsManager {
         let alias: String?
         let emojiID: String
         let hex: String
+        let isFavorite: Bool
         private(set) var contact: Contact?
 
         static func == (lhs: InternalContactsManager.ContactModel, rhs: InternalContactsManager.ContactModel) -> Bool {
@@ -60,8 +61,8 @@ final class InternalContactsManager {
 
         var models: [ContactModel] = []
 
-        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, emojiID: $0.address.emojis, hex: $0.address.byteVector.hex, contact: $0) }
-        models += try fetchTariAddresses().map { try ContactModel(alias: nil, emojiID: $0.emojis, hex: $0.byteVector.hex, contact: nil) }
+        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, emojiID: $0.address.emojis, hex: $0.address.byteVector.hex, isFavorite: $0.isFavorite, contact: $0) }
+        models += try fetchTariAddresses().map { try ContactModel(alias: nil, emojiID: $0.emojis, hex: $0.byteVector.hex, isFavorite: false, contact: nil) }
 
         return models
             .reduce(into: [ContactModel]()) { collection, model in
@@ -89,13 +90,13 @@ final class InternalContactsManager {
             }
     }
 
-    func create(name: String, address: TariAddress) throws -> ContactModel {
-        let contact = try Contact(alias: name, addressPointer: address.pointer)
+    func create(name: String, isFavorite: Bool, address: TariAddress) throws -> ContactModel {
+        let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
         try Tari.shared.contacts.upsert(contact: contact)
-        return try ContactModel(alias: name, emojiID: address.emojis, hex: address.byteVector.hex, contact: contact)
+        return try ContactModel(alias: name, emojiID: address.emojis, hex: address.byteVector.hex, isFavorite: isFavorite, contact: contact)
     }
 
-    func update(name: String, contact: ContactModel) throws {
+    func update(name: String, isFavorite: Bool, contact: ContactModel) throws {
 
         let address: TariAddress
 
@@ -105,7 +106,7 @@ final class InternalContactsManager {
             address = try TariAddress(emojiID: contact.emojiID)
         }
 
-        let contact = try Contact(alias: name, addressPointer: address.pointer)
+        let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
         try Tari.shared.contacts.upsert(contact: contact)
     }
 

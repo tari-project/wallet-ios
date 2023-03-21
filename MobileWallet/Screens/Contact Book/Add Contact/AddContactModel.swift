@@ -116,7 +116,7 @@ final class AddContactModel {
     func createContact() {
         do {
             guard let address else { return }
-            let model = try contactsManager.createInternalModel(name: contactName, address: address)
+            let model = try contactsManager.createInternalModel(name: contactName, isFavorite: false, address: address)
             action = .moveToContactDetails(model: model)
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)

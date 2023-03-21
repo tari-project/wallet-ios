@@ -42,13 +42,13 @@ enum PopUpComponentsFactory {
 
     static func makeHeaderView(title: String) -> PopUpHeaderView {
         let view = PopUpHeaderView()
-        view.label.text = title
+        view.label.textComponents = [StylizedLabel.StylizedText(text: title, style: .normal)]
         return view
     }
 
     static func makeContentView(message: String) -> PopUpDescriptionContentView {
         let view = PopUpDescriptionContentView()
-        view.label.text = message
+        view.label.textComponents = [StylizedLabel.StylizedText(text: message, style: .normal)]
         return view
     }
 
