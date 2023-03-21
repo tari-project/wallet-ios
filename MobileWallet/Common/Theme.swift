@@ -58,7 +58,6 @@ struct Images {
     let homeItem = UIImage(named: "navHome")
     let ttlItem = UIImage(named: "navTtl")
     let sendItem = UIImage(named: "navSend")?.withRenderingMode(.alwaysOriginal)
-    let profileItem = UIImage(named: "navProfile")
     let settingsItem = UIImage(named: "navSettings")
 
     // General icons

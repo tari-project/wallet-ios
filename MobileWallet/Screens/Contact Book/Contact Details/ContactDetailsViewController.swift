@@ -84,7 +84,7 @@ final class ContactDetailsViewController: UIViewController {
 
         model.$editButtonName
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.navigationBar.rightButton.setTitle($0, for: .normal) }
+            .sink { [weak self] in self?.mainView.editButtonName = $0 }
             .store(in: &cancellables)
 
         model.$name

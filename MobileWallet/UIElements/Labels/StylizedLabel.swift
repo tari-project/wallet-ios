@@ -85,7 +85,7 @@ final class StylizedLabel: UILabel {
 
     // MARK: - Updates
 
-    private func updateText(function: String = #function) {
+    private func updateText() {
 
         guard !textComponents.isEmpty else { return }
 
