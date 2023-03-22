@@ -860,7 +860,6 @@
 		3AFC6E022745051400A20287 /* SettingsHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeaderView.swift; sourceTree = "<group>"; };
 		491AB89F23F3FF4400372189 /* AddAmountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAmountViewController.swift; sourceTree = "<group>"; };
 		49996E1823F164BA002B6696 /* AnimatedBalanceLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedBalanceLabel.swift; sourceTree = "<group>"; };
-		4C2C95B723795930005058AB /* wallet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wallet.h; sourceTree = "<group>"; };
 		4C2C95B8237959B3005058AB /* MobileWallet-bridging-header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileWallet-bridging-header.h"; sourceTree = "<group>"; };
 		4C2C95C6237962CB005058AB /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		4C363B372574EFE500D99868 /* OpenSSL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenSSL.xcframework; path = "Pods/OpenSSL-Universal/Frameworks/OpenSSL.xcframework"; sourceTree = "<group>"; };
@@ -2384,7 +2383,6 @@
 			isa = PBXGroup;
 			children = (
 				3A874036278842E700D80823 /* Core */,
-				4C2C95B723795930005058AB /* wallet.h */,
 				006D211B23CEDEEE007D1C10 /* Utils */,
 			);
 			path = TariLib;

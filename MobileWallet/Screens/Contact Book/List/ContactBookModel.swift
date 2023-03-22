@@ -146,8 +146,11 @@ final class ContactBookModel {
                 let internalContacts = contactsManager.tariContactModels
                 let externalContacts = contactsManager.externalModels
 
-                let internalContactSection = internalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: $0.isFavorite, menuItems: $0.menuItems, type: $0.type) }
-                let externalContactSection = externalContacts.map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
+                let internalContactSection = internalContacts
+                    .map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: $0.isFavorite, menuItems: $0.menuItems, type: $0.type) }
+
+                let externalContactSection = externalContacts
+                    .map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
 
                 if !internalContactSection.isEmpty {
                     sections.append(ContactSection(title: nil, viewModels: internalContactSection))

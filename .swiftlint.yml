@@ -1,28 +1,32 @@
 line_length: # Target: 120/200
-  - 245
-  - 325
+  - 230
+  - 250
 
 type_body_length: # Target: 250/350
+  - 380
   - 400
-  - 500
 
 function_body_length: # Target: 50/100
+  - 105
   - 120
-  - 220
 
 file_length: # Target: 400/1000
-  - 910
-  - 1510
+  - 675
+  - 1000
 
 disabled_rules:  
   - identifier_name
-  - cyclomatic_complexity
   - multiple_closures_with_trailing_closure
   - function_parameter_count
   - todo
-  - nesting
-  - type_name
 
 excluded:
   - Pods
   - UnitTests
+  # Files scheduled for refactor
+  - ./**/TariSettings.swift
+  - ./**/SettingsViewController.swift
+  - ./**/AddAmountViewController.swift
+  - ./**/EmojiIdView.swift
+  - ./**/AnimatedBalanceLabel.swift
+  - ./**/TxsListViewController.swift
