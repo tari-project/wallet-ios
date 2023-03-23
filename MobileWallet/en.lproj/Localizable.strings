@@ -766,13 +766,14 @@
 "contact_book.details.menu.option.bitcoin" = "Open Bitcoin Wallet";
 "contact_book.details.menu.option.ethereum" = "Open Ethereum Wallet";
 "contact_book.details.menu.option.monero" = "Open Monero Wallet";
-"contact_book.details.menu.section.connected_wallets" = "Connected Wallets";
+"contact_book.details.menu.section.connected_wallets" = "Associated Wallets";
 "contact_book.details.popup.delete_contact.title" = "Delete Contact";
 "contact_book.details.popup.delete_contact.message" = "You are about to pernamently remove this contact. Are you sure?";
 "contact_book.details.popup.delete_contact.button.ok" = "Delete";
 "contact_book.details.popup.error.invalid_yat_response" = "Aurora was unable to get data from the Yat service. Some contact details may be unavailable";
 "contact_book.details.popup.error.unable_to_open_url" = "Aurora was unable to navigate to %@ wallet. Please check that the wallet app is installed on your device";
-"contact_book.details.edit_form.title" = "Edit Contact";
+"contact_book.details.edit_form.title.add" = "Add Contact";
+"contact_book.details.edit_form.title.edit" = "Edit Contact";
 "contact_book.details.edit_form.text_field.name" = "Name";
 "contact_book.details.edit_form.text_field.first_name" = "First Name";
 "contact_book.details.edit_form.text_field.last_name" = "Last Name";

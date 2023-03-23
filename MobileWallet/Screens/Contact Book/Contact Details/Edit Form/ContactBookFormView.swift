@@ -56,7 +56,6 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
     @View private var titleBar: NavigationBar = {
         let view = NavigationBar()
         view.backButtonType = .none
-        view.title = localized("contact_book.details.edit_form.title")
         return view
     }()
 
@@ -79,9 +78,9 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
     // MARK: - Initialisers
 
-    init(textFieldsModels: [TextFieldViewModel]) {
+    init(title: String?, textFieldsModels: [TextFieldViewModel]) {
         super.init()
-        setupTitleBar()
+        setupTitleBar(title: title)
         setupConstraints()
         setupCallbacks()
         update(textFieldsModels: textFieldsModels)
@@ -93,7 +92,8 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
     // MARK: - Setups
 
-    private func setupTitleBar() {
+    private func setupTitleBar(title: String?) {
+        titleBar.title = title
         titleBar.rightButton.setTitle(localized("common.done"), for: .normal)
     }
 

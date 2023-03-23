@@ -82,8 +82,9 @@ final class ContactDetailsViewController: UIViewController {
 
     private func setupCallbacks() {
 
-        model.$editButtonName
+        model.$isContactExist
             .receive(on: DispatchQueue.main)
+            .map { $0 ? localized("common.edit") : localized("common.add") }
             .sink { [weak self] in self?.mainView.editButtonName = $0 }
             .store(in: &cancellables)
 
@@ -172,7 +173,7 @@ final class ContactDetailsViewController: UIViewController {
 
     private func showEditForm() {
 
-        var nameComponents: [String] = model.nameComponents
+        var nameComponents: [String] = model.isContactExist ? model.nameComponents : model.nameComponents.map { _ in "" }
         var yat: String = model.yat ?? ""
         let models: [ContactBookFormView.TextFieldViewModel]
 
@@ -208,7 +209,8 @@ final class ContactDetailsViewController: UIViewController {
             ]
         }
 
-        let formView = ContactBookFormView(textFieldsModels: models)
+        let title = model.isContactExist ? localized("contact_book.details.edit_form.title.edit") : localized("contact_book.details.edit_form.title.add")
+        let formView = ContactBookFormView(title: title, textFieldsModels: models)
         let overlay = FormOverlay(formView: formView)
 
         overlay.onClose = { [weak self] in
