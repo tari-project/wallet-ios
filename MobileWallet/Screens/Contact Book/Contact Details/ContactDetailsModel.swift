@@ -79,7 +79,7 @@ final class ContactDetailsModel {
 
     // MARK: - View Model
 
-    @Published private(set) var editButtonName: String?
+    @Published private(set) var isContactExist: Bool = false
     @Published private(set) var name: String?
     @Published private(set) var viewModel: ViewModel?
     @Published private(set) var yat: String?
@@ -286,7 +286,10 @@ final class ContactDetailsModel {
 
     private func fetchYatData(yat: String?) {
 
-        guard let yat, !yat.isEmpty else { return }
+        guard let yat, !yat.isEmpty else {
+            connectedWallets.removeAll()
+            return
+        }
 
         Yat.api.emojiID.lookupEmojiIDPublisher(emojiId: yat, tags: nil)
             .sink { [weak self] in
@@ -313,6 +316,7 @@ final class ContactDetailsModel {
     private func handle(yatCompletion: Subscribers.Completion<APIError>) {
         switch yatCompletion {
         case .failure:
+            connectedWallets.removeAll()
             errorModel = MessageModel(title: localized("common.error"), message: localized("contact_book.details.popup.error.invalid_yat_response"), type: .error)
         case .finished:
             break
@@ -324,11 +328,11 @@ final class ContactDetailsModel {
     private func handle(model: ContactsManager.Model) {
 
         if model.type == .internalOrEmojiID, !model.isFFIContact {
+            isContactExist = false
             name = nil
-            editButtonName = localized("common.add")
         } else {
             name = model.name
-            editButtonName = localized("common.edit")
+            isContactExist = true
         }
 
         yat = model.externalModel?.yat
