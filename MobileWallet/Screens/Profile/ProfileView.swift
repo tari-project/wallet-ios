@@ -87,10 +87,10 @@ final class ProfileView: DynamicThemeView {
         return view
     }()
 
-    @View private var qrImageView = UIImageView()
+    @View private var qrImageView = LoadingImageView()
 
     var qrCodeImage: UIImage? {
-        didSet { qrImageView.image = qrCodeImage }
+        didSet { qrImageView.state = .image(qrCodeImage) }
     }
 
     var isYatButtonOn: Bool = false {
@@ -142,7 +142,6 @@ final class ProfileView: DynamicThemeView {
             reconnectYatButton.topAnchor.constraint(equalTo: middleLabel.bottomAnchor),
             reconnectYatButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             qrContainer.heightAnchor.constraint(equalTo: qrContainer.widthAnchor),
-            qrContainer.centerXAnchor.constraint(equalTo: centerXAnchor),
             qrImageView.leadingAnchor.constraint(equalTo: qrContainer.leadingAnchor, constant: 30.0),
             qrImageView.trailingAnchor.constraint(equalTo: qrContainer.trailingAnchor, constant: -30.0),
             qrImageView.bottomAnchor.constraint(equalTo: qrContainer.bottomAnchor, constant: -30.0),
@@ -153,14 +152,14 @@ final class ProfileView: DynamicThemeView {
             constraints += [
                 qrContainer.topAnchor.constraint(equalTo: reconnectYatButton.bottomAnchor, constant: 100.0),
                 qrContainer.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, multiplier: 0.5),
-                qrContainer.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, multiplier: 0.5)
+                qrContainer.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, multiplier: 0.5),
+                qrContainer.centerXAnchor.constraint(equalTo: centerXAnchor)
             ]
         } else {
             constraints += [
-                qrContainer.topAnchor.constraint(greaterThanOrEqualTo: reconnectYatButton.bottomAnchor, constant: 10.0),
-                qrContainer.topAnchor.constraint(lessThanOrEqualTo: reconnectYatButton.bottomAnchor, constant: 25.0),
-                qrContainer.leadingAnchor.constraint(greaterThanOrEqualTo: leadingAnchor, constant: 22.0),
-                qrContainer.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -22.0)
+                qrContainer.topAnchor.constraint(equalTo: reconnectYatButton.bottomAnchor, constant: 25.0),
+                qrContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+                qrContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0)
             ]
         }
 

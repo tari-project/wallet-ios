@@ -98,8 +98,10 @@ final class RequestTariAmountModel {
     }
 
     func generateQrRequest() {
-        guard let deeplink = makeDeeplink(), let deeplinkData = deeplink.absoluteString.data(using: .utf8), let qrCodeImage = QRCodeFactory.makeQrCode(data: deeplinkData) else { return }
-        qrCode = qrCodeImage
+        guard let deeplink = makeDeeplink(), let deeplinkData = deeplink.absoluteString.data(using: .utf8) else { return }
+        Task {
+            qrCode = await QRCodeFactory.makeQrCode(data: deeplinkData)
+        }
     }
 
     func shareActionRequest() {

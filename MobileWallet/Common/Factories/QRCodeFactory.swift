@@ -42,22 +42,34 @@ import UIKit
 
 final class QRCodeFactory {
 
-    static func makeQrCode(data: Data) -> UIImage? {
+    static func makeQrCode(data: Data) async -> UIImage? {
 
-        guard let filter = CIFilter(name: "CIQRCodeGenerator") else { return nil }
+        let screenWidth = await UIScreen.main.bounds.width
 
-        filter.setValuesForKeys([
-            "inputMessage": data,
-            "inputCorrectionLevel": "L"
-        ])
+        return await withCheckedContinuation { continuation in
 
-        guard let outputImage = filter.outputImage else { return nil }
+            guard let filter = CIFilter(name: "CIQRCodeGenerator") else {
+                continuation.resume(returning: nil)
+                return
+            }
 
-        let scaleX = UIScreen.main.bounds.width / outputImage.extent.size.width
-        let scaleY = UIScreen.main.bounds.width / outputImage.extent.size.height
-        let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
-        let scaledOutputImage = outputImage.transformed(by: transform)
+            filter.setValuesForKeys([
+                "inputMessage": data,
+                "inputCorrectionLevel": "L"
+            ])
 
-        return UIImage(ciImage: scaledOutputImage)
+            guard let outputImage = filter.outputImage else {
+                continuation.resume(returning: nil)
+                return
+            }
+
+            let scaleX = screenWidth / outputImage.extent.size.width
+            let scaleY = screenWidth / outputImage.extent.size.height
+            let transform = CGAffineTransform(scaleX: scaleX, y: scaleY)
+            let scaledOutputImage = outputImage.transformed(by: transform)
+            let image = UIImage(ciImage: scaledOutputImage)
+            continuation.resume(returning: image)
+        }
+
     }
 }

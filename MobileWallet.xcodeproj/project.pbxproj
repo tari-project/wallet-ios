@@ -380,6 +380,7 @@
 		5430B97929B7401200C80AA2 /* LinkContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97829B7401200C80AA2 /* LinkContactsViewController.swift */; };
 		5430B97B29B7401C00C80AA2 /* LinkContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */; };
 		5430B97D29B7402600C80AA2 /* LinkContactsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */; };
+		54394EDE29CA133400E7CAEA /* LoadingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54394EDD29CA133400E7CAEA /* LoadingImageView.swift */; };
 		543DF19A293F37E70031EA70 /* CustomBridgesHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */; };
 		543DF19C293F3DA90031EA70 /* BridgesConfigurationFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */; };
 		5443954629800F1600786682 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5443954529800F1600786682 /* OnboardingViewController.swift */; };
@@ -878,6 +879,7 @@
 		5430B97829B7401200C80AA2 /* LinkContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsViewController.swift; sourceTree = "<group>"; };
 		5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsView.swift; sourceTree = "<group>"; };
 		5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsConstructor.swift; sourceTree = "<group>"; };
+		54394EDD29CA133400E7CAEA /* LoadingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingImageView.swift; sourceTree = "<group>"; };
 		543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBridgesHeaderView.swift; sourceTree = "<group>"; };
 		543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgesConfigurationFooterView.swift; sourceTree = "<group>"; };
 		5443954529800F1600786682 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
@@ -1642,6 +1644,7 @@
 				3AFAEBF126B15A3300B82603 /* KeyboardAvoidingContentView.swift */,
 				5421551329A4AE92000A3F49 /* SearchTextField.swift */,
 				5455969729B08D7B00D6719E /* FormTextField.swift */,
+				54394EDD29CA133400E7CAEA /* LoadingImageView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -2945,6 +2948,7 @@
 				3A7DAB9A28FDC972002CC013 /* LogViewController.swift in Sources */,
 				540CB6EE29C1D519003FACEF /* SettingsProfileCell.swift in Sources */,
 				3AE885082837857B0070D1AC /* CurrencyLabelView.swift in Sources */,
+				54394EDE29CA133400E7CAEA /* LoadingImageView.swift in Sources */,
 				5460258C29A74DC100CF5764 /* ContactDetailsConstructor.swift in Sources */,
 				3A90653A29001D830084EE66 /* AppValues.swift in Sources */,
 				3A7E06DC287831D800D15190 /* PopUpCombineUTXOsConfirmationContentView.swift in Sources */,
