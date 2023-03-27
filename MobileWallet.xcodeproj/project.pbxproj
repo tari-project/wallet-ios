@@ -141,7 +141,6 @@
 		3A3D70B9291A625700A8CD7A /* BackupStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3D70B8291A625700A8CD7A /* BackupStatus.swift */; };
 		3A3D70BB291A637100A8CD7A /* BaseMenuTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3D70BA291A637100A8CD7A /* BaseMenuTableView.swift */; };
 		3A3E7AD6284E03140065F3C0 /* UTXOTileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3E7AD5284E03140065F3C0 /* UTXOTileView.swift */; };
-		3A3E8BF12924F84300490E57 /* Constants.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3A3E8BF02924F84300490E57 /* Constants.plist */; };
 		3A3E8BF32924FB4C00490E57 /* MigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3E8BF22924FB4C00490E57 /* MigrationManager.swift */; };
 		3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A4205912798001A00A8D49C /* AmountKeyboardView.swift */; };
 		3A420594279802E500A8D49C /* BaseButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A420593279802E500A8D49C /* BaseButton.swift */; };
@@ -2840,7 +2839,6 @@
 				BF5537B92412B9BB0071328C /* purple_orb.mp4 in Resources */,
 				00A6651F2437AD9A0046E730 /* SplashAnimation.json in Resources */,
 				BF0A779C241F904D00861A3E /* faceId@3x.png in Resources */,
-				3A3E8BF12924F84300490E57 /* Constants.plist in Resources */,
 				BF191A2923E5AFA200D33C85 /* img_0.png in Resources */,
 				0048AF43245ADCA300E1A359 /* env.json in Resources */,
 				00E491A82366E08F007B332D /* Assets.xcassets in Resources */,
