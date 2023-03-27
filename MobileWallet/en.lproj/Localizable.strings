@@ -737,7 +737,11 @@
 /* Contact Book */
 
 "contact_book.title" = "Contact Book";
+"contact_book.nav_bar.buttons.share" = "Share";
 "contact_book.search_bar.placeholder" = "Find Contact";
+"contact_book.share_bar.buttons.qr" = "QR Code";
+"contact_book.share_bar.buttons.link" = "Link";
+"contact_book.share_bar.buttons.ble" = "BLE";
 "contact_book.pager.tab.contacts" = "Contacts";
 "contact_book.pager.tab.favorites" = "Favorites";
 "contact_book.section.phone_contacts" = "Phone Contacts";

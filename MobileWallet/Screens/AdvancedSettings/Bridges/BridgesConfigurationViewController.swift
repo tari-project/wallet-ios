@@ -98,29 +98,32 @@ final class BridgesConfigurationViewController: SettingsParentTableViewControlle
 
 // MARK: Setup subviews
 extension BridgesConfigurationViewController {
+
     override func setupNavigationBar() {
         super.setupNavigationBar()
+
         navigationBar.title = localized("bridges_configuration.title")
-        navigationBar.rightButton.isEnabled = false
-        navigationBar.onRightButtonAction = { [weak self] in
-            guard let self = self else { return }
-            self.navigationBar.progress = 0.0
-            self.navigationBar.rightButton.isEnabled = false
-            self.view.isUserInteractionEnabled = false
-            Task { [weak self] in
-                do {
-                    guard let self = self else { return }
-                    try await Tari.shared.update(torBridgesConfiguration: self.bridgesConfiguration)
-                    self.onCustomBridgeSuccessAction()
-                } catch {
-                    self?.onCustomBridgeFailureAction(error: error)
-                }
+
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(title: localized("bridges_configuration.connect"), callback: { [weak self] in
+            self?.handleConnectAction()
+        }))
+
+        navigationBar.rightButton(index: 0)?.isEnabled = false
+    }
+
+    private func handleConnectAction() {
+        navigationBar.progress = 0.0
+        view.isUserInteractionEnabled = false
+
+        Task { [weak self] in
+            do {
+                guard let self = self else { return }
+                try await Tari.shared.update(torBridgesConfiguration: self.bridgesConfiguration)
+                self.onCustomBridgeSuccessAction()
+            } catch {
+                self?.onCustomBridgeFailureAction(error: error)
             }
         }
-
-        let title = localized("bridges_configuration.connect")
-        navigationBar.rightButton.setTitle(title, for: .normal)
-        navigationBar.rightButton.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
     }
 }
 
@@ -189,7 +192,7 @@ extension BridgesConfigurationViewController: UITableViewDelegate, UITableViewDa
                 return
             }
 
-            navigationBar.rightButton.isEnabled = OnionSettings.currentlyUsedBridgesConfiguration.bridgesType != bridgesConfiguration.bridgesType && bridgesConfiguration.bridgesType != .custom
+            navigationBar.rightButton(index: 0)?.isEnabled = OnionSettings.currentlyUsedBridgesConfiguration.bridgesType != bridgesConfiguration.bridgesType && bridgesConfiguration.bridgesType != .custom
 
             chooseBridgeSectionItems.forEach { (item) in
                 item.mark = .none

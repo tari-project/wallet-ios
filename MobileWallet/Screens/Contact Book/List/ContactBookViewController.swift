@@ -119,6 +119,14 @@ final class ContactBookViewController: UIViewController {
             .sink { [weak self] in self?.contactsPageViewController.models = $0 }
             .store(in: &cancellables)
 
+        model.$selectedIDs
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.contactsPageViewController.selectedRows = $0
+                self?.favoritesPageViewController.selectedRows = $0
+            }
+            .store(in: &cancellables)
+
         model.$favoriteContactsList
             .compactMap { [weak self] in self?.map(sections: $0) }
             .receive(on: DispatchQueue.main)
@@ -152,21 +160,41 @@ final class ContactBookViewController: UIViewController {
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
 
+        model.$contentMode
+            .sink { [weak self] in self?.handle(contentMode: $0) }
+            .store(in: &cancellables)
+
         mainView.searchText
             .receive(on: DispatchQueue.main)
             .assign(to: \.searchText, on: model)
             .store(in: &cancellables)
 
+        mainView.onShareModeButtonTap = { [weak self] in
+            self?.model.contentMode = .shareContacts
+        }
+
         mainView.onAddContactButtonTap = { [weak self] in
             self?.moveToAddContactScreen()
+        }
+
+        mainView.onCancelShareModelButtonTap = { [weak self] in
+            self?.model.contentMode = .normal
         }
 
         contactsPageViewController.onButtonTap = { [weak self] in
             self?.model.performAction(contactID: $0, menuItemID: $1)
         }
 
+        contactsPageViewController.onRowTap = { [weak self] in
+            self?.model.toggle(contactID: $0)
+        }
+
         favoritesPageViewController.onButtonTap = { [weak self] in
             self?.model.performAction(contactID: $0, menuItemID: $1)
+        }
+
+        favoritesPageViewController.onRowTap = { [weak self] in
+            self?.model.toggle(contactID: $0)
         }
 
         contactsPageViewController.onFooterTap = { [weak self] in
@@ -240,6 +268,19 @@ final class ContactBookViewController: UIViewController {
                 return ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatarText: $0.avatar, avatarImage: $0.avatarImage, isFavorite: $0.isFavorite, menuItems: menuItems, contactTypeImage: $0.type.image)
             }
             return ContactBookContactListView.Section(title: $0.title, items: items)
+        }
+    }
+
+    private func handle(contentMode: ContactBookModel.ContentMode) {
+        switch contentMode {
+        case .normal:
+            mainView.isInSelectionMode = false
+            contactsPageViewController.isInSharingMode = false
+            favoritesPageViewController.isInSharingMode = false
+        case .shareContacts:
+            mainView.isInSelectionMode = true
+            contactsPageViewController.isInSharingMode = true
+            favoritesPageViewController.isInSharingMode = true
         }
     }
 

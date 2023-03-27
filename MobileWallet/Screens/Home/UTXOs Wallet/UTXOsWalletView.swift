@@ -125,6 +125,16 @@ final class UTXOsWalletView: BaseNavigationContentView {
         topToolbar.height = topBarHeight
         tileList.verticalContentInset = topBarHeight
         textList.verticalContentInset = topBarHeight
+
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(image: nil, callback: { [weak self] in
+            guard let self = self else { return }
+            switch self.selectedListType {
+            case .text:
+                self.selectedListType = .tiles
+            case .tiles:
+                self.selectedListType = .text
+            }
+        }))
     }
 
     private func setupConstraints() {
@@ -189,17 +199,6 @@ final class UTXOsWalletView: BaseNavigationContentView {
             }
             .store(in: &cancellables)
 
-        navigationBar.onRightButtonAction = { [weak self] in
-            guard let self = self else { return }
-            switch self.selectedListType {
-            case .text:
-                self.selectedListType = .tiles
-            case .tiles:
-                self.selectedListType = .text
-
-            }
-        }
-
         topToolbar.onFilterButtonTap = { [weak self] in
             self?.onFilterButtonTap?()
         }
@@ -263,7 +262,7 @@ final class UTXOsWalletView: BaseNavigationContentView {
         let isDataVisible = visibleContentType == .tilesList || visibleContentType == .textList
 
         UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState]) {
-            self.navigationBar.rightButton.alpha = isDataVisible ? 1.0 : 0.0
+            self.navigationBar.rightButton(index: 0)?.alpha = isDataVisible ? 1.0 : 0.0
             self.topToolbar.alpha = isDataVisible ? 1.0 : 0.0
             self.loadingView.alpha = visibleContentType == .loadingScreen ? 1.0 : 0.0
             self.placeholderView.alpha = visibleContentType == .placeholder ? 1.0 : 0.0
@@ -275,9 +274,9 @@ final class UTXOsWalletView: BaseNavigationContentView {
     private func updateListSwitchIcon(selectedListType: ListType) {
         switch selectedListType {
         case .tiles:
-            navigationBar.rightButton.setImage(Theme.shared.images.utxoTextListIcon, for: .normal)
+            navigationBar.rightButton(index: 0)?.setImage(Theme.shared.images.utxoTextListIcon, for: .normal)
         case .text:
-            navigationBar.rightButton.setImage(Theme.shared.images.utxoTileViewIcon, for: .normal)
+            navigationBar.rightButton(index: 0)?.setImage(Theme.shared.images.utxoTileViewIcon, for: .normal)
         }
     }
 
