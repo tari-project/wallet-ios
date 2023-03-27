@@ -147,8 +147,6 @@ enum BackupFilesManager {
         try model.utxos
             .map { try UnblindedOutput(json: $0) }
             .forEach { _ = try Tari.shared.unspentOutputsService.store(unspentOutput: $0, sourceAddress: sourceAddress, message: localized("backup.cloud.partial.recovery_message")) }
-
-        try MigrationManager.updateWalletVersion()
     }
 
     private static func recoverFullBackup(backupURL: URL, password: String) async throws {

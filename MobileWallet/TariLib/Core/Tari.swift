@@ -89,6 +89,13 @@ final class Tari: MainServiceable {
         get throws { try walletManager.walletAddress() }
     }
 
+    var walletVersion: String? {
+        get throws {
+            let commsConfig = try makeCommsConfig()
+            return try walletManager.walletVersion(commsConfig: commsConfig)
+        }
+    }
+
     var logsURLs: [URL] {
         get throws {
             try FileManager.default.contentsOfDirectory(at: TariSettings.storageDirectory, includingPropertiesForKeys: nil)

@@ -411,7 +411,15 @@ final class FFIWalletManager {
 
         guard errorCode == 0, let cString = result else { throw WalletError(code: errorCode) }
         return String(cString: cString)
+    }
 
+    func walletVersion(commsConfig: CommsConfig) throws -> String? {
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let result = wallet_get_last_version(commsConfig.pointer, errorCodePointer)
+        guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        guard let result else { return nil }
+        return String(cString: result)
     }
 
     func seedWords() throws -> SeedWords {

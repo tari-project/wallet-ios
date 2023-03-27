@@ -42,7 +42,6 @@ final class TariKeyValueService: CoreTariService {
 
     enum Key: String {
         case network = "SU7FM2O6Q3BU4XVN7HDD"
-        case version
     }
 
     func value(key: Key) throws -> String {
