@@ -141,4 +141,95 @@ final class VersionValidatorTests: XCTestCase {
         let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
         XCTAssertTrue(result)
     }
+
+    func testPreComponentFirstVersionIsHigher() {
+
+        let firstVersion = "1.23.4-pre.2"
+        let secondVersion = "1.23.4-pre.1"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertTrue(result)
+    }
+
+    func testPreComponentSecondVersionIsHigher() {
+
+            let firstVersion = "1.23.4-pre.1"
+            let secondVersion = "1.23.4-pre.2"
+
+            let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+            XCTAssertFalse(result)
+    }
+
+    func testRcComponentFirstVersionIsHigher() {
+
+        let firstVersion = "1.23.4-rc.2"
+        let secondVersion = "1.23.4-rc.1"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertTrue(result)
+    }
+
+    func testRcComponentSecondVersionIsHigher() {
+
+        let firstVersion = "1.23.4-rc.1"
+        let secondVersion = "1.23.4-rc.2"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertFalse(result)
+    }
+
+
+    func testRcComponentIsHigherThanPreComponent() {
+
+        let firstVersion = "1.23.4-rc.1"
+        let secondVersion = "1.23.4-pre.1"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertTrue(result)
+    }
+
+    func testNumberComponentIsHigherThanPreComponent() {
+
+        let firstVersion = "1.23.4"
+        let secondVersion = "1.23.4-pre.1"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertTrue(result)
+    }
+
+    func testNumberComponentIsHigherThanRcComponent() {
+
+        let firstVersion = "1.23.4"
+        let secondVersion = "1.23.4-rc.1"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertTrue(result)
+    }
+
+    func testPreComponentIsLowerThanRcComponent() {
+
+        let firstVersion = "1.23.4-pre.1"
+        let secondVersion = "1.23.4-rc.1"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertFalse(result)
+    }
+
+    func testPreComponentIsLowerThanNumberComponent() {
+
+        let firstVersion = "1.23.4-pre.1"
+        let secondVersion = "1.23.4"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertFalse(result)
+    }
+
+    func testRcComponentIsLowerThanNumberComponent() {
+
+        let firstVersion = "1.23.4-rc.1"
+        let secondVersion = "1.23.4"
+
+        let result = VersionValidator.compare(firstVersion, isHigherOrEqualTo: secondVersion)
+        XCTAssertFalse(result)
+    }
 }

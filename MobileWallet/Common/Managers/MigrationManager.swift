@@ -46,22 +46,7 @@ enum MigrationManager {
 
     // MARK: - Properties
 
-    private static let minValidVersion = "0.48.0"
-
-    private static var currentWalletVersion: String {
-
-        get throws {
-            guard
-                let path = Bundle.main.path(forResource: "Constants", ofType: "plist"),
-                let data = FileManager.default.contents(atPath: path),
-                let dictionary = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: String],
-                let value = dictionary["FFI Version"]
-            else {
-                throw MigrationError.noCurrentWalletVersion
-            }
-            return value
-        }
-    }
+    private static let minValidVersion = "0.49.0-pre.4"
 
     // MARK: - Actions
 
@@ -77,21 +62,16 @@ enum MigrationManager {
         }
     }
 
-    static func updateWalletVersion() throws {
-        try Tari.shared.keyValues.set(key: .version, value: currentWalletVersion)
-    }
-
     private static func isWalletHasValidVersion() -> Bool {
 
-        let walletVersion: String
-
-        do {
-            walletVersion = try Tari.shared.keyValues.value(key: .version)
-        } catch {
+        if let version = try? Tari.shared.walletVersion {
+            let isValid = VersionValidator.compare(version, isHigherOrEqualTo: minValidVersion)
+            Logger.log(message: "Min. Valid Wallet Version: \(minValidVersion), Local Wallet Version: \(version), isValid: \(isValid)", domain: .general, level: .info)
+            return isValid
+        } else {
+            Logger.log(message: "Unable to get wallet version", domain: .general, level: .info)
             return false
         }
-
-        return VersionValidator.compare(walletVersion, isHigherOrEqualTo: minValidVersion)
     }
 
     private static func showPopUp(completion: @escaping (Bool) -> Void) {

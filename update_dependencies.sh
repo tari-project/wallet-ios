@@ -61,13 +61,7 @@ if [ $API_KEY != null ]; then
   done
 fi
 
-# Constants.plist
-
-CONSTS_PLIST_PATH="./MobileWallet/Constants.plist"
-FFI_VERSION_KEY="FFI Version"
-
-plutil -create xml1 $CONSTS_PLIST_PATH
-plutil -replace "$FFI_VERSION_KEY" -string $FFI_VERSION $CONSTS_PLIST_PATH
+# Git Hooks
 
 echo "\n\n***Updating Git Hooks***"
 
