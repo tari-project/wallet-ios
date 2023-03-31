@@ -55,6 +55,10 @@ final class StylizedLabel: UILabel {
 
     // MARK: - Properties
 
+    override var text: String? {
+        didSet { textComponents = [] }
+    }
+
     var normalFont: UIFont? {
         didSet { updateText() }
     }
@@ -83,6 +87,8 @@ final class StylizedLabel: UILabel {
 
     private func updateText() {
 
+        guard !textComponents.isEmpty else { return }
+
         attributedText = textComponents.reduce(into: NSMutableAttributedString()) { result, stylizedText in
 
             var font: UIFont?
@@ -105,10 +111,10 @@ final class StylizedLabel: UILabel {
             result.append(NSAttributedString(string: stylizedText.text))
 
             if let font {
-                result.addAttribute(.font, value: font, range: NSRange(location: location, length: stylizedText.text.count))
+                result.addAttribute(.font, value: font, range: NSRange(location: location, length: stylizedText.text.utf16.count))
             }
             if let textColor {
-                result.addAttribute(.foregroundColor, value: textColor, range: NSRange(location: location, length: stylizedText.text.count))
+                result.addAttribute(.foregroundColor, value: textColor, range: NSRange(location: location, length: stylizedText.text.utf16.count))
             }
         }
     }

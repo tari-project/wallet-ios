@@ -133,7 +133,6 @@ final class SplashViewModel {
             do {
                 status = StatusModel(status: .working, statusRepresentation: .content)
                 try await connectToWallet(isWalletConnected: false)
-                try MigrationManager.updateWalletVersion()
                 status = StatusModel(status: .success, statusRepresentation: .content)
             } catch {
                 handle(error: error)
@@ -149,13 +148,13 @@ final class SplashViewModel {
                 let statusRepresentation = status?.statusRepresentation ?? .content
                 status = StatusModel(status: .working, statusRepresentation: statusRepresentation)
 
-                try await connectToWallet(isWalletConnected: isWalletConnected)
-                isWalletConnected = false
-
                 guard await validateWallet() else {
                     self.deleteWallet()
                     return
                 }
+
+                try await connectToWallet(isWalletConnected: isWalletConnected)
+                isWalletConnected = false
 
                 status = StatusModel(status: .success, statusRepresentation: statusRepresentation)
             } catch {

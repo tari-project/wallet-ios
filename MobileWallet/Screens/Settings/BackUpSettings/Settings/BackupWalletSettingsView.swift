@@ -45,7 +45,7 @@ final class BackupWalletSettingsView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var tableView = MenuTableView()
+    @View private var tableView = BaseMenuTableView()
 
     // MARK: - Properties
 

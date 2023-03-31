@@ -78,8 +78,9 @@ final class ActionButton: DynamicThemeBaseButton {
         contentEdgeInsets = UIEdgeInsets(top: 0.0, left: 8.0, bottom: 0.0, right: 8.0)
         clipsToBounds = true
 
-        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.5)
-        gradientLayer.endPoint = CGPoint(x: 1.0, y: 0.5)
+        gradientLayer.startPoint = CGPoint(x: 0.0, y: 0.0)
+        gradientLayer.endPoint = CGPoint(x: 1.0, y: 1.0)
+
         gradientLayer.locations = [0.0, 1.0]
         layer.insertSublayer(gradientLayer, at: 0)
     }

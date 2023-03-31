@@ -83,4 +83,9 @@ extension UIViewController {
         controller.willMove(toParent: self)
         controller.didMove(toParent: self)
     }
+
+    func presentOnFullScreen(_ viewController: UIViewController) {
+        viewController.modalPresentationStyle = .fullScreen
+        present(viewController, animated: true)
+    }
 }

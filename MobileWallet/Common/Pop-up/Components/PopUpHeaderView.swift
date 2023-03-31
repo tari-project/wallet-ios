@@ -45,9 +45,11 @@ final class PopUpHeaderView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private(set) var label: UILabel = {
-        let view = UILabel()
+    @View private(set) var label: StylizedLabel = {
+        let view = StylizedLabel()
         view.font = .Avenir.light.withSize(18.0)
+        view.normalFont = .Avenir.light.withSize(18.0)
+        view.separator = " "
         view.textAlignment = .center
         view.numberOfLines = 0
         return view

@@ -115,14 +115,21 @@ final class ProfileModel {
     private func updateData() {
         do {
             let walletAddress = try Tari.shared.walletAddress
-            let deeplinkData = try walletAddress.byteVector.hex.data(using: .utf8) ?? Data()
+            let deeplinkModel = try TransactionsSendDeeplink(receiverAddress: walletAddress.byteVector.hex, amount: nil, note: nil)
+            let deeplinkData = try DeepLinkFormatter.deeplink(model: deeplinkModel)?.absoluteString.data(using: .utf8) ?? Data()
             self.walletAddress = walletAddress
-            qrCodeImage = QRCodeFactory.makeQrCode(data: deeplinkData)
+            updateQR(data: deeplinkData)
             updateYatIdData()
         } catch {
             qrCodeImage = nil
             emojiData = nil
             errorMessage = MessageModel(title: localized("profile_view.error.qr_code.title"), message: localized("wallet.error.failed_to_access"), type: .error)
+        }
+    }
+
+    private func updateQR(data: Data) {
+        Task {
+            qrCodeImage = await QRCodeFactory.makeQrCode(data: data)
         }
     }
 

@@ -182,8 +182,8 @@ final class NavigationBar: DynamicThemeView {
         progressView.tintColor = theme.brand.purple
 
         rightButton.tintColor = theme.icons.default
-        rightButton.setTitleColor(theme.icons.default, for: .normal)
-        rightButton.setTitleColor(theme.icons.default?.withAlphaComponent(0.5), for: .highlighted)
+        rightButton.setTitleColor(theme.brand.purple, for: .normal)
+        rightButton.setTitleColor(theme.brand.purple?.withAlphaComponent(0.5), for: .highlighted)
         rightButton.setTitleColor(theme.icons.inactive, for: .disabled)
     }
 

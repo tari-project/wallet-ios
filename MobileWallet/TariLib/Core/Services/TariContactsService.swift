@@ -50,6 +50,10 @@ final class TariContactsService: CoreTariService {
         try walletManager.upsert(contact: contact)
     }
 
+    @discardableResult func remove(contact: Contact) throws -> Bool {
+        try walletManager.remove(contact: contact)
+    }
+
     func findContact(hex: String) throws -> Contact? {
         try allContacts.first { try $0.address.byteVector.hex == hex }
     }

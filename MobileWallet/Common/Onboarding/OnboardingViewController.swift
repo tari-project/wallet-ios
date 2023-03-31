@@ -116,13 +116,13 @@ final class OnboardingViewController: UIViewController {
     private func pageViewModel(index: Int) -> OnboardingPageView.ViewModel {
         switch index {
         case 0:
-            return OnboardingPageView.ViewModel.page1
+            return .page1
         case 1:
-            return OnboardingPageView.ViewModel.page2
+            return .page2
         case 2:
-            return OnboardingPageView.ViewModel.page3
+            return .page3
         case 3:
-            return OnboardingPageView.ViewModel.page4
+            return .page4
         default:
             return OnboardingPageView.ViewModel(image: nil, titleComponents: [], messageComponents: [], footerComponents: [], actionButtonTitle: nil, actionButtonCallback: nil)
         }

@@ -298,7 +298,10 @@ extension CustomBridgesViewController: UITextViewDelegate {
     }
 
     func textViewDidChange(_ textView: UITextView) {
-        navigationBar.rightButton.isEnabled = textView.text.count > 0 && textView.text.trimmingCharacters(in: .whitespacesAndNewlines) != bridgesConfiguration?.customBridges?.joined(separator: "\n") && textView.text != examplePlaceHolderString
+        let isTextFieldNotEmpty = !textView.text.isEmpty
+        let isNewBridge = textView.text.trimmingCharacters(in: .whitespacesAndNewlines) != bridgesConfiguration?.customBridges?.joined(separator: "\n")
+        let isNotPlaceholder = textView.text != examplePlaceHolderString
+        navigationBar.rightButton.isEnabled = isTextFieldNotEmpty && isNewBridge && isNotPlaceholder
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {

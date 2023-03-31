@@ -41,5 +41,5 @@
 import UIKit
 
 extension UIScreen {
-    static var isSmallScreen: Bool { UIScreen.main.nativeBounds.height <= 1136.0 }
+    static var isSmallScreen: Bool { UIScreen.main.nativeBounds.height <= 1334.0 }
 }

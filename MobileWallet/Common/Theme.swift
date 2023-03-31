@@ -58,7 +58,6 @@ struct Images {
     let homeItem = UIImage(named: "navHome")
     let ttlItem = UIImage(named: "navTtl")
     let sendItem = UIImage(named: "navSend")?.withRenderingMode(.alwaysOriginal)
-    let profileItem = UIImage(named: "navProfile")
     let settingsItem = UIImage(named: "navSettings")
 
     // General icons
@@ -300,15 +299,65 @@ extension Shadow {
     static var none: Self { Self(color: nil, opacity: 0.0, radius: 0.0, offset: .zero) }
 }
 
-extension UIImage {
+// MARK: - Images
 
-    enum security {
-        enum onboarding {
-            static var background: UIImage? { UIImage(named: "Images/Security/Onboarding/Background") }
-            static var page1: UIImage? { UIImage(named: "Images/Security/Onboarding/Page1") }
-            static var page2: UIImage? { UIImage(named: "Images/Security/Onboarding/Page2") }
-            static var page3: UIImage? { UIImage(named: "Images/Security/Onboarding/Page3") }
-            static var page4: UIImage? { UIImage(named: "Images/Security/Onboarding/Page4") }
-        }
-    }
+extension UIImage {
+    static var security: SecurityImages.Type { SecurityImages.self }
+    static var contactBook: ContactBookImages.Type { ContactBookImages.self }
+    static var icons: IconsImages.Type { IconsImages.self }
+}
+
+// MARK: - Security
+
+enum SecurityImages {
+    static var onboarding: SecurityOnboardingImages.Type { SecurityOnboardingImages.self }
+}
+
+enum SecurityOnboardingImages {
+    static var background: UIImage? { UIImage(named: "Images/Security/Onboarding/Background") }
+    static var page1: UIImage? { UIImage(named: "Images/Security/Onboarding/Page1") }
+    static var page2: UIImage? { UIImage(named: "Images/Security/Onboarding/Page2") }
+    static var page3: UIImage? { UIImage(named: "Images/Security/Onboarding/Page3") }
+    static var page4: UIImage? { UIImage(named: "Images/Security/Onboarding/Page4") }
+}
+
+// MARK: - Contact Book
+
+enum ContactBookImages {
+    static var placeholders: ContactBookPlaceholderImages.Type { ContactBookPlaceholderImages.self }
+    static var addContact: UIImage? { UIImage(named: "Images/Contact Book/AddContact") }
+}
+
+enum ContactBookPlaceholderImages {
+    static var contactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListPlaceholder") }
+    static var favoritesContactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListFavPlaceholder") }
+}
+
+// MARK: - Icons
+
+enum IconsImages {
+
+    static var contactTypes: IconsContactTypesImages.Type { IconsContactTypesImages.self }
+    static var star: IconsStarImages.Type { IconsStarImages.self }
+    static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
+
+    static var link: UIImage? { UIImage(named: "Icons/Link") }
+    static var profile: UIImage? { UIImage(named: "Icons/Profile") }
+    static var send: UIImage? { UIImage(named: "Icons/Send") }
+    static var unlink: UIImage? { UIImage(named: "Icons/Unlink") }
+}
+
+enum IconsContactTypesImages {
+    static var `internal`: UIImage? { UIImage(named: "Icons/Contact Types/Internal") }
+    static var external: UIImage? { UIImage(named: "Icons/Contact Types/External") }
+    static var linked: UIImage? { UIImage(named: "Icons/Contact Types/Linked") }
+}
+
+enum IconsStarImages {
+    static var border: UIImage? { UIImage(named: "Icons/Star/Border") }
+    static var filled: UIImage? { UIImage(named: "Icons/Star/Filled") }
+}
+
+enum IconsTabBarImages {
+    static var contactBook: UIImage? { UIImage(named: "Icons/TabBar/ContactBook") }
 }

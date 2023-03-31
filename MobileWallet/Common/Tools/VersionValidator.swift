@@ -39,24 +39,75 @@
 */
 
 enum VersionValidator {
-
     static func compare(_ firstVersion: String, isHigherOrEqualTo secondVersion: String) -> Bool {
+        Version(rawVersion: firstVersion) >= Version(rawVersion: secondVersion)
+    }
+}
 
-        var firstVersionComponents = firstVersion.split(separator: ".")
-        var secondVersionComponents = secondVersion.split(separator: ".")
+private struct Version: Comparable {
 
-        let componentsCount = max(firstVersionComponents.count, secondVersionComponents.count)
+    let components: [String]
+    let suffix: String
 
-        firstVersionComponents += Array(repeating: "", count: componentsCount - firstVersionComponents.count)
-        secondVersionComponents += Array(repeating: "", count: componentsCount - secondVersionComponents.count)
+    private var suffixValue: Int {
+        switch suffix {
+        case "pre":
+            return 1
+        case "rc":
+            return 2
+        case "":
+            return 3
+        default:
+            return 0
+        }
+    }
 
-        let result: Bool? = zip(firstVersionComponents, secondVersionComponents)
+    init(rawVersion: String) {
+
+        let rawComponents = rawVersion
+            .split(separator: "-", maxSplits: 1)
+            .map { String($0) }
+
+        if rawComponents.count >= 1 {
+            components = rawComponents[0]
+                .split(separator: ".")
+                .map { String($0) }
+        } else {
+            components = []
+        }
+
+        if rawComponents.count == 2 {
+            suffix = rawComponents[1]
+        } else {
+            suffix = ""
+        }
+    }
+
+    static func < (lhs: Self, rhs: Self) -> Bool {
+
+        var firstComponents = lhs.components
+        var secondComponents = rhs.components
+
+        let componentsCount = max(firstComponents.count, secondComponents.count)
+
+        firstComponents += Array(repeating: "", count: componentsCount - firstComponents.count)
+        secondComponents += Array(repeating: "", count: componentsCount - secondComponents.count)
+
+        let result: Bool? = zip(firstComponents, secondComponents)
             .compactMap {
                 guard $0 != $1 else { return nil }
-                return $0 > $1
+                return $0 < $1
             }
             .first
 
-        return result ?? true
+        if let result {
+            return result
+        }
+
+        if lhs.suffixValue == rhs.suffixValue {
+            return lhs.suffix < rhs.suffix
+        }
+
+        return lhs.suffixValue < rhs.suffixValue
     }
 }

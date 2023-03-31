@@ -54,7 +54,7 @@ final class SeedWordsMnemonicWordList {
 
     private let pointer: OpaquePointer
 
-    // MARK: - Initialisators
+    // MARK: - Initialisers
 
     init(language: String) throws {
 

@@ -7,6 +7,10 @@
 "common.close" = "Close";
 "common.apply" = "Apply";
 "common.next" = "Next";
+"common.add" = "Add";
+"common.edit" = "Edit";
+"common.done" = "Done";
+"common.confirm" = "Confirm";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -192,7 +196,6 @@
 
 "settings.done" = "Done";
 "settings.item.header.more" = "More";
-"settings.item.header.yat" = "Yat Settings";
 "settings.item.header.advanced_settings" = "Advanced Settings";
 "settings.item.header.security" = "Security";
 
@@ -730,3 +733,70 @@
 /* Cloud Backup */
 
 "backup.cloud.partial.recovery_message" = "Funds recovered from your previous wallet.";
+
+/* Contact Book */
+
+"contact_book.title" = "Contact Book";
+"contact_book.search_bar.placeholder" = "Find Contact";
+"contact_book.pager.tab.contacts" = "Contacts";
+"contact_book.pager.tab.favorites" = "Favorites";
+"contact_book.section.phone_contacts" = "Phone Contacts";
+"contact_book.section.list.placeholder.message.part1" = "Keep track of your contacts by saving them in the contact book. To";
+"contact_book.section.list.placeholder.message.part2.bold" = "add a new contact,";
+"contact_book.section.list.placeholder.message.part3" = "tap the “add contact” icon at the top of the page.";
+"contact_book.section.list.placeholder.title.part1" = "Find your";
+"contact_book.section.list.placeholder.title.part2.bold" = "friends";
+"contact_book.section.list.placeholder.without_permission.message.part1" = "You can";
+"contact_book.section.list.placeholder.without_permission.message.part2.bold" = "add a new contact";
+"contact_book.section.list.placeholder.without_permission.message.part3" = "by tapping on the “add contact” icon at the top of the page. Aurora can also automatically detect contacts with Tari addresses on you phone. We’ll need your permission to access your existing contact book to do this.";
+"contact_book.section.list.placeholder.button" = "Grant app access to my contacts";
+"contact_book.section.favorites.placeholder.title.part1" = "Add some";
+"contact_book.section.favorites.placeholder.title.part2.bold" = "favorites";
+"contact_book.section.favorites.placeholder.message.part1" = "You can";
+"contact_book.section.favorites.placeholder.message.part2.bold" = "favorite contacts";
+"contact_book.section.favorites.placeholder.message.part3" = "to easily access them later. Tap on the contact’s name and then on the star icon to add them to your favorites list.";
+"contact_book.details.title" = "Contact Profile";
+"contact_book.details.menu.option.send" = "Send Tari";
+"contact_book.details.menu.option.add_to_favorites" = "Add to Favorites";
+"contact_book.details.menu.option.remove_from_favorites" = "Remove from Favorites";
+"contact_book.details.menu.option.link" = "Link Contact";
+"contact_book.details.menu.option.unlink" = "Unlink Contact";
+"contact_book.details.menu.option.remove_from_favorites" = "Remove from Favorites";
+"contact_book.details.menu.option.delete" = "Delete Contact";
+"contact_book.details.menu.option.bitcoin" = "Open Bitcoin Wallet";
+"contact_book.details.menu.option.ethereum" = "Open Ethereum Wallet";
+"contact_book.details.menu.option.monero" = "Open Monero Wallet";
+"contact_book.details.menu.section.connected_wallets" = "Associated Wallets";
+"contact_book.details.popup.delete_contact.title" = "Delete Contact";
+"contact_book.details.popup.delete_contact.message" = "You are about to pernamently remove this contact. Are you sure?";
+"contact_book.details.popup.delete_contact.button.ok" = "Delete";
+"contact_book.details.popup.error.invalid_yat_response" = "Aurora was unable to get data from the Yat service. Some contact details may be unavailable";
+"contact_book.details.popup.error.unable_to_open_url" = "Aurora was unable to navigate to %@ wallet. Please check that the wallet app is installed on your device";
+"contact_book.details.edit_form.title.add" = "Add Contact";
+"contact_book.details.edit_form.title.edit" = "Edit Contact";
+"contact_book.details.edit_form.text_field.name" = "Name";
+"contact_book.details.edit_form.text_field.first_name" = "First Name";
+"contact_book.details.edit_form.text_field.last_name" = "Last Name";
+"contact_book.details.edit_form.text_field.yat" = "Yat";
+"contact_book.details.wallet.bitcoin" = "Bitcoin";
+"contact_book.details.wallet.ethereum" = "Ethereum";
+"contact_book.details.wallet.monero" = "Monero";
+"contact_book.link_contacts.title" = "Link Contact";
+"contact_book.link_contacts.lables.info.part1" = "You can quickly associate an Emoji ID or Yat with a contact already present in your phone. Simply click on a name below and it will be linked to";
+"contact_book.link_contacts.text_field.search" = "Find Contact";
+"contact_book.link_contacts.popup.confirmation.title" = "Link Contact";
+"contact_book.link_contacts.popup.confirmation.message.part1" = "Click “confirm” below to link %@ to";
+"contact_book.link_contacts.popup.success.title" = "Success!";
+"contact_book.link_contacts.popup.success.message.part1" = "You have successfully linked %@ to";
+"contact_book.unlink_contact.popup.confirmation.title" = "Unlink Contact";
+"contact_book.unlink_contact.popup.confirmation.message.part1" = "Click “confirm” to unlink %@ from";
+"contact_book.unlink_contact.popup.success.title" = "Success!";
+"contact_book.unlink_contact.popup.success.message.part1" = "You have successfully unlinked %@ from";
+"contact_book.contact_type.internal" = "Tari Contact";
+"contact_book.contact_type.external" = "External Contact";
+"contact_book.contact_type.linked" = "Linked Contact";
+"contact_book.add_contact.title" = "Add Contact";
+"contact_book.add_contact.validation_error.invalid_emoji_id" = "Invalid emoji ID entered. Please verify the ID and try again.";
+"contact_book.add_contact.validation_error.no_name" = "Please enter a name in order to create a contact.";
+"contact_book.add_contact.text_field.search.placeholder" = "Enter Emoji ID";
+"contact_book.add_contact.text_field.name.placeholder" = "Name";

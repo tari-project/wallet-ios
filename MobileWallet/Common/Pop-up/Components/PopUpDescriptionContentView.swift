@@ -45,9 +45,12 @@ final class PopUpDescriptionContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private(set) var label: UILabel = {
-        let view = UILabel()
+    @View private(set) var label: StylizedLabel = {
+        let view = StylizedLabel()
         view.font = .Avenir.medium.withSize(14.0)
+        view.normalFont = .Avenir.medium.withSize(14.0)
+        view.boldFont = .Avenir.heavy.withSize(14.0)
+        view.separator = " "
         view.textAlignment = .center
         view.numberOfLines = 0
         return view

@@ -40,11 +40,11 @@
 
 import UIKit
 import GiphyUISDK
+import TariCommon
 
-class TxTableViewCell: DynamicThemeCell {
-    private let avatarContainer = UIView()
+final class TxTableViewCell: DynamicThemeCell {
     private let labelsContainer = UIView()
-    private let avatarLabel = UILabel()
+    @View private var avatarView = RoundedAvatarView()
     private let titleLabel = UILabel()
     private let timeLabel = UILabel()
     private let statusLabel = UILabel()
@@ -86,11 +86,15 @@ class TxTableViewCell: DynamicThemeCell {
 
     func configure(with model: TxTableViewModel) {
 
-        if model.id == self.model?.id { return }
-
         setStatus(model.status)
         self.model = model
-        avatarLabel.text = model.avatar
+
+        if let avatarImage = model.avatarImage {
+            avatarView.avatar = .image(avatarImage)
+        } else {
+            avatarView.avatar = .text(model.avatarText)
+        }
+
         noteLabel.text = model.message
         titleLabel.attributedText = model.title
         timeLabel.text = model.time
@@ -219,8 +223,6 @@ class TxTableViewCell: DynamicThemeCell {
         super.update(theme: theme)
 
         backgroundColor = .clear
-        avatarContainer.backgroundColor = theme.backgrounds.primary
-        avatarContainer.apply(shadow: theme.shadows.box)
         titleLabel.textColor = theme.text.body
         timeLabel.textColor = theme.text.lightText
         statusLabel.textColor = theme.system.yellow
@@ -245,21 +247,17 @@ extension TxTableViewCell {
     }
 
     private func setupAvatar() {
-        contentView.addSubview(avatarContainer)
 
-        avatarContainer.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(avatarView)
 
-        let size: CGFloat = 42
-        avatarContainer.widthAnchor.constraint(equalToConstant: size).isActive = true
-        avatarContainer.heightAnchor.constraint(equalToConstant: size).isActive = true
-        avatarContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
-        avatarContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TxTableViewCell.topCellPadding).isActive = true
-        avatarContainer.layer.cornerRadius = size / 2
-        avatarLabel.translatesAutoresizingMaskIntoConstraints = false
-        avatarContainer.addSubview(avatarLabel)
-        avatarLabel.font = UIFont.systemFont(ofSize: size * 0.55)
-        avatarLabel.centerXAnchor.constraint(equalTo: avatarContainer.centerXAnchor).isActive = true
-        avatarLabel.centerYAnchor.constraint(equalTo: avatarContainer.centerYAnchor).isActive = true
+        let constraints = [
+            avatarView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TxTableViewCell.topCellPadding),
+            avatarView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Theme.shared.sizes.appSidePadding),
+            avatarView.widthAnchor.constraint(equalToConstant: 42.0),
+            avatarView.heightAnchor.constraint(equalToConstant: 42.0)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
     }
 
     private func setupLabels() {
@@ -281,7 +279,7 @@ extension TxTableViewCell {
 
         labelsContainer.topAnchor.constraint(equalTo: contentView.topAnchor, constant: TxTableViewCell.topCellPadding).isActive = true
         labelsContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -25 + TxTableViewCell.topCellPadding).isActive = true
-        labelsContainer.leadingAnchor.constraint(equalTo: avatarContainer.trailingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
+        labelsContainer.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: Theme.shared.sizes.appSidePadding).isActive = true
         labelsContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Theme.shared.sizes.appSidePadding).isActive = true
 
         // MARK: - Value

@@ -40,7 +40,7 @@
 
 import UIKit
 
-class MenuTabBarController: UITabBarController {
+final class MenuTabBarController: UITabBarController {
     enum Tab: Int {
         case home
         case ttlStore
@@ -49,28 +49,29 @@ class MenuTabBarController: UITabBarController {
         case settings
     }
 
-    var homeViewController = HomeViewController()
-    var storeViewController = WebBrowserViewController()
-    var transactionsViewController = TransactionsViewController()
-    var profileViewController = ProfileViewController()
-    var settingsViewController = SettingsViewController()
-    let customTabBar = CustomTabBar()
+    let homeViewController = HomeViewController()
+    private let storeViewController = WebBrowserViewController()
+    private let transactionsViewController = TransactionsViewController()
+    private let contactBookViewController = ContactBookConstructor.buildScene()
+    private let settingsViewController = SettingsViewController()
+    private let customTabBar = CustomTabBar()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setValue(customTabBar, forKey: "tabBar")
         self.delegate = self
+        tabBar.isTranslucent = false
 
         homeViewController.tabBarItem.image = Theme.shared.images.homeItem
         storeViewController.tabBarItem.image = Theme.shared.images.ttlItem
         transactionsViewController.tabBarItem.image = Theme.shared.images.sendItem
         transactionsViewController.tabBarItem.tag = 1 // Using this to determine which icon to move upwards
-        profileViewController.tabBarItem.image = Theme.shared.images.profileItem
+        contactBookViewController.tabBarItem.image = .icons.tabBar.contactBook
         settingsViewController.tabBarItem.image = Theme.shared.images.settingsItem
 
         storeViewController.url = URL(string: TariSettings.shared.storeUrl)
 
-        viewControllers = [homeViewController, storeViewController, transactionsViewController, profileViewController, settingsViewController]
+        viewControllers = [homeViewController, storeViewController, transactionsViewController, contactBookViewController, settingsViewController]
 
         for tabBarItem in tabBar.items! {
             // For the send image we need to raise it higher than the others
@@ -82,7 +83,7 @@ class MenuTabBarController: UITabBarController {
         }
     }
 
-    open override var childForStatusBarStyle: UIViewController? {
+    override var childForStatusBarStyle: UIViewController? {
         return selectedViewController?.childForStatusBarStyle ?? selectedViewController
     }
 

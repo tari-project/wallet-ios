@@ -41,6 +41,17 @@
 import UIKit
 
 extension String {
+
+    var firstOrEmpty: String {
+        guard let first else { return "" }
+        return String(first)
+    }
+
+    var obfuscatedText: String {
+        guard count >= 9 else { return self }
+        return "\(prefix(3))•••\(suffix(3))"
+    }
+
     func insertSeparator(_ separatorString: String, atEvery n: Int) -> String {
         guard 0 < n else { return self }
         return self.enumerated().map({String($0.element) + (($0.offset != self.count - 1 && $0.offset % n ==  n - 1) ? "\(separatorString)" : "")}).joined()
@@ -113,5 +124,13 @@ extension Collection {
 extension String.Index {
     func distance<S: StringProtocol>(in string: S) -> Int {
         string.distance(to: self)
+    }
+}
+
+extension Array where Element == String.SubSequence {
+
+    var firstString: String? {
+        guard let first else { return nil }
+        return String(first)
     }
 }

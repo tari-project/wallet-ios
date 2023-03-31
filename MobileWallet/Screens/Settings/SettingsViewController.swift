@@ -48,23 +48,23 @@ final class SettingsViewController: SettingsParentTableViewController {
     private let localAuth = LAContext()
 
     private enum Section: Int, CaseIterable {
+        case profile
         case security
         case more
-        case yat
         case advancedSettings
     }
 
     private enum SettingsHeaderTitle: CaseIterable {
+        case profileHeader
         case securityHeader
         case moreHeader
-        case yatHeader
         case advancedSettingsHeader
 
         var rawValue: String {
             switch self {
+            case .profileHeader: return ""
             case .securityHeader: return localized("settings.item.header.security")
             case .moreHeader: return localized("settings.item.header.more")
-            case .yatHeader: return localized("settings.item.header.yat")
             case .advancedSettingsHeader: return localized("settings.item.header.advanced_settings")
             }
         }
@@ -150,6 +150,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         .blockExplorer: URL(string: TariSettings.shared.blockExplorerUrl)
     ]
 
+    private let profileIndexPath = IndexPath(row: 0, section: 0)
     private var cancellables = Set<AnyCancellable>()
 
     override func viewDidLoad() {
@@ -157,6 +158,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = SettingsViewFooter()
+        tableView.register(type: SettingsProfileCell.self)
         setupCallbacks()
     }
 
@@ -168,16 +170,7 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-
-        guard let footerView = tableView.tableFooterView else { return }
-
-        let width = tableView.bounds.width
-        let size = footerView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height))
-
-        guard footerView.bounds.height != size.height else { return }
-
-        footerView.bounds.size.height = size.height
-        tableView.tableFooterView = footerView
+        tableView.updateFooterFrame()
     }
 
     private func setupCallbacks() {
@@ -234,6 +227,11 @@ final class SettingsViewController: SettingsParentTableViewController {
         WebBrowserPresenter.open(url: url)
     }
 
+    private func onProfileAction() {
+        let controller = ProfileViewController()
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
     private func onConnectYatAction() {
 
         let address: String
@@ -284,24 +282,37 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let section = Section(rawValue: section) else { return 0 }
         switch section {
+        case .profile: return yatSectionItems.count + 1
         case .security: return securitySectionItems.count
         case .more: return moreSectionItems.count
-        case .yat: return yatSectionItems.count
         case .advancedSettings: return advancedSettingsSectionItems.count
         }
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+        if indexPath == profileIndexPath {
+            let cell = tableView.dequeueReusableCell(type: SettingsProfileCell.self, indexPath: indexPath)
+            do {
+                let emojiID = try Tari.shared.walletAddress.emojis.obfuscatedText
+                cell.update(avatar: emojiID.firstOrEmpty, emojiID: emojiID)
+            } catch {
+                let message = ErrorMessageManager.errorModel(forError: error)
+                PopUpPresenter.show(message: message)
+            }
+            return cell
+        }
+
         let cell = tableView.dequeueReusableCell(type: SystemMenuTableViewCell.self, indexPath: indexPath)
 
         guard let section = Section(rawValue: indexPath.section) else { return cell }
         switch section {
+        case .profile:
+            cell.configure(yatSectionItems[indexPath.row - 1])
         case .security:
             cell.configure(securitySectionItems[indexPath.row])
         case .more:
             cell.configure(moreSectionItems[indexPath.row])
-        case .yat:
-            cell.configure(yatSectionItems[indexPath.row])
         case .advancedSettings:
             cell.configure(advancedSettingsSectionItems[indexPath.row])
         }
@@ -317,13 +328,13 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         let sec = Section(rawValue: section)
 
         switch sec {
-        case .security, .advancedSettings, .yat, .more:
+        case .security, .advancedSettings, .more:
             break
         default:
             return nil
         }
 
-        let header = SettingsTableHeaderView()
+        let header = MenuTableHeaderView()
         header.label.text = SettingsHeaderTitle.allCases[section].rawValue
 
         return header
@@ -338,14 +349,26 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 65.0
+        guard indexPath == profileIndexPath else { return 65.0 }
+        return UITableView.automaticDimension
     }
 
     func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         guard let section = Section(rawValue: indexPath.section) else { return nil }
         switch section {
+        case .profile:
+            switch indexPath.row {
+            case 0:
+                onProfileAction()
+            case 1:
+                onConnectYatAction()
+            default:
+                break
+            }
         case .security: onBackupWalletAction()
         case .more:
+            var indexPath = indexPath
+            indexPath.row -= 1
             switch SettingsItemTitle.allCases[indexPath.row + indexPath.section] {
             case .about:
                 onAboutAction()
@@ -353,13 +376,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 onReportBugAction()
             default:
                 onLinkAction(indexPath: indexPath)
-            }
-        case .yat:
-            switch indexPath.row {
-            case 0:
-                onConnectYatAction()
-            default:
-                break
             }
         case .advancedSettings:
             switch indexPath.row {
@@ -419,47 +435,5 @@ extension SettingsViewController {
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("settings.pasteboard.custom_base_node.error.title"), message: localized("settings.pasteboard.custom_base_node.error.message"), type: .error))
         }
-    }
-}
-
-private final class SettingsTableHeaderView: DynamicThemeView {
-
-    // MARK: - Subviews
-
-    @View private(set) var label: UILabel = {
-        let view = UILabel()
-        view.font = Theme.shared.fonts.settingsViewHeader
-        return view
-    }()
-
-    // MARK: - Initialisers
-
-    override init() {
-        super.init()
-        setupConstraints()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Setups
-
-    private func setupConstraints() {
-
-        addSubview(label)
-
-        let constraints = [
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0),
-            heightAnchor.constraint(equalToConstant: 70.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
-
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-        label.textColor = theme.text.heading
     }
 }

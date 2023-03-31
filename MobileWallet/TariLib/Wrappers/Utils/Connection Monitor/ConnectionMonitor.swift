@@ -189,17 +189,6 @@ private extension TariValidationService.SyncStatus {
 
 extension ConnectionMonitor {
 
-    var formattedDisplayItems: [String] {
-        var entries: [String] = []
-        entries.append("Reachability: \(networkConnection.statusName)")
-        entries.append("Base node (\(NetworkManager.shared.selectedNetwork.selectedBaseNode.name)): \(syncStatus.statusName)")
-        entries.append("Base node connection status: \(baseNodeConnection.statusName)")
-        entries.append("Tor status: \(torConnection.statusName)")
-        entries.append("Tor bootstrap progress: \(torBootstrapProgress)%")
-
-        return entries
-    }
-
     func showDetailsPopup() {
 
         let headerSection = PopUpHeaderView()
