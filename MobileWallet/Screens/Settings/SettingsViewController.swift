@@ -403,13 +403,6 @@ extension SettingsViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
         navigationBar.backButtonType = .none
-        if modalPresentationStyle != .popover { return }
-        navigationBar.onRightButtonAction = { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-        }
-
-        let title = localized("settings.done")
-        navigationBar.rightButton.setTitle(title, for: .normal)
     }
 
     private func checkClipboardForBaseNode() {

@@ -87,7 +87,6 @@ final class LogView: BaseNavigationContentView {
         super.init()
         setupViews()
         setupConstraints()
-        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -97,7 +96,7 @@ final class LogView: BaseNavigationContentView {
     // MARK: - Setups
 
     private func setupViews() {
-        navigationBar.rightButton.setImage(Theme.shared.images.utxoFaucet, for: .normal)
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(image: Theme.shared.images.utxoFaucet, callback: { [weak self] in self?.onFilterButtonTap?() }))
     }
 
     private func setupConstraints() {
@@ -119,12 +118,6 @@ final class LogView: BaseNavigationContentView {
         ]
 
         NSLayoutConstraint.activate(constraints)
-    }
-
-    private func setupCallbacks() {
-        navigationBar.onRightButtonAction = { [weak self] in
-            self?.onFilterButtonTap?()
-        }
     }
 
     // MARK: - Updates

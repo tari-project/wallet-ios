@@ -58,6 +58,7 @@ final class ContactBookContactListView: DynamicThemeView {
         view.register(type: ContactBookCell.self)
         view.register(headerFooterType: MenuTableHeaderView.self)
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 22.0, bottom: 0.0, right: 22.0)
+        view.allowsSelectionDuringEditing = true
         return view
     }()
 
@@ -87,14 +88,23 @@ final class ContactBookContactListView: DynamicThemeView {
         didSet { tableView.tableFooterView = isFooterVisible ? tableFooterView : nil }
     }
 
-    var onButtonTap: ((UUID, UInt) -> Void)?
+    var isInSharingMode: Bool = false {
+        didSet { updateViewsContentMode() }
+    }
 
-    var onTap: (() -> Void)? {
+    var selectedRows = Set<UUID>() {
+        didSet { updateSelectedRows() }
+    }
+
+    var onButtonTap: ((UUID, UInt) -> Void)?
+    var onRowTap: ((UUID) -> Void)?
+
+    var onFooterTap: (() -> Void)? {
         get { tableFooterView.onTap }
         set { tableFooterView.onTap = newValue }
     }
 
-    private var expandedIndex: IndexPath? {
+    private var expandedID: UUID? {
         didSet { updateCellsState() }
     }
 
@@ -137,14 +147,11 @@ final class ContactBookContactListView: DynamicThemeView {
         let dataSource = UITableViewDiffableDataSource<Int, ContactBookCell.ViewModel>(tableView: tableView) { [weak self] tableView, indexPath, model in
             let cell = tableView.dequeueReusableCell(type: ContactBookCell.self, indexPath: indexPath)
             cell.update(viewModel: model)
-            cell.updateCell(isExpanded: indexPath == self?.expandedIndex, withAnmiation: false)
+            cell.updateCell(isExpanded: model.id == self?.expandedID, withAnmiation: false)
+            cell.isTickSelected = self?.selectedRows.contains(model.id) == true
             cell.onButtonTap = {
-                self?.onButtonTap?(model.id, $0)
-                self?.expandedIndex = nil
-            }
-            cell.onExpand = { [weak self, tableView] in
-                guard let index = tableView.indexPath(for: cell) else { return }
-                self?.expandedIndex = index
+                self?.onButtonTap?($0, $1)
+                self?.expandedID = nil
             }
 
             return cell
@@ -186,10 +193,31 @@ final class ContactBookContactListView: DynamicThemeView {
     private func updateCellsState() {
         tableView.visibleCells
             .compactMap { $0 as? ContactBookCell }
-            .forEach { [weak self] in
-                guard let index = self?.tableView.indexPath(for: $0), index != self?.expandedIndex else { return }
-                $0.updateCell(isExpanded: false, withAnmiation: false)
+            .forEach {
+                guard let expandedID else {
+                    $0.updateCell(isExpanded: false, withAnmiation: true)
+                    return
+                }
+
+                $0.updateCell(isExpanded: expandedID == $0.elementID, withAnmiation: true)
             }
+    }
+
+    private func updateSelectedRows() {
+        tableView.visibleCells
+            .compactMap { $0 as? ContactBookCell }
+            .forEach {
+                guard let elementID = $0.elementID else {
+                    $0.isTickSelected = false
+                    return
+                }
+                $0.isTickSelected = self.selectedRows.contains(elementID)
+            }
+    }
+
+    private func updateViewsContentMode() {
+        expandedID = nil
+        tableView.setEditing(isInSharingMode, animated: true)
     }
 
     // MARK: - Layout
@@ -216,8 +244,20 @@ extension ContactBookContactListView: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) as? ContactBookCell else { return }
-        cell.updateCell(isExpanded: !cell.isExpanded, withAnmiation: true)
+
+        guard let cell = tableView.cellForRow(at: indexPath) as? ContactBookCell, let elementID = cell.elementID else { return }
+
+        guard !tableView.isEditing else {
+            onRowTap?(elementID)
+            return
+        }
+
+        guard elementID == expandedID else {
+            expandedID = elementID
+            return
+        }
+
+        expandedID = nil
     }
 }
 

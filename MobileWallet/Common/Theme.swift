@@ -324,8 +324,13 @@ enum SecurityOnboardingImages {
 // MARK: - Contact Book
 
 enum ContactBookImages {
+    static var buttons: ContactBookButtonImages.Type { ContactBookButtonImages.self }
     static var placeholders: ContactBookPlaceholderImages.Type { ContactBookPlaceholderImages.self }
-    static var addContact: UIImage? { UIImage(named: "Images/Contact Book/AddContact") }
+}
+
+enum ContactBookButtonImages {
+    static var addContact: UIImage? { UIImage(named: "Images/Contact Book/Buttons/AddContact") }
+    static var share: UIImage? { UIImage(named: "Images/Contact Book/Buttons/Share") }
 }
 
 enum ContactBookPlaceholderImages {
@@ -341,6 +346,7 @@ enum IconsImages {
     static var star: IconsStarImages.Type { IconsStarImages.self }
     static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
 
+    static var bluetooth: UIImage? { UIImage(named: "Icons/Bluetooth") }
     static var link: UIImage? { UIImage(named: "Icons/Link") }
     static var profile: UIImage? { UIImage(named: "Icons/Profile") }
     static var send: UIImage? { UIImage(named: "Icons/Send") }

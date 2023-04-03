@@ -46,6 +46,12 @@ final class ContactBookView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
+    @View private var shareBar: ContactBookShareBar = {
+        let view = ContactBookShareBar()
+        view.alpha = 0.0
+        return view
+    }()
+
     @View private var searchTextField: SearchTextField = {
         let view = SearchTextField()
         view.placeholder = localized("contact_book.search_bar.placeholder")
@@ -55,9 +61,19 @@ final class ContactBookView: BaseNavigationContentView {
     // MARK: - Properties
 
     var searchText: AnyPublisher<String, Never> { searchTextSubject.eraseToAnyPublisher() }
+
     var onAddContactButtonTap: (() -> Void)?
+    var onShareModeButtonTap: (() -> Void)?
+    var onCancelShareModelButtonTap: (() -> Void)?
 
     private let searchTextSubject = CurrentValueSubject<String, Never>("")
+
+    var isInSelectionMode: Bool = false {
+        didSet { updateViewsState() }
+    }
+
+    private var shareBarTopConstraint: NSLayoutConstraint?
+    private var shareBarBottomConstraint: NSLayoutConstraint?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -67,6 +83,7 @@ final class ContactBookView: BaseNavigationContentView {
         setupSuviews()
         setupConstraints()
         setupCallbacks()
+        updateViewsState()
     }
 
     required init?(coder: NSCoder) {
@@ -92,15 +109,23 @@ final class ContactBookView: BaseNavigationContentView {
     private func setupSuviews() {
         navigationBar.title = localized("contact_book.title")
         navigationBar.backButtonType = .none
-        navigationBar.rightButton.setImage(.contactBook.addContact, for: .normal)
     }
 
     private func setupConstraints() {
 
-        addSubview(searchTextField)
+        [shareBar, searchTextField].forEach(addSubview)
+
+        sendSubviewToBack(shareBar)
+
+        shareBarTopConstraint = shareBar.topAnchor.constraint(equalTo: navigationBar.bottomAnchor)
+        let shareBarBottomConstraint = shareBar.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)
+        self.shareBarBottomConstraint = shareBarBottomConstraint
 
         let constraints = [
-            searchTextField.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 20.0),
+            shareBarBottomConstraint,
+            shareBar.leadingAnchor.constraint(equalTo: leadingAnchor),
+            shareBar.trailingAnchor.constraint(equalTo: trailingAnchor),
+            searchTextField.topAnchor.constraint(equalTo: shareBar.bottomAnchor, constant: 20.0),
             searchTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
             searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0)
         ]
@@ -112,8 +137,8 @@ final class ContactBookView: BaseNavigationContentView {
 
         searchTextField.bind(withSubject: searchTextSubject, storeIn: &cancellables)
 
-        navigationBar.onRightButtonAction = { [weak self] in
-            self?.onAddContactButtonTap?()
+        navigationBar.onBackButtonAction = { [weak self] in
+            self?.onCancelShareModelButtonTap?()
         }
     }
 
@@ -122,5 +147,47 @@ final class ContactBookView: BaseNavigationContentView {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
+    }
+
+    private func updateViewsState() {
+        updateNavigationButtons()
+        updateShareBar()
+    }
+
+    private func updateNavigationButtons() {
+
+        let rightButtons: [NavigationBar.ButtonModel]
+
+        if isInSelectionMode {
+            rightButtons = [
+                NavigationBar.ButtonModel(title: localized("contact_book.nav_bar.buttons.share"), callback: {})
+            ]
+        } else {
+            rightButtons = [
+                NavigationBar.ButtonModel(image: .contactBook.buttons.share, callback: { [weak self] in self?.onShareModeButtonTap?() }),
+                NavigationBar.ButtonModel(image: .contactBook.buttons.addContact, callback: { [weak self] in self?.onAddContactButtonTap?() })
+            ]
+        }
+
+        navigationBar.backButtonType = isInSelectionMode ? .text(localized("common.cancel")) : .none
+        navigationBar.update(rightButtons: rightButtons)
+    }
+
+    private func updateShareBar() {
+
+        if isInSelectionMode {
+            shareBarBottomConstraint?.isActive = false
+            shareBarTopConstraint?.isActive = true
+        } else {
+            shareBarTopConstraint?.isActive = false
+            shareBarBottomConstraint?.isActive = true
+        }
+
+        navigationBar.layoutIfNeeded()
+
+        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState, .curveEaseInOut]) {
+            self.layoutIfNeeded()
+            self.shareBar.alpha = self.isInSelectionMode ? 1.0 : 0.0
+        }
     }
 }

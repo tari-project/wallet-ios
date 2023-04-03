@@ -88,8 +88,7 @@ final class ContactDetailsView: BaseNavigationContentView {
     // MARK: - Properties
 
     var editButtonName: String? {
-        get { navigationBar.rightButton.title(for: .normal) }
-        set { navigationBar.rightButton.setTitle(newValue, for: .normal) }
+        didSet { updateEditButton() }
     }
 
     var avatar: RoundedAvatarView.Avatar {
@@ -178,11 +177,6 @@ final class ContactDetailsView: BaseNavigationContentView {
     }
 
     private func setupCallbacks() {
-
-        navigationBar.onRightButtonAction = { [weak self] in
-            self?.onEditButtonTap?()
-        }
-
         yatButton.onTap = { [weak self] in
             self?.toggleYatButton()
         }
@@ -204,6 +198,10 @@ final class ContactDetailsView: BaseNavigationContentView {
 
     private func update(viewModel: [MenuTableView.Section]) {
         tableView.viewModel = viewModel
+    }
+
+    private func updateEditButton() {
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(title: editButtonName, callback: { [weak self] in self?.onEditButtonTap?() }))
     }
 
     private func updateEmojiView() {

@@ -67,6 +67,11 @@ final class ContactBookModel {
         case details
     }
 
+    enum ContentMode {
+        case normal
+        case shareContacts
+    }
+
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
         case link(model: ContactsManager.Model)
@@ -78,9 +83,11 @@ final class ContactBookModel {
     // MARK: - View Model
 
     @Published var searchText: String = ""
+    @Published var contentMode: ContentMode = .normal
 
     @Published private(set) var contactsList: [ContactSection] = []
     @Published private(set) var favoriteContactsList: [ContactSection] = []
+    @Published private(set) var selectedIDs: Set<UUID> = []
     @Published private(set) var areContactsAvailable: Bool = false
     @Published private(set) var areFavoriteContactsAvailable: Bool = false
     @Published private(set) var errorModel: MessageModel?
@@ -130,6 +137,11 @@ final class ContactBookModel {
             .map { $0.map { ContactSection(title: $0.title, viewModels: $0.viewModels.filter { $0.isFavorite }) }}
             .map { $0.filter { !$0.viewModels.isEmpty } }
             .sink { [weak self] in self?.favoriteContactsList = $0 }
+            .store(in: &cancellables)
+
+        $contentMode
+            .filter { $0 == .normal }
+            .sink { [weak self] _ in self?.selectedIDs = [] }
             .store(in: &cancellables)
     }
 
@@ -190,6 +202,16 @@ final class ContactBookModel {
             performShowDetailsAction(model: model)
             return
         }
+    }
+
+    func toggle(contactID: UUID) {
+
+        guard selectedIDs.contains(contactID) else {
+            selectedIDs.insert(contactID)
+            return
+        }
+
+        selectedIDs.remove(contactID)
     }
 
     func unlink(contact: ContactsManager.Model) {

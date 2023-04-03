@@ -1,4 +1,4 @@
-//  UTXOsWalletTickButton.swift
+//  TickButton.swift
 
 /*
 	Package MobileWallet
@@ -40,7 +40,7 @@
 
 import UIKit
 
-final class UTXOsWalletTickButton: DynamicThemeBaseButton {
+final class TickButton: DynamicThemeBaseButton {
 
     // MARK: - Properties
 

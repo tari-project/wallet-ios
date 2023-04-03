@@ -49,6 +49,11 @@ final class ContactBookContactListViewController: UIViewController {
         set { mainView.viewModels = newValue }
     }
 
+    var selectedRows: Set<UUID> {
+        get { mainView.selectedRows }
+        set { mainView.selectedRows = newValue }
+    }
+
     var placeholderViewModel: ContactBookListPlaceholder.ViewModel? {
         get { mainView.placeholderViewModel }
         set { mainView.placeholderViewModel = newValue }
@@ -65,8 +70,18 @@ final class ContactBookContactListViewController: UIViewController {
     }
 
     var onFooterTap: (() -> Void)? {
-        get { mainView.onTap }
-        set { mainView.onTap = newValue }
+        get { mainView.onFooterTap }
+        set { mainView.onFooterTap = newValue }
+    }
+
+    var onRowTap: ((UUID) -> Void)? {
+        get { mainView.onRowTap }
+        set { mainView.onRowTap = newValue }
+    }
+
+    var isInSharingMode: Bool {
+        get { mainView.isInSharingMode }
+        set { mainView.isInSharingMode = newValue }
     }
 
     var onButtonTap: ((UUID, UInt) -> Void)?
