@@ -338,8 +338,8 @@
 		3AECD490284F3BB300D81C80 /* BaseNavigationContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AECD48F284F3BB300D81C80 /* BaseNavigationContentView.swift */; };
 		3AECD494284F46FD00D81C80 /* UIColor+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AECD493284F46FD00D81C80 /* UIColor+Utils.swift */; };
 		3AEDBE4D27CE45C0006B0166 /* DeepLinkFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEDBE4C27CE45C0006B0166 /* DeepLinkFormatter.swift */; };
-		3AEDBE4F27CE46D6006B0166 /* DeeplinkDataDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEDBE4E27CE46D5006B0166 /* DeeplinkDataDecoder.swift */; };
-		3AEDBE5127CE477B006B0166 /* DeepLinkDataEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEDBE5027CE477B006B0166 /* DeepLinkDataEncoder.swift */; };
+		3AEDBE4F27CE46D6006B0166 /* DeepLinkDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEDBE4E27CE46D5006B0166 /* DeepLinkDecoder.swift */; };
+		3AEDBE5127CE477B006B0166 /* DeepLinkEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEDBE5027CE477B006B0166 /* DeepLinkEncoder.swift */; };
 		3AEDBE5927CE4F80006B0166 /* DeepLinkFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEDBE5827CE4F80006B0166 /* DeepLinkFormatterTests.swift */; };
 		3AEE7AA3286599E6000F84ED /* UTXOsWalletTopBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AEE7AA2286599E6000F84ED /* UTXOsWalletTopBar.swift */; };
 		3AF335E028D7983100B48F33 /* MessageMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF335DF28D7983000B48F33 /* MessageMetadata.swift */; };
@@ -382,6 +382,7 @@
 		54394EDE29CA133400E7CAEA /* LoadingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54394EDD29CA133400E7CAEA /* LoadingImageView.swift */; };
 		543DF19A293F37E70031EA70 /* CustomBridgesHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */; };
 		543DF19C293F3DA90031EA70 /* BridgesConfigurationFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */; };
+		544013A429E0003100B5DD6D /* ContactListDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544013A329E0003100B5DD6D /* ContactListDeeplink.swift */; };
 		5443954629800F1600786682 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5443954529800F1600786682 /* OnboardingViewController.swift */; };
 		544692A429B6059C0081085D /* ContactsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544692A329B6059C0081085D /* ContactsManager.swift */; };
 		544D9D4C296D9B2000D8ECEF /* UnblindedOutputs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544D9D4B296D9B2000D8ECEF /* UnblindedOutputs.swift */; };
@@ -409,6 +410,15 @@
 		5460258829A74DA200CF5764 /* ContactDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5460258729A74DA200CF5764 /* ContactDetailsViewController.swift */; };
 		5460258A29A74DAB00CF5764 /* ContactDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5460258929A74DAB00CF5764 /* ContactDetailsView.swift */; };
 		5460258C29A74DC100CF5764 /* ContactDetailsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5460258B29A74DC100CF5764 /* ContactDetailsConstructor.swift */; };
+		54621F8729E00E04000E9659 /* URL+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54621F8629E00E04000E9659 /* URL+Tools.swift */; };
+		54621F8929E00E38000E9659 /* Dictionary+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54621F8829E00E38000E9659 /* Dictionary+Tools.swift */; };
+		54621F8B29E00E78000E9659 /* String+Tools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54621F8A29E00E78000E9659 /* String+Tools.swift */; };
+		54621F8E29E01362000E9659 /* DeepLinkKeyedDecodingContainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54621F8D29E01362000E9659 /* DeepLinkKeyedDecodingContainter.swift */; };
+		54621F9029E01385000E9659 /* DeeplinkUnkeyedDecodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54621F8F29E01385000E9659 /* DeeplinkUnkeyedDecodingContainer.swift */; };
+		54621F9229E0139D000E9659 /* DeeplinkDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54621F9129E0139D000E9659 /* DeeplinkDataSource.swift */; };
+		54621F9529E01423000E9659 /* DeepLinkEncoderStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54621F9429E01423000E9659 /* DeepLinkEncoderStorage.swift */; };
+		54621F9729E01443000E9659 /* DeepLinkKeyedEncodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54621F9629E01443000E9659 /* DeepLinkKeyedEncodingContainer.swift */; };
+		54621F9929E01465000E9659 /* DeepLinkUnkeyedEncodingContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54621F9829E01465000E9659 /* DeepLinkUnkeyedEncodingContainer.swift */; };
 		546B03232983B49400DBED8E /* StylizedLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03222983B49400DBED8E /* StylizedLabel.swift */; };
 		546B03262983E92700DBED8E /* ContentNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03252983E92700DBED8E /* ContentNavigationViewController.swift */; };
 		546B03282983F2F700DBED8E /* OnboardingPagerElementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03272983F2F700DBED8E /* OnboardingPagerElementView.swift */; };
@@ -838,8 +848,8 @@
 		3AECD48F284F3BB300D81C80 /* BaseNavigationContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNavigationContentView.swift; sourceTree = "<group>"; };
 		3AECD493284F46FD00D81C80 /* UIColor+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Utils.swift"; sourceTree = "<group>"; };
 		3AEDBE4C27CE45C0006B0166 /* DeepLinkFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkFormatter.swift; sourceTree = "<group>"; };
-		3AEDBE4E27CE46D5006B0166 /* DeeplinkDataDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeeplinkDataDecoder.swift; sourceTree = "<group>"; };
-		3AEDBE5027CE477B006B0166 /* DeepLinkDataEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkDataEncoder.swift; sourceTree = "<group>"; };
+		3AEDBE4E27CE46D5006B0166 /* DeepLinkDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkDecoder.swift; sourceTree = "<group>"; };
+		3AEDBE5027CE477B006B0166 /* DeepLinkEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkEncoder.swift; sourceTree = "<group>"; };
 		3AEDBE5827CE4F80006B0166 /* DeepLinkFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkFormatterTests.swift; sourceTree = "<group>"; };
 		3AEE7AA2286599E6000F84ED /* UTXOsWalletTopBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTopBar.swift; sourceTree = "<group>"; };
 		3AF335DF28D7983000B48F33 /* MessageMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageMetadata.swift; sourceTree = "<group>"; };
@@ -883,6 +893,7 @@
 		54394EDD29CA133400E7CAEA /* LoadingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingImageView.swift; sourceTree = "<group>"; };
 		543DF199293F37E70031EA70 /* CustomBridgesHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomBridgesHeaderView.swift; sourceTree = "<group>"; };
 		543DF19B293F3DA90031EA70 /* BridgesConfigurationFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgesConfigurationFooterView.swift; sourceTree = "<group>"; };
+		544013A329E0003100B5DD6D /* ContactListDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListDeeplink.swift; sourceTree = "<group>"; };
 		5443954529800F1600786682 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		544692A329B6059C0081085D /* ContactsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsManager.swift; sourceTree = "<group>"; };
 		544D9D4B296D9B2000D8ECEF /* UnblindedOutputs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnblindedOutputs.swift; sourceTree = "<group>"; };
@@ -910,6 +921,15 @@
 		5460258729A74DA200CF5764 /* ContactDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetailsViewController.swift; sourceTree = "<group>"; };
 		5460258929A74DAB00CF5764 /* ContactDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetailsView.swift; sourceTree = "<group>"; };
 		5460258B29A74DC100CF5764 /* ContactDetailsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetailsConstructor.swift; sourceTree = "<group>"; };
+		54621F8629E00E04000E9659 /* URL+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Tools.swift"; sourceTree = "<group>"; };
+		54621F8829E00E38000E9659 /* Dictionary+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+Tools.swift"; sourceTree = "<group>"; };
+		54621F8A29E00E78000E9659 /* String+Tools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Tools.swift"; sourceTree = "<group>"; };
+		54621F8D29E01362000E9659 /* DeepLinkKeyedDecodingContainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkKeyedDecodingContainter.swift; sourceTree = "<group>"; };
+		54621F8F29E01385000E9659 /* DeeplinkUnkeyedDecodingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeeplinkUnkeyedDecodingContainer.swift; sourceTree = "<group>"; };
+		54621F9129E0139D000E9659 /* DeeplinkDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeeplinkDataSource.swift; sourceTree = "<group>"; };
+		54621F9429E01423000E9659 /* DeepLinkEncoderStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkEncoderStorage.swift; sourceTree = "<group>"; };
+		54621F9629E01443000E9659 /* DeepLinkKeyedEncodingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkKeyedEncodingContainer.swift; sourceTree = "<group>"; };
+		54621F9829E01465000E9659 /* DeepLinkUnkeyedEncodingContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkUnkeyedEncodingContainer.swift; sourceTree = "<group>"; };
 		546B03222983B49400DBED8E /* StylizedLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylizedLabel.swift; sourceTree = "<group>"; };
 		546B03252983E92700DBED8E /* ContentNavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentNavigationViewController.swift; sourceTree = "<group>"; };
 		546B03272983F2F700DBED8E /* OnboardingPagerElementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPagerElementView.swift; sourceTree = "<group>"; };
@@ -1039,34 +1059,37 @@
 			isa = PBXGroup;
 			children = (
 				376C62AD247574850091BB28 /* Animation+EnumInit.swift */,
+				3A2B956928648D860085BE21 /* CChar+Helpers.swift */,
+				3A420596279803DF00A8D49C /* CharacterSet+CustomSets.swift */,
 				00BBD808237D80C800EBF5E6 /* Date.swift */,
+				3A685425290AD04600032963 /* DateFormatter+Formats.swift */,
+				54621F8829E00E38000E9659 /* Dictionary+Tools.swift */,
 				373CCDC42490F3B600D0A2C9 /* FileManager+SecureCopy.swift */,
 				BF8316FC23EF7EAA00235403 /* LAContext.swift */,
-				0042780223E8421100AE7BD9 /* String.swift */,
-				37CB9F892451A2AD00C495F2 /* String+Emoji.swift */,
-				37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */,
-				37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */,
-				37ABB68F24781CE800F08163 /* UILabel.swift */,
-				37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */,
-				BFC5532423D9B8E4009130A8 /* UIView+Content.swift */,
-				37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */,
-				004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */,
-				3AFAC361271C6F9E008AA842 /* UITextField+Combine.swift */,
-				3A420596279803DF00A8D49C /* CharacterSet+CustomSets.swift */,
-				3A4BF7CD27B5712900CA499D /* Result+Void.swift */,
-				3A8826C427F1B8320037F779 /* UICollectionViewDiffableDataSource+Animation.swift */,
-				3AE138D22804AB4100443D34 /* UIApplication+Keyboard.swift */,
-				3AECD493284F46FD00D81C80 /* UIColor+Utils.swift */,
-				3A2B956928648D860085BE21 /* CChar+Helpers.swift */,
 				3ACC4F5F2876D2F100632F64 /* NSAttributedString+Format.swift */,
 				3A8473D928EC57AA0015E63A /* Publisher+Binding.swift */,
-				3A21FC5228FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift */,
-				3A685425290AD04600032963 /* DateFormatter+Formats.swift */,
-				54A6E9F3297F260800A60853 /* UIViewController+Common.swift */,
-				54DEF9F22987DA8700C4B749 /* UIScreen+Tools.swift */,
-				548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */,
+				3A4BF7CD27B5712900CA499D /* Result+Void.swift */,
+				0042780223E8421100AE7BD9 /* String.swift */,
+				37CB9F892451A2AD00C495F2 /* String+Emoji.swift */,
+				54621F8A29E00E78000E9659 /* String+Tools.swift */,
+				3AE138D22804AB4100443D34 /* UIApplication+Keyboard.swift */,
+				37547D512460165500EB59CC /* UIApplication+KeyWindow.swift */,
+				3A8826C427F1B8320037F779 /* UICollectionViewDiffableDataSource+Animation.swift */,
+				3AECD493284F46FD00D81C80 /* UIColor+Utils.swift */,
+				37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */,
+				37ABB68F24781CE800F08163 /* UILabel.swift */,
 				54DD2E8529C37A7600C8C0D9 /* UINavigationController+Common.swift */,
+				54DEF9F22987DA8700C4B749 /* UIScreen+Tools.swift */,
+				37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */,
 				5488068629D4230500C2A0F9 /* UIStackView+Common.swift */,
+				548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */,
+				3A21FC5228FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift */,
+				3AFAC361271C6F9E008AA842 /* UITextField+Combine.swift */,
+				BFC5532423D9B8E4009130A8 /* UIView+Content.swift */,
+				37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */,
+				54A6E9F3297F260800A60853 /* UIViewController+Common.swift */,
+				004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */,
+				54621F8629E00E04000E9659 /* URL+Tools.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2354,6 +2377,7 @@
 			children = (
 				3AF97E6427CF767D00FF6A3F /* TransactionsSendDeeplink.swift */,
 				3AF97E6627CF769A00FF6A3F /* BaseNodesAddDeeplink.swift */,
+				544013A329E0003100B5DD6D /* ContactListDeeplink.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -2361,9 +2385,9 @@
 		3AF97E6A27CF77B800FF6A3F /* Data Handling */ = {
 			isa = PBXGroup;
 			children = (
+				54621F9329E0140D000E9659 /* Encoder */,
+				54621F8C29E01329000E9659 /* Decoder */,
 				3AEDBE4C27CE45C0006B0166 /* DeepLinkFormatter.swift */,
-				3AEDBE4E27CE46D5006B0166 /* DeeplinkDataDecoder.swift */,
-				3AEDBE5027CE477B006B0166 /* DeepLinkDataEncoder.swift */,
 			);
 			path = "Data Handling";
 			sourceTree = "<group>";
@@ -2533,6 +2557,28 @@
 				5460258B29A74DC100CF5764 /* ContactDetailsConstructor.swift */,
 			);
 			path = "Contact Details";
+			sourceTree = "<group>";
+		};
+		54621F8C29E01329000E9659 /* Decoder */ = {
+			isa = PBXGroup;
+			children = (
+				54621F9129E0139D000E9659 /* DeeplinkDataSource.swift */,
+				3AEDBE4E27CE46D5006B0166 /* DeepLinkDecoder.swift */,
+				54621F8D29E01362000E9659 /* DeepLinkKeyedDecodingContainter.swift */,
+				54621F8F29E01385000E9659 /* DeeplinkUnkeyedDecodingContainer.swift */,
+			);
+			path = Decoder;
+			sourceTree = "<group>";
+		};
+		54621F9329E0140D000E9659 /* Encoder */ = {
+			isa = PBXGroup;
+			children = (
+				3AEDBE5027CE477B006B0166 /* DeepLinkEncoder.swift */,
+				54621F9429E01423000E9659 /* DeepLinkEncoderStorage.swift */,
+				54621F9629E01443000E9659 /* DeepLinkKeyedEncodingContainer.swift */,
+				54621F9829E01465000E9659 /* DeepLinkUnkeyedEncodingContainer.swift */,
+			);
+			path = Encoder;
 			sourceTree = "<group>";
 		};
 		546B03212983B46E00DBED8E /* Labels */ = {
@@ -2964,6 +3010,7 @@
 				3A03683127DF211D00F304A2 /* TransactionDetailsView.swift in Sources */,
 				545A9D1A294F6F6B008D24A6 /* ThemeSettingsConstructor.swift in Sources */,
 				3A82455827E1EE38003B6B59 /* TransactionDetailsEmojiView.swift in Sources */,
+				54621F8729E00E04000E9659 /* URL+Tools.swift in Sources */,
 				3AF97E7027CFCA2000FF6A3F /* ShortcutsManager.swift in Sources */,
 				3ACDA70926B031CB00F138B8 /* SeedWordsRecoveryProgressView.swift in Sources */,
 				3A87403A2788438E00D80823 /* FFIWalletManager.swift in Sources */,
@@ -2984,6 +3031,7 @@
 				3A35412C26A72D9F002AB5A8 /* ViewIdentifiable.swift in Sources */,
 				3A70433F28E21D3600207D6F /* CompletedTransactionKernel.swift in Sources */,
 				3A13260127EDE3B900289C8C /* TransactionProgressPresenter.swift in Sources */,
+				54621F9529E01423000E9659 /* DeepLinkEncoderStorage.swift in Sources */,
 				3AA2717C279031950076E51F /* TransactionsToolbarView.swift in Sources */,
 				3A7DAB9E28FDC9E2002CC013 /* LogModel.swift in Sources */,
 				BFE1FC0023E20E3600BA5EEC /* WalletCreationViewController.swift in Sources */,
@@ -3044,6 +3092,7 @@
 				543DF19C293F3DA90031EA70 /* BridgesConfigurationFooterView.swift in Sources */,
 				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				3A82455627E1EE0D003B6B59 /* TransactionDetailsSectionView.swift in Sources */,
+				54621F9029E01385000E9659 /* DeeplinkUnkeyedDecodingContainer.swift in Sources */,
 				3A7DAB9528FDB220002CC013 /* LogsListCell.swift in Sources */,
 				3AECD494284F46FD00D81C80 /* UIColor+Utils.swift in Sources */,
 				BFD758E623E98ABD00B0F1A5 /* ProfileViewController.swift in Sources */,
@@ -3063,7 +3112,7 @@
 				3A4205A127980FFA00A8D49C /* QRCodeView.swift in Sources */,
 				3AC05F9B26C3F302002742C6 /* TransactionsListHeaderView.swift in Sources */,
 				3AFC6E032745051400A20287 /* SettingsHeaderView.swift in Sources */,
-				3AEDBE5127CE477B006B0166 /* DeepLinkDataEncoder.swift in Sources */,
+				3AEDBE5127CE477B006B0166 /* DeepLinkEncoder.swift in Sources */,
 				3AFAEBF226B15A3300B82603 /* KeyboardAvoidingContentView.swift in Sources */,
 				37B48A7F24B3312000F8A8D2 /* PasswordVerificationViewController.swift in Sources */,
 				006D211D23CEDF16007D1C10 /* MicroTari.swift in Sources */,
@@ -3132,6 +3181,7 @@
 				3AE138CB28044B1E00443D34 /* CustomDeeplinkPopUpContentView.swift in Sources */,
 				3A2F30B828F5946B0095E25D /* CrashLogger.swift in Sources */,
 				3A66109927AD364E0038EB5B /* SendingTariModel.swift in Sources */,
+				54621F9729E01443000E9659 /* DeepLinkKeyedEncodingContainer.swift in Sources */,
 				3A5A3D5A29016E1300B689C6 /* BackupWalletSettingsView.swift in Sources */,
 				00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				3AC6F11428E9D8840068E6FF /* CustomBridgesHandable.swift in Sources */,
@@ -3139,11 +3189,12 @@
 				3A62674626D76E6B007F9895 /* SelectNetworkViewController.swift in Sources */,
 				3AA00E97271D5ECA00977C36 /* AddRecipientSectionHeaderView.swift in Sources */,
 				377C951E2522213800CC1696 /* TxsListViewController.swift in Sources */,
-				3AEDBE4F27CE46D6006B0166 /* DeeplinkDataDecoder.swift in Sources */,
+				3AEDBE4F27CE46D6006B0166 /* DeepLinkDecoder.swift in Sources */,
 				3AD1306A27D62918003EC7FA /* SeedWordsListView.swift in Sources */,
 				54D419B32995092F00D496B4 /* ContactBookModel.swift in Sources */,
 				3A66109627AD07F10038EB5B /* SendingTariView.swift in Sources */,
 				3A4376E9269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift in Sources */,
+				54621F8929E00E38000E9659 /* Dictionary+Tools.swift in Sources */,
 				3ADF96CE2858A93000A3C888 /* ContextualButton.swift in Sources */,
 				546CE7F929AF523F00264699 /* ContactBookFormView.swift in Sources */,
 				3723A7A624AC9389003382EB /* SecureBackupViewController.swift in Sources */,
@@ -3192,8 +3243,10 @@
 				3ADEBF6A26A5C10E00E87C84 /* AddBaseNodeModel.swift in Sources */,
 				3A420597279803DF00A8D49C /* CharacterSet+CustomSets.swift in Sources */,
 				3ACDA70026AFF83D00F138B8 /* OverlayPresentable.swift in Sources */,
+				54621F8E29E01362000E9659 /* DeepLinkKeyedDecodingContainter.swift in Sources */,
 				3A35413A26A738F5002AB5A8 /* ContentScrollView.swift in Sources */,
 				544D9D4E296D9B3300D8ECEF /* UnblindedOutput.swift in Sources */,
+				544013A429E0003100B5DD6D /* ContactListDeeplink.swift in Sources */,
 				004277F323E0407900AE7BD9 /* TextButton.swift in Sources */,
 				370E886124FE7AE800576F61 /* BridgesConfigurationViewController.swift in Sources */,
 				3A983A5A27C62A3900F0AB61 /* VerifySeedWordsViewController.swift in Sources */,
@@ -3260,6 +3313,7 @@
 				5430B97D29B7402600C80AA2 /* LinkContactsConstructor.swift in Sources */,
 				5453242229A68CA0009281A7 /* RoundedButton.swift in Sources */,
 				3A2C0B8727DA22970018C5A8 /* SeedWordListElementView.swift in Sources */,
+				54621F8B29E00E78000E9659 /* String+Tools.swift in Sources */,
 				3A8473D628EC56C90015E63A /* TariBalanceService.swift in Sources */,
 				3A6F3FF8283BF980005D1793 /* TariFeePerGramStats.swift in Sources */,
 				3A5A3D5829016DE300B689C6 /* BackupWalletSettingsViewController.swift in Sources */,
@@ -3367,8 +3421,10 @@
 				3ABBBA7E2850815C00A3108D /* UTXOsWalletTileListView.swift in Sources */,
 				546B03232983B49400DBED8E /* StylizedLabel.swift in Sources */,
 				54DE32D02930BE3D0060108A /* ColorTheme.swift in Sources */,
+				54621F9929E01465000E9659 /* DeepLinkUnkeyedEncodingContainer.swift in Sources */,
 				376B502324924BB700278ACC /* PendingView.swift in Sources */,
 				3A01248127B39FC000A481F4 /* SendingTariLabel.swift in Sources */,
+				54621F9229E0139D000E9659 /* DeeplinkDataSource.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,4 +1,4 @@
-//  DeepLinkFormatter.swift
+//  DeepLinkDataEncoder.swift
 
 /*
 	Package MobileWallet
@@ -38,51 +38,19 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-protocol DeepLinkCodable: Codable {
-    static var command: String { get }
-}
+struct DeepLinkEncoder: Encoder {
 
-enum DeepLinkError: Error {
-    case invalidNetworkName
-    case invalidCommandName
-    case unableToParse(key: String)
-    case unableToEncode(error: Error)
-}
+    var result: String { storage.query }
+    private let storage: DeepLinkEncoderStorage
 
-enum DeepLinkFormatter {
+    let codingPath: [CodingKey] = []
+    let userInfo: [CodingUserInfoKey: Any] = [:]
 
-    private static var validScheme: String { "tari" }
-    private static var validNetworkName: String { NetworkManager.shared.selectedNetwork.name }
-
-    static func model<T: DeepLinkCodable>(type: T.Type, deeplink: URL) throws -> T {
-        guard let networkName = deeplink.host, networkName == validNetworkName else { throw DeepLinkError.invalidNetworkName }
-        guard deeplink.path == T.command else { throw DeepLinkError.invalidCommandName }
-        let decoder = DeepLinkDecoder(deeplink: deeplink)
-        return try T(from: decoder)
-
+    init(keysHierarchy: [String] = []) {
+        storage = DeepLinkEncoderStorage(keysHierarchy: keysHierarchy)
     }
 
-    static func deeplink<T: DeepLinkCodable>(model: T, networkName: String = validNetworkName) throws -> URL? {
-
-        let encoder = DeepLinkEncoder()
-
-        do {
-         try model.encode(to: encoder)
-        } catch {
-            throw DeepLinkError.unableToEncode(error: error)
-        }
-
-        let query = encoder.result
-
-        var urlComponents = URLComponents()
-        urlComponents.scheme = validScheme
-        urlComponents.host = networkName
-        urlComponents.path = T.command
-
-        if !query.isEmpty {
-            urlComponents.query = query
-        }
-
-        return urlComponents.url
-    }
+    func container<Key: CodingKey>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> { KeyedEncodingContainer(DeepLinkKeyedEncodingContainer(storage: storage)) }
+    func unkeyedContainer() -> UnkeyedEncodingContainer { DeepLinkUnkeyedEncodingContainer(storage: storage) }
+    func singleValueContainer() -> SingleValueEncodingContainer { fatalError() }
 }

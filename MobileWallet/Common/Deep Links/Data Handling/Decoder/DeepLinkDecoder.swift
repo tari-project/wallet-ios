@@ -1,4 +1,4 @@
-//  DeepLinkFormatter.swift
+//  DeepLinkDecoder.swift
 
 /*
 	Package MobileWallet
@@ -38,51 +38,39 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-protocol DeepLinkCodable: Codable {
-    static var command: String { get }
-}
+struct DeepLinkDecoder {
 
-enum DeepLinkError: Error {
-    case invalidNetworkName
-    case invalidCommandName
-    case unableToParse(key: String)
-    case unableToEncode(error: Error)
-}
+    private let parameters: [String: Any]
 
-enum DeepLinkFormatter {
-
-    private static var validScheme: String { "tari" }
-    private static var validNetworkName: String { NetworkManager.shared.selectedNetwork.name }
-
-    static func model<T: DeepLinkCodable>(type: T.Type, deeplink: URL) throws -> T {
-        guard let networkName = deeplink.host, networkName == validNetworkName else { throw DeepLinkError.invalidNetworkName }
-        guard deeplink.path == T.command else { throw DeepLinkError.invalidCommandName }
-        let decoder = DeepLinkDecoder(deeplink: deeplink)
-        return try T(from: decoder)
-
+    init(parameters: [String: Any]) {
+        self.parameters = parameters
     }
 
-    static func deeplink<T: DeepLinkCodable>(model: T, networkName: String = validNetworkName) throws -> URL? {
-
-        let encoder = DeepLinkEncoder()
-
-        do {
-         try model.encode(to: encoder)
-        } catch {
-            throw DeepLinkError.unableToEncode(error: error)
-        }
-
-        let query = encoder.result
-
-        var urlComponents = URLComponents()
-        urlComponents.scheme = validScheme
-        urlComponents.host = networkName
-        urlComponents.path = T.command
-
-        if !query.isEmpty {
-            urlComponents.query = query
-        }
-
-        return urlComponents.url
+    init(deeplink: URL) {
+        parameters = deeplink
+            .keysValueComponents?
+            .map { Self.object(keys: $0, value: $1) }
+            .reduce(into: [String: Any]()) { $0.nestedMerge(with: $1) } ?? [:]
     }
+
+    private static func object(keys: [String], value: Any) -> [String: Any] {
+        var keys = keys
+        let workingKey = keys.popLast()!
+        let value = [workingKey: value]
+        guard !keys.isEmpty else { return value }
+        return object(keys: keys, value: value)
+    }
+}
+
+extension DeepLinkDecoder: Decoder {
+
+    var codingPath: [CodingKey] { [] }
+    var userInfo: [CodingUserInfoKey: Any] { [:] }
+
+    func container<Key: CodingKey>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> {
+        KeyedDecodingContainer(DeepLinkKeyedDecodingContainter(parameters: parameters))
+    }
+
+    func unkeyedContainer() throws -> UnkeyedDecodingContainer { DeeplinkUnkeyedDecodingContainer(parameters: parameters) }
+    func singleValueContainer() throws -> SingleValueDecodingContainer { fatalError() }
 }
