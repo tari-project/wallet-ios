@@ -742,6 +742,7 @@
 "contact_book.share_bar.buttons.qr" = "QR Code";
 "contact_book.share_bar.buttons.link" = "Link";
 "contact_book.share_bar.buttons.ble" = "BLE";
+"contact_book.pop_ups.qr.title" = "Share QR Code";
 "contact_book.pager.tab.contacts" = "Contacts";
 "contact_book.pager.tab.favorites" = "Favorites";
 "contact_book.section.phone_contacts" = "Phone Contacts";

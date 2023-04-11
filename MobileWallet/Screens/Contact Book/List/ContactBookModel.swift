@@ -56,6 +56,7 @@ final class ContactBookModel {
         let isFavorite: Bool
         let menuItems: [ContactBookModel.MenuItem]
         let type: ContactsManager.ContactType
+        let isSelectable: Bool
     }
 
     enum MenuItem: UInt {
@@ -72,12 +73,21 @@ final class ContactBookModel {
         case shareContacts
     }
 
+    enum ShareType: Int, CaseIterable {
+        case qr
+        case link
+        case ble
+    }
+
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
         case link(model: ContactsManager.Model)
         case unlink(model: ContactsManager.Model)
         case showUnlinkSuccess(emojiID: String, name: String)
         case showDetails(model: ContactsManager.Model)
+        case showQRDialog
+        case shareQR(image: UIImage)
+        case shareLink(link: URL)
     }
 
     // MARK: - View Model
@@ -93,6 +103,7 @@ final class ContactBookModel {
     @Published private(set) var errorModel: MessageModel?
     @Published private(set) var action: Action?
     @Published private(set) var isPermissionGranted: Bool = false
+    @Published private(set) var isSharePossible: Bool = false
 
     // MARK: - Properties
 
@@ -143,6 +154,11 @@ final class ContactBookModel {
             .filter { $0 == .normal }
             .sink { [weak self] _ in self?.selectedIDs = [] }
             .store(in: &cancellables)
+
+        $selectedIDs
+            .map { !$0.isEmpty }
+            .assignPublisher(to: \.isSharePossible, on: self)
+            .store(in: &cancellables)
     }
 
     // MARK: - View Model
@@ -159,10 +175,10 @@ final class ContactBookModel {
                 let externalContacts = contactsManager.externalModels
 
                 let internalContactSection = internalContacts
-                    .map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: $0.isFavorite, menuItems: $0.menuItems, type: $0.type) }
+                    .map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: $0.isFavorite, menuItems: $0.menuItems, type: $0.type, isSelectable: true) }
 
                 let externalContactSection = externalContacts
-                    .map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: $0.menuItems, type: $0.type) }
+                    .map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: $0.menuItems, type: $0.type, isSelectable: false) }
 
                 if !internalContactSection.isEmpty {
                     sections.append(ContactSection(title: nil, viewModels: internalContactSection))
@@ -227,6 +243,30 @@ final class ContactBookModel {
         }
     }
 
+    func shareSelectedContacts(shareType: ShareType) {
+
+        let deeplink: URL
+
+        do {
+            guard let link = try makeDeeplink() else { return }
+            deeplink = link
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
+            return
+        }
+
+        switch shareType {
+        case .qr:
+            shareQR(deeplink: deeplink)
+        case .link:
+            shareLink(deeplink: deeplink)
+        case .ble:
+            break
+        }
+
+        contentMode = .normal
+    }
+
     private func update(isFavorite: Bool, contact: ContactsManager.Model) {
         do {
             try contactsManager.update(nameComponents: contact.nameComponents, isFavorite: isFavorite, yat: contact.externalModel?.yat ?? "", contact: contact)
@@ -236,7 +276,33 @@ final class ContactBookModel {
         }
     }
 
+    private func shareQR(deeplink: URL) {
+
+        action = .showQRDialog
+
+        Task {
+            guard let data = deeplink.absoluteString.data(using: .utf8), let image = await QRCodeFactory.makeQrCode(data: data) else { return }
+            action = .shareQR(image: image)
+        }
+    }
+
+    private func shareLink(deeplink: URL) {
+        action = .shareLink(link: deeplink)
+    }
+
     // MARK: - Handlers
+
+    private func makeDeeplink() throws -> URL? {
+
+        let list = selectedIDs
+            .compactMap { selectedID in contacts.first { $0.id == selectedID }}
+            .compactMap { $0.internalModel }
+            .map { ContactListDeeplink.Contact(alias: $0.alias ?? "", hex: $0.hex ) }
+
+        let model = ContactListDeeplink(list: list)
+
+        return try DeepLinkFormatter.deeplink(model: model)
+    }
 
     private func performSendAction(model: ContactsManager.Model) {
         do {
@@ -257,5 +323,30 @@ final class ContactBookModel {
 
     private func performUnlinkAction(model: ContactsManager.Model) {
         action = .unlink(model: model)
+    }
+}
+
+extension ContactBookModel.ShareType {
+
+    var image: UIImage? {
+        switch self {
+        case .qr:
+            return Theme.shared.images.qrButton?.withRenderingMode(.alwaysTemplate)
+        case .link:
+            return .icons.link
+        case .ble:
+            return .icons.bluetooth
+        }
+    }
+
+    var text: String? {
+        switch self {
+        case .qr:
+            return localized("contact_book.share_bar.buttons.qr")
+        case .link:
+            return localized("contact_book.share_bar.buttons.link")
+        case .ble:
+            return localized("contact_book.share_bar.buttons.ble")
+        }
     }
 }

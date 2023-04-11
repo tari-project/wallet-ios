@@ -40,6 +40,7 @@
 
 import UIKit
 
+@available(*, deprecated, message: "This class is deprecated and will be removed later. Please user PopUpPresenter.showQRCodeDialog() instead.")
 final class QRCodePresentationController: UIViewController {
 
     // MARK: - Properties
@@ -55,7 +56,7 @@ final class QRCodePresentationController: UIViewController {
         modalTransitionStyle = .crossDissolve
         modalPresentationStyle = .overFullScreen
 
-        mainView.qrCodeView.image = image
+        mainView.qrCodeView.state = .image(image)
     }
 
     required init?(coder: NSCoder) {

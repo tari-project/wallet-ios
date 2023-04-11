@@ -43,10 +43,10 @@ import TariCommon
 
 final class ContactBookShareBar: UIView {
 
-    enum ButtonType: Int, CaseIterable {
-        case qr
-        case link
-        case ble
+    struct ViewModel {
+        let identifier: Int
+        let image: UIImage?
+        let text: String?
     }
 
     // MARK: - Subviews
@@ -60,7 +60,7 @@ final class ContactBookShareBar: UIView {
 
     // MARK: - Properties
 
-    private(set) var selectedButtonType: ButtonType = .qr {
+    private(set) var selectedIdentifier: Int? {
         didSet { updateButtons() }
     }
 
@@ -69,7 +69,6 @@ final class ContactBookShareBar: UIView {
     init() {
         super.init(frame: .zero)
         setupConstraints()
-        setupButtons()
     }
 
     required init?(coder: NSCoder) {
@@ -95,50 +94,32 @@ final class ContactBookShareBar: UIView {
         NSLayoutConstraint.activate(constraints)
     }
 
-    private func setupButtons() {
-        ButtonType.allCases
-            .map { makeButton(type: $0) }
+    func setupButtons(models: [ViewModel]) {
+
+        stackView.removeAllViews()
+
+        models
+            .enumerated()
+            .map { makeButton(model: $1, isSelected: $0 == 0) }
             .forEach { stackView.addArrangedSubview($0) }
+
+        guard !models.isEmpty else { return }
+        selectedIdentifier = 0
     }
 
-    private func makeButton(type: ButtonType) -> ContactBookShareButton {
+    private func makeButton(model: ViewModel, isSelected: Bool) -> ContactBookShareButton {
         @View var button = ContactBookShareButton()
-        button.isSelected = type == selectedButtonType
-        button.update(image: type.icon, text: type.text)
-        button.onTap = { [weak self] in self?.selectedButtonType = type }
+        button.isSelected = isSelected
+        button.tag = model.identifier
+        button.update(image: model.image, text: model.text)
+        button.onTap = { [weak self] in self?.selectedIdentifier = model.identifier }
         return button
     }
 
     private func updateButtons() {
         stackView.arrangedSubviews
             .compactMap { $0 as? ContactBookShareButton }
-            .enumerated()
-            .forEach { $1.isSelected = $0 == self.selectedButtonType.rawValue }
-    }
-}
-
-extension ContactBookShareBar.ButtonType {
-
-    var icon: UIImage? {
-        switch self {
-        case .qr:
-            return Theme.shared.images.qrButton?.withRenderingMode(.alwaysTemplate)
-        case .link:
-            return .icons.link
-        case .ble:
-            return .icons.bluetooth
-        }
-    }
-
-    var text: String? {
-        switch self {
-        case .qr:
-            return localized("contact_book.share_bar.buttons.qr")
-        case .link:
-            return localized("contact_book.share_bar.buttons.link")
-        case .ble:
-            return localized("contact_book.share_bar.buttons.ble")
-        }
+            .forEach { $0.isSelected = $0.tag == self.selectedIdentifier }
     }
 }
 

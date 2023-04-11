@@ -61,10 +61,16 @@ final class ContactBookView: BaseNavigationContentView {
     // MARK: - Properties
 
     var searchText: AnyPublisher<String, Never> { searchTextSubject.eraseToAnyPublisher() }
+    var selectedShareOptionID: Int? { shareBar.selectedIdentifier }
+
+    var isShareButtonEnabled: Bool = false {
+        didSet { updateShareButton() }
+    }
 
     var onAddContactButtonTap: (() -> Void)?
     var onShareModeButtonTap: (() -> Void)?
-    var onCancelShareModelButtonTap: (() -> Void)?
+    var onCancelShareModeButtonTap: (() -> Void)?
+    var onShareButtonTap: (() -> Void)?
 
     private let searchTextSubject = CurrentValueSubject<String, Never>("")
 
@@ -106,6 +112,10 @@ final class ContactBookView: BaseNavigationContentView {
         NSLayoutConstraint.activate(constraints)
     }
 
+    func setupShareBar(models: [ContactBookShareBar.ViewModel]) {
+        shareBar.setupButtons(models: models)
+    }
+
     private func setupSuviews() {
         navigationBar.title = localized("contact_book.title")
         navigationBar.backButtonType = .none
@@ -138,7 +148,7 @@ final class ContactBookView: BaseNavigationContentView {
         searchTextField.bind(withSubject: searchTextSubject, storeIn: &cancellables)
 
         navigationBar.onBackButtonAction = { [weak self] in
-            self?.onCancelShareModelButtonTap?()
+            self?.onCancelShareModeButtonTap?()
         }
     }
 
@@ -160,7 +170,7 @@ final class ContactBookView: BaseNavigationContentView {
 
         if isInSelectionMode {
             rightButtons = [
-                NavigationBar.ButtonModel(title: localized("contact_book.nav_bar.buttons.share"), callback: {})
+                NavigationBar.ButtonModel(title: localized("contact_book.nav_bar.buttons.share"), callback: { [weak self] in self?.onShareButtonTap?() })
             ]
         } else {
             rightButtons = [
@@ -171,6 +181,13 @@ final class ContactBookView: BaseNavigationContentView {
 
         navigationBar.backButtonType = isInSelectionMode ? .text(localized("common.cancel")) : .none
         navigationBar.update(rightButtons: rightButtons)
+
+        updateShareButton()
+    }
+
+    private func updateShareButton() {
+        guard isInSelectionMode else { return }
+        navigationBar.rightButton(index: 0)?.isEnabled = isShareButtonEnabled
     }
 
     private func updateShareBar() {

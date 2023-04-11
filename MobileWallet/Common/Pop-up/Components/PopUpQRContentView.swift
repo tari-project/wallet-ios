@@ -1,10 +1,10 @@
-//  QRCodeView.swift
+//  PopUpQRContentView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 19/01/2022
+	Created by Adrian Truszczyński on 11/04/2023
 	Using Swift 5.0
-	Running on macOS 12.1
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,28 +38,27 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
+import Lottie
 
-final class QRCodeView: UIView {
+final class PopUpQRContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var imageView = LoadingImageView()
+    @View private var qrCodeView = QRCodeView()
 
     // MARK: - Properties
 
-    var state: LoadingImageView.State {
-        get { imageView.state }
-        set { imageView.state = newValue }
+    var qrCode: UIImage? {
+        didSet { updateViewsState() }
     }
 
-    // MARK: - Initialiser
+    // MARK: - Initailisers
 
-    init() {
-        super.init(frame: .zero)
-        setupViews()
+    override init() {
+        super.init()
         setupConstraints()
+        updateViewsState()
     }
 
     required init?(coder: NSCoder) {
@@ -68,22 +67,36 @@ final class QRCodeView: UIView {
 
     // MARK: - Setups
 
-    private func setupViews() {
-        backgroundColor = .white
-        layer.cornerRadius = 7.0
-    }
-
     private func setupConstraints() {
 
-        addSubview(imageView)
+        addSubview(qrCodeView)
 
         let constraints = [
-            imageView.topAnchor.constraint(equalTo: topAnchor, constant: 17.0),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 17.0),
-            imageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -17.0),
-            imageView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -17.0)
+            qrCodeView.topAnchor.constraint(equalTo: topAnchor),
+            qrCodeView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 58.0),
+            qrCodeView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -58.0),
+            qrCodeView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            qrCodeView.heightAnchor.constraint(equalTo: qrCodeView.widthAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
+    }
+
+    // MARK: - Updates
+
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = .clear
+        qrCodeView.apply(shadow: theme.shadows.box)
+    }
+
+    private func updateViewsState() {
+
+        guard let qrCode else {
+            qrCodeView.state = .loading
+            return
+        }
+
+        qrCodeView.state = .image(qrCode)
     }
 }
