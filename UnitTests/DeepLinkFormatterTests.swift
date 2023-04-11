@@ -232,4 +232,60 @@ final class DeepLinkFormatterTests: XCTestCase {
             XCTFail("Invalid error type")
         }
     }
+
+    // MARK: - ContactListDeeplink
+
+    func testValidContactListAddDeeplinkDecoding() {
+
+        let inputDeeplink = URL(string: "tari://test_network/contacts?list[0][alias]=MrWhite&list[0][hex]=FirstHex&list[1][alias]=MrOrange&list[1][hex]=SecondHex")!
+        let expectedResult = ContactListDeeplink(list: [
+            ContactListDeeplink.Contact(alias: "MrWhite", hex: "FirstHex"),
+            ContactListDeeplink.Contact(alias: "MrOrange", hex: "SecondHex")
+        ])
+
+        let result = try! DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: inputDeeplink)
+
+        XCTAssertEqual(result.list.count, expectedResult.list.count)
+        XCTAssertEqual(result.list[0].alias, expectedResult.list[0].alias)
+        XCTAssertEqual(result.list[0].hex, expectedResult.list[0].hex)
+        XCTAssertEqual(result.list[1].alias, expectedResult.list[1].alias)
+        XCTAssertEqual(result.list[1].hex, expectedResult.list[1].hex)
+    }
+
+    func testValidContactListAddDeeplinkEncoding() {
+
+        let inputModel = ContactListDeeplink(list: [
+            ContactListDeeplink.Contact(alias: "MrWhite", hex: "FirstHex"),
+            ContactListDeeplink.Contact(alias: "MrOrange", hex: "SecondHex")
+        ])
+
+        let expectedResult = URL(string: "tari://test_network/contacts?list[0][alias]=MrWhite&list[0][hex]=FirstHex&list[1][alias]=MrOrange&list[1][hex]=SecondHex")!
+        let result = try! DeepLinkFormatter.deeplink(model: inputModel)
+
+        XCTAssertEqual(result, expectedResult)
+    }
+
+    func testContactListAddDeeplinkWithInvalidKey() {
+
+        let inputDeeplink = URL(string: "tari://test_network/contacts?notlist[0][alias]=MrWhite&list[0][hex]=FirstHex&list[1][alias]=MrOrange&list[1][hex]=SecondHex")!
+        let invalidKey = "alias"
+
+        var result: ContactListDeeplink?
+        var cachedError: DeepLinkError!
+
+        do {
+            result = try DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: inputDeeplink)
+        } catch {
+            cachedError = error as? DeepLinkError
+        }
+
+        XCTAssertNil(result)
+
+        switch cachedError {
+        case let .unableToParse(key):
+            XCTAssertEqual(key, invalidKey)
+        default:
+            XCTFail("Invalid error type")
+        }
+    }
 }

@@ -47,6 +47,7 @@ enum DeeplinkError: Error {
     case unknownDeeplink
     case transactionSendDeeplinkError(_ error: Error)
     case baseNodesAddDeeplinkError(_ error: Error)
+    case contactListDeeplinkError(_ error: Error)
 }
 
 enum DeeplinkHandler {
@@ -57,7 +58,6 @@ enum DeeplinkHandler {
     }
 
     static func handle(deeplink: URL, handler: DeeplinkHandlable? = nil) throws {
-
         guard !handle(legacyDeeplink: deeplink, handler: handler) else { return }
 
         switch deeplink.path {
@@ -65,6 +65,8 @@ enum DeeplinkHandler {
             try handle(transactionSendDeeplink: deeplink, handler: handler)
         case BaseNodesAddDeeplink.command:
             try handle(baseNodesAddDeeplink: deeplink, handler: handler)
+        case ContactListDeeplink.command:
+            try handle(contactListDeeplink: deeplink, handler: handler)
         default:
             throw DeeplinkError.unknownDeeplink
         }
@@ -130,6 +132,16 @@ enum DeeplinkHandler {
             handler.handle(deeplink: deeplink)
         } catch {
             throw DeeplinkError.baseNodesAddDeeplinkError(error)
+        }
+    }
+
+    private static func handle(contactListDeeplink: URL, handler: DeeplinkHandlable?) throws {
+
+        do {
+            let deeplink = try DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: contactListDeeplink)
+            // TODO: It will be implemented in the future
+        } catch {
+            throw DeeplinkError.contactListDeeplinkError(error)
         }
     }
 

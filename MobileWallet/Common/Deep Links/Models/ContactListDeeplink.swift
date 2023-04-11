@@ -1,10 +1,10 @@
-//  DeepLinkFormatter.swift
+//  ContactListDeeplink.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 01/03/2022
+	Created by Adrian Truszczyński on 07/04/2023
 	Using Swift 5.0
-	Running on macOS 12.1
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,51 +38,16 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-protocol DeepLinkCodable: Codable {
-    static var command: String { get }
-}
+struct ContactListDeeplink {
 
-enum DeepLinkError: Error {
-    case invalidNetworkName
-    case invalidCommandName
-    case unableToParse(key: String)
-    case unableToEncode(error: Error)
-}
-
-enum DeepLinkFormatter {
-
-    private static var validScheme: String { "tari" }
-    private static var validNetworkName: String { NetworkManager.shared.selectedNetwork.name }
-
-    static func model<T: DeepLinkCodable>(type: T.Type, deeplink: URL) throws -> T {
-        guard let networkName = deeplink.host, networkName == validNetworkName else { throw DeepLinkError.invalidNetworkName }
-        guard deeplink.path == T.command else { throw DeepLinkError.invalidCommandName }
-        let decoder = DeepLinkDecoder(deeplink: deeplink)
-        return try T(from: decoder)
-
+    struct Contact: Codable {
+        let alias: String
+        let hex: String
     }
 
-    static func deeplink<T: DeepLinkCodable>(model: T, networkName: String = validNetworkName) throws -> URL? {
+    let list: [Contact]
+}
 
-        let encoder = DeepLinkEncoder()
-
-        do {
-         try model.encode(to: encoder)
-        } catch {
-            throw DeepLinkError.unableToEncode(error: error)
-        }
-
-        let query = encoder.result
-
-        var urlComponents = URLComponents()
-        urlComponents.scheme = validScheme
-        urlComponents.host = networkName
-        urlComponents.path = T.command
-
-        if !query.isEmpty {
-            urlComponents.query = query
-        }
-
-        return urlComponents.url
-    }
+extension ContactListDeeplink: DeepLinkCodable {
+    static var command: String { "/contacts" }
 }
