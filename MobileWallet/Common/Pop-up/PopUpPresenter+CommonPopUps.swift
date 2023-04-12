@@ -127,6 +127,21 @@ extension PopUpPresenter {
         log(message: message)
     }
 
+    static func showQRCodeDialog(title: String) -> PopUpQRContentView {
+
+        let headerView = PopUpHeaderView()
+        let contentView = PopUpQRContentView()
+        let buttonsView = PopUpButtonsView()
+
+        headerView.label.text = title
+        buttonsView.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), icon: nil, type: .text, callback: { PopUpPresenter.dismissPopup() }))
+
+        let popUp = TariPopUp(headerSection: headerView, contentSection: contentView, buttonsSection: buttonsView)
+        PopUpPresenter.show(popUp: popUp)
+
+        return contentView
+    }
+
     static func showPopUp(model: PopUpDialogModel) {
 
         var headerView: UIView?

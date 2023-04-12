@@ -52,6 +52,7 @@ final class ContactBookViewController: UIViewController {
     private let contactsPageViewController = ContactBookContactListViewController()
     private let favoritesPageViewController = ContactBookContactListViewController()
 
+    private weak var qrCodePopUpContentView: PopUpQRContentView?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -74,6 +75,7 @@ final class ContactBookViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupPages()
+        setupSharingOptions()
         setupCallbacks()
     }
 
@@ -109,6 +111,11 @@ final class ContactBookViewController: UIViewController {
             actionButtonTitle: nil,
             actionButtonCallback: nil
         )
+    }
+
+    private func setupSharingOptions() {
+        let models = ContactBookModel.ShareType.allCases.map { ContactBookShareBar.ViewModel(identifier: $0.rawValue, image: $0.image, text: $0.text) }
+        mainView.setupShareBar(models: models)
     }
 
     private func setupCallbacks() {
@@ -164,6 +171,10 @@ final class ContactBookViewController: UIViewController {
             .sink { [weak self] in self?.handle(contentMode: $0) }
             .store(in: &cancellables)
 
+        model.$isSharePossible
+            .sink { [weak self] in self?.mainView.isShareButtonEnabled = $0 }
+            .store(in: &cancellables)
+
         mainView.searchText
             .receive(on: DispatchQueue.main)
             .assign(to: \.searchText, on: model)
@@ -177,8 +188,13 @@ final class ContactBookViewController: UIViewController {
             self?.moveToAddContactScreen()
         }
 
-        mainView.onCancelShareModelButtonTap = { [weak self] in
+        mainView.onCancelShareModeButtonTap = { [weak self] in
             self?.model.contentMode = .normal
+        }
+
+        mainView.onShareButtonTap = { [weak self] in
+            guard let identifier = self?.mainView.selectedShareOptionID, let shareType = ContactBookModel.ShareType(rawValue: identifier) else { return }
+            self?.model.shareSelectedContacts(shareType: shareType)
         }
 
         contactsPageViewController.onButtonTap = { [weak self] in
@@ -258,6 +274,12 @@ final class ContactBookViewController: UIViewController {
             showUnlinkSuccessDialog(emojiID: emojiID, name: name)
         case let .showDetails(model):
             moveToContactDetails(model: model)
+        case .showQRDialog:
+            showQrCodeDialog()
+        case let .shareQR(image):
+            showQrCodeInDialog(qrCode: image)
+        case let .shareLink(link):
+            showLinkShareDialog(link: link)
         }
     }
 
@@ -265,7 +287,16 @@ final class ContactBookViewController: UIViewController {
         sections.map {
             let items = $0.viewModels.map {
                 let menuItems = $0.menuItems.map { $0.buttonViewModel }
-                return ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatarText: $0.avatar, avatarImage: $0.avatarImage, isFavorite: $0.isFavorite, menuItems: menuItems, contactTypeImage: $0.type.image)
+                return ContactBookCell.ViewModel(
+                    id: $0.id,
+                    name: $0.name,
+                    avatarText: $0.avatar,
+                    avatarImage: $0.avatarImage,
+                    isFavorite: $0.isFavorite,
+                    menuItems: menuItems,
+                    contactTypeImage: $0.type.image,
+                    isSelectable: $0.isSelectable
+                )
             }
             return ContactBookContactListView.Section(title: $0.title, items: items)
         }
@@ -317,6 +348,20 @@ final class ContactBookViewController: UIViewController {
     private func openAppSettings() {
         guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
         UIApplication.shared.open(url)
+    }
+
+    private func showQrCodeDialog() {
+        qrCodePopUpContentView = PopUpPresenter.showQRCodeDialog(title: localized("contact_book.pop_ups.qr.title"))
+    }
+
+    private func showQrCodeInDialog(qrCode: UIImage) {
+        qrCodePopUpContentView?.qrCode = qrCode
+    }
+
+    private func showLinkShareDialog(link: URL) {
+        let controller = UIActivityViewController(activityItems: [link], applicationActivities: nil)
+        controller.popoverPresentationController?.sourceView = mainView.navigationBar
+        present(controller, animated: true)
     }
 }
 

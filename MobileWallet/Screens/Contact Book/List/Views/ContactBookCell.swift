@@ -51,6 +51,7 @@ final class ContactBookCell: DynamicThemeCell {
         let isFavorite: Bool
         let menuItems: [ContactCapsuleMenu.ButtonViewModel]
         let contactTypeImage: UIImage?
+        let isSelectable: Bool
     }
 
     // MARK: - Subviews
@@ -100,6 +101,7 @@ final class ContactBookCell: DynamicThemeCell {
     private(set) var elementID: UUID?
     private(set) var isExpanded: Bool = false
 
+    private var isSelectable: Bool = false
     private var normalModeConstraint: NSLayoutConstraint?
     private var editModeConstraint: NSLayoutConstraint?
 
@@ -178,6 +180,7 @@ final class ContactBookCell: DynamicThemeCell {
     func update(viewModel: ViewModel) {
 
         elementID = viewModel.id
+        isSelectable = viewModel.isSelectable
         nameLabel.text = viewModel.name
 
         if let avatarImage = viewModel.avatarImage {
@@ -205,7 +208,9 @@ final class ContactBookCell: DynamicThemeCell {
 
     override func setEditing(_ editing: Bool, animated: Bool) {
 
-        if editing {
+        let isTickVisible = editing && isSelectable
+
+        if isTickVisible {
             normalModeConstraint?.isActive = false
             editModeConstraint?.isActive = true
         } else {
@@ -216,7 +221,7 @@ final class ContactBookCell: DynamicThemeCell {
         let duration: TimeInterval = animated ? 0.3 : 0.0
 
         UIView.animate(withDuration: duration, delay: 0.0, options: [.beginFromCurrentState, .curveEaseInOut]) {
-            self.tickView.alpha = editing ? 1.0 : 0.0
+            self.tickView.alpha = isTickVisible ? 1.0 : 0.0
             self.layoutIfNeeded()
         }
     }
