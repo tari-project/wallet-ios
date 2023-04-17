@@ -131,19 +131,10 @@ final class TorManager {
             reconfigureSession()
         }
 
-        return try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-                guard let self = self else { return }
-                do {
-                    try self.startController()
-                    try self.observeAuthentication()
-                    self.setupRetry()
-                    continuation.resume()
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+        try await Task.sleep(nanoseconds: 1000000000)
+        try startController()
+        try await observeAuthentication()
+        setupRetry()
     }
 
     private func configureSession() throws {
@@ -295,16 +286,12 @@ final class TorManager {
 
     // MARK: - Observers
 
-    private func observeAuthentication() throws {
-
-        let cookie = try cookie()
-
-        controller?.authenticate(with: cookie) { [weak self] isSuccess, _ in
-            guard isSuccess else { return }
-            self?.connectionStatus = .portsOpen
-            self?.observeCircuit()
-            self?.observeStatusEvents()
-        }
+    private func observeAuthentication() async throws {
+        let cookie = try await cookie()
+        guard let isSuccess = try await controller?.authenticate(with: cookie) else { return }
+        connectionStatus = .portsOpen
+        observeCircuit()
+        observeStatusEvents()
     }
 
     private func observeCircuit() {
@@ -330,7 +317,26 @@ final class TorManager {
 
     // MARK: - Constructors
 
-    func cookie() throws -> Data {
+    func cookie() async throws -> Data {
+        try await cookie(retryCount: 0)
+    }
+
+    private func cookie(retryCount: Int) async throws -> Data {
+
+        let maxRetryCount = 5
+
+        do {
+            return try self.fetchCookieData()
+        } catch {
+            guard retryCount < maxRetryCount else { throw error }
+            Logger.log(message: "Waiting for cookies: Retry Count: \(retryCount)", domain: .connection, level: .info)
+            try await Task.sleep(nanoseconds: 100000000) // 0.1s
+            return try await cookie(retryCount: retryCount + 1)
+        }
+    }
+
+    private func fetchCookieData() throws -> Data {
+
         guard let fileUrl = configuration?.dataDirectory?.appendingPathComponent("control_auth_cookie") else { throw TorError.missingCookie(error: nil) }
         do {
             return try Data(contentsOf: fileUrl)
