@@ -89,13 +89,6 @@ final class Tari: MainServiceable {
         get throws { try walletManager.walletAddress() }
     }
 
-    var walletVersion: String? {
-        get throws {
-            let commsConfig = try makeCommsConfig()
-            return try walletManager.walletVersion(commsConfig: commsConfig)
-        }
-    }
-
     var logsURLs: [URL] {
         get throws {
             try FileManager.default.contentsOfDirectory(at: TariSettings.storageDirectory, includingPropertiesForKeys: nil)
@@ -182,12 +175,12 @@ final class Tari: MainServiceable {
 
     func startWallet() async throws {
         await waitForTor()
-        try startWallet(seedWords: nil)
+        try await startWallet(seedWords: nil)
         try connection.selectCurrentNode()
     }
 
-    func restoreWallet(seedWords: [String]) throws {
-        try startWallet(seedWords: seedWords)
+    func restoreWallet(seedWords: [String]) async throws {
+        try await startWallet(seedWords: seedWords)
     }
 
     func deleteWallet() {
@@ -218,8 +211,9 @@ final class Tari: MainServiceable {
         Task { await torManager.stop() }
     }
 
-    private func startWallet(seedWords: [String]?) throws {
-        let commsConfig = try makeCommsConfig()
+    private func startWallet(seedWords: [String]?) async throws {
+
+        let commsConfig = try await makeCommsConfig()
         let selectedNetwork = NetworkManager.shared.selectedNetwork
         var walletSeedWords: SeedWords?
 
@@ -264,9 +258,9 @@ final class Tari: MainServiceable {
         NetworkManager.shared.removeSelectedNetworkSettings()
     }
 
-    private func makeCommsConfig() throws -> CommsConfig {
+    private func makeCommsConfig() async throws -> CommsConfig {
 
-        let torCookie = try torManager.cookie()
+        let torCookie = try await torManager.cookie()
         let transportType = try makeTransportType(torCookie: torCookie)
 
         return try CommsConfig(
@@ -318,5 +312,12 @@ final class Tari: MainServiceable {
         } while newBaseNode == selectedBaseNode
 
         try connection.select(baseNode: newBaseNode)
+    }
+
+    // MARK: - Data
+
+    func walletVersion() async throws -> String? {
+        let commsConfig = try await makeCommsConfig()
+        return try walletManager.walletVersion(commsConfig: commsConfig)
     }
 }

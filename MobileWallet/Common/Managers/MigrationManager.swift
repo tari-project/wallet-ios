@@ -52,19 +52,22 @@ enum MigrationManager {
 
     static func validateWalletVersion(completion: @escaping (Bool) -> Void) {
 
-        guard !isWalletHasValidVersion() else {
-            completion(true)
-            return
-        }
+        Task {
 
-        DispatchQueue.main.async {
-            showPopUp { completion($0) }
+            guard await !isWalletHasValidVersion() else {
+                completion(true)
+                return
+            }
+
+            DispatchQueue.main.async {
+                showPopUp { completion($0) }
+            }
         }
     }
 
-    private static func isWalletHasValidVersion() -> Bool {
+    private static func isWalletHasValidVersion() async -> Bool {
 
-        if let version = try? Tari.shared.walletVersion {
+        if let version = try? await Tari.shared.walletVersion() {
             let isValid = VersionValidator.compare(version, isHigherOrEqualTo: minValidVersion)
             Logger.log(message: "Min. Valid Wallet Version: \(minValidVersion), Local Wallet Version: \(version), isValid: \(isValid)", domain: .general, level: .info)
             return isValid

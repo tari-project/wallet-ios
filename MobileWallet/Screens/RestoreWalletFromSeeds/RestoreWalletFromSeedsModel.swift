@@ -125,15 +125,8 @@ final class RestoreWalletFromSeedsModel {
             .filter { $0.state != .editing }
             .map { $0.title }
 
-        do {
-            try Tari.shared.restoreWallet(seedWords: seedWords)
-            viewModel.isEmptyWalletCreated = true
-        } catch let error as SeedWords.InternalError {
-            handle(seedWordsError: error)
-        } catch let error as WalletError {
-            handle(walletError: error)
-        } catch {
-            handleUnknownError()
+        Task {
+            await restoreWallet(seedWords: seedWords)
         }
     }
 
@@ -154,6 +147,19 @@ final class RestoreWalletFromSeedsModel {
         let state = state(seedWord: inputText)
         appendModelsBeforeEditingModel(models: [SeedWordModel(id: UUID(), title: inputText, state: state, visualTrait: .deleteIcon)])
         viewModel.updatedInputText = ""
+    }
+
+    private func restoreWallet(seedWords: [String]) async {
+        do {
+            try await Tari.shared.restoreWallet(seedWords: seedWords)
+            viewModel.isEmptyWalletCreated = true
+        } catch let error as SeedWords.InternalError {
+            handle(seedWordsError: error)
+        } catch let error as WalletError {
+            handle(walletError: error)
+        } catch {
+            handleUnknownError()
+        }
     }
 
     private func fetchAvailableSeedWords() {
