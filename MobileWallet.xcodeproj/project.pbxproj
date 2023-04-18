@@ -450,6 +450,7 @@
 		54D419B52995093800D496B4 /* ContactBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B42995093800D496B4 /* ContactBookViewController.swift */; };
 		54D419B72995094100D496B4 /* ContactBookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B62995094100D496B4 /* ContactBookView.swift */; };
 		54D419B92995094B00D496B4 /* ContactBookConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B82995094B00D496B4 /* ContactBookConstructor.swift */; };
+		54D4747929EDC21D003D14E6 /* FormOverlayPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D4747829EDC21D003D14E6 /* FormOverlayPresenter.swift */; };
 		54DD2E8629C37A7600C8C0D9 /* UINavigationController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DD2E8529C37A7600C8C0D9 /* UINavigationController+Common.swift */; };
 		54DDB18129A366700021DFD4 /* ContactCapsuleMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DDB18029A366700021DFD4 /* ContactCapsuleMenu.swift */; };
 		54DDB18329A373C90021DFD4 /* ContactBookMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54DDB18229A373C90021DFD4 /* ContactBookMenuButton.swift */; };
@@ -962,6 +963,7 @@
 		54D419B42995093800D496B4 /* ContactBookViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookViewController.swift; sourceTree = "<group>"; };
 		54D419B62995094100D496B4 /* ContactBookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookView.swift; sourceTree = "<group>"; };
 		54D419B82995094B00D496B4 /* ContactBookConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookConstructor.swift; sourceTree = "<group>"; };
+		54D4747829EDC21D003D14E6 /* FormOverlayPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormOverlayPresenter.swift; sourceTree = "<group>"; };
 		54DD2E8529C37A7600C8C0D9 /* UINavigationController+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Common.swift"; sourceTree = "<group>"; };
 		54DDB18029A366700021DFD4 /* ContactCapsuleMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactCapsuleMenu.swift; sourceTree = "<group>"; };
 		54DDB18229A373C90021DFD4 /* ContactBookMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookMenuButton.swift; sourceTree = "<group>"; };
@@ -2605,6 +2607,7 @@
 		546CE7F229AF50F300264699 /* Keyboard Form */ = {
 			isa = PBXGroup;
 			children = (
+				54D4747829EDC21D003D14E6 /* FormOverlayPresenter.swift */,
 				546CE7F329AF514A00264699 /* FormOverlay.swift */,
 				546CE7F529AF517900264699 /* FormOverlayView.swift */,
 			);
@@ -3419,6 +3422,7 @@
 				3A7E06DA287831BD00D15190 /* UTXOsEstimationLabel.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
 				540CB6F529C1DE42003FACEF /* AddContactView.swift in Sources */,
+				54D4747929EDC21D003D14E6 /* FormOverlayPresenter.swift in Sources */,
 				3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */,
 				3A3E7AD6284E03140065F3C0 /* UTXOTileView.swift in Sources */,
 				3A420594279802E500A8D49C /* BaseButton.swift in Sources */,

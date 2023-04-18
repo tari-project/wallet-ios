@@ -55,29 +55,22 @@ final class TransactionDetailsContactView: DynamicThemeView {
         view.placeholder = localized("tx_detail.contect_name_placeholder")
         view.autocorrectionType = .no
         view.returnKeyType = .done
+        view.isUserInteractionEnabled = false
         return view
     }()
 
-    @View private var editButton: TextButton = {
+    @View private(set) var editButton: TextButton = {
         let view = TextButton()
         view.setTitle(localized("tx_detail.edit"), for: .normal)
         view.setVariation(.secondary)
         return view
     }()
 
-    var isEditingEnabled: Bool = false {
-        didSet { updateTextField() }
-    }
-
-    var onNameChange: ((String?) -> Void)?
-
     // MARK: - Initialisers
 
     override init() {
         super.init()
         setupConstraints()
-        setupCallbacks()
-        updateTextField()
     }
 
     required init?(coder: NSCoder) {
@@ -102,44 +95,10 @@ final class TransactionDetailsContactView: DynamicThemeView {
         NSLayoutConstraint.activate(constraints)
     }
 
-    private func setupCallbacks() {
-        textField.delegate = self
-        editButton.onTap = { [weak self] in
-            self?.isEditingEnabled = true
-        }
-    }
-
     // MARK: - Updates
-
-    private func updateTextField() {
-        editButton.isHidden = isEditingEnabled
-        textField.isUserInteractionEnabled = isEditingEnabled
-        _ = isEditingEnabled ? textField.becomeFirstResponder() : textField.resignFirstResponder()
-    }
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         textField.textColor = theme.text.body
-    }
-}
-
-extension TransactionDetailsContactView: UITextFieldDelegate {
-
-    func textFieldDidEndEditing(_ textField: UITextField) {
-        isEditingEnabled = false
-    }
-
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        onNameChange?(textField.text)
-        isEditingEnabled = false
-        textField.resignFirstResponder()
-        return true
-    }
-
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let text = textField.text ?? ""
-        guard let range = Range(range, in: text) else { return false }
-        let updatedString = text.replacingCharacters(in: range, with: string)
-        return updatedString.count <= maxCharacters
     }
 }
