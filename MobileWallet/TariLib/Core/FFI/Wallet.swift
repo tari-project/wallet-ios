@@ -123,6 +123,9 @@ final class Wallet {
             WalletCallbacksManager.shared.post(name: .baseNodeConnectionStatusUpdate, object: status)
         }
 
+        let baseNodeStateCallback: (@convention(c) (OpaquePointer?) -> Void) = { _ in
+        }
+
         var isRecoveryInProgress = false
         var errorCode: Int32 = -1
 
@@ -153,6 +156,7 @@ final class Wallet {
             trasactionValidationCompleteCallback,
             storedMessagesReceivedCallback,
             connectivityStatusCallback,
+            baseNodeStateCallback,
             isRecoveryInProgressPointer,
             errorCodePointer
         )
