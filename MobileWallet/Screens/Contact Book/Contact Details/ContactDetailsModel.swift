@@ -54,6 +54,7 @@ final class ContactDetailsModel {
         case removeFromFavorites
         case linkContact
         case unlinkContact
+        case transactionsList
         case removeContact
         case btcWallet
         case ethWallet
@@ -65,6 +66,7 @@ final class ContactDetailsModel {
         case moveToLinkContactScreen(model: ContactsManager.Model)
         case showUnlinkConfirmationDialog(emojiID: String, name: String)
         case showUnlinkSuccessDialog(emojiID: String, name: String)
+        case moveToTransactionsList(model: ContactsManager.Model)
         case removeContactConfirmation
         case endFlow
     }
@@ -107,6 +109,7 @@ final class ContactDetailsModel {
 
     // MARK: - View Model
 
+    // swiftlint:disable:next cyclomatic_complexity
     func perform(actionID: UInt) {
 
         guard let menuItem = MenuItem(rawValue: actionID) else { return }
@@ -122,6 +125,8 @@ final class ContactDetailsModel {
             update(isFavorite: true)
         case .removeFromFavorites:
             update(isFavorite: false)
+        case .transactionsList:
+            action = .moveToTransactionsList(model: model)
         case .removeContact:
             action = .removeContactConfirmation
         case .btcWallet:
@@ -232,6 +237,10 @@ final class ContactDetailsModel {
                     return nil
                 }
             }
+
+        if model.hasIntrenalModel {
+            mainMenuItems.append(.transactionsList)
+        }
 
         if model.isFFIContact || model.hasExternalModel {
             mainMenuItems.append(.removeContact)

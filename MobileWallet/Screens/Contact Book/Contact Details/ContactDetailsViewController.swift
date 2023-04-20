@@ -154,6 +154,8 @@ final class ContactDetailsViewController: UIViewController {
             showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
         case let .showUnlinkSuccessDialog(emojiID, name):
             showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+        case let .moveToTransactionsList(model):
+            moveToTransactionsList(model: model)
         case .removeContactConfirmation:
             showRemoveContactConfirmationDialog()
         case .endFlow:
@@ -193,6 +195,11 @@ final class ContactDetailsViewController: UIViewController {
 
     private func moveToLinkContactScreen(model: ContactsManager.Model) {
         let controller = LinkContactsConstructor.buildScene(contactModel: model)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func moveToTransactionsList(model: ContactsManager.Model) {
+        let controller = ContactTransactionListConstructor.buildScene(contactModel: model)
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -239,6 +246,8 @@ private extension ContactDetailsModel.MenuItem {
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.link"), isArrowVisible: true, isDestructive: false)
         case .unlinkContact:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.unlink"), isArrowVisible: true, isDestructive: false)
+        case .transactionsList:
+            return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.transaction_list"), isArrowVisible: true, isDestructive: false)
         case .removeContact:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.delete"), isArrowVisible: false, isDestructive: true)
         case .btcWallet:

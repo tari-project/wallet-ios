@@ -1,8 +1,8 @@
-//  UITableView+Common.swift
+//  ContactTransactionListConstructor.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 13/03/2023
+	Created by Adrian Truszczyński on 18/04/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -38,33 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+enum ContactTransactionListConstructor {
 
-extension UITableView {
-
-    func updateHeaderFrame() {
-
-        guard let tableHeaderView else { return }
-
-        let width = bounds.width
-        let size = tableHeaderView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height))
-
-        guard tableHeaderView.bounds.height != size.height else { return }
-
-        tableHeaderView.bounds.size.height = size.height
-        self.tableHeaderView = tableHeaderView
-    }
-
-    func updateFooterFrame() {
-
-        guard let tableFooterView else { return }
-
-        let width = bounds.width
-        let size = tableFooterView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height))
-
-        guard tableFooterView.bounds.height != size.height else { return }
-
-        tableFooterView.bounds.size.height = size.height
-        self.tableFooterView = tableFooterView
+    static func buildScene(contactModel: ContactsManager.Model) -> ContactTransactionListViewController {
+        let model = ContactTransactionListModel(contactModel: contactModel)
+        return ContactTransactionListViewController(model: model)
     }
 }
