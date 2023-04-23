@@ -98,7 +98,7 @@ final class Tari: MainServiceable {
     }
 
     var isWalletExist: Bool { (try? connectedDatabaseDirectory.checkResourceIsReachable()) ?? false }
-    var isWalletConnected: Bool { walletManager.isWalletConnected }
+    @Published private(set) var isWalletConnected: Bool = false
     var torBridgesConfiguration: BridgesConfiguration { torManager.usedBridgesConfiguration }
 
     var canAutomaticalyReconnectWallet: Bool = false
@@ -153,6 +153,10 @@ final class Tari: MainServiceable {
                     try? self?.validation.sync()
                 }
             }
+            .store(in: &cancellables)
+
+        walletManager.$isWalletConnected
+            .sink { [weak self] in self?.isWalletConnected = $0 }
             .store(in: &cancellables)
 
         NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)

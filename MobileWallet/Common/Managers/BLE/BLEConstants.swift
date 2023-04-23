@@ -1,8 +1,8 @@
-//  UserSettings.swift
+//  BLEConstants.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 18/12/2022
+	Created by Adrian Truszczyński on 13/04/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -38,25 +38,19 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct UserSettings: Codable {
+import CoreBluetooth
 
-    enum ColorScheme: Codable {
-        case system
-        case light
-        case dark
-        case purple
-    }
-
-    enum BLEAdvertisementMode: Codable {
-        case turnedOff
-        case onlyOnForeground
-        case alwaysOn
-    }
-
-    var colorScheme: ColorScheme
-    var bleAdvertismentMode: BLEAdvertisementMode
+enum BLEConstants {
+    static var contactBookService: BLEContactBookService.Type { BLEContactBookService.self }
 }
 
-extension UserSettings {
-    static var `default`: Self { Self(colorScheme: .system, bleAdvertismentMode: .onlyOnForeground) }
+// MARK: - Contact Book
+
+enum BLEContactBookService {
+    static let uuid: CBUUID = CBUUID(string: "0DABCA14-0688-458D-89D3-367A3D969537")
+    static var characteristics: BLEContactBookCharacteristics.Type { BLEContactBookCharacteristics.self }
+}
+
+enum BLEContactBookCharacteristics {
+    static let contactsShare: CBUUID = CBUUID(string: "999CB541-8D4C-4075-BFF3-43AB74DE8C9B")
 }

@@ -88,6 +88,9 @@ final class ContactBookModel {
         case showQRDialog
         case shareQR(image: UIImage)
         case shareLink(link: URL)
+        case showBLEWaitingForReceiverDialog
+        case showBLESuccessDialog
+        case showBLEFailureDialog(message: String?)
     }
 
     // MARK: - View Model
@@ -111,6 +114,7 @@ final class ContactBookModel {
 
     private let contactsManager = ContactsManager()
 
+    private weak var bleTask: BLECentralTask?
     private var contacts: [ContactsManager.Model] = []
     private var cancellables = Set<AnyCancellable>()
 
@@ -216,7 +220,6 @@ final class ContactBookModel {
             performUnlinkAction(model: model)
         case .details:
             performShowDetailsAction(model: model)
-            return
         }
     }
 
@@ -261,10 +264,14 @@ final class ContactBookModel {
         case .link:
             shareLink(deeplink: deeplink)
         case .ble:
-            break
+            shareLinkViaBLE(deeplink: deeplink)
         }
 
         contentMode = .normal
+    }
+
+    func cancelBLESharing() {
+        bleTask?.cancel()
     }
 
     private func update(isFavorite: Bool, contact: ContactsManager.Model) {
@@ -288,6 +295,41 @@ final class ContactBookModel {
 
     private func shareLink(deeplink: URL) {
         action = .shareLink(link: deeplink)
+    }
+
+    private func shareLinkViaBLE(deeplink: URL) {
+
+        guard let payload = deeplink.absoluteString.data(using: .utf8) else { return }
+
+        action = .showBLEWaitingForReceiverDialog
+
+        let bleTask = BLECentralTask(service: BLEConstants.contactBookService.uuid, characteristic: BLEConstants.contactBookService.characteristics.contactsShare)
+        self.bleTask = bleTask
+
+        Task {
+            do {
+                guard try await bleTask.findAndWrite(payload: payload) else { return }
+                action = .showBLESuccessDialog
+            } catch {
+                handle(bleWriteError: error)
+
+            }
+        }
+    }
+
+    private func handle(bleWriteError error: Error) {
+
+        Logger.log(message: "Unable to find and write BLE payload. Reason: \(error)", domain: .general, level: .error)
+
+        let message: String?
+
+        if let error = error as? BLECentralManager.BLECentralError {
+            message = error.errorMessage
+        } else {
+            message = ErrorMessageManager.errorMessage(forError: error)
+        }
+
+        action = .showBLEFailureDialog(message: message)
     }
 
     // MARK: - Handlers
@@ -347,6 +389,28 @@ extension ContactBookModel.ShareType {
             return localized("contact_book.share_bar.buttons.link")
         case .ble:
             return localized("contact_book.share_bar.buttons.ble")
+        }
+    }
+}
+
+private extension BLECentralManager.BLECentralError {
+
+    var errorMessage: String? {
+        switch self {
+        case .turnedOff:
+            return localized("error.ble.central.turned_off")
+        case .unauthorized:
+            return localized("error.ble.central.unauthorized")
+        case .unsupported:
+            return localized("error.ble.central.unsupported")
+        case .unknown:
+            return localized("error.ble.central.unknown")
+        case .connectionError:
+            return localized("error.ble.central.connection_error")
+        case .processInterrupted:
+            return localized("error.ble.central.process_interrupted")
+        case .writeFailedCharacteristicNotFound:
+            return localized("error.ble.central.write_failed_characteristic_not_found")
         }
     }
 }

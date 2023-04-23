@@ -202,6 +202,7 @@
 "settings.last_successful_backup.with_param" = "Last successful backup: %@";
 
 "settings.item.select_theme" = "Select Theme";
+"settings.item.bluetooth_settings" = "Bluetooth Settings";
 "settings.item.wallet_backups" = "Wallet Backups";
 "settings.item.bridge_configuration" = "Bridge Configuration";
 "settings.item.select_network" = "Select Network";
@@ -698,6 +699,14 @@
 "theme_switcher.element.title.dark" = "Dark";
 "theme_switcher.element.title.purple" = "Purple";
 
+/* Bluetooth Settings */
+
+"bluetooth_settings.title" = "Bluetooth Settings";
+"bluetooth_settings.table.ble.header" = "Other users can share their contacts using Bluetooth Low Energy by moving their devices near your device. Your device will be visible to nearby Bluetooth devices when it's turned on.";
+"bluetooth_settings.table.ble.row.title.ble_always_off" = "Turned Off";
+"bluetooth_settings.table.ble.row.title.ble_foreground" = "Enabled while the App is on the screen";
+"bluetooth_settings.table.ble.row.title.ble_always_on" = "Always On";
+
 /* Errors */
 
 "error.generic.title" = "Error";
@@ -730,6 +739,16 @@
 "error.dropbox_backup.no_backup" = "The app was unable to locate a valid backup on your Dropbox account.";
 "error.dropbox_backup.unknown" = "The app detected an unknown error during the backup process. Please get in touch with the support if this error appears again.";
 
+/* BLE Errors */
+
+"error.ble.central.turned_off" = "Bluetooth is currently turned off. You can turn it on from the system settings.";
+"error.ble.central.unauthorized" = "You are unauthorized to use Bluetooth on your device.";
+"error.ble.central.unsupported" = "Your device is unable to make Bluetooth connections.";
+"error.ble.central.unknown" = "The connection failed due to an unknown reason.";
+"error.ble.central.connection_error" = "The app wasn't able to connect with another device.";
+"error.ble.central.process_interrupted" = "The connection process was interrupted.";
+"error.ble.central.write_failed_characteristic_not_found" = "The connection failed due to an issue on the second device.";
+
 /* Cloud Backup */
 
 "backup.cloud.partial.recovery_message" = "Funds recovered from your previous wallet.";
@@ -742,6 +761,11 @@
 "contact_book.share_bar.buttons.qr" = "QR Code";
 "contact_book.share_bar.buttons.link" = "Link";
 "contact_book.share_bar.buttons.ble" = "BLE";
+"contact_book.popup.ble.share.title" = "Share via BLE";
+"contact_book.popup.ble.share.message" = "Bring the smartphone close to a BLE enabled device";
+"contact_book.popup.ble.success.title" = "Profile Shared";
+"contact_book.popup.ble.success.message" = "Awesome! Your details have been shared successfully";
+"contact_book.popup.ble.failure.title" = "Error";
 "contact_book.pop_ups.qr.title" = "Share QR Code";
 "contact_book.pager.tab.contacts" = "Contacts";
 "contact_book.pager.tab.favorites" = "Favorites";

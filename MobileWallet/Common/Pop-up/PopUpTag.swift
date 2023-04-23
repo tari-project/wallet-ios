@@ -1,8 +1,8 @@
-//  UserSettings.swift
+//  PopUpTag.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 18/12/2022
+	Created by Adrian Truszczyński on 20/04/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -38,25 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct UserSettings: Codable {
-
-    enum ColorScheme: Codable {
-        case system
-        case light
-        case dark
-        case purple
-    }
-
-    enum BLEAdvertisementMode: Codable {
-        case turnedOff
-        case onlyOnForeground
-        case alwaysOn
-    }
-
-    var colorScheme: ColorScheme
-    var bleAdvertismentMode: BLEAdvertisementMode
-}
-
-extension UserSettings {
-    static var `default`: Self { Self(colorScheme: .system, bleAdvertismentMode: .onlyOnForeground) }
+enum PopUpTag: String {
+    case bleScanDialog
 }

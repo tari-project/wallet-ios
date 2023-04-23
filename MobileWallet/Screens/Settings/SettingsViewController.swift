@@ -85,6 +85,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         case connectYats
 
         case selectTheme
+        case bluetoothConfiguration
         case torBridgeConfiguration
         case selectNetwork
         case selectBaseNode
@@ -94,6 +95,7 @@ final class SettingsViewController: SettingsParentTableViewController {
             switch self {
             case .backUpWallet: return localized("settings.item.wallet_backups")
 
+            case .bluetoothConfiguration: return localized("settings.item.bluetooth_settings")
             case .selectTheme: return localized("settings.item.select_theme")
             case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
             case .selectNetwork: return localized("settings.item.select_network")
@@ -120,6 +122,7 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
+        SystemMenuTableViewCellItem(icon: .icons.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsNetworkIcon, title: SettingsItemTitle.selectNetwork.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBaseNodeIcon, title: SettingsItemTitle.selectBaseNode.rawValue),
@@ -199,6 +202,11 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private func onSelectThemeAction() {
         let controller = ThemeSettingsConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func onBluetoothSettingsAction() {
+        let controller = BluetoothSettingsConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -382,12 +390,14 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case 0:
                 onSelectThemeAction()
             case 1:
-                onBridgeConfigurationAction()
+                onBluetoothSettingsAction()
             case 2:
-                onSelectNetworkAction()
+                onBridgeConfigurationAction()
             case 3:
-                onSelectBaseNodeAction()
+                onSelectNetworkAction()
             case 4:
+                onSelectBaseNodeAction()
+            case 5:
                 onDeleteWalletAction()
             default:
                 break

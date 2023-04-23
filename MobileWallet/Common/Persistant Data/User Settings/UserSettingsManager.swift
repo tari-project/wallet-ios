@@ -49,6 +49,15 @@ enum UserSettingsManager {
         }
     }
 
+    static var bleAdvertisementMode: UserSettings.BLEAdvertisementMode {
+        get { userSettings.bleAdvertismentMode }
+        set {
+            var userSettings = userSettings
+            userSettings.bleAdvertismentMode = newValue
+            GroupUserDefaults.userSettings = userSettings
+        }
+    }
+
     private static var userSettings: UserSettings {
 
         guard let settings = GroupUserDefaults.userSettings else {
