@@ -79,7 +79,6 @@ final class AddRecipientModel {
     @Published private(set) var errorDialog: MessageModel?
     @Published private(set) var verifiedPaymentInfo: PaymentInfo?
     @Published private(set) var contactsSectionItems: [ContactsSectionItem] = []
-    @Published private(set) var validatedPasteboardText: String?
     @Published private(set) var yatID: String?
     @Published private(set) var walletAddressPreview: String?
     let searchText = CurrentValueSubject<String, Never>("")
@@ -292,13 +291,6 @@ final class AddRecipientModel {
             return false
         }
         return true
-    }
-
-    // MARK: - Actions - Pasteboard
-
-    func checkPasteboard() {
-        guard let pasteboardText = UIPasteboard.general.string, let emojis = try? makeAddress(text: pasteboardText).emojis else { return }
-        validatedPasteboardText = emojis
     }
 }
 

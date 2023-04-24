@@ -133,7 +133,6 @@ final class AddRecipientViewController: UIViewController {
 
         mainView.onScanButtonTap = { [weak self] in self?.openScanner() }
         mainView.onPreviewButtonTap = { [weak self] in self?.model.toogleYatPreview() }
-        mainView.onSearchFieldBeginEditing = { [weak self] in self?.model.checkPasteboard() }
         mainView.onReturnButtonTap = { [weak self] in self?.model.confirmSelection() }
         mainView.onContinueButtonTap = { [weak self] in self?.model.confirmSelection() }
 
@@ -157,18 +156,6 @@ final class AddRecipientViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.updateTableView(items: $0) }
             .store(in: &cancellables)
-
-        NotificationCenter.default
-            .publisher(for: UIResponder.keyboardWillShowNotification)
-            .compactMap { $0.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect }
-            .map(\.height)
-            .sink { [weak self] in self?.showClipboardEmojis(keyboardHeight: $0) }
-            .store(in: &cancellables)
-
-        NotificationCenter.default
-            .publisher(for: UIResponder.keyboardWillHideNotification)
-            .sink { [weak self] _ in self?.hideClipboardEmojis() }
-            .store(in: &cancellables)
     }
 
     // MARK: - Actions
@@ -188,19 +175,6 @@ final class AddRecipientViewController: UIViewController {
         scanViewController.actionDelegate = self
         scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
         present(scanViewController, animated: true, completion: nil)
-    }
-
-    private func showClipboardEmojis(keyboardHeight: CGFloat) {
-
-        guard let validatedPasteboardText = model.validatedPasteboardText else { return }
-
-        mainView.showCopyFromClipboardDialog(text: validatedPasteboardText, keyboardOffset: keyboardHeight) { [weak self] in
-            self?.model.searchText.send(validatedPasteboardText)
-        }
-    }
-
-    private func hideClipboardEmojis() {
-        mainView.hideCopyFromClipboardDialog()
     }
 
     private func updateTableView(items: [ContactsSectionItem]) {

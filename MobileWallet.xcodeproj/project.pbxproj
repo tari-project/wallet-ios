@@ -12,7 +12,6 @@
 		001F6CE02380198D00FA7002 /* Contacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CDF2380198D00FA7002 /* Contacts.swift */; };
 		001F6CE42380253B00FA7002 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 001F6CE32380253B00FA7002 /* Contact.swift */; };
 		00262EB4236F024400A6C8A0 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00262EB3236F024400A6C8A0 /* Theme.swift */; };
-		0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0039B1B123FA925500F91E0F /* PasteEmojisView.swift */; };
 		004277F323E0407900AE7BD9 /* TextButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277F223E0407900AE7BD9 /* TextButton.swift */; };
 		004277F723E0628A00AE7BD9 /* UIViewController+Content.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */; };
 		0042780323E8421200AE7BD9 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0042780223E8421100AE7BD9 /* String.swift */; };
@@ -537,7 +536,6 @@
 		001F6CDF2380198D00FA7002 /* Contacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contacts.swift; sourceTree = "<group>"; };
 		001F6CE32380253B00FA7002 /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 		00262EB3236F024400A6C8A0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
-		0039B1B123FA925500F91E0F /* PasteEmojisView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PasteEmojisView.swift; sourceTree = "<group>"; };
 		004277F223E0407900AE7BD9 /* TextButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextButton.swift; sourceTree = "<group>"; };
 		004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Content.swift"; sourceTree = "<group>"; };
 		0042780223E8421100AE7BD9 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
@@ -1832,7 +1830,6 @@
 				3A494A412716D6DA00CF5B05 /* AddRecipientView.swift */,
 				3AFAC35F271C6B4D008AA842 /* ContactAvatarView.swift */,
 				00A66522243B3E380046E730 /* ErrorView.swift */,
-				0039B1B123FA925500F91E0F /* PasteEmojisView.swift */,
 				3AA00E96271D5ECA00977C36 /* AddRecipientSectionHeaderView.swift */,
 				3AF79D5D2727201A00613C24 /* ScrollableLabel.swift */,
 				3AF79D5F2727206200613C24 /* AddRecipientSearchView.swift */,
@@ -3399,7 +3396,6 @@
 				00B084C5249E4F6900F7B9BD /* SeedWords.swift in Sources */,
 				545A9D1D294F9305008D24A6 /* ThemeSettingsCollectionCell.swift in Sources */,
 				37E0B008249B700F00DFE315 /* UIFont+FontStyle.swift in Sources */,
-				0039B1B223FA925500F91E0F /* PasteEmojisView.swift in Sources */,
 				5444C80629F17C1800BF3875 /* BluetoothSettingsViewController.swift in Sources */,
 				3A8473C228EC556C0015E63A /* CoreTariService.swift in Sources */,
 				3A2B956A28648D860085BE21 /* CChar+Helpers.swift in Sources */,
