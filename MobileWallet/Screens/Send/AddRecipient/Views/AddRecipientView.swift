@@ -71,15 +71,6 @@ final class AddRecipientView: DynamicThemeView {
         return view
     }()
 
-    @View private var dimView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .static.popupOverlay
-        view.alpha = 0.0
-        return view
-    }()
-
-    @View private var pasteEmojisView = PasteEmojisView()
-
     // MARK: - Properties
 
     var isSearchViewShadowVisible: Bool = false {
@@ -118,11 +109,8 @@ final class AddRecipientView: DynamicThemeView {
         }
     }
 
-    var textSubject: CurrentValueSubject<String, Never> = CurrentValueSubject("")
-
     var onScanButtonTap: (() -> Void)?
     var onPreviewButtonTap: (() -> Void)?
-    var onSearchFieldBeginEditing: (() -> Void)?
     var onReturnButtonTap: (() -> Void)?
     var onContinueButtonTap: (() -> Void)?
 
@@ -130,7 +118,6 @@ final class AddRecipientView: DynamicThemeView {
 
     private var continueButtonTopConstraint: NSLayoutConstraint?
     private var continueButtonBottomConstraint: NSLayoutConstraint?
-    private var pasteEmojisViewBottomConstraint: NSLayoutConstraint?
 
     private var normalTableViewTopConstraint: NSLayoutConstraint?
     private var errorTableViewTopConstraint: NSLayoutConstraint?
@@ -158,15 +145,13 @@ final class AddRecipientView: DynamicThemeView {
 
     private func setupConstraints() {
 
-        [searchContentView, contactsTableView, errorMessageView, continueButton, dimView, searchView, pasteEmojisView].forEach(addSubview)
+        [searchContentView, contactsTableView, errorMessageView, continueButton, searchView].forEach(addSubview)
 
         let continueButtonTopConstraint = continueButton.topAnchor.constraint(equalTo: bottomAnchor)
-        let pasteEmojisViewBottomConstraint = pasteEmojisView.bottomAnchor.constraint(equalTo: bottomAnchor)
         let normalTableViewTopConstraint = contactsTableView.topAnchor.constraint(equalTo: searchContentView.bottomAnchor)
 
         self.continueButtonTopConstraint = continueButtonTopConstraint
         self.continueButtonBottomConstraint = continueButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -22.0)
-        self.pasteEmojisViewBottomConstraint = pasteEmojisViewBottomConstraint
         self.normalTableViewTopConstraint = normalTableViewTopConstraint
         errorTableViewTopConstraint = contactsTableView.topAnchor.constraint(equalTo: errorMessageView.bottomAnchor)
 
@@ -188,15 +173,7 @@ final class AddRecipientView: DynamicThemeView {
             errorMessageView.heightAnchor.constraint(greaterThanOrEqualToConstant: 35.0),
             continueButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 22.0),
             continueButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -22.0),
-            continueButtonTopConstraint,
-            dimView.topAnchor.constraint(equalTo: topAnchor),
-            dimView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            dimView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            dimView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            pasteEmojisView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            pasteEmojisView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            pasteEmojisView.heightAnchor.constraint(equalToConstant: 78.0),
-            pasteEmojisViewBottomConstraint
+            continueButtonTopConstraint
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -240,29 +217,6 @@ final class AddRecipientView: DynamicThemeView {
 
         UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
             self?.searchContentView.layer.shadowOpacity = 0.0
-            self?.layoutIfNeeded()
-        }
-    }
-
-    func showCopyFromClipboardDialog(text: String, keyboardOffset: CGFloat, onPress: @escaping () -> Void) {
-
-        pasteEmojisView.setEmojis(emojis: text, onPress: onPress)
-        pasteEmojisViewBottomConstraint?.constant = -keyboardOffset
-
-        UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
-            self?.dimView.alpha = 0.6
-            self?.pasteEmojisView.alpha = 1.0
-            self?.layoutIfNeeded()
-        }
-    }
-
-    func hideCopyFromClipboardDialog() {
-
-        pasteEmojisViewBottomConstraint?.constant = 0.0
-
-        UIView.animate(withDuration: CATransaction.animationDuration()) { [weak self] in
-            self?.dimView.alpha = 0.0
-            self?.pasteEmojisView.alpha = 0.0
             self?.layoutIfNeeded()
         }
     }
@@ -313,10 +267,6 @@ final class AddRecipientView: DynamicThemeView {
 }
 
 extension AddRecipientView: UITextFieldDelegate {
-
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        onSearchFieldBeginEditing?()
-    }
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()

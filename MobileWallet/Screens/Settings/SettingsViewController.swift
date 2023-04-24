@@ -165,12 +165,6 @@ final class SettingsViewController: SettingsParentTableViewController {
         setupCallbacks()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        checkClipboardForBaseNode()
-    }
-
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateFooterFrame()
@@ -413,30 +407,5 @@ extension SettingsViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
         navigationBar.backButtonType = .none
-    }
-
-    private func checkClipboardForBaseNode() {
-        guard let pasteboardText = UIPasteboard.general.string, let baseNode = try? BaseNode(name: "From Pasteboard", peer: pasteboardText) else { return }
-
-        let popUpModel = PopUpDialogModel(
-            title: localized("settings.pasteboard.custom_base_node.pop_up.title"),
-            message: localized("settings.pasteboard.custom_base_node.pop_up.message", arguments: pasteboardText),
-            buttons: [
-                PopUpDialogButtonModel(title: localized("settings.pasteboard.custom_base_node.pop_up.button.confirm"), type: .normal, callback: { [weak self] in self?.update(baseNode: baseNode) }),
-                PopUpDialogButtonModel(title: localized("settings.pasteboard.custom_base_node.pop_up.button.cancel"), type: .text, callback: { UIPasteboard.general.string = "" })
-            ],
-            hapticType: .none
-        )
-
-        PopUpPresenter.showPopUp(model: popUpModel)
-    }
-
-    private func update(baseNode: BaseNode) {
-        do {
-            try Tari.shared.connection.select(baseNode: baseNode)
-            UIPasteboard.general.string = ""
-        } catch {
-            PopUpPresenter.show(message: MessageModel(title: localized("settings.pasteboard.custom_base_node.error.title"), message: localized("settings.pasteboard.custom_base_node.error.message"), type: .error))
-        }
     }
 }
