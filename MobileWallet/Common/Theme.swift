@@ -324,8 +324,15 @@ enum SecurityOnboardingImages {
 // MARK: - Contact Book
 
 enum ContactBookImages {
+    static var bleDialog: ContactBookBLEDialogImages.Type { ContactBookBLEDialogImages.self }
     static var buttons: ContactBookButtonImages.Type { ContactBookButtonImages.self }
     static var placeholders: ContactBookPlaceholderImages.Type { ContactBookPlaceholderImages.self }
+}
+
+enum ContactBookBLEDialogImages {
+    static var icon: UIImage? { UIImage(named: "Images/Contact Book/BLE Dialog/Icon") }
+    static var success: UIImage? { UIImage(named: "Images/Contact Book/BLE Dialog/Success") }
+    static var failure: UIImage? { UIImage(named: "Images/Contact Book/BLE Dialog/Failure") }
 }
 
 enum ContactBookButtonImages {

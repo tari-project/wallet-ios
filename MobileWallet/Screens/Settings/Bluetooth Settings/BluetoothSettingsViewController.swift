@@ -1,8 +1,8 @@
-//  UserSettings.swift
+//  BluetoothSettingsViewController.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 18/12/2022
+	Created by Adrian Truszczyński on 20/04/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -38,25 +38,55 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct UserSettings: Codable {
+import UIKit
+import Combine
 
-    enum ColorScheme: Codable {
-        case system
-        case light
-        case dark
-        case purple
+final class BluetoothSettingsViewController: UIViewController {
+
+    // MARK: - Properties
+
+    private let model: BluetoothSettingsModel
+    private let mainView = BluetoothSettingsView()
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Initialisers
+
+    init(model: BluetoothSettingsModel) {
+        self.model = model
+        super.init(nibName: nil, bundle: nil)
     }
 
-    enum BLEAdvertisementMode: Codable {
-        case turnedOff
-        case onlyOnForeground
-        case alwaysOn
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    var colorScheme: ColorScheme
-    var bleAdvertismentMode: BLEAdvertisementMode
-}
+    // MARK: - View Lifecycle
 
-extension UserSettings {
-    static var `default`: Self { Self(colorScheme: .system, bleAdvertismentMode: .onlyOnForeground) }
+    override func loadView() {
+        view = mainView
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupCallbacks()
+    }
+
+    // MARK: - Setups
+
+    private func setupCallbacks() {
+
+        model.$sections
+            .map {
+                return $0.map {
+                    let rows = $0.items.map { SelectableCell.ViewModel(id: $0.id, title: $0.title, isSelected: $0.isSelected) }
+                    return BluetoothSettingsView.Section(header: $0.header, items: rows)
+                }
+            }
+            .sink { [weak self] in self?.mainView.viewModels = $0 }
+            .store(in: &cancellables)
+
+        mainView.onSelectRow = { [weak self] in
+            self?.model.selectRow(uuid: $0)
+        }
+    }
 }

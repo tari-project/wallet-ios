@@ -54,10 +54,11 @@ final class FFIWalletManager {
     // MARK: - Properties
 
     @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
+    @Published private(set) var isWalletConnected: Bool = false
 
-    var isWalletConnected: Bool { wallet != nil }
-
-    private var wallet: Wallet?
+    private var wallet: Wallet? {
+        didSet { isWalletConnected = wallet != nil }
+    }
 
     private var exisingWallet: Wallet {
         get throws {

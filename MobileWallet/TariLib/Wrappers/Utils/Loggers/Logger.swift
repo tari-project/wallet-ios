@@ -61,6 +61,8 @@ final class Logger {
         case navigation
         case userInterface
         case stagedWalletSecurity
+        case bleCentral
+        case blePeripherial
         case debug
     }
 
@@ -95,10 +97,14 @@ extension Logger.Domain {
             return "Navigation"
         case .userInterface:
             return "UI"
-        case .debug:
-            return "Debug"
         case .stagedWalletSecurity:
             return "Wallet Security"
+        case .bleCentral:
+            return "BLE - Central"
+        case .blePeripherial:
+            return "BLE - Peripherial"
+        case .debug:
+            return "Debug"
         }
     }
 }

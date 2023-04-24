@@ -43,6 +43,12 @@ import Combine
 
 final class ContactBookViewController: UIViewController {
 
+    private enum BLEDialogType {
+        case scan
+        case success
+        case failure(message: String?)
+    }
+
     // MARK: - Properties
 
     private let model: ContactBookModel
@@ -262,6 +268,7 @@ final class ContactBookViewController: UIViewController {
 
     // MARK: - Handlers
 
+    // swiftlint:disable:next cyclomatic_complexity
     private func handle(action: ContactBookModel.Action) {
         switch action {
         case let .sendTokens(paymentInfo):
@@ -280,6 +287,12 @@ final class ContactBookViewController: UIViewController {
             showQrCodeInDialog(qrCode: image)
         case let .shareLink(link):
             showLinkShareDialog(link: link)
+        case .showBLEWaitingForReceiverDialog:
+            showBLEDialog(type: .scan)
+        case .showBLESuccessDialog:
+            showBLEDialog(type: .success)
+        case let .showBLEFailureDialog(message):
+            showBLEDialog(type: .failure(message: message))
         }
     }
 
@@ -362,6 +375,56 @@ final class ContactBookViewController: UIViewController {
         let controller = UIActivityViewController(activityItems: [link], applicationActivities: nil)
         controller.popoverPresentationController?.sourceView = mainView.navigationBar
         present(controller, animated: true)
+    }
+
+    private func showBLEDialog(type: BLEDialogType) {
+
+        var image: UIImage?
+        var title: String?
+        var message: String?
+        var tag: String?
+
+        switch type {
+        case .scan:
+            image = .contactBook.bleDialog.icon
+            title = localized("contact_book.popup.ble.share.title")
+            message = localized("contact_book.popup.ble.share.message")
+            tag = PopUpTag.bleScanDialog.rawValue
+        case .success:
+            image = .contactBook.bleDialog.success
+            title = localized("contact_book.popup.ble.success.title")
+            message = localized("contact_book.popup.ble.success.message")
+            PopUpPresenter.dismissPopup(tag: PopUpTag.bleScanDialog.rawValue)
+        case let .failure(errorMessage):
+            image = .contactBook.bleDialog.failure
+            title = localized("contact_book.popup.ble.failure.title")
+            message = errorMessage
+            PopUpPresenter.dismissPopup(tag: PopUpTag.bleScanDialog.rawValue)
+        }
+
+        showBLEDialog(image: image, title: title, message: message, tag: tag) { [weak self] in
+            self?.model.cancelBLESharing()
+        }
+    }
+
+    private func showBLEDialog(image: UIImage?, title: String?, message: String?, tag: String?, callback: (() -> Void)?) {
+
+        let headerSection = PopUpCircleImageHeaderView()
+        let contentSection = PopUpDescriptionContentView()
+        let buttonsSection = PopUpButtonsView()
+
+        headerSection.image = image
+        headerSection.imageTintColor = .purple
+        headerSection.text = title
+        contentSection.label.text = message
+
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: {
+            callback?()
+            PopUpPresenter.dismissPopup()
+        }))
+
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        PopUpPresenter.show(popUp: popUp, tag: tag)
     }
 }
 

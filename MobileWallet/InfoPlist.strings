@@ -2,3 +2,4 @@ NSCameraUsageDescription = "Tari needs access to the camera to scan the QR";
 NSContactsUsageDescription = "The App need access to your contact book to present contats on the list";
 NSFaceIDUsageDescription = "Enable Face ID to protect your wallet";
 NSPhotoLibraryAddUsageDescription = "Tari needs permission to write media to photo library";
+NSBluetoothAlwaysUsageDescription = "The App needs access to Bluetooth to share contacts with users nearby";

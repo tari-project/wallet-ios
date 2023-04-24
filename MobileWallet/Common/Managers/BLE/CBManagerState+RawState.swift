@@ -1,8 +1,8 @@
-//  UserSettings.swift
+//  CBManagerState+RawState.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 18/12/2022
+	Created by Adrian Truszczyński on 20/04/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -38,25 +38,25 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct UserSettings: Codable {
+import CoreBluetooth
 
-    enum ColorScheme: Codable {
-        case system
-        case light
-        case dark
-        case purple
+extension CBManagerState {
+    var rawState: String {
+        switch self {
+        case .poweredOn:
+            return "Powered On"
+        case .poweredOff:
+            return "Powered Off"
+        case .resetting:
+            return "Resetting"
+        case .unauthorized:
+            return "Unauthorized"
+        case .unknown:
+            return "Unknown"
+        case .unsupported:
+            return "Unsupported"
+        @unknown default:
+            return "Unknown"
+        }
     }
-
-    enum BLEAdvertisementMode: Codable {
-        case turnedOff
-        case onlyOnForeground
-        case alwaysOn
-    }
-
-    var colorScheme: ColorScheme
-    var bleAdvertismentMode: BLEAdvertisementMode
-}
-
-extension UserSettings {
-    static var `default`: Self { Self(colorScheme: .system, bleAdvertismentMode: .onlyOnForeground) }
 }

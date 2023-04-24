@@ -139,7 +139,14 @@ enum DeeplinkHandler {
 
         do {
             let deeplink = try DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: contactListDeeplink)
-            // TODO: It will be implemented in the future
+            let contactsManager = ContactsManager()
+
+            try deeplink.list
+                .forEach {
+                    let address = try TariAddress(hex: $0.hex)
+                    _ = try contactsManager.createInternalModel(name: $0.alias, isFavorite: false, address: address)
+                }
+
         } catch {
             throw DeeplinkError.contactListDeeplinkError(error)
         }

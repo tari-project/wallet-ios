@@ -1,8 +1,8 @@
-//  UserSettings.swift
+//  BluetoothSettingsHeaderView.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 18/12/2022
+	Created by Adrian Truszczyński on 20/04/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -38,25 +38,58 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct UserSettings: Codable {
+import UIKit
+import TariCommon
 
-    enum ColorScheme: Codable {
-        case system
-        case light
-        case dark
-        case purple
+final class BluetoothSettingsHeaderView: DynamicThemeHeaderFooterView {
+
+    // MARK: - Subviews
+
+    @View private var label: UILabel = {
+        let view = UILabel()
+        view.font = .Avenir.medium.withSize(14.0)
+        view.numberOfLines = 0
+        return view
+    }()
+
+    // MARK: - Properties
+
+    var text: String? {
+        get { label.text }
+        set { label.text = newValue }
     }
 
-    enum BLEAdvertisementMode: Codable {
-        case turnedOff
-        case onlyOnForeground
-        case alwaysOn
+    // MARK: - Initialisers
+
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        setupConstraints()
     }
 
-    var colorScheme: ColorScheme
-    var bleAdvertismentMode: BLEAdvertisementMode
-}
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
-extension UserSettings {
-    static var `default`: Self { Self(colorScheme: .system, bleAdvertismentMode: .onlyOnForeground) }
+    // MARK: - Setups
+
+    private func setupConstraints() {
+
+        addSubview(label)
+
+        let constraints = [
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 23.0),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    // MARK: - Updates
+
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.heading
+    }
 }
