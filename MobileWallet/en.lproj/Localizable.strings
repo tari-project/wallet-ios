@@ -11,6 +11,7 @@
 "common.edit" = "Edit";
 "common.done" = "Done";
 "common.confirm" = "Confirm";
+"common.user" = "Aurora User";
 
 "common.fee" = "Transaction Fee";
 "common.wallet_balance" = "Wallet Balance";
@@ -383,9 +384,11 @@
 /* Profile view */
 "profile_view.title" = "My Profile";
 "profile_view.error.qr_code.title" = "Failed to generate QR";
-"profile_view.error.qr_code.description.with_param" = "Transacting in person? Others can scan this QR code from the Tari Aurora App to send you %@.";
+"profile_view.error.qr_code.description.with_param" = "Easily receive %@ from others by sharing your profile via one of the methods below:";
 "profile_view.error.yat_mismatch" = "You've previously connected this Yat.\n Do you want to re-connect it to your wallet?";
 "profile_view.button.recconect_yat" = "Reconnect Yat";
+"profile_view.form.title" = "Edit Name";
+"profile_view.form.text_field.name.placeholder" = "Name";
 
 /* Navigation bar */
 "navigation_bar.error.show_emoji.title" = "Public key error";
@@ -734,13 +737,13 @@
 
 /* BLE Errors */
 
-"error.ble.central.turned_off" = "Bluetooth is currently turned off. You can turn it on from the system settings.";
-"error.ble.central.unauthorized" = "You are unauthorized to use Bluetooth on your device.";
-"error.ble.central.unsupported" = "Your device is unable to make Bluetooth connections.";
-"error.ble.central.unknown" = "The connection failed due to an unknown reason.";
-"error.ble.central.connection_error" = "The app wasn't able to connect with another device.";
-"error.ble.central.process_interrupted" = "The connection process was interrupted.";
-"error.ble.central.write_failed_characteristic_not_found" = "The connection failed due to an issue on the second device.";
+"error.ble.central.turned_off" = "Bluetooth is currently turned off. Please turn it on in your device's system settings.";
+"error.ble.central.unauthorized" = "You are not authorized to use Bluetooth on this device.";
+"error.ble.central.unsupported" = "Your device does not support Bluetooth connections.";
+"error.ble.central.unknown" = "The connection attempt failed due to an unknown reason. Please try again later.";
+"error.ble.central.connection_error" = "Unable to establish a connection with the other device. Please make sure both devices are compatible and within range.";
+"error.ble.central.process_interrupted" = "The connection process was interrupted unexpectedly. Please try again later.";
+"error.ble.central.write_failed_characteristic_not_found" = "Unable to connect to the second device. Please check that the device is on and within range.";
 
 /* Cloud Backup */
 

@@ -45,7 +45,13 @@ final class ContactBookMenuButton: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private var button = RoundedButton()
+    @View private var button: RoundedButton = {
+        let view = RoundedButton()
+        view.contentHorizontalAlignment = .fill
+        view.contentVerticalAlignment = .fill
+        view.imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
+        return view
+    }()
 
     // MARK: - Properties
 
@@ -55,9 +61,6 @@ final class ContactBookMenuButton: DynamicThemeView {
     }
 
     var onTap: (() -> Void)?
-
-    private var buttonCollapsedSizeConstraints: [NSLayoutConstraint] = []
-    private var buttonExpandedSizeConstraints: [NSLayoutConstraint] = []
 
     // MARK: - Initialisers
 
@@ -77,22 +80,14 @@ final class ContactBookMenuButton: DynamicThemeView {
 
         addSubview(button)
 
-        buttonCollapsedSizeConstraints = [
-            button.widthAnchor.constraint(equalToConstant: 0.0),
-            button.heightAnchor.constraint(equalToConstant: 0.0)
-        ]
-
-        buttonExpandedSizeConstraints = [
+        let constraints = [
+            button.centerXAnchor.constraint(equalTo: centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: centerYAnchor),
             button.widthAnchor.constraint(equalTo: widthAnchor),
             button.heightAnchor.constraint(equalTo: heightAnchor)
         ]
 
-        let constraints = [
-            button.centerXAnchor.constraint(equalTo: centerXAnchor),
-            button.centerYAnchor.constraint(equalTo: centerYAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints + buttonCollapsedSizeConstraints)
+        NSLayoutConstraint.activate(constraints)
     }
 
     private func setupCallbacks() {
@@ -102,13 +97,11 @@ final class ContactBookMenuButton: DynamicThemeView {
     // MARK: - Actions
 
     func show() {
-        NSLayoutConstraint.deactivate(buttonCollapsedSizeConstraints)
-        NSLayoutConstraint.activate(buttonExpandedSizeConstraints)
+        button.isHidden = false
     }
 
     func hide() {
-        NSLayoutConstraint.deactivate(buttonExpandedSizeConstraints)
-        NSLayoutConstraint.activate(buttonCollapsedSizeConstraints)
+        button.isHidden = true
     }
 
     // MARK: - Updates

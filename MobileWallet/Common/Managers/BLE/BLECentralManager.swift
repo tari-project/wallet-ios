@@ -297,3 +297,25 @@ extension BLECentralManager: CBPeripheralDelegate {
         handleWriteSuccess()
     }
 }
+
+extension BLECentralManager.BLECentralError {
+
+    var errorMessage: String? {
+        switch self {
+        case .turnedOff:
+            return localized("error.ble.central.turned_off")
+        case .unauthorized:
+            return localized("error.ble.central.unauthorized")
+        case .unsupported:
+            return localized("error.ble.central.unsupported")
+        case .unknown:
+            return localized("error.ble.central.unknown")
+        case .connectionError:
+            return localized("error.ble.central.connection_error")
+        case .processInterrupted:
+            return localized("error.ble.central.process_interrupted")
+        case .writeFailedCharacteristicNotFound:
+            return localized("error.ble.central.write_failed_characteristic_not_found")
+        }
+    }
+}

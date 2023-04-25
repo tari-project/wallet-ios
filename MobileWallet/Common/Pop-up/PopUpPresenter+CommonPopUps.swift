@@ -108,6 +108,12 @@ struct MessageModel {
 
 extension PopUpPresenter {
 
+    enum BLEDialogType {
+        case scan
+        case success
+        case failure(message: String?)
+    }
+
     static func show(message: MessageModel) {
         let model = PopUpDialogModel(title: message.title, message: message.message, buttons: [], hapticType: makeHapticType(model: message))
         showPopUp(model: model)
@@ -140,6 +146,56 @@ extension PopUpPresenter {
         PopUpPresenter.show(popUp: popUp)
 
         return contentView
+    }
+
+    static func showBLEDialog(type: BLEDialogType, callback: ((_ type: BLEDialogType) -> Void)?) {
+
+        var image: UIImage?
+        var title: String?
+        var message: String?
+        var tag: String?
+
+        switch type {
+        case .scan:
+            image = .contactBook.bleDialog.icon
+            title = localized("contact_book.popup.ble.share.title")
+            message = localized("contact_book.popup.ble.share.message")
+            tag = PopUpTag.bleScanDialog.rawValue
+        case .success:
+            image = .contactBook.bleDialog.success
+            title = localized("contact_book.popup.ble.success.title")
+            message = localized("contact_book.popup.ble.success.message")
+            PopUpPresenter.dismissPopup(tag: PopUpTag.bleScanDialog.rawValue)
+        case let .failure(errorMessage):
+            image = .contactBook.bleDialog.failure
+            title = localized("contact_book.popup.ble.failure.title")
+            message = errorMessage
+            PopUpPresenter.dismissPopup(tag: PopUpTag.bleScanDialog.rawValue)
+        }
+
+        PopUpPresenter.showBLEDialog(image: image, title: title, message: message, tag: tag) {
+            callback?(type)
+        }
+    }
+
+    static func showBLEDialog(image: UIImage?, title: String?, message: String?, tag: String?, callback: (() -> Void)?) {
+
+        let headerSection = PopUpCircleImageHeaderView()
+        let contentSection = PopUpDescriptionContentView()
+        let buttonsSection = PopUpButtonsView()
+
+        headerSection.image = image
+        headerSection.imageTintColor = .purple
+        headerSection.text = title
+        contentSection.label.text = message
+
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: {
+            callback?()
+            PopUpPresenter.dismissPopup()
+        }))
+
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        PopUpPresenter.show(popUp: popUp, tag: tag)
     }
 
     static func showPopUp(model: PopUpDialogModel) {

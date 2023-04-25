@@ -42,16 +42,9 @@ import UIKit
 import TariCommon
 import Lottie
 
-final class ProfileView: DynamicThemeView {
+final class ProfileView: BaseNavigationContentView {
 
     // MARK: - Subviews
-
-    @View private var navigationBar: NavigationBar = {
-        let view = NavigationBar()
-        view.backButtonType = .back
-        view.title = localized("profile_view.title")
-        return view
-    }()
 
     @View private var emojiIdView = EmojiIdView()
     @View var yatButton: BaseButton = BaseButton()
@@ -79,23 +72,46 @@ final class ProfileView: DynamicThemeView {
         return view
     }()
 
-    @View private var qrContainer: UIView = {
-        let view = UIView()
-        view.layer.cornerRadius = 10.0
-        view.layer.shouldRasterize = true
-        view.layer.rasterizationScale = UIScreen.main.scale
+    @View private var buttonsStackView: UIStackView = {
+        let view = UIStackView()
+        view.spacing = 40.0
         return view
     }()
 
-    @View private var qrImageView = LoadingImageView()
+    @View private var qrCodeButton: ContactBookShareButton = {
+        let view = ContactBookShareButton()
+        view.buttonSize = 80.0
+        view.padding = 15.0
+        view.update(image: .icons.qr, text: localized("contact_book.share_bar.buttons.qr"))
+        return view
+    }()
 
-    var qrCodeImage: UIImage? {
-        didSet { qrImageView.state = .image(qrCodeImage) }
-    }
+    @View private var linkCodeButton: ContactBookShareButton = {
+        let view = ContactBookShareButton()
+        view.update(image: .icons.link, text: localized("contact_book.share_bar.buttons.link"))
+        view.buttonSize = 80.0
+        view.padding = 15.0
+        return view
+    }()
+
+    @View private var bleCodeButton: ContactBookShareButton = {
+        let view = ContactBookShareButton()
+        view.update(image: .icons.bluetooth, text: localized("contact_book.share_bar.buttons.ble"))
+        view.buttonSize = 80.0
+        view.padding = 15.0
+        return view
+    }()
+
+    // MARK: - Properties
 
     var isYatButtonOn: Bool = false {
         didSet { updateYatButton(isOn: isYatButtonOn) }
     }
+
+    var onEditButtonTap: (() -> Void)?
+    var onQrCodeButtonTap: (() -> Void)?
+    var onLinkButtonTap: (() -> Void)?
+    var onBleButtonTap: (() -> Void)?
 
     private var yatButtonOnTintColor: UIColor?
     private var yatButtonOffTintColor: UIColor?
@@ -104,9 +120,9 @@ final class ProfileView: DynamicThemeView {
 
     override init() {
         super.init()
+        setupViews()
         setupConstraints()
-
-        yatButton.imageView?.contentMode = .scaleAspectFit
+        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -115,15 +131,22 @@ final class ProfileView: DynamicThemeView {
 
     // MARK: - Setups
 
+    private func setupViews() {
+
+        navigationBar.title = localized("profile_view.title")
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(title: localized("common.edit"), callback: { [weak self] in
+            self?.onEditButtonTap?()
+        }))
+
+        yatButton.imageView?.contentMode = .scaleAspectFit
+    }
+
     private func setupConstraints() {
 
-        [navigationBar, emojiIdView, yatButton, yatSpinnerView, middleLabel, reconnectYatButton, qrContainer].forEach(addSubview)
-        qrContainer.addSubview(qrImageView)
+        [emojiIdView, yatButton, yatSpinnerView, middleLabel, reconnectYatButton, buttonsStackView].forEach(addSubview)
+        [qrCodeButton, linkCodeButton, bleCodeButton].forEach(buttonsStackView.addArrangedSubview)
 
-        var constraints = [
-            navigationBar.topAnchor.constraint(equalTo: topAnchor),
-            navigationBar.leadingAnchor.constraint(equalTo: leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: trailingAnchor),
+        let constraints = [
             emojiIdView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 25.0),
             emojiIdView.widthAnchor.constraint(equalToConstant: 185.0),
             emojiIdView.heightAnchor.constraint(equalToConstant: 38.0),
@@ -136,34 +159,31 @@ final class ProfileView: DynamicThemeView {
             yatSpinnerView.centerYAnchor.constraint(equalTo: yatButton.centerYAnchor),
             yatSpinnerView.heightAnchor.constraint(equalToConstant: 28.0),
             yatSpinnerView.widthAnchor.constraint(equalToConstant: 28.0),
-            middleLabel.topAnchor.constraint(equalTo: emojiIdView.bottomAnchor, constant: 20),
-            middleLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 22.0),
-            middleLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -22.0),
+            middleLabel.topAnchor.constraint(equalTo: emojiIdView.bottomAnchor, constant: 40.0),
+            middleLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 40.0),
+            middleLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -40.0),
             reconnectYatButton.topAnchor.constraint(equalTo: middleLabel.bottomAnchor),
             reconnectYatButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            qrContainer.heightAnchor.constraint(equalTo: qrContainer.widthAnchor),
-            qrImageView.leadingAnchor.constraint(equalTo: qrContainer.leadingAnchor, constant: 30.0),
-            qrImageView.trailingAnchor.constraint(equalTo: qrContainer.trailingAnchor, constant: -30.0),
-            qrImageView.bottomAnchor.constraint(equalTo: qrContainer.bottomAnchor, constant: -30.0),
-            qrImageView.topAnchor.constraint(equalTo: qrContainer.topAnchor, constant: 30.0)
+            buttonsStackView.topAnchor.constraint(equalTo: reconnectYatButton.bottomAnchor, constant: 20.0),
+            buttonsStackView.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
 
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            constraints += [
-                qrContainer.topAnchor.constraint(equalTo: reconnectYatButton.bottomAnchor, constant: 100.0),
-                qrContainer.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, multiplier: 0.5),
-                qrContainer.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, multiplier: 0.5),
-                qrContainer.centerXAnchor.constraint(equalTo: centerXAnchor)
-            ]
-        } else {
-            constraints += [
-                qrContainer.topAnchor.constraint(equalTo: reconnectYatButton.bottomAnchor, constant: 25.0),
-                qrContainer.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-                qrContainer.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0)
-            ]
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    private func setupCallbacks() {
+
+        qrCodeButton.onTap = { [weak self] in
+            self?.onQrCodeButtonTap?()
         }
 
-        NSLayoutConstraint.activate(constraints)
+        linkCodeButton.onTap = { [weak self] in
+            self?.onLinkButtonTap?()
+        }
+
+        bleCodeButton.onTap = { [weak self] in
+            self?.onBleButtonTap?()
+        }
     }
 
     // MARK: - Updates
@@ -176,8 +196,6 @@ final class ProfileView: DynamicThemeView {
         reconnectYatButton.setTitleColor(theme.text.links, for: .normal)
         yatButtonOnTintColor = theme.icons.active
         yatButtonOffTintColor = theme.icons.inactive
-        qrContainer.backgroundColor = theme.components.qrBackground
-        qrContainer.apply(shadow: theme.shadows.box)
 
         updateYatButton(isOn: isYatButtonOn)
     }
@@ -207,13 +225,5 @@ final class ProfileView: DynamicThemeView {
         yatButton.isHidden = true
         yatSpinnerView.isHidden = true
         yatSpinnerView.stop()
-    }
-
-    // MARK: - Autolayout
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        let shadowFrame: CGRect = qrContainer.bounds.insetBy(dx: 4.0, dy: 4.0)
-        qrContainer.layer.shadowPath = UIBezierPath(rect: shadowFrame).cgPath
     }
 }

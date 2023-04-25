@@ -65,7 +65,10 @@ final class AddRecipientSearchView: DynamicThemeView {
 
     @View private(set) var qrButton: PulseButton = {
         let view = PulseButton()
-        view.setImage(Theme.shared.images.qrButton, for: .normal)
+        view.setImage(.icons.qr, for: .normal)
+        view.contentHorizontalAlignment = .fill
+        view.contentVerticalAlignment = .fill
+        view.imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
         return view
     }()
 
@@ -113,6 +116,7 @@ final class AddRecipientSearchView: DynamicThemeView {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
+        qrButton.tintColor = theme.brand.purple
         yatIconView.tintColor = theme.icons.default
         apply(shadow: theme.shadows.box)
     }
