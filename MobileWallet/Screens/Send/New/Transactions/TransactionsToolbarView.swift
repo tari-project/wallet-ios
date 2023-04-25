@@ -52,13 +52,6 @@ final class TransactionsToolbarView: DynamicThemeView {
         return view
     }()
 
-    @View private var requestButton: BaseButton = {
-        let view = BaseButton()
-        view.setTitle(localized("transactions.toolbar.request"), for: .normal)
-        view.titleLabel?.font = UIFont.Avenir.medium.withSize(16.0)
-        return view
-    }()
-
     @View private var selectorLineView = UIView()
 
     @View private var stackView: UIStackView = {
@@ -71,7 +64,6 @@ final class TransactionsToolbarView: DynamicThemeView {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         sendButton.setTitleColor(theme.text.heading, for: .normal)
-        requestButton.setTitleColor(theme.text.heading, for: .normal)
         selectorLineView.backgroundColor = theme.brand.purple
     }
 
@@ -102,7 +94,7 @@ final class TransactionsToolbarView: DynamicThemeView {
     private func setupConstraints() {
 
         [stackView, selectorLineView].forEach(addSubview)
-        [sendButton, requestButton].forEach(stackView.addArrangedSubview)
+        [sendButton].forEach(stackView.addArrangedSubview)
 
         let selectorLineCenterXConstraint = selectorLineView.centerXAnchor.constraint(equalTo: sendButton.centerXAnchor)
         self.selectorLineCenterXConstraint = selectorLineCenterXConstraint
@@ -123,7 +115,7 @@ final class TransactionsToolbarView: DynamicThemeView {
 
     private func setupCallbacks() {
 
-        [sendButton, requestButton]
+        [sendButton]
             .enumerated()
             .forEach { index, button in
                 button.onTap = { [weak self] in self?.onButtonTap?(index) }
