@@ -61,5 +61,6 @@ enum AppConfigurator {
         BackupManager.shared.configure()
         StatusLoggerManager.shared.configure()
         BLEPeripheralManager.shared.configure()
+        DataFlowManager.shared.configure()
     }
 }

@@ -1,8 +1,8 @@
-//  UserSettingsManager.swift
+//  DataFlowManager.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 18/12/2022
+	Created by Adrian Truszczyński on 24/04/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -38,43 +38,29 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum UserSettingsManager {
+import Combine
 
-    static var name: String? {
-        get { userSettings.name }
-        set {
-            var userSettings = userSettings
-            userSettings.name = newValue
-            GroupUserDefaults.userSettings = userSettings
-        }
+final class DataFlowManager {
+
+    static let shared = DataFlowManager()
+    private var cancellables = Set<AnyCancellable>()
+
+    private init() {}
+
+    func configure() {
+        setupCallbacks()
     }
 
-    static var colorScheme: UserSettings.ColorScheme {
-        get { userSettings.colorScheme }
-        set {
-            var userSettings = userSettings
-            userSettings.colorScheme = newValue
-            GroupUserDefaults.userSettings = userSettings
-        }
+    private func setupCallbacks() {
+
+        Tari.shared.$isWalletConnected
+            .filter { $0 }
+            .sink { [weak self] _ in self?.updateUserName() }
+            .store(in: &cancellables)
     }
 
-    static var bleAdvertisementMode: UserSettings.BLEAdvertisementMode {
-        get { userSettings.bleAdvertismentMode }
-        set {
-            var userSettings = userSettings
-            userSettings.bleAdvertismentMode = newValue
-            GroupUserDefaults.userSettings = userSettings
-        }
-    }
-
-    private static var userSettings: UserSettings {
-
-        guard let settings = GroupUserDefaults.userSettings else {
-            let newSettings = UserSettings.default
-            GroupUserDefaults.userSettings = newSettings
-            return newSettings
-        }
-
-        return settings
+    private func updateUserName() {
+        guard UserSettingsManager.name == nil, let address = try? Tari.shared.walletAddress.emojis.prefix(3) else { return }
+        UserSettingsManager.name = [localized("common.user"), String(address)].joined(separator: " ")
     }
 }

@@ -53,6 +53,7 @@ struct UserSettings: Codable {
         case alwaysOn
     }
 
+    var name: String?
     var colorScheme: ColorScheme
     var bleAdvertismentMode: BLEAdvertisementMode
 }

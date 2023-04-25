@@ -49,6 +49,7 @@ final class ProfileViewController: UIViewController {
     private let mainView = ProfileView()
     private let model = ProfileModel()
 
+    private weak var qrCodePopUpContentView: PopUpQRContentView?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - View Lifecycle
@@ -70,12 +71,6 @@ final class ProfileViewController: UIViewController {
     // MARK: - Setups
 
     private func setupBindings() {
-
-        model.$qrCodeImage
-            .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.qrCodeImage, on: mainView)
-            .store(in: &cancellables)
 
         model.$emojiData
             .compactMap { $0 }
@@ -111,12 +106,34 @@ final class ProfileViewController: UIViewController {
             .sink { [weak self] in self?.showYatOnboardingFlow(publicKey: $0) }
             .store(in: &cancellables)
 
+        model.$action
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.handle(action: $0) }
+            .store(in: &cancellables)
+
         mainView.yatButton.onTap = { [weak self] in
             self?.model.toggleVisibleData()
         }
 
         mainView.reconnectYatButton.onTap = { [weak self] in
             self?.model.reconnectYat()
+        }
+
+        mainView.onEditButtonTap = { [weak self] in
+            self?.showEditNameForm()
+        }
+
+        mainView.onQrCodeButtonTap = { [weak self] in
+            self?.model.generateQrCode()
+        }
+
+        mainView.onLinkButtonTap = { [weak self] in
+            self?.model.generateLink()
+        }
+
+        mainView.onBleButtonTap = { [weak self] in
+            self?.model.shareContactUsingBLE()
         }
     }
 
@@ -143,5 +160,61 @@ final class ProfileViewController: UIViewController {
         Yat.integration.showOnboarding(onViewController: self, records: [
             YatRecordInput(tag: .XTRAddress, value: publicKey)
         ])
+    }
+
+    private func handle(action: ProfileModel.Action) {
+
+        switch action {
+        case .showQRPopUp:
+            showQrCodeDialog()
+        case let .shareQR(image):
+            showQrCodeInDialog(qrCode: image)
+        case let .shareLink(url):
+            showLinkShareDialog(link: url)
+        case .showBLEWaitingForReceiverDialog:
+            showBLEDialog(type: .scan)
+        case .showBLESuccessDialog:
+            showBLEDialog(type: .success)
+        case let .showBLEFailureDialog(message):
+            showBLEDialog(type: .failure(message: message))
+        }
+    }
+
+    private func showEditNameForm() {
+
+        var name = model.name
+
+        let models = [
+            ContactBookFormView.TextFieldViewModel(
+                placeholder: localized("profile_view.form.text_field.name.placeholder"),
+                text: name,
+                isEmojiKeyboardVisible: false,
+                callback: { name = $0 }
+            )
+        ]
+
+        FormOverlayPresenter.showForm(title: localized("profile_view.form.title"), textFieldModels: models, presenter: self, onClose: { [weak self] in
+            self?.model.name = name
+        })
+    }
+
+    private func showQrCodeDialog() {
+        qrCodePopUpContentView = PopUpPresenter.showQRCodeDialog(title: localized("contact_book.pop_ups.qr.title"))
+    }
+
+    private func showQrCodeInDialog(qrCode: UIImage) {
+        qrCodePopUpContentView?.qrCode = qrCode
+    }
+
+    private func showBLEDialog(type: PopUpPresenter.BLEDialogType) {
+        PopUpPresenter.showBLEDialog(type: type) { [weak self] _ in
+            self?.model.cancelBLESharing()
+        }
+    }
+
+    private func showLinkShareDialog(link: URL) {
+        let controller = UIActivityViewController(activityItems: [link], applicationActivities: nil)
+        controller.popoverPresentationController?.sourceView = mainView.navigationBar
+        present(controller, animated: true)
     }
 }

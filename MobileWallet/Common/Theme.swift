@@ -62,7 +62,6 @@ struct Images {
 
     // General icons
     let currencySymbol = UIImage(named: "Gem")
-    let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
     let forwardArrow = UIImage(named: "ForwardArrow")
     let close = UIImage(named: "Close")
@@ -358,6 +357,7 @@ enum IconsImages {
     static var link: UIImage? { UIImage(named: "Icons/Link") }
     static var profile: UIImage? { UIImage(named: "Icons/Profile") }
     static var send: UIImage? { UIImage(named: "Icons/Send") }
+    static var qr: UIImage? { UIImage(named: "Icons/QR") }
     static var unlink: UIImage? { UIImage(named: "Icons/Unlink") }
 }
 

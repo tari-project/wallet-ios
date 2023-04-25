@@ -296,8 +296,9 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath == profileIndexPath {
             let cell = tableView.dequeueReusableCell(type: SettingsProfileCell.self, indexPath: indexPath)
             do {
-                let emojiID = try Tari.shared.walletAddress.emojis.obfuscatedText
-                cell.update(avatar: emojiID.firstOrEmpty, emojiID: emojiID)
+                let name = UserSettingsManager.name
+                let address = try Tari.shared.walletAddress.emojis.obfuscatedText
+                cell.update(avatar: address.firstOrEmpty, name: name, address: address)
             } catch {
                 let message = ErrorMessageManager.errorModel(forError: error)
                 PopUpPresenter.show(message: message)

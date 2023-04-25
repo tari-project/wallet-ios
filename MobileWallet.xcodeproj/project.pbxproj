@@ -452,6 +452,8 @@
 		54A6E9F4297F260800A60853 /* UIViewController+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A6E9F3297F260800A60853 /* UIViewController+Common.swift */; };
 		54A783DB29E96FF600A30594 /* BLEPeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A783DA29E96FF600A30594 /* BLEPeripheralManager.swift */; };
 		54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */; };
+		54A9C88829F6A06F009B0653 /* DataFlowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A9C88729F6A06F009B0653 /* DataFlowManager.swift */; };
+		54A9C88A29F6A54B009B0653 /* ContactBookShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A9C88929F6A54B009B0653 /* ContactBookShareButton.swift */; };
 		54AA5D5A298122B70031A396 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D59298122B70031A396 /* OnboardingView.swift */; };
 		54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */; };
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
@@ -983,6 +985,8 @@
 		54A6E9F3297F260800A60853 /* UIViewController+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Common.swift"; sourceTree = "<group>"; };
 		54A783DA29E96FF600A30594 /* BLEPeripheralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEPeripheralManager.swift; sourceTree = "<group>"; };
 		54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariUnspentOutputsService.swift; sourceTree = "<group>"; };
+		54A9C88729F6A06F009B0653 /* DataFlowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFlowManager.swift; sourceTree = "<group>"; };
+		54A9C88929F6A54B009B0653 /* ContactBookShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookShareButton.swift; sourceTree = "<group>"; };
 		54AA5D59298122B70031A396 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
@@ -1730,6 +1734,7 @@
 				3A3E8BF22924FB4C00490E57 /* MigrationManager.swift */,
 				5491696D2940F78000783E54 /* LogFilesManager.swift */,
 				54A6E9EF297F1F9900A60853 /* StagedWalletSecurityManager.swift */,
+				54A9C88729F6A06F009B0653 /* DataFlowManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -2720,6 +2725,7 @@
 				54DDB18229A373C90021DFD4 /* ContactBookMenuButton.swift */,
 				5453241D29A67FFF009281A7 /* ContactCapsuleMenuBackground.swift */,
 				5488068829D4244800C2A0F9 /* ContactBookShareBar.swift */,
+				54A9C88929F6A54B009B0653 /* ContactBookShareButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3480,6 +3486,7 @@
 				3A4CE33626A1A04000ECF460 /* SelectBaseNodeViewController.swift in Sources */,
 				3AA9499E26BD3EAC007C550D /* HomeViewToolbar.swift in Sources */,
 				3A70434828E21F5600207D6F /* Transaction.swift in Sources */,
+				54A9C88829F6A06F009B0653 /* DataFlowManager.swift in Sources */,
 				3A8473BF28EC51780015E63A /* TransactionValidationStatus.swift in Sources */,
 				37B444A9248949B800592D92 /* Checkbox.swift in Sources */,
 				546CE7F629AF517900264699 /* FormOverlayView.swift in Sources */,
@@ -3533,6 +3540,7 @@
 				37BB696B245705D20013AC4D /* RadialGradientView.swift in Sources */,
 				3A7E06DA287831BD00D15190 /* UTXOsEstimationLabel.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
+				54A9C88A29F6A54B009B0653 /* ContactBookShareButton.swift in Sources */,
 				540CB6F529C1DE42003FACEF /* AddContactView.swift in Sources */,
 				54D4747929EDC21D003D14E6 /* FormOverlayPresenter.swift in Sources */,
 				3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */,
