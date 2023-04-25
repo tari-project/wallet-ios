@@ -65,7 +65,7 @@ final class TransactionsViewController: UIViewController {
     // MARK: - Setups
 
     private func setupPageController() {
-        pageViewController.controllers = [AddRecipientViewController(), RequestTariAmountViewController()]
+        pageViewController.controllers = [AddRecipientViewController()]
         add(childController: pageViewController, containerView: mainView.contentView)
     }
 
@@ -89,8 +89,6 @@ final class TransactionsViewController: UIViewController {
         switch roundedIndex {
         case 0:
             mainView.navigationBar.title = localized("add_recipient.title")
-        case 1:
-            mainView.navigationBar.title = localized("request.navigation_bar.title")
         default:
             break
         }

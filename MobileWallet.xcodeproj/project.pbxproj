@@ -2154,7 +2154,6 @@
 			isa = PBXGroup;
 			children = (
 				3AA27175279024670076E51F /* Transactions */,
-				3AA271782790284E0076E51F /* RequestTari */,
 			);
 			path = New;
 			sourceTree = "<group>";
@@ -2870,6 +2869,7 @@
 		BFD758E423E98A9F00B0F1A5 /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				3AA271782790284E0076E51F /* RequestTari */,
 				3ACFA42A278EC9F200EBED98 /* ProfileModel.swift */,
 				BFD758E523E98ABD00B0F1A5 /* ProfileViewController.swift */,
 				3ACFA428278EC9BF00EBED98 /* ProfileView.swift */,

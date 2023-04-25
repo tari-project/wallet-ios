@@ -387,6 +387,7 @@
 "profile_view.error.qr_code.description.with_param" = "Easily receive %@ from others by sharing your profile via one of the methods below:";
 "profile_view.error.yat_mismatch" = "You've previously connected this Yat.\n Do you want to re-connect it to your wallet?";
 "profile_view.button.recconect_yat" = "Reconnect Yat";
+"profile_view.button.request_tokens" = "Request Tari";
 "profile_view.form.title" = "Edit Name";
 "profile_view.form.text_field.name.placeholder" = "Name";
 
