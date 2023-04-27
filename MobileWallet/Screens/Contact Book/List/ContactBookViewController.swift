@@ -172,7 +172,15 @@ final class ContactBookViewController: UIViewController {
             .store(in: &cancellables)
 
         model.$isSharePossible
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.isShareButtonEnabled = $0 }
+            .store(in: &cancellables)
+
+        model.$isValidAddressInSearchField
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.isSendButtonVisible = $0 }
             .store(in: &cancellables)
 
         mainView.searchText
@@ -195,6 +203,14 @@ final class ContactBookViewController: UIViewController {
         mainView.onShareButtonTap = { [weak self] in
             guard let identifier = self?.mainView.selectedShareOptionID, let shareType = ContactBookModel.ShareType(rawValue: identifier) else { return }
             self?.model.shareSelectedContacts(shareType: shareType)
+        }
+
+        mainView.onQRScannerButtonTap = { [weak self] in
+            self?.showQRCodeScanner()
+        }
+
+        mainView.onSendButtonTap = { [weak self] in
+            self?.model.sendTokensRequest()
         }
 
         contactsPageViewController.onButtonTap = { [weak self] in
@@ -376,6 +392,16 @@ final class ContactBookViewController: UIViewController {
             self?.model.cancelBLESharing()
         }
     }
+
+    private func showQRCodeScanner() {
+        let scanViewController = ScanViewController(scanResourceType: .publicKey)
+        scanViewController.actionDelegate = self
+        scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
+        present(scanViewController, animated: true, completion: nil)
+    }
+}
+
+extension ContactBookViewController: ScanViewControllerDelegate {
 }
 
 private extension ContactBookModel.MenuItem {

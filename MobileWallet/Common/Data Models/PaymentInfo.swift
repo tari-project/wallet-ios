@@ -1,10 +1,10 @@
-//  ErrorView.swift
+//  PaymentInfo.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/04/06
+	Created by Adrian Truszczyński on 27/04/2023
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,46 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-
-final class ErrorView: DynamicThemeView {
-    private let padding: CGFloat = 14
-    private let label = UILabel()
-    var message = "" {
-        didSet {
-            label.text = message
-            if message.isEmpty {
-                alpha = 0.0
-            } else {
-                alpha = 1.0
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
-
-        }
-    }
-
-    override func draw(_ rect: CGRect) {
-        alpha = 0.0
-        backgroundColor = .clear
-
-        layer.cornerRadius = 4
-        layer.masksToBounds = true
-        layer.borderWidth = 1
-
-        label.textAlignment = .center
-        label.font = Theme.shared.fonts.warningBoxTitleLabel
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        addSubview(label)
-        label.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
-        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
-        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
-    }
-
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-        label.textColor = theme.system.red
-        layer.borderColor =  theme.system.red?.cgColor
-    }
+struct PaymentInfo {
+   let address: TariAddress
+   let yatID: String?
 }

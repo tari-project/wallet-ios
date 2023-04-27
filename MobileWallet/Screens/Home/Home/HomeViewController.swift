@@ -354,18 +354,19 @@ final class HomeViewController: DynamicThemeViewController {
     }
 
     func onSend(deeplink: TransactionsSendDeeplink? = nil) {
+        // FIXME: Deeplink Handler
 
-        let sendVC = TransactionsViewController()
-        let navigationController = AlwaysPoppableNavigationController(rootViewController: sendVC)
-        navigationController.setNavigationBarHidden(true, animated: false)
-        navigationController.modalPresentationStyle = .fullScreen
-
-        DispatchQueue.main.async {
-            UIApplication.shared.menuTabBarController?.present(navigationController, animated: true) {
-                guard let deeplink = deeplink else { return }
-                sendVC.update(deeplink: deeplink)
-            }
-        }
+//        let sendVC = TransactionsViewController()
+//        let navigationController = AlwaysPoppableNavigationController(rootViewController: sendVC)
+//        navigationController.setNavigationBarHidden(true, animated: false)
+//        navigationController.modalPresentationStyle = .fullScreen
+//
+//        DispatchQueue.main.async {
+//            UIApplication.shared.menuTabBarController?.present(navigationController, animated: true) {
+//                guard let deeplink = deeplink else { return }
+//                sendVC.update(deeplink: deeplink)
+//            }
+//        }
     }
 }
 
