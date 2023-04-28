@@ -57,7 +57,6 @@ struct Images {
     // TabBar
     let homeItem = UIImage(named: "navHome")
     let ttlItem = UIImage(named: "navTtl")
-    let sendItem = UIImage(named: "navSend")?.withRenderingMode(.alwaysOriginal)
     let settingsItem = UIImage(named: "navSettings")
 
     // General icons
@@ -69,7 +68,6 @@ struct Images {
     let txFee = UIImage(named: "TxFee")
     let storeIcon = UIImage(named: "store-icon")
     let storeModal = UIImage(named: "store-modal")
-    let unknownUser = UIImage(named: "unknownUser")
     let handWave = UIImage(named: "HandWave")
     let attentionIcon = UIImage(named: "AttentionIcon")
     let scheduledIcon = UIImage(named: "ScheduledIcon")
@@ -218,8 +216,6 @@ struct Fonts {
 
     // Add recipient view
     let searchContactsInputBoxText = UIFont.Avenir.roman.withSize(14.0)
-    let contactCellAlias = UIFont.Avenir.heavy.withSize(15.0)
-    let contactCellAliasLetter = UIFont.Avenir.heavy.withSize(24.0)
 
     // Add amount screen
     let keypadButton = UIFont.Avenir.heavy.withSize(36.0)
@@ -350,6 +346,7 @@ enum ContactBookPlaceholderImages {
 enum IconsImages {
 
     static var contactTypes: IconsContactTypesImages.Type { IconsContactTypesImages.self }
+    static var settings: IconsSettingsImages.Type { IconsSettingsImages.self }
     static var star: IconsStarImages.Type { IconsStarImages.self }
     static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
 
@@ -374,4 +371,8 @@ enum IconsStarImages {
 
 enum IconsTabBarImages {
     static var contactBook: UIImage? { UIImage(named: "Icons/TabBar/ContactBook") }
+}
+
+enum IconsSettingsImages {
+    static var bluetooth: UIImage? { UIImage(named: "Icons/Settings/Bluetooth") }
 }

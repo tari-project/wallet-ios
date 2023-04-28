@@ -122,7 +122,7 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
-        SystemMenuTableViewCellItem(icon: .icons.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
+        SystemMenuTableViewCellItem(icon: .icons.settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsNetworkIcon, title: SettingsItemTitle.selectNetwork.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBaseNodeIcon, title: SettingsItemTitle.selectBaseNode.rawValue),

@@ -40,6 +40,7 @@
 
 import UIKit
 import Combine
+import YatLib
 
 final class ContactBookModel {
 
@@ -93,6 +94,10 @@ final class ContactBookModel {
         case showBLEFailureDialog(message: String?)
     }
 
+    // MARK: - Constants
+
+    private let maxYatIDLenght: Int = 5
+
     // MARK: - View Model
 
     @Published var searchText: String = ""
@@ -107,10 +112,13 @@ final class ContactBookModel {
     @Published private(set) var action: Action?
     @Published private(set) var isPermissionGranted: Bool = false
     @Published private(set) var isSharePossible: Bool = false
+    @Published private(set) var isValidAddressInSearchField: Bool = false
 
     // MARK: - Properties
 
     @Published private var allContactList: [ContactSection] = []
+    @Published private var enteredAddress: TariAddress?
+    @Published private var yatID: String?
 
     private let contactsManager = ContactsManager()
 
@@ -154,6 +162,15 @@ final class ContactBookModel {
             .sink { [weak self] in self?.favoriteContactsList = $0 }
             .store(in: &cancellables)
 
+        $searchText
+            .sink { [weak self] in self?.generateAddress(text: $0) }
+            .store(in: &cancellables)
+
+        $searchText
+            .throttle(for: .milliseconds(750), scheduler: DispatchQueue.main, latest: true)
+            .sink { [weak self] in self?.searchAddress(forYatID: $0) }
+            .store(in: &cancellables)
+
         $contentMode
             .filter { $0 == .normal }
             .sink { [weak self] _ in self?.selectedIDs = [] }
@@ -162,6 +179,11 @@ final class ContactBookModel {
         $selectedIDs
             .map { !$0.isEmpty }
             .assignPublisher(to: \.isSharePossible, on: self)
+            .store(in: &cancellables)
+
+        $enteredAddress
+            .map { $0 != nil }
+            .assignPublisher(to: \.isValidAddressInSearchField, on: self)
             .store(in: &cancellables)
     }
 
@@ -274,6 +296,20 @@ final class ContactBookModel {
         bleTask?.cancel()
     }
 
+    func sendTokensRequest() {
+
+        guard let enteredAddress else {
+            Logger.log(message: "No Address on 'send tokens' request.", domain: .navigation, level: .error)
+            errorModel = ErrorMessageManager.errorModel(forError: nil)
+            return
+        }
+
+        let paymentInfo = PaymentInfo(address: enteredAddress, yatID: yatID)
+        action = .sendTokens(paymentInfo: paymentInfo)
+    }
+
+    // MARK: - Actions
+
     private func update(isFavorite: Bool, contact: ContactsManager.Model) {
         do {
             try contactsManager.update(nameComponents: contact.nameComponents, isFavorite: isFavorite, yat: contact.externalModel?.yat ?? "", contact: contact)
@@ -317,6 +353,29 @@ final class ContactBookModel {
         }
     }
 
+    // MARK: - Actions - Yat
+
+    private func searchAddress(forYatID yatID: String) {
+
+        self.yatID = nil
+        guard yatID.containsOnlyEmoji, (1...maxYatIDLenght).contains(yatID.count) else { return }
+
+        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: yatID, tags: YatRecordTag.XTRAddress.rawValue)
+            .sink(
+                receiveCompletion: { _ in },
+                receiveValue: { [weak self] in self?.handle(apiResponse: $0, yatID: yatID) }
+            )
+            .store(in: &cancellables)
+    }
+
+    private func handle(apiResponse: PaymentAddressResponse, yatID: String) {
+        guard let walletAddress = apiResponse.result?[YatRecordTag.XTRAddress.rawValue]?.address else { return }
+        generateAddress(text: walletAddress)
+        self.yatID = yatID
+    }
+
+    // MARK: - Handlers
+
     private func handle(bleWriteError error: Error) {
 
         Logger.log(message: "Unable to find and write BLE payload. Reason: \(error)", domain: .general, level: .error)
@@ -332,8 +391,6 @@ final class ContactBookModel {
         action = .showBLEFailureDialog(message: message)
     }
 
-    // MARK: - Handlers
-
     private func makeDeeplink() throws -> URL? {
 
         let list = selectedIDs
@@ -344,6 +401,25 @@ final class ContactBookModel {
         let model = ContactListDeeplink(list: list)
 
         return try DeepLinkFormatter.deeplink(model: model)
+    }
+
+    private func generateAddress(text: String) {
+        guard let address = makeAddress(text: text), verify(address: address) else {
+            enteredAddress = nil
+            return
+        }
+        enteredAddress = address
+    }
+
+    private func makeAddress(text: String) -> TariAddress? {
+        do { return try TariAddress(emojiID: text) } catch {}
+        do { return try TariAddress(hex: text) } catch {}
+        return nil
+    }
+
+    private func verify(address: TariAddress) -> Bool {
+        guard let hex = try? address.byteVector.hex, let userHex = try? Tari.shared.walletAddress.byteVector.hex, hex != userHex else { return false }
+        return true
     }
 
     private func performSendAction(model: ContactsManager.Model) {

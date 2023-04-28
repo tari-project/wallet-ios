@@ -1,10 +1,10 @@
-//  TransactionsView.swift
+//  ContactBookSearchField.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 13/01/2022
+	Created by Adrian Truszczyński on 26/04/2023
 	Using Swift 5.0
-	Running on macOS 12.1
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,21 +38,32 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
-final class TransactionsView: BaseNavigationContentView {
+final class ContactBookSearchField: DynamicThemeTextField {
 
     // MARK: - Subviews
 
-    @View var toolbar = TransactionsToolbarView()
-    @View var contentView = UIView()
+    @View private var scanButton: PulseButton = {
+        let view = PulseButton()
+        view.setImage(.icons.qr, for: .normal)
+        view.contentHorizontalAlignment = .fill
+        view.contentVerticalAlignment = .fill
+        view.imageEdgeInsets = UIEdgeInsets(top: 10.0, left: 10.0, bottom: 10.0, right: 10.0)
+        return view
+    }()
+
+    // MARK: - Properties
+
+    var onScanButtonTap: (() -> Void)?
 
     // MARK: - Initialisers
 
     override init() {
         super.init()
-        setupConstraints()
+        setupView()
+        setupSideViews()
+        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -61,21 +72,30 @@ final class TransactionsView: BaseNavigationContentView {
 
     // MARK: - Setups
 
-    private func setupConstraints() {
+    private func setupView() {
+        font = .Avenir.medium.withSize(14.0)
+        layer.cornerRadius = 6.0
+        layer.borderWidth = 1.0
+        heightAnchor.constraint(equalToConstant: 46.0).isActive = true
+    }
 
-        [toolbar, contentView].forEach(addSubview)
+    private func setupSideViews() {
+        leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 20.0, height: 0.0))
+        leftViewMode = .always
+        rightView = scanButton
+        rightViewMode = .always
+    }
 
-        let constraints = [
-            toolbar.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            toolbar.leadingAnchor.constraint(equalTo: leadingAnchor),
-            toolbar.trailingAnchor.constraint(equalTo: trailingAnchor),
-            toolbar.heightAnchor.constraint(equalToConstant: 44.0),
-            contentView.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
-            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ]
+    private func setupCallbacks() {
+        scanButton.onTap = { [weak self] in
+            self?.onScanButtonTap?()
+        }
+    }
 
-        NSLayoutConstraint.activate(constraints)
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.primary
+        textColor = theme.text.heading
+        layer.borderColor = theme.neutral.tertiary?.cgColor
     }
 }
