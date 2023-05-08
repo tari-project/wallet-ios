@@ -54,29 +54,11 @@ final class ContactsManager {
         let id: UUID = UUID()
         let internalModel: InternalContactsManager.ContactModel?
         let externalModel: ExternalContactsManager.ContactModel?
+        let name: String
+        let nameComponents: [String]
+        var avatar: String
 
-        var name: String { nameComponents.joined(separator: " ") }
-
-        var nameComponents: [String] {
-            guard let externalModel else {
-                let name = internalModel?.alias ?? internalModel?.emojiID.obfuscatedText ?? ""
-                return [name]
-            }
-            return [externalModel.firstName, externalModel.lastName]
-        }
-
-        var avatar: String {
-            guard let externalModel else { return internalModel?.emojiID.firstOrEmpty ?? "" }
-            return [externalModel.firstName, externalModel.lastName]
-                .compactMap { $0.first }
-                .map { String($0) }
-                .joined()
-        }
-
-        var avatarImage: UIImage? {
-            externalModel?.avatar
-        }
-
+        var avatarImage: UIImage? { externalModel?.avatar }
         var isFavorite: Bool { internalModel?.isFavorite ?? false }
         var isFFIContact: Bool { internalModel?.alias != nil }
         var hasIntrenalModel: Bool { internalModel != nil }
@@ -98,6 +80,32 @@ final class ContactsManager {
 
             return .empty
         }
+
+        init(internalModel: InternalContactsManager.ContactModel?, externalModel: ExternalContactsManager.ContactModel?) {
+
+            self.internalModel = internalModel
+            self.externalModel = externalModel
+
+            let name: String
+            let nameComponents: [String]
+            let avatar: String
+
+            if let externalModel {
+                nameComponents = [externalModel.firstName, externalModel.lastName]
+                name = nameComponents.joined(separator: " ")
+                avatar = nameComponents
+                    .map { $0.firstOrEmpty }
+                    .joined()
+            } else {
+                name = internalModel?.alias ?? internalModel?.emojiID.obfuscatedText ?? ""
+                nameComponents = [name]
+                avatar = internalModel?.emojiID.firstOrEmpty ?? ""
+            }
+
+            self.name = name
+            self.nameComponents = nameComponents
+            self.avatar = avatar
+        }
     }
 
     var isPermissionGranted: Bool {
@@ -106,8 +114,8 @@ final class ContactsManager {
 
     // MARK: - Properties
 
-    @Published private(set) var tariContactModels: [Model] = []
-    @Published private(set) var externalModels: [Model] = []
+    private(set) var tariContactModels: [Model] = []
+    private(set) var externalModels: [Model] = []
 
     private let internalContactsManager = InternalContactsManager()
     private let externalContactsManager = ExternalContactsManager()
@@ -135,9 +143,11 @@ final class ContactsManager {
         }
 
         tariContactModels += internalContacts.map { Model(internalModel: $0, externalModel: nil) }
+        tariContactModels.sort { $0.name < $1.name }
 
-        self.tariContactModels = tariContactModels.sorted { $0.name < $1.name }
-        externalModels = filteredExternalContacts.map { Model(internalModel: nil, externalModel: $0) }.sorted { $0.name < $1.name }
+        let externalModels = filteredExternalContacts.map { Model(internalModel: nil, externalModel: $0) }.sorted { $0.name < $1.name }
+
+        await update(tariContactModels: tariContactModels, externalModels: externalModels)
     }
 
     func updatedModel(model: Model) -> Model {
@@ -163,38 +173,48 @@ final class ContactsManager {
         let externalContact = contact.externalModel
 
         if let internalContact {
-            try internalContactsManager.update(name: nameComponents.joined(separator: " "), isFavorite: isFavorite, contact: internalContact)
+            try internalContactsManager.update(name: nameComponents.joined(separator: " "), isFavorite: isFavorite, hex: internalContact.hex)
         }
 
         if let externalContact, nameComponents.count == 2 {
-            try externalContactsManager.update(firstName: nameComponents[0], lastName: nameComponents[1], yat: yat, contact: externalContact)
+            try externalContactsManager.update(firstName: nameComponents[0], lastName: nameComponents[1], yat: yat, contactID: externalContact.uuid)
         }
     }
 
     func remove(contact: Model) throws {
 
-        if let internalContact = contact.internalModel {
-            try internalContactsManager.remove(contact: internalContact)
+        if let internalContactHex = contact.internalModel?.hex {
+            try internalContactsManager.remove(hex: internalContactHex)
         }
 
-        if let externalContact = contact.externalModel {
-            try externalContactsManager.remove(contact: externalContact)
+        if let externalContactID = contact.externalModel?.uuid {
+            try externalContactsManager.remove(contactID: externalContactID)
         }
     }
 
     func link(internalContact: InternalContactsManager.ContactModel, externalContact: ExternalContactsManager.ContactModel) throws {
-        try externalContactsManager.link(hex: internalContact.hex, emojiID: internalContact.emojiID, contact: externalContact)
-        try internalContactsManager.update(name: externalContact.fullname, isFavorite: internalContact.isFavorite, contact: internalContact)
+        try externalContactsManager.link(hex: internalContact.hex, emojiID: internalContact.emojiID, contactID: externalContact.uuid)
+        try internalContactsManager.update(name: externalContact.fullname, isFavorite: internalContact.isFavorite, hex: internalContact.hex)
     }
 
     func unlink(contact: Model) throws {
-        guard let externalContact = contact.externalModel else { return }
-        try externalContactsManager.unlink(contact: externalContact)
+        guard let externalContactID = contact.externalModel?.uuid else { return }
+        try externalContactsManager.unlink(contactID: externalContactID)
     }
 
     func createInternalModel(name: String, isFavorite: Bool, address: TariAddress) throws -> Model {
         let internalModel = try internalContactsManager.create(name: name, isFavorite: isFavorite, address: address)
         return Model(internalModel: internalModel, externalModel: nil)
+    }
+
+    private func update(tariContactModels: [Model], externalModels: [Model]) async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                self.tariContactModels = tariContactModels
+                self.externalModels = externalModels
+                continuation.resume()
+            }
+        }
     }
 }
 
