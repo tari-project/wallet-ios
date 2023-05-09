@@ -94,6 +94,11 @@ final class ContactBookModel {
         case showBLEFailureDialog(message: String?)
     }
 
+    fileprivate enum SectionType: Int {
+        case internalContacts
+        case externalContacts
+    }
+
     // MARK: - Constants
 
     private let maxYatIDLenght: Int = 5
@@ -116,14 +121,14 @@ final class ContactBookModel {
 
     // MARK: - Properties
 
-    @Published private var allContactList: [ContactSection] = []
     @Published private var enteredAddress: TariAddress?
     @Published private var yatID: String?
+
+    @Published private var contactModels: [[ContactsManager.Model]] = []
 
     private let contactsManager = ContactsManager()
 
     private weak var bleTask: BLECentralTask?
-    private var contacts: [ContactsManager.Model] = []
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -136,30 +141,23 @@ final class ContactBookModel {
 
     private func setupCallbacks() {
 
-        $allContactList
-            .sink { [weak self] in
-                let models = $0.flatMap { $0.viewModels }
-                self?.areContactsAvailable = !models.isEmpty
-                self?.areFavoriteContactsAvailable = models.first { $0.isFavorite } != nil
-            }
+        $contactModels
+            .sink { [weak self] in self?.handle(contactModels: $0) }
             .store(in: &cancellables)
 
-        let contactsPublisher = Publishers.CombineLatest($allContactList, $searchText)
-            .map { sections, searchText in
-                guard !searchText.isEmpty else { return sections }
-                return sections.map { ContactSection(title: $0.title, viewModels: $0.viewModels.filter { $0.name.range(of: searchText, options: .caseInsensitive) != nil }) }
-            }
+        let contactsPublisher = Publishers.CombineLatest($contactModels, $searchText)
+            .compactMap { [weak self] in self?.filter(contactsSections: $0, searchText: $1) }
+            .compactMap { [weak self] in self?.map(contactsSections: $0) }
             .share()
 
         contactsPublisher
-            .map { $0.filter { !$0.viewModels.isEmpty } }
-            .sink { [weak self] in self?.contactsList = $0 }
+            .assignPublisher(to: \.contactsList, on: self)
             .store(in: &cancellables)
 
         contactsPublisher
             .map { $0.map { ContactSection(title: $0.title, viewModels: $0.viewModels.filter { $0.isFavorite }) }}
-            .map { $0.filter { !$0.viewModels.isEmpty } }
-            .sink { [weak self] in self?.favoriteContactsList = $0 }
+            .map { $0.filter { !$0.viewModels.isEmpty }}
+            .assignPublisher(to: \.favoriteContactsList, on: self)
             .store(in: &cancellables)
 
         $searchText
@@ -190,33 +188,10 @@ final class ContactBookModel {
     // MARK: - View Model
 
     func fetchContacts() {
-
         Task {
             do {
                 try await contactsManager.fetchModels()
-
-                var sections: [ContactSection] = []
-
-                let internalContacts = contactsManager.tariContactModels
-                let externalContacts = contactsManager.externalModels
-
-                let internalContactSection = internalContacts
-                    .map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: $0.isFavorite, menuItems: $0.menuItems, type: $0.type, isSelectable: true) }
-
-                let externalContactSection = externalContacts
-                    .map { ContactViewModel(id: $0.id, name: $0.name, avatar: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: $0.menuItems, type: $0.type, isSelectable: false) }
-
-                if !internalContactSection.isEmpty {
-                    sections.append(ContactSection(title: nil, viewModels: internalContactSection))
-                }
-
-                if !externalContactSection.isEmpty {
-                    sections.append(ContactSection(title: localized("contact_book.section.phone_contacts"), viewModels: externalContactSection))
-                }
-
-                contacts = internalContacts + externalContacts
-                allContactList = sections
-
+                contactModels = [contactsManager.tariContactModels, contactsManager.externalModels]
             } catch {
                 errorModel = ErrorMessageManager.errorModel(forError: error)
             }
@@ -227,7 +202,7 @@ final class ContactBookModel {
 
     func performAction(contactID: UUID, menuItemID: UInt) {
 
-        guard let model = contacts.first(where: { $0.id == contactID }), let menuItem = MenuItem(rawValue: menuItemID) else { return }
+        guard let model = contactModels.flatMap({ $0 }).first(where: { $0.id == contactID }), let menuItem = MenuItem(rawValue: menuItemID) else { return }
 
         switch menuItem {
         case .send:
@@ -353,6 +328,27 @@ final class ContactBookModel {
         }
     }
 
+    private func performSendAction(model: ContactsManager.Model) {
+        do {
+            guard let paymentInfo = try model.paymentInfo else { return }
+            action = .sendTokens(paymentInfo: paymentInfo)
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
+        }
+    }
+
+    private func performLinkAction(model: ContactsManager.Model) {
+        action = .link(model: model)
+    }
+
+    private func performShowDetailsAction(model: ContactsManager.Model) {
+        action = .showDetails(model: model)
+    }
+
+    private func performUnlinkAction(model: ContactsManager.Model) {
+        action = .unlink(model: model)
+    }
+
     // MARK: - Actions - Yat
 
     private func searchAddress(forYatID yatID: String) {
@@ -393,8 +389,9 @@ final class ContactBookModel {
 
     private func makeDeeplink() throws -> URL? {
 
+        let allModels = contactModels.flatMap { $0 }
         let list = selectedIDs
-            .compactMap { selectedID in contacts.first { $0.id == selectedID }}
+            .compactMap { selectedID in allModels.first { $0.id == selectedID }}
             .compactMap { $0.internalModel }
             .map { ContactListDeeplink.Contact(alias: $0.alias ?? "", hex: $0.hex ) }
 
@@ -422,25 +419,50 @@ final class ContactBookModel {
         return true
     }
 
-    private func performSendAction(model: ContactsManager.Model) {
-        do {
-            guard let paymentInfo = try model.paymentInfo else { return }
-            action = .sendTokens(paymentInfo: paymentInfo)
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
+    private func filter(contactsSections: [[ContactsManager.Model]], searchText: String) -> [[ContactsManager.Model]] {
+
+        guard !searchText.isEmpty else { return contactsSections }
+
+        return contactsSections.map {
+            $0.filter {
+                guard $0.name.range(of: searchText, options: .caseInsensitive) == nil else { return true }
+                guard let internalModel = $0.internalModel else { return false }
+                guard internalModel.emojiID.range(of: searchText, options: .caseInsensitive) == nil else { return true }
+                return internalModel.hex.range(of: searchText, options: .caseInsensitive) != nil
+            }
         }
     }
 
-    private func performLinkAction(model: ContactsManager.Model) {
-        action = .link(model: model)
+    private func map(contactsSections: [[ContactsManager.Model]]) -> [ContactSection] {
+        contactsSections
+            .enumerated()
+            .reduce(into: [ContactSection]()) { result, data in
+
+                guard !data.element.isEmpty else { return }
+
+                let section = SectionType(rawValue: data.offset)
+
+                let viewModels = data.element.map {
+                    ContactViewModel(
+                        id: $0.id,
+                        name: $0.name,
+                        avatar: $0.avatar,
+                        avatarImage: $0.avatarImage,
+                        isFavorite: $0.isFavorite,
+                        menuItems: $0.menuItems,
+                        type: $0.type,
+                        isSelectable: section?.isSelectable ?? false
+                    )
+                }
+
+                result.append(ContactSection(title: section?.title, viewModels: viewModels))
+        }
     }
 
-    private func performShowDetailsAction(model: ContactsManager.Model) {
-        action = .showDetails(model: model)
-    }
-
-    private func performUnlinkAction(model: ContactsManager.Model) {
-        action = .unlink(model: model)
+    private func handle(contactModels: [[ContactsManager.Model]]) {
+        let models = contactModels.flatMap { $0 }
+        areContactsAvailable = !models.isEmpty
+        areFavoriteContactsAvailable = models.first { $0.isFavorite } != nil
     }
 }
 
@@ -467,4 +489,18 @@ extension ContactBookModel.ShareType {
             return localized("contact_book.share_bar.buttons.ble")
         }
     }
+}
+
+private extension ContactBookModel.SectionType {
+
+    var title: String? {
+        switch self {
+        case .internalContacts:
+            return nil
+        case .externalContacts:
+            return localized("contact_book.section.phone_contacts")
+        }
+    }
+
+    var isSelectable: Bool { self == .internalContacts }
 }
