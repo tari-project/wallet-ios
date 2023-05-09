@@ -41,6 +41,7 @@
 protocol DeeplinkHandlable {
     func handle(deeplink: TransactionsSendDeeplink)
     func handle(deeplink: BaseNodesAddDeeplink)
+    func handle(deeplink: ContactListDeeplink)
 }
 
 enum DeeplinkError: Error {
@@ -147,6 +148,7 @@ enum DeeplinkHandler {
                     _ = try contactsManager.createInternalModel(name: $0.alias, isFavorite: false, address: address)
                 }
 
+            handler?.handle(deeplink: deeplink)
         } catch {
             throw DeeplinkError.contactListDeeplinkError(error)
         }

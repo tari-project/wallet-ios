@@ -402,6 +402,10 @@ final class ContactBookViewController: UIViewController {
 }
 
 extension ContactBookViewController: ScanViewControllerDelegate {
+
+    func onScan(deeplink: ContactListDeeplink) {
+        model.fetchContacts()
+    }
 }
 
 private extension ContactBookModel.MenuItem {

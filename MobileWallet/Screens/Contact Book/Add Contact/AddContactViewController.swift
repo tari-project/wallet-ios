@@ -137,4 +137,8 @@ extension AddContactViewController: ScanViewControllerDelegate {
     func onScan(deeplink: TransactionsSendDeeplink) {
         model.handle(deeplink: deeplink)
     }
+
+    func onScan(deeplink: ContactListDeeplink) {
+        navigationController?.popViewController(animated: true)
+    }
 }
