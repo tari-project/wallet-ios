@@ -106,6 +106,11 @@ final class TransactionDetailsModel {
                 .sink { [weak self] in self?.handle(transaction: $0) }
                 .store(in: &cancellables)
         }
+
+        $userAlias
+            .map { $0 != nil }
+            .sink { [weak self] in self?.handle(isUserAliasExist: $0) }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions
@@ -128,9 +133,6 @@ final class TransactionDetailsModel {
         }
 
         handleTransactionKernel()
-
-        isAddContactButtonVisible = userAlias == nil
-        isNameSectionVisible = userAlias != nil
     }
 
     func cancelTransactionRequest() {
@@ -280,6 +282,12 @@ final class TransactionDetailsModel {
         return try contactsManager.tariContactModels.first { try $0.internalModel?.hex == transaction.address.byteVector.hex }
     }
 
+    private func fetchLinkToOpen() -> URL? {
+        guard let transactionNounce = transactionNounce, let transactionSignature = transactionSignature else { return nil }
+        let request = [transactionNounce, transactionSignature].joined(separator: "/")
+        return URL(string: TariSettings.shared.blockExplorerKernelUrl + "\(request)")
+    }
+
     private func handle(transaction: Transaction) {
         self.transaction = transaction
         fetchData()
@@ -336,10 +344,9 @@ final class TransactionDetailsModel {
         transactionSignature = try? kernel.excessSignatureHex
     }
 
-    private func fetchLinkToOpen() -> URL? {
-        guard let transactionNounce = transactionNounce, let transactionSignature = transactionSignature else { return nil }
-        let request = [transactionNounce, transactionSignature].joined(separator: "/")
-        return URL(string: TariSettings.shared.blockExplorerKernelUrl + "\(request)")
+    private func handle(isUserAliasExist: Bool) {
+        isAddContactButtonVisible = !isUserAliasExist
+        isNameSectionVisible = isUserAliasExist
     }
 }
 
