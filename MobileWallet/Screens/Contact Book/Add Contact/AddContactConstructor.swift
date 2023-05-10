@@ -40,8 +40,8 @@
 
 enum AddContactConstructor {
 
-    static func bulidScene() -> AddContactViewController {
+    static func bulidScene(onSuccess navigationActionType: AddContactViewController.NavigationActionType) -> AddContactViewController {
         let model = AddContactModel()
-        return AddContactViewController(model: model)
+        return AddContactViewController(model: model, navigationActionType: navigationActionType)
     }
 }

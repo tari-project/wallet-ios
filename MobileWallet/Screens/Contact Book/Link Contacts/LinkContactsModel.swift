@@ -45,6 +45,15 @@ final class LinkContactsModel {
     enum Action {
         case showConfirmation(emojiID: String, name: String)
         case showSuccess(emojiID: String, name: String)
+        case moveToAddContact
+        case moveToPhoneBook
+        case moveToPermissionSettings
+    }
+
+    struct PlaceholderModel {
+        let title: String?
+        let message: String?
+        let buttonTitle: String?
     }
 
     // MARK: - View Model
@@ -55,6 +64,7 @@ final class LinkContactsModel {
     @Published private(set) var models: [ContactsManager.Model] = []
     @Published private(set) var action: Action?
     @Published private(set) var errorModel: MessageModel?
+    @Published private(set) var placeholder: PlaceholderModel?
 
     // MARK: - Properties
 
@@ -69,13 +79,12 @@ final class LinkContactsModel {
 
     init(contactModel: ContactsManager.Model) {
         self.contactModel = contactModel
-        setupData()
         setupCallbacks()
     }
 
     // MARK: - Setups
 
-    private func setupData() {
+    func fetchData() {
 
         if contactModel.type == .linked {
             errorModel = ErrorMessageManager.errorModel(forError: nil)
@@ -113,6 +122,12 @@ final class LinkContactsModel {
                 return models.filter { $0.name.range(of: searchText, options: .caseInsensitive) != nil }
             }
             .sink { [weak self] in self?.models = $0 }
+            .store(in: &cancellables)
+
+        $allModels
+            .map(\.isEmpty)
+            .map { [weak self] in $0 ? self?.makePlaceholderModel() : nil }
+            .assignPublisher(to: \.placeholder, on: self)
             .store(in: &cancellables)
     }
 
@@ -163,5 +178,39 @@ final class LinkContactsModel {
     func cancelLinkContacts() {
         unconfirmedInternalModel = nil
         unconfirmedExternalModel = nil
+    }
+
+    func performPlaceholderAction() {
+        switch contactModel.type {
+        case .internalOrEmojiID:
+            action = contactsManager.isPermissionGranted ? .moveToPhoneBook : .moveToPermissionSettings
+        case .external:
+            action = .moveToAddContact
+        case .linked, .empty:
+            Logger.log(message: "LinkContactsModel: Invalid model state for placeholder button action", domain: .general, level: .error)
+        }
+    }
+
+    // MARK: - Handlers
+
+    private func makePlaceholderModel() -> PlaceholderModel {
+
+        var title = localized("contact_book.link_contacts.placeholder.title")
+        var message: String?
+        var buttonTitle: String?
+
+        switch contactModel.type {
+        case .internalOrEmojiID:
+            let isPermissionGranted = contactsManager.isPermissionGranted
+            message = isPermissionGranted ? localized("contact_book.link_contacts.placeholder.message.internal") : localized("contact_book.link_contacts.placeholder.message.internal.no_permission")
+            buttonTitle = isPermissionGranted ? localized("contact_book.link_contacts.placeholder.buttons.add_contact") : localized("contact_book.link_contacts.placeholder.buttons.permission_settings")
+        case .external:
+            message = localized("contact_book.link_contacts.placeholder.message.external")
+            buttonTitle = localized("contact_book.link_contacts.placeholder.buttons.add_contact")
+        case .linked, .empty:
+            Logger.log(message: "LinkContactsModel: Invalid model state for placeholder model", domain: .general, level: .error)
+        }
+
+        return PlaceholderModel(title: title, message: message, buttonTitle: buttonTitle)
     }
 }

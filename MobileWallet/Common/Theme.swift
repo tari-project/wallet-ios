@@ -339,6 +339,7 @@ enum ContactBookPlaceholderImages {
     static var contactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListPlaceholder") }
     static var favoritesContactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListFavPlaceholder") }
     static var transactionList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/TransactionList") }
+    static var linkList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/LinkList") }
 }
 
 // MARK: - Icons

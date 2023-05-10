@@ -796,6 +796,12 @@
 "contact_book.link_contacts.title" = "Link Contact";
 "contact_book.link_contacts.lables.info.part1" = "You can quickly associate an Emoji ID or Yat with a contact already present in your phone. Simply click on a name below and it will be linked to";
 "contact_book.link_contacts.text_field.search" = "Find Contact";
+"contact_book.link_contacts.placeholder.title" = "Oh no, it’s empty in here!";
+"contact_book.link_contacts.placeholder.message.internal" = "Looks like your phone’s contact book is empty. Once you’ve added a contact, you’ll be able to link to their profile.";
+"contact_book.link_contacts.placeholder.message.internal.no_permission" = "Aurora doesn’t currently have permission to access your phone’s contacts. If you would like to link to an existing contact, please click below and grant permission to the app to read from your contact book.";
+"contact_book.link_contacts.placeholder.message.external" = "Looks like you don’t have any contacts that we can link to yet. Once you’ve added a contact, you’ll be able to link to their profile.";
+"contact_book.link_contacts.placeholder.buttons.add_contact" = "Add a contact";
+"contact_book.link_contacts.placeholder.buttons.permission_settings" = "Go to permission settings";
 "contact_book.link_contacts.popup.confirmation.title" = "Link Contact";
 "contact_book.link_contacts.popup.confirmation.message.part1" = "Click “confirm” below to link %@ to";
 "contact_book.link_contacts.popup.success.title" = "Success!";

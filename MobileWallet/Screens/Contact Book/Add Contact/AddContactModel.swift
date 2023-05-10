@@ -42,6 +42,10 @@ import Combine
 
 final class AddContactModel {
 
+    enum Action {
+        case endFlow(model: ContactsManager.Model)
+    }
+
     private enum DataValidationError: Int, Error, Comparable {
 
         case noEmojiID
@@ -51,10 +55,6 @@ final class AddContactModel {
         static func < (lhs: AddContactModel.DataValidationError, rhs: AddContactModel.DataValidationError) -> Bool {
             lhs.rawValue < rhs.rawValue
         }
-    }
-
-    enum Action {
-        case moveToContactDetails(model: ContactsManager.Model)
     }
 
     // MARK: - View Model
@@ -115,7 +115,7 @@ final class AddContactModel {
         do {
             guard let address else { return }
             let model = try contactsManager.createInternalModel(name: contactName, isFavorite: false, address: address)
-            action = .moveToContactDetails(model: model)
+            action = .endFlow(model: model)
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
         }

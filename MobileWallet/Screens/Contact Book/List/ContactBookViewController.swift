@@ -341,7 +341,7 @@ final class ContactBookViewController: UIViewController {
     // MARK: - Actions
 
     private func moveToAddContactScreen() {
-        let controller = AddContactConstructor.bulidScene()
+        let controller = AddContactConstructor.bulidScene(onSuccess: .moveToDetails)
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -369,8 +369,7 @@ final class ContactBookViewController: UIViewController {
     }
 
     private func openAppSettings() {
-        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-        UIApplication.shared.open(url)
+        AppRouter.openAppSettings()
     }
 
     private func showQrCodeDialog() {
