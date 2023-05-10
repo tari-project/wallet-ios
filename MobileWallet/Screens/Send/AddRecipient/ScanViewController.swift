@@ -44,11 +44,13 @@ import AVFoundation
 protocol ScanViewControllerDelegate: AnyObject {
     func onAdd(string: String)
     func onScan(deeplink: TransactionsSendDeeplink)
+    func onScan(deeplink: ContactListDeeplink)
 }
 
 extension ScanViewControllerDelegate {
     func onAdd(string: String) { }
     func onScan(deeplink: TransactionsSendDeeplink) {}
+    func onScan(deeplink: ContactListDeeplink) {}
 }
 
 class ScanViewController: UIViewController {
@@ -292,8 +294,9 @@ class ScanViewController: UIViewController {
         previewLayer.videoGravity = .resizeAspectFill
         view.layer.insertSublayer(previewLayer, at: 0)
 
-        captureSession.startRunning()
-
+        DispatchQueue.global().async {
+            self.captureSession.startRunning()
+        }
     }
 
     private func customizeScanner() {
@@ -372,4 +375,9 @@ extension ScanViewController: DeeplinkHandlable {
     }
 
     func handle(deeplink: BaseNodesAddDeeplink) {}
+
+    func handle(deeplink: ContactListDeeplink) {
+        actionDelegate?.onScan(deeplink: deeplink)
+        dismiss(animated: true)
+    }
 }
