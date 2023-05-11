@@ -39,6 +39,7 @@
 */
 
 import UIKit
+import YatLib
 
 final class ThemeCoordinator {
 
@@ -55,7 +56,7 @@ final class ThemeCoordinator {
 
     var colorScheme: ColorScheme = .light {
         didSet {
-            theme = theme(colorScheme: colorScheme)
+            updateTheme(colorScheme: colorScheme)
             updateColorMode(colorScheme: colorScheme)
             updateUserDefaults(colorScheme: colorScheme)
         }
@@ -136,11 +137,27 @@ final class ThemeCoordinator {
         }
     }
 
+    private func updateTheme(colorScheme: ColorScheme) {
+        theme = theme(colorScheme: colorScheme)
+        updateYatUIStyle(colorScheme: colorScheme)
+    }
+
+    private func updateYatUIStyle(colorScheme: ColorScheme) {
+        switch colorScheme {
+        case .system:
+            Yat.style = uiStyle == .dark ? .dark : .light
+        case .light:
+            Yat.style = .light
+        case .dark, .tariPurple:
+            Yat.style = .dark
+        }
+    }
+
     // MARK: = Handlers
 
     private func handle(uiStyle: UIUserInterfaceStyle) {
         self.uiStyle = uiStyle
         guard colorScheme == .system else { return }
-        theme = theme(colorScheme: .system)
+        updateTheme(colorScheme: .system)
     }
 }
