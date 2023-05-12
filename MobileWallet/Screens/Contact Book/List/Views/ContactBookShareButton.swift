@@ -128,7 +128,7 @@ final class ContactBookShareButton: DynamicThemeView {
     }
 
     private func updateColors(theme: ColorTheme) {
-        roundedView.backgroundColor = isSelected ? theme.brand.purple : theme.buttons.primaryText
+        roundedView.backgroundColor = isSelected ? theme.brand.purple : theme.backgrounds.primary
         roundedView.tintColor = isSelected ? theme.backgrounds.primary : theme.icons.default
         label.textColor = isSelected ? theme.text.heading : theme.text.body
     }
