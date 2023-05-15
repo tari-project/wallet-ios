@@ -161,4 +161,15 @@ enum AppRouter {
         navigationController.isNavigationBarHidden = true
         tabBar?.presentOnFullScreen(navigationController)
     }
+
+    // MARK: - External Apps
+
+    static func openAppSettings() {
+        open(rawURL: UIApplication.openSettingsURLString)
+    }
+
+    private static func open(rawURL: String) {
+        guard let url = URL(string: rawURL), UIApplication.shared.canOpenURL(url) else { return }
+        UIApplication.shared.open(url)
+    }
 }

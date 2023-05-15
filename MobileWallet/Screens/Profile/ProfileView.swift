@@ -173,7 +173,7 @@ final class ProfileView: BaseNavigationContentView {
             reconnectYatButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             buttonsStackView.topAnchor.constraint(equalTo: reconnectYatButton.bottomAnchor, constant: 20.0),
             buttonsStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            requestTokensButton.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 40.0), // TODO: Small screen
+            requestTokensButton.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 40.0),
             requestTokensButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
             requestTokensButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0)
         ]

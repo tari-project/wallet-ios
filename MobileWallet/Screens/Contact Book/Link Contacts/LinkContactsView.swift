@@ -71,6 +71,12 @@ final class LinkContactsView: BaseNavigationContentView {
         return view
     }()
 
+    @View private var placeholderView: ContactBookListPlaceholder = {
+        let view = ContactBookListPlaceholder()
+        view.isHidden = true
+        return view
+    }()
+
     // MARK: - Properties
 
     var name: String = "" {
@@ -81,7 +87,12 @@ final class LinkContactsView: BaseNavigationContentView {
         didSet { update(viewModels: viewModels) }
     }
 
+    var placeholderViewModel: ContactBookListPlaceholder.ViewModel? {
+        didSet { update(placeholderViewModel: placeholderViewModel) }
+    }
+
     var searchText: AnyPublisher<String, Never> { searchTextSubject.eraseToAnyPublisher() }
+
     var onSelectRow: ((IndexPath) -> Void)?
 
     private var dataSource: UITableViewDiffableDataSource<Int, ContactBookCell.ViewModel>?
@@ -110,7 +121,7 @@ final class LinkContactsView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        [infoLabel, searchTextField, tableView].forEach(addSubview)
+        [infoLabel, searchTextField, tableView, placeholderView].forEach(addSubview)
 
         let constraints = [
             infoLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 22.0),
@@ -122,7 +133,11 @@ final class LinkContactsView: BaseNavigationContentView {
             tableView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 20.0),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            placeholderView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            placeholderView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            placeholderView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            placeholderView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -170,6 +185,17 @@ final class LinkContactsView: BaseNavigationContentView {
         snapshot.appendItems(viewModels)
 
         dataSource?.apply(snapshot: snapshot)
+    }
+
+    private func update(placeholderViewModel: ContactBookListPlaceholder.ViewModel?) {
+
+        guard let placeholderViewModel else {
+            placeholderView.isHidden = true
+            return
+        }
+
+        placeholderView.isHidden = false
+        placeholderView.update(viewModel: placeholderViewModel)
     }
 }
 
