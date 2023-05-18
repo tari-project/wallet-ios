@@ -514,12 +514,9 @@
 
 /* BridgesConfiguration view */
 "bridges_configuration.title" = "Bridges Configuration";
-
 "bridges_configuration.item.noBridges" = "No Bridges";
 "bridges_configuration.item.custom" = "Custom Bridges";
-
 "bridges_configuration.description.bridges" = "If you are in a country or using a connection that censors Tor, you might need to use bridges.";
-
 "bridges_configuration.connect" = "Connect";
 
 /* CustomBridges view */
@@ -730,6 +727,19 @@
 "error.ble.central.connection_error" = "Unable to establish a connection with the other device. Please make sure both devices are compatible and within range.";
 "error.ble.central.process_interrupted" = "The connection process was interrupted unexpectedly. Please try again later.";
 "error.ble.central.write_failed_characteristic_not_found" = "Unable to connect to the second device. Please check that the device is on and within range.";
+
+/* Contacts Received PopUp */
+
+"contacts_received.popup.title.singular" = "Contact received";
+"contacts_received.popup.title.plural" = "Contacts received";
+"contacts_received.popup.message.part.1" = "You’ve been sent";
+"contacts_received.popup.message.part.2.singular.bold" = "a new contact.";
+"contacts_received.popup.message.part.2.plural.bold" = "%d new contacts.";
+"contacts_received.popup.message.part.3.singular" = "Would you like to add it to your contact book?";
+"contacts_received.popup.message.part.3.plural" = "Would you like to add them to your contact book?";
+"contacts_received.popup.buttons.confirm.singular" = "Yes, add it";
+"contacts_received.popup.buttons.confirm.plural" = "Yes, add them";
+"contacts_received.popup.buttons.reject" = "No thanks";
 
 /* Cloud Backup */
 
