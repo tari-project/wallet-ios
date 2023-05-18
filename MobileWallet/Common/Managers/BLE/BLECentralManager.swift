@@ -60,7 +60,6 @@ final class BLECentralManager: NSObject {
 
     // MARK: - Constants
 
-    private let proximyCheckTimeInterval: TimeInterval = 1.0
     private let rssiThreshold = -40
 
     // MARK: - Properties
@@ -68,8 +67,7 @@ final class BLECentralManager: NSObject {
     private let manager = CBCentralManager()
     private let configuration: Configuration
 
-    private var connectedPeripherals: [CBPeripheral] = []
-    private var selectedPeripheral: CBPeripheral?
+    private var connectedPeripheral: CBPeripheral?
     private var findProcessSubject: PassthroughSubject<Void, BLECentralError>?
     private var writeProcessSubject: PassthroughSubject<Void, BLECentralError>?
 
@@ -80,17 +78,12 @@ final class BLECentralManager: NSObject {
         super.init()
         log(message: "Init", level: .info)
         setupManager()
-        setupProximityCheck()
     }
 
     // MARK: - Setups
 
     private func setupManager() {
         manager.delegate = self
-    }
-
-    private func setupProximityCheck() {
-        Timer.scheduledTimer(withTimeInterval: proximyCheckTimeInterval, repeats: true) { [weak self] _ in self?.checkRSSIs() }
     }
 
     // MARK: - Actions
@@ -119,15 +112,14 @@ final class BLECentralManager: NSObject {
     }
 
     private func write(payload: Data, serviceID: CBUUID, characteristicID: CBUUID) throws {
-        guard let characteristic = selectedPeripheral?.services?.first(where: { $0.uuid == serviceID })?.characteristics?.first(where: { $0.uuid == characteristicID }) else {
+        guard let characteristic = connectedPeripheral?.services?.first(where: { $0.uuid == serviceID })?.characteristics?.first(where: { $0.uuid == characteristicID }) else {
             throw BLECentralError.writeFailedCharacteristicNotFound
         }
 
-        selectedPeripheral?.writeValue(payload, for: characteristic, type: .withResponse)
+        connectedPeripheral?.writeValue(payload, for: characteristic, type: .withResponse)
     }
 
     private func startFindProcess() -> AnyPublisher<Void, BLECentralError> {
-
         let subject = PassthroughSubject<Void, BLECentralError>()
         findProcessSubject = subject
         return subject.eraseToAnyPublisher()
@@ -135,7 +127,7 @@ final class BLECentralManager: NSObject {
 
     private func startScanning() {
         guard !manager.isScanning else { return }
-        manager.scanForPeripherals(withServices: [configuration.service])
+        manager.scanForPeripherals(withServices: [configuration.service], options: [CBCentralManagerScanOptionAllowDuplicatesKey: true])
         log(message: "Scanning: Start", level: .info)
     }
 
@@ -144,35 +136,15 @@ final class BLECentralManager: NSObject {
         log(message: "Scanning: Stop", level: .info)
     }
 
-    private func checkRSSIs() {
-        connectedPeripherals
-            .filter { $0.state == .connected }
-            .forEach { $0.readRSSI() }
-    }
-
-    private func select(peripheral: CBPeripheral) -> Bool {
-        guard let index = connectedPeripherals.firstIndex(of: peripheral) else { return false }
-        connectedPeripherals.remove(at: index)
-        selectedPeripheral = peripheral
-        disconnectFromPeripherals()
-        return true
-    }
-
-    private func disconnectFromPeripherals() {
-        connectedPeripherals.forEach { self.manager.cancelPeripheralConnection($0) }
-        log(message: "Disconnected from Peripherals", level: .info)
-    }
-
-    private func disconnectSelectedPeripheral() {
-        guard let selectedPeripheral else { return }
-        manager.cancelPeripheralConnection(selectedPeripheral)
+    private func disconnectPeripheral() {
+        guard let connectedPeripheral else { return }
+        manager.cancelPeripheralConnection(connectedPeripheral)
     }
 
     private func resetService() {
         findProcessSubject?.send(completion: .failure(.processInterrupted))
         findProcessSubject = nil
-        disconnectFromPeripherals()
-        disconnectSelectedPeripheral()
+        disconnectPeripheral()
     }
 
     // MARK: - Handle
@@ -229,42 +201,37 @@ extension BLECentralManager: CBCentralManagerDelegate {
 
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
 
-        log(message: "Found: \(peripheral.identifier)", level: .info)
+        log(message: "Discovered: \(peripheral.identifier) | RSSI: \(RSSI)", level: .verbose)
 
-        guard !connectedPeripherals.contains(where: { $0.identifier == peripheral.identifier }) else { return }
+        guard RSSI.intValue >= rssiThreshold else { return }
 
-        connectedPeripherals.append(peripheral)
+        connectedPeripheral = peripheral
         peripheral.delegate = self
         central.connect(peripheral)
+
+        stopScanning()
     }
 
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         log(message: "Connected to: \(peripheral.identifier)", level: .info)
+        guard peripheral == connectedPeripheral else { return }
+        peripheral.discoverServices([configuration.service])
     }
 
     func centralManager(_ central: CBCentralManager, didFailToConnect peripheral: CBPeripheral, error: Error?) {
         log(message: "Did fail to connect: \(peripheral.identifier) | Error: \(error.debugDescription)", level: .warning)
+        guard peripheral == connectedPeripheral else { return }
+        connectedPeripheral = nil
     }
 
     func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
-
         log(message: "Disconnected from: \(peripheral.identifier) | Error: \(error.debugDescription)", level: .info)
-
-        if let index = connectedPeripherals.firstIndex(of: peripheral) {
-            connectedPeripherals.remove(at: index)
-        } else if peripheral == selectedPeripheral {
-            selectedPeripheral = nil
-        }
+        guard peripheral == connectedPeripheral else { return }
+        connectedPeripheral = nil
     }
 }
 
 extension BLECentralManager: CBPeripheralDelegate {
-
-    func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
-        log(message: "RSSI: \(peripheral.identifier) | \(RSSI.intValue)", level: .verbose)
-        guard RSSI.intValue >= rssiThreshold, select(peripheral: peripheral) else { return }
-        peripheral.discoverServices([configuration.service])
-    }
 
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
 
@@ -288,6 +255,8 @@ extension BLECentralManager: CBPeripheralDelegate {
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
+
+        log(message: "Did Write: \(error == nil)", level: .info)
 
         if let error {
             handleWriteFailure(error: error)

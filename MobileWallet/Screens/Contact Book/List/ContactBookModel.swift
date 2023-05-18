@@ -310,7 +310,7 @@ final class ContactBookModel {
 
     private func shareLinkViaBLE(deeplink: URL) {
 
-        guard let payload = deeplink.absoluteString.data(using: .utf8) else { return }
+        guard let payload = deeplink.absoluteString.data(using: .utf16) else { return }
 
         action = .showBLEWaitingForReceiverDialog
 

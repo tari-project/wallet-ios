@@ -172,7 +172,7 @@ final class ProfileModel {
 
     func shareContactUsingBLE() {
 
-        guard let deeplink = try? makeDeeplink(), let payload = deeplink.absoluteString.data(using: .utf8) else { return }
+        guard let deeplink = try? makeDeeplink(), let payload = deeplink.absoluteString.data(using: .utf16) else { return }
 
         action = .showBLEWaitingForReceiverDialog
 

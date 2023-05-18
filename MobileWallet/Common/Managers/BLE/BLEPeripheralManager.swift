@@ -55,7 +55,7 @@ final class BLEPeripheralManager: NSObject {
 
     static let shared = BLEPeripheralManager()
 
-    @Published private(set) var error: BLEPeripheralError? = .unknown
+    @Published private(set) var error: BLEPeripheralError?
     @Published private var isAdvertising = false
 
     var advertisingMode: UserSettings.BLEAdvertisementMode {
@@ -154,14 +154,19 @@ final class BLEPeripheralManager: NSObject {
 
     private func handle(writeRequest: CBATTRequest) {
 
-        guard let data = writeRequest.value, let rawDeeplink = String(data: data, encoding: .utf8) else { return }
+        guard let data = writeRequest.value, let rawDeeplink = String(data: data, encoding: .utf16) else {
+            manager.respond(to: writeRequest, withResult: .invalidHandle)
+            return
+        }
 
         Logger.log(message: "Write Request", domain: .blePeripherial, level: .info)
 
         do {
             try DeeplinkHandler.handle(rawDeeplink: rawDeeplink)
+            manager.respond(to: writeRequest, withResult: .success)
         } catch {
-            Logger.log(message: "Invalid write rquest receiverd", domain: .blePeripherial, level: .warning)
+            Logger.log(message: "Invalid write request received", domain: .blePeripherial, level: .warning)
+            manager.respond(to: writeRequest, withResult: .invalidHandle)
         }
     }
 
@@ -171,7 +176,7 @@ final class BLEPeripheralManager: NSObject {
 
         let advertisingMode = advertisingMode ?? self.advertisingMode
         let isWalletConnected = isWalletConnected ?? Tari.shared.isWalletConnected
-        let isBluetoothReady = error == nil
+        let isBluetoothReady = isBluetoothReady ?? (error == nil)
 
         Logger.log(message: "Updated Advertising Mode: \(advertisingMode) | isWalletConnected: \(isWalletConnected) | isBluetoothReady: \(isBluetoothReady)", domain: .blePeripherial, level: .info)
 
@@ -195,7 +200,7 @@ final class BLEPeripheralManager: NSObject {
         guard advertisingMode == .onlyOnForeground else { return }
 
         DispatchQueue.main.async {
-            self.isAdvertising = UIApplication.shared.applicationState == .background
+            self.isAdvertising = UIApplication.shared.applicationState != .background
         }
     }
 }
