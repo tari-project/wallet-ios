@@ -59,8 +59,6 @@ enum DeeplinkHandler {
     }
 
     static func handle(deeplink: URL, handler: DeeplinkHandlable? = nil) throws {
-        guard !handle(legacyDeeplink: deeplink, handler: handler) else { return }
-
         switch deeplink.path {
         case TransactionsSendDeeplink.command:
             try handle(transactionSendDeeplink: deeplink, handler: handler)
@@ -71,36 +69,6 @@ enum DeeplinkHandler {
         default:
             throw DeeplinkError.unknownDeeplink
         }
-    }
-
-    @available(*, deprecated, message: "This method will be removed in the near future")
-    private static func handle(legacyDeeplink: URL, handler: DeeplinkHandlable?) -> Bool {
-        guard let components = URLComponents(url: legacyDeeplink, resolvingAgainstBaseURL: false), components.scheme == "tari", components.host == NetworkManager.shared.selectedNetwork.name else { return false }
-
-        let pathComponents = components.path
-            .split(separator: "/")
-            .filter { !$0.isEmpty }
-
-        guard pathComponents.count == 2, pathComponents[0] == "pubkey" else { return false }
-
-        let publicKey = String(pathComponents[1])
-        let queryItems = components.queryItems?.reduce(into: [String: String]()) { $0[$1.name] = $1.value } ?? [:]
-
-        var amount: UInt64?
-        if let rawAmount = queryItems["amount"] {
-            amount = UInt64(rawAmount)
-        }
-        let note = queryItems["note"]
-
-        let deeplink = TransactionsSendDeeplink(receiverAddress: publicKey, amount: amount, note: note)
-
-        guard let handler = handler else {
-            AppRouter.moveToTransactionSend(deeplink: deeplink)
-            return true
-        }
-
-        handler.handle(deeplink: deeplink)
-        return true
     }
 
     private static func handle(transactionSendDeeplink: URL, handler: DeeplinkHandlable?) throws {
