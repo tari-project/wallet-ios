@@ -44,7 +44,7 @@ struct TransactionsSendDeeplink {
     let note: String?
 
     enum CodingKeys: String, CodingKey {
-        case receiverAddress = "publicKey"
+        case receiverAddress = "tariAddress"
         case amount
         case note
     }
