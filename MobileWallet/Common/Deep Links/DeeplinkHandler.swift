@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import UIKit
+
 protocol DeeplinkHandlable {
     func handle(deeplink: TransactionsSendDeeplink)
     func handle(deeplink: BaseNodesAddDeeplink)
@@ -110,15 +112,32 @@ enum DeeplinkHandler {
             let deeplink = try DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: contactListDeeplink)
 
             guard let handler = handler else {
-                showAddContactsDialog(deeplink: deeplink) {
-                    try? addContacts(deeplink: deeplink)
-                }
+                handle(contactListDeeplink: deeplink, rawDeeplink: contactListDeeplink)
                 return
             }
 
             handler.handle(deeplink: deeplink)
         } catch {
             throw DeeplinkError.contactListDeeplinkError(error)
+        }
+    }
+
+    private static func handle(contactListDeeplink: ContactListDeeplink, rawDeeplink: URL) {
+
+        DispatchQueue.main.async {
+            guard UIApplication.shared.applicationState == .background else {
+                showAddContactsDialog(deeplink: contactListDeeplink) {
+                    try? addContacts(deeplink: contactListDeeplink)
+                }
+                return
+            }
+
+            guard let rawEncodedDeeplink = rawDeeplink.absoluteString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else {
+                Logger.log(message: "Unable to encode deeplink", domain: .general, level: .error)
+                return
+            }
+
+            LocalNotificationsManager.shared.showContactsReceivedNotification(rawEncodedDeeplink: rawEncodedDeeplink, isSingleContact: contactListDeeplink.list.count == 1)
         }
     }
 
@@ -158,7 +177,12 @@ enum DeeplinkHandler {
         try deeplink.list
             .forEach {
                 let address = try TariAddress(hex: $0.hex)
-                _ = try contactsManager.createInternalModel(name: $0.alias, isFavorite: false, address: address)
+
+                if Tari.shared.isWalletConnected {
+                    _ = try contactsManager.createInternalModel(name: $0.alias, isFavorite: false, address: address)
+                } else {
+                    try PendingDataManager.shared.storeContact(name: $0.alias, isFavorite: false, address: address)
+                }
             }
     }
 

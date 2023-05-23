@@ -1,10 +1,10 @@
-//  AppConfigurator.swift
+//  PendingDataManager.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/10/2022
+	Created by Adrian Truszczyński on 23/05/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,30 +38,42 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum AppConfigurator {
+import Combine
+import SwiftEntryKit
 
-    static func configure() {
-        configureLoggers()
-        configureManagers()
+final class PendingDataManager {
+
+    // MARK: - Properties
+
+    static var shared: PendingDataManager = PendingDataManager()
+
+    private var pendingContacts: [Contact] = []
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Initialisers
+
+    private init() {
+        setupCallbacks()
     }
 
-    private static func configureLoggers() {
-        switch TariSettings.shared.environment {
-        case .debug:
-            Logger.attach(logger: ConsoleLogger())
-        case .testflight, .production:
-            break
-        }
+    // MARK: - Setups
 
-        Logger.attach(logger: FileLogger())
-        Logger.attach(logger: CrashLogger())
+    private func setupCallbacks() {
+        Tari.shared.$isWalletConnected
+            .filter { $0 }
+            .sink { [weak self] _ in self?.addPendingContacts() }
+            .store(in: &cancellables)
     }
 
-    private static func configureManagers() {
-        BackupManager.shared.configure()
-        StatusLoggerManager.shared.configure()
-        BLEPeripheralManager.shared.configure()
-        DataFlowManager.shared.configure()
-        LocalNotificationsManager.shared.configure()
+    // MARK: - Actions
+
+    func storeContact(name: String, isFavorite: Bool, address: TariAddress) throws {
+        let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
+        pendingContacts.append(contact)
+    }
+
+    private func addPendingContacts() {
+        pendingContacts.forEach { _ = try? Tari.shared.contacts.upsert(contact: $0) }
+        pendingContacts.removeAll()
     }
 }
