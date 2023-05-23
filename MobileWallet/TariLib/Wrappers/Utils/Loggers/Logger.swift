@@ -63,6 +63,7 @@ final class Logger {
         case stagedWalletSecurity
         case bleCentral
         case blePeripherial
+        case localNotification
         case debug
     }
 
@@ -105,6 +106,8 @@ extension Logger.Domain {
             return "BLE - Peripherial"
         case .debug:
             return "Debug"
+        case .localNotification:
+            return "L. Notification"
         }
     }
 }

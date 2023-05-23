@@ -44,7 +44,7 @@ import AVFoundation
 import GiphyUISDK
 
 @UIApplicationMain
-final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(
         _ application: UIApplication,
@@ -53,7 +53,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
         // Override point for customization after application launch.
         handleCommandLineArgs()
 
-        UNUserNotificationCenter.current().delegate = self
         try? AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: .mixWithOthers)
         BackgroundTaskManager.shared.registerScheduleReminderNotificationsTask()
         ShortcutsManager.configureShortcuts()
@@ -113,17 +112,6 @@ final class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationC
 
     func application(_ application: UIApplication, shouldAllowExtensionPointIdentifier extensionPointIdentifier: UIApplication.ExtensionPointIdentifier) -> Bool {
         extensionPointIdentifier != .keyboard
-    }
-
-    func userNotificationCenter(
-        _ center: UNUserNotificationCenter,
-        willPresent notification: UNNotification,
-        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
-    ) {
-        NotificationManager.shared.handleForegroundNotification(
-            notification,
-            completionHandler: completionHandler
-        )
     }
 
     // MARK: - Core Data stack
