@@ -222,6 +222,8 @@ final class ContactBookModel {
 
     func toggle(contactID: UUID) {
 
+        guard let model = contactModels.flatMap({ $0 }).first(where: { $0.id == contactID }), model.hasIntrenalModel else { return }
+
         guard selectedIDs.contains(contactID) else {
             selectedIDs.insert(contactID)
             return
