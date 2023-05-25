@@ -60,7 +60,6 @@ enum AppConfigurator {
     private static func configureManagers() {
         BackupManager.shared.configure()
         StatusLoggerManager.shared.configure()
-        BLEPeripheralManager.shared.configure()
         DataFlowManager.shared.configure()
         LocalNotificationsManager.shared.configure()
     }
