@@ -55,14 +55,18 @@ final class BLEPeripheralManager: NSObject {
 
     static let shared = BLEPeripheralManager()
 
-    @Published private(set) var error: BLEPeripheralError?
+    @Published private(set) var error: BLEPeripheralError? = .unknown
     @Published private var isAdvertising = false
+
+    var isEnabled = false {
+        didSet { setupManager() }
+    }
 
     var advertisingMode: UserSettings.BLEAdvertisementMode {
         get { UserSettingsManager.bleAdvertisementMode }
         set {
             UserSettingsManager.bleAdvertisementMode = newValue
-            updateAdvertisingMode(advertisingMode: newValue)
+            updateAdvertisingState(advertisingMode: newValue)
         }
     }
 
@@ -73,17 +77,19 @@ final class BLEPeripheralManager: NSObject {
 
     private override init() {
         super.init()
+        configure()
     }
 
     // MARK: - Setups
 
-    func configure() {
-        updateAdvertisingMode()
+    private func configure() {
+        updateAdvertisingState()
         setupCallbacks()
     }
 
     private func setupManager() {
-        manager.delegate = self
+        manager.delegate = isEnabled ? self : nil
+        updateAdvertisingState()
     }
 
     private func setupService() {
@@ -98,17 +104,13 @@ final class BLEPeripheralManager: NSObject {
         let onMoveToForegroundPublisher = NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).onChangePublisher()
         let onMoveToBackgroundPublisher = NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).onChangePublisher()
 
-        Tari.shared.$isWalletConnected
-            .sink { [weak self] in self?.updateAdvertisingMode(isWalletConnected: $0) }
-            .store(in: &cancellables)
-
         Publishers.Merge(onMoveToForegroundPublisher, onMoveToBackgroundPublisher)
-            .sink { [weak self] _ in self?.updateAdvertisingMode() }
+            .sink { [weak self] _ in self?.updateAdvertisingState() }
             .store(in: &cancellables)
 
         $error
             .map { $0 == nil }
-            .sink { [weak self] in self?.updateAdvertisingMode(isBluetoothReady: $0) }
+            .sink { [weak self] in self?.updateAdvertisingState(isBluetoothReady: $0) }
             .store(in: &cancellables)
 
         $isAdvertising
@@ -132,16 +134,11 @@ final class BLEPeripheralManager: NSObject {
     }
 
     private func start() {
-
-        isAdvertising = true
-
         Logger.log(message: "Start Advertising", domain: .blePeripherial, level: .info)
-        setupManager()
+        setupService()
         manager.startAdvertising([
             CBAdvertisementDataServiceUUIDsKey: [BLEConstants.contactBookService.uuid]
         ])
-
-        setupService()
     }
 
     private func stop() {
@@ -172,15 +169,19 @@ final class BLEPeripheralManager: NSObject {
 
     // MARK: - Updates
 
-    private func updateAdvertisingMode(advertisingMode: UserSettings.BLEAdvertisementMode? = nil, isWalletConnected: Bool? = nil, isBluetoothReady: Bool? = nil) {
+    private func updateAdvertisingState(advertisingMode: UserSettings.BLEAdvertisementMode? = nil, isBluetoothReady: Bool? = nil) {
+
+        guard isEnabled else {
+            isAdvertising = false
+            return
+        }
 
         let advertisingMode = advertisingMode ?? self.advertisingMode
-        let isWalletConnected = isWalletConnected ?? Tari.shared.isWalletConnected
         let isBluetoothReady = isBluetoothReady ?? (error == nil)
 
-        Logger.log(message: "Updated Advertising Mode: \(advertisingMode) | isWalletConnected: \(isWalletConnected) | isBluetoothReady: \(isBluetoothReady)", domain: .blePeripherial, level: .info)
+        Logger.log(message: "Updated Advertising Mode: \(advertisingMode) | isBluetoothReady: \(isBluetoothReady)", domain: .blePeripherial, level: .info)
 
-        guard isWalletConnected, isBluetoothReady else {
+        guard isBluetoothReady else {
             isAdvertising = false
             return
         }
@@ -213,7 +214,6 @@ extension BLEPeripheralManager: CBPeripheralManagerDelegate {
 
         switch peripheral.state {
         case .poweredOn:
-            updateAdvertisingMode()
             error = nil
         case .poweredOff:
             error = .turnedOff
