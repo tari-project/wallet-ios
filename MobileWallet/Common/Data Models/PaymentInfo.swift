@@ -39,6 +39,9 @@
 */
 
 struct PaymentInfo {
-   let address: TariAddress
-   let yatID: String?
+    let address: String
+    let yatID: String?
+    let amount: MicroTari?
+    let feePerGram: MicroTari?
+    let note: String?
 }

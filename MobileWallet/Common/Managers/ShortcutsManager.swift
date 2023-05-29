@@ -87,7 +87,7 @@ final class ShortcutsManager {
         case .showQR:
             AppRouter.moveToProfile()
         case .send:
-            AppRouter.moveToTransactionSend(deeplink: nil)
+            AppRouter.moveToContactBook()
         }
     }
 

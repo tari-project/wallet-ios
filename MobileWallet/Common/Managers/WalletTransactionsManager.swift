@@ -47,6 +47,7 @@ final class WalletTransactionsManager {
         case unsucessfulTransaction
         case noInternetConnection
         case timeout
+        case missingInputData
     }
 
     enum State {
@@ -61,7 +62,7 @@ final class WalletTransactionsManager {
 
     // MARK: - Actions
 
-    func performTransactionPublisher(address: TariAddress, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
+    func performTransactionPublisher(address: String, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool) -> AnyPublisher<State, TransactionError> {
 
         let subject = CurrentValueSubject<State, TransactionError>(.connectionCheck)
 
@@ -108,11 +109,12 @@ final class WalletTransactionsManager {
             .store(in: &cancellables)
     }
 
-    private func sendTransactionToBlockchain(address: TariAddress, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
+    private func sendTransactionToBlockchain(address: String, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, result: @escaping (Result<Void, TransactionError>) -> Void) {
 
         do {
+            let tariAddress = try TariAddress(hex: address)
             let transactionID = try Tari.shared.transactions.send(
-                toAddress: address,
+                toAddress: tariAddress,
                 amount: amount.rawValue,
                 feePerGram: feePerGram.rawValue,
                 message: message,
@@ -123,7 +125,7 @@ final class WalletTransactionsManager {
                 result(.success)
                 return
             }
-            startListeningForWalletEvents(transactionID: transactionID, recipientHex: try address.byteVector.hex, result: result)
+            startListeningForWalletEvents(transactionID: transactionID, recipientHex: address, result: result)
         } catch {
             result(.failure(.transactionError(error: error)))
         }

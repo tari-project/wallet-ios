@@ -44,8 +44,7 @@ final class MenuTabBarController: UITabBarController {
     enum Tab: Int {
         case home
         case ttlStore
-        case sendFlow
-        case profile
+        case contactBook
         case settings
     }
 

@@ -43,7 +43,7 @@ import Combine
 final class SendingTariModel {
 
     struct InputData {
-        let address: TariAddress
+        let address: String
         let amount: MicroTari
         let feePerGram: MicroTari
         let message: String

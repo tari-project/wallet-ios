@@ -48,10 +48,8 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     private static var giphyCurrentKeywordIndex = 0
 
     private let paymentInfo: PaymentInfo
-    private let amount: MicroTari
     private let feePerGram: MicroTari
     private let isOneSidedPayment: Bool
-    private let deeplink: TransactionsSendDeeplink?
 
     private let sidePadding = Theme.shared.sizes.appSidePadding
     @View private var navigationBar = NavigationBar()
@@ -103,12 +101,10 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         }
     }
 
-    init(paymentInfo: PaymentInfo, amount: MicroTari, feePerGram: MicroTari, isOneSidedPayment: Bool, deeplink: TransactionsSendDeeplink?) {
+    init(paymentInfo: PaymentInfo, feePerGram: MicroTari, isOneSidedPayment: Bool) {
         self.paymentInfo = paymentInfo
-        self.amount = amount
         self.feePerGram = feePerGram
         self.isOneSidedPayment = isOneSidedPayment
-        self.deeplink = deeplink
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -135,7 +131,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
 
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
 
-        if let note = deeplink?.note {
+        if let note = paymentInfo.note {
             noteInput.text = note
             textViewDidChangeSelection(noteInput)
         }
@@ -151,13 +147,14 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         var alias: String?
 
         do {
-            alias = try Tari.shared.contacts.findContact(hex: try paymentInfo.address.byteVector.hex)?.alias
+            alias = try Tari.shared.contacts.findContact(hex: paymentInfo.address)?.alias
         } catch {
         }
 
         guard let alias = alias, !alias.trimmingCharacters(in: .whitespaces).isEmpty else {
             do {
-                emojiIdView.setup(emojiID: try paymentInfo.address.emojis, hex: try paymentInfo.address.byteVector.hex, textCentered: true, inViewController: self)
+                let tariAddress = try TariAddress(hex: paymentInfo.address)
+                emojiIdView.setup(emojiID: try tariAddress.emojis, hex: paymentInfo.address, textCentered: true, inViewController: self)
             } catch {
                 PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
             }
@@ -264,10 +261,10 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
 
     private func onSlideToEndAction() {
         dismissKeyboard()
-        sendTx(recipientAddress: paymentInfo.address, amount: amount, feePerGram: feePerGram)
+        sendTx()
     }
 
-    private func sendTx(recipientAddress: TariAddress, amount: MicroTari, feePerGram: MicroTari) {
+    private func sendTx() {
 
         var message = noteText
 
@@ -275,15 +272,8 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
             message += " \(embedUrl)"
         }
 
-        TransactionProgressPresenter.showTransactionProgress(
-            presenter: self,
-            recipientAddress: recipientAddress,
-            amount: amount,
-            feePerGram: feePerGram,
-            message: message,
-            isOneSidedPayment: isOneSidedPayment,
-            yatID: paymentInfo.yatID
-        )
+        let paymentInfo = PaymentInfo(address: paymentInfo.address, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.amount, note: message)
+        TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: isOneSidedPayment)
     }
 
     override func update(theme: ColorTheme) {

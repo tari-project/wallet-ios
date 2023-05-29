@@ -42,16 +42,23 @@ import UIKit
 
 enum TransactionProgressPresenter {
 
-    static func showTransactionProgress(presenter: UIViewController, recipientAddress: TariAddress, amount: MicroTari, feePerGram: MicroTari, message: String, isOneSidedPayment: Bool, yatID: String?) {
+    static func showTransactionProgress(presenter: UIViewController, paymentInfo: PaymentInfo, isOneSidedPayment: Bool) {
+
+        guard let amount = paymentInfo.amount, let feePerGram = paymentInfo.feePerGram else {
+            show(transactionError: .missingInputData)
+            return
+        }
+
+        let message = paymentInfo.note ?? ""
 
         let controller: TransactionViewControllable
 
-        if let yatID = yatID {
-            let inputData = YatTransactionModel.InputData(address: recipientAddress, amount: amount, feePerGram: feePerGram, message: message, yatID: yatID, isOneSidedPayment: isOneSidedPayment)
+        if let yatID = paymentInfo.yatID {
+            let inputData = YatTransactionModel.InputData(address: paymentInfo.address, amount: amount, feePerGram: feePerGram, message: message, yatID: yatID, isOneSidedPayment: isOneSidedPayment)
             controller = YatTransactionConstructor.buildScene(inputData: inputData)
             presenter.present(controller, animated: false)
         } else {
-            let inputData = SendingTariModel.InputData(address: recipientAddress, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
+            let inputData = SendingTariModel.InputData(address: paymentInfo.address, amount: amount, feePerGram: feePerGram, message: message, isOneSidedPayment: isOneSidedPayment)
             controller = SendingTariConstructor.buildScene(inputData: inputData)
             presenter.navigationController?.pushViewController(controller, animated: false)
         }
@@ -69,7 +76,7 @@ enum TransactionProgressPresenter {
         switch transactionError {
         case .noInternetConnection:
             PopUpPresenter.show(message: MessageModel(title: localized("sending_tari.error.interwebs_connection.title"), message: localized("sending_tari.error.interwebs_connection.description"), type: .error))
-        case .timeout, .transactionError, .unsucessfulTransaction:
+        case .timeout, .transactionError, .unsucessfulTransaction, .missingInputData:
             PopUpPresenter.show(message: MessageModel(title: localized("sending_tari.error.no_connection.title"), message: localized("sending_tari.error.no_connection.description"), type: .error))
         }
     }
