@@ -143,10 +143,7 @@ final class ContextualButtonsOverlay: DynamicThemeView {
     }
 
     private func removeAllButtons() {
-        stackView.arrangedSubviews.forEach {
-            stackView.removeArrangedSubview($0)
-            $0.removeFromSuperview()
-        }
+        stackView.removeAllViews()
     }
 
     private func addButtons(models: [ButtonModel]) {

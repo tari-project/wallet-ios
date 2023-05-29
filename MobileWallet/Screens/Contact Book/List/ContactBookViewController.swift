@@ -52,6 +52,7 @@ final class ContactBookViewController: UIViewController {
     private let contactsPageViewController = ContactBookContactListViewController()
     private let favoritesPageViewController = ContactBookContactListViewController()
 
+    private weak var qrCodePopUpContentView: PopUpQRContentView?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -74,6 +75,7 @@ final class ContactBookViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupPages()
+        setupSharingOptions()
         setupCallbacks()
     }
 
@@ -111,12 +113,25 @@ final class ContactBookViewController: UIViewController {
         )
     }
 
+    private func setupSharingOptions() {
+        let models = ContactBookModel.ShareType.allCases.map { ContactBookShareBar.ViewModel(identifier: $0.rawValue, image: $0.image, text: $0.text) }
+        mainView.setupShareBar(models: models)
+    }
+
     private func setupCallbacks() {
 
         model.$contactsList
             .compactMap { [weak self] in self?.map(sections: $0) }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.contactsPageViewController.models = $0 }
+            .store(in: &cancellables)
+
+        model.$selectedIDs
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in
+                self?.contactsPageViewController.selectedRows = $0
+                self?.favoritesPageViewController.selectedRows = $0
+            }
             .store(in: &cancellables)
 
         model.$favoriteContactsList
@@ -152,21 +167,66 @@ final class ContactBookViewController: UIViewController {
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
 
+        model.$contentMode
+            .sink { [weak self] in self?.handle(contentMode: $0) }
+            .store(in: &cancellables)
+
+        model.$isSharePossible
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.isShareButtonEnabled = $0 }
+            .store(in: &cancellables)
+
+        model.$isValidAddressInSearchField
+            .removeDuplicates()
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.isSendButtonVisible = $0 }
+            .store(in: &cancellables)
+
         mainView.searchText
             .receive(on: DispatchQueue.main)
             .assign(to: \.searchText, on: model)
             .store(in: &cancellables)
 
+        mainView.onShareModeButtonTap = { [weak self] in
+            self?.model.contentMode = .shareContacts
+        }
+
         mainView.onAddContactButtonTap = { [weak self] in
             self?.moveToAddContactScreen()
+        }
+
+        mainView.onCancelShareModeButtonTap = { [weak self] in
+            self?.model.contentMode = .normal
+        }
+
+        mainView.onShareButtonTap = { [weak self] in
+            guard let identifier = self?.mainView.selectedShareOptionID, let shareType = ContactBookModel.ShareType(rawValue: identifier) else { return }
+            self?.model.shareSelectedContacts(shareType: shareType)
+        }
+
+        mainView.onQRScannerButtonTap = { [weak self] in
+            self?.showQRCodeScanner()
+        }
+
+        mainView.onSendButtonTap = { [weak self] in
+            self?.model.sendTokensRequest()
         }
 
         contactsPageViewController.onButtonTap = { [weak self] in
             self?.model.performAction(contactID: $0, menuItemID: $1)
         }
 
+        contactsPageViewController.onRowTap = { [weak self] in
+            self?.model.toggle(contactID: $0)
+        }
+
         favoritesPageViewController.onButtonTap = { [weak self] in
             self?.model.performAction(contactID: $0, menuItemID: $1)
+        }
+
+        favoritesPageViewController.onRowTap = { [weak self] in
+            self?.model.toggle(contactID: $0)
         }
 
         contactsPageViewController.onFooterTap = { [weak self] in
@@ -218,6 +278,7 @@ final class ContactBookViewController: UIViewController {
 
     // MARK: - Handlers
 
+    // swiftlint:disable:next cyclomatic_complexity
     private func handle(action: ContactBookModel.Action) {
         switch action {
         case let .sendTokens(paymentInfo):
@@ -230,6 +291,18 @@ final class ContactBookViewController: UIViewController {
             showUnlinkSuccessDialog(emojiID: emojiID, name: name)
         case let .showDetails(model):
             moveToContactDetails(model: model)
+        case .showQRDialog:
+            showQrCodeDialog()
+        case let .shareQR(image):
+            showQrCodeInDialog(qrCode: image)
+        case let .shareLink(link):
+            showLinkShareDialog(link: link)
+        case .showBLEWaitingForReceiverDialog:
+            showBLEDialog(type: .scan)
+        case .showBLESuccessDialog:
+            showBLEDialog(type: .success)
+        case let .showBLEFailureDialog(message):
+            showBLEDialog(type: .failure(message: message))
         }
     }
 
@@ -237,16 +310,38 @@ final class ContactBookViewController: UIViewController {
         sections.map {
             let items = $0.viewModels.map {
                 let menuItems = $0.menuItems.map { $0.buttonViewModel }
-                return ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatarText: $0.avatar, avatarImage: $0.avatarImage, isFavorite: $0.isFavorite, menuItems: menuItems, contactTypeImage: $0.type.image)
+                return ContactBookCell.ViewModel(
+                    id: $0.id,
+                    name: $0.name,
+                    avatarText: $0.avatar,
+                    avatarImage: $0.avatarImage,
+                    isFavorite: $0.isFavorite,
+                    menuItems: menuItems,
+                    contactTypeImage: $0.type.image,
+                    isSelectable: $0.isSelectable
+                )
             }
             return ContactBookContactListView.Section(title: $0.title, items: items)
+        }
+    }
+
+    private func handle(contentMode: ContactBookModel.ContentMode) {
+        switch contentMode {
+        case .normal:
+            mainView.isInSelectionMode = false
+            contactsPageViewController.isInSharingMode = false
+            favoritesPageViewController.isInSharingMode = false
+        case .shareContacts:
+            mainView.isInSelectionMode = true
+            contactsPageViewController.isInSharingMode = true
+            favoritesPageViewController.isInSharingMode = true
         }
     }
 
     // MARK: - Actions
 
     private func moveToAddContactScreen() {
-        let controller = AddContactConstructor.bulidScene()
+        let controller = AddContactConstructor.bulidScene(onSuccess: .moveToDetails)
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -274,8 +369,41 @@ final class ContactBookViewController: UIViewController {
     }
 
     private func openAppSettings() {
-        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
-        UIApplication.shared.open(url)
+        AppRouter.openAppSettings()
+    }
+
+    private func showQrCodeDialog() {
+        qrCodePopUpContentView = PopUpPresenter.showQRCodeDialog(title: localized("contact_book.pop_ups.qr.title"))
+    }
+
+    private func showQrCodeInDialog(qrCode: UIImage) {
+        qrCodePopUpContentView?.qrCode = qrCode
+    }
+
+    private func showLinkShareDialog(link: URL) {
+        let controller = UIActivityViewController(activityItems: [link], applicationActivities: nil)
+        controller.popoverPresentationController?.sourceView = mainView.navigationBar
+        present(controller, animated: true)
+    }
+
+    private func showBLEDialog(type: PopUpPresenter.BLEDialogType) {
+        PopUpPresenter.showBLEDialog(type: type) { [weak self] _ in
+            self?.model.cancelBLESharing()
+        }
+    }
+
+    private func showQRCodeScanner() {
+        let scanViewController = ScanViewController(scanResourceType: .publicKey)
+        scanViewController.actionDelegate = self
+        scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
+        present(scanViewController, animated: true, completion: nil)
+    }
+}
+
+extension ContactBookViewController: ScanViewControllerDelegate {
+
+    func onScan(deeplink: ContactListDeeplink) {
+        model.fetchContacts()
     }
 }
 

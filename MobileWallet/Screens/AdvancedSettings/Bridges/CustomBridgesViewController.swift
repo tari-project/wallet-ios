@@ -109,13 +109,15 @@ final class CustomBridgesViewController: SettingsParentTableViewController, Cust
 
 // MARK: Setup subviews
 extension CustomBridgesViewController {
+
     override func setupNavigationBar() {
         super.setupNavigationBar()
+
         navigationBar.title = localized("custom_bridges.title")
-        navigationBar.rightButton.isEnabled = false
-        navigationBar.onRightButtonAction = connectAction
-        let title = localized("custom_bridges.connect")
-        navigationBar.rightButton.setTitle(title, for: .normal)
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(title: localized("custom_bridges.connect"), callback: { [weak self] in
+            self?.connectAction()
+        }))
+        navigationBar.rightButton(index: 0)?.isEnabled = false
     }
 
     private func onTorConnDifficulties(error: Error) {
@@ -168,7 +170,7 @@ extension CustomBridgesViewController {
 
     private func applyConnectingStatus() {
         navigationBar.progress = 0.0
-        navigationBar.rightButton.isEnabled = false
+        navigationBar.rightButton(index: 0)?.isEnabled = false
         view.isUserInteractionEnabled = false
     }
 }
@@ -301,7 +303,7 @@ extension CustomBridgesViewController: UITextViewDelegate {
         let isTextFieldNotEmpty = !textView.text.isEmpty
         let isNewBridge = textView.text.trimmingCharacters(in: .whitespacesAndNewlines) != bridgesConfiguration?.customBridges?.joined(separator: "\n")
         let isNotPlaceholder = textView.text != examplePlaceHolderString
-        navigationBar.rightButton.isEnabled = isTextFieldNotEmpty && isNewBridge && isNotPlaceholder
+        navigationBar.rightButton(index: 0)?.isEnabled = isTextFieldNotEmpty && isNewBridge && isNotPlaceholder
     }
 
     func textViewDidBeginEditing(_ textView: UITextView) {

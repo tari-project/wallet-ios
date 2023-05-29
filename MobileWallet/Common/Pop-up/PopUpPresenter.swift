@@ -79,9 +79,10 @@ enum PopUpPresenter {
 
     // MARK: - Actions
 
-    static func show(popUp: TariPopUp, configuration: Configuration? = nil) {
+    static func show(popUp: TariPopUp, configuration: Configuration? = nil, tag: String? = nil) {
 
         var attributes = defaultAttributes
+        attributes.name = tag
 
         if let configuration = configuration {
             attributes.displayDuration = configuration.displayDuration ?? .infinity
@@ -94,8 +95,17 @@ enum PopUpPresenter {
         UIApplication.shared.hideKeyboard()
     }
 
-    static func dismissPopup(onCompletion: (() -> Void)? = nil) {
-        SwiftEntryKit.dismiss {
+    static func dismissPopup(tag: String? = nil, onCompletion: (() -> Void)? = nil) {
+
+        let dismissalDescriptor: SwiftEntryKit.EntryDismissalDescriptor
+
+        if let tag {
+            dismissalDescriptor = .specific(entryName: tag)
+        } else {
+            dismissalDescriptor = .displayed
+        }
+
+        SwiftEntryKit.dismiss(dismissalDescriptor) {
             onCompletion?()
         }
     }

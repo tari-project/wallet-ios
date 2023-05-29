@@ -100,7 +100,7 @@ final class OnboardingViewController: UIViewController {
         pageViewController.$pageIndex
             .sink { [weak self] in
                 self?.mainView.progress = $0 + 1.0
-                self?.mainView.navigationBar.rightButton.isHidden = $0 > 2.0
+                self?.mainView.navigationBar.rightButton(index: 0)?.isHidden = $0 > 2.0
             }
             .store(in: &cancellables)
     }

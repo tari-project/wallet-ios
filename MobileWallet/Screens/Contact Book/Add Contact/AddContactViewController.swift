@@ -43,17 +43,24 @@ import Combine
 
 final class AddContactViewController: UIViewController {
 
+    enum NavigationActionType {
+        case moveToDetails
+        case moveBack
+    }
+
     // MARK: - Properties
 
     private let model: AddContactModel
     private let mainView = AddContactView()
 
+    private let navigationActionType: NavigationActionType
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(model: AddContactModel) {
+    init(model: AddContactModel, navigationActionType: NavigationActionType) {
         self.model = model
+        self.navigationActionType = navigationActionType
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -117,10 +124,8 @@ final class AddContactViewController: UIViewController {
 
     private func handle(action: AddContactModel.Action) {
         switch action {
-        case let .moveToContactDetails(model):
-            let controller = ContactDetailsConstructor.buildScene(model: model)
-            navigationController?.pushViewController(controller, animated: true)
-            navigationController?.remove(controller: self)
+        case let .endFlow(model):
+            navigateToNextScreen(model: model)
         }
     }
 
@@ -130,11 +135,36 @@ final class AddContactViewController: UIViewController {
         scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
         present(scanViewController, animated: true, completion: nil)
     }
+
+    // MARK: - Navigation
+
+    private func navigateToNextScreen(model: ContactsManager.Model) {
+        switch navigationActionType {
+        case .moveToDetails:
+            moveToContactDetails(model: model)
+        case .moveBack:
+            moveBack()
+        }
+    }
+
+    private func moveToContactDetails(model: ContactsManager.Model) {
+        let controller = ContactDetailsConstructor.buildScene(model: model)
+        navigationController?.pushViewController(controller, animated: true)
+        navigationController?.remove(controller: self)
+    }
+
+    private func moveBack() {
+        navigationController?.popViewController(animated: true)
+    }
 }
 
 extension AddContactViewController: ScanViewControllerDelegate {
 
     func onScan(deeplink: TransactionsSendDeeplink) {
         model.handle(deeplink: deeplink)
+    }
+
+    func onScan(deeplink: ContactListDeeplink) {
+        navigationController?.popViewController(animated: true)
     }
 }

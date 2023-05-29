@@ -60,5 +60,7 @@ enum AppConfigurator {
     private static func configureManagers() {
         BackupManager.shared.configure()
         StatusLoggerManager.shared.configure()
+        DataFlowManager.shared.configure()
+        LocalNotificationsManager.shared.configure()
     }
 }

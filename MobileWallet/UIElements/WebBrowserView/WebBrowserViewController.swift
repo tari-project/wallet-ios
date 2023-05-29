@@ -182,8 +182,7 @@ extension WebBrowserViewController {
         view.addSubview(navigationBar)
 
         navigationBar.backButtonType = modalPresentationStyle == .popover ? .close : .none
-        navigationBar.rightButton.setImage(Theme.shared.images.share, for: .normal)
-        navigationBar.onRightButtonAction = { [weak self] in self?.showShareDialog() }
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(image: Theme.shared.images.share, callback: { [weak self] in self?.showShareDialog() }))
 
         let constraints = [
             navigationBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 32.0),

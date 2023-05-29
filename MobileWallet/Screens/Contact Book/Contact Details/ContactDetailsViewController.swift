@@ -154,6 +154,8 @@ final class ContactDetailsViewController: UIViewController {
             showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
         case let .showUnlinkSuccessDialog(emojiID, name):
             showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+        case let .moveToTransactionsList(model):
+            moveToTransactionsList(model: model)
         case .removeContactConfirmation:
             showRemoveContactConfirmationDialog()
         case .endFlow:
@@ -173,51 +175,18 @@ final class ContactDetailsViewController: UIViewController {
 
     private func showEditForm() {
 
-        var nameComponents: [String] = model.isContactExist ? model.nameComponents : model.nameComponents.map { _ in "" }
-        var yat: String = model.yat ?? ""
-        let models: [ContactBookFormView.TextFieldViewModel]
-
         if model.hasSplittedName {
-            models = [
-                ContactBookFormView.TextFieldViewModel(
-                    placeholder: localized("contact_book.details.edit_form.text_field.first_name"),
-                    text: nameComponents[0],
-                    isEmojiKeyboardVisible: false,
-                    callback: { nameComponents[0] = $0 }
-                ),
-                ContactBookFormView.TextFieldViewModel(
-                    placeholder: localized("contact_book.details.edit_form.text_field.last_name"),
-                    text: nameComponents[1],
-                    isEmojiKeyboardVisible: false,
-                    callback: { nameComponents[1] = $0 }
-                ),
-                ContactBookFormView.TextFieldViewModel(
-                    placeholder: localized("contact_book.details.edit_form.text_field.yat"),
-                    text: yat,
-                    isEmojiKeyboardVisible: true,
-                    callback: { yat = $0 }
-                )
-            ]
+            let nameComponents = model.nameComponents
+            let yat = model.yat ?? ""
+            FormOverlayPresenter.showFullContactEditForm(isContactExist: model.isContactExist, nameComponents: nameComponents, yat: yat, presenter: self) { [weak self] nameComponents, yat in
+                self?.model.update(nameComponents: nameComponents, yat: yat)
+            }
         } else {
-            models = [
-                ContactBookFormView.TextFieldViewModel(
-                    placeholder: localized("contact_book.details.edit_form.text_field.name"),
-                    text: nameComponents[0],
-                    isEmojiKeyboardVisible: false,
-                    callback: { nameComponents[0] = $0 }
-                )
-            ]
+            let alias = model.name ?? ""
+            FormOverlayPresenter.showSingleFieldContactEditForm(isContactExist: model.isContactExist, alias: alias, presenter: self) { [weak self] alias in
+                self?.model.update(nameComponents: [alias], yat: "")
+            }
         }
-
-        let title = model.isContactExist ? localized("contact_book.details.edit_form.title.edit") : localized("contact_book.details.edit_form.title.add")
-        let formView = ContactBookFormView(title: title, textFieldsModels: models)
-        let overlay = FormOverlay(formView: formView)
-
-        overlay.onClose = { [weak self] in
-            self?.model.update(nameComponents: nameComponents, yat: yat)
-        }
-
-        present(overlay, animated: true)
     }
 
     private func moveToSendTokensScreen(paymentInfo: PaymentInfo) {
@@ -226,6 +195,11 @@ final class ContactDetailsViewController: UIViewController {
 
     private func moveToLinkContactScreen(model: ContactsManager.Model) {
         let controller = LinkContactsConstructor.buildScene(contactModel: model)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func moveToTransactionsList(model: ContactsManager.Model) {
+        let controller = ContactTransactionListConstructor.buildScene(contactModel: model)
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -272,6 +246,8 @@ private extension ContactDetailsModel.MenuItem {
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.link"), isArrowVisible: true, isDestructive: false)
         case .unlinkContact:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.unlink"), isArrowVisible: true, isDestructive: false)
+        case .transactionsList:
+            return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.transaction_list"), isArrowVisible: true, isDestructive: false)
         case .removeContact:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.delete"), isArrowVisible: false, isDestructive: true)
         case .btcWallet:

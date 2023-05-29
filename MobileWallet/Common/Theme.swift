@@ -57,12 +57,10 @@ struct Images {
     // TabBar
     let homeItem = UIImage(named: "navHome")
     let ttlItem = UIImage(named: "navTtl")
-    let sendItem = UIImage(named: "navSend")?.withRenderingMode(.alwaysOriginal)
     let settingsItem = UIImage(named: "navSettings")
 
     // General icons
     let currencySymbol = UIImage(named: "Gem")
-    let qrButton = UIImage(named: "QRButton")
     let backArrow = UIImage(named: "BackArrow")
     let forwardArrow = UIImage(named: "ForwardArrow")
     let close = UIImage(named: "Close")
@@ -70,7 +68,6 @@ struct Images {
     let txFee = UIImage(named: "TxFee")
     let storeIcon = UIImage(named: "store-icon")
     let storeModal = UIImage(named: "store-modal")
-    let unknownUser = UIImage(named: "unknownUser")
     let handWave = UIImage(named: "HandWave")
     let attentionIcon = UIImage(named: "AttentionIcon")
     let scheduledIcon = UIImage(named: "ScheduledIcon")
@@ -219,8 +216,6 @@ struct Fonts {
 
     // Add recipient view
     let searchContactsInputBoxText = UIFont.Avenir.roman.withSize(14.0)
-    let contactCellAlias = UIFont.Avenir.heavy.withSize(15.0)
-    let contactCellAliasLetter = UIFont.Avenir.heavy.withSize(24.0)
 
     // Add amount screen
     let keypadButton = UIFont.Avenir.heavy.withSize(36.0)
@@ -324,13 +319,27 @@ enum SecurityOnboardingImages {
 // MARK: - Contact Book
 
 enum ContactBookImages {
+    static var bleDialog: ContactBookBLEDialogImages.Type { ContactBookBLEDialogImages.self }
+    static var buttons: ContactBookButtonImages.Type { ContactBookButtonImages.self }
     static var placeholders: ContactBookPlaceholderImages.Type { ContactBookPlaceholderImages.self }
-    static var addContact: UIImage? { UIImage(named: "Images/Contact Book/AddContact") }
+}
+
+enum ContactBookBLEDialogImages {
+    static var icon: UIImage? { UIImage(named: "Images/Contact Book/BLE Dialog/Icon") }
+    static var success: UIImage? { UIImage(named: "Images/Contact Book/BLE Dialog/Success") }
+    static var failure: UIImage? { UIImage(named: "Images/Contact Book/BLE Dialog/Failure") }
+}
+
+enum ContactBookButtonImages {
+    static var addContact: UIImage? { UIImage(named: "Images/Contact Book/Buttons/AddContact") }
+    static var share: UIImage? { UIImage(named: "Images/Contact Book/Buttons/Share") }
 }
 
 enum ContactBookPlaceholderImages {
     static var contactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListPlaceholder") }
     static var favoritesContactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListFavPlaceholder") }
+    static var transactionList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/TransactionList") }
+    static var linkList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/LinkList") }
 }
 
 // MARK: - Icons
@@ -338,12 +347,15 @@ enum ContactBookPlaceholderImages {
 enum IconsImages {
 
     static var contactTypes: IconsContactTypesImages.Type { IconsContactTypesImages.self }
+    static var settings: IconsSettingsImages.Type { IconsSettingsImages.self }
     static var star: IconsStarImages.Type { IconsStarImages.self }
     static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
 
+    static var bluetooth: UIImage? { UIImage(named: "Icons/Bluetooth") }
     static var link: UIImage? { UIImage(named: "Icons/Link") }
     static var profile: UIImage? { UIImage(named: "Icons/Profile") }
     static var send: UIImage? { UIImage(named: "Icons/Send") }
+    static var qr: UIImage? { UIImage(named: "Icons/QR") }
     static var unlink: UIImage? { UIImage(named: "Icons/Unlink") }
 }
 
@@ -360,4 +372,8 @@ enum IconsStarImages {
 
 enum IconsTabBarImages {
     static var contactBook: UIImage? { UIImage(named: "Icons/TabBar/ContactBook") }
+}
+
+enum IconsSettingsImages {
+    static var bluetooth: UIImage? { UIImage(named: "Icons/Settings/Bluetooth") }
 }

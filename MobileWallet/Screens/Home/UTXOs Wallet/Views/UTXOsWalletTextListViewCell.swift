@@ -80,7 +80,7 @@ final class UTXOsWalletTextListViewCell: DynamicThemeCell {
         return view
     }()
 
-    @View private var tickView = UTXOsWalletTickButton()
+    @View private var tickView = TickButton()
 
     // MARK: - Properties
 

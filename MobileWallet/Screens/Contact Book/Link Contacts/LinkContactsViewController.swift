@@ -40,6 +40,7 @@
 
 import UIKit
 import Combine
+import ContactsUI
 
 final class LinkContactsViewController: UIViewController {
 
@@ -72,6 +73,11 @@ final class LinkContactsViewController: UIViewController {
         setupCallbacks()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        model.fetchData()
+    }
+
     // MARK: - Setups
 
     private func setupCallbacks() {
@@ -82,7 +88,7 @@ final class LinkContactsViewController: UIViewController {
             .store(in: &cancellables)
 
         model.$models
-            .map { $0.map { ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatarText: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: [], contactTypeImage: nil) }}
+            .map { $0.map { ContactBookCell.ViewModel(id: $0.id, name: $0.name, avatarText: $0.avatar, avatarImage: $0.avatarImage, isFavorite: false, menuItems: [], contactTypeImage: nil, isSelectable: false) }}
             .sink { [weak self] in self?.mainView.viewModels = $0 }
             .store(in: &cancellables)
 
@@ -96,6 +102,12 @@ final class LinkContactsViewController: UIViewController {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { PopUpPresenter.show(message: $0) }
+            .store(in: &cancellables)
+
+        model.$placeholder
+            .receive(on: DispatchQueue.main)
+            .map { [weak self] in self?.mapPlaceholderViewModel(model: $0) }
+            .sink { [weak self] in self?.mainView.placeholderViewModel = $0 }
             .store(in: &cancellables)
 
         mainView.searchText
@@ -116,7 +128,37 @@ final class LinkContactsViewController: UIViewController {
             showConfirmationDialog(emojiID: emojiID, name: name)
         case let .showSuccess(emojiID, name):
             showSuccessDialog(emojiID: emojiID, name: name)
+        case .moveToAddContact:
+            moveToAddContact()
+        case .moveToPhoneBook:
+            moveToAddExternalContact()
+        case .moveToPermissionSettings:
+            openAppSettings()
         }
+    }
+
+    private func mapPlaceholderViewModel(model: LinkContactsModel.PlaceholderModel?) -> ContactBookListPlaceholder.ViewModel? {
+
+        guard let model else { return nil }
+
+        var titleComponents: [StylizedLabel.StylizedText] = []
+        var messageComponents: [StylizedLabel.StylizedText] = []
+
+        if let title = model.title {
+            titleComponents = [StylizedLabel.StylizedText(text: title, style: .normal)]
+        }
+
+        if let message = model.message {
+            messageComponents = [StylizedLabel.StylizedText(text: message, style: .normal)]
+        }
+
+        return ContactBookListPlaceholder.ViewModel(
+            image: .contactBook.placeholders.linkList,
+            titleComponents: titleComponents,
+            messageComponents: messageComponents,
+            actionButtonTitle: model.buttonTitle,
+            actionButtonCallback: { [weak self] in self?.model.performPlaceholderAction() }
+        )
     }
 
     // MARK: - Actions
@@ -159,5 +201,28 @@ final class LinkContactsViewController: UIViewController {
 
         PopUpPresenter.showPopUp(model: model)
         navigationController?.popViewController(animated: true)
+    }
+
+    private func moveToAddContact() {
+        let controller = AddContactConstructor.bulidScene(onSuccess: .moveBack)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func moveToAddExternalContact() {
+        let controller = CNContactViewController(forNewContact: nil)
+        controller.delegate = self
+        let navigationController = UINavigationController(rootViewController: controller)
+        present(navigationController, animated: true)
+    }
+
+    private func openAppSettings() {
+        AppRouter.openAppSettings()
+    }
+}
+
+extension LinkContactsViewController: CNContactViewControllerDelegate {
+
+    func contactViewController(_ viewController: CNContactViewController, didCompleteWith contact: CNContact?) {
+        viewController.dismiss(animated: true)
     }
 }

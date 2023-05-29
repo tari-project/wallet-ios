@@ -51,6 +51,7 @@ final class ContactBookCell: DynamicThemeCell {
         let isFavorite: Bool
         let menuItems: [ContactCapsuleMenu.ButtonViewModel]
         let contactTypeImage: UIImage?
+        let isSelectable: Bool
     }
 
     // MARK: - Subviews
@@ -82,12 +83,27 @@ final class ContactBookCell: DynamicThemeCell {
         return view
     }()
 
+    @View private var tickView: TickButton = {
+        let view = TickButton()
+        view.alpha = 0.0
+        return view
+    }()
+
     // MARK: - Properties
 
+    var isTickSelected: Bool {
+        get { tickView.isSelected }
+        set { tickView.isSelected = newValue }
+    }
+
+    var onButtonTap: ((UUID, UInt) -> Void)?
+
+    private(set) var elementID: UUID?
     private(set) var isExpanded: Bool = false
 
-    var onButtonTap: ((UInt) -> Void)?
-    var onExpand: (() -> Void)?
+    private var isSelectable: Bool = false
+    private var normalModeConstraint: NSLayoutConstraint?
+    private var editModeConstraint: NSLayoutConstraint?
 
     // MARK: - Initialisers
 
@@ -111,11 +127,20 @@ final class ContactBookCell: DynamicThemeCell {
 
     private func setupConstraints() {
 
-        [nameLabel, favoriteView, avatarMenu, contactTypeBackgroundView, contactTypeView].forEach(contentView.addSubview)
+        [nameLabel, favoriteView, avatarMenu, contactTypeBackgroundView, contactTypeView, tickView].forEach(contentView.addSubview)
+
+        let normalModeConstraint = avatarMenu.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0)
+        editModeConstraint = tickView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0)
+
+        self.normalModeConstraint = normalModeConstraint
 
         let constraints = [
+            tickView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            tickView.heightAnchor.constraint(equalToConstant: 24.0),
+            tickView.widthAnchor.constraint(equalToConstant: 24.0),
             avatarMenu.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
-            avatarMenu.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0),
+            normalModeConstraint,
+            avatarMenu.leadingAnchor.constraint(equalTo: tickView.trailingAnchor, constant: 10.0),
             avatarMenu.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
             contactTypeBackgroundView.trailingAnchor.constraint(equalTo: avatarMenu.avatarView.trailingAnchor),
             contactTypeBackgroundView.bottomAnchor.constraint(equalTo: avatarMenu.avatarView.bottomAnchor),
@@ -136,7 +161,10 @@ final class ContactBookCell: DynamicThemeCell {
     }
 
     private func setupCallbacks() {
-        avatarMenu.onButtonTap = { [weak self] in self?.onButtonTap?($0) }
+        avatarMenu.onButtonTap = { [weak self] in
+            guard let elementID = self?.elementID else { return }
+            self?.onButtonTap?(elementID, $0)
+        }
     }
 
     // MARK: - Updates
@@ -146,10 +174,13 @@ final class ContactBookCell: DynamicThemeCell {
         nameLabel.textColor = theme.text.heading
         favoriteView.tintColor = theme.brand.purple
         contactTypeBackgroundView.backgroundColor = theme.brand.purple
-        contactTypeView.tintColor = theme.backgrounds.primary
+        contactTypeView.tintColor = theme.buttons.primaryText
     }
 
     func update(viewModel: ViewModel) {
+
+        elementID = viewModel.id
+        isSelectable = viewModel.isSelectable
         nameLabel.text = viewModel.name
 
         if let avatarImage = viewModel.avatarImage {
@@ -170,9 +201,30 @@ final class ContactBookCell: DynamicThemeCell {
 
         if isExpanded {
             avatarMenu.show(withAnmiation: withAnmiation)
-            onExpand?()
         } else {
             avatarMenu.hide(withAnmiation: withAnmiation)
+        }
+    }
+
+    override func setEditing(_ editing: Bool, animated: Bool) {
+
+        let isTickVisible = editing && isSelectable
+        let isDimmed = editing && !isSelectable
+
+        if isTickVisible {
+            normalModeConstraint?.isActive = false
+            editModeConstraint?.isActive = true
+        } else {
+            editModeConstraint?.isActive = false
+            normalModeConstraint?.isActive = true
+        }
+
+        let duration: TimeInterval = animated ? 0.3 : 0.0
+
+        UIView.animate(withDuration: duration, delay: 0.0, options: [.beginFromCurrentState, .curveEaseInOut]) {
+            self.tickView.alpha = isTickVisible ? 1.0 : 0.0
+            self.alpha = isDimmed ? 0.6 : 1.0
+            self.layoutIfNeeded()
         }
     }
 }

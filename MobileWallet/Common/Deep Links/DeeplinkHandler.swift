@@ -38,66 +38,39 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import UIKit
+
 protocol DeeplinkHandlable {
     func handle(deeplink: TransactionsSendDeeplink)
     func handle(deeplink: BaseNodesAddDeeplink)
+    func handle(deeplink: ContactListDeeplink)
 }
 
 enum DeeplinkError: Error {
     case unknownDeeplink
     case transactionSendDeeplinkError(_ error: Error)
     case baseNodesAddDeeplinkError(_ error: Error)
+    case contactListDeeplinkError(_ error: Error)
 }
 
 enum DeeplinkHandler {
 
     static func handle(rawDeeplink: String, handler: DeeplinkHandlable? = nil) throws {
-        guard let deeplink = URL(string: rawDeeplink) else { throw DeeplinkError.unknownDeeplink }
+        guard let decodedDeeplink = rawDeeplink.removingPercentEncoding, let deeplink = URL(string: decodedDeeplink) else { throw DeeplinkError.unknownDeeplink }
         return try handle(deeplink: deeplink, handler: handler)
     }
 
     static func handle(deeplink: URL, handler: DeeplinkHandlable? = nil) throws {
-
-        guard !handle(legacyDeeplink: deeplink, handler: handler) else { return }
-
         switch deeplink.path {
         case TransactionsSendDeeplink.command:
             try handle(transactionSendDeeplink: deeplink, handler: handler)
         case BaseNodesAddDeeplink.command:
             try handle(baseNodesAddDeeplink: deeplink, handler: handler)
+        case ContactListDeeplink.command:
+            try handle(contactListDeeplink: deeplink, handler: handler)
         default:
             throw DeeplinkError.unknownDeeplink
         }
-    }
-
-    @available(*, deprecated, message: "This method will be removed in the near future")
-    private static func handle(legacyDeeplink: URL, handler: DeeplinkHandlable?) -> Bool {
-        guard let components = URLComponents(url: legacyDeeplink, resolvingAgainstBaseURL: false), components.scheme == "tari", components.host == NetworkManager.shared.selectedNetwork.name else { return false }
-
-        let pathComponents = components.path
-            .split(separator: "/")
-            .filter { !$0.isEmpty }
-
-        guard pathComponents.count == 2, pathComponents[0] == "pubkey" else { return false }
-
-        let publicKey = String(pathComponents[1])
-        let queryItems = components.queryItems?.reduce(into: [String: String]()) { $0[$1.name] = $1.value } ?? [:]
-
-        var amount: UInt64?
-        if let rawAmount = queryItems["amount"] {
-            amount = UInt64(rawAmount)
-        }
-        let note = queryItems["note"]
-
-        let deeplink = TransactionsSendDeeplink(receiverAddress: publicKey, amount: amount, note: note)
-
-        guard let handler = handler else {
-            AppRouter.moveToTransactionSend(deeplink: deeplink)
-            return true
-        }
-
-        handler.handle(deeplink: deeplink)
-        return true
     }
 
     private static func handle(transactionSendDeeplink: URL, handler: DeeplinkHandlable?) throws {
@@ -131,6 +104,86 @@ enum DeeplinkHandler {
         } catch {
             throw DeeplinkError.baseNodesAddDeeplinkError(error)
         }
+    }
+
+    private static func handle(contactListDeeplink: URL, handler: DeeplinkHandlable?) throws {
+
+        do {
+            let deeplink = try DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: contactListDeeplink)
+
+            guard let handler = handler else {
+                handle(contactListDeeplink: deeplink, rawDeeplink: contactListDeeplink)
+                return
+            }
+
+            handler.handle(deeplink: deeplink)
+        } catch {
+            throw DeeplinkError.contactListDeeplinkError(error)
+        }
+    }
+
+    private static func handle(contactListDeeplink: ContactListDeeplink, rawDeeplink: URL) {
+
+        DispatchQueue.main.async {
+            guard UIApplication.shared.applicationState == .background else {
+                showAddContactsDialog(deeplink: contactListDeeplink) {
+                    try? addContacts(deeplink: contactListDeeplink)
+                }
+                return
+            }
+
+            guard let rawEncodedDeeplink = rawDeeplink.absoluteString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else {
+                Logger.log(message: "Unable to encode deeplink", domain: .general, level: .error)
+                return
+            }
+
+            LocalNotificationsManager.shared.showContactsReceivedNotification(rawEncodedDeeplink: rawEncodedDeeplink, isSingleContact: contactListDeeplink.list.count == 1)
+        }
+    }
+
+    private static func showAddContactsDialog(deeplink: ContactListDeeplink, onConfrim: @escaping () -> Void) {
+
+        let contactCount = deeplink.list.count
+        let isPlural = contactCount > 1
+
+        let title = isPlural ? localized("contacts_received.popup.title.plural") : localized("contacts_received.popup.title.singular")
+        let messagePart2 = isPlural ? localized("contacts_received.popup.message.part.2.plural.bold", arguments: contactCount) : localized("contacts_received.popup.message.part.2.singular.bold")
+        let messagePart3 = isPlural ? localized("contacts_received.popup.message.part.3.plural") : localized("contacts_received.popup.message.part.3.singular")
+        let confirmButtonTitle = isPlural ? localized("contacts_received.popup.buttons.confirm.plural") : localized("contacts_received.popup.buttons.confirm.singular")
+
+        let model = PopUpDialogModel(
+            titleComponents: [
+                StylizedLabel.StylizedText(text: title, style: .normal)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("contacts_received.popup.message.part.1"), style: .normal),
+                StylizedLabel.StylizedText(text: messagePart2, style: .bold),
+                StylizedLabel.StylizedText(text: messagePart3, style: .normal)
+            ],
+            buttons: [
+                PopUpDialogButtonModel(title: confirmButtonTitle, type: .normal, callback: onConfrim),
+                PopUpDialogButtonModel(title: localized("contacts_received.popup.buttons.reject"), type: .text)
+            ],
+            hapticType: .success
+        )
+
+        PopUpPresenter.showPopUp(model: model)
+    }
+
+    private static func addContacts(deeplink: ContactListDeeplink) throws {
+
+        let contactsManager = ContactsManager()
+
+        try deeplink.list
+            .forEach {
+                let address = try TariAddress(hex: $0.hex)
+
+                if Tari.shared.isWalletConnected {
+                    _ = try contactsManager.createInternalModel(name: $0.alias, isFavorite: false, address: address)
+                } else {
+                    try PendingDataManager.shared.storeContact(name: $0.alias, isFavorite: false, address: address)
+                }
+            }
     }
 
     private static func showCustomDeeplinkPopUp(name: String, peer: String) {

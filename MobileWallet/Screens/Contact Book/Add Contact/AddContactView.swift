@@ -79,7 +79,7 @@ final class AddContactView: BaseNavigationContentView {
     }
 
     var isDoneButtonEnabled: Bool = false {
-        didSet { navigationBar.rightButton.isEnabled = isDoneButtonEnabled }
+        didSet { navigationBar.rightButton(index: 0)?.isEnabled = isDoneButtonEnabled }
     }
 
     var onDoneButtonTap: (() -> Void)?
@@ -103,7 +103,7 @@ final class AddContactView: BaseNavigationContentView {
 
     private func setupSuviews() {
         navigationBar.title = localized("contact_book.add_contact.title")
-        navigationBar.rightButton.setTitle(localized("common.done"), for: .normal)
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(title: localized("common.done"), callback: { [weak self] in self?.onDoneButtonTap?() }))
     }
 
     private func setupConstraints() {
@@ -135,10 +135,6 @@ final class AddContactView: BaseNavigationContentView {
     }
 
     private func setupCallbacks() {
-
-        navigationBar.onRightButtonAction = { [weak self] in
-            self?.onDoneButtonTap?()
-        }
 
         searchView.qrButton.onTap = { [weak self] in
             self?.onQRCodeButtonTap?()

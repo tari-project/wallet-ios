@@ -47,15 +47,23 @@ final class SettingsProfileCell: DynamicThemeCell {
 
     @View private var avatarView = RoundedAvatarView()
 
-    @View private var label: UILabel = {
+    @View private var nameLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Avenir.medium.withSize(16.0)
+        return view
+    }()
+
+    @View private var addressLabel: UILabel = {
         let view = UILabel()
         view.font = .Avenir.medium.withSize(17.0)
         return view
     }()
 
+    @View private var centralContentView = UIView()
+
     @View private var scanImage: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.qrButton?.withRenderingMode(.alwaysTemplate)
+        view.image = .icons.qr
         view.contentMode = .scaleAspectFit
         return view
     }()
@@ -75,7 +83,8 @@ final class SettingsProfileCell: DynamicThemeCell {
 
     private func setupConstraints() {
 
-        [avatarView, label, scanImage].forEach(contentView.addSubview)
+        [avatarView, centralContentView, scanImage].forEach(contentView.addSubview)
+        [nameLabel, addressLabel].forEach(centralContentView.addSubview)
 
         let constraints = [
             avatarView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 30.0),
@@ -83,9 +92,16 @@ final class SettingsProfileCell: DynamicThemeCell {
             avatarView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -30.0),
             avatarView.heightAnchor.constraint(equalToConstant: 65.0),
             avatarView.widthAnchor.constraint(equalToConstant: 65.0),
-            label.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 10.0),
-            label.centerYAnchor.constraint(equalTo: avatarView.centerYAnchor),
-            scanImage.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 10.0),
+            centralContentView.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 10.0),
+            centralContentView.centerYAnchor.constraint(equalTo: avatarView.centerYAnchor),
+            nameLabel.topAnchor.constraint(equalTo: centralContentView.topAnchor),
+            nameLabel.leadingAnchor.constraint(equalTo: centralContentView.leadingAnchor),
+            nameLabel.trailingAnchor.constraint(equalTo: centralContentView.trailingAnchor),
+            addressLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 5.0),
+            addressLabel.leadingAnchor.constraint(equalTo: centralContentView.leadingAnchor),
+            addressLabel.trailingAnchor.constraint(equalTo: centralContentView.trailingAnchor),
+            addressLabel.bottomAnchor.constraint(equalTo: centralContentView.bottomAnchor),
+            scanImage.leadingAnchor.constraint(equalTo: centralContentView.trailingAnchor, constant: 10.0),
             scanImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
             scanImage.centerYAnchor.constraint(equalTo: avatarView.centerYAnchor),
             scanImage.heightAnchor.constraint(equalToConstant: 30.0),
@@ -101,10 +117,13 @@ final class SettingsProfileCell: DynamicThemeCell {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         scanImage.tintColor = theme.icons.default
+        nameLabel.textColor = theme.text.heading
+        addressLabel.textColor = theme.text.heading
     }
 
-    func update(avatar: String?, emojiID: String?) {
+    func update(avatar: String?, name: String?, address: String?) {
         avatarView.avatar = .text(avatar)
-        label.text = emojiID
+        nameLabel.text = name
+        addressLabel.text = address
     }
 }

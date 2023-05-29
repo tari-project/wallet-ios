@@ -46,7 +46,6 @@ final class InternalContactsManager {
         let emojiID: String
         let hex: String
         let isFavorite: Bool
-        private(set) var contact: Contact?
 
         static func == (lhs: InternalContactsManager.ContactModel, rhs: InternalContactsManager.ContactModel) -> Bool {
             lhs.hex == rhs.hex
@@ -61,8 +60,8 @@ final class InternalContactsManager {
 
         var models: [ContactModel] = []
 
-        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, emojiID: $0.address.emojis, hex: $0.address.byteVector.hex, isFavorite: $0.isFavorite, contact: $0) }
-        models += try fetchTariAddresses().map { try ContactModel(alias: nil, emojiID: $0.emojis, hex: $0.byteVector.hex, isFavorite: false, contact: nil) }
+        models += try fetchWalletContacts().map { try ContactModel(alias: $0.alias, emojiID: $0.address.emojis, hex: $0.address.byteVector.hex, isFavorite: $0.isFavorite) }
+        models += try fetchTariAddresses().map { try ContactModel(alias: nil, emojiID: $0.emojis, hex: $0.byteVector.hex, isFavorite: false) }
 
         return models
             .reduce(into: [ContactModel]()) { collection, model in
@@ -93,25 +92,17 @@ final class InternalContactsManager {
     func create(name: String, isFavorite: Bool, address: TariAddress) throws -> ContactModel {
         let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
         try Tari.shared.contacts.upsert(contact: contact)
-        return try ContactModel(alias: name, emojiID: address.emojis, hex: address.byteVector.hex, isFavorite: isFavorite, contact: contact)
+        return try ContactModel(alias: name, emojiID: address.emojis, hex: address.byteVector.hex, isFavorite: isFavorite)
     }
 
-    func update(name: String, isFavorite: Bool, contact: ContactModel) throws {
-
-        let address: TariAddress
-
-        if let existingContact = contact.contact {
-            address = try TariAddress(emojiID: existingContact.address.emojis)
-        } else {
-            address = try TariAddress(emojiID: contact.emojiID)
-        }
-
+    func update(name: String, isFavorite: Bool, hex: String) throws {
+        let address = try TariAddress(hex: hex)
         let contact = try Contact(alias: name, isFavorite: isFavorite, addressPointer: address.pointer)
         try Tari.shared.contacts.upsert(contact: contact)
     }
 
-    func remove(contact: ContactModel) throws {
-        guard let contact = contact.contact else { return }
+    func remove(hex: String) throws {
+        guard let contact = try Tari.shared.contacts.findContact(hex: hex) else { return }
         try Tari.shared.contacts.remove(contact: contact)
     }
 

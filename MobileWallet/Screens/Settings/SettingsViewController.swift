@@ -85,6 +85,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         case connectYats
 
         case selectTheme
+        case bluetoothConfiguration
         case torBridgeConfiguration
         case selectNetwork
         case selectBaseNode
@@ -94,6 +95,7 @@ final class SettingsViewController: SettingsParentTableViewController {
             switch self {
             case .backUpWallet: return localized("settings.item.wallet_backups")
 
+            case .bluetoothConfiguration: return localized("settings.item.bluetooth_settings")
             case .selectTheme: return localized("settings.item.select_theme")
             case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
             case .selectNetwork: return localized("settings.item.select_network")
@@ -120,6 +122,7 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
+        SystemMenuTableViewCellItem(icon: .icons.settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsNetworkIcon, title: SettingsItemTitle.selectNetwork.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBaseNodeIcon, title: SettingsItemTitle.selectBaseNode.rawValue),
@@ -162,12 +165,6 @@ final class SettingsViewController: SettingsParentTableViewController {
         setupCallbacks()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        checkClipboardForBaseNode()
-    }
-
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateFooterFrame()
@@ -199,6 +196,11 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private func onSelectThemeAction() {
         let controller = ThemeSettingsConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func onBluetoothSettingsAction() {
+        let controller = BluetoothSettingsConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -294,8 +296,9 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         if indexPath == profileIndexPath {
             let cell = tableView.dequeueReusableCell(type: SettingsProfileCell.self, indexPath: indexPath)
             do {
-                let emojiID = try Tari.shared.walletAddress.emojis.obfuscatedText
-                cell.update(avatar: emojiID.firstOrEmpty, emojiID: emojiID)
+                let name = UserSettingsManager.name
+                let address = try Tari.shared.walletAddress.emojis.obfuscatedText
+                cell.update(avatar: address.firstOrEmpty, name: name, address: address)
             } catch {
                 let message = ErrorMessageManager.errorModel(forError: error)
                 PopUpPresenter.show(message: message)
@@ -382,12 +385,14 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case 0:
                 onSelectThemeAction()
             case 1:
-                onBridgeConfigurationAction()
+                onBluetoothSettingsAction()
             case 2:
-                onSelectNetworkAction()
+                onBridgeConfigurationAction()
             case 3:
-                onSelectBaseNodeAction()
+                onSelectNetworkAction()
             case 4:
+                onSelectBaseNodeAction()
+            case 5:
                 onDeleteWalletAction()
             default:
                 break
@@ -403,37 +408,5 @@ extension SettingsViewController {
     override func setupNavigationBar() {
         super.setupNavigationBar()
         navigationBar.backButtonType = .none
-        if modalPresentationStyle != .popover { return }
-        navigationBar.onRightButtonAction = { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-        }
-
-        let title = localized("settings.done")
-        navigationBar.rightButton.setTitle(title, for: .normal)
-    }
-
-    private func checkClipboardForBaseNode() {
-        guard let pasteboardText = UIPasteboard.general.string, let baseNode = try? BaseNode(name: "From Pasteboard", peer: pasteboardText) else { return }
-
-        let popUpModel = PopUpDialogModel(
-            title: localized("settings.pasteboard.custom_base_node.pop_up.title"),
-            message: localized("settings.pasteboard.custom_base_node.pop_up.message", arguments: pasteboardText),
-            buttons: [
-                PopUpDialogButtonModel(title: localized("settings.pasteboard.custom_base_node.pop_up.button.confirm"), type: .normal, callback: { [weak self] in self?.update(baseNode: baseNode) }),
-                PopUpDialogButtonModel(title: localized("settings.pasteboard.custom_base_node.pop_up.button.cancel"), type: .text, callback: { UIPasteboard.general.string = "" })
-            ],
-            hapticType: .none
-        )
-
-        PopUpPresenter.showPopUp(model: popUpModel)
-    }
-
-    private func update(baseNode: BaseNode) {
-        do {
-            try Tari.shared.connection.select(baseNode: baseNode)
-            UIPasteboard.general.string = ""
-        } catch {
-            PopUpPresenter.show(message: MessageModel(title: localized("settings.pasteboard.custom_base_node.error.title"), message: localized("settings.pasteboard.custom_base_node.error.message"), type: .error))
-        }
     }
 }

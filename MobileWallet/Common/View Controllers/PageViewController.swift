@@ -128,6 +128,7 @@ extension PageViewController: UIScrollViewDelegate {
         let bounds = scrollView.bounds.width
         let index = CGFloat(currentIndex)
 
-        pageIndex = offset / bounds + index - 1
+        let pageIndex = offset / bounds + index - 1
+        self.pageIndex = pageIndex.isNormal ? pageIndex : 0.0
     }
 }

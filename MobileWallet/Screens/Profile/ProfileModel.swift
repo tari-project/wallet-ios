@@ -58,15 +58,25 @@ final class ProfileModel {
         case on
     }
 
+    enum Action {
+        case showQRPopUp
+        case shareQR(image: UIImage)
+        case shareLink(url: URL)
+        case showBLEWaitingForReceiverDialog
+        case showBLESuccessDialog
+        case showBLEFailureDialog(message: String?)
+    }
+
     // MARK: - View Model
 
+    @Published var name: String?
     @Published private(set) var emojiData: EmojiData?
     @Published private(set) var description: String?
     @Published private(set) var isReconnectButtonVisible: Bool = false
-    @Published private(set) var qrCodeImage: UIImage?
     @Published private(set) var errorMessage: MessageModel?
     @Published private(set) var yatButtonState: YatButtonState = .hidden
     @Published private(set) var yatAddress: String?
+    @Published private(set) var action: Action?
 
     // MARK: - Properties
 
@@ -75,6 +85,7 @@ final class ProfileModel {
     private var walletAddress: TariAddress?
     private var yat: String?
     private var isYatOutOfSync = false
+    private var bleTask: BLECentralTask?
 
     private var walletDescription: String {
         localized("profile_view.error.qr_code.description.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
@@ -90,6 +101,11 @@ final class ProfileModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
+
+        $name
+            .sink { UserSettingsManager.name = $0 }
+            .store(in: &cancellables)
+
         $yatButtonState
             .sink { [weak self] in try? self?.updatePresentedData(yatButtonState: $0) }
             .store(in: &cancellables)
@@ -113,23 +129,15 @@ final class ProfileModel {
     }
 
     private func updateData() {
+
+        name = UserSettingsManager.name
+
         do {
-            let walletAddress = try Tari.shared.walletAddress
-            let deeplinkModel = try TransactionsSendDeeplink(receiverAddress: walletAddress.byteVector.hex, amount: nil, note: nil)
-            let deeplinkData = try DeepLinkFormatter.deeplink(model: deeplinkModel)?.absoluteString.data(using: .utf8) ?? Data()
-            self.walletAddress = walletAddress
-            updateQR(data: deeplinkData)
+            self.walletAddress = try Tari.shared.walletAddress
             updateYatIdData()
         } catch {
-            qrCodeImage = nil
             emojiData = nil
             errorMessage = MessageModel(title: localized("profile_view.error.qr_code.title"), message: localized("wallet.error.failed_to_access"), type: .error)
-        }
-    }
-
-    private func updateQR(data: Data) {
-        Task {
-            qrCodeImage = await QRCodeFactory.makeQrCode(data: data)
         }
     }
 
@@ -145,6 +153,76 @@ final class ProfileModel {
                 receiveValue: { [weak self] in self?.handle(paymentAddressResponse: $0, yat: connectedYat) }
             )
             .store(in: &cancellables)
+    }
+
+    func generateQrCode() {
+
+        action = .showQRPopUp
+
+        Task {
+            guard let deeplink = try? makeDeeplink(), let deeplinkData = deeplink.absoluteString.data(using: .utf8), let image = await QRCodeFactory.makeQrCode(data: deeplinkData) else { return }
+            action = .shareQR(image: image)
+        }
+    }
+
+    func generateLink() {
+        guard let deeplink = try? makeDeeplink() else { return }
+        action = .shareLink(url: deeplink)
+    }
+
+    func shareContactUsingBLE() {
+
+        guard let deeplink = try? makeDeeplink(), let payload = deeplink.absoluteString.data(using: .utf16) else { return }
+
+        action = .showBLEWaitingForReceiverDialog
+
+        let bleTask = BLECentralTask(service: BLEConstants.contactBookService.uuid, characteristic: BLEConstants.contactBookService.characteristics.contactsShare)
+        self.bleTask = bleTask
+
+        Task {
+            do {
+                guard try await bleTask.findAndWrite(payload: payload) else { return }
+                action = .showBLESuccessDialog
+            } catch {
+                handle(bleWriteError: error)
+            }
+        }
+    }
+
+    func cancelBLESharing() {
+        bleTask?.cancel()
+    }
+
+    private func makeDeeplink() throws -> URL? {
+
+        guard let alias = name else { return nil }
+        let hex = try Tari.shared.walletAddress.byteVector.hex
+
+        let deeplinkModel = ContactListDeeplink(list: [
+            ContactListDeeplink.Contact(alias: alias, hex: hex)
+        ])
+
+        return try DeepLinkFormatter.deeplink(model: deeplinkModel)
+    }
+
+    private func show(error: Error?) {
+        yatButtonState = .hidden
+        self.errorMessage = ErrorMessageManager.errorModel(forError: error)
+    }
+
+    private func updatePresentedData(yatButtonState: YatButtonState) throws {
+        switch yatButtonState {
+        case .hidden, .loading, .off:
+            guard let walletAddress = walletAddress else { return }
+            emojiData = EmojiData(emojiID: try walletAddress.emojis, hex: try walletAddress.byteVector.hex, copyText: localized("emoji.copy"), tooltipText: localized("emoji.hex_tip"))
+            description = walletDescription
+            isReconnectButtonVisible = false
+        case .on:
+            guard let yat = self.yat else { return }
+            emojiData = EmojiData(emojiID: yat, hex: nil, copyText: localized("emoji.yat.copy"), tooltipText: nil)
+            description = isYatOutOfSync ? localized("profile_view.error.yat_mismatch") : walletDescription
+            isReconnectButtonVisible = isYatOutOfSync
+        }
     }
 
     // MARK: - Handlers
@@ -171,23 +249,16 @@ final class ProfileModel {
         }
     }
 
-    private func show(error: Error?) {
-        yatButtonState = .hidden
-        self.errorMessage = ErrorMessageManager.errorModel(forError: error)
-    }
+    private func handle(bleWriteError error: Error) {
 
-    private func updatePresentedData(yatButtonState: YatButtonState) throws {
-        switch yatButtonState {
-        case .hidden, .loading, .off:
-            guard let walletAddress = walletAddress else { return }
-            emojiData = EmojiData(emojiID: try walletAddress.emojis, hex: try walletAddress.byteVector.hex, copyText: localized("emoji.copy"), tooltipText: localized("emoji.hex_tip"))
-            description = walletDescription
-            isReconnectButtonVisible = false
-        case .on:
-            guard let yat = self.yat else { return }
-            emojiData = EmojiData(emojiID: yat, hex: nil, copyText: localized("emoji.yat.copy"), tooltipText: nil)
-            description = isYatOutOfSync ? localized("profile_view.error.yat_mismatch") : walletDescription
-            isReconnectButtonVisible = isYatOutOfSync
+        let message: String?
+
+        if let error = error as? BLECentralManager.BLECentralError {
+            message = error.errorMessage
+        } else {
+            message = ErrorMessageManager.errorMessage(forError: error)
         }
+
+        action = .showBLEFailureDialog(message: message)
     }
 }

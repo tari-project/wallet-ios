@@ -68,8 +68,8 @@ final class UTXOTileView: DynamicThemeCollectionCell {
 
     @View private var amountContentView = UIView()
 
-    @View private var tickView: UTXOsWalletTickButton = {
-        let view = UTXOsWalletTickButton()
+    @View private var tickView: TickButton = {
+        let view = TickButton()
         view.alpha = 0.0
         return view
     }()

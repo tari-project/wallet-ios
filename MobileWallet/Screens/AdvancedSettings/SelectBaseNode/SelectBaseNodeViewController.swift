@@ -66,13 +66,8 @@ final class SelectBaseNodeViewController: SettingsParentTableViewController {
 
     override func setupNavigationBar() {
         super.setupNavigationBar()
-
         navigationBar.title = localized("select_base_node.title")
-        navigationBar.rightButton.setImage(UIImage(systemName: "plus.bubble"), for: .normal)
-
-        navigationBar.onRightButtonAction = { [weak self] in
-            self?.presentAddBaseNodeScreen()
-        }
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(image: UIImage(systemName: "plus.bubble"), callback: { [weak self] in self?.presentAddBaseNodeScreen() }))
     }
 
     override func setupViews() {

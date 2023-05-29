@@ -57,14 +57,14 @@ enum DeepLinkFormatter {
     static func model<T: DeepLinkCodable>(type: T.Type, deeplink: URL) throws -> T {
         guard let networkName = deeplink.host, networkName == validNetworkName else { throw DeepLinkError.invalidNetworkName }
         guard deeplink.path == T.command else { throw DeepLinkError.invalidCommandName }
-        let decoder = DeepLinkDataDecoder(deeplink: deeplink)
+        let decoder = DeepLinkDecoder(deeplink: deeplink)
         return try T(from: decoder)
 
     }
 
     static func deeplink<T: DeepLinkCodable>(model: T, networkName: String = validNetworkName) throws -> URL? {
 
-        let encoder = DeepLinkDataEncoder()
+        let encoder = DeepLinkEncoder()
 
         do {
          try model.encode(to: encoder)
@@ -72,7 +72,7 @@ enum DeepLinkFormatter {
             throw DeepLinkError.unableToEncode(error: error)
         }
 
-        let query = encoder.query
+        let query = encoder.result
 
         var urlComponents = URLComponents()
         urlComponents.scheme = validScheme

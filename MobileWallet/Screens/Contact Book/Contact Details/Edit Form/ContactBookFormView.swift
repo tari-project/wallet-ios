@@ -82,7 +82,6 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
         super.init()
         setupTitleBar(title: title)
         setupConstraints()
-        setupCallbacks()
         update(textFieldsModels: textFieldsModels)
     }
 
@@ -94,7 +93,7 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
     private func setupTitleBar(title: String?) {
         titleBar.title = title
-        titleBar.rightButton.setTitle(localized("common.done"), for: .normal)
+        titleBar.update(rightButton: NavigationBar.ButtonModel(title: localized("common.done"), callback: { [weak self] in self?.onCloseAction?() }))
     }
 
     private func setupConstraints() {
@@ -112,12 +111,6 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
         ]
 
         NSLayoutConstraint.activate(constraints)
-    }
-
-    private func setupCallbacks() {
-        titleBar.onRightButtonAction = { [weak self] in
-            self?.onCloseAction?()
-        }
     }
 
     // MARK: - Updates

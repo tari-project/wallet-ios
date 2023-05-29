@@ -63,11 +63,18 @@ final class TransactionDetailsModel {
     @Published private(set) var isBlockExplorerActionAvailable: Bool = false
     @Published private(set) var linkToOpen: URL?
 
+    var isContactExist: Bool { contactModel?.isFFIContact == true }
+    var contactHaveSplittedName: Bool { contactModel?.hasExternalModel ?? false }
+    var contactNameComponents: [String] { contactModel?.nameComponents ?? ["", ""] }
+
     var userAliasUpdateSuccessCallback: (() -> Void)?
 
     // MARK: - Properties
 
+    private let contactsManager = ContactsManager()
+
     private var transaction: Transaction
+    private var contactModel: ContactsManager.Model?
     private var transactionNounce: String?
     private var transactionSignature: String?
 
@@ -99,6 +106,11 @@ final class TransactionDetailsModel {
                 .sink { [weak self] in self?.handle(transaction: $0) }
                 .store(in: &cancellables)
         }
+
+        $userAlias
+            .map { $0 != nil }
+            .sink { [weak self] in self?.handle(isUserAliasExist: $0) }
+            .store(in: &cancellables)
     }
 
     // MARK: - Actions
@@ -114,16 +126,13 @@ final class TransactionDetailsModel {
             subtitle = try fetchSubtitle()
             amount = try fetchAmount()
             fee = try fetchFee()
-            userAlias = try fetchUserAlias()
             try handleMessage()
+            updateContactData()
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.error.load_tx.title"), message: localized("tx_detail.error.load_tx.description"), type: .error)
         }
 
         handleTransactionKernel()
-
-        isAddContactButtonVisible = userAlias == nil
-        isNameSectionVisible = userAlias != nil
     }
 
     func cancelTransactionRequest() {
@@ -144,27 +153,42 @@ final class TransactionDetailsModel {
         isNameSectionVisible = true
     }
 
-    func update(alias: String?) {
+    func update(nameComponents: [String]) {
 
-        guard let alias = alias, !alias.isEmpty else { return }
+        guard let contactModel else {
+            do {
+                let address = try transaction.address
+                self.contactModel = try contactsManager.createInternalModel(name: nameComponents.joined(separator: " "), isFavorite: false, address: address)
+                updateAlias()
+                userAliasUpdateSuccessCallback?()
+            } catch {
+                errorModel = MessageModel(title: localized("tx_detail.error.contact.title"), message: localized("tx_detail.error.save_contact.description"), type: .error)
+                resetAlias()
+            }
+            return
+        }
 
         do {
-            let address = try transaction.address
-            let isFavorite: Bool
-
-            if let existingContact = try Tari.shared.contacts.findContact(hex: address.byteVector.hex) {
-                isFavorite = try existingContact.isFavorite
-            } else {
-                isFavorite = false
-            }
-
-            let contact = try Contact(alias: alias, isFavorite: isFavorite, addressPointer: address.pointer)
-            _ = try Tari.shared.contacts.upsert(contact: contact)
-            userAliasUpdateSuccessCallback?()
-            userAlias = alias
+            try contactsManager.update(nameComponents: nameComponents, isFavorite: contactModel.isFavorite, yat: contactModel.externalModel?.yat ?? "", contact: contactModel)
+            updateContactData()
         } catch {
             errorModel = MessageModel(title: localized("tx_detail.error.contact.title"), message: localized("tx_detail.error.save_contact.description"), type: .error)
             resetAlias()
+        }
+    }
+
+    private func updateContactData() {
+        Task {
+            contactModel = try await fetchContactModel()
+            updateAlias()
+        }
+    }
+
+    private func updateAlias() {
+        if let contactModel {
+            userAlias = isContactExist ? contactModel.name : nil
+        } else {
+            userAlias = nil
         }
     }
 
@@ -253,9 +277,15 @@ final class TransactionDetailsModel {
         return EmojiIdView.ViewModel(emojiID: emojiID, hex: hex)
     }
 
-    private func fetchUserAlias() throws -> String? {
-        let contact = try Tari.shared.contacts.findContact(hex: try transaction.address.byteVector.hex)
-        return try contact?.alias
+    private func fetchContactModel() async throws -> ContactsManager.Model? {
+        try await contactsManager.fetchModels()
+        return try contactsManager.tariContactModels.first { try $0.internalModel?.hex == transaction.address.byteVector.hex }
+    }
+
+    private func fetchLinkToOpen() -> URL? {
+        guard let transactionNounce = transactionNounce, let transactionSignature = transactionSignature else { return nil }
+        let request = [transactionNounce, transactionSignature].joined(separator: "/")
+        return URL(string: TariSettings.shared.blockExplorerKernelUrl + "\(request)")
     }
 
     private func handle(transaction: Transaction) {
@@ -314,10 +344,9 @@ final class TransactionDetailsModel {
         transactionSignature = try? kernel.excessSignatureHex
     }
 
-    private func fetchLinkToOpen() -> URL? {
-        guard let transactionNounce = transactionNounce, let transactionSignature = transactionSignature else { return nil }
-        let request = [transactionNounce, transactionSignature].joined(separator: "/")
-        return URL(string: TariSettings.shared.blockExplorerKernelUrl + "\(request)")
+    private func handle(isUserAliasExist: Bool) {
+        isAddContactButtonVisible = !isUserAliasExist
+        isNameSectionVisible = isUserAliasExist
     }
 }
 

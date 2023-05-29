@@ -43,10 +43,30 @@ import TariCommon
 
 final class NavigationBar: DynamicThemeView {
 
-    enum BackButtonType {
+    enum BackButtonType: Equatable {
         case back
         case close
+        case text(String?)
         case none
+    }
+
+    struct ButtonModel {
+
+        let image: UIImage?
+        let title: String?
+        let callback: (() -> Void)?
+
+        init(image: UIImage?, callback: (() -> Void)?) {
+            self.image = image
+            title = nil
+            self.callback = callback
+        }
+
+        init(title: String?, callback: (() -> Void)?) {
+            image = nil
+            self.title = title
+            self.callback = callback
+        }
     }
 
     // MARK: - Subviews
@@ -60,13 +80,17 @@ final class NavigationBar: DynamicThemeView {
         return view
     }()
 
-    @View private var backButton = BaseButton()
-    @View private var separator = UIView()
-
-    @View private(set) var rightButton: BaseButton = {
+    @View private var backButton: BaseButton = {
         let view = BaseButton()
         view.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
-        view.titleEdgeInsets = UIEdgeInsets(top: 0.0, left: -8.0, bottom: 0.0, right: 8.0)
+        return view
+    }()
+
+    @View private var separator = UIView()
+
+    @View private var rightStackView: UIStackView = {
+        let view = UIStackView()
+        view.axis = .horizontal
         return view
     }()
 
@@ -107,7 +131,6 @@ final class NavigationBar: DynamicThemeView {
     }
 
     var onBackButtonAction: (() -> Void)?
-    var onRightButtonAction: (() -> Void)?
 
     override init() {
         super.init()
@@ -125,9 +148,7 @@ final class NavigationBar: DynamicThemeView {
     private func setupConstraints() {
 
         [contentView, bottomContentView, separator, progressView].forEach(addSubview)
-        [backButton, titleLabel, rightButton].forEach(contentView.addSubview)
-
-        rightButton.setContentHuggingPriority(.required, for: .horizontal)
+        [backButton, titleLabel, rightStackView].forEach(contentView.addSubview)
 
         let bottomContentViewHeightConstraint = bottomContentView.heightAnchor.constraint(equalToConstant: 0.0)
         bottomContentViewHeightConstraint.priority = .defaultHigh
@@ -138,16 +159,16 @@ final class NavigationBar: DynamicThemeView {
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentView.heightAnchor.constraint(equalToConstant: 44.0),
             backButton.topAnchor.constraint(equalTo: contentView.topAnchor),
-            backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            backButton.widthAnchor.constraint(equalToConstant: 44.0),
+            backButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8.0),
+            backButton.widthAnchor.constraint(greaterThanOrEqualTo: backButton.heightAnchor),
             backButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: backButton.trailingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: rightButton.leadingAnchor),
+            titleLabel.leadingAnchor.constraint(greaterThanOrEqualTo: backButton.trailingAnchor),
+            titleLabel.trailingAnchor.constraint(lessThanOrEqualTo: rightStackView.leadingAnchor),
+            titleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            rightButton.topAnchor.constraint(equalTo: contentView.topAnchor),
-            rightButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            rightButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 44.0),
-            rightButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            rightStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            rightStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8.0),
+            rightStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomContentView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             bottomContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -168,7 +189,6 @@ final class NavigationBar: DynamicThemeView {
 
     private func setupCallbacks() {
         backButton.onTap = { [weak self] in self?.handleBackButtonAction() }
-        rightButton.onTap = { [weak self] in self?.onRightButtonAction?() }
     }
 
     // MARK: - Updates
@@ -177,29 +197,62 @@ final class NavigationBar: DynamicThemeView {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
         backButton.tintColor = theme.icons.default
+        backButton.setTitleColor(theme.brand.purple, for: .normal)
         titleLabel.textColor = theme.text.heading
         separator.backgroundColor = theme.neutral.tertiary
         progressView.tintColor = theme.brand.purple
+        updateStackView(theme: theme)
+    }
 
-        rightButton.tintColor = theme.icons.default
-        rightButton.setTitleColor(theme.brand.purple, for: .normal)
-        rightButton.setTitleColor(theme.brand.purple?.withAlphaComponent(0.5), for: .highlighted)
-        rightButton.setTitleColor(theme.icons.inactive, for: .disabled)
+    private func updateStackView(theme: ColorTheme) {
+        rightStackView
+            .arrangedSubviews
+            .compactMap { $0 as? BaseButton }
+            .forEach {
+                $0.tintColor = theme.icons.default
+                $0.setTitleColor(theme.brand.purple, for: .normal)
+                $0.setTitleColor(theme.brand.purple?.withAlphaComponent(0.5), for: .highlighted)
+                $0.setTitleColor(theme.icons.inactive, for: .disabled)
+            }
+    }
+
+    func update(rightButton: ButtonModel) {
+        update(rightButtons: [rightButton])
+    }
+
+    func update(rightButtons: [ButtonModel]) {
+
+        rightStackView.removeAllViews()
+
+        rightButtons
+            .compactMap { [weak self] in self?.makeButton(model: $0) }
+            .forEach(rightStackView.addArrangedSubview)
+
+        updateStackView(theme: theme)
+    }
+
+    func rightButton(index: Int) -> BaseButton? {
+        guard rightStackView.arrangedSubviews.count > index else { return nil }
+        return rightStackView.arrangedSubviews[index] as? BaseButton
     }
 
     private func updateLeftButton() {
 
-        let image: UIImage?
+        var text: String?
+        var image: UIImage?
 
         switch backButtonType {
         case .back:
             image = Theme.shared.images.backArrow
         case .close:
             image = Theme.shared.images.close
+        case let .text(buttonText):
+            text = buttonText
         case .none:
-            image = nil
+            break
         }
 
+        backButton.setTitle(text, for: .normal)
         backButton.setImage(image, for: .normal)
     }
 
@@ -227,5 +280,17 @@ final class NavigationBar: DynamicThemeView {
         }
 
         navigationController.dismiss(animated: true)
+    }
+
+    // MARK: - Factories
+
+    private func makeButton(model: ButtonModel) -> BaseButton {
+        @View var button = BaseButton()
+        button.titleLabel?.font = Theme.shared.fonts.settingsDoneButton
+        button.setTitle(model.title, for: .normal)
+        button.setImage(model.image, for: .normal)
+        button.onTap = model.callback
+        button.widthAnchor.constraint(greaterThanOrEqualTo: button.heightAnchor).isActive = true
+        return button
     }
 }

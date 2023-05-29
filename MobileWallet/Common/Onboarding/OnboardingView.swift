@@ -68,7 +68,6 @@ final class OnboardingView: BaseNavigationContentView {
         super.init()
         setupViews()
         setupConstraints()
-        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -79,7 +78,7 @@ final class OnboardingView: BaseNavigationContentView {
 
     private func setupViews() {
         navigationBar.backButtonType = .close
-        navigationBar.rightButton.setTitle(localized("common.next"), for: .normal)
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(title: localized("common.next"), callback: { [weak self] in self?.onNextButtonPress?() }))
     }
 
     private func setupConstraints() {
@@ -98,17 +97,10 @@ final class OnboardingView: BaseNavigationContentView {
         NSLayoutConstraint.activate(constraints)
     }
 
-    private func setupCallbacks() {
-        navigationBar.onRightButtonAction = { [weak self] in
-            self?.onNextButtonPress?()
-        }
-    }
-
     // MARK: - Theme
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
-        navigationBar.rightButton.setTitleColor(theme.brand.purple, for: .normal)
     }
 }

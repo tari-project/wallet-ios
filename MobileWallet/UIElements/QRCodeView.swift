@@ -45,16 +45,13 @@ final class QRCodeView: UIView {
 
     // MARK: - Subviews
 
-    @View private var imageView: UIImageView = {
-        let view = UIImageView()
-        view.contentMode = .scaleAspectFit
-        return view
-    }()
+    @View private var imageView = LoadingImageView()
 
     // MARK: - Properties
 
-    var image: UIImage? {
-        didSet { imageView.image = image }
+    var state: LoadingImageView.State {
+        get { imageView.state }
+        set { imageView.state = newValue }
     }
 
     // MARK: - Initialiser

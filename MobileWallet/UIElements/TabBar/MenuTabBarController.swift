@@ -51,7 +51,6 @@ final class MenuTabBarController: UITabBarController {
 
     let homeViewController = HomeViewController()
     private let storeViewController = WebBrowserViewController()
-    private let transactionsViewController = TransactionsViewController()
     private let contactBookViewController = ContactBookConstructor.buildScene()
     private let settingsViewController = SettingsViewController()
     private let customTabBar = CustomTabBar()
@@ -64,23 +63,15 @@ final class MenuTabBarController: UITabBarController {
 
         homeViewController.tabBarItem.image = Theme.shared.images.homeItem
         storeViewController.tabBarItem.image = Theme.shared.images.ttlItem
-        transactionsViewController.tabBarItem.image = Theme.shared.images.sendItem
-        transactionsViewController.tabBarItem.tag = 1 // Using this to determine which icon to move upwards
         contactBookViewController.tabBarItem.image = .icons.tabBar.contactBook
         settingsViewController.tabBarItem.image = Theme.shared.images.settingsItem
 
         storeViewController.url = URL(string: TariSettings.shared.storeUrl)
 
-        viewControllers = [homeViewController, storeViewController, transactionsViewController, contactBookViewController, settingsViewController]
+        viewControllers = [homeViewController, storeViewController, contactBookViewController, settingsViewController]
 
-        for tabBarItem in tabBar.items! {
-            // For the send image we need to raise it higher than the others
-            if tabBarItem.tag == 1 {
-                tabBarItem.imageInsets = UIEdgeInsets(top: -16, left: 0, bottom: -12, right: 0)
-            } else if hasNotch { // On phones without notches the icons should stay vertically centered
-                tabBarItem.imageInsets = UIEdgeInsets(top: 13, left: 0, bottom: -13, right: 0)
-            }
-        }
+        guard hasNotch else { return }
+        tabBarItem.imageInsets = UIEdgeInsets(top: 13, left: 0, bottom: -13, right: 0)
     }
 
     override var childForStatusBarStyle: UIViewController? {
@@ -98,16 +89,6 @@ final class MenuTabBarController: UITabBarController {
 }
 
 extension MenuTabBarController: UITabBarControllerDelegate {
-    func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
-        if viewController.isKind(of: TransactionsViewController.self) {
-            let navigationController = AlwaysPoppableNavigationController(rootViewController: TransactionsViewController())
-            navigationController.setNavigationBarHidden(true, animated: false)
-            navigationController.modalPresentationStyle = .fullScreen
-            present(navigationController, animated: true)
-            return false
-        }
-        return true
-    }
 
     func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return Transition(viewControllers: tabBarController.viewControllers)

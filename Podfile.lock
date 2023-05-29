@@ -30,7 +30,7 @@ PODS:
   - Tor (407.12.1):
     - Tor/Core (= 407.12.1)
   - Tor/Core (407.12.1)
-  - YatLib (0.3.2):
+  - YatLib (0.3.3):
     - TariCommon (~> 0.2.0)
   - Zip (2.1.2)
 
@@ -47,7 +47,7 @@ DEPENDENCIES:
   - SwiftyDropbox (= 8.2.1)
   - TariCommon (= 0.2.0)
   - Tor (~> 407.12.1)
-  - YatLib (= 0.3.2)
+  - YatLib (= 0.3.3)
   - Zip (= 2.1.2)
 
 SPEC REPOS:
@@ -95,9 +95,9 @@ SPEC CHECKSUMS:
   SwiftyDropbox: f6c55aae36c4ea944fe6b35f807c19897f78b09b
   TariCommon: 2c8bb97359f59d6b302d2e96c191ff95931da8ac
   Tor: 319ca0f3bc42c387736a2d6dc56de75ed0a30eaf
-  YatLib: cd443f044b7ddc58bd17e2406e3ecaf6688880a6
+  YatLib: f56aa60679b20e989a41b6bc92c0081c013b523a
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: 6d687c19b6f40f1e746d9ba4eb7c7a515c027dc8
+PODFILE CHECKSUM: 8832ff20a801bc9cce75eabcb6665cce00b686f5
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.12.1

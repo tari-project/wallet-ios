@@ -40,11 +40,29 @@
 
 enum UserSettingsManager {
 
+    static var name: String? {
+        get { userSettings.name }
+        set {
+            var userSettings = userSettings
+            userSettings.name = newValue
+            GroupUserDefaults.userSettings = userSettings
+        }
+    }
+
     static var colorScheme: UserSettings.ColorScheme {
         get { userSettings.colorScheme }
         set {
             var userSettings = userSettings
             userSettings.colorScheme = newValue
+            GroupUserDefaults.userSettings = userSettings
+        }
+    }
+
+    static var bleAdvertisementMode: UserSettings.BLEAdvertisementMode {
+        get { userSettings.bleAdvertismentMode }
+        set {
+            var userSettings = userSettings
+            userSettings.bleAdvertismentMode = newValue
             GroupUserDefaults.userSettings = userSettings
         }
     }

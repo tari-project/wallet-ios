@@ -129,8 +129,6 @@ final class TransactionDetailsViewController: UIViewController {
             .sink { [weak self] in
                 self?.mainView.contactNameView.isHidden = !$0
                 self?.mainView.noteSeparatorView.isHidden = !$0
-                guard $0, self?.mainView.contactNameView.contentView.textField.text?.isEmpty == true else { return }
-                self?.mainView.contactNameView.contentView.isEditingEnabled = true
             }
             .store(in: &cancellables)
 
@@ -195,12 +193,29 @@ final class TransactionDetailsViewController: UIViewController {
             self?.model.addContactAliasRequest()
         }
 
-        mainView.contactNameView.contentView.onNameChange = { [weak self] in
-            self?.model.update(alias: $0)
+        mainView.contactNameView.contentView.editButton.onTap = { [weak self] in
+            self?.showEditFormOverlay()
         }
 
         mainView.blockExplorerView.contentView.onTap = { [weak self] in
             self?.model.requestLinkToBlockExplorer()
+        }
+    }
+
+    private func showEditFormOverlay() {
+
+        let isContactExist = model.isContactExist
+
+        if model.contactHaveSplittedName {
+            let nameComponents = model.contactNameComponents
+            FormOverlayPresenter.showTwoFieldsContactEditForm(isContactExist: isContactExist, nameComponents: nameComponents, presenter: self) { [weak self] nameComponents in
+                self?.model.update(nameComponents: nameComponents)
+            }
+        } else {
+            let alias = model.userAlias ?? ""
+            FormOverlayPresenter.showSingleFieldContactEditForm(isContactExist: isContactExist, alias: alias, presenter: self) { [weak self] alias in
+                self?.model.update(nameComponents: [alias])
+            }
         }
     }
 

@@ -42,6 +42,19 @@ import UIKit
 
 extension UITableView {
 
+    func updateHeaderFrame() {
+
+        guard let tableHeaderView else { return }
+
+        let width = bounds.width
+        let size = tableHeaderView.systemLayoutSizeFitting(CGSize(width: width, height: UIView.layoutFittingCompressedSize.height))
+
+        guard tableHeaderView.bounds.height != size.height else { return }
+
+        tableHeaderView.bounds.size.height = size.height
+        self.tableHeaderView = tableHeaderView
+    }
+
     func updateFooterFrame() {
 
         guard let tableFooterView else { return }

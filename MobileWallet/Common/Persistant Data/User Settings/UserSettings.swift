@@ -47,9 +47,17 @@ struct UserSettings: Codable {
         case purple
     }
 
+    enum BLEAdvertisementMode: Codable {
+        case turnedOff
+        case onlyOnForeground
+        case alwaysOn
+    }
+
+    var name: String?
     var colorScheme: ColorScheme
+    var bleAdvertismentMode: BLEAdvertisementMode
 }
 
 extension UserSettings {
-    static var `default`: Self { Self(colorScheme: .system) }
+    static var `default`: Self { Self(colorScheme: .system, bleAdvertismentMode: .onlyOnForeground) }
 }

@@ -43,27 +43,24 @@ import UIKit
 
 final class ExternalContactsManager {
 
-    private static let auroraServiceName = "Aurora"
-    private static let yatServiceName = "Yat"
-
     struct ContactModel: Equatable {
+
+        let uuid: String
         let firstName: String
         let lastName: String
-        let contact: CNContact
+        let emojiID: String?
         let yat: String?
+        let avatar: UIImage?
 
-        var avatar: UIImage? {
-            guard let data = contact.thumbnailImageData, let image = UIImage(data: data) else { return nil }
-            return image
-        }
-
-        var emojiID: String? { contact.socialProfiles.first { $0.value.service == auroraServiceName }?.value.username }
         var fullname: String { [firstName, lastName].joined(separator: " ") }
-
-        static func == (lhs: Self, rhs: Self) -> Bool {
-            lhs.contact.identifier == rhs.contact.identifier
-        }
+        static func == (lhs: Self, rhs: Self) -> Bool { lhs.uuid == rhs.uuid }
     }
+
+    // MARK: - Constants
+
+    private static let auroraServiceName = "Aurora"
+    private static let yatServiceName = "Yat"
+    private let keysToFetch: [CNKeyDescriptor] = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactInstantMessageAddressesKey, CNContactSocialProfilesKey, CNContactThumbnailImageDataKey] as [CNKeyDescriptor]
 
     // MARK: - Properties
 
@@ -83,7 +80,6 @@ final class ExternalContactsManager {
             return []
         }
 
-        let keysToFetch: [CNKeyDescriptor] = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactInstantMessageAddressesKey, CNContactSocialProfilesKey, CNContactThumbnailImageDataKey] as [CNKeyDescriptor]
         let request = CNContactFetchRequest(keysToFetch: keysToFetch)
 
         return try await withCheckedThrowingContinuation { continuation in
@@ -92,8 +88,13 @@ final class ExternalContactsManager {
 
             do {
                 try store.enumerateContacts(with: request) { contact, _ in
+                    let emojiID = contact.socialProfiles.first { $0.value.service == Self.auroraServiceName }?.value.username
                     let yat = contact.socialProfiles.first { $0.value.service == Self.yatServiceName }?.value.username
-                    models.append(ContactModel(firstName: contact.givenName, lastName: contact.familyName, contact: contact, yat: yat))
+                    var avatar: UIImage?
+                    if let avatarData = contact.thumbnailImageData {
+                        avatar = UIImage(data: avatarData)
+                    }
+                    models.append(ContactModel(uuid: contact.identifier, firstName: contact.givenName, lastName: contact.familyName, emojiID: emojiID, yat: yat, avatar: avatar))
                 }
                 continuation.resume(with: .success(models))
             } catch {
@@ -102,65 +103,72 @@ final class ExternalContactsManager {
         }
     }
 
-    func update(firstName: String, lastName: String, yat: String, contact: ContactModel) throws {
+    func update(firstName: String, lastName: String, yat: String, contactID: String) throws {
 
-        guard let mutableContact = contact.contact.mutableCopy() as? CNMutableContact else { return }
+        guard let contact = try fetchContact(uuid: contactID) else { return }
 
-        mutableContact.givenName = firstName
-        mutableContact.familyName = lastName
+        contact.givenName = firstName
+        contact.familyName = lastName
 
         let urlString = "https://www.y.at"
 
-        var socialProfiles = mutableContact.socialProfiles.filter { $0.value.service != Self.yatServiceName }
+        var socialProfiles = contact.socialProfiles.filter { $0.value.service != Self.yatServiceName }
 
         if !yat.isEmpty {
             socialProfiles.append(CNLabeledValue<CNSocialProfile>(label: nil, value: CNSocialProfile(urlString: urlString, username: yat, userIdentifier: nil, service: Self.yatServiceName)))
         }
 
-        mutableContact.socialProfiles = socialProfiles
+        contact.socialProfiles = socialProfiles
 
         let request = CNSaveRequest()
-        request.update(mutableContact)
+        request.update(contact)
 
         try store.execute(request)
     }
 
-    func remove(contact: ContactModel) throws {
+    func remove(contactID: String) throws {
 
-        guard let mutableContact = contact.contact.mutableCopy() as? CNMutableContact else { return }
+        guard let contact = try fetchContact(uuid: contactID) else { return }
 
         let request = CNSaveRequest()
-        request.delete(mutableContact)
+        request.delete(contact)
 
         try store.execute(request)
     }
 
-    func link(hex: String, emojiID: String, contact: ContactModel) throws {
+    func link(hex: String, emojiID: String, contactID: String) throws {
 
-        guard let mutableContact = contact.contact.mutableCopy() as? CNMutableContact else { return }
+        guard let contact = try fetchContact(uuid: contactID) else { return }
 
         let urlString = "tari://\(NetworkManager.shared.selectedNetwork.name)/transactions/send?publicKey=\(hex)"
 
-        var socialProfiles = mutableContact.socialProfiles.filter { $0.value.service != Self.auroraServiceName }
+        var socialProfiles = contact.socialProfiles.filter { $0.value.service != Self.auroraServiceName }
         socialProfiles.append(CNLabeledValue<CNSocialProfile>(label: nil, value: CNSocialProfile(urlString: urlString, username: emojiID, userIdentifier: nil, service: Self.auroraServiceName)))
 
-        mutableContact.socialProfiles = socialProfiles
+        contact.socialProfiles = socialProfiles
 
         let request = CNSaveRequest()
-        request.update(mutableContact)
+        request.update(contact)
 
         try store.execute(request)
     }
 
-    func unlink(contact: ContactModel) throws {
+    func unlink(contactID: String) throws {
 
-        guard let mutableContact = contact.contact.mutableCopy() as? CNMutableContact else { return }
+        guard let contact = try fetchContact(uuid: contactID) else { return }
 
-        mutableContact.socialProfiles = mutableContact.socialProfiles.filter { $0.value.service != Self.auroraServiceName }
+        contact.socialProfiles = contact.socialProfiles.filter { $0.value.service != Self.auroraServiceName }
 
         let request = CNSaveRequest()
-        request.update(mutableContact)
+        request.update(contact)
 
         try store.execute(request)
+    }
+
+    // MARK: - Helpers
+
+    private func fetchContact(uuid: String) throws -> CNMutableContact? {
+        let contact = try store.unifiedContact(withIdentifier: uuid, keysToFetch: keysToFetch)
+        return contact.mutableCopy() as? CNMutableContact
     }
 }
