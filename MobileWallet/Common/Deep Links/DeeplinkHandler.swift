@@ -79,7 +79,7 @@ enum DeeplinkHandler {
             let deeplink = try DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: transactionSendDeeplink)
 
             guard let handler = handler else {
-                AppRouter.moveToTransactionSend(deeplink: deeplink)
+                showTransactionFlow(deeplink: deeplink)
                 return
             }
 
@@ -87,6 +87,18 @@ enum DeeplinkHandler {
         } catch {
             throw DeeplinkError.transactionSendDeeplinkError(error)
         }
+    }
+
+    private static func showTransactionFlow(deeplink: TransactionsSendDeeplink) {
+
+        var amount: MicroTari?
+
+        if let rawAmount = deeplink.amount {
+            amount = MicroTari(rawAmount)
+        }
+
+        let paymentInfo = PaymentInfo(address: deeplink.receiverAddress, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note)
+        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
     }
 
     private static func handle(baseNodesAddDeeplink: URL, handler: DeeplinkHandlable?) throws {

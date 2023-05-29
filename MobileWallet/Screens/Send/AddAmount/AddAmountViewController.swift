@@ -45,7 +45,6 @@ import Combine
 final class AddAmountViewController: DynamicThemeViewController {
 
     private let paymentInfo: PaymentInfo
-    private let deeplink: TransactionsSendDeeplink?
 
     private let navigationBar = NavigationBar()
     @View private var emojiIdView = EmojiIdView()
@@ -149,9 +148,8 @@ final class AddAmountViewController: DynamicThemeViewController {
     private var isBalanceExceeded = false
     private var cancellables = Set<AnyCancellable>()
 
-    init(paymentInfo: PaymentInfo, deeplink: TransactionsSendDeeplink?) {
+    init(paymentInfo: PaymentInfo) {
         self.paymentInfo = paymentInfo
-        self.deeplink = deeplink
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -166,10 +164,8 @@ final class AddAmountViewController: DynamicThemeViewController {
         updateLabelText()
         showAvailableBalance()
 
-        // Deep link value
-        if let amount = deeplink?.amount, amount > 0 {
-            let tariAmount = MicroTari(amount)
-            addCharacter(tariAmount.formattedPrecise)
+        if let amount = paymentInfo.amount, amount.isGreaterThanZero {
+            addCharacter(amount.formattedPrecise)
         }
 
         setupOneSidedPaymentElements()
@@ -185,8 +181,9 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func displayAliasOrEmojiId() {
         do {
-            guard let contact = try Tari.shared.contacts.findContact(hex: paymentInfo.address.byteVector.hex) else {
-                emojiIdView.setup(emojiID: try paymentInfo.address.emojis, hex: try paymentInfo.address.byteVector.hex, textCentered: true, inViewController: self)
+            guard let contact = try Tari.shared.contacts.findContact(hex: paymentInfo.address) else {
+                let tariAddress = try TariAddress(hex: paymentInfo.address)
+                emojiIdView.setup(emojiID: try tariAddress.emojis, hex: paymentInfo.address, textCentered: true, inViewController: self)
                 return
             }
             navigationBar.title = try contact.alias
@@ -455,9 +452,9 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     @objc private func continueButtonTapped() {
-        guard let amount = calculateAmount(), let feePerGram = feePerGram else { return }
-        let noteVC = AddNoteViewController(paymentInfo: paymentInfo, amount: amount, feePerGram: feePerGram, isOneSidedPayment: oneSidedPaymentSwitch.isOn, deeplink: deeplink)
-        navigationController?.pushViewController(noteVC, animated: true)
+        guard let paymentInfo = updatedPaymentInfo(), let feePerGram = feePerGram else { return }
+        let controller = AddNoteViewController(paymentInfo: paymentInfo, feePerGram: feePerGram, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     private func calculateAmount() -> MicroTari? {
@@ -492,22 +489,19 @@ final class AddAmountViewController: DynamicThemeViewController {
         return amount
     }
 
+    private func updatedPaymentInfo() -> PaymentInfo? {
+        guard let amount = calculateAmount(), let feePerGram = feePerGram else { return nil }
+        return PaymentInfo(address: paymentInfo.address, yatID: paymentInfo.yatID, amount: amount, feePerGram: feePerGram, note: paymentInfo.note)
+    }
+
     private func updateNextStepElements(isEnabled: Bool) {
         continueButton.variation = isEnabled ? .normal : .disabled
         sliderBar.isEnabled = isEnabled
     }
 
     private func showTransactionProgress() {
-        guard let amount = calculateAmount(), let feePerGram = feePerGram else { return }
-        TransactionProgressPresenter.showTransactionProgress(
-            presenter: self,
-            recipientAddress: paymentInfo.address,
-            amount: amount,
-            feePerGram: feePerGram,
-            message: "",
-            isOneSidedPayment: oneSidedPaymentSwitch.isOn,
-            yatID: paymentInfo.yatID
-        )
+        guard let paymentInfo = updatedPaymentInfo() else { return }
+        TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
     }
 
     @objc private func onOneSidedPaymentSwitchAction() {

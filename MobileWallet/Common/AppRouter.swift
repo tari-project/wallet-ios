@@ -113,12 +113,12 @@ enum AppRouter {
 
     // MARK: - TabBar Actions
 
-    static func moveToTransactionSend(deeplink: TransactionsSendDeeplink?) {
-        tabBar?.homeViewController.onSend(deeplink: deeplink)
+    static func moveToContactBook() {
+        tabBar?.setTab(.contactBook)
     }
 
     static func moveToProfile() {
-        tabBar?.setTab(.profile)
+        present(controller: ProfileViewController())
     }
 
     // MARK: - Modal Actions
@@ -156,7 +156,7 @@ enum AppRouter {
     }
 
     static func presentSendTransaction(paymentInfo: PaymentInfo) {
-        let controller = AddAmountViewController(paymentInfo: paymentInfo, deeplink: nil)
+        let controller = AddAmountViewController(paymentInfo: paymentInfo)
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.isNavigationBarHidden = true
         tabBar?.presentOnFullScreen(navigationController)

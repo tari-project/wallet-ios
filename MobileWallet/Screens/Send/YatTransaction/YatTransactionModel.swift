@@ -52,7 +52,7 @@ enum YatTransactionViewState {
 final class YatTransactionModel {
 
     struct InputData {
-        let address: TariAddress
+        let address: String
         let amount: MicroTari
         let feePerGram: MicroTari
         let message: String

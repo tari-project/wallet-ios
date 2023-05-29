@@ -275,13 +275,13 @@ final class ContactBookModel {
 
     func sendTokensRequest() {
 
-        guard let enteredAddress else {
+        guard let enteredAddress, let hex = try? enteredAddress.byteVector.hex else {
             Logger.log(message: "No Address on 'send tokens' request.", domain: .navigation, level: .error)
             errorModel = ErrorMessageManager.errorModel(forError: nil)
             return
         }
 
-        let paymentInfo = PaymentInfo(address: enteredAddress, yatID: yatID)
+        let paymentInfo = PaymentInfo(address: hex, yatID: yatID, amount: nil, feePerGram: nil, note: nil)
         action = .sendTokens(paymentInfo: paymentInfo)
     }
 
