@@ -46,9 +46,17 @@ extension URL {
             .split(separator: "&")
             .map { $0.split(separator: "=") }
             .reduce(into: [[String]: String]()) { result, element in
-                let keys = String(element[0]).splitElementsInBrackets()
-                let value = String(element[1])
-                result[keys] = value
+                switch element.count {
+                case 1:
+                    let keys = String(element[0]).splitElementsInBrackets()
+                    result[keys] = ""
+                case 2:
+                    let keys = String(element[0]).splitElementsInBrackets()
+                    let value = String(element[1])
+                    result[keys] = value
+                default:
+                    break
+                }
             }
     }
 }

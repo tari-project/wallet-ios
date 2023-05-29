@@ -88,6 +88,9 @@ final class ExternalContactsManager {
 
             do {
                 try store.enumerateContacts(with: request) { contact, _ in
+
+                    guard !contact.givenName.isEmpty || !contact.familyName.isEmpty else { return }
+
                     let emojiID = contact.socialProfiles.first { $0.value.service == Self.auroraServiceName }?.value.username
                     let yat = contact.socialProfiles.first { $0.value.service == Self.yatServiceName }?.value.username
                     var avatar: UIImage?

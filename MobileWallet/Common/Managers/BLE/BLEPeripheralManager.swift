@@ -151,7 +151,7 @@ final class BLEPeripheralManager: NSObject {
 
     private func handle(writeRequest: CBATTRequest) {
 
-        guard let data = writeRequest.value, let rawDeeplink = String(data: data, encoding: .utf16) else {
+        guard let data = writeRequest.value, let rawDeeplink = String(data: data, encoding: .utf8) else {
             manager.respond(to: writeRequest, withResult: .invalidHandle)
             return
         }

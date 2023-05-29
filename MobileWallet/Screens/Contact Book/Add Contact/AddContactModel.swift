@@ -43,7 +43,8 @@ import Combine
 final class AddContactModel {
 
     enum Action {
-        case endFlow(model: ContactsManager.Model)
+        case showDetails(model: ContactsManager.Model)
+        case popBack
     }
 
     private enum DataValidationError: Int, Error, Comparable {
@@ -115,7 +116,7 @@ final class AddContactModel {
         do {
             guard let address else { return }
             let model = try contactsManager.createInternalModel(name: contactName, isFavorite: false, address: address)
-            action = .endFlow(model: model)
+            action = .showDetails(model: model)
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
         }
@@ -126,6 +127,17 @@ final class AddContactModel {
         guard let emojis = try? address?.emojis else { return }
         rawSearchText = emojis
         searchTextSubject.send(emojis)
+    }
+
+    func handle(deeplink: ContactListDeeplink) {
+        Task {
+            do {
+                guard try await DeepLinkDefaultActionsHandler.handleInForeground(contactListDeeplink: deeplink) else { return }
+                action = .popBack
+            } catch {
+                errorMessage = ErrorMessageManager.errorModel(forError: error)
+            }
+        }
     }
 
     // MARK: - Handlers

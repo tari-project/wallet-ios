@@ -93,6 +93,7 @@ final class AddContactViewController: UIViewController {
 
         model.$action
             .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(action: $0) }
             .store(in: &cancellables)
 
@@ -124,8 +125,10 @@ final class AddContactViewController: UIViewController {
 
     private func handle(action: AddContactModel.Action) {
         switch action {
-        case let .endFlow(model):
+        case let .showDetails(model):
             navigateToNextScreen(model: model)
+        case .popBack:
+            navigationController?.popViewController(animated: true)
         }
     }
 
@@ -165,6 +168,6 @@ extension AddContactViewController: ScanViewControllerDelegate {
     }
 
     func onScan(deeplink: ContactListDeeplink) {
-        navigationController?.popViewController(animated: true)
+        model.handle(deeplink: deeplink)
     }
 }
