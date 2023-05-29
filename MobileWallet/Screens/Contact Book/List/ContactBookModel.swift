@@ -187,6 +187,30 @@ final class ContactBookModel {
 
     // MARK: - View Model
 
+    func handle(transactionSendDeeplink: TransactionsSendDeeplink) {
+
+        var amount: MicroTari?
+
+        if let rawAmount = transactionSendDeeplink.amount {
+            amount = MicroTari(rawAmount)
+        }
+
+        let paymentInfo = PaymentInfo(address: transactionSendDeeplink.receiverAddress, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeeplink.note)
+
+        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+    }
+
+    func handle(contactListDeeplink: ContactListDeeplink) {
+        Task {
+            do {
+                guard try await DeepLinkDefaultActionsHandler.handleInForeground(contactListDeeplink: contactListDeeplink) else { return }
+                fetchContacts()
+            } catch {
+                errorModel = ErrorMessageManager.errorModel(forError: error)
+            }
+        }
+    }
+
     func fetchContacts() {
         Task {
             do {
@@ -312,7 +336,7 @@ final class ContactBookModel {
 
     private func shareLinkViaBLE(deeplink: URL) {
 
-        guard let payload = deeplink.absoluteString.data(using: .utf16) else { return }
+        guard let payload = deeplink.absoluteString.data(using: .utf8) else { return }
 
         action = .showBLEWaitingForReceiverDialog
 
@@ -445,9 +469,10 @@ final class ContactBookModel {
                 let section = SectionType(rawValue: data.offset)
 
                 let viewModels = data.element.map {
-                    ContactViewModel(
+                    let name = (!$0.name.isEmpty ? $0.name : $0.internalModel?.emojiID.obfuscatedText) ?? ""
+                    return ContactViewModel(
                         id: $0.id,
-                        name: $0.name,
+                        name: name,
                         avatar: $0.avatar,
                         avatarImage: $0.avatarImage,
                         isFavorite: $0.isFavorite,

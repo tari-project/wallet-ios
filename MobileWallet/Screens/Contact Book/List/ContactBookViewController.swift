@@ -402,8 +402,12 @@ final class ContactBookViewController: UIViewController {
 
 extension ContactBookViewController: ScanViewControllerDelegate {
 
+    func onScan(deeplink: TransactionsSendDeeplink) {
+        model.handle(transactionSendDeeplink: deeplink)
+    }
+
     func onScan(deeplink: ContactListDeeplink) {
-        model.fetchContacts()
+        model.handle(contactListDeeplink: deeplink)
     }
 }
 

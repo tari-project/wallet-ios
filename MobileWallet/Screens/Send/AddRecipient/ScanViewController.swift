@@ -369,9 +369,10 @@ extension ScanViewController: AVCaptureMetadataOutputObjectsDelegate {
 extension ScanViewController: DeeplinkHandlable {
 
     func handle(deeplink: TransactionsSendDeeplink) {
-        actionDelegate?.onScan(deeplink: deeplink)
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
-        dismiss(animated: true)
+        dismiss(animated: true) { [weak self] in
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            self?.actionDelegate?.onScan(deeplink: deeplink)
+        }
     }
 
     func handle(deeplink: BaseNodesAddDeeplink) {}

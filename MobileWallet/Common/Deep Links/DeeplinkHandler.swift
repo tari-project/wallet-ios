@@ -56,7 +56,7 @@ enum DeeplinkError: Error {
 enum DeeplinkHandler {
 
     static func handle(rawDeeplink: String, handler: DeeplinkHandlable? = nil) throws {
-        guard let decodedDeeplink = rawDeeplink.removingPercentEncoding, let deeplink = URL(string: decodedDeeplink) else { throw DeeplinkError.unknownDeeplink }
+        guard let deeplink = URL(string: rawDeeplink) else { throw DeeplinkError.unknownDeeplink }
         return try handle(deeplink: deeplink, handler: handler)
     }
 
@@ -138,8 +138,8 @@ enum DeeplinkHandler {
 
         DispatchQueue.main.async {
             guard UIApplication.shared.applicationState == .background else {
-                showAddContactsDialog(deeplink: contactListDeeplink) {
-                    try? addContacts(deeplink: contactListDeeplink)
+                Task {
+                    try? await DeepLinkDefaultActionsHandler.handleInForeground(contactListDeeplink: contactListDeeplink)
                 }
                 return
             }
@@ -151,51 +151,6 @@ enum DeeplinkHandler {
 
             LocalNotificationsManager.shared.showContactsReceivedNotification(rawEncodedDeeplink: rawEncodedDeeplink, isSingleContact: contactListDeeplink.list.count == 1)
         }
-    }
-
-    private static func showAddContactsDialog(deeplink: ContactListDeeplink, onConfrim: @escaping () -> Void) {
-
-        let contactCount = deeplink.list.count
-        let isPlural = contactCount > 1
-
-        let title = isPlural ? localized("contacts_received.popup.title.plural") : localized("contacts_received.popup.title.singular")
-        let messagePart2 = isPlural ? localized("contacts_received.popup.message.part.2.plural.bold", arguments: contactCount) : localized("contacts_received.popup.message.part.2.singular.bold")
-        let messagePart3 = isPlural ? localized("contacts_received.popup.message.part.3.plural") : localized("contacts_received.popup.message.part.3.singular")
-        let confirmButtonTitle = isPlural ? localized("contacts_received.popup.buttons.confirm.plural") : localized("contacts_received.popup.buttons.confirm.singular")
-
-        let model = PopUpDialogModel(
-            titleComponents: [
-                StylizedLabel.StylizedText(text: title, style: .normal)
-            ],
-            messageComponents: [
-                StylizedLabel.StylizedText(text: localized("contacts_received.popup.message.part.1"), style: .normal),
-                StylizedLabel.StylizedText(text: messagePart2, style: .bold),
-                StylizedLabel.StylizedText(text: messagePart3, style: .normal)
-            ],
-            buttons: [
-                PopUpDialogButtonModel(title: confirmButtonTitle, type: .normal, callback: onConfrim),
-                PopUpDialogButtonModel(title: localized("contacts_received.popup.buttons.reject"), type: .text)
-            ],
-            hapticType: .success
-        )
-
-        PopUpPresenter.showPopUp(model: model)
-    }
-
-    private static func addContacts(deeplink: ContactListDeeplink) throws {
-
-        let contactsManager = ContactsManager()
-
-        try deeplink.list
-            .forEach {
-                let address = try TariAddress(hex: $0.hex)
-
-                if Tari.shared.isWalletConnected {
-                    _ = try contactsManager.createInternalModel(name: $0.alias, isFavorite: false, address: address)
-                } else {
-                    try PendingDataManager.shared.storeContact(name: $0.alias, isFavorite: false, address: address)
-                }
-            }
     }
 
     private static func showCustomDeeplinkPopUp(name: String, peer: String) {

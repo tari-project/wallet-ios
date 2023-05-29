@@ -422,6 +422,7 @@
 		546B03262983E92700DBED8E /* ContentNavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03252983E92700DBED8E /* ContentNavigationViewController.swift */; };
 		546B03282983F2F700DBED8E /* OnboardingPagerElementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03272983F2F700DBED8E /* OnboardingPagerElementView.swift */; };
 		546B032A2983F33600DBED8E /* OnboardingPagerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B03292983F33600DBED8E /* OnboardingPagerView.swift */; };
+		546B270D2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546B270C2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift */; };
 		546CE7F429AF514A00264699 /* FormOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F329AF514A00264699 /* FormOverlay.swift */; };
 		546CE7F629AF517900264699 /* FormOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F529AF517900264699 /* FormOverlayView.swift */; };
 		546CE7F929AF523F00264699 /* ContactBookFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F829AF523F00264699 /* ContactBookFormView.swift */; };
@@ -949,6 +950,7 @@
 		546B03252983E92700DBED8E /* ContentNavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentNavigationViewController.swift; sourceTree = "<group>"; };
 		546B03272983F2F700DBED8E /* OnboardingPagerElementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPagerElementView.swift; sourceTree = "<group>"; };
 		546B03292983F33600DBED8E /* OnboardingPagerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPagerView.swift; sourceTree = "<group>"; };
+		546B270C2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkDefaultActionsHandler.swift; sourceTree = "<group>"; };
 		546CE7F329AF514A00264699 /* FormOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormOverlay.swift; sourceTree = "<group>"; };
 		546CE7F529AF517900264699 /* FormOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormOverlayView.swift; sourceTree = "<group>"; };
 		546CE7F829AF523F00264699 /* ContactBookFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookFormView.swift; sourceTree = "<group>"; };
@@ -2330,6 +2332,7 @@
 				3AF97E6327CF766F00FF6A3F /* Models */,
 				3AF97E6A27CF77B800FF6A3F /* Data Handling */,
 				3AF97E6827CF76C800FF6A3F /* DeeplinkHandler.swift */,
+				546B270C2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift */,
 			);
 			path = "Deep Links";
 			sourceTree = "<group>";
@@ -3313,6 +3316,7 @@
 				3A8473CE28EC56480015E63A /* TariUTXOsService.swift in Sources */,
 				54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */,
 				3A4CE32C26A18D7300ECF460 /* UserDefault.swift in Sources */,
+				546B270D2A2482C100FE24AA /* DeepLinkDefaultActionsHandler.swift in Sources */,
 				3A1D8E4B28400AB8004129D5 /* AboutViewHeader.swift in Sources */,
 				54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */,
 				3AD1306827D6290A003EC7FA /* SeedWordsListViewController.swift in Sources */,
@@ -3716,7 +3720,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.21.0;
+				MARKETING_VERSION = 0.21.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3751,7 +3755,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.21.0;
+				MARKETING_VERSION = 0.21.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
