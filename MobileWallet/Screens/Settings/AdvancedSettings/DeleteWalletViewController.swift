@@ -79,6 +79,7 @@ class DeleteWalletViewController: SettingsParentTableViewController {
     private func deleteWallet() {
         Tari.shared.deleteWallet()
         Tari.shared.canAutomaticalyReconnectWallet = false
+        BLEPeripheralManager.shared.isEnabled = false
         BackupManager.shared.disableBackup()
         AppRouter.transitionToSplashScreen()
     }

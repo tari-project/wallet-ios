@@ -65,6 +65,7 @@ final class HomeViewModel {
     init() {
         setupCallbacks()
         checkNetworkCompatibility()
+        BLEPeripheralManager.shared.isEnabled = true
     }
 
     // MARK: - Setups
@@ -92,6 +93,7 @@ final class HomeViewModel {
         Tari.shared.deleteWallet()
         Tari.shared.canAutomaticalyReconnectWallet = false
         BackupManager.shared.disableBackup()
+        BLEPeripheralManager.shared.isEnabled = false
     }
 
     private func checkNetworkCompatibility() {

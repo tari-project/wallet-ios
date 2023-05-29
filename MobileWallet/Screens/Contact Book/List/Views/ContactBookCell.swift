@@ -209,6 +209,7 @@ final class ContactBookCell: DynamicThemeCell {
     override func setEditing(_ editing: Bool, animated: Bool) {
 
         let isTickVisible = editing && isSelectable
+        let isDimmed = editing && !isSelectable
 
         if isTickVisible {
             normalModeConstraint?.isActive = false
@@ -222,6 +223,7 @@ final class ContactBookCell: DynamicThemeCell {
 
         UIView.animate(withDuration: duration, delay: 0.0, options: [.beginFromCurrentState, .curveEaseInOut]) {
             self.tickView.alpha = isTickVisible ? 1.0 : 0.0
+            self.alpha = isDimmed ? 0.6 : 1.0
             self.layoutIfNeeded()
         }
     }
