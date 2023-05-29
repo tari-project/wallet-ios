@@ -12,7 +12,7 @@ target 'MobileWallet' do
   pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '8.1.0'
   pod 'SwiftKeychainWrapper', '3.4.0'
   pod 'Giphy', '2.1.22'
-  pod 'IPtProxy', '1.8.0'
+  pod 'IPtProxy', '1.10.1'
   pod 'OpenSSL-Universal'
   pod 'Zip', '2.1.2'
   pod 'SwiftyDropbox', '8.2.1'

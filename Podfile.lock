@@ -3,7 +3,7 @@ PODS:
   - FloatingPanel (1.7.5)
   - Giphy (2.1.22):
     - libwebp
-  - IPtProxy (1.8.0)
+  - IPtProxy (1.10.1)
   - libwebp (1.2.3):
     - libwebp/demux (= 1.2.3)
     - libwebp/mux (= 1.2.3)
@@ -37,7 +37,7 @@ PODS:
 DEPENDENCIES:
   - FloatingPanel (= 1.7.5)
   - Giphy (= 2.1.22)
-  - IPtProxy (= 1.8.0)
+  - IPtProxy (= 1.10.1)
   - lottie-ios
   - OpenSSL-Universal
   - ReachabilitySwift
@@ -83,7 +83,7 @@ SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
   FloatingPanel: bb17fd6fc7ae519f877f7bd30f4f6115a78acf07
   Giphy: 6757d929878ef45f70ed62a02a2c9a03994e7b6c
-  IPtProxy: e180e0f4381a893b52ae12626fbd0d40cbabe746
+  IPtProxy: 17a32bf135d3824e8cbc3fba0fa5bc404490ac84
   libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   OpenSSL-Universal: 84efb8a29841f2764ac5403e0c4119a28b713346
@@ -98,6 +98,6 @@ SPEC CHECKSUMS:
   YatLib: cd443f044b7ddc58bd17e2406e3ecaf6688880a6
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: 33ae307ecdfa5885be0817ba7c780c035b7d38c0
+PODFILE CHECKSUM: 6d687c19b6f40f1e746d9ba4eb7c7a515c027dc8
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0
