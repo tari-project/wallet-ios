@@ -47,6 +47,20 @@ enum AppEnvironment {
     case production
 }
 
+extension AppEnvironment {
+
+    var name: String {
+        switch self {
+        case .debug:
+            return "development"
+        case .testflight:
+            return "rc"
+        case .production:
+            return "production"
+        }
+    }
+}
+
 struct TariSettings {
 
     static let shared = TariSettings()
