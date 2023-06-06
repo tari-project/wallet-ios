@@ -110,7 +110,7 @@ final class ContactBookListPlaceholder: DynamicThemeView {
         [backgroundImageView, imageView, titleLabel, messageLabel, actionButton].forEach(addSubview)
 
         let constraints = [
-            backgroundImageView.topAnchor.constraint(equalTo: topAnchor, constant: 44.0),
+            backgroundImageView.topAnchor.constraint(equalTo: topAnchor, constant: 110.0),
             backgroundImageView.centerXAnchor.constraint(equalTo: centerXAnchor),
             backgroundImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: UIScreen.isSmallScreen ? 0.2 : 0.33),
             imageView.topAnchor.constraint(equalTo: backgroundImageView.topAnchor),

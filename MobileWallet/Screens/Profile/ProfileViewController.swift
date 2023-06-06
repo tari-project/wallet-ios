@@ -176,9 +176,9 @@ final class ProfileViewController: UIViewController {
         case let .shareLink(url):
             showLinkShareDialog(link: url)
         case .showBLEWaitingForReceiverDialog:
-            showBLEDialog(type: .scan)
+            showBLEDialog(type: .scanForContactListReceiver(onCancel: { [weak self] in self?.model.cancelBLESharing() }))
         case .showBLESuccessDialog:
-            showBLEDialog(type: .success)
+            showBLEDialog(type: .successContactSharing)
         case let .showBLEFailureDialog(message):
             showBLEDialog(type: .failure(message: message))
         }
@@ -211,9 +211,7 @@ final class ProfileViewController: UIViewController {
     }
 
     private func showBLEDialog(type: PopUpPresenter.BLEDialogType) {
-        PopUpPresenter.showBLEDialog(type: type) { [weak self] _ in
-            self?.model.cancelBLESharing()
-        }
+        PopUpPresenter.showBLEDialog(type: type)
     }
 
     private func showLinkShareDialog(link: URL) {

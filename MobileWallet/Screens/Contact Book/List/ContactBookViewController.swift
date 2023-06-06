@@ -121,7 +121,6 @@ final class ContactBookViewController: UIViewController {
     private func setupCallbacks() {
 
         model.$contactsList
-            .compactMap { [weak self] in self?.map(sections: $0) }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.contactsPageViewController.models = $0 }
             .store(in: &cancellables)
@@ -135,7 +134,6 @@ final class ContactBookViewController: UIViewController {
             .store(in: &cancellables)
 
         model.$favoriteContactsList
-            .compactMap { [weak self] in self?.map(sections: $0) }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.favoritesPageViewController.models = $0 }
             .store(in: &cancellables)
@@ -150,9 +148,9 @@ final class ContactBookViewController: UIViewController {
             .sink { [weak self] in self?.favoritesPageViewController.isPlaceholderVisible = !$0 }
             .store(in: &cancellables)
 
-        model.$isPermissionGranted
+        Publishers.CombineLatest(model.$isPermissionGranted, model.$areContactsAvailable)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.updatePlaceholders(isPermissionGranted: $0) }
+            .sink { [weak self] in self?.updatePlaceholders(isPermissionGranted: $0, areContactsAvailable: $1) }
             .store(in: &cancellables)
 
         model.$action
@@ -217,7 +215,11 @@ final class ContactBookViewController: UIViewController {
             self?.model.performAction(contactID: $0, menuItemID: $1)
         }
 
-        contactsPageViewController.onRowTap = { [weak self] in
+        contactsPageViewController.onBluetoothRowTap = { [weak self] in
+            self?.model.fetchTransactionDataViaBLE()
+        }
+
+        contactsPageViewController.onContactRowTap = { [weak self] in
             self?.model.toggle(contactID: $0)
         }
 
@@ -225,7 +227,7 @@ final class ContactBookViewController: UIViewController {
             self?.model.performAction(contactID: $0, menuItemID: $1)
         }
 
-        favoritesPageViewController.onRowTap = { [weak self] in
+        favoritesPageViewController.onContactRowTap = { [weak self] in
             self?.model.toggle(contactID: $0)
         }
 
@@ -236,9 +238,9 @@ final class ContactBookViewController: UIViewController {
 
     // MARK: - Updates
 
-    private func updatePlaceholders(isPermissionGranted: Bool) {
+    private func updatePlaceholders(isPermissionGranted: Bool, areContactsAvailable: Bool) {
 
-        contactsPageViewController.isFooterVisible = !isPermissionGranted
+        contactsPageViewController.isFooterVisible = !isPermissionGranted && areContactsAvailable
 
         guard isPermissionGranted else {
 
@@ -278,7 +280,6 @@ final class ContactBookViewController: UIViewController {
 
     // MARK: - Handlers
 
-    // swiftlint:disable:next cyclomatic_complexity
     private func handle(action: ContactBookModel.Action) {
         switch action {
         case let .sendTokens(paymentInfo):
@@ -297,31 +298,8 @@ final class ContactBookViewController: UIViewController {
             showQrCodeInDialog(qrCode: image)
         case let .shareLink(link):
             showLinkShareDialog(link: link)
-        case .showBLEWaitingForReceiverDialog:
-            showBLEDialog(type: .scan)
-        case .showBLESuccessDialog:
-            showBLEDialog(type: .success)
-        case let .showBLEFailureDialog(message):
-            showBLEDialog(type: .failure(message: message))
-        }
-    }
-
-    private func map(sections: [ContactBookModel.ContactSection]) -> [ContactBookContactListView.Section] {
-        sections.map {
-            let items = $0.viewModels.map {
-                let menuItems = $0.menuItems.map { $0.buttonViewModel }
-                return ContactBookCell.ViewModel(
-                    id: $0.id,
-                    name: $0.name,
-                    avatarText: $0.avatar,
-                    avatarImage: $0.avatarImage,
-                    isFavorite: $0.isFavorite,
-                    menuItems: menuItems,
-                    contactTypeImage: $0.type.image,
-                    isSelectable: $0.isSelectable
-                )
-            }
-            return ContactBookContactListView.Section(title: $0.title, items: items)
+        case let .show(dialog):
+            handle(dialog: dialog)
         }
     }
 
@@ -335,6 +313,25 @@ final class ContactBookViewController: UIViewController {
             mainView.isInSelectionMode = true
             contactsPageViewController.isInSharingMode = true
             favoritesPageViewController.isInSharingMode = true
+        }
+    }
+
+    private func handle(dialog: ContactBookModel.DialogType) {
+        switch dialog {
+        case .bleContactSharingWaitingForReceiverDialog:
+            showBLEDialog(type: .scanForContactListReceiver(onCancel: { [weak self] in self?.model.cancelBLETask() }))
+        case .bleContactSharingSuccessDialog:
+            showBLEDialog(type: .successContactSharing)
+        case let .bleFailureDialog(message):
+            showBLEDialog(type: .failure(message: message))
+        case .bleTransactionWaitingForReceiverDialog:
+            showBLEDialog(type: .scanForTransactionData(onCancel: { [weak self] in self?.model.cancelBLETask() }))
+        case let .bleTransactionConfirmationDialog(receiverName):
+            showBLEDialog(type: .confirmTransactionData(
+                receiverName: receiverName,
+                onConfirmation: { [weak self] in self?.model.confirmIncomingTransaction() },
+                onReject: { [weak self] in self?.model.cancelIncomingTransaction() }
+            ))
         }
     }
 
@@ -387,9 +384,7 @@ final class ContactBookViewController: UIViewController {
     }
 
     private func showBLEDialog(type: PopUpPresenter.BLEDialogType) {
-        PopUpPresenter.showBLEDialog(type: type) { [weak self] _ in
-            self?.model.cancelBLESharing()
-        }
+        PopUpPresenter.showBLEDialog(type: type)
     }
 
     private func showQRCodeScanner() {
@@ -408,27 +403,5 @@ extension ContactBookViewController: ScanViewControllerDelegate {
 
     func onScan(deeplink: ContactListDeeplink) {
         model.handle(contactListDeeplink: deeplink)
-    }
-}
-
-private extension ContactBookModel.MenuItem {
-
-    var buttonViewModel: ContactCapsuleMenu.ButtonViewModel { ContactCapsuleMenu.ButtonViewModel(id: rawValue, icon: icon) }
-
-    private var icon: UIImage? {
-        switch self {
-        case .send:
-            return .icons.send
-        case .addToFavorites:
-            return .icons.star.filled
-        case .removeFromFavorites:
-            return .icons.star.border
-        case .link:
-            return .icons.link
-        case .unlink:
-            return .icons.unlink
-        case .details:
-            return .icons.profile
-        }
     }
 }

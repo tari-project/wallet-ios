@@ -129,7 +129,7 @@ final class ContactBookCell: DynamicThemeCell {
 
         [nameLabel, favoriteView, avatarMenu, contactTypeBackgroundView, contactTypeView, tickView].forEach(contentView.addSubview)
 
-        let normalModeConstraint = avatarMenu.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0)
+        let normalModeConstraint = avatarMenu.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 14.0)
         editModeConstraint = tickView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0)
 
         self.normalModeConstraint = normalModeConstraint

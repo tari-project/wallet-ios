@@ -39,5 +39,6 @@
 */
 
 enum PopUpTag: String {
-    case bleScanDialog
+    case bleScanContactSharingDialog
+    case bleScanTransactionDataDialog
 }

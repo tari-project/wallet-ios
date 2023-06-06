@@ -45,7 +45,12 @@ final class ContactBookContactListView: DynamicThemeView {
 
     struct Section {
         let title: String?
-        let items: [ContactBookCell.ViewModel]
+        let items: [ItemType]
+    }
+
+    enum ItemType: Hashable {
+        case bluetooth
+        case contact(model: ContactBookCell.ViewModel)
     }
 
     // MARK: - Subviews
@@ -55,6 +60,7 @@ final class ContactBookContactListView: DynamicThemeView {
         view.estimatedRowHeight = 44.0
         view.rowHeight = UITableView.automaticDimension
         view.keyboardDismissMode = .interactive
+        view.register(type: ContactBookBluetoothCell.self)
         view.register(type: ContactBookCell.self)
         view.register(headerFooterType: MenuTableHeaderView.self)
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 22.0, bottom: 0.0, right: 22.0)
@@ -62,11 +68,7 @@ final class ContactBookContactListView: DynamicThemeView {
         return view
     }()
 
-    @View private var placeholderView: ContactBookListPlaceholder = {
-        let view = ContactBookListPlaceholder()
-        view.isHidden = true
-        return view
-    }()
+    @View private var placeholderView = ContactBookListPlaceholder()
 
     private let tableFooterView = ContactBookContactListFooter()
 
@@ -81,7 +83,7 @@ final class ContactBookContactListView: DynamicThemeView {
     }
 
     var isPlaceholderVisible: Bool = false {
-        didSet { placeholderView.isHidden = !isPlaceholderVisible }
+        didSet { updatePlaceholders() }
     }
 
     var isFooterVisible: Bool = false {
@@ -97,7 +99,8 @@ final class ContactBookContactListView: DynamicThemeView {
     }
 
     var onButtonTap: ((UUID, UInt) -> Void)?
-    var onRowTap: ((UUID) -> Void)?
+    var onBluetoothRowTap: (() -> Void)?
+    var onContactRowTap: ((UUID) -> Void)?
 
     var onFooterTap: (() -> Void)? {
         get { tableFooterView.onTap }
@@ -108,7 +111,8 @@ final class ContactBookContactListView: DynamicThemeView {
         didSet { updateCellsState() }
     }
 
-    private var dataSource: UITableViewDiffableDataSource<Int, ContactBookCell.ViewModel>?
+    private var dataSource: UITableViewDiffableDataSource<Int, ItemType>?
+    private var placeholderConstraints: [NSLayoutConstraint] = []
 
     // MARK: - Initialisers
 
@@ -126,13 +130,16 @@ final class ContactBookContactListView: DynamicThemeView {
 
     private func setupConstraints() {
 
-        [tableView, placeholderView].forEach(addSubview)
+        addSubview(tableView)
 
         let constraints = [
             tableView.topAnchor.constraint(equalTo: topAnchor),
             tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        placeholderConstraints = [
             placeholderView.topAnchor.constraint(equalTo: topAnchor),
             placeholderView.leadingAnchor.constraint(equalTo: leadingAnchor),
             placeholderView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -144,17 +151,13 @@ final class ContactBookContactListView: DynamicThemeView {
 
     private func setupTableView() {
 
-        let dataSource = UITableViewDiffableDataSource<Int, ContactBookCell.ViewModel>(tableView: tableView) { [weak self] tableView, indexPath, model in
-            let cell = tableView.dequeueReusableCell(type: ContactBookCell.self, indexPath: indexPath)
-            cell.update(viewModel: model)
-            cell.updateCell(isExpanded: model.id == self?.expandedID, withAnmiation: false)
-            cell.isTickSelected = self?.selectedRows.contains(model.id) == true
-            cell.onButtonTap = {
-                self?.onButtonTap?($0, $1)
-                self?.expandedID = nil
+        let dataSource = UITableViewDiffableDataSource<Int, ItemType>(tableView: tableView) { [weak self] tableView, indexPath, model in
+            switch model {
+            case .bluetooth:
+                return self?.makeBluetoothCell(tableView: tableView, indexPath: indexPath)
+            case let .contact(model):
+                return self?.makeContactCell(model: model, tableView: tableView, indexPath: indexPath)
             }
-
-            return cell
         }
 
         tableView.delegate = self
@@ -173,7 +176,7 @@ final class ContactBookContactListView: DynamicThemeView {
 
     private func update(sections: [Section]) {
 
-        var snapshot = NSDiffableDataSourceSnapshot<Int, ContactBookCell.ViewModel>()
+        var snapshot = NSDiffableDataSourceSnapshot<Int, ItemType>()
 
         sections
             .enumerated()
@@ -188,6 +191,19 @@ final class ContactBookContactListView: DynamicThemeView {
     private func update(placeholderViewModel: ContactBookListPlaceholder.ViewModel?) {
         guard let placeholderViewModel else { return }
         placeholderView.update(viewModel: placeholderViewModel)
+    }
+
+    private func updatePlaceholders() {
+
+        if isPlaceholderVisible {
+            tableView.backgroundView = placeholderView
+            NSLayoutConstraint.activate(placeholderConstraints)
+        } else {
+            NSLayoutConstraint.deactivate(placeholderConstraints)
+            tableView.backgroundView = nil
+        }
+
+        tableView.bounces = !isPlaceholderVisible
     }
 
     private func updateCellsState() {
@@ -220,6 +236,49 @@ final class ContactBookContactListView: DynamicThemeView {
         tableView.setEditing(isInSharingMode, animated: true)
     }
 
+    // MARK: - Factories
+
+    private func makeBluetoothCell(tableView: UITableView, indexPath: IndexPath) -> ContactBookBluetoothCell {
+        tableView.dequeueReusableCell(type: ContactBookBluetoothCell.self, indexPath: indexPath)
+    }
+
+    private func makeContactCell(model: ContactBookCell.ViewModel, tableView: UITableView, indexPath: IndexPath) -> ContactBookCell {
+
+        let cell = tableView.dequeueReusableCell(type: ContactBookCell.self, indexPath: indexPath)
+
+        cell.update(viewModel: model)
+        cell.updateCell(isExpanded: model.id == expandedID, withAnmiation: false)
+        cell.isTickSelected = selectedRows.contains(model.id) == true
+        cell.onButtonTap = { [weak self] in
+            self?.onButtonTap?($0, $1)
+            self?.expandedID = nil
+        }
+
+        return cell
+    }
+
+    // MARK: - Handlers
+
+    private func handle(bluetoothCell: ContactBookBluetoothCell) {
+        onBluetoothRowTap?()
+    }
+
+    private func handle(contactBookCell: ContactBookCell) {
+        guard let elementID = contactBookCell.elementID else { return }
+
+        guard !tableView.isEditing else {
+            onContactRowTap?(elementID)
+            return
+        }
+
+        guard elementID == expandedID else {
+            expandedID = elementID
+            return
+        }
+
+        expandedID = nil
+    }
+
     // MARK: - Layout
 
     override func layoutSubviews() {
@@ -245,19 +304,16 @@ extension ContactBookContactListView: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 
-        guard let cell = tableView.cellForRow(at: indexPath) as? ContactBookCell, let elementID = cell.elementID else { return }
+        guard let cell = tableView.cellForRow(at: indexPath) else { return }
 
-        guard !tableView.isEditing else {
-            onRowTap?(elementID)
-            return
+        switch cell {
+        case let bluetoothCell as ContactBookBluetoothCell:
+            handle(bluetoothCell: bluetoothCell)
+        case let contactBookCell as ContactBookCell:
+            handle(contactBookCell: contactBookCell)
+        default:
+            break
         }
-
-        guard elementID == expandedID else {
-            expandedID = elementID
-            return
-        }
-
-        expandedID = nil
     }
 }
 

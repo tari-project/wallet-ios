@@ -109,8 +109,10 @@ struct MessageModel {
 extension PopUpPresenter {
 
     enum BLEDialogType {
-        case scan
-        case success
+        case scanForContactListReceiver(onCancel: (() -> Void)?)
+        case successContactSharing
+        case scanForTransactionData(onCancel: (() -> Void)?)
+        case confirmTransactionData(receiverName: String, onConfirmation: (() -> Void)?, onReject: (() -> Void)?)
         case failure(message: String?)
     }
 
@@ -148,58 +150,35 @@ extension PopUpPresenter {
         return contentView
     }
 
-    static func showBLEDialog(type: BLEDialogType, callback: ((_ type: BLEDialogType) -> Void)?) {
-
-        var image: UIImage?
-        let imageTintColor: PopUpCircleImageHeaderView.ImageTint
-        var title: String?
-        var message: String?
-        var tag: String?
-
-        switch type {
-        case .scan:
-            image = .contactBook.bleDialog.icon
-            imageTintColor = .purple
-            title = localized("contact_book.popup.ble.share.title")
-            message = localized("contact_book.popup.ble.share.message")
-            tag = PopUpTag.bleScanDialog.rawValue
-        case .success:
-            image = .contactBook.bleDialog.success
-            imageTintColor = .purple
-            title = localized("contact_book.popup.ble.success.title")
-            message = localized("contact_book.popup.ble.success.message")
-            PopUpPresenter.dismissPopup(tag: PopUpTag.bleScanDialog.rawValue)
-        case let .failure(errorMessage):
-            image = .contactBook.bleDialog.failure
-            imageTintColor = .red
-            title = localized("contact_book.popup.ble.failure.title")
-            message = errorMessage
-            PopUpPresenter.dismissPopup(tag: PopUpTag.bleScanDialog.rawValue)
-        }
-
-        PopUpPresenter.showBLEDialog(image: image, imageTintColor: imageTintColor, title: title, message: message, tag: tag) {
-            callback?(type)
-        }
-    }
-
-    static func showBLEDialog(image: UIImage?, imageTintColor: PopUpCircleImageHeaderView.ImageTint, title: String?, message: String?, tag: String?, callback: (() -> Void)?) {
+    static func showBLEDialog(type: BLEDialogType) {
 
         let headerSection = PopUpCircleImageHeaderView()
         let contentSection = PopUpDescriptionContentView()
         let buttonsSection = PopUpButtonsView()
 
-        headerSection.image = image
-        headerSection.imageTintColor = imageTintColor
-        headerSection.text = title
-        contentSection.label.text = message
+        let viewModel = type.viewModel
 
-        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: {
-            callback?()
-            PopUpPresenter.dismissPopup()
-        }))
+        headerSection.image = viewModel.image
+        headerSection.imageTintColor = viewModel.imageTintColor
+        headerSection.text = viewModel.title
+        contentSection.label.textComponents = viewModel.messageComponents
+
+        viewModel.buttons.forEach { buttonsSection.addButton(model: $0) }
+
+        switch type {
+        case .successContactSharing:
+            PopUpPresenter.dismissPopup(tag: PopUpTag.bleScanContactSharingDialog.rawValue)
+        case .confirmTransactionData:
+            PopUpPresenter.dismissPopup(tag: PopUpTag.bleScanTransactionDataDialog.rawValue)
+        case .failure:
+            PopUpPresenter.dismissPopup(tag: PopUpTag.bleScanContactSharingDialog.rawValue)
+            PopUpPresenter.dismissPopup(tag: PopUpTag.bleScanTransactionDataDialog.rawValue)
+        default:
+            break
+        }
 
         let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
-        PopUpPresenter.show(popUp: popUp, tag: tag)
+        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: viewModel.hapticType), tag: viewModel.tag)
     }
 
     static func showPopUp(model: PopUpDialogModel) {
@@ -270,5 +249,92 @@ extension PopUpPresenter.Configuration {
 
     static func dialog(hapticType: PopUpPresenter.HapticType) -> Self {
         Self(displayDuration: nil, dismissOnTapOutsideOrSwipe: false, hapticType: hapticType)
+    }
+}
+
+private struct BLEDialogModel {
+    let image: UIImage?
+    let imageTintColor: PopUpCircleImageHeaderView.ImageTint
+    let title: String?
+    let messageComponents: [StylizedLabel.StylizedText]
+    let tag: String?
+    let buttons: [PopUpDialogButtonModel]
+    let hapticType: PopUpPresenter.HapticType
+}
+
+private extension PopUpPresenter.BLEDialogType {
+
+    var viewModel: BLEDialogModel {
+
+        switch self {
+        case let .scanForContactListReceiver(onCancel):
+            return BLEDialogModel(
+                image: .contactBook.bleDialog.icon,
+                imageTintColor: .purple,
+                title: localized("contact_book.popup.ble.share.title"),
+                messageComponents: [StylizedLabel.StylizedText(text: localized("contact_book.popup.ble.share.message"), style: .normal)],
+                tag: PopUpTag.bleScanContactSharingDialog.rawValue,
+                buttons: [makeCancelButtonModel(callback: onCancel)],
+                hapticType: .none
+            )
+        case .successContactSharing:
+            return BLEDialogModel(
+                image: .contactBook.bleDialog.success,
+                imageTintColor: .purple,
+                title: localized("contact_book.popup.ble.success.title"),
+                messageComponents: [StylizedLabel.StylizedText(text: localized("contact_book.popup.ble.success.message"), style: .normal)],
+                tag: nil,
+                buttons: [makeCancelButtonModel()],
+                hapticType: .success
+            )
+        case .scanForTransactionData:
+            return BLEDialogModel(
+                image: .contactBook.bleDialog.icon,
+                imageTintColor: .purple,
+                title: localized("contact_book.popup.ble.transaction.scan.title"),
+                messageComponents: [StylizedLabel.StylizedText(text: localized("contact_book.popup.ble.transaction.scan.message"), style: .normal)],
+                tag: PopUpTag.bleScanTransactionDataDialog.rawValue,
+                buttons: [makeCancelButtonModel()],
+                hapticType: .none
+            )
+        case let .confirmTransactionData(receiverName, confirmationCallback, rejectCallback):
+            return BLEDialogModel(
+                image: .contactBook.bleDialog.icon,
+                imageTintColor: .purple,
+                title: localized("contact_book.popup.ble.transaction.confimation.title"),
+                messageComponents: [
+                    StylizedLabel.StylizedText(text: localized("contact_book.popup.ble.transaction.confimation.message.part.1"), style: .normal),
+                    StylizedLabel.StylizedText(text: receiverName, style: .bold),
+                    StylizedLabel.StylizedText(text: localized("contact_book.popup.ble.transaction.confimation.message.part.3"), style: .normal)
+                ],
+                tag: nil,
+                buttons: [
+                    PopUpDialogButtonModel(title: localized("contact_book.popup.ble.transaction.confimation.button.confirm"), type: .normal, callback: { PopUpPresenter.dismissPopup { confirmationCallback?() }}),
+                    PopUpDialogButtonModel(title: localized("contact_book.popup.ble.transaction.confimation.button.reject"), type: .text, callback: { PopUpPresenter.dismissPopup { rejectCallback?() }})
+                ],
+                hapticType: .success
+            )
+        case let .failure(message):
+
+            var components = [StylizedLabel.StylizedText]()
+
+            if let message {
+                components = [StylizedLabel.StylizedText(text: message, style: .normal)]
+            }
+
+            return BLEDialogModel(
+                image: .contactBook.bleDialog.failure,
+                imageTintColor: .red,
+                title: localized("contact_book.popup.ble.failure.title"),
+                messageComponents: components,
+                tag: nil,
+                buttons: [makeCancelButtonModel()],
+                hapticType: .error
+            )
+        }
+    }
+
+    private func makeCancelButtonModel(callback: (() -> Void)? = nil) -> PopUpDialogButtonModel {
+        PopUpDialogButtonModel(title: localized("common.close"), type: .text, callback: { PopUpPresenter.dismissPopup(onCompletion: callback) })
     }
 }

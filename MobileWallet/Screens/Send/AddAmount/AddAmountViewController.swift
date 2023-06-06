@@ -181,12 +181,13 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func displayAliasOrEmojiId() {
         do {
-            guard let contact = try Tari.shared.contacts.findContact(hex: paymentInfo.address) else {
+
+            guard let alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(hex: paymentInfo.address)?.alias else {
                 let tariAddress = try TariAddress(hex: paymentInfo.address)
                 emojiIdView.setup(emojiID: try tariAddress.emojis, hex: paymentInfo.address, textCentered: true, inViewController: self)
                 return
             }
-            navigationBar.title = try contact.alias
+            navigationBar.title = alias
         } catch {
             PopUpPresenter.show(message: MessageModel(title: localized("navigation_bar.error.show_emoji.title"), message: localized("navigation_bar.error.show_emoji.description"), type: .error))
         }
@@ -491,7 +492,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func updatedPaymentInfo() -> PaymentInfo? {
         guard let amount = calculateAmount(), let feePerGram = feePerGram else { return nil }
-        return PaymentInfo(address: paymentInfo.address, yatID: paymentInfo.yatID, amount: amount, feePerGram: feePerGram, note: paymentInfo.note)
+        return PaymentInfo(address: paymentInfo.address, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: amount, feePerGram: feePerGram, note: paymentInfo.note)
     }
 
     private func updateNextStepElements(isEnabled: Bool) {

@@ -74,9 +74,14 @@ final class ContactBookContactListViewController: UIViewController {
         set { mainView.onFooterTap = newValue }
     }
 
-    var onRowTap: ((UUID) -> Void)? {
-        get { mainView.onRowTap }
-        set { mainView.onRowTap = newValue }
+    var onBluetoothRowTap: (() -> Void)? {
+        get { mainView.onBluetoothRowTap }
+        set { mainView.onBluetoothRowTap = newValue }
+    }
+
+    var onContactRowTap: ((UUID) -> Void)? {
+        get { mainView.onContactRowTap }
+        set { mainView.onContactRowTap = newValue }
     }
 
     var isInSharingMode: Bool {

@@ -69,6 +69,7 @@ final class BLECentralManager: NSObject {
 
     private var connectedPeripheral: CBPeripheral?
     private var findProcessSubject: PassthroughSubject<Void, BLECentralError>?
+    private var readProcessSubject: PassthroughSubject<Data?, BLECentralError>?
     private var writeProcessSubject: PassthroughSubject<Void, BLECentralError>?
 
     // MARK: - Initialisers
@@ -90,13 +91,34 @@ final class BLECentralManager: NSObject {
 
     func findDeviceProcess() -> AnyPublisher<Void, BLECentralError> {
         resetService()
-        return startFindProcess()
+        let publisher = makeFindProcessSubject()
+        handle(centralManagerState: manager.state)
+        return publisher
+    }
+
+    func readProcess() -> AnyPublisher<Data?, BLECentralError> {
+
+        interruptCurrentProcess()
+
+        let subject = PassthroughSubject<Data?, BLECentralError>()
+        readProcessSubject = subject
+
+        do {
+            try read(serviceID: configuration.service, characteristicID: configuration.characteristic)
+            return subject.eraseToAnyPublisher()
+        } catch {
+            let bleError: BLECentralError = error as? BLECentralError ?? .unknown
+            return Fail<Data?, BLECentralError>(error: bleError).eraseToAnyPublisher()
+        }
     }
 
     func writeProcess(payload: Data) -> AnyPublisher<Void, BLECentralError> {
-        writeProcessSubject?.send(completion: .failure(.processInterrupted))
+
+        interruptCurrentProcess()
+
         let subject = PassthroughSubject<Void, BLECentralError>()
         writeProcessSubject = subject
+
         do {
             try write(payload: payload, serviceID: configuration.service, characteristicID: configuration.characteristic)
             return subject.eraseToAnyPublisher()
@@ -111,15 +133,22 @@ final class BLECentralManager: NSObject {
         resetService()
     }
 
-    private func write(payload: Data, serviceID: CBUUID, characteristicID: CBUUID) throws {
-        guard let characteristic = connectedPeripheral?.services?.first(where: { $0.uuid == serviceID })?.characteristics?.first(where: { $0.uuid == characteristicID }) else {
-            throw BLECentralError.writeFailedCharacteristicNotFound
-        }
+    private func interruptCurrentProcess() {
+        readProcessSubject?.send(completion: .failure(.processInterrupted))
+        writeProcessSubject?.send(completion: .failure(.processInterrupted))
+    }
 
+    private func read(serviceID: CBUUID, characteristicID: CBUUID) throws {
+        let characteristic = try findCharacteristic(serviceID: serviceID, characteristicID: characteristicID)
+        connectedPeripheral?.readValue(for: characteristic)
+    }
+
+    private func write(payload: Data, serviceID: CBUUID, characteristicID: CBUUID) throws {
+        let characteristic = try findCharacteristic(serviceID: serviceID, characteristicID: characteristicID)
         connectedPeripheral?.writeValue(payload, for: characteristic, type: .withResponse)
     }
 
-    private func startFindProcess() -> AnyPublisher<Void, BLECentralError> {
+    private func makeFindProcessSubject() -> AnyPublisher<Void, BLECentralError> {
         let subject = PassthroughSubject<Void, BLECentralError>()
         findProcessSubject = subject
         return subject.eraseToAnyPublisher()
@@ -161,12 +190,47 @@ final class BLECentralManager: NSObject {
         findProcessSubject?.send(completion: .finished)
     }
 
+    private func handleReadSuccess(data: Data?) {
+        readProcessSubject?.send(data)
+        readProcessSubject?.send(completion: .finished)
+    }
+
+    private func handleReadFailure(error: Error) {
+        readProcessSubject?.send(completion: .failure(.connectionError(error: error)))
+    }
+
     private func handleWriteSuccess() {
         writeProcessSubject?.send(completion: .finished)
     }
 
     private func handleWriteFailure(error: Error) {
         writeProcessSubject?.send(completion: .failure(.connectionError(error: error)))
+    }
+
+    private func handle(centralManagerState: CBManagerState) {
+        switch centralManagerState {
+        case .poweredOn:
+            startScanning()
+        case .poweredOff:
+            handleDiscoveryFailure(error: .turnedOff)
+        case .unauthorized:
+            handleDiscoveryFailure(error: .unauthorized)
+        case .unsupported:
+            handleDiscoveryFailure(error: .unsupported)
+        case .resetting, .unknown:
+            break
+        @unknown default:
+            handleDiscoveryFailure(error: .unknown)
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func findCharacteristic(serviceID: CBUUID, characteristicID: CBUUID) throws -> CBCharacteristic {
+        guard let characteristic = connectedPeripheral?.services?.first(where: { $0.uuid == serviceID })?.characteristics?.first(where: { $0.uuid == characteristicID }) else {
+            throw BLECentralError.writeFailedCharacteristicNotFound
+        }
+        return characteristic
     }
 
     private func log(message: String, level: Logger.Level) {
@@ -183,20 +247,7 @@ final class BLECentralManager: NSObject {
 extension BLECentralManager: CBCentralManagerDelegate {
 
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
-        switch central.state {
-        case .poweredOn:
-            startScanning()
-        case .poweredOff:
-            handleDiscoveryFailure(error: .turnedOff)
-        case .unauthorized:
-            handleDiscoveryFailure(error: .unauthorized)
-        case .unsupported:
-            handleDiscoveryFailure(error: .unsupported)
-        case .resetting, .unknown:
-            handleDiscoveryFailure(error: .unknown)
-        @unknown default:
-            handleDiscoveryFailure(error: .unknown)
-        }
+        handle(centralManagerState: central.state)
     }
 
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
@@ -252,6 +303,18 @@ extension BLECentralManager: CBPeripheralDelegate {
         }
 
         handleDiscoverySuccess()
+    }
+
+    func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
+
+        log(message: "Did Read: \(error == nil)", level: .info)
+
+        if let error {
+            handleReadFailure(error: error)
+            return
+        }
+
+        handleReadSuccess(data: characteristic.value)
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
