@@ -97,7 +97,7 @@ enum DeeplinkHandler {
             amount = MicroTari(rawAmount)
         }
 
-        let paymentInfo = PaymentInfo(address: deeplink.receiverAddress, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note)
+        let paymentInfo = PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note)
         AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
     }
 

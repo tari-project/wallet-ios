@@ -246,7 +246,7 @@ extension ContactsManager.Model {
     var paymentInfo: PaymentInfo? {
         get throws {
             guard let internalModel else { return nil }
-            return PaymentInfo(address: internalModel.hex, yatID: nil, amount: nil, feePerGram: nil, note: nil)
+            return PaymentInfo(address: internalModel.hex, alias: nil, yatID: nil, amount: nil, feePerGram: nil, note: nil)
         }
     }
 }

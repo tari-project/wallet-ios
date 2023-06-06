@@ -69,6 +69,16 @@ final class RoundedAvatarView: DynamicThemeView {
         didSet { update(avatar: avatar) }
     }
 
+    var imagePadding: CGFloat = 0.0 {
+        didSet {
+            imageViewPositiveContraints.forEach { $0.constant = imagePadding }
+            imageViewNegativeContraints.forEach { $0.constant = -imagePadding }
+        }
+    }
+
+    private var imageViewPositiveContraints: [NSLayoutConstraint] = []
+    private var imageViewNegativeContraints: [NSLayoutConstraint] = []
+
     // MARK: - Initialisers
 
     override init() {
@@ -91,14 +101,20 @@ final class RoundedAvatarView: DynamicThemeView {
             label.topAnchor.constraint(equalTo: topAnchor),
             label.leadingAnchor.constraint(equalTo: leadingAnchor),
             label.trailingAnchor.constraint(equalTo: trailingAnchor),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        imageViewPositiveContraints = [
             imageView.topAnchor.constraint(equalTo: topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor)
+        ]
+
+        imageViewNegativeContraints = [
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
-        NSLayoutConstraint.activate(constraints)
+        NSLayoutConstraint.activate(constraints + imageViewPositiveContraints + imageViewNegativeContraints)
     }
 
     // MARK: - Updates

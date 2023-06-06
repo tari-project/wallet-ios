@@ -1,8 +1,8 @@
-//  BLEConstants.swift
+//  UserProfileDeeplink.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 13/04/2023
+	Created by Adrian Truszczyński on 06/06/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -38,26 +38,11 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import CoreBluetooth
-
-enum BLEConstants {
-    static var contactBookService: BLEContactBookService.Type { BLEContactBookService.self }
+struct UserProfileDeeplink {
+    let alias: String
+    let tariAddress: String
 }
 
-// MARK: - Contact Book
-
-enum BLEContactBookService {
-    static let uuid: CBUUID = CBUUID(string: "0DABCA14-0688-458D-89D3-367A3D969537")
-    static var characteristics: BLEContactBookCharacteristics.Type { BLEContactBookCharacteristics.self }
-}
-
-enum BLEContactBookCharacteristics {
-
-    // MARK: - Read only characteristics
-
-    static let transactionData: CBUUID = CBUUID(string: "4567F76F-2577-4EA4-9220-AFCCCAA89B59")
-
-    // MARK: - Write only characteristics
-
-    static let contactsShare: CBUUID = CBUUID(string: "999CB541-8D4C-4075-BFF3-43AB74DE8C9B")
+extension UserProfileDeeplink: DeepLinkCodable {
+    static var command: String { "/profile" }
 }

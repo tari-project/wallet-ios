@@ -195,7 +195,7 @@ final class LinkContactsModel {
 
     private func makePlaceholderModel() -> PlaceholderModel {
 
-        var title = localized("contact_book.link_contacts.placeholder.title")
+        let title = localized("contact_book.link_contacts.placeholder.title")
         var message: String?
         var buttonTitle: String?
 
