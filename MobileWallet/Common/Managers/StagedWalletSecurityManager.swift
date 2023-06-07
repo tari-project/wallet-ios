@@ -90,7 +90,7 @@ final class StagedWalletSecurityManager {
         cancellables.removeAll()
     }
 
-    private func showPopUp(securityStage: WalletSettings.WalletSecurityStage) {
+    @MainActor private func showPopUp(securityStage: WalletSettings.WalletSecurityStage) {
         switch securityStage {
         case .stage1A:
             showStage1APopUp()
@@ -103,7 +103,7 @@ final class StagedWalletSecurityManager {
         }
     }
 
-    private func showStage1APopUp() {
+    @MainActor private func showStage1APopUp() {
 
         let messageParts = [
             localized("staged_wallet_security.stages.1a.message.part1"),
@@ -130,7 +130,7 @@ final class StagedWalletSecurityManager {
         )
     }
 
-    private func showStage1BPopUp() {
+    @MainActor private func showStage1BPopUp() {
         showPopUp(
             title: localized("staged_wallet_security.stages.1b.title"),
             subtitle: localized("staged_wallet_security.stages.1b.subtitle"),
@@ -141,7 +141,7 @@ final class StagedWalletSecurityManager {
         )
     }
 
-    private func showStage2PopUp() {
+    @MainActor private func showStage2PopUp() {
         showPopUp(
             title: localized("staged_wallet_security.stages.2.title"),
             subtitle: localized("staged_wallet_security.stages.2.subtitle"),
@@ -152,7 +152,7 @@ final class StagedWalletSecurityManager {
         )
     }
 
-    private func showStage3PopUp() {
+    @MainActor private func showStage3PopUp() {
         showPopUp(
             title: localized("staged_wallet_security.stages.3.title"),
             subtitle: localized("staged_wallet_security.stages.3.subtitle"),
@@ -163,7 +163,7 @@ final class StagedWalletSecurityManager {
         )
     }
 
-    private func showPopUp(title: String, subtitle: String, message: String, messageBoldRanges: [NSRange] = [], mainActionTitle: String, mainActionCallback: @escaping () -> Void, helpActionCallback: @escaping () -> Void) {
+    @MainActor private func showPopUp(title: String, subtitle: String, message: String, messageBoldRanges: [NSRange] = [], mainActionTitle: String, mainActionCallback: @escaping () -> Void, helpActionCallback: @escaping () -> Void) {
         let headerSection = PopUpStagedWalletSecurityHeaderView(title: title, subtitle: subtitle)
         let contentSection = PopUpDescriptionContentView()
         let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [
@@ -219,7 +219,9 @@ final class StagedWalletSecurityManager {
         guard !isActionDiabled(securityStage: securityStage) else { return }
         guard securityStage != .stage3 else { return } // FIXME: Stage 3 is currently disabled
         updateTimestamp(securityStage: securityStage)
-        showPopUp(securityStage: securityStage)
+        Task { @MainActor in
+            showPopUp(securityStage: securityStage)
+        }
     }
 
     private func updateTimestamp(securityStage: WalletSettings.WalletSecurityStage) {

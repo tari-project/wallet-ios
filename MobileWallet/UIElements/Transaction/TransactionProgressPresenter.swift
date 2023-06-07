@@ -42,7 +42,7 @@ import UIKit
 
 enum TransactionProgressPresenter {
 
-    static func showTransactionProgress(presenter: UIViewController, paymentInfo: PaymentInfo, isOneSidedPayment: Bool) {
+    @MainActor static func showTransactionProgress(presenter: UIViewController, paymentInfo: PaymentInfo, isOneSidedPayment: Bool) {
 
         guard let amount = paymentInfo.amount, let feePerGram = paymentInfo.feePerGram else {
             show(transactionError: .missingInputData)
@@ -72,7 +72,7 @@ enum TransactionProgressPresenter {
         }
     }
 
-    private static func show(transactionError: WalletTransactionsManager.TransactionError) {
+    @MainActor private static func show(transactionError: WalletTransactionsManager.TransactionError) {
         switch transactionError {
         case .noInternetConnection:
             PopUpPresenter.show(message: MessageModel(title: localized("sending_tari.error.interwebs_connection.title"), message: localized("sending_tari.error.interwebs_connection.description"), type: .error))

@@ -116,13 +116,13 @@ extension PopUpPresenter {
         case failure(message: String?)
     }
 
-    static func show(message: MessageModel) {
+    @MainActor static func show(message: MessageModel) {
         let model = PopUpDialogModel(title: message.title, message: message.message, buttons: [], hapticType: makeHapticType(model: message))
         showPopUp(model: model)
         log(message: message)
     }
 
-    static func showMessageWithCloseButton(message: MessageModel, onCloseButtonAction: (() -> Void)? = nil) {
+    @MainActor static func showMessageWithCloseButton(message: MessageModel, onCloseButtonAction: (() -> Void)? = nil) {
 
         let model = PopUpDialogModel(
             title: message.title,
@@ -135,7 +135,7 @@ extension PopUpPresenter {
         log(message: message)
     }
 
-    static func showQRCodeDialog(title: String) -> PopUpQRContentView {
+    @MainActor static func showQRCodeDialog(title: String) -> PopUpQRContentView {
 
         let headerView = PopUpHeaderView()
         let contentView = PopUpQRContentView()
@@ -150,7 +150,7 @@ extension PopUpPresenter {
         return contentView
     }
 
-    static func showBLEDialog(type: BLEDialogType) {
+    @MainActor static func showBLEDialog(type: BLEDialogType) {
 
         let headerSection = PopUpCircleImageHeaderView()
         let contentSection = PopUpDescriptionContentView()
@@ -181,7 +181,7 @@ extension PopUpPresenter {
         PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: viewModel.hapticType), tag: viewModel.tag)
     }
 
-    static func showPopUp(model: PopUpDialogModel) {
+    @MainActor static func showPopUp(model: PopUpDialogModel) {
 
         var headerView: UIView?
         var contentView: UIView?

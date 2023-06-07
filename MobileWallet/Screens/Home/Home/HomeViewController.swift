@@ -553,7 +553,7 @@ extension HomeViewController: FloatingPanelControllerDelegate {
 
 private extension PopUpPresenter {
 
-    static func showStorePopUp() {
+    @MainActor static func showStorePopUp() {
 
         let headerSection = PopUpImageHeaderView()
 

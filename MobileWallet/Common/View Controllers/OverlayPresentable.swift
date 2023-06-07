@@ -44,7 +44,7 @@ protocol OverlayPresentable where Self: UIViewController {}
 
 extension OverlayPresentable {
 
-    func show(overlay: UIViewController) {
+    @MainActor func show(overlay: UIViewController) {
 
         guard presentedViewController == nil else { return }
 

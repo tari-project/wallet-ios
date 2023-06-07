@@ -40,7 +40,7 @@
 
 extension PopUpPresenter {
 
-    static func showUnlinkConfirmationDialog(emojiID: String, name: String, confirmationCallback: @escaping () -> Void) {
+    @MainActor static func showUnlinkConfirmationDialog(emojiID: String, name: String, confirmationCallback: @escaping () -> Void) {
 
         let model = PopUpDialogModel(
             titleComponents: [
@@ -60,7 +60,7 @@ extension PopUpPresenter {
         showPopUp(model: model)
     }
 
-    static func showUnlinkSuccessDialog(emojiID: String, name: String) {
+    @MainActor static func showUnlinkSuccessDialog(emojiID: String, name: String) {
 
         let model = PopUpDialogModel(
             titleComponents: [

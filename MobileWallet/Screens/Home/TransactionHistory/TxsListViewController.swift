@@ -291,6 +291,9 @@ final class TxsListViewController: DynamicThemeViewController {
     }
 
     private func tableViewModels(forSection section: Int) -> [TxTableViewModel] {
+
+        guard sections().count > section else { return [] }
+
         switch sections()[section] {
         case .pending:
             return pendingTxModels
@@ -299,8 +302,10 @@ final class TxsListViewController: DynamicThemeViewController {
         }
     }
 
-    private func tableViewModel(forIndexPath indexPath: IndexPath) -> TxTableViewModel {
-        tableViewModels(forSection: indexPath.section)[indexPath.row]
+    private func tableViewModel(forIndexPath indexPath: IndexPath) -> TxTableViewModel? {
+        let models = tableViewModels(forSection: indexPath.section)
+        guard models.count > indexPath.row else { return nil }
+        return models[indexPath.row]
     }
 
     // MARK: - Handlers
@@ -398,9 +403,9 @@ extension TxsListViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 
-        let cell = tableView.dequeueReusableCell(type: TxTableViewCell.self, indexPath: indexPath)
-        let viewModel = tableViewModel(forIndexPath: indexPath)
+        guard let viewModel = tableViewModel(forIndexPath: indexPath) else { return UITableViewCell() }
 
+        let cell = tableView.dequeueReusableCell(type: TxTableViewCell.self, indexPath: indexPath)
         cell.configure(with: viewModel)
         viewModel.downloadGif()
 
@@ -414,14 +419,15 @@ extension TxsListViewController: UITableViewDelegate, UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        actionDelegate?.onTxSelect(tableViewModel(forIndexPath: indexPath).transaction)
+        guard let transaction = tableViewModel(forIndexPath: indexPath)?.transaction else { return }
+        actionDelegate?.onTxSelect(transaction)
     }
 }
 
 // MARK: UITableViewDataSourcePrefetching
 extension TxsListViewController: UITableViewDataSourcePrefetching {
     func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        indexPaths.forEach { tableViewModel(forIndexPath: $0).downloadGif() }
+        indexPaths.forEach { tableViewModel(forIndexPath: $0)?.downloadGif() }
     }
 }
 
