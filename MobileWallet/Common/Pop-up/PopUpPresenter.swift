@@ -79,7 +79,7 @@ enum PopUpPresenter {
 
     // MARK: - Actions
 
-    static func show(popUp: TariPopUp, configuration: Configuration? = nil, tag: String? = nil) {
+    @MainActor static func show(popUp: TariPopUp, configuration: Configuration? = nil, tag: String? = nil) {
 
         var attributes = defaultAttributes
         attributes.name = tag

@@ -40,19 +40,19 @@
 
 enum PopUpComponentsFactory {
 
-    static func makeHeaderView(title: String) -> PopUpHeaderView {
+    @MainActor static func makeHeaderView(title: String) -> PopUpHeaderView {
         let view = PopUpHeaderView()
         view.label.textComponents = [StylizedLabel.StylizedText(text: title, style: .normal)]
         return view
     }
 
-    static func makeContentView(message: String) -> PopUpDescriptionContentView {
+    @MainActor static func makeContentView(message: String) -> PopUpDescriptionContentView {
         let view = PopUpDescriptionContentView()
         view.label.textComponents = [StylizedLabel.StylizedText(text: message, style: .normal)]
         return view
     }
 
-    static func makeButtonsView(models: [PopUpDialogButtonModel]) -> PopUpButtonsView {
+    @MainActor static func makeButtonsView(models: [PopUpDialogButtonModel]) -> PopUpButtonsView {
         let view = PopUpButtonsView()
         models
             .map { model in

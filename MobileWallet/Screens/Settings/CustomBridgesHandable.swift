@@ -70,6 +70,9 @@ extension CustomBridgesHandable {
         navigationBar.progress = nil
         view.isUserInteractionEnabled = true
         let errorMessage = ErrorMessageManager.errorModel(forError: error)
-        PopUpPresenter.show(message: errorMessage)
+
+        Task { @MainActor in
+            PopUpPresenter.show(message: errorMessage)
+        }
     }
 }

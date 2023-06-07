@@ -108,7 +108,9 @@ enum DeeplinkHandler {
             _ = try BaseNode(name: deeplink.name, peer: deeplink.peer)
 
             guard let handler = handler else {
-                showCustomDeeplinkPopUp(name: deeplink.name, peer: deeplink.peer)
+                Task { @MainActor in
+                    showCustomDeeplinkPopUp(name: deeplink.name, peer: deeplink.peer)
+                }
                 return
             }
 
@@ -153,7 +155,7 @@ enum DeeplinkHandler {
         }
     }
 
-    private static func showCustomDeeplinkPopUp(name: String, peer: String) {
+    @MainActor private static func showCustomDeeplinkPopUp(name: String, peer: String) {
 
         let headerSection = PopUpHeaderWithSubtitle()
         headerSection.titleLabel.text = localized("add_base_node_overlay.label.title")

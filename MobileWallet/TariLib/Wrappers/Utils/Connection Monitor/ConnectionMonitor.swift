@@ -189,7 +189,7 @@ private extension TariValidationService.SyncStatus {
 
 extension ConnectionMonitor {
 
-    func showDetailsPopup() {
+    @MainActor func showDetailsPopup() {
 
         let headerSection = PopUpHeaderView()
         let contentSection = PopUpNetworkStatusContentView()

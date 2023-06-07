@@ -143,7 +143,9 @@ final class BackupManager {
 
         guard UIApplication.shared.applicationState == .background else {
             let messageModel = MessageModel(title: localized("iCloud_backup.error.title.create_backup"), message: message, type: .error)
-            PopUpPresenter.show(message: messageModel)
+            Task { @MainActor in
+                PopUpPresenter.show(message: messageModel)
+            }
             return
         }
 

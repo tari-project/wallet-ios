@@ -81,7 +81,7 @@ final class PopUpButtonsView: UIView {
 
     // MARK: - Actions
 
-    func addButton(model: PopUpDialogButtonModel) {
+    @MainActor func addButton(model: PopUpDialogButtonModel) {
 
         let button: BaseButton
 
