@@ -453,8 +453,8 @@ final class AddAmountViewController: DynamicThemeViewController {
     }
 
     @objc private func continueButtonTapped() {
-        guard let paymentInfo = updatedPaymentInfo(), let feePerGram = feePerGram else { return }
-        let controller = AddNoteViewController(paymentInfo: paymentInfo, feePerGram: feePerGram, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
+        guard let paymentInfo = updatedPaymentInfo() else { return }
+        let controller = AddNoteViewController(paymentInfo: paymentInfo, isOneSidedPayment: oneSidedPaymentSwitch.isOn)
         navigationController?.pushViewController(controller, animated: true)
     }
 
