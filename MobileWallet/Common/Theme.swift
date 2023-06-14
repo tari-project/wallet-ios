@@ -300,6 +300,7 @@ extension UIImage {
     static var security: SecurityImages.Type { SecurityImages.self }
     static var contactBook: ContactBookImages.Type { ContactBookImages.self }
     static var icons: IconsImages.Type { IconsImages.self }
+    static var legacy: LegacyImages.Type { LegacyImages.self }
 }
 
 // MARK: - Security
@@ -340,6 +341,13 @@ enum ContactBookPlaceholderImages {
     static var favoritesContactsList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/ContactBookListFavPlaceholder") }
     static var transactionList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/TransactionList") }
     static var linkList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/LinkList") }
+}
+
+// MARK: - Legacy
+
+enum LegacyImages {
+    static var send: UIImage? { UIImage(named: "navSend")?.withRenderingMode(.alwaysOriginal) }
+    static var unknownUser = UIImage(named: "unknownUser")
 }
 
 // MARK: - Icons
