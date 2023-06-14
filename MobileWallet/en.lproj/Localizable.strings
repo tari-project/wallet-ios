@@ -843,3 +843,18 @@
 "contact_book.transaction_list.placeholder.label.message.part.1" = "You don’t have any transactions with";
 "contact_book.transaction_list.placeholder.label.message.part.3" = "yet. Click the button below to send some Tari.";
 "contact_book.transaction_list.placeholder.button.send" = "Send Tari";
+
+/* Legacy */
+
+"add_recipient.recent_txs" = "Recent Transactions";
+"add_recipient.error.load_contacts.title" = "Failed to load contacts";
+"add_recipient.error.load_contacts.description" = "Could not access wallet";
+"add_recipient.error.load_contacts.invalid_emoji_set" = "Your recipient needs to upgrade to the latest version of Tari Aurora and copy their updated Emoji ID to transact with you";
+"add_recipient.inputbox.warning" = "Invalid Emoji ID";
+"add_recipient.warning.can_not_send_yourself.with_param" = "Sorry, you cannot send %@ to yourself";
+"add_recipient.my_contacts" = "My Contacts";
+"add_recipient.title" = "Send To";
+"add_recipient.error.invalid_emoji.title" = "Could not use Emoji ID";
+"add_recipient.error.invalid_emoji.description" = "Failed to create a valid contact from the pasted Emoji ID";
+"transactions.toolbar.send" = "Send";
+"transactions.toolbar.request" = "Request";

@@ -448,6 +448,13 @@
 		54AA5D5A298122B70031A396 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D59298122B70031A396 /* OnboardingView.swift */; };
 		54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */; };
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
+		54ADC0872A3856B50082C455 /* AddRecipientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC0852A3856B50082C455 /* AddRecipientViewController.swift */; };
+		54ADC0882A3856B50082C455 /* AddRecipientModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC0862A3856B50082C455 /* AddRecipientModel.swift */; };
+		54ADC08B2A3857280082C455 /* AddRecipientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC08A2A3857280082C455 /* AddRecipientView.swift */; };
+		54ADC08E2A3857850082C455 /* AddRecipientSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC08C2A3857840082C455 /* AddRecipientSectionHeaderView.swift */; };
+		54ADC08F2A3857850082C455 /* ContactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC08D2A3857840082C455 /* ContactCell.swift */; };
+		54ADC0912A38582B0082C455 /* ContactAvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC0902A38582B0082C455 /* ContactAvatarView.swift */; };
+		54ADC0932A3858C40082C455 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC0922A3858C40082C455 /* ErrorView.swift */; };
 		54B7F4452996583800BB484B /* ContactBookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7F4442996583800BB484B /* ContactBookCell.swift */; };
 		54B854B929BF993600A2367A /* ContactBookListPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B854B829BF993600A2367A /* ContactBookListPlaceholder.swift */; };
 		54BB5E052A2F081300E239C7 /* UserProfileDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */; };
@@ -978,6 +985,13 @@
 		54AA5D59298122B70031A396 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
+		54ADC0852A3856B50082C455 /* AddRecipientViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRecipientViewController.swift; sourceTree = "<group>"; };
+		54ADC0862A3856B50082C455 /* AddRecipientModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRecipientModel.swift; sourceTree = "<group>"; };
+		54ADC08A2A3857280082C455 /* AddRecipientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRecipientView.swift; sourceTree = "<group>"; };
+		54ADC08C2A3857840082C455 /* AddRecipientSectionHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRecipientSectionHeaderView.swift; sourceTree = "<group>"; };
+		54ADC08D2A3857840082C455 /* ContactCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactCell.swift; sourceTree = "<group>"; };
+		54ADC0902A38582B0082C455 /* ContactAvatarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactAvatarView.swift; sourceTree = "<group>"; };
+		54ADC0922A3858C40082C455 /* ErrorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		54B7F4442996583800BB484B /* ContactBookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookCell.swift; sourceTree = "<group>"; };
 		54B854B829BF993600A2367A /* ContactBookListPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookListPlaceholder.swift; sourceTree = "<group>"; };
 		54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileDeeplink.swift; sourceTree = "<group>"; };
@@ -1312,6 +1326,7 @@
 		00E2BCB5236B469C00C2A105 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				54ADC07A2A3855840082C455 /* Legacy */,
 				54D419B12995091B00D496B4 /* Contact Book */,
 				3ACDA70326B0317300F138B8 /* RestoreWalletFromSeedsProgress */,
 				3A4376E3269C0BF0006107B0 /* RestoreWalletFromSeeds */,
@@ -2690,6 +2705,36 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		54ADC07A2A3855840082C455 /* Legacy */ = {
+			isa = PBXGroup;
+			children = (
+				54ADC0842A3856B50082C455 /* AddRecipient */,
+			);
+			path = Legacy;
+			sourceTree = "<group>";
+		};
+		54ADC0842A3856B50082C455 /* AddRecipient */ = {
+			isa = PBXGroup;
+			children = (
+				54ADC0892A3857280082C455 /* Views */,
+				54ADC0852A3856B50082C455 /* AddRecipientViewController.swift */,
+				54ADC0862A3856B50082C455 /* AddRecipientModel.swift */,
+			);
+			path = AddRecipient;
+			sourceTree = "<group>";
+		};
+		54ADC0892A3857280082C455 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				54ADC0922A3858C40082C455 /* ErrorView.swift */,
+				54ADC0902A38582B0082C455 /* ContactAvatarView.swift */,
+				54ADC08C2A3857840082C455 /* AddRecipientSectionHeaderView.swift */,
+				54ADC08D2A3857840082C455 /* ContactCell.swift */,
+				54ADC08A2A3857280082C455 /* AddRecipientView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		54B7F4432996582B00BB484B /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -3133,6 +3178,7 @@
 				547A85D529AD23D800D94985 /* MenuTableView.swift in Sources */,
 				37ABB69424781F8600F08163 /* UILabelWithPadding.swift in Sources */,
 				3A6A033C2802DD34000432B4 /* PopUpPresenter.swift in Sources */,
+				54ADC08E2A3857850082C455 /* AddRecipientSectionHeaderView.swift in Sources */,
 				3ABBBA8028508AB000A3108D /* UTXOsWalletTextListViewCell.swift in Sources */,
 				3A8473CA28EC56180015E63A /* TariFeesService.swift in Sources */,
 				3A39E57229012C8B000BBEBF /* DropboxBackupService.swift in Sources */,
@@ -3185,6 +3231,7 @@
 				543DF19C293F3DA90031EA70 /* BridgesConfigurationFooterView.swift in Sources */,
 				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				3A82455627E1EE0D003B6B59 /* TransactionDetailsSectionView.swift in Sources */,
+				54ADC0882A3856B50082C455 /* AddRecipientModel.swift in Sources */,
 				54621F9029E01385000E9659 /* DeeplinkUnkeyedDecodingContainer.swift in Sources */,
 				3A7DAB9528FDB220002CC013 /* LogsListCell.swift in Sources */,
 				3AECD494284F46FD00D81C80 /* UIColor+Utils.swift in Sources */,
@@ -3199,6 +3246,7 @@
 				3A4376E5269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift in Sources */,
 				54885B1929E7FEA8009175AC /* BLECentralManager.swift in Sources */,
 				3A8473DA28EC57AA0015E63A /* Publisher+Binding.swift in Sources */,
+				54ADC08B2A3857280082C455 /* AddRecipientView.swift in Sources */,
 				3AF56BBD28B77969004E8E43 /* PendingOutboundTransactions.swift in Sources */,
 				37875E4424D85C4300C0595B /* LoadingGIFButton.swift in Sources */,
 				BFC5532523D9B8E4009130A8 /* UIView+Content.swift in Sources */,
@@ -3250,6 +3298,7 @@
 				3A7DAB9728FDB6FD002CC013 /* LogsListConstructor.swift in Sources */,
 				3AC6F11228E9C6590068E6FF /* WalletCallbacksManager.swift in Sources */,
 				3AEDBE4D27CE45C0006B0166 /* DeepLinkFormatter.swift in Sources */,
+				54ADC08F2A3857850082C455 /* ContactCell.swift in Sources */,
 				3ACDA70E26B0320900F138B8 /* SeedWordsRecoveryProgressModel.swift in Sources */,
 				3AE138CF2804A88500443D34 /* ToastPresenter.swift in Sources */,
 				3A0EA98226AA8E64002612D4 /* TokenInputView.swift in Sources */,
@@ -3281,6 +3330,7 @@
 				3A5A3D5A29016E1300B689C6 /* BackupWalletSettingsView.swift in Sources */,
 				00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				3AC6F11428E9D8840068E6FF /* CustomBridgesHandable.swift in Sources */,
+				54ADC0912A38582B0082C455 /* ContactAvatarView.swift in Sources */,
 				00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */,
 				3A62674626D76E6B007F9895 /* SelectNetworkViewController.swift in Sources */,
 				377C951E2522213800CC1696 /* TxsListViewController.swift in Sources */,
@@ -3361,6 +3411,7 @@
 				3AC877E628741680006F327B /* UTXOsWalletLoadingView.swift in Sources */,
 				37547D5624601BF600EB59CC /* UIView+GlobalFrame.swift in Sources */,
 				BF8316FD23EF7EAA00235403 /* LAContext.swift in Sources */,
+				54ADC0932A3858C40082C455 /* ErrorView.swift in Sources */,
 				54885B1B29E802D7009175AC /* BLEConstants.swift in Sources */,
 				3A983A5E27C64B0500F0AB61 /* VerifySeedWordsModel.swift in Sources */,
 				3A6A033E2802DEEB000432B4 /* PopUpPresenter+CommonPopUps.swift in Sources */,
@@ -3438,6 +3489,7 @@
 				54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */,
 				3A2B95682864801D0085BE21 /* UTXOsWalletTileListLayout.swift in Sources */,
 				54F2E34E29EEAEBB00A7A15A /* ContactTransactionListPlaceholder.swift in Sources */,
+				54ADC0872A3856B50082C455 /* AddRecipientViewController.swift in Sources */,
 				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
 				3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */,
 				540CB6F329C1DE26003FACEF /* AddContactViewController.swift in Sources */,
