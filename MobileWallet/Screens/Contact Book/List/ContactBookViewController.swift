@@ -41,7 +41,7 @@
 import UIKit
 import Combine
 
-final class ContactBookViewController: UIViewController {
+final class ContactBookViewController: UIViewController, OverlayPresentable {
 
     // MARK: - Properties
 
@@ -211,24 +211,16 @@ final class ContactBookViewController: UIViewController {
             self?.model.sendTokensRequest()
         }
 
-        contactsPageViewController.onButtonTap = { [weak self] in
-            self?.model.performAction(contactID: $0, menuItemID: $1)
+        contactsPageViewController.onContactRowTap = { [weak self] contactID, isEditing in
+            self?.handleSelectRow(contactID: contactID, isEditing: isEditing)
         }
 
         contactsPageViewController.onBluetoothRowTap = { [weak self] in
             self?.model.fetchTransactionDataViaBLE()
         }
 
-        contactsPageViewController.onContactRowTap = { [weak self] in
-            self?.model.toggle(contactID: $0)
-        }
-
-        favoritesPageViewController.onButtonTap = { [weak self] in
-            self?.model.performAction(contactID: $0, menuItemID: $1)
-        }
-
-        favoritesPageViewController.onContactRowTap = { [weak self] in
-            self?.model.toggle(contactID: $0)
+        favoritesPageViewController.onContactRowTap = { [weak self] contactID, isEditing in
+            self?.handleSelectRow(contactID: contactID, isEditing: isEditing)
         }
 
         contactsPageViewController.onFooterTap = { [weak self] in
@@ -300,6 +292,8 @@ final class ContactBookViewController: UIViewController {
             showLinkShareDialog(link: link)
         case let .show(dialog):
             handle(dialog: dialog)
+        case let .showMenu(model):
+            showMenu(model: model)
         }
     }
 
@@ -333,6 +327,14 @@ final class ContactBookViewController: UIViewController {
                 onReject: { [weak self] in self?.model.cancelIncomingTransaction() }
             ))
         }
+    }
+
+    private func handleSelectRow(contactID: UUID, isEditing: Bool) {
+        guard isEditing else {
+            model.selectContact(contactID: contactID)
+            return
+        }
+        model.toggleSelection(contactID: contactID)
     }
 
     // MARK: - Actions
@@ -392,6 +394,18 @@ final class ContactBookViewController: UIViewController {
         scanViewController.actionDelegate = self
         scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
         present(scanViewController, animated: true, completion: nil)
+    }
+
+    private func showMenu(model: ContactsManager.Model) {
+
+        let overlay = RotaryMenuOverlay(model: model)
+
+        overlay.onMenuButtonTap = { [weak self] in
+            self?.dismiss(animated: true)
+            self?.model.performAction(contactID: $0, menuItemID: $1)
+        }
+
+        show(overlay: overlay)
     }
 }
 

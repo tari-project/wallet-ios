@@ -1,10 +1,10 @@
-//  ContactCapsuleMenuBackground.swift
+//  UIView+Utils.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 22/02/2023
+	Created by Adrian Truszczyński on 15/06/2023
 	Using Swift 5.0
-	Running on macOS 13.0
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -39,55 +39,15 @@
 */
 
 import UIKit
-import TariCommon
 
-final class ContactCapsuleMenuBackground: UIView {
+extension UIView {
 
-    // MARK: - Subviews
-
-    @View private var gradientView = TariGradientView()
-
-    private let menuMaskView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .black
-        return view
-    }()
-
-    // MARK: - Properties
-
-    var maskFrame: CGRect {
-        get { menuMaskView.frame }
-        set {
-            menuMaskView.frame = newValue
-            menuMaskView.layer.cornerRadius = newValue.height * 0.5
+    @discardableResult
+    static func animate(duration: TimeInterval, deley: TimeInterval = 0.0, options: UIView.AnimationOptions = [], animations: @escaping () -> Void) async -> Bool {
+        await withCheckedContinuation { continuation in
+            UIView.animate(withDuration: duration, delay: deley, options: options, animations: animations) { result in
+                continuation.resume(returning: result)
+            }
         }
-    }
-
-    // MARK: - Initialisers
-
-    init() {
-        super.init(frame: .zero)
-        setupViews()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Setups
-
-    private func setupViews() {
-
-        addSubview(gradientView)
-        mask = menuMaskView
-
-        let constraints = [
-            gradientView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            gradientView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            gradientView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1.5),
-            gradientView.heightAnchor.constraint(equalTo: heightAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
     }
 }

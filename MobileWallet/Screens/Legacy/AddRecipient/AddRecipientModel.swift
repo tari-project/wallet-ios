@@ -123,7 +123,6 @@ final class AddRecipientModel {
         }
 
         errorMessage = nil
-//        verifiedPaymentInfo = PaymentInfo(address: address, yatID: yatID) // TODO: !
         verifiedPaymentInfo = PaymentInfo(address: hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil)
     }
 
@@ -146,7 +145,6 @@ final class AddRecipientModel {
             return
         }
 
-//        verifiedPaymentInfo = PaymentInfo(address: address, yatID: yatID) // TODO: !
         verifiedPaymentInfo = PaymentInfo(address: hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil)
     }
 

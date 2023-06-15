@@ -82,6 +82,7 @@ final class ContactBookModel {
         case shareQR(image: UIImage)
         case shareLink(link: URL)
         case show(dialog: DialogType)
+        case showMenu(model: ContactsManager.Model)
     }
 
     fileprivate enum SectionType: Int {
@@ -217,7 +218,7 @@ final class ContactBookModel {
 
     func performAction(contactID: UUID, menuItemID: UInt) {
 
-        guard let model = contactModels.flatMap({ $0 }).first(where: { $0.id == contactID }), let menuItem = MenuItem(rawValue: menuItemID) else { return }
+        guard let model = contact(contactID: contactID), let menuItem = MenuItem(rawValue: menuItemID) else { return }
 
         switch menuItem {
         case .send:
@@ -235,9 +236,9 @@ final class ContactBookModel {
         }
     }
 
-    func toggle(contactID: UUID) {
+    func toggleSelection(contactID: UUID) {
 
-        guard let model = contactModels.flatMap({ $0 }).first(where: { $0.id == contactID }), model.hasIntrenalModel else { return }
+        guard let model = contact(contactID: contactID), model.hasIntrenalModel else { return }
 
         guard selectedIDs.contains(contactID) else {
             selectedIDs.insert(contactID)
@@ -333,6 +334,11 @@ final class ContactBookModel {
 
     func cancelIncomingTransaction() {
         incomingUserProfile = nil
+    }
+
+    func selectContact(contactID: UUID) {
+        guard let model = contact(contactID: contactID) else { return }
+        action = .showMenu(model: model)
     }
 
     // MARK: - Actions
@@ -509,7 +515,6 @@ final class ContactBookModel {
                         avatarText: $0.avatar,
                         avatarImage: $0.avatarImage,
                         isFavorite: $0.isFavorite,
-                        menuItems: $0.menuItems.map { $0.buttonViewModel },
                         contactTypeImage: $0.type.image,
                         isSelectable: section?.isSelectable ?? false
                     )
@@ -528,6 +533,12 @@ final class ContactBookModel {
         let models = contactModels.flatMap { $0 }
         areContactsAvailable = !models.isEmpty
         areFavoriteContactsAvailable = models.first { $0.isFavorite } != nil
+    }
+
+    // MARK: - Helpers
+
+    private func contact(contactID: UUID) -> ContactsManager.Model? {
+        contactModels.flatMap { $0 }.first { $0.id == contactID }
     }
 }
 
@@ -568,26 +579,4 @@ private extension ContactBookModel.SectionType {
     }
 
     var isSelectable: Bool { self == .internalContacts }
-}
-
-private extension ContactBookModel.MenuItem {
-
-    var buttonViewModel: ContactCapsuleMenu.ButtonViewModel { ContactCapsuleMenu.ButtonViewModel(id: rawValue, icon: icon) }
-
-    private var icon: UIImage? {
-        switch self {
-        case .send:
-            return .icons.send
-        case .addToFavorites:
-            return .icons.star.filled
-        case .removeFromFavorites:
-            return .icons.star.border
-        case .link:
-            return .icons.link
-        case .unlink:
-            return .icons.unlink
-        case .details:
-            return .icons.profile
-        }
-    }
 }
