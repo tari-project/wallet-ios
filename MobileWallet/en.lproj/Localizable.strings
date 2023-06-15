@@ -785,6 +785,7 @@
 "contact_book.section.favorites.placeholder.message.part1" = "You can";
 "contact_book.section.favorites.placeholder.message.part2.bold" = "favorite contacts";
 "contact_book.section.favorites.placeholder.message.part3" = "to easily access them later. Tap on the contact’s name and then on the star icon to add them to your favorites list.";
+"contact_book.menu.option.details" = "Show details";
 "contact_book.details.title" = "Contact Profile";
 "contact_book.details.menu.option.send" = "Send Tari";
 "contact_book.details.menu.option.add_to_favorites" = "Add to Favorites";

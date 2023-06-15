@@ -1,10 +1,10 @@
-//  TariGradientView.swift
+//  UIImage+Utils.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 22/02/2023
+	Created by Adrian Truszczyński on 15/06/2023
 	Using Swift 5.0
-	Running on macOS 13.0
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -40,33 +40,20 @@
 
 import UIKit
 
-final class TariGradientView: DynamicThemeView {
+extension UIImage {
 
-    private let gradientLayer: CAGradientLayer = {
-        let layer = CAGradientLayer()
-        layer.startPoint = CGPoint(x: 0.0, y: 0.0)
-        layer.endPoint = CGPoint(x: 1.0, y: 1.0)
-        layer.locations = [0.0, 1.0]
-        return layer
-    }()
+    var invertedMask: UIImage? {
 
-    override init() {
-        super.init()
-        layer.addSublayer(gradientLayer)
-    }
+        guard let ciImage = CIImage(image: self),
+              let backgroundFilter = CIFilter(name: "CIConstantColorGenerator", parameters: [kCIInputColorKey: CIColor.black]),
+              let inputColorFilter = CIFilter(name: "CIConstantColorGenerator", parameters: [kCIInputColorKey: CIColor.clear]),
+              let inputImage = inputColorFilter.outputImage,
+              let backgroundImage = backgroundFilter.outputImage,
+              let blendFilter = CIFilter(name: "CIBlendWithAlphaMask", parameters: [kCIInputImageKey: inputImage, kCIInputBackgroundImageKey: backgroundImage, kCIInputMaskImageKey: ciImage]),
+              let filterOutput = blendFilter.outputImage,
+              let outputImage = CIContext().createCGImage(filterOutput, from: ciImage.extent)
+        else { return nil }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func layoutSublayers(of layer: CALayer) {
-        super.layoutSublayers(of: layer)
-        gradientLayer.frame = layer.bounds
-    }
-
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-        backgroundColor = theme.neutral.primary
-        gradientLayer.colors = [theme.buttons.primaryStart, theme.buttons.primaryEnd].compactMap { $0?.cgColor }
+        return UIImage(cgImage: outputImage)
     }
 }

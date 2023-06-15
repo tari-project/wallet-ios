@@ -54,6 +54,7 @@ final class RoundedAvatarView: DynamicThemeView {
     @View private var label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
+        label.contentMode = .scaleAspectFit
         return label
     }()
 
@@ -98,10 +99,10 @@ final class RoundedAvatarView: DynamicThemeView {
         [label, imageView].forEach(addSubview)
 
         let constraints = [
-            label.topAnchor.constraint(equalTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor)
+            label.heightAnchor.constraint(equalTo: heightAnchor),
+            label.widthAnchor.constraint(equalTo: widthAnchor),
+            label.centerXAnchor.constraint(equalTo: centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: centerYAnchor)
         ]
 
         imageViewPositiveContraints = [

@@ -98,17 +98,12 @@ final class ContactBookContactListView: DynamicThemeView {
         didSet { updateSelectedRows() }
     }
 
-    var onButtonTap: ((UUID, UInt) -> Void)?
     var onBluetoothRowTap: (() -> Void)?
-    var onContactRowTap: ((UUID) -> Void)?
+    var onContactRowTap: ((_ identifier: UUID, _ isEditing: Bool) -> Void)?
 
     var onFooterTap: (() -> Void)? {
         get { tableFooterView.onTap }
         set { tableFooterView.onTap = newValue }
-    }
-
-    private var expandedID: UUID? {
-        didSet { updateCellsState() }
     }
 
     private var dataSource: UITableViewDiffableDataSource<Int, ItemType>?
@@ -206,19 +201,6 @@ final class ContactBookContactListView: DynamicThemeView {
         tableView.bounces = !isPlaceholderVisible
     }
 
-    private func updateCellsState() {
-        tableView.visibleCells
-            .compactMap { $0 as? ContactBookCell }
-            .forEach {
-                guard let expandedID else {
-                    $0.updateCell(isExpanded: false, withAnmiation: true)
-                    return
-                }
-
-                $0.updateCell(isExpanded: expandedID == $0.elementID, withAnmiation: true)
-            }
-    }
-
     private func updateSelectedRows() {
         tableView.visibleCells
             .compactMap { $0 as? ContactBookCell }
@@ -232,7 +214,6 @@ final class ContactBookContactListView: DynamicThemeView {
     }
 
     private func updateViewsContentMode() {
-        expandedID = nil
         tableView.setEditing(isInSharingMode, animated: true)
     }
 
@@ -243,17 +224,9 @@ final class ContactBookContactListView: DynamicThemeView {
     }
 
     private func makeContactCell(model: ContactBookCell.ViewModel, tableView: UITableView, indexPath: IndexPath) -> ContactBookCell {
-
         let cell = tableView.dequeueReusableCell(type: ContactBookCell.self, indexPath: indexPath)
-
         cell.update(viewModel: model)
-        cell.updateCell(isExpanded: model.id == expandedID, withAnmiation: false)
         cell.isTickSelected = selectedRows.contains(model.id) == true
-        cell.onButtonTap = { [weak self] in
-            self?.onButtonTap?($0, $1)
-            self?.expandedID = nil
-        }
-
         return cell
     }
 
@@ -265,18 +238,7 @@ final class ContactBookContactListView: DynamicThemeView {
 
     private func handle(contactBookCell: ContactBookCell) {
         guard let elementID = contactBookCell.elementID else { return }
-
-        guard !tableView.isEditing else {
-            onContactRowTap?(elementID)
-            return
-        }
-
-        guard elementID == expandedID else {
-            expandedID = elementID
-            return
-        }
-
-        expandedID = nil
+        onContactRowTap?(elementID, tableView.isEditing)
     }
 
     // MARK: - Layout

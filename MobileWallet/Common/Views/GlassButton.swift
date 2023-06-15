@@ -1,10 +1,10 @@
-//  UserSettingsManager.swift
+//  GlassButton.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 18/12/2022
+	Created by Adrian Truszczyński on 15/06/2023
 	Using Swift 5.0
-	Running on macOS 13.0
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,52 +38,50 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum UserSettingsManager {
+import UIKit
 
-    static var name: String? {
-        get { userSettings.name }
-        set {
-            var userSettings = userSettings
-            userSettings.name = newValue
-            GroupUserDefaults.userSettings = userSettings
-        }
+final class GlassButton: RoundedButton {
+
+    // MARK: - Subviews
+
+    private let maskImageView: UIImageView = {
+        let view = UIImageView()
+        view.contentMode = .scaleAspectFit
+        return view
+    }()
+
+    // MARK: - Properties
+
+    var maskImage: UIImage? {
+        didSet { maskImageView.image = maskImage?.invertedMask }
     }
 
-    static var colorScheme: UserSettings.ColorScheme {
-        get { userSettings.colorScheme }
-        set {
-            var userSettings = userSettings
-            userSettings.colorScheme = newValue
-            GroupUserDefaults.userSettings = userSettings
-        }
+    var backgroundAlpha: CGFloat = 0.4 {
+        didSet { backgroundColor = .static.white?.withAlphaComponent(backgroundAlpha) }
     }
 
-    static var bleAdvertisementMode: UserSettings.BLEAdvertisementMode {
-        get { userSettings.bleAdvertismentMode }
-        set {
-            var userSettings = userSettings
-            userSettings.bleAdvertismentMode = newValue
-            GroupUserDefaults.userSettings = userSettings
-        }
+    // MARK: - Initialisers
+
+    override init() {
+        super.init()
+        setupViews()
     }
 
-    static var rotaryMenuPosition: UserSettings.RotaryMenuPosition {
-        get { userSettings.rotaryMenuPosition }
-        set {
-            var userSettings = userSettings
-            userSettings.rotaryMenuPosition = newValue
-            GroupUserDefaults.userSettings = userSettings
-        }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    private static var userSettings: UserSettings {
+    // MARK: - Setups
 
-        guard let settings = GroupUserDefaults.userSettings else {
-            let newSettings = UserSettings.default
-            GroupUserDefaults.userSettings = newSettings
-            return newSettings
-        }
+    private func setupViews() {
+        mask = maskImageView
+        backgroundAlpha = 0.4
+    }
 
-        return settings
+    // MARK: - Layout
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        maskImageView.frame = bounds
     }
 }

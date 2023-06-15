@@ -355,6 +355,7 @@ enum LegacyImages {
 enum IconsImages {
 
     static var contactTypes: IconsContactTypesImages.Type { IconsContactTypesImages.self }
+    static var rotaryMenu: IconsRotaryImages.Type { IconsRotaryImages.self }
     static var settings: IconsSettingsImages.Type { IconsSettingsImages.self }
     static var star: IconsStarImages.Type { IconsStarImages.self }
     static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
@@ -373,6 +374,15 @@ enum IconsContactTypesImages {
     static var linked: UIImage? { UIImage(named: "Icons/Contact Types/Linked") }
 }
 
+enum IconsRotaryImages {
+    static var close: UIImage? { UIImage(named: "Icons/Rotary Menu/Close") }
+    static var switchSide: UIImage? { UIImage(named: "Icons/Rotary Menu/Switch Side") }
+}
+
+enum IconsSettingsImages {
+    static var bluetooth: UIImage? { UIImage(named: "Icons/Settings/Bluetooth") }
+}
+
 enum IconsStarImages {
     static var border: UIImage? { UIImage(named: "Icons/Star/Border") }
     static var filled: UIImage? { UIImage(named: "Icons/Star/Filled") }
@@ -380,8 +390,4 @@ enum IconsStarImages {
 
 enum IconsTabBarImages {
     static var contactBook: UIImage? { UIImage(named: "Icons/TabBar/ContactBook") }
-}
-
-enum IconsSettingsImages {
-    static var bluetooth: UIImage? { UIImage(named: "Icons/Settings/Bluetooth") }
 }
