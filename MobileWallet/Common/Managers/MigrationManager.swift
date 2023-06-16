@@ -77,7 +77,7 @@ enum MigrationManager {
         }
     }
 
-    private static func showPopUp(completion: @escaping (Bool) -> Void) {
+    @MainActor private static func showPopUp(completion: @escaping (Bool) -> Void) {
 
         let headerSection = PopUpComponentsFactory.makeHeaderView(title: localized("ffi_validation.error.title"))
         let contentSection = PopUpComponentsFactory.makeContentView(message: localized("ffi_validation.error.message"))

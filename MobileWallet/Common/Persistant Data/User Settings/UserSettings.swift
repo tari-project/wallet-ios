@@ -53,11 +53,17 @@ struct UserSettings: Codable {
         case alwaysOn
     }
 
+    enum RotaryMenuPosition: Codable {
+        case left
+        case right
+    }
+
     var name: String?
     var colorScheme: ColorScheme
     var bleAdvertismentMode: BLEAdvertisementMode
+    var rotaryMenuPosition: RotaryMenuPosition
 }
 
 extension UserSettings {
-    static var `default`: Self { Self(colorScheme: .system, bleAdvertismentMode: .onlyOnForeground) }
+    static var `default`: Self { Self(colorScheme: .system, bleAdvertismentMode: .onlyOnForeground, rotaryMenuPosition: .left) }
 }

@@ -40,7 +40,7 @@
 
 import UIKit
 
-class TariGradientView: DynamicThemeView {
+final class TariGradientView: DynamicThemeView {
 
     private let gradientLayer: CAGradientLayer = {
         let layer = CAGradientLayer()

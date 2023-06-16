@@ -300,6 +300,7 @@ extension UIImage {
     static var security: SecurityImages.Type { SecurityImages.self }
     static var contactBook: ContactBookImages.Type { ContactBookImages.self }
     static var icons: IconsImages.Type { IconsImages.self }
+    static var legacy: LegacyImages.Type { LegacyImages.self }
 }
 
 // MARK: - Security
@@ -342,11 +343,19 @@ enum ContactBookPlaceholderImages {
     static var linkList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/LinkList") }
 }
 
+// MARK: - Legacy
+
+enum LegacyImages {
+    static var send: UIImage? { UIImage(named: "navSend")?.withRenderingMode(.alwaysOriginal) }
+    static var unknownUser = UIImage(named: "unknownUser")
+}
+
 // MARK: - Icons
 
 enum IconsImages {
 
     static var contactTypes: IconsContactTypesImages.Type { IconsContactTypesImages.self }
+    static var rotaryMenu: IconsRotaryImages.Type { IconsRotaryImages.self }
     static var settings: IconsSettingsImages.Type { IconsSettingsImages.self }
     static var star: IconsStarImages.Type { IconsStarImages.self }
     static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
@@ -365,6 +374,15 @@ enum IconsContactTypesImages {
     static var linked: UIImage? { UIImage(named: "Icons/Contact Types/Linked") }
 }
 
+enum IconsRotaryImages {
+    static var close: UIImage? { UIImage(named: "Icons/Rotary Menu/Close") }
+    static var switchSide: UIImage? { UIImage(named: "Icons/Rotary Menu/Switch Side") }
+}
+
+enum IconsSettingsImages {
+    static var bluetooth: UIImage? { UIImage(named: "Icons/Settings/Bluetooth") }
+}
+
 enum IconsStarImages {
     static var border: UIImage? { UIImage(named: "Icons/Star/Border") }
     static var filled: UIImage? { UIImage(named: "Icons/Star/Filled") }
@@ -372,8 +390,4 @@ enum IconsStarImages {
 
 enum IconsTabBarImages {
     static var contactBook: UIImage? { UIImage(named: "Icons/TabBar/ContactBook") }
-}
-
-enum IconsSettingsImages {
-    static var bluetooth: UIImage? { UIImage(named: "Icons/Settings/Bluetooth") }
 }

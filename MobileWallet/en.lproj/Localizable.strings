@@ -758,9 +758,18 @@
 "contact_book.popup.ble.success.title" = "Profile Shared";
 "contact_book.popup.ble.success.message" = "Awesome! Your details have been shared successfully";
 "contact_book.popup.ble.failure.title" = "Error";
+"contact_book.popup.ble.transaction.scan.title" = "Connect to a Device";
+"contact_book.popup.ble.transaction.scan.message" = "Aurora can grab contact info from users nearby using BLE (Bluetooth Low Energy)!\n\nSimply place your phones close to each other and make sure Bluetooth is turned on for both devices. Once connected, you’ll be able to send some Tari quick and easy! 😎";
+"contact_book.popup.ble.transaction.confimation.title" = "Device Detected";
+"contact_book.popup.ble.transaction.confimation.message.part.1" = "We just found a fellow Aurora user nearby! Would you like to send Tari to";
+"contact_book.popup.ble.transaction.confimation.message.part.3" = "?";
+"contact_book.popup.ble.transaction.confimation.button.confirm" = "Yeah, let’s do it!";
+"contact_book.popup.ble.transaction.confimation.button.reject" = "Nah, not now";
 "contact_book.pop_ups.qr.title" = "Share QR Code";
 "contact_book.pager.tab.contacts" = "Contacts";
 "contact_book.pager.tab.favorites" = "Favorites";
+"contact_book.cell.bluetooth.lable.title" = "Bluetooth Connect 🤘";
+"contact_book.cell.bluetooth.lable.subtitle" = "Connect and send Tari to someone nearby";
 "contact_book.section.phone_contacts" = "Phone Contacts";
 "contact_book.section.list.placeholder.message.part1" = "Keep track of your contacts by saving them in the contact book. To";
 "contact_book.section.list.placeholder.message.part2.bold" = "add a new contact,";
@@ -776,6 +785,7 @@
 "contact_book.section.favorites.placeholder.message.part1" = "You can";
 "contact_book.section.favorites.placeholder.message.part2.bold" = "favorite contacts";
 "contact_book.section.favorites.placeholder.message.part3" = "to easily access them later. Tap on the contact’s name and then on the star icon to add them to your favorites list.";
+"contact_book.menu.option.details" = "Show details";
 "contact_book.details.title" = "Contact Profile";
 "contact_book.details.menu.option.send" = "Send Tari";
 "contact_book.details.menu.option.add_to_favorites" = "Add to Favorites";
@@ -834,3 +844,18 @@
 "contact_book.transaction_list.placeholder.label.message.part.1" = "You don’t have any transactions with";
 "contact_book.transaction_list.placeholder.label.message.part.3" = "yet. Click the button below to send some Tari.";
 "contact_book.transaction_list.placeholder.button.send" = "Send Tari";
+
+/* Legacy */
+
+"add_recipient.recent_txs" = "Recent Transactions";
+"add_recipient.error.load_contacts.title" = "Failed to load contacts";
+"add_recipient.error.load_contacts.description" = "Could not access wallet";
+"add_recipient.error.load_contacts.invalid_emoji_set" = "Your recipient needs to upgrade to the latest version of Tari Aurora and copy their updated Emoji ID to transact with you";
+"add_recipient.inputbox.warning" = "Invalid Emoji ID";
+"add_recipient.warning.can_not_send_yourself.with_param" = "Sorry, you cannot send %@ to yourself";
+"add_recipient.my_contacts" = "My Contacts";
+"add_recipient.title" = "Send To";
+"add_recipient.error.invalid_emoji.title" = "Could not use Emoji ID";
+"add_recipient.error.invalid_emoji.description" = "Failed to create a valid contact from the pasted Emoji ID";
+"transactions.toolbar.send" = "Send";
+"transactions.toolbar.request" = "Request";

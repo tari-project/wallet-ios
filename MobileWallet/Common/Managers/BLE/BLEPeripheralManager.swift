@@ -70,6 +70,8 @@ final class BLEPeripheralManager: NSObject {
         }
     }
 
+    private let userProfileCharacteristic = CBMutableCharacteristic(type: BLEConstants.contactBookService.characteristics.transactionData, properties: [.read], value: nil, permissions: [.readable])
+
     private lazy var manager = CBPeripheralManager()
     private var cancellables = Set<AnyCancellable>()
 
@@ -93,9 +95,11 @@ final class BLEPeripheralManager: NSObject {
     }
 
     private func setupService() {
+
         let contactBookService = CBMutableService(type: BLEConstants.contactBookService.uuid, primary: true)
         let contactShareCharacteristic = CBMutableCharacteristic(type: BLEConstants.contactBookService.characteristics.contactsShare, properties: [.write], value: nil, permissions: [.writeable])
-        contactBookService.characteristics = [contactShareCharacteristic]
+
+        contactBookService.characteristics = [userProfileCharacteristic, contactShareCharacteristic]
         manager.add(contactBookService)
     }
 
@@ -117,6 +121,12 @@ final class BLEPeripheralManager: NSObject {
             .removeDuplicates()
             .dropFirst()
             .sink { [weak self] in self?.update(isAdvertising: $0) }
+            .store(in: &cancellables)
+
+        Tari.shared.$isWalletConnected
+            .filter { $0 }
+            .map { [weak self] _ in self?.makeUserProfileDeeplink() }
+            .sink { [weak self] in self?.update(userProfileDeeplink: $0) }
             .store(in: &cancellables)
     }
 
@@ -203,6 +213,18 @@ final class BLEPeripheralManager: NSObject {
         DispatchQueue.main.async {
             self.isAdvertising = UIApplication.shared.applicationState != .background
         }
+    }
+
+    private func update(userProfileDeeplink: URL?) {
+        userProfileCharacteristic.value = userProfileDeeplink?.absoluteString.data(using: .utf8)
+    }
+
+    // MARK: - Factories
+
+    private func makeUserProfileDeeplink() -> URL? {
+        guard let alias = UserSettingsManager.name, let address = try? Tari.shared.walletAddress.byteVector.hex else { return nil }
+        let model = UserProfileDeeplink(alias: alias, tariAddress: address)
+        return try? DeepLinkFormatter.deeplink(model: model)
     }
 }
 

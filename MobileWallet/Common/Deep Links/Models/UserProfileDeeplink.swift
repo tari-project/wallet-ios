@@ -1,8 +1,8 @@
-//  ContactCapsuleMenuBackground.swift
+//  UserProfileDeeplink.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 22/02/2023
+	Created by Adrian Truszczyński on 06/06/2023
 	Using Swift 5.0
 	Running on macOS 13.0
 
@@ -38,56 +38,11 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-import TariCommon
+struct UserProfileDeeplink {
+    let alias: String
+    let tariAddress: String
+}
 
-final class ContactCapsuleMenuBackground: UIView {
-
-    // MARK: - Subviews
-
-    @View private var gradientView = TariGradientView()
-
-    private let menuMaskView: UIView = {
-        let view = UIView()
-        view.backgroundColor = .black
-        return view
-    }()
-
-    // MARK: - Properties
-
-    var maskFrame: CGRect {
-        get { menuMaskView.frame }
-        set {
-            menuMaskView.frame = newValue
-            menuMaskView.layer.cornerRadius = newValue.height * 0.5
-        }
-    }
-
-    // MARK: - Initialisers
-
-    init() {
-        super.init(frame: .zero)
-        setupViews()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Setups
-
-    private func setupViews() {
-
-        addSubview(gradientView)
-        mask = menuMaskView
-
-        let constraints = [
-            gradientView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            gradientView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            gradientView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1.5),
-            gradientView.heightAnchor.constraint(equalTo: heightAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
+extension UserProfileDeeplink: DeepLinkCodable {
+    static var command: String { "/profile" }
 }

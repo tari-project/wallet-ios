@@ -52,5 +52,12 @@ enum BLEContactBookService {
 }
 
 enum BLEContactBookCharacteristics {
+
+    // MARK: - Read only characteristics
+
+    static let transactionData: CBUUID = CBUUID(string: "4567F76F-2577-4EA4-9220-AFCCCAA89B59")
+
+    // MARK: - Write only characteristics
+
     static let contactsShare: CBUUID = CBUUID(string: "999CB541-8D4C-4075-BFF3-43AB74DE8C9B")
 }

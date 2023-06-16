@@ -46,6 +46,7 @@ final class CrashLogger {
         guard let sentryPublicDSN = TariSettings.shared.sentryPublicDSN else { return }
         let options = Options()
         options.dsn = sentryPublicDSN
+        options.environment = TariSettings.shared.environment.name
         SentrySDK.start(options: options)
     }
 }

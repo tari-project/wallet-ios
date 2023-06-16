@@ -48,7 +48,6 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     private static var giphyCurrentKeywordIndex = 0
 
     private let paymentInfo: PaymentInfo
-    private let feePerGram: MicroTari
     private let isOneSidedPayment: Bool
 
     private let sidePadding = Theme.shared.sizes.appSidePadding
@@ -101,9 +100,8 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         }
     }
 
-    init(paymentInfo: PaymentInfo, feePerGram: MicroTari, isOneSidedPayment: Bool) {
+    init(paymentInfo: PaymentInfo, isOneSidedPayment: Bool) {
         self.paymentInfo = paymentInfo
-        self.feePerGram = feePerGram
         self.isOneSidedPayment = isOneSidedPayment
         super.init(nibName: nil, bundle: nil)
     }
@@ -147,7 +145,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         var alias: String?
 
         do {
-            alias = try Tari.shared.contacts.findContact(hex: paymentInfo.address)?.alias
+            alias = try paymentInfo.alias ?? Tari.shared.contacts.findContact(hex: paymentInfo.address)?.alias
         } catch {
         }
 
@@ -272,7 +270,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
             message += " \(embedUrl)"
         }
 
-        let paymentInfo = PaymentInfo(address: paymentInfo.address, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.amount, note: message)
+        let paymentInfo = PaymentInfo(address: paymentInfo.address, alias: paymentInfo.alias, yatID: paymentInfo.yatID, amount: paymentInfo.amount, feePerGram: paymentInfo.feePerGram, note: message)
         TransactionProgressPresenter.showTransactionProgress(presenter: self, paymentInfo: paymentInfo, isOneSidedPayment: isOneSidedPayment)
     }
 

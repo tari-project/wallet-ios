@@ -54,6 +54,7 @@ final class RoundedAvatarView: DynamicThemeView {
     @View private var label: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
+        label.contentMode = .scaleAspectFit
         return label
     }()
 
@@ -68,6 +69,16 @@ final class RoundedAvatarView: DynamicThemeView {
     var avatar: Avatar = .empty {
         didSet { update(avatar: avatar) }
     }
+
+    var imagePadding: CGFloat = 0.0 {
+        didSet {
+            imageViewPositiveContraints.forEach { $0.constant = imagePadding }
+            imageViewNegativeContraints.forEach { $0.constant = -imagePadding }
+        }
+    }
+
+    private var imageViewPositiveContraints: [NSLayoutConstraint] = []
+    private var imageViewNegativeContraints: [NSLayoutConstraint] = []
 
     // MARK: - Initialisers
 
@@ -88,17 +99,23 @@ final class RoundedAvatarView: DynamicThemeView {
         [label, imageView].forEach(addSubview)
 
         let constraints = [
-            label.topAnchor.constraint(equalTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor),
+            label.heightAnchor.constraint(equalTo: heightAnchor),
+            label.widthAnchor.constraint(equalTo: widthAnchor),
+            label.centerXAnchor.constraint(equalTo: centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: centerYAnchor)
+        ]
+
+        imageViewPositiveContraints = [
             imageView.topAnchor.constraint(equalTo: topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            imageView.leadingAnchor.constraint(equalTo: leadingAnchor)
+        ]
+
+        imageViewNegativeContraints = [
             imageView.trailingAnchor.constraint(equalTo: trailingAnchor),
             imageView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
-        NSLayoutConstraint.activate(constraints)
+        NSLayoutConstraint.activate(constraints + imageViewPositiveContraints + imageViewNegativeContraints)
     }
 
     // MARK: - Updates

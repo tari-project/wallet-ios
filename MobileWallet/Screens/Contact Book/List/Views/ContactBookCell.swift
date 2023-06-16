@@ -49,14 +49,13 @@ final class ContactBookCell: DynamicThemeCell {
         let avatarText: String
         let avatarImage: UIImage?
         let isFavorite: Bool
-        let menuItems: [ContactCapsuleMenu.ButtonViewModel]
         let contactTypeImage: UIImage?
         let isSelectable: Bool
     }
 
     // MARK: - Subviews
 
-    @View private var avatarMenu = ContactCapsuleMenu()
+    @View private var avatarView = RoundedAvatarView()
 
     @View private var contactTypeBackgroundView: UIView = {
         let view = UIView()
@@ -96,8 +95,6 @@ final class ContactBookCell: DynamicThemeCell {
         set { tickView.isSelected = newValue }
     }
 
-    var onButtonTap: ((UUID, UInt) -> Void)?
-
     private(set) var elementID: UUID?
     private(set) var isExpanded: Bool = false
 
@@ -111,7 +108,6 @@ final class ContactBookCell: DynamicThemeCell {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
-        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -127,9 +123,9 @@ final class ContactBookCell: DynamicThemeCell {
 
     private func setupConstraints() {
 
-        [nameLabel, favoriteView, avatarMenu, contactTypeBackgroundView, contactTypeView, tickView].forEach(contentView.addSubview)
+        [nameLabel, favoriteView, avatarView, contactTypeBackgroundView, contactTypeView, tickView].forEach(contentView.addSubview)
 
-        let normalModeConstraint = avatarMenu.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0)
+        let normalModeConstraint = avatarView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0)
         editModeConstraint = tickView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0)
 
         self.normalModeConstraint = normalModeConstraint
@@ -138,19 +134,21 @@ final class ContactBookCell: DynamicThemeCell {
             tickView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             tickView.heightAnchor.constraint(equalToConstant: 24.0),
             tickView.widthAnchor.constraint(equalToConstant: 24.0),
-            avatarMenu.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
+            avatarView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
             normalModeConstraint,
-            avatarMenu.leadingAnchor.constraint(equalTo: tickView.trailingAnchor, constant: 10.0),
-            avatarMenu.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
-            contactTypeBackgroundView.trailingAnchor.constraint(equalTo: avatarMenu.avatarView.trailingAnchor),
-            contactTypeBackgroundView.bottomAnchor.constraint(equalTo: avatarMenu.avatarView.bottomAnchor),
+            avatarView.leadingAnchor.constraint(equalTo: tickView.trailingAnchor, constant: 10.0),
+            avatarView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -10.0),
+            avatarView.widthAnchor.constraint(equalToConstant: 44.0),
+            avatarView.heightAnchor.constraint(equalToConstant: 44.0),
+            contactTypeBackgroundView.trailingAnchor.constraint(equalTo: avatarView.trailingAnchor),
+            contactTypeBackgroundView.bottomAnchor.constraint(equalTo: avatarView.bottomAnchor),
             contactTypeBackgroundView.widthAnchor.constraint(equalToConstant: 16.0),
             contactTypeBackgroundView.heightAnchor.constraint(equalToConstant: 16.0),
             contactTypeView.topAnchor.constraint(equalTo: contactTypeBackgroundView.topAnchor, constant: 3.0),
             contactTypeView.leadingAnchor.constraint(equalTo: contactTypeBackgroundView.leadingAnchor, constant: 3.0),
             contactTypeView.trailingAnchor.constraint(equalTo: contactTypeBackgroundView.trailingAnchor, constant: -3.0),
             contactTypeView.bottomAnchor.constraint(equalTo: contactTypeBackgroundView.bottomAnchor, constant: -3.0),
-            nameLabel.leadingAnchor.constraint(equalTo: avatarMenu.avatarView.trailingAnchor, constant: 10.0),
+            nameLabel.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 10.0),
             nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             favoriteView.leadingAnchor.constraint(equalTo: nameLabel.trailingAnchor, constant: 10.0),
             favoriteView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
@@ -158,13 +156,6 @@ final class ContactBookCell: DynamicThemeCell {
         ]
 
         NSLayoutConstraint.activate(constraints)
-    }
-
-    private func setupCallbacks() {
-        avatarMenu.onButtonTap = { [weak self] in
-            guard let elementID = self?.elementID else { return }
-            self?.onButtonTap?(elementID, $0)
-        }
     }
 
     // MARK: - Updates
@@ -184,26 +175,14 @@ final class ContactBookCell: DynamicThemeCell {
         nameLabel.text = viewModel.name
 
         if let avatarImage = viewModel.avatarImage {
-            avatarMenu.avatarView.avatar = .image(avatarImage)
+            avatarView.avatar = .image(avatarImage)
         } else {
-            avatarMenu.avatarView.avatar = .text(viewModel.avatarText)
+            avatarView.avatar = .text(viewModel.avatarText)
         }
 
-        avatarMenu.update(buttons: viewModel.menuItems)
         favoriteView.isHidden = !viewModel.isFavorite
         contactTypeView.image = viewModel.contactTypeImage
         contactTypeBackgroundView.isHidden = viewModel.contactTypeImage == nil
-    }
-
-    func updateCell(isExpanded: Bool, withAnmiation: Bool) {
-
-        self.isExpanded = isExpanded
-
-        if isExpanded {
-            avatarMenu.show(withAnmiation: withAnmiation)
-        } else {
-            avatarMenu.hide(withAnmiation: withAnmiation)
-        }
     }
 
     override func setEditing(_ editing: Bool, animated: Bool) {

@@ -44,22 +44,6 @@ import YatLib
 
 final class ContactBookModel {
 
-    struct ContactSection {
-       let title: String?
-       let viewModels: [ContactViewModel]
-    }
-
-    struct ContactViewModel: Identifiable {
-        let id: UUID
-        let name: String
-        let avatar: String
-        let avatarImage: UIImage?
-        let isFavorite: Bool
-        let menuItems: [ContactBookModel.MenuItem]
-        let type: ContactsManager.ContactType
-        let isSelectable: Bool
-    }
-
     enum MenuItem: UInt {
         case send
         case addToFavorites
@@ -80,6 +64,14 @@ final class ContactBookModel {
         case ble
     }
 
+    enum DialogType {
+        case bleContactSharingWaitingForReceiverDialog
+        case bleContactSharingSuccessDialog
+        case bleFailureDialog(message: String?)
+        case bleTransactionWaitingForReceiverDialog
+        case bleTransactionConfirmationDialog(receiverName: String)
+    }
+
     enum Action {
         case sendTokens(paymentInfo: PaymentInfo)
         case link(model: ContactsManager.Model)
@@ -89,9 +81,8 @@ final class ContactBookModel {
         case showQRDialog
         case shareQR(image: UIImage)
         case shareLink(link: URL)
-        case showBLEWaitingForReceiverDialog
-        case showBLESuccessDialog
-        case showBLEFailureDialog(message: String?)
+        case show(dialog: DialogType)
+        case showMenu(model: ContactsManager.Model)
     }
 
     fileprivate enum SectionType: Int {
@@ -108,8 +99,8 @@ final class ContactBookModel {
     @Published var searchText: String = ""
     @Published var contentMode: ContentMode = .normal
 
-    @Published private(set) var contactsList: [ContactSection] = []
-    @Published private(set) var favoriteContactsList: [ContactSection] = []
+    @Published private(set) var contactsList: [ContactBookContactListView.Section] = []
+    @Published private(set) var favoriteContactsList: [ContactBookContactListView.Section] = []
     @Published private(set) var selectedIDs: Set<UUID> = []
     @Published private(set) var areContactsAvailable: Bool = false
     @Published private(set) var areFavoriteContactsAvailable: Bool = false
@@ -129,6 +120,7 @@ final class ContactBookModel {
     private let contactsManager = ContactsManager()
 
     private weak var bleTask: BLECentralTask?
+    private var incomingUserProfile: UserProfileDeeplink?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -155,8 +147,8 @@ final class ContactBookModel {
             .store(in: &cancellables)
 
         contactsPublisher
-            .map { $0.map { ContactSection(title: $0.title, viewModels: $0.viewModels.filter { $0.isFavorite }) }}
-            .map { $0.filter { !$0.viewModels.isEmpty }}
+            .compactMap { [unowned self] in $0.map { ContactBookContactListView.Section(title: $0.title, items: self.filterFavorite(items: $0.items)) }}
+            .map { $0.filter { !$0.items.isEmpty }}
             .assignPublisher(to: \.favoriteContactsList, on: self)
             .store(in: &cancellables)
 
@@ -195,7 +187,7 @@ final class ContactBookModel {
             amount = MicroTari(rawAmount)
         }
 
-        let paymentInfo = PaymentInfo(address: transactionSendDeeplink.receiverAddress, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeeplink.note)
+        let paymentInfo = PaymentInfo(address: transactionSendDeeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeeplink.note)
 
         AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
     }
@@ -226,7 +218,7 @@ final class ContactBookModel {
 
     func performAction(contactID: UUID, menuItemID: UInt) {
 
-        guard let model = contactModels.flatMap({ $0 }).first(where: { $0.id == contactID }), let menuItem = MenuItem(rawValue: menuItemID) else { return }
+        guard let model = contact(contactID: contactID), let menuItem = MenuItem(rawValue: menuItemID) else { return }
 
         switch menuItem {
         case .send:
@@ -244,9 +236,9 @@ final class ContactBookModel {
         }
     }
 
-    func toggle(contactID: UUID) {
+    func toggleSelection(contactID: UUID) {
 
-        guard let model = contactModels.flatMap({ $0 }).first(where: { $0.id == contactID }), model.hasIntrenalModel else { return }
+        guard let model = contact(contactID: contactID), model.hasIntrenalModel else { return }
 
         guard selectedIDs.contains(contactID) else {
             selectedIDs.insert(contactID)
@@ -293,7 +285,27 @@ final class ContactBookModel {
         contentMode = .normal
     }
 
-    func cancelBLESharing() {
+    func fetchTransactionDataViaBLE() {
+
+        let bleTask = BLECentralTask(service: BLEConstants.contactBookService.uuid, characteristic: BLEConstants.contactBookService.characteristics.transactionData)
+        self.bleTask?.cancel()
+        self.bleTask = bleTask
+
+        action = .show(dialog: .bleTransactionWaitingForReceiverDialog)
+
+        Task {
+            do {
+                guard let data = try await bleTask.findAndRead(), let rawDeeplink = String(data: data, encoding: .utf8), let url = URL(string: rawDeeplink) else { return }
+                let deeplink = try DeepLinkFormatter.model(type: UserProfileDeeplink.self, deeplink: url)
+                incomingUserProfile = deeplink
+                action = .show(dialog: .bleTransactionConfirmationDialog(receiverName: deeplink.alias))
+            } catch {
+                handle(bleError: error)
+            }
+        }
+    }
+
+    func cancelBLETask() {
         bleTask?.cancel()
     }
 
@@ -305,8 +317,28 @@ final class ContactBookModel {
             return
         }
 
-        let paymentInfo = PaymentInfo(address: hex, yatID: yatID, amount: nil, feePerGram: nil, note: nil)
+        let paymentInfo = PaymentInfo(address: hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil)
         action = .sendTokens(paymentInfo: paymentInfo)
+    }
+
+    func confirmIncomingTransaction() {
+        guard let incomingUserProfile else {
+            action = .show(dialog: .bleFailureDialog(message: ErrorMessageManager.errorMessage(forError: nil)))
+            return
+        }
+
+        let paymentInfo = PaymentInfo(address: incomingUserProfile.tariAddress, alias: incomingUserProfile.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil)
+        self.incomingUserProfile = nil
+        action = .sendTokens(paymentInfo: paymentInfo)
+    }
+
+    func cancelIncomingTransaction() {
+        incomingUserProfile = nil
+    }
+
+    func selectContact(contactID: UUID) {
+        guard let model = contact(contactID: contactID) else { return }
+        action = .showMenu(model: model)
     }
 
     // MARK: - Actions
@@ -338,18 +370,18 @@ final class ContactBookModel {
 
         guard let payload = deeplink.absoluteString.data(using: .utf8) else { return }
 
-        action = .showBLEWaitingForReceiverDialog
-
         let bleTask = BLECentralTask(service: BLEConstants.contactBookService.uuid, characteristic: BLEConstants.contactBookService.characteristics.contactsShare)
+        self.bleTask?.cancel()
         self.bleTask = bleTask
+
+        action = .show(dialog: .bleContactSharingWaitingForReceiverDialog)
 
         Task {
             do {
                 guard try await bleTask.findAndWrite(payload: payload) else { return }
-                action = .showBLESuccessDialog
+                action = .show(dialog: .bleContactSharingSuccessDialog)
             } catch {
-                handle(bleWriteError: error)
-
+                handle(bleError: error)
             }
         }
     }
@@ -398,9 +430,9 @@ final class ContactBookModel {
 
     // MARK: - Handlers
 
-    private func handle(bleWriteError error: Error) {
+    private func handle(bleError error: Error) {
 
-        Logger.log(message: "Unable to find and write BLE payload. Reason: \(error)", domain: .general, level: .error)
+        Logger.log(message: "Unable to finish BLE task. Reason: \(error)", domain: .general, level: .error)
 
         let message: String?
 
@@ -410,7 +442,7 @@ final class ContactBookModel {
             message = ErrorMessageManager.errorMessage(forError: error)
         }
 
-        action = .showBLEFailureDialog(message: message)
+        action = .show(dialog: .bleFailureDialog(message: message))
     }
 
     private func makeDeeplink() throws -> URL? {
@@ -459,37 +491,54 @@ final class ContactBookModel {
         }
     }
 
-    private func map(contactsSections: [[ContactsManager.Model]]) -> [ContactSection] {
+    private func filterFavorite(items: [ContactBookContactListView.ItemType]) -> [ContactBookContactListView.ItemType] {
+        items.filter {
+            guard case let .contact(model) = $0 else { return false }
+            return model.isFavorite
+        }
+    }
+
+    private func map(contactsSections: [[ContactsManager.Model]]) -> [ContactBookContactListView.Section] {
         contactsSections
             .enumerated()
-            .reduce(into: [ContactSection]()) { result, data in
-
-                guard !data.element.isEmpty else { return }
+            .reduce(into: [ContactBookContactListView.Section]()) { result, data in
 
                 let section = SectionType(rawValue: data.offset)
+                guard section == .internalContacts || !data.element.isEmpty else { return }
 
-                let viewModels = data.element.map {
+                var items: [ContactBookContactListView.ItemType] = data.element.map {
+
                     let name = (!$0.name.isEmpty ? $0.name : $0.internalModel?.emojiID.obfuscatedText) ?? ""
-                    return ContactViewModel(
+                    let model = ContactBookCell.ViewModel(
                         id: $0.id,
                         name: name,
-                        avatar: $0.avatar,
+                        avatarText: $0.avatar,
                         avatarImage: $0.avatarImage,
                         isFavorite: $0.isFavorite,
-                        menuItems: $0.menuItems,
-                        type: $0.type,
+                        contactTypeImage: $0.type.image,
                         isSelectable: section?.isSelectable ?? false
                     )
+                    return .contact(model: model)
                 }
 
-                result.append(ContactSection(title: section?.title, viewModels: viewModels))
-        }
+                if section == .internalContacts {
+                    items.insert(.bluetooth, at: 0)
+                }
+
+                result.append(ContactBookContactListView.Section(title: section?.title, items: items))
+            }
     }
 
     private func handle(contactModels: [[ContactsManager.Model]]) {
         let models = contactModels.flatMap { $0 }
         areContactsAvailable = !models.isEmpty
         areFavoriteContactsAvailable = models.first { $0.isFavorite } != nil
+    }
+
+    // MARK: - Helpers
+
+    private func contact(contactID: UUID) -> ContactsManager.Model? {
+        contactModels.flatMap { $0 }.first { $0.id == contactID }
     }
 }
 

@@ -74,9 +74,14 @@ final class ContactBookContactListViewController: UIViewController {
         set { mainView.onFooterTap = newValue }
     }
 
-    var onRowTap: ((UUID) -> Void)? {
-        get { mainView.onRowTap }
-        set { mainView.onRowTap = newValue }
+    var onBluetoothRowTap: (() -> Void)? {
+        get { mainView.onBluetoothRowTap }
+        set { mainView.onBluetoothRowTap = newValue }
+    }
+
+    var onContactRowTap: ((_ identifier: UUID, _ isEditing: Bool) -> Void)? {
+        get { mainView.onContactRowTap }
+        set { mainView.onContactRowTap = newValue }
     }
 
     var isInSharingMode: Bool {
@@ -84,24 +89,11 @@ final class ContactBookContactListViewController: UIViewController {
         set { mainView.isInSharingMode = newValue }
     }
 
-    var onButtonTap: ((UUID, UInt) -> Void)?
-
     private let mainView = ContactBookContactListView()
 
     // MARK: - View Lifecycle
 
     override func loadView() {
         view = mainView
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupCallbacks()
-    }
-
-    // MARK: - Sutups
-
-    private func setupCallbacks() {
-        mainView.onButtonTap = { [weak self] in self?.onButtonTap?($0, $1) }
     }
 }

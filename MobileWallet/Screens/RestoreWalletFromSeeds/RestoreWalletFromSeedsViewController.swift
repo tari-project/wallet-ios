@@ -86,10 +86,9 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
     private func setupFeedbacks() {
 
         model.viewModel.$isEmptyWalletCreated
-            .sink { [weak self] isEmptyWalletCreated in
-                guard isEmptyWalletCreated else { return }
-                self?.showProgressOverlay()
-            }
+            .filter { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.showProgressOverlay() }
             .store(in: &cancelables)
 
         model.viewModel.$isConfimationEnabled
@@ -151,7 +150,7 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
 
     // MARK: - Actions
 
-    private func showProgressOverlay() {
+    @MainActor private func showProgressOverlay() {
 
         let overlay = SeedWordsRecoveryProgressViewController()
 

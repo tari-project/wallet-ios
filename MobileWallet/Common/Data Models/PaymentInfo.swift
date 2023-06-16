@@ -40,6 +40,7 @@
 
 struct PaymentInfo {
     let address: String
+    let alias: String?
     let yatID: String?
     let amount: MicroTari?
     let feePerGram: MicroTari?

@@ -57,9 +57,13 @@ final class BLECentralTask {
 
     // MARK: - Actions
 
+    func findAndRead() async throws -> Data? {
+        guard try await findDevice() else { return nil }
+        return try await read()
+    }
+
     func findAndWrite(payload: Data) async throws -> Bool {
-        guard try await findDevice() else { return false }
-        guard try await write(payload: payload) else { return false }
+        guard try await findDevice(), try await write(payload: payload) else { return false }
         return true
     }
 
@@ -84,6 +88,25 @@ final class BLECentralTask {
                         continuation.resume(throwing: error)
                     }
                 } receiveValue: {}
+                .store(in: &self.cancellables)
+        }
+    }
+
+    private func read() async throws -> Data? {
+
+        try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self else { return }
+
+            self.manager.readProcess()
+                .handleEvents(receiveCancel: { continuation.resume(returning: nil) })
+                .sink { completion in
+                    switch completion {
+                    case .finished:
+                        return
+                    case let .failure(error):
+                        continuation.resume(throwing: error)
+                    }
+                } receiveValue: { continuation.resume(returning: $0) }
                 .store(in: &self.cancellables)
         }
     }
