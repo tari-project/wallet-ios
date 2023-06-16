@@ -58,8 +58,8 @@ final class RotaryMenuView: UIView {
 
     // MARK: - Constants
 
-    private let radius: CGFloat = 195.0
-    private let angleStep: CGFloat = 0.5
+    private let radius: CGFloat = 193.0
+    private let angleStep: CGFloat = 0.4
     private let animationTime: TimeInterval = 0.4
 
     // MARK: - Subviews
@@ -107,7 +107,9 @@ final class RotaryMenuView: UIView {
             data.horizontalConstraint.constant = xOffset
             data.verticalConstraint.constant = yOffset
 
-            data.button.transform = CGAffineTransform(rotationAngle: angle)
+            DispatchQueue.main.async {
+                data.button.transform = CGAffineTransform(rotationAngle: angle)
+            }
         }
     }
 

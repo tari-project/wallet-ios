@@ -167,4 +167,15 @@ final class RotaryMenuButton: BaseButton {
             label.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
     }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+
+        guard bounds.width > 0.0, bounds.height > 0.0 else { return }
+
+        let xAnchorPoint = iconView.frame.midX / bounds.width
+        let yAnchorPoint = iconView.frame.midY / bounds.height
+
+        update(anchorPoint: CGPoint(x: xAnchorPoint, y: yAnchorPoint))
+    }
 }
