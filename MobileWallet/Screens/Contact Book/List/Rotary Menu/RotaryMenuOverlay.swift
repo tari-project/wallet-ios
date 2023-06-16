@@ -108,9 +108,7 @@ final class RotaryMenuOverlay: UIViewController {
         }
 
         mainView.onCloseButtonTap = { [weak self] in
-            Task {
-                self?.dismiss()
-            }
+            self?.dismiss()
         }
 
         mainView.onSwitchSideButtonTap = { [weak self] in
