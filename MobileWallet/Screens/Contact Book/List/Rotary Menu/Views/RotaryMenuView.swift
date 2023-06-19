@@ -168,7 +168,7 @@ final class RotaryMenuView: UIView {
             self.buttonData.enumerated().forEach { index, data in
 
                 let button = data.button
-                let delay = TimeInterval(index) * self.animationTime / 2.0
+                let delay = TimeInterval(index) * self.animationTime / 6.0
 
                 UIView.animate(withDuration: self.animationTime, delay: delay, animations: {
                     button.alpha = alpha
