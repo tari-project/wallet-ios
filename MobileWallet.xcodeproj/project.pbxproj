@@ -360,6 +360,9 @@
 		540CB6F329C1DE26003FACEF /* AddContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F229C1DE26003FACEF /* AddContactViewController.swift */; };
 		540CB6F529C1DE42003FACEF /* AddContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F429C1DE42003FACEF /* AddContactView.swift */; };
 		540CB6F729C1DE83003FACEF /* AddContactConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F629C1DE83003FACEF /* AddContactConstructor.swift */; };
+		541029042A402D930095F7CB /* RotaryMenuOuterCircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541029032A402D930095F7CB /* RotaryMenuOuterCircleView.swift */; };
+		541029062A406E4E0095F7CB /* CGFloat+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541029052A406E4E0095F7CB /* CGFloat+Utils.swift */; };
+		541029082A406E810095F7CB /* CGPoint+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541029072A406E810095F7CB /* CGPoint+Utils.swift */; };
 		5410F5D12951F04B006976DC /* TariWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5410F5D02951F04B006976DC /* TariWindow.swift */; };
 		5421551029A4AE37000A3F49 /* ContactBookContactListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */; };
 		5421551229A4AE4B000A3F49 /* ContactBookContactListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */; };
@@ -903,6 +906,9 @@
 		540CB6F229C1DE26003FACEF /* AddContactViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactViewController.swift; sourceTree = "<group>"; };
 		540CB6F429C1DE42003FACEF /* AddContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactView.swift; sourceTree = "<group>"; };
 		540CB6F629C1DE83003FACEF /* AddContactConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddContactConstructor.swift; sourceTree = "<group>"; };
+		541029032A402D930095F7CB /* RotaryMenuOuterCircleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuOuterCircleView.swift; sourceTree = "<group>"; };
+		541029052A406E4E0095F7CB /* CGFloat+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGFloat+Utils.swift"; sourceTree = "<group>"; };
+		541029072A406E810095F7CB /* CGPoint+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGPoint+Utils.swift"; sourceTree = "<group>"; };
 		5410F5D02951F04B006976DC /* TariWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariWindow.swift; sourceTree = "<group>"; };
 		5421550F29A4AE37000A3F49 /* ContactBookContactListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListViewController.swift; sourceTree = "<group>"; };
 		5421551129A4AE4B000A3F49 /* ContactBookContactListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookContactListView.swift; sourceTree = "<group>"; };
@@ -1156,6 +1162,8 @@
 				004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */,
 				54621F8629E00E04000E9659 /* URL+Tools.swift */,
 				54F306142A3B1E6300B5689D /* UIImage+Utils.swift */,
+				541029052A406E4E0095F7CB /* CGFloat+Utils.swift */,
+				541029072A406E810095F7CB /* CGPoint+Utils.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2509,6 +2517,7 @@
 				542585C72A334697009D12CD /* RotaryMenuView.swift */,
 				542585C92A3346C0009D12CD /* RotaryMenuButton.swift */,
 				54BBAF022A37238A002BC64B /* RotaryMenuCircleBackgroundView.swift */,
+				541029032A402D930095F7CB /* RotaryMenuOuterCircleView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3167,6 +3176,7 @@
 				540CB6EE29C1D519003FACEF /* SettingsProfileCell.swift in Sources */,
 				3AE885082837857B0070D1AC /* CurrencyLabelView.swift in Sources */,
 				54394EDE29CA133400E7CAEA /* LoadingImageView.swift in Sources */,
+				541029062A406E4E0095F7CB /* CGFloat+Utils.swift in Sources */,
 				5460258C29A74DC100CF5764 /* ContactDetailsConstructor.swift in Sources */,
 				3A90653A29001D830084EE66 /* AppValues.swift in Sources */,
 				3A7E06DC287831D800D15190 /* PopUpCombineUTXOsConfirmationContentView.swift in Sources */,
@@ -3245,6 +3255,7 @@
 				00DD160B241CCE0600C955B4 /* TariSettings.swift in Sources */,
 				00B4D6F6241B778D00ED8318 /* BackgroundTaskManager.swift in Sources */,
 				549E0E0D29754E9C00828743 /* PartialBackupModel.swift in Sources */,
+				541029042A402D930095F7CB /* RotaryMenuOuterCircleView.swift in Sources */,
 				375AFDCF2475387700C62CA1 /* WebBrowserViewController.swift in Sources */,
 				3A8473D828EC56EF0015E63A /* TariKeyValueService.swift in Sources */,
 				3A874038278842F500D80823 /* TorManager.swift in Sources */,
@@ -3536,6 +3547,7 @@
 				5455969B29B0A6B500D6719E /* InternalContactsManager.swift in Sources */,
 				49996E1923F164BA002B6696 /* AnimatedBalanceLabel.swift in Sources */,
 				54A6E9F0297F1F9900A60853 /* StagedWalletSecurityManager.swift in Sources */,
+				541029082A406E810095F7CB /* CGPoint+Utils.swift in Sources */,
 				3A7DAB9328FDB18A002CC013 /* LogsListModel.swift in Sources */,
 				3AEE7AA3286599E6000F84ED /* UTXOsWalletTopBar.swift in Sources */,
 				3AABFC9B28F5960100D87773 /* LogFormatter.swift in Sources */,
