@@ -52,6 +52,7 @@ final class RotaryMenuCircleBackgroundView: UIView {
 
     @View private var avatarView: RoundedAvatarView = {
         let view = RoundedAvatarView()
+        view.backgroundColorType = .static
         view.alpha = 0.0
         return view
     }()
