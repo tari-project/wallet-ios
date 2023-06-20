@@ -50,24 +50,4 @@ extension UIView {
             }
         }
     }
-
-    func update(anchorPoint: CGPoint) {
-
-        var newPoint = CGPoint(x: bounds.width * anchorPoint.x, y: bounds.height * anchorPoint.y)
-        var oldPoint = CGPoint(x: bounds.width * layer.anchorPoint.x, y: bounds.height * layer.anchorPoint.y)
-
-        newPoint = newPoint.applying(transform)
-        oldPoint = oldPoint.applying(transform)
-
-        var position = layer.position
-
-        position.x -= oldPoint.x
-        position.x += newPoint.x
-
-        position.y -= oldPoint.y
-        position.y += newPoint.y
-
-        layer.position = position
-        layer.anchorPoint = anchorPoint
-    }
 }
