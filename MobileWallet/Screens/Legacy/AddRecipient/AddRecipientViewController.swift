@@ -46,10 +46,6 @@ final class AddRecipientViewController: UIViewController {
 
     // MARK: - Properties
 
-    var deeplink: TransactionsSendDeeplink? {
-        didSet { handleDeeplink() }
-    }
-
     private let model = AddRecipientModel()
     private let mainView = AddRecipientView()
 
@@ -104,7 +100,6 @@ final class AddRecipientViewController: UIViewController {
             .map { $0.filter { !"| ".contains($0) }}
             .sink { [weak self] in
                 self?.model.searchText.send($0)
-                self?.deeplink = nil
             }
             .store(in: &cancellables)
 
@@ -190,13 +185,7 @@ final class AddRecipientViewController: UIViewController {
 
     private func onContinue(paymentInfo: PaymentInfo) {
         let amountVC = AddAmountViewController(paymentInfo: paymentInfo)
-        deeplink = nil
         navigationController?.pushViewController(amountVC, animated: true)
-    }
-
-    private func handleDeeplink() {
-        guard let deeplink = deeplink, let emojiID = try? TariAddress(hex: deeplink.receiverAddress).emojis else { return }
-        model.searchText.send(emojiID)
     }
 }
 
@@ -225,7 +214,7 @@ extension AddRecipientViewController: UITableViewDelegate {
 extension AddRecipientViewController: ScanViewControllerDelegate {
 
     func onScan(deeplink: TransactionsSendDeeplink) {
-        self.deeplink = deeplink
+        model.handle(deeplink: deeplink)
     }
 }
 
