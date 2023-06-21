@@ -81,33 +81,33 @@ final class RotaryMenuView: UIView {
     }
 
     private func updateButtonsConstraints(iconLocation: RotaryMenuButton.IconLocation) {
+        // FIXME: It's a temporary solution. Please remove it after proper fix.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
 
-        let angleOffset = CGFloat(buttons.count - 1) * angleStep / 2.0
+            let angleOffset = CGFloat(self.buttons.count - 1) * self.angleStep / 2.0
 
-        buttons
-            .enumerated()
-            .forEach { index, button in
+            self.buttons
+                .enumerated()
+                .forEach { index, button in
 
-            let angle = CGFloat(index) * angleStep - angleOffset
+                    let angle = CGFloat(index) * self.angleStep - angleOffset
 
-            DispatchQueue.main.async {
+                    let buttonWidth = button.bounds.width
+                    let radius = self.bounds.width / 2.0
 
-                let buttonWidth = button.bounds.width
-                let radius = self.bounds.width / 2.0
+                    let translationVector: CGFloat
 
-                let translationVector: CGFloat
+                    switch iconLocation {
+                    case .left:
+                        translationVector = 1.0
+                    case .right:
+                        translationVector = -1.0
+                    }
 
-                switch iconLocation {
-                case .left:
-                    translationVector = 1.0
-                case .right:
-                    translationVector = -1.0
+                    button.transform = CGAffineTransform(translationX: (-buttonWidth / 2.0) * translationVector, y: 0.0)
+                        .rotated(by: angle)
+                        .translatedBy(x: (radius + buttonWidth / 2.0) * translationVector, y: 0.0)
                 }
-
-                button.transform = CGAffineTransform(translationX: (-buttonWidth / 2.0) * translationVector, y: 0.0)
-                    .rotated(by: angle)
-                    .translatedBy(x: (radius + buttonWidth / 2.0) * translationVector, y: 0.0)
-            }
         }
     }
 
