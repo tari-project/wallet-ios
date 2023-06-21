@@ -49,22 +49,14 @@ final class RotaryMenuView: UIView {
         let title: String?
     }
 
-    private struct ButtonViewData {
-        let index: Int
-        let button: RotaryMenuButton
-        let horizontalConstraint: NSLayoutConstraint
-        let verticalConstraint: NSLayoutConstraint
-    }
-
     // MARK: - Constants
 
-    private let radius: CGFloat = 193.0
-    private let angleStep: CGFloat = 0.4
+    private let angleStep: CGFloat = CGFloat(20.0).degToRad
     private let animationTime: TimeInterval = 0.4
 
     // MARK: - Subviews
 
-    private var buttonData: [ButtonViewData] = []
+    private var buttons: [RotaryMenuButton] { subviews.compactMap { $0 as? RotaryMenuButton }}
 
     // MARK: - Properties
 
@@ -86,39 +78,42 @@ final class RotaryMenuView: UIView {
             .forEach { addButton(model: $1, index: $0, iconLocation: iconLocation) }
 
         updateButtonsConstraints(iconLocation: iconLocation)
-        updateButtonsWidth()
     }
 
     private func updateButtonsConstraints(iconLocation: RotaryMenuButton.IconLocation) {
 
-        let angleOffset = CGFloat(buttonData.count - 1) * angleStep / 2.0
-        var positionOffset: CGFloat = 0.0
+        let angleOffset = CGFloat(buttons.count - 1) * angleStep / 2.0
 
-        if iconLocation == .right {
-            positionOffset = .pi
-        }
+        buttons
+            .enumerated()
+            .forEach { index, button in
 
-        buttonData.forEach { data in
-
-            let angle = CGFloat(data.index) * angleStep - angleOffset
-            let xOffset = radius * cos(angle + positionOffset)
-            let yOffset = radius * sin(angle + positionOffset)
-
-            data.horizontalConstraint.constant = xOffset
-            data.verticalConstraint.constant = yOffset
+            let angle = CGFloat(index) * angleStep - angleOffset
 
             DispatchQueue.main.async {
-                data.button.transform = CGAffineTransform(rotationAngle: angle)
+
+                let buttonWidth = button.bounds.width
+                let radius = self.bounds.width / 2.0
+
+                let translationVector: CGFloat
+
+                switch iconLocation {
+                case .left:
+                    translationVector = 1.0
+                case .right:
+                    translationVector = -1.0
+                }
+
+                button.transform = CGAffineTransform(translationX: (-buttonWidth / 2.0) * translationVector, y: 0.0)
+                    .rotated(by: angle)
+                    .translatedBy(x: (radius + buttonWidth / 2.0) * translationVector, y: 0.0)
             }
         }
     }
 
     private func updateButtonsWidth() {
         let maxWidth = UIScreen.main.bounds.width - (bounds.width / 2.0) - 50.0
-
-        buttonData
-            .map(\.button)
-            .forEach { $0.maxWidth = maxWidth }
+        buttons.forEach { $0.maxWidth = maxWidth }
     }
 
     private func addButton(model: MenuButtonViewModel, index: Int, iconLocation: RotaryMenuButton.IconLocation) {
@@ -140,14 +135,10 @@ final class RotaryMenuView: UIView {
         let verticalConstraint = button.iconView.centerYAnchor.constraint(equalTo: centerYAnchor)
 
         NSLayoutConstraint.activate([horizontalConstraint, verticalConstraint])
-
-        let data = ButtonViewData(index: index, button: button, horizontalConstraint: horizontalConstraint, verticalConstraint: verticalConstraint)
-        buttonData.append(data)
     }
 
     private func removeButtons() {
-        buttonData.forEach { $0.button.removeFromSuperview() }
-        buttonData.removeAll()
+        buttons.forEach { $0.removeFromSuperview() }
     }
 
     // MARK: - Actions
@@ -165,18 +156,20 @@ final class RotaryMenuView: UIView {
         await withCheckedContinuation { [weak self] continuation in
             guard let self else { return }
 
-            self.buttonData.enumerated().forEach { index, data in
+            self.buttons
+                .enumerated()
+                .forEach { index, button in
 
-                let button = data.button
-                let delay = TimeInterval(index) * self.animationTime / 6.0
+                    let button = button
+                    let delay = TimeInterval(index) * self.animationTime / 6.0
 
-                UIView.animate(withDuration: self.animationTime, delay: delay, animations: {
-                    button.alpha = alpha
-                }, completion: { _ in
-                    guard self.buttonData.count == index + 1 else { return }
-                    continuation.resume()
-                })
-            }
+                    UIView.animate(withDuration: self.animationTime, delay: delay, animations: {
+                        button.alpha = alpha
+                    }, completion: { _ in
+                        guard self.buttons.count == index + 1 else { return }
+                        continuation.resume()
+                    })
+                }
         }
     }
 
