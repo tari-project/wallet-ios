@@ -73,6 +73,7 @@ final class BLEPeripheralManager: NSObject {
     private let userProfileCharacteristic = CBMutableCharacteristic(type: BLEConstants.contactBookService.characteristics.transactionData, properties: [.read], value: nil, permissions: [.readable])
 
     private lazy var manager = CBPeripheralManager()
+    private var cache: [CBUUID: [Data]] = [:]
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -122,12 +123,6 @@ final class BLEPeripheralManager: NSObject {
             .dropFirst()
             .sink { [weak self] in self?.update(isAdvertising: $0) }
             .store(in: &cancellables)
-
-        Tari.shared.$isWalletConnected
-            .filter { $0 }
-            .map { [weak self] _ in self?.makeUserProfileDeeplink() }
-            .sink { [weak self] in self?.update(userProfileDeeplink: $0) }
-            .store(in: &cancellables)
     }
 
     // MARK: - Actions
@@ -155,25 +150,65 @@ final class BLEPeripheralManager: NSObject {
         Logger.log(message: "Stop Advertising", domain: .blePeripherial, level: .info)
         manager.stopAdvertising()
         manager.removeAllServices()
+        cache.removeAll()
     }
 
     // MARK: - Handlers
 
-    private func handle(writeRequest: CBATTRequest) {
+    private func handle(readRequest: CBATTRequest) {
 
-        guard let data = writeRequest.value, let rawDeeplink = String(data: data, encoding: .utf8) else {
-            manager.respond(to: writeRequest, withResult: .invalidHandle)
+        var chunks: [Data] = cache[readRequest.characteristic.uuid] ?? []
+
+        if chunks.isEmpty {
+            chunks = makeUserProfileDeeplinkChunks()
+        }
+
+        guard !chunks.isEmpty else {
+            manager.respond(to: readRequest, withResult: .invalidHandle)
             return
         }
 
+        let chunk = chunks.removeFirst()
+
+        cache[readRequest.characteristic.uuid] = chunks
+        readRequest.value = chunk
+        manager.respond(to: readRequest, withResult: .success)
+    }
+
+    private func handle(writeRequest: CBATTRequest) {
+
         Logger.log(message: "Write Request", domain: .blePeripherial, level: .info)
+
+        guard let data = writeRequest.value, data.isBLEChunk else {
+            manager.respond(to: writeRequest, withResult: .invalidHandle)
+            Logger.log(message: "Invalid write request received - No Data", domain: .blePeripherial, level: .warning)
+            return
+        }
+
+        var cachedData = cache[writeRequest.characteristic.uuid] ?? []
+        cachedData.append(data)
+        cache[writeRequest.characteristic.uuid] = cachedData
+
+        guard data.bleChunkType == .last else {
+            manager.respond(to: writeRequest, withResult: .success)
+            return
+        }
+
+        let rawDeeplink = cache[writeRequest.characteristic.uuid]?.stringFromBLEChunks
+        cache[writeRequest.characteristic.uuid] = nil
+
+        guard let rawDeeplink else {
+            manager.respond(to: writeRequest, withResult: .invalidHandle)
+            Logger.log(message: "Invalid write request received - Invalid Chunks", domain: .blePeripherial, level: .warning)
+            return
+        }
 
         do {
             try DeeplinkHandler.handle(rawDeeplink: rawDeeplink)
             manager.respond(to: writeRequest, withResult: .success)
         } catch {
-            Logger.log(message: "Invalid write request received", domain: .blePeripherial, level: .warning)
             manager.respond(to: writeRequest, withResult: .invalidHandle)
+            Logger.log(message: "Invalid write request received - Invalid Data", domain: .blePeripherial, level: .warning)
         }
     }
 
@@ -215,16 +250,13 @@ final class BLEPeripheralManager: NSObject {
         }
     }
 
-    private func update(userProfileDeeplink: URL?) {
-        userProfileCharacteristic.value = userProfileDeeplink?.absoluteString.data(using: .utf8)
-    }
-
     // MARK: - Factories
 
-    private func makeUserProfileDeeplink() -> URL? {
-        guard let alias = UserSettingsManager.name, let address = try? Tari.shared.walletAddress.byteVector.hex else { return nil }
+    private func makeUserProfileDeeplinkChunks() -> [Data] {
+        guard let alias = UserSettingsManager.name, let address = try? Tari.shared.walletAddress.byteVector.hex else { return [] }
         let model = UserProfileDeeplink(alias: alias, tariAddress: address)
-        return try? DeepLinkFormatter.deeplink(model: model)
+        guard let url = try? DeepLinkFormatter.deeplink(model: model) else { return [] }
+        return url.absoluteString.data(using: .utf8)?.bleDataChunks ?? []
     }
 }
 
@@ -248,6 +280,11 @@ extension BLEPeripheralManager: CBPeripheralManagerDelegate {
         @unknown default:
             error = .unknown
         }
+    }
+
+    func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveRead request: CBATTRequest) {
+        Logger.log(message: "Read request received", domain: .blePeripherial, level: .info)
+        handle(readRequest: request)
     }
 
     func peripheralManager(_ peripheral: CBPeripheralManager, didReceiveWrite requests: [CBATTRequest]) {

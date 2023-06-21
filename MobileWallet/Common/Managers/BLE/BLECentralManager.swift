@@ -56,6 +56,7 @@ final class BLECentralManager: NSObject {
         case connectionError(error: Error)
         case processInterrupted
         case writeFailedCharacteristicNotFound
+        case invalidData
     }
 
     // MARK: - Constants
@@ -69,8 +70,9 @@ final class BLECentralManager: NSObject {
 
     private var connectedPeripheral: CBPeripheral?
     private var findProcessSubject: PassthroughSubject<Void, BLECentralError>?
-    private var readProcessSubject: PassthroughSubject<Data?, BLECentralError>?
+    private var readProcessSubject: PassthroughSubject<[Data], BLECentralError>?
     private var writeProcessSubject: PassthroughSubject<Void, BLECentralError>?
+    private var cache: [CBUUID: [Data]] = [:]
 
     // MARK: - Initialisers
 
@@ -96,11 +98,11 @@ final class BLECentralManager: NSObject {
         return publisher
     }
 
-    func readProcess() -> AnyPublisher<Data?, BLECentralError> {
+    func readProcess() -> AnyPublisher<[Data], BLECentralError> {
 
         interruptCurrentProcess()
 
-        let subject = PassthroughSubject<Data?, BLECentralError>()
+        let subject = PassthroughSubject<[Data], BLECentralError>()
         readProcessSubject = subject
 
         do {
@@ -108,7 +110,7 @@ final class BLECentralManager: NSObject {
             return subject.eraseToAnyPublisher()
         } catch {
             let bleError: BLECentralError = error as? BLECentralError ?? .unknown
-            return Fail<Data?, BLECentralError>(error: bleError).eraseToAnyPublisher()
+            return Fail<[Data], BLECentralError>(error: bleError).eraseToAnyPublisher()
         }
     }
 
@@ -190,7 +192,7 @@ final class BLECentralManager: NSObject {
         findProcessSubject?.send(completion: .finished)
     }
 
-    private func handleReadSuccess(data: Data?) {
+    private func handleReadSuccess(data: [Data]) {
         readProcessSubject?.send(data)
         readProcessSubject?.send(completion: .finished)
     }
@@ -314,7 +316,21 @@ extension BLECentralManager: CBPeripheralDelegate {
             return
         }
 
-        handleReadSuccess(data: characteristic.value)
+        guard let value = characteristic.value, value.isBLEChunk else {
+            handleReadFailure(error: BLECentralError.invalidData)
+            return
+        }
+
+        var chunks = cache[characteristic.uuid] ?? []
+        chunks.append(value)
+        cache[characteristic.uuid] = chunks
+
+        guard value.bleChunkType == .last else {
+            peripheral.readValue(for: characteristic)
+            return
+        }
+
+        handleReadSuccess(data: chunks)
     }
 
     func peripheral(_ peripheral: CBPeripheral, didWriteValueFor characteristic: CBCharacteristic, error: Error?) {
@@ -348,6 +364,8 @@ extension BLECentralManager.BLECentralError {
             return localized("error.ble.central.process_interrupted")
         case .writeFailedCharacteristicNotFound:
             return localized("error.ble.central.write_failed_characteristic_not_found")
+        case .invalidData:
+            return localized("error.ble.central.invalid_data")
         }
     }
 }

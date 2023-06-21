@@ -41,6 +41,7 @@
 import CoreBluetooth
 
 enum BLEConstants {
+    static var chunkSize = 200
     static var contactBookService: BLEContactBookService.Type { BLEContactBookService.self }
 }
 
