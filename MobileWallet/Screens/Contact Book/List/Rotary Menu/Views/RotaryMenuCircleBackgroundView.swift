@@ -52,6 +52,7 @@ final class RotaryMenuCircleBackgroundView: UIView {
 
     @View private var avatarView: RoundedAvatarView = {
         let view = RoundedAvatarView()
+        view.backgroundColorType = .static
         view.alpha = 0.0
         return view
     }()
@@ -73,10 +74,8 @@ final class RotaryMenuCircleBackgroundView: UIView {
         return view
     }()
 
-    @View private var thirdCircleView: UIView = {
-        let view = UIView()
-        view.layer.borderWidth = 1.0
-        view.layer.borderColor = UIColor.static.white?.withAlphaComponent(0.8).cgColor
+    @View private var thirdCircleView: RotaryMenuOuterCircleView = {
+        let view = RotaryMenuOuterCircleView()
         view.alpha = 0.0
         return view
     }()

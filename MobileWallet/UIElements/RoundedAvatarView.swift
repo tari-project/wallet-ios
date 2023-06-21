@@ -49,6 +49,11 @@ final class RoundedAvatarView: DynamicThemeView {
         case empty
     }
 
+    enum BackgroundColorType {
+        case `dynamic`
+        case `static`
+    }
+
     // MARK: - Subviews
 
     @View private var label: UILabel = {
@@ -68,6 +73,10 @@ final class RoundedAvatarView: DynamicThemeView {
 
     var avatar: Avatar = .empty {
         didSet { update(avatar: avatar) }
+    }
+
+    var backgroundColorType: BackgroundColorType = .dynamic {
+        didSet { updateDynamicElements(theme: theme) }
     }
 
     var imagePadding: CGFloat = 0.0 {
@@ -122,9 +131,20 @@ final class RoundedAvatarView: DynamicThemeView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        backgroundColor = theme.backgrounds.primary
         label.textColor = theme.text.lightText
-        apply(shadow: theme.shadows.box)
+        updateDynamicElements(theme: theme)
+    }
+
+    private func updateDynamicElements(theme: ColorTheme) {
+
+        switch backgroundColorType {
+        case .dynamic:
+            backgroundColor = theme.backgrounds.primary
+            apply(shadow: theme.shadows.box)
+        case .static:
+            backgroundColor = .static.white
+            apply(shadow: .none)
+        }
     }
 
     private func update(avatar: Avatar) {

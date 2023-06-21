@@ -1,8 +1,8 @@
-//  UIView+Utils.swift
+//  CGFloat+Utils.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 15/06/2023
+	Created by Adrian Truszczyński on 19/06/2023
 	Using Swift 5.0
 	Running on macOS 13.4
 
@@ -38,16 +38,11 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+extension CGFloat {
 
-extension UIView {
+    var degToRad: CGFloat { self * .pi / 180.0 }
 
-    @discardableResult
-    static func animate(duration: TimeInterval, deley: TimeInterval = 0.0, options: UIView.AnimationOptions = [], animations: @escaping () -> Void) async -> Bool {
-        await withCheckedContinuation { continuation in
-            UIView.animate(withDuration: duration, delay: deley, options: options, animations: animations) { result in
-                continuation.resume(returning: result)
-            }
-        }
+    static func angle(normalizedDegrees: CGFloat) -> CGFloat {
+        normalizedDegrees.degToRad - (.pi / 2.0)
     }
 }
