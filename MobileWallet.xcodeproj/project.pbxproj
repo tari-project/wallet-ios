@@ -454,6 +454,7 @@
 		54AA5D5A298122B70031A396 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D59298122B70031A396 /* OnboardingView.swift */; };
 		54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */; };
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
+		54AD5F662A420A9F00D223B8 /* Data+Utlis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */; };
 		54ADC0872A3856B50082C455 /* AddRecipientViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC0852A3856B50082C455 /* AddRecipientViewController.swift */; };
 		54ADC0882A3856B50082C455 /* AddRecipientModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC0862A3856B50082C455 /* AddRecipientModel.swift */; };
 		54ADC08B2A3857280082C455 /* AddRecipientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC08A2A3857280082C455 /* AddRecipientView.swift */; };
@@ -1000,6 +1001,7 @@
 		54AA5D59298122B70031A396 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
+		54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Utlis.swift"; sourceTree = "<group>"; };
 		54ADC0852A3856B50082C455 /* AddRecipientViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRecipientViewController.swift; sourceTree = "<group>"; };
 		54ADC0862A3856B50082C455 /* AddRecipientModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRecipientModel.swift; sourceTree = "<group>"; };
 		54ADC08A2A3857280082C455 /* AddRecipientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRecipientView.swift; sourceTree = "<group>"; };
@@ -1130,6 +1132,8 @@
 			children = (
 				376C62AD247574850091BB28 /* Animation+EnumInit.swift */,
 				3A2B956928648D860085BE21 /* CChar+Helpers.swift */,
+				541029052A406E4E0095F7CB /* CGFloat+Utils.swift */,
+				541029072A406E810095F7CB /* CGPoint+Utils.swift */,
 				3A420596279803DF00A8D49C /* CharacterSet+CustomSets.swift */,
 				00BBD808237D80C800EBF5E6 /* Date.swift */,
 				3A685425290AD04600032963 /* DateFormatter+Formats.swift */,
@@ -1147,6 +1151,7 @@
 				3A8826C427F1B8320037F779 /* UICollectionViewDiffableDataSource+Animation.swift */,
 				3AECD493284F46FD00D81C80 /* UIColor+Utils.swift */,
 				37E0B007249B700F00DFE315 /* UIFont+FontStyle.swift */,
+				54F306142A3B1E6300B5689D /* UIImage+Utils.swift */,
 				37ABB68F24781CE800F08163 /* UILabel.swift */,
 				54DD2E8529C37A7600C8C0D9 /* UINavigationController+Common.swift */,
 				54DEF9F22987DA8700C4B749 /* UIScreen+Tools.swift */,
@@ -1161,9 +1166,7 @@
 				54A6E9F3297F260800A60853 /* UIViewController+Common.swift */,
 				004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */,
 				54621F8629E00E04000E9659 /* URL+Tools.swift */,
-				54F306142A3B1E6300B5689D /* UIImage+Utils.swift */,
-				541029052A406E4E0095F7CB /* CGFloat+Utils.swift */,
-				541029072A406E810095F7CB /* CGPoint+Utils.swift */,
+				54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3275,6 +3278,7 @@
 				543DF19C293F3DA90031EA70 /* BridgesConfigurationFooterView.swift in Sources */,
 				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				3A82455627E1EE0D003B6B59 /* TransactionDetailsSectionView.swift in Sources */,
+				54AD5F662A420A9F00D223B8 /* Data+Utlis.swift in Sources */,
 				54ADC0882A3856B50082C455 /* AddRecipientModel.swift in Sources */,
 				54621F9029E01385000E9659 /* DeeplinkUnkeyedDecodingContainer.swift in Sources */,
 				3A7DAB9528FDB220002CC013 /* LogsListCell.swift in Sources */,

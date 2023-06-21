@@ -287,14 +287,14 @@ private extension PopUpPresenter.BLEDialogType {
                 buttons: [makeCancelButtonModel()],
                 hapticType: .success
             )
-        case .scanForTransactionData:
+        case let .scanForTransactionData(onCancel):
             return BLEDialogModel(
                 image: .contactBook.bleDialog.icon,
                 imageTintColor: .purple,
                 title: localized("contact_book.popup.ble.transaction.scan.title"),
                 messageComponents: [StylizedLabel.StylizedText(text: localized("contact_book.popup.ble.transaction.scan.message"), style: .normal)],
                 tag: PopUpTag.bleScanTransactionDataDialog.rawValue,
-                buttons: [makeCancelButtonModel()],
+                buttons: [makeCancelButtonModel(callback: onCancel)],
                 hapticType: .none
             )
         case let .confirmTransactionData(receiverName, confirmationCallback, rejectCallback):

@@ -63,8 +63,8 @@ final class BLECentralTask {
     }
 
     func findAndWrite(payload: Data) async throws -> Bool {
-        guard try await findDevice(), try await write(payload: payload) else { return false }
-        return true
+        guard try await findDevice() else { return false }
+        return try await write(chunks: payload.bleDataChunks)
     }
 
     func cancel() {
@@ -106,9 +106,21 @@ final class BLECentralTask {
                     case let .failure(error):
                         continuation.resume(throwing: error)
                     }
-                } receiveValue: { continuation.resume(returning: $0) }
+                } receiveValue: {
+                    continuation.resume(with: .success($0.dataFromBLEChunks))
+                }
                 .store(in: &self.cancellables)
         }
+    }
+
+    private func write(chunks: [Data]) async throws -> Bool {
+
+        guard !chunks.isEmpty else { return true }
+        var chunks = chunks
+        let payload = chunks.removeFirst()
+
+        guard try await write(payload: payload) else { return false }
+        return try await write(chunks: chunks)
     }
 
     private func write(payload: Data) async throws -> Bool {

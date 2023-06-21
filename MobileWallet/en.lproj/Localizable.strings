@@ -727,6 +727,7 @@
 "error.ble.central.connection_error" = "Unable to establish a connection with the other device. Please make sure both devices are compatible and within range.";
 "error.ble.central.process_interrupted" = "The connection process was interrupted unexpectedly. Please try again later.";
 "error.ble.central.write_failed_characteristic_not_found" = "Unable to connect to the second device. Please check that the device is on and within range.";
+"error.ble.central.invalid_data" = "An error occurred while transferring data between devices. The data passed is invalid and cannot be read. Please try again.";
 
 /* Contacts Received PopUp */
 
