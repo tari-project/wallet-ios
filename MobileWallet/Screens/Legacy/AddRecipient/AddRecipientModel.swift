@@ -153,6 +153,17 @@ final class AddRecipientModel {
         walletAddressPreview = isAddressVisible ? nil : try? address?.byteVector.hex
     }
 
+    func handle(deeplink: TransactionsSendDeeplink) {
+
+        var amount: MicroTari?
+
+        if let rawAmount = deeplink.amount {
+            amount = MicroTari(rawAmount)
+        }
+
+        verifiedPaymentInfo = PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note)
+    }
+
     // MARK: - Actions - Contacts
 
     private func fetchWalletContacts() {
