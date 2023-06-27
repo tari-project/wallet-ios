@@ -157,20 +157,22 @@ final class BLEPeripheralManager: NSObject {
 
     private func handle(readRequest: CBATTRequest) {
 
-        var chunks: [Data] = cache[readRequest.characteristic.uuid] ?? []
+        let chunk: Data
 
-        if chunks.isEmpty {
-            chunks = makeUserProfileDeeplinkChunks()
+        if readRequest.offset == 0 {
+            guard let nextChunk = nextChunk(characteristicUUID: readRequest.characteristic.uuid) else {
+                manager.respond(to: readRequest, withResult: .invalidHandle)
+                return
+            }
+            chunk = nextChunk
+        } else {
+            guard let currentChunk = currentChunk(characteristicUUID: readRequest.characteristic.uuid, offset: readRequest.offset) else {
+                manager.respond(to: readRequest, withResult: .invalidHandle)
+                return
+            }
+            chunk = currentChunk
         }
 
-        guard !chunks.isEmpty else {
-            manager.respond(to: readRequest, withResult: .invalidHandle)
-            return
-        }
-
-        let chunk = chunks.removeFirst()
-
-        cache[readRequest.characteristic.uuid] = chunks
         readRequest.value = chunk
         manager.respond(to: readRequest, withResult: .success)
     }
@@ -250,13 +252,35 @@ final class BLEPeripheralManager: NSObject {
         }
     }
 
-    // MARK: - Factories
+    // MARK: - Helpers
 
     private func makeUserProfileDeeplinkChunks() -> [Data] {
         guard let alias = UserSettingsManager.name, let address = try? Tari.shared.walletAddress.byteVector.hex else { return [] }
         let model = UserProfileDeeplink(alias: alias, tariAddress: address)
         guard let url = try? DeepLinkFormatter.deeplink(model: model) else { return [] }
         return url.absoluteString.data(using: .utf8)?.bleDataChunks ?? []
+    }
+
+    private func nextChunk(characteristicUUID: CBUUID) -> Data? {
+
+        var chunks: [Data] = cache[characteristicUUID] ?? []
+
+        if !chunks.isEmpty {
+            chunks.removeFirst()
+        }
+
+        if chunks.isEmpty {
+            chunks = makeUserProfileDeeplinkChunks()
+        }
+
+        cache[characteristicUUID] = chunks
+        return chunks.first
+    }
+
+    private func currentChunk(characteristicUUID: CBUUID, offset: Int) -> Data? {
+        var chunks: [Data] = cache[characteristicUUID] ?? []
+        guard let chunk = chunks.first, chunk.count > offset else { return nil }
+        return chunk.subdata(in: offset..<chunk.count)
     }
 }
 
