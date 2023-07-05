@@ -1,10 +1,10 @@
-//  Transaction.swift
+//  RoundedGlassContentView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 26/09/2022
+	Created by Adrian Truszczyński on 28/06/2023
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,44 +38,58 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum TransactionStatus: Int32 {
-    case unknown = -2
-    case txNullError = -1
-    case completed
-    case broadcast
-    case minedUnconfirmed
-    case imported
-    case pending
-    case coinbase
-    case minedConfirmed
-    case rejected
-    case fauxUnconfirmed
-    case fauxConfirmed
-    case queued
-}
+import TariCommon
 
-protocol Transaction {
-    var identifier: UInt64 { get throws }
-    var amount: UInt64 { get throws }
-    var isOutboundTransaction: Bool { get throws }
-    var status: TransactionStatus { get throws }
-    var message: String { get throws }
-    var timestamp: UInt64 { get throws }
-    var address: TariAddress { get throws }
-    var isCancelled: Bool { get }
-    var isPending: Bool { get }
-}
+final class RoundedGlassContentView<Subview: UIView>: UIView {
 
-extension Transaction {
+    // MARK: - Subviews
 
-    var isOneSidedPayment: Bool {
-        get throws {
-            let status = try status
-            return status == .fauxConfirmed || status == .fauxUnconfirmed
-        }
+    @View private(set) var subview: Subview = Subview()
+
+    // MARK: - Properties
+
+    var borderWidth: CGFloat = 0.0 {
+        didSet { subviewConstraints.forEach { $0.constant = borderWidth }}
     }
 
-    var formattedTimestamp: String {
-        get throws { Date(timeIntervalSince1970: Double(try timestamp)).relativeDayFromToday() ?? "" }
+    private var subviewConstraints: [NSLayoutConstraint] = []
+
+    // MARK: - Initialisers
+
+    init() {
+        super.init(frame: .zero)
+        setupConstraints()
+
+        layer.borderColor = UIColor.static.white?.withAlphaComponent(0.6).cgColor
+        layer.borderWidth = 1.0
+        backgroundColor = .static.white?.withAlphaComponent(0.4)
+
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Setups
+
+    private func setupConstraints() {
+
+        addSubview(subview)
+
+        subviewConstraints = [
+            subview.topAnchor.constraint(equalTo: topAnchor),
+            subview.leadingAnchor.constraint(equalTo: leadingAnchor),
+            trailingAnchor.constraint(equalTo: subview.trailingAnchor),
+            bottomAnchor.constraint(equalTo: subview.bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(subviewConstraints)
+    }
+
+    // MARK: - Layout
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = min(bounds.height, bounds.width) / 2.0
     }
 }

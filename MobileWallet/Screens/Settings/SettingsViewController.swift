@@ -230,7 +230,7 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onProfileAction() {
-        let controller = ProfileViewController()
+        let controller = ProfileViewController(backButtonType: .back)
         navigationController?.pushViewController(controller, animated: true)
     }
 

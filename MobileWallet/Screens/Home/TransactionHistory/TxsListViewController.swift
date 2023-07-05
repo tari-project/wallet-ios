@@ -72,6 +72,8 @@ final class TxsListViewController: DynamicThemeViewController {
 
     weak var actionDelegate: TxsTableViewDelegate?
 
+    @View private var navgationBar = NavigationBar()
+
     let tableView = UITableView(frame: .zero, style: .grouped)
 
     private let animatedRefresher = AnimatedRefreshingView()
@@ -347,6 +349,11 @@ final class TxsListViewController: DynamicThemeViewController {
             NotificationManager.shared.cancelAllFutureReminderNotifications()
         }
     }
+
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        view.backgroundColor = theme.backgrounds.primary
+    }
 }
 
 // MARK: AnimatedRefreshingView behavior
@@ -449,15 +456,29 @@ extension TxsListViewController {
             setIntroView()
         }
 
+        setupNavigationBar()
         setupTableView()
         setupRefreshControl()
+    }
+
+    private func setupNavigationBar() {
+
+        view.addSubview(navgationBar)
+
+        let constratints = [
+            navgationBar.topAnchor.constraint(equalTo: view.topAnchor),
+            navgationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            navgationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ]
+
+        NSLayoutConstraint.activate(constratints)
     }
 
     private func setupTableView() {
         view.addSubview(tableView)
 
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        tableView.topAnchor.constraint(equalTo: navgationBar.bottomAnchor).isActive = true
         tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true

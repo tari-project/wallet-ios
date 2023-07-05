@@ -77,6 +77,9 @@
 "transaction.one_sided_payment.avatar" = "➡️";
 "transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
 "transaction.one_sided_payment.note.recovered" = "You recovered some funds";
+"transaction.normal.title.pending.part.2" = "sent a payment";
+"transaction.normal.title.inbound.part.2" = "paid you";
+"transaction.normal.title.outbound.part.1" = "You paid";
 
 /* Authentication */
 "authentication.fail.title" = "Authentication failed";
@@ -89,15 +92,16 @@
 "authentication.try_again" = "Try again";
 "authentication.proceed" = "Proceed";
 
-/* Home view */
-"home.available_balance" = "Balance";
-"home.label.spendable" = "Available to spend";
-"home.error.update_balance" = "Balance update failed";
-"home.info.amount_help.title" = "Why is some of my balance not spendable right now?";
-"home.info.amount_help.description" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
-"home.info.amount_help.action_button" = "Go to TariLabs University";
+/* TX list */
+
 "home.transactions.section.pending" = "Pending Transactions";
 "home.transactions.section.completed" = "Completed Transactions";
+
+/* Home */
+
+"home.label.spendable" = "Available to spend:";
+"home.button.all_transactions" = "View all transactions";
+"home.transaction_list.placeholder" = "Hey there, %@\n\nWelcome to Aurora! Once you start making some transactions, they'll appear right here. In the meantime, you can click the \"transact\" button below to get things rolling.";
 
 /* UTXOs Wallet */
 

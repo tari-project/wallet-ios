@@ -283,7 +283,12 @@ class DynamicThemeViewController: UIViewController, ThemeViewProtocol {
 
 final class ThemeViewManager {
 
+    var enforcedTheme: ColorTheme? {
+        didSet { handle(theme: theme) }
+    }
+
     var onThemeUpdate: ((_ theme: ColorTheme, _ isInitialUpdate: Bool) -> Void)?
+    var theme: ColorTheme { enforcedTheme ?? ThemeCoordinator.shared.theme }
 
     private var isInitialUpdate = true
     private var cancellables = Set<AnyCancellable>()
@@ -311,12 +316,18 @@ protocol ThemeViewProtocol: AnyObject {
 
 extension ThemeViewProtocol {
 
-    var theme: ColorTheme { ThemeCoordinator.shared.theme }
+    var theme: ColorTheme { themeManager.theme }
+
+    var enforcedTheme: ColorTheme? {
+        get { themeManager.enforcedTheme }
+        set { themeManager.enforcedTheme = newValue }
+    }
 
     fileprivate func setupThemeCallbacks() {
 
         themeManager.onThemeUpdate = { [weak self] in
-            self?.update(theme: $0, isInitialUpdate: $1)
+            guard let self else { return }
+            self.update(theme: self.theme, isInitialUpdate: $1)
         }
 
         themeManager.start()

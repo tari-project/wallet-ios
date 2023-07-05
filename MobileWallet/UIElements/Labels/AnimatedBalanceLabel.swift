@@ -38,10 +38,9 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
 import UIKit
 
-class AnimatedBalanceLabel: UIView {
+final class AnimatedBalanceLabel: UIView {
     enum Alignment {
         case left
         case right
@@ -70,6 +69,10 @@ class AnimatedBalanceLabel: UIView {
         didSet {
             adjustLabelTextAlignment()
         }
+    }
+
+    var adjustFontToFitWidth: Bool = true {
+        didSet { self.attributedText = _attributedText }
     }
 
     override var bounds: CGRect {
@@ -120,7 +123,7 @@ class AnimatedBalanceLabel: UIView {
     var attributedText: NSAttributedString? {
         get { _attributedText }
         set {
-            if let newValue = newValue, !attributedTextFitsInWidth(attributedText: newValue, width: bounds.width), bounds.width >= 0 {
+            if let newValue = newValue, adjustFontToFitWidth, !attributedTextFitsInWidth(attributedText: newValue, width: bounds.width), bounds.width >= 0 {
                 self._attributedText = attributedTextFittingInWidth(attributedText: newValue, width: bounds.width)
             } else {
                 self._attributedText = newValue

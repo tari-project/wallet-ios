@@ -89,33 +89,38 @@ final class StylizedLabel: UILabel {
 
         guard !textComponents.isEmpty else { return }
 
-        attributedText = textComponents.reduce(into: NSMutableAttributedString()) { result, stylizedText in
+        attributedText = textComponents
+            .enumerated()
+            .reduce(into: NSMutableAttributedString()) { result, data in
 
-            var font: UIFont?
-            var textColor: UIColor?
+                var font: UIFont?
+                var textColor: UIColor?
 
-            switch stylizedText.style {
-            case .normal:
-                font = normalFont
-                textColor = self.textColor
-            case .bold:
-                font = boldFont
-                textColor = self.textColor
-            case .highlighted:
-                font = normalFont
-                textColor = highlightedTextColor
+                switch data.element.style {
+                case .normal:
+                    font = normalFont
+                    textColor = self.textColor
+                case .bold:
+                    font = boldFont
+                    textColor = self.textColor
+                case .highlighted:
+                    font = normalFont
+                    textColor = highlightedTextColor
+                }
+
+                if data.offset != 0 {
+                    result.append(NSAttributedString(string: separator))
+                }
+
+                let location = result.length
+                result.append(NSAttributedString(string: data.element.text))
+
+                if let font {
+                    result.addAttribute(.font, value: font, range: NSRange(location: location, length: data.element.text.utf16.count))
+                }
+                if let textColor {
+                    result.addAttribute(.foregroundColor, value: textColor, range: NSRange(location: location, length: data.element.text.utf16.count))
+                }
             }
-
-            result.append(NSAttributedString(string: separator))
-            let location = result.length
-            result.append(NSAttributedString(string: stylizedText.text))
-
-            if let font {
-                result.addAttribute(.font, value: font, range: NSRange(location: location, length: stylizedText.text.utf16.count))
-            }
-            if let textColor {
-                result.addAttribute(.foregroundColor, value: textColor, range: NSRange(location: location, length: stylizedText.text.utf16.count))
-            }
-        }
     }
 }

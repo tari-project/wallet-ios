@@ -66,8 +66,6 @@ struct Images {
     let close = UIImage(named: "Close")
     let share = UIImage(named: "share")
     let txFee = UIImage(named: "TxFee")
-    let storeIcon = UIImage(named: "store-icon")
-    let storeModal = UIImage(named: "store-modal")
     let handWave = UIImage(named: "HandWave")
     let attentionIcon = UIImage(named: "AttentionIcon")
     let scheduledIcon = UIImage(named: "ScheduledIcon")
@@ -87,9 +85,6 @@ struct Images {
 
     // Seed words list
     let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
-
-    // Home Icons
-    let homeWalletIcon = UIImage(named: "icon-wallet")
 
     // UTXOs Wallet Icons
     let utxoFaucet = UIImage(named: "icon-faucet")
@@ -136,12 +131,6 @@ struct Images {
     let speedometerMid = UIImage(named: "speedometer-mid")
     let speedometerHigh = UIImage(named: "speedometer-high")
 
-    // Connection Indicator
-
-    let connectionIndicatorConnectedIcon = UIImage(named: "network-full")
-    let connectionIndicatorLimitedConnectonIcon = UIImage(named: "network-limited")
-    let connectionIndicatorDisconnectedIcon = UIImage(named: "network-off")
-
     // Color Themes
 
     let colorThemeSystem = UIImage(named: "Themes/System")
@@ -168,11 +157,6 @@ struct Fonts {
 
     // Profile
     let profileMiddleLabel = UIFont.Avenir.medium.withSize(14.0)
-
-    // Home screen
-    let homeScreenTotalBalanceLabel = UIFont.Avenir.medium.withSize(12.0)
-    let homeScreenTotalBalanceValueLabel = UIFont.Avenir.black.withSize(30.0)
-    let homeScreenTotalBalanceValueLabelDecimals = UIFont.Avenir.heavy.withSize(12.0)
 
     // Loadig gif button
     let loadingGifButtonTitle = UIFont.Avenir.heavy.withSize(14.0)
@@ -203,7 +187,6 @@ struct Fonts {
 
     // Popup User feedback
     let feedbackPopupTitle = UIFont.Avenir.light.withSize(18.0)
-    let feedbackPopupHeavy = UIFont.Avenir.black.withSize(18.0)
     let feedbackPopupDescription = UIFont.Avenir.medium.withSize(14.0)
 
     // Simple text button
@@ -355,6 +338,7 @@ enum LegacyImages {
 enum IconsImages {
 
     static var contactTypes: IconsContactTypesImages.Type { IconsContactTypesImages.self }
+    static var network: IconsNetworkImages.Type { IconsNetworkImages.self }
     static var rotaryMenu: IconsRotaryImages.Type { IconsRotaryImages.self }
     static var settings: IconsSettingsImages.Type { IconsSettingsImages.self }
     static var star: IconsStarImages.Type { IconsStarImages.self }
@@ -364,6 +348,7 @@ enum IconsImages {
     static var link: UIImage? { UIImage(named: "Icons/Link") }
     static var profile: UIImage? { UIImage(named: "Icons/Profile") }
     static var send: UIImage? { UIImage(named: "Icons/Send") }
+    static var tariGem: UIImage? { UIImage(named: "Icons/Tari Gem") }
     static var qr: UIImage? { UIImage(named: "Icons/QR") }
     static var unlink: UIImage? { UIImage(named: "Icons/Unlink") }
 }
@@ -372,6 +357,12 @@ enum IconsContactTypesImages {
     static var `internal`: UIImage? { UIImage(named: "Icons/Contact Types/Internal") }
     static var external: UIImage? { UIImage(named: "Icons/Contact Types/External") }
     static var linked: UIImage? { UIImage(named: "Icons/Contact Types/Linked") }
+}
+
+enum IconsNetworkImages {
+    static var full: UIImage? { UIImage(named: "Icons/Network/Full") }
+    static var limited: UIImage? { UIImage(named: "Icons/Network/Limited") }
+    static var off: UIImage? { UIImage(named: "Icons/Network/Off") }
 }
 
 enum IconsRotaryImages {

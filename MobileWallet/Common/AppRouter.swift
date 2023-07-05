@@ -118,7 +118,7 @@ enum AppRouter {
     }
 
     static func moveToProfile() {
-        present(controller: ProfileViewController())
+        present(controller: ProfileViewController(backButtonType: .close))
     }
 
     // MARK: - Modal Actions
