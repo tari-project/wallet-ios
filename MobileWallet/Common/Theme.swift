@@ -173,7 +173,6 @@ struct Fonts {
     let txScreenCurrencyValueLabel = UIFont.Avenir.black.withSize(90.0)
     let txScreenSubheadingLabel = UIFont.Avenir.medium.withSize(13.0)
     let txScreenTextLabel = UIFont.Avenir.roman.withSize(14.0)
-    let txListEmptyMessageLabel = UIFont.Avenir.medium.withSize(14.0)
     let txFeeLabel = UIFont.Avenir.heavy.withSize(14.0)
     let txFeeButton = UIFont.Avenir.roman.withSize(13.0)
     let txSectionTitleLabel = UIFont.Avenir.medium.withSize(16.0)
@@ -193,9 +192,6 @@ struct Fonts {
     let textButton = UIFont.Avenir.medium.withSize(14.0)
     let copyButton = UIFont.Avenir.heavy.withSize(14.0)
     let textButtonCancel = UIFont.Avenir.medium.withSize(12.0)
-
-    // Intro to wallet
-    let introTitle = UIFont.Avenir.light.withSize(18.0)
 
     // Add recipient view
     let searchContactsInputBoxText = UIFont.Avenir.roman.withSize(14.0)
@@ -346,11 +342,13 @@ enum IconsImages {
 
     static var bluetooth: UIImage? { UIImage(named: "Icons/Bluetooth") }
     static var link: UIImage? { UIImage(named: "Icons/Link") }
+    static var magnifyingGlass: UIImage? { UIImage(named: "Icons/Magnifying Glass") }
     static var profile: UIImage? { UIImage(named: "Icons/Profile") }
     static var send: UIImage? { UIImage(named: "Icons/Send") }
     static var tariGem: UIImage? { UIImage(named: "Icons/Tari Gem") }
     static var qr: UIImage? { UIImage(named: "Icons/QR") }
     static var unlink: UIImage? { UIImage(named: "Icons/Unlink") }
+    static var wallet: UIImage? { UIImage(named: "Icons/Wallet") }
 }
 
 enum IconsContactTypesImages {

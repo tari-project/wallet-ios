@@ -39,13 +39,14 @@
 */
 
 import TariCommon
+import Combine
 
 final class HomeViewTransactionCell: UITableViewCell {
 
     struct ViewModel: Identifiable, Hashable {
         let id: UInt64
         let titleComponents: [StylizedLabel.StylizedText]
-        let timestamp: String
+        let timestamp: TimeInterval
         let amount: AmountBadge.ViewModel
 
         static func == (lhs: HomeViewTransactionCell.ViewModel, rhs: HomeViewTransactionCell.ViewModel) -> Bool { lhs.id == rhs.id }
@@ -82,6 +83,11 @@ final class HomeViewTransactionCell: UITableViewCell {
         view.enforcedTheme = .light
         return view
     }()
+
+    // MARK: - Properties
+
+    private var dynamicModel: TransactionDynamicModel?
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
@@ -134,8 +140,24 @@ final class HomeViewTransactionCell: UITableViewCell {
     // MARK: - Updates
 
     func update(viewModel: ViewModel) {
+
         titleLabel.textComponents = viewModel.titleComponents
-        timestampLabel.text = viewModel.timestamp
         amountView.update(viewModel: viewModel.amount)
+
+        dynamicModel = TransactionDynamicModel(timestamp: viewModel.timestamp, giphyID: nil)
+
+        dynamicModel?.$formattedTimestamp
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.timestampLabel.text = $0 }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - Reuse
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        dynamicModel = nil
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
     }
 }

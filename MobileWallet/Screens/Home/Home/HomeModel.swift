@@ -50,13 +50,14 @@ final class HomeModel {
     @Published private(set) var availableBalance: String = ""
     @Published private(set) var avatar: String = ""
     @Published private(set) var username: String = ""
-    @Published private(set) var recentTransactions: [HomeViewTransactionCell.ViewModel] = []
+    @Published private(set) var recentTransactions: [TransactionFormatter.Model] = []
 
     // MARK: - Properties
 
     private let onContactUpdated = PassthroughSubject<Void, Never>()
 
-    private var contactsManager = ContactsManager()
+    private let contactsManager = ContactsManager()
+    private let transactionFormatter = TransactionFormatter()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -85,15 +86,13 @@ final class HomeModel {
             .sink { [weak self] _ in self?.updateAvatar() }
             .store(in: &cancellables)
 
-        let transactionsPublisher = Publishers.CombineLatest4(Tari.shared.transactions.$completed, Tari.shared.transactions.$cancelled, Tari.shared.transactions.$pendingInbound, Tari.shared.transactions.$pendingOutbound)
-            .map { $0 as [Transaction] + $1 + $2 + $3 }
+        let transactionsPublisher = Tari.shared.transactions.all
+            .map { $0.filterDuplicates() }
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
             .replaceError(with: [Transaction]())
 
         Publishers.CombineLatest(transactionsPublisher, onContactUpdated)
-            .compactMap { [weak self] in self?.removeDuplicates(transactions: $0.0) }
-            .compactMap { [weak self] in self?.mapTransactionViewModels(transactions: $0) }
-            .sink { [weak self] in self?.recentTransactions = $0 }
+            .sink { [weak self] in self?.handle(transactions: $0.0) }
             .store(in: &cancellables)
     }
 
@@ -142,16 +141,11 @@ final class HomeModel {
         availableBalance = MicroTari(walletBalance.available).formatted
     }
 
-    private func mapTransactionViewModels(transactions: [Transaction]) -> [HomeViewTransactionCell.ViewModel] {
-        transactions[0..<min(2, transactions.count)]
-            .compactMap {
-                try? HomeViewTransactionCell.ViewModel(
-                    id: $0.identifier,
-                    titleComponents: makeTransactionTitleComponents(transaction: $0),
-                    timestamp: $0.formattedTimestamp,
-                    amount: makeAmountViewModel(transaction: $0)
-                )
-            }
+    private func handle(transactions: [Transaction]) {
+        Task {
+            try? await transactionFormatter.updateContactsData()
+            recentTransactions = transactions[0..<min(2, transactions.count)].compactMap { try? transactionFormatter.model(transaction: $0) }
+        }
     }
 
     private func updateAvatar() {
@@ -164,60 +158,5 @@ final class HomeModel {
 
         avatar = emojis.firstOrEmpty
         username = emojis.obfuscatedText
-    }
-
-    // MARK: - Helpers
-
-    private func removeDuplicates(transactions: [Transaction]) -> [Transaction] {
-
-        var uniqueTransactions: [Transaction] = []
-
-        transactions.forEach {
-            guard let identifier = try? $0.identifier, uniqueTransactions.first(where: { (try? $0.identifier) == identifier }) == nil else { return }
-            uniqueTransactions.append($0)
-        }
-
-        return uniqueTransactions
-    }
-
-    private func makeTransactionTitleComponents(transaction: Transaction) throws -> [StylizedLabel.StylizedText] {
-
-        let hex = try transaction.address.byteVector.hex
-        let name = contactsManager.tariContactModels.first { $0.internalModel?.hex == hex }?.name ?? localized("transaction.one_sided_payment.inbound_user_placeholder")
-
-        if try transaction.isOutboundTransaction {
-            return [
-                StylizedLabel.StylizedText(text: localized("transaction.normal.title.outbound.part.1"), style: .normal),
-                StylizedLabel.StylizedText(text: name, style: .bold)
-            ]
-        } else {
-
-            let name = try transaction.isOneSidedPayment ? localized("transaction.one_sided_payment.inbound_user_placeholder") : name
-            let text = transaction.isPending ? localized("transaction.normal.title.pending.part.2") : localized("transaction.normal.title.inbound.part.2")
-
-            return [
-                StylizedLabel.StylizedText(text: name, style: .bold),
-                StylizedLabel.StylizedText(text: text, style: .normal)
-            ]
-        }
-    }
-
-    private func makeAmountViewModel(transaction: Transaction) throws -> AmountBadge.ViewModel {
-
-        let amount = try MicroTari(transaction.amount).formattedWithNegativeOperator
-
-        let valueType: AmountBadge.ValueType
-
-        if transaction.isCancelled {
-            valueType = .invalidated
-        } else if transaction.isPending {
-            valueType = .waiting
-        } else if try transaction.isOutboundTransaction {
-            valueType = .negative
-        } else {
-            valueType = .positive
-        }
-
-        return AmountBadge.ViewModel(amount: amount, valueType: valueType)
     }
 }

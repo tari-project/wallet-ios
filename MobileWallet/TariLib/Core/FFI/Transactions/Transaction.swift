@@ -79,3 +79,18 @@ extension Transaction {
         get throws { Date(timeIntervalSince1970: Double(try timestamp)).relativeDayFromToday() ?? "" }
     }
 }
+
+extension Array where Element == Transaction {
+
+    func filterDuplicates() -> Self {
+
+        var uniqueTransactions: Self = []
+
+        forEach {
+            guard let identifier = try? $0.identifier, uniqueTransactions.first(where: { (try? $0.identifier) == identifier }) == nil else { return }
+            uniqueTransactions.append($0)
+        }
+
+        return uniqueTransactions
+    }
+}

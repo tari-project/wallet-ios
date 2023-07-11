@@ -92,10 +92,12 @@
 "authentication.try_again" = "Try again";
 "authentication.proceed" = "Proceed";
 
-/* TX list */
+/* Transactions history list */
 
-"home.transactions.section.pending" = "Pending Transactions";
-"home.transactions.section.completed" = "Completed Transactions";
+"transaction_history.title" = "Transaction History";
+"transaction_history.section.pending" = "Pending Transactions";
+"transaction_history.section.completed" = "Completed Transactions";
+"transaction_history.search_field.placeholder" = "Enter Emoji ID or Contact Name";
 
 /* Home */
 
