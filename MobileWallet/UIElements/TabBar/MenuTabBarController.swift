@@ -49,7 +49,7 @@ final class MenuTabBarController: UITabBarController {
         case settings
     }
 
-    let homeViewController = HomeViewController()
+    private let homeViewController = HomeConstructor.buildScene()
     private let storeViewController = WebBrowserViewController()
     private let transactionsViewController = AddRecipientViewController()
     private let contactBookViewController = ContactBookConstructor.buildScene()

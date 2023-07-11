@@ -110,6 +110,11 @@ final class ProfileView: BaseNavigationContentView {
 
     // MARK: - Properties
 
+    var backButtonType: NavigationBar.BackButtonType {
+        get { navigationBar.backButtonType }
+        set { navigationBar.backButtonType = newValue }
+    }
+
     var isYatButtonOn: Bool = false {
         didSet { updateYatButton(isOn: isYatButtonOn) }
     }

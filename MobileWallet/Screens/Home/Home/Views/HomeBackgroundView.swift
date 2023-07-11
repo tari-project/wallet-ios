@@ -1,10 +1,10 @@
-//  Transaction.swift
+//  HomeBackgroundView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 26/09/2022
+	Created by Adrian Truszczyński on 04/07/2023
 	Using Swift 5.0
-	Running on macOS 12.4
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,44 +38,53 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum TransactionStatus: Int32 {
-    case unknown = -2
-    case txNullError = -1
-    case completed
-    case broadcast
-    case minedUnconfirmed
-    case imported
-    case pending
-    case coinbase
-    case minedConfirmed
-    case rejected
-    case fauxUnconfirmed
-    case fauxConfirmed
-    case queued
-}
+import TariCommon
 
-protocol Transaction {
-    var identifier: UInt64 { get throws }
-    var amount: UInt64 { get throws }
-    var isOutboundTransaction: Bool { get throws }
-    var status: TransactionStatus { get throws }
-    var message: String { get throws }
-    var timestamp: UInt64 { get throws }
-    var address: TariAddress { get throws }
-    var isCancelled: Bool { get }
-    var isPending: Bool { get }
-}
+final class HomeBackgroundView: UIView {
 
-extension Transaction {
+    // MARK: - Subviews
 
-    var isOneSidedPayment: Bool {
-        get throws {
-            let status = try status
-            return status == .fauxConfirmed || status == .fauxUnconfirmed
-        }
+    @View private var topView = TariGradientView()
+    @View private var bottomView = WaveView()
+
+    // MARK: - Initialisers
+
+    init() {
+        super.init(frame: .zero)
+        setupConstraints()
     }
 
-    var formattedTimestamp: String {
-        get throws { Date(timeIntervalSince1970: Double(try timestamp)).relativeDayFromToday() ?? "" }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Setups
+
+    private func setupConstraints() {
+
+        [topView, bottomView].forEach(addSubview)
+
+        let constraints = [
+            topView.topAnchor.constraint(equalTo: topAnchor),
+            topView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            topView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            topView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.6),
+            bottomView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            bottomView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            bottomView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            bottomView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.6)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    // MARK: - Actions
+
+    func startAnimation() {
+        bottomView.startAnimation()
+    }
+
+    func stopAnimation() {
+        bottomView.stopAnimation()
     }
 }

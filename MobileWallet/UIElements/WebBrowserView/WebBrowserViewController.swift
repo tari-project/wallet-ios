@@ -42,6 +42,13 @@ import WebKit
 import TariCommon
 
 class WebBrowserViewController: DynamicThemeViewController {
+
+    enum ScrollDirection {
+        case none
+        case up
+        case down
+    }
+
     private enum UniversalLinkAppPrefix: String, CaseIterable {
         case telegram = "https://t.me"
     }

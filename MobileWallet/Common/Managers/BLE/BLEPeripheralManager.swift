@@ -278,7 +278,7 @@ final class BLEPeripheralManager: NSObject {
     }
 
     private func currentChunk(characteristicUUID: CBUUID, offset: Int) -> Data? {
-        var chunks: [Data] = cache[characteristicUUID] ?? []
+        let chunks: [Data] = cache[characteristicUUID] ?? []
         guard let chunk = chunks.first, chunk.count > offset else { return nil }
         return chunk.subdata(in: offset..<chunk.count)
     }

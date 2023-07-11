@@ -1,10 +1,10 @@
-//  HomeViewToolbar.swift
+//  HomeTransactionsPlaceholderView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 06/08/2021
+	Created by Adrian Truszczyński on 04/07/2023
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,33 +38,32 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import TariCommon
 
-final class HomeViewToolbar: DynamicThemeView {
+final class HomeTransactionsPlaceholderView: HomeGlassView {
 
-    var onOnCloseButtonTap: (() -> Void)?
+    // MARK: - Subviews
 
-    private let titleLabel: UILabel = {
+    @View private var label: UILabel = {
         let view = UILabel()
-        view.text = localized("tx_list.title")
-        view.font = Theme.shared.fonts.navigationBarTitle
-        view.translatesAutoresizingMaskIntoConstraints = false
+        view.textColor = .static.white
+        view.font = .Avenir.medium.withSize(12.0)
+        view.numberOfLines = 0
         return view
     }()
 
-    private let closeButton: UIButton = {
-        let view = UIButton()
-        view.setImage(Theme.shared.images.close, for: .normal)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
+    // MARK: - Properties
 
-    // MARK: - Initializers
+    var text: String? {
+        get { label.text }
+        set { label.text = newValue }
+    }
+
+    // MARK: - Initialisers
 
     override init() {
         super.init()
         setupConstraints()
-        setupFeedbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -75,37 +74,15 @@ final class HomeViewToolbar: DynamicThemeView {
 
     private func setupConstraints() {
 
-        [titleLabel, closeButton].forEach(addSubview)
+        addSubview(label)
 
         let constraints = [
-            titleLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -20.0),
-            closeButton.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            closeButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.0),
-            closeButton.heightAnchor.constraint(equalToConstant: 25.0),
-            closeButton.widthAnchor.constraint(equalToConstant: 25.0)
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 10.0),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10.0),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10.0),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
-    }
-
-    private func setupFeedbacks() {
-        closeButton.addTarget(self, action: #selector(onCloseButtonTapAction), for: .touchUpInside)
-    }
-
-    // MARK: - Updates
-
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-        backgroundColor = theme.backgrounds.primary
-        titleLabel.textColor = theme.text.heading
-        closeButton.tintColor = theme.icons.default
-        apply(shadow: theme.shadows.box)
-    }
-
-    // MARK: - Target - Actions
-
-    @objc private func onCloseButtonTapAction() {
-        onOnCloseButtonTap?()
     }
 }

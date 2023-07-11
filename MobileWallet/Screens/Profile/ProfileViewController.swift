@@ -52,6 +52,17 @@ final class ProfileViewController: UIViewController {
     private weak var qrCodePopUpContentView: PopUpQRContentView?
     private var cancellables = Set<AnyCancellable>()
 
+    // MARK: - Initialisers
+
+    init(backButtonType: NavigationBar.BackButtonType) {
+        super.init(nibName: nil, bundle: nil)
+        mainView.backButtonType = backButtonType
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     // MARK: - View Lifecycle
 
     override func loadView() {
