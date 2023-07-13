@@ -115,6 +115,7 @@ final class HomeViewController: UIViewController {
 
         model.$recentTransactions
             .receive(on: DispatchQueue.main)
+            .map { $0.map { HomeViewTransactionCell.ViewModel(id: $0.id, titleComponents: $0.titleComponents, timestamp: $0.timestamp, amount: $0.amountModel) }}
             .sink { [weak self] in self?.mainView.transactions = $0 }
             .store(in: &cancellables)
 
@@ -148,7 +149,7 @@ final class HomeViewController: UIViewController {
     }
 
     private func moveToTransactionList() {
-        let controller = TxsListViewController()
+        let controller = TransactionHistoryConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
     }
 }

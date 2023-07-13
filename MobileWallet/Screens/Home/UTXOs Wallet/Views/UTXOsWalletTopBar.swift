@@ -134,7 +134,6 @@ final class UTXOsWalletTopBar: DynamicThemeView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-
         filterButton.iconView.tintColor = theme.icons.default
         filterButton.label.textColor = theme.text.heading
         editButton.setTitleColor(theme.icons.active, for: .normal)

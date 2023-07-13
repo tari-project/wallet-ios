@@ -1,4 +1,4 @@
-//  TransactionsListHeaderView.swift
+//  TransactionHistoryHeaderView.swift
 
 /*
 	Package MobileWallet
@@ -38,10 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
-final class TransactionsListHeaderView: DynamicThemeHeaderFooterView {
+final class TransactionHistoryHeaderView: DynamicThemeHeaderFooterView {
 
     // MARK: - Subviews
 
@@ -73,13 +72,13 @@ final class TransactionsListHeaderView: DynamicThemeHeaderFooterView {
 
     private func setupConstraints() {
 
-        addSubview(titleLabel)
+        contentView.addSubview(titleLabel)
 
         let constraints = [
-            titleLabel.topAnchor.constraint(equalTo: topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12.0),
-            titleLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -25.0)
+            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20.0),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 22.0),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -22.0),
+            titleLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -89,6 +88,7 @@ final class TransactionsListHeaderView: DynamicThemeHeaderFooterView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
+        tintColor = theme.backgrounds.primary
         titleLabel.textColor = theme.text.heading
     }
 }

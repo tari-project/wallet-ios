@@ -183,6 +183,14 @@ final class TariTransactionsService: CoreTariService {
 
 extension TariTransactionsService {
 
+    var all: AnyPublisher<[Transaction], Never> {
+        Publishers.CombineLatest4($completed, $cancelled, $pendingInbound, $pendingOutbound)
+            .map { $0 as [Transaction] + $1 + $2 + $3 }
+            .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
+            .replaceError(with: [Transaction]())
+            .eraseToAnyPublisher()
+    }
+
     var onUpdate: AnyPublisher<Void, Never> {
         Publishers.CombineLatest4($completed, $cancelled, $pendingInbound, $pendingOutbound)
             .onChangePublisher()

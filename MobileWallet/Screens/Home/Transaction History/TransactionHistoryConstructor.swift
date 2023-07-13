@@ -1,10 +1,10 @@
-//  UIScrollView+RefreshControl.swift
+//  TransactionHistoryConstructor.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 29.05.2020
+	Created by Adrian Truszczyński on 05/07/2023
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,18 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+enum TransactionHistoryConstructor {
 
-extension UIScrollView {
-
-    func scrollToBottom(animated: Bool) {
-        let yOffset = contentSize.height - bounds.size.height
-        let bottomOffset = CGPoint(x: 0, y: yOffset > 0 ? yOffset : 0)
-        setContentOffset(bottomOffset, animated: animated)
-    }
-
-    func scrollToTop(animated: Bool) {
-        let y = 0.0 - contentInset.top
-        setContentOffset(CGPoint(x: 0.0, y: y), animated: animated)
+    static func buildScene() -> TransactionHistoryViewController {
+        let model = TransactionHistoryModel()
+        return TransactionHistoryViewController(model: model)
     }
 }

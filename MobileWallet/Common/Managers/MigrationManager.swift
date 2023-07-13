@@ -40,10 +40,6 @@
 
 enum MigrationManager {
 
-    enum MigrationError: Error {
-        case noCurrentWalletVersion
-    }
-
     // MARK: - Properties
 
     private static let minValidVersion = "0.49.0-rc.2"
