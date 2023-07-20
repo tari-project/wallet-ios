@@ -206,7 +206,7 @@ final class BLEPeripheralManager: NSObject {
         }
 
         do {
-            try DeeplinkHandler.handle(rawDeeplink: rawDeeplink)
+            try DeeplinkHandler.handle(rawDeeplink: rawDeeplink, showDefaultDialogIfNeeded: true)
             manager.respond(to: writeRequest, withResult: .success)
         } catch {
             manager.respond(to: writeRequest, withResult: .invalidHandle)

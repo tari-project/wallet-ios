@@ -179,30 +179,6 @@ final class ContactBookModel {
 
     // MARK: - View Model
 
-    func handle(transactionSendDeeplink: TransactionsSendDeeplink) {
-
-        var amount: MicroTari?
-
-        if let rawAmount = transactionSendDeeplink.amount {
-            amount = MicroTari(rawAmount)
-        }
-
-        let paymentInfo = PaymentInfo(address: transactionSendDeeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeeplink.note)
-
-        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
-    }
-
-    func handle(contactListDeeplink: ContactListDeeplink) {
-        Task {
-            do {
-                guard try await DeepLinkDefaultActionsHandler.handleInForeground(contactListDeeplink: contactListDeeplink) else { return }
-                fetchContacts()
-            } catch {
-                errorModel = ErrorMessageManager.errorModel(forError: error)
-            }
-        }
-    }
-
     func fetchContacts() {
         Task {
             do {

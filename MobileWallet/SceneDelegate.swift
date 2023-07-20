@@ -58,7 +58,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // If the user opens a deep link while the app is closed
         if let url = connectionOptions.urlContexts.first?.url {
-            try? DeeplinkHandler.handle(deeplink: url)
+            try? DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
         }
 
         // If the user opens a home screen shortcut while the app is closed
@@ -87,7 +87,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else { return }
-        try? DeeplinkHandler.handle(deeplink: url)
+        try? DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
         Yat.integration.handle(deeplink: url)
         BackupManager.shared.handle(url: url)
     }

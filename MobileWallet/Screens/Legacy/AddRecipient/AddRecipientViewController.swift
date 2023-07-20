@@ -166,10 +166,9 @@ final class AddRecipientViewController: UIViewController {
     }
 
     private func openScanner() {
-        let scanViewController = ScanViewController(scanResourceType: .publicKey)
-        scanViewController.actionDelegate = self
-        scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
-        present(scanViewController, animated: true, completion: nil)
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.transactionSend), .deeplink(.profile)]) { [weak self] in
+            self?.model.handle(qrCodeData: $0)
+        }
     }
 
     private func updateTableView(items: [ContactsSectionItem]) {
@@ -208,13 +207,6 @@ extension AddRecipientViewController: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let isScrolledToTop = scrollView.contentOffset.y <= 20.0
         mainView.isSearchViewShadowVisible = !isScrolledToTop
-    }
-}
-
-extension AddRecipientViewController: ScanViewControllerDelegate {
-
-    func onScan(deeplink: TransactionsSendDeeplink) {
-        model.handle(deeplink: deeplink)
     }
 }
 

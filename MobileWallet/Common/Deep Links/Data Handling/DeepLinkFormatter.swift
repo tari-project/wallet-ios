@@ -38,8 +38,20 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-protocol DeepLinkCodable: Codable {
-    static var command: String { get }
+enum DeeplinkType: String {
+    case transactionSend = "/transactions/send"
+    case baseNodesAdd = "/base_nodes/add"
+    case contacts = "/contacts"
+    case profile = "/profile"
+}
+
+protocol DeepLinkable: Codable {
+    static var type: DeeplinkType { get }
+}
+
+extension DeepLinkable {
+    static var command: String { type.rawValue }
+    var type: DeeplinkType { Self.type }
 }
 
 enum DeepLinkError: Error {
@@ -54,7 +66,7 @@ enum DeepLinkFormatter {
     private static var validScheme: String { "tari" }
     private static var validNetworkName: String { NetworkManager.shared.selectedNetwork.name }
 
-    static func model<T: DeepLinkCodable>(type: T.Type, deeplink: URL) throws -> T {
+    static func model<T: DeepLinkable>(type: T.Type, deeplink: URL) throws -> T {
         guard let networkName = deeplink.host, networkName == validNetworkName else { throw DeepLinkError.invalidNetworkName }
         guard deeplink.path == T.command else { throw DeepLinkError.invalidCommandName }
         let decoder = DeepLinkDecoder(deeplink: deeplink)
@@ -62,7 +74,7 @@ enum DeepLinkFormatter {
 
     }
 
-    static func deeplink<T: DeepLinkCodable>(model: T, networkName: String = validNetworkName) throws -> URL? {
+    static func deeplink<T: DeepLinkable>(model: T, networkName: String = validNetworkName) throws -> URL? {
 
         let encoder = DeepLinkEncoder()
 

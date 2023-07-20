@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 import Combine
 
@@ -52,8 +51,8 @@ final class ContactBookView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var searchTextField: ContactBookSearchField = {
-        let view = ContactBookSearchField()
+    @View private var searchTextField: SearchField = {
+        let view = SearchField()
         view.placeholder = localized("contact_book.search_bar.placeholder")
         return view
     }()
@@ -78,7 +77,6 @@ final class ContactBookView: BaseNavigationContentView {
     var onShareModeButtonTap: (() -> Void)?
     var onCancelShareModeButtonTap: (() -> Void)?
     var onShareButtonTap: (() -> Void)?
-    var onQRScannerButtonTap: (() -> Void)?
     var onSendButtonTap: (() -> Void)?
 
     private let searchTextSubject = CurrentValueSubject<String, Never>("")
@@ -174,10 +172,6 @@ final class ContactBookView: BaseNavigationContentView {
 
         navigationBar.onBackButtonAction = { [weak self] in
             self?.onCancelShareModeButtonTap?()
-        }
-
-        searchTextField.onScanButtonTap = { [weak self] in
-            self?.onQRScannerButtonTap?()
         }
 
         sendButton.onTap = { [weak self] in

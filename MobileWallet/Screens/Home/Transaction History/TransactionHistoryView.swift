@@ -50,8 +50,9 @@ final class TransactionHistoryView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
-    @View private var searchTextField: TransactionHistorySearchField = {
-        let view = TransactionHistorySearchField()
+    @View private var searchTextField: SearchField = {
+        let view = SearchField()
+        view.placeholder = localized("transaction_history.search_field.placeholder")
         return view
     }()
 

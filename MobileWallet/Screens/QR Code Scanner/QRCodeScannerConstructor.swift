@@ -1,10 +1,10 @@
-//  DeepLinkParams.swift
+//  QRCodeScannerConstructor.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/05/19
+	Created by Adrian Truszczyński on 11/07/2023
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,47 +38,12 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
+enum QRCodeScannerConstructor {
 
-enum DeepLinkParamsError: Error {
-    case invalidURL
-}
-
-struct DeepLinkParams {
-    let amount: MicroTari
-    let note: String
-
-    init(deeplink: String) throws {
-        var defaultNote = ""
-        var defaultAmount = MicroTari(0)
-
-        guard let url = URL(string: deeplink) else {
-            throw DeepLinkParamsError.invalidURL
-        }
-
-        let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
-        if let items = (urlComponents?.queryItems) as [NSURLQueryItem]? {
-            items.forEach { (item) in
-                switch item.name {
-                case "note":
-                    if let noteValue = item.value {
-                        defaultNote = noteValue
-                    }
-                case "amount":
-                      if let amountFormatted = item.value {
-                        if let d = Double(amountFormatted) {
-                            if let microTariAmount = try? MicroTari(decimalValue: d) {
-                                defaultAmount = microTariAmount
-                            }
-                        }
-                      }
-                default:
-                    break
-                }
-            }
-        }
-
-        note = defaultNote
-        amount = defaultAmount
+    static func buildScene(expectedDataTypes: [QRCodeScannerModel.ExpectedType]) throws -> QRCodeScannerViewController {
+        let videoCaptureManager = VideoCaptureManager()
+        try videoCaptureManager.setupSession()
+        let model = QRCodeScannerModel(videoCaptureManager: videoCaptureManager, expectedDataTypes: expectedDataTypes)
+        return QRCodeScannerViewController(model: model, videoSession: videoCaptureManager.captureSession)
     }
 }

@@ -153,15 +153,19 @@ final class AddRecipientModel {
         walletAddressPreview = isAddressVisible ? nil : try? address?.byteVector.hex
     }
 
-    func handle(deeplink: TransactionsSendDeeplink) {
+    func handle(qrCodeData: QRCodeData) {
 
-        var amount: MicroTari?
+        guard case let .deeplink(deeplink) = qrCodeData else { return }
 
-        if let rawAmount = deeplink.amount {
-            amount = MicroTari(rawAmount)
+        if let deeplink = deeplink as? TransactionsSendDeeplink {
+            var amount: MicroTari?
+            if let rawAmount = deeplink.amount {
+                amount = MicroTari(rawAmount)
+            }
+            verifiedPaymentInfo = PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note)
+        } else if let deeplink = deeplink as? UserProfileDeeplink {
+            verifiedPaymentInfo = PaymentInfo(address: deeplink.tariAddress, alias: deeplink.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil)
         }
-
-        verifiedPaymentInfo = PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note)
     }
 
     // MARK: - Actions - Contacts

@@ -108,6 +108,7 @@ final class HomeModel {
     func runManagers() {
         NotificationManager.shared.requestAuthorization()
         StagedWalletSecurityManager.shared.start()
+        BLEPeripheralManager.shared.isEnabled = true
     }
 
     func executeQueuedShortcut() {

@@ -391,12 +391,16 @@
 "navigation_bar.error.show_emoji.title" = "Public key error";
 "navigation_bar.error.show_emoji.description" = "Failed to get Emoji ID from user's contact";
 
-/* Scan view */
-"scan_view.scan_qr_to_set_bridges" = "Scan a QR code to set custom bridges";
-"scan_view.scan_qr_to_send.with_param" = "Scan a Tari QR code to send %@ to the recipient.";
-"scan_view.error.title" = "Scanning error";
-"scan_view.error.public_key.description" = "Failed to import user's public key";
-"scan_view.error.bridges.description" = "Bridges from QR Code could not be decoded";
+/* QR Code Scanner */
+
+"qr_code_scanner.labels.title" = "Scan Tari QR code in the box below";
+"qr_code_scanner.labels.actions.transaction_send" = "This QR code contains a funds request.\nWould you like to send funds to %@?";
+"qr_code_scanner.labels.actions.base_node_add" = "This QR code contains base node information.\nWould you like to add this base node to the list and switch to that node?";
+"qr_code_scanner.labels.actions.contacts" = "This QR code contains contact information.\nWould you like to add it to your contact book?";
+"qr_code_scanner.labels.actions.tor_bridges" = "This QR code contains a custom bridge.\nWould you like to connect to it?";
+"qr_code_scanner.labels.actions.invalid" = "Invalid QR Code.\nYour request cannot be processed at this time.";
+"qr_code_scanner.error.no_valid_device.title" = "No Valid Device";
+"qr_code_scanner.error.no_valid_device.message" = "The QR scanner is unavailable on this device because there is no camera able to capture QR codes.";
 
 /* RestoreWallet view */
 "restore_wallet.title" = "Restore Your Wallet";

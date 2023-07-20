@@ -143,9 +143,7 @@ final class HomeViewController: UIViewController {
     }
 
     private func showQRCodeScanner() {
-        let scanViewController = ScanViewController(scanResourceType: .publicKey)
-        scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
-        present(scanViewController, animated: true, completion: nil)
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [], onExpectedDataScan: nil)
     }
 
     private func moveToTransactionList() {

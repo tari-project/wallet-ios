@@ -54,7 +54,7 @@ final class AddContactView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var nameTextField: UITextField = {
+    @View private(set) var nameTextField: UITextField = {
         let view = UITextField()
         view.font = .Avenir.medium.withSize(14.0)
         return view
@@ -71,8 +71,6 @@ final class AddContactView: BaseNavigationContentView {
     }()
 
     // MARK: - Properties
-
-    var contactName: AnyPublisher<String, Never> { nameTextField.textPublisher() }
 
     var errorText: String? {
         didSet { errorLabel.text = errorText }
