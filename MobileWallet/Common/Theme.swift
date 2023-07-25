@@ -207,9 +207,6 @@ struct Fonts {
     let addNoteInputView = UIFont.Avenir.medium.withSize(20.0)
     let searchGiphyButtonTitle = UIFont.Avenir.black.withSize(9.0)
 
-    // Add note screen
-    let scannerTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
-
     // Refresh view
     let refreshViewLabel = UIFont.Avenir.heavy.withSize(12.0)
 
@@ -265,6 +262,7 @@ enum StaticColors {
     static var white: UIColor? { UIColor(named: "White") }
     static var black: UIColor? { UIColor(named: "Black") }
     static var purple: UIColor? { UIColor(named: "Purple") }
+    static var red: UIColor? { UIColor(named: "Red") }
     static var mediumGrey: UIColor? { UIColor(named: "MediumGrey") }
     static var popupOverlay: UIColor? { .black.withAlphaComponent(0.7) }
 }
@@ -341,6 +339,8 @@ enum IconsImages {
     static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
 
     static var bluetooth: UIImage? { UIImage(named: "Icons/Bluetooth") }
+    static var checkmark: UIImage? { UIImage(named: "Icons/Checkmark") }
+    static var close: UIImage? { UIImage(named: "Icons/Close") }
     static var link: UIImage? { UIImage(named: "Icons/Link") }
     static var magnifyingGlass: UIImage? { UIImage(named: "Icons/Magnifying Glass") }
     static var profile: UIImage? { UIImage(named: "Icons/Profile") }

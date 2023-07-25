@@ -40,20 +40,93 @@
 
 enum DeepLinkDefaultActionsHandler {
 
-    static func handleInForeground(contactListDeeplink: ContactListDeeplink) async throws -> Bool {
-        try await Task.sleep(nanoseconds: 500000000) // FIXME: Replace it with App state handler
-        guard await showAddContactsDialog(deeplink: contactListDeeplink) else { return false }
-        try addContacts(deeplink: contactListDeeplink)
-        return true
+    enum ActionType {
+        case direct
+        case popUp
+        case notification
     }
 
-    private static func showAddContactsDialog(deeplink: ContactListDeeplink) async -> Bool {
+    private struct ContactData {
+        let name: String
+        let address: String
+    }
 
-        let contactCount = deeplink.list.count
-        let isPlural = contactCount > 1
+    // MARK: - Handlers
+
+    static func handle(baseNodesAddDeeplink: BaseNodesAddDeeplink) throws {
+        Task { @MainActor in
+            try await Task.sleep(nanoseconds: 500000000) // FIXME: Replace it with App state handler
+            self.showAddBaseNodePopUp(name: baseNodesAddDeeplink.name, peer: baseNodesAddDeeplink.peer)
+        }
+    }
+
+    static func handle(contactListDeepLink: ContactListDeeplink, actionType: ActionType) throws {
+        let contacts = contactData(deeplink: contactListDeepLink)
+        try handle(deeplink: contactListDeepLink, contacts: contacts, actionType: actionType)
+    }
+
+    static func handle(userProfileDeepLink: UserProfileDeeplink, actionType: ActionType) throws {
+        let contacts = contactData(deeplink: userProfileDeepLink)
+        try handle(deeplink: userProfileDeepLink, contacts: contacts, actionType: actionType)
+    }
+
+    static func handle(transactionSendDeepLink: TransactionsSendDeeplink) {
+
+        var amount: MicroTari?
+
+        if let rawAmount = transactionSendDeepLink.amount {
+            amount = MicroTari(rawAmount)
+        }
+
+        let paymentInfo = PaymentInfo(address: transactionSendDeepLink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeepLink.note)
+        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+    }
+
+    private static func handle(deeplink: DeepLinkable, contacts: [ContactData], actionType: ActionType) throws {
+        switch actionType {
+        case .direct:
+            try add(contacts: contacts)
+        case .popUp:
+            Task { @MainActor in
+                try await showAddContactsPopUp(contacts: contacts)
+            }
+        case .notification:
+            try showAddContactsNotification(deeplink: deeplink, isSingleContact: contacts.count == 1)
+        }
+    }
+
+    // MARK: - Pop Ups
+
+    @MainActor private static func showAddBaseNodePopUp(name: String, peer: String) {
+
+        let headerSection = PopUpHeaderWithSubtitle()
+        headerSection.titleLabel.text = localized("add_base_node_overlay.label.title")
+        headerSection.subtitleLabel.text = localized("add_base_node_overlay.label.subtitle")
+
+        let contentSection = CustomDeeplinkPopUpContentView()
+        contentSection.update(name: name, peer: peer)
+
+        let buttonSection = PopUpComponentsFactory.makeButtonsView(models: [
+            PopUpDialogButtonModel(title: localized("add_base_node_overlay.button.confirm"), type: .normal, callback: { try? Tari.shared.connection.addBaseNode(name: name, peer: peer) }),
+            PopUpDialogButtonModel(title: localized("common.close"), type: .text)
+        ])
+
+        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonSection)
+        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
+    }
+
+    @MainActor private static func showAddContactsPopUp(contacts: [ContactData]) async throws {
+        try await Task.sleep(nanoseconds: 500000000) // FIXME: Replace it with App state handler
+        guard await showAddContactsDialog(contacts: contacts) else { return }
+        try add(contacts: contacts)
+    }
+
+    private static func showAddContactsDialog(contacts: [ContactData]) async -> Bool {
+
+        let isPlural = contacts.count > 1
 
         let title = isPlural ? localized("contacts_received.popup.title.plural") : localized("contacts_received.popup.title.singular")
-        let messagePart2 = isPlural ? localized("contacts_received.popup.message.part.2.plural.bold", arguments: contactCount) : localized("contacts_received.popup.message.part.2.singular.bold")
+        let messagePart2 = isPlural ? localized("contacts_received.popup.message.part.2.plural.bold", arguments: contacts.count) : localized("contacts_received.popup.message.part.2.singular.bold")
         let messagePart3 = isPlural ? localized("contacts_received.popup.message.part.3.plural") : localized("contacts_received.popup.message.part.3.singular")
         let confirmButtonTitle = isPlural ? localized("contacts_received.popup.buttons.confirm.plural") : localized("contacts_received.popup.buttons.confirm.singular")
 
@@ -81,19 +154,36 @@ enum DeepLinkDefaultActionsHandler {
         }
     }
 
-    private static func addContacts(deeplink: ContactListDeeplink) throws {
+    // MARK: - Notifications
+
+    private static func showAddContactsNotification(deeplink: DeepLinkable, isSingleContact: Bool) throws {
+        guard let rawEncodedDeeplink = try DeepLinkFormatter.deeplink(model: deeplink)?.absoluteString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else { return }
+        LocalNotificationsManager.shared.showContactsReceivedNotification(rawEncodedDeeplink: rawEncodedDeeplink, isSingleContact: isSingleContact)
+    }
+
+    // MARK: - Actions
+
+    private static func contactData(deeplink: ContactListDeeplink) -> [ContactData] {
+        deeplink.list.map { ContactData(name: $0.alias, address: $0.hex) }
+    }
+
+    private static func contactData(deeplink: UserProfileDeeplink) -> [ContactData] {
+        [ContactData(name: deeplink.alias, address: deeplink.tariAddress)]
+    }
+
+    private static func add(contacts: [ContactData]) throws {
 
         let contactsManager = ContactsManager()
 
-        try deeplink.list
-            .forEach {
-                let address = try TariAddress(hex: $0.hex)
+        try contacts.forEach {
 
-                if Tari.shared.isWalletConnected {
-                    _ = try contactsManager.createInternalModel(name: $0.alias, isFavorite: false, address: address)
-                } else {
-                    try PendingDataManager.shared.storeContact(name: $0.alias, isFavorite: false, address: address)
-                }
+            let address = try TariAddress(hex: $0.address)
+
+            if Tari.shared.isWalletConnected {
+                _ = try contactsManager.createInternalModel(name: $0.name, isFavorite: false, address: address)
+            } else {
+                try PendingDataManager.shared.storeContact(name: $0.name, isFavorite: false, address: address)
             }
+        }
     }
 }

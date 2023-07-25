@@ -40,136 +40,69 @@
 
 import UIKit
 
-protocol DeeplinkHandlable {
-    func handle(deeplink: TransactionsSendDeeplink)
-    func handle(deeplink: BaseNodesAddDeeplink)
-    func handle(deeplink: ContactListDeeplink)
-}
-
-enum DeeplinkError: Error {
-    case unknownDeeplink
-    case transactionSendDeeplinkError(_ error: Error)
-    case baseNodesAddDeeplinkError(_ error: Error)
-    case contactListDeeplinkError(_ error: Error)
-}
-
 enum DeeplinkHandler {
 
-    static func handle(rawDeeplink: String, handler: DeeplinkHandlable? = nil) throws {
-        guard let deeplink = URL(string: rawDeeplink) else { throw DeeplinkError.unknownDeeplink }
-        return try handle(deeplink: deeplink, handler: handler)
-    }
+    static func deeplink(rawDeeplink: String) throws -> DeepLinkable? {
 
-    static func handle(deeplink: URL, handler: DeeplinkHandlable? = nil) throws {
-        switch deeplink.path {
-        case TransactionsSendDeeplink.command:
-            try handle(transactionSendDeeplink: deeplink, handler: handler)
-        case BaseNodesAddDeeplink.command:
-            try handle(baseNodesAddDeeplink: deeplink, handler: handler)
-        case ContactListDeeplink.command:
-            try handle(contactListDeeplink: deeplink, handler: handler)
-        default:
-            throw DeeplinkError.unknownDeeplink
+        guard let deeplink = URL(string: rawDeeplink) else { return nil }
+        guard let type = DeeplinkType(rawValue: deeplink.path) else { return nil }
+
+        switch type {
+        case .transactionSend:
+            return try DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: deeplink)
+        case .baseNodesAdd:
+            return try DeepLinkFormatter.model(type: BaseNodesAddDeeplink.self, deeplink: deeplink)
+        case .contacts:
+            return try DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: deeplink)
+        case .profile:
+            return try DeepLinkFormatter.model(type: UserProfileDeeplink.self, deeplink: deeplink)
         }
     }
 
-    private static func handle(transactionSendDeeplink: URL, handler: DeeplinkHandlable?) throws {
+    static func handle(rawDeeplink: String, showDefaultDialogIfNeeded: Bool) throws {
+        guard let deeplink = try deeplink(rawDeeplink: rawDeeplink) else { return }
+        try handle(deeplink: deeplink, showDefaultDialogIfNeeded: showDefaultDialogIfNeeded)
+    }
 
-        do {
-            let deeplink = try DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: transactionSendDeeplink)
+    static func handle(deeplink: DeepLinkable, showDefaultDialogIfNeeded: Bool) throws {
 
-            guard let handler = handler else {
-                showTransactionFlow(deeplink: deeplink)
-                return
-            }
+        let actionType: DeepLinkDefaultActionsHandler.ActionType
 
-            handler.handle(deeplink: deeplink)
-        } catch {
-            throw DeeplinkError.transactionSendDeeplinkError(error)
+        if showDefaultDialogIfNeeded {
+            actionType = UIApplication.shared.applicationState == .background ? .notification : .popUp
+        } else {
+            actionType = .direct
+        }
+
+        switch deeplink.type {
+        case .baseNodesAdd:
+            try handle(baseNodesAddDeeplink: deeplink)
+        case .contacts:
+            try handle(contactsDeepLink: deeplink, actionType: actionType)
+        case .profile:
+            try handle(userProfileDeepLink: deeplink, actionType: actionType)
+        case .transactionSend:
+            handle(transactionSendDeepLink: deeplink)
         }
     }
 
-    private static func showTransactionFlow(deeplink: TransactionsSendDeeplink) {
-
-        var amount: MicroTari?
-
-        if let rawAmount = deeplink.amount {
-            amount = MicroTari(rawAmount)
-        }
-
-        let paymentInfo = PaymentInfo(address: deeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: deeplink.note)
-        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+    private static func handle(baseNodesAddDeeplink: DeepLinkable) throws {
+        guard let deeplink = baseNodesAddDeeplink as? BaseNodesAddDeeplink else { return }
+        try DeepLinkDefaultActionsHandler.handle(baseNodesAddDeeplink: deeplink)
     }
 
-    private static func handle(baseNodesAddDeeplink: URL, handler: DeeplinkHandlable?) throws {
-
-        do {
-            let deeplink = try DeepLinkFormatter.model(type: BaseNodesAddDeeplink.self, deeplink: baseNodesAddDeeplink)
-            _ = try BaseNode(name: deeplink.name, peer: deeplink.peer)
-
-            guard let handler = handler else {
-                Task { @MainActor in
-                    showCustomDeeplinkPopUp(name: deeplink.name, peer: deeplink.peer)
-                }
-                return
-            }
-
-            handler.handle(deeplink: deeplink)
-        } catch {
-            throw DeeplinkError.baseNodesAddDeeplinkError(error)
-        }
+    private static func handle(contactsDeepLink: DeepLinkable, actionType: DeepLinkDefaultActionsHandler.ActionType) throws {
+        guard let deeplink = contactsDeepLink as? ContactListDeeplink else { return }
+        try DeepLinkDefaultActionsHandler.handle(contactListDeepLink: deeplink, actionType: actionType)
     }
 
-    private static func handle(contactListDeeplink: URL, handler: DeeplinkHandlable?) throws {
-
-        do {
-            let deeplink = try DeepLinkFormatter.model(type: ContactListDeeplink.self, deeplink: contactListDeeplink)
-
-            guard let handler = handler else {
-                handle(contactListDeeplink: deeplink, rawDeeplink: contactListDeeplink)
-                return
-            }
-
-            handler.handle(deeplink: deeplink)
-        } catch {
-            throw DeeplinkError.contactListDeeplinkError(error)
-        }
+    private static func handle(userProfileDeepLink: DeepLinkable, actionType: DeepLinkDefaultActionsHandler.ActionType) throws {
+        guard let deeplink = userProfileDeepLink as? UserProfileDeeplink else { return }
+        try DeepLinkDefaultActionsHandler.handle(userProfileDeepLink: deeplink, actionType: actionType)
     }
 
-    private static func handle(contactListDeeplink: ContactListDeeplink, rawDeeplink: URL) {
-
-        DispatchQueue.main.async {
-            guard UIApplication.shared.applicationState == .background else {
-                Task {
-                    try? await DeepLinkDefaultActionsHandler.handleInForeground(contactListDeeplink: contactListDeeplink)
-                }
-                return
-            }
-
-            guard let rawEncodedDeeplink = rawDeeplink.absoluteString.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else {
-                Logger.log(message: "Unable to encode deeplink", domain: .general, level: .error)
-                return
-            }
-
-            LocalNotificationsManager.shared.showContactsReceivedNotification(rawEncodedDeeplink: rawEncodedDeeplink, isSingleContact: contactListDeeplink.list.count == 1)
-        }
-    }
-
-    @MainActor private static func showCustomDeeplinkPopUp(name: String, peer: String) {
-
-        let headerSection = PopUpHeaderWithSubtitle()
-        headerSection.titleLabel.text = localized("add_base_node_overlay.label.title")
-        headerSection.subtitleLabel.text = localized("add_base_node_overlay.label.subtitle")
-
-        let contentSection = CustomDeeplinkPopUpContentView()
-        contentSection.update(name: name, peer: peer)
-
-        let buttonSection = PopUpComponentsFactory.makeButtonsView(models: [
-            PopUpDialogButtonModel(title: localized("add_base_node_overlay.button.confirm"), type: .normal, callback: { try? Tari.shared.connection.addBaseNode(name: name, peer: peer) }),
-            PopUpDialogButtonModel(title: localized("common.close"), type: .text)
-        ])
-
-        let popUp = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonSection)
-        PopUpPresenter.show(popUp: popUp, configuration: .dialog(hapticType: .none))
+    private static func handle(transactionSendDeepLink: DeepLinkable) {
+        guard let deeplink = transactionSendDeepLink as? TransactionsSendDeeplink else { return }
+        DeepLinkDefaultActionsHandler.handle(transactionSendDeepLink: deeplink)
     }
 }

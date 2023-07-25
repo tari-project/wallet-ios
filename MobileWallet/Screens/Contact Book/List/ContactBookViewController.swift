@@ -203,10 +203,6 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
             self?.model.shareSelectedContacts(shareType: shareType)
         }
 
-        mainView.onQRScannerButtonTap = { [weak self] in
-            self?.showQRCodeScanner()
-        }
-
         mainView.onSendButtonTap = { [weak self] in
             self?.model.sendTokensRequest()
         }
@@ -389,13 +385,6 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
         PopUpPresenter.showBLEDialog(type: type)
     }
 
-    private func showQRCodeScanner() {
-        let scanViewController = ScanViewController(scanResourceType: .publicKey)
-        scanViewController.actionDelegate = self
-        scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
-        present(scanViewController, animated: true, completion: nil)
-    }
-
     private func showMenu(model: ContactsManager.Model) {
 
         let overlay = RotaryMenuOverlay(model: model)
@@ -406,16 +395,5 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
         }
 
         show(overlay: overlay)
-    }
-}
-
-extension ContactBookViewController: ScanViewControllerDelegate {
-
-    func onScan(deeplink: TransactionsSendDeeplink) {
-        model.handle(transactionSendDeeplink: deeplink)
-    }
-
-    func onScan(deeplink: ContactListDeeplink) {
-        model.handle(contactListDeeplink: deeplink)
     }
 }

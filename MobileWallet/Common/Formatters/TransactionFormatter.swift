@@ -83,6 +83,10 @@ final class TransactionFormatter {
         )
     }
 
+    func contact(hex: String) -> ContactsManager.Model? {
+        contactsManager.tariContactModels.first { $0.internalModel?.hex == hex }
+    }
+
     private func avatar(transaction: Transaction) throws -> RoundedAvatarView.Avatar {
 
         guard try !transaction.isOneSidedPayment else {
@@ -190,6 +194,6 @@ final class TransactionFormatter {
 
     private func contact(transaction: Transaction) throws -> ContactsManager.Model? {
         let hex = try transaction.address.byteVector.hex
-        return contactsManager.tariContactModels.first { $0.internalModel?.hex == hex }
+        return contact(hex: hex)
     }
 }

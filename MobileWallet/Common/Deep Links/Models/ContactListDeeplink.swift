@@ -48,6 +48,6 @@ struct ContactListDeeplink {
     let list: [Contact]
 }
 
-extension ContactListDeeplink: DeepLinkCodable {
-    static var command: String { "/contacts" }
+extension ContactListDeeplink: DeepLinkable {
+    static var type: DeeplinkType { .contacts }
 }

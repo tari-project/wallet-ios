@@ -43,6 +43,6 @@ struct UserProfileDeeplink {
     let tariAddress: String
 }
 
-extension UserProfileDeeplink: DeepLinkCodable {
-    static var command: String { "/profile" }
+extension UserProfileDeeplink: DeepLinkable {
+    static var type: DeeplinkType { .profile }
 }

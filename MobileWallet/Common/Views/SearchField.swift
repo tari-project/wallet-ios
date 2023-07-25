@@ -1,10 +1,10 @@
-//  ContactBookMenuButton.swift
+//  SearchField.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 20/02/2023
+	Created by Adrian Truszczyński on 11/07/2023
 	Using Swift 5.0
-	Running on macOS 13.0
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,36 +38,25 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
-final class ContactBookMenuButton: DynamicThemeView {
+final class SearchField: DynamicThemeTextField {
 
     // MARK: - Subviews
 
-    @View private var button: RoundedButton = {
-        let view = RoundedButton()
-        view.contentHorizontalAlignment = .fill
-        view.contentVerticalAlignment = .fill
-        view.imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)
+    @View private var iconView: UIImageView = {
+        let view = UIImageView()
+        view.image = .icons.magnifyingGlass
+        view.contentMode = .scaleAspectFit
         return view
     }()
-
-    // MARK: - Properties
-
-    var image: UIImage? {
-        get { button.image(for: .normal) }
-        set { button.setImage(newValue, for: .normal) }
-    }
-
-    var onTap: (() -> Void)?
 
     // MARK: - Initialisers
 
     override init() {
         super.init()
-        setupConstraints()
-        setupCallbacks()
+        setupView()
+        setupSideViews()
     }
 
     required init?(coder: NSCoder) {
@@ -76,39 +65,36 @@ final class ContactBookMenuButton: DynamicThemeView {
 
     // MARK: - Setups
 
-    private func setupConstraints() {
-
-        addSubview(button)
-
-        let constraints = [
-            button.centerXAnchor.constraint(equalTo: centerXAnchor),
-            button.centerYAnchor.constraint(equalTo: centerYAnchor),
-            button.widthAnchor.constraint(equalTo: widthAnchor),
-            button.heightAnchor.constraint(equalTo: heightAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
+    private func setupView() {
+        font = .Avenir.medium.withSize(14.0)
+        layer.cornerRadius = 6.0
+        layer.borderWidth = 1.0
+        heightAnchor.constraint(equalToConstant: 46.0).isActive = true
     }
 
-    private func setupCallbacks() {
-        button.onTap = { [weak self] in self?.onTap?() }
-    }
-
-    // MARK: - Actions
-
-    func show() {
-        button.isHidden = false
-    }
-
-    func hide() {
-        button.isHidden = true
+    private func setupSideViews() {
+        leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 20.0, height: 0.0))
+        leftViewMode = .always
+        rightView = iconView
+        rightViewMode = .always
     }
 
     // MARK: - Updates
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        button.backgroundColor = theme.backgrounds.primary?.withAlphaComponent(0.15)
-        button.tintColor = theme.buttons.primaryText
+        backgroundColor = theme.backgrounds.primary
+        textColor = theme.text.heading
+        layer.borderColor = theme.neutral.tertiary?.cgColor
+        iconView.tintColor = theme.icons.active
+    }
+
+    // MARK: - Layout
+
+    override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
+        var rect = super.rightViewRect(forBounds: bounds)
+        rect.origin.x -= 20.0
+        rect.size.width += 20.0
+        return rect
     }
 }
