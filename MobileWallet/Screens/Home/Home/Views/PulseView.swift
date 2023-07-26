@@ -1,8 +1,8 @@
-//  PulseLayer.swift
+//  PulseView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 04/07/2023
+	Created by Adrian Truszczyński on 26/07/2023
 	Using Swift 5.0
 	Running on macOS 13.4
 
@@ -40,65 +40,38 @@
 
 import UIKit
 
-final class PulseLayer: CAShapeLayer {
+final class PulseView: UIView {
+
+    // MARK: - Sublayers
+
+    private let pulseLayer: PulseLayer
 
     // MARK: - Initialisers
 
-    override init(layer: Any) {
-        super.init(layer: layer)
-    }
-
     init(radius: CGFloat) {
-        super.init()
-        setupLayer(radius: radius)
+        self.pulseLayer = PulseLayer(radius: radius)
+        super.init(frame: .zero)
+        layer.addSublayer(pulseLayer)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Setups
-
-    private func setupLayer(radius: CGFloat) {
-
-        let bezierPath = UIBezierPath(arcCenter: .zero, radius: radius, startAngle: 0, endAngle: 2.0 * .pi, clockwise: true)
-
-        path = bezierPath.cgPath
-        lineWidth = 2.0
-        fillColor = UIColor.clear.cgColor
-        strokeColor = UIColor.static.white?.cgColor
-        opacity = 0.0
-    }
-
     // MARK: - Actions
 
     func startAnimation() {
-
-        let scaleAnimation = CABasicAnimation(keyPath: "transform.scale")
-        scaleAnimation.fromValue = 0.5
-        scaleAnimation.toValue = 1.0
-        scaleAnimation.duration = 1.0
-        scaleAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        scaleAnimation.fillMode = .forwards
-        scaleAnimation.isRemovedOnCompletion = false
-
-        let opacityAnimation = CABasicAnimation(keyPath: #keyPath(CALayer.opacity))
-        opacityAnimation.fromValue = 1.0
-        opacityAnimation.toValue = 0.0
-        opacityAnimation.duration = 1.0
-        scaleAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
-        opacityAnimation.fillMode = .forwards
-        opacityAnimation.isRemovedOnCompletion = false
-
-        let animation = CAAnimationGroup()
-        animation.animations = [scaleAnimation, opacityAnimation]
-        animation.duration = 20.0
-        animation.repeatCount = .greatestFiniteMagnitude
-
-        add(animation, forKey: nil)
+        pulseLayer.startAnimation()
     }
 
     func stopAnimation() {
-        removeAllAnimations()
+        pulseLayer.stopAnimation()
+    }
+
+    // MARK: - Layout
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        pulseLayer.position = CGPoint(x: bounds.midX, y: bounds.midY)
     }
 }

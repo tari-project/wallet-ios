@@ -129,26 +129,22 @@ final class WaveView: UIView {
         let endPosition = CGPoint(x: -bounds.width * waveWidthScale, y: 0.0)
         guard endPosition.x < 0.0 else { return }
 
-        isAnimating = true
-        shapeLayer.removeAllAnimations()
-        CATransaction.begin()
-
         let animation = CABasicAnimation(keyPath: "position.x")
         animation.fromValue = CGPoint.zero
         animation.toValue = endPosition
         animation.duration = 10.0
 
-        CATransaction.setCompletionBlock { [weak self] in
-            guard self?.isAnimating == true else { return }
+        animation.onCompletion = { [weak self] finished in
+            guard finished, self?.isAnimating == true else { return }
             self?.startAnimation()
         }
 
         shapeLayer.add(animation, forKey: nil)
-        CATransaction.commit()
+        isAnimating = true
     }
 
     func stopAnimation() {
-        shapeLayer.removeAllAnimations()
         isAnimating = false
+        shapeLayer.removeAllAnimations()
     }
 }
