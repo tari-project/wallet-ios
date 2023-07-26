@@ -245,16 +245,18 @@ extension OnboardingPageView.ViewModel {
         OnboardingPageView.ViewModel(
             image: .security.onboarding.page2,
             titleComponents: [
-                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page3.title.part1"), style: .normal),
-                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page3.title.part2.bold"), style: .bold)
+                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page2.title.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page2.title.part2.bold"), style: .bold)
             ],
             messageComponents: [
-                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page3.message.part1"), style: .normal),
-                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page3.message.part2.bold"), style: .bold),
-                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page3.message.part3"), style: .normal)
+                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page2.message.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page2.message.part2.bold"), style: .bold),
+                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page2.message.part3"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page2.message.part4.bold"), style: .bold),
+                StylizedLabel.StylizedText(text: localized("onboarding.staged_wallet_security.page2.message.part5"), style: .normal)
             ],
             footerComponents: footerComponents(threshold: nil),
-            actionButtonTitle: localized("onboarding.staged_wallet_security.page3.action_button"),
+            actionButtonTitle: localized("onboarding.staged_wallet_security.page2.action_button"),
             actionButtonCallback: { AppRouter.presentBackupSettings() }
         )
     }
