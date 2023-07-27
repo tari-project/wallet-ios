@@ -491,8 +491,8 @@
 "onboarding.staged_wallet_security.page2.message.part1" = "An easy way to recover your coins and transaction list is to keep a";
 "onboarding.staged_wallet_security.page2.message.part2.bold" = "backup";
 "onboarding.staged_wallet_security.page2.message.part3" = "of your wallet in the";
-"onboarding.staged_wallet_security.page2.message.part4.bold" = "cloud";
-"onboarding.staged_wallet_security.page2.message.part5" = ".\n\nTo do that, the only thing that you need to do is go to the settings menu, select the cloud service that you want to use, and authorize the app to send backups to that service.";
+"onboarding.staged_wallet_security.page2.message.part4.bold" = "cloud.";
+"onboarding.staged_wallet_security.page2.message.part5" = "\n\nTo do that, the only thing that you need to do is go to the settings menu, select the cloud service that you want to use, and authorize the app to send backups to that service.";
 "onboarding.staged_wallet_security.page2.action_button" = "Go To Cloud Backups";
 "onboarding.staged_wallet_security.page3.title.part1" = "Create a";
 "onboarding.staged_wallet_security.page3.title.part2.bold" = "password";
