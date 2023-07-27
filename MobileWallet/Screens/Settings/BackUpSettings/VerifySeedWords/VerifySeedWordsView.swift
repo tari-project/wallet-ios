@@ -60,7 +60,7 @@ final class VerifySeedWordsView: BaseNavigationContentView {
     @View private var errorLabel: UILabel = {
         let view = UILabel()
         view.text = localized("verify_phrase.warning")
-        view.font = Theme.shared.fonts.warningBoxTitleLabel
+        view.font = .Avenir.heavy.withSize(14.0)
         view.textAlignment = .center
         view.layer.cornerRadius = 4.0
         view.layer.borderWidth = 1.0

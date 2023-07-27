@@ -41,17 +41,18 @@
 import UIKit
 
 final class MenuTabBarController: UITabBarController {
+
     enum Tab: Int {
         case home
         case ttlStore
-        case sendFlow
+        case transactions
         case contactBook
         case settings
     }
 
     private let homeViewController = HomeConstructor.buildScene()
     private let storeViewController = WebBrowserViewController()
-    private let transactionsViewController = AddRecipientViewController()
+    private let transactionsViewController = UIViewController()
     private let contactBookViewController = ContactBookConstructor.buildScene()
     private let settingsViewController = SettingsViewController()
     private let customTabBar = CustomTabBar()
@@ -62,20 +63,14 @@ final class MenuTabBarController: UITabBarController {
         self.delegate = self
         tabBar.isTranslucent = false
 
-        homeViewController.tabBarItem.image = Theme.shared.images.homeItem
-        storeViewController.tabBarItem.image = Theme.shared.images.ttlItem
-        transactionsViewController.tabBarItem.image = .legacy.send
-        transactionsViewController.tabBarItem.tag = 1 // Using this to determine which icon to move upwards
-        contactBookViewController.tabBarItem.image = .icons.tabBar.contactBook
-        settingsViewController.tabBarItem.image = Theme.shared.images.settingsItem
-
         storeViewController.url = URL(string: TariSettings.shared.storeUrl)
 
         viewControllers = [homeViewController, storeViewController, transactionsViewController, contactBookViewController, settingsViewController]
+        viewControllers?.enumerated().forEach { setup(controller: $1, index: $0) }
 
         for tabBarItem in tabBar.items! {
             // For the send image we need to raise it higher than the others
-            if tabBarItem.tag == 1 {
+            if Tab(rawValue: tabBarItem.tag) == .transactions {
                 tabBarItem.imageInsets = UIEdgeInsets(top: -16, left: 0, bottom: -12, right: 0)
             } else if hasNotch { // On phones without notches the icons should stay vertically centered
                 tabBarItem.imageInsets = UIEdgeInsets(top: 13, left: 0, bottom: -13, right: 0)
@@ -95,18 +90,26 @@ final class MenuTabBarController: UITabBarController {
     func setTab(_ tab: Tab) {
         selectedIndex = tab.rawValue
     }
+
+    private func setup(controller: UIViewController, index: Int) {
+        guard let tab = Tab(rawValue: index) else { return }
+        controller.tabBarItem.tag = tab.rawValue
+        controller.tabBarItem.image = tab.icon
+    }
 }
 
 extension MenuTabBarController: UITabBarControllerDelegate {
 
     func tabBarController(_ tabBarController: UITabBarController, shouldSelect viewController: UIViewController) -> Bool {
 
-        guard viewController is AddRecipientViewController else { return true }
+        guard Tab(rawValue: viewController.tabBarItem.tag) == .transactions else { return true }
 
-        let navigationController = AlwaysPoppableNavigationController(rootViewController: AddRecipientViewController())
+        let controller = TransactionsConstructor.buildScene()
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.setNavigationBarHidden(true, animated: false)
         navigationController.modalPresentationStyle = .fullScreen
         present(navigationController, animated: true)
+
         return false
     }
 
@@ -164,5 +167,23 @@ private class Transition: NSObject, UIViewControllerAnimatedTransitioning {
             .enumerated()
             .first { $0.element == vc }
             .map { $0.offset }
+    }
+}
+
+private extension MenuTabBarController.Tab {
+
+    var icon: UIImage? {
+        switch self {
+        case .home:
+            return Theme.shared.images.homeItem
+        case .ttlStore:
+            return Theme.shared.images.ttlItem
+        case .transactions:
+            return .legacy.send
+        case .contactBook:
+            return .icons.tabBar.contactBook
+        case .settings:
+            return Theme.shared.images.settingsItem
+        }
     }
 }

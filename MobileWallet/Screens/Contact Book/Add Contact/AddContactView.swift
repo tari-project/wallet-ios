@@ -47,8 +47,8 @@ final class AddContactView: BaseNavigationContentView {
 
     @View private var searchViewBackgroundView = UIView()
 
-    @View private(set) var searchView: AddRecipientSearchView = {
-        let view = AddRecipientSearchView()
+    @View private(set) var searchView: ContactSearchView = {
+        let view = ContactSearchView()
         view.textField.placeholder = localized("contact_book.add_contact.text_field.search.placeholder")
         view.previewText = nil
         return view

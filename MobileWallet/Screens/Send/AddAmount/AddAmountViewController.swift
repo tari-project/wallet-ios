@@ -629,7 +629,7 @@ extension AddAmountViewController {
         walletBalanceIcon.contentMode = .scaleAspectFit
         walletBalanceStackView.addArrangedSubview(walletBalanceIcon)
         walletBalanceStackView.addArrangedSubview(walletBalanceLabel)
-        walletBalanceLabel.font = Theme.shared.fonts.warningBoxTitleLabel
+        walletBalanceLabel.font = .Avenir.heavy.withSize(14.0)
         walletBalanceLabel.text = "0.0"
 
         warningStackView.addArrangedSubview(walletBalanceTitleLabel)

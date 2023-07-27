@@ -57,13 +57,6 @@ final class ContactBookView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var sendButton: BaseButton = {
-        let view = BaseButton()
-        view.setImage(.icons.send, for: .normal)
-        view.alpha = 0.0
-        return view
-    }()
-
     // MARK: - Properties
 
     var searchText: AnyPublisher<String, Never> { searchTextSubject.eraseToAnyPublisher() }
@@ -77,7 +70,6 @@ final class ContactBookView: BaseNavigationContentView {
     var onShareModeButtonTap: (() -> Void)?
     var onCancelShareModeButtonTap: (() -> Void)?
     var onShareButtonTap: (() -> Void)?
-    var onSendButtonTap: (() -> Void)?
 
     private let searchTextSubject = CurrentValueSubject<String, Never>("")
 
@@ -85,14 +77,8 @@ final class ContactBookView: BaseNavigationContentView {
         didSet { updateViewsState() }
     }
 
-    var isSendButtonVisible: Bool = false {
-        didSet { updateSendButtonState() }
-    }
-
     private var shareBarTopConstraint: NSLayoutConstraint?
     private var shareBarBottomConstraint: NSLayoutConstraint?
-    private var searchTextFieldTrailingConstraint: NSLayoutConstraint?
-    private var sendButtonTrailingConstraint: NSLayoutConstraint?
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -137,7 +123,7 @@ final class ContactBookView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        [shareBar, searchTextField, sendButton].forEach(addSubview)
+        [shareBar, searchTextField].forEach(addSubview)
 
         sendSubviewToBack(shareBar)
 
@@ -145,22 +131,13 @@ final class ContactBookView: BaseNavigationContentView {
         let shareBarBottomConstraint = shareBar.bottomAnchor.constraint(equalTo: navigationBar.bottomAnchor)
         self.shareBarBottomConstraint = shareBarBottomConstraint
 
-        let searchTextFieldTrailingConstraint = searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0)
-        sendButtonTrailingConstraint = sendButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -18.0)
-        self.searchTextFieldTrailingConstraint = searchTextFieldTrailingConstraint
-
-        sendButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-
         let constraints = [
             shareBarBottomConstraint,
             shareBar.leadingAnchor.constraint(equalTo: leadingAnchor),
             shareBar.trailingAnchor.constraint(equalTo: trailingAnchor),
             searchTextField.topAnchor.constraint(equalTo: shareBar.bottomAnchor, constant: 20.0),
             searchTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            searchTextFieldTrailingConstraint,
-            sendButton.topAnchor.constraint(equalTo: searchTextField.topAnchor),
-            sendButton.bottomAnchor.constraint(equalTo: searchTextField.bottomAnchor),
-            sendButton.leadingAnchor.constraint(equalTo: searchTextField.trailingAnchor, constant: 10.0)
+            searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -173,10 +150,6 @@ final class ContactBookView: BaseNavigationContentView {
         navigationBar.onBackButtonAction = { [weak self] in
             self?.onCancelShareModeButtonTap?()
         }
-
-        sendButton.onTap = { [weak self] in
-            self?.onSendButtonTap?()
-        }
     }
 
     // MARK: - Updates
@@ -184,28 +157,11 @@ final class ContactBookView: BaseNavigationContentView {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.secondary
-        sendButton.tintColor = theme.icons.default
     }
 
     private func updateViewsState() {
         updateNavigationButtons()
         updateShareBar()
-    }
-
-    private func updateSendButtonState() {
-
-        if isSendButtonVisible {
-            searchTextFieldTrailingConstraint?.isActive = false
-            sendButtonTrailingConstraint?.isActive = true
-        } else {
-            sendButtonTrailingConstraint?.isActive = false
-            searchTextFieldTrailingConstraint?.isActive = true
-        }
-
-        UIView.animate(withDuration: 0.3, delay: 0.0, options: [.beginFromCurrentState, .curveEaseInOut]) {
-            self.layoutIfNeeded()
-            self.sendButton.alpha = self.isSendButtonVisible ? 1.0 : 0.0
-        }
     }
 
     private func updateNavigationButtons() {

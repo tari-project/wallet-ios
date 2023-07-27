@@ -383,7 +383,6 @@
 "profile_view.error.qr_code.description.with_param" = "Easily receive %@ from others by sharing your profile via one of the methods below:";
 "profile_view.error.yat_mismatch" = "You've previously connected this Yat.\n Do you want to re-connect it to your wallet?";
 "profile_view.button.recconect_yat" = "Reconnect Yat";
-"profile_view.button.request_tokens" = "Request Tari";
 "profile_view.form.title" = "Edit Name";
 "profile_view.form.text_field.name.placeholder" = "Name";
 
@@ -856,17 +855,16 @@
 "contact_book.transaction_list.placeholder.label.message.part.3" = "yet. Click the button below to send some Tari.";
 "contact_book.transaction_list.placeholder.button.send" = "Send Tari";
 
-/* Legacy */
+/* Transaction Send */
+
+"send.nav_bar.add_recipient.title" = "Send To";
+"send.nav_bar.request.title" = "Receive Tari";
+"send.page_tab.add_recipient.title" = "Send";
+"send.page_tab.request.title" = "Receive";
+
+/* Add Recipient */
 
 "add_recipient.recent_txs" = "Recent Transactions";
-"add_recipient.error.load_contacts.title" = "Failed to load contacts";
-"add_recipient.error.load_contacts.description" = "Could not access wallet";
-"add_recipient.error.load_contacts.invalid_emoji_set" = "Your recipient needs to upgrade to the latest version of Tari Aurora and copy their updated Emoji ID to transact with you";
-"add_recipient.inputbox.warning" = "Invalid Emoji ID";
-"add_recipient.warning.can_not_send_yourself.with_param" = "Sorry, you cannot send %@ to yourself";
 "add_recipient.my_contacts" = "My Contacts";
-"add_recipient.title" = "Send To";
-"add_recipient.error.invalid_emoji.title" = "Could not use Emoji ID";
-"add_recipient.error.invalid_emoji.description" = "Failed to create a valid contact from the pasted Emoji ID";
-"transactions.toolbar.send" = "Send";
-"transactions.toolbar.request" = "Request";
+"add_recipient.error.can_not_send_yourself" = "Sorry, you cannot send %@ to yourself";
+"add_recipient.error.invalid_emoji_id" = "Invalid Emoji ID";"

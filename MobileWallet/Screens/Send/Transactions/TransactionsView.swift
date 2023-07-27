@@ -1,10 +1,10 @@
-//  ErrorView.swift
+//  TransactionsView.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/04/06
+	Created by Adrian Truszczyński on 21/07/2023
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -40,31 +40,13 @@
 
 import TariCommon
 
-final class ErrorView: DynamicThemeView {
-
-    // MARK: - Subviews
-
-    @View private var label: UILabel = {
-        let view = UILabel()
-        view.textAlignment = .center
-        view.font = .Avenir.heavy.withSize(14.0)
-        view.numberOfLines = 0
-        return view
-    }()
-
-    // MARK: - Properties
-
-    var message: String? {
-        get { label.text }
-        set { label.text = newValue }
-    }
+final class TransactionsView: BaseNavigationContentView {
 
     // MARK: - Initialisers
 
     override init() {
         super.init()
         setupViews()
-        setupConstraints()
     }
 
     required init?(coder: NSCoder) {
@@ -73,32 +55,21 @@ final class ErrorView: DynamicThemeView {
 
     // MARK: - Setups
 
-    private func setupViews() {
-        layer.cornerRadius = 4.0
-        layer.masksToBounds = true
-        layer.borderWidth = 1.0
-        backgroundColor = .clear
-    }
+    func setup(pagerView: UIView) {
 
-    private func setupConstraints() {
-
-        addSubview(label)
+        addSubview(pagerView)
 
         let constraints = [
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 14.0),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14.0),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -14.0)
+            pagerView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            pagerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            pagerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            pagerView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
     }
 
-    // MARK: - Updates
-
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-        label.textColor = theme.system.red
-        layer.borderColor =  theme.system.red?.cgColor
+    private func setupViews() {
+        navigationBar.backButtonType = .close
     }
 }

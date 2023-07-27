@@ -199,7 +199,6 @@ struct Fonts {
     // Add amount screen
     let keypadButton = UIFont.Avenir.heavy.withSize(36.0)
     let amountLabel = UIFont.Avenir.black.withSize(90.0)
-    let warningBoxTitleLabel = UIFont.Avenir.heavy.withSize(14.0)
     let amountWarningLabel = UIFont.Avenir.roman.withSize(13.0)
 
     // Add note screen

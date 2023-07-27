@@ -1,10 +1,10 @@
-//  ContactBookContactListViewController.swift
+//  AddRecipientConstructor.swift
 
 /*
 	Package MobileWallet
-	Created by Browncoat on 21/02/2023
+	Created by Adrian Truszczyński on 21/07/2023
 	Using Swift 5.0
-	Running on macOS 13.0
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,57 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+enum AddRecipientConstructor {
 
-final class ContactBookContactListViewController: UIViewController {
-
-    // MARK: - Properties
-
-    var models: [ContactBookContactListView.Section] {
-        get { mainView.viewModels }
-        set { mainView.viewModels = newValue }
-    }
-
-    var selectedRows: Set<UUID> {
-        get { mainView.selectedRows }
-        set { mainView.selectedRows = newValue }
-    }
-
-    var placeholderViewModel: ContactBookListPlaceholder.ViewModel? {
-        get { mainView.placeholderViewModel }
-        set { mainView.placeholderViewModel = newValue }
-    }
-
-    var isPlaceholderVisible: Bool {
-        get { mainView.isPlaceholderVisible }
-        set { mainView.isPlaceholderVisible = newValue }
-    }
-
-    var isFooterVisible: Bool {
-        get { mainView.isFooterVisible }
-        set { mainView.isFooterVisible = newValue }
-    }
-
-    var onFooterTap: (() -> Void)? {
-        get { mainView.onFooterTap }
-        set { mainView.onFooterTap = newValue }
-    }
-
-    var onContactRowTap: ((_ identifier: UUID, _ isEditing: Bool) -> Void)? {
-        get { mainView.onContactRowTap }
-        set { mainView.onContactRowTap = newValue }
-    }
-
-    var isInSharingMode: Bool {
-        get { mainView.isInSharingMode }
-        set { mainView.isInSharingMode = newValue }
-    }
-
-    private let mainView = ContactBookContactListView()
-
-    // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
+    static func buildScene() -> AddRecipientViewController {
+        let model = AddRecipientModel()
+        return AddRecipientViewController(model: model)
     }
 }
