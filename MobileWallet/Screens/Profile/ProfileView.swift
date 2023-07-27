@@ -102,12 +102,6 @@ final class ProfileView: BaseNavigationContentView {
         return view
     }()
 
-    @View private var requestTokensButton: ActionButton = {
-        let view = ActionButton()
-        view.setTitle(localized("profile_view.button.request_tokens"), for: .normal)
-        return view
-    }()
-
     // MARK: - Properties
 
     var backButtonType: NavigationBar.BackButtonType {
@@ -123,7 +117,6 @@ final class ProfileView: BaseNavigationContentView {
     var onQrCodeButtonTap: (() -> Void)?
     var onLinkButtonTap: (() -> Void)?
     var onBleButtonTap: (() -> Void)?
-    var onRequestTokensButtonTap: (() -> Void)?
 
     private var yatButtonOnTintColor: UIColor?
     private var yatButtonOffTintColor: UIColor?
@@ -155,7 +148,7 @@ final class ProfileView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        [emojiIdView, yatButton, yatSpinnerView, middleLabel, reconnectYatButton, buttonsStackView, requestTokensButton].forEach(addSubview)
+        [emojiIdView, yatButton, yatSpinnerView, middleLabel, reconnectYatButton, buttonsStackView].forEach(addSubview)
         [qrCodeButton, linkCodeButton, bleCodeButton].forEach(buttonsStackView.addArrangedSubview)
 
         let constraints = [
@@ -177,10 +170,7 @@ final class ProfileView: BaseNavigationContentView {
             reconnectYatButton.topAnchor.constraint(equalTo: middleLabel.bottomAnchor),
             reconnectYatButton.centerXAnchor.constraint(equalTo: centerXAnchor),
             buttonsStackView.topAnchor.constraint(equalTo: reconnectYatButton.bottomAnchor, constant: 20.0),
-            buttonsStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-            requestTokensButton.topAnchor.constraint(equalTo: buttonsStackView.bottomAnchor, constant: 40.0),
-            requestTokensButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20.0),
-            requestTokensButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20.0)
+            buttonsStackView.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -198,10 +188,6 @@ final class ProfileView: BaseNavigationContentView {
 
         bleCodeButton.onTap = { [weak self] in
             self?.onBleButtonTap?()
-        }
-
-        requestTokensButton.onTap = { [weak self] in
-            self?.onRequestTokensButtonTap?()
         }
     }
 

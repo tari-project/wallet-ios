@@ -38,16 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
-final class AddRecipientSearchView: DynamicThemeView {
+final class ContactSearchView: DynamicThemeView {
 
     // MARK: - Subviews
 
     @View private(set) var textField: UITextField = {
         let view = UITextField()
-        view.placeholder = localized("add_recipient.inputbox.placeholder")
         view.font = Theme.shared.fonts.searchContactsInputBoxText
         view.leftView = UIView(frame: CGRect(x: 0.0, y: 0.0, width: 11.0, height: 0.0))
         view.leftViewMode = .always
@@ -111,14 +109,15 @@ final class AddRecipientSearchView: DynamicThemeView {
     private func setupViews() {
         backgroundColor = .clear
         layer.cornerRadius = 6.0
+        layer.borderWidth = 2.0
     }
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
         backgroundColor = theme.backgrounds.primary
+        layer.borderColor = theme.backgrounds.secondary?.cgColor
         qrButton.tintColor = theme.brand.purple
         yatIconView.tintColor = theme.icons.default
-        apply(shadow: theme.shadows.box)
     }
 
     private func setupConstraints() {

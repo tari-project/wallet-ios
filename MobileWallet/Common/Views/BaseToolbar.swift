@@ -1,10 +1,10 @@
-//  ErrorView.swift
+//  BaseToolbar.swift
 
 /*
 	Package MobileWallet
-	Created by Jason van den Berg on 2020/04/06
+	Created by Adrian Truszczyński on 26/07/2023
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,67 +38,21 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import TariCommon
+class BaseToolbar: DynamicThemeView {
 
-final class ErrorView: DynamicThemeView {
-
-    // MARK: - Subviews
-
-    @View private var label: UILabel = {
-        let view = UILabel()
-        view.textAlignment = .center
-        view.font = .Avenir.heavy.withSize(14.0)
-        view.numberOfLines = 0
-        return view
-    }()
-
-    // MARK: - Properties
-
-    var message: String? {
-        get { label.text }
-        set { label.text = newValue }
-    }
-
-    // MARK: - Initialisers
-
-    override init() {
-        super.init()
-        setupViews()
-        setupConstraints()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Setups
-
-    private func setupViews() {
-        layer.cornerRadius = 4.0
-        layer.masksToBounds = true
-        layer.borderWidth = 1.0
-        backgroundColor = .clear
-    }
-
-    private func setupConstraints() {
-
-        addSubview(label)
-
-        let constraints = [
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 14.0),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14.0),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -14.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
+    var backgroundAlpha: CGFloat = 0.0 {
+        didSet { updateBackground() }
     }
 
     // MARK: - Updates
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        label.textColor = theme.system.red
-        layer.borderColor =  theme.system.red?.cgColor
+        updateBackground(theme: theme)
+    }
+
+    private func updateBackground(theme: ColorTheme? = nil) {
+        let theme = theme ?? self.theme
+        backgroundColor = theme.backgrounds.primary?.withAlphaComponent(backgroundAlpha)
     }
 }

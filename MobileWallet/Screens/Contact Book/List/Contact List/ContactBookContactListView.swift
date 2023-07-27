@@ -38,19 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
 final class ContactBookContactListView: DynamicThemeView {
 
     struct Section {
         let title: String?
-        let items: [ItemType]
-    }
-
-    enum ItemType: Hashable {
-        case bluetooth
-        case contact(model: ContactBookCell.ViewModel)
+        let items: [ContactBookCell.ViewModel]
     }
 
     // MARK: - Subviews
@@ -60,7 +54,6 @@ final class ContactBookContactListView: DynamicThemeView {
         view.estimatedRowHeight = 44.0
         view.rowHeight = UITableView.automaticDimension
         view.keyboardDismissMode = .interactive
-        view.register(type: ContactBookBluetoothCell.self)
         view.register(type: ContactBookCell.self)
         view.register(headerFooterType: MenuTableHeaderView.self)
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 22.0, bottom: 0.0, right: 22.0)
@@ -98,7 +91,6 @@ final class ContactBookContactListView: DynamicThemeView {
         didSet { updateSelectedRows() }
     }
 
-    var onBluetoothRowTap: (() -> Void)?
     var onContactRowTap: ((_ identifier: UUID, _ isEditing: Bool) -> Void)?
 
     var onFooterTap: (() -> Void)? {
@@ -106,7 +98,7 @@ final class ContactBookContactListView: DynamicThemeView {
         set { tableFooterView.onTap = newValue }
     }
 
-    private var dataSource: UITableViewDiffableDataSource<Int, ItemType>?
+    private var dataSource: UITableViewDiffableDataSource<Int, ContactBookCell.ViewModel>?
     private var placeholderConstraints: [NSLayoutConstraint] = []
 
     // MARK: - Initialisers
@@ -146,13 +138,8 @@ final class ContactBookContactListView: DynamicThemeView {
 
     private func setupTableView() {
 
-        let dataSource = UITableViewDiffableDataSource<Int, ItemType>(tableView: tableView) { [weak self] tableView, indexPath, model in
-            switch model {
-            case .bluetooth:
-                return self?.makeBluetoothCell(tableView: tableView, indexPath: indexPath)
-            case let .contact(model):
-                return self?.makeContactCell(model: model, tableView: tableView, indexPath: indexPath)
-            }
+        let dataSource = UITableViewDiffableDataSource<Int, ContactBookCell.ViewModel>(tableView: tableView) { [weak self] tableView, indexPath, model in
+            self?.makeContactCell(model: model, tableView: tableView, indexPath: indexPath)
         }
 
         tableView.delegate = self
@@ -171,7 +158,7 @@ final class ContactBookContactListView: DynamicThemeView {
 
     private func update(sections: [Section]) {
 
-        var snapshot = NSDiffableDataSourceSnapshot<Int, ItemType>()
+        var snapshot = NSDiffableDataSourceSnapshot<Int, ContactBookCell.ViewModel>()
 
         sections
             .enumerated()
@@ -219,10 +206,6 @@ final class ContactBookContactListView: DynamicThemeView {
 
     // MARK: - Factories
 
-    private func makeBluetoothCell(tableView: UITableView, indexPath: IndexPath) -> ContactBookBluetoothCell {
-        tableView.dequeueReusableCell(type: ContactBookBluetoothCell.self, indexPath: indexPath)
-    }
-
     private func makeContactCell(model: ContactBookCell.ViewModel, tableView: UITableView, indexPath: IndexPath) -> ContactBookCell {
         let cell = tableView.dequeueReusableCell(type: ContactBookCell.self, indexPath: indexPath)
         cell.update(viewModel: model)
@@ -231,10 +214,6 @@ final class ContactBookContactListView: DynamicThemeView {
     }
 
     // MARK: - Handlers
-
-    private func handle(bluetoothCell: ContactBookBluetoothCell) {
-        onBluetoothRowTap?()
-    }
 
     private func handle(contactBookCell: ContactBookCell) {
         guard let elementID = contactBookCell.elementID else { return }
@@ -265,17 +244,8 @@ extension ContactBookContactListView: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
-        guard let cell = tableView.cellForRow(at: indexPath) else { return }
-
-        switch cell {
-        case let bluetoothCell as ContactBookBluetoothCell:
-            handle(bluetoothCell: bluetoothCell)
-        case let contactBookCell as ContactBookCell:
-            handle(contactBookCell: contactBookCell)
-        default:
-            break
-        }
+        guard let cell = tableView.cellForRow(at: indexPath) as? ContactBookCell else { return }
+        handle(contactBookCell: cell)
     }
 }
 

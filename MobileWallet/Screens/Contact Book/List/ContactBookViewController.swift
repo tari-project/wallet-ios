@@ -174,13 +174,6 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
             .sink { [weak self] in self?.mainView.isShareButtonEnabled = $0 }
             .store(in: &cancellables)
 
-        model.$isValidAddressInSearchField
-            .removeDuplicates()
-            .dropFirst()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.isSendButtonVisible = $0 }
-            .store(in: &cancellables)
-
         mainView.searchText
             .receive(on: DispatchQueue.main)
             .assign(to: \.searchText, on: model)
@@ -203,16 +196,8 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
             self?.model.shareSelectedContacts(shareType: shareType)
         }
 
-        mainView.onSendButtonTap = { [weak self] in
-            self?.model.sendTokensRequest()
-        }
-
         contactsPageViewController.onContactRowTap = { [weak self] contactID, isEditing in
             self?.handleSelectRow(contactID: contactID, isEditing: isEditing)
-        }
-
-        contactsPageViewController.onBluetoothRowTap = { [weak self] in
-            self?.model.fetchTransactionDataViaBLE()
         }
 
         favoritesPageViewController.onContactRowTap = { [weak self] contactID, isEditing in
@@ -314,14 +299,6 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
             showBLEDialog(type: .successContactSharing)
         case let .bleFailureDialog(message):
             showBLEDialog(type: .failure(message: message))
-        case .bleTransactionWaitingForReceiverDialog:
-            showBLEDialog(type: .scanForTransactionData(onCancel: { [weak self] in self?.model.cancelBLETask() }))
-        case let .bleTransactionConfirmationDialog(receiverName):
-            showBLEDialog(type: .confirmTransactionData(
-                receiverName: receiverName,
-                onConfirmation: { [weak self] in self?.model.confirmIncomingTransaction() },
-                onReject: { [weak self] in self?.model.cancelIncomingTransaction() }
-            ))
         }
     }
 

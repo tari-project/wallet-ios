@@ -38,64 +38,70 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 import Combine
 
 final class TariPagerViewController: UIViewController {
 
-   struct Page {
-       let title: String
-       let controller: UIViewController
-   }
+    struct Page {
+        let title: String
+        let controller: UIViewController
+    }
 
-   // MARK: - Subviews
+    // MARK: - Subviews
 
-   @View private var mainView = TariPagerView()
-   private lazy var pageViewController = PageViewController()
+    @View private var mainView = TariPagerView()
+    private lazy var pageViewController = PageViewController()
 
-   // MARK: - Properties
+    // MARK: - Properties
 
-   var pages: [Page] = [] {
-       didSet { update(pages: pages) }
-   }
+    var pageIndex: AnyPublisher<Int, Never> {
+        pageViewController.$pageIndex
+            .map { Int(round($0)) }
+            .removeDuplicates()
+            .eraseToAnyPublisher()
+    }
 
-   private var cancellables = Set<AnyCancellable>()
+    var pages: [Page] = [] {
+        didSet { update(pages: pages) }
+    }
 
-   // MARK: - View Lifecycle
+    private var cancellables = Set<AnyCancellable>()
 
-   override func loadView() {
-       view = mainView
-   }
+    // MARK: - View Lifecycle
 
-   override func viewDidLoad() {
-       super.viewDidLoad()
-       setupSubviews()
-       setupCallbacks()
-   }
+    override func loadView() {
+        view = mainView
+    }
 
-   private func setupSubviews() {
-       add(childController: pageViewController, containerView: mainView.contentView)
-   }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupSubviews()
+        setupCallbacks()
+    }
 
-   private func setupCallbacks() {
+    private func setupSubviews() {
+        add(childController: pageViewController, containerView: mainView.contentView)
+    }
 
-       mainView.toolbar.onTap = { [weak self] in
-           self?.pageViewController.move(toIndex: $0)
-       }
+    private func setupCallbacks() {
 
-       pageViewController.$pageIndex
-           .sink { [weak self] in self?.mainView.toolbar.indexPosition = $0 }
-           .store(in: &cancellables)
-   }
+        mainView.toolbar.onTap = { [weak self] in
+            self?.pageViewController.move(toIndex: $0)
+        }
 
-   // MARK: - Updates
+        pageViewController.$pageIndex
+            .sink { [weak self] in self?.mainView.toolbar.indexPosition = $0 }
+            .store(in: &cancellables)
+    }
 
-   private func update(pages: [Page]) {
+    // MARK: - Updates
 
-       let tabModels = pages.map { $0.title }
+    private func update(pages: [Page]) {
 
-       mainView.toolbar.update(tabs: tabModels)
-       pageViewController.controllers = pages.map { $0.controller }
-   }
+        let tabModels = pages.map { $0.title }
+
+        mainView.toolbar.update(tabs: tabModels)
+        pageViewController.controllers = pages.map { $0.controller }
+    }
 }

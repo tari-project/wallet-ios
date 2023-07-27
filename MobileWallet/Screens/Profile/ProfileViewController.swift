@@ -146,10 +146,6 @@ final class ProfileViewController: UIViewController {
         mainView.onBleButtonTap = { [weak self] in
             self?.model.shareContactUsingBLE()
         }
-
-        mainView.onRequestTokensButtonTap = { [weak self] in
-            self?.moveToRequestTokensScene()
-        }
     }
 
     // MARK: - Actions
@@ -229,10 +225,5 @@ final class ProfileViewController: UIViewController {
         let controller = UIActivityViewController(activityItems: [link], applicationActivities: nil)
         controller.popoverPresentationController?.sourceView = mainView.navigationBar
         present(controller, animated: true)
-    }
-
-    private func moveToRequestTokensScene() {
-        let controller = RequestTariAmountViewController()
-        navigationController?.pushViewController(controller, animated: true)
     }
 }
