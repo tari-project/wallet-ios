@@ -44,7 +44,7 @@ final class HomeView: UIView {
 
     // MARK: - Constants
 
-    private let avatarWidth = 136.0
+    private static let avatarWidth = 136.0
 
     // MARK: - Subviews
 
@@ -144,7 +144,7 @@ final class HomeView: UIView {
         return view
     }()
 
-    private lazy var pulseLayer = PulseLayer(radius: avatarWidth)
+    @View private var pulseView = PulseView(radius: avatarWidth)
 
     // MARK: - Properties
 
@@ -188,7 +188,6 @@ final class HomeView: UIView {
 
     init() {
         super.init(frame: .zero)
-        setupViews()
         setupConstraints()
         setupCallbacks()
     }
@@ -199,16 +198,12 @@ final class HomeView: UIView {
 
     // MARK: - Setups
 
-    private func setupViews() {
-        avatarContentView.layer.addSublayer(pulseLayer)
-    }
-
     private func setupConstraints() {
 
         [connectionStatusButton, qrCodeScannerButton].forEach(buttonsStackView.addArrangedSubview)
         [balanceCurrencyView, balanceLabel].forEach(balanceContentView.addSubview)
         [availableBalanceTitleLabel, availableBalanceCurrencyView, availableBalanceLabel].forEach(availableBalanceContentView.addSubview)
-        [avatarView, avatarButton].forEach(avatarContentView.addSubview)
+        [pulseView, avatarView, avatarButton].forEach(avatarContentView.addSubview)
         [waveBackgroundView, buttonsStackView, balanceContentView, availableBalanceContentView, avatarContentView, viewAllTransactionsButton, transactionTableView, transactionPlaceholderView].forEach(addSubview)
 
         let constraints = [
@@ -254,8 +249,8 @@ final class HomeView: UIView {
             avatarContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             avatarView.centerXAnchor.constraint(equalTo: avatarContentView.centerXAnchor),
             avatarView.centerYAnchor.constraint(equalTo: avatarContentView.centerYAnchor),
-            avatarView.widthAnchor.constraint(equalToConstant: avatarWidth),
-            avatarView.heightAnchor.constraint(equalToConstant: avatarWidth),
+            avatarView.widthAnchor.constraint(equalToConstant: Self.avatarWidth),
+            avatarView.heightAnchor.constraint(equalToConstant: Self.avatarWidth),
             avatarButton.topAnchor.constraint(equalTo: avatarView.topAnchor),
             avatarButton.leadingAnchor.constraint(equalTo: avatarView.leadingAnchor),
             avatarButton.trailingAnchor.constraint(equalTo: avatarView.trailingAnchor),
@@ -270,7 +265,9 @@ final class HomeView: UIView {
             transactionPlaceholderView.topAnchor.constraint(equalTo: transactionTableView.topAnchor),
             transactionPlaceholderView.leadingAnchor.constraint(equalTo: transactionTableView.leadingAnchor),
             transactionPlaceholderView.trailingAnchor.constraint(equalTo: transactionTableView.trailingAnchor),
-            transactionPlaceholderView.bottomAnchor.constraint(equalTo: transactionTableView.bottomAnchor)
+            transactionPlaceholderView.bottomAnchor.constraint(equalTo: transactionTableView.bottomAnchor),
+            pulseView.centerXAnchor.constraint(equalTo: avatarView.centerXAnchor),
+            pulseView.centerYAnchor.constraint(equalTo: avatarView.centerYAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -369,18 +366,11 @@ final class HomeView: UIView {
 
     func startAnimations() {
         waveBackgroundView.startAnimation()
-        pulseLayer.startAnimation()
+        pulseView.startAnimation()
     }
 
     func stopAnimations() {
         waveBackgroundView.stopAnimation()
-        pulseLayer.stopAnimation()
-    }
-
-    // MARK: - Autolayout
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        pulseLayer.position = avatarView.center
+        pulseView.stopAnimation()
     }
 }
