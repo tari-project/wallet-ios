@@ -448,9 +448,9 @@
 		547A85D329ACF2D100D94985 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D229ACF2D100D94985 /* MenuCell.swift */; };
 		547A85D529AD23D800D94985 /* MenuTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D429AD23D800D94985 /* MenuTableView.swift */; };
 		547A85D729AD248400D94985 /* MenuTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D629AD248400D94985 /* MenuTableHeaderView.swift */; };
-		5482C8D22A714A7300C2C80A /* BaseToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5482C8D12A714A7300C2C80A /* BaseToolbar.swift */; };
 		5482C8CE2A70F66300C2C80A /* PulseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5482C8CD2A70F66300C2C80A /* PulseView.swift */; };
 		5482C8D02A71105700C2C80A /* AnimationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5482C8CF2A71105700C2C80A /* AnimationHandler.swift */; };
+		5482C8D22A714A7300C2C80A /* BaseToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5482C8D12A714A7300C2C80A /* BaseToolbar.swift */; };
 		5488068729D4230500C2A0F9 /* UIStackView+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5488068629D4230500C2A0F9 /* UIStackView+Common.swift */; };
 		5488068929D4244800C2A0F9 /* ContactBookShareBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5488068829D4244800C2A0F9 /* ContactBookShareBar.swift */; };
 		54885B1929E7FEA8009175AC /* BLECentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54885B1829E7FEA8009175AC /* BLECentralManager.swift */; };
@@ -1018,9 +1018,9 @@
 		547A85D229ACF2D100D94985 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		547A85D429AD23D800D94985 /* MenuTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableView.swift; sourceTree = "<group>"; };
 		547A85D629AD248400D94985 /* MenuTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableHeaderView.swift; sourceTree = "<group>"; };
-		5482C8D12A714A7300C2C80A /* BaseToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseToolbar.swift; sourceTree = "<group>"; };
 		5482C8CD2A70F66300C2C80A /* PulseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseView.swift; sourceTree = "<group>"; };
 		5482C8CF2A71105700C2C80A /* AnimationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimationHandler.swift; sourceTree = "<group>"; };
+		5482C8D12A714A7300C2C80A /* BaseToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseToolbar.swift; sourceTree = "<group>"; };
 		5488068629D4230500C2A0F9 /* UIStackView+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Common.swift"; sourceTree = "<group>"; };
 		5488068829D4244800C2A0F9 /* ContactBookShareBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookShareBar.swift; sourceTree = "<group>"; };
 		54885B1829E7FEA8009175AC /* BLECentralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLECentralManager.swift; sourceTree = "<group>"; };
@@ -3936,7 +3936,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.22.1;
+				MARKETING_VERSION = 0.23.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3971,7 +3971,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/MobileWallet/TariLib",
 				);
-				MARKETING_VERSION = 0.22.1;
+				MARKETING_VERSION = 0.23.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.tari.wallet;
 				PRODUCT_NAME = "Tari Aurora";
 				PROVISIONING_PROFILE_SPECIFIER = "";
