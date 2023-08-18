@@ -165,9 +165,7 @@ final class TransactionHistoryView: BaseNavigationContentView {
 
     private func updateCells(indexPath: IndexPath) {
         guard tableView.indexPathsForVisibleRows?.first(where: { $0 == indexPath }) != nil else { return }
-        UIView.performWithoutAnimation {
-            self.tableView.performBatchUpdates {}
-        }
+        tableView.resizeCellsWithoutAnimation()
     }
 }
 

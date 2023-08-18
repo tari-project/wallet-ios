@@ -326,8 +326,8 @@ extension AddNoteViewController {
 
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(sendButton)
-        sendButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
-        sendButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        sendButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25.0).isActive = true
+        sendButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25.0).isActive = true
         sendButtonBottomConstraint = sendButton.bottomAnchor.constraint(equalTo: view.safeBottomAnchor)
         sendButtonBottomConstraint.isActive = true
 

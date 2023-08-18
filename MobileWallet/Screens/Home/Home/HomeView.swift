@@ -112,6 +112,13 @@ final class HomeView: UIView {
         return view
     }()
 
+    @View private var amountHelpButton: BaseButton = {
+        let view = BaseButton()
+        view.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
+        view.tintColor = .static.white
+        return view
+    }()
+
     @View private var avatarContentView = UIView()
 
     @View private var avatarView: RoundedGlassContentView<RoundedAvatarView> = {
@@ -181,6 +188,8 @@ final class HomeView: UIView {
     var onQRCodeScannerButtonTap: (() -> Void)?
     var onAvatarButtonTap: (() -> Void)?
     var onViewAllTransactionsButtonTap: (() -> Void)?
+    var onAmountHelpButtonTap: (() -> Void)?
+    var onTransactionCellTap: ((_ identifier: UInt64) -> Void)?
 
     private var transactionsDataSource: UITableViewDiffableDataSource<Int, HomeViewTransactionCell.ViewModel>?
 
@@ -202,7 +211,7 @@ final class HomeView: UIView {
 
         [connectionStatusButton, qrCodeScannerButton].forEach(buttonsStackView.addArrangedSubview)
         [balanceCurrencyView, balanceLabel].forEach(balanceContentView.addSubview)
-        [availableBalanceTitleLabel, availableBalanceCurrencyView, availableBalanceLabel].forEach(availableBalanceContentView.addSubview)
+        [availableBalanceTitleLabel, availableBalanceCurrencyView, availableBalanceLabel, amountHelpButton].forEach(availableBalanceContentView.addSubview)
         [pulseView, avatarView, avatarButton].forEach(avatarContentView.addSubview)
         [waveBackgroundView, buttonsStackView, balanceContentView, availableBalanceContentView, avatarContentView, viewAllTransactionsButton, transactionTableView, transactionPlaceholderView].forEach(addSubview)
 
@@ -242,8 +251,12 @@ final class HomeView: UIView {
             availableBalanceCurrencyView.heightAnchor.constraint(equalToConstant: 9.0),
             availableBalanceLabel.topAnchor.constraint(equalTo: availableBalanceContentView.topAnchor),
             availableBalanceLabel.leadingAnchor.constraint(equalTo: availableBalanceCurrencyView.trailingAnchor, constant: 4.0),
-            availableBalanceLabel.trailingAnchor.constraint(equalTo: availableBalanceContentView.trailingAnchor),
             availableBalanceLabel.bottomAnchor.constraint(equalTo: availableBalanceContentView.bottomAnchor),
+            amountHelpButton.leadingAnchor.constraint(equalTo: availableBalanceLabel.trailingAnchor, constant: 5.0),
+            amountHelpButton.trailingAnchor.constraint(equalTo: availableBalanceContentView.trailingAnchor),
+            amountHelpButton.centerYAnchor.constraint(equalTo: availableBalanceContentView.centerYAnchor),
+            amountHelpButton.widthAnchor.constraint(equalToConstant: 22.0),
+            amountHelpButton.heightAnchor.constraint(equalToConstant: 22.0),
             avatarContentView.topAnchor.constraint(equalTo: availableBalanceContentView.bottomAnchor),
             avatarContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             avatarContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -282,6 +295,7 @@ final class HomeView: UIView {
         }
 
         transactionTableView.dataSource = transactionsDataSource
+        transactionTableView.delegate = self
 
         connectionStatusButton.onTap = { [weak self] in
             self?.onConnetionStatusButtonTap?()
@@ -297,6 +311,10 @@ final class HomeView: UIView {
 
         avatarButton.onTap = { [weak self] in
             self?.onAvatarButtonTap?()
+        }
+
+        amountHelpButton.onTap = { [weak self] in
+            self?.onAmountHelpButtonTap?()
         }
     }
 
@@ -321,7 +339,7 @@ final class HomeView: UIView {
 
         var baselineOffset = integerFont.capHeight - fractionalFont.capHeight
 
-        if #unavailable(iOS 16) {
+        if #unavailable(iOS 16.4) {
             baselineOffset /= 2.5
         }
 
@@ -372,5 +390,13 @@ final class HomeView: UIView {
     func stopAnimations() {
         waveBackgroundView.stopAnimation()
         pulseView.stopAnimation()
+    }
+}
+
+extension HomeView: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? HomeViewTransactionCell, let identifier = cell.identifier else { return }
+        onTransactionCellTap?(identifier)
     }
 }

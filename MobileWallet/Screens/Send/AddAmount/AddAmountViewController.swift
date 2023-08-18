@@ -729,8 +729,8 @@ extension AddAmountViewController {
 
         let constraints = [
             sliderBar.topAnchor.constraint(equalTo: continueButton.topAnchor),
-            sliderBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            sliderBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            sliderBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25.0),
+            sliderBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
