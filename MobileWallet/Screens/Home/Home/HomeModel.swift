@@ -51,6 +51,7 @@ final class HomeModel {
     @Published private(set) var avatar: String = ""
     @Published private(set) var username: String = ""
     @Published private(set) var recentTransactions: [TransactionFormatter.Model] = []
+    @Published private(set) var selectedTransaction: Transaction?
 
     // MARK: - Properties
 
@@ -58,6 +59,7 @@ final class HomeModel {
 
     private let contactsManager = ContactsManager()
     private let transactionFormatter = TransactionFormatter()
+    private var recentWalletTransactions: [Transaction] = []
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -115,6 +117,10 @@ final class HomeModel {
         ShortcutsManager.executeQueuedShortcut()
     }
 
+    func select(transactionID: UInt64) {
+        selectedTransaction = try? recentWalletTransactions.first { try $0.identifier == transactionID }
+    }
+
     // MARK: - Handlers
 
     private func handle(networkConnection: NetworkMonitor.Status, torConnection: TorManager.ConnectionStatus, baseNodeConnection: BaseNodeConnectivityStatus, syncStatus: TariValidationService.SyncStatus) {
@@ -145,6 +151,7 @@ final class HomeModel {
     private func handle(transactions: [Transaction]) {
         Task {
             try? await transactionFormatter.updateContactsData()
+            recentWalletTransactions = transactions
             recentTransactions = transactions[0..<min(2, transactions.count)].compactMap { try? transactionFormatter.model(transaction: $0) }
         }
     }

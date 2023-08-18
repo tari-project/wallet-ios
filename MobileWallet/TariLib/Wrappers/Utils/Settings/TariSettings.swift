@@ -75,6 +75,7 @@ struct TariSettings {
     let userAgreementUrl = "https://www.tari.com/user_agreement/"
     let privacyPolicyUrl = "https://www.tari.com/privacy_policy/"
     let storeUrl = "https://store.tarilabs.com/"
+    let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
     let blockExplorerUrl = "https://explore-esme.tari.com/"
     let blockExplorerKernelUrl = "https://explore-esme.tari.com/kernel/"
 

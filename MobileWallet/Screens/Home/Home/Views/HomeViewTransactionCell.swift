@@ -86,6 +86,7 @@ final class HomeViewTransactionCell: UITableViewCell {
 
     // MARK: - Properties
 
+    private(set) var identifier: UInt64?
     private var dynamicModel: TransactionDynamicModel?
     private var cancellables = Set<AnyCancellable>()
 
@@ -141,6 +142,7 @@ final class HomeViewTransactionCell: UITableViewCell {
 
     func update(viewModel: ViewModel) {
 
+        identifier = viewModel.id
         titleLabel.textComponents = viewModel.titleComponents
         amountView.update(viewModel: viewModel.amount)
 

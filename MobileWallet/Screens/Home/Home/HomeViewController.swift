@@ -119,6 +119,12 @@ final class HomeViewController: UIViewController {
             .sink { [weak self] in self?.mainView.transactions = $0 }
             .store(in: &cancellables)
 
+        model.$selectedTransaction
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.moveToTransactionDetails(transaction: $0) }
+            .store(in: &cancellables)
+
         mainView.onConnetionStatusButtonTap = { [weak self] in
             self?.showConectionStatusPopUp()
         }
@@ -133,6 +139,14 @@ final class HomeViewController: UIViewController {
 
         mainView.onViewAllTransactionsButtonTap = { [weak self] in
             self?.moveToTransactionList()
+        }
+
+        mainView.onAmountHelpButtonTap = { [weak self] in
+            self?.showAmountHelpPopUp()
+        }
+
+        mainView.onTransactionCellTap = { [weak self] in
+            self?.model.select(transactionID: $0)
         }
     }
 
@@ -149,5 +163,28 @@ final class HomeViewController: UIViewController {
     private func moveToTransactionList() {
         let controller = TransactionHistoryConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func moveToTransactionDetails(transaction: Transaction) {
+        let controller = TransactionDetailsConstructor.buildScene(transaction: transaction)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func showAmountHelpPopUp() {
+
+        let popUpModel = PopUpDialogModel(
+            title: localized("home.pop_up.amount_help.title"),
+            message: localized("home.pop_up.amount_help.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("home.pop_up.amount_help.buttons.open_url"), type: .normal, callback: {
+                    guard let url = URL(string: TariSettings.shared.tariLabsUniversityUrl) else { return }
+                    UIApplication.shared.open(url)
+                }),
+                PopUpDialogButtonModel(title: localized("common.close"), type: .text)
+            ],
+            hapticType: .none
+        )
+
+        PopUpPresenter.showPopUp(model: popUpModel)
     }
 }
