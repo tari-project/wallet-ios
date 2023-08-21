@@ -77,6 +77,7 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
         setupPages()
         setupSharingOptions()
         setupCallbacks()
+        hideKeyboardWhenTappedAroundOrSwipedDown()
     }
 
     override func viewWillAppear(_ animated: Bool) {

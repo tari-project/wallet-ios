@@ -73,6 +73,11 @@ final class HomeViewController: UIViewController {
         model.runManagers()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        model.updateData()
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         mainView.startAnimations()

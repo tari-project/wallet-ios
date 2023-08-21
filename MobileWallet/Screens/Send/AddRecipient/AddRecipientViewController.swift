@@ -71,6 +71,7 @@ final class AddRecipientViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
+        hideKeyboardWhenTappedAroundOrSwipedDown()
     }
 
     // MARK: - Setups

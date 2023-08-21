@@ -66,6 +66,7 @@ final class AddRecipientView: DynamicThemeView {
     @View private(set) var searchView: ContactSearchView = {
         let view = ContactSearchView()
         view.textField.placeholder = localized("add_recipient.inputbox.placeholder")
+        view.textField.returnKeyType = .done
         return view
     }()
 
@@ -80,7 +81,6 @@ final class AddRecipientView: DynamicThemeView {
         let view = UITableView()
         view.estimatedRowHeight = 44.0
         view.rowHeight = UITableView.automaticDimension
-        view.keyboardDismissMode = .interactive
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 22.0, bottom: 0.0, right: 22.0)
         view.register(type: ContactBookBluetoothCell.self)
         view.register(type: ContactBookCell.self)
@@ -189,6 +189,8 @@ final class AddRecipientView: DynamicThemeView {
             self?.searchView.textField.resignFirstResponder()
             self?.onYatPreviewButtonTap?()
         }
+
+        searchView.textField.delegate = self
 
         continueButton.onTap = { [weak self] in
             self?.onContinueButtonTap?()
@@ -322,5 +324,12 @@ extension AddRecipientView: UITableViewDelegate {
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         updateToolbarsAlpha(scrollView: scrollView)
+    }
+}
+
+extension AddRecipientView: UITextFieldDelegate {
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
     }
 }

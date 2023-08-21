@@ -373,7 +373,7 @@ final class HomeView: UIView {
         var snapshot = NSDiffableDataSourceSnapshot<Int, HomeViewTransactionCell.ViewModel>()
         snapshot.appendSections([0])
         snapshot.appendItems(transactions)
-        transactionsDataSource?.apply(snapshot, animatingDifferences: true)
+        transactionsDataSource?.apply(snapshot, animatingDifferences: false)
 
         UIView.animate(withDuration: 0.3) {
             self.transactionPlaceholderView.alpha = transactions.isEmpty ? 1.0 : 0.0
