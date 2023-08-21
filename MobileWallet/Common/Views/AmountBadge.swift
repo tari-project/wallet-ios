@@ -53,7 +53,7 @@ final class AmountBadge: DynamicThemeView {
         case invalidated
     }
 
-    struct ViewModel {
+    struct ViewModel: Hashable {
         let amount: String?
         let valueType: ValueType
     }

@@ -50,11 +50,12 @@ final class TransactionHistoryModel {
     // MARK: - View Model
 
     @Published var searchText = ""
-
     @Published private(set) var transactions: [TransactionsSection] = []
     @Published private(set) var selectedTransaction: Transaction?
 
     // MARK: - Properties
+
+    @Published private var updateNeeded: Void = ()
 
     private var transactionFormatter = TransactionFormatter()
     private var allTransactions: [Transaction] = []
@@ -80,8 +81,8 @@ final class TransactionHistoryModel {
             .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
             .replaceError(with: [])
 
-        Publishers.CombineLatest3(pendingTransactionsPublisher, completedTransactionsPublisher, $searchText)
-            .sink { [weak self] in self?.handle(pendingTransactions: $0, completedTransactions: $1, searchText: $2) }
+        Publishers.CombineLatest4(pendingTransactionsPublisher, completedTransactionsPublisher, $searchText, $updateNeeded)
+            .sink { [weak self] pendingTransactions, completedTransactions, searchText, _ in self?.handle(pendingTransactions: pendingTransactions, completedTransactions: completedTransactions, searchText: searchText) }
             .store(in: &cancellables)
     }
 
@@ -89,6 +90,10 @@ final class TransactionHistoryModel {
 
     func select(transactionID: UInt64) {
         selectedTransaction = try? allTransactions.first(where: { try $0.identifier == transactionID })
+    }
+
+    func updateData() {
+        updateNeeded = ()
     }
 
     // MARK: - Handlers

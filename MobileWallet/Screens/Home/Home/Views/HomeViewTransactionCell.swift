@@ -49,8 +49,19 @@ final class HomeViewTransactionCell: UITableViewCell {
         let timestamp: TimeInterval
         let amount: AmountBadge.ViewModel
 
-        static func == (lhs: HomeViewTransactionCell.ViewModel, rhs: HomeViewTransactionCell.ViewModel) -> Bool { lhs.id == rhs.id }
-        func hash(into hasher: inout Hasher) { hasher.combine(id) }
+        static func == (lhs: HomeViewTransactionCell.ViewModel, rhs: HomeViewTransactionCell.ViewModel) -> Bool {
+            lhs.id == rhs.id
+            && lhs.titleComponents.map { $0.text } == lhs.titleComponents.map { $0.text }
+            && lhs.timestamp == rhs.timestamp
+            && lhs.amount == rhs.amount
+        }
+
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(id)
+            hasher.combine(titleComponents.map { $0.text })
+            hasher.combine(timestamp)
+            hasher.combine(amount)
+        }
     }
 
     // MARK: - Constants

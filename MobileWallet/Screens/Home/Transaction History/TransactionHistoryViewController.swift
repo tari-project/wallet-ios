@@ -72,6 +72,11 @@ final class TransactionHistoryViewController: UIViewController {
         setupCallbacks()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        model.updateData()
+    }
+
     // MARK: - Setups
 
     private func setupCallbacks() {

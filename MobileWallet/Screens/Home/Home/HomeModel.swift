@@ -66,7 +66,6 @@ final class HomeModel {
 
     init() {
         setupCallbacks()
-        updateContactsData()
     }
 
     // MARK: - Setups
@@ -119,6 +118,10 @@ final class HomeModel {
 
     func select(transactionID: UInt64) {
         selectedTransaction = try? recentWalletTransactions.first { try $0.identifier == transactionID }
+    }
+
+    func updateData() {
+        updateContactsData()
     }
 
     // MARK: - Handlers
