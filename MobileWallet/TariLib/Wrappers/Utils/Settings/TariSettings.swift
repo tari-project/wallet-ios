@@ -79,6 +79,8 @@ struct TariSettings {
     let blockExplorerUrl = "https://explore-esme.tari.com/"
     let blockExplorerKernelUrl = "https://explore-esme.tari.com/kernel/"
 
+    let isBlockExplorerAvaiable: Bool = false
+
     var pushServerApiKey: String?
     var sentryPublicDSN: String?
     static var appleTeamID: String?

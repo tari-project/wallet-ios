@@ -331,7 +331,7 @@ final class TransactionDetailsModel {
     private func handleTransactionKernel() {
 
         defer {
-            isBlockExplorerActionAvailable = transactionNounce != nil && transactionSignature != nil
+            isBlockExplorerActionAvailable = transactionNounce != nil && transactionSignature != nil && TariSettings.shared.isBlockExplorerAvaiable
         }
 
         guard let kernel = try? (transaction as? CompletedTransaction)?.transactionKernel else {
