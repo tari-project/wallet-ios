@@ -111,6 +111,8 @@ final class AnimatedBalanceLabel: UIView {
     }
 
     var animation = Animation.update
+    var offsetIndex: Int?
+    var topOffset: CGFloat = 0.0
 
     let fontSizeCalculatorLabel = UILabel()
 
@@ -218,26 +220,41 @@ final class AnimatedBalanceLabel: UIView {
     }
 
     private func layoutLabels() {
+
         adjustLabelTextAlignment()
 
-        for i in 0..<labels.count {
-            let label = labels[i]
-            addSubview(label)
-            var leftAnc: NSLayoutXAxisAnchor!
+        var constraints = labels.enumerated().reduce(into: [NSLayoutConstraint]()) { result, data in
 
-            if i == 0 {
-                label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-                leftAnc = labelsLeftLayoutGuide.rightAnchor
+            let topOffset: CGFloat
+
+            if let offsetIndex, data.offset >= offsetIndex  {
+                topOffset = self.topOffset * -1.0
             } else {
-                label.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-                leftAnc = labels[i - 1].rightAnchor
+                topOffset = 0.0
             }
-            label.leftAnchor.constraint(equalTo: leftAnc).isActive = true
-            label.heightAnchor.constraint(equalTo: heightAnchor).isActive = true
+
+            result += [
+                data.element.topAnchor.constraint(equalTo: topAnchor, constant: topOffset),
+                data.element.bottomAnchor.constraint(equalTo: bottomAnchor, constant: topOffset)
+            ]
+
+            if data.offset != 0 {
+                let previousLabel = labels[data.offset - 1]
+                result.append(data.element.leadingAnchor.constraint(equalTo: previousLabel.trailingAnchor))
+            }
         }
 
-        labels.last?.rightAnchor.constraint(equalTo: labelsRightLayoutGuide.leftAnchor).isActive = true
-        self.layoutIfNeeded()
+        if let constraint = labels.first?.leadingAnchor.constraint(equalTo: labelsLeftLayoutGuide.trailingAnchor) {
+            constraints.append(constraint)
+        }
+
+        if let constraint = labels.last?.trailingAnchor.constraint(equalTo: labelsRightLayoutGuide.leadingAnchor) {
+            constraints.append(constraint)
+        }
+
+        labels.forEach(addSubview)
+        NSLayoutConstraint.activate(constraints)
+        layoutIfNeeded()
     }
 
     private func enabledCharacterAnimations(displayedAttributedText: NSAttributedString) -> [Bool] {

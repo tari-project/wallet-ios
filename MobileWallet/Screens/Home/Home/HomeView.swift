@@ -336,22 +336,21 @@ final class HomeView: UIView {
         )
 
         let lastNumberOfDigitsToFormat = MicroTari.roundedFractionDigits + 1
-
-        var baselineOffset = integerFont.capHeight - fractionalFont.capHeight
-
-        if #unavailable(iOS 16.4) {
-            baselineOffset /= 2.5
-        }
+        let fractionalNumbersStartIndex = balance.count - lastNumberOfDigitsToFormat
 
         balanceLabelAttributedText.addAttributes(
             [
                 .font: fractionalFont,
-                .foregroundColor: textColor,
-                .baselineOffset: baselineOffset
+                .foregroundColor: textColor
             ],
-            range: NSRange(location: balance.count - lastNumberOfDigitsToFormat, length: lastNumberOfDigitsToFormat)
+            range: NSRange(location: fractionalNumbersStartIndex, length: lastNumberOfDigitsToFormat)
         )
 
+        let integerValue = integerFont.ascender - integerFont.capHeight
+        let fractionalValue = fractionalFont.ascender - fractionalFont.capHeight
+
+        balanceLabel.offsetIndex = fractionalNumbersStartIndex
+        balanceLabel.topOffset = integerValue - (fractionalValue * 0.5)
         balanceLabel.attributedText = balanceLabelAttributedText
     }
 
