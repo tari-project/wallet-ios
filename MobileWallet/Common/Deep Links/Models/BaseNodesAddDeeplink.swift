@@ -43,6 +43,6 @@ struct BaseNodesAddDeeplink {
     let peer: String
 }
 
-extension BaseNodesAddDeeplink: DeepLinkCodable {
-    static var command: String { "/base_nodes/add" }
+extension BaseNodesAddDeeplink: DeepLinkable {
+    static var type: DeeplinkType { .baseNodesAdd }
 }

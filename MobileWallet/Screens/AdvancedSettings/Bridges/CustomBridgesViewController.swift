@@ -62,7 +62,7 @@ final class CustomBridgesViewController: SettingsParentTableViewController, Cust
         }
     }
 
-    private weak var bridgesConfiguration: BridgesConfiguration?
+    private var bridgesConfiguration: BridgesConfiguration?
     private let examplePlaceHolderString = """
     Available formates:
     • obfs4 <IP ADDRESS>:<PORT> <FINGERPRINT> cert=<CERTIFICATE> iat-mode=<value>
@@ -86,10 +86,12 @@ final class CustomBridgesViewController: SettingsParentTableViewController, Cust
         SystemMenuTableViewCellItem(title: CustomBridgesTitle.uploadQRCode.rawValue)
     ]
 
+    private var initialValue: String?
     private var cancellables = Set<AnyCancellable>()
 
-    init(bridgesConfiguration: BridgesConfiguration) {
+    init(bridgesConfiguration: BridgesConfiguration, initialValue: String? = nil) {
         self.bridgesConfiguration = bridgesConfiguration
+        self.initialValue = initialValue
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -131,10 +133,10 @@ extension CustomBridgesViewController {
     }
 
     private func openScannerVC() {
-        let vc = ScanViewController(scanResourceType: .bridges)
-        vc.actionDelegate = self
-        vc.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
-        present(vc, animated: true, completion: nil)
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [.torBridges]) { [weak self] data in
+            guard case let .bridges(bridges) = data else { return }
+            self?.update(torBridges: bridges)
+        }
     }
 
     private func openImagePickerVC() {
@@ -173,11 +175,9 @@ extension CustomBridgesViewController {
         navigationBar.rightButton(index: 0)?.isEnabled = false
         view.isUserInteractionEnabled = false
     }
-}
 
-extension CustomBridgesViewController: ScanViewControllerDelegate {
-    func onAdd(string: String) {
-        headerView.text = string
+    private func update(torBridges: String) {
+        headerView.text = torBridges
     }
 }
 
@@ -198,7 +198,7 @@ extension CustomBridgesViewController: UIImagePickerControllerDelegate, UINaviga
         }
 
         if let bridges = raw.findBridges() {
-            onAdd(string: bridges)
+            update(torBridges: bridges)
         } else {
             PopUpPresenter.show(message: MessageModel(title: localized("custom_bridges.error.image_decode.title"), message: localized("custom_bridges.error.image_decode.description"), type: .error))
         }
@@ -252,11 +252,15 @@ extension CustomBridgesViewController: UITableViewDelegate, UITableViewDataSourc
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if section != 0 { return nil }
 
-        let customBridgesText = bridgesConfiguration?.customBridges?.joined(separator: "\n")
-        let text = (customBridgesText?.isEmpty ?? true) ? examplePlaceHolderString : customBridgesText
-
-        headerView.text = text
         headerView.textViewDelegate = self
+
+        if let initialValue {
+            headerView.text = initialValue
+            self.initialValue = nil
+        } else {
+            let customBridgesText = bridgesConfiguration?.customBridges?.joined(separator: "\n")
+            headerView.text = (customBridgesText?.isEmpty ?? true) ? examplePlaceHolderString : customBridgesText
+        }
 
         return headerView
     }

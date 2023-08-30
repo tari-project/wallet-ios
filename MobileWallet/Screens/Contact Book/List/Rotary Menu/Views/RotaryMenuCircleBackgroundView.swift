@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
 final class RotaryMenuCircleBackgroundView: UIView {
@@ -46,7 +45,7 @@ final class RotaryMenuCircleBackgroundView: UIView {
     // MARK: - Constants
 
     private let avatarViewHeight: CGFloat = 170.0
-    private let animationTime: TimeInterval = 0.2
+    private let animationTime: TimeInterval = 0.05
 
     // MARK: - Subviews
 

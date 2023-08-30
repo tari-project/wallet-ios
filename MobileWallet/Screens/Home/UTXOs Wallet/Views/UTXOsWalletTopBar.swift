@@ -38,10 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
-final class UTXOsWalletTopBar: DynamicThemeView {
+final class UTXOsWalletTopBar: BaseToolbar {
 
     // MARK: - Subviews
 
@@ -91,10 +90,6 @@ final class UTXOsWalletTopBar: DynamicThemeView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    var backgroundAlpha: CGFloat = 0.0 {
-        didSet { updateBackground() }
-    }
-
     private var heightConstraint: NSLayoutConstraint?
 
     // MARK: - Setups
@@ -134,21 +129,13 @@ final class UTXOsWalletTopBar: DynamicThemeView {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-
         filterButton.iconView.tintColor = theme.icons.default
         filterButton.label.textColor = theme.text.heading
         editButton.setTitleColor(theme.icons.active, for: .normal)
-
-        updateBackground(theme: theme)
     }
 
     private func update(isEditingEnabled: Bool) {
         let title = isEditingEnabled ? localized("common.cancel") : localized("utxos_wallet.button.edit_mode.select")
         editButton.setTitle(title, for: .normal)
-    }
-
-    private func updateBackground(theme: ColorTheme? = nil) {
-        let theme = theme ?? self.theme
-        backgroundColor = theme.backgrounds.primary?.withAlphaComponent(backgroundAlpha)
     }
 }

@@ -77,6 +77,7 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
         setupPages()
         setupSharingOptions()
         setupCallbacks()
+        hideKeyboardWhenTappedAroundOrSwipedDown()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -174,13 +175,6 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
             .sink { [weak self] in self?.mainView.isShareButtonEnabled = $0 }
             .store(in: &cancellables)
 
-        model.$isValidAddressInSearchField
-            .removeDuplicates()
-            .dropFirst()
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.isSendButtonVisible = $0 }
-            .store(in: &cancellables)
-
         mainView.searchText
             .receive(on: DispatchQueue.main)
             .assign(to: \.searchText, on: model)
@@ -203,20 +197,8 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
             self?.model.shareSelectedContacts(shareType: shareType)
         }
 
-        mainView.onQRScannerButtonTap = { [weak self] in
-            self?.showQRCodeScanner()
-        }
-
-        mainView.onSendButtonTap = { [weak self] in
-            self?.model.sendTokensRequest()
-        }
-
         contactsPageViewController.onContactRowTap = { [weak self] contactID, isEditing in
             self?.handleSelectRow(contactID: contactID, isEditing: isEditing)
-        }
-
-        contactsPageViewController.onBluetoothRowTap = { [weak self] in
-            self?.model.fetchTransactionDataViaBLE()
         }
 
         favoritesPageViewController.onContactRowTap = { [weak self] contactID, isEditing in
@@ -318,14 +300,6 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
             showBLEDialog(type: .successContactSharing)
         case let .bleFailureDialog(message):
             showBLEDialog(type: .failure(message: message))
-        case .bleTransactionWaitingForReceiverDialog:
-            showBLEDialog(type: .scanForTransactionData(onCancel: { [weak self] in self?.model.cancelBLETask() }))
-        case let .bleTransactionConfirmationDialog(receiverName):
-            showBLEDialog(type: .confirmTransactionData(
-                receiverName: receiverName,
-                onConfirmation: { [weak self] in self?.model.confirmIncomingTransaction() },
-                onReject: { [weak self] in self?.model.cancelIncomingTransaction() }
-            ))
         }
     }
 
@@ -389,13 +363,6 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
         PopUpPresenter.showBLEDialog(type: type)
     }
 
-    private func showQRCodeScanner() {
-        let scanViewController = ScanViewController(scanResourceType: .publicKey)
-        scanViewController.actionDelegate = self
-        scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
-        present(scanViewController, animated: true, completion: nil)
-    }
-
     private func showMenu(model: ContactsManager.Model) {
 
         let overlay = RotaryMenuOverlay(model: model)
@@ -406,16 +373,5 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
         }
 
         show(overlay: overlay)
-    }
-}
-
-extension ContactBookViewController: ScanViewControllerDelegate {
-
-    func onScan(deeplink: TransactionsSendDeeplink) {
-        model.handle(transactionSendDeeplink: deeplink)
-    }
-
-    func onScan(deeplink: ContactListDeeplink) {
-        model.handle(contactListDeeplink: deeplink)
     }
 }

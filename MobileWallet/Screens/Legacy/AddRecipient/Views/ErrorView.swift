@@ -38,42 +38,63 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import TariCommon
 
 final class ErrorView: DynamicThemeView {
-    private let padding: CGFloat = 14
-    private let label = UILabel()
-    var message = "" {
-        didSet {
-            label.text = message
-            if message.isEmpty {
-                alpha = 0.0
-            } else {
-                alpha = 1.0
-                UINotificationFeedbackGenerator().notificationOccurred(.error)
-            }
 
-        }
+    // MARK: - Subviews
+
+    @View private var label: UILabel = {
+        let view = UILabel()
+        view.textAlignment = .center
+        view.font = .Avenir.heavy.withSize(14.0)
+        view.numberOfLines = 0
+        return view
+    }()
+
+    // MARK: - Properties
+
+    var message: String? {
+        get { label.text }
+        set { label.text = newValue }
     }
 
-    override func draw(_ rect: CGRect) {
-        alpha = 0.0
-        backgroundColor = .clear
+    // MARK: - Initialisers
 
-        layer.cornerRadius = 4
+    override init() {
+        super.init()
+        setupViews()
+        setupConstraints()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Setups
+
+    private func setupViews() {
+        layer.cornerRadius = 4.0
         layer.masksToBounds = true
-        layer.borderWidth = 1
-
-        label.textAlignment = .center
-        label.font = Theme.shared.fonts.warningBoxTitleLabel
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.numberOfLines = 0
-        addSubview(label)
-        label.topAnchor.constraint(equalTo: topAnchor, constant: padding).isActive = true
-        label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -padding).isActive = true
-        label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: padding).isActive = true
-        label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -padding).isActive = true
+        layer.borderWidth = 1.0
+        backgroundColor = .clear
     }
+
+    private func setupConstraints() {
+
+        addSubview(label)
+
+        let constraints = [
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 14.0),
+            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 14.0),
+            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -14.0),
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -14.0)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    // MARK: - Updates
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)

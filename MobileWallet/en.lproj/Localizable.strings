@@ -77,6 +77,9 @@
 "transaction.one_sided_payment.avatar" = "➡️";
 "transaction.one_sided_payment.note.normal" = "You received a one-sided payment";
 "transaction.one_sided_payment.note.recovered" = "You recovered some funds";
+"transaction.normal.title.pending.part.2" = "sent a payment";
+"transaction.normal.title.inbound.part.2" = "paid you";
+"transaction.normal.title.outbound.part.1" = "You paid";
 
 /* Authentication */
 "authentication.fail.title" = "Authentication failed";
@@ -89,15 +92,21 @@
 "authentication.try_again" = "Try again";
 "authentication.proceed" = "Proceed";
 
-/* Home view */
-"home.available_balance" = "Balance";
-"home.label.spendable" = "Available to spend";
-"home.error.update_balance" = "Balance update failed";
-"home.info.amount_help.title" = "Why is some of my balance not spendable right now?";
-"home.info.amount_help.description" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
-"home.info.amount_help.action_button" = "Go to TariLabs University";
-"home.transactions.section.pending" = "Pending Transactions";
-"home.transactions.section.completed" = "Completed Transactions";
+/* Transactions history list */
+
+"transaction_history.title" = "Transaction History";
+"transaction_history.section.pending" = "Pending Transactions";
+"transaction_history.section.completed" = "Completed Transactions";
+"transaction_history.search_field.placeholder" = "Enter Emoji ID or Contact Name";
+
+/* Home */
+
+"home.label.spendable" = "Available to spend:";
+"home.button.all_transactions" = "View all transactions";
+"home.transaction_list.placeholder" = "Hey there, %@\n\nWelcome to Aurora! Once you start making some transactions, they'll appear right here. In the meantime, you can click the \"transact\" button below to get things rolling.";
+"home.pop_up.amount_help.title" = "Why is some of my balance not spendable right now?";
+"home.pop_up.amount_help.message" = "The Tari in your wallet is made up of notes, just as your real wallet contains notes and coins. When you spend Tari, you must use up entire notes and wait for change. While you're waiting, the change is not spendable until your transaction is mined. You can find out more about how Tari transactions work in TariLabs University";
+"home.pop_up.amount_help.buttons.open_url" = "Go to TariLabs University";
 
 /* UTXOs Wallet */
 
@@ -326,9 +335,6 @@
 "refresh_view.backup.inProgress" = "Backing up your wallet...";
 "refresh_view.backup.success" = "Backup successful!";
 
-/* Feedback view */
-"feedback_view.close" = "Close";
-
 /* VerifyPhrase view */
 "verify_phrase.complete" = "Complete Verification";
 "verify_phrase.warning" = "Nope, that’s not right";
@@ -377,7 +383,6 @@
 "profile_view.error.qr_code.description.with_param" = "Easily receive %@ from others by sharing your profile via one of the methods below:";
 "profile_view.error.yat_mismatch" = "You've previously connected this Yat.\n Do you want to re-connect it to your wallet?";
 "profile_view.button.recconect_yat" = "Reconnect Yat";
-"profile_view.button.request_tokens" = "Request Tari";
 "profile_view.form.title" = "Edit Name";
 "profile_view.form.text_field.name.placeholder" = "Name";
 
@@ -385,12 +390,16 @@
 "navigation_bar.error.show_emoji.title" = "Public key error";
 "navigation_bar.error.show_emoji.description" = "Failed to get Emoji ID from user's contact";
 
-/* Scan view */
-"scan_view.scan_qr_to_set_bridges" = "Scan a QR code to set custom bridges";
-"scan_view.scan_qr_to_send.with_param" = "Scan a Tari QR code to send %@ to the recipient.";
-"scan_view.error.title" = "Scanning error";
-"scan_view.error.public_key.description" = "Failed to import user's public key";
-"scan_view.error.bridges.description" = "Bridges from QR Code could not be decoded";
+/* QR Code Scanner */
+
+"qr_code_scanner.labels.title" = "Scan Tari QR code in the box below";
+"qr_code_scanner.labels.actions.transaction_send" = "This QR code contains a funds request.\nWould you like to send funds to %@?";
+"qr_code_scanner.labels.actions.base_node_add" = "This QR code contains base node information.\nWould you like to add this base node to the list and switch to that node?";
+"qr_code_scanner.labels.actions.contacts" = "This QR code contains contact information.\nWould you like to add it to your contact book?";
+"qr_code_scanner.labels.actions.tor_bridges" = "This QR code contains a custom bridge.\nWould you like to connect to it?";
+"qr_code_scanner.labels.actions.invalid" = "Invalid QR Code.\nYour request cannot be processed at this time.";
+"qr_code_scanner.error.no_valid_device.title" = "No Valid Device";
+"qr_code_scanner.error.no_valid_device.message" = "The QR scanner is unavailable on this device because there is no camera able to capture QR codes.";
 
 /* RestoreWallet view */
 "restore_wallet.title" = "Restore Your Wallet";
@@ -482,8 +491,8 @@
 "onboarding.staged_wallet_security.page2.message.part1" = "An easy way to recover your coins and transaction list is to keep a";
 "onboarding.staged_wallet_security.page2.message.part2.bold" = "backup";
 "onboarding.staged_wallet_security.page2.message.part3" = "of your wallet in the";
-"onboarding.staged_wallet_security.page2.message.part4.bold" = "cloud";
-"onboarding.staged_wallet_security.page2.message.part5" = ".\n\nTo do that, the only thing that you need to do is go to the settings menu, select the cloud service that you want to use, and authorize the app to send backups to that service.";
+"onboarding.staged_wallet_security.page2.message.part4.bold" = "cloud.";
+"onboarding.staged_wallet_security.page2.message.part5" = "\n\nTo do that, the only thing that you need to do is go to the settings menu, select the cloud service that you want to use, and authorize the app to send backups to that service.";
 "onboarding.staged_wallet_security.page2.action_button" = "Go To Cloud Backups";
 "onboarding.staged_wallet_security.page3.title.part1" = "Create a";
 "onboarding.staged_wallet_security.page3.title.part2.bold" = "password";
@@ -846,17 +855,16 @@
 "contact_book.transaction_list.placeholder.label.message.part.3" = "yet. Click the button below to send some Tari.";
 "contact_book.transaction_list.placeholder.button.send" = "Send Tari";
 
-/* Legacy */
+/* Transaction Send */
+
+"send.nav_bar.add_recipient.title" = "Send To";
+"send.nav_bar.request.title" = "Receive Tari";
+"send.page_tab.add_recipient.title" = "Send";
+"send.page_tab.request.title" = "Receive";
+
+/* Add Recipient */
 
 "add_recipient.recent_txs" = "Recent Transactions";
-"add_recipient.error.load_contacts.title" = "Failed to load contacts";
-"add_recipient.error.load_contacts.description" = "Could not access wallet";
-"add_recipient.error.load_contacts.invalid_emoji_set" = "Your recipient needs to upgrade to the latest version of Tari Aurora and copy their updated Emoji ID to transact with you";
-"add_recipient.inputbox.warning" = "Invalid Emoji ID";
-"add_recipient.warning.can_not_send_yourself.with_param" = "Sorry, you cannot send %@ to yourself";
 "add_recipient.my_contacts" = "My Contacts";
-"add_recipient.title" = "Send To";
-"add_recipient.error.invalid_emoji.title" = "Could not use Emoji ID";
-"add_recipient.error.invalid_emoji.description" = "Failed to create a valid contact from the pasted Emoji ID";
-"transactions.toolbar.send" = "Send";
-"transactions.toolbar.request" = "Request";
+"add_recipient.error.can_not_send_yourself" = "Sorry, you cannot send %@ to yourself";
+"add_recipient.error.invalid_emoji_id" = "Invalid Emoji ID";"

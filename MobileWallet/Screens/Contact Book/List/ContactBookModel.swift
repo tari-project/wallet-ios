@@ -68,8 +68,6 @@ final class ContactBookModel {
         case bleContactSharingWaitingForReceiverDialog
         case bleContactSharingSuccessDialog
         case bleFailureDialog(message: String?)
-        case bleTransactionWaitingForReceiverDialog
-        case bleTransactionConfirmationDialog(receiverName: String)
     }
 
     enum Action {
@@ -108,19 +106,15 @@ final class ContactBookModel {
     @Published private(set) var action: Action?
     @Published private(set) var isPermissionGranted: Bool = false
     @Published private(set) var isSharePossible: Bool = false
-    @Published private(set) var isValidAddressInSearchField: Bool = false
 
     // MARK: - Properties
 
     @Published private var enteredAddress: TariAddress?
-    @Published private var yatID: String?
-
     @Published private var contactModels: [[ContactsManager.Model]] = []
 
     private let contactsManager = ContactsManager()
 
     private weak var bleTask: BLECentralTask?
-    private var incomingUserProfile: UserProfileDeeplink?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -147,18 +141,13 @@ final class ContactBookModel {
             .store(in: &cancellables)
 
         contactsPublisher
-            .compactMap { [unowned self] in $0.map { ContactBookContactListView.Section(title: $0.title, items: self.filterFavorite(items: $0.items)) }}
+            .compactMap { $0.map { ContactBookContactListView.Section(title: $0.title, items: $0.items.filter { $0.isFavorite })}}
             .map { $0.filter { !$0.items.isEmpty }}
             .assignPublisher(to: \.favoriteContactsList, on: self)
             .store(in: &cancellables)
 
         $searchText
             .sink { [weak self] in self?.generateAddress(text: $0) }
-            .store(in: &cancellables)
-
-        $searchText
-            .throttle(for: .milliseconds(750), scheduler: DispatchQueue.main, latest: true)
-            .sink { [weak self] in self?.searchAddress(forYatID: $0) }
             .store(in: &cancellables)
 
         $contentMode
@@ -170,38 +159,9 @@ final class ContactBookModel {
             .map { !$0.isEmpty }
             .assignPublisher(to: \.isSharePossible, on: self)
             .store(in: &cancellables)
-
-        $enteredAddress
-            .map { $0 != nil }
-            .assignPublisher(to: \.isValidAddressInSearchField, on: self)
-            .store(in: &cancellables)
     }
 
     // MARK: - View Model
-
-    func handle(transactionSendDeeplink: TransactionsSendDeeplink) {
-
-        var amount: MicroTari?
-
-        if let rawAmount = transactionSendDeeplink.amount {
-            amount = MicroTari(rawAmount)
-        }
-
-        let paymentInfo = PaymentInfo(address: transactionSendDeeplink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeeplink.note)
-
-        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
-    }
-
-    func handle(contactListDeeplink: ContactListDeeplink) {
-        Task {
-            do {
-                guard try await DeepLinkDefaultActionsHandler.handleInForeground(contactListDeeplink: contactListDeeplink) else { return }
-                fetchContacts()
-            } catch {
-                errorModel = ErrorMessageManager.errorModel(forError: error)
-            }
-        }
-    }
 
     func fetchContacts() {
         Task {
@@ -285,55 +245,8 @@ final class ContactBookModel {
         contentMode = .normal
     }
 
-    func fetchTransactionDataViaBLE() {
-
-        let bleTask = BLECentralTask(service: BLEConstants.contactBookService.uuid, characteristic: BLEConstants.contactBookService.characteristics.transactionData)
-        self.bleTask?.cancel()
-        self.bleTask = bleTask
-
-        action = .show(dialog: .bleTransactionWaitingForReceiverDialog)
-
-        Task {
-            do {
-                guard let data = try await bleTask.findAndRead(), let rawDeeplink = String(data: data, encoding: .utf8), let url = URL(string: rawDeeplink) else { return }
-                let deeplink = try DeepLinkFormatter.model(type: UserProfileDeeplink.self, deeplink: url)
-                incomingUserProfile = deeplink
-                action = .show(dialog: .bleTransactionConfirmationDialog(receiverName: deeplink.alias))
-            } catch {
-                handle(bleError: error)
-            }
-        }
-    }
-
     func cancelBLETask() {
         bleTask?.cancel()
-    }
-
-    func sendTokensRequest() {
-
-        guard let enteredAddress, let hex = try? enteredAddress.byteVector.hex else {
-            Logger.log(message: "No Address on 'send tokens' request.", domain: .navigation, level: .error)
-            errorModel = ErrorMessageManager.errorModel(forError: nil)
-            return
-        }
-
-        let paymentInfo = PaymentInfo(address: hex, alias: nil, yatID: yatID, amount: nil, feePerGram: nil, note: nil)
-        action = .sendTokens(paymentInfo: paymentInfo)
-    }
-
-    func confirmIncomingTransaction() {
-        guard let incomingUserProfile else {
-            action = .show(dialog: .bleFailureDialog(message: ErrorMessageManager.errorMessage(forError: nil)))
-            return
-        }
-
-        let paymentInfo = PaymentInfo(address: incomingUserProfile.tariAddress, alias: incomingUserProfile.alias, yatID: nil, amount: nil, feePerGram: nil, note: nil)
-        self.incomingUserProfile = nil
-        action = .sendTokens(paymentInfo: paymentInfo)
-    }
-
-    func cancelIncomingTransaction() {
-        incomingUserProfile = nil
     }
 
     func selectContact(contactID: UUID) {
@@ -407,27 +320,6 @@ final class ContactBookModel {
         action = .unlink(model: model)
     }
 
-    // MARK: - Actions - Yat
-
-    private func searchAddress(forYatID yatID: String) {
-
-        self.yatID = nil
-        guard yatID.containsOnlyEmoji, (1...maxYatIDLenght).contains(yatID.count) else { return }
-
-        Yat.api.emojiID.lookupEmojiIDPaymentPublisher(emojiId: yatID, tags: YatRecordTag.XTRAddress.rawValue)
-            .sink(
-                receiveCompletion: { _ in },
-                receiveValue: { [weak self] in self?.handle(apiResponse: $0, yatID: yatID) }
-            )
-            .store(in: &cancellables)
-    }
-
-    private func handle(apiResponse: PaymentAddressResponse, yatID: String) {
-        guard let walletAddress = apiResponse.result?[YatRecordTag.XTRAddress.rawValue]?.address else { return }
-        generateAddress(text: walletAddress)
-        self.yatID = yatID
-    }
-
     // MARK: - Handlers
 
     private func handle(bleError error: Error) {
@@ -491,25 +383,17 @@ final class ContactBookModel {
         }
     }
 
-    private func filterFavorite(items: [ContactBookContactListView.ItemType]) -> [ContactBookContactListView.ItemType] {
-        items.filter {
-            guard case let .contact(model) = $0 else { return false }
-            return model.isFavorite
-        }
-    }
-
     private func map(contactsSections: [[ContactsManager.Model]]) -> [ContactBookContactListView.Section] {
         contactsSections
             .enumerated()
             .reduce(into: [ContactBookContactListView.Section]()) { result, data in
 
                 let section = SectionType(rawValue: data.offset)
-                guard section == .internalContacts || !data.element.isEmpty else { return }
+                guard !data.element.isEmpty else { return }
 
-                var items: [ContactBookContactListView.ItemType] = data.element.map {
-
+                let items: [ContactBookCell.ViewModel] = data.element.map {
                     let name = (!$0.name.isEmpty ? $0.name : $0.internalModel?.emojiID.obfuscatedText) ?? ""
-                    let model = ContactBookCell.ViewModel(
+                    return ContactBookCell.ViewModel(
                         id: $0.id,
                         name: name,
                         avatarText: $0.avatar,
@@ -518,11 +402,6 @@ final class ContactBookModel {
                         contactTypeImage: $0.type.image,
                         isSelectable: section?.isSelectable ?? false
                     )
-                    return .contact(model: model)
-                }
-
-                if section == .internalContacts {
-                    items.insert(.bluetooth, at: 0)
                 }
 
                 result.append(ContactBookContactListView.Section(title: section?.title, items: items))

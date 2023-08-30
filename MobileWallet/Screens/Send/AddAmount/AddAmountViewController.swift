@@ -629,7 +629,7 @@ extension AddAmountViewController {
         walletBalanceIcon.contentMode = .scaleAspectFit
         walletBalanceStackView.addArrangedSubview(walletBalanceIcon)
         walletBalanceStackView.addArrangedSubview(walletBalanceLabel)
-        walletBalanceLabel.font = Theme.shared.fonts.warningBoxTitleLabel
+        walletBalanceLabel.font = .Avenir.heavy.withSize(14.0)
         walletBalanceLabel.text = "0.0"
 
         warningStackView.addArrangedSubview(walletBalanceTitleLabel)
@@ -729,8 +729,8 @@ extension AddAmountViewController {
 
         let constraints = [
             sliderBar.topAnchor.constraint(equalTo: continueButton.topAnchor),
-            sliderBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            sliderBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            sliderBar.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 25.0),
+            sliderBar.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -25.0)
         ]
 
         NSLayoutConstraint.activate(constraints)

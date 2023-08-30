@@ -66,8 +66,6 @@ struct Images {
     let close = UIImage(named: "Close")
     let share = UIImage(named: "share")
     let txFee = UIImage(named: "TxFee")
-    let storeIcon = UIImage(named: "store-icon")
-    let storeModal = UIImage(named: "store-modal")
     let handWave = UIImage(named: "HandWave")
     let attentionIcon = UIImage(named: "AttentionIcon")
     let scheduledIcon = UIImage(named: "ScheduledIcon")
@@ -87,9 +85,6 @@ struct Images {
 
     // Seed words list
     let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
-
-    // Home Icons
-    let homeWalletIcon = UIImage(named: "icon-wallet")
 
     // UTXOs Wallet Icons
     let utxoFaucet = UIImage(named: "icon-faucet")
@@ -136,12 +131,6 @@ struct Images {
     let speedometerMid = UIImage(named: "speedometer-mid")
     let speedometerHigh = UIImage(named: "speedometer-high")
 
-    // Connection Indicator
-
-    let connectionIndicatorConnectedIcon = UIImage(named: "network-full")
-    let connectionIndicatorLimitedConnectonIcon = UIImage(named: "network-limited")
-    let connectionIndicatorDisconnectedIcon = UIImage(named: "network-off")
-
     // Color Themes
 
     let colorThemeSystem = UIImage(named: "Themes/System")
@@ -169,11 +158,6 @@ struct Fonts {
     // Profile
     let profileMiddleLabel = UIFont.Avenir.medium.withSize(14.0)
 
-    // Home screen
-    let homeScreenTotalBalanceLabel = UIFont.Avenir.medium.withSize(12.0)
-    let homeScreenTotalBalanceValueLabel = UIFont.Avenir.black.withSize(30.0)
-    let homeScreenTotalBalanceValueLabelDecimals = UIFont.Avenir.heavy.withSize(12.0)
-
     // Loadig gif button
     let loadingGifButtonTitle = UIFont.Avenir.heavy.withSize(14.0)
 
@@ -189,7 +173,6 @@ struct Fonts {
     let txScreenCurrencyValueLabel = UIFont.Avenir.black.withSize(90.0)
     let txScreenSubheadingLabel = UIFont.Avenir.medium.withSize(13.0)
     let txScreenTextLabel = UIFont.Avenir.roman.withSize(14.0)
-    let txListEmptyMessageLabel = UIFont.Avenir.medium.withSize(14.0)
     let txFeeLabel = UIFont.Avenir.heavy.withSize(14.0)
     let txFeeButton = UIFont.Avenir.roman.withSize(13.0)
     let txSectionTitleLabel = UIFont.Avenir.medium.withSize(16.0)
@@ -203,7 +186,6 @@ struct Fonts {
 
     // Popup User feedback
     let feedbackPopupTitle = UIFont.Avenir.light.withSize(18.0)
-    let feedbackPopupHeavy = UIFont.Avenir.black.withSize(18.0)
     let feedbackPopupDescription = UIFont.Avenir.medium.withSize(14.0)
 
     // Simple text button
@@ -211,25 +193,18 @@ struct Fonts {
     let copyButton = UIFont.Avenir.heavy.withSize(14.0)
     let textButtonCancel = UIFont.Avenir.medium.withSize(12.0)
 
-    // Intro to wallet
-    let introTitle = UIFont.Avenir.light.withSize(18.0)
-
     // Add recipient view
     let searchContactsInputBoxText = UIFont.Avenir.roman.withSize(14.0)
 
     // Add amount screen
     let keypadButton = UIFont.Avenir.heavy.withSize(36.0)
     let amountLabel = UIFont.Avenir.black.withSize(90.0)
-    let warningBoxTitleLabel = UIFont.Avenir.heavy.withSize(14.0)
     let amountWarningLabel = UIFont.Avenir.roman.withSize(13.0)
 
     // Add note screen
     let addNoteTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
     let addNoteInputView = UIFont.Avenir.medium.withSize(20.0)
     let searchGiphyButtonTitle = UIFont.Avenir.black.withSize(9.0)
-
-    // Add note screen
-    let scannerTitleLabel = UIFont.Avenir.heavy.withSize(16.0)
 
     // Refresh view
     let refreshViewLabel = UIFont.Avenir.heavy.withSize(12.0)
@@ -286,6 +261,7 @@ enum StaticColors {
     static var white: UIColor? { UIColor(named: "White") }
     static var black: UIColor? { UIColor(named: "Black") }
     static var purple: UIColor? { UIColor(named: "Purple") }
+    static var red: UIColor? { UIColor(named: "Red") }
     static var mediumGrey: UIColor? { UIColor(named: "MediumGrey") }
     static var popupOverlay: UIColor? { .black.withAlphaComponent(0.7) }
 }
@@ -300,6 +276,7 @@ extension UIImage {
     static var security: SecurityImages.Type { SecurityImages.self }
     static var contactBook: ContactBookImages.Type { ContactBookImages.self }
     static var icons: IconsImages.Type { IconsImages.self }
+    static var tabBar: TabBarImages.Type { TabBarImages.self }
     static var legacy: LegacyImages.Type { LegacyImages.self }
 }
 
@@ -343,10 +320,15 @@ enum ContactBookPlaceholderImages {
     static var linkList: UIImage? { UIImage(named: "Images/Contact Book/Placeholders/LinkList") }
 }
 
+// MARK: - Tab Bar
+
+enum TabBarImages {
+    static var send: UIImage? { UIImage(named: "Images/TabBar/Send") }
+}
+
 // MARK: - Legacy
 
 enum LegacyImages {
-    static var send: UIImage? { UIImage(named: "navSend")?.withRenderingMode(.alwaysOriginal) }
     static var unknownUser = UIImage(named: "unknownUser")
 }
 
@@ -355,23 +337,35 @@ enum LegacyImages {
 enum IconsImages {
 
     static var contactTypes: IconsContactTypesImages.Type { IconsContactTypesImages.self }
+    static var network: IconsNetworkImages.Type { IconsNetworkImages.self }
     static var rotaryMenu: IconsRotaryImages.Type { IconsRotaryImages.self }
     static var settings: IconsSettingsImages.Type { IconsSettingsImages.self }
     static var star: IconsStarImages.Type { IconsStarImages.self }
     static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
 
     static var bluetooth: UIImage? { UIImage(named: "Icons/Bluetooth") }
+    static var checkmark: UIImage? { UIImage(named: "Icons/Checkmark") }
+    static var close: UIImage? { UIImage(named: "Icons/Close") }
     static var link: UIImage? { UIImage(named: "Icons/Link") }
+    static var magnifyingGlass: UIImage? { UIImage(named: "Icons/Magnifying Glass") }
     static var profile: UIImage? { UIImage(named: "Icons/Profile") }
     static var send: UIImage? { UIImage(named: "Icons/Send") }
+    static var tariGem: UIImage? { UIImage(named: "Icons/Tari Gem") }
     static var qr: UIImage? { UIImage(named: "Icons/QR") }
     static var unlink: UIImage? { UIImage(named: "Icons/Unlink") }
+    static var wallet: UIImage? { UIImage(named: "Icons/Wallet") }
 }
 
 enum IconsContactTypesImages {
     static var `internal`: UIImage? { UIImage(named: "Icons/Contact Types/Internal") }
     static var external: UIImage? { UIImage(named: "Icons/Contact Types/External") }
     static var linked: UIImage? { UIImage(named: "Icons/Contact Types/Linked") }
+}
+
+enum IconsNetworkImages {
+    static var full: UIImage? { UIImage(named: "Icons/Network/Full") }
+    static var limited: UIImage? { UIImage(named: "Icons/Network/Limited") }
+    static var off: UIImage? { UIImage(named: "Icons/Network/Off") }
 }
 
 enum IconsRotaryImages {

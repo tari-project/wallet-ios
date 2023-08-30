@@ -38,10 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
-final class RequestTariAmountView: BaseNavigationContentView {
+final class RequestTariAmountView: DynamicThemeView {
 
     // MARK: - Subviews
 
@@ -102,7 +101,6 @@ final class RequestTariAmountView: BaseNavigationContentView {
     // MARK: - Setups
 
     private func setupViews() {
-        navigationBar.title = localized("request.navigation_bar.title")
         update(amount: "0")
         areButtonsEnabled = false
     }
@@ -114,7 +112,7 @@ final class RequestTariAmountView: BaseNavigationContentView {
         [amountContentView, keyboardContentView, generateQrButton, shareButton].forEach(addSubview)
 
         var constraints = [
-            amountContentView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            amountContentView.topAnchor.constraint(equalTo: topAnchor),
             amountContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             amountContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             keyboardContentView.topAnchor.constraint(equalTo: amountContentView.bottomAnchor),

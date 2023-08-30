@@ -129,16 +129,23 @@ final class SettingsViewController: SettingsParentTableViewController {
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsDeleteIcon, title: SettingsItemTitle.deleteWallet.rawValue, isDestructive: true)
     ]
 
-    private let moreSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsAboutIcon, title: SettingsItemTitle.about.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsReportBugIcon, title: SettingsItemTitle.reportBug.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsVisitTariIcon, title: SettingsItemTitle.visitTari.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsContributeIcon, title: SettingsItemTitle.contributeToTariAurora.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsUserAgreementIcon, title: SettingsItemTitle.userAgreement.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsPrivacyPolicyIcon, title: SettingsItemTitle.privacyPolicy.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsDisclaimerIcon, title: SettingsItemTitle.disclaimer.rawValue),
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBlockExplorerIcon, title: SettingsItemTitle.blockExplorer.rawValue)
-    ]
+    private let moreSectionItems: [SystemMenuTableViewCellItem] = {
+        var items = [
+            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsAboutIcon, title: SettingsItemTitle.about.rawValue),
+            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsReportBugIcon, title: SettingsItemTitle.reportBug.rawValue),
+            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsVisitTariIcon, title: SettingsItemTitle.visitTari.rawValue),
+            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsContributeIcon, title: SettingsItemTitle.contributeToTariAurora.rawValue),
+            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsUserAgreementIcon, title: SettingsItemTitle.userAgreement.rawValue),
+            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsPrivacyPolicyIcon, title: SettingsItemTitle.privacyPolicy.rawValue),
+            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsDisclaimerIcon, title: SettingsItemTitle.disclaimer.rawValue)
+        ]
+
+        if TariSettings.shared.isBlockExplorerAvaiable {
+            items.append(SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBlockExplorerIcon, title: SettingsItemTitle.blockExplorer.rawValue))
+        }
+
+        return items
+    }()
 
     private let yatSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsYatIcon, title: SettingsItemTitle.connectYats.rawValue)
@@ -230,7 +237,7 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onProfileAction() {
-        let controller = ProfileViewController()
+        let controller = ProfileViewController(backButtonType: .back)
         navigationController?.pushViewController(controller, animated: true)
     }
 

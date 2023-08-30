@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
 final class RotaryMenuOverlayView: UIView {
@@ -53,18 +52,20 @@ final class RotaryMenuOverlayView: UIView {
     @View private var backgroundView = RotaryMenuCircleBackgroundView()
     @View private var rotaryMenu = RotaryMenuView()
 
-    @View private var switchSideButton: GlassButton = {
-        let view = GlassButton()
-        view.maskImage = .icons.rotaryMenu.switchSide
-        view.backgroundAlpha = 0.4
+    @View private var switchSideButton: RoundedButton = {
+        let view = RoundedButton()
+        view.setImage(.icons.rotaryMenu.switchSide, for: .normal)
+        view.backgroundColor = .static.white?.withAlphaComponent(0.4)
+        view.tintColor = .static.black
         view.alpha = 0.0
         return view
     }()
 
-    @View private var closeButton: GlassButton = {
-        let view = GlassButton()
-        view.maskImage = .icons.rotaryMenu.close
-        view.backgroundAlpha = 0.8
+    @View private var closeButton: RoundedButton = {
+        let view = RoundedButton()
+        view.setImage(.icons.rotaryMenu.close, for: .normal)
+        view.backgroundColor = .static.white?.withAlphaComponent(0.8)
+        view.tintColor = .static.black
         view.alpha = 0.0
         return view
     }()

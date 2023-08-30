@@ -118,13 +118,24 @@ enum AppRouter {
     }
 
     static func moveToProfile() {
-        present(controller: ProfileViewController())
+        present(controller: ProfileViewController(backButtonType: .close))
     }
 
     // MARK: - Modal Actions
 
     static func present(controller: UIViewController) {
         tabBar?.present(controller, animated: true)
+    }
+
+    static func presentOnTop(controller: UIViewController) {
+
+        guard var topViewController = UIApplication.shared.keyWindow?.rootViewController else { return }
+
+        while let presentedViewController = topViewController.presentedViewController {
+            topViewController = presentedViewController
+        }
+
+        topViewController.present(controller, animated: true)
     }
 
     static func presentVerifiySeedPhrase() {
@@ -160,6 +171,21 @@ enum AppRouter {
         let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
         navigationController.isNavigationBarHidden = true
         tabBar?.presentOnFullScreen(navigationController)
+    }
+
+    @MainActor static func presentQrCodeScanner(expectedDataTypes: [QRCodeScannerModel.ExpectedType], onExpectedDataScan: ((QRCodeData) -> Void)?) {
+        do {
+            let controller = try QRCodeScannerConstructor.buildScene(expectedDataTypes: expectedDataTypes)
+            controller.onExpectedDataScan = onExpectedDataScan
+            presentOnTop(controller: controller)
+        } catch {
+            PopUpPresenter.show(message: MessageModel(title: localized("qr_code_scanner.error.no_valid_device.title"), message: localized("qr_code_scanner.error.no_valid_device.message"), type: .error))
+        }
+    }
+
+    static func presentCustomTorBridgesForm(bridges: String?) {
+        let controller = CustomBridgesViewController(bridgesConfiguration: BridgesConfiguration(bridges: .none, customBridges: nil), initialValue: bridges)
+        present(controller: controller)
     }
 
     // MARK: - External Apps

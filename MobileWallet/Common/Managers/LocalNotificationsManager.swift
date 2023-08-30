@@ -131,14 +131,13 @@ final class LocalNotificationsManager: NSObject {
     private func handleOpenNotification(userInfo: [AnyHashable: Any]) {
         guard let rawDeeplink = userInfo[UserInfo.rawDeeplink.rawValue] as? String else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            try? DeeplinkHandler.handle(rawDeeplink: rawDeeplink)
+            try? DeeplinkHandler.handle(rawDeeplink: rawDeeplink, showDefaultDialogIfNeeded: true)
         }
     }
 
     private func handleContactsReceivedAction(userInfo: [AnyHashable: Any]) {
         guard let rawDeeplink = userInfo[UserInfo.rawDeeplink.rawValue] as? String else { return }
-
-        try? DeeplinkHandler.handle(rawDeeplink: rawDeeplink, handler: self)
+        try? DeeplinkHandler.handle(rawDeeplink: rawDeeplink, showDefaultDialogIfNeeded: true)
     }
 }
 
@@ -164,19 +163,6 @@ extension LocalNotificationsManager: UNUserNotificationCenterDelegate {
             handleContactsReceivedAction(userInfo: userInfo)
         case .contactReceivedReject:
             break
-        }
-    }
-}
-
-extension LocalNotificationsManager: DeeplinkHandlable {
-
-    func handle(deeplink: TransactionsSendDeeplink) {}
-    func handle(deeplink: BaseNodesAddDeeplink) {}
-
-    func handle(deeplink: ContactListDeeplink) {
-        deeplink.list.forEach {
-            guard let address = try? TariAddress(hex: $0.hex) else { return }
-            try? PendingDataManager.shared.storeContact(name: $0.alias, isFavorite: false, address: address)
         }
     }
 }

@@ -47,14 +47,14 @@ final class AddContactView: BaseNavigationContentView {
 
     @View private var searchViewBackgroundView = UIView()
 
-    @View private(set) var searchView: AddRecipientSearchView = {
-        let view = AddRecipientSearchView()
+    @View private(set) var searchView: ContactSearchView = {
+        let view = ContactSearchView()
         view.textField.placeholder = localized("contact_book.add_contact.text_field.search.placeholder")
         view.previewText = nil
         return view
     }()
 
-    @View private var nameTextField: UITextField = {
+    @View private(set) var nameTextField: UITextField = {
         let view = UITextField()
         view.font = .Avenir.medium.withSize(14.0)
         return view
@@ -71,8 +71,6 @@ final class AddContactView: BaseNavigationContentView {
     }()
 
     // MARK: - Properties
-
-    var contactName: AnyPublisher<String, Never> { nameTextField.textPublisher() }
 
     var errorText: String? {
         didSet { errorLabel.text = errorText }

@@ -74,11 +74,6 @@ final class ContactBookContactListViewController: UIViewController {
         set { mainView.onFooterTap = newValue }
     }
 
-    var onBluetoothRowTap: (() -> Void)? {
-        get { mainView.onBluetoothRowTap }
-        set { mainView.onBluetoothRowTap = newValue }
-    }
-
     var onContactRowTap: ((_ identifier: UUID, _ isEditing: Bool) -> Void)? {
         get { mainView.onContactRowTap }
         set { mainView.onContactRowTap = newValue }

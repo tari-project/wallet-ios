@@ -209,9 +209,9 @@ final class TransactionDetailsModel {
         }
 
         switch try transaction.status {
-        case .txNullError, .completed, .broadcast, .minedUnconfirmed, .pending, .unknown:
+        case .unknown, .txNullError, .completed, .broadcast, .minedUnconfirmed, .pending, .queued:
             return localized("tx_detail.payment_in_progress")
-        case .minedConfirmed, .imported, .rejected, .fauxUnconfirmed, .fauxConfirmed:
+        case .minedConfirmed, .imported, .rejected, .fauxUnconfirmed, .fauxConfirmed, .coinbase:
             return try transaction.isOutboundTransaction ? localized("tx_detail.payment_sent") : localized("tx_detail.payment_received")
         }
     }
@@ -251,7 +251,7 @@ final class TransactionDetailsModel {
                 return .txCompleted(confirmationCount: 1)
             }
             return .txCompleted(confirmationCount: confirmationCount + 1)
-        case .txNullError, .imported, .minedConfirmed, .unknown, .rejected, .fauxUnconfirmed, .fauxConfirmed:
+        case .txNullError, .imported, .minedConfirmed, .unknown, .rejected, .fauxUnconfirmed, .fauxConfirmed, .queued, .coinbase:
             return nil
         }
     }
@@ -331,7 +331,7 @@ final class TransactionDetailsModel {
     private func handleTransactionKernel() {
 
         defer {
-            isBlockExplorerActionAvailable = transactionNounce != nil && transactionSignature != nil
+            isBlockExplorerActionAvailable = transactionNounce != nil && transactionSignature != nil && TariSettings.shared.isBlockExplorerAvaiable
         }
 
         guard let kernel = try? (transaction as? CompletedTransaction)?.transactionKernel else {

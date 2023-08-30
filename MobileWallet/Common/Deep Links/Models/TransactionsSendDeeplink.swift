@@ -50,6 +50,6 @@ struct TransactionsSendDeeplink {
     }
 }
 
-extension TransactionsSendDeeplink: DeepLinkCodable {
-    static var command: String { "/transactions/send" }
+extension TransactionsSendDeeplink: DeepLinkable {
+    static var type: DeeplinkType { .transactionSend }
 }

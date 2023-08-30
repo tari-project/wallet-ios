@@ -60,11 +60,10 @@ final class AddContactModel {
 
     // MARK: - View Model
 
-    let searchTextSubject: CurrentValueSubject<String, Never> = CurrentValueSubject("")
+    let emojiIDSubject: CurrentValueSubject<String, Never> = CurrentValueSubject("")
+    let nameSubject: CurrentValueSubject<String, Never> = CurrentValueSubject("")
 
-    @Published var contactName: String = ""
     @Published var isSearchTextFormatted: Bool = true
-
     @Published private(set) var isDataValid: Bool = false
     @Published private(set) var action: Action?
     @Published private(set) var errorText: String?
@@ -89,12 +88,14 @@ final class AddContactModel {
 
     private func setupCallbacks() {
 
-        Publishers.CombineLatest(searchTextSubject.removeDuplicates(), $isSearchTextFormatted.removeDuplicates())
+        Publishers.CombineLatest(emojiIDSubject.removeDuplicates(), $isSearchTextFormatted.removeDuplicates())
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(searchText: $0, isSearchTextFormatted: $1) }
             .store(in: &cancellables)
 
-        $contactName
+        nameSubject
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.handle(contactName: $0) }
             .store(in: &cancellables)
 
@@ -115,28 +116,31 @@ final class AddContactModel {
     func createContact() {
         do {
             guard let address else { return }
-            let model = try contactsManager.createInternalModel(name: contactName, isFavorite: false, address: address)
+            let model = try contactsManager.createInternalModel(name: nameSubject.value, isFavorite: false, address: address)
             action = .showDetails(model: model)
         } catch {
             errorMessage = ErrorMessageManager.errorModel(forError: error)
         }
     }
 
-    func handle(deeplink: TransactionsSendDeeplink) {
-        let address = TariAddressFactory.address(text: deeplink.receiverAddress)
-        guard let emojis = try? address?.emojis else { return }
-        rawSearchText = emojis
-        searchTextSubject.send(emojis)
-    }
+    func handle(qrCodeData: QRCodeData) {
 
-    func handle(deeplink: ContactListDeeplink) {
-        Task {
-            do {
-                guard try await DeepLinkDefaultActionsHandler.handleInForeground(contactListDeeplink: deeplink) else { return }
-                action = .popBack
-            } catch {
-                errorMessage = ErrorMessageManager.errorModel(forError: error)
-            }
+        guard case let .deeplink(deeplink) = qrCodeData else { return }
+
+        switch deeplink {
+        case let deeplink as UserProfileDeeplink:
+            let address = TariAddressFactory.address(text: deeplink.tariAddress)
+            guard let emojis = try? address?.emojis else { return }
+            rawSearchText = emojis
+            emojiIDSubject.send(emojis)
+            nameSubject.send(deeplink.alias)
+        case let deeplink as TransactionsSendDeeplink:
+            let address = TariAddressFactory.address(text: deeplink.receiverAddress)
+            guard let emojis = try? address?.emojis else { return }
+            rawSearchText = emojis
+            emojiIDSubject.send(emojis)
+        default:
+            break
         }
     }
 
@@ -151,9 +155,9 @@ final class AddContactModel {
         handle(searchText: rawSearchText)
 
         if isSearchTextFormatted, address != nil {
-            searchTextSubject.send(rawSearchText.insertSeparator(" | ", atEvery: 3))
+            emojiIDSubject.send(rawSearchText.insertSeparator(" | ", atEvery: 3))
         } else {
-            searchTextSubject.send(rawSearchText)
+            emojiIDSubject.send(rawSearchText)
         }
     }
 

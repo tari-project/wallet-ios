@@ -102,11 +102,8 @@ final class AddContactViewController: UIViewController {
             .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
 
-        mainView.searchView.textField.bind(withSubject: model.searchTextSubject, storeIn: &cancellables)
-
-        mainView.contactName
-            .assignPublisher(to: \.contactName, on: model)
-            .store(in: &cancellables)
+        mainView.searchView.textField.bind(withSubject: model.emojiIDSubject, storeIn: &cancellables)
+        mainView.nameTextField.bind(withSubject: model.nameSubject, storeIn: &cancellables)
 
         mainView.onSearchTextFieldFocusState = { [weak self] in
             self?.model.isSearchTextFormatted = !$0
@@ -133,10 +130,9 @@ final class AddContactViewController: UIViewController {
     }
 
     private func showQRScanner() {
-        let scanViewController = ScanViewController(scanResourceType: .publicKey)
-        scanViewController.actionDelegate = self
-        scanViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover
-        present(scanViewController, animated: true, completion: nil)
+        AppRouter.presentQrCodeScanner(expectedDataTypes: [.deeplink(.profile), .deeplink(.transactionSend)]) { [weak self] in
+            self?.model.handle(qrCodeData: $0)
+        }
     }
 
     // MARK: - Navigation
@@ -158,16 +154,5 @@ final class AddContactViewController: UIViewController {
 
     private func moveBack() {
         navigationController?.popViewController(animated: true)
-    }
-}
-
-extension AddContactViewController: ScanViewControllerDelegate {
-
-    func onScan(deeplink: TransactionsSendDeeplink) {
-        model.handle(deeplink: deeplink)
-    }
-
-    func onScan(deeplink: ContactListDeeplink) {
-        model.handle(deeplink: deeplink)
     }
 }

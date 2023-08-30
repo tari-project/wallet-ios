@@ -67,4 +67,11 @@ extension UITableView {
         tableFooterView.bounds.size.height = size.height
         self.tableFooterView = tableFooterView
     }
+
+    func resizeCellsWithoutAnimation() {
+        UIView.performWithoutAnimation {
+            self.beginUpdates()
+            self.endUpdates()
+        }
+    }
 }

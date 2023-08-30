@@ -42,32 +42,6 @@ import UIKit
 
 extension UIScrollView {
 
-    func beginRefreshing() {
-        if isRefreshing() { return }
-        refreshControl?.programmaticallyBeginRefreshing(in: self)
-    }
-
-    func endRefreshing() {
-        if !isRefreshing() { return }
-        stopDecelerating()
-        // animated for fix blinking during end refresh
-        UIView.transition(with: self,
-                          duration: CATransaction.animationDuration(),
-                          options: .transitionCrossDissolve,
-                          animations: {
-                            self.refreshControl?.endRefreshing()
-                          },
-                          completion: { (_) in
-                            if self.contentOffset.y < 0 {
-                                self.scrollToTop(animated: true)
-                            }})
-    }
-
-    func isRefreshing() -> Bool {
-        guard let refreshControl = refreshControl else { return false }
-        return refreshControl.isRefreshing
-    }
-
     func scrollToBottom(animated: Bool) {
         let yOffset = contentSize.height - bounds.size.height
         let bottomOffset = CGPoint(x: 0, y: yOffset > 0 ? yOffset : 0)
@@ -75,37 +49,7 @@ extension UIScrollView {
     }
 
     func scrollToTop(animated: Bool) {
-        let y = 0.0  - contentInset.top
+        let y = 0.0 - contentInset.top
         setContentOffset(CGPoint(x: 0.0, y: y), animated: animated)
-    }
-
-    func lockScrollView() {
-        isDirectionalLockEnabled = true
-        bounces = false
-        showsVerticalScrollIndicator = false
-    }
-
-    func unlockScrollView() {
-        isDirectionalLockEnabled = false
-        bounces = true
-        showsVerticalScrollIndicator = true
-    }
-
-    func stopDecelerating() {
-         setContentOffset(contentOffset, animated: false)
-    }
-}
-
-extension UIRefreshControl {
-    func programmaticallyBeginRefreshing(in scrollView: UIScrollView) {
-        beginRefreshing()
-        let yOffset = height()
-        let offsetPoint = CGPoint.init(x: 0, y: -yOffset)
-        scrollView.setContentOffset(offsetPoint, animated: true)
-        sendActions(for: .valueChanged)
-    }
-
-    func height() -> CGFloat {
-        return frame.size.height >= 80 ? frame.size.height : 80
     }
 }
