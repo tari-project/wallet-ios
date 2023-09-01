@@ -64,6 +64,7 @@ final class Logger {
         case bleCentral
         case blePeripherial
         case localNotification
+        case tor
         case debug
     }
 
@@ -108,6 +109,8 @@ extension Logger.Domain {
             return "Debug"
         case .localNotification:
             return "L. Notification"
+        case .tor:
+            return "Tor"
         }
     }
 }

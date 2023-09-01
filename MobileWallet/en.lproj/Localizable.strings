@@ -541,12 +541,6 @@
 "custom_bridges.error.image_decode.title" = "QR code decode error";
 "custom_bridges.error.image_decode.description" = "Failed to decode QR Code from image";
 
-/* Onion error */
-"Onion_Error.error.missing_cookie_file" = "Tor connection error. Missing cookie file";
-"Onion_Error.error.connectionError" = "Tor connection error. Please, check your network connection";
-"Onion_Error.error.invalid_bridges" = "Invalid Bridges. Returning to previous bridges configuration ...";
-"Onion_Error.error.title.onionError" = "Onion Error";
-
 /* Delete wallet */
 "delete_wallet.title"="You're about to lose everything!";
 "delete_wallet.warning"="Please double-check that your wallet is backed up before deleting it from this device. If you proceed, you will LOSE ALL YOUR FUNDS, your contact data and your transaction history. If this is definitely what you want, go ahead.";
