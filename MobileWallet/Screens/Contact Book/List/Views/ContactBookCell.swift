@@ -96,7 +96,6 @@ final class ContactBookCell: DynamicThemeCell {
     }
 
     private(set) var elementID: UUID?
-    private(set) var isExpanded: Bool = false
 
     private var isSelectable: Bool = false
     private var normalModeConstraint: NSLayoutConstraint?

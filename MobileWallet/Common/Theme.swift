@@ -277,7 +277,6 @@ extension UIImage {
     static var contactBook: ContactBookImages.Type { ContactBookImages.self }
     static var icons: IconsImages.Type { IconsImages.self }
     static var tabBar: TabBarImages.Type { TabBarImages.self }
-    static var legacy: LegacyImages.Type { LegacyImages.self }
 }
 
 // MARK: - Security
@@ -324,12 +323,6 @@ enum ContactBookPlaceholderImages {
 
 enum TabBarImages {
     static var send: UIImage? { UIImage(named: "Images/TabBar/Send") }
-}
-
-// MARK: - Legacy
-
-enum LegacyImages {
-    static var unknownUser = UIImage(named: "unknownUser")
 }
 
 // MARK: - Icons
