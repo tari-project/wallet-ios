@@ -52,8 +52,6 @@ enum SlideViewVariation {
 final class SlideView: DynamicThemeView {
     static private let thumbnailMargin: CGFloat = 10
     private let impactFeedbackGenerator = UIImpactFeedbackGenerator(style: .light)
-    static private let thumbnailShadowRadius: Float = 0.5
-    static private let thumbnailCornerRadius: CGFloat = 0
     private let pendingAnimationView = AnimationView()
 
     var onSlideToEnd: (() -> Void)?
@@ -162,7 +160,6 @@ final class SlideView: DynamicThemeView {
     private var topSliderConstraint: NSLayoutConstraint?
     private var topThumbnailViewConstraint: NSLayoutConstraint?
     private var trailingDraggedViewConstraint: NSLayoutConstraint?
-    private var xPositionInThumbnailView: CGFloat = 0
     private var xEndingPoint: CGFloat { self.view.frame.maxX - thumbnailImageView.bounds.width - thumbnailViewStartingDistance }
     private var isFinished: Bool = false
 
@@ -303,10 +300,6 @@ final class SlideView: DynamicThemeView {
         thumbnailImageView.apply(shadow: isEnabled ? theme.shadows.box : .none)
     }
 
-    private func isTapOnThumbnailViewWithPoint(_ point: CGPoint) -> Bool {
-        return self.thumbnailImageView.frame.contains(point)
-    }
-
     private func updateThumbnailXPosition(_ x: CGFloat) {
         leadingThumbnailViewConstraint?.constant = x
         setNeedsLayout()
@@ -358,23 +351,6 @@ final class SlideView: DynamicThemeView {
         }
     }
     // Others
-    func resetStateWithAnimation(_ animated: Bool) {
-        let action = {
-            self.leadingThumbnailViewConstraint?.constant = self.thumbnailViewStartingDistance
-            self.textLabel.alpha = 1
-            self.layoutIfNeeded()
-            //
-            self.isFinished = false
-        }
-        if animated {
-            UIView.animate(withDuration: animationVelocity) {
-               action()
-            }
-        } else {
-            action()
-        }
-    }
-
     private func updateVariationStyle() {
         switch variation {
         case .loading:
