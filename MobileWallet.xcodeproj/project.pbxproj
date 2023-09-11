@@ -1281,6 +1281,7 @@
 		0087A1A423F4231E00B89EE7 /* AddRecipient */ = {
 			isa = PBXGroup;
 			children = (
+				54F9AB782AAF153A001D0AF5 /* Views */,
 				540F022F2A6A67DA00691FF5 /* AddRecipientViewController.swift */,
 				540F02312A6A67E500691FF5 /* AddRecipientView.swift */,
 				540F02332A6A67EF00691FF5 /* AddRecipientModel.swift */,
@@ -1380,7 +1381,6 @@
 			isa = PBXGroup;
 			children = (
 				54C36D092A5D3E8700BD973A /* QR Code Scanner */,
-				54ADC07A2A3855840082C455 /* Legacy */,
 				54D419B12995091B00D496B4 /* Contact Book */,
 				3ACDA70326B0317300F138B8 /* RestoreWalletFromSeedsProgress */,
 				3A4376E3269C0BF0006107B0 /* RestoreWalletFromSeeds */,
@@ -2808,30 +2808,6 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		54ADC07A2A3855840082C455 /* Legacy */ = {
-			isa = PBXGroup;
-			children = (
-				54ADC0842A3856B50082C455 /* AddRecipient */,
-			);
-			path = Legacy;
-			sourceTree = "<group>";
-		};
-		54ADC0842A3856B50082C455 /* AddRecipient */ = {
-			isa = PBXGroup;
-			children = (
-				54ADC0892A3857280082C455 /* Views */,
-			);
-			path = AddRecipient;
-			sourceTree = "<group>";
-		};
-		54ADC0892A3857280082C455 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				54ADC0922A3858C40082C455 /* ErrorView.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		54B7F4432996582B00BB484B /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -2907,6 +2883,14 @@
 			children = (
 				54F2E34B29EE9FFC00A7A15A /* ContactTransactionListHeaderView.swift */,
 				54F2E34D29EEAEBB00A7A15A /* ContactTransactionListPlaceholder.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		54F9AB782AAF153A001D0AF5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				54ADC0922A3858C40082C455 /* ErrorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
