@@ -126,7 +126,7 @@ final class HomeModel {
 
     // MARK: - Handlers
 
-    private func handle(networkConnection: NetworkMonitor.Status, torConnection: TorManager.ConnectionStatus, baseNodeConnection: BaseNodeConnectivityStatus, syncStatus: TariValidationService.SyncStatus) {
+    private func handle(networkConnection: NetworkMonitor.Status, torConnection: TorConnectionStatus, baseNodeConnection: BaseNodeConnectivityStatus, syncStatus: TariValidationService.SyncStatus) {
 
         switch (networkConnection, torConnection, baseNodeConnection, syncStatus) {
         case (.disconnected, _, _, _),

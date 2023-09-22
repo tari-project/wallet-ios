@@ -46,7 +46,7 @@ final class ConnectionMonitor {
     // MARK: - Properties
 
     @Published private(set) var networkConnection: NetworkMonitor.Status = .disconnected
-    @Published private(set) var torConnection: TorManager.ConnectionStatus = .disconnected
+    @Published private(set) var torConnection: TorConnectionStatus = .disconnected
     @Published private(set) var torBootstrapProgress: Int = 0
     @Published private(set) var isTorBootstrapCompleted: Bool = false
     @Published private(set) var baseNodeConnection: BaseNodeConnectivityStatus = .offline
@@ -57,7 +57,7 @@ final class ConnectionMonitor {
 
     // MARK: - Setups
 
-    func setupPublishers(torConnectionStatus: AnyPublisher<TorManager.ConnectionStatus, Never>, torBootstrapProgress: AnyPublisher<Int, Never>,
+    func setupPublishers(torConnectionStatus: AnyPublisher<TorConnectionStatus, Never>, torBootstrapProgress: AnyPublisher<Int, Never>,
                          baseNodeConnectionStatus: AnyPublisher<BaseNodeConnectivityStatus, Never>, baseNodeSyncStatus: AnyPublisher<TariValidationService.SyncStatus, Never>) {
 
         networkMonitor.$status
@@ -108,7 +108,7 @@ private extension NetworkMonitor.Status {
     }
 }
 
-private extension TorManager.ConnectionStatus {
+private extension TorConnectionStatus {
 
     var statusName: String {
         switch self {

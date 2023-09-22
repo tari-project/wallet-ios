@@ -458,6 +458,7 @@
 		548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */; };
 		54909AAF29C05822002D1070 /* ContactType+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54909AAE29C05822002D1070 /* ContactType+Data.swift */; };
 		5491696E2940F78000783E54 /* LogFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5491696D2940F78000783E54 /* LogFilesManager.swift */; };
+		549565E02AA1D21E0092A10F /* Task+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549565DF2AA1D21E0092A10F /* Task+Utils.swift */; };
 		549E0E0D29754E9C00828743 /* PartialBackupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549E0E0C29754E9B00828743 /* PartialBackupModel.swift */; };
 		549E1A012A5EB7B00063022C /* QRCodeScannerBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549E1A002A5EB7B00063022C /* QRCodeScannerBoxView.swift */; };
 		549E1A032A5EC2260063022C /* VideoCaptureManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549E1A022A5EC2260063022C /* VideoCaptureManager.swift */; };
@@ -484,6 +485,7 @@
 		54C36D112A5D3EB600BD973A /* QRCodeScannerConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D102A5D3EB600BD973A /* QRCodeScannerConstructor.swift */; };
 		54C416232A1C914200454096 /* LocalNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C416222A1C914200454096 /* LocalNotificationsManager.swift */; };
 		54C416252A1CA81700454096 /* PendingDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C416242A1CA81700454096 /* PendingDataManager.swift */; };
+		54CAC3A72A9DD2060009E6CD /* TorWorkingContainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CAC3A62A9DD2060009E6CD /* TorWorkingContainter.swift */; };
 		54CB24F829FA65230008632D /* PaymentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB24F729FA65230008632D /* PaymentInfo.swift */; };
 		54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */; };
 		54CF5E012A27460700B01F21 /* ContactBookBluetoothCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CF5E002A27460700B01F21 /* ContactBookBluetoothCell.swift */; };
@@ -1023,6 +1025,7 @@
 		548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Common.swift"; sourceTree = "<group>"; };
 		54909AAE29C05822002D1070 /* ContactType+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactType+Data.swift"; sourceTree = "<group>"; };
 		5491696D2940F78000783E54 /* LogFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFilesManager.swift; sourceTree = "<group>"; };
+		549565DF2AA1D21E0092A10F /* Task+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Utils.swift"; sourceTree = "<group>"; };
 		549E0E0C29754E9B00828743 /* PartialBackupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialBackupModel.swift; sourceTree = "<group>"; };
 		549E1A002A5EB7B00063022C /* QRCodeScannerBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerBoxView.swift; sourceTree = "<group>"; };
 		549E1A022A5EC2260063022C /* VideoCaptureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoCaptureManager.swift; sourceTree = "<group>"; };
@@ -1049,6 +1052,7 @@
 		54C36D102A5D3EB600BD973A /* QRCodeScannerConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerConstructor.swift; sourceTree = "<group>"; };
 		54C416222A1C914200454096 /* LocalNotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsManager.swift; sourceTree = "<group>"; };
 		54C416242A1CA81700454096 /* PendingDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingDataManager.swift; sourceTree = "<group>"; };
+		54CAC3A62A9DD2060009E6CD /* TorWorkingContainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorWorkingContainter.swift; sourceTree = "<group>"; };
 		54CB24F729FA65230008632D /* PaymentInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentInfo.swift; sourceTree = "<group>"; };
 		54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PopPresenter+ContactBook.swift"; sourceTree = "<group>"; };
 		54CF5E002A27460700B01F21 /* ContactBookBluetoothCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookBluetoothCell.swift; sourceTree = "<group>"; };
@@ -1202,6 +1206,7 @@
 				004277F623E0628A00AE7BD9 /* UIViewController+Content.swift */,
 				54621F8629E00E04000E9659 /* URL+Tools.swift */,
 				54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */,
+				549565DF2AA1D21E0092A10F /* Task+Utils.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2249,6 +2254,7 @@
 			children = (
 				370E886A24FE9FF800576F61 /* Helpers */,
 				370E886224FE974100576F61 /* OnionSettings.swift */,
+				54CAC3A62A9DD2060009E6CD /* TorWorkingContainter.swift */,
 			);
 			path = Tor;
 			sourceTree = "<group>";
@@ -3692,6 +3698,7 @@
 				54D88EA42A5AEAEC0075DBC1 /* TransactionDynamicModel.swift in Sources */,
 				3A7E06DA287831BD00D15190 /* UTXOsEstimationLabel.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
+				54CAC3A72A9DD2060009E6CD /* TorWorkingContainter.swift in Sources */,
 				54A9C88A29F6A54B009B0653 /* ContactBookShareButton.swift in Sources */,
 				540CB6F529C1DE42003FACEF /* AddContactView.swift in Sources */,
 				54D4747929EDC21D003D14E6 /* FormOverlayPresenter.swift in Sources */,
@@ -3700,6 +3707,7 @@
 				3A420594279802E500A8D49C /* BaseButton.swift in Sources */,
 				3ABBBA7E2850815C00A3108D /* UTXOsWalletTileListView.swift in Sources */,
 				546B03232983B49400DBED8E /* StylizedLabel.swift in Sources */,
+				549565E02AA1D21E0092A10F /* Task+Utils.swift in Sources */,
 				54DE32D02930BE3D0060108A /* ColorTheme.swift in Sources */,
 				54621F9929E01465000E9659 /* DeepLinkUnkeyedEncodingContainer.swift in Sources */,
 				376B502324924BB700278ACC /* PendingView.swift in Sources */,

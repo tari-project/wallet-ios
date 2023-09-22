@@ -27,9 +27,11 @@ PODS:
   - SwiftyDropbox (8.2.1):
     - Alamofire (~> 5.4.3)
   - TariCommon (0.2.0)
-  - Tor (407.12.1):
-    - Tor/Core (= 407.12.1)
-  - Tor/Core (407.12.1)
+  - Tor (407.14.1):
+    - Tor/CTor (= 407.14.1)
+  - Tor/Core (407.14.1)
+  - Tor/CTor (407.14.1):
+    - Tor/Core
   - YatLib (0.3.3):
     - TariCommon (~> 0.2.0)
   - Zip (2.1.2)
@@ -46,7 +48,7 @@ DEPENDENCIES:
   - SwiftKeychainWrapper (= 3.4.0)
   - SwiftyDropbox (= 8.2.1)
   - TariCommon (= 0.2.0)
-  - Tor (~> 407.12.1)
+  - Tor (= 407.14.1)
   - YatLib (= 0.3.3)
   - Zip (= 2.1.2)
 
@@ -94,10 +96,10 @@ SPEC CHECKSUMS:
   SwiftKeychainWrapper: 6fc49fbf7d4a6b0772917acb0e53a1639f6078d6
   SwiftyDropbox: f6c55aae36c4ea944fe6b35f807c19897f78b09b
   TariCommon: 2c8bb97359f59d6b302d2e96c191ff95931da8ac
-  Tor: 319ca0f3bc42c387736a2d6dc56de75ed0a30eaf
+  Tor: 049f581f01953163b13effa212fc9e027448496a
   YatLib: f56aa60679b20e989a41b6bc92c0081c013b523a
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: 8832ff20a801bc9cce75eabcb6665cce00b686f5
+PODFILE CHECKSUM: 783e5ec88ee03b35e822f3c5a52a2e486f253af4
 
 COCOAPODS: 1.12.1
