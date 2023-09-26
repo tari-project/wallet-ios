@@ -106,8 +106,17 @@ final class TariAddress {
 }
 
 extension TariAddress: Equatable {
+
     static func == (lhs: TariAddress, rhs: TariAddress) -> Bool {
         guard let leftHex = try? lhs.byteVector.hex, let rightHex = try? rhs.byteVector.hex else { return false }
         return leftHex == rightHex
+    }
+
+    var isUnknownUser: Bool {
+        get throws {
+            let rawAddress = try byteVector.hex
+            let rawEmojiID = rawAddress.dropLast(2)
+            return rawEmojiID.filter { $0 == "0" }.count == 64
+        }
     }
 }
