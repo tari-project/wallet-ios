@@ -80,6 +80,7 @@
 "transaction.normal.title.pending.part.2" = "sent a payment";
 "transaction.normal.title.inbound.part.2" = "paid you";
 "transaction.normal.title.outbound.part.1" = "You paid";
+"transaction.unknown_source" = "Unknown Source";
 
 /* Authentication */
 "authentication.fail.title" = "Authentication failed";

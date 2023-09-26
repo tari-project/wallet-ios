@@ -97,7 +97,7 @@ final class ContactsManager {
                     .map { $0.firstOrEmpty }
                     .joined()
             } else {
-                name = internalModel?.alias ?? internalModel?.emojiID.obfuscatedText ?? ""
+                name = internalModel?.alias ?? internalModel?.defaultAlias ?? internalModel?.emojiID.obfuscatedText ?? ""
                 nameComponents = [name]
                 avatar = internalModel?.emojiID.firstOrEmpty ?? ""
             }
