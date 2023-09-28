@@ -1,4 +1,4 @@
-//  ContactBookShareButton.swift
+//  RoundedLabeledButton.swift
 
 /*
 	Package MobileWallet
@@ -40,7 +40,7 @@
 
 import TariCommon
 
-final class ContactBookShareButton: DynamicThemeView {
+final class RoundedLabeledButton: DynamicThemeView {
 
     // MARK: - Subviews
 
@@ -48,6 +48,7 @@ final class ContactBookShareButton: DynamicThemeView {
         let view = RoundedButton()
         view.contentVerticalAlignment = .fill
         view.contentHorizontalAlignment = .fill
+        view.imageView?.contentMode = .scaleAspectFit
         return view
     }()
 

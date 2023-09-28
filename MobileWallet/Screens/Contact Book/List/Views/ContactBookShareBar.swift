@@ -107,8 +107,8 @@ final class ContactBookShareBar: UIView {
         selectedIdentifier = 0
     }
 
-    private func makeButton(model: ViewModel, isSelected: Bool) -> ContactBookShareButton {
-        @View var button = ContactBookShareButton()
+    private func makeButton(model: ViewModel, isSelected: Bool) -> RoundedLabeledButton {
+        @View var button = RoundedLabeledButton()
         button.buttonSize = 46.0
         button.padding = 10.0
         button.isSelected = isSelected
@@ -120,7 +120,7 @@ final class ContactBookShareBar: UIView {
 
     private func updateButtons() {
         stackView.arrangedSubviews
-            .compactMap { $0 as? ContactBookShareButton }
+            .compactMap { $0 as? RoundedLabeledButton }
             .forEach { $0.isSelected = $0.tag == self.selectedIdentifier }
     }
 }

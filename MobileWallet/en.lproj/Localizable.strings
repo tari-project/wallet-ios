@@ -220,8 +220,6 @@
 "settings.item.select_base_node" = "Select Base Node";
 "settings.item.delete_wallet" = "Delete Your Wallet";
 
-"settings.item.connect_yats" = "Connect Yats";
-
 "settings.item.contribute_to_tari" = "Contribute to Tari Aurora";
 "settings.item.disclaimer" = "Disclaimer";
 "settings.item.privacy_policy" = "Privacy Policy";
@@ -382,10 +380,17 @@
 "profile_view.title" = "My Profile";
 "profile_view.error.qr_code.title" = "Failed to generate QR";
 "profile_view.error.qr_code.description.with_param" = "Easily receive %@ from others by sharing your profile via one of the methods below:";
-"profile_view.error.yat_mismatch" = "You've previously connected this Yat.\n Do you want to re-connect it to your wallet?";
-"profile_view.button.recconect_yat" = "Reconnect Yat";
+"profile_view.button.wallet" = "Wallet";
+"profile_view.button.connect_yat" = "Connect Yats";
+"profile_view.button.share.qr_code" = "QR Code";
+"profile_view.button.share.link" = "Link";
+"profile_view.button.share.ble" = "BLE";
 "profile_view.form.title" = "Edit Name";
 "profile_view.form.text_field.name.placeholder" = "Name";
+"profile_view.label.out_of_sync.part.1" = "Your previously connected Yat has lost sync with the app. Click";
+"profile_view.label.out_of_sync.part.2.bold" = "Connect Yats";
+"profile_view.label.out_of_sync.part.3" = "below if you’d like to reconnect it.";
+"profile_view.label.title.share" = "Share Profile";
 
 /* Navigation bar */
 "navigation_bar.error.show_emoji.title" = "Public key error";

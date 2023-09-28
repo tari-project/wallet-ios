@@ -468,7 +468,7 @@
 		54A783DB29E96FF600A30594 /* BLEPeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A783DA29E96FF600A30594 /* BLEPeripheralManager.swift */; };
 		54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */; };
 		54A9C88829F6A06F009B0653 /* DataFlowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A9C88729F6A06F009B0653 /* DataFlowManager.swift */; };
-		54A9C88A29F6A54B009B0653 /* ContactBookShareButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A9C88929F6A54B009B0653 /* ContactBookShareButton.swift */; };
+		54A9C88A29F6A54B009B0653 /* RoundedLabeledButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A9C88929F6A54B009B0653 /* RoundedLabeledButton.swift */; };
 		54AA5D5A298122B70031A396 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D59298122B70031A396 /* OnboardingView.swift */; };
 		54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */; };
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
@@ -1048,7 +1048,7 @@
 		54A783DA29E96FF600A30594 /* BLEPeripheralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEPeripheralManager.swift; sourceTree = "<group>"; };
 		54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariUnspentOutputsService.swift; sourceTree = "<group>"; };
 		54A9C88729F6A06F009B0653 /* DataFlowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataFlowManager.swift; sourceTree = "<group>"; };
-		54A9C88929F6A54B009B0653 /* ContactBookShareButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookShareButton.swift; sourceTree = "<group>"; };
+		54A9C88929F6A54B009B0653 /* RoundedLabeledButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedLabeledButton.swift; sourceTree = "<group>"; };
 		54AA5D59298122B70031A396 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageViewController.swift; sourceTree = "<group>"; };
 		54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
@@ -1435,6 +1435,7 @@
 				37875E4324D85C4300C0595B /* LoadingGIFButton.swift */,
 				00A994322396434B007D9990 /* PulseButton.swift */,
 				5453242129A68CA0009281A7 /* RoundedButton.swift */,
+				54A9C88929F6A54B009B0653 /* RoundedLabeledButton.swift */,
 				0053872F24065F6C00901A68 /* SlideView.swift */,
 				004277F223E0407900AE7BD9 /* TextButton.swift */,
 			);
@@ -2842,7 +2843,6 @@
 				54B7F4442996583800BB484B /* ContactBookCell.swift */,
 				54CF5E002A27460700B01F21 /* ContactBookBluetoothCell.swift */,
 				5488068829D4244800C2A0F9 /* ContactBookShareBar.swift */,
-				54A9C88929F6A54B009B0653 /* ContactBookShareButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -3722,7 +3722,7 @@
 				3A7E06DA287831BD00D15190 /* UTXOsEstimationLabel.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
 				54CAC3A72A9DD2060009E6CD /* TorWorkingContainter.swift in Sources */,
-				54A9C88A29F6A54B009B0653 /* ContactBookShareButton.swift in Sources */,
+				54A9C88A29F6A54B009B0653 /* RoundedLabeledButton.swift in Sources */,
 				540CB6F529C1DE42003FACEF /* AddContactView.swift in Sources */,
 				54D4747929EDC21D003D14E6 /* FormOverlayPresenter.swift in Sources */,
 				3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */,
