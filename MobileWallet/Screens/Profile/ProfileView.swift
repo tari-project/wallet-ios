@@ -38,13 +38,19 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 import Lottie
 
 final class ProfileView: BaseNavigationContentView {
 
     // MARK: - Subviews
+
+    @View private var usernameLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Avenir.heavy.withSize(16.0)
+        view.textAlignment = .center
+        return view
+    }()
 
     @View private var emojiIdView = EmojiIdView()
     @View var yatButton: BaseButton = BaseButton()
@@ -57,48 +63,91 @@ final class ProfileView: BaseNavigationContentView {
         return view
     }()
 
-    @View var middleLabel: UILabel = {
-        let view = UILabel()
-        view.font = Theme.shared.fonts.profileMiddleLabel
+    @View private var yatOutOfSyncLabel: StylizedLabel = {
+        let view = StylizedLabel()
+        view.normalFont = .Avenir.medium.withSize(13.0)
+        view.boldFont = .Avenir.heavy.withSize(13.0)
+        view.separator = " "
         view.textAlignment = .center
-        view.numberOfLines = 2
-        view.adjustsFontSizeToFitWidth = true
+        view.numberOfLines = 0
+        view.alpha = 0.0
+        view.textComponents = [
+            StylizedLabel.StylizedText(text: localized("profile_view.label.out_of_sync.part.1"), style: .normal),
+            StylizedLabel.StylizedText(text: localized("profile_view.label.out_of_sync.part.2.bold"), style: .bold),
+            StylizedLabel.StylizedText(text: localized("profile_view.label.out_of_sync.part.3"), style: .normal)
+        ]
         return view
     }()
 
-    @View var reconnectYatButton: TextButton = {
-        let view = TextButton()
-        view.setTitle(localized("profile_view.button.recconect_yat"), for: .normal)
-        return view
-    }()
-
-    @View private var buttonsStackView: UIStackView = {
+    @View private var auroraButtonsStackView: UIStackView = {
         let view = UIStackView()
         view.spacing = 40.0
         return view
     }()
 
-    @View private var qrCodeButton: ContactBookShareButton = {
-        let view = ContactBookShareButton()
-        view.buttonSize = 80.0
-        view.padding = 15.0
+    @View private var walletButton: RoundedLabeledButton = {
+        let view = RoundedLabeledButton()
+        view.buttonSize = 46.0
+        view.padding = 12.0
+        view.update(image: .icons.wallet, text: localized("profile_view.button.wallet"))
+        return view
+    }()
+
+    @View private var connectYatButton: RoundedLabeledButton = {
+        let view = RoundedLabeledButton()
+        view.buttonSize = 46.0
+        view.padding = 12.0
+        view.update(image: Theme.shared.images.yatLogo, text: localized("profile_view.button.connect_yat"))
+        return view
+    }()
+
+    @View private var shareSectionSeparator = UIView()
+
+    @View private var shareSectionTitleLabel: UILabel = {
+        let view = UILabel()
+        view.font = .Avenir.heavy.withSize(16.0)
+        view.textAlignment = .center
+        view.text = localized("profile_view.label.title.share")
+        return view
+    }()
+
+    @View private var shareSectionDescriptionLabel: UILabel = {
+        let view = UILabel()
+        view.font = Theme.shared.fonts.profileMiddleLabel
+        view.textAlignment = .center
+        view.numberOfLines = 2
+        view.adjustsFontSizeToFitWidth = true
+        view.text = localized("profile_view.error.qr_code.description.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
+        return view
+    }()
+
+    @View private var shareButtonsStackView: UIStackView = {
+        let view = UIStackView()
+        view.spacing = 40.0
+        return view
+    }()
+
+    @View private var qrCodeButton: RoundedLabeledButton = {
+        let view = RoundedLabeledButton()
+        view.buttonSize = 46.0
+        view.padding = 12.0
         view.update(image: .icons.qr, text: localized("contact_book.share_bar.buttons.qr"))
         return view
     }()
 
-    @View private var linkCodeButton: ContactBookShareButton = {
-        let view = ContactBookShareButton()
+    @View private var linkCodeButton: RoundedLabeledButton = {
+        let view = RoundedLabeledButton()
         view.update(image: .icons.link, text: localized("contact_book.share_bar.buttons.link"))
-        view.buttonSize = 80.0
-        view.padding = 15.0
+        view.buttonSize = 46.0
+        view.padding = 12.0
         return view
     }()
 
-    @View private var bleCodeButton: ContactBookShareButton = {
-        let view = ContactBookShareButton()
+    @View private var bleCodeButton: RoundedLabeledButton = {
+        let view = RoundedLabeledButton()
         view.update(image: .icons.bluetooth, text: localized("contact_book.share_bar.buttons.ble"))
-        view.buttonSize = 80.0
-        view.padding = 15.0
+        view.buttonSize = 46.0
+        view.padding = 12.0
         return view
     }()
 
@@ -113,13 +162,25 @@ final class ProfileView: BaseNavigationContentView {
         didSet { updateYatButton(isOn: isYatButtonOn) }
     }
 
+    var isOutOfSyncLabelVisible = false {
+        didSet {
+            guard isOutOfSyncLabelVisible != oldValue else { return }
+            updateOutOfSyncStatus()
+        }
+    }
+
     var onEditButtonTap: (() -> Void)?
+    var onWalletButtonTap: (() -> Void)?
+    var onConnectYatButtonTap: (() -> Void)?
     var onQrCodeButtonTap: (() -> Void)?
     var onLinkButtonTap: (() -> Void)?
     var onBleButtonTap: (() -> Void)?
 
     private var yatButtonOnTintColor: UIColor?
     private var yatButtonOffTintColor: UIColor?
+
+    private var auroraButtonsTopConstraintOnYatLabelHidden: NSLayoutConstraint?
+    private var auroraButtonsTopConstraintOnYatLabelShown: NSLayoutConstraint?
 
     // MARK: - Initialisers
 
@@ -148,11 +209,19 @@ final class ProfileView: BaseNavigationContentView {
 
     private func setupConstraints() {
 
-        [emojiIdView, yatButton, yatSpinnerView, middleLabel, reconnectYatButton, buttonsStackView].forEach(addSubview)
-        [qrCodeButton, linkCodeButton, bleCodeButton].forEach(buttonsStackView.addArrangedSubview)
+        [usernameLabel, emojiIdView, yatButton, yatSpinnerView, yatOutOfSyncLabel, shareSectionSeparator, shareSectionTitleLabel, shareSectionDescriptionLabel, auroraButtonsStackView, shareButtonsStackView].forEach(addSubview)
+        [walletButton, connectYatButton].forEach(auroraButtonsStackView.addArrangedSubview)
+        [qrCodeButton, linkCodeButton, bleCodeButton].forEach(shareButtonsStackView.addArrangedSubview)
+
+        let auroraButtonsTopConstraintOnYatLabelHidden = auroraButtonsStackView.topAnchor.constraint(equalTo: emojiIdView.bottomAnchor, constant: 20.0)
+        self.auroraButtonsTopConstraintOnYatLabelHidden = auroraButtonsTopConstraintOnYatLabelHidden
+        auroraButtonsTopConstraintOnYatLabelShown = auroraButtonsStackView.topAnchor.constraint(equalTo: yatOutOfSyncLabel.bottomAnchor, constant: 20.0)
 
         let constraints = [
-            emojiIdView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 25.0),
+            usernameLabel.topAnchor.constraint(equalTo: navigationBar.bottomAnchor, constant: 50.0),
+            usernameLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            usernameLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
+            emojiIdView.topAnchor.constraint(equalTo: usernameLabel.bottomAnchor, constant: 20.0),
             emojiIdView.widthAnchor.constraint(equalToConstant: 185.0),
             emojiIdView.heightAnchor.constraint(equalToConstant: 38.0),
             emojiIdView.centerXAnchor.constraint(equalTo: centerXAnchor),
@@ -164,19 +233,37 @@ final class ProfileView: BaseNavigationContentView {
             yatSpinnerView.centerYAnchor.constraint(equalTo: yatButton.centerYAnchor),
             yatSpinnerView.heightAnchor.constraint(equalToConstant: 28.0),
             yatSpinnerView.widthAnchor.constraint(equalToConstant: 28.0),
-            middleLabel.topAnchor.constraint(equalTo: emojiIdView.bottomAnchor, constant: 40.0),
-            middleLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 40.0),
-            middleLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -40.0),
-            reconnectYatButton.topAnchor.constraint(equalTo: middleLabel.bottomAnchor),
-            reconnectYatButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            buttonsStackView.topAnchor.constraint(equalTo: reconnectYatButton.bottomAnchor, constant: 20.0),
-            buttonsStackView.centerXAnchor.constraint(equalTo: centerXAnchor)
+            yatOutOfSyncLabel.topAnchor.constraint(equalTo: emojiIdView.bottomAnchor, constant: 20.0),
+            yatOutOfSyncLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            yatOutOfSyncLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
+            auroraButtonsTopConstraintOnYatLabelHidden,
+            auroraButtonsStackView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            shareSectionSeparator.topAnchor.constraint(equalTo: auroraButtonsStackView.bottomAnchor, constant: 20.0),
+            shareSectionSeparator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            shareSectionSeparator.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
+            shareSectionSeparator.heightAnchor.constraint(equalToConstant: 1.0),
+            shareSectionTitleLabel.topAnchor.constraint(equalTo: shareSectionSeparator.bottomAnchor, constant: 20.0),
+            shareSectionTitleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            shareSectionTitleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0),
+            shareSectionDescriptionLabel.topAnchor.constraint(equalTo: shareSectionTitleLabel.bottomAnchor, constant: 20.0),
+            shareSectionDescriptionLabel.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: 25.0),
+            shareSectionDescriptionLabel.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -25.0),
+            shareButtonsStackView.topAnchor.constraint(equalTo: shareSectionDescriptionLabel.bottomAnchor, constant: 20.0),
+            shareButtonsStackView.centerXAnchor.constraint(equalTo: centerXAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
     }
 
     private func setupCallbacks() {
+
+        walletButton.onTap = { [weak self] in
+            self?.onWalletButtonTap?()
+        }
+
+        connectYatButton.onTap = { [weak self] in
+            self?.onConnectYatButtonTap?()
+        }
 
         qrCodeButton.onTap = { [weak self] in
             self?.onQrCodeButtonTap?()
@@ -197,12 +284,35 @@ final class ProfileView: BaseNavigationContentView {
         super.update(theme: theme)
 
         backgroundColor = theme.backgrounds.secondary
-        middleLabel.textColor = theme.text.body
-        reconnectYatButton.setTitleColor(theme.text.links, for: .normal)
+        usernameLabel.textColor = theme.text.heading
+        yatOutOfSyncLabel.textColor = theme.text.body
+        shareSectionSeparator.backgroundColor = theme.neutral.tertiary
+        shareSectionTitleLabel.textColor = theme.text.heading
+        shareSectionDescriptionLabel.textColor = theme.text.body
         yatButtonOnTintColor = theme.icons.active
         yatButtonOffTintColor = theme.icons.inactive
 
         updateYatButton(isOn: isYatButtonOn)
+    }
+
+    func update(username: String?) {
+        usernameLabel.text = username
+    }
+
+    private func updateOutOfSyncStatus() {
+
+        if isOutOfSyncLabelVisible {
+            auroraButtonsTopConstraintOnYatLabelHidden?.isActive = false
+            auroraButtonsTopConstraintOnYatLabelShown?.isActive = true
+        } else {
+            auroraButtonsTopConstraintOnYatLabelShown?.isActive = false
+            auroraButtonsTopConstraintOnYatLabelHidden?.isActive = true
+        }
+
+        UIView.animate(withDuration: 0.3) {
+            self.yatOutOfSyncLabel.alpha = self.isOutOfSyncLabelVisible ? 1.0 : 0.0
+            self.layoutIfNeeded()
+        }
     }
 
     func update(emojiID: String, hex: String?, copyText: String, tooltopText: String?) {

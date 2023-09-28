@@ -71,8 +71,7 @@ final class ProfileModel {
 
     @Published var name: String?
     @Published private(set) var emojiData: EmojiData?
-    @Published private(set) var description: String?
-    @Published private(set) var isReconnectButtonVisible: Bool = false
+    @Published private(set) var isYatOutOfSync: Bool = false
     @Published private(set) var errorMessage: MessageModel?
     @Published private(set) var yatButtonState: YatButtonState = .hidden
     @Published private(set) var yatAddress: String?
@@ -84,12 +83,7 @@ final class ProfileModel {
 
     private var walletAddress: TariAddress?
     private var yat: String?
-    private var isYatOutOfSync = false
     private var bleTask: BLECentralTask?
-
-    private var walletDescription: String {
-        localized("profile_view.error.qr_code.description.with_param", arguments: NetworkManager.shared.selectedNetwork.tickerSymbol)
-    }
 
     // MARK: - Initialisers
 
@@ -134,7 +128,6 @@ final class ProfileModel {
 
         do {
             self.walletAddress = try Tari.shared.walletAddress
-            updateYatIdData()
         } catch {
             emojiData = nil
             errorMessage = MessageModel(title: localized("profile_view.error.qr_code.title"), message: localized("wallet.error.failed_to_access"), type: .error)
@@ -215,13 +208,9 @@ final class ProfileModel {
         case .hidden, .loading, .off:
             guard let walletAddress = walletAddress else { return }
             emojiData = EmojiData(emojiID: try walletAddress.emojis, hex: try walletAddress.byteVector.hex, copyText: localized("emoji.copy"), tooltipText: localized("emoji.hex_tip"))
-            description = walletDescription
-            isReconnectButtonVisible = false
         case .on:
             guard let yat = self.yat else { return }
             emojiData = EmojiData(emojiID: yat, hex: nil, copyText: localized("emoji.yat.copy"), tooltipText: nil)
-            description = isYatOutOfSync ? localized("profile_view.error.yat_mismatch") : walletDescription
-            isReconnectButtonVisible = isYatOutOfSync
         }
     }
 

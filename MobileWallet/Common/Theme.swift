@@ -109,7 +109,6 @@ struct Images {
     let settingsUserAgreementIcon = UIImage(named: "icon-user-agreement")
     let settingsVisitTariIcon = UIImage(named: "icon-visit-tari")
     let settingsWalletBackupsIcon = UIImage(named: "icon-wallet-backups")
-    let settingsYatIcon = UIImage(named: "icon-yat")
     let settingColorThemeIcon = UIImage(named: "icon-theme")
 
     // Connection Details Icons

@@ -75,7 +75,6 @@ final class TransactionHistoryView: BaseNavigationContentView {
 
     var searchText: AnyPublisher<String, Never> { searchTextSubject.eraseToAnyPublisher() }
 
-    var onWalletButtonTap: (() -> Void)?
     var onCellTap: ((_ id: UInt64) -> Void)?
 
     private let searchTextSubject = CurrentValueSubject<String, Never>("")
@@ -100,9 +99,6 @@ final class TransactionHistoryView: BaseNavigationContentView {
 
     private func setupNavigationBar() {
         navigationBar.title = localized("transaction_history.title")
-        navigationBar.update(rightButton: NavigationBar.ButtonModel(image: .icons.wallet, callback: { [weak self] in
-            self?.onWalletButtonTap?()
-        }))
     }
 
     private func setupConstraints() {

@@ -74,8 +74,8 @@ final class ProfileViewController: UIViewController {
         setupBindings()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         model.updateYatIdData()
     }
 
@@ -83,21 +83,20 @@ final class ProfileViewController: UIViewController {
 
     private func setupBindings() {
 
+        model.$name
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.update(username: $0) }
+            .store(in: &cancellables)
+
         model.$emojiData
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.mainView.update(emojiID: $0.emojiID, hex: $0.hex, copyText: $0.copyText, tooltopText: $0.tooltipText) }
             .store(in: &cancellables)
 
-        model.$description
+        model.$isYatOutOfSync
             .receive(on: DispatchQueue.main)
-            .assign(to: \.text, on: mainView.middleLabel)
-            .store(in: &cancellables)
-
-        model.$isReconnectButtonVisible
-            .map { !$0 }
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.isHidden, on: mainView.reconnectYatButton)
+            .assign(to: \.isOutOfSyncLabelVisible, on: mainView)
             .store(in: &cancellables)
 
         model.$errorMessage
@@ -127,12 +126,16 @@ final class ProfileViewController: UIViewController {
             self?.model.toggleVisibleData()
         }
 
-        mainView.reconnectYatButton.onTap = { [weak self] in
-            self?.model.reconnectYat()
-        }
-
         mainView.onEditButtonTap = { [weak self] in
             self?.showEditNameForm()
+        }
+
+        mainView.onWalletButtonTap = { [weak self] in
+            self?.moveToUTXOsWallet()
+        }
+
+        mainView.onConnectYatButtonTap = { [weak self] in
+            self?.model.reconnectYat()
         }
 
         mainView.onQrCodeButtonTap = { [weak self] in
@@ -171,6 +174,11 @@ final class ProfileViewController: UIViewController {
         Yat.integration.showOnboarding(onViewController: self, records: [
             YatRecordInput(tag: .XTRAddress, value: publicKey)
         ])
+    }
+
+    private func moveToUTXOsWallet() {
+        let controller = UTXOsWalletConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     private func handle(action: ProfileModel.Action) {
