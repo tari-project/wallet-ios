@@ -70,7 +70,9 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private enum SettingsItemTitle: CaseIterable {
+
         case backUpWallet
+        case dataCollection
 
         case about
         case reportBug
@@ -91,6 +93,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         var rawValue: String {
             switch self {
             case .backUpWallet: return localized("settings.item.wallet_backups")
+            case .dataCollection: return localized("settings.item.data_collection")
 
             case .bluetoothConfiguration: return localized("settings.item.bluetooth_settings")
             case .selectTheme: return localized("settings.item.select_theme")
@@ -113,7 +116,10 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private let backUpWalletItem = SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsWalletBackupsIcon, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
 
-    private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [backUpWalletItem]
+    private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [
+        backUpWalletItem,
+        SystemMenuTableViewCellItem(icon: .icons.analytics, title: SettingsItemTitle.dataCollection.rawValue)
+    ]
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
@@ -180,6 +186,11 @@ final class SettingsViewController: SettingsParentTableViewController {
             let controller = BackupWalletSettingsConstructor.buildScene(backButtonType: .back)
             self?.navigationController?.pushViewController(controller, animated: true)
         }
+    }
+
+    private func onDataCollectionAction() {
+        let controller = DataCollectionSettingsConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     private func onAboutAction() {
@@ -366,10 +377,17 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             default:
                 break
             }
-        case .security: onBackupWalletAction()
+        case .security:
+            switch indexPath.row {
+            case 0:
+                onBackupWalletAction()
+            case 1:
+                onDataCollectionAction()
+            default:
+                break
+            }
         case .more:
             var indexPath = indexPath
-            indexPath.row -= 1
             switch SettingsItemTitle.allCases[indexPath.row + indexPath.section] {
             case .about:
                 onAboutAction()

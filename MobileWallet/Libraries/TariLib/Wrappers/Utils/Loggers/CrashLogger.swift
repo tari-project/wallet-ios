@@ -42,12 +42,42 @@ import Sentry
 
 final class CrashLogger {
 
-    init() {
-        guard let sentryPublicDSN = TariSettings.shared.sentryPublicDSN else { return }
+    var isEnabled: Bool? = GroupUserDefaults.isTrackingEnabled {
+        didSet { updateState() }
+    }
+
+    // MARK: - Actions
+
+    func configure() {
+        isEnabled = GroupUserDefaults.isTrackingEnabled
+    }
+
+    private func start() {
+        guard let sentryPublicDSN = TariSettings.shared.sentryPublicDSN, !SentrySDK.isEnabled else { return }
         let options = Options()
         options.dsn = sentryPublicDSN
         options.environment = TariSettings.shared.environment.name
         SentrySDK.start(options: options)
+        Logger.log(message: "Data Collection Enabled", domain: .general, level: .info)
+    }
+
+    private func stop() {
+        guard SentrySDK.isEnabled else { return }
+        SentrySDK.close()
+        Logger.log(message: "Data Collection Disabled", domain: .general, level: .info)
+    }
+
+    // MARK: - Handlers
+
+    private func updateState() {
+
+        GroupUserDefaults.isTrackingEnabled = isEnabled
+
+        if isEnabled == true {
+            start()
+        } else {
+            stop()
+        }
     }
 }
 

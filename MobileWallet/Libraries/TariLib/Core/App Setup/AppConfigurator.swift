@@ -38,14 +38,31 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum AppConfigurator {
+final class AppConfigurator {
 
-    static func configure() {
+    // MARK: - Properties
+
+    static let shared = AppConfigurator()
+
+    var isCrashLoggerEnabled: Bool {
+        get { crashLogger.isEnabled ?? false }
+        set { crashLogger.isEnabled = newValue }
+    }
+
+    private let crashLogger = CrashLogger()
+
+    // MARK: - Initialisers
+
+    private init() {}
+
+    // MARK: - Actions
+
+    func configure() {
         configureLoggers()
         configureManagers()
     }
 
-    private static func configureLoggers() {
+    private func configureLoggers() {
         switch TariSettings.shared.environment {
         case .debug:
             Logger.attach(logger: ConsoleLogger())
@@ -54,10 +71,12 @@ enum AppConfigurator {
         }
 
         Logger.attach(logger: FileLogger())
-        Logger.attach(logger: CrashLogger())
+        Logger.attach(logger: crashLogger)
+
+        crashLogger.configure()
     }
 
-    private static func configureManagers() {
+    private func configureManagers() {
         BackupManager.shared.configure()
         StatusLoggerManager.shared.configure()
         DataFlowManager.shared.configure()

@@ -455,6 +455,7 @@
 		54885B1929E7FEA8009175AC /* BLECentralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54885B1829E7FEA8009175AC /* BLECentralManager.swift */; };
 		54885B1B29E802D7009175AC /* BLEConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54885B1A29E802D7009175AC /* BLEConstants.swift */; };
 		548C137B29BF64AD00ACDF0C /* UITableView+Common.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */; };
+		548C4C322AC1689B00E376EF /* SwitchMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C4C312AC1689B00E376EF /* SwitchMenuCell.swift */; };
 		54909AAF29C05822002D1070 /* ContactType+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54909AAE29C05822002D1070 /* ContactType+Data.swift */; };
 		5491696E2940F78000783E54 /* LogFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5491696D2940F78000783E54 /* LogFilesManager.swift */; };
 		549565E02AA1D21E0092A10F /* Task+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549565DF2AA1D21E0092A10F /* Task+Utils.swift */; };
@@ -486,10 +487,15 @@
 		54C36D112A5D3EB600BD973A /* QRCodeScannerConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D102A5D3EB600BD973A /* QRCodeScannerConstructor.swift */; };
 		54C416232A1C914200454096 /* LocalNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C416222A1C914200454096 /* LocalNotificationsManager.swift */; };
 		54C416252A1CA81700454096 /* PendingDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C416242A1CA81700454096 /* PendingDataManager.swift */; };
+		54C7EB602AC6B22C00F387DF /* TrackingConsentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C7EB5F2AC6B22C00F387DF /* TrackingConsentManager.swift */; };
 		54CAC3A72A9DD2060009E6CD /* TorWorkingContainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CAC3A62A9DD2060009E6CD /* TorWorkingContainter.swift */; };
 		54CB24F829FA65230008632D /* PaymentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB24F729FA65230008632D /* PaymentInfo.swift */; };
 		54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */; };
 		54CF5E012A27460700B01F21 /* ContactBookBluetoothCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CF5E002A27460700B01F21 /* ContactBookBluetoothCell.swift */; };
+		54D1E1A32ABD92290021A365 /* DataCollectionSettingsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D1E1A22ABD92290021A365 /* DataCollectionSettingsConstructor.swift */; };
+		54D1E1A52ABD92380021A365 /* DataCollectionSettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D1E1A42ABD92380021A365 /* DataCollectionSettingsModel.swift */; };
+		54D1E1A72ABD92420021A365 /* DataCollectionSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D1E1A62ABD92420021A365 /* DataCollectionSettingsViewController.swift */; };
+		54D1E1A92ABD92490021A365 /* DataCollectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D1E1A82ABD92490021A365 /* DataCollectionSettingsView.swift */; };
 		54D419B32995092F00D496B4 /* ContactBookModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B22995092F00D496B4 /* ContactBookModel.swift */; };
 		54D419B52995093800D496B4 /* ContactBookViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B42995093800D496B4 /* ContactBookViewController.swift */; };
 		54D419B72995094100D496B4 /* ContactBookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B62995094100D496B4 /* ContactBookView.swift */; };
@@ -709,7 +715,6 @@
 		3A3D70B8291A625700A8CD7A /* BackupStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupStatus.swift; sourceTree = "<group>"; };
 		3A3D70BA291A637100A8CD7A /* BaseMenuTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseMenuTableView.swift; sourceTree = "<group>"; };
 		3A3E7AD5284E03140065F3C0 /* UTXOTileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOTileView.swift; sourceTree = "<group>"; };
-		3A3E8BF02924F84300490E57 /* Constants.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Constants.plist; sourceTree = "<group>"; };
 		3A3E8BF22924FB4C00490E57 /* MigrationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationManager.swift; sourceTree = "<group>"; };
 		3A4205912798001A00A8D49C /* AmountKeyboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmountKeyboardView.swift; sourceTree = "<group>"; };
 		3A420593279802E500A8D49C /* BaseButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseButton.swift; sourceTree = "<group>"; };
@@ -1002,7 +1007,6 @@
 		545A9D1E294F9323008D24A6 /* RadioButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButtonView.swift; sourceTree = "<group>"; };
 		545A9D20294F9CCE008D24A6 /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		545A9D23294F9E77008D24A6 /* UserSettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettingsManager.swift; sourceTree = "<group>"; };
-		545B80A1298D40CF00405AE9 /* libtari_wallet_ffi_ios.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libtari_wallet_ffi_ios.xcframework; path = MobileWallet/TariLib/libtari_wallet_ffi_ios.xcframework; sourceTree = "<group>"; };
 		5460258529A74D8200CF5764 /* ContactDetailsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetailsModel.swift; sourceTree = "<group>"; };
 		5460258729A74DA200CF5764 /* ContactDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetailsViewController.swift; sourceTree = "<group>"; };
 		5460258929A74DAB00CF5764 /* ContactDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactDetailsView.swift; sourceTree = "<group>"; };
@@ -1035,6 +1039,7 @@
 		54885B1829E7FEA8009175AC /* BLECentralManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLECentralManager.swift; sourceTree = "<group>"; };
 		54885B1A29E802D7009175AC /* BLEConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BLEConstants.swift; sourceTree = "<group>"; };
 		548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Common.swift"; sourceTree = "<group>"; };
+		548C4C312AC1689B00E376EF /* SwitchMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchMenuCell.swift; sourceTree = "<group>"; };
 		54909AAE29C05822002D1070 /* ContactType+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactType+Data.swift"; sourceTree = "<group>"; };
 		5491696D2940F78000783E54 /* LogFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFilesManager.swift; sourceTree = "<group>"; };
 		549565DF2AA1D21E0092A10F /* Task+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Utils.swift"; sourceTree = "<group>"; };
@@ -1065,10 +1070,15 @@
 		54C36D102A5D3EB600BD973A /* QRCodeScannerConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerConstructor.swift; sourceTree = "<group>"; };
 		54C416222A1C914200454096 /* LocalNotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsManager.swift; sourceTree = "<group>"; };
 		54C416242A1CA81700454096 /* PendingDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingDataManager.swift; sourceTree = "<group>"; };
+		54C7EB5F2AC6B22C00F387DF /* TrackingConsentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingConsentManager.swift; sourceTree = "<group>"; };
 		54CAC3A62A9DD2060009E6CD /* TorWorkingContainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorWorkingContainter.swift; sourceTree = "<group>"; };
 		54CB24F729FA65230008632D /* PaymentInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentInfo.swift; sourceTree = "<group>"; };
 		54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PopPresenter+ContactBook.swift"; sourceTree = "<group>"; };
 		54CF5E002A27460700B01F21 /* ContactBookBluetoothCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookBluetoothCell.swift; sourceTree = "<group>"; };
+		54D1E1A22ABD92290021A365 /* DataCollectionSettingsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionSettingsConstructor.swift; sourceTree = "<group>"; };
+		54D1E1A42ABD92380021A365 /* DataCollectionSettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionSettingsModel.swift; sourceTree = "<group>"; };
+		54D1E1A62ABD92420021A365 /* DataCollectionSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionSettingsViewController.swift; sourceTree = "<group>"; };
+		54D1E1A82ABD92490021A365 /* DataCollectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCollectionSettingsView.swift; sourceTree = "<group>"; };
 		54D419B22995092F00D496B4 /* ContactBookModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookModel.swift; sourceTree = "<group>"; };
 		54D419B42995093800D496B4 /* ContactBookViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookViewController.swift; sourceTree = "<group>"; };
 		54D419B62995094100D496B4 /* ContactBookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookView.swift; sourceTree = "<group>"; };
@@ -1469,7 +1479,6 @@
 				4C2C95B8237959B3005058AB /* MobileWallet-bridging-header.h */,
 				54F23DE629BBA0C3001E39A2 /* InfoPlist.strings */,
 				00E491AC2366E08F007B332D /* Info.plist */,
-				3A3E8BF02924F84300490E57 /* Constants.plist */,
 				00E491992366E08B007B332D /* AppDelegate.swift */,
 				00E4919B2366E08B007B332D /* SceneDelegate.swift */,
 				00E491A72366E08F007B332D /* Assets.xcassets */,
@@ -1488,7 +1497,6 @@
 		27F235021D9E2060A3CBB465 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				545B80A1298D40CF00405AE9 /* libtari_wallet_ffi_ios.xcframework */,
 				54B3A5442AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework */,
 				4C363B372574EFE500D99868 /* OpenSSL.xcframework */,
 				371189722488FF11004D0CE3 /* CloudKit.framework */,
@@ -1512,6 +1520,7 @@
 		3708D748247FCF0700807D72 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				54D1E1A12ABD920F0021A365 /* Data Collection Settings */,
 				5444C80429F17C0000BF3875 /* Bluetooth Settings */,
 				545A9D12294F6EBD008D24A6 /* Theme Settings */,
 				3A0391E2290BA22400352D73 /* Bug Reporting */,
@@ -1825,6 +1834,7 @@
 				54C416242A1CA81700454096 /* PendingDataManager.swift */,
 				549E1A022A5EC2260063022C /* VideoCaptureManager.swift */,
 				5482C8CF2A71105700C2C80A /* AnimationHandler.swift */,
+				54C7EB5F2AC6B22C00F387DF /* TrackingConsentManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -2797,6 +2807,7 @@
 				547A85D429AD23D800D94985 /* MenuTableView.swift */,
 				547A85D229ACF2D100D94985 /* MenuCell.swift */,
 				547A85D629AD248400D94985 /* MenuTableHeaderView.swift */,
+				548C4C312AC1689B00E376EF /* SwitchMenuCell.swift */,
 			);
 			path = Menu;
 			sourceTree = "<group>";
@@ -2866,6 +2877,17 @@
 				54D88EA32A5AEAEC0075DBC1 /* TransactionDynamicModel.swift */,
 			);
 			path = "Data Models";
+			sourceTree = "<group>";
+		};
+		54D1E1A12ABD920F0021A365 /* Data Collection Settings */ = {
+			isa = PBXGroup;
+			children = (
+				54D1E1A22ABD92290021A365 /* DataCollectionSettingsConstructor.swift */,
+				54D1E1A42ABD92380021A365 /* DataCollectionSettingsModel.swift */,
+				54D1E1A62ABD92420021A365 /* DataCollectionSettingsViewController.swift */,
+				54D1E1A82ABD92490021A365 /* DataCollectionSettingsView.swift */,
+			);
+			path = "Data Collection Settings";
 			sourceTree = "<group>";
 		};
 		54D419B12995091B00D496B4 /* Contact Book */ = {
@@ -3104,8 +3126,9 @@
 		00E4918E2366E08B007B332D /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1310;
-				LastUpgradeCheck = 1400;
+				LastUpgradeCheck = 1430;
 				ORGANIZATIONNAME = "Jason van den Berg";
 				TargetAttributes = {
 					00E491952366E08B007B332D = {
@@ -3289,8 +3312,10 @@
 				3A70C4F7292E51D800212026 /* VersionValidator.swift in Sources */,
 				3AE138D12804A8B300443D34 /* SuccessToast.swift in Sources */,
 				5410F5D12951F04B006976DC /* TariWindow.swift in Sources */,
+				54D1E1A32ABD92290021A365 /* DataCollectionSettingsConstructor.swift in Sources */,
 				370E887824FEA54100576F61 /* NetworkTools.m in Sources */,
 				3A35412C26A72D9F002AB5A8 /* ViewIdentifiable.swift in Sources */,
+				548C4C322AC1689B00E376EF /* SwitchMenuCell.swift in Sources */,
 				3A70433F28E21D3600207D6F /* CompletedTransactionKernel.swift in Sources */,
 				3A13260127EDE3B900289C8C /* TransactionProgressPresenter.swift in Sources */,
 				54C416232A1C914200454096 /* LocalNotificationsManager.swift in Sources */,
@@ -3305,6 +3330,7 @@
 				3A6A033C2802DD34000432B4 /* PopUpPresenter.swift in Sources */,
 				3ABBBA8028508AB000A3108D /* UTXOsWalletTextListViewCell.swift in Sources */,
 				3A8473CA28EC56180015E63A /* TariFeesService.swift in Sources */,
+				54D1E1A92ABD92490021A365 /* DataCollectionSettingsView.swift in Sources */,
 				3A39E57229012C8B000BBEBF /* DropboxBackupService.swift in Sources */,
 				3AD308642923FDBB009A53CE /* Error+BackupErrors.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
@@ -3612,6 +3638,7 @@
 				3A6F3FF8283BF980005D1793 /* TariFeePerGramStats.swift in Sources */,
 				3A5A3D5829016DE300B689C6 /* BackupWalletSettingsViewController.swift in Sources */,
 				3A94DB21283E7CEF00B0A740 /* TransactionFeesManager.swift in Sources */,
+				54D1E1A52ABD92380021A365 /* DataCollectionSettingsModel.swift in Sources */,
 				3ACC4F602876D2F100632F64 /* NSAttributedString+Format.swift in Sources */,
 				3A72DC4126DFA1E100E0BC43 /* NetworkSettings.swift in Sources */,
 				3ADA73DD270A02B900D50E3B /* WalletSettings.swift in Sources */,
@@ -3633,6 +3660,7 @@
 				54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */,
 				3A2B95682864801D0085BE21 /* UTXOsWalletTileListLayout.swift in Sources */,
 				54F2E34E29EEAEBB00A7A15A /* ContactTransactionListPlaceholder.swift in Sources */,
+				54C7EB602AC6B22C00F387DF /* TrackingConsentManager.swift in Sources */,
 				373CCDC52490F3B600D0A2C9 /* FileManager+SecureCopy.swift in Sources */,
 				3ACFA429278EC9BF00EBED98 /* ProfileView.swift in Sources */,
 				540CB6F329C1DE26003FACEF /* AddContactViewController.swift in Sources */,
@@ -3684,6 +3712,7 @@
 				3AE138D52804ACE100443D34 /* WebBrowserPresenter.swift in Sources */,
 				3A8A0558285370B200D48FCE /* TickButton.swift in Sources */,
 				3730E15124C884D500827DFA /* MenuTabBarController.swift in Sources */,
+				54D1E1A72ABD92420021A365 /* DataCollectionSettingsViewController.swift in Sources */,
 				3A6A033A2802DCE7000432B4 /* TariPopUp.swift in Sources */,
 				371A0818247290C000F97713 /* TransitionLabel.swift in Sources */,
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
