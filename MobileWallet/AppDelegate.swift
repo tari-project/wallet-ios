@@ -61,7 +61,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             Giphy.configure(apiKey: giphyApiKey)
         }
 
-        AppConfigurator.configure()
+        AppConfigurator.shared.configure()
 
         return true
     }

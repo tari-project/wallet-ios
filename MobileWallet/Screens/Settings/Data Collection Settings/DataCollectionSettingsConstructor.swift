@@ -1,10 +1,10 @@
-//  BugReportingModel.swift
+//  DataCollectionSettingsConstructor.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 28/10/2022
+	Created by Adrian Truszczyński on 22/09/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 13.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,47 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class BugReportingModel {
+enum DataCollectionSettingsConstructor {
 
-    enum Action {
-        case showDataCollectionConsentDialog
-        case endFlow
-    }
-
-    // MARK: - View Model
-
-    @Published private(set) var action: Action?
-    @Published private(set) var errorMessage: MessageModel?
-
-    // MARK: - Properties
-
-    private let bugReportService = BugReportService()
-
-    // MARK: - Actions
-
-    func sendReport(name: String?, email: String?, message: String?) {
-
-        guard AppConfigurator.shared.isCrashLoggerEnabled else {
-            action = .showDataCollectionConsentDialog
-            return
-        }
-
-        performSendReport(name: name, email: email, message: message)
-    }
-
-    func turnOnDataCollection() {
-        AppConfigurator.shared.isCrashLoggerEnabled = true
-    }
-
-    private func performSendReport(name: String?, email: String?, message: String?) {
-
-        Task {
-            do {
-                try await bugReportService.send(name: name ?? "", email: email ?? "", message: message ?? "")
-                action = .endFlow
-            } catch {
-                errorMessage = ErrorMessageManager.errorModel(forError: error)
-            }
-        }
+    static func buildScene() -> DataCollectionViewController {
+        let model = DataCollectionSettingsModel()
+        return DataCollectionViewController(model: model)
     }
 }

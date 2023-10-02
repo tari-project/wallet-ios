@@ -1,10 +1,10 @@
-//  BugReportingModel.swift
+//  TrackingConsentManager.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 28/10/2022
+	Created by Adrian Truszczyński on 29/09/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 13.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,47 +38,33 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class BugReportingModel {
+enum TrackingConsentManager {
 
-    enum Action {
-        case showDataCollectionConsentDialog
-        case endFlow
+    @MainActor static func handleTrackingConsent() {
+        guard GroupUserDefaults.isTrackingEnabled == nil else { return }
+        showDialog()
     }
 
-    // MARK: - View Model
+    @MainActor private static func showDialog() {
 
-    @Published private(set) var action: Action?
-    @Published private(set) var errorMessage: MessageModel?
+        let model = PopUpDialogModel(
+            title: localized("tracking.pop_up.consent.title"),
+            message: localized("tracking.pop_up.consent.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("tracking.pop_up.consent.button.yes"), type: .normal, callback: { turnOnTracking() }),
+                PopUpDialogButtonModel(title: localized("tracking.pop_up.consent.button.no"), type: .text, callback: { turnOffTracking() })
+            ],
+            hapticType: .error
+        )
 
-    // MARK: - Properties
-
-    private let bugReportService = BugReportService()
-
-    // MARK: - Actions
-
-    func sendReport(name: String?, email: String?, message: String?) {
-
-        guard AppConfigurator.shared.isCrashLoggerEnabled else {
-            action = .showDataCollectionConsentDialog
-            return
-        }
-
-        performSendReport(name: name, email: email, message: message)
+        PopUpPresenter.showPopUp(model: model)
     }
 
-    func turnOnDataCollection() {
+    private static func turnOnTracking() {
         AppConfigurator.shared.isCrashLoggerEnabled = true
     }
 
-    private func performSendReport(name: String?, email: String?, message: String?) {
-
-        Task {
-            do {
-                try await bugReportService.send(name: name ?? "", email: email ?? "", message: message ?? "")
-                action = .endFlow
-            } catch {
-                errorMessage = ErrorMessageManager.errorModel(forError: error)
-            }
-        }
+    private static func turnOffTracking() {
+        AppConfigurator.shared.isCrashLoggerEnabled = false
     }
 }

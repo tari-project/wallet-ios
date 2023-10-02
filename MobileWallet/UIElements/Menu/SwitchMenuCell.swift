@@ -1,10 +1,10 @@
-//  BugReportingModel.swift
+//  SwitchMenuCell.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 28/10/2022
+	Created by Adrian Truszczyński on 25/09/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 13.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,47 +38,64 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class BugReportingModel {
+import TariCommon
+import Combine
 
-    enum Action {
-        case showDataCollectionConsentDialog
-        case endFlow
+final class SwitchMenuCell: MenuCell {
+
+    final class DynamicModel {
+        @Published var switchValue: Bool = false
     }
 
-    // MARK: - View Model
+    // MARK: - Subviews
 
-    @Published private(set) var action: Action?
-    @Published private(set) var errorMessage: MessageModel?
+    @View private var switchView = UISwitch()
 
     // MARK: - Properties
 
-    private let bugReportService = BugReportService()
-
-    // MARK: - Actions
-
-    func sendReport(name: String?, email: String?, message: String?) {
-
-        guard AppConfigurator.shared.isCrashLoggerEnabled else {
-            action = .showDataCollectionConsentDialog
-            return
-        }
-
-        performSendReport(name: name, email: email, message: message)
+    weak var dynamicModel: DynamicModel? {
+        didSet { setupDynamicModel() }
     }
 
-    func turnOnDataCollection() {
-        AppConfigurator.shared.isCrashLoggerEnabled = true
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Initialisers
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupViews()
+        setupCallbacks()
     }
 
-    private func performSendReport(name: String?, email: String?, message: String?) {
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
-        Task {
-            do {
-                try await bugReportService.send(name: name ?? "", email: email ?? "", message: message ?? "")
-                action = .endFlow
-            } catch {
-                errorMessage = ErrorMessageManager.errorModel(forError: error)
-            }
-        }
+    // MARK: - Setups
+
+    private func setupViews() {
+        replace(accessoryItem: switchView)
+    }
+
+    private func setupCallbacks() {
+        switchView.addTarget(self, action: #selector(onSwitchValueChangeAction), for: .valueChanged)
+    }
+
+    private func setupDynamicModel() {
+
+        cancellables.forEach { $0.cancel() }
+
+        guard let dynamicModel else { return }
+
+        dynamicModel.$switchValue
+            .removeDuplicates()
+            .sink { [weak self] in self?.switchView.isOn = $0 }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - Targets
+
+    @objc private func onSwitchValueChangeAction(switchView: UISwitch) {
+        dynamicModel?.switchValue = switchView.isOn
     }
 }

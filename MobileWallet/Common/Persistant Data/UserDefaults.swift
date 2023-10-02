@@ -43,6 +43,7 @@ private enum UserDefaultName: String, CaseIterable {
     case networksSettings
     case walletSettings
     case userSettings
+    case isTrackingEnabled
 }
 
 enum GroupUserDefaults {
@@ -50,6 +51,7 @@ enum GroupUserDefaults {
     @UserDefault(key: UserDefaultName.networksSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
     @UserDefault(key: UserDefaultName.walletSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
     @UserDefault(key: UserDefaultName.userSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var userSettings: UserSettings?
+    @UserDefault(key: UserDefaultName.isTrackingEnabled.rawValue, suiteName: TariSettings.groupIndentifier) static var isTrackingEnabled: Bool?
 }
 
 extension UserDefaults {

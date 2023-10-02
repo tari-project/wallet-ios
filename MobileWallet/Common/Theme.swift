@@ -335,6 +335,7 @@ enum IconsImages {
     static var star: IconsStarImages.Type { IconsStarImages.self }
     static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
 
+    static var analytics: UIImage? { UIImage(named: "Icons/Analytics") }
     static var bluetooth: UIImage? { UIImage(named: "Icons/Bluetooth") }
     static var checkmark: UIImage? { UIImage(named: "Icons/Checkmark") }
     static var close: UIImage? { UIImage(named: "Icons/Close") }

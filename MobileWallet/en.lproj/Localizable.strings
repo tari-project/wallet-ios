@@ -215,6 +215,7 @@
 "settings.item.select_theme" = "Select Theme";
 "settings.item.bluetooth_settings" = "Bluetooth Settings";
 "settings.item.wallet_backups" = "Wallet Backups";
+"settings.item.data_collection" = "Data Collection";
 "settings.item.bridge_configuration" = "Bridge Configuration";
 "settings.item.select_network" = "Select Network";
 "settings.item.select_base_node" = "Select Base Node";
@@ -678,6 +679,10 @@
 "bug_reporting.label.footer" = "With this bug report you will send us information about your device model, iOS version and recent logs.";
 "bug_reporting.button.send" = "Send";
 "bug_reporting.button.view_logs" = "View logs";
+"bug_reporting.popup.data_collection.label.title" = "Hang on...";
+"bug_reporting.popup.data_collection.label.message" = "We need your permission to access information about your device model, iOS version and recent logs. This will help us pinpoint and fix any issues you’re experiencing.\n\nSo, can we get your nod to send us this data? By the way, this also allows us to gather some non-identifying info through a third-party service, but you can switch that off in the settings menu whenever you feel like it. Cool? 😎";
+"bug_reporting.popup.data_collection.button.ok" = "Yes, I consent";
+"bug_reporting.popup.data_collection.button.cancel" = "No, I decline";
 
 /* Theme Switcher */
 
@@ -694,6 +699,12 @@
 "bluetooth_settings.table.ble.row.title.ble_always_off" = "Turned Off";
 "bluetooth_settings.table.ble.row.title.ble_foreground" = "Enabled while the App is on the screen";
 "bluetooth_settings.table.ble.row.title.ble_always_on" = "Always On";
+
+/* Data Collection Settings */
+
+"data_collection_settings.title" = "Data Collection";
+"data_collection_settings.label.description" = "We're always striving to make Aurora better.\nTo achieve this, we use a third-party service to gather non-identifiable data like crash logs and usage statistics. This data helps us pinpoint and fix any issues, ultimately improving your experience.\n\nDo you consent to your data being collected?";
+"data_collection_settings.label.consent" = "I consent to data collection";
 
 /* Errors */
 
@@ -867,4 +878,11 @@
 "add_recipient.recent_txs" = "Recent Transactions";
 "add_recipient.my_contacts" = "My Contacts";
 "add_recipient.error.can_not_send_yourself" = "Sorry, you cannot send %@ to yourself";
-"add_recipient.error.invalid_emoji_id" = "Invalid Emoji ID";"
+"add_recipient.error.invalid_emoji_id" = "Invalid Emoji ID";
+
+/* Tracking */
+
+"tracking.pop_up.consent.title" = "Help us improve";
+"tracking.pop_up.consent.message" = "We're always striving to make Aurora better.\nTo achieve this, we use a third-party service to gather non-identifiable data like crash logs and usage statistics. This data helps us pinpoint and fix any issues, ultimately improving your experience.\n\nDo you consent to your data being collected?";
+"tracking.pop_up.consent.button.yes" = "Yes, I consent";
+"tracking.pop_up.consent.button.no" = "No, I decline";

@@ -40,7 +40,7 @@
 
 import TariCommon
 
-final class MenuCell: DynamicThemeCell {
+class MenuCell: DynamicThemeCell {
 
     struct ViewModel: Hashable, Identifiable {
         let id: UInt
@@ -57,10 +57,16 @@ final class MenuCell: DynamicThemeCell {
         return view
     }()
 
-    @View private var accessoryItemView: UIImageView = {
+    @View private var arrowView: UIImageView = {
         let view = UIImageView()
         view.image = Theme.shared.images.forwardArrow
         view.contentMode = .scaleAspectFit
+        return view
+    }()
+
+    @View private var accessoryStackView: UIStackView = {
+        let view = UIStackView()
+        view.spacing = 8.0
         return view
     }()
 
@@ -90,13 +96,15 @@ final class MenuCell: DynamicThemeCell {
 
     private func setupConstraints() {
 
-        [titleLabel, accessoryItemView].forEach(contentView.addSubview)
+        accessoryStackView.addArrangedSubview(arrowView)
+        [titleLabel, accessoryStackView].forEach(contentView.addSubview)
 
         let constraints = [
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
             titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            accessoryItemView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
-            accessoryItemView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            accessoryStackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            accessoryStackView.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 8.0),
+            accessoryStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
             contentView.heightAnchor.constraint(equalToConstant: 63.0)
         ]
 
@@ -117,20 +125,28 @@ final class MenuCell: DynamicThemeCell {
         let tintColor = isDestructive ? theme.system.red : theme.text.heading
 
         titleLabel.textColor = tintColor
-        accessoryItemView.tintColor = tintColor
+        arrowView.tintColor = tintColor
     }
 
     private func update(viewModel: ViewModel?) {
+        titleLabel.text = viewModel?.title
+        arrowView.isHidden = !(viewModel?.isArrowVisible ?? false)
+        updateTintColor(theme: theme)
+    }
 
-        defer { updateTintColor(theme: theme) }
+    // MARK: - Helpers
 
-        guard let viewModel else {
-            titleLabel.text = nil
-            accessoryItemView.isHidden = true
-            return
-        }
+    func replace(accessoryItem: UIView) {
+        removeAccessoryItem()
+        accessoryStackView.insertArrangedSubview(accessoryItem, at: 0)
+    }
 
-        titleLabel.text = viewModel.title
-        accessoryItemView.isHidden = !viewModel.isArrowVisible
+    func removeAccessoryItem() {
+        accessoryStackView.arrangedSubviews
+            .filter { $0 != arrowView }
+            .forEach {
+                accessoryStackView.removeArrangedSubview($0)
+                $0.removeFromSuperview()
+            }
     }
 }

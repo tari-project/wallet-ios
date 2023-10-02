@@ -1,10 +1,10 @@
-//  BugReportingModel.swift
+//  DataCollectionSettingsViewController.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 28/10/2022
+	Created by Adrian Truszczyński on 22/09/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 13.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,47 +38,51 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-final class BugReportingModel {
+import UIKit
+import Combine
 
-    enum Action {
-        case showDataCollectionConsentDialog
-        case endFlow
-    }
-
-    // MARK: - View Model
-
-    @Published private(set) var action: Action?
-    @Published private(set) var errorMessage: MessageModel?
+final class DataCollectionViewController: UIViewController {
 
     // MARK: - Properties
 
-    private let bugReportService = BugReportService()
+    private let model: DataCollectionSettingsModel
+    private let mainView = DataCollectionSettingsView()
+    private var cancellables = Set<AnyCancellable>()
 
-    // MARK: - Actions
+    // MARK: - Initialisers
 
-    func sendReport(name: String?, email: String?, message: String?) {
-
-        guard AppConfigurator.shared.isCrashLoggerEnabled else {
-            action = .showDataCollectionConsentDialog
-            return
-        }
-
-        performSendReport(name: name, email: email, message: message)
+    init(model: DataCollectionSettingsModel) {
+        self.model = model
+        super.init(nibName: nil, bundle: nil)
     }
 
-    func turnOnDataCollection() {
-        AppConfigurator.shared.isCrashLoggerEnabled = true
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    private func performSendReport(name: String?, email: String?, message: String?) {
+    // MARK: - View Lifecycle
 
-        Task {
-            do {
-                try await bugReportService.send(name: name ?? "", email: email ?? "", message: message ?? "")
-                action = .endFlow
-            } catch {
-                errorMessage = ErrorMessageManager.errorModel(forError: error)
-            }
+    override func loadView() {
+        view = mainView
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupCallbacks()
+    }
+
+    // MARK: - Setups
+
+    private func setupCallbacks() {
+
+        model.$isDataCollectionTurnedOn
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.update(switchValue: $0) }
+            .store(in: &cancellables)
+
+        mainView.onSwitchValueChange = { [weak self] in
+            self?.model.isDataCollectionTurnedOn = $0
         }
     }
 }
