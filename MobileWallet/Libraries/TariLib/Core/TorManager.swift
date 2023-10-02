@@ -52,33 +52,32 @@ final class TorManager {
 
     // MARK: - Properties
 
+    var isUsingCustomBridges: Bool { TorManagerUserDefaults.isUsingCustomBridges ?? false }
+    var bridges: String? { TorManagerUserDefaults.torBridges }
+
     @Published private(set) var connectionStatus: TorConnectionStatus = .disconnected
     @Published private(set) var bootstrapProgress: Int = 0
+    @Published private(set) var error: TorError?
 
-    private(set) var usedBridgesConfiguration: BridgesConfiguration = OnionSettings.currentlyUsedBridgesConfiguration
     private var containter: TorWorkingContainter?
-
     private var cancellables = Set<AnyCancellable>()
 
     func reinitiateConnection() {
-
         Logger.log(message: "Reinitiate connection", domain: .tor, level: .info)
-
         stop()
         start()
     }
 
     func stop() {
-
         Logger.log(message: "Stop", domain: .tor, level: .info)
-
         containter?.invalidate()
         containter = nil
     }
 
     private func start() {
         Logger.log(message: "Start", domain: .tor, level: .info)
-        setupContainter(bridgesConfiguration: usedBridgesConfiguration)
+        let bridges = isUsingCustomBridges ? bridges : nil
+        setupContainter(bridges: bridges)
     }
 
     func cookie() async throws -> Data {
@@ -86,25 +85,23 @@ final class TorManager {
         return try await containter.cookie()
     }
 
-    func update(bridgesConfiguration: BridgesConfiguration) async throws {
-
-        Logger.log(message: "Update bridges configuration", domain: .tor, level: .info)
-
-        updateAndValidate(bridgesConfiguration: bridgesConfiguration)
-        OnionSettings.backupBridgesConfiguration = bridgesConfiguration
-        OnionSettings.currentlyUsedBridgesConfiguration = bridgesConfiguration
-    }
-
-    private func updateAndValidate(bridgesConfiguration: BridgesConfiguration) {
-        usedBridgesConfiguration = bridgesConfiguration
+    func update(bridges: String?) {
+        Logger.log(message: "Update bridges", domain: .tor, level: .info)
+        TorManagerUserDefaults.isUsingCustomBridges = bridges != nil
+        TorManagerUserDefaults.torBridges = bridges
         reinitiateConnection()
     }
 
     // MARK: - Setups
 
-    private func setupContainter(bridgesConfiguration: BridgesConfiguration) {
+    private func setupContainter(bridges: String?) {
 
-        containter = TorWorkingContainter(bridgesConfiguration: bridgesConfiguration)
+        let bridgesChunks = (bridges ?? "")
+            .components(separatedBy: "\n")
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty && !$0.hasPrefix("//") && !$0.hasPrefix("#") }
+
+        containter = TorWorkingContainter(bridges: bridgesChunks)
 
         containter?.$connectionStatus
             .assign(to: \.connectionStatus, on: self)
@@ -116,7 +113,39 @@ final class TorManager {
 
         containter?.$error
             .compactMap { $0 }
-            .sink { Logger.log(message: "\($0)", domain: .tor, level: .error) }
+            .sink { [weak self] in self?.handle(error: $0) }
             .store(in: &cancellables)
+    }
+
+    // MARK: - Handlers
+
+    private func handle(error: TorError) {
+
+        Logger.log(message: "\(error)", domain: .tor, level: .error)
+
+        switch error {
+        case let .connectionFailed(error):
+            handle(connectionError: error)
+        case .authenticationFailed, .missingController, .missingCookie, .unknown:
+            break
+        }
+
+        self.error = error
+    }
+
+    private func handle(connectionError: Error) {
+
+        guard let posixError = connectionError as? PosixError else { return }
+
+        Logger.log(message: "POSIX Error: \(posixError.code)", domain: .tor, level: .error)
+
+        switch posixError {
+        case .connectionRefused:
+            Logger.log(message: "Connection Refused. Custom Tor bridged disabled.", domain: .tor, level: .warning)
+            TorManagerUserDefaults.isUsingCustomBridges = false
+            reinitiateConnection()
+        default:
+            break
+        }
     }
 }

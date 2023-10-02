@@ -1,10 +1,10 @@
-//  SuccessToast.swift
+//  UIImage+Utils.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/04/2022
+	Created by Adrian Truszczyński on 01/10/2023
 	Using Swift 5.0
-	Running on macOS 12.3
+	Running on macOS 13.5
 
 	Copyright 2019 The Tari Project
 
@@ -39,45 +39,19 @@
 */
 
 import UIKit
-import TariCommon
 
-final class SuccessToast: UIView {
+extension UIImage {
 
-    // MARK: - Subviews
+   func makeCIImage() -> CIImage? {
 
-    @View private(set) var label: UILabel = {
-        let view = UILabel()
-        view.textColor = .static.white
-        view.font = Theme.shared.fonts.feedbackPopupDescription
-        view.textAlignment = .center
-        view.numberOfLines = 0
-        return view
-    }()
+       if let ciImage {
+           return ciImage
+       }
 
-    // MARK: - Initialisers
+       if let cgImage {
+           return CIImage(cgImage: cgImage)
+       }
 
-    init() {
-        super.init(frame: .zero)
-        setupConstraints()
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    // MARK: - Setups
-
-    private func setupConstraints() {
-
-        addSubview(label)
-
-        let constraints = [
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 15.0),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
+       return nil
+   }
 }

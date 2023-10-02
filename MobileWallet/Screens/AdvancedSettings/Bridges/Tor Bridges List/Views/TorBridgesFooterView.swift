@@ -1,10 +1,10 @@
-//  SuccessToast.swift
+//  BridgesConfigurationFooterView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/04/2022
+	Created by Browncoat on 06/12/2022
 	Using Swift 5.0
-	Running on macOS 12.3
+	Running on macOS 13.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,26 +38,24 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-import TariCommon
+ import TariCommon
 
-final class SuccessToast: UIView {
+ final class TorBridgesFooterView: DynamicThemeHeaderFooterView {
 
     // MARK: - Subviews
 
-    @View private(set) var label: UILabel = {
+    @View private var label: UILabel = {
         let view = UILabel()
-        view.textColor = .static.white
-        view.font = Theme.shared.fonts.feedbackPopupDescription
-        view.textAlignment = .center
         view.numberOfLines = 0
+        view.font = Theme.shared.fonts.settingsTableViewLastBackupDate
+        view.text = localized("bridges_configuration.description.bridges")
         return view
     }()
 
-    // MARK: - Initialisers
+    // MARK: - Initialiser
 
-    init() {
-        super.init(frame: .zero)
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
         setupConstraints()
     }
 
@@ -69,15 +67,22 @@ final class SuccessToast: UIView {
 
     private func setupConstraints() {
 
-        addSubview(label)
+        contentView.addSubview(label)
 
         let constraints = [
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 15.0),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0)
+            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8.0),
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 25.0),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -25.0),
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
     }
-}
+
+    // MARK: - Updated
+
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        label.textColor = theme.text.lightText
+    }
+ }

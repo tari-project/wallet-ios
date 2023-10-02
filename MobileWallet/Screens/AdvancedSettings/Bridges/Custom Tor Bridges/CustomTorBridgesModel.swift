@@ -1,10 +1,10 @@
-//  SuccessToast.swift
+//  CustomTorBridgesModel.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/04/2022
+	Created by Adrian Truszczyński on 04/09/2023
 	Using Swift 5.0
-	Running on macOS 12.3
+	Running on macOS 13.4
 
 	Copyright 2019 The Tari Project
 
@@ -38,46 +38,41 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-import TariCommon
+final class CustomTorBridgesModel {
 
-final class SuccessToast: UIView {
+    // MARK: - View Model
 
-    // MARK: - Subviews
+    @Published private(set) var isConnectionPossible = false
+    @Published private(set) var torBridges: String?
+    @Published private(set) var endFlow: Bool = false
 
-    @View private(set) var label: UILabel = {
-        let view = UILabel()
-        view.textColor = .static.white
-        view.font = Theme.shared.fonts.feedbackPopupDescription
-        view.textAlignment = .center
-        view.numberOfLines = 0
-        return view
-    }()
+    // MARK: - Properties
+
+    private var isUsingCustomBridges: Bool { Tari.shared.isUsingCustomBridges }
+    private var usedTorBridges: String? { Tari.shared.torBridges }
 
     // MARK: - Initialisers
 
-    init() {
-        super.init(frame: .zero)
-        setupConstraints()
+    init(torBridges: String?) {
+        self.torBridges = torBridges
+        updateValues()
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    // MARK: - Actions
+
+    func update(torBridges: String) {
+        self.torBridges = torBridges
+        updateValues()
     }
 
-    // MARK: - Setups
+    func connect() {
+        Tari.shared.update(torBridges: torBridges)
+        updateValues()
+        endFlow = true
+    }
 
-    private func setupConstraints() {
-
-        addSubview(label)
-
-        let constraints = [
-            label.topAnchor.constraint(equalTo: topAnchor, constant: 15.0),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
+    private func updateValues() {
+        let isTorBridgesEmpty = torBridges?.isEmpty ?? true
+        isConnectionPossible = !isUsingCustomBridges || (!isTorBridgesEmpty && self.usedTorBridges != torBridges)
     }
 }

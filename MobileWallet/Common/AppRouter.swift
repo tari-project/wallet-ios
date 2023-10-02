@@ -184,7 +184,7 @@ enum AppRouter {
     }
 
     static func presentCustomTorBridgesForm(bridges: String?) {
-        let controller = CustomBridgesViewController(bridgesConfiguration: BridgesConfiguration(bridges: .none, customBridges: nil), initialValue: bridges)
+        let controller = CustomTorBridgesConstructor.buildScene(bridges: bridges)
         present(controller: controller)
     }
 

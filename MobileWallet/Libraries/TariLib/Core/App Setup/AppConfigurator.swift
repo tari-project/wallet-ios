@@ -38,6 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+import Combine
+
 final class AppConfigurator {
 
     // MARK: - Properties
@@ -50,6 +52,7 @@ final class AppConfigurator {
     }
 
     private let crashLogger = CrashLogger()
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
@@ -60,6 +63,7 @@ final class AppConfigurator {
     func configure() {
         configureLoggers()
         configureManagers()
+        configureCallbacks()
     }
 
     private func configureLoggers() {
@@ -81,5 +85,37 @@ final class AppConfigurator {
         StatusLoggerManager.shared.configure()
         DataFlowManager.shared.configure()
         LocalNotificationsManager.shared.configure()
+    }
+
+    private func configureCallbacks() {
+
+        Tari.shared.$torError
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.handle(torError: $0) }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - Handlers
+
+    private func handle(torError: TorError) {
+
+        switch torError {
+        case let .connectionFailed(error):
+            guard let posixError = error as? PosixError else { return }
+            handle(posixError: posixError)
+        case .authenticationFailed, .missingController, .missingCookie, .unknown:
+            break
+        }
+    }
+
+    private func handle(posixError: PosixError) {
+
+        switch posixError {
+        case .connectionRefused:
+            ToastPresenter.show(title: localized("custom_bridges.toast.error.connection_refused"), duration: 5.0)
+        default:
+            break
+        }
     }
 }

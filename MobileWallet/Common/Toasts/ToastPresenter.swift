@@ -42,7 +42,7 @@ import SwiftEntryKit
 
 enum ToastPresenter {
 
-    static func show(title: String) {
+    static func show(title: String, duration: TimeInterval = 2.0) {
 
         guard let toastColor: UIColor = .static.purple else { return }
 
@@ -52,7 +52,7 @@ enum ToastPresenter {
         var attributes = EKAttributes.topToast
         attributes.entryBackground = .color(color: EKColor(toastColor))
         attributes.screenBackground = .clear
-        attributes.displayDuration = 2.0
+        attributes.displayDuration = duration
         attributes.hapticFeedbackType = .success
         attributes.screenInteraction = .forward
 

@@ -77,19 +77,20 @@ final class TorWorkingContainter {
     @Published private(set) var bootstrapProgress: Int = 0
     @Published private(set) var error: TorError?
 
-    private let bridgesConfiguration: BridgesConfiguration
+    private let bridges: [String]
 
     private lazy var controller: TorController = TorController(socketHost: controlAddress, port: controlPort)
     private var isInvalidated = false
     private var thread: TorThread?
     private var observers: [Any?] = []
     private var retryAction: DispatchWorkItem?
+    private var isUsingCustomBridges: Bool { !bridges.isEmpty }
 
     // MARK: - Initialisers
 
-    init(bridgesConfiguration: BridgesConfiguration) {
+    init(bridges: [String]) {
         Logger.log(message: "Containter - Init", domain: .tor, level: .info)
-        self.bridgesConfiguration = bridgesConfiguration
+        self.bridges = bridges
         setupContainter()
     }
 
@@ -142,7 +143,8 @@ final class TorWorkingContainter {
                 try await Task.sleep(seconds: 0.2)
                 try await startController(retryCount: retryCount + 1)
             } else {
-                throw TorError.connectionFailed(error: error)
+                guard let posixError = error.posixError else { throw TorError.connectionFailed(error: error) }
+                throw TorError.connectionFailed(error: posixError)
             }
         }
     }
@@ -309,8 +311,8 @@ final class TorWorkingContainter {
     }
 
     private func makeBridgeArguments() -> [String] {
-        guard bridgesConfiguration.bridgesType == .custom, let customBridges = bridgesConfiguration.customBridges, !customBridges.isEmpty else { return [] }
-        var arguments = customBridges.flatMap { ["--Bridge", $0] }
+        guard isUsingCustomBridges else { return [] }
+        var arguments = bridges.flatMap { ["--Bridge", $0] }
         arguments += ["--UseBridges", "1"]
         return arguments
     }
@@ -322,7 +324,7 @@ final class TorWorkingContainter {
         switch Ipv6Tester.ipv6_status() {
         case .torIpv6ConnOnly:
             arguments += ["--ClientPreferIPv6ORPort", "1"]
-            let ipv4argument = bridgesConfiguration.bridgesType == .custom ? "1" : "0"
+            let ipv4argument = isUsingCustomBridges ? "1" : "0"
             arguments += ["--ClientUseIPv4", ipv4argument]
         case .torIpv6ConnDual, .torIpv6ConnFalse, .torIpv6ConnUnknown:
             arguments += [

@@ -46,7 +46,6 @@ final class BaseMenuTableView: DynamicThemeTableView {
         super.init(frame: .zero, style: .grouped)
         showsVerticalScrollIndicator = false
         rowHeight = UITableView.automaticDimension
-        register(type: SystemMenuTableViewCell.self)
     }
 
     required init?(coder: NSCoder) {
