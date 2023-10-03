@@ -78,6 +78,7 @@ struct TariSettings {
     let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
     let blockExplorerUrl = "https://explore-esme.tari.com/"
     let blockExplorerKernelUrl = "https://explore-esme.tari.com/kernel/"
+    let torBridgesUrl = "https://bridges.torproject.org/bridges"
 
     let isBlockExplorerAvaiable: Bool = false
 

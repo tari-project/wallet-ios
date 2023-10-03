@@ -97,9 +97,13 @@ final class Tari: MainServiceable {
         }
     }
 
+    var isUsingCustomBridges: Bool { torManager.isUsingCustomBridges }
+    var torBridges: String? { torManager.bridges }
+
     var isWalletExist: Bool { (try? connectedDatabaseDirectory.checkResourceIsReachable()) ?? false }
+
     @Published private(set) var isWalletConnected: Bool = false
-    var torBridgesConfiguration: BridgesConfiguration { torManager.usedBridgesConfiguration }
+    @Published private(set) var torError: TorError?
 
     var canAutomaticalyReconnectWallet: Bool = false
     @Published var isDisconnectionDisabled: Bool = false
@@ -117,8 +121,8 @@ final class Tari: MainServiceable {
         return passphrase
     }
 
-    func update(torBridgesConfiguration: BridgesConfiguration) async throws {
-        try await torManager.update(bridgesConfiguration: torBridgesConfiguration)
+    func update(torBridges: String?) {
+        torManager.update(bridges: torBridges)
     }
 
     // MARK: - Initialisers
@@ -172,6 +176,10 @@ final class Tari: MainServiceable {
             .receive(on: DispatchQueue.main)
             .filter { !$0 && UIApplication.shared.applicationState == .background }
             .sink { [weak self] _ in self?.disconnect() }
+            .store(in: &cancellables)
+
+        torManager.$error
+            .assignPublisher(to: \.torError, on: self)
             .store(in: &cancellables)
     }
 

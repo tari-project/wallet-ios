@@ -547,6 +547,7 @@
 
 "custom_bridges.error.image_decode.title" = "QR code decode error";
 "custom_bridges.error.image_decode.description" = "Failed to decode QR Code from image";
+"custom_bridges.toast.error.connection_refused" = "Unable to connect with Tor. Tor bridges configuration is now disabled. You can re-enable them from the settings menu.";
 
 /* Delete wallet */
 "delete_wallet.title"="You're about to lose everything!";

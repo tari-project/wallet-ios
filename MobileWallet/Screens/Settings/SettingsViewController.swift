@@ -214,8 +214,8 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onBridgeConfigurationAction() {
-        let bridgesConfigurationViewController = BridgesConfigurationViewController()
-        navigationController?.pushViewController(bridgesConfigurationViewController, animated: true)
+        let controller = TorBridgesConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     private func onSelectNetworkAction() {

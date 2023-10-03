@@ -1,10 +1,10 @@
-//  BackupWalletSettingsView.swift
+//  AccessoryImageMenuCell.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 20/10/2022
+	Created by Adrian Truszczyński on 29/09/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 13.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,32 +38,28 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
-final class BackupWalletSettingsView: BaseNavigationContentView {
+final class AccessoryImageMenuCell: MenuCell {
 
+    struct ViewModel: Hashable {
+        let baseModel: MenuCell.ViewModel
+        let accessoryImage: UIImage?
+    }
     // MARK: - Subviews
 
-    @View private var tableView: BaseMenuTableView = {
-        let view = BaseMenuTableView()
-        view.register(type: SystemMenuTableViewCell.self)
+    @View private var accessoryImageView: UIImageView = {
+        let view = UIImageView()
+        view.contentMode = .scaleAspectFit
         return view
     }()
 
-    // MARK: - Properties
+    // MARK: - Initialisers
 
-    var onSelectRow: ((IndexPath) -> Void)?
-
-    private var dataSource: UITableViewDiffableDataSource<Int, SystemMenuTableViewCellItem>?
-
-    // MARK: - Initializers
-
-    override init() {
-        super.init()
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
-        setupCallbacks()
     }
 
     required init?(coder: NSCoder) {
@@ -73,51 +69,23 @@ final class BackupWalletSettingsView: BaseNavigationContentView {
     // MARK: - Setups
 
     private func setupViews() {
-        navigationBar.title = localized("backup_wallet_settings.title")
+        replace(accessoryItem: accessoryImageView)
     }
 
     private func setupConstraints() {
 
-        addSubview(tableView)
-
         let constraints = [
-            tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            accessoryImageView.widthAnchor.constraint(equalToConstant: 22.0),
+            accessoryImageView.heightAnchor.constraint(equalToConstant: 22.0)
         ]
 
         NSLayoutConstraint.activate(constraints)
     }
 
-    private func setupCallbacks() {
-
-        dataSource = UITableViewDiffableDataSource(tableView: tableView) { tableView, indexPath, model in
-            let cell = tableView.dequeueReusableCell(type: SystemMenuTableViewCell.self, indexPath: indexPath)
-            cell.configure(model)
-            return cell
-        }
-
-        tableView.delegate = self
-    }
-
     // MARK: - Actions
 
-    func update(models: [SystemMenuTableViewCellItem]) {
-        var snapshot = NSDiffableDataSourceSnapshot<Int, SystemMenuTableViewCellItem>()
-        snapshot.appendSections([0])
-        snapshot.appendItems(models)
-        dataSource?.apply(snapshot)
-    }
-}
-
-extension BackupWalletSettingsView: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        BackupWalletSettingsHeaderView()
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        onSelectRow?(indexPath)
+    func update(viewModel: ViewModel) {
+        self.viewModel = viewModel.baseModel
+        accessoryImageView.image = viewModel.accessoryImage
     }
 }
