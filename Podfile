@@ -5,7 +5,6 @@ inhibit_all_warnings!
 
 target 'MobileWallet' do
   pod 'Tor', '407.14.1'
-  pod 'FloatingPanel', '1.7.5'
   pod 'lottie-ios'
   pod 'SwiftEntryKit', '2.0.0'
   pod 'ReachabilitySwift'
