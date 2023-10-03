@@ -1,6 +1,5 @@
 PODS:
   - Alamofire (5.4.4)
-  - FloatingPanel (1.7.5)
   - Giphy (2.1.22):
     - libwebp
   - IPtProxy (1.10.1)
@@ -37,7 +36,6 @@ PODS:
   - Zip (2.1.2)
 
 DEPENDENCIES:
-  - FloatingPanel (= 1.7.5)
   - Giphy (= 2.1.22)
   - IPtProxy (= 1.10.1)
   - lottie-ios
@@ -55,7 +53,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Alamofire
-    - FloatingPanel
     - Giphy
     - IPtProxy
     - libwebp
@@ -83,7 +80,6 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
-  FloatingPanel: bb17fd6fc7ae519f877f7bd30f4f6115a78acf07
   Giphy: 6757d929878ef45f70ed62a02a2c9a03994e7b6c
   IPtProxy: 17a32bf135d3824e8cbc3fba0fa5bc404490ac84
   libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
@@ -100,6 +96,6 @@ SPEC CHECKSUMS:
   YatLib: f56aa60679b20e989a41b6bc92c0081c013b523a
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: 783e5ec88ee03b35e822f3c5a52a2e486f253af4
+PODFILE CHECKSUM: 6beb86d3b8711fdc8cad4e82098238fbb207436c
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.13.0
