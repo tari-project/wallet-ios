@@ -370,6 +370,7 @@
 		54103CE02A555A4500C456B4 /* TransactionHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54103CDF2A555A4500C456B4 /* TransactionHistoryView.swift */; };
 		54103CE22A5564CA00C456B4 /* TransactionHistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54103CE12A5564CA00C456B4 /* TransactionHistoryCell.swift */; };
 		5410F5D12951F04B006976DC /* TariWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5410F5D02951F04B006976DC /* TariWindow.swift */; };
+		5418BDAC2ADD2B720029D891 /* TorWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418BDAB2ADD2B720029D891 /* TorWorker.swift */; };
 		5419AA792A4473F90079E745 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419AA782A4473F90079E745 /* HomeViewController.swift */; };
 		5419AA7B2A4474040079E745 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419AA7A2A4474040079E745 /* HomeView.swift */; };
 		5419AA7D2A4474390079E745 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419AA7C2A4474390079E745 /* HomeModel.swift */; };
@@ -489,7 +490,6 @@
 		54C416232A1C914200454096 /* LocalNotificationsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C416222A1C914200454096 /* LocalNotificationsManager.swift */; };
 		54C416252A1CA81700454096 /* PendingDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C416242A1CA81700454096 /* PendingDataManager.swift */; };
 		54C7EB602AC6B22C00F387DF /* TrackingConsentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C7EB5F2AC6B22C00F387DF /* TrackingConsentManager.swift */; };
-		54CAC3A72A9DD2060009E6CD /* TorWorkingContainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CAC3A62A9DD2060009E6CD /* TorWorkingContainter.swift */; };
 		54CB24F829FA65230008632D /* PaymentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB24F729FA65230008632D /* PaymentInfo.swift */; };
 		54CB354429B905AA00551D5A /* PopPresenter+ContactBook.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */; };
 		54CF5E012A27460700B01F21 /* ContactBookBluetoothCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54CF5E002A27460700B01F21 /* ContactBookBluetoothCell.swift */; };
@@ -963,6 +963,7 @@
 		54103CDF2A555A4500C456B4 /* TransactionHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistoryView.swift; sourceTree = "<group>"; };
 		54103CE12A5564CA00C456B4 /* TransactionHistoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistoryCell.swift; sourceTree = "<group>"; };
 		5410F5D02951F04B006976DC /* TariWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariWindow.swift; sourceTree = "<group>"; };
+		5418BDAB2ADD2B720029D891 /* TorWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorWorker.swift; sourceTree = "<group>"; };
 		5419AA782A4473F90079E745 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		5419AA7A2A4474040079E745 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		5419AA7C2A4474390079E745 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
@@ -1081,7 +1082,6 @@
 		54C416222A1C914200454096 /* LocalNotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationsManager.swift; sourceTree = "<group>"; };
 		54C416242A1CA81700454096 /* PendingDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingDataManager.swift; sourceTree = "<group>"; };
 		54C7EB5F2AC6B22C00F387DF /* TrackingConsentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingConsentManager.swift; sourceTree = "<group>"; };
-		54CAC3A62A9DD2060009E6CD /* TorWorkingContainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorWorkingContainter.swift; sourceTree = "<group>"; };
 		54CB24F729FA65230008632D /* PaymentInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PaymentInfo.swift; sourceTree = "<group>"; };
 		54CB354329B905AA00551D5A /* PopPresenter+ContactBook.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PopPresenter+ContactBook.swift"; sourceTree = "<group>"; };
 		54CF5E002A27460700B01F21 /* ContactBookBluetoothCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookBluetoothCell.swift; sourceTree = "<group>"; };
@@ -2298,7 +2298,7 @@
 			isa = PBXGroup;
 			children = (
 				370E886A24FE9FF800576F61 /* Helpers */,
-				54CAC3A62A9DD2060009E6CD /* TorWorkingContainter.swift */,
+				5418BDAB2ADD2B720029D891 /* TorWorker.swift */,
 			);
 			path = Tor;
 			sourceTree = "<group>";
@@ -3395,6 +3395,7 @@
 				3A39E57229012C8B000BBEBF /* DropboxBackupService.swift in Sources */,
 				3AD308642923FDBB009A53CE /* Error+BackupErrors.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
+				5418BDAC2ADD2B720029D891 /* TorWorker.swift in Sources */,
 				3ABF91AC283FFAA50001C766 /* AboutViewCell.swift in Sources */,
 				3A80F636287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift in Sources */,
 				5444C81729F1C10700BF3875 /* PopUpTag.swift in Sources */,
@@ -3817,7 +3818,6 @@
 				54D88EA42A5AEAEC0075DBC1 /* TransactionDynamicModel.swift in Sources */,
 				3A7E06DA287831BD00D15190 /* UTXOsEstimationLabel.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
-				54CAC3A72A9DD2060009E6CD /* TorWorkingContainter.swift in Sources */,
 				54A9C88A29F6A54B009B0653 /* RoundedLabeledButton.swift in Sources */,
 				54A148EC2AA88B7B00C68D9D /* CustomTorBridgesConstructor.swift in Sources */,
 				54A9C88A29F6A54B009B0653 /* RoundedLabeledButton.swift in Sources */,

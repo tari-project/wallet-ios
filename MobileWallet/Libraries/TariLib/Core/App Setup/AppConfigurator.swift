@@ -104,7 +104,7 @@ final class AppConfigurator {
         case let .connectionFailed(error):
             guard let posixError = error as? PosixError else { return }
             handle(posixError: posixError)
-        case .authenticationFailed, .missingController, .missingCookie, .unknown:
+        case .authenticationFailed, .missingCookie, .unknown:
             break
         }
     }

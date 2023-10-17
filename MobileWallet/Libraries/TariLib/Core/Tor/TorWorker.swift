@@ -1,10 +1,10 @@
-//  TorWorkingContainter.swift
+//  TorWorker.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 29/08/2023
+	Created by Adrian Truszczyński on 16/10/2023
 	Using Swift 5.0
-	Running on macOS 13.4
+	Running on macOS 14.0
 
 	Copyright 2019 The Tari Project
 
@@ -40,11 +40,11 @@
 
 import Tor
 import IPtProxy
+import Combine
 
 enum TorError: Error {
     case connectionFailed(error: Error)
     case authenticationFailed
-    case missingController
     case missingCookie(error: Error)
     case unknown(error: Error)
 }
@@ -54,13 +54,18 @@ enum TorConnectionStatus {
     case connecting
     case portsOpen
     case connected
-    case disconnecting
 }
 
-final class TorWorkingContainter {
+final class TorWorker {
+
+    private enum BootstrapStatus {
+        case notStarted
+        case inProgress
+        case finished
+    }
 
     private enum InternalError: Error {
-        case invalidated
+        case threadAlreadyRunning
     }
 
     // MARK: - Constants
@@ -76,34 +81,30 @@ final class TorWorkingContainter {
     @Published private(set) var connectionStatus: TorConnectionStatus = .disconnected
     @Published private(set) var bootstrapProgress: Int = 0
     @Published private(set) var error: TorError?
-
-    private let bridges: [String]
+    @Published private var bootstrapStatus: BootstrapStatus = .notStarted
 
     private lazy var controller: TorController = TorController(socketHost: controlAddress, port: controlPort)
-    private var isInvalidated = false
-    private var thread: TorThread?
-    private var observers: [Any?] = []
+
     private var retryAction: DispatchWorkItem?
-    private var isUsingCustomBridges: Bool { !bridges.isEmpty }
+    private var observers: [Any?] = []
+    private var bootstrapCancellables = Set<AnyCancellable>()
 
-    // MARK: - Initialisers
+    // MARK: - Actions
 
-    init(bridges: [String]) {
-        Logger.log(message: "Containter - Init", domain: .tor, level: .info)
-        self.bridges = bridges
-        setupContainter()
-    }
+    func start(bridges: [String]) {
 
-    // MARK: - Setups
+        Logger.log(message: "TorWorker - Start", domain: .tor, level: .info)
 
-    private func setupContainter() {
         Task {
             do {
                 try createDirectoriesIfNeeded()
-                try await setupThread()
-                startIObfs4Proxy()
-                try await startController()
-                try await observeAuthentication()
+                await disconnect()
+                try await waitForThread()
+                try await createThread(bridges: bridges)
+                createController()
+                try await connect()
+                try await authenticate()
+                observeConnection()
                 setupRetry()
             } catch {
                 handle(error: error)
@@ -111,37 +112,53 @@ final class TorWorkingContainter {
         }
     }
 
-    private func setupThread() async throws {
-
-        guard thread == nil, !isInvalidated else { throw InternalError.invalidated }
-
-        guard TorThread.active == nil else {
-            Logger.log(message: "Containter - Waiting for thread", domain: .tor, level: .info)
-            try await Task.sleep(seconds: 0.5)
-            try await setupThread()
-            return
-        }
-
-        let configuration = makeTorConfiguration()
-
-        thread = TorThread(configuration: configuration)
-        thread?.start()
-        Logger.log(message: "Containter - Thread created", domain: .tor, level: .info)
+    func stop() async {
+        Logger.log(message: "TorWorker - Stop", domain: .tor, level: .info)
+        await disconnect()
     }
 
-    private func startController(retryCount: Int = 0) async throws {
+    private func createDirectoriesIfNeeded() throws {
+        try createDataDirectoryInNeeded()
+        try createAuthDirectoryInNeeded()
+    }
+
+    private func waitForThread() async throws {
+        Logger.log(message: "TorWorker - Waiting for thread", domain: .tor, level: .info)
+        guard TorThread.active != nil else { return }
+        try await Task.sleep(seconds: 0.5)
+        try await waitForThread()
+    }
+
+    private func createThread(bridges: [String]) async throws {
+
+        guard TorThread.active == nil else { throw InternalError.threadAlreadyRunning }
+
+        let configuration = makeTorConfiguration(bridges: bridges)
+        let thread = TorThread(configuration: configuration)
+        thread.start()
+        startIObfs4Proxy()
+        Logger.log(message: "TorWorker - Thread created", domain: .tor, level: .info)
+        try await Task.sleep(seconds: 0.5)
+    }
+
+    private func createController() {
+        controller = TorController(socketHost: controlAddress, port: controlPort)
+        Logger.log(message: "TorWorker - Controller created", domain: .tor, level: .info)
+    }
+
+    private func connect(retryCount: Int = 0) async throws {
 
         guard !controller.isConnected else { return }
         let maxRetryCount = 4
 
         do {
             try controller.connect()
-            Logger.log(message: "Containter - Controller created", domain: .tor, level: .info)
+            Logger.log(message: "TorWorker - Controller connected", domain: .tor, level: .info)
         } catch {
             if retryCount < maxRetryCount {
-                Logger.log(message: "Containter - Waiting for controller: \(retryCount)", domain: .tor, level: .info)
+                Logger.log(message: "TorWorker - Waiting for controller: \(retryCount)", domain: .tor, level: .info)
                 try await Task.sleep(seconds: 0.2)
-                try await startController(retryCount: retryCount + 1)
+                try await connect(retryCount: retryCount + 1)
             } else {
                 guard let posixError = error.posixError else { throw TorError.connectionFailed(error: error) }
                 throw TorError.connectionFailed(error: posixError)
@@ -149,49 +166,47 @@ final class TorWorkingContainter {
         }
     }
 
-    private func startIObfs4Proxy() {
-        IPtProxyStartObfs4Proxy(nil, false, false, nil)
+    private func disconnect() async {
+        await waitingForBootstrap()
+        cleanup()
     }
 
-    private func setupRetry() {
+    private func waitingForBootstrap() async {
 
-        Logger.log(message: "Containter - Retry set", domain: .tor, level: .info)
+        guard bootstrapStatus == .inProgress else { return }
 
-        let retryAction = DispatchWorkItem { [weak self] in
-            self?.resetConnection()
+        await withCheckedContinuation { [weak self] continuation in
+            guard let self else { return }
+            self.$bootstrapStatus
+                .filter { $0 != .inProgress }
+                .sink { [weak self] _ in
+                    self?.bootstrapCancellables.forEach { $0.cancel() }
+                    self?.bootstrapCancellables.removeAll()
+                    continuation.resume()
+                }
+                .store(in: &self.bootstrapCancellables)
         }
-
-        DispatchQueue.main.asyncAfter(wallDeadline: .now() + 30.0, execute: retryAction)
-        self.retryAction = retryAction
     }
 
-    private func cancelRetry() {
-
-        Logger.log(message: "Containter - Retry cancelled", domain: .tor, level: .info)
-
-        retryAction?.cancel()
-        retryAction = nil
+    private func cleanup() {
+        guard controller.isConnected else { return }
+        bootstrapProgress = 0
+        observers.forEach { controller.removeObserver($0) }
+        observers.removeAll()
+        controller.disconnect()
+        connectionStatus = .disconnected
+        cancelRetry()
     }
 
-    private func resetConnection() {
-
-        Logger.log(message: "Containter - Retry triggered", domain: .tor, level: .info)
-
-        controller.setConfForKey("DisableNetwork", withValue: "1")
-        controller.setConfForKey("DisableNetwork", withValue: "0")
-    }
-
-    // MARK: - Observers
-
-    private func observeAuthentication() async throws {
-
+    private func authenticate() async throws {
         let cookie = try await cookie()
-
         guard try await controller.authenticate(with: cookie) else { throw TorError.authenticationFailed }
-
-        Logger.log(message: "Containter - Authentication completed", domain: .tor, level: .info)
-
         connectionStatus = .portsOpen
+        bootstrapStatus = .inProgress
+        Logger.log(message: "TorWorker - Authentication completed", domain: .tor, level: .info)
+    }
+
+    private func observeConnection() {
         observeCircuit()
         observeStatusEvents()
     }
@@ -199,7 +214,7 @@ final class TorWorkingContainter {
     private func observeCircuit() {
 
         let observer = controller.addObserver(forCircuitEstablished: { [weak self] isCircuitEstablished in
-            Logger.log(message: "Containter - isCircuitEstablished: \(isCircuitEstablished)", domain: .tor, level: .verbose)
+            Logger.log(message: "TorWorker - isCircuitEstablished: \(isCircuitEstablished)", domain: .tor, level: .verbose)
             guard isCircuitEstablished else { return }
             self?.connectionStatus = .connected
         })
@@ -214,17 +229,43 @@ final class TorWorkingContainter {
             self?.bootstrapProgress = progress
             guard progress >= 100 else { return true }
             self?.cancelRetry()
+            self?.bootstrapStatus = .finished
             return true
         }
 
         observers.append(observer)
     }
 
-    // MARK: - Actions
+    private func startIObfs4Proxy() {
+        IPtProxyStartObfs4Proxy(nil, false, false, nil)
+    }
 
-    func invalidate() {
-        Logger.log(message: "Containter - Invalidated", domain: .tor, level: .info)
-        isInvalidated = true
+    private func setupRetry() {
+
+        Logger.log(message: "TorWorker - Retry set", domain: .tor, level: .info)
+
+        let retryAction = DispatchWorkItem { [weak self] in
+            self?.resetConnection()
+        }
+
+        DispatchQueue.main.asyncAfter(wallDeadline: .now() + 30.0, execute: retryAction)
+        self.retryAction = retryAction
+    }
+
+    private func cancelRetry() {
+
+        Logger.log(message: "TorWorker - Retry cancelled", domain: .tor, level: .info)
+
+        retryAction?.cancel()
+        retryAction = nil
+    }
+
+    private func resetConnection() {
+
+        Logger.log(message: "TorWorker - Retry triggered", domain: .tor, level: .info)
+
+        controller.setConfForKey("DisableNetwork", withValue: "1")
+        controller.setConfForKey("DisableNetwork", withValue: "0")
     }
 
     // MARK: - Handlers
@@ -267,12 +308,7 @@ final class TorWorkingContainter {
         }
     }
 
-    private func createDirectoriesIfNeeded() throws {
-        try createDataDirectoryInNeeded()
-        try createAuthDirectoryInNeeded()
-    }
-
-    private func makeTorConfiguration() -> TorConfiguration {
+    private func makeTorConfiguration(bridges: [String]) -> TorConfiguration {
 
         let configuration = TorConfiguration()
 
@@ -280,8 +316,8 @@ final class TorWorkingContainter {
         configuration.dataDirectory = dataDirectoryUrl
 
         var arguments: [String] = makeBaseArguments()
-        arguments += makeBridgeArguments()
-        arguments += makeIpArguments()
+        arguments += makeBridgeArguments(bridges: bridges)
+        arguments += makeIpArguments(isUsingCustomBridges: !bridges.isEmpty)
         configuration.arguments = arguments
 
         return configuration
@@ -310,14 +346,14 @@ final class TorWorkingContainter {
         ]
     }
 
-    private func makeBridgeArguments() -> [String] {
-        guard isUsingCustomBridges else { return [] }
+    private func makeBridgeArguments(bridges: [String]) -> [String] {
+        guard !bridges.isEmpty else { return [] }
         var arguments = bridges.flatMap { ["--Bridge", $0] }
         arguments += ["--UseBridges", "1"]
         return arguments
     }
 
-    private func makeIpArguments() -> [String] {
+    private func makeIpArguments(isUsingCustomBridges: Bool) -> [String] {
 
         var arguments: [String] = []
 
@@ -346,17 +382,5 @@ final class TorWorkingContainter {
     private func createAuthDirectoryInNeeded() throws {
         guard !FileManager.default.fileExists(atPath: authDirectoryURL.path) else { return }
         try FileManager.default.createDirectory(at: authDirectoryURL, withIntermediateDirectories: true)
-    }
-
-    // MARK: - Deinit
-
-    deinit {
-        controller.disconnect()
-        observers.forEach { self.controller.removeObserver($0) }
-        TorThread.active?.cancel()
-        thread?.cancel()
-        thread = nil
-
-        Logger.log(message: "Containter - Deinit", domain: .tor, level: .info)
     }
 }

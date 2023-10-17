@@ -59,37 +59,37 @@ final class TorManager {
     @Published private(set) var bootstrapProgress: Int = 0
     @Published private(set) var error: TorError?
 
-    private var containter: TorWorkingContainter?
+    private let torWorker = TorWorker()
     private var cancellables = Set<AnyCancellable>()
 
-    func reinitiateConnection() {
-        Logger.log(message: "Reinitiate connection", domain: .tor, level: .info)
-        stop()
-        start()
+    // MARK: - Initialisers
+
+    init() {
+        setupCallbacks()
     }
 
-    func stop() {
+    // MARK: - Actions
+
+    func stop() async {
         Logger.log(message: "Stop", domain: .tor, level: .info)
-        containter?.invalidate()
-        containter = nil
+        await torWorker.stop()
     }
 
-    private func start() {
+    func start() {
         Logger.log(message: "Start", domain: .tor, level: .info)
         let bridges = isUsingCustomBridges ? bridges : nil
         setupContainter(bridges: bridges)
     }
 
     func cookie() async throws -> Data {
-        guard let containter else { throw TorError.missingController }
-        return try await containter.cookie()
+        try await torWorker.cookie()
     }
 
     func update(bridges: String?) {
         Logger.log(message: "Update bridges", domain: .tor, level: .info)
         TorManagerUserDefaults.isUsingCustomBridges = bridges != nil
         TorManagerUserDefaults.torBridges = bridges
-        reinitiateConnection()
+        start()
     }
 
     // MARK: - Setups
@@ -101,17 +101,20 @@ final class TorManager {
             .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty && !$0.hasPrefix("//") && !$0.hasPrefix("#") }
 
-        containter = TorWorkingContainter(bridges: bridgesChunks)
+        torWorker.start(bridges: bridgesChunks)
+    }
 
-        containter?.$connectionStatus
+    private func setupCallbacks() {
+
+        torWorker.$connectionStatus
             .assign(to: \.connectionStatus, on: self)
             .store(in: &cancellables)
 
-        containter?.$bootstrapProgress
+        torWorker.$bootstrapProgress
             .assign(to: \.bootstrapProgress, on: self)
             .store(in: &cancellables)
 
-        containter?.$error
+        torWorker.$error
             .compactMap { $0 }
             .sink { [weak self] in self?.handle(error: $0) }
             .store(in: &cancellables)
@@ -126,7 +129,7 @@ final class TorManager {
         switch error {
         case let .connectionFailed(error):
             handle(connectionError: error)
-        case .authenticationFailed, .missingController, .missingCookie, .unknown:
+        case .authenticationFailed, .missingCookie, .unknown:
             break
         }
 
@@ -143,7 +146,7 @@ final class TorManager {
         case .connectionRefused:
             Logger.log(message: "Connection Refused. Custom Tor bridged disabled.", domain: .tor, level: .warning)
             TorManagerUserDefaults.isUsingCustomBridges = false
-            reinitiateConnection()
+            start()
         default:
             break
         }
