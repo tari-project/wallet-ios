@@ -112,7 +112,7 @@ private extension TorConnectionStatus {
 
     var statusName: String {
         switch self {
-        case .disconnected, .disconnecting:
+        case .disconnected:
             return localized("connection_status.popUp.label.tor_status.disconnected")
         case .connecting, .portsOpen:
             return localized("connection_status.popUp.label.tor_status.connecting")
@@ -123,7 +123,7 @@ private extension TorConnectionStatus {
 
     var status: StatusView.Status {
         switch self {
-        case .disconnected, .disconnecting:
+        case .disconnected:
             return .error
         case .connecting, .portsOpen:
             return .warning
