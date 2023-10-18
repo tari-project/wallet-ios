@@ -101,10 +101,6 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         LogFilesManager.cleanupLogs()
     }
 
-    func sceneDidEnterBackground(_ scene: UIScene) {
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
-    }
-
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {
         ShortcutsManager.handle(shortcut: shortcutItem)
     }

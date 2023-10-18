@@ -41,7 +41,6 @@
 		00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E2BCB9236B5BE800C2A105 /* ActionButton.swift */; };
 		00E4919A2366E08B007B332D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E491992366E08B007B332D /* AppDelegate.swift */; };
 		00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4919B2366E08B007B332D /* SceneDelegate.swift */; };
-		00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 00E491A42366E08B007B332D /* MobileWallet.xcdatamodeld */; };
 		00E491A82366E08F007B332D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A72366E08F007B332D /* Assets.xcassets */; };
 		00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
 		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
@@ -478,7 +477,6 @@
 		54AD5F662A420A9F00D223B8 /* Data+Utlis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */; };
 		54ADC0932A3858C40082C455 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC0922A3858C40082C455 /* ErrorView.swift */; };
 		54B3A5452AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54B3A5442AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework */; };
-		54B3A5462AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 54B3A5442AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		54B7F4452996583800BB484B /* ContactBookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7F4442996583800BB484B /* ContactBookCell.swift */; };
 		54B854B929BF993600A2367A /* ContactBookListPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B854B829BF993600A2367A /* ContactBookListPlaceholder.swift */; };
 		54BB5E052A2F081300E239C7 /* UserProfileDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */; };
@@ -580,17 +578,6 @@
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		54B3A5472AC2CE7800FDC578 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				54B3A5462AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -631,7 +618,6 @@
 		00E491962366E08B007B332D /* Tari Aurora.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Tari Aurora.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E491992366E08B007B332D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		00E4919B2366E08B007B332D /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		00E491A52366E08B007B332D /* MobileWallet.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MobileWallet.xcdatamodel; sourceTree = "<group>"; };
 		00E491A72366E08F007B332D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		00E491AA2366E08F007B332D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		00E491AC2366E08F007B332D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1505,7 +1491,6 @@
 				001256432371EBAA00A9C067 /* Boards */,
 				00262EB2236F022000A6C8A0 /* Common */,
 				37098045249CD48A0004ED2E /* Localizable.strings */,
-				00E491A42366E08B007B332D /* MobileWallet.xcdatamodeld */,
 				00E2BCB5236B469C00C2A105 /* Screens */,
 				00E2BCAF236B44CE00C2A105 /* UIElements */,
 				54B3A5432AC2CB8600FDC578 /* Libraries */,
@@ -3150,7 +3135,6 @@
 				00E491942366E08B007B332D /* Resources */,
 				1D2ED85D52528FD37F207E5E /* [CP] Embed Pods Frameworks */,
 				00C520A7246965260077BF7F /* Embed Foundation Extensions */,
-				54B3A5472AC2CE7800FDC578 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -3512,7 +3496,6 @@
 				3708D756247FF81900807D72 /* SettingsParentViewController.swift in Sources */,
 				5419AA792A4473F90079E745 /* HomeViewController.swift in Sources */,
 				54DF83C52A4C5A220040E3F4 /* RoundedGlassContentView.swift in Sources */,
-				00E491A62366E08B007B332D /* MobileWallet.xcdatamodeld in Sources */,
 				5460258A29A74DAB00CF5764 /* ContactDetailsView.swift in Sources */,
 				545A9D18294F6F50008D24A6 /* ThemeSettingsModel.swift in Sources */,
 				3ABF91A7283FFA6E0001C766 /* AboutView.swift in Sources */,
@@ -4153,19 +4136,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		00E491A42366E08B007B332D /* MobileWallet.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				00E491A52366E08B007B332D /* MobileWallet.xcdatamodel */,
-			);
-			currentVersion = 00E491A52366E08B007B332D /* MobileWallet.xcdatamodel */;
-			path = MobileWallet.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 00E4918E2366E08B007B332D /* Project object */;
 }
