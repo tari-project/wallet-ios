@@ -130,7 +130,8 @@ final class HomeModel {
 
         switch (networkConnection, torConnection, baseNodeConnection, syncStatus) {
         case (.disconnected, _, _, _),
-            (.connected, .disconnected, _, _):
+            (.connected, .disconnected, _, _),
+            (.connected, .disconnecting, _, _):
             connectionStatusIcon = .icons.network.off
         case (.connected, .connecting, _, _),
             (.connected, .portsOpen, _, _),

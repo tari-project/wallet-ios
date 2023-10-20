@@ -211,7 +211,7 @@ final class Tari: MainServiceable {
     }
 
     private func connect() {
-        torManager.start()
+        torManager.reinitiateConnection()
         guard canAutomaticalyReconnectWallet, !walletManager.isWalletConnected else { return }
         Task {
             try? await startWallet()
@@ -220,9 +220,7 @@ final class Tari: MainServiceable {
 
     private func disconnect() {
         walletManager.disconnectWallet()
-        Task {
-            await torManager.stop()
-        }
+        torManager.stop()
     }
 
     private func startWallet(seedWords: [String]?) async throws {
