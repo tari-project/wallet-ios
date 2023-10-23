@@ -118,7 +118,10 @@ enum AppRouter {
     }
 
     static func moveToProfile() {
-        present(controller: ProfileViewController(backButtonType: .close))
+        let controller = ProfileViewController(backButtonType: .close)
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+        navigationController.isNavigationBarHidden = true
+        tabBar?.presentOnFullScreen(navigationController)
     }
 
     // MARK: - Modal Actions
