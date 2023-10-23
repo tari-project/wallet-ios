@@ -369,7 +369,6 @@
 		54103CE02A555A4500C456B4 /* TransactionHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54103CDF2A555A4500C456B4 /* TransactionHistoryView.swift */; };
 		54103CE22A5564CA00C456B4 /* TransactionHistoryCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54103CE12A5564CA00C456B4 /* TransactionHistoryCell.swift */; };
 		5410F5D12951F04B006976DC /* TariWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5410F5D02951F04B006976DC /* TariWindow.swift */; };
-		5418BDAC2ADD2B720029D891 /* TorWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5418BDAB2ADD2B720029D891 /* TorWorker.swift */; };
 		5419AA792A4473F90079E745 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419AA782A4473F90079E745 /* HomeViewController.swift */; };
 		5419AA7B2A4474040079E745 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419AA7A2A4474040079E745 /* HomeView.swift */; };
 		5419AA7D2A4474390079E745 /* HomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5419AA7C2A4474390079E745 /* HomeModel.swift */; };
@@ -443,6 +442,7 @@
 		546CE7F629AF517900264699 /* FormOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F529AF517900264699 /* FormOverlayView.swift */; };
 		546CE7F929AF523F00264699 /* ContactBookFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F829AF523F00264699 /* ContactBookFormView.swift */; };
 		5477518D2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5477518C2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift */; };
+		547833572AE2829400D297C2 /* TorWorkingContainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547833562AE2829400D297C2 /* TorWorkingContainter.swift */; };
 		547A85D329ACF2D100D94985 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D229ACF2D100D94985 /* MenuCell.swift */; };
 		547A85D529AD23D800D94985 /* MenuTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D429AD23D800D94985 /* MenuTableView.swift */; };
 		547A85D729AD248400D94985 /* MenuTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D629AD248400D94985 /* MenuTableHeaderView.swift */; };
@@ -949,7 +949,6 @@
 		54103CDF2A555A4500C456B4 /* TransactionHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistoryView.swift; sourceTree = "<group>"; };
 		54103CE12A5564CA00C456B4 /* TransactionHistoryCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistoryCell.swift; sourceTree = "<group>"; };
 		5410F5D02951F04B006976DC /* TariWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TariWindow.swift; sourceTree = "<group>"; };
-		5418BDAB2ADD2B720029D891 /* TorWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorWorker.swift; sourceTree = "<group>"; };
 		5419AA782A4473F90079E745 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		5419AA7A2A4474040079E745 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		5419AA7C2A4474390079E745 /* HomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModel.swift; sourceTree = "<group>"; };
@@ -1023,6 +1022,7 @@
 		546CE7F529AF517900264699 /* FormOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormOverlayView.swift; sourceTree = "<group>"; };
 		546CE7F829AF523F00264699 /* ContactBookFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookFormView.swift; sourceTree = "<group>"; };
 		5477518C2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesHeaderView.swift; sourceTree = "<group>"; };
+		547833562AE2829400D297C2 /* TorWorkingContainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorWorkingContainter.swift; sourceTree = "<group>"; };
 		547A85D229ACF2D100D94985 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		547A85D429AD23D800D94985 /* MenuTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableView.swift; sourceTree = "<group>"; };
 		547A85D629AD248400D94985 /* MenuTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableHeaderView.swift; sourceTree = "<group>"; };
@@ -2283,7 +2283,7 @@
 			isa = PBXGroup;
 			children = (
 				370E886A24FE9FF800576F61 /* Helpers */,
-				5418BDAB2ADD2B720029D891 /* TorWorker.swift */,
+				547833562AE2829400D297C2 /* TorWorkingContainter.swift */,
 			);
 			path = Tor;
 			sourceTree = "<group>";
@@ -3327,6 +3327,7 @@
 				3A7E06DC287831D800D15190 /* PopUpCombineUTXOsConfirmationContentView.swift in Sources */,
 				3A6CD3B5279194980034DF81 /* RequestTariAmountView.swift in Sources */,
 				5421551429A4AE92000A3F49 /* SearchTextField.swift in Sources */,
+				547833572AE2829400D297C2 /* TorWorkingContainter.swift in Sources */,
 				54F2E34929EE6BE900A7A15A /* ContactTransactionListConstructor.swift in Sources */,
 				3A72DC3D26DFA02900E0BC43 /* NetworkManager.swift in Sources */,
 				3AE1D58227E0A8C8001A46C4 /* TransactionDetailsConstructor.swift in Sources */,
@@ -3379,7 +3380,6 @@
 				3A39E57229012C8B000BBEBF /* DropboxBackupService.swift in Sources */,
 				3AD308642923FDBB009A53CE /* Error+BackupErrors.swift in Sources */,
 				00E2BCBA236B5BE800C2A105 /* ActionButton.swift in Sources */,
-				5418BDAC2ADD2B720029D891 /* TorWorker.swift in Sources */,
 				3ABF91AC283FFAA50001C766 /* AboutViewCell.swift in Sources */,
 				3A80F636287C56D60099EB73 /* PopUpUtxoDetailsContentView.swift in Sources */,
 				5444C81729F1C10700BF3875 /* PopUpTag.swift in Sources */,
