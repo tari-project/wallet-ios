@@ -112,11 +112,11 @@ extension TariAddress: Equatable {
         return leftHex == rightHex
     }
 
+    var publicKey: String {
+        get throws { try String(byteVector.hex.dropLast(2)) }
+    }
+
     var isUnknownUser: Bool {
-        get throws {
-            let rawAddress = try byteVector.hex
-            let rawEmojiID = rawAddress.dropLast(2)
-            return rawEmojiID.filter { $0 == "0" }.count == 64
-        }
+        get throws { try publicKey.filter { $0 == "0" }.count == 64 }
     }
 }

@@ -122,7 +122,7 @@ extension MenuTableView: UITableViewDelegate {
         guard let title = viewModel[section].title else { return nil }
 
         let headerView = tableView.dequeueReusableHeaderFooterView(type: MenuTableHeaderView.self)
-        headerView.label.text = title
+        headerView.title = title
         return headerView
     }
 
