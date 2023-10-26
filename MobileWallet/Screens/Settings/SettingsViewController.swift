@@ -347,7 +347,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         }
 
         let header = MenuTableHeaderView()
-        header.label.text = SettingsHeaderTitle.allCases[section].rawValue
+        header.title = SettingsHeaderTitle.allCases[section].rawValue
 
         return header
     }
