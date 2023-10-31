@@ -442,7 +442,6 @@
 		546CE7F629AF517900264699 /* FormOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F529AF517900264699 /* FormOverlayView.swift */; };
 		546CE7F929AF523F00264699 /* ContactBookFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546CE7F829AF523F00264699 /* ContactBookFormView.swift */; };
 		5477518D2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5477518C2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift */; };
-		547833572AE2829400D297C2 /* TorWorkingContainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547833562AE2829400D297C2 /* TorWorkingContainter.swift */; };
 		547A85D329ACF2D100D94985 /* MenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D229ACF2D100D94985 /* MenuCell.swift */; };
 		547A85D529AD23D800D94985 /* MenuTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D429AD23D800D94985 /* MenuTableView.swift */; };
 		547A85D729AD248400D94985 /* MenuTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 547A85D629AD248400D94985 /* MenuTableHeaderView.swift */; };
@@ -457,6 +456,9 @@
 		548C4C322AC1689B00E376EF /* SwitchMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 548C4C312AC1689B00E376EF /* SwitchMenuCell.swift */; };
 		54909AAF29C05822002D1070 /* ContactType+Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54909AAE29C05822002D1070 /* ContactType+Data.swift */; };
 		5491696E2940F78000783E54 /* LogFilesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5491696D2940F78000783E54 /* LogFilesManager.swift */; };
+		5494BFB02AF0E98E00791A52 /* TorConnectionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5494BFAF2AF0E98E00791A52 /* TorConnectionStatus.swift */; };
+		5494BFB22AF0E9B500791A52 /* TorError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5494BFB12AF0E9B500791A52 /* TorError.swift */; };
+		5494BFB32AF122A600791A52 /* RoundedLabeledButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A9C88929F6A54B009B0653 /* RoundedLabeledButton.swift */; };
 		549565E02AA1D21E0092A10F /* Task+Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549565DF2AA1D21E0092A10F /* Task+Utils.swift */; };
 		549E0E0D29754E9C00828743 /* PartialBackupModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549E0E0C29754E9B00828743 /* PartialBackupModel.swift */; };
 		549E1A012A5EB7B00063022C /* QRCodeScannerBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549E1A002A5EB7B00063022C /* QRCodeScannerBoxView.swift */; };
@@ -470,7 +472,6 @@
 		54A783DB29E96FF600A30594 /* BLEPeripheralManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A783DA29E96FF600A30594 /* BLEPeripheralManager.swift */; };
 		54A95B3C29747C19003CCE5C /* TariUnspentOutputsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A95B3B29747C19003CCE5C /* TariUnspentOutputsService.swift */; };
 		54A9C88829F6A06F009B0653 /* DataFlowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A9C88729F6A06F009B0653 /* DataFlowManager.swift */; };
-		54A9C88A29F6A54B009B0653 /* RoundedLabeledButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54A9C88929F6A54B009B0653 /* RoundedLabeledButton.swift */; };
 		54AA5D5A298122B70031A396 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D59298122B70031A396 /* OnboardingView.swift */; };
 		54AA5D5C2981267C0031A396 /* OnboardingPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5B2981267C0031A396 /* OnboardingPageViewController.swift */; };
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
@@ -1022,7 +1023,6 @@
 		546CE7F529AF517900264699 /* FormOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormOverlayView.swift; sourceTree = "<group>"; };
 		546CE7F829AF523F00264699 /* ContactBookFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookFormView.swift; sourceTree = "<group>"; };
 		5477518C2AAB227000B78E1D /* CustomTorBridgesHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTorBridgesHeaderView.swift; sourceTree = "<group>"; };
-		547833562AE2829400D297C2 /* TorWorkingContainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorWorkingContainter.swift; sourceTree = "<group>"; };
 		547A85D229ACF2D100D94985 /* MenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuCell.swift; sourceTree = "<group>"; };
 		547A85D429AD23D800D94985 /* MenuTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableView.swift; sourceTree = "<group>"; };
 		547A85D629AD248400D94985 /* MenuTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuTableHeaderView.swift; sourceTree = "<group>"; };
@@ -1037,6 +1037,8 @@
 		548C4C312AC1689B00E376EF /* SwitchMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchMenuCell.swift; sourceTree = "<group>"; };
 		54909AAE29C05822002D1070 /* ContactType+Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContactType+Data.swift"; sourceTree = "<group>"; };
 		5491696D2940F78000783E54 /* LogFilesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFilesManager.swift; sourceTree = "<group>"; };
+		5494BFAF2AF0E98E00791A52 /* TorConnectionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorConnectionStatus.swift; sourceTree = "<group>"; };
+		5494BFB12AF0E9B500791A52 /* TorError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorError.swift; sourceTree = "<group>"; };
 		549565DF2AA1D21E0092A10F /* Task+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Task+Utils.swift"; sourceTree = "<group>"; };
 		549E0E0C29754E9B00828743 /* PartialBackupModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartialBackupModel.swift; sourceTree = "<group>"; };
 		549E1A002A5EB7B00063022C /* QRCodeScannerBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerBoxView.swift; sourceTree = "<group>"; };
@@ -2283,7 +2285,8 @@
 			isa = PBXGroup;
 			children = (
 				370E886A24FE9FF800576F61 /* Helpers */,
-				547833562AE2829400D297C2 /* TorWorkingContainter.swift */,
+				5494BFAF2AF0E98E00791A52 /* TorConnectionStatus.swift */,
+				5494BFB12AF0E9B500791A52 /* TorError.swift */,
 			);
 			path = Tor;
 			sourceTree = "<group>";
@@ -3314,6 +3317,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5494BFB32AF122A600791A52 /* RoundedLabeledButton.swift in Sources */,
 				3A51B1AD28F00A4F0094FDD6 /* Logger.swift in Sources */,
 				3A7DABA028FDC9F3002CC013 /* LogConstructor.swift in Sources */,
 				3A7DAB9A28FDC972002CC013 /* LogViewController.swift in Sources */,
@@ -3327,7 +3331,6 @@
 				3A7E06DC287831D800D15190 /* PopUpCombineUTXOsConfirmationContentView.swift in Sources */,
 				3A6CD3B5279194980034DF81 /* RequestTariAmountView.swift in Sources */,
 				5421551429A4AE92000A3F49 /* SearchTextField.swift in Sources */,
-				547833572AE2829400D297C2 /* TorWorkingContainter.swift in Sources */,
 				54F2E34929EE6BE900A7A15A /* ContactTransactionListConstructor.swift in Sources */,
 				3A72DC3D26DFA02900E0BC43 /* NetworkManager.swift in Sources */,
 				3AE1D58227E0A8C8001A46C4 /* TransactionDetailsConstructor.swift in Sources */,
@@ -3535,6 +3538,7 @@
 				3A66109927AD364E0038EB5B /* SendingTariModel.swift in Sources */,
 				54FCC36B2AA5C2E400CA0025 /* TorBridgesModel.swift in Sources */,
 				54621F9729E01443000E9659 /* DeepLinkKeyedEncodingContainer.swift in Sources */,
+				5494BFB02AF0E98E00791A52 /* TorConnectionStatus.swift in Sources */,
 				3A5A3D5A29016E1300B689C6 /* BackupWalletSettingsView.swift in Sources */,
 				00A66527243C766D0046E730 /* ConnectionMonitor.swift in Sources */,
 				3AC6F11428E9D8840068E6FF /* CustomBridgesHandable.swift in Sources */,
@@ -3677,6 +3681,7 @@
 				00A994332396434B007D9990 /* PulseButton.swift in Sources */,
 				5460258629A74D8200CF5764 /* ContactDetailsModel.swift in Sources */,
 				545A9D21294F9CCE008D24A6 /* UserSettings.swift in Sources */,
+				5494BFB22AF0E9B500791A52 /* TorError.swift in Sources */,
 				3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */,
 				3A84CDD42846088D005F2F8D /* UTXOsWalletView.swift in Sources */,
 				5430B97D29B7402600C80AA2 /* LinkContactsConstructor.swift in Sources */,
@@ -3801,9 +3806,7 @@
 				54D88EA42A5AEAEC0075DBC1 /* TransactionDynamicModel.swift in Sources */,
 				3A7E06DA287831BD00D15190 /* UTXOsEstimationLabel.swift in Sources */,
 				0042780323E8421200AE7BD9 /* String.swift in Sources */,
-				54A9C88A29F6A54B009B0653 /* RoundedLabeledButton.swift in Sources */,
 				54A148EC2AA88B7B00C68D9D /* CustomTorBridgesConstructor.swift in Sources */,
-				54A9C88A29F6A54B009B0653 /* RoundedLabeledButton.swift in Sources */,
 				540CB6F529C1DE42003FACEF /* AddContactView.swift in Sources */,
 				54D4747929EDC21D003D14E6 /* FormOverlayPresenter.swift in Sources */,
 				3A793BF3280354830094DF23 /* PopUpHeaderWithSubtitle.swift in Sources */,

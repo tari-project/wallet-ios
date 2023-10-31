@@ -1,10 +1,10 @@
-//  ToastPresenter.swift
+//  TorError.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 11/04/2022
+	Created by Adrian Truszczyński on 31/10/2023
 	Using Swift 5.0
-	Running on macOS 12.3
+	Running on macOS 14.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,27 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import SwiftEntryKit
-
-enum ToastPresenter {
-
-    static func show(title: String, duration: TimeInterval = 2.0) {
-
-        guard let toastColor: UIColor = .static.purple else { return }
-
-        let toast = SuccessToast()
-        toast.label.text = title
-
-        var attributes = EKAttributes.topToast
-        attributes.entryBackground = .color(color: EKColor(toastColor))
-        attributes.screenBackground = .clear
-        attributes.displayDuration = duration
-        attributes.hapticFeedbackType = .success
-        attributes.screenInteraction = .forward
-        attributes.precedence = .enqueue(priority: .normal)
-
-        SwiftEntryKit.display(entry: toast, using: attributes)
-        UIApplication.shared.hideKeyboard()
-        Logger.log(message: "Success Toast: \(title)", domain: .userInterface, level: .info)
-    }
+enum TorError: Error {
+    case connectionFailed(error: Error)
+    case authenticationFailed
+    case missingController
+    case missingCookie(error: Error)
+    case unknown(error: Error)
 }

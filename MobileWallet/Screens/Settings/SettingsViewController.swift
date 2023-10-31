@@ -387,7 +387,6 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 break
             }
         case .more:
-            var indexPath = indexPath
             switch SettingsItemTitle.allCases[indexPath.row + indexPath.section] {
             case .about:
                 onAboutAction()
