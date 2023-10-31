@@ -187,12 +187,12 @@ final class Tari: MainServiceable {
 
     func startWallet() async throws {
         await waitForTor()
-        try await startWallet(seedWords: nil)
+        try startWallet(seedWords: nil)
         try connection.selectCurrentNode()
     }
 
-    func restoreWallet(seedWords: [String]) async throws {
-        try await startWallet(seedWords: seedWords)
+    func restoreWallet(seedWords: [String]) throws {
+        try startWallet(seedWords: seedWords)
     }
 
     func deleteWallet() {
@@ -211,7 +211,7 @@ final class Tari: MainServiceable {
     }
 
     private func connect() {
-        torManager.reinitiateConnection()
+        torManager.start()
         guard canAutomaticalyReconnectWallet, !walletManager.isWalletConnected else { return }
         Task {
             try? await startWallet()
@@ -223,9 +223,9 @@ final class Tari: MainServiceable {
         torManager.stop()
     }
 
-    private func startWallet(seedWords: [String]?) async throws {
+    private func startWallet(seedWords: [String]?) throws {
 
-        let commsConfig = try await makeCommsConfig()
+        let commsConfig = try makeCommsConfig()
         let selectedNetwork = NetworkManager.shared.selectedNetwork
         var walletSeedWords: SeedWords?
 
@@ -270,9 +270,9 @@ final class Tari: MainServiceable {
         NetworkManager.shared.removeSelectedNetworkSettings()
     }
 
-    private func makeCommsConfig() async throws -> CommsConfig {
+    private func makeCommsConfig() throws -> CommsConfig {
 
-        let torCookie = try await torManager.cookie()
+        let torCookie = try torManager.controlAuthCookie()
         let transportType = try makeTransportType(torCookie: torCookie)
 
         return try CommsConfig(
@@ -328,8 +328,8 @@ final class Tari: MainServiceable {
 
     // MARK: - Data
 
-    func walletVersion() async throws -> String? {
-        let commsConfig = try await makeCommsConfig()
+    func walletVersion() throws -> String? {
+        let commsConfig = try makeCommsConfig()
         return try walletManager.walletVersion(commsConfig: commsConfig)
     }
 }
