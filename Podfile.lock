@@ -15,21 +15,21 @@ PODS:
   - lottie-ios (3.2.3)
   - OpenSSL-Universal (1.1.1900)
   - ReachabilitySwift (5.0.0)
-  - Sentry (8.1.0):
-    - Sentry/Core (= 8.1.0)
-    - SentryPrivate (= 8.1.0)
-  - Sentry/Core (8.1.0):
-    - SentryPrivate (= 8.1.0)
-  - SentryPrivate (8.1.0)
+  - Sentry (8.14.2):
+    - Sentry/Core (= 8.14.2)
+    - SentryPrivate (= 8.14.2)
+  - Sentry/Core (8.14.2):
+    - SentryPrivate (= 8.14.2)
+  - SentryPrivate (8.14.2)
   - SwiftEntryKit (2.0.0)
   - SwiftKeychainWrapper (3.4.0)
   - SwiftyDropbox (8.2.1):
     - Alamofire (~> 5.4.3)
   - TariCommon (0.2.0)
-  - Tor (408.4.1):
-    - Tor/CTor (= 408.4.1)
-  - Tor/Core (408.4.1)
-  - Tor/CTor (408.4.1):
+  - Tor (408.7.2):
+    - Tor/CTor (= 408.7.2)
+  - Tor/Core (408.7.2)
+  - Tor/CTor (408.7.2):
     - Tor/Core
   - YatLib (0.3.3):
     - TariCommon (~> 0.2.0)
@@ -41,12 +41,12 @@ DEPENDENCIES:
   - lottie-ios
   - OpenSSL-Universal
   - ReachabilitySwift
-  - Sentry (from `https://github.com/getsentry/sentry-cocoa.git`, tag `8.1.0`)
+  - Sentry (= 8.14.2)
   - SwiftEntryKit (= 2.0.0)
   - SwiftKeychainWrapper (= 3.4.0)
   - SwiftyDropbox (= 8.2.1)
   - TariCommon (= 0.2.0)
-  - Tor (= 408.4.1)
+  - Tor (= 408.7.2)
   - YatLib (= 0.3.3)
   - Zip (= 2.1.2)
 
@@ -59,6 +59,7 @@ SPEC REPOS:
     - lottie-ios
     - OpenSSL-Universal
     - ReachabilitySwift
+    - Sentry
     - SentryPrivate
     - SwiftEntryKit
     - SwiftKeychainWrapper
@@ -68,16 +69,6 @@ SPEC REPOS:
     - YatLib
     - Zip
 
-EXTERNAL SOURCES:
-  Sentry:
-    :git: https://github.com/getsentry/sentry-cocoa.git
-    :tag: 8.1.0
-
-CHECKOUT OPTIONS:
-  Sentry:
-    :git: https://github.com/getsentry/sentry-cocoa.git
-    :tag: 8.1.0
-
 SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
   Giphy: 6757d929878ef45f70ed62a02a2c9a03994e7b6c
@@ -86,16 +77,16 @@ SPEC CHECKSUMS:
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
   OpenSSL-Universal: 84efb8a29841f2764ac5403e0c4119a28b713346
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  Sentry: a73976b9f5a5141187b0c15432425a167c90d80f
-  SentryPrivate: eb7ce6ea7ccf1bbeda1f3f37fa355668849426ae
+  Sentry: e0ea366f95ebb68f26d6030d8c22d6b2e6d23dd0
+  SentryPrivate: 949a21fa59872427edc73b524c3ec8456761d97f
   SwiftEntryKit: 61b5fa36f34a97dd8013e48a7345bc4c4720be9a
   SwiftKeychainWrapper: 6fc49fbf7d4a6b0772917acb0e53a1639f6078d6
   SwiftyDropbox: f6c55aae36c4ea944fe6b35f807c19897f78b09b
   TariCommon: 2c8bb97359f59d6b302d2e96c191ff95931da8ac
-  Tor: 47917bb7670747dddc72a81445cf6835ee3e48d9
+  Tor: 7e7ab1fa8b5140b0b5038cff45b9c9472ad73951
   YatLib: f56aa60679b20e989a41b6bc92c0081c013b523a
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: 1935c8b1d357f9c14a7c5f3d0bb5cdffee24a68a
+PODFILE CHECKSUM: 78481b66b4ba45f09ba6fe28f4de98e3ab98cccf
 
 COCOAPODS: 1.13.0

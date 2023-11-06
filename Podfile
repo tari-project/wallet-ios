@@ -4,11 +4,11 @@ use_frameworks!
 inhibit_all_warnings!
 
 target 'MobileWallet' do
-  pod 'Tor', '408.4.1'
+  pod 'Tor', '408.7.2'
   pod 'lottie-ios'
   pod 'SwiftEntryKit', '2.0.0'
   pod 'ReachabilitySwift'
-  pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '8.1.0'
+  pod 'Sentry', '8.14.2'
   pod 'SwiftKeychainWrapper', '3.4.0'
   pod 'Giphy', '2.1.22'
   pod 'IPtProxy', '1.10.1'
