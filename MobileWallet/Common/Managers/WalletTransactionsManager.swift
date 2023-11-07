@@ -125,13 +125,13 @@ final class WalletTransactionsManager {
                 result(.success)
                 return
             }
-            startListeningForWalletEvents(transactionID: transactionID, recipientHex: address, result: result)
+            try startListeningForWalletEvents(transactionID: transactionID, publicKey: tariAddress.publicKey, result: result)
         } catch {
             result(.failure(.transactionError(error: error)))
         }
     }
 
-    private func startListeningForWalletEvents(transactionID: UInt64, recipientHex: String, result: @escaping (Result<Void, TransactionError>) -> Void) {
+    private func startListeningForWalletEvents(transactionID: UInt64, publicKey: String, result: @escaping (Result<Void, TransactionError>) -> Void) {
 
         WalletCallbacksManager.shared.transactionSendResult
             .filter { $0.identifier == transactionID }
@@ -142,7 +142,7 @@ final class WalletTransactionsManager {
                     return
                 }
 
-                self?.sendPushNotificationToRecipient(recipientHex: recipientHex)
+                self?.sendPushNotificationToRecipient(publicKey: publicKey)
 
                 Logger.log(message: "Transaction send successful", domain: .general, level: .info)
                 result(.success)
@@ -150,11 +150,11 @@ final class WalletTransactionsManager {
             .store(in: &cancellables)
     }
 
-    private func sendPushNotificationToRecipient(recipientHex: String) {
+    private func sendPushNotificationToRecipient(publicKey: String) {
 
         do {
             try NotificationManager.shared.sendToRecipient(
-                recipientHex: recipientHex,
+                publicKey: publicKey,
                 onSuccess: { Logger.log(message: "Recipient has been notified", domain: .general, level: .info) },
                 onError: { Logger.log(message: "Failed to notify recipient: \($0.localizedDescription)", domain: .general, level: .error) }
             )
