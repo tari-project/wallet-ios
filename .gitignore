@@ -71,7 +71,7 @@ fastlane/screenshots/*.html*
 fastlane/test_output
 .DS_Store
 fastlane/Appfile
-MobileWallet/Libraries/TariLib/libtari_wallet_ffi_ios.xcframework
+MobileWallet/Libraries/TariLib/libminotari_wallet_ffi_ios.xcframework
 MobileWallet/Constants.plist
 .idea/
 fastlane/.env*

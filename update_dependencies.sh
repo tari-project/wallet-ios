@@ -2,9 +2,9 @@
 
 FILE=env.json
 WORKING_DIR=Temp
-FRAMEWORK_ZIP_FILE_NAME=libtari_wallet_ffi.ios-xcframework.zip
-FRAMEWORK_DIRECTORY=libwallet-ios-xcframework
-FRAMEWORK_FILE_NAME=libtari_wallet_ffi_ios.xcframework
+FRAMEWORK_ZIP_FILE_NAME=libminotari_wallet_ffi.ios-xcframework.zip
+FRAMEWORK_DIRECTORY=libminotari_wallet_ffi-ios-xcframework
+FRAMEWORK_FILE_NAME=libminotari_wallet_ffi_ios.xcframework
 PROJECT_FRAMEWORK_DIRECTORY=./MobileWallet/Libraries/TariLib
 
 if test ! -f "$FILE"; then

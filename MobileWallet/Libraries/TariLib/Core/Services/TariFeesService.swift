@@ -42,7 +42,7 @@ final class TariFeesService: CoreTariService {
 
     // MARK: - Actions
 
-    func estimateFee(amount: UInt64, feePerGram: UInt64 = Tari.defaultFeePerGram.rawValue, kernelsCount: UInt64 = Tari.defaultKernelCount, outputsCount: UInt64 = Tari.defaultOutputCount) throws -> UInt64 {
+    func estimateFee(amount: UInt64, feePerGram: UInt64 = Tari.defaultFeePerGram.rawValue, kernelsCount: UInt32 = Tari.defaultKernelCount, outputsCount: UInt32 = Tari.defaultOutputCount) throws -> UInt64 {
         try walletManager.feeEstimate(amount: amount, feePerGram: feePerGram, kernelsCount: kernelsCount, outputsCount: outputsCount)
     }
 

@@ -76,9 +76,10 @@ struct BaseNode: Equatable {
     // MARK: - Actions
 
     private func validateData() throws {
-        let regex = try NSRegularExpression(pattern: "[a-z0-9]{64}::\\/onion3\\/[a-z0-9]{56}:[0-9]{2,6}")
+        let onionRegex = try NSRegularExpression(pattern: "[a-z0-9]{64}::\\/onion3\\/[a-z0-9]{56}:[0-9]{2,6}")
+        let ip4Regex = try NSRegularExpression(pattern: "[a-z0-9]{64}::\\/ip4\\/[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}\\/tcp\\/[0-9]{2,6}")
         let range = NSRange(location: 0, length: peer.utf16.count)
-        guard regex.matches(in: peer, options: [], range: range).count == 1 else { throw InternalError.invalidPeerString }
+        guard onionRegex.matches(in: peer, options: [], range: range).count == 1 || ip4Regex.matches(in: peer, range: range).count == 1 else { throw InternalError.invalidPeerString }
     }
 }
 

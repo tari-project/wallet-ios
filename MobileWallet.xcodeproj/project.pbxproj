@@ -43,7 +43,6 @@
 		00E4919C2366E08B007B332D /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00E4919B2366E08B007B332D /* SceneDelegate.swift */; };
 		00E491A82366E08F007B332D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A72366E08F007B332D /* Assets.xcassets */; };
 		00E491AB2366E08F007B332D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 00E491A92366E08F007B332D /* LaunchScreen.storyboard */; };
-		123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F28D9135828811CA84244432 /* Pods_MobileWallet.framework */; };
 		37049270247EA0770034EE5D /* RestoreWalletViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3704926F247EA0770034EE5D /* RestoreWalletViewController.swift */; };
 		37049274247EA9110034EE5D /* SystemMenuTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37049273247EA9110034EE5D /* SystemMenuTableViewCell.swift */; };
 		3708D74A247FCF2300807D72 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3708D749247FCF2300807D72 /* SettingsViewController.swift */; };
@@ -343,6 +342,7 @@
 		4C363B762574F15E00D99868 /* OpenSSL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C363B372574EFE500D99868 /* OpenSSL.xcframework */; };
 		4CD20A362407967B007B64D8 /* TransportConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD20A352407967B007B64D8 /* TransportConfig.swift */; };
 		4CDEC323273A5E3600999DCB /* Balance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDEC322273A5E3500999DCB /* Balance.swift */; };
+		515299BD56554003EF2BD2FD /* Pods_MobileWallet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0A04F26CF08C60019DAC177 /* Pods_MobileWallet.framework */; };
 		540CB6EE29C1D519003FACEF /* SettingsProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6ED29C1D519003FACEF /* SettingsProfileCell.swift */; };
 		540CB6F129C1DDCC003FACEF /* AddContactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F029C1DDCC003FACEF /* AddContactModel.swift */; };
 		540CB6F329C1DE26003FACEF /* AddContactViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 540CB6F229C1DE26003FACEF /* AddContactViewController.swift */; };
@@ -380,6 +380,7 @@
 		542585C52A332F32009D12CD /* RotaryMenuOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542585C42A332F32009D12CD /* RotaryMenuOverlayView.swift */; };
 		542585C82A334697009D12CD /* RotaryMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542585C72A334697009D12CD /* RotaryMenuView.swift */; };
 		542585CA2A3346C0009D12CD /* RotaryMenuButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542585C92A3346C0009D12CD /* RotaryMenuButton.swift */; };
+		542725662AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 542725652AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework */; };
 		5430B97729B7400900C80AA2 /* LinkContactsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97629B7400900C80AA2 /* LinkContactsModel.swift */; };
 		5430B97929B7401200C80AA2 /* LinkContactsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97829B7401200C80AA2 /* LinkContactsViewController.swift */; };
 		5430B97B29B7401C00C80AA2 /* LinkContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */; };
@@ -477,7 +478,6 @@
 		54AA5D5E298126CA0031A396 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */; };
 		54AD5F662A420A9F00D223B8 /* Data+Utlis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */; };
 		54ADC0932A3858C40082C455 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADC0922A3858C40082C455 /* ErrorView.swift */; };
-		54B3A5452AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54B3A5442AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework */; };
 		54B7F4452996583800BB484B /* ContactBookCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B7F4442996583800BB484B /* ContactBookCell.swift */; };
 		54B854B929BF993600A2367A /* ContactBookListPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B854B829BF993600A2367A /* ContactBookListPlaceholder.swift */; };
 		54BB5E052A2F081300E239C7 /* UserProfileDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */; };
@@ -961,6 +961,7 @@
 		542585C42A332F32009D12CD /* RotaryMenuOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuOverlayView.swift; sourceTree = "<group>"; };
 		542585C72A334697009D12CD /* RotaryMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuView.swift; sourceTree = "<group>"; };
 		542585C92A3346C0009D12CD /* RotaryMenuButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuButton.swift; sourceTree = "<group>"; };
+		542725652AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libminotari_wallet_ffi_ios.xcframework; path = MobileWallet/Libraries/TariLib/libminotari_wallet_ffi_ios.xcframework; sourceTree = "<group>"; };
 		5430B97629B7400900C80AA2 /* LinkContactsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsModel.swift; sourceTree = "<group>"; };
 		5430B97829B7401200C80AA2 /* LinkContactsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsViewController.swift; sourceTree = "<group>"; };
 		5430B97A29B7401C00C80AA2 /* LinkContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsView.swift; sourceTree = "<group>"; };
@@ -1058,7 +1059,6 @@
 		54AA5D5D298126CA0031A396 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
 		54AD5F652A420A9F00D223B8 /* Data+Utlis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Utlis.swift"; sourceTree = "<group>"; };
 		54ADC0922A3858C40082C455 /* ErrorView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
-		54B3A5442AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libtari_wallet_ffi_ios.xcframework; path = MobileWallet/Libraries/TariLib/libtari_wallet_ffi_ios.xcframework; sourceTree = "<group>"; };
 		54B7F4442996583800BB484B /* ContactBookCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookCell.swift; sourceTree = "<group>"; };
 		54B854B829BF993600A2367A /* ContactBookListPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookListPlaceholder.swift; sourceTree = "<group>"; };
 		54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileDeeplink.swift; sourceTree = "<group>"; };
@@ -1137,8 +1137,8 @@
 		BFF1ED9C2408111000CC9EF6 /* SendingTariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendingTariViewController.swift; sourceTree = "<group>"; };
 		BFF1EDA22408225900CC9EF6 /* sendingTariAnimation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sendingTariAnimation.json; sourceTree = "<group>"; };
 		BFF1EDA62408226200CC9EF6 /* sending-background.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "sending-background.mp4"; sourceTree = "<group>"; };
+		C0A04F26CF08C60019DAC177 /* Pods_MobileWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E6C8060CF3B17C7AA315F558 /* Pods-MobileWallet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet.release.xcconfig"; path = "Target Support Files/Pods-MobileWallet/Pods-MobileWallet.release.xcconfig"; sourceTree = "<group>"; };
-		F28D9135828811CA84244432 /* Pods_MobileWallet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileWallet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4E5AB1EC7D42438C3CA62CF /* Pods-MobileWallet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileWallet.debug.xcconfig"; path = "Target Support Files/Pods-MobileWallet/Pods-MobileWallet.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1147,13 +1147,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				54B3A5452AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework in Frameworks */,
 				4C363B762574F15E00D99868 /* OpenSSL.xcframework in Frameworks */,
 				371189732488FF11004D0CE3 /* CloudKit.framework in Frameworks */,
 				00DC2E22238554FD00036DDC /* libsqlite3.tbd in Frameworks */,
 				0070A7BC2379847100C25E1C /* LocalAuthentication.framework in Frameworks */,
 				4C2C95C7237962CB005058AB /* libc++.tbd in Frameworks */,
-				123181E402EDECC46E321212 /* Pods_MobileWallet.framework in Frameworks */,
+				542725662AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework in Frameworks */,
+				515299BD56554003EF2BD2FD /* Pods_MobileWallet.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1503,14 +1503,14 @@
 		27F235021D9E2060A3CBB465 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				54B3A5442AC2CE7800FDC578 /* libtari_wallet_ffi_ios.xcframework */,
+				542725652AFB7E1000FA4973 /* libminotari_wallet_ffi_ios.xcframework */,
 				4C363B372574EFE500D99868 /* OpenSSL.xcframework */,
 				371189722488FF11004D0CE3 /* CloudKit.framework */,
 				0070A7BB2379847100C25E1C /* LocalAuthentication.framework */,
-				F28D9135828811CA84244432 /* Pods_MobileWallet.framework */,
 				00C520AE2469716E0077BF7F /* libc++.1.tbd */,
 				4C2C95C6237962CB005058AB /* libc++.tbd */,
 				00DC2E21238554FD00036DDC /* libsqlite3.tbd */,
+				C0A04F26CF08C60019DAC177 /* Pods_MobileWallet.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
