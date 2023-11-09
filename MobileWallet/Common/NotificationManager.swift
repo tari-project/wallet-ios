@@ -81,12 +81,9 @@ final class NotificationManager {
 
     static let shared = NotificationManager()
 
-    private static let hasRegisteredTokenKey = "hasRegisteredPushToken"
-
     private let notificationCenter = UNUserNotificationCenter.current()
     private let options: UNAuthorizationOptions = [.alert, .sound, .badge]
 
-    private var hasRegisteredToken: Bool { UserDefaults.standard.bool(forKey: NotificationManager.hasRegisteredTokenKey) }
     private var cancellables = Set<AnyCancellable>()
 
     private init() {
@@ -103,12 +100,6 @@ final class NotificationManager {
     func requestAuthorization(_ completionHandler: ((Bool) -> Void)? = nil) {
 
         if ProcessInfo.processInfo.arguments.contains("ui-test-mode") {
-            completionHandler?(true)
-            return
-        }
-
-        guard !hasRegisteredToken else {
-            Logger.log(message: "Already registered for push notifications", domain: .general, level: .info)
             completionHandler?(true)
             return
         }
@@ -198,7 +189,6 @@ final class NotificationManager {
                 path: "/register/\(messageData.hex)",
                 requestPayload: requestPayload,
                 onSuccess: {
-                    UserDefaults.standard.set(true, forKey: NotificationManager.hasRegisteredTokenKey)
                     Logger.log(message: "Registered device token", domain: .general, level: .info)
                 }) { (error) in
                     Logger.log(message: "Failed to register device token: \(error.localizedDescription)", domain: .general, level: .error)
@@ -208,8 +198,8 @@ final class NotificationManager {
         }
     }
 
-    func sendToRecipient(recipientHex: String, onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
-        let messageData = try sign(message: recipientHex)
+    func sendToRecipient(publicKey: String, onSuccess: @escaping (() -> Void), onError: @escaping ((Error) -> Void)) throws {
+        let messageData = try sign(message: publicKey)
 
         let requestPayload = try JSONEncoder().encode(
             SendNotificationServerRequest(
@@ -219,7 +209,7 @@ final class NotificationManager {
             )
         )
 
-        pushServerRequest(path: "/send/\(recipientHex)", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
+        pushServerRequest(path: "/send/\(publicKey)", requestPayload: requestPayload, onSuccess: onSuccess, onError: onError)
     }
 
     // TODO remove this is local push notifications work better
