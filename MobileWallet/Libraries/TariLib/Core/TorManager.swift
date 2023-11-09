@@ -68,6 +68,7 @@ final class TorManager {
     var isUsingCustomBridges: Bool { TorManagerUserDefaults.isUsingCustomBridges ?? false }
     var bridges: String? { TorManagerUserDefaults.torBridges }
 
+    private var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
     private var controller: TorController?
     private var queuedAction: Action?
     private var retryAction: DispatchWorkItem?
@@ -160,7 +161,9 @@ final class TorManager {
 
         Task {
             do {
+                startBackgroundTask()
                 try await disconnect()
+                endBackgroundTask()
             } catch {
                 handle(error: error)
             }
@@ -373,6 +376,22 @@ final class TorManager {
         } catch {
             throw TorError.missingCookie(error: error)
         }
+    }
+
+    // MARK: - Background Tasks
+
+    private func startBackgroundTask() {
+        Logger.log(message: "Start Background Task", domain: .tor, level: .info)
+        backgroundTaskID = UIApplication.shared.beginBackgroundTask { [weak self] in
+            self?.endBackgroundTask()
+        }
+    }
+
+    private func endBackgroundTask() {
+        guard backgroundTaskID != .invalid else { return }
+        Logger.log(message: "End Background Task", domain: .tor, level: .info)
+        UIApplication.shared.endBackgroundTask(backgroundTaskID)
+        backgroundTaskID = .invalid
     }
 
     // MARK: - Helpers
