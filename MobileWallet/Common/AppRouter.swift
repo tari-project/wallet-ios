@@ -188,7 +188,7 @@ enum AppRouter {
 
     static func presentCustomTorBridgesForm(bridges: String?) {
         let controller = CustomTorBridgesConstructor.buildScene(bridges: bridges)
-        present(controller: controller)
+        presentOnTop(controller: controller)
     }
 
     // MARK: - External Apps
