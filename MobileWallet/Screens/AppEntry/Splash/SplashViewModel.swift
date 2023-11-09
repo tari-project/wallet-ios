@@ -172,6 +172,7 @@ final class SplashViewModel {
         Tari.shared.deleteWallet()
         Tari.shared.canAutomaticalyReconnectWallet = false
         status = StatusModel(status: .idle, statusRepresentation: .content)
+        isWalletExist = Tari.shared.isWalletExist
     }
 
     private func connectToWallet(isWalletConnected: Bool) async throws {

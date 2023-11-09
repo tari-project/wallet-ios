@@ -239,7 +239,7 @@ final class FFIWalletManager {
         return result
     }
 
-    func feeEstimate(amount: UInt64, feePerGram: UInt64, kernelsCount: UInt64, outputsCount: UInt64) throws -> UInt64 {
+    func feeEstimate(amount: UInt64, feePerGram: UInt64, kernelsCount: UInt32, outputsCount: UInt32) throws -> UInt64 {
 
         let wallet = try exisingWallet
 

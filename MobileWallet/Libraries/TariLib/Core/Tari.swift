@@ -46,8 +46,8 @@ final class Tari: MainServiceable {
     // MARK: - Constants
 
     static let defaultFeePerGram = MicroTari(10)
-    static let defaultKernelCount = UInt64(1)
-    static let defaultOutputCount = UInt64(2)
+    static let defaultKernelCount = UInt32(1)
+    static let defaultOutputCount = UInt32(2)
 
     private let databaseName = "tari_wallet"
 
