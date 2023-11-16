@@ -72,10 +72,10 @@ final class SuccessToast: UIView {
         addSubview(label)
 
         let constraints = [
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 15.0),
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 30.0),
             label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -30.0),
-            label.centerYAnchor.constraint(equalTo: centerYAnchor),
-            heightAnchor.constraint(equalToConstant: 40.0)
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0)
         ]
 
         NSLayoutConstraint.activate(constraints)

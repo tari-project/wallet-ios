@@ -192,6 +192,7 @@ final class HomeView: UIView {
     var onTransactionCellTap: ((_ identifier: UInt64) -> Void)?
 
     private var transactionsDataSource: UITableViewDiffableDataSource<Int, HomeViewTransactionCell.ViewModel>?
+    private var avatarConstraints: [NSLayoutConstraint] = []
 
     // MARK: - Initialisers
 
@@ -214,6 +215,11 @@ final class HomeView: UIView {
         [availableBalanceTitleLabel, availableBalanceCurrencyView, availableBalanceLabel, amountHelpButton].forEach(availableBalanceContentView.addSubview)
         [pulseView, avatarView, avatarButton].forEach(avatarContentView.addSubview)
         [waveBackgroundView, buttonsStackView, balanceContentView, availableBalanceContentView, avatarContentView, viewAllTransactionsButton, transactionTableView, transactionPlaceholderView].forEach(addSubview)
+
+        avatarConstraints = [
+            avatarView.widthAnchor.constraint(equalToConstant: 0.0),
+            avatarView.heightAnchor.constraint(equalToConstant: 0.0)
+        ]
 
         let constraints = [
             waveBackgroundView.topAnchor.constraint(equalTo: topAnchor),
@@ -257,20 +263,18 @@ final class HomeView: UIView {
             amountHelpButton.centerYAnchor.constraint(equalTo: availableBalanceContentView.centerYAnchor),
             amountHelpButton.widthAnchor.constraint(equalToConstant: 22.0),
             amountHelpButton.heightAnchor.constraint(equalToConstant: 22.0),
-            avatarContentView.topAnchor.constraint(equalTo: availableBalanceContentView.bottomAnchor),
+            avatarContentView.topAnchor.constraint(equalTo: availableBalanceContentView.bottomAnchor, constant: 30.0),
             avatarContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             avatarContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             avatarView.centerXAnchor.constraint(equalTo: avatarContentView.centerXAnchor),
             avatarView.centerYAnchor.constraint(equalTo: avatarContentView.centerYAnchor),
-            avatarView.widthAnchor.constraint(equalToConstant: Self.avatarWidth),
-            avatarView.heightAnchor.constraint(equalToConstant: Self.avatarWidth),
             avatarButton.topAnchor.constraint(equalTo: avatarView.topAnchor),
             avatarButton.leadingAnchor.constraint(equalTo: avatarView.leadingAnchor),
             avatarButton.trailingAnchor.constraint(equalTo: avatarView.trailingAnchor),
             avatarButton.bottomAnchor.constraint(equalTo: avatarView.bottomAnchor),
             viewAllTransactionsButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -55.0),
             viewAllTransactionsButton.centerXAnchor.constraint(equalTo: centerXAnchor),
-            transactionTableView.topAnchor.constraint(equalTo: avatarContentView.bottomAnchor),
+            transactionTableView.topAnchor.constraint(equalTo: avatarContentView.bottomAnchor, constant: 20.0),
             transactionTableView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 26.0),
             transactionTableView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -26.0),
             transactionTableView.bottomAnchor.constraint(equalTo: viewAllTransactionsButton.topAnchor, constant: -20.0),
@@ -283,7 +287,7 @@ final class HomeView: UIView {
             pulseView.centerYAnchor.constraint(equalTo: avatarView.centerYAnchor)
         ]
 
-        NSLayoutConstraint.activate(constraints)
+        NSLayoutConstraint.activate(constraints + avatarConstraints)
     }
 
     private func setupCallbacks() {
@@ -389,6 +393,14 @@ final class HomeView: UIView {
     func stopAnimations() {
         waveBackgroundView.stopAnimation()
         pulseView.stopAnimation()
+    }
+
+    // MARK: - Layout
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        let avatarWidth = min(avatarContentView.bounds.height, Self.avatarWidth)
+        avatarConstraints.forEach { $0.constant = avatarWidth }
     }
 }
 

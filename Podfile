@@ -4,12 +4,11 @@ use_frameworks!
 inhibit_all_warnings!
 
 target 'MobileWallet' do
-  pod 'Tor', '~> 407.12.1'
-  pod 'FloatingPanel', '1.7.5'
+  pod 'Tor', '408.7.2'
   pod 'lottie-ios'
   pod 'SwiftEntryKit', '2.0.0'
   pod 'ReachabilitySwift'
-  pod 'Sentry', :git => 'https://github.com/getsentry/sentry-cocoa.git', :tag => '8.1.0'
+  pod 'Sentry', '8.14.2'
   pod 'SwiftKeychainWrapper', '3.4.0'
   pod 'Giphy', '2.1.22'
   pod 'IPtProxy', '1.10.1'
@@ -21,9 +20,26 @@ target 'MobileWallet' do
 end
 
 post_install do |installer|
+
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
+    end
+  end
+
+  installer.aggregate_targets.each do |target|
+      target.xcconfigs.each do |variant, xcconfig|
+      xcconfig_path = target.client_root + target.xcconfig_relative_path(variant)
+      IO.write(xcconfig_path, IO.read(xcconfig_path).gsub("DT_TOOLCHAIN_DIR", "TOOLCHAIN_DIR"))
+      end
+  end
+
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      if config.base_configuration_reference.is_a? Xcodeproj::Project::Object::PBXFileReference
+          xcconfig_path = config.base_configuration_reference.real_path
+          IO.write(xcconfig_path, IO.read(xcconfig_path).gsub("DT_TOOLCHAIN_DIR", "TOOLCHAIN_DIR"))
+      end
     end
   end
 end

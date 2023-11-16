@@ -38,20 +38,26 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
 final class MenuTableHeaderView: DynamicThemeHeaderFooterView {
 
     // MARK: - Subviews
 
-    @View private(set) var label: UILabel = {
+    @View private var label: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.settingsViewHeader
+        view.font = .Avenir.heavy.withSize(15.0)
         return view
     }()
 
     @View private var backgroundContentView = UIView()
+
+    // MARK: - Properties
+
+    var title: String? {
+        get { label.text }
+        set { label.text = newValue }
+    }
 
     // MARK: - Initialisers
 
@@ -75,9 +81,9 @@ final class MenuTableHeaderView: DynamicThemeHeaderFooterView {
             backgroundContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             backgroundContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             backgroundContentView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            label.topAnchor.constraint(equalTo: topAnchor, constant: 20.0),
             label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -15.0),
-            heightAnchor.constraint(equalToConstant: 70.0)
+            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10.0)
         ]
 
         NSLayoutConstraint.activate(constraints)

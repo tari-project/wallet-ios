@@ -67,7 +67,7 @@ final class TransactionHistoryView: BaseNavigationContentView {
             view.sectionHeaderTopPadding = .zero
         }
         view.register(type: TransactionHistoryCell.self)
-        view.register(headerFooterType: TransactionHistoryHeaderView.self)
+        view.register(headerFooterType: MenuTableHeaderView.self)
         return view
     }()
 
@@ -75,7 +75,6 @@ final class TransactionHistoryView: BaseNavigationContentView {
 
     var searchText: AnyPublisher<String, Never> { searchTextSubject.eraseToAnyPublisher() }
 
-    var onWalletButtonTap: (() -> Void)?
     var onCellTap: ((_ id: UInt64) -> Void)?
 
     private let searchTextSubject = CurrentValueSubject<String, Never>("")
@@ -100,9 +99,6 @@ final class TransactionHistoryView: BaseNavigationContentView {
 
     private func setupNavigationBar() {
         navigationBar.title = localized("transaction_history.title")
-        navigationBar.update(rightButton: NavigationBar.ButtonModel(image: .icons.wallet, callback: { [weak self] in
-            self?.onWalletButtonTap?()
-        }))
     }
 
     private func setupConstraints() {
@@ -177,7 +173,7 @@ extension TransactionHistoryView: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = tableView.dequeueReusableHeaderFooterView(type: TransactionHistoryHeaderView.self)
+        let view = tableView.dequeueReusableHeaderFooterView(type: MenuTableHeaderView.self)
         view.title = viewModels[section].sectionTitle
         return view
     }

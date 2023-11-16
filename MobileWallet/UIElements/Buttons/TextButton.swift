@@ -125,10 +125,6 @@ final class TextButton: DynamicThemeBaseButton {
         imageView?.transform = CGAffineTransform(scaleX: -1.0, y: 1.0)
     }
 
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-    }
-
     private func updateTextColor(theme: ColorTheme) {
         switch variation {
         case .primary:

@@ -83,10 +83,10 @@ final class BugReportingViewController: UIViewController {
             self?.showLogs()
         }
 
-        model.$shouldEndFlow
-            .filter { $0 }
+        model.$action
+            .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.endFlow() }
+            .sink { [weak self] in self?.handle(action: $0) }
             .store(in: &cancellables)
 
         model.$errorMessage
@@ -114,8 +114,38 @@ final class BugReportingViewController: UIViewController {
         dismiss(animated: true)
     }
 
+    private func handle(action: BugReportingModel.Action) {
+
+        switch action {
+        case .showDataCollectionConsentDialog:
+            showDataCollectionConsentPopUp()
+        case .endFlow:
+            endFlow()
+        }
+    }
+
     private func handle(errorMessage: MessageModel) {
         PopUpPresenter.show(message: errorMessage)
         mainView.isProcessing = false
+    }
+
+    private func showDataCollectionConsentPopUp() {
+
+        let model = PopUpDialogModel(
+            title: localized("bug_reporting.popup.data_collection.label.title"),
+            message: localized("bug_reporting.popup.data_collection.label.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("bug_reporting.popup.data_collection.button.ok"), type: .normal, callback: { [weak self] in
+                    self?.model.turnOnDataCollection()
+                    self?.sendReport()
+                }),
+                PopUpDialogButtonModel(title: localized("bug_reporting.popup.data_collection.button.cancel"), type: .text, callback: { [weak self] in
+                    self?.mainView.isProcessing = false
+                })
+            ],
+            hapticType: .none
+        )
+
+        PopUpPresenter.showPopUp(model: model)
     }
 }

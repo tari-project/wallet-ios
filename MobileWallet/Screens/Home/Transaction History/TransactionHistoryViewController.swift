@@ -91,10 +91,6 @@ final class TransactionHistoryViewController: UIViewController {
             .sink { [weak self] in self?.moveToTransactionDetails(transaction: $0) }
             .store(in: &cancellables)
 
-        mainView.onWalletButtonTap = { [weak self] in
-            self?.moveToUTXOsWallet()
-        }
-
         mainView.searchText
             .sink { [weak self] in self?.model.searchText = $0 }
             .store(in: &cancellables)
@@ -126,11 +122,6 @@ final class TransactionHistoryViewController: UIViewController {
     }
 
     // MARK: - Actions
-
-    private func moveToUTXOsWallet() {
-        let controller = UTXOsWalletConstructor.buildScene()
-        navigationController?.pushViewController(controller, animated: true)
-    }
 
     private func moveToTransactionDetails(transaction: Transaction) {
         let controller = TransactionDetailsConstructor.buildScene(transaction: transaction)

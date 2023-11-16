@@ -79,10 +79,4 @@ final class ContentNavigationViewController: UIViewController {
 
         NSLayoutConstraint.activate(constraints)
     }
-
-    // MARK: - Autolayout
-
-    override func viewWillLayoutSubviews() {
-        super.viewWillLayoutSubviews()
-    }
 }

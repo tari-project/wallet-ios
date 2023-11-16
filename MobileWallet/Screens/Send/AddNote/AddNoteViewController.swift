@@ -215,13 +215,13 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
 
     @objc private func moveSendButtonUp(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
-            let keyboardHeight = keyboardSize.height
+            let bottomOffset = -keyboardSize.height - 14.0
             sendButtonBottomConstraint.isActive = false
             showGiphyCarousel()
 
             UIView.animate(withDuration: 0.46, delay: 0.008, options: .curveEaseIn, animations: { [weak self] in
                 guard let self = self else { return }
-                self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -keyboardHeight)
+                self.sendButtonBottomConstraint = self.sendButton.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: bottomOffset)
                 self.sendButtonBottomConstraint.isActive = true
                 self.view.layoutIfNeeded()
             })

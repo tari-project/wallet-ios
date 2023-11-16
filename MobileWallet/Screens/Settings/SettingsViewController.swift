@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import LocalAuthentication
 import YatLib
 import Combine
@@ -71,7 +70,9 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private enum SettingsItemTitle: CaseIterable {
+
         case backUpWallet
+        case dataCollection
 
         case about
         case reportBug
@@ -81,8 +82,6 @@ final class SettingsViewController: SettingsParentTableViewController {
         case privacyPolicy
         case disclaimer
         case blockExplorer
-
-        case connectYats
 
         case selectTheme
         case bluetoothConfiguration
@@ -94,6 +93,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         var rawValue: String {
             switch self {
             case .backUpWallet: return localized("settings.item.wallet_backups")
+            case .dataCollection: return localized("settings.item.data_collection")
 
             case .bluetoothConfiguration: return localized("settings.item.bluetooth_settings")
             case .selectTheme: return localized("settings.item.select_theme")
@@ -101,8 +101,6 @@ final class SettingsViewController: SettingsParentTableViewController {
             case .selectNetwork: return localized("settings.item.select_network")
             case .selectBaseNode: return localized("settings.item.select_base_node")
             case .deleteWallet: return localized("settings.item.delete_wallet")
-
-            case .connectYats: return localized("settings.item.connect_yats")
 
             case .about: return localized("settings.item.about")
             case .reportBug: return localized("settings.item.report_bug")
@@ -118,7 +116,10 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private let backUpWalletItem = SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsWalletBackupsIcon, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
 
-    private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [backUpWalletItem]
+    private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [
+        backUpWalletItem,
+        SystemMenuTableViewCellItem(icon: .icons.analytics, title: SettingsItemTitle.dataCollection.rawValue)
+    ]
 
     private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
@@ -146,10 +147,6 @@ final class SettingsViewController: SettingsParentTableViewController {
 
         return items
     }()
-
-    private let yatSectionItems: [SystemMenuTableViewCellItem] = [
-        SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsYatIcon, title: SettingsItemTitle.connectYats.rawValue)
-    ]
 
     private let links: [SettingsItemTitle: URL?] = [
         .visitTari: URL(string: TariSettings.shared.tariUrl),
@@ -191,6 +188,11 @@ final class SettingsViewController: SettingsParentTableViewController {
         }
     }
 
+    private func onDataCollectionAction() {
+        let controller = DataCollectionSettingsConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
     private func onAboutAction() {
         let controller = AboutViewController()
         navigationController?.pushViewController(controller, animated: true)
@@ -212,8 +214,8 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onBridgeConfigurationAction() {
-        let bridgesConfigurationViewController = BridgesConfigurationViewController()
-        navigationController?.pushViewController(bridgesConfigurationViewController, animated: true)
+        let controller = TorBridgesConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
     }
 
     private func onSelectNetworkAction() {
@@ -291,7 +293,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let section = Section(rawValue: section) else { return 0 }
         switch section {
-        case .profile: return yatSectionItems.count + 1
+        case .profile: return 1
         case .security: return securitySectionItems.count
         case .more: return moreSectionItems.count
         case .advancedSettings: return advancedSettingsSectionItems.count
@@ -318,7 +320,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         guard let section = Section(rawValue: indexPath.section) else { return cell }
         switch section {
         case .profile:
-            cell.configure(yatSectionItems[indexPath.row - 1])
+            break
         case .security:
             cell.configure(securitySectionItems[indexPath.row])
         case .more:
@@ -345,7 +347,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         }
 
         let header = MenuTableHeaderView()
-        header.label.text = SettingsHeaderTitle.allCases[section].rawValue
+        header.title = SettingsHeaderTitle.allCases[section].rawValue
 
         return header
     }
@@ -375,10 +377,16 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             default:
                 break
             }
-        case .security: onBackupWalletAction()
+        case .security:
+            switch indexPath.row {
+            case 0:
+                onBackupWalletAction()
+            case 1:
+                onDataCollectionAction()
+            default:
+                break
+            }
         case .more:
-            var indexPath = indexPath
-            indexPath.row -= 1
             switch SettingsItemTitle.allCases[indexPath.row + indexPath.section] {
             case .about:
                 onAboutAction()

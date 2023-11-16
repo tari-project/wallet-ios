@@ -42,7 +42,7 @@ enum MigrationManager {
 
     // MARK: - Properties
 
-    private static let minValidVersion = "0.50.0-hotfix.1"
+    private static let minValidVersion = "0.52.0"
 
     // MARK: - Actions
 
@@ -61,9 +61,21 @@ enum MigrationManager {
         }
     }
 
-    private static func isWalletHasValidVersion() async -> Bool {
+    private static func isWalletHasValidVersion(retryCount: Int = 0) async -> Bool {
 
-        if let version = try? await Tari.shared.walletVersion() {
+        let maxRetryCount = 5
+        var version: String?
+
+        do {
+            version = try Tari.shared.walletVersion()
+        } catch {
+            guard retryCount < maxRetryCount else { return false }
+            Logger.log(message: "Waiting for cookies: Retry Count: \(retryCount)", domain: .general, level: .info)
+            try? await Task.sleep(seconds: 1)
+            return await isWalletHasValidVersion(retryCount: retryCount + 1)
+        }
+
+        if let version {
             let isValid = VersionValidator.compare(version, isHigherOrEqualTo: minValidVersion)
             Logger.log(message: "Min. Valid Wallet Version: \(minValidVersion), Local Wallet Version: \(version), isValid: \(isValid)", domain: .general, level: .info)
             return isValid

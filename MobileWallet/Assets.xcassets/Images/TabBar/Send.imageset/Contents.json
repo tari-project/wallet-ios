@@ -3,6 +3,16 @@
     {
       "filename" : "TabBarSend.pdf",
       "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "send-dark.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {

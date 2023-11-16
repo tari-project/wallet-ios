@@ -125,9 +125,7 @@ final class RestoreWalletFromSeedsModel {
             .filter { $0.state != .editing }
             .map { $0.title }
 
-        Task {
-            await restoreWallet(seedWords: seedWords)
-        }
+        restoreWallet(seedWords: seedWords)
     }
 
     func removeSeedWord(row: Int) {
@@ -149,9 +147,9 @@ final class RestoreWalletFromSeedsModel {
         viewModel.updatedInputText = ""
     }
 
-    private func restoreWallet(seedWords: [String]) async {
+    private func restoreWallet(seedWords: [String]) {
         do {
-            try await Tari.shared.restoreWallet(seedWords: seedWords)
+            try Tari.shared.restoreWallet(seedWords: seedWords)
             viewModel.isEmptyWalletCreated = true
         } catch let error as SeedWords.InternalError {
             handle(seedWordsError: error)

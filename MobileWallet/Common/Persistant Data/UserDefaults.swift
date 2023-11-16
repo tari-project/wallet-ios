@@ -38,11 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+// MARK: - Generic User Defaults
+
 private enum UserDefaultName: String, CaseIterable {
     case selectedNetworkName
     case networksSettings
     case walletSettings
     case userSettings
+    case isTrackingEnabled
 }
 
 enum GroupUserDefaults {
@@ -50,10 +53,31 @@ enum GroupUserDefaults {
     @UserDefault(key: UserDefaultName.networksSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var networksSettings: [NetworkSettings]?
     @UserDefault(key: UserDefaultName.walletSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
     @UserDefault(key: UserDefaultName.userSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var userSettings: UserSettings?
+    @UserDefault(key: UserDefaultName.isTrackingEnabled.rawValue, suiteName: TariSettings.groupIndentifier) static var isTrackingEnabled: Bool?
 }
+
+// MARK: - Tor Manager User Defaults
+
+enum TorManagerUserDefaults {
+
+    private enum Name: String, CaseIterable {
+        case isUsingCustomBridges
+        case torBridges
+    }
+
+    @UserDefault(key: Name.isUsingCustomBridges.rawValue) static var isUsingCustomBridges: Bool?
+    @UserDefault(key: Name.torBridges.rawValue) static var torBridges: String?
+
+    static func removeAll() {
+        Name.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }
+    }
+}
+
+// MARK: - Extensions
 
 extension UserDefaults {
     func removeAll() {
         UserDefaultName.allCases.forEach { UserDefaults.standard.removeObject(forKey: $0.rawValue) }
+        TorManagerUserDefaults.removeAll()
     }
 }

@@ -2,9 +2,9 @@
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 15/06/2023
+	Created by Adrian Truszczyński on 01/10/2023
 	Using Swift 5.0
-	Running on macOS 13.4
+	Running on macOS 13.5
 
 	Copyright 2019 The Tari Project
 
@@ -42,18 +42,16 @@ import UIKit
 
 extension UIImage {
 
-    var invertedMask: UIImage? {
+   func makeCIImage() -> CIImage? {
 
-        guard let ciImage = CIImage(image: self),
-              let backgroundFilter = CIFilter(name: "CIConstantColorGenerator", parameters: [kCIInputColorKey: CIColor.black]),
-              let inputColorFilter = CIFilter(name: "CIConstantColorGenerator", parameters: [kCIInputColorKey: CIColor.clear]),
-              let inputImage = inputColorFilter.outputImage,
-              let backgroundImage = backgroundFilter.outputImage,
-              let blendFilter = CIFilter(name: "CIBlendWithAlphaMask", parameters: [kCIInputImageKey: inputImage, kCIInputBackgroundImageKey: backgroundImage, kCIInputMaskImageKey: ciImage]),
-              let filterOutput = blendFilter.outputImage,
-              let outputImage = CIContext().createCGImage(filterOutput, from: ciImage.extent)
-        else { return nil }
+       if let ciImage {
+           return ciImage
+       }
 
-        return UIImage(cgImage: outputImage)
-    }
+       if let cgImage {
+           return CIImage(cgImage: cgImage)
+       }
+
+       return nil
+   }
 }

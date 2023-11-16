@@ -1,9 +1,0 @@
-language: objective-c
-osx_image: xcode11.4
-xcode_workspace: MobileWallet.xcworkspace
-xcode_scheme: MobileWallet
-xcode_only_testing: MobileWalletTests
-xcode_destination: platform=iOS Simulator,OS=13.4.1,name=iPhone 11
-before_script:
-- bash update_dependencies.sh
-# - ios-sim start --devicetypeid "com.apple.CoreSimulator.SimDeviceType.iPhone-11, 13.4.1"

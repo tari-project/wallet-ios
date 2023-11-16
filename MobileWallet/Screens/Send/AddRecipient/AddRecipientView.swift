@@ -299,7 +299,7 @@ extension AddRecipientView: UITableViewDelegate {
         guard let title = viewModels[section].title else { return nil }
 
         let headerView = tableView.dequeueReusableHeaderFooterView(type: MenuTableHeaderView.self)
-        headerView.label.text = title
+        headerView.title = title
         return headerView
     }
 

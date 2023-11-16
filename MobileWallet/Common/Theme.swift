@@ -109,7 +109,6 @@ struct Images {
     let settingsUserAgreementIcon = UIImage(named: "icon-user-agreement")
     let settingsVisitTariIcon = UIImage(named: "icon-visit-tari")
     let settingsWalletBackupsIcon = UIImage(named: "icon-wallet-backups")
-    let settingsYatIcon = UIImage(named: "icon-yat")
     let settingColorThemeIcon = UIImage(named: "icon-theme")
 
     // Connection Details Icons
@@ -277,7 +276,6 @@ extension UIImage {
     static var contactBook: ContactBookImages.Type { ContactBookImages.self }
     static var icons: IconsImages.Type { IconsImages.self }
     static var tabBar: TabBarImages.Type { TabBarImages.self }
-    static var legacy: LegacyImages.Type { LegacyImages.self }
 }
 
 // MARK: - Security
@@ -326,12 +324,6 @@ enum TabBarImages {
     static var send: UIImage? { UIImage(named: "Images/TabBar/Send") }
 }
 
-// MARK: - Legacy
-
-enum LegacyImages {
-    static var unknownUser = UIImage(named: "unknownUser")
-}
-
 // MARK: - Icons
 
 enum IconsImages {
@@ -343,6 +335,7 @@ enum IconsImages {
     static var star: IconsStarImages.Type { IconsStarImages.self }
     static var tabBar: IconsTabBarImages.Type { IconsTabBarImages.self }
 
+    static var analytics: UIImage? { UIImage(named: "Icons/Analytics") }
     static var bluetooth: UIImage? { UIImage(named: "Icons/Bluetooth") }
     static var checkmark: UIImage? { UIImage(named: "Icons/Checkmark") }
     static var close: UIImage? { UIImage(named: "Icons/Close") }

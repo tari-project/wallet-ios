@@ -40,9 +40,14 @@
 
 final class BugReportingModel {
 
+    enum Action {
+        case showDataCollectionConsentDialog
+        case endFlow
+    }
+
     // MARK: - View Model
 
-    @Published private(set) var shouldEndFlow: Bool = false
+    @Published private(set) var action: Action?
     @Published private(set) var errorMessage: MessageModel?
 
     // MARK: - Properties
@@ -52,10 +57,25 @@ final class BugReportingModel {
     // MARK: - Actions
 
     func sendReport(name: String?, email: String?, message: String?) {
+
+        guard AppConfigurator.shared.isCrashLoggerEnabled else {
+            action = .showDataCollectionConsentDialog
+            return
+        }
+
+        performSendReport(name: name, email: email, message: message)
+    }
+
+    func turnOnDataCollection() {
+        AppConfigurator.shared.isCrashLoggerEnabled = true
+    }
+
+    private func performSendReport(name: String?, email: String?, message: String?) {
+
         Task {
             do {
                 try await bugReportService.send(name: name ?? "", email: email ?? "", message: message ?? "")
-                shouldEndFlow = true
+                action = .endFlow
             } catch {
                 errorMessage = ErrorMessageManager.errorModel(forError: error)
             }

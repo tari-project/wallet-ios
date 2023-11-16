@@ -118,7 +118,10 @@ enum AppRouter {
     }
 
     static func moveToProfile() {
-        present(controller: ProfileViewController(backButtonType: .close))
+        let controller = ProfileViewController(backButtonType: .close)
+        let navigationController = AlwaysPoppableNavigationController(rootViewController: controller)
+        navigationController.isNavigationBarHidden = true
+        tabBar?.presentOnFullScreen(navigationController)
     }
 
     // MARK: - Modal Actions
@@ -184,8 +187,8 @@ enum AppRouter {
     }
 
     static func presentCustomTorBridgesForm(bridges: String?) {
-        let controller = CustomBridgesViewController(bridgesConfiguration: BridgesConfiguration(bridges: .none, customBridges: nil), initialValue: bridges)
-        present(controller: controller)
+        let controller = CustomTorBridgesConstructor.buildScene(bridges: bridges)
+        presentOnTop(controller: controller)
     }
 
     // MARK: - External Apps
