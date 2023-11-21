@@ -159,13 +159,16 @@ final class TorManager {
             return
         }
 
+        endBackgroundTask()
+        startBackgroundTask()
+
         Task {
             do {
-                startBackgroundTask()
                 try await disconnect()
                 endBackgroundTask()
             } catch {
                 handle(error: error)
+                endBackgroundTask()
             }
         }
     }
