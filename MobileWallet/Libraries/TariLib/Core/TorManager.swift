@@ -388,9 +388,11 @@ final class TorManager {
         backgroundTaskID = UIApplication.shared.beginBackgroundTask { [weak self] in
             self?.endBackgroundTask()
         }
+        Logger.log(message: "BG Task - Start: \(backgroundTaskID)", domain: .debug, level: .info)
     }
 
     private func endBackgroundTask() {
+        Logger.log(message: "BG Task - End: \(backgroundTaskID)", domain: .debug, level: .info)
         guard backgroundTaskID != .invalid else { return }
         Logger.log(message: "End Background Task", domain: .tor, level: .info)
         UIApplication.shared.endBackgroundTask(backgroundTaskID)
