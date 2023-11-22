@@ -80,7 +80,7 @@ enum AppRouter {
 
     private static func transition(to controller: UIViewController, type: TransitionType) {
 
-        guard let window = UIApplication.shared.keyWindow else { return }
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = scene.windows.first else { return }
 
         guard type != .none else {
             window.rootViewController = controller
