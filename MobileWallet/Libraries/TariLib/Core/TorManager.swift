@@ -70,10 +70,20 @@ final class TorManager {
 
     private var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
     private var controller: TorController?
-    private var queuedAction: Action?
+    private var queuedAction: Action? {
+        didSet {
+            guard let queuedAction else {
+                Logger.log(message: "queuedAction: None", domain: .debug, level: .info)
+                return
+            }
+            Logger.log(message: "queuedAction: \(queuedAction)", domain: .debug, level: .info)
+        }
+    }
     private var retryAction: DispatchWorkItem?
     private var observers: [Any?] = []
-    private var isConnecting = false
+    private var isActionLocked = false {
+        didSet { Logger.log(message: "isActionLocked: \(isActionLocked)", domain: .debug, level: .info) }
+    }
     private var cancellables = Set<AnyCancellable>()
 
     private var isThreadRunning: Bool { TorThread.active != nil }
@@ -108,11 +118,11 @@ final class TorManager {
                 case 0:
                     break
                 case 100:
-                    self?.isConnecting = false
+                    self?.isActionLocked = false
                     self?.cancelRetry()
                     self?.runQueuedAction()
                 default:
-                    self?.isConnecting = true
+                    self?.isActionLocked = true
                 }
             }
             .store(in: &cancellables)
@@ -135,7 +145,7 @@ final class TorManager {
 
         Logger.log(message: "Start", domain: .tor, level: .info)
 
-        guard !isConnecting else {
+        guard !isActionLocked else {
             queuedAction = .connect
             return
         }
@@ -154,7 +164,7 @@ final class TorManager {
 
         Logger.log(message: "Stop", domain: .tor, level: .info)
 
-        guard !isConnecting else {
+        guard !isActionLocked else {
             queuedAction = .disconnect
             return
         }
@@ -175,11 +185,13 @@ final class TorManager {
 
     func disconnect() async throws {
         Logger.log(message: "Disconnect: Start", domain: .tor, level: .info)
+        isActionLocked = true
         stopController()
         connectionStatus = .disconnecting
         bootstrapProgress = 0
         try await waitingForThread()
         connectionStatus = .disconnected
+        isActionLocked = false
         Logger.log(message: "Disconnect: Done", domain: .tor, level: .info)
     }
 
@@ -193,6 +205,7 @@ final class TorManager {
     private func connect() async throws {
         Logger.log(message: "Connect: Start", domain: .tor, level: .info)
         connectionStatus = .connecting
+        isActionLocked = true
         try createDirectories()
         try createThread()
         startIObfs4Proxy()
@@ -248,18 +261,20 @@ final class TorManager {
 
     private func startController(retryCount: Int = 0) async throws {
 
+        Logger.log(message: "Controller Connecting", domain: .tor, level: .info)
+
         let maxRetryCount = 5
 
         do {
             try existingController.connect()
-            isConnecting = true
+            isActionLocked = true
             Logger.log(message: "Controller Connected", domain: .tor, level: .info)
         } catch {
             Logger.log(message: "Waiting for connection: \(retryCount)", domain: .tor, level: .info)
             let retryCount = retryCount + 1
             guard retryCount < maxRetryCount else {
                 guard let posixError = error.posixError else { throw TorError.connectionFailed(error: error) }
-                isConnecting = false
+                isActionLocked = false
                 throw TorError.connectionFailed(error: posixError)
             }
 

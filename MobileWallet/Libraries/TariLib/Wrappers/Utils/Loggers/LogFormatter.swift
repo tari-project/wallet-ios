@@ -54,7 +54,7 @@ enum LogFormatter {
     static func formattedDomainName(domain: Logger.Domain, includePrefix: Bool) -> String {
         let domainName = domain.name.fixedLength(domainNameLength)
         guard includePrefix else { return domainName }
-        return [Date().description, appNamePrefix, domainName].joined(separator: separator)
+        return [appNamePrefix, domainName].joined(separator: separator)
     }
 }
 
