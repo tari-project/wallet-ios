@@ -44,16 +44,16 @@ final class MenuTabBarController: UITabBarController {
 
     enum Tab: Int {
         case home
-        case ttlStore
-        case transactions
         case contactBook
+        case transactions
+        case chat
         case settings
     }
 
     private let homeViewController = HomeConstructor.buildScene()
-    private let storeViewController = WebBrowserViewController()
-    private let transactionsViewController = UIViewController()
     private let contactBookViewController = ContactBookConstructor.buildScene()
+    private let transactionsViewController = UIViewController()
+    private let chatViewController = ChatListConstructor.buildScene()
     private let settingsViewController = SettingsViewController()
     private let customTabBar = CustomTabBar()
 
@@ -63,9 +63,7 @@ final class MenuTabBarController: UITabBarController {
         self.delegate = self
         tabBar.isTranslucent = false
 
-        storeViewController.url = URL(string: TariSettings.shared.storeUrl)
-
-        viewControllers = [homeViewController, storeViewController, transactionsViewController, contactBookViewController, settingsViewController]
+        viewControllers = [homeViewController, contactBookViewController, transactionsViewController, chatViewController, settingsViewController]
         viewControllers?.enumerated().forEach { setup(controller: $1, index: $0) }
 
         for tabBarItem in tabBar.items! {
@@ -176,12 +174,12 @@ private extension MenuTabBarController.Tab {
         switch self {
         case .home:
             return Theme.shared.images.homeItem
-        case .ttlStore:
-            return Theme.shared.images.ttlItem
-        case .transactions:
-            return .tabBar.send
         case .contactBook:
             return .icons.tabBar.contactBook
+        case .transactions:
+            return .tabBar.send
+        case .chat:
+            return .icons.tabBar.chat
         case .settings:
             return Theme.shared.images.settingsItem
         }
