@@ -220,6 +220,11 @@ final class ContactsManager {
 
 extension ContactsManager.Model {
 
+    init(address: TariAddress) throws {
+        let internalModel = try InternalContactsManager.ContactModel(alias: nil, defaultAlias: nil, emojiID: address.emojis, hex: address.byteVector.hex, isFavorite: false)
+        self.init(internalModel: internalModel, externalModel: nil)
+    }
+
     var menuItems: [ContactBookModel.MenuItem] {
 
         var items: [ContactBookModel.MenuItem] = []
@@ -248,5 +253,12 @@ extension ContactsManager.Model {
             guard let internalModel else { return nil }
             return PaymentInfo(address: internalModel.hex, alias: nil, yatID: nil, amount: nil, feePerGram: nil, note: nil)
         }
+    }
+}
+
+extension ContactsManager {
+
+    func contact(address: TariAddress) throws -> Model? {
+        try tariContactModels.first { try $0.internalModel?.hex == address.byteVector.hex }
     }
 }
