@@ -273,6 +273,7 @@ extension Shadow {
 
 extension UIImage {
     static var security: SecurityImages.Type { SecurityImages.self }
+    static var chat: ChatImages.Type { ChatImages.self }
     static var contactBook: ContactBookImages.Type { ContactBookImages.self }
     static var icons: IconsImages.Type { IconsImages.self }
     static var tabBar: TabBarImages.Type { TabBarImages.self }
@@ -290,6 +291,17 @@ enum SecurityOnboardingImages {
     static var page2: UIImage? { UIImage(named: "Images/Security/Onboarding/Page2") }
     static var page3: UIImage? { UIImage(named: "Images/Security/Onboarding/Page3") }
     static var page4: UIImage? { UIImage(named: "Images/Security/Onboarding/Page4") }
+}
+
+// MARK: - Chat
+
+enum ChatImages {
+    static var placeholders: ChatPlaceholders.Type { ChatPlaceholders.self }
+}
+
+enum ChatPlaceholders {
+    static var list: UIImage? { UIImage(named: "Images/Chat/Placeholders/List") }
+    static var conversation: UIImage? { UIImage(named: "Images/Chat/Placeholders/Conversation") }
 }
 
 // MARK: - Contact Book
@@ -343,6 +355,7 @@ enum IconsImages {
     static var magnifyingGlass: UIImage? { UIImage(named: "Icons/Magnifying Glass") }
     static var profile: UIImage? { UIImage(named: "Icons/Profile") }
     static var send: UIImage? { UIImage(named: "Icons/Send") }
+    static var sendMessage: UIImage? { UIImage(named: "Icons/Send Message") }
     static var tariGem: UIImage? { UIImage(named: "Icons/Tari Gem") }
     static var qr: UIImage? { UIImage(named: "Icons/QR") }
     static var unlink: UIImage? { UIImage(named: "Icons/Unlink") }
@@ -376,5 +389,6 @@ enum IconsStarImages {
 }
 
 enum IconsTabBarImages {
+    static var chat: UIImage? { UIImage(named: "Icons/TabBar/Chat") }
     static var contactBook: UIImage? { UIImage(named: "Icons/TabBar/ContactBook") }
 }
