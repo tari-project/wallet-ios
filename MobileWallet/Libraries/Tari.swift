@@ -50,10 +50,14 @@ final class Tari: MainServiceable {
     static let defaultOutputCount = UInt32(2)
 
     private let databaseName = "tari_wallet"
+    private let chatDatabaseName = "tari_chat"
 
     var connectedDatabaseDirectory: URL { TariSettings.storageDirectory.appendingPathComponent("\(databaseName)_\(NetworkManager.shared.selectedNetwork.name)", isDirectory: true) }
     var databaseURL: URL { connectedDatabaseDirectory.appendingPathComponent(databaseFilename) }
     private var databaseFilename: String { databaseName + ".sqlite3" }
+
+    private var chatDatabaseDirectory: URL { TariSettings.storageDirectory.appendingPathComponent("\(chatDatabaseName)_\(NetworkManager.shared.selectedNetwork.name)", isDirectory: true) }
+    private lazy var chatIdentityFilePath = chatDatabaseDirectory.appendingPathComponent("chat_id_file").path
 
     private let logFilePrefix = "log"
     private let publicAddress = "/ip4/0.0.0.0/tcp/9838"
@@ -77,6 +81,8 @@ final class Tari: MainServiceable {
     private(set) lazy var validation = TariValidationService(walletManager: walletManager, services: self)
     private(set) lazy var walletBalance = TariBalanceService(walletManager: walletManager, services: self)
     private(set) lazy var unspentOutputsService = TariUnspentOutputsService(walletManager: walletManager, services: self)
+
+    private(set) lazy var chatMessagesService = ChatMessagesService(chatManager: chatManager)
 
     private(set) lazy var logFilePath: String = {
         let dateFormatter = DateFormatter()
@@ -110,6 +116,7 @@ final class Tari: MainServiceable {
     @Published var isDisconnectionDisabled: Bool = false
 
     private let walletManager = FFIWalletManager()
+    private let chatManager = ChatManager()
     private lazy var torManager = TorManager(logPath: logFilePath)
     private var cancellables = Set<AnyCancellable>()
 
@@ -265,6 +272,16 @@ final class Tari: MainServiceable {
             logVerbosity: logVerbosity
         )
         resetServices()
+
+        try chatManager.start(
+                networkName: selectedNetwork.name,
+                publicAddress: torManager.controlServerAddress,
+                datastorePath: chatDatabaseDirectory.path,
+                identityFilePath: chatIdentityFilePath,
+                transportConfig: makeTransportConfig(),
+                logPath: logFilePath,
+                logVerbosity: TariSettings.shared.environment == .debug ? 11 : 2
+            ) // TODO: Align
     }
 
     private func waitForTor() async {
@@ -288,14 +305,15 @@ final class Tari: MainServiceable {
         NetworkManager.shared.removeSelectedNetworkSettings()
     }
 
-    private func makeCommsConfig() throws -> CommsConfig {
-
+    private func makeTransportConfig() throws -> TransportConfig {
         let torCookie = try torManager.controlAuthCookie()
-        let transportType = try makeTransportType(torCookie: torCookie)
+        return try makeTransportType(torCookie: torCookie)
+    }
 
-        return try CommsConfig(
+    private func makeCommsConfig() throws -> CommsConfig {
+        try CommsConfig(
             publicAddress: publicAddress,
-            transport: transportType,
+            transport: try makeTransportConfig(),
             databaseName: databaseName,
             databaseFolderPath: connectedDatabaseDirectory.path,
             discoveryTimeoutInSecs: discoveryTimeoutSec,

@@ -74,6 +74,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         case backUpWallet
         case dataCollection
 
+        case store
         case about
         case reportBug
         case visitTari
@@ -104,6 +105,7 @@ final class SettingsViewController: SettingsParentTableViewController {
             case .selectBaseNode: return localized("settings.item.select_base_node")
             case .deleteWallet: return localized("settings.item.delete_wallet")
 
+            case .store: return localized("settings.item.store")
             case .about: return localized("settings.item.about")
             case .reportBug: return localized("settings.item.report_bug")
             case .visitTari: return localized("settings.item.visit_tari")
@@ -137,6 +139,7 @@ final class SettingsViewController: SettingsParentTableViewController {
     private let moreSectionItems: [SystemMenuTableViewCellItem] = {
 
         var items = [
+            SystemMenuTableViewCellItem(icon: Theme.shared.images.ttlItem, title: SettingsItemTitle.store.rawValue),
             SystemMenuTableViewCellItem(icon: .Icons.Settings.about, title: SettingsItemTitle.about.rawValue),
             SystemMenuTableViewCellItem(icon: .Icons.Settings.reportBug, title: SettingsItemTitle.reportBug.rawValue),
             SystemMenuTableViewCellItem(icon: .Icons.Settings.visitTari, title: SettingsItemTitle.visitTari.rawValue),
@@ -154,6 +157,7 @@ final class SettingsViewController: SettingsParentTableViewController {
     }()
 
     private let links: [SettingsItemTitle: URL?] = [
+        .store: URL(string: TariSettings.shared.storeUrl),
         .visitTari: URL(string: TariSettings.shared.tariUrl),
         .contributeToTariAurora: URL(string: TariSettings.shared.contributeUrl),
         .userAgreement: URL(string: TariSettings.shared.userAgreementUrl),
@@ -404,6 +408,8 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             }
         case .more:
             switch SettingsItemTitle.allCases[indexPath.row + indexPath.section] {
+            case .store:
+                onLinkAction(indexPath: indexPath)
             case .about:
                 onAboutAction()
             case .reportBug:

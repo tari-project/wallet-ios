@@ -231,6 +231,7 @@
 "settings.item.report_bug" = "Report a Bug";
 "settings.item.block_explorer" = "Block Explorer";
 "settings.item.about" = "About";
+"settings.item.store" = "The TTL Store";
 
 "settings.error.connect_yats_no_connection" = "The app isn't currently connected to a peer-to-peer network. Please check your internet connection or change the base node and try again.";
 
@@ -915,3 +916,17 @@
 "address_poisoning.label.transaction_count" = "No of transactions: %d";
 "address_poisoning.label.last_transction" = "Last transaction date: %@";
 "address_poisoning.label.last_transction.never" = "Never";
+
+/* Chat List */
+
+"chat.list.title" = "Messages";
+"chat.list.lables.unread_messages.singular" = "You have %d unread message";
+"chat.list.lables.unread_messages.plural" = "You have %d unread messages";
+"chat.list.placeholder.label.title" = "No messages yet";
+"chat.list.placeholder.label.message" = "Just tap the 'New Message' icon up top to kick things off!";
+"chat.list.table.section.pinned" = "Pinned";
+"chat.list.table.section.other" = "Other";
+
+/* Chat Conversation */
+
+"chat.conversation.label.input_placeholder" = "Type message";
