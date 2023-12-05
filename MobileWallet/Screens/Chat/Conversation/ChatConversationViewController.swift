@@ -1,8 +1,8 @@
-//  ChatListViewConrtoller.swift
+//  ChatConversationViewController.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 11/09/2023
+	Created by Adrian Truszczyński on 14/09/2023
 	Using Swift 5.0
 	Running on macOS 13.5
 
@@ -41,18 +41,18 @@
 import UIKit
 import Combine
 
-final class ChatListViewConrtoller: UIViewController {
+final class ChatConversationViewController: UIViewController {
 
     // MARK: - Properties
 
-    private let model: ChatListModel
-    private let mainView = ChatListView()
+    let model: ChatConversationModel
+    let mainView = ChatConversationView()
 
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(model: ChatListModel) {
+    init(model: ChatConversationModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
@@ -70,88 +70,74 @@ final class ChatListViewConrtoller: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
+        mainView.interactableViews.forEach { hideKeyboardWhenTappedAroundOrSwipedDown(view: $0) }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        model.updateData()
+        model.updateUserData()
     }
 
     // MARK: - Setups
 
     private func setupCallbacks() {
 
-        model.$unreadMessagesCount
+        model.$userData
+            .compactMap { $0 }
+            .map { ChatConversationView.Model(avatar: .avatar(text: $0.avatarText, image: $0.avatarImage), isOnline: $0.isOnline, name: $0.name) }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.update(unreadMessagesCount: $0) }
+            .sink { [weak self] in self?.mainView.update(model: $0) }
             .store(in: &cancellables)
 
-        model.$previewsSections
+        model.$messages
+            .compactMap { [weak self] in self?.sectionViewModels(sectionModels: $0) }
+            .sink { [weak self] in self?.mainView.update(sections: $0) }
+            .store(in: &cancellables)
+
+        model.$messages
+            .map(\.isEmpty)
             .receive(on: DispatchQueue.main)
-            .map {
-                $0.map {
-                    ChatListView.Section(
-                        title: $0.title,
-                        rows: $0.previews.map {
-                            ChatListCell.Model(
-                                id: $0.id,
-                                avatar: $0.avatarImage != nil ? .image($0.avatarImage) : .text($0.avatarText),
-                                isOnline: $0.isOnline,
-                                title: $0.name,
-                                message: $0.preview,
-                                badgeNumber: $0.unreadMessagesCount,
-                                timestamp: $0.timestamp
-                            )
-                        }
-                    )
-                }
-            }
-            .sink { [weak self] in self?.mainView.viewModels = $0 }
+            .sink { [weak self] in self?.mainView.isPlaceholderVisible = $0 }
             .store(in: &cancellables)
 
         model.$action
             .compactMap { $0 }
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(action: $0 ) }
+            .sink { [weak self] in self?.handle(action: $0) }
             .store(in: &cancellables)
 
-        model.$errorMessage
+        model.$errorModel
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(errorMessage: $0) }
+            .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
 
-        mainView.onStartConversationButtonTap = { [weak self] in
-            self?.moveToSelectAddressScene()
+        mainView.onNavigationBarTap = { [weak self] in
+            self?.model.requestContactDetails()
         }
 
-        mainView.onSelectRow = { [weak self] in
-            self?.model.select(identifier: $0)
+        mainView.onSendButtonTap = { [weak self] in
+            self?.model.send(message: $0 ?? "")
         }
     }
 
     // MARK: - Handlers
 
-    private func handle(action: ChatListModel.Action) {
-        switch action {
-        case let .openConversation(address):
-            moveToConversationScene(address: address)
+    private func sectionViewModels(sectionModels: [ChatConversationModel.MessageSection]) -> [ChatConversationView.Section] {
+        sectionModels.map {
+            let messages = $0.messages.map {
+                ChatConversationCell.Model(id: $0.id, isIncoming: $0.isIncomming, isLastInContext: $0.isLastInContext, notificationTextComponents: $0.notificationParts, message: $0.message, timestamp: $0.timestamp)
+            }
+            return ChatConversationView.Section(title: $0.relativeDay, messages: messages)
         }
-    }
-
-    private func handle(errorMessage: MessageModel) {
-        PopUpPresenter.show(message: errorMessage)
     }
 
     // MARK: - Actions
 
-    private func moveToSelectAddressScene() {
-        let controller = ChatSelectContactConstructor.buildScene()
-        navigationController?.pushViewController(controller, animated: true)
-    }
-
-    private func moveToConversationScene(address: TariAddress) {
-        let controller = ChatConversationConstructor.buildScene(address: address)
-        navigationController?.pushViewController(controller, animated: true)
+    private func handle(action: ChatConversationModel.Action) {
+        switch action {
+        case let .openContactDetails(contact):
+            let controller = ContactDetailsConstructor.buildScene(model: contact)
+            navigationController?.pushViewController(controller, animated: true)
+        }
     }
 }

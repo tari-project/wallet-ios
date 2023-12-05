@@ -1,10 +1,10 @@
-//  DateFormatter+Formats.swift
+//  AvatarWithStatusView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 27/10/2022
+	Created by Adrian Truszczyński on 20/09/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 13.5
 
 	Copyright 2019 The Tari Project
 
@@ -38,29 +38,58 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension DateFormatter {
+import TariCommon
 
-    static var backupTimestamp: Self {
-        let formatter = Self()
-        formatter.dateFormat = "MMM dd yyy 'at' h:mm a"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
+final class AvatarWithStatusView: RoundedAvatarView {
+
+    // MARK: - Subviews
+
+    @View private var statusView = UIView()
+
+    // MARK: - Properties
+
+    var isOnline: Bool = false {
+        didSet { statusView.isHidden = !isOnline }
     }
 
-    static var hour: Self {
-        let formatter = Self()
-        formatter.dateFormat = "h:mm a"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
+    // MARK: - Initialisers
+
+    override init() {
+        super.init()
+        setupConstraints()
     }
 
-    static var shortDate: Self {
-        let formatter = Self()
-        formatter.dateFormat = "MMM dd yyy"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Setups
+
+    private func setupConstraints() {
+
+        addSubview(statusView)
+
+        let constraints = [
+            statusView.topAnchor.constraint(equalTo: topAnchor),
+            statusView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            statusView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.33),
+            statusView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.33)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    // MARK: - Updates
+
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        statusView.backgroundColor = theme.system.green
+    }
+
+    // MARK: - Layout
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        statusView.layer.cornerRadius = statusView.bounds.height / 2.0
     }
 }

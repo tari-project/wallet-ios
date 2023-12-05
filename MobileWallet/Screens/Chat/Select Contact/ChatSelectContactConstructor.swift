@@ -1,10 +1,10 @@
-//  DateFormatter+Formats.swift
+//  ChatSelectContactConstructor.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 27/10/2022
+	Created by Adrian Truszczyński on 29/11/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 14.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,29 +38,10 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension DateFormatter {
+enum ChatSelectContactConstructor {
 
-    static var backupTimestamp: Self {
-        let formatter = Self()
-        formatter.dateFormat = "MMM dd yyy 'at' h:mm a"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
-    }
-
-    static var hour: Self {
-        let formatter = Self()
-        formatter.dateFormat = "h:mm a"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
-    }
-
-    static var shortDate: Self {
-        let formatter = Self()
-        formatter.dateFormat = "MMM dd yyy"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
+    static func buildScene() -> ChatSelectContactViewController {
+        let model = ChatSelectContactModel()
+        return ChatSelectContactViewController(model: model)
     }
 }

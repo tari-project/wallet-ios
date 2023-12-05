@@ -42,6 +42,11 @@ import Foundation
 
 extension Date {
 
+    var dateOnly: Date? {
+        let components = Calendar.current.dateComponents([.year, .month, .day], from: self)
+        return Calendar.current.date(from: components)
+    }
+
     /*
      Creates a readable string from a given date
     */
