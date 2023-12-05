@@ -1,10 +1,10 @@
-//  DateFormatter+Formats.swift
+//  BaseContactBookView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 27/10/2022
+	Created by Adrian Truszczyński on 28/11/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 14.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,29 +38,55 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension DateFormatter {
+import TariCommon
 
-    static var backupTimestamp: Self {
-        let formatter = Self()
-        formatter.dateFormat = "MMM dd yyy 'at' h:mm a"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
+final class BaseContactBookView: DynamicThemeView {
+
+    // MARK: - Subviews
+
+    @View private var searchTextField: SearchField = {
+        let view = SearchField()
+        view.placeholder = localized("contact_book.search_bar.placeholder")
+        return view
+    }()
+
+    // MARK: - Initialisers
+
+    override init() {
+        super.init()
+        setupConstraints()
     }
 
-    static var hour: Self {
-        let formatter = Self()
-        formatter.dateFormat = "h:mm a"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    static var shortDate: Self {
-        let formatter = Self()
-        formatter.dateFormat = "MMM dd yyy"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
+    // MARK: - Setups
+
+    private func setupConstraints() {
+
+        addSubview(searchTextField)
+
+        let constraints = [
+            searchTextField.topAnchor.constraint(equalTo: topAnchor, constant: 20.0),
+            searchTextField.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 25.0),
+            searchTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -25.0)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    func setup(pagerView: UIView) {
+
+        addSubview(pagerView)
+
+        let constraints = [
+            pagerView.topAnchor.constraint(equalTo: searchTextField.bottomAnchor, constant: 20.0),
+            pagerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            pagerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            pagerView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
     }
 }

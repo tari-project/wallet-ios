@@ -161,3 +161,10 @@ final class ChatMessage {
         destroy_chat_message(pointer)
     }
 }
+
+extension ChatMessage {
+
+    var isIncomming: Bool {
+        get throws { try direction == 1 }
+    }
+}

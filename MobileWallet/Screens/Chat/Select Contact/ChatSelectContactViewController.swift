@@ -1,10 +1,10 @@
-//  ChatListViewConrtoller.swift
+//  ChatSelectContactViewController.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 11/09/2023
+	Created by Adrian Truszczyński on 28/11/2023
 	Using Swift 5.0
-	Running on macOS 13.5
+	Running on macOS 14.0
 
 	Copyright 2019 The Tari Project
 
@@ -41,18 +41,22 @@
 import UIKit
 import Combine
 
-final class ChatListViewConrtoller: UIViewController {
+final class ChatSelectContactViewController: UIViewController {
 
     // MARK: - Properties
 
-    private let model: ChatListModel
-    private let mainView = ChatListView()
+    private let mainView = ChatSelectContactView()
+    private let model: ChatSelectContactModel
+    private lazy var contactsPageManager = BaseContactViewPageManager(
+        contactsPlaceholderModel: .chat(actionButtonCallback: { [weak self] in self?.moveToContactBook() }),
+        favoritesContactsPlaceholderModel: .chatFavorite
+    )
 
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
 
-    init(model: ChatListModel) {
+    init(model: ChatSelectContactModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
     }
@@ -70,88 +74,68 @@ final class ChatListViewConrtoller: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
+        mainView.setup(pagerView: contactsPageManager.pagerView)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        model.updateData()
+        model.fetchContacts()
     }
 
     // MARK: - Setups
 
     private func setupCallbacks() {
 
-        model.$unreadMessagesCount
+        model.$contactsList
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.mainView.update(unreadMessagesCount: $0) }
+            .sink { [weak self] in self?.contactsPageManager.contactsList = $0 }
             .store(in: &cancellables)
 
-        model.$previewsSections
+        model.$favoriteContactsList
             .receive(on: DispatchQueue.main)
-            .map {
-                $0.map {
-                    ChatListView.Section(
-                        title: $0.title,
-                        rows: $0.previews.map {
-                            ChatListCell.Model(
-                                id: $0.id,
-                                avatar: $0.avatarImage != nil ? .image($0.avatarImage) : .text($0.avatarText),
-                                isOnline: $0.isOnline,
-                                title: $0.name,
-                                message: $0.preview,
-                                badgeNumber: $0.unreadMessagesCount,
-                                timestamp: $0.timestamp
-                            )
-                        }
-                    )
-                }
-            }
-            .sink { [weak self] in self?.mainView.viewModels = $0 }
+            .sink { [weak self] in self?.contactsPageManager.favoriteContactsList = $0 }
             .store(in: &cancellables)
 
         model.$action
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(action: $0 ) }
+            .sink { [weak self] in self?.handle(action: $0) }
             .store(in: &cancellables)
 
-        model.$errorMessage
+        model.$errorModel
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] in self?.handle(errorMessage: $0) }
+            .sink { PopUpPresenter.show(message: $0) }
             .store(in: &cancellables)
 
-        mainView.onStartConversationButtonTap = { [weak self] in
-            self?.moveToSelectAddressScene()
+        contactsPageManager.onContactPageRowTap = { [weak self] identifier, _ in
+            self?.model.select(contactID: identifier)
         }
 
-        mainView.onSelectRow = { [weak self] in
-            self?.model.select(identifier: $0)
+        contactsPageManager.onFavoritesContactPageRowTap = { [weak self] identifier, _ in
+            self?.model.select(contactID: identifier)
         }
     }
 
     // MARK: - Handlers
 
-    private func handle(action: ChatListModel.Action) {
+    private func handle(action: ChatSelectContactModel.Action) {
         switch action {
-        case let .openConversation(address):
+        case let .startConversation(address):
             moveToConversationScene(address: address)
         }
     }
 
-    private func handle(errorMessage: MessageModel) {
-        PopUpPresenter.show(message: errorMessage)
-    }
-
     // MARK: - Actions
-
-    private func moveToSelectAddressScene() {
-        let controller = ChatSelectContactConstructor.buildScene()
-        navigationController?.pushViewController(controller, animated: true)
-    }
 
     private func moveToConversationScene(address: TariAddress) {
         let controller = ChatConversationConstructor.buildScene(address: address)
         navigationController?.pushViewController(controller, animated: true)
+        removeFromParent()
+    }
+
+    private func moveToContactBook() {
+        navigationController?.popToRootViewController(animated: true)
+        AppRouter.moveToContactBook()
     }
 }

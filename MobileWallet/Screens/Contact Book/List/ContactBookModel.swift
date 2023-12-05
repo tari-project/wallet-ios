@@ -50,6 +50,7 @@ final class ContactBookModel {
         case link
         case unlink
         case details
+        case chat
     }
 
     enum ContentMode {
@@ -80,6 +81,7 @@ final class ContactBookModel {
         case shareLink(link: URL)
         case show(dialog: DialogType)
         case showMenu(model: ContactsManager.Model)
+        case chat(address: TariAddress)
     }
 
     fileprivate enum SectionType: Int {
@@ -183,6 +185,8 @@ final class ContactBookModel {
             performUnlinkAction(model: model)
         case .details:
             performShowDetailsAction(model: model)
+        case .chat:
+            performChatAction(model: model)
         }
     }
 
@@ -290,12 +294,8 @@ final class ContactBookModel {
     }
 
     private func performSendAction(model: ContactsManager.Model) {
-        do {
-            guard let paymentInfo = try model.paymentInfo else { return }
-            action = .sendTokens(paymentInfo: paymentInfo)
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
-        }
+        guard let paymentInfo = model.paymentInfo else { return }
+        action = .sendTokens(paymentInfo: paymentInfo)
     }
 
     private func performLinkAction(model: ContactsManager.Model) {
@@ -308,6 +308,15 @@ final class ContactBookModel {
 
     private func performUnlinkAction(model: ContactsManager.Model) {
         action = .unlink(model: model)
+    }
+
+    private func performChatAction(model: ContactsManager.Model) {
+        do {
+            guard let address = try model.tariAddress else { return }
+            action = .chat(address: address)
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
+        }
     }
 
     // MARK: - Handlers

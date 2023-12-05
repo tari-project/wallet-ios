@@ -243,15 +243,20 @@ extension ContactsManager.Model {
             items.append(.link)
         }
 
-        items.append(.details)
+        items += [.chat, .details]
 
         return items
     }
 
     var paymentInfo: PaymentInfo? {
+        guard let internalModel else { return nil }
+        return PaymentInfo(address: internalModel.hex, alias: nil, yatID: nil, amount: nil, feePerGram: nil, note: nil)
+    }
+
+    var tariAddress: TariAddress? {
         get throws {
             guard let internalModel else { return nil }
-            return PaymentInfo(address: internalModel.hex, alias: nil, yatID: nil, amount: nil, feePerGram: nil, note: nil)
+            return try TariAddress(hex: internalModel.hex)
         }
     }
 }

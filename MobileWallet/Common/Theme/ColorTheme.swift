@@ -86,6 +86,23 @@ struct ColorTheme {
         var secondary: UIColor?
     }
 
+    struct Chat {
+        var backgrounds: ChatBackgrounds
+        var text: ChatText
+    }
+
+    struct ChatBackgrounds {
+        var sender: UIColor?
+        var senderNotification: UIColor?
+        var receiver: UIColor?
+        var receiverNotification: UIColor?
+    }
+
+    struct ChatText {
+        var text: UIColor?
+        var textNotification: UIColor?
+    }
+
     struct System {
         var red: UIColor?
         var orange: UIColor?
@@ -112,6 +129,7 @@ struct ColorTheme {
     let icons: Icons
     let components: Components
     let backgrounds: Backgrounds
+    let chat: Chat
     let system: System
     let shadows: Shadows
 }
@@ -156,6 +174,18 @@ extension ColorTheme {
             backgrounds: Backgrounds(
                 primary: .Light.Backgrounds.primary,
                 secondary: .Light.Backgrounds.secondary
+            ),
+            chat: Chat(
+                backgrounds: ChatBackgrounds(
+                    sender: .Light.Chat.Backgrounds.sender,
+                    senderNotification: .Light.Chat.Backgrounds.senderNotification,
+                    receiver: .Light.Chat.Backgrounds.receiver,
+                    receiverNotification: .Light.Chat.Backgrounds.receiverNotification
+                ),
+                text: ChatText(
+                    text: .Light.Chat.Text.text,
+                    textNotification: .Light.Chat.Text.textNotification
+                )
             ),
             system: System(
                 red: .Light.System.red,
@@ -214,6 +244,18 @@ extension ColorTheme {
                 primary: .Dark.Backgrounds.primary,
                 secondary: .Dark.Backgrounds.secondary
             ),
+            chat: Chat(
+                backgrounds: ChatBackgrounds(
+                    sender: .Dark.Chat.Backgrounds.sender,
+                    senderNotification: .Dark.Chat.Backgrounds.senderNotification,
+                    receiver: .Dark.Chat.Backgrounds.receiver,
+                    receiverNotification: .Dark.Chat.Backgrounds.receiverNotification
+                ),
+                text: ChatText(
+                    text: .Dark.Chat.Text.text,
+                    textNotification: .Dark.Chat.Text.textNotification
+                )
+            ),
             system: System(
                 red: .Dark.System.red,
                 orange: .Dark.System.orange,
@@ -270,6 +312,18 @@ extension ColorTheme {
             backgrounds: Backgrounds(
                 primary: .TariPurple.Backgrounds.primary,
                 secondary: .TariPurple.Backgrounds.secondary
+            ),
+            chat: Chat(
+                backgrounds: ChatBackgrounds(
+                    sender: .TariPurple.Chat.Backgrounds.sender,
+                    senderNotification: .TariPurple.Chat.Backgrounds.senderNotification,
+                    receiver: .TariPurple.Chat.Backgrounds.receiver,
+                    receiverNotification: .TariPurple.Chat.Backgrounds.receiverNotification
+                ),
+                text: ChatText(
+                    text: .TariPurple.Chat.Text.text,
+                    textNotification: .TariPurple.Chat.Text.textNotification
+                )
             ),
             system: System(
                 red: .TariPurple.System.red,

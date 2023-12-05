@@ -62,8 +62,7 @@ final class ChatListCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    @View private var avatarView = RoundedAvatarView()
-    @View private var statusView = UIView()
+    @View private var avatarView = AvatarWithStatusView()
 
     @View private var labelsStackView: UIStackView = {
         let view = UIStackView()
@@ -127,7 +126,7 @@ final class ChatListCell: DynamicThemeCell {
     private func setupConstraints() {
 
         [titleLabel, messageLabel].forEach(labelsStackView.addArrangedSubview)
-        [avatarView, statusView, labelsStackView, numberBadge, timestampLabel].forEach(contentView.addSubview)
+        [avatarView, labelsStackView, numberBadge, timestampLabel].forEach(contentView.addSubview)
 
         let constraints = [
             avatarView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
@@ -135,10 +134,6 @@ final class ChatListCell: DynamicThemeCell {
             avatarView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -10.0),
             avatarView.widthAnchor.constraint(equalToConstant: 42.0),
             avatarView.heightAnchor.constraint(equalToConstant: 42.0),
-            statusView.topAnchor.constraint(equalTo: avatarView.topAnchor),
-            statusView.trailingAnchor.constraint(equalTo: avatarView.trailingAnchor),
-            statusView.widthAnchor.constraint(equalToConstant: 14.0),
-            statusView.heightAnchor.constraint(equalToConstant: 14.0),
             labelsStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10.0),
             labelsStackView.leadingAnchor.constraint(equalTo: avatarView.trailingAnchor, constant: 15.0),
             labelsStackView.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -10.0),
@@ -158,7 +153,6 @@ final class ChatListCell: DynamicThemeCell {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
 
-        statusView.backgroundColor = theme.system.green
         titleLabel.textColor = theme.text.heading
         messageLabel.textColor = theme.text.body
         numberBadge.backgroundColor = theme.icons.active
@@ -169,7 +163,7 @@ final class ChatListCell: DynamicThemeCell {
 
         identifier = model.id
         avatarView.avatar = model.avatar
-        statusView.isHidden = !model.isOnline
+        avatarView.isOnline = model.isOnline
         titleLabel.text = model.title
         messageLabel.text = model.message
         numberBadge.text = "\(model.badgeNumber)"
@@ -189,9 +183,7 @@ final class ChatListCell: DynamicThemeCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         numberBadge.layoutIfNeeded()
-        statusView.layoutIfNeeded()
         numberBadge.layer.cornerRadius = numberBadge.bounds.height / 2.0
-        statusView.layer.cornerRadius = statusView.bounds.height / 2.0
     }
 
     // MARK: - Reuse
