@@ -151,3 +151,74 @@ final class ContactBookListPlaceholder: DynamicThemeView {
         actionButton.onTap = viewModel.actionButtonCallback
     }
 }
+
+extension ContactBookListPlaceholder.ViewModel {
+
+    static func contactBook(actionButtonTitle: String, actionButtonCallback: (() -> Void)?) -> Self {
+        ContactBookListPlaceholder.ViewModel(
+            image: .Images.ContactBook.Placeholders.list,
+            titleComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.title.part2.bold"), style: .bold)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.without_permission.message.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.without_permission.message.part2.bold"), style: .bold),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.list.placeholder.without_permission.message.part3"), style: .normal)
+            ],
+            actionButtonTitle: actionButtonTitle,
+            actionButtonCallback: actionButtonCallback
+        )
+    }
+
+    static var contactBookFavorite: Self {
+        ContactBookListPlaceholder.ViewModel(
+            image: .Images.ContactBook.Placeholders.favourites,
+            titleComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.title.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.title.part2.bold"), style: .bold)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.message.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.message.part2.bold"), style: .bold),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.message.part3"), style: .normal)
+            ],
+            actionButtonTitle: nil,
+            actionButtonCallback: nil
+        )
+    }
+
+    static func chat(actionButtonCallback: (() -> Void)?) -> Self {
+        ContactBookListPlaceholder.ViewModel(
+            image: .Images.ContactBook.Placeholders.list,
+            titleComponents: [
+                StylizedLabel.StylizedText(text: localized("chat.contacts.section.list.placeholder.title.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("chat.contacts.section.list.placeholder.title.part2.bold"), style: .bold)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("chat.contacts.section.list.placeholder.message.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("chat.contacts.section.list.placeholder.message.part2.bold"), style: .bold),
+                StylizedLabel.StylizedText(text: localized("chat.contacts.section.list.placeholder.message.part3"), style: .normal)
+            ],
+            actionButtonTitle: localized("chat.contacts.section.list.placeholder.button"),
+            actionButtonCallback: actionButtonCallback
+        )
+    }
+
+    static var chatFavorite: Self {
+        ContactBookListPlaceholder.ViewModel(
+            image: .Images.ContactBook.Placeholders.favourites,
+            titleComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.title.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.title.part2.bold"), style: .bold)
+            ],
+            messageComponents: [
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.message.part1"), style: .normal),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.message.part2.bold"), style: .bold),
+                StylizedLabel.StylizedText(text: localized("contact_book.section.favorites.placeholder.message.part3"), style: .normal)
+            ],
+            actionButtonTitle: nil,
+            actionButtonCallback: nil
+        )
+    }
+}

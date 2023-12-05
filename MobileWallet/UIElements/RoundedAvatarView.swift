@@ -38,10 +38,9 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
-final class RoundedAvatarView: DynamicThemeView {
+class RoundedAvatarView: DynamicThemeView {
 
     enum Avatar {
         case text(_: String?)
@@ -169,5 +168,15 @@ final class RoundedAvatarView: DynamicThemeView {
         layer.cornerRadius = size
         imageView.layer.cornerRadius = size
         label.font = .Avenir.medium.withSize(size)
+    }
+}
+
+extension RoundedAvatarView.Avatar {
+
+    static func avatar(text: String?, image: UIImage?) -> Self {
+        guard let image else {
+            return .text(text)
+        }
+        return .image(image)
     }
 }

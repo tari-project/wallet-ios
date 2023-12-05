@@ -833,7 +833,7 @@
 "contact_book.details.menu.option.remove_from_favorites" = "Remove from Favorites";
 "contact_book.details.menu.option.link" = "Link Contact";
 "contact_book.details.menu.option.unlink" = "Unlink Contact";
-"contact_book.details.menu.option.remove_from_favorites" = "Remove from Favorites";
+"contact_book.details.menu.option.chat" = "Chat";
 "contact_book.details.menu.option.transaction_list" = "Transaction History";
 "contact_book.details.menu.option.delete" = "Delete Contact";
 "contact_book.details.menu.option.bitcoin" = "Open Bitcoin Wallet";
@@ -927,6 +927,15 @@
 "chat.list.table.section.pinned" = "Pinned";
 "chat.list.table.section.other" = "Other";
 
+/* Chat Contact List */
+
+"chat.contacts.title" = "New Chat";
+"chat.contacts.section.list.placeholder.title.part1" = "No chat buddies";
+"chat.contacts.section.list.placeholder.title.part2.bold" = "in sight, huh?";
+"chat.contacts.section.list.placeholder.message.part1" = "It looks like you don’t have any contacts to message yet. You can";
+"chat.contacts.section.list.placeholder.message.part2.bold" = "add a new contact";
+"chat.contacts.section.list.placeholder.message.part3" = "and start a conversation, by going to your contact book.";
+"chat.contacts.section.list.placeholder.button" = "Go to contact book";
 /* Chat Conversation */
 
 "chat.conversation.label.input_placeholder" = "Type message";

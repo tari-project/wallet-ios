@@ -78,6 +78,8 @@ final class ChatListView: BaseNavigationContentView {
     var viewModels: [Section] = [] {
         didSet { update(viewModels: viewModels) }
     }
+
+    var onStartConversationButtonTap: (() -> Void)?
     var onSelectRow: ((String) -> Void)?
 
     private var dataSource: UITableViewDiffableDataSource<Int, ChatListCell.Model>?
@@ -101,7 +103,7 @@ final class ChatListView: BaseNavigationContentView {
     private func setupViews() {
         navigationBar.backButtonType = .none
         navigationBar.title = localized("chat.list.title")
-        navigationBar.update(rightButton: NavigationBar.ButtonModel(image: UIImage(systemName: "plus.bubble"), callback: { }))
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(image: UIImage(systemName: "plus.bubble"), callback: { [weak self] in self?.onStartConversationButtonTap?() }))
     }
 
     private func setupConstraints() {

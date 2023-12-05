@@ -89,7 +89,7 @@ final class ContactTransactionListModel {
     }
 
     func transactionSendRequest() {
-        guard let paymentInfo = try? contactModel.paymentInfo else { return }
+        guard let paymentInfo = contactModel.paymentInfo else { return }
         action = .moveToTransactionSend(paymentInfo: paymentInfo)
     }
 
