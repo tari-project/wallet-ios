@@ -276,6 +276,8 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
             handle(dialog: dialog)
         case let .showMenu(model):
             showMenu(model: model)
+        case let .chat(address):
+            showChat(address: address)
         }
     }
 
@@ -373,5 +375,10 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
         }
 
         show(overlay: overlay)
+    }
+
+    private func showChat(address: TariAddress) {
+        let controller = ChatConversationConstructor.buildScene(address: address)
+        navigationController?.pushViewController(controller, animated: true)
     }
 }

@@ -1,10 +1,10 @@
-//  DateFormatter+Formats.swift
+//  ChatSelectContactView.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 27/10/2022
+	Created by Adrian Truszczyński on 28/11/2023
 	Using Swift 5.0
-	Running on macOS 12.6
+	Running on macOS 14.0
 
 	Copyright 2019 The Tari Project
 
@@ -38,29 +38,54 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-extension DateFormatter {
+import TariCommon
 
-    static var backupTimestamp: Self {
-        let formatter = Self()
-        formatter.dateFormat = "MMM dd yyy 'at' h:mm a"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
+final class ChatSelectContactView: BaseNavigationContentView {
+
+    // MARK: - Subviews
+
+    @View private var contactBookView = BaseContactBookView()
+
+    // MARK: - Initialisers
+
+    override init() {
+        super.init()
+        setupViews()
+        setupConstraints()
     }
 
-    static var hour: Self {
-        let formatter = Self()
-        formatter.dateFormat = "h:mm a"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    static var shortDate: Self {
-        let formatter = Self()
-        formatter.dateFormat = "MMM dd yyy"
-        formatter.timeZone = .current
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        return formatter
+    // MARK: - Setups
+
+    private func setupViews() {
+        navigationBar.title = localized("chat.contacts.title")
+    }
+
+    private func setupConstraints() {
+
+        addSubview(contactBookView)
+
+        let constraints = [
+            contactBookView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
+            contactBookView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contactBookView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contactBookView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    func setup(pagerView: UIView) {
+        contactBookView.setup(pagerView: pagerView)
+    }
+
+    // MARK: - Updates
+
+    override func update(theme: ColorTheme) {
+        super.update(theme: theme)
+        backgroundColor = theme.backgrounds.secondary
     }
 }

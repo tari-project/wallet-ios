@@ -154,6 +154,8 @@ final class ContactDetailsViewController: UIViewController {
             showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
         case let .showUnlinkSuccessDialog(emojiID, name):
             showUnlinkSuccessDialog(emojiID: emojiID, name: name)
+        case let .showChat(address):
+            showChat(address: address)
         case let .moveToTransactionsList(model):
             moveToTransactionsList(model: model)
         case .removeContactConfirmation:
@@ -227,6 +229,11 @@ final class ContactDetailsViewController: UIViewController {
         PopUpPresenter.showUnlinkSuccessDialog(emojiID: emojiID, name: name)
     }
 
+    private func showChat(address: TariAddress) {
+        let controller = ChatConversationConstructor.buildScene(address: address)
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
     private func endFlow() {
         navigationController?.popViewController(animated: true)
     }
@@ -246,6 +253,8 @@ private extension ContactDetailsModel.MenuItem {
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.link"), isArrowVisible: true, isDestructive: false)
         case .unlinkContact:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.unlink"), isArrowVisible: true, isDestructive: false)
+        case .chat:
+            return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.chat"), isArrowVisible: true, isDestructive: false)
         case .transactionsList:
             return MenuCell.ViewModel(id: rawValue, title: localized("contact_book.details.menu.option.transaction_list"), isArrowVisible: true, isDestructive: false)
         case .removeContact:

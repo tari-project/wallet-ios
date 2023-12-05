@@ -350,6 +350,7 @@ enum IconsImages {
     static var analytics: UIImage? { UIImage(named: "Icons/Analytics") }
     static var bluetooth: UIImage? { UIImage(named: "Icons/Bluetooth") }
     static var checkmark: UIImage? { UIImage(named: "Icons/Checkmark") }
+    static var chat: UIImage? { UIImage(named: "Icons/Chat") }
     static var close: UIImage? { UIImage(named: "Icons/Close") }
     static var link: UIImage? { UIImage(named: "Icons/Link") }
     static var magnifyingGlass: UIImage? { UIImage(named: "Icons/Magnifying Glass") }
