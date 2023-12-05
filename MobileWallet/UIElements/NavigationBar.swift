@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
 final class NavigationBar: DynamicThemeView {
@@ -72,6 +71,8 @@ final class NavigationBar: DynamicThemeView {
     // MARK: - Subviews
 
     @View private(set) var contentView = UIView()
+    @View private(set) var centerContentView = UIView()
+    @View private(set) var bottomContentView = UIView()
 
     @View private var titleLabel: UILabel = {
         let view = UILabel()
@@ -93,8 +94,6 @@ final class NavigationBar: DynamicThemeView {
         view.axis = .horizontal
         return view
     }()
-
-    @View private(set) var bottomContentView = UIView()
 
     @View private var progressView: UIProgressView = {
         let view = UIProgressView()
@@ -132,11 +131,14 @@ final class NavigationBar: DynamicThemeView {
 
     var onBackButtonAction: (() -> Void)?
 
+    private var rightButtons: [BaseButton] { rightStackView.arrangedSubviews.compactMap { $0 as? BaseButton }}
+
     override init() {
         super.init()
         setupConstraints()
         setupCallbacks()
         updateLeftButton()
+        addRightButtonPlaceholder()
     }
 
     required init?(coder: NSCoder) {
@@ -147,8 +149,13 @@ final class NavigationBar: DynamicThemeView {
 
     private func setupConstraints() {
 
+        backButton.setContentHuggingPriority(.required, for: .horizontal)
+        backButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        rightStackView.setContentHuggingPriority(.required, for: .horizontal)
+        rightStackView.setContentCompressionResistancePriority(.required, for: .horizontal)
+
         [contentView, bottomContentView, separator, progressView].forEach(addSubview)
-        [backButton, titleLabel, rightStackView].forEach(contentView.addSubview)
+        [backButton, titleLabel, centerContentView, rightStackView].forEach(contentView.addSubview)
 
         let bottomContentViewHeightConstraint = bottomContentView.heightAnchor.constraint(equalToConstant: 0.0)
         bottomContentViewHeightConstraint.priority = .defaultHigh
@@ -169,6 +176,10 @@ final class NavigationBar: DynamicThemeView {
             rightStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
             rightStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8.0),
             rightStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            centerContentView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            centerContentView.leadingAnchor.constraint(equalTo: backButton.trailingAnchor),
+            centerContentView.trailingAnchor.constraint(equalTo: rightStackView.leadingAnchor),
+            centerContentView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomContentView.topAnchor.constraint(equalTo: contentView.bottomAnchor),
             bottomContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             bottomContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -223,6 +234,7 @@ final class NavigationBar: DynamicThemeView {
     func update(rightButtons: [ButtonModel]) {
 
         rightStackView.removeAllViews()
+        addRightButtonPlaceholder()
 
         rightButtons
             .compactMap { [weak self] in self?.makeButton(model: $0) }
@@ -232,8 +244,8 @@ final class NavigationBar: DynamicThemeView {
     }
 
     func rightButton(index: Int) -> BaseButton? {
-        guard rightStackView.arrangedSubviews.count > index else { return nil }
-        return rightStackView.arrangedSubviews[index] as? BaseButton
+        guard rightButtons.count > index else { return nil }
+        return rightButtons[index]
     }
 
     private func updateLeftButton() {
@@ -280,6 +292,12 @@ final class NavigationBar: DynamicThemeView {
         }
 
         navigationController.dismiss(animated: true)
+    }
+
+    private func addRightButtonPlaceholder() {
+        @View var placeholderView = UIView()
+        placeholderView.widthAnchor.constraint(equalToConstant: 0.0).isActive = true
+        rightStackView.addArrangedSubview(placeholderView)
     }
 
     // MARK: - Factories

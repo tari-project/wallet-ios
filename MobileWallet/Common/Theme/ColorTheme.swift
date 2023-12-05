@@ -86,6 +86,23 @@ struct ColorTheme {
         var secondary: UIColor?
     }
 
+    struct Chat {
+        var backgrounds: ChatBackgrounds
+        var text: ChatText
+    }
+
+    struct ChatBackgrounds {
+        var sender: UIColor?
+        var senderNotification: UIColor?
+        var receiver: UIColor?
+        var receiverNotification: UIColor?
+    }
+
+    struct ChatText {
+        var text: UIColor?
+        var textNotification: UIColor?
+    }
+
     struct System {
         var red: UIColor?
         var orange: UIColor?
@@ -112,6 +129,7 @@ struct ColorTheme {
     let icons: Icons
     let components: Components
     let backgrounds: Backgrounds
+    let chat: Chat
     let system: System
     let shadows: Shadows
 }
@@ -156,6 +174,18 @@ extension ColorTheme {
             backgrounds: Backgrounds(
                 primary: UIColor(named: "Light/Backgrounds/Primary"),
                 secondary: UIColor(named: "Light/Backgrounds/Secondary")
+            ),
+            chat: Chat(
+                backgrounds: ChatBackgrounds(
+                    sender: UIColor(named: "Light/Chat/Backgrounds/Sender"),
+                    senderNotification: UIColor(named: "Light/Chat/Backgrounds/Sender Notification"),
+                    receiver: UIColor(named: "Light/Chat/Backgrounds/Receiver"),
+                    receiverNotification: UIColor(named: "Light/Chat/Backgrounds/Receiver Notification")
+                ),
+                text: ChatText(
+                    text: UIColor(named: "Light/Chat/Text/Text"),
+                    textNotification: UIColor(named: "Light/Chat/Text/Text Notification")
+                )
             ),
             system: System(
                 red: UIColor(named: "Light/System/Red"),
@@ -214,6 +244,18 @@ extension ColorTheme {
                 primary: UIColor(named: "Dark/Backgrounds/Primary"),
                 secondary: UIColor(named: "Dark/Backgrounds/Secondary")
             ),
+            chat: Chat(
+                backgrounds: ChatBackgrounds(
+                    sender: UIColor(named: "Dark/Chat/Backgrounds/Sender"),
+                    senderNotification: UIColor(named: "Dark/Chat/Backgrounds/Sender Notification"),
+                    receiver: UIColor(named: "Dark/Chat/Backgrounds/Receiver"),
+                    receiverNotification: UIColor(named: "Dark/Chat/Backgrounds/Receiver Notification")
+                ),
+                text: ChatText(
+                    text: UIColor(named: "Dark/Chat/Text/Text"),
+                    textNotification: UIColor(named: "Dark/Chat/Text/Text Notification")
+                )
+            ),
             system: System(
                 red: UIColor(named: "Dark/System/Red"),
                 orange: UIColor(named: "Dark/System/Orange"),
@@ -270,6 +312,18 @@ extension ColorTheme {
             backgrounds: Backgrounds(
                 primary: UIColor(named: "Tari Purple/Backgrounds/Primary"),
                 secondary: UIColor(named: "Tari Purple/Backgrounds/Secondary")
+            ),
+            chat: Chat(
+                backgrounds: ChatBackgrounds(
+                    sender: UIColor(named: "Tari Purple/Chat/Backgrounds/Sender"),
+                    senderNotification: UIColor(named: "Tari Purple/Chat/Backgrounds/Sender Notification"),
+                    receiver: UIColor(named: "Tari Purple/Chat/Backgrounds/Receiver"),
+                    receiverNotification: UIColor(named: "Tari Purple/Chat/Backgrounds/Receiver Notification")
+                ),
+                text: ChatText(
+                    text: UIColor(named: "Tari Purple/Chat/Text/Text"),
+                    textNotification: UIColor(named: "Tari Purple/Chat/Text/Text Notification")
+                )
             ),
             system: System(
                 red: UIColor(named: "Tari Purple/System/Red"),

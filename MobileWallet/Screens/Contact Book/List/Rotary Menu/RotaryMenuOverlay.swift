@@ -171,6 +171,8 @@ private extension ContactBookModel.MenuItem {
             return .icons.unlink
         case .details:
             return .icons.profile
+        case .chat:
+            return .icons.chat
         }
     }
 
@@ -186,6 +188,8 @@ private extension ContactBookModel.MenuItem {
             return localized("contact_book.details.menu.option.link")
         case .unlink:
             return localized("contact_book.details.menu.option.unlink")
+        case .chat:
+            return localized("contact_book.details.menu.option.chat")
         case .details:
             return localized("contact_book.menu.option.details")
         }

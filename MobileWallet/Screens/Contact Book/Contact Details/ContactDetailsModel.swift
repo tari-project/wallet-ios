@@ -54,6 +54,7 @@ final class ContactDetailsModel {
         case removeFromFavorites
         case linkContact
         case unlinkContact
+        case chat
         case transactionsList
         case removeContact
         case btcWallet
@@ -66,6 +67,7 @@ final class ContactDetailsModel {
         case moveToLinkContactScreen(model: ContactsManager.Model)
         case showUnlinkConfirmationDialog(emojiID: String, name: String)
         case showUnlinkSuccessDialog(emojiID: String, name: String)
+        case showChat(address: TariAddress)
         case moveToTransactionsList(model: ContactsManager.Model)
         case removeContactConfirmation
         case endFlow
@@ -125,6 +127,8 @@ final class ContactDetailsModel {
             update(isFavorite: true)
         case .removeFromFavorites:
             update(isFavorite: false)
+        case .chat:
+            showChat(model: model)
         case .transactionsList:
             action = .moveToTransactionsList(model: model)
         case .removeContact:
@@ -233,13 +237,13 @@ final class ContactDetailsModel {
                     return .linkContact
                 case .unlink:
                     return .unlinkContact
-                case .details:
+                case .chat, .details:
                     return nil
                 }
             }
 
         if model.hasIntrenalModel {
-            mainMenuItems.append(.transactionsList)
+            mainMenuItems += [.chat, .transactionsList]
         }
 
         if model.isFFIContact || model.hasExternalModel {
@@ -250,17 +254,22 @@ final class ContactDetailsModel {
     }
 
     private func performSendAction() {
-        do {
-            guard let paymentInfo = try model.paymentInfo else { return }
-            action = .sendTokens(paymentInfo: paymentInfo)
-        } catch {
-            errorModel = ErrorMessageManager.errorModel(forError: error)
-        }
+        guard let paymentInfo = model.paymentInfo else { return }
+        action = .sendTokens(paymentInfo: paymentInfo)
     }
 
     private func prepareForUnkinkAction() {
         guard let emojiID = model.internalModel?.emojiID.obfuscatedText, let name = model.externalModel?.fullname else { return }
         action = .showUnlinkConfirmationDialog(emojiID: emojiID, name: name)
+    }
+
+    private func showChat(model: ContactsManager.Model) {
+        do {
+            guard let address = try model.tariAddress else { return }
+            action = .showChat(address: address)
+        } catch {
+            errorModel = ErrorMessageManager.errorModel(forError: error)
+        }
     }
 
     private func openAddress(type: YatRecordTag) {
