@@ -89,7 +89,7 @@ extension TariNetwork {
 
 extension TariNetwork {
 
-    static var all: [TariNetwork] { [stagenet].compactMap { $0 } }
+    static var all: [TariNetwork] { [stagenet, esme].compactMap { $0 } }
 
     static var stagenet: Self {
         makeNetwork(
@@ -114,6 +114,19 @@ extension TariNetwork {
             ]
         )
     }
+
+    static var esme: Self {
+            makeNetwork(
+                name: "esmeralda",
+                presentedName: "Esme",
+                isMainNet: false,
+                rawBaseNodes: [
+                    "Esme 1": "84f96417df602c11fbe34871b89b542925cafeca1aa7d97e263c425502c27165::/onion3/vzzzo4e5vjhoz3u35cz5wkijfxahwxwt723af2b4lcd6wuxvlpg5awid:18141",
+                    "Esme 2": "8a24a7fb8ff2f1183c02ac52d488a13cc1104f970cc9a6fb3dd5f17ea1d85212::/ip4/3.248.103.200/tcp/18189",
+                    "Esme 3": "8a24a7fb8ff2f1183c02ac52d488a13cc1104f970cc9a6fb3dd5f17ea1d85212::/onion3/4a5vimdolvhhn6v55vjvoxgvfehqh7zwpdhi6touut3cvxtkg6a5jqqd:18141"
+                ]
+            )
+        }
 
     private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, rawBaseNodes: [String: String]) -> Self {
         let baseNodes = rawBaseNodes.compactMap { try? BaseNode(name: $0, peer: $1) }
