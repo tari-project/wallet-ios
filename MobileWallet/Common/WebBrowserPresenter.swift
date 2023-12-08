@@ -44,7 +44,7 @@ enum WebBrowserPresenter {
 
     static func open(url: URL) {
         DispatchQueue.main.async {
-            guard let topController = UIApplication.shared.topController() else { return }
+            guard let topController = UIApplication.shared.topController else { return }
             let webBrowserViewController = WebBrowserViewController()
             webBrowserViewController.url = url
             webBrowserViewController.modalPresentationStyle = UIDevice.current.userInterfaceIdiom == .pad ? .automatic :.popover

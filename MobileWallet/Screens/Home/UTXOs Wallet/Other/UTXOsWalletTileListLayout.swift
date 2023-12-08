@@ -81,7 +81,7 @@ final class UTXOsWalletTileListLayout: UICollectionViewLayout {
         let data = (0..<itemsCount)
             .reduce(into: initialData) { [weak self] result, index in
 
-                guard let columnIndex = result.min(by: { $0.totalHeight < $1.totalHeight })?.columnIndex, let height = self?.onCheckHeightAtIndex?(index) else { return }
+                guard let self, let columnIndex = result.min(by: { $0.totalHeight < $1.totalHeight })?.columnIndex, let height = self.onCheckHeightAtIndex?(index) else { return }
 
                 let attributes = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: index, section: 0))
                 attributes.frame = CGRect(

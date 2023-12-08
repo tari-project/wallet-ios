@@ -49,7 +49,7 @@ final class EmojiIdView: DynamicThemeView {
     private lazy var blackoutView: UIView = {
         let view = UIView()
         view.backgroundColor = .static.popupOverlay
-        guard let bounds =  UIApplication.shared.keyWindow?.bounds else { return view }
+        guard let bounds =  UIApplication.shared.firstWindow?.bounds else { return view }
         view.frame = bounds
         view.alpha = 0.0
         return view
@@ -257,7 +257,7 @@ final class EmojiIdView: DynamicThemeView {
         // fade in blackout
         fadeView(view: condensedEmojiIdContainer, fadeOut: true)
         if blackoutWhileExpanded {
-            UIApplication.shared.keyWindow?.addSubview(blackoutView)
+            UIApplication.shared.firstWindow?.addSubview(blackoutView)
             fadeView(view: blackoutView, fadeOut: false, maxAlpha: 0.65)
             showCopyEmojiIdButton()
             showHexPubKeyCopyTip()
@@ -273,7 +273,7 @@ final class EmojiIdView: DynamicThemeView {
             width: scrollViewTargetWidth,
             height: scrollViewFrame.height
         )
-        UIApplication.shared.keyWindow?.addSubview(expandedEmojiIdScrollView)
+        UIApplication.shared.firstWindow?.addSubview(expandedEmojiIdScrollView)
         if animated {
             expandedEmojiIdScrollView.alpha = 0
             expandedEmojiIdScrollView.setContentOffset(
@@ -439,7 +439,7 @@ extension EmojiIdView {
             }
         }
 
-        UIApplication.shared.keyWindow?.addSubview(emojiMenu)
+        UIApplication.shared.firstWindow?.addSubview(emojiMenu)
         guard let globalFrame = condensedEmojiIdContainer.globalFrame else { return }
         let emojiMenuSize = CGSize(width: 119, height: 37)
         emojiMenu.alpha = 0.0
@@ -469,7 +469,7 @@ extension EmojiIdView {
         hexPubKeyTipLabel = UILabel()
         guard let tipView = hexPubKeyTipView,
               let tipLabel = hexPubKeyTipLabel,
-              let parentView = UIApplication.shared.keyWindow else {
+              let parentView = UIApplication.shared.firstWindow else {
             return
         }
         parentView.addSubview(tipView)
@@ -542,7 +542,7 @@ extension EmojiIdView {
             withDuration: 0.5,
             delay: 0,
             options: .curveEaseInOut) {
-            UIApplication.shared.keyWindow?.layoutIfNeeded()
+            UIApplication.shared.firstWindow?.layoutIfNeeded()
         } completion: { [weak self] (_) in
             self?.hexPubKeyTipView?.removeFromSuperview()
             self?.hexPubKeyTipViewBottomConstraint = nil
@@ -684,8 +684,8 @@ extension EmojiIdView {
 
         updateCopyView(theme: theme)
 
-        UIApplication.shared.keyWindow?.addSubview(containerView)
-        UIApplication.shared.keyWindow?.bringSubviewToFront(containerView)
+        UIApplication.shared.firstWindow?.addSubview(containerView)
+        UIApplication.shared.firstWindow?.bringSubviewToFront(containerView)
 
         UIView.animate(withDuration: CATransaction.animationDuration(),
                        animations: {

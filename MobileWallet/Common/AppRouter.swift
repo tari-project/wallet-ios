@@ -132,7 +132,7 @@ enum AppRouter {
 
     static func presentOnTop(controller: UIViewController) {
 
-        guard var topViewController = UIApplication.shared.keyWindow?.rootViewController else { return }
+        guard var topViewController = UIApplication.shared.topController else { return }
 
         while let presentedViewController = topViewController.presentedViewController {
             topViewController = presentedViewController
