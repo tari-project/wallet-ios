@@ -81,9 +81,9 @@ final class PendingView: DynamicThemeView {
 
     private func setupPendingView() {
         let view: UIView
-        if let keyWindow = UIApplication.shared.keyWindow {
-            view = keyWindow
-        } else if let topController = UIApplication.shared.topController() {
+        if let firstWindow = UIApplication.shared.firstWindow {
+            view = firstWindow
+        } else if let topController = UIApplication.shared.topController {
             view = topController.view
         } else { return }
 

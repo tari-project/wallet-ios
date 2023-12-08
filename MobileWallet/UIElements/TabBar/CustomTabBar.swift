@@ -63,7 +63,7 @@ final class CustomTabBar: DynamicThemeTabBar {
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         super.sizeThatFits(size)
         var sizeThatFits = super.sizeThatFits(size)
-        let bottomInset = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
+        let bottomInset = UIApplication.shared.firstWindow?.safeAreaInsets.bottom ?? 0
         sizeThatFits.height = 59 + bottomInset
         return sizeThatFits
     }
@@ -77,9 +77,6 @@ final class CustomTabBar: DynamicThemeTabBar {
         appearance.stackedLayoutAppearance.selected.iconColor = theme.icons.active
 
         standardAppearance = appearance
-
-        if #available(iOS 15.0, *) {
-            scrollEdgeAppearance = appearance
-        }
+        scrollEdgeAppearance = appearance
     }
 }
