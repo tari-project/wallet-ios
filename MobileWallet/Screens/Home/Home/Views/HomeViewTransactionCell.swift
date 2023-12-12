@@ -51,7 +51,7 @@ final class HomeViewTransactionCell: UITableViewCell {
 
         static func == (lhs: HomeViewTransactionCell.ViewModel, rhs: HomeViewTransactionCell.ViewModel) -> Bool {
             lhs.id == rhs.id
-            && lhs.titleComponents.map { $0.text } == lhs.titleComponents.map { $0.text }
+            && lhs.titleComponents.map { $0.text } == rhs.titleComponents.map { $0.text }
             && lhs.timestamp == rhs.timestamp
             && lhs.amount == rhs.amount
         }
