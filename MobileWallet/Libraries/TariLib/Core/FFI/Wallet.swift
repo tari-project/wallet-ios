@@ -132,6 +132,8 @@ final class Wallet {
         let isRecoveryInProgressPointer = PointerHandler.pointer(for: &isRecoveryInProgress)
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
+        Logger.log(message: "Wallet created", domain: .debug, level: .info)
+
         let result = wallet_create(
             commsConfig.pointer,
             loggingFilePath,
@@ -168,6 +170,7 @@ final class Wallet {
     // MARK: - Deinitialiser
 
     deinit {
+        Logger.log(message: "Wallet destoyed", domain: .debug, level: .info)
         wallet_destroy(pointer)
     }
 }

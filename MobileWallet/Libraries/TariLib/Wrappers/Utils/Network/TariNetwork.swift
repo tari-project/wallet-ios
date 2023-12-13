@@ -89,12 +89,25 @@ extension TariNetwork {
 
 extension TariNetwork {
 
-    static var all: [TariNetwork] { [stagenet, esme].compactMap { $0 } }
+    static var all: [TariNetwork] { [nextnet, stagenet].compactMap { $0 } }
+
+    static var nextnet: Self {
+        makeNetwork(
+            name: "nextnet",
+            presentedName: "NextNet (\(localized("common.recommended")))",
+            isMainNet: false,
+            rawBaseNodes: [
+                "NextNet 1": "0cff11dff44458bfea3e39444d440e54260746ff2a5ce6a6c3f7355decff2167::/ip4/54.195.217.107/tcp/18189",
+                "NextNet 2": "0cff11dff44458bfea3e39444d440e54260746ff2a5ce6a6c3f7355decff2167::/onion3/h6oj2cusgtaxo63zbfw2wjir4mltkqzz4jquoak2i5mvgyszaieowwad:18141",
+                "NextNet 3": "4c236de788e803ef9615f72a4d973cf3f8a9b83c9d2fb176cbaf65c1b0442572::/onion3/3jtk3e2ud3zqtbrq36sw6ata6u5epkjmqgr5tfuemcfpyhisrzkgbtyd:18141"
+            ]
+        )
+    }
 
     static var stagenet: Self {
         makeNetwork(
             name: "stagenet",
-            presentedName: "StageNet (\(localized("common.recommended")))",
+            presentedName: "StageNet",
             isMainNet: false,
             rawBaseNodes: [
                 "StageNet 01": "1a294e0312ba507899a3f3eadc390d492ab620ce29cad94ba496b4d4fd78aa16::/ip4/34.252.174.111/tcp/18189",
@@ -114,19 +127,6 @@ extension TariNetwork {
             ]
         )
     }
-
-    static var esme: Self {
-            makeNetwork(
-                name: "esmeralda",
-                presentedName: "Esme",
-                isMainNet: false,
-                rawBaseNodes: [
-                    "Esme 1": "84f96417df602c11fbe34871b89b542925cafeca1aa7d97e263c425502c27165::/onion3/vzzzo4e5vjhoz3u35cz5wkijfxahwxwt723af2b4lcd6wuxvlpg5awid:18141",
-                    "Esme 2": "8a24a7fb8ff2f1183c02ac52d488a13cc1104f970cc9a6fb3dd5f17ea1d85212::/ip4/3.248.103.200/tcp/18189",
-                    "Esme 3": "8a24a7fb8ff2f1183c02ac52d488a13cc1104f970cc9a6fb3dd5f17ea1d85212::/onion3/4a5vimdolvhhn6v55vjvoxgvfehqh7zwpdhi6touut3cvxtkg6a5jqqd:18141"
-                ]
-            )
-        }
 
     private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, rawBaseNodes: [String: String]) -> Self {
         let baseNodes = rawBaseNodes.compactMap { try? BaseNode(name: $0, peer: $1) }
