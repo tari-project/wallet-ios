@@ -97,8 +97,13 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
+        Logger.log(message: "App State: Foreground", domain: .general, level: .info)
         UIApplication.shared.applicationIconBadgeNumber = 0
         LogFilesManager.cleanupLogs()
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        Logger.log(message: "App State: Background", domain: .general, level: .info)
     }
 
     func windowScene(_ windowScene: UIWindowScene, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: @escaping (Bool) -> Void) {

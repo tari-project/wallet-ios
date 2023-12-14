@@ -46,6 +46,6 @@ extension ConsoleLogger: Logable {
 
     func log(message: String, domain: Logger.Domain, logLevel: Logger.Level) {
         let formattedMessage = LogFormatter.formattedMessage(message: message, domain: domain, logLevel: logLevel, showPrefix: true)
-        os_log("%@", formattedMessage)
+        os_log("%@ %@", Date().description, formattedMessage)
     }
 }

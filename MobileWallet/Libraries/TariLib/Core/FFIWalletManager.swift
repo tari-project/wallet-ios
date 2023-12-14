@@ -39,6 +39,7 @@
 */
 
 import Combine
+import UIKit
 
 final class FFIWalletManager {
 
@@ -54,7 +55,9 @@ final class FFIWalletManager {
     // MARK: - Properties
 
     @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
-    @Published private(set) var isWalletConnected: Bool = false
+    @Published private(set) var isWalletConnected: Bool = false {
+        didSet { Logger.log(message: "isWalletConnected: \(isWalletConnected)", domain: .general, level: .info) }
+    }
 
     private var wallet: Wallet? {
         didSet { isWalletConnected = wallet != nil }
@@ -95,8 +98,14 @@ final class FFIWalletManager {
     }
 
     func disconnectWallet() {
+        let taskID = UIApplication.shared.beginBackgroundTask()
+        Logger.log(message: "disconnectWallet Start: \(taskID)", domain: .general, level: .info)
         wallet = nil
         baseNodeConnectionStatus = .offline
+        DispatchQueue.main.asyncAfter(deadline: .now() + 20.0) {
+            Logger.log(message: "disconnectWallet: End: \(taskID)", domain: .general, level: .info)
+            UIApplication.shared.endBackgroundTask(taskID)
+        }
     }
 
     // MARK: - FFI Actions
