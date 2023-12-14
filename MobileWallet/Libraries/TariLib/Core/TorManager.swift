@@ -73,16 +73,16 @@ final class TorManager {
     private var queuedAction: Action? {
         didSet {
             guard let queuedAction else {
-                Logger.log(message: "queuedAction: None", domain: .debug, level: .info)
+                Logger.log(message: "queuedAction: None", domain: .tor, level: .info)
                 return
             }
-            Logger.log(message: "queuedAction: \(queuedAction)", domain: .debug, level: .info)
+            Logger.log(message: "queuedAction: \(queuedAction)", domain: .tor, level: .info)
         }
     }
     private var retryAction: DispatchWorkItem?
     private var observers: [Any?] = []
     private var isActionLocked = false {
-        didSet { Logger.log(message: "isActionLocked: \(isActionLocked)", domain: .debug, level: .info) }
+        didSet { Logger.log(message: "isActionLocked: \(isActionLocked)", domain: .tor, level: .info) }
     }
     private var cancellables = Set<AnyCancellable>()
 
@@ -403,11 +403,11 @@ final class TorManager {
         backgroundTaskID = UIApplication.shared.beginBackgroundTask { [weak self] in
             self?.endBackgroundTask()
         }
-        Logger.log(message: "BG Task - Start: \(backgroundTaskID)", domain: .debug, level: .info)
+        Logger.log(message: "Background Task - Start: \(backgroundTaskID)", domain: .tor, level: .info)
     }
 
     private func endBackgroundTask() {
-        Logger.log(message: "BG Task - End: \(backgroundTaskID)", domain: .debug, level: .info)
+        Logger.log(message: "Background Task - End: \(backgroundTaskID)", domain: .tor, level: .info)
         guard backgroundTaskID != .invalid else { return }
         Logger.log(message: "End Background Task", domain: .tor, level: .info)
         UIApplication.shared.endBackgroundTask(backgroundTaskID)
