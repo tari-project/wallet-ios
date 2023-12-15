@@ -7,8 +7,8 @@ type_body_length: # Target: 250/350
   - 400
 
 function_body_length: # Target: 50/100
-  - 105
-  - 120
+  - 90
+  - 100
 
 file_length: # Target: 400/1000
   - 675
@@ -24,9 +24,7 @@ excluded:
   - Pods
   - UnitTests
   # Files scheduled for refactor
-  - ./**/TariSettings.swift
   - ./**/SettingsViewController.swift
   - ./**/AddAmountViewController.swift
   - ./**/EmojiIdView.swift
   - ./**/AnimatedBalanceLabel.swift
-  - ./**/TxsListViewController.swift

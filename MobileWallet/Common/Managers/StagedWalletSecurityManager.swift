@@ -163,7 +163,8 @@ final class StagedWalletSecurityManager {
         )
     }
 
-    @MainActor private func showPopUp(title: String, subtitle: String, message: String, messageBoldRanges: [NSRange] = [], mainActionTitle: String, mainActionCallback: @escaping () -> Void, helpActionCallback: @escaping () -> Void) {
+    @MainActor private func showPopUp(title: String, subtitle: String, message: String, messageBoldRanges: [NSRange] = [], mainActionTitle: String,
+                                      mainActionCallback: @escaping () -> Void, helpActionCallback: @escaping () -> Void) {
         let headerSection = PopUpStagedWalletSecurityHeaderView(title: title, subtitle: subtitle)
         let contentSection = PopUpDescriptionContentView()
         let buttonsSection = PopUpComponentsFactory.makeButtonsView(models: [

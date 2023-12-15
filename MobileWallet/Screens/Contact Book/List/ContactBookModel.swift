@@ -40,7 +40,6 @@
 
 import UIKit
 import Combine
-import YatLib
 
 final class ContactBookModel {
 
@@ -88,10 +87,6 @@ final class ContactBookModel {
         case externalContacts
     }
 
-    // MARK: - Constants
-
-    private let maxYatIDLenght: Int = 5
-
     // MARK: - View Model
 
     @Published var searchText: String = ""
@@ -109,7 +104,6 @@ final class ContactBookModel {
 
     // MARK: - Properties
 
-    @Published private var enteredAddress: TariAddress?
     @Published private var contactModels: [[ContactsManager.Model]] = []
 
     private let contactsManager = ContactsManager()
@@ -144,10 +138,6 @@ final class ContactBookModel {
             .compactMap { $0.map { ContactBookContactListView.Section(title: $0.title, items: $0.items.filter { $0.isFavorite })}}
             .map { $0.filter { !$0.items.isEmpty }}
             .assignPublisher(to: \.favoriteContactsList, on: self)
-            .store(in: &cancellables)
-
-        $searchText
-            .sink { [weak self] in self?.generateAddress(text: $0) }
             .store(in: &cancellables)
 
         $contentMode
@@ -348,25 +338,6 @@ final class ContactBookModel {
         let model = ContactListDeeplink(list: list)
 
         return try DeepLinkFormatter.deeplink(model: model)
-    }
-
-    private func generateAddress(text: String) {
-        guard let address = makeAddress(text: text), verify(address: address) else {
-            enteredAddress = nil
-            return
-        }
-        enteredAddress = address
-    }
-
-    private func makeAddress(text: String) -> TariAddress? {
-        do { return try TariAddress(emojiID: text) } catch {}
-        do { return try TariAddress(hex: text) } catch {}
-        return nil
-    }
-
-    private func verify(address: TariAddress) -> Bool {
-        guard let hex = try? address.byteVector.hex, let userHex = try? Tari.shared.walletAddress.byteVector.hex, hex != userHex else { return false }
-        return true
     }
 
     private func filter(contactsSections: [[ContactsManager.Model]], searchText: String) -> [[ContactsManager.Model]] {
