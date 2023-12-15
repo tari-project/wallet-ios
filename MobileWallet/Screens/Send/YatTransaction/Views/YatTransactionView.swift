@@ -38,14 +38,8 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 import Lottie
-
-struct YatTransactionViewModel {
-    let transactionText: String
-    let yatID: String
-}
 
 final class YatTransactionView: UIView {
 

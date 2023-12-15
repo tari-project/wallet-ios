@@ -69,13 +69,14 @@ final class TransactionDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupCallbacks()
+        setupModelCallbacks()
+        setupViewCallbacks()
         hideKeyboardWhenTappedAroundOrSwipedDown()
     }
 
     // MARK: - Setups
 
-    private func setupCallbacks() {
+    private func setupModelCallbacks() {
 
         model.$title
             .receive(on: DispatchQueue.main)
@@ -180,6 +181,9 @@ final class TransactionDetailsViewController: UIViewController {
         model.userAliasUpdateSuccessCallback = {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
         }
+    }
+
+    private func setupViewCallbacks() {
 
         mainView.valueView.feeButton.onTap = { [weak self] in
             self?.showFeeInfo()

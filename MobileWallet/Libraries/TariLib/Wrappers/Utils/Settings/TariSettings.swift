@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Foundation
 import SwiftKeychainWrapper
 
 enum AppEnvironment {
@@ -132,55 +131,25 @@ struct TariSettings {
 
         do {
             let data = try Data(contentsOf: URL(fileURLWithPath: envPath), options: .mappedIfSafe)
-            let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves)
+            guard let jsonResult = try JSONSerialization.jsonObject(with: data, options: .mutableLeaves) as? [String: AnyObject] else { return }
 
-            if let jsonResult = jsonResult as? [String: AnyObject] {
-                if let pushServerApiKey = jsonResult["pushServerApiKey"] as? String, !pushServerApiKey.isEmpty {
-                    self.pushServerApiKey = pushServerApiKey
-                } else {
-                    Logger.log(message: "pushServerApiKey not set in env.json. Sending push notifications will be disabled.", domain: .general, level: .warning)
-                }
-                if let sentryPublicDSN = jsonResult["sentryPublicDSN"] as? String, !sentryPublicDSN.isEmpty {
-                    self.sentryPublicDSN = sentryPublicDSN
-                } else {
-                    Logger.log(message: "sentryPublicDSN not set in env.json. Crash reporting will not work.", domain: .general, level: .warning)
-                }
+            pushServerApiKey = jsonResult["pushServerApiKey"] as? String
+            sentryPublicDSN = jsonResult["sentryPublicDSN"] as? String
+            giphyApiKey = jsonResult["giphyApiKey"] as? String
+            TariSettings.appleTeamID = jsonResult["appleTeamID"] as? String
+            yatReturnLink = jsonResult["yatReturnLink"] as? String
+            yatOrganizationName = jsonResult["yatOrganizationName"] as? String
+            yatOrganizationKey = jsonResult["yatOrganizationKey"] as? String
 
-                if let giphyApiKey = jsonResult["giphyApiKey"] as? String, !giphyApiKey.isEmpty {
-                    self.giphyApiKey = giphyApiKey
-                } else {
-                    Logger.log(message: "giphyApiKey not set in env.json. Appending gifs to transaction notes will not work.", domain: .general, level: .warning)
-                }
-
-                if let appleTeamID = jsonResult["appleTeamID"] as? String, !appleTeamID.isEmpty {
-                    TariSettings.appleTeamID = appleTeamID
-                } else {
-                    fatalError("appleTeamID not set in env.json. Shared keychain will not work.")
-                }
-                if let yatReturnLink = jsonResult["yatReturnLink"] as? String, !yatReturnLink.isEmpty {
-                    self.yatReturnLink = yatReturnLink
-                } else {
-                    fatalError("yatReturnLink not set in env.json. Yat related funtionalities will not work.")
-                }
-                if let yatOrganizationName = jsonResult["yatOrganizationName"] as? String, !yatOrganizationName.isEmpty {
-                    self.yatOrganizationName = yatOrganizationName
-                } else {
-                    fatalError("yatOrganizationName not set in env.json. Yat related funtionalities will not work.")
-                }
-                if let yatOrganizationKey = jsonResult["yatOrganizationKey"] as? String, !yatOrganizationKey.isEmpty {
-                    self.yatOrganizationKey = yatOrganizationKey
-                } else {
-                    fatalError("yatOrganizationKey not set in env.json. Yat related funtionalities will not work.")
-                }
-                if let yatWebServiceURL = jsonResult["yatWebServiceURL"] as? String, !yatWebServiceURL.isEmpty, let url = URL(string: yatWebServiceURL) {
-                    self.yatWebServiceURL = url
-                }
-                if let yatApiURL = jsonResult["yatApiURL"] as? String, !yatApiURL.isEmpty, let url = URL(string: yatApiURL) {
-                    self.yatApiURL = url
-                }
-
-                dropboxApiKey = jsonResult["dropboxApiKey"] as? String
+            if let yatWebServiceRawURL = jsonResult["yatWebServiceURL"] as? String, !yatWebServiceRawURL.isEmpty, let url = URL(string: yatWebServiceRawURL) {
+                yatWebServiceURL = url
             }
+
+            if let yatApiRawURL = jsonResult["yatApiURL"] as? String, !yatApiRawURL.isEmpty, let url = URL(string: yatApiRawURL) {
+                self.yatApiURL = url
+            }
+
+            dropboxApiKey = jsonResult["dropboxApiKey"] as? String
         } catch {
             Logger.log(message: "Could not load env vars: \(error)", domain: .general, level: .error)
         }

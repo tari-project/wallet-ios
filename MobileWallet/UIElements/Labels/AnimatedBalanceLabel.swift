@@ -227,7 +227,7 @@ final class AnimatedBalanceLabel: UIView {
 
             let topOffset: CGFloat
 
-            if let offsetIndex, data.offset >= offsetIndex  {
+            if let offsetIndex, data.offset >= offsetIndex {
                 topOffset = self.topOffset * -1.0
             } else {
                 topOffset = 0.0

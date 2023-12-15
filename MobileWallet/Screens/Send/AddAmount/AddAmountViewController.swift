@@ -835,7 +835,7 @@ extension AddAmountViewController {
     }
 
     private func updateFee(selectedIndex: Int) {
-        fee = transactionFeesManager.feesData?.fees.fee(forIndex: selectedFeeIndex)
+        fee = transactionFeesManager.feesData?.fees.fee(forIndex: selectedIndex)
     }
 
     private func handle(error: Error) {
