@@ -85,9 +85,8 @@ final class ChatListModel {
     // MARK: - Setups
 
     private func setupCallbacks() {
-
-        Tari.shared.chatMessagesService.$recentMessages
-            .sink { [weak self] in try? self?.handle(messages: $0) }
+        Publishers.CombineLatest(Tari.shared.chatMessagesService.$recentMessages, Tari.shared.chatUsersService.$onlineStatuses)
+            .sink { [weak self] in try? self?.handle(messages: $0, onlineStatuses: $1) }
             .store(in: &cancellables)
     }
 
@@ -95,7 +94,8 @@ final class ChatListModel {
 
     private func updateRecentMessages() throws {
         let messages = Tari.shared.chatMessagesService.recentMessages
-        try handle(messages: messages)
+        let onlineStatuses = Tari.shared.chatUsersService.onlineStatuses
+        try handle(messages: messages, onlineStatuses: onlineStatuses)
     }
 
     // MARK: - Actions
@@ -118,21 +118,23 @@ final class ChatListModel {
 
     // MARK: Handlers
 
-    private func handle(messages: [ChatMessage]) throws {
+    private func handle(messages: [ChatMessage], onlineStatuses: [String: ChatOnlineStatus]) throws {
 
         let previews: [MessagePreview] = try messages.compactMap {
             guard let identifier = try $0.identifier.string else { return nil }
 
             let address = try $0.address
             let emojis = try address.emojis
+            let hex = try address.byteVector.hex
             let timestamp = try TimeInterval($0.timestamp)
             let contact = try contactsManager.contact(address: address)
+            let isOnline = onlineStatuses.first { $0.key == hex }?.value == .online
 
             return try MessagePreview(
                 id: identifier,
                 avatarText: contact?.avatar ?? emojis.firstOrEmpty,
                 avatarImage: contact?.avatarImage,
-                isOnline: false, // TODO: Currently unused
+                isOnline: isOnline,
                 name: contact?.name ?? emojis.obfuscatedText,
                 preview: $0.body.string ?? "",
                 timestamp: timestamp,

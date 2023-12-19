@@ -541,4 +541,17 @@ final class FFIWalletManager {
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
         return result
     }
+
+    func contactsHandle() throws -> OpaquePointer {
+
+        let wallet = try exisingWallet
+
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+
+        let result = contacts_handle(wallet.pointer, errorCodePointer)
+
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return result
+    }
 }

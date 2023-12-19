@@ -1,10 +1,10 @@
-//  ChatCallbackManager.swift
+//  ContactsLivenessData.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 27/09/2023
+	Created by Adrian Truszczyński on 19/12/2023
 	Using Swift 5.0
-	Running on macOS 13.5
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -38,45 +38,51 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Combine
-
-final class ChatCallbackManager {
-
-    var contactStatusChange: AnyPublisher<ContactsLivenessData, Never> {
-        NotificationCenter.default
-            .publisher(for: .contactStatusChange)
-            .compactMap { $0.object as? ContactsLivenessData }
-            .share()
-            .eraseToAnyPublisher()
-    }
-
-    var messageReceived: AnyPublisher<ChatMessage, Never> {
-        NotificationCenter.default
-            .publisher(for: .messageReceived)
-            .compactMap { $0.object as? ChatMessage }
-            .share()
-            .eraseToAnyPublisher()
-    }
+final class ContactsLivenessData {
 
     // MARK: - Properties
 
-    static let shared = ChatCallbackManager()
-    private let queue = DispatchQueue(label: "com.tari.events.chat", attributes: [])
+    var address: TariAddress {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = read_liveness_data_address(pointer, errorCodePointer)
+            guard errorCode == 0, let result else { throw ChatError(code: errorCode) }
+            return TariAddress(pointer: result)
+        }
+    }
+
+    var onlineStatus: ChatOnlineStatus {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = read_liveness_data_online_status(pointer, errorCodePointer)
+            guard errorCode == 0, let status = ChatOnlineStatus(rawValue: result) else { throw ChatError(code: errorCode) }
+            return status
+        }
+    }
+
+    var lastSeen: Int64 {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = read_liveness_data_last_seen(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw ChatError(code: errorCode) }
+            return result
+        }
+    }
+
+    private let pointer: OpaquePointer
 
     // MARK: - Initialisers
 
-    private init() {}
-
-    // MARK: - Actions
-
-    func post(name: Notification.Name, object: Any?) {
-        queue.async {
-            NotificationCenter.default.post(name: name, object: object)
-        }
+    init(pointer: OpaquePointer) {
+        self.pointer = pointer
     }
-}
 
-extension Notification.Name {
-    static let contactStatusChange = Self(rawValue: "com.tari.wallet.chat.contact_status_change")
-    static let messageReceived = Self(rawValue: "com.tari.wallet.chat.message_received")
+    // MARK: - Deinitialiser
+
+    deinit {
+        destroy_contacts_liveness_data(pointer)
+    }
 }
