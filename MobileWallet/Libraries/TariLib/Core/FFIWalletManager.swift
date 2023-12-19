@@ -88,9 +88,9 @@ final class FFIWalletManager {
 
     // MARK: - Actions
 
-    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String) throws {
+    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, logVerbosity: Int32) throws {
         do {
-            wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: logFilePath, seedWords: seedWords, passphrase: passphrase, networkName: networkName)
+            wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: logFilePath, seedWords: seedWords, passphrase: passphrase, networkName: networkName, logVerbosity: logVerbosity)
         } catch {
             wallet = nil
             throw error
@@ -505,6 +505,19 @@ final class FFIWalletManager {
         let result = wallet_import_external_utxo_as_non_rewindable(wallet.pointer, output.pointer, sourceAddress.pointer, message, errorCodePointer)
 
         guard errorCode == 0 else { throw WalletError(code: errorCode) }
+        return result
+    }
+
+    func contactsHandle() throws -> OpaquePointer {
+
+        let wallet = try exisingWallet
+
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+
+        let result = contacts_handle(wallet.pointer, errorCodePointer)
+
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         return result
     }
 }

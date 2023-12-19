@@ -83,6 +83,7 @@ final class Tari: MainServiceable {
     private(set) lazy var unspentOutputsService = TariUnspentOutputsService(walletManager: walletManager, services: self)
 
     private(set) lazy var chatMessagesService = ChatMessagesService(chatManager: chatManager)
+    private(set) lazy var chatUsersService = ChatUsersService(chatManager: chatManager)
 
     private(set) lazy var logFilePath: String = {
         let dateFormatter = DateFormatter()
@@ -248,9 +249,10 @@ final class Tari: MainServiceable {
         let logFilePath = logFilePath
         Logger.log(message: "Log Path: \(logFilePath)", domain: .general, level: .info)
 
+        let logVerbosity: Int32 = TariSettings.shared.environment == .debug ? 11 : 2
+
         do {
-            try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name)
-            resetServices()
+            try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name, logVerbosity: logVerbosity)
             try chatManager.start(
                 networkName: selectedNetwork.name,
                 publicAddress: torManager.controlServerAddress,
@@ -258,11 +260,13 @@ final class Tari: MainServiceable {
                 identityFilePath: chatIdentityFilePath,
                 transportConfig: makeTransportConfig(),
                 logPath: logFilePath,
-                logVerbosity: TariSettings.shared.environment == .debug ? 11 : 2
+                logVerbosity: logVerbosity,
+                contactsHandle: walletManager.contactsHandle()
             )
+            resetServices()
         } catch {
             guard let error = error as? WalletError, error == WalletError.invalidPassphrase else { throw error }
-            try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: nil, networkName: selectedNetwork.name)
+            try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: nil, networkName: selectedNetwork.name, logVerbosity: logVerbosity)
         }
     }
 

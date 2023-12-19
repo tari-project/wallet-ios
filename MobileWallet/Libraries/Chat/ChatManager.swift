@@ -57,7 +57,7 @@ final class ChatManager {
 
     // MARK: - Actions
 
-    func start(networkName: String, publicAddress: String, datastorePath: String, identityFilePath: String, transportConfig: TransportConfig, logPath: String, logVerbosity: Int32) throws {
+    func start(networkName: String, publicAddress: String, datastorePath: String, identityFilePath: String, transportConfig: TransportConfig, logPath: String, logVerbosity: Int32, contactsHandle: OpaquePointer) throws {
 
         client = nil
 
@@ -71,7 +71,7 @@ final class ChatManager {
             logVerbosity: logVerbosity
         )
 
-        client = try ChatClient(config: config)
+        client = try ChatClient(config: config, contactsHandle: contactsHandle)
     }
 
     func add(contact: TariAddress) throws {
@@ -89,9 +89,10 @@ final class ChatManager {
         try client.send(message: chatMessage)
     }
 
-    func onlineStatus(address: TariAddress) throws -> Int32 {
+    func onlineStatus(address: TariAddress) throws -> ChatOnlineStatus? {
         let client = try existingClient
-        return try client.checkOnlineStatus(address: address)
+        let result = try client.checkOnlineStatus(address: address)
+        return ChatOnlineStatus(rawValue: UInt8(result)) // TODO: Type mismatch will be fixed in the next version of ChatFFI
     }
 
     func conversationalists() throws -> Conversationalists {
