@@ -1,11 +1,19 @@
 #!/bin/bash
 
+# Constants
+
 FILE=env.json
 WORKING_DIR=Temp
-FRAMEWORK_ZIP_FILE_NAME=libminotari_wallet_ffi.ios-xcframework.zip
-FRAMEWORK_DIRECTORY=libminotari_wallet_ffi-ios-xcframework
-FRAMEWORK_FILE_NAME=libminotari_wallet_ffi_ios.xcframework
-PROJECT_FRAMEWORK_DIRECTORY=./MobileWallet/Libraries/TariLib
+
+WALLET_ZIP_FILE_NAME=libminotari_wallet_ffi.ios-xcframework.zip
+WALLET_DIRECTORY=libminotari_wallet_ffi-ios-xcframework
+WALLET_FILE_NAME=libminotari_wallet_ffi_ios.xcframework
+PROJECT_WALLET_DIRECTORY=./MobileWallet/Libraries/TariLib
+
+CHAR_ZIP_FILE_NAME=libminotari_chat_ffi.ios-xcframework.zip
+CHAR_DIRECTORY=libminotari_chat_ffi-ios-xcframework
+CHAT_FILE_NAME=libminotari_chat_ffi_ios.xcframework
+PROJECT_CHAR_DIRECTORY=./MobileWallet/Libraries/Chat
 
 if test ! -f "$FILE"; then
     echo "$FILE does not exist. Creating default."
@@ -13,35 +21,42 @@ if test ! -f "$FILE"; then
     echo "Please adjust env.json as needed."
 fi
 
-echo "\n\n***Pulling latest Tari lib build***"
 source dependencies.env
+
+# FFI Frameworks update
+
+update() {
+  printf "\n*** Downloading $1 Framework ***\n\n"
+  curl -L https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/$2 -o ./$WORKING_DIR/$2
+  unzip ./$WORKING_DIR/$2 -d ./$WORKING_DIR
+  rm -rf $5/$4
+  mv $WORKING_DIR/$3/$4 $5
+}
 
 rm -rf $WORKING_DIR
 mkdir $WORKING_DIR
 
-curl -L "https://github.com/tari-project/tari/releases/download/v$FFI_VERSION/$FRAMEWORK_ZIP_FILE_NAME" -o "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME"
-unzip "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME" -d "./$WORKING_DIR"
-rm -f "./$WORKING_DIR/$FRAMEWORK_ZIP_FILE_NAME"
+update "FFI Wallet" $WALLET_ZIP_FILE_NAME $WALLET_DIRECTORY $WALLET_FILE_NAME $PROJECT_WALLET_DIRECTORY
+update "FFI Chat" $CHAR_ZIP_FILE_NAME $CHAR_DIRECTORY $CHAT_FILE_NAME $PROJECT_CHAR_DIRECTORY
 
-rm -rf $PROJECT_FRAMEWORK_DIRECTORY/$FRAMEWORK_FILE_NAME
-mv $WORKING_DIR/$FRAMEWORK_DIRECTORY/$FRAMEWORK_FILE_NAME $PROJECT_FRAMEWORK_DIRECTORY
 rm -rf $WORKING_DIR
 
 # Check for cocoapods and install if missing.
+
 if hash pod 2>/dev/null; then
-  echo "Cool, you have pods installed."
+  printf "\nCool, you have Cocoapods installed."
 else
-  echo "You need cocoapods. Would you like it installed?"
+  printf "You need Cocoapods. Would you like it installed?"
   read -e -p "y or n? " yn
   if [[ "y" = "$yn" || "Y" = "$yn" ]]; then
     sudo gem install cocoapods
   fi
 fi
 
-echo "\n\n***Updating pods***"
+printf "\n\n*** Updating Cocoapods dependencies ***\n\n"
 pod install
 
-echo "\n\n***Updating Property Lists***"
+printf "\n*** Updating Property Lists ***"
 
 # Info.plist
 
@@ -63,7 +78,7 @@ fi
 
 # Git Hooks
 
-echo "\n\n***Updating Git Hooks***"
+printf "\n\n*** Updating Git Hooks ***\n\n"
 
 PER_COMMIT_HOOK_PATH=".git/hooks/pre-commit"
 PRE_HOOK_SCRIPT_PATH="./pre_commit.sh"

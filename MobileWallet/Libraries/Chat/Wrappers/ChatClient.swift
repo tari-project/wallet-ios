@@ -46,10 +46,12 @@ final class ChatClient {
 
     // MARK: - Initialisers
 
-    init(config: ChatConfig) throws {
+    init(config: ChatConfig, contactsHandle: OpaquePointer) throws {
 
-        let contactStatusChangeCallback: @convention(c) (OpaquePointer?) -> Void = { _ in
-            ChatCallbackManager.shared.post(name: .contactStatusChange, object: nil)
+        let contactStatusChangeCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+            guard let pointer else { return }
+            let livenessData = ContactsLivenessData(pointer: pointer)
+            ChatCallbackManager.shared.post(name: .contactStatusChange, object: livenessData)
         }
 
         let messageReceivedCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
@@ -59,16 +61,14 @@ final class ChatClient {
         }
 
         let deliveryConfirmationReceivedCallback: @convention(c) (OpaquePointer?) -> Void = { _ in
-
         }
 
         let readConfirmationReceived: @convention(c) (OpaquePointer?) -> Void = { _ in
-
         }
 
         var errorCode: Int32 = -1
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
-        let result = create_chat_client(config.pointer, errorCodePointer, contactStatusChangeCallback, messageReceivedCallback, deliveryConfirmationReceivedCallback, readConfirmationReceived)
+        let result = sideload_chat_client(config.pointer, contactsHandle, errorCodePointer, contactStatusChangeCallback, messageReceivedCallback, deliveryConfirmationReceivedCallback, readConfirmationReceived)
 
         guard errorCode == 0, let result else { throw ChatError(code: errorCode) }
         pointer = result
