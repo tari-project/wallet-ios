@@ -1,10 +1,10 @@
-//  ChatOnlineStatus.swift
+//  ChatUsersService.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczyński on 14/11/2023
+	Created by Adrian Truszczyński on 18/12/2023
 	Using Swift 5.0
-	Running on macOS 14.0
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -38,9 +38,52 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-enum ChatOnlineStatus: UInt8 {
-    case online = 1
-    case offline
-    case neverSeen
-    case banned
+import Combine
+
+final class ChatUsersService: CoreChatService {
+
+    // MARK: - Properties
+
+    @Published private(set) var onlineStatuses: [String: ChatOnlineStatus] = [:]
+    @Published private(set) var error: Error?
+
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Initialisers
+
+    override init(chatManager: ChatManager) {
+        super.init(chatManager: chatManager)
+        setupCallbacks()
+        fetchData()
+    }
+
+    // MARK: - Setups
+
+    private func setupCallbacks() {
+        ChatCallbackManager.shared.contactStatusChange
+            .sink { [weak self] in self?.handle(livenessData: $0) }
+            .store(in: &cancellables)
+    }
+
+    // MARK: - Actions
+
+    private func fetchData() {
+        do {
+            onlineStatuses = try chatManager.conversationalists().all
+                .reduce(into: [String: ChatOnlineStatus]()) { result, address in
+                    let hex = try address.byteVector.hex
+                    let onlineStatus = try chatManager.onlineStatus(address: address)
+                    result[hex] = onlineStatus
+                }
+        } catch {
+            self.error = error
+        }
+    }
+
+    // MARK: - Handlers
+
+    private func handle(livenessData: ContactsLivenessData) {
+        guard let hex = try? livenessData.address.byteVector.hex, let onlineStatus = try? livenessData.onlineStatus else { return }
+        onlineStatuses[hex] = onlineStatus
+    }
 }

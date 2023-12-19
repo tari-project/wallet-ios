@@ -81,6 +81,8 @@ final class ChatConversationModel {
     private let dateFormatter = DateFormatter.shortDate
     private let hourFormatter = DateFormatter.hour
     private let contactsManager = ContactsManager()
+
+    private var isOnline: Bool = false
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -98,9 +100,22 @@ final class ChatConversationModel {
     // MARK: - Setups
 
     private func setupCallbacks() throws {
+
         try Tari.shared.chatMessagesService.messages(address: address)
             .compactMap { [weak self] in try? self?.messagesSections(chatMessages: $0) }
             .sink { [weak self] in self?.messages = $0 }
+            .store(in: &cancellables)
+
+        let hex = try address.byteVector.hex
+
+        Tari.shared.chatUsersService
+            .$onlineStatuses
+            .compactMap { $0.first { $0.key == hex }?.value }
+            .map { $0 == .online }
+            .sink { [weak self] in
+                self?.isOnline = $0
+                self?.updateUserData()
+            }
             .store(in: &cancellables)
     }
 
@@ -115,7 +130,7 @@ final class ChatConversationModel {
                 userData = try UserData(
                     avatarText: contact?.avatar ?? address.emojis.firstOrEmpty,
                     avatarImage: contact?.avatarImage,
-                    isOnline: false, // TODO: Currently unused
+                    isOnline: isOnline,
 
                     name: contact?.name ?? address.emojis.obfuscatedText
                 )

@@ -83,6 +83,7 @@ final class Tari: MainServiceable {
     private(set) lazy var unspentOutputsService = TariUnspentOutputsService(walletManager: walletManager, services: self)
 
     private(set) lazy var chatMessagesService = ChatMessagesService(chatManager: chatManager)
+    private(set) lazy var chatUsersService = ChatUsersService(chatManager: chatManager)
 
     private(set) lazy var logFilePath: String = {
         let dateFormatter = DateFormatter()
@@ -272,17 +273,18 @@ final class Tari: MainServiceable {
             isDnsSecureOn: false,
             logVerbosity: logVerbosity
         )
-        resetServices()
 
         try chatManager.start(
-                networkName: selectedNetwork.name,
-                publicAddress: torManager.controlServerAddress,
-                datastorePath: chatDatabaseDirectory.path,
-                identityFilePath: chatIdentityFilePath,
-                transportConfig: makeTransportConfig(),
-                logPath: logFilePath,
-                logVerbosity: TariSettings.shared.environment == .debug ? 11 : 2
-            ) // TODO: Align
+            networkName: selectedNetwork.name,
+            publicAddress: torManager.controlServerAddress,
+            datastorePath: chatDatabaseDirectory.path,
+            identityFilePath: chatIdentityFilePath,
+            transportConfig: makeTransportConfig(),
+            logPath: logFilePath,
+            logVerbosity: logVerbosity,
+            contactsHandle: walletManager.contactsHandle()
+        )
+        resetServices()
     }
 
     private func waitForTor() async {
