@@ -241,13 +241,8 @@ final class Tari: MainServiceable {
         let logFilePath = logFilePath
         Logger.log(message: "Log Path: \(logFilePath)", domain: .general, level: .info)
 
-        do {
-            try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name)
-            resetServices()
-        } catch {
-            guard let error = error as? WalletError, error == WalletError.invalidPassphrase else { throw error }
-            try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: nil, networkName: selectedNetwork.name)
-        }
+        try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name)
+        resetServices()
     }
 
     private func waitForTor() async {
