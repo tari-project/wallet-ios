@@ -249,7 +249,15 @@ final class TorManager {
     // MARK: - Proxy
 
     private func startIObfs4Proxy() {
-        IPtProxyStartObfs4Proxy(nil, false, false, nil)
+
+        guard let iptStateLocation = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("pt_state").path else {
+            Logger.log(message: "No IPtProxy state location", domain: .tor, level: .error)
+            return
+        }
+
+        IPtProxy.setStateLocation(iptStateLocation)
+        IPtProxyStartLyrebird(nil, false, false, nil)
+        Logger.log(message: "IPtProxy state location set", domain: .tor, level: .info)
     }
 
     // MARK: - Controller
