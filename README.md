@@ -42,7 +42,6 @@ Third-party frameworks and libraries are managed using a pre-compiled [Tari](htt
 - pod 'SwiftKeychainWrapper'
 - pod 'Giphy'
 - pod 'IPtProxy'
-- pod 'OpenSSL-Universal'
 - pod 'Zip'
 - pod 'SwiftyDropbox'
 - pod 'YatLib'
@@ -56,10 +55,6 @@ Third-party frameworks and libraries are managed using a pre-compiled [Tari](htt
     * The major revision will be increased only after significant and breaking changes.
     * The minor revision will be increased when new features or improvements are introduced.
     * The patch revision will be increased when the new version contains only hotfixes 
-
-### Folder Structure and Architecture
-
-Coming soon.
 
 ### Git Branches
 

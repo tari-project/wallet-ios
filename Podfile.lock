@@ -2,7 +2,7 @@ PODS:
   - Alamofire (5.4.4)
   - Giphy (2.1.22):
     - libwebp
-  - IPtProxy (1.10.1)
+  - IPtProxy (3.3.0)
   - libwebp (1.2.3):
     - libwebp/demux (= 1.2.3)
     - libwebp/mux (= 1.2.3)
@@ -13,7 +13,6 @@ PODS:
     - libwebp/demux
   - libwebp/webp (1.2.3)
   - lottie-ios (3.2.3)
-  - OpenSSL-Universal (1.1.1900)
   - ReachabilitySwift (5.0.0)
   - Sentry (8.14.2):
     - Sentry/Core (= 8.14.2)
@@ -26,10 +25,10 @@ PODS:
   - SwiftyDropbox (8.2.1):
     - Alamofire (~> 5.4.3)
   - TariCommon (0.2.0)
-  - Tor (408.7.2):
-    - Tor/CTor (= 408.7.2)
-  - Tor/Core (408.7.2)
-  - Tor/CTor (408.7.2):
+  - Tor (408.10.1):
+    - Tor/CTor (= 408.10.1)
+  - Tor/Core (408.10.1)
+  - Tor/CTor (408.10.1):
     - Tor/Core
   - YatLib (0.3.3):
     - TariCommon (~> 0.2.0)
@@ -37,16 +36,15 @@ PODS:
 
 DEPENDENCIES:
   - Giphy (= 2.1.22)
-  - IPtProxy (= 1.10.1)
+  - IPtProxy (= 3.3.0)
   - lottie-ios
-  - OpenSSL-Universal
   - ReachabilitySwift
   - Sentry (= 8.14.2)
   - SwiftEntryKit (= 2.0.0)
   - SwiftKeychainWrapper (= 3.4.0)
   - SwiftyDropbox (= 8.2.1)
   - TariCommon (= 0.2.0)
-  - Tor (= 408.7.2)
+  - Tor (= 408.10.1)
   - YatLib (= 0.3.3)
   - Zip (= 2.1.2)
 
@@ -57,7 +55,6 @@ SPEC REPOS:
     - IPtProxy
     - libwebp
     - lottie-ios
-    - OpenSSL-Universal
     - ReachabilitySwift
     - Sentry
     - SentryPrivate
@@ -72,10 +69,9 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Alamofire: f3b09a368f1582ab751b3fff5460276e0d2cf5c9
   Giphy: 6757d929878ef45f70ed62a02a2c9a03994e7b6c
-  IPtProxy: 17a32bf135d3824e8cbc3fba0fa5bc404490ac84
+  IPtProxy: 2136e276560ffd3a1d017683259f52552fc7c2e5
   libwebp: 60305b2e989864154bd9be3d772730f08fc6a59c
   lottie-ios: c058aeafa76daa4cf64d773554bccc8385d0150e
-  OpenSSL-Universal: 84efb8a29841f2764ac5403e0c4119a28b713346
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   Sentry: e0ea366f95ebb68f26d6030d8c22d6b2e6d23dd0
   SentryPrivate: 949a21fa59872427edc73b524c3ec8456761d97f
@@ -83,10 +79,10 @@ SPEC CHECKSUMS:
   SwiftKeychainWrapper: 6fc49fbf7d4a6b0772917acb0e53a1639f6078d6
   SwiftyDropbox: f6c55aae36c4ea944fe6b35f807c19897f78b09b
   TariCommon: 2c8bb97359f59d6b302d2e96c191ff95931da8ac
-  Tor: 7e7ab1fa8b5140b0b5038cff45b9c9472ad73951
+  Tor: 4aa4aee031f892efa43d1afb01c90565990c6312
   YatLib: f56aa60679b20e989a41b6bc92c0081c013b523a
   Zip: b3fef584b147b6e582b2256a9815c897d60ddc67
 
-PODFILE CHECKSUM: 78481b66b4ba45f09ba6fe28f4de98e3ab98cccf
+PODFILE CHECKSUM: 43b8e66d361bf301a04d308d4daf6088dedeab0f
 
 COCOAPODS: 1.14.3
