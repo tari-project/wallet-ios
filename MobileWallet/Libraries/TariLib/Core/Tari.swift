@@ -241,7 +241,9 @@ final class Tari: MainServiceable {
         let logFilePath = logFilePath
         Logger.log(message: "Log Path: \(logFilePath)", domain: .general, level: .info)
 
-        try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name)
+        let logVerbosity: Int32 = TariSettings.shared.environment == .debug ? 11 : 2
+
+        try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name, logVerbosity: logVerbosity)
         resetServices()
     }
 
