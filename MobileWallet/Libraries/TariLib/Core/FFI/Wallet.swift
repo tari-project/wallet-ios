@@ -52,7 +52,7 @@ final class Wallet {
 
     // MARK: - Initialisers
 
-    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String) throws {
+    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, logVerbosity: Int32) throws {
 
         let receivedTransactionCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
             WalletCallbacksManager.shared.post(name: .receivedTransaction, object: pointer)
@@ -137,6 +137,7 @@ final class Wallet {
         let result = wallet_create(
             commsConfig.pointer,
             loggingFilePath,
+            logVerbosity,
             Self.numberOfRollingLogFiles,
             Self.logFileSize,
             passphrase,

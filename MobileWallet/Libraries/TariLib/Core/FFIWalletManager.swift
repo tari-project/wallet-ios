@@ -88,9 +88,9 @@ final class FFIWalletManager {
 
     // MARK: - Actions
 
-    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String) throws {
+    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, logVerbosity: Int32) throws {
         do {
-            wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: logFilePath, seedWords: seedWords, passphrase: passphrase, networkName: networkName)
+            wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: logFilePath, seedWords: seedWords, passphrase: passphrase, networkName: networkName, logVerbosity: logVerbosity)
         } catch {
             wallet = nil
             throw error
