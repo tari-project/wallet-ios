@@ -250,7 +250,7 @@ final class Tari: MainServiceable {
     private func waitForTor() async {
         return await withCheckedContinuation { continuation in
             Tari.shared.connectionMonitor.$torConnection
-                .filter { $0 == .portsOpen || $0 == .connected }
+                .filter { $0 == .waitingForAuthorization || $0 == .portsOpen || $0 == .connected }
                 .first()
                 .sink { _ in continuation.resume() }
                 .store(in: &cancellables)

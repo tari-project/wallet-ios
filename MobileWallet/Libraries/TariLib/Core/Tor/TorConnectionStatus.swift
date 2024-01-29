@@ -41,6 +41,7 @@
 enum TorConnectionStatus {
     case disconnected
     case connecting
+    case waitingForAuthorization
     case portsOpen
     case connected
     case disconnecting

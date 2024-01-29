@@ -55,7 +55,6 @@ enum DeepLinkDefaultActionsHandler {
 
     static func handle(baseNodesAddDeeplink: BaseNodesAddDeeplink) throws {
         Task { @MainActor in
-            try await Task.sleep(nanoseconds: 500000000) // FIXME: Replace it with App state handler
             self.showAddBaseNodePopUp(name: baseNodesAddDeeplink.name, peer: baseNodesAddDeeplink.peer)
         }
     }
@@ -116,7 +115,6 @@ enum DeepLinkDefaultActionsHandler {
     }
 
     @MainActor private static func showAddContactsPopUp(contacts: [ContactData]) async throws {
-        try await Task.sleep(nanoseconds: 500000000) // FIXME: Replace it with App state handler
         guard await showAddContactsDialog(contacts: contacts) else { return }
         try add(contacts: contacts)
     }
