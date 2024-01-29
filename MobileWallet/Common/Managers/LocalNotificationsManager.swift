@@ -130,13 +130,6 @@ final class LocalNotificationsManager: NSObject {
 
     private func handleOpenNotification(userInfo: [AnyHashable: Any]) {
         guard let rawDeeplink = userInfo[UserInfo.rawDeeplink.rawValue] as? String else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            try? DeeplinkHandler.handle(rawDeeplink: rawDeeplink, showDefaultDialogIfNeeded: true)
-        }
-    }
-
-    private func handleContactsReceivedAction(userInfo: [AnyHashable: Any]) {
-        guard let rawDeeplink = userInfo[UserInfo.rawDeeplink.rawValue] as? String else { return }
         try? DeeplinkHandler.handle(rawDeeplink: rawDeeplink, showDefaultDialogIfNeeded: true)
     }
 }
@@ -160,7 +153,7 @@ extension LocalNotificationsManager: UNUserNotificationCenterDelegate {
 
         switch actionType {
         case .contactReceivedConfirm:
-            handleContactsReceivedAction(userInfo: userInfo)
+            handleOpenNotification(userInfo: userInfo)
         case .contactReceivedReject:
             break
         }

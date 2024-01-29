@@ -90,7 +90,9 @@ final class FFIWalletManager {
 
     func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, logVerbosity: Int32) throws {
         do {
+            let beforeWalletCreationDate = Date()
             wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: logFilePath, seedWords: seedWords, passphrase: passphrase, networkName: networkName, logVerbosity: logVerbosity)
+            Logger.log(message: "Wallet created after \(-beforeWalletCreationDate.timeIntervalSinceNow) seconds", domain: .general, level: .info)
         } catch {
             wallet = nil
             throw error

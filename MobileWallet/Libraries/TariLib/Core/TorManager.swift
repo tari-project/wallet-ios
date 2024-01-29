@@ -211,6 +211,7 @@ final class TorManager {
         startIObfs4Proxy()
         createController()
         try await startController()
+        connectionStatus = .waitingForAuthorization
         guard try await auth() else { throw TorError.authenticationFailed }
         connectionStatus = .portsOpen
         try observeConnection()

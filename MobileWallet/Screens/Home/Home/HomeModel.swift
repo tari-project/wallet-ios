@@ -134,6 +134,7 @@ final class HomeModel {
             (.connected, .disconnecting, _, _):
             connectionStatusIcon = .icons.network.off
         case (.connected, .connecting, _, _),
+            (.connected, .waitingForAuthorization, _, _),
             (.connected, .portsOpen, _, _),
             (.connected, .connected, .offline, _),
             (.connected, .connected, .connecting, _),
