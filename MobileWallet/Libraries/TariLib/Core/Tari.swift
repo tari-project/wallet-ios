@@ -187,6 +187,7 @@ final class Tari: MainServiceable {
 
     func startWallet() async throws {
         await waitForTor()
+        guard await UIApplication.shared.applicationState != .background else { return }
         try startWallet(seedWords: nil)
         try connection.selectCurrentNode()
     }
@@ -240,19 +241,16 @@ final class Tari: MainServiceable {
         let logFilePath = logFilePath
         Logger.log(message: "Log Path: \(logFilePath)", domain: .general, level: .info)
 
-        do {
-            try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name)
-            resetServices()
-        } catch {
-            guard let error = error as? WalletError, error == WalletError.invalidPassphrase else { throw error }
-            try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: nil, networkName: selectedNetwork.name)
-        }
+        let logVerbosity: Int32 = TariSettings.shared.environment == .debug ? 11 : 2
+
+        try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name, logVerbosity: logVerbosity)
+        resetServices()
     }
 
     private func waitForTor() async {
         return await withCheckedContinuation { continuation in
             Tari.shared.connectionMonitor.$torConnection
-                .filter { $0 == .portsOpen || $0 == .connected }
+                .filter { $0 == .waitingForAuthorization || $0 == .portsOpen || $0 == .connected }
                 .first()
                 .sink { _ in continuation.resume() }
                 .store(in: &cancellables)

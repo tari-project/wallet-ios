@@ -116,7 +116,7 @@ extension LAContext {
                 onSuccess()
             }))
 
-            if let topController = UIApplication.shared.topController() {
+            if let topController = UIApplication.shared.topController {
                 topController.present(alert, animated: true, completion: nil)
             }
         }
@@ -136,7 +136,7 @@ extension LAContext {
             }
         }))
 
-        if let topController = UIApplication.shared.topController() {
+        if let topController = UIApplication.shared.topController {
             topController.present(alert, animated: true, completion: nil)
         }
     }

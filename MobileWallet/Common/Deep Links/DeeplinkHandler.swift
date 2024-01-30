@@ -42,6 +42,8 @@ import UIKit
 
 enum DeeplinkHandler {
 
+    private static var storedDeeplink: DeepLinkable?
+
     static func deeplink(rawDeeplink: String) throws -> DeepLinkable? {
 
         guard let deeplink = URL(string: rawDeeplink) else { return nil }
@@ -74,6 +76,11 @@ enum DeeplinkHandler {
             actionType = .direct
         }
 
+        if actionType == .popUp, !(Tari.shared.isWalletConnected && AppRouter.isNavigationReady) {
+            retryHandle(deeplink: deeplink)
+            return
+        }
+
         switch deeplink.type {
         case .baseNodesAdd:
             try handle(baseNodesAddDeeplink: deeplink)
@@ -104,5 +111,14 @@ enum DeeplinkHandler {
     private static func handle(transactionSendDeepLink: DeepLinkable) {
         guard let deeplink = transactionSendDeepLink as? TransactionsSendDeeplink else { return }
         DeepLinkDefaultActionsHandler.handle(transactionSendDeepLink: deeplink)
+    }
+
+    private static func retryHandle(deeplink: DeepLinkable) {
+        storedDeeplink = deeplink
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            guard let storedDeeplink else { return }
+            self.storedDeeplink = nil
+            try? handle(deeplink: storedDeeplink, showDefaultDialogIfNeeded: true)
+        }
     }
 }

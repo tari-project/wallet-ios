@@ -70,10 +70,20 @@ final class TorManager {
 
     private var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
     private var controller: TorController?
-    private var queuedAction: Action?
+    private var queuedAction: Action? {
+        didSet {
+            guard let queuedAction else {
+                Logger.log(message: "queuedAction: None", domain: .tor, level: .info)
+                return
+            }
+            Logger.log(message: "queuedAction: \(queuedAction)", domain: .tor, level: .info)
+        }
+    }
     private var retryAction: DispatchWorkItem?
     private var observers: [Any?] = []
-    private var isConnecting = false
+    private var isActionLocked = false {
+        didSet { Logger.log(message: "isActionLocked: \(isActionLocked)", domain: .tor, level: .info) }
+    }
     private var cancellables = Set<AnyCancellable>()
 
     private var isThreadRunning: Bool { TorThread.active != nil }
@@ -108,11 +118,11 @@ final class TorManager {
                 case 0:
                     break
                 case 100:
-                    self?.isConnecting = false
+                    self?.isActionLocked = false
                     self?.cancelRetry()
                     self?.runQueuedAction()
                 default:
-                    self?.isConnecting = true
+                    self?.isActionLocked = true
                 }
             }
             .store(in: &cancellables)
@@ -135,7 +145,7 @@ final class TorManager {
 
         Logger.log(message: "Start", domain: .tor, level: .info)
 
-        guard !isConnecting else {
+        guard !isActionLocked else {
             queuedAction = .connect
             return
         }
@@ -154,29 +164,34 @@ final class TorManager {
 
         Logger.log(message: "Stop", domain: .tor, level: .info)
 
-        guard !isConnecting else {
+        guard !isActionLocked else {
             queuedAction = .disconnect
             return
         }
 
+        endBackgroundTask()
+        startBackgroundTask()
+
         Task {
             do {
-                startBackgroundTask()
                 try await disconnect()
                 endBackgroundTask()
             } catch {
                 handle(error: error)
+                endBackgroundTask()
             }
         }
     }
 
     func disconnect() async throws {
         Logger.log(message: "Disconnect: Start", domain: .tor, level: .info)
+        isActionLocked = true
         stopController()
         connectionStatus = .disconnecting
         bootstrapProgress = 0
         try await waitingForThread()
         connectionStatus = .disconnected
+        isActionLocked = false
         Logger.log(message: "Disconnect: Done", domain: .tor, level: .info)
     }
 
@@ -190,11 +205,13 @@ final class TorManager {
     private func connect() async throws {
         Logger.log(message: "Connect: Start", domain: .tor, level: .info)
         connectionStatus = .connecting
+        isActionLocked = true
         try createDirectories()
         try createThread()
         startIObfs4Proxy()
         createController()
         try await startController()
+        connectionStatus = .waitingForAuthorization
         guard try await auth() else { throw TorError.authenticationFailed }
         connectionStatus = .portsOpen
         try observeConnection()
@@ -233,7 +250,15 @@ final class TorManager {
     // MARK: - Proxy
 
     private func startIObfs4Proxy() {
-        IPtProxyStartObfs4Proxy(nil, false, false, nil)
+
+        guard let iptStateLocation = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("pt_state").path else {
+            Logger.log(message: "No IPtProxy state location", domain: .tor, level: .error)
+            return
+        }
+
+        IPtProxy.setStateLocation(iptStateLocation)
+        IPtProxyStartLyrebird(nil, false, false, nil)
+        Logger.log(message: "IPtProxy state location set", domain: .tor, level: .info)
     }
 
     // MARK: - Controller
@@ -245,18 +270,20 @@ final class TorManager {
 
     private func startController(retryCount: Int = 0) async throws {
 
+        Logger.log(message: "Controller Connecting", domain: .tor, level: .info)
+
         let maxRetryCount = 5
 
         do {
             try existingController.connect()
-            isConnecting = true
+            isActionLocked = true
             Logger.log(message: "Controller Connected", domain: .tor, level: .info)
         } catch {
             Logger.log(message: "Waiting for connection: \(retryCount)", domain: .tor, level: .info)
             let retryCount = retryCount + 1
             guard retryCount < maxRetryCount else {
                 guard let posixError = error.posixError else { throw TorError.connectionFailed(error: error) }
-                isConnecting = false
+                isActionLocked = false
                 throw TorError.connectionFailed(error: posixError)
             }
 
@@ -385,9 +412,11 @@ final class TorManager {
         backgroundTaskID = UIApplication.shared.beginBackgroundTask { [weak self] in
             self?.endBackgroundTask()
         }
+        Logger.log(message: "Background Task - Start: \(backgroundTaskID)", domain: .tor, level: .info)
     }
 
     private func endBackgroundTask() {
+        Logger.log(message: "Background Task - End: \(backgroundTaskID)", domain: .tor, level: .info)
         guard backgroundTaskID != .invalid else { return }
         Logger.log(message: "End Background Task", domain: .tor, level: .info)
         UIApplication.shared.endBackgroundTask(backgroundTaskID)

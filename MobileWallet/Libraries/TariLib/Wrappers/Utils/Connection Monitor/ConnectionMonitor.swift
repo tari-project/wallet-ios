@@ -114,7 +114,7 @@ private extension TorConnectionStatus {
         switch self {
         case .disconnected, .disconnecting:
             return localized("connection_status.popUp.label.tor_status.disconnected")
-        case .connecting, .portsOpen:
+        case .connecting, .waitingForAuthorization, .portsOpen:
             return localized("connection_status.popUp.label.tor_status.connecting")
         case .connected:
             return localized("connection_status.popUp.label.tor_status.connected")
@@ -125,7 +125,7 @@ private extension TorConnectionStatus {
         switch self {
         case .disconnected, .disconnecting:
             return .error
-        case .connecting, .portsOpen:
+        case .connecting, .waitingForAuthorization, .portsOpen:
             return .warning
         case .connected:
             return .ok

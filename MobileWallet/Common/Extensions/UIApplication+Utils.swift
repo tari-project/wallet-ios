@@ -1,4 +1,4 @@
-//  UIApplication+keyWindow.swift
+//  UIApplication+Utils.swift
 
 /*
 	Package MobileWallet
@@ -41,26 +41,32 @@
 import UIKit
 
 extension UIApplication {
-    var keyWindow: UIWindow? {
-        return UIApplication.shared.windows.filter({$0.isKeyWindow}).first
-    }
+
+    var firstWindow: UIWindow? { windows.first }
 
     var menuTabBarController: MenuTabBarController? {
-        return findViewController(kindOf: MenuTabBarController.self)
+        findViewController(kindOf: MenuTabBarController.self)
     }
 
-    func topController() -> UIViewController? {
-        if var topController = keyWindow?.rootViewController {
-            while let presentedViewController = topController.presentedViewController {
-                topController = presentedViewController
-            }
-            return topController
+    var topController: UIViewController? {
+        guard var topController = firstWindow?.rootViewController else { return nil }
+        while let presentedViewController = topController.presentedViewController {
+            topController = presentedViewController
         }
-        return nil
+        return topController
     }
 
-    func findViewController<T: UIViewController>(kindOf: T.Type? = nil) -> T? {
-        guard let window = keyWindow else { return nil }
+    func hideKeyboard() {
+        sendAction(#selector(UIApplication.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+
+    private var windows: [UIWindow] {
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return [] }
+        return scene.windows
+    }
+
+    private func findViewController<T: UIViewController>(kindOf: T.Type? = nil) -> T? {
+        guard let window = firstWindow else { return nil }
         if let vc = window.rootViewController as? T {
             return vc
         } else if let vc = window.rootViewController?.presentedViewController as? T {

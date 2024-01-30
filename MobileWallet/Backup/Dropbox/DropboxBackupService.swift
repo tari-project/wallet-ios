@@ -210,20 +210,21 @@ final class DropboxBackupService {
         startBackgroundTask()
 
         Task { [weak self] in
+            guard let self else { return }
             do {
                 _ = try dropboxClient
                 try await uploadFile(password: password)
-                self?.syncDate = Date()
-                self?.syncStatus = .enabled
+                self.syncDate = Date()
+                self.syncStatus = .enabled
             } catch InternalError.noClient, InternalError.unableToAuthenticateUser {
-                self?.signIn(task: .upload)
+                self.signIn(task: .upload)
             } catch let error as DropboxBackupError {
-                self?.syncStatus = .failed(error: error)
+                self.syncStatus = .failed(error: error)
             } catch {
-                self?.syncStatus = .failed(error: DropboxBackupError.unknown)
+                self.syncStatus = .failed(error: DropboxBackupError.unknown)
             }
 
-            self?.endBackgroundTask()
+            self.endBackgroundTask()
         }
     }
 
@@ -414,6 +415,8 @@ final class DropboxBackupService {
         let client = try dropboxClient
 
         return try await withCheckedThrowingContinuation { [weak self] continuation in
+
+            guard let self else { return }
 
             let group = DispatchGroup()
 

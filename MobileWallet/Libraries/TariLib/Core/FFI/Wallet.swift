@@ -52,7 +52,7 @@ final class Wallet {
 
     // MARK: - Initialisers
 
-    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String) throws {
+    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, logVerbosity: Int32) throws {
 
         let receivedTransactionCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
             WalletCallbacksManager.shared.post(name: .receivedTransaction, object: pointer)
@@ -132,9 +132,12 @@ final class Wallet {
         let isRecoveryInProgressPointer = PointerHandler.pointer(for: &isRecoveryInProgress)
         let errorCodePointer = PointerHandler.pointer(for: &errorCode)
 
+        Logger.log(message: "Wallet created", domain: .general, level: .info)
+
         let result = wallet_create(
             commsConfig.pointer,
             loggingFilePath,
+            logVerbosity,
             Self.numberOfRollingLogFiles,
             Self.logFileSize,
             passphrase,
@@ -168,6 +171,7 @@ final class Wallet {
     // MARK: - Deinitialiser
 
     deinit {
+        Logger.log(message: "Wallet destoyed", domain: .general, level: .info)
         wallet_destroy(pointer)
     }
 }

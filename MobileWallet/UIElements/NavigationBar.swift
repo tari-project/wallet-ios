@@ -267,7 +267,7 @@ final class NavigationBar: DynamicThemeView {
             return
         }
 
-        let topController = UIApplication.shared.topController()
+        let topController = UIApplication.shared.topController
 
         guard let navigationController = topController as? UINavigationController else {
             topController?.dismiss(animated: true)

@@ -129,11 +129,11 @@ final class ThemeCoordinator {
     private func updateColorMode(colorScheme: ColorScheme) {
         switch colorScheme {
         case .system:
-            UIApplication.shared.windows.forEach { $0.overrideUserInterfaceStyle = .unspecified }
+            UIApplication.shared.firstWindow?.overrideUserInterfaceStyle = .unspecified
         case .light:
-            UIApplication.shared.windows.forEach { $0.overrideUserInterfaceStyle = .light }
+            UIApplication.shared.firstWindow?.overrideUserInterfaceStyle = .light
         case .dark, .tariPurple:
-            UIApplication.shared.windows.forEach { $0.overrideUserInterfaceStyle = .dark }
+            UIApplication.shared.firstWindow?.overrideUserInterfaceStyle = .dark
         }
     }
 

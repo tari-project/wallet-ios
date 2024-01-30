@@ -39,6 +39,7 @@
 */
 
 import Combine
+import UIKit
 
 final class FFIWalletManager {
 
@@ -54,7 +55,9 @@ final class FFIWalletManager {
     // MARK: - Properties
 
     @Published private(set) var baseNodeConnectionStatus: BaseNodeConnectivityStatus = .offline
-    @Published private(set) var isWalletConnected: Bool = false
+    @Published private(set) var isWalletConnected: Bool = false {
+        didSet { Logger.log(message: "isWalletConnected: \(isWalletConnected)", domain: .general, level: .info) }
+    }
 
     private var wallet: Wallet? {
         didSet { isWalletConnected = wallet != nil }
@@ -85,9 +88,11 @@ final class FFIWalletManager {
 
     // MARK: - Actions
 
-    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String) throws {
+    func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, logVerbosity: Int32) throws {
         do {
-            wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: logFilePath, seedWords: seedWords, passphrase: passphrase, networkName: networkName)
+            let beforeWalletCreationDate = Date()
+            wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: logFilePath, seedWords: seedWords, passphrase: passphrase, networkName: networkName, logVerbosity: logVerbosity)
+            Logger.log(message: "Wallet created after \(-beforeWalletCreationDate.timeIntervalSinceNow) seconds", domain: .general, level: .info)
         } catch {
             wallet = nil
             throw error
@@ -95,8 +100,14 @@ final class FFIWalletManager {
     }
 
     func disconnectWallet() {
+        let taskID = UIApplication.shared.beginBackgroundTask()
+        Logger.log(message: "disconnectWallet Start: \(taskID)", domain: .general, level: .info)
         wallet = nil
         baseNodeConnectionStatus = .offline
+        DispatchQueue.main.asyncAfter(deadline: .now() + 20.0) {
+            Logger.log(message: "disconnectWallet: End: \(taskID)", domain: .general, level: .info)
+            UIApplication.shared.endBackgroundTask(taskID)
+        }
     }
 
     // MARK: - FFI Actions

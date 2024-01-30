@@ -80,7 +80,7 @@ enum AppRouter {
 
     private static func transition(to controller: UIViewController, type: TransitionType) {
 
-        guard let window = UIApplication.shared.windows.first else { return }
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene, let window = scene.windows.first else { return }
 
         guard type != .none else {
             window.rootViewController = controller
@@ -132,7 +132,7 @@ enum AppRouter {
 
     static func presentOnTop(controller: UIViewController) {
 
-        guard var topViewController = UIApplication.shared.keyWindow?.rootViewController else { return }
+        guard var topViewController = UIApplication.shared.topController else { return }
 
         while let presentedViewController = topViewController.presentedViewController {
             topViewController = presentedViewController

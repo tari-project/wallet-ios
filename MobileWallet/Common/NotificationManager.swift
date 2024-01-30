@@ -133,7 +133,7 @@ final class NotificationManager {
 
     func handleForegroundNotification(_ notification: UNNotification, completionHandler: (UNNotificationPresentationOptions) -> Void) {
         if notification.request.identifier == NotificationIdentifier.scheduledBackupFailure.rawValue {
-            completionHandler([.alert, .badge, .sound])
+            completionHandler([.list, .banner, .badge, .sound])
         }
     }
 
