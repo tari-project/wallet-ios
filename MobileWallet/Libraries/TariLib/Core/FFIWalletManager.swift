@@ -91,10 +91,12 @@ final class FFIWalletManager {
     func connectWallet(commsConfig: CommsConfig, logFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, logVerbosity: Int32) throws {
         do {
             let beforeWalletCreationDate = Date()
+            Logger.log(message: "Wallet will be created", domain: .general, level: .info)
             wallet = try Wallet(commsConfig: commsConfig, loggingFilePath: logFilePath, seedWords: seedWords, passphrase: passphrase, networkName: networkName, logVerbosity: logVerbosity)
             Logger.log(message: "Wallet created after \(-beforeWalletCreationDate.timeIntervalSinceNow) seconds", domain: .general, level: .info)
         } catch {
-            wallet = nil
+            Logger.log(message: "Wallet wasn't created: \(error)", domain: .general, level: .info)
+            destroyWallet()
             throw error
         }
     }
@@ -102,12 +104,21 @@ final class FFIWalletManager {
     func disconnectWallet() {
         let taskID = UIApplication.shared.beginBackgroundTask()
         Logger.log(message: "disconnectWallet Start: \(taskID)", domain: .general, level: .info)
-        wallet = nil
+        destroyWallet()
         baseNodeConnectionStatus = .offline
         DispatchQueue.main.asyncAfter(deadline: .now() + 20.0) {
             Logger.log(message: "disconnectWallet: End: \(taskID)", domain: .general, level: .info)
             UIApplication.shared.endBackgroundTask(taskID)
         }
+    }
+
+    private func destroyWallet() {
+        guard let wallet else { return }
+        let beforeWalletDestroyDate = Date()
+        Logger.log(message: "Wallet will be destroyed", domain: .general, level: .info)
+        wallet.destroy()
+        Logger.log(message: "Wallet destroyed after \(-beforeWalletDestroyDate.timeIntervalSinceNow) seconds", domain: .general, level: .info)
+        self.wallet = nil
     }
 
     // MARK: - FFI Actions
