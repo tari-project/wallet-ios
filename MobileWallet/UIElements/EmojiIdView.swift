@@ -96,7 +96,7 @@ final class EmojiIdView: DynamicThemeView {
         }
     }
 
-    private var superVC: UIViewController?
+    private weak var superVC: UIViewController?
 
     // MARK: - Updates
 

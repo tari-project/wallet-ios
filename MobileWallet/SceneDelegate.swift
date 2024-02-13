@@ -58,7 +58,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         // If the user opens a deep link while the app is closed
         if let url = connectionOptions.urlContexts.first?.url {
-            try? DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
+            DispatchQueue.main.async {
+                try? DeeplinkHandler.handle(rawDeeplink: url.absoluteString, showDefaultDialogIfNeeded: true)
+            }
         }
 
         // If the user opens a home screen shortcut while the app is closed

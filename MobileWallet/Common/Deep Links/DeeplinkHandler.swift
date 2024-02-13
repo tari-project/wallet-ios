@@ -42,8 +42,6 @@ import UIKit
 
 enum DeeplinkHandler {
 
-    private static var storedDeeplink: DeepLinkable?
-
     static func deeplink(rawDeeplink: String) throws -> DeepLinkable? {
 
         guard let deeplink = URL(string: rawDeeplink) else { return nil }
@@ -114,11 +112,8 @@ enum DeeplinkHandler {
     }
 
     private static func retryHandle(deeplink: DeepLinkable) {
-        storedDeeplink = deeplink
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            guard let storedDeeplink else { return }
-            self.storedDeeplink = nil
-            try? handle(deeplink: storedDeeplink, showDefaultDialogIfNeeded: true)
+            try? handle(deeplink: deeplink, showDefaultDialogIfNeeded: true)
         }
     }
 }
