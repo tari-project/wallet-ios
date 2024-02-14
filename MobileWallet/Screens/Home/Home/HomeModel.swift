@@ -148,8 +148,8 @@ final class HomeModel {
     }
 
     private func handle(walletBalance: WalletBalance) {
-        balance = MicroTari(walletBalance.available + walletBalance.incoming).formatted
-        availableBalance = MicroTari(walletBalance.available).formatted
+        balance = MicroTari(walletBalance.total).formatted
+        availableBalance = MicroTari(walletBalance.availableToSpend).formatted
     }
 
     private func handle(transactions: [Transaction]) {
