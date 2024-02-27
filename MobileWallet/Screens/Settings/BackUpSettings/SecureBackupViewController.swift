@@ -41,7 +41,7 @@
 import UIKit
 import Combine
 
-class SecureBackupViewController: SettingsParentViewController {
+final class SecureBackupViewController: SettingsParentViewController {
     private let scrollView = UIScrollView()
     private let stackView = UIStackView()
     private let headerLabel = UILabel()
@@ -243,7 +243,7 @@ extension SecureBackupViewController {
         scrollView.showsVerticalScrollIndicator = false
 
         scrollView.backgroundColor = .clear
-        view.addSubview(scrollView)
+        mainView.addSubview(scrollView)
 
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
@@ -268,7 +268,7 @@ extension SecureBackupViewController {
         continueButton.addTarget(self, action: #selector(continueButtonAction), for: .touchUpInside)
         continueButton.variation = .disabled
 
-        view.addSubview(continueButton)
+        mainView.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
 
         continueButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,

@@ -41,12 +41,11 @@
 import UIKit
 import Combine
 
-final class ContactBookViewController: UIViewController, OverlayPresentable {
+final class ContactBookViewController: SecureViewController<ContactBookView>, OverlayPresentable {
 
     // MARK: - Properties
 
     private let model: ContactBookModel
-    private let mainView = ContactBookView()
     private let pagerViewController = TariPagerViewController()
 
     private let contactsPageViewController = ContactBookContactListViewController()
@@ -67,10 +66,6 @@ final class ContactBookViewController: UIViewController, OverlayPresentable {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

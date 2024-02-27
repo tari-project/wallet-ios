@@ -233,7 +233,7 @@ final class WalletCreationViewController: DynamicThemeViewController {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        view.backgroundColor = theme.backgrounds.secondary
+        mainView.backgroundColor = theme.backgrounds.secondary
         firstLabel.textColor = theme.text.heading
         secondLabel.textColor = theme.text.heading
         thirdLabel.textColor = theme.text.heading
@@ -491,7 +491,7 @@ extension WalletCreationViewController {
         stackView.distribution = .fill
         stackView.alignment = .center
 
-        view.addSubview(stackView)
+        mainView.addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
         stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -552,7 +552,7 @@ extension WalletCreationViewController {
         loadingCircle.animation = Animation.named(.pendingCircleAnimation)
         loadingCircle.alpha = 0.0
 
-        view.addSubview(loadingCircle)
+        mainView.addSubview(loadingCircle)
         loadingCircle.translatesAutoresizingMaskIntoConstraints = false
         loadingCircle.widthAnchor.constraint(equalToConstant: 45).isActive = true
         loadingCircle.heightAnchor.constraint(equalToConstant: 45).isActive = true
@@ -592,7 +592,7 @@ extension WalletCreationViewController {
     private func setupContinueButton() {
         continueButton.addTarget(self, action: #selector(onNavigateNext), for: .touchUpInside)
         continueButton.alpha = 0.0
-        view.addSubview(continueButton)
+        mainView.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
 
         continueButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor,
@@ -636,7 +636,7 @@ extension WalletCreationViewController {
     private func setupTapToSeeFullEmojiButton() {
         tapToSeeButtonContainer.backgroundColor = .clear
         tapToSeeButtonContainer.alpha = 0.0
-        view.addSubview(tapToSeeButtonContainer)
+        mainView.addSubview(tapToSeeButtonContainer)
 
         tapToSeeButtonContainer.translatesAutoresizingMaskIntoConstraints = false
         tapToSeeButtonContainer.bottomAnchor.constraint(equalTo: emojiIdView.topAnchor, constant: 3).isActive = true

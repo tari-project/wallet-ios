@@ -41,15 +41,13 @@
 import UIKit
 import Combine
 
-final class SendingTariViewController: UIViewController, TransactionViewControllable {
+final class SendingTariViewController: SecureViewController<SendingTariView>, TransactionViewControllable {
 
     // MARK: - Properties
 
     var onCompletion: ((WalletTransactionsManager.TransactionError?) -> Void)?
 
-    private let mainView = SendingTariView()
     private let model: SendingTariModel
-
     private var cancelables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -65,10 +63,6 @@ final class SendingTariViewController: UIViewController, TransactionViewControll
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

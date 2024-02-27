@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
 class SettingsParentTableViewController: SettingsParentViewController {
@@ -88,7 +87,7 @@ extension SettingsParentTableViewController {
 
     func setupTableView() {
         tableView.register(type: SystemMenuTableViewCell.self)
-        view.addSubview(tableView)
+        mainView.addSubview(tableView)
 
         let constraints = [
             tableView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),

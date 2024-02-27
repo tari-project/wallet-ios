@@ -54,7 +54,6 @@ final class SelectBaseNodeViewController: SettingsParentTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
-
     }
 
     override func viewWillAppear(_ animated: Bool) {

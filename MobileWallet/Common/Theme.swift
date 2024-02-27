@@ -368,6 +368,7 @@ enum IconsRotaryImages {
 
 enum IconsSettingsImages {
     static var bluetooth: UIImage? { UIImage(named: "Icons/Settings/Bluetooth") }
+    static var camera: UIImage? { UIImage(named: "Icons/Settings/Camera") }
 }
 
 enum IconsStarImages {

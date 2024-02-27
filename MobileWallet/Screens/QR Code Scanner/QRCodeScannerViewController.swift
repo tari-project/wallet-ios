@@ -42,13 +42,12 @@ import UIKit
 import AVFoundation
 import Combine
 
-final class QRCodeScannerViewController: UIViewController {
+final class QRCodeScannerViewController: SecureViewController<QRCodeScannerView> {
 
     // MARK: - Properties
 
     var onExpectedDataScan: ((QRCodeData) -> Void)?
 
-    private let mainView = QRCodeScannerView()
     private let model: QRCodeScannerModel
 
     private var cancellables = Set<AnyCancellable>()
@@ -66,10 +65,6 @@ final class QRCodeScannerViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -41,13 +41,11 @@
 import UIKit
 import Combine
 
-final class TorBridgesViewController: UIViewController {
+final class TorBridgesViewController: SecureViewController<TorBridgesView> {
 
     // MARK: - Properties
 
     private let model: TorBridgesModel
-    private let mainView = TorBridgesView()
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -62,10 +60,6 @@ final class TorBridgesViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

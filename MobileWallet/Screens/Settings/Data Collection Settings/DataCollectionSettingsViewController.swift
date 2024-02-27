@@ -41,12 +41,11 @@
 import UIKit
 import Combine
 
-final class DataCollectionViewController: UIViewController {
+final class DataCollectionViewController: SecureViewController<DataCollectionSettingsView> {
 
     // MARK: - Properties
 
     private let model: DataCollectionSettingsModel
-    private let mainView = DataCollectionSettingsView()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -61,10 +60,6 @@ final class DataCollectionViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -261,7 +261,7 @@ class DynamicThemeTextView: UITextView, ThemeViewProtocol {
     func update(theme: ColorTheme) {}
 }
 
-class DynamicThemeViewController: UIViewController, ThemeViewProtocol {
+class DynamicThemeViewController: SecureViewController<UIView>, ThemeViewProtocol {
 
     // MARK: - Properties
 

@@ -41,13 +41,11 @@
 import UIKit
 import Combine
 
-final class HomeViewController: UIViewController {
+final class HomeViewController: SecureViewController<HomeView> {
 
     // MARK: - Properties
 
-    private let mainView = HomeView()
     private let model: HomeModel
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -62,10 +60,6 @@ final class HomeViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

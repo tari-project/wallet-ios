@@ -66,6 +66,8 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
         return view
     }()
 
+    @View private var secureContentView = SecureWrapperView<UIView>()
+
     // MARK: - Properties
 
     private var cancellables = Set<AnyCancellable>()
@@ -98,9 +100,14 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
     private func setupConstraints() {
 
-        [titleBar, stackView].forEach(addSubview)
+        addSubview(secureContentView)
+        [titleBar, stackView].forEach(secureContentView.view.addSubview)
 
         let constraints = [
+            secureContentView.topAnchor.constraint(equalTo: topAnchor),
+            secureContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            secureContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            secureContentView.bottomAnchor.constraint(equalTo: bottomAnchor),
             titleBar.topAnchor.constraint(equalTo: topAnchor),
             titleBar.leadingAnchor.constraint(equalTo: leadingAnchor),
             titleBar.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -117,7 +124,7 @@ final class ContactBookFormView: DynamicThemeView, FormShowable {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        backgroundColor = theme.backgrounds.primary
+        secureContentView.view.backgroundColor = theme.backgrounds.primary
     }
 
     private func update(textFieldsModels: [TextFieldViewModel]) {
