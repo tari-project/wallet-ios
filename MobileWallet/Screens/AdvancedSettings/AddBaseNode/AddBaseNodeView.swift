@@ -40,7 +40,7 @@
 
 import UIKit
 
-final class AddBaseNodeView: DynamicThemeView {
+final class AddBaseNodeView: BaseNavigationContentView {
 
     // MARK: - Subviews
 
@@ -118,6 +118,7 @@ final class AddBaseNodeView: DynamicThemeView {
 
     override init() {
         super.init()
+        setupNavigationBar()
         setupConstraints()
         setupFeedbacks()
     }
@@ -127,6 +128,10 @@ final class AddBaseNodeView: DynamicThemeView {
     }
 
     // MARK: - Setups
+
+    private func setupNavigationBar() {
+        navigationBar.title = localized("add_base_node.title")
+    }
 
     private func setupConstraints() {
 
@@ -140,7 +145,7 @@ final class AddBaseNodeView: DynamicThemeView {
         self.scrollViewBottomConstraint = scrollViewBottomConstraint
 
         let constraints = [
-            scrollView.topAnchor.constraint(equalTo: topAnchor),
+            scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollViewBottomConstraint,

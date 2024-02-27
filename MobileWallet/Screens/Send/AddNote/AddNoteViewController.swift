@@ -177,7 +177,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
         setupGiphy()
 
         scrollView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(scrollView)
+        mainView.addSubview(scrollView)
         scrollView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor).isActive = true
         scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
@@ -277,7 +277,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
 
-        view.backgroundColor = theme.backgrounds.primary
+        mainView.backgroundColor = theme.backgrounds.primary
 
         searchGiphyButton.backgroundColor = theme.icons.default
         searchGiphyButton.tintColor = theme.neutral.primary
@@ -296,7 +296,7 @@ final class AddNoteViewController: DynamicThemeViewController, UIScrollViewDeleg
 extension AddNoteViewController {
     private func setupNavigationBar() {
 
-        view.addSubview(navigationBar)
+        mainView.addSubview(navigationBar)
         navigationBar.addSubview(emojiIdView)
 
         navigationBar.isSeparatorVisible = false
@@ -325,7 +325,7 @@ extension AddNoteViewController {
         sendButton.isEnabled = false
 
         sendButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(sendButton)
+        mainView.addSubview(sendButton)
         sendButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25.0).isActive = true
         sendButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -25.0).isActive = true
         sendButtonBottomConstraint = sendButton.bottomAnchor.constraint(equalTo: view.safeBottomAnchor)
@@ -397,7 +397,7 @@ extension AddNoteViewController {
         let giphyVC = GiphyGridController()
 
         giphyCarouselContainerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(giphyCarouselContainerView)
+        mainView.addSubview(giphyCarouselContainerView)
         giphyCarouselContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: giffPadding).isActive = true
         giphyCarouselContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -giffPadding).isActive = true
         giphyCarouselBottomConstraint = giphyCarouselContainerView.bottomAnchor.constraint(equalTo: sendButton.topAnchor, constant: -(giffPadding * 2))

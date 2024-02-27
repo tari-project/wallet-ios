@@ -84,6 +84,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         case blockExplorer
 
         case selectTheme
+        case screenRecording
         case bluetoothConfiguration
         case torBridgeConfiguration
         case selectNetwork
@@ -95,8 +96,9 @@ final class SettingsViewController: SettingsParentTableViewController {
             case .backUpWallet: return localized("settings.item.wallet_backups")
             case .dataCollection: return localized("settings.item.data_collection")
 
-            case .bluetoothConfiguration: return localized("settings.item.bluetooth_settings")
             case .selectTheme: return localized("settings.item.select_theme")
+            case .screenRecording: return localized("settings.item.screen_recording_settings")
+            case .bluetoothConfiguration: return localized("settings.item.bluetooth_settings")
             case .torBridgeConfiguration: return localized("settings.item.bridge_configuration")
             case .selectNetwork: return localized("settings.item.select_network")
             case .selectBaseNode: return localized("settings.item.select_base_node")
@@ -115,14 +117,16 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private let backUpWalletItem = SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsWalletBackupsIcon, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
+    private let screenRecordingItem = SystemMenuTableViewCellItem(icon: .icons.settings.camera, title: SettingsItemTitle.screenRecording.rawValue)
 
     private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [
         backUpWalletItem,
         SystemMenuTableViewCellItem(icon: .icons.analytics, title: SettingsItemTitle.dataCollection.rawValue)
     ]
 
-    private let advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
+    private lazy var advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
+        screenRecordingItem,
         SystemMenuTableViewCellItem(icon: .icons.settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsNetworkIcon, title: SettingsItemTitle.selectNetwork.rawValue),
@@ -175,9 +179,15 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func setupCallbacks() {
+
         BackupManager.shared.$syncState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] in self?.updateItems(syncStatus: $0) }
+            .store(in: &cancellables)
+
+        SecurityManager.shared.$areScreenshotsDisabled
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.screenRecordingItem.mark = $0 ? .none : .attention }
             .store(in: &cancellables)
     }
 
@@ -205,6 +215,11 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private func onSelectThemeAction() {
         let controller = ThemeSettingsConstructor.buildScene()
+        navigationController?.pushViewController(controller, animated: true)
+    }
+
+    private func onScreenRecordingSettingsAction() {
+        let controller = ScreenRecordingSettingsViewController() // TODO: Constructor
         navigationController?.pushViewController(controller, animated: true)
     }
 
@@ -400,14 +415,16 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case 0:
                 onSelectThemeAction()
             case 1:
-                onBluetoothSettingsAction()
+                onScreenRecordingSettingsAction()
             case 2:
-                onBridgeConfigurationAction()
+                onBluetoothSettingsAction()
             case 3:
-                onSelectNetworkAction()
+                onBridgeConfigurationAction()
             case 4:
-                onSelectBaseNodeAction()
+                onSelectNetworkAction()
             case 5:
+                onSelectBaseNodeAction()
+            case 6:
                 onDeleteWalletAction()
             default:
                 break

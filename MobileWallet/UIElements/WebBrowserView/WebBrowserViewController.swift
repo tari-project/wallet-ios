@@ -107,7 +107,7 @@ class WebBrowserViewController: DynamicThemeViewController {
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
 
-        view.backgroundColor = theme.backgrounds.primary
+        mainView.backgroundColor = theme.backgrounds.primary
         webView.backgroundColor = theme.backgrounds.secondary
         backButton.tintColor = theme.icons.default
         forwardButton.tintColor = theme.icons.default
@@ -186,7 +186,7 @@ extension WebBrowserViewController {
 
     private func setupNavigationBar() {
 
-        view.addSubview(navigationBar)
+        mainView.addSubview(navigationBar)
 
         navigationBar.backButtonType = modalPresentationStyle == .popover ? .close : .none
         navigationBar.update(rightButton: NavigationBar.ButtonModel(image: Theme.shared.images.share, callback: { [weak self] in self?.showShareDialog() }))
@@ -204,7 +204,7 @@ extension WebBrowserViewController {
         navigationPanel.backgroundColor = .clear
         navigationPanel.clipsToBounds = true
 
-        view.addSubview(navigationPanel)
+        mainView.addSubview(navigationPanel)
         navigationPanel.translatesAutoresizingMaskIntoConstraints = false
         navigationPanel.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         navigationPanelHeightConstraint = navigationPanel.heightAnchor.constraint(equalToConstant: 56.0)
@@ -237,8 +237,8 @@ extension WebBrowserViewController {
         webView.navigationDelegate = self
         webView.scrollView.delegate = self
 
-        view.addSubview(webView)
-        view.bringSubviewToFront(navigationBar)
+        mainView.addSubview(webView)
+        mainView.bringSubviewToFront(navigationBar)
 
         webView.translatesAutoresizingMaskIntoConstraints = false
         webView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
@@ -250,7 +250,7 @@ extension WebBrowserViewController {
     private func setupGrabber() {
         if modalPresentationStyle != .popover { return }
 
-        view.addSubview(grabber)
+        mainView.addSubview(grabber)
 
         grabber.heightAnchor.constraint(equalToConstant: 5).isActive = true
         grabber.widthAnchor.constraint(equalToConstant: 44).isActive = true

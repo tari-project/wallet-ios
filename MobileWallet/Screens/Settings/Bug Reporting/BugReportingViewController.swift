@@ -41,12 +41,11 @@
 import UIKit
 import Combine
 
-final class BugReportingViewController: UIViewController {
+final class BugReportingViewController: SecureViewController<BugReportingView> {
 
     // MARK: - Properties
 
     private let model: BugReportingModel
-    private let mainView = BugReportingView()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -61,10 +60,6 @@ final class BugReportingViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

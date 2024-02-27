@@ -41,11 +41,10 @@
 import UIKit
 import Combine
 
-final class RestoreWalletFromSeedsViewController: SettingsParentViewController, OverlayPresentable {
+final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWalletFromSeedsView>, OverlayPresentable {
 
     // MARK: - Properties
 
-    private let mainView = RestoreWalletFromSeedsView()
     private let model = RestoreWalletFromSeedsModel()
     private var cancelables = Set<AnyCancellable>()
 
@@ -62,26 +61,6 @@ final class RestoreWalletFromSeedsViewController: SettingsParentViewController, 
     }
 
     // MARK: - Setups
-
-    override func setupViews() {
-        super.setupViews()
-        setupConstraints()
-    }
-
-    private func setupConstraints() {
-
-        view.addSubview(mainView)
-        mainView.translatesAutoresizingMaskIntoConstraints = false
-
-        let constraints = [
-            mainView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            mainView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mainView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
 
     private func setupFeedbacks() {
 

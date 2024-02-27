@@ -1,10 +1,10 @@
-//  SettingsParentViewController.swift
+//  SecurityManager.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 28.05.2020
+	Created by Adrian Truszczyński on 27/02/2024
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -38,50 +38,27 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-import TariCommon
+import Combine
 
-class SettingsParentViewController: DynamicThemeViewController {
+final class SecurityManager {
 
-    @View private(set) var navigationBar: NavigationBar = {
-        let view = NavigationBar()
-        view.title = localized("settings.title")
-        return view
-    }()
+    // MARK: - Properties
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        setupConstraints()
-        setupViews()
+    static let shared = SecurityManager()
+    @Published var areScreenshotsDisabled: Bool = GroupUserDefaults.areScreenshotsDisabled ?? true
+    private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - Initialisers
+
+    private init() {
+        setupCallbacks()
     }
 
-    private func setupConstraints() {
+    // MARK: - Setups
 
-        mainView.addSubview(navigationBar)
-
-        let constraints = [
-            navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
-            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
+    private func setupCallbacks() {
+        $areScreenshotsDisabled
+            .sink { GroupUserDefaults.areScreenshotsDisabled = $0 }
+            .store(in: &cancellables)
     }
-
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-        mainView.backgroundColor = theme.backgrounds.primary
-    }
-}
-
-extension SettingsParentViewController {
-
-    @objc func setupViews() {
-        setupNavigationBar()
-        setupNavigationBarSeparator()
-    }
-
-    @objc func setupNavigationBar() {}
-    @objc func setupNavigationBarSeparator() {}
 }

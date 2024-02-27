@@ -38,16 +38,14 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import Combine
 import TariCommon
 
-final class LogViewController: UIViewController {
+final class LogViewController: SecureViewController<LogView> {
 
     // MARK: - Properties
 
     private let model: LogModel
-    private let mainView = LogView()
     private var tableDataSource: UITableViewDiffableDataSource<Int, LogLineModel>?
     private var cancellables = Set<AnyCancellable>()
 
@@ -63,10 +61,6 @@ final class LogViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

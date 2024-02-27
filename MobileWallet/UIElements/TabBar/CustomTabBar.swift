@@ -38,9 +38,11 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import TariCommon
 
 final class CustomTabBar: DynamicThemeTabBar {
+
+    @View private var secureContentView = SecureWrapperView<UIView>()
 
     override init() {
         super.init()
@@ -58,6 +60,27 @@ final class CustomTabBar: DynamicThemeTabBar {
         layer.shadowRadius = 8
         layer.shadowOpacity = 0.25
         layer.masksToBounds = false
+
+        addSubview(secureContentView)
+
+        let constraints = [
+            secureContentView.topAnchor.constraint(equalTo: topAnchor),
+            secureContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            secureContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            secureContentView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ]
+
+        NSLayoutConstraint.activate(constraints)
+    }
+
+    override func addSubview(_ view: UIView) {
+
+        guard view != secureContentView else {
+            super.addSubview(view)
+            return
+        }
+
+        secureContentView.view.addSubview(view)
     }
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {
@@ -72,11 +95,13 @@ final class CustomTabBar: DynamicThemeTabBar {
 
         let appearance = UITabBarAppearance()
         appearance.configureWithOpaqueBackground()
-        appearance.backgroundColor = theme.backgrounds.primary
+        appearance.backgroundColor = .clear
         appearance.stackedLayoutAppearance.normal.iconColor = theme.icons.default
         appearance.stackedLayoutAppearance.selected.iconColor = theme.icons.active
 
         standardAppearance = appearance
         scrollEdgeAppearance = appearance
+
+        secureContentView.view.backgroundColor = theme.backgrounds.primary
     }
 }

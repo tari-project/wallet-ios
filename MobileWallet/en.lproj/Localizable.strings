@@ -213,6 +213,7 @@
 "settings.last_successful_backup.with_param" = "Last successful backup: %@";
 
 "settings.item.select_theme" = "Select Theme";
+"settings.item.screen_recording_settings" = "Screen Recording";
 "settings.item.bluetooth_settings" = "Bluetooth Settings";
 "settings.item.wallet_backups" = "Wallet Backups";
 "settings.item.data_collection" = "Data Collection";
@@ -693,6 +694,14 @@
 "theme_switcher.element.title.light" = "Light";
 "theme_switcher.element.title.dark" = "Dark";
 "theme_switcher.element.title.purple" = "Purple";
+
+/* Screen Recording Settings */
+
+"screen_recording.title" = "Screen Recording";
+"screen_recording.label.description" = "Screen recording and taking screenshots can capture your wallet data and transactions. To keep your wallet data private, you can disable this setting.\n\nNote: Screen recording and screenshots will always be disabled for the Seed Phrase screen.";
+"screen_recording.label.confirmation" = "Allow screen recording";
+"screen_recording.pop_up.confirmation.title" = "Screen recording will be enabled";
+"screen_recording.pop_up.confirmation.message" = "You will be able to record your screen. Are you sure you want to proceed?";
 
 /* Bluetooth Settings */
 

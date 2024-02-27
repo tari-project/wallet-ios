@@ -41,20 +41,14 @@
 import UIKit
 import Combine
 
-final class OnboardingViewController: UIViewController {
+final class OnboardingViewController: SecureViewController<OnboardingView> {
 
     // MARK: - Properties
 
-    private let mainView = OnboardingView()
     private let pageViewController = PageViewController()
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

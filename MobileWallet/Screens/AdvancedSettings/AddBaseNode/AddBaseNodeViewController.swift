@@ -41,11 +41,10 @@
 import UIKit
 import Combine
 
-final class AddBaseNodeViewController: SettingsParentViewController {
+final class AddBaseNodeViewController: SecureViewController<AddBaseNodeView> {
 
     // MARK: - Properties
 
-    private let mainView = AddBaseNodeView()
     private let model = AddBaseNodeModel()
     private var cancelables: Set<AnyCancellable> = []
 
@@ -62,27 +61,6 @@ final class AddBaseNodeViewController: SettingsParentViewController {
     }
 
     // MARK: - Setups
-
-    override func setupViews() {
-        super.setupViews()
-
-        view.addSubview(mainView)
-        mainView.translatesAutoresizingMaskIntoConstraints = false
-
-        let constraints = [
-            mainView.topAnchor.constraint(equalTo: navigationBar.bottomAnchor),
-            mainView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            mainView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            mainView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
-
-    override func setupNavigationBar() {
-        super.setupNavigationBar()
-        navigationBar.title = localized("add_base_node.title")
-    }
 
     private func setupFeedbacks() {
 
