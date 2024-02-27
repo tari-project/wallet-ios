@@ -129,7 +129,8 @@ final class TransactionFormatter {
 
     private func amountViewModel(transaction: Transaction) throws -> AmountBadge.ViewModel {
 
-        let amount = try MicroTari(transaction.amount).formattedWithNegativeOperator
+        let tariAmount = try MicroTari(transaction.amount)
+        let amount = try transaction.isOutboundTransaction ? tariAmount.formattedWithNegativeOperator : tariAmount.formattedWithOperator
 
         let valueType: AmountBadge.ValueType
 
