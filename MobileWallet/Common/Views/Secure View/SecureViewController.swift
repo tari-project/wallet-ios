@@ -1,10 +1,10 @@
-//  SettingsParentViewController.swift
+//  SecureViewController.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 28.05.2020
+	Created by Adrian Truszczyński on 20/02/2024
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -39,49 +39,23 @@
 */
 
 import UIKit
-import TariCommon
 
-class SettingsParentViewController: DynamicThemeViewController {
+class SecureViewController<MainView: UIView>: UIViewController {
 
-    @View private(set) var navigationBar: NavigationBar = {
-        let view = NavigationBar()
-        view.title = localized("settings.title")
-        return view
-    }()
+    // MARK: - Views
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        setupConstraints()
-        setupViews()
+    var mainView: MainView { secureWrapper.view }
+
+    var screenshotPreventionStatus: ScreenshotPreventionStatus {
+        get { secureWrapper.screenshotPreventionStatus }
+        set { secureWrapper.screenshotPreventionStatus = newValue }
     }
 
-    private func setupConstraints() {
+    private let secureWrapper = SecureWrapperView<MainView>()
 
-        mainView.addSubview(navigationBar)
+    // MARK: - View lifecycle
 
-        let constraints = [
-            navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
-            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
+    override func loadView() {
+        view = secureWrapper
     }
-
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-        mainView.backgroundColor = theme.backgrounds.primary
-    }
-}
-
-extension SettingsParentViewController {
-
-    @objc func setupViews() {
-        setupNavigationBar()
-        setupNavigationBarSeparator()
-    }
-
-    @objc func setupNavigationBar() {}
-    @objc func setupNavigationBarSeparator() {}
 }

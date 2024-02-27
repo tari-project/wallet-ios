@@ -41,13 +41,11 @@
 import UIKit
 import Combine
 
-final class UTXOsWalletViewController: UIViewController {
+final class UTXOsWalletViewController: SecureViewController<UTXOsWalletView> {
 
     // MARK: - Properties
 
     private let model: UTXOsWalletModel
-    private let mainView = UTXOsWalletView()
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -62,10 +60,6 @@ final class UTXOsWalletViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

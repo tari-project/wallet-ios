@@ -41,13 +41,11 @@
 import UIKit
 import Combine
 
-final class SeedWordsListViewController: UIViewController {
+final class SeedWordsListViewController: SecureViewController<SeedWordsListView> {
 
     // MARK: - Properties
 
-    private let mainView = SeedWordsListView()
     private let model: SeedWordsListModel
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -64,14 +62,11 @@ final class SeedWordsListViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    override func loadView() {
-        view = mainView
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
         model.fetchSeedWords()
+        screenshotPreventionStatus = .enforced
     }
 
     override func viewDidAppear(_ animated: Bool) {

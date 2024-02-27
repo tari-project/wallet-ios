@@ -46,6 +46,7 @@ private enum UserDefaultName: String, CaseIterable {
     case walletSettings
     case userSettings
     case isTrackingEnabled
+    case areScreenshotsDisabled
 }
 
 enum GroupUserDefaults {
@@ -54,6 +55,7 @@ enum GroupUserDefaults {
     @UserDefault(key: UserDefaultName.walletSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var walletSettings: [WalletSettings]?
     @UserDefault(key: UserDefaultName.userSettings.rawValue, suiteName: TariSettings.groupIndentifier) static var userSettings: UserSettings?
     @UserDefault(key: UserDefaultName.isTrackingEnabled.rawValue, suiteName: TariSettings.groupIndentifier) static var isTrackingEnabled: Bool?
+    @UserDefault(key: UserDefaultName.areScreenshotsDisabled.rawValue, suiteName: TariSettings.groupIndentifier) static var areScreenshotsDisabled: Bool?
 }
 
 // MARK: - Tor Manager User Defaults

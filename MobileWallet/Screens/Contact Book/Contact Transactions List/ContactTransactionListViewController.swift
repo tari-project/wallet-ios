@@ -41,12 +41,11 @@
 import UIKit
 import Combine
 
-final class ContactTransactionListViewController: UIViewController {
+final class ContactTransactionListViewController: SecureViewController<ContactTransactionListView> {
 
     // MARK: - Properties
 
     private let model: ContactTransactionListModel
-    private let mainView = ContactTransactionListView()
 
     private var cancellables = Set<AnyCancellable>()
 
@@ -62,10 +61,6 @@ final class ContactTransactionListViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

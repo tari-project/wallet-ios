@@ -41,7 +41,7 @@
 import UIKit
 import Combine
 
-final class AddContactViewController: UIViewController {
+final class AddContactViewController: SecureViewController<AddContactView> {
 
     enum NavigationActionType {
         case moveToDetails
@@ -51,7 +51,6 @@ final class AddContactViewController: UIViewController {
     // MARK: - Properties
 
     private let model: AddContactModel
-    private let mainView = AddContactView()
 
     private let navigationActionType: NavigationActionType
     private var cancellables = Set<AnyCancellable>()
@@ -69,10 +68,6 @@ final class AddContactViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

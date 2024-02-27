@@ -264,7 +264,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     override func update(theme: ColorTheme) {
         super.update(theme: theme)
-        view.backgroundColor = theme.backgrounds.primary
+        mainView.backgroundColor = theme.backgrounds.primary
         oneSidedPaymentLabel.textColor = theme.text.heading
         oneSidedPaymentSwitch.onTintColor = theme.brand.purple
         oneSidedPaymentHelpButton.tintColor = theme.text.body
@@ -531,7 +531,7 @@ extension AddAmountViewController {
         // navigationBar
         navigationBar.isSeparatorVisible = false
         navigationBar.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(navigationBar)
+        mainView.addSubview(navigationBar)
         navigationBar.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
@@ -542,7 +542,7 @@ extension AddAmountViewController {
         emojiIdView.centerYAnchor.constraint(equalTo: navigationBar.contentView.centerYAnchor).isActive = true
 
         // contiue button
-        view.addSubview(continueButton)
+        mainView.addSubview(continueButton)
         continueButton.translatesAutoresizingMaskIntoConstraints = false
         continueButton.leftAnchor.constraint(
             equalTo: view.safeAreaLayoutGuide.leftAnchor,
@@ -575,7 +575,7 @@ extension AddAmountViewController {
         // amount container
         let amountContainer = UIView()
         amountContainer.backgroundColor = .clear
-        view.addSubview(amountContainer)
+        mainView.addSubview(amountContainer)
         amountContainer.translatesAutoresizingMaskIntoConstraints = false
         amountContainer.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
         amountContainer.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
@@ -585,7 +585,7 @@ extension AddAmountViewController {
         let amountHeight: CGFloat = isSmallScreen ? 50.0 : 75.0
 
         // amount label
-        view.addSubview(amountLabel)
+        mainView.addSubview(amountLabel)
         amountLabel.animation = .type
         amountLabel.textAlignment = .center(inset: -30)
         amountLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -595,7 +595,7 @@ extension AddAmountViewController {
         amountLabel.heightAnchor.constraint(equalToConstant: amountHeight).isActive = true
 
         // warning view
-        view.addSubview(warningView)
+        mainView.addSubview(warningView)
         warningView.isHidden = true
         warningView.translatesAutoresizingMaskIntoConstraints = false
         warningView.widthAnchor.constraint(equalTo: view.safeAreaLayoutGuide.widthAnchor, constant: -50).isActive = true
@@ -655,7 +655,7 @@ extension AddAmountViewController {
 
         // tx fee
         txViewContainer.alpha = 0.0
-        view.addSubview(txViewContainer)
+        mainView.addSubview(txViewContainer)
         txViewContainer.translatesAutoresizingMaskIntoConstraints = false
         txViewContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         txViewContainer.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 12).isActive = true
@@ -677,7 +677,7 @@ extension AddAmountViewController {
     }
 
     private func setupKeypad() {
-        view.addSubview(amountKeyboardView)
+        mainView.addSubview(amountKeyboardView)
 
         let constraints = [
             amountKeyboardView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -701,7 +701,7 @@ extension AddAmountViewController {
         oneSidedPaymentLabel.minimumScaleFactor = 0.5
         oneSidedPaymentLabel.adjustsFontSizeToFitWidth = true
 
-        view.addSubview(oneSidedPaymentStackView)
+        mainView.addSubview(oneSidedPaymentStackView)
         [oneSidedPaymentLabel, oneSidedPaymentSwitch, oneSidedPaymentHelpButton].forEach(oneSidedPaymentStackView.addArrangedSubview)
 
         let margin = isSmallScreen ? 8.0 : 20.0
@@ -725,7 +725,7 @@ extension AddAmountViewController {
 
     private func setupSliderBar() {
 
-        view.addSubview(sliderBar)
+        mainView.addSubview(sliderBar)
 
         let constraints = [
             sliderBar.topAnchor.constraint(equalTo: continueButton.topAnchor),

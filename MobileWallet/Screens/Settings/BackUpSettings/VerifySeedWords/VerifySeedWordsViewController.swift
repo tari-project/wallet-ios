@@ -41,13 +41,11 @@
 import UIKit
 import Combine
 
-final class VerifySeedWordsViewController: UIViewController {
+final class VerifySeedWordsViewController: SecureViewController<VerifySeedWordsView> {
 
     // MARK: - Properties
 
-    private let mainView = VerifySeedWordsView()
     private let model: VerifySeedWordsModel
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -62,10 +60,6 @@ final class VerifySeedWordsViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

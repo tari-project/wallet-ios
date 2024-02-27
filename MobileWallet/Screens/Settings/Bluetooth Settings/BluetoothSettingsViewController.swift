@@ -41,12 +41,11 @@
 import UIKit
 import Combine
 
-final class BluetoothSettingsViewController: UIViewController {
+final class BluetoothSettingsViewController: SecureViewController<BluetoothSettingsView> {
 
     // MARK: - Properties
 
     private let model: BluetoothSettingsModel
-    private let mainView = BluetoothSettingsView()
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -61,10 +60,6 @@ final class BluetoothSettingsViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -41,7 +41,7 @@
 import UIKit
 import Combine
 
-final class TransactionsViewController: UIViewController {
+final class TransactionsViewController: SecureViewController<TransactionsView> {
 
     fileprivate enum Page: Int {
         case send
@@ -50,7 +50,6 @@ final class TransactionsViewController: UIViewController {
 
     // MARK: - Properties
 
-    private let mainView = TransactionsView()
     private let pagerViewController = TariPagerViewController()
     private let addRecipientViewController = AddRecipientConstructor.buildScene()
     private let requestTariAmountViewController = RequestTariAmountViewController()
@@ -58,10 +57,6 @@ final class TransactionsViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

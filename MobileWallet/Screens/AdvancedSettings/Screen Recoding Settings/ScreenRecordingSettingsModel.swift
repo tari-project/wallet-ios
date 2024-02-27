@@ -1,10 +1,10 @@
-//  SettingsParentViewController.swift
+//  ScreenRecordingSettingsModel.swift
 
 /*
 	Package MobileWallet
-	Created by S.Shovkoplyas on 28.05.2020
+	Created by Adrian Truszczyński on 23/02/2024
 	Using Swift 5.0
-	Running on macOS 10.15
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -38,50 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
-import TariCommon
+import Combine
 
-class SettingsParentViewController: DynamicThemeViewController {
+final class ScreenRecordingSettingsModel {
 
-    @View private(set) var navigationBar: NavigationBar = {
-        let view = NavigationBar()
-        view.title = localized("settings.title")
-        return view
-    }()
+    // MARK: - View Model
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        navigationController?.setNavigationBarHidden(true, animated: false)
-        setupConstraints()
-        setupViews()
+    @Published var areScreenshotsEnabled: Bool = !SecurityManager.shared.areScreenshotsDisabled {
+        didSet { SecurityManager.shared.areScreenshotsDisabled = !areScreenshotsEnabled }
     }
-
-    private func setupConstraints() {
-
-        mainView.addSubview(navigationBar)
-
-        let constraints = [
-            navigationBar.topAnchor.constraint(equalTo: view.topAnchor),
-            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ]
-
-        NSLayoutConstraint.activate(constraints)
-    }
-
-    override func update(theme: ColorTheme) {
-        super.update(theme: theme)
-        mainView.backgroundColor = theme.backgrounds.primary
-    }
-}
-
-extension SettingsParentViewController {
-
-    @objc func setupViews() {
-        setupNavigationBar()
-        setupNavigationBarSeparator()
-    }
-
-    @objc func setupNavigationBar() {}
-    @objc func setupNavigationBarSeparator() {}
 }

@@ -41,11 +41,10 @@
 import UIKit
 import Combine
 
-final class ContactDetailsViewController: UIViewController {
+final class ContactDetailsViewController: SecureViewController<ContactDetailsView> {
 
     // MARK: - Properties
 
-    private let mainView = ContactDetailsView()
     private let model: ContactDetailsModel
 
     private var needUpdate = false
@@ -63,10 +62,6 @@ final class ContactDetailsViewController: UIViewController {
     }
 
     // MARK: - View lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -56,6 +56,7 @@ final class RotaryMenuOverlay: UIViewController {
     }()
 
     private let contactID: UUID
+    private lazy var secureWrapperView = SecureWrapperView<RotaryMenuOverlayView>(mainView: mainView)
 
     // MARK: - Initialisers
 
@@ -79,7 +80,7 @@ final class RotaryMenuOverlay: UIViewController {
     // MARK: - View Lifecycle
 
     override func loadView() {
-        view = mainView
+        view = secureWrapperView
     }
 
     override func viewDidLoad() {

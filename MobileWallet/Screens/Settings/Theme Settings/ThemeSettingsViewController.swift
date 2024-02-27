@@ -41,13 +41,11 @@
 import UIKit
 import Combine
 
-final class ThemeSettingsViewController: UIViewController {
+final class ThemeSettingsViewController: SecureViewController<ThemeSettingsView> {
 
     // MARK: - Properties
 
-    private let mainView = ThemeSettingsView()
     private let model: ThemeSettingsModel
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initalisers
@@ -62,10 +60,6 @@ final class ThemeSettingsViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

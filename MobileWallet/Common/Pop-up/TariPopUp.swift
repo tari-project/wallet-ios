@@ -38,12 +38,13 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
 final class TariPopUp: DynamicThemeView {
 
     // MARK: - Subviews
+
+    @View private var secureContentView = SecureWrapperView<UIView>()
 
     @View private var backgroundView: UIView = {
         let view = UIView()
@@ -74,12 +75,17 @@ final class TariPopUp: DynamicThemeView {
 
     private func setupConstraints(headerSection: UIView?, contentSection: UIView?, buttonsSection: UIView?) {
 
-        addSubview(backgroundView)
+        addSubview(secureContentView)
+        secureContentView.view.addSubview(backgroundView)
 
-        let backgroundViewTopConstraint = backgroundView.topAnchor.constraint(equalTo: topAnchor)
+        let backgroundViewTopConstraint = backgroundView.topAnchor.constraint(equalTo: secureContentView.view.topAnchor)
         self.backgroundViewTopConstraint = backgroundViewTopConstraint
 
         var constraints = [
+            secureContentView.topAnchor.constraint(equalTo: topAnchor),
+            secureContentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            secureContentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            secureContentView.bottomAnchor.constraint(equalTo: bottomAnchor),
             backgroundViewTopConstraint,
             backgroundView.leadingAnchor.constraint(equalTo: leadingAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -92,21 +98,21 @@ final class TariPopUp: DynamicThemeView {
             constraints += makeConstraints(forView: headerSection, viewOnTop: viewOnTop)
             viewOnTop = headerSection
             headerSection.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(headerSection)
+            secureContentView.view.addSubview(headerSection)
         }
 
         if let contentSection = contentSection {
             constraints += makeConstraints(forView: contentSection, viewOnTop: viewOnTop)
             viewOnTop = contentSection
             contentSection.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(contentSection)
+            secureContentView.view.addSubview(contentSection)
         }
 
         if let buttonsSection = buttonsSection {
             constraints += makeConstraints(forView: buttonsSection, viewOnTop: viewOnTop)
             viewOnTop = buttonsSection
             buttonsSection.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(buttonsSection)
+            secureContentView.view.addSubview(buttonsSection)
         }
 
         guard let viewOnTop = viewOnTop else { return }

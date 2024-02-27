@@ -1,10 +1,10 @@
-//  AboutViewController.swift
+//  ScreenRecordingSettingsViewController.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 26/05/2022
+	Created by Adrian Truszczyński on 23/02/2024
 	Using Swift 5.0
-	Running on macOS 12.3
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -38,40 +38,56 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import Combine
 
-final class AboutViewController: SecureViewController<AboutView> {
+final class ScreenRecordingSettingsViewController: SecureViewController<ScreenRecordingSettingsView> {
 
-    private let model = AboutModel()
+    // MARK: - Properties
+
+    private let model = ScreenRecordingSettingsModel()
     private var cancellables = Set<AnyCancellable>()
+
+    // MARK: - View Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setupCallbacks()
-        model.generateData()
     }
 
-    // MARK: - Setups
+    // MARK: - Settings
 
     private func setupCallbacks() {
 
-        model.$rowModels
-            .map { $0.map { AboutView.CellModel(icon: $0.icon, text: $0.title) }}
-            .sink { [weak self] in self?.mainView.cellModels = $0 }
+        model.$areScreenshotsEnabled
+            .removeDuplicates()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] in self?.mainView.update(switchValue: $0) }
             .store(in: &cancellables)
 
-        model.$selectedURL
-            .compactMap { $0 }
-            .sink { WebBrowserPresenter.open(url: $0) }
-            .store(in: &cancellables)
+        mainView.onSwitchValueChange = { [weak self] in
 
-        mainView.onTapOnCreativeCommonsButton = { [weak self] in
-            self?.model.selectCrativeCommonButton()
-        }
+            guard self?.model.areScreenshotsEnabled != $0 else { return }
 
-        mainView.onSelectRow = { [weak self] in
-            self?.model.select(index: $0)
+            if $0 {
+                self?.showConfirmationDialog()
+            } else {
+                self?.model.areScreenshotsEnabled = false
+            }
         }
+    }
+
+    private func showConfirmationDialog() {
+
+        let model = PopUpDialogModel(
+            title: localized("screen_recording.pop_up.confirmation.title"),
+            message: localized("screen_recording.pop_up.confirmation.message"),
+            buttons: [
+                PopUpDialogButtonModel(title: localized("common.confirm"), type: .normal, callback: { [weak self] in self?.model.areScreenshotsEnabled = true }),
+                PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { [weak self] in self?.mainView.update(switchValue: false) })
+            ],
+            hapticType: .none
+        )
+
+        PopUpPresenter.showPopUp(model: model)
     }
 }

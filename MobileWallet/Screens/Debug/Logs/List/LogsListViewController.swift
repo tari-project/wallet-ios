@@ -41,11 +41,10 @@
 import UIKit
 import Combine
 
-final class LogsListViewController: UIViewController {
+final class LogsListViewController: SecureViewController<LogsListView> {
 
     // MARK: - Properties
 
-    private let mainView = LogsListView()
     private let model: LogsListModel
     private var tableDataSource: UITableViewDiffableDataSource<Int, String>?
     private var cancellables = Set<AnyCancellable>()
@@ -62,10 +61,6 @@ final class LogsListViewController: UIViewController {
     }
 
     // MARK: - View Lifecycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -41,13 +41,11 @@
 import UIKit
 import Combine
 
-final class TransactionHistoryViewController: UIViewController {
+final class TransactionHistoryViewController: SecureViewController<TransactionHistoryView> {
 
     // MARK: - Properties
 
-    private let mainView = TransactionHistoryView()
     private let model: TransactionHistoryModel
-
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Initialisers
@@ -62,10 +60,6 @@ final class TransactionHistoryViewController: UIViewController {
     }
 
     // MARK: - View Life Cycle
-
-    override func loadView() {
-        view = mainView
-    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
