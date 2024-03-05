@@ -68,6 +68,8 @@ final class TorManager {
     var isUsingCustomBridges: Bool { TorManagerUserDefaults.isUsingCustomBridges ?? false }
     var bridges: String? { TorManagerUserDefaults.torBridges }
 
+    private let logPath: String
+
     private var backgroundTaskID: UIBackgroundTaskIdentifier = .invalid
     private var controller: TorController?
     private var queuedAction: Action? {
@@ -104,7 +106,8 @@ final class TorManager {
 
     // MARK: - Init
 
-    init() {
+    init(logPath: String) {
+        self.logPath = logPath
         setupCallbacks()
     }
 
@@ -430,6 +433,7 @@ final class TorManager {
         var arguments: [String] = makeBaseArguments()
         arguments += makeBridgeArguments()
         arguments += makeIpArguments()
+        arguments += makeLogsArguments()
 
         let configuration = TorConfiguration()
         configuration.cookieAuthentication = true
@@ -440,21 +444,13 @@ final class TorManager {
     }
 
     private func makeBaseArguments() -> [String] {
-
-        #if DEBUG
-        let logLocation = "notice stdout"
-        #else
-        let logLocation = "notice file /dev/null"
-        #endif
-
-        return [
+        [
             "--allow-missing-torrc",
             "--ignore-missing-torrc",
             "--clientonly", "1",
             "--AvoidDiskWrites", "1",
             "--socksport", "39059",
             "--controlport", "\(socketHost):\(port)",
-            "--log", logLocation,
             "--clientuseipv6", "1",
             "--ClientTransportPlugin", "obfs4 socks5 127.0.0.1:47351",
             "--ClientTransportPlugin", "meek_lite socks5 127.0.0.1:47352",
@@ -483,6 +479,17 @@ final class TorManager {
                 "--ClientPreferIPv6ORPort", "auto",
                 "--ClientUseIPv4", "1"
             ]
+        }
+
+        return arguments
+    }
+
+    private func makeLogsArguments() -> [String] {
+
+        var arguments: [String] = ["--log", "notice file \(logPath)"]
+
+        if TariSettings.shared.environment == .debug {
+            arguments += ["--log", "notice stdout"]
         }
 
         return arguments
