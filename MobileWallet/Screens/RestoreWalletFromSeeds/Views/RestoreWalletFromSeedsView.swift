@@ -85,7 +85,7 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
     // MARK: - Setups
 
     private func setupViews() {
-        navigationBar.title = localized("settings.title") // TODO: Check
+        navigationBar.title = localized("restore_from_seed_words.title")
     }
 
     private func setupConstraints() {
