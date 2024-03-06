@@ -40,17 +40,13 @@
 
 import TariCommon
 
-final class ScrollableLabel: UIView {
-
-    // MARK: - Constants
-
-    private let margin = 12.0
+final class ScrollableLabel: DynamicThemeView {
 
     // MARK: - Subviews
 
     @View var label: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.searchContactsInputBoxText
+        view.font =  UIFont.Avenir.roman.withSize(14.0)
         return view
     }()
 
@@ -68,10 +64,19 @@ final class ScrollableLabel: UIView {
         return layer
     }()
 
+    // MARK: - Properties
+
+    var margin: CGFloat = 12.0 {
+        didSet { updateLayout() }
+    }
+
+    private var leadingLabelConstraint: NSLayoutConstraint?
+    private var trailingLabelConstraint: NSLayoutConstraint?
+
     // MARK: - Initialisers
 
-    init() {
-        super.init(frame: .zero)
+    override init() {
+        super.init()
         setupViews()
         setupConstraints()
     }
@@ -83,7 +88,6 @@ final class ScrollableLabel: UIView {
     // MARK: - Setups
 
     private func setupViews() {
-        backgroundColor = .white
         layer.mask = maskLayer
     }
 
@@ -92,17 +96,19 @@ final class ScrollableLabel: UIView {
         scrollView.addSubview(label)
         addSubview(scrollView)
 
+        let leadingLabelConstraint = label.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: margin)
+        let trailingLabelConstraint = label.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -margin)
+
         let constraints = [
             scrollView.topAnchor.constraint(equalTo: topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: bottomAnchor),
             label.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            label.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: margin),
-            label.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -margin),
+            leadingLabelConstraint,
+            trailingLabelConstraint,
             label.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-            label.heightAnchor.constraint(equalTo: heightAnchor),
-            heightAnchor.constraint(equalToConstant: 46.0)
+            label.heightAnchor.constraint(equalTo: heightAnchor)
         ]
 
         NSLayoutConstraint.activate(constraints)
@@ -117,5 +123,12 @@ final class ScrollableLabel: UIView {
         let startPoint = margin / bounds.width
         let endPoint = 1.0 - startPoint
         maskLayer.locations = [0.0, NSNumber(value: startPoint), NSNumber(value: endPoint), 1.0]
+    }
+
+    // MARK: - Updates
+
+    private func updateLayout() {
+        leadingLabelConstraint?.constant = margin
+        trailingLabelConstraint?.constant = margin
     }
 }

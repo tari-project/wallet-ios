@@ -343,6 +343,7 @@ enum IconsImages {
     static var magnifyingGlass: UIImage? { UIImage(named: "Icons/Magnifying Glass") }
     static var profile: UIImage? { UIImage(named: "Icons/Profile") }
     static var send: UIImage? { UIImage(named: "Icons/Send") }
+    static var shieldCheckmark: UIImage? { UIImage(named: "Icons/Shield Checkmark") }
     static var tariGem: UIImage? { UIImage(named: "Icons/Tari Gem") }
     static var qr: UIImage? { UIImage(named: "Icons/QR") }
     static var unlink: UIImage? { UIImage(named: "Icons/Unlink") }

@@ -87,9 +87,8 @@ final class HomeModel {
             .sink { [weak self] _ in self?.updateAvatar() }
             .store(in: &cancellables)
 
-        let transactionsPublisher = Tari.shared.transactions.all
+        let transactionsPublisher = Tari.shared.transactions.$all
             .map { $0.filterDuplicates() }
-            .tryMap { try $0.sorted { try $0.timestamp > $1.timestamp }}
             .replaceError(with: [Transaction]())
 
         Publishers.CombineLatest(transactionsPublisher, onContactUpdated)
