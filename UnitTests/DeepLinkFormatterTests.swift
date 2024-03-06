@@ -52,7 +52,7 @@ final class DeepLinkFormatterTests: XCTestCase {
 
     func testDeeplinkWithInvalidNetworkName() {
 
-        let inputDeeplink = URL(string: "tari://invalid_network/transactions/send?publicKey=testpubkey&amount=123&note=Hello%20World!")!
+        let inputDeeplink = URL(string: "tari://invalid_network/transactions/send?tariAddress=testpubkey&amount=123&note=Hello%20World!")!
 
         var result: TransactionsSendDeeplink?
         var cachedError: DeepLinkError!
@@ -74,7 +74,7 @@ final class DeepLinkFormatterTests: XCTestCase {
 
     func testDeeplinkWithInvalidCommandName() {
 
-        let inputDeeplink = URL(string: "tari://test_network/invalid_command/send?publicKey=testpubkey&amount=123&note=Hello%20World!")!
+        let inputDeeplink = URL(string: "tari://test_network/invalid_command/send?tariAddress=testpubkey&amount=123&note=Hello%20World!")!
 
         var result: TransactionsSendDeeplink?
         var cachedError: DeepLinkError!
@@ -96,7 +96,7 @@ final class DeepLinkFormatterTests: XCTestCase {
 
     func testDeeplinkWithInvalidValue() {
 
-        let inputDeeplink = URL(string: "tari://test_network/transactions/send?publicKey=testpubkey&amount=-123&note=Hello%20World!")!
+        let inputDeeplink = URL(string: "tari://test_network/transactions/send?tariAddress=testpubkey&amount=-123&note=Hello%20World!")!
         let invalidKey = "amount"
 
         var result: TransactionsSendDeeplink?
@@ -121,7 +121,7 @@ final class DeepLinkFormatterTests: XCTestCase {
 
     func testValidTransactionsSendDeeplinkDecoding() {
 
-        let inputDeeplink = URL(string: "tari://test_network/transactions/send?publicKey=testpubkey&amount=123&note=Hello%20World!")!
+        let inputDeeplink = URL(string: "tari://test_network/transactions/send?tariAddress=testpubkey&amount=123&note=Hello%20World!")!
         let expectedResult = TransactionsSendDeeplink(receiverAddress: "testpubkey", amount: 123, note: "Hello World!")
 
         let result = try! DeepLinkFormatter.model(type: TransactionsSendDeeplink.self, deeplink: inputDeeplink)
@@ -133,8 +133,8 @@ final class DeepLinkFormatterTests: XCTestCase {
 
     func testValidTransactionsSendDeeplinkEncoding() {
 
-        let inputModel = TransactionsSendDeeplink(receiverAddress: "testpubkey", amount: 123, note: "Hello World!")
-        let expectedResult = URL(string: "tari://test_network/transactions/send?publicKey=testpubkey&amount=123&note=Hello%20World!")!
+        let inputModel = TransactionsSendDeeplink(receiverAddress: "testaddress", amount: 123, note: "Hello World!")
+        let expectedResult = URL(string: "tari://test_network/transactions/send?tariAddress=testaddress&amount=123&note=Hello%20World!")!
 
         let result = try! DeepLinkFormatter.deeplink(model: inputModel)
 
@@ -144,7 +144,7 @@ final class DeepLinkFormatterTests: XCTestCase {
     func testTransactionsSendDeeplinkDecodingWithMissingPublicKey() {
 
         let inputDeeplink = URL(string: "tari://test_network/transactions/send?amount=123&note=Hello%20World!")!
-        let invalidKey = "publicKey"
+        let invalidKey = "tariAddress"
 
         var result: TransactionsSendDeeplink?
         var cachedError: DeepLinkError!

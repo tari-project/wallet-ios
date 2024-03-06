@@ -45,7 +45,7 @@ final class NetworkManagerTests: XCTestCase {
 
     // MARK: - Properties
 
-    private let defaultNetwork = TariNetwork.esmeralda
+    private let defaultNetwork = TariNetwork.nextnet
     private var networkManager: NetworkManager!
 
     // MARK: - Setups
