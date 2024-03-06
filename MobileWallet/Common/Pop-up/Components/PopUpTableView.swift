@@ -72,6 +72,7 @@ final class PopUpTableView: DynamicThemeTableView {
 
     private func setupConstraints() {
         heightConstraint = heightAnchor.constraint(equalToConstant: 0.0)
+        heightConstraint?.priority = .defaultHigh
         heightConstraint?.isActive = true
     }
 

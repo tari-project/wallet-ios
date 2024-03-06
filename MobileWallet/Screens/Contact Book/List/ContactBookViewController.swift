@@ -314,7 +314,9 @@ final class ContactBookViewController: SecureViewController<ContactBookView>, Ov
     }
 
     private func moveToSendTokensScreen(paymentInfo: PaymentInfo) {
-        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+        Task { @MainActor in
+            AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+        }
     }
 
     private func moveToLinkContactsScreen(model: ContactsManager.Model) {

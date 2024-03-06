@@ -79,7 +79,7 @@ final class TransactionsViewController: SecureViewController<TransactionsView> {
     private func setupCallbacks() {
 
         addRecipientViewController.onContactSelected = { [weak self] in
-            self?.moveToAddAmount(paymentInfo: $0)
+            AppRouter.presentSendTransaction(paymentInfo: $0, presenter: self?.navigationController)
         }
 
         pagerViewController.pageIndex
@@ -91,13 +91,6 @@ final class TransactionsViewController: SecureViewController<TransactionsView> {
 
     private func updateTitle(index: Int) {
         mainView.navigationBar.title = Page(rawValue: index)?.navBarTitle
-    }
-
-    // MARK: - Actions
-
-    private func moveToAddAmount(paymentInfo: PaymentInfo) {
-        let controller = AddAmountViewController(paymentInfo: paymentInfo)
-        navigationController?.pushViewController(controller, animated: true)
     }
 }
 

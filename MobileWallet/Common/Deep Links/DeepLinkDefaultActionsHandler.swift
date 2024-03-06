@@ -78,7 +78,10 @@ enum DeepLinkDefaultActionsHandler {
         }
 
         let paymentInfo = PaymentInfo(address: transactionSendDeepLink.receiverAddress, alias: nil, yatID: nil, amount: amount, feePerGram: nil, note: transactionSendDeepLink.note)
-        AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+
+        Task { @MainActor in
+            AppRouter.presentSendTransaction(paymentInfo: paymentInfo)
+        }
     }
 
     private static func handle(deeplink: DeepLinkable, contacts: [ContactData], actionType: ActionType) throws {
