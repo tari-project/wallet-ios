@@ -219,7 +219,7 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private func onScreenRecordingSettingsAction() {
-        let controller = ScreenRecordingSettingsViewController() // TODO: Constructor
+        let controller = ScreenRecordingSettingsConstructor.buildScene()
         navigationController?.pushViewController(controller, animated: true)
     }
 
