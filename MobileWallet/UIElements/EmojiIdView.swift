@@ -280,6 +280,7 @@ final class EmojiIdView: DynamicThemeView {
     func expand(completion: (() -> Void)? = nil, callTapCompletion: Bool = false, animated: Bool = true) {
         guard let scrollViewFrame = condensedEmojiIdContainer.globalFrame else { return }
         secureContentView.isHidden = false
+        secureContentView.isUserInteractionEnabled = blackoutWhileExpanded
         tapActionIsDisabled = true
         expanded = true
         // If they're typing somewhere, close the keyboard
