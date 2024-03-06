@@ -208,6 +208,29 @@ extension PopUpPresenter {
         show(popUp: popUp, configuration: configuration)
     }
 
+    @MainActor static func showAddressPoisoningPopUp(options: [PopUpAddressPoisoningContentCell.ViewModel], onContinue: ((_ selectedOption: PopUpAddressPoisoningContentCell.ViewModel, _ isTrusted: Bool) -> Void)?) {
+
+        let headerSection = PopUpHeaderWithSubtitle()
+        let contentSection = PopUpAddressPoisoningContentView()
+        let buttonsSection = PopUpButtonsView()
+
+        headerSection.titleLabel.text = localized("address_poisoning.pop_up.title")
+        headerSection.subtitleLabel.text = localized("address_poisoning.pop_up.message", arguments: options.count)
+
+        contentSection.viewModels = options
+
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.continue"), type: .normal, callback: {
+            PopUpPresenter.dismissPopup {
+                guard let index = contentSection.selectedIndex else { return }
+                onContinue?(options[index], contentSection.isTrustedTickSelected)
+            }
+        }))
+        buttonsSection.addButton(model: PopUpDialogButtonModel(title: localized("common.cancel"), type: .text, callback: { PopUpPresenter.dismissPopup() }))
+
+        let popup = TariPopUp(headerSection: headerSection, contentSection: contentSection, buttonsSection: buttonsSection)
+        PopUpPresenter.show(popUp: popup)
+    }
+
     private static func log(message: MessageModel) {
         var log = "Pop-up Title: \(message.title)"
 

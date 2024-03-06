@@ -896,3 +896,13 @@
 "tracking.pop_up.consent.message" = "We're always striving to make Aurora better.\nTo achieve this, we use a third-party service to gather non-identifiable data like crash logs and usage statistics. This data helps us pinpoint and fix any issues, ultimately improving your experience.\n\nDo you consent to your data being collected?";
 "tracking.pop_up.consent.button.yes" = "Yes, I consent";
 "tracking.pop_up.consent.button.no" = "No, I decline";
+
+/* Address Poisoning Prevention */
+
+"address_poisoning.pop_up.title" = "Heads Up!";
+"address_poisoning.pop_up.message" = "Looks like there are %d very similar addresses in your contact book. Please double check that you’re sending to the right one!";
+"address_poisoning.pop_up.label.tick_message" = "This is a trusted contact";
+"address_poisoning.pop_up.label.trusted_info" = "Marking a contact as trusted means you trust this person and we won’t ask you to double check the address again.";
+"address_poisoning.label.transaction_count" = "No of transactions: %d";
+"address_poisoning.label.last_transction" = "Last transaction date: %@";
+"address_poisoning.label.last_transction.never" = "Never";

@@ -269,7 +269,7 @@ private class PopUpSwitchListViewCell: DynamicThemeCell {
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -15.0),
             switchView.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 8.0),
-            switchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            switchView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -4.0),
             switchView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ]
 

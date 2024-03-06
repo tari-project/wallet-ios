@@ -54,5 +54,22 @@ extension Character {
 }
 
 extension String {
-    var containsOnlyEmoji: Bool { !isEmpty && !contains { !$0.isEmoji } }
+
+    var containsOnlyEmoji: Bool { !isEmpty && !contains { !$0.isEmoji }}
+
+    func isSimilar(to text: String, minSameCharacters: Int, usedPrefixSuffixCharacters: Int) -> Bool {
+
+        guard self != text, count == text.count, count >= (usedPrefixSuffixCharacters * 2) else { return false }
+
+        let lShortText = prefix(usedPrefixSuffixCharacters) + suffix(usedPrefixSuffixCharacters)
+        let rShortText = text.prefix(usedPrefixSuffixCharacters) + text.suffix(usedPrefixSuffixCharacters)
+
+        let result = zip(lShortText, rShortText)
+            .reduce(into: 0) { result, elements in
+                guard elements.0 == elements.1 else { return }
+                result += 1
+            }
+
+        return result >= minSameCharacters
+    }
 }
