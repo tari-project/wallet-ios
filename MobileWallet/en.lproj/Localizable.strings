@@ -599,6 +599,7 @@
 "add_base_node.error.button" = "OK";
 
 /* Restore Wallet From Seed Words */
+"restore_from_seed_words.title" = "Restore With Seed Phrase";
 "restore_from_seed_words.label.description" = "Enter your seed phrase to restore your wallet";
 "restore_from_seed_words.button.select_base_node" = "Select base node";
 "restore_from_seed_words.button.submit" = "Restore Wallet";

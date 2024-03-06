@@ -388,6 +388,7 @@
 		5430B97D29B7402600C80AA2 /* LinkContactsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */; };
 		54394EDE29CA133400E7CAEA /* LoadingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54394EDD29CA133400E7CAEA /* LoadingImageView.swift */; };
 		543DF19C293F3DA90031EA70 /* TorBridgesFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543DF19B293F3DA90031EA70 /* TorBridgesFooterView.swift */; };
+		543F89D02B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 543F89CF2B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift */; };
 		544013A429E0003100B5DD6D /* ContactListDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544013A329E0003100B5DD6D /* ContactListDeeplink.swift */; };
 		5443954629800F1600786682 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5443954529800F1600786682 /* OnboardingViewController.swift */; };
 		5444C80329F14C2900BF3875 /* PopUpCircleImageHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5444C80229F14C2900BF3875 /* PopUpCircleImageHeaderView.swift */; };
@@ -977,6 +978,7 @@
 		5430B97C29B7402600C80AA2 /* LinkContactsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkContactsConstructor.swift; sourceTree = "<group>"; };
 		54394EDD29CA133400E7CAEA /* LoadingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingImageView.swift; sourceTree = "<group>"; };
 		543DF19B293F3DA90031EA70 /* TorBridgesFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridgesFooterView.swift; sourceTree = "<group>"; };
+		543F89CF2B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRecordingSettingsConstructor.swift; sourceTree = "<group>"; };
 		544013A329E0003100B5DD6D /* ContactListDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactListDeeplink.swift; sourceTree = "<group>"; };
 		5443954529800F1600786682 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		5444C80229F14C2900BF3875 /* PopUpCircleImageHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpCircleImageHeaderView.swift; sourceTree = "<group>"; };
@@ -2615,6 +2617,7 @@
 				5422CBF72B88B1CA00428394 /* ScreenRecordingSettingsViewController.swift */,
 				5422CBF92B88B5C800428394 /* ScreenRecordingSettingsModel.swift */,
 				5422CBFB2B88C79200428394 /* ScreenRecordingSettingsView.swift */,
+				543F89CF2B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift */,
 			);
 			path = "Screen Recoding Settings";
 			sourceTree = "<group>";
@@ -3731,6 +3734,7 @@
 				5453242229A68CA0009281A7 /* RoundedButton.swift in Sources */,
 				3A2C0B8727DA22970018C5A8 /* SeedWordListElementView.swift in Sources */,
 				54621F8B29E00E78000E9659 /* String+Tools.swift in Sources */,
+				543F89D02B98811F00B9821C /* ScreenRecordingSettingsConstructor.swift in Sources */,
 				3A8473D628EC56C90015E63A /* TariBalanceService.swift in Sources */,
 				3A6F3FF8283BF980005D1793 /* TariFeePerGramStats.swift in Sources */,
 				3A5A3D5829016DE300B689C6 /* BackupWalletSettingsViewController.swift in Sources */,
