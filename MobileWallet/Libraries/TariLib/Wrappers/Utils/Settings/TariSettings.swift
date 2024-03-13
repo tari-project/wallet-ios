@@ -75,11 +75,7 @@ struct TariSettings {
     let privacyPolicyUrl = "https://www.tari.com/privacy_policy/"
     let storeUrl = "https://store.tarilabs.com/"
     let tariLabsUniversityUrl = "https://tlu.tarilabs.com/"
-    let blockExplorerUrl = "https://explore-esme.tari.com/"
-    let blockExplorerKernelUrl = "https://explore-esme.tari.com/kernel/"
     let torBridgesUrl = "https://bridges.torproject.org/bridges"
-
-    let isBlockExplorerAvaiable: Bool = false
 
     var pushServerApiKey: String?
     var sentryPublicDSN: String?

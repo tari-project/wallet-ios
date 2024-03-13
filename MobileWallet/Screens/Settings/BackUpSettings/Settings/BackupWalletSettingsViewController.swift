@@ -181,7 +181,7 @@ final class BackupWalletSettingsViewController: SecureViewController<BackupWalle
 
         var items = [seedWordsItem]
 
-        if !AppValues.isSimulator {
+        if !AppValues.general.isSimulator {
             items.append(iCloudItem)
         }
 
