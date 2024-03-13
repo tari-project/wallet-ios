@@ -284,8 +284,7 @@ final class TransactionDetailsModel {
 
     private func fetchLinkToOpen() -> URL? {
         guard let transactionNounce = transactionNounce, let transactionSignature = transactionSignature else { return nil }
-        let request = [transactionNounce, transactionSignature].joined(separator: "/")
-        return URL(string: TariSettings.shared.blockExplorerKernelUrl + "\(request)")
+        return AppValues.blockExplorer.kernelURL(nounce: transactionNounce, signature: transactionSignature)
     }
 
     private func handle(transaction: Transaction) {
@@ -331,7 +330,7 @@ final class TransactionDetailsModel {
     private func handleTransactionKernel() {
 
         defer {
-            isBlockExplorerActionAvailable = transactionNounce != nil && transactionSignature != nil && TariSettings.shared.isBlockExplorerAvaiable
+            isBlockExplorerActionAvailable = transactionNounce != nil && transactionSignature != nil
         }
 
         guard let kernel = try? (transaction as? CompletedTransaction)?.transactionKernel else {

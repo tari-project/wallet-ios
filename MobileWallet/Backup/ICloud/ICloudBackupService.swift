@@ -256,7 +256,7 @@ extension ICloudBackupService: BackupServicable {
 
     func performBackup(forced: Bool) {
 
-        guard !AppValues.isSimulator, isOn else { return }
+        guard !AppValues.general.isSimulator, isOn else { return }
         guard forced || backupStatusValue.isFailed else { return }
 
         Task {

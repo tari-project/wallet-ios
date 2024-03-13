@@ -39,6 +39,11 @@
 */
 
 enum AppValues {
+    static let general = GeneralValues.self
+    static let blockExplorer = BlockExplorerValues.self
+}
+
+enum GeneralValues {
     static var isSimulator: Bool {
         #if targetEnvironment(simulator)
         return true
@@ -46,4 +51,9 @@ enum AppValues {
         return false
         #endif
     }
+}
+
+enum BlockExplorerValues {
+    static var baseURL: URL? { URL(string: "https://explore-nextnet.tari.com") }
+    static func kernelURL(nounce: String, signature: String) -> URL? { URL(string: "https://explore-nextnet.tari.com/kernel_search?nonces=\(nounce)&signatures=\(signature)") }
 }
