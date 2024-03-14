@@ -187,14 +187,9 @@ final class ProfileModel {
     }
 
     private func makeDeeplink() throws -> URL? {
-
         guard let alias = name else { return nil }
         let hex = try Tari.shared.walletAddress.byteVector.hex
-
-        let deeplinkModel = ContactListDeeplink(list: [
-            ContactListDeeplink.Contact(alias: alias, hex: hex)
-        ])
-
+        let deeplinkModel = UserProfileDeeplink(alias: alias, tariAddress: hex)
         return try DeepLinkFormatter.deeplink(model: deeplinkModel)
     }
 
