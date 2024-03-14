@@ -51,7 +51,7 @@ enum AddressPoisoningDataHandler {
             return
         }
 
-        Task {
+        Task { @MainActor in
             do {
                 let address = try TariAddress(hex: rawAddress)
                 let similarAddresses = try await AddressPoisoningManager.shared.similarAddresses(address: address, includeInputAddress: true)
