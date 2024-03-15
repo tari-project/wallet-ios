@@ -91,7 +91,7 @@ final class SplashViewModel {
     private func setupCallbacks() {
 
         NetworkManager.shared.$selectedNetwork
-            .map(\.presentedName)
+            .map(\.fullPresentedName)
             .sink { [weak self] in self?.networkName = $0 }
             .store(in: &cancellables)
 
@@ -109,7 +109,7 @@ final class SplashViewModel {
 
     private func setupData() {
         appVersion = AppVersionFormatter.version
-        allNetworkNames = TariNetwork.all.map { $0.presentedName }
+        allNetworkNames = TariNetwork.all.map { $0.fullPresentedName }
     }
 
     // MARK: - View Model Actions

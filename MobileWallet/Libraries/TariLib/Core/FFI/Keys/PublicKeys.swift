@@ -1,10 +1,10 @@
-//  TariNetwork+Mocks.swift
+//  PublicKeys.swift
 
 /*
-	Package UnitTests
-	Created by Adrian Truszczynski on 03/03/2022
+	Package MobileWallet
+	Created by Adrian Truszczyński on 07/03/2024
 	Using Swift 5.0
-	Running on macOS 12.1
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -38,8 +38,44 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-@testable import Tari_Aurora
+final class PublicKeys {
 
-extension TariNetwork {
-    static let testNetwork = TariNetwork(name: "test_network", presentedName: "Test Network", tickerSymbol: "Test Symbol", isRecommended: false, dnsPeer: "")
+    // MARK: - Properties
+
+    var pointer: OpaquePointer
+
+    var count: UInt32 {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = public_keys_get_length(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return result
+        }
+    }
+
+    // MARK: - Initialisers
+
+    init(pointer: OpaquePointer) {
+        self.pointer = pointer
+    }
+
+    // MARK: - Actions
+
+    func publicKey(index: UInt32) throws -> PublicKey {
+        var errorCode: Int32 = -1
+        let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+        let result = public_keys_get_at(pointer, index, errorCodePointer)
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
+        return PublicKey(pointer: result)
+    }
+}
+
+extension PublicKeys {
+
+    var all: [PublicKey] {
+        get throws {
+            try (0..<count).map { try publicKey(index: $0) }
+        }
+    }
 }

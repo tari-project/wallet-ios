@@ -130,4 +130,22 @@ extension FormOverlayPresenter {
             onClose?(nameComponents, yat)
         }
     }
+
+    static func showSelectCustomBaseNodeForm(address: String?, presenter: UIViewController, onClose: ((_ address: String?) -> Void)?) {
+
+        var address = address
+        let title = localized("restore_from_seed_words.form.title")
+        let models = [
+            ContactBookFormView.TextFieldViewModel(
+                placeholder: localized("restore_from_seed_words.form.placeholder"),
+                text: address,
+                isEmojiKeyboardVisible: false,
+                callback: { address = $0 }
+            )
+        ]
+
+        showForm(title: title, textFieldModels: models, presenter: presenter) {
+            onClose?(address)
+        }
+    }
 }

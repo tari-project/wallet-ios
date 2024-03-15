@@ -49,8 +49,8 @@ final class TariRecoveryService: CoreTariService {
     // MARK: - Actions
 
     func startRecovery(recoveredOutputMessage: String) throws -> Bool {
-        let publicKey = NetworkManager.shared.selectedNetwork.selectedBaseNode.publicKey
-        return try walletManager.startRecovery(baseNodePublicKey: publicKey, recoveredOutputMessage: recoveredOutputMessage)
+        guard let selectedBaseNode = NetworkManager.shared.selectedBaseNode else { return false }
+        return try walletManager.startRecovery(baseNodePublicKey: selectedBaseNode.makePublicKey(), recoveredOutputMessage: recoveredOutputMessage)
     }
 
     func allSeedWords(forLanguage language: SeedWordsMnemonicWordList.Language) throws -> [String] {

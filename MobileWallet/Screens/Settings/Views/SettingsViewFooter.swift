@@ -45,7 +45,7 @@ final class SettingsViewFooter: DynamicThemeView {
 
     @View private var label: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.systemTableViewCell
+        view.font = .Avenir.medium.withSize(15.0)
         view.text = AppVersionFormatter.version
         return view
     }()

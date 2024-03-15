@@ -54,15 +54,15 @@ final class SelectBaseNodeModel {
 
     // MARK: - Properties
 
-    private var predefinedNodes: [BaseNode] { NetworkManager.shared.selectedNetwork.baseNodes }
-    private var avaiableNodes: [BaseNode] { NetworkManager.shared.selectedNetwork.allBaseNodes }
+    private var predefinedNodes: [BaseNode] { NetworkManager.shared.defaultBaseNodes }
+    private var avaiableNodes: [BaseNode] { NetworkManager.shared.allBaseNodes }
     private var selectedNodeIndex: Int?
 
     // MARK: - Setups
 
     private func updateSelectedNodeIndex() {
-        let selectedNode = NetworkManager.shared.selectedNetwork.selectedBaseNode
-        selectedNodeIndex = avaiableNodes.firstIndex { $0 == selectedNode }
+        let selectedBaseNode = NetworkManager.shared.selectedBaseNode
+        selectedNodeIndex = avaiableNodes.firstIndex { $0.peer == selectedBaseNode?.peer }
     }
 
     private func updateViewModelNodes() {
@@ -101,8 +101,8 @@ final class SelectBaseNodeModel {
     func deleteNode(index: Int) {
         guard avaiableNodes.count >= index else { return }
         let node = avaiableNodes[index]
-        guard let index = NetworkManager.shared.selectedNetwork.customBaseNodes.firstIndex(of: node) else { return }
-        NetworkManager.shared.selectedNetwork.customBaseNodes.remove(at: index)
+        guard let index = NetworkManager.shared.customBaseNodes.firstIndex(of: node) else { return }
+        NetworkManager.shared.customBaseNodes.remove(at: index)
         refreshData()
     }
 }

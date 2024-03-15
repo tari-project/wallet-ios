@@ -45,7 +45,7 @@ final class NetworkManagerTests: XCTestCase {
 
     // MARK: - Properties
 
-    private let defaultNetwork = TariNetwork.nextnet
+    private let defaultNetwork = TariNetwork.stagenet
     private var networkManager: NetworkManager!
 
     // MARK: - Setups
@@ -116,9 +116,9 @@ final class NetworkManagerTests: XCTestCase {
 
     func testSelectedBaseNodeUpdate() {
 
-        let baseNode = try! BaseNode(name: "Test Name", peer: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
+        let baseNode = BaseNode(name: "Test Name", peer: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43", address: "/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
 
-        networkManager.selectedNetwork.selectedBaseNode = baseNode
+        networkManager.selectedBaseNode = baseNode
 
         let selectedNetworkName = GroupUserDefaults.selectedNetworkName!
         let networkSettings = GroupUserDefaults.networksSettings!.first!
@@ -129,14 +129,14 @@ final class NetworkManagerTests: XCTestCase {
 
     func testCustomBaseNodesUpdate() {
 
-        let baseNode = try! BaseNode(name: "Test Name", peer: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43::/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
+        let baseNode = BaseNode(name: "Test Name", peer: "2e93c460df49d8cfbbf7a06dd9004c25a84f92584f7d0ac5e30bd8e0beee9a43", address: "/onion3/nuuq3e2olck22rudimovhmrdwkmjncxvwdgbvfxhz6myzcnx2j4rssyd:18141")
 
-        networkManager.selectedNetwork.customBaseNodes = [baseNode]
+        networkManager.customBaseNodes = [baseNode]
 
         let customBaseNodes = GroupUserDefaults.networksSettings!.first!.customBaseNodes
 
         XCTAssertEqual(customBaseNodes.count, 1)
-        XCTAssertEqual(customBaseNodes, networkManager.selectedNetwork.customBaseNodes)
+        XCTAssertEqual(customBaseNodes, networkManager.customBaseNodes)
         XCTAssertEqual(customBaseNodes.first!, baseNode)
     }
 
@@ -144,6 +144,6 @@ final class NetworkManagerTests: XCTestCase {
 
     private func initialiseNetworkSettings() {
         // User defaults are updated with every access to internal settings
-        _ = networkManager.selectedNetwork.selectedBaseNode
+        _ = networkManager.selectedBaseNode
     }
 }

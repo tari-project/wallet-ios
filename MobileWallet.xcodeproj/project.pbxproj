@@ -489,6 +489,8 @@
 		54B854B929BF993600A2367A /* ContactBookListPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54B854B829BF993600A2367A /* ContactBookListPlaceholder.swift */; };
 		54BB5E052A2F081300E239C7 /* UserProfileDeeplink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */; };
 		54BBAF032A37238A002BC64B /* RotaryMenuCircleBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BBAF022A37238A002BC64B /* RotaryMenuCircleBackgroundView.swift */; };
+		54BFE3F62B99C74800273272 /* PublicKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54BFE3F52B99C74800273272 /* PublicKeys.swift */; };
+		54C02B912BA075120057301A /* BaseNodeConnectionError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C02B902BA075120057301A /* BaseNodeConnectionError.swift */; };
 		54C36D0B2A5D3E9800BD973A /* QRCodeScannerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D0A2A5D3E9800BD973A /* QRCodeScannerModel.swift */; };
 		54C36D0D2A5D3EA400BD973A /* QRCodeScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D0C2A5D3EA400BD973A /* QRCodeScannerViewController.swift */; };
 		54C36D0F2A5D3EAC00BD973A /* QRCodeScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54C36D0E2A5D3EAC00BD973A /* QRCodeScannerView.swift */; };
@@ -1079,6 +1081,8 @@
 		54B854B829BF993600A2367A /* ContactBookListPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookListPlaceholder.swift; sourceTree = "<group>"; };
 		54BB5E042A2F081300E239C7 /* UserProfileDeeplink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileDeeplink.swift; sourceTree = "<group>"; };
 		54BBAF022A37238A002BC64B /* RotaryMenuCircleBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RotaryMenuCircleBackgroundView.swift; sourceTree = "<group>"; };
+		54BFE3F52B99C74800273272 /* PublicKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKeys.swift; sourceTree = "<group>"; };
+		54C02B902BA075120057301A /* BaseNodeConnectionError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNodeConnectionError.swift; sourceTree = "<group>"; };
 		54C36D0A2A5D3E9800BD973A /* QRCodeScannerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerModel.swift; sourceTree = "<group>"; };
 		54C36D0C2A5D3EA400BD973A /* QRCodeScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerViewController.swift; sourceTree = "<group>"; };
 		54C36D0E2A5D3EAC00BD973A /* QRCodeScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeScannerView.swift; sourceTree = "<group>"; };
@@ -1782,6 +1786,7 @@
 			children = (
 				3AF335DD28D7905C00B48F33 /* Configs */,
 				3AF335DA28D754EC00B48F33 /* Contacts */,
+				54C02B8F2BA075040057301A /* Errors */,
 				3AF335DC28D78D1F00B48F33 /* Keys */,
 				3AF335DB28D789F000B48F33 /* Seed Words */,
 				3A312FEC28B6315A00A290D3 /* Transactions */,
@@ -1927,6 +1932,7 @@
 			children = (
 				3A4376EC269C0CB5006107B0 /* Views */,
 				3A4376E4269C0C10006107B0 /* RestoreWalletFromSeedsViewController.swift */,
+				3A4376ED269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift */,
 				3A4376E8269C0C58006107B0 /* RestoreWalletFromSeedsModel.swift */,
 			);
 			path = RestoreWalletFromSeeds;
@@ -1935,7 +1941,6 @@
 		3A4376EC269C0CB5006107B0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				3A4376ED269C0CC1006107B0 /* RestoreWalletFromSeedsView.swift */,
 				3A0EA97926AA8E1C002612D4 /* TokenCollectionView.swift */,
 				3A0EA97D26AA8E3C002612D4 /* TokenView.swift */,
 				3A0EA98126AA8E64002612D4 /* TokenInputView.swift */,
@@ -2491,6 +2496,7 @@
 			isa = PBXGroup;
 			children = (
 				3A890EC829262744000F5DA6 /* TariAddress.swift */,
+				54BFE3F52B99C74800273272 /* PublicKeys.swift */,
 				001F6CDB238011CA00FA7002 /* PublicKey.swift */,
 			);
 			path = Keys;
@@ -2912,6 +2918,14 @@
 				5488068829D4244800C2A0F9 /* ContactBookShareBar.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		54C02B8F2BA075040057301A /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				54C02B902BA075120057301A /* BaseNodeConnectionError.swift */,
+			);
+			path = Errors;
 			sourceTree = "<group>";
 		};
 		54C36D092A5D3E8700BD973A /* QR Code Scanner */ = {
@@ -3402,6 +3416,7 @@
 				3A7DAB9128FDAFD5002CC013 /* LogsListView.swift in Sources */,
 				3A70C4F7292E51D800212026 /* VersionValidator.swift in Sources */,
 				3AE138D12804A8B300443D34 /* SuccessToast.swift in Sources */,
+				54C02B912BA075120057301A /* BaseNodeConnectionError.swift in Sources */,
 				5410F5D12951F04B006976DC /* TariWindow.swift in Sources */,
 				54D1E1A32ABD92290021A365 /* DataCollectionSettingsConstructor.swift in Sources */,
 				370E887824FEA54100576F61 /* NetworkTools.m in Sources */,
@@ -3818,6 +3833,7 @@
 				3A6A033A2802DCE7000432B4 /* TariPopUp.swift in Sources */,
 				371A0818247290C000F97713 /* TransitionLabel.swift in Sources */,
 				3A4205922798001A00A8D49C /* AmountKeyboardView.swift in Sources */,
+				54BFE3F62B99C74800273272 /* PublicKeys.swift in Sources */,
 				3A03A602288962FA00788A02 /* SplashViewModel.swift in Sources */,
 				3A312FEE28B6316D00A290D3 /* CompletedTransactions.swift in Sources */,
 				3ADF96CC28585E2400A3C888 /* ContextualButtonsOverlay.swift in Sources */,

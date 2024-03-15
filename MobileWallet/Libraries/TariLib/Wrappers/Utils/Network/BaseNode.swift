@@ -38,62 +38,33 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct BaseNode: Equatable {
-
-    // MARK: - Subelements
-
-    enum InternalError: Error {
-        case invalidPeerString
-    }
-
-    // MARK: - Properties
-
+/// Represents a configuration for a base node in a network.
+struct BaseNode: Equatable, Codable {
+    /// The name of the base node.
     let name: String
+    /// The hex identifier of the base node.
     let hex: String
-    let address: String
-    let publicKey: PublicKey
-
-    var peer: String { "\(hex)::\(address)" }
-
-    // MARK: - Initializers
-
-    init(name: String, peer: String) throws {
-        let peerComponents = peer.components(separatedBy: "::")
-        guard peerComponents.count == 2 else { throw InternalError.invalidPeerString }
-        try self.init(name: name, hex: peerComponents[0], address: peerComponents[1])
-    }
-
-    private init(name: String, hex: String, address: String) throws {
-        self.name = name
-        self.hex = hex
-        self.address = address
-
-        publicKey = try PublicKey(hex: hex)
-
-        try validateData()
-    }
-
-    // MARK: - Actions
-
-    private func validateData() throws {
-        let onionRegex = try NSRegularExpression(pattern: "[a-z0-9]{64}::\\/onion3\\/[a-z0-9]{56}:[0-9]{2,6}")
-        let ip4Regex = try NSRegularExpression(pattern: "[a-z0-9]{64}::\\/ip4\\/[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}\\/tcp\\/[0-9]{2,6}")
-        let range = NSRange(location: 0, length: peer.utf16.count)
-        guard onionRegex.matches(in: peer, options: [], range: range).count == 1 || ip4Regex.matches(in: peer, range: range).count == 1 else { throw InternalError.invalidPeerString }
-    }
+    /// The network address of the base node, It's equal to `nil` for default base nodes.
+    let address: String?
 }
 
-extension BaseNode: Codable {
+extension BaseNode {
 
-    enum CodingKeys: CodingKey {
-        case name, hex, address
+    /// Determines whether the base node is a custom node.
+    var isCustomBaseNode: Bool { address != nil }
+
+    /// The peer identifier of the base node. The value is a generated based on the base node's hex and address.
+    var peer: String {
+        [hex, address]
+            .compactMap { $0 }
+            .joined(separator: "::")
     }
 
-    init(from decoder: Decoder) throws {
-        let containter = try decoder.container(keyedBy: CodingKeys.self)
-        let name = try containter.decode(String.self, forKey: .name)
-        let hex = try containter.decode(String.self, forKey: .hex)
-        let address = try containter.decode(String.self, forKey: .address)
-        try self.init(name: name, hex: hex, address: address)
+    /// Generates a `PublicKey`  based on the configuration of the base node.
+    ///
+    /// - Throws: An error if the public key generation fails.
+    /// - Returns: The generated public key.
+    func makePublicKey() throws -> PublicKey {
+        try PublicKey(hex: hex)
     }
 }
