@@ -459,7 +459,7 @@ final class AddAmountViewController: DynamicThemeViewController {
 
     private func calculateAmount() -> MicroTari? {
 
-        let availableBalance = Tari.shared.walletBalance.balance.availableToSpend
+        let availableBalance = Tari.shared.walletBalance.balance.available
         var tariAmount: MicroTari?
 
         do {

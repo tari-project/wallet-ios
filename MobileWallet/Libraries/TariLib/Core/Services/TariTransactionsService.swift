@@ -176,7 +176,7 @@ final class TariTransactionsService: CoreTariService {
 
         let estimatedFee = try walletManager.feeEstimate(amount: amount, feePerGram: feePerGram, kernelsCount: kernelsCount, outputsCount: outputsCount)
         let total = estimatedFee + amount
-        let availableBalance = services.walletBalance.balance.availableToSpend
+        let availableBalance = services.walletBalance.balance.available
 
         guard availableBalance >= total else {
             throw InternalError.insufficientFunds(spendableMicroTari: availableBalance)
