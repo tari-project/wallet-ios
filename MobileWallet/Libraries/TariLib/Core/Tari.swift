@@ -244,7 +244,16 @@ final class Tari: MainServiceable {
 
         let logVerbosity: Int32 = TariSettings.shared.environment == .debug ? 11 : 4
 
-        try walletManager.connectWallet(commsConfig: commsConfig, logFilePath: logFilePath, seedWords: walletSeedWords, passphrase: passphrase, networkName: selectedNetwork.name, logVerbosity: logVerbosity)
+        try walletManager.connectWallet(
+            commsConfig: commsConfig,
+            logFilePath: logFilePath,
+            seedWords: walletSeedWords,
+            passphrase: passphrase,
+            networkName: selectedNetwork.name,
+            dnsPeer: selectedNetwork.dnsPeer,
+            isDnsSecureOn: false,
+            logVerbosity: logVerbosity
+        )
         resetServices()
     }
 

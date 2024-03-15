@@ -52,7 +52,7 @@ final class Wallet {
 
     // MARK: - Initialisers
 
-    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, logVerbosity: Int32) throws {
+    init(commsConfig: CommsConfig, loggingFilePath: String, seedWords: SeedWords?, passphrase: String?, networkName: String, dnsPeer: String, isDnsSecureOn: Bool, logVerbosity: Int32) throws {
 
         let receivedTransactionCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
             WalletCallbacksManager.shared.post(name: .receivedTransaction, object: pointer)
@@ -143,6 +143,8 @@ final class Wallet {
             passphrase,
             seedWords?.pointer,
             networkName,
+            dnsPeer,
+            isDnsSecureOn,
             receivedTransactionCallback,
             receivedTransactionReplyCallback,
             receivedFinalizedTransactionCallback,
@@ -164,7 +166,7 @@ final class Wallet {
             errorCodePointer
         )
 
-        guard errorCode == 0, let result = result else { throw WalletError(code: errorCode) }
+        guard errorCode == 0, let result else { throw WalletError(code: errorCode) }
         pointer = result
     }
 

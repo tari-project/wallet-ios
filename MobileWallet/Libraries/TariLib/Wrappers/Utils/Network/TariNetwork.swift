@@ -43,6 +43,7 @@ struct TariNetwork {
     let presentedName: String
     let tickerSymbol: String
     let baseNodes: [BaseNode]
+    let dnsPeer: String
 }
 
 extension TariNetwork {
@@ -103,13 +104,14 @@ extension TariNetwork {
                 "NextNet 4": "2caf4be53523ecf2b71ca23db33f7df590fd41792b2d14c2bb0bbebe1b2c4b52::/onion3/wi2teiwyyq33jwblcuy7anmja6d7iyuciyrzbwumvldeiw73d6ce5ryd:18141",
                 "NextNet 5": "4c236de788e803ef9615f72a4d973cf3f8a9b83c9d2fb176cbaf65c1b0442572::/ip4/52.210.35.123/tcp/18189",
                 "NextNet 6": "4c236de788e803ef9615f72a4d973cf3f8a9b83c9d2fb176cbaf65c1b0442572::/onion3/7gwfakr7ko5uo3fl3yz3fsjc7elccbzter5botggodrmmwi2exm3vbid:18141"
-            ]
+            ],
+            dnsPeer: "seeds.nextnet.tari.com"
         )
     }
 
-    private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, rawBaseNodes: [String: String]) -> Self {
+    private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, rawBaseNodes: [String: String], dnsPeer: String) -> Self {
         let baseNodes = rawBaseNodes.compactMap { try? BaseNode(name: $0, peer: $1) }
         let currencySymbol = isMainNet ? "XTR" : "tXTR"
-        return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, baseNodes: baseNodes)
+        return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, baseNodes: baseNodes, dnsPeer: dnsPeer)
     }
 }
