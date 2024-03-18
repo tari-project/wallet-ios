@@ -320,13 +320,18 @@ final class Tari: MainServiceable {
 
     private func switchBaseNode() throws {
 
-        let selectedBaseNode = NetworkManager.shared.selectedNetwork.selectedBaseNode
-        guard NetworkManager.shared.selectedNetwork.baseNodes.contains(selectedBaseNode), NetworkManager.shared.selectedNetwork.baseNodes.count > 1 else { return }
+        guard isWalletConnected else { return }
+
+        let selectedBaseNode = NetworkManager.shared.selectedBaseNode
+
+        if let selectedBaseNode, selectedBaseNode.isCustomBaseNode {
+            return
+        }
 
         var newBaseNode: BaseNode
 
         repeat {
-            newBaseNode = try NetworkManager.shared.selectedNetwork.randomNode()
+            newBaseNode = try NetworkManager.shared.randomBaseNode()
         } while newBaseNode == selectedBaseNode
 
         try connection.select(baseNode: newBaseNode)

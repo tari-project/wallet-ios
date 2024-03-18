@@ -100,6 +100,12 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
             .assign(to: \.seedWords, on: mainView.tokenView)
             .store(in: &cancelables)
 
+        model.viewModel.$customBaseNode
+            .receive(on: DispatchQueue.main)
+            .map { $0 != nil }
+            .assign(to: \.isCustomBaseNodeSet, on: mainView)
+            .store(in: &cancelables)
+
         mainView.tokenView.$inputText
             .receive(on: DispatchQueue.main)
             .assign(to: \.inputText, on: model)
@@ -118,7 +124,7 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
         }
 
         mainView.selectBaseNodeButton.onTap = { [weak self] in
-            self?.moveToSelectBaseNodeScene()
+            self?.showCustomBaseNodeForm()
         }
 
         mainView.submitButton.onTap = { [weak self] in
@@ -140,7 +146,9 @@ final class RestoreWalletFromSeedsViewController: SecureViewController<RestoreWa
         show(overlay: overlay)
     }
 
-    private func moveToSelectBaseNodeScene() {
-        navigationController?.pushViewController(SelectBaseNodeViewController(), animated: true)
+    private func showCustomBaseNodeForm() {
+        FormOverlayPresenter.showSelectCustomBaseNodeForm(address: model.viewModel.customBaseNode, presenter: self) { [weak self] in
+            self?.model.update(customBaseNode: $0)
+        }
     }
 }

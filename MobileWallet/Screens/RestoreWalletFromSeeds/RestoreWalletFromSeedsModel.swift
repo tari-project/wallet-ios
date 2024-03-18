@@ -48,14 +48,15 @@ struct TokenViewModel: Identifiable, Hashable {
 final class RestoreWalletFromSeedsModel {
 
     final class ViewModel {
-        @Published var seedWordModels: [SeedWordModel] = []
-        @Published var updatedInputText: String = ""
-        @Published var error: MessageModel?
-        @Published var isConfimationEnabled: Bool = false
-        @Published var isEmptyWalletCreated: Bool = false
-        @Published var isAutocompletionAvailable: Bool = false
-        @Published var autocompletionTokens: [TokenViewModel] = []
-        @Published var autocompletionMessage: String?
+        @Published fileprivate(set) var seedWordModels: [SeedWordModel] = []
+        @Published fileprivate(set) var updatedInputText: String = ""
+        @Published fileprivate(set) var error: MessageModel?
+        @Published fileprivate(set) var isConfimationEnabled: Bool = false
+        @Published fileprivate(set) var isEmptyWalletCreated: Bool = false
+        @Published fileprivate(set) var isAutocompletionAvailable: Bool = false
+        @Published fileprivate(set) var autocompletionTokens: [TokenViewModel] = []
+        @Published fileprivate(set) var autocompletionMessage: String?
+        @Published fileprivate(set) var customBaseNode: String?
     }
 
     // MARK: - Properties
@@ -147,9 +148,32 @@ final class RestoreWalletFromSeedsModel {
         viewModel.updatedInputText = ""
     }
 
+    func update(customBaseNode: String?) {
+
+        guard viewModel.customBaseNode != customBaseNode else { return }
+
+        guard let customBaseNode else {
+            viewModel.customBaseNode = nil
+            return
+        }
+
+        guard !customBaseNode.isEmpty else {
+            viewModel.customBaseNode = nil
+            return
+        }
+
+        guard customBaseNode.isBaseNodeAddress else {
+            viewModel.error = MessageModel(title: localized("restore_from_seed_words.error.title"), message: localized("restore_from_seed_words.form.error.message"), type: .error)
+            return
+        }
+
+        viewModel.customBaseNode = customBaseNode
+    }
+
     private func restoreWallet(seedWords: [String]) {
         do {
             try Tari.shared.restoreWallet(seedWords: seedWords)
+            try selectCustomBaseNode()
             viewModel.isEmptyWalletCreated = true
         } catch let error as SeedWords.InternalError {
             handle(seedWordsError: error)
@@ -168,6 +192,11 @@ final class RestoreWalletFromSeedsModel {
     private func appendModelsBeforeEditingModel(models: [SeedWordModel]) {
         let index = viewModel.seedWordModels.count - 1
         viewModel.seedWordModels.insert(contentsOf: models, at: index)
+    }
+
+    private func selectCustomBaseNode() throws {
+        guard let customBaseNode = viewModel.customBaseNode else { return }
+        try Tari.shared.connection.addBaseNode(name: localized("restore_from_seed_words.custom_node_name"), peer: customBaseNode)
     }
 
     // MARK: - Handlers

@@ -1,10 +1,10 @@
-//  TariNetwork+Mocks.swift
+//  BaseNodeConnectionError.swift
 
 /*
-	Package UnitTests
-	Created by Adrian Truszczynski on 03/03/2022
+	Package MobileWallet
+	Created by Adrian Truszczyński on 12/03/2024
 	Using Swift 5.0
-	Running on macOS 12.1
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -38,8 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-@testable import Tari_Aurora
-
-extension TariNetwork {
-    static let testNetwork = TariNetwork(name: "test_network", presentedName: "Test Network", tickerSymbol: "Test Symbol", isRecommended: false, dnsPeer: "")
+enum BaseNodeConnectionError: Error {
+    case noSelectedBaseNode
+    case noBaseNodeToSwitch
 }

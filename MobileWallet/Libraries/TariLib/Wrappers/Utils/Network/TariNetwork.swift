@@ -42,73 +42,31 @@ struct TariNetwork {
     let name: String
     let presentedName: String
     let tickerSymbol: String
-    let baseNodes: [BaseNode]
+    let isRecommended: Bool
     let dnsPeer: String
 }
 
 extension TariNetwork {
 
-    enum Error: Swift.Error {
-        case noPredefinedNodes
-    }
+    static var all: [TariNetwork] { [stagenet].compactMap { $0 } }
 
-    var allBaseNodes: [BaseNode] { baseNodes.sorted { $0.name < $1.name } + customBaseNodes }
-
-    private var settings: NetworkSettings {
-        let allSettings = GroupUserDefaults.networksSettings ?? []
-
-        guard let existingSettings = allSettings.first(where: { $0.name == name }) else {
-            let newSettings = NetworkSettings(name: name, selectedBaseNode: baseNodes.randomElement()!, customBaseNodes: [])
-            update(settings: newSettings)
-            return newSettings
-        }
-        return existingSettings
-    }
-
-    var selectedBaseNode: BaseNode {
-        get { settings.selectedBaseNode }
-        set { update(settings: settings.update(selectedBaseNode: newValue)) }
-    }
-
-    var customBaseNodes: [BaseNode] {
-        get { settings.customBaseNodes }
-        set { update(settings: settings.update(customBaseNodes: newValue)) }
-    }
-
-    func randomNode() throws -> BaseNode {
-        guard let randomNode = baseNodes.randomElement() else { throw Error.noPredefinedNodes }
-        return randomNode
-    }
-
-    private func update(settings: NetworkSettings) {
-        var allSettings = GroupUserDefaults.networksSettings ?? []
-        allSettings.removeAll { $0 == settings }
-        allSettings.append(settings)
-        GroupUserDefaults.networksSettings = allSettings
-    }
-}
-
-extension TariNetwork {
-
-    static var all: [TariNetwork] { [nextnet].compactMap { $0 } }
-
-    static var nextnet: Self {
+    static var stagenet: Self {
         makeNetwork(
-            name: "nextnet",
-            presentedName: "NextNet (\(localized("common.recommended")))",
+            name: "stagenet",
+            presentedName: "StageNet",
             isMainNet: false,
-            rawBaseNodes: [
-                "NextNet 1": "0cff11dff44458bfea3e39444d440e54260746ff2a5ce6a6c3f7355decff2167::/ip4/54.195.217.107/tcp/18189",
-                "NextNet 2": "0cff11dff44458bfea3e39444d440e54260746ff2a5ce6a6c3f7355decff2167::/onion3/h6oj2cusgtaxo63zbfw2wjir4mltkqzz4jquoak2i5mvgyszaieowwad:18141",
-                "NextNet 3": "4c236de788e803ef9615f72a4d973cf3f8a9b83c9d2fb176cbaf65c1b0442572::/onion3/3jtk3e2ud3zqtbrq36sw6ata6u5epkjmqgr5tfuemcfpyhisrzkgbtyd:18141"
-            ],
-            dnsPeer: "seeds.nextnet.tari.com"
+            isRecommended: true,
+            dnsPeer: "seeds.stagenet.tari.com"
         )
     }
 
-    private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, rawBaseNodes: [String: String], dnsPeer: String) -> Self {
-        let baseNodes = rawBaseNodes.compactMap { try? BaseNode(name: $0, peer: $1) }
+    var fullPresentedName: String {
+        guard isRecommended else { return presentedName }
+        return "\(presentedName) (\(localized("common.recommended")))"
+    }
+
+    private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, isRecommended: Bool, dnsPeer: String) -> Self {
         let currencySymbol = isMainNet ? "XTR" : "tXTR"
-        return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, baseNodes: baseNodes, dnsPeer: dnsPeer)
+        return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, isRecommended: isRecommended, dnsPeer: dnsPeer)
     }
 }
