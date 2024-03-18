@@ -209,9 +209,7 @@ struct Fonts {
     let refreshViewLabel = UIFont.Avenir.heavy.withSize(12.0)
 
     // App table view
-    let systemTableViewCell = UIFont.Avenir.medium.withSize(15.0)
     let systemTableViewCellMarkDescription = UIFont.Avenir.medium.withSize(14.0)
-    let systemTableViewCellMarkDescriptionSmall = UIFont.Avenir.medium.withSize(11.0)
     let tableViewSection = UIFont.Avenir.medium.withSize(14.0)
 
     // Restore pending view

@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import Combine
 import TariCommon
 
 final class RestoreWalletFromSeedsView: BaseNavigationContentView {
@@ -60,7 +59,6 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
     @View private(set) var selectBaseNodeButton: TextButton = {
         let view = TextButton()
         view.setVariation(.secondary)
-        view.setTitle(localized("restore_from_seed_words.button.select_base_node"), for: .normal)
         return view
     }()
 
@@ -69,6 +67,15 @@ final class RestoreWalletFromSeedsView: BaseNavigationContentView {
         view.setTitle(localized("restore_from_seed_words.button.submit"), for: .normal)
         return view
     }()
+
+    // MARK: - Properties
+
+    var isCustomBaseNodeSet: Bool = false {
+        didSet {
+            let title = isCustomBaseNodeSet ? localized("restore_from_seed_words.button.select_base_node.edit") : localized("restore_from_seed_words.button.select_base_node.select")
+            selectBaseNodeButton.setTitle(title, for: .normal)
+        }
+    }
 
     // MARK: - Initializers
 

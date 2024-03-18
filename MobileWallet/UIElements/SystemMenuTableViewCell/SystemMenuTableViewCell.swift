@@ -38,7 +38,6 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
 import TariCommon
 
 class SystemMenuTableViewCellItem: NSObject {
@@ -378,13 +377,13 @@ extension SystemMenuTableViewCell {
     }
 
     private func setupTitle() {
-        titleLabel.font = Theme.shared.fonts.systemTableViewCell
+        titleLabel.font = .Avenir.medium.withSize(15.0)
         titleLabel.adjustsFontSizeToFitWidth = true
         labelsStackView.addArrangedSubview(titleLabel)
     }
 
     private func setupDescriptionLabel() {
-        subtitleLabel.font = Theme.shared.fonts.systemTableViewCell
+        subtitleLabel.font = .Avenir.medium.withSize(15.0)
         subtitleLabel.adjustsFontSizeToFitWidth = true
         labelsStackView.addArrangedSubview(subtitleLabel)
     }

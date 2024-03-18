@@ -599,10 +599,15 @@
 "add_base_node.error.button" = "OK";
 
 /* Restore Wallet From Seed Words */
+"restore_from_seed_words.custom_node_name" = "Recovery Base Node";
 "restore_from_seed_words.title" = "Restore With Seed Phrase";
 "restore_from_seed_words.label.description" = "Enter your seed phrase to restore your wallet";
-"restore_from_seed_words.button.select_base_node" = "Select base node";
+"restore_from_seed_words.button.select_base_node.select" = "Select Custom Base Node";
+"restore_from_seed_words.button.select_base_node.edit" = "Edit Base Node";
 "restore_from_seed_words.button.submit" = "Restore Wallet";
+"restore_from_seed_words.form.title" = "Enter Custom Base Node";
+"restore_from_seed_words.form.placeholder" = "Enter Base Node Address";
+"restore_from_seed_words.form.error.message" = "Oops, looks like the address you entered isn't good. We had to revert your change.";
 "restore_from_seed_words.autocompletion_toolbar.label.start_typing" = "Start typing to see suggestions";
 "restore_from_seed_words.autocompletion_toolbar.label.no_suggestions" = "There are no suggestions for the phrase";
 "restore_from_seed_words.error.title" = "Error";

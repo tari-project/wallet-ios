@@ -38,7 +38,7 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import UIKit
+import TariCommon
 
 final class SelectBaseNodeCell: DynamicThemeCell {
 
@@ -48,40 +48,36 @@ final class SelectBaseNodeCell: DynamicThemeCell {
 
     // MARK: - Subviews
 
-    private let titleLabel: UILabel = {
+    @View private var titleLabel: UILabel = {
        let view = UILabel()
-        view.font = Theme.shared.fonts.systemTableViewCell
-        view.translatesAutoresizingMaskIntoConstraints = false
+        view.font = .Avenir.medium.withSize(15.0)
         return view
     }()
 
-    private let subtitleLabel: UILabel = {
+    @View private var subtitleLabel: UILabel = {
         let view = UILabel()
-        view.font = Theme.shared.fonts.systemTableViewCellMarkDescriptionSmall
-        view.translatesAutoresizingMaskIntoConstraints = false
+        view.font = .Avenir.medium.withSize(11.0)
+        view.numberOfLines = 0
         return view
     }()
 
-    private let labelsStackView: UIStackView = {
+    @View private var labelsStackView: UIStackView = {
         let view = UIStackView()
         view.axis = .vertical
         view.spacing = 4.0
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 
-    private let tickView: UIImageView = {
+    @View private var tickView: UIImageView = {
         let view = UIImageView(image: Theme.shared.images.scheduledIcon)
-        view.translatesAutoresizingMaskIntoConstraints = false
         view.contentMode = .scaleAspectFit
         return view
     }()
 
-    private let deleteButton: UIButton = {
+    @View private var deleteButton: UIButton = {
         let view = UIButton()
-        view.titleLabel?.font = UIFont.Avenir.heavy.withSize(14.0)
+        view.titleLabel?.font = .Avenir.heavy.withSize(14.0)
         view.setTitle(localized("select_base_node.cell.delete"), for: .normal)
-        view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
 

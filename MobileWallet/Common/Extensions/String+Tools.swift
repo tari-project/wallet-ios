@@ -40,6 +40,16 @@
 
 extension String {
 
+    var isBaseNodeAddress: Bool {
+        guard let onionRegex = try? NSRegularExpression(pattern: "[a-z0-9]{64}::\\/onion3\\/[a-z0-9]{56}:[0-9]{2,6}"),
+                let ip4Regex = try? NSRegularExpression(pattern: "[a-z0-9]{64}::\\/ip4\\/[0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}[.][0-9]{1,3}\\/tcp\\/[0-9]{2,6}") else {
+            return false
+        }
+
+        let range = NSRange(location: 0, length: utf16.count)
+        return onionRegex.matches(in: self, options: [], range: range).count == 1 || ip4Regex.matches(in: self, range: range).count == 1
+    }
+
     func splitElementsInBrackets() -> [String] {
         guard #available(iOS 16.0, *) else { return components(separatedBy: CharacterSet(charactersIn: "[]")).map { String($0) }}
         return split(separator: /\[|\]/).map { String($0) }

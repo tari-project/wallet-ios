@@ -42,13 +42,42 @@ import Combine
 
 final class NetworkManager {
 
+    enum InternalError: Error {
+        case noBaseNode
+    }
+
     // MARK: - Properties
 
     static let shared = NetworkManager()
+    private static var defaultNetwork: TariNetwork { .stagenet }
 
     @Published var selectedNetwork: TariNetwork
 
-    private static var defaultNetwork: TariNetwork { .nextnet }
+    var defaultBaseNodes: [BaseNode] { (try? Tari.shared.connection.defaultBaseNodePeers()) ?? [] }
+
+    var selectedBaseNode: BaseNode? {
+        get { settings.selectedBaseNode }
+        set { update(settings: settings.update(selectedBaseNode: newValue)) }
+    }
+
+    var customBaseNodes: [BaseNode] {
+        get { settings.customBaseNodes }
+        set { update(settings: settings.update(customBaseNodes: newValue)) }
+    }
+
+    var allBaseNodes: [BaseNode] { defaultBaseNodes + customBaseNodes }
+
+    private var settings: NetworkSettings {
+        let allSettings = GroupUserDefaults.networksSettings ?? []
+
+        guard let existingSettings = allSettings.first(where: { $0.name == selectedNetwork.name }) else {
+            let newSettings = NetworkSettings(name: selectedNetwork.name, selectedBaseNode: nil, customBaseNodes: [])
+            update(settings: newSettings)
+            return newSettings
+        }
+        return existingSettings
+    }
+
     private var cancelables = Set<AnyCancellable>()
 
     // MARK: - Initializers
@@ -79,5 +108,27 @@ final class NetworkManager {
     func removeSelectedNetworkSettings() {
         GroupUserDefaults.networksSettings?.removeAll { $0.name == GroupUserDefaults.selectedNetworkName }
         GroupUserDefaults.selectedNetworkName = nil
+    }
+
+    func randomBaseNode() throws -> BaseNode {
+        guard let newBaseNode = defaultBaseNodes.randomElement() else { throw InternalError.noBaseNode }
+        return newBaseNode
+    }
+
+    private func update(settings: NetworkSettings) {
+        var allSettings = GroupUserDefaults.networksSettings ?? []
+        allSettings.removeAll { $0 == settings }
+        allSettings.append(settings)
+        GroupUserDefaults.networksSettings = allSettings
+    }
+
+    private func updateDataFromSettings() {
+        selectedBaseNode = settings.selectedBaseNode
+    }
+
+    // MARK: - Handlers
+
+    private func handle(selectedNetwork: TariNetwork) {
+        GroupUserDefaults.selectedNetworkName = selectedNetwork.name
     }
 }
