@@ -75,7 +75,7 @@ final class Wallet {
         }
 
         let transactionSendResultCallback: (@convention(c) (UInt64, OpaquePointer?) -> Void) = { identifier, pointer in
-            guard let pointer = pointer, let data = try? TransactionSendResult(identifier: identifier, pointer: pointer) else { return }
+            guard let pointer, let data = try? TransactionSendResult(identifier: identifier, pointer: pointer) else { return }
             WalletCallbacksManager.shared.post(name: .transactionSendResult, object: data)
         }
 
@@ -103,11 +103,8 @@ final class Wallet {
         let contactsLivenessDataUpdatedCallback: (@convention(c) (OpaquePointer?) -> Void) = { _ in
         }
 
-        let balanceUpdatedCallback: @convention(c) (OpaquePointer?) -> Void = { balancePointer in
-            guard let balancePointer = balancePointer else { return }
-            let balance = Balance(pointer: balancePointer)
-            WalletCallbacksManager.shared.post(name: .walletBalanceUpdate, object: balance)
-
+        let balanceUpdatedCallback: @convention(c) (OpaquePointer?) -> Void = { pointer in
+            WalletCallbacksManager.shared.post(name: .walletBalanceUpdate, object: pointer)
         }
 
         let trasactionValidationCompleteCallback: @convention(c) (UInt64, UInt64) -> Void = { responseId, status in
@@ -118,12 +115,12 @@ final class Wallet {
         let storedMessagesReceivedCallback: (@convention(c) () -> Void) = {
         }
 
-        let connectivityStatusCallback: (@convention(c) (UInt64) -> Void) = { rawStatus in
-            guard let status = BaseNodeConnectivityStatus(rawValue: rawStatus) else { return }
+        let connectivityStatusCallback: (@convention(c) (UInt64) -> Void) = { status in
             WalletCallbacksManager.shared.post(name: .baseNodeConnectionStatusUpdate, object: status)
         }
 
-        let baseNodeStateCallback: (@convention(c) (OpaquePointer?) -> Void) = { _ in
+        let baseNodeStateCallback: (@convention(c) (OpaquePointer?) -> Void) = { pointer in
+            WalletCallbacksManager.shared.post(name: .baseNodeStateUpdate, object: pointer)
         }
 
         var isRecoveryInProgress = false

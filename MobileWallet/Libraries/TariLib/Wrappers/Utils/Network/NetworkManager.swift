@@ -65,13 +65,18 @@ final class NetworkManager {
         set { update(settings: settings.update(customBaseNodes: newValue)) }
     }
 
+    var blockHeight: UInt64 {
+        get { settings.blockHeight }
+        set { update(settings: settings.update(blockHeight: newValue)) }
+    }
+
     var allBaseNodes: [BaseNode] { defaultBaseNodes + customBaseNodes }
 
     private var settings: NetworkSettings {
         let allSettings = GroupUserDefaults.networksSettings ?? []
 
         guard let existingSettings = allSettings.first(where: { $0.name == selectedNetwork.name }) else {
-            let newSettings = NetworkSettings(name: selectedNetwork.name, selectedBaseNode: nil, customBaseNodes: [])
+            let newSettings = NetworkSettings(name: selectedNetwork.name, selectedBaseNode: nil, customBaseNodes: [], blockHeight: 0)
             update(settings: newSettings)
             return newSettings
         }

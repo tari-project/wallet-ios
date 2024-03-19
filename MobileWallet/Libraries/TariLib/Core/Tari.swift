@@ -104,6 +104,7 @@ final class Tari: MainServiceable {
 
     @Published private(set) var isWalletConnected: Bool = false
     @Published private(set) var torError: TorError?
+    @Published private(set) var blockHeight: UInt64 = NetworkManager.shared.blockHeight
 
     var canAutomaticalyReconnectWallet: Bool = false
     @Published var isDisconnectionDisabled: Bool = false
@@ -182,6 +183,15 @@ final class Tari: MainServiceable {
 
         torManager.$error
             .assignPublisher(to: \.torError, on: self)
+            .store(in: &cancellables)
+
+        WalletCallbacksManager.shared.baseNodeState
+            .compactMap { try? $0.heightOfTheLongestChain }
+            .removeDuplicates()
+            .sink { [weak self] in
+                NetworkManager.shared.blockHeight = $0
+                self?.blockHeight = $0
+            }
             .store(in: &cancellables)
     }
 
