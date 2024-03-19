@@ -511,6 +511,7 @@
 		54D419B72995094100D496B4 /* ContactBookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B62995094100D496B4 /* ContactBookView.swift */; };
 		54D419B92995094B00D496B4 /* ContactBookConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D419B82995094B00D496B4 /* ContactBookConstructor.swift */; };
 		54D4747929EDC21D003D14E6 /* FormOverlayPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D4747829EDC21D003D14E6 /* FormOverlayPresenter.swift */; };
+		54D782F62BA8616F00DD3BFE /* BaseNodeState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D782F52BA8616F00DD3BFE /* BaseNodeState.swift */; };
 		54D835582AC6C99D00D74FE8 /* AccessoryImageMenuCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D835572AC6C99D00D74FE8 /* AccessoryImageMenuCell.swift */; };
 		54D88EA22A5ADBFA0075DBC1 /* TransactionFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D88EA12A5ADBFA0075DBC1 /* TransactionFormatter.swift */; };
 		54D88EA42A5AEAEC0075DBC1 /* TransactionDynamicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D88EA32A5AEAEC0075DBC1 /* TransactionDynamicModel.swift */; };
@@ -1103,6 +1104,7 @@
 		54D419B62995094100D496B4 /* ContactBookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookView.swift; sourceTree = "<group>"; };
 		54D419B82995094B00D496B4 /* ContactBookConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactBookConstructor.swift; sourceTree = "<group>"; };
 		54D4747829EDC21D003D14E6 /* FormOverlayPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormOverlayPresenter.swift; sourceTree = "<group>"; };
+		54D782F52BA8616F00DD3BFE /* BaseNodeState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseNodeState.swift; sourceTree = "<group>"; };
 		54D835572AC6C99D00D74FE8 /* AccessoryImageMenuCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessoryImageMenuCell.swift; sourceTree = "<group>"; };
 		54D88EA12A5ADBFA0075DBC1 /* TransactionFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFormatter.swift; sourceTree = "<group>"; };
 		54D88EA32A5AEAEC0075DBC1 /* TransactionDynamicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDynamicModel.swift; sourceTree = "<group>"; };
@@ -1784,6 +1786,7 @@
 		3A312FEB28B6314A00A290D3 /* FFI */ = {
 			isa = PBXGroup;
 			children = (
+				54D782F42BA8615D00DD3BFE /* Base Node */,
 				3AF335DD28D7905C00B48F33 /* Configs */,
 				3AF335DA28D754EC00B48F33 /* Contacts */,
 				54C02B8F2BA075040057301A /* Errors */,
@@ -1792,7 +1795,6 @@
 				3A312FEC28B6315A00A290D3 /* Transactions */,
 				544D9D4A296D9B0000D8ECEF /* Unblinded Outputs */,
 				4CDEC322273A5E3500999DCB /* Balance.swift */,
-				3A8005CE28EAF9380022A38A /* BaseNodeConnectivityStatus.swift */,
 				00BBD80D237DA07400EBF5E6 /* ByteVector.swift */,
 				3A8005C728EAF1AB0022A38A /* RestoreWalletStatus.swift */,
 				3A6F3FF7283BF980005D1793 /* TariFeePerGramStats.swift */,
@@ -2975,6 +2977,15 @@
 			path = "Contact Book";
 			sourceTree = "<group>";
 		};
+		54D782F42BA8615D00DD3BFE /* Base Node */ = {
+			isa = PBXGroup;
+			children = (
+				3A8005CE28EAF9380022A38A /* BaseNodeConnectivityStatus.swift */,
+				54D782F52BA8616F00DD3BFE /* BaseNodeState.swift */,
+			);
+			path = "Base Node";
+			sourceTree = "<group>";
+		};
 		54DE32CE2930BE170060108A /* Theme */ = {
 			isa = PBXGroup;
 			children = (
@@ -3489,6 +3500,7 @@
 				3A8473D228EC568A0015E63A /* TariMessageSignService.swift in Sources */,
 				543DF19C293F3DA90031EA70 /* TorBridgesFooterView.swift in Sources */,
 				54103CDA2A555A1A00C456B4 /* TransactionHistoryConstructor.swift in Sources */,
+				54D782F62BA8616F00DD3BFE /* BaseNodeState.swift in Sources */,
 				37765D2624A35BA20091AE2A /* AESEncryption.swift in Sources */,
 				3A82455627E1EE0D003B6B59 /* TransactionDetailsSectionView.swift in Sources */,
 				54AD5F662A420A9F00D223B8 /* Data+Utlis.swift in Sources */,
