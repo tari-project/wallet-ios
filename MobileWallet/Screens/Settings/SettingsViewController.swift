@@ -135,7 +135,8 @@ final class SettingsViewController: SettingsParentTableViewController {
     ]
 
     private let moreSectionItems: [SystemMenuTableViewCellItem] = {
-        [
+
+        var items = [
             SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsAboutIcon, title: SettingsItemTitle.about.rawValue),
             SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsReportBugIcon, title: SettingsItemTitle.reportBug.rawValue),
             SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsVisitTariIcon, title: SettingsItemTitle.visitTari.rawValue),
@@ -143,8 +144,13 @@ final class SettingsViewController: SettingsParentTableViewController {
             SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsUserAgreementIcon, title: SettingsItemTitle.userAgreement.rawValue),
             SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsPrivacyPolicyIcon, title: SettingsItemTitle.privacyPolicy.rawValue),
             SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsDisclaimerIcon, title: SettingsItemTitle.disclaimer.rawValue),
-            SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBlockExplorerIcon, title: SettingsItemTitle.blockExplorer.rawValue)
         ]
+
+        if NetworkManager.shared.selectedNetwork.isBlockExplorerAvailable {
+            items.append(SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBlockExplorerIcon, title: SettingsItemTitle.blockExplorer.rawValue))
+        }
+
+        return items
     }()
 
     private let links: [SettingsItemTitle: URL?] = [
@@ -153,7 +159,7 @@ final class SettingsViewController: SettingsParentTableViewController {
         .userAgreement: URL(string: TariSettings.shared.userAgreementUrl),
         .privacyPolicy: URL(string: TariSettings.shared.privacyPolicyUrl),
         .disclaimer: URL(string: TariSettings.shared.disclaimer),
-        .blockExplorer: AppValues.blockExplorer.baseURL
+        .blockExplorer: NetworkManager.shared.selectedNetwork.blockExplorerURL
     ]
 
     private let profileIndexPath = IndexPath(row: 0, section: 0)
