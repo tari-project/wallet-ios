@@ -145,7 +145,8 @@ final class WalletCallbacksManager {
     let walletBalanceUpdatePublisher: AnyPublisher<Balance, Never> = {
         NotificationCenter.default
             .publisher(for: .walletBalanceUpdate)
-            .compactMap { $0.object as? Balance }
+            .compactMap { $0.object as? OpaquePointer }
+            .map { Balance(pointer: $0) }
             .share()
             .eraseToAnyPublisher()
     }()
@@ -161,7 +162,17 @@ final class WalletCallbacksManager {
     let baseNodeConnectionStatus: AnyPublisher<BaseNodeConnectivityStatus, Never> = {
         NotificationCenter.default
             .publisher(for: .baseNodeConnectionStatusUpdate)
-            .compactMap { $0.object as? BaseNodeConnectivityStatus }
+            .compactMap { $0.object as? UInt64 }
+            .compactMap { BaseNodeConnectivityStatus(rawValue: $0) }
+            .share()
+            .eraseToAnyPublisher()
+    }()
+
+    let baseNodeState: AnyPublisher<BaseNodeState, Never> = {
+        NotificationCenter.default
+            .publisher(for: .baseNodeStateUpdate)
+            .compactMap { $0.object as? OpaquePointer }
+            .map { BaseNodeState(pointer: $0) }
             .share()
             .eraseToAnyPublisher()
     }()
@@ -212,6 +223,7 @@ extension Notification.Name {
     static let walletBalanceUpdate = Self(rawValue: "com.tari.wallet.balance_update")
     static let transactionValidation = Self(rawValue: "com.tari.wallet.transaction_validation")
     static let baseNodeConnectionStatusUpdate = Self(rawValue: "com.tari.wallet.base_node_connection_status_update")
+    static let baseNodeStateUpdate = Self(rawValue: "com.tari.wallet.base_node_state_update")
 
     // MARK: - Recovery Callbacks
 

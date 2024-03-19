@@ -1,10 +1,10 @@
-//  NetworkSettings.swift
+//  BaseNodeState.swift
 
 /*
 	Package MobileWallet
-	Created by Adrian Truszczynski on 01/09/2021
+	Created by Adrian Truszczyński on 18/03/2024
 	Using Swift 5.0
-	Running on macOS 12.0
+	Running on macOS 14.2
 
 	Copyright 2019 The Tari Project
 
@@ -38,20 +38,25 @@
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-struct NetworkSettings: Codable, Equatable {
+final class BaseNodeState {
 
-    let name: String
-    let selectedBaseNode: BaseNode?
-    let customBaseNodes: [BaseNode]
-    let blockHeight: UInt64
+    // MARK: - Properties
 
-    static func == (lhs: Self, rhs: Self) -> Bool { lhs.name == rhs.name }
-}
+    var heightOfTheLongestChain: UInt64 {
+        get throws {
+            var errorCode: Int32 = -1
+            let errorCodePointer = PointerHandler.pointer(for: &errorCode)
+            let result = basenode_state_get_height_of_the_longest_chain(pointer, errorCodePointer)
+            guard errorCode == 0 else { throw WalletError(code: errorCode) }
+            return result
+        }
+    }
 
-extension NetworkSettings {
-    func update(selectedBaseNode: BaseNode?) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
-    func update(customBaseNodes: [BaseNode]) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
-    func update(isCloudBackupEnabled: Bool) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
-    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
-    func update(blockHeight: UInt64) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
+    private let pointer: OpaquePointer
+
+    // MARK: - Initialisers
+
+    init(pointer: OpaquePointer) {
+        self.pointer = pointer
+    }
 }

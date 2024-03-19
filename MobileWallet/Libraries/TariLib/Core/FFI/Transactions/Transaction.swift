@@ -49,9 +49,12 @@ enum TransactionStatus: Int32 {
     case coinbase
     case minedConfirmed
     case rejected
-    case fauxUnconfirmed
-    case fauxConfirmed
+    case oneSidedUnconfirmed
+    case oneSidedConfirmed
     case queued
+    case coinbaseUnconfirmed
+    case coinbaseConfirmed
+    case coinbaseNotInBlockChain
 }
 
 protocol Transaction {
@@ -71,7 +74,14 @@ extension Transaction {
     var isOneSidedPayment: Bool {
         get throws {
             let status = try status
-            return status == .fauxConfirmed || status == .fauxUnconfirmed
+            return status == .oneSidedConfirmed || status == .oneSidedUnconfirmed
+        }
+    }
+
+    var isCoinbase: Bool {
+        get throws {
+            let status = try status
+            return status == .coinbase || status == .coinbaseUnconfirmed || status == .coinbaseConfirmed || status == .coinbaseNotInBlockChain
         }
     }
 

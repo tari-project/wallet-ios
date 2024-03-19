@@ -209,9 +209,9 @@ final class TransactionDetailsModel {
         }
 
         switch try transaction.status {
-        case .unknown, .txNullError, .completed, .broadcast, .minedUnconfirmed, .pending, .queued:
+        case .unknown, .txNullError, .completed, .broadcast, .minedUnconfirmed, .pending, .queued, .coinbaseUnconfirmed, .coinbaseNotInBlockChain:
             return localized("tx_detail.payment_in_progress")
-        case .minedConfirmed, .imported, .rejected, .fauxUnconfirmed, .fauxConfirmed, .coinbase:
+        case .minedConfirmed, .imported, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .coinbase, .coinbaseConfirmed:
             return try transaction.isOutboundTransaction ? localized("tx_detail.payment_sent") : localized("tx_detail.payment_received")
         }
     }
@@ -251,7 +251,7 @@ final class TransactionDetailsModel {
                 return .txCompleted(confirmationCount: 1)
             }
             return .txCompleted(confirmationCount: confirmationCount + 1)
-        case .txNullError, .imported, .minedConfirmed, .unknown, .rejected, .fauxUnconfirmed, .fauxConfirmed, .queued, .coinbase:
+        case .txNullError, .imported, .minedConfirmed, .unknown, .rejected, .oneSidedUnconfirmed, .oneSidedConfirmed, .queued, .coinbase, .coinbaseUnconfirmed, .coinbaseConfirmed, .coinbaseNotInBlockChain:
             return nil
         }
     }
