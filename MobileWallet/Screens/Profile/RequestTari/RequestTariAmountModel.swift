@@ -58,7 +58,6 @@ final class RequestTariAmountModel {
     // MARK: - Properties
 
     private let amountFormatter = AmountNumberFormatter()
-    private var cancellables = Set<AnyCancellable>()
 
     init() {
         setupCallbacks()
@@ -68,23 +67,13 @@ final class RequestTariAmountModel {
 
     private func setupCallbacks() {
 
-        if #available(iOS 14.0, *) {
-            amountFormatter.$amount
-                .assign(to: &$amount)
+        amountFormatter.$amount
+            .assign(to: &$amount)
 
-            amountFormatter.$amountValue
-                .map { $0 > 0.0 }
-                .assign(to: &$isValidAmount)
-        } else {
-            amountFormatter.$amount
-                .assign(to: \.amount, on: self)
-                .store(in: &cancellables)
+        amountFormatter.$amountValue
+            .map { $0 > 0.0 }
+            .assign(to: &$isValidAmount)
 
-            amountFormatter.$amountValue
-                .map { $0 > 0.0 }
-                .assign(to: \.isValidAmount, on: self)
-                .store(in: &cancellables)
-        }
     }
 
     // MARK: - Actions

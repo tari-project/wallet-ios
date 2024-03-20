@@ -126,14 +126,4 @@ final class NetworkManager {
         allSettings.append(settings)
         GroupUserDefaults.networksSettings = allSettings
     }
-
-    private func updateDataFromSettings() {
-        selectedBaseNode = settings.selectedBaseNode
-    }
-
-    // MARK: - Handlers
-
-    private func handle(selectedNetwork: TariNetwork) {
-        GroupUserDefaults.selectedNetworkName = selectedNetwork.name
-    }
 }

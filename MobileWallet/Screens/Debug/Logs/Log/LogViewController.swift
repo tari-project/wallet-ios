@@ -117,7 +117,7 @@ final class LogViewController: SecureViewController<LogView> {
         var snapshot = NSDiffableDataSourceSnapshot<Int, LogLineModel>()
         snapshot.appendSections([0])
         snapshot.appendItems(items)
-        tableDataSource?.apply(snapshot: snapshot)
+        tableDataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     private func showFiltersPopUp(options: [LogFilterModel]) {

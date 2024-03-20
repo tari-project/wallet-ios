@@ -167,7 +167,7 @@ final class ContactBookContactListView: DynamicThemeView {
                 snapshot.appendItems($1.items)
             }
 
-        dataSource?.apply(snapshot: snapshot)
+        dataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     private func update(placeholderViewModel: ContactBookListPlaceholder.ViewModel?) {

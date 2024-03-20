@@ -63,9 +63,7 @@ final class TransactionHistoryView: BaseNavigationContentView {
         view.rowHeight = UITableView.automaticDimension
         view.separatorInset = UIEdgeInsets(top: 0.0, left: 22.0, bottom: 0.0, right: 22.0)
         view.keyboardDismissMode = .interactive
-        if #available(iOS 15.0, *) {
-            view.sectionHeaderTopPadding = .zero
-        }
+        view.sectionHeaderTopPadding = .zero
         view.register(type: TransactionHistoryCell.self)
         view.register(headerFooterType: MenuTableHeaderView.self)
         return view
@@ -156,7 +154,7 @@ final class TransactionHistoryView: BaseNavigationContentView {
         }
 
         viewModels = transactions
-        dataSource?.apply(snapshot: snapshot)
+        dataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     private func updateCells(indexPath: IndexPath) {
