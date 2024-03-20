@@ -137,7 +137,7 @@ final class TorBridgesView: BaseNavigationContentView {
         snapshot.appendSections([0])
         snapshot.appendItems(items)
 
-        dataSource?.apply(snapshot: snapshot)
+        dataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     // MARK: - Actions
