@@ -44,6 +44,7 @@ struct TariNetwork {
     let tickerSymbol: String
     let isRecommended: Bool
     let dnsPeer: String
+    let blockExplorerURL: URL?
 }
 
 extension TariNetwork {
@@ -56,7 +57,19 @@ extension TariNetwork {
             presentedName: "StageNet",
             isMainNet: false,
             isRecommended: true,
-            dnsPeer: "seeds.stagenet.tari.com"
+            dnsPeer: "seeds.stagenet.tari.com",
+            blockExplorerURL: nil
+        )
+    }
+
+    static var nextnet: Self {
+        makeNetwork(
+            name: "nextnet",
+            presentedName: "NextNet",
+            isMainNet: false,
+            isRecommended: false,
+            dnsPeer: "seeds.nextnet.tari.com",
+            blockExplorerURL: URL(string: "https://explore-nextnet.tari.com")
         )
     }
 
@@ -65,8 +78,24 @@ extension TariNetwork {
         return "\(presentedName) (\(localized("common.recommended")))"
     }
 
-    private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, isRecommended: Bool, dnsPeer: String) -> Self {
+    var isBlockExplorerAvailable: Bool { blockExplorerURL != nil }
+
+    func blockExplorerKernelURL(nounce: String, signature: String) -> URL? {
+        if #available(iOS 16.0, *) {
+            return blockExplorerURL?
+                .appending(path: "kernel_search")
+                .appending(queryItems: [
+                    URLQueryItem(name: "nonces", value: nounce),
+                    URLQueryItem(name: "signatures", value: signature)
+                ])
+        } else {
+            guard let rawURL = blockExplorerURL?.absoluteString.appending("/kernel_search?nonces=\(nounce)&signatures=\(signature)") else { return nil }
+            return URL(string: rawURL)
+        }
+    }
+
+    private static func makeNetwork(name: String, presentedName: String, isMainNet: Bool, isRecommended: Bool, dnsPeer: String, blockExplorerURL: URL?) -> Self {
         let currencySymbol = isMainNet ? "XTR" : "tXTR"
-        return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, isRecommended: isRecommended, dnsPeer: dnsPeer)
+        return Self(name: name, presentedName: presentedName, tickerSymbol: currencySymbol, isRecommended: isRecommended, dnsPeer: dnsPeer, blockExplorerURL: blockExplorerURL)
     }
 }
