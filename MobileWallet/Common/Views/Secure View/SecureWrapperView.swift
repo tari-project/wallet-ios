@@ -95,6 +95,10 @@ final class SecureWrapperView<MainView: UIView>: UIView {
 
         addSubview(contentView)
 
+        if #unavailable(iOS 16.0) {
+            contentView.isUserInteractionEnabled = true
+        }
+
         contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(view)
 
