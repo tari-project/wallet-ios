@@ -63,7 +63,7 @@ final class SettingsProfileCell: DynamicThemeCell {
 
     @View private var scanImage: UIImageView = {
         let view = UIImageView()
-        view.image = .icons.qr
+        view.image = .Icons.QR
         view.contentMode = .scaleAspectFit
         return view
     }()

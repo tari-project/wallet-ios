@@ -56,9 +56,9 @@ class HomeGlassView: UIView {
     // MARK: - Setups
 
     private func setupView() {
-        backgroundColor = .static.white?.withAlphaComponent(0.2)
+        backgroundColor = .Static.white.withAlphaComponent(0.2)
         layer.cornerRadius = 10.0
-        layer.borderColor = UIColor.static.white?.withAlphaComponent(0.4).cgColor
+        layer.borderColor = UIColor.Static.white.withAlphaComponent(0.4).cgColor
         layer.borderWidth = 1.0
     }
 }

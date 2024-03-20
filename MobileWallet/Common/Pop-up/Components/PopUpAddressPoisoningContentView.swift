@@ -69,7 +69,7 @@ final class PopUpAddressPoisoningContentView: DynamicThemeView {
 
     @View private var shieldIconView: UIImageView = {
         let view = UIImageView()
-        view.image = .icons.shieldCheckmark
+        view.image = .Icons.shieldCheckmark
         return view
     }()
 
@@ -250,7 +250,7 @@ final class PopUpAddressPoisoningContentCell: DynamicThemeCell {
 
     @View private var shieldIconView: UIImageView = {
         let view = UIImageView()
-        view.image = .icons.shieldCheckmark
+        view.image = .Icons.shieldCheckmark
         view.isHidden = true
         return view
     }()

@@ -58,14 +58,14 @@ final class HomeView: UIView {
 
     @View private var connectionStatusButton: BaseButton = {
         let view = BaseButton()
-        view.tintColor = .static.white
+        view.tintColor = .Static.white
         return view
     }()
 
     @View private var qrCodeScannerButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "qrcode"), for: .normal)
-        view.tintColor = .static.white
+        view.tintColor = .Static.white
         return view
     }()
 
@@ -73,8 +73,8 @@ final class HomeView: UIView {
 
     @View private var balanceCurrencyView: UIImageView = {
         let view = UIImageView()
-        view.tintColor = .static.white
-        view.image = .icons.tariGem
+        view.tintColor = .Static.white
+        view.image = .Icons.tariGem
         view.contentMode = .scaleAspectFit
         return view
     }()
@@ -91,15 +91,15 @@ final class HomeView: UIView {
     @View private var availableBalanceTitleLabel: UILabel = {
         let view = UILabel()
         view.text = localized("home.label.spendable")
-        view.textColor = .static.white
+        view.textColor = .Static.white
         view.font = .Avenir.medium.withSize(12.0)
         return view
     }()
 
     @View private var availableBalanceCurrencyView: UIImageView = {
         let view = UIImageView()
-        view.tintColor = .static.white
-        view.image = .icons.tariGem
+        view.tintColor = .Static.white
+        view.image = .Icons.tariGem
         view.contentMode = .scaleAspectFit
 
         return view
@@ -115,7 +115,7 @@ final class HomeView: UIView {
     @View private var amountHelpButton: BaseButton = {
         let view = BaseButton()
         view.setImage(UIImage(systemName: "questionmark.circle"), for: .normal)
-        view.tintColor = .static.white
+        view.tintColor = .Static.white
         return view
     }()
 
@@ -146,7 +146,7 @@ final class HomeView: UIView {
     @View private var viewAllTransactionsButton: BaseButton = {
         let view = BaseButton()
         view.setTitle(localized("home.button.all_transactions"), for: .normal)
-        view.setTitleColor(.static.white, for: .normal)
+        view.setTitleColor(.Static.white, for: .normal)
         view.titleLabel?.font = .Avenir.medium.withSize(12.0)
         return view
     }()
@@ -326,7 +326,7 @@ final class HomeView: UIView {
 
     private func update(balance: String) {
 
-        guard let textColor = UIColor.static.white else { return }
+        let textColor = UIColor.Static.white
 
         let integerFont = UIFont.Avenir.black.withSize(50.0)
         let fractionalFont = UIFont.Avenir.heavy.withSize(18.0)
@@ -359,13 +359,10 @@ final class HomeView: UIView {
     }
 
     private func update(availableBalance: String) {
-
-        guard let foregroundColor = UIColor.static.white else { return }
-
         availableBalanceLabel.attributedText = NSAttributedString(
             string: availableBalance,
             attributes: [
-                .foregroundColor: foregroundColor,
+                .foregroundColor: UIColor.Static.white,
                 .font: UIFont.Avenir.medium.withSize(12.0)
             ]
         )

@@ -121,56 +121,56 @@ extension ColorTheme {
     static var light: Self {
         Self(
             brand: Brand(
-                purple: UIColor(named: "Light/Brand/Purple"),
-                pink: UIColor(named: "Light/Brand/Pink"),
-                darkBlue: UIColor(named: "Light/Brand/Dark Blue")
+                purple: UIColor.Light.Brand.purple,
+                pink: UIColor.Light.Brand.pink,
+                darkBlue: UIColor.Light.Brand.darkBlue
             ),
             neutral: Neutral(
-                primary: UIColor(named: "Light/Neutral/Primary"),
-                secondary: UIColor(named: "Light/Neutral/Secondary"),
-                tertiary: UIColor(named: "Light/Neutral/Tertiary"),
-                inactive: UIColor(named: "Light/Neutral/Inactive")
+                primary: UIColor.Light.Neutral.primary,
+                secondary: UIColor.Light.Neutral.secondary,
+                tertiary: UIColor.Light.Neutral.tertiary,
+                inactive: UIColor.Light.Neutral.inactive
             ),
             buttons: Buttons(
-                primaryStart: UIColor(named: "Light/Buttons/PrimaryStart"),
-                primaryEnd: UIColor(named: "Light/Buttons/PrimaryEnd"),
-                disabled: UIColor(named: "Light/Buttons/Disabled"),
-                primaryText: UIColor(named: "Light/Buttons/Primary Text"),
-                disabledText: UIColor(named: "Light/Buttons/Disabled Text")
+                primaryStart: UIColor.Light.Buttons.primaryStart,
+                primaryEnd: UIColor.Light.Buttons.primaryEnd,
+                disabled: UIColor.Light.Buttons.disabled,
+                primaryText: UIColor.Light.Buttons.primaryText,
+                disabledText: UIColor.Light.Buttons.disabledText
             ),
             text: Text(
-                heading: UIColor(named: "Light/Text/Heading"),
-                body: UIColor(named: "Light/Text/Body"),
-                lightText: UIColor(named: "Light/Text/Light Text"),
-                links: UIColor(named: "Light/Text/Links")
+                heading: UIColor.Light.Text.heading,
+                body: UIColor.Light.Text.body,
+                lightText: UIColor.Light.Text.lightText,
+                links: UIColor.Light.Text.links
             ),
             icons: Icons(
-                default: UIColor(named: "Light/Icons/Default"),
-                active: UIColor(named: "Light/Icons/Active"),
-                inactive: UIColor(named: "Light/Icons/Inactive")
+                default: UIColor.Light.Icons.default,
+                active: UIColor.Light.Icons.active,
+                inactive: UIColor.Light.Icons.inactive
             ),
             components: Components(
-                qrBackground: UIColor(named: "Light/Components/QR Background"),
-                overlay: UIColor(named: "Light/Components/Overlay")
+                qrBackground: UIColor.Light.Components.qrBackground,
+                overlay: UIColor.Light.Components.overlay
             ),
             backgrounds: Backgrounds(
-                primary: UIColor(named: "Light/Backgrounds/Primary"),
-                secondary: UIColor(named: "Light/Backgrounds/Secondary")
+                primary: UIColor.Light.Backgrounds.primary,
+                secondary: UIColor.Light.Backgrounds.secondary
             ),
             system: System(
-                red: UIColor(named: "Light/System/Red"),
-                orange: UIColor(named: "Light/System/Orange"),
-                yellow: UIColor(named: "Light/System/Yellow"),
-                green: UIColor(named: "Light/System/Green"),
-                blue: UIColor(named: "Light/System/Blue"),
-                lightRed: UIColor(named: "Light/System/Light Red"),
-                lightOrange: UIColor(named: "Light/System/Light Orange"),
-                lightYellow: UIColor(named: "Light/System/Light Yellow"),
-                lightGreen: UIColor(named: "Light/System/Light Green"),
-                lightBlue: UIColor(named: "Light/System/Light Blue")
+                red: UIColor.Light.System.red,
+                orange: UIColor.Light.System.orange,
+                yellow: UIColor.Light.System.yellow,
+                green: UIColor.Light.System.green,
+                blue: UIColor.Light.System.blue,
+                lightRed: UIColor.Light.System.lightGreen,
+                lightOrange: UIColor.Light.System.lightOrange,
+                lightYellow: UIColor.Light.System.lightYellow,
+                lightGreen: UIColor.Light.System.lightGreen,
+                lightBlue: UIColor.Light.System.lightBlue
             ),
             shadows: Shadows(
-                box: Shadow(color: UIColor(named: "Light/Shadows/Box"), opacity: 1.0, radius: 13.5, offset: CGSize(width: -1.0, height: 6.5))
+                box: Shadow(color: UIColor.Light.Shadows.box, opacity: 1.0, radius: 13.5, offset: CGSize(width: -1.0, height: 6.5))
             )
         )
     }
@@ -178,56 +178,56 @@ extension ColorTheme {
     static var dark: Self {
         Self(
             brand: Brand(
-                purple: UIColor(named: "Dark/Brand/Purple"),
-                pink: UIColor(named: "Dark/Brand/Pink"),
-                darkBlue: UIColor(named: "Dark/Brand/Dark Blue")
+                purple: UIColor.Dark.Brand.purple,
+                pink: UIColor.Dark.Brand.pink,
+                darkBlue: UIColor.Dark.Brand.darkBlue
             ),
             neutral: Neutral(
-                primary: UIColor(named: "Dark/Neutral/Primary"),
-                secondary: UIColor(named: "Dark/Neutral/Secondary"),
-                tertiary: UIColor(named: "Dark/Neutral/Tertiary"),
-                inactive: UIColor(named: "Dark/Neutral/Inactive")
+                primary: UIColor.Dark.Neutral.primary,
+                secondary: UIColor.Dark.Neutral.secondary,
+                tertiary: UIColor.Dark.Neutral.tertiary,
+                inactive: UIColor.Dark.Neutral.inactive
             ),
             buttons: Buttons(
-                primaryStart: UIColor(named: "Dark/Buttons/PrimaryStart"),
-                primaryEnd: UIColor(named: "Dark/Buttons/PrimaryEnd"),
-                disabled: UIColor(named: "Dark/Buttons/Disabled"),
-                primaryText: UIColor(named: "Dark/Buttons/Primary Text"),
-                disabledText: UIColor(named: "Dark/Buttons/Disabled Text")
+                primaryStart: UIColor.Dark.Buttons.primaryStart,
+                primaryEnd: UIColor.Dark.Buttons.primaryEnd,
+                disabled: UIColor.Dark.Buttons.disabled,
+                primaryText: UIColor.Dark.Buttons.primaryText,
+                disabledText: UIColor.Dark.Buttons.disabledText
             ),
             text: Text(
-                heading: UIColor(named: "Dark/Text/Heading"),
-                body: UIColor(named: "Dark/Text/Body"),
-                lightText: UIColor(named: "Dark/Text/Light Text"),
-                links: UIColor(named: "Dark/Text/Links")
+                heading: UIColor.Dark.Text.heading,
+                body: UIColor.Dark.Text.body,
+                lightText: UIColor.Dark.Text.lightText,
+                links: UIColor.Dark.Text.links
             ),
             icons: Icons(
-                default: UIColor(named: "Dark/Icons/Default"),
-                active: UIColor(named: "Dark/Icons/Active"),
-                inactive: UIColor(named: "Dark/Icons/Inactive")
+                default: UIColor.Dark.Icons.default,
+                active: UIColor.Dark.Icons.active,
+                inactive: UIColor.Dark.Icons.inactive
             ),
             components: Components(
-                qrBackground: UIColor(named: "Dark/Components/QR Background"),
-                overlay: UIColor(named: "Dark/Components/Overlay")
+                qrBackground: UIColor.Dark.Components.qrBackground,
+                overlay: UIColor.Dark.Components.overlay
             ),
             backgrounds: Backgrounds(
-                primary: UIColor(named: "Dark/Backgrounds/Primary"),
-                secondary: UIColor(named: "Dark/Backgrounds/Secondary")
+                primary: UIColor.Dark.Backgrounds.primary,
+                secondary: UIColor.Dark.Backgrounds.secondary
             ),
             system: System(
-                red: UIColor(named: "Dark/System/Red"),
-                orange: UIColor(named: "Dark/System/Orange"),
-                yellow: UIColor(named: "Dark/System/Yellow"),
-                green: UIColor(named: "Dark/System/Green"),
-                blue: UIColor(named: "Dark/System/Blue"),
-                lightRed: UIColor(named: "Dark/System/Light Red"),
-                lightOrange: UIColor(named: "Dark/System/Light Orange"),
-                lightYellow: UIColor(named: "Dark/System/Light Yellow"),
-                lightGreen: UIColor(named: "Dark/System/Light Green"),
-                lightBlue: UIColor(named: "Dark/System/Light Blue")
+                red: UIColor.Dark.System.red,
+                orange: UIColor.Dark.System.orange,
+                yellow: UIColor.Dark.System.yellow,
+                green: UIColor.Dark.System.green,
+                blue: UIColor.Dark.System.blue,
+                lightRed: UIColor.Dark.System.lightRed,
+                lightOrange: UIColor.Dark.System.lightOrange,
+                lightYellow: UIColor.Dark.System.lightYellow,
+                lightGreen: UIColor.Dark.System.lightGreen,
+                lightBlue: UIColor.Dark.System.lightBlue
             ),
             shadows: Shadows(
-                box: Shadow(color: UIColor(named: "Dark/Shadows/Box"), opacity: 1.0, radius: 18.0, offset: CGSize(width: -1.0, height: 0.0))
+                box: Shadow(color: UIColor.Dark.Shadows.box, opacity: 1.0, radius: 18.0, offset: CGSize(width: -1.0, height: 0.0))
             )
         )
     }
@@ -235,56 +235,56 @@ extension ColorTheme {
     static var tariPurple: Self {
         Self(
             brand: Brand(
-                purple: UIColor(named: "Tari Purple/Brand/Purple"),
-                pink: UIColor(named: "Tari Purple/Brand/Pink"),
-                darkBlue: UIColor(named: "Tari Purple/Brand/Dark Blue")
+                purple: UIColor.TariPurple.Brand.purple,
+                pink: UIColor.TariPurple.Brand.pink,
+                darkBlue: UIColor.TariPurple.Brand.darkBlue
             ),
             neutral: Neutral(
-                primary: UIColor(named: "Tari Purple/Neutral/Primary"),
-                secondary: UIColor(named: "Tari Purple/Neutral/Secondary"),
-                tertiary: UIColor(named: "Tari Purple/Neutral/Tertiary"),
-                inactive: UIColor(named: "Tari Purple/Neutral/Inactive")
+                primary: UIColor.TariPurple.Neutral.primary,
+                secondary: UIColor.TariPurple.Neutral.secondary,
+                tertiary: UIColor.TariPurple.Neutral.tertiary,
+                inactive: UIColor.TariPurple.Neutral.inactive
             ),
             buttons: Buttons(
-                primaryStart: UIColor(named: "Tari Purple/Buttons/PrimaryStart"),
-                primaryEnd: UIColor(named: "Tari Purple/Buttons/PrimaryEnd"),
-                disabled: UIColor(named: "Tari Purple/Buttons/Disabled"),
-                primaryText: UIColor(named: "Tari Purple/Buttons/Primary Text"),
-                disabledText: UIColor(named: "Tari Purple/Buttons/Disabled Text")
+                primaryStart: UIColor.TariPurple.Buttons.primaryStart,
+                primaryEnd: UIColor.TariPurple.Buttons.primaryEnd,
+                disabled: UIColor.TariPurple.Buttons.disabled,
+                primaryText: UIColor.TariPurple.Buttons.primaryText,
+                disabledText: UIColor.TariPurple.Buttons.disabledText
             ),
             text: Text(
-                heading: UIColor(named: "Tari Purple/Text/Heading"),
-                body: UIColor(named: "Tari Purple/Text/Body"),
-                lightText: UIColor(named: "Tari Purple/Text/Light Text"),
-                links: UIColor(named: "Tari Purple/Text/Links")
+                heading: UIColor.TariPurple.Text.heading,
+                body: UIColor.TariPurple.Text.body,
+                lightText: UIColor.TariPurple.Text.lightText,
+                links: UIColor.TariPurple.Text.links
             ),
             icons: Icons(
-                default: UIColor(named: "Tari Purple/Icons/Default"),
-                active: UIColor(named: "Tari Purple/Icons/Active"),
-                inactive: UIColor(named: "Tari Purple/Icons/Inactive")
+                default: UIColor.TariPurple.Icons.default,
+                active: UIColor.TariPurple.Icons.active,
+                inactive: UIColor.TariPurple.Icons.inactive
             ),
             components: Components(
-                qrBackground: UIColor(named: "Tari Purple/Components/QR Background"),
-                overlay: UIColor(named: "Tari Purple/Components/Overlay")
+                qrBackground: UIColor.TariPurple.Components.qrBackground,
+                overlay: UIColor.TariPurple.Components.overlay
             ),
             backgrounds: Backgrounds(
-                primary: UIColor(named: "Tari Purple/Backgrounds/Primary"),
-                secondary: UIColor(named: "Tari Purple/Backgrounds/Secondary")
+                primary: UIColor.TariPurple.Backgrounds.primary,
+                secondary: UIColor.TariPurple.Backgrounds.secondary
             ),
             system: System(
-                red: UIColor(named: "Tari Purple/System/Red"),
-                orange: UIColor(named: "Tari Purple/System/Orange"),
-                yellow: UIColor(named: "Tari Purple/System/Yellow"),
-                green: UIColor(named: "Tari Purple/System/Green"),
-                blue: UIColor(named: "Tari Purple/System/Blue"),
-                lightRed: UIColor(named: "Tari Purple/System/Light Red"),
-                lightOrange: UIColor(named: "Tari Purple/System/Light Orange"),
-                lightYellow: UIColor(named: "Tari Purple/System/Light Yellow"),
-                lightGreen: UIColor(named: "Tari Purple/System/Light Green"),
-                lightBlue: UIColor(named: "Tari Purple/System/Light Blue")
+                red: UIColor.TariPurple.System.red,
+                orange: UIColor.TariPurple.System.orange,
+                yellow: UIColor.TariPurple.System.yellow,
+                green: UIColor.TariPurple.System.green,
+                blue: UIColor.TariPurple.System.blue,
+                lightRed: UIColor.TariPurple.System.lightRed,
+                lightOrange: UIColor.TariPurple.System.lightOrange,
+                lightYellow: UIColor.TariPurple.System.lightYellow,
+                lightGreen: UIColor.TariPurple.System.lightGreen,
+                lightBlue: UIColor.TariPurple.System.lightBlue
             ),
             shadows: Shadows(
-                box: Shadow(color: UIColor(named: "Tari Purple/Shadows/Box"), opacity: 1.0, radius: 18.0, offset: CGSize(width: -1.0, height: 0.0))
+                box: Shadow(color: UIColor.TariPurple.Shadows.box, opacity: 1.0, radius: 18.0, offset: CGSize(width: -1.0, height: 0.0))
             )
         )
     }

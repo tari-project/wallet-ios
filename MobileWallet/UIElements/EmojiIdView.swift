@@ -48,7 +48,7 @@ final class EmojiIdView: DynamicThemeView {
     weak var blackoutParent: UIView?
     private lazy var blackoutView: UIView = {
         let view = UIView()
-        view.backgroundColor = .static.popupOverlay
+        view.backgroundColor = .Static.popupOverlay
         guard let bounds =  UIApplication.shared.firstWindow?.bounds else { return view }
         view.frame = bounds
         view.alpha = 0.0
@@ -153,7 +153,7 @@ final class EmojiIdView: DynamicThemeView {
     private func updateCopyView(theme: ColorTheme) {
         copiedLabel?.textColor = theme.text.links
         containerView?.layer.borderColor = theme.system.green?.cgColor
-        containerView?.backgroundColor = .static.white?.withAlphaComponent(0.75)
+        containerView?.backgroundColor = .Static.white.withAlphaComponent(0.75)
         greenView?.backgroundColor = theme.system.green?.withAlphaComponent(0.12)
     }
 

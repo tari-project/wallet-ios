@@ -45,11 +45,11 @@ extension ContactsManager.ContactType {
     var image: UIImage? {
         switch self {
         case .internalOrEmojiID:
-            return .icons.contactTypes.internal
+            return .Icons.ContactTypes.internal
         case .external:
-            return .icons.contactTypes.external
+            return .Icons.ContactTypes.external
         case .linked:
-            return .icons.contactTypes.linked
+            return .Icons.ContactTypes.linked
         case .empty:
             return nil
         }

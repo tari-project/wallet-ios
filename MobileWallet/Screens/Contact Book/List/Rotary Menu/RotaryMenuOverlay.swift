@@ -161,17 +161,17 @@ private extension ContactBookModel.MenuItem {
     private var icon: UIImage? {
         switch self {
         case .send:
-            return .icons.send
+            return .Icons.send
         case .addToFavorites:
-            return .icons.star.filled
+            return .Icons.Star.filled
         case .removeFromFavorites:
-            return .icons.star.border
+            return .Icons.Star.border
         case .link:
-            return .icons.link
+            return .Icons.link
         case .unlink:
-            return .icons.unlink
+            return .Icons.unlink
         case .details:
-            return .icons.profile
+            return .Icons.profile
         }
     }
 

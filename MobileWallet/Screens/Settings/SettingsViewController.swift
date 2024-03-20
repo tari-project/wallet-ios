@@ -117,17 +117,17 @@ final class SettingsViewController: SettingsParentTableViewController {
     }
 
     private let backUpWalletItem = SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsWalletBackupsIcon, title: SettingsItemTitle.backUpWallet.rawValue, disableCellInProgress: false)
-    private let screenRecordingItem = SystemMenuTableViewCellItem(icon: .icons.settings.camera, title: SettingsItemTitle.screenRecording.rawValue)
+    private let screenRecordingItem = SystemMenuTableViewCellItem(icon: .Icons.Settings.camera, title: SettingsItemTitle.screenRecording.rawValue)
 
     private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [
         backUpWalletItem,
-        SystemMenuTableViewCellItem(icon: .icons.analytics, title: SettingsItemTitle.dataCollection.rawValue)
+        SystemMenuTableViewCellItem(icon: .Icons.analytics, title: SettingsItemTitle.dataCollection.rawValue)
     ]
 
     private lazy var advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingColorThemeIcon, title: SettingsItemTitle.selectTheme.rawValue),
         screenRecordingItem,
-        SystemMenuTableViewCellItem(icon: .icons.settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
+        SystemMenuTableViewCellItem(icon: .Icons.Settings.bluetooth, title: SettingsItemTitle.bluetoothConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBridgeConfigIcon, title: SettingsItemTitle.torBridgeConfiguration.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsNetworkIcon, title: SettingsItemTitle.selectNetwork.rawValue),
         SystemMenuTableViewCellItem(icon: Theme.shared.images.settingsBaseNodeIcon, title: SettingsItemTitle.selectBaseNode.rawValue),

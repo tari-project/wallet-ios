@@ -66,7 +66,7 @@ final class PulseLayer: CAShapeLayer {
         path = bezierPath.cgPath
         lineWidth = 2.0
         fillColor = UIColor.clear.cgColor
-        strokeColor = UIColor.static.white?.cgColor
+        strokeColor = UIColor.Static.white.cgColor
         opacity = 0.0
     }
 

@@ -63,8 +63,8 @@ final class QRCodeScannerView: UIView {
 
     @View private var closeButton: BaseButton = {
         let view = BaseButton()
-        view.setImage(.icons.close, for: .normal)
-        view.tintColor = .static.white
+        view.setImage(.Icons.close, for: .normal)
+        view.tintColor = .Static.white
         return view
     }()
 
@@ -72,7 +72,7 @@ final class QRCodeScannerView: UIView {
 
     @View private var titleContentView: UIView = {
         let view = UIView()
-        view.backgroundColor = .static.popupOverlay
+        view.backgroundColor = .Static.popupOverlay
         view.layer.cornerRadius = 10.0
         return view
     }()
@@ -83,7 +83,7 @@ final class QRCodeScannerView: UIView {
         view.textAlignment = .center
         view.font = .Avenir.medium.withSize(16.0)
         view.numberOfLines = 0
-        view.textColor = .static.white
+        view.textColor = .Static.white
         return view
     }()
 
@@ -115,25 +115,25 @@ final class QRCodeScannerView: UIView {
 
     @View private var approveButton: RoundedButton = {
         let view = RoundedButton()
-        view.setImage(.icons.checkmark, for: .normal)
-        view.backgroundColor = .static.white
+        view.setImage(.Icons.checkmark, for: .normal)
+        view.backgroundColor = .Static.white
         view.layer.cornerRadius = 22.0
         return view
     }()
 
     @View private var cancelButton: RoundedButton = {
         let view = RoundedButton()
-        view.setImage(.icons.close, for: .normal)
-        view.backgroundColor = .static.white
-        view.tintColor = .static.black
+        view.setImage(.Icons.close, for: .normal)
+        view.backgroundColor = .Static.white
+        view.tintColor = .Static.black
         view.layer.cornerRadius = 22.0
         return view
     }()
 
     @View private var bottomCenteredContentView: UIView = {
         let view = UIView()
-        view.backgroundColor = .static.popupOverlay
-        view.tintColor = .static.black
+        view.backgroundColor = .Static.popupOverlay
+        view.tintColor = .Static.black
         view.layer.cornerRadius = 10.0
         return view
     }()
@@ -166,7 +166,7 @@ final class QRCodeScannerView: UIView {
     // MARK: - Setups
 
     private func setupView() {
-        backgroundColor = .static.black
+        backgroundColor = .Static.black
     }
 
     private func setupLayers() {
@@ -252,9 +252,9 @@ final class QRCodeScannerView: UIView {
     private func updateActionLabel(actionType: ActionType) {
         switch actionType {
         case .normal:
-            self.actionLabel.textColor = .static.white
+            self.actionLabel.textColor = .Static.white
         case .error:
-            self.actionLabel.textColor = .static.red
+            self.actionLabel.textColor = .Static.red
         }
     }
 

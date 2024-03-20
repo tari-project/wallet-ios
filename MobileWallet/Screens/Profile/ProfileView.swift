@@ -89,7 +89,7 @@ final class ProfileView: BaseNavigationContentView {
         let view = RoundedLabeledButton()
         view.buttonSize = 46.0
         view.padding = 12.0
-        view.update(image: .icons.wallet, text: localized("profile_view.button.wallet"))
+        view.update(image: .Icons.wallet, text: localized("profile_view.button.wallet"))
         return view
     }()
 
@@ -131,13 +131,13 @@ final class ProfileView: BaseNavigationContentView {
         let view = RoundedLabeledButton()
         view.buttonSize = 46.0
         view.padding = 12.0
-        view.update(image: .icons.qr, text: localized("contact_book.share_bar.buttons.qr"))
+        view.update(image: .Icons.QR, text: localized("contact_book.share_bar.buttons.qr"))
         return view
     }()
 
     @View private var linkCodeButton: RoundedLabeledButton = {
         let view = RoundedLabeledButton()
-        view.update(image: .icons.link, text: localized("contact_book.share_bar.buttons.link"))
+        view.update(image: .Icons.link, text: localized("contact_book.share_bar.buttons.link"))
         view.buttonSize = 46.0
         view.padding = 12.0
         return view
@@ -145,7 +145,7 @@ final class ProfileView: BaseNavigationContentView {
 
     @View private var bleCodeButton: RoundedLabeledButton = {
         let view = RoundedLabeledButton()
-        view.update(image: .icons.bluetooth, text: localized("contact_book.share_bar.buttons.ble"))
+        view.update(image: .Icons.bluetooth, text: localized("contact_book.share_bar.buttons.ble"))
         view.buttonSize = 46.0
         view.padding = 12.0
         return view

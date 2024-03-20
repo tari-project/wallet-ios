@@ -131,7 +131,7 @@ final class HomeModel {
         case (.disconnected, _, _, _),
             (.connected, .disconnected, _, _),
             (.connected, .disconnecting, _, _):
-            connectionStatusIcon = .icons.network.off
+            connectionStatusIcon = .Icons.Network.off
         case (.connected, .connecting, _, _),
             (.connected, .waitingForAuthorization, _, _),
             (.connected, .portsOpen, _, _),
@@ -139,10 +139,10 @@ final class HomeModel {
             (.connected, .connected, .connecting, _),
             (.connected, .connected, .online, .idle),
             (.connected, .connected, .online, .failed):
-            connectionStatusIcon = .icons.network.limited
+            connectionStatusIcon = .Icons.Network.limited
         case (.connected, .connected, .online, .syncing),
             (.connected, .connected, .online, .synced):
-            connectionStatusIcon = .icons.network.full
+            connectionStatusIcon = .Icons.Network.full
         }
     }
 
