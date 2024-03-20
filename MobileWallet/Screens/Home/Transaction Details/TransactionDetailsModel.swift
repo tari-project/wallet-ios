@@ -122,7 +122,7 @@ final class TransactionDetailsModel {
             transactionState = try fetchTransactionState()
             transactionDirection = try fetchTransactionDirection()
             emojiIdViewModel = try fetchEmojiIdViewModel()
-            isContactSectionVisible = try !transaction.isOneSidedPayment
+            isContactSectionVisible = try !transaction.isOneSidedPayment && !transaction.isCoinbase
             subtitle = try fetchSubtitle()
             amount = try fetchAmount()
             fee = try fetchFee()
