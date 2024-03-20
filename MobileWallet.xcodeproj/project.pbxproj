@@ -105,7 +105,6 @@
 		3A1D8E4B28400AB8004129D5 /* AboutViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A1D8E4A28400AB8004129D5 /* AboutViewHeader.swift */; };
 		3A20A6B82722EE00002B15DB /* VideoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A20A6B72722EDFF002B15DB /* VideoView.swift */; };
 		3A21FC5128FFD7B8004B09A0 /* PopUpTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A21FC5028FFD7B8004B09A0 /* PopUpTableView.swift */; };
-		3A21FC5328FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A21FC5228FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift */; };
 		3A237C7B27D8D0F7005FA6AB /* SeedWordsListModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */; };
 		3A237C7D27D8E141005FA6AB /* SeedWordsListConstructor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */; };
 		3A2B95682864801D0085BE21 /* UTXOsWalletTileListLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A2B95672864801D0085BE21 /* UTXOsWalletTileListLayout.swift */; };
@@ -698,7 +697,6 @@
 		3A1D8E4A28400AB8004129D5 /* AboutViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewHeader.swift; sourceTree = "<group>"; };
 		3A20A6B72722EDFF002B15DB /* VideoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoView.swift; sourceTree = "<group>"; };
 		3A21FC5028FFD7B8004B09A0 /* PopUpTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopUpTableView.swift; sourceTree = "<group>"; };
-		3A21FC5228FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableViewDiffableDataSource+Update.swift"; sourceTree = "<group>"; };
 		3A237C7A27D8D0F7005FA6AB /* SeedWordsListModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListModel.swift; sourceTree = "<group>"; };
 		3A237C7C27D8E140005FA6AB /* SeedWordsListConstructor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeedWordsListConstructor.swift; sourceTree = "<group>"; };
 		3A2B95672864801D0085BE21 /* UTXOsWalletTileListLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UTXOsWalletTileListLayout.swift; sourceTree = "<group>"; };
@@ -1250,7 +1248,6 @@
 				37C8BA46248126B4005BBC05 /* UIScrollView+RefreshControl.swift */,
 				5488068629D4230500C2A0F9 /* UIStackView+Common.swift */,
 				548C137A29BF64AD00ACDF0C /* UITableView+Common.swift */,
-				3A21FC5228FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift */,
 				3AFAC361271C6F9E008AA842 /* UITextField+Combine.swift */,
 				BFC5532423D9B8E4009130A8 /* UIView+Content.swift */,
 				37547D5524601BF600EB59CC /* UIView+GlobalFrame.swift */,
@@ -3457,7 +3454,6 @@
 				00B4D6FA241B910200ED8318 /* NotificationManager.swift in Sources */,
 				3AE88506283785100070D1AC /* PopUpModifyFeeContentView.swift in Sources */,
 				3ACDA85E2721794800F08C70 /* YatTransactionModel.swift in Sources */,
-				3A21FC5328FFDD10004B09A0 /* UITableViewDiffableDataSource+Update.swift in Sources */,
 				5453242429A68D14009281A7 /* TariGradientView.swift in Sources */,
 				37B48A8324B3968F00F8A8D2 /* AppKeychainWrapper.swift in Sources */,
 				54DEF9F32987DA8700C4B749 /* UIScreen+Tools.swift in Sources */,

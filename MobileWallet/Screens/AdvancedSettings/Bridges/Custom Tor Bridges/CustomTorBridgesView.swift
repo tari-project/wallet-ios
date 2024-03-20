@@ -130,7 +130,7 @@ final class CustomTorBridgesView: BaseNavigationContentView {
         snapshot.appendItems([.requestBridges], toSection: 1)
         snapshot.appendItems([.scanQRCode, .uploadQRCode], toSection: 2)
 
-        dataSource?.apply(snapshot: snapshot)
+        dataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     // MARK: - Updates

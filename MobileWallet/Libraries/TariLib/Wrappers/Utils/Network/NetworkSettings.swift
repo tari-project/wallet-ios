@@ -51,7 +51,5 @@ struct NetworkSettings: Codable, Equatable {
 extension NetworkSettings {
     func update(selectedBaseNode: BaseNode?) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
     func update(customBaseNodes: [BaseNode]) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
-    func update(isCloudBackupEnabled: Bool) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
-    func update(hasVerifiedSeedPhrase: Bool) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
     func update(blockHeight: UInt64) -> Self { Self(name: name, selectedBaseNode: selectedBaseNode, customBaseNodes: customBaseNodes, blockHeight: blockHeight) }
 }

@@ -141,7 +141,7 @@ final class ContactTransactionListView: BaseNavigationContentView {
         var snapshot = NSDiffableDataSourceSnapshot<Int, TxTableViewModel>()
         snapshot.appendSections([0])
         snapshot.appendItems(models)
-        dataSource?.apply(snapshot: snapshot)
+        dataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     // MARK: - Layout

@@ -111,7 +111,7 @@ final class MenuTableView: DynamicThemeTableView {
                 snapshot.appendItems($1.items)
         }
 
-        tableDataSource?.apply(snapshot: snapshot)
+        tableDataSource?.applySnapshotUsingReloadData(snapshot)
     }
 }
 

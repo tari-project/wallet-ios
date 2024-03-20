@@ -129,7 +129,7 @@ final class DataCollectionSettingsView: BaseNavigationContentView {
         var snapshot = NSDiffableDataSourceSnapshot<Int, UInt>()
         snapshot.appendSections([0])
         snapshot.appendItems([0])
-        dataSource?.apply(snapshot: snapshot)
+        dataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     // MARK: - Updates

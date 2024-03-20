@@ -123,7 +123,7 @@ final class BluetoothSettingsView: BaseNavigationContentView {
                 snapshot.appendItems($1.items)
             }
 
-        dataSource?.apply(snapshot: snapshot)
+        dataSource?.applySnapshotUsingReloadData(snapshot)
     }
 
     // MARK: - Layout
