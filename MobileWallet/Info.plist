@@ -51,15 +51,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSBluetoothAlwaysUsageDescription</key>
-	<string></string>
+	<string>NSBluetoothAlwaysUsageDescription</string>
 	<key>NSCameraUsageDescription</key>
-	<string></string>
+	<string>NSCameraUsageDescription</string>
 	<key>NSContactsUsageDescription</key>
-	<string></string>
+	<string>NSContactsUsageDescription</string>
 	<key>NSFaceIDUsageDescription</key>
-	<string></string>
+	<string>NSFaceIDUsageDescription</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string></string>
+	<string>NSPhotoLibraryAddUsageDescription</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>iCloud.com.tari.wallet</key>
