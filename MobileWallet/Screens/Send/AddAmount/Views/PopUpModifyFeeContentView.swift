@@ -45,7 +45,7 @@ final class PopUpModifyFeeContentView: DynamicThemeView {
 
     // MARK: - Subviews
 
-    @View private(set) var segmentedControl = TariSegmentedControl(icons: [Theme.shared.images.speedometerLow, Theme.shared.images.speedometerMid, Theme.shared.images.speedometerHigh])
+    @View private(set) var segmentedControl = TariSegmentedControl(icons: [.Icons.Fees.Speedometer.low, .Icons.Fees.Speedometer.mid, .Icons.Fees.Speedometer.high])
 
     @View private var estimatedFeeTitleLabel: UILabel = {
         let view = UILabel()

@@ -72,70 +72,12 @@ struct Images {
     let successIcon = UIImage(named: "SuccessIcon")
     let tariIcon = UIImage(named: "TariIcon")
     let cancelGiphy = UIImage(named: "cancelGiphy")
-    let cancelGrey = UIImage(named: "cancelGrey")
     let poweredByGiphy = UIImage(named: "poweredByGiphy")
     let searchIcon = UIImage(named: "SearchIcon")
-    let yatLogo = UIImage(named: "YatLogo")
-    let yatButtonOff = UIImage(named: "YatButtonOff")
-    let yatButtonOn = UIImage(named: "YatButtonOn")
 
     // Amount
     let delete = UIImage(named: "numpad-delete")
-    let helpButton = UIImage(named: "QuestionMark")
-
-    // Seed words list
-    let expandButtonArrow = UIImage(named: "ExpandButtonArrow")
-
-    // UTXOs Wallet Icons
-    let utxoFaucet = UIImage(named: "icon-faucet")
-    let utxoTileViewIcon = UIImage(named: "icon-blockview")
-    let utxoTextListIcon = UIImage(named: "icon-listview")
-    let utxoStatusHourglass = UIImage(named: "icon-hourglass")
-    let utxoActionJoin = UIImage(named: "icon-join")
-    let utxoActionSplit = UIImage(named: "icon-split")
-    let utxoActionJoinSplit = UIImage(named: "icon-join-split")
-
-    // Settings Icons
-    let settingsAboutIcon = UIImage(named: "icon-about")
-    let settingsBaseNodeIcon = UIImage(named: "icon-base-node")
-    let settingsBlockExplorerIcon = UIImage(named: "icon-block-explorer")
-    let settingsBridgeConfigIcon = UIImage(named: "icon-bridge-config")
-    let settingsContributeIcon = UIImage(named: "icon-contribute")
-    let settingsDeleteIcon = UIImage(named: "icon-delete")
-    let settingsDisclaimerIcon = UIImage(named: "icon-disclaimer")
-    let settingsNetworkIcon = UIImage(named: "icon-network")
-    let settingsPrivacyPolicyIcon = UIImage(named: "icon-privacy-policy")
-    let settingsReportBugIcon = UIImage(named: "icon-report-bug")
-    let settingsUserAgreementIcon = UIImage(named: "icon-user-agreement")
-    let settingsVisitTariIcon = UIImage(named: "icon-visit-tari")
-    let settingsWalletBackupsIcon = UIImage(named: "icon-wallet-backups")
-    let settingColorThemeIcon = UIImage(named: "icon-theme")
-
-    // Connection Details Icons
-    let connectionInternetIcon = UIImage(named: "icon-internet")
-    let connectionTorIcon = UIImage(named: "icon-tor")
-    let connectionSyncIcon = UIImage(named: "icon-sync")
-
-    // UTXOs Wallet
-
-    let utxoTick = UIImage(named: "tick")
-    let utxoWalletPlaceholder = UIImage(named: "UtxoWalletPlaceholder")
-    let utxoWalletPickerMinus = UIImage(named: "ValuePickerMinus")
-    let utxoWalletPickerPlus = UIImage(named: "ValuePickerPlus")
-    let utxoSuccessImage = UIImage(named: "UtxoSuccess")
-
-    // Adjustable fees
-
-    let speedometerLow = UIImage(named: "speedometer-low")
-    let speedometerMid = UIImage(named: "speedometer-mid")
-    let speedometerHigh = UIImage(named: "speedometer-high")
-
-    // Color Themes
-
-    let colorThemeSystem = UIImage(named: "Themes/System")
-    let colorThemeLight = UIImage(named: "Themes/Light")
-    let colorThemeDark = UIImage(named: "Themes/Dark")
-    let colorThemePurple = UIImage(named: "Themes/Purple")
+//    let helpButton = UIImage(named: "QuestionMark")
 }
 
 struct Fonts {
@@ -245,7 +187,6 @@ struct Fonts {
 
 struct Sizes {
     let appSidePadding: CGFloat = 22
-    // TODO move other constants here
 }
 
 // MARK: - Shadow

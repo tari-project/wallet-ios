@@ -96,7 +96,7 @@ final class LogView: BaseNavigationContentView {
     // MARK: - Setups
 
     private func setupViews() {
-        navigationBar.update(rightButton: NavigationBar.ButtonModel(image: Theme.shared.images.utxoFaucet, callback: { [weak self] in self?.onFilterButtonTap?() }))
+        navigationBar.update(rightButton: NavigationBar.ButtonModel(image: .Icons.faucet, callback: { [weak self] in self?.onFilterButtonTap?() }))
     }
 
     private func setupConstraints() {

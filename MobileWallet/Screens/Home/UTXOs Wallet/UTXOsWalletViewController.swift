@@ -335,7 +335,7 @@ final class UTXOsWalletViewController: SecureViewController<UTXOsWalletView> {
         let contentSection = PopUpDescriptionContentView()
         let buttonsSection = PopUpButtonsView()
 
-        headerSection.imageView.image = Theme.shared.images.utxoSuccessImage
+        headerSection.imageView.image = .Images.UTXO.success
         headerSection.imageHeight = 90.0
 
         headerSection.label.text = localized("utxos_wallet.pop_up.success.title")

@@ -54,7 +54,7 @@ final class ContactSearchView: DynamicThemeView {
 
     @View private var yatIconView: UIImageView = {
         let view = UIImageView()
-        view.image = Theme.shared.images.yatLogo?.withAlignmentRectInsets(UIEdgeInsets(top: -7.0, left: -11.0, bottom: -7.0, right: 0.0))
+        view.image = .Icons.Yat.logo.withAlignmentRectInsets(UIEdgeInsets(top: -7.0, left: -11.0, bottom: -7.0, right: 0.0))
         view.contentMode = .scaleAspectFit
         return view
     }()

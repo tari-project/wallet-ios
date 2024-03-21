@@ -46,7 +46,7 @@ final class UTXOsWalletTopBar: BaseToolbar {
 
     @View private var filterButton: LeftImageButton = {
         let view = LeftImageButton()
-        view.iconView.image = Theme.shared.images.utxoFaucet
+        view.iconView.image = .Icons.faucet
         view.label.font = .Avenir.roman.withSize(14.0)
         view.iconSize = CGSize(width: 14.0, height: 14.0)
         view.internalPadding = 12.0

@@ -58,55 +58,55 @@ final class AboutModel {
 
     private let rowsData: [RowData] = [
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsWalletBackupsIcon, title: "Locked Lock by BlackActurus from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.walletBackups, title: "Locked Lock by BlackActurus from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/locked-lock-3734872/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsAboutIcon, title: "About by Anggara Putra from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.about, title: "About by Anggara Putra from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/about-4860865/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsReportBugIcon, title: "Speech Bubbles by Design Circle from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.reportBug, title: "Speech Bubbles by Design Circle from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/speech-bubbles-4213155/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsContributeIcon, title: "Keyboard by Design Circle from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.contribute, title: "Keyboard by Design Circle from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/keyboard-4213010/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsUserAgreementIcon, title: "Writing by Design Circle from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.userAgreement, title: "Writing by Design Circle from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/writing-4213261/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsPrivacyPolicyIcon, title: "Privacy by Gregor Cresnar from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.privacyPolicy, title: "Privacy by Gregor Cresnar from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/privacy-1381695/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsDisclaimerIcon, title: "Bullhorn by Design Circle from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.disclaimer, title: "Bullhorn by Design Circle from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/bullhorn-4213159/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsBlockExplorerIcon, title: "Magnifier by Design Circle from\nNounProject.com (Modified)"),
+            model: RowModel(icon: .Icons.Settings.blockExplorer, title: "Magnifier by Design Circle from\nNounProject.com (Modified)"),
             url: URL(string: "https://thenounproject.com/icon/magnifier-4213152/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingColorThemeIcon, title: "Theme by icon 54 from\nNoun Project.com"),
+            model: RowModel(icon: .Icons.Settings.theme, title: "Theme by icon 54 from\nNoun Project.com"),
             url: URL(string: "https://thenounproject.com/icon/theme-396505/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsBridgeConfigIcon, title: "Repair Tools by Design Circle from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.bridgeConfig, title: "Repair Tools by Design Circle from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/repair-tools-4213156/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsNetworkIcon, title: "Internet Server by Design Circle from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.network, title: "Internet Server by Design Circle from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/internet-server-4213144/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsBaseNodeIcon, title: "Networking by Design Circle from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.baseNode, title: "Networking by Design Circle from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/networking-4213263/")
         ),
         RowData(
-            model: RowModel(icon: Theme.shared.images.settingsDeleteIcon, title: "Delete by Maya Nurhayati from\nNounProject.com"),
+            model: RowModel(icon: .Icons.Settings.delete, title: "Delete by Maya Nurhayati from\nNounProject.com"),
             url: URL(string: "https://thenounproject.com/icon/delete-4727971/")
         ),
         RowData(

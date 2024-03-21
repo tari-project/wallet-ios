@@ -78,6 +78,6 @@ final class TickButton: DynamicThemeBaseButton {
     }
 
     private func update(selectionState: Bool) {
-        setImage(selectionState ? Theme.shared.images.utxoTick : nil, for: .normal)
+        setImage(selectionState ? .Icons.tick : nil, for: .normal)
     }
 }

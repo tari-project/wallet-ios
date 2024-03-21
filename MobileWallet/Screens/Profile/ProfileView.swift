@@ -97,7 +97,7 @@ final class ProfileView: BaseNavigationContentView {
         let view = RoundedLabeledButton()
         view.buttonSize = 46.0
         view.padding = 12.0
-        view.update(image: Theme.shared.images.yatLogo, text: localized("profile_view.button.connect_yat"))
+        view.update(image: .Icons.Yat.logo, text: localized("profile_view.button.connect_yat"))
         return view
     }()
 
@@ -323,7 +323,7 @@ final class ProfileView: BaseNavigationContentView {
 
     private func updateYatButton(isOn: Bool) {
         yatButton.isHidden = false
-        let icon = isOn ? Theme.shared.images.yatButtonOn : Theme.shared.images.yatButtonOff
+        let icon: UIImage = isOn ? .Icons.Yat.buttonOn : .Icons.Yat.buttonOff
         yatButton.setImage(icon, for: .normal)
         yatButton.tintColor = isOn ? yatButtonOnTintColor : yatButtonOffTintColor
         yatSpinnerView.isHidden = true
