@@ -121,7 +121,7 @@ final class SettingsViewController: SettingsParentTableViewController {
 
     private lazy var securitySectionItems: [SystemMenuTableViewCellItem] = [
         backUpWalletItem,
-        SystemMenuTableViewCellItem(icon: .Icons.analytics, title: SettingsItemTitle.dataCollection.rawValue)
+        SystemMenuTableViewCellItem(icon: .Icons.General.analytics, title: SettingsItemTitle.dataCollection.rawValue)
     ]
 
     private lazy var advancedSettingsSectionItems: [SystemMenuTableViewCellItem] = [

@@ -46,7 +46,7 @@ final class SearchField: DynamicThemeTextField {
 
     @View private var iconView: UIImageView = {
         let view = UIImageView()
-        view.image = .Icons.magnifyingGlass
+        view.image = .Icons.General.magnifyingGlass
         view.contentMode = .scaleAspectFit
         return view
     }()

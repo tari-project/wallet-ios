@@ -63,7 +63,7 @@ final class QRCodeScannerView: UIView {
 
     @View private var closeButton: BaseButton = {
         let view = BaseButton()
-        view.setImage(.Icons.close, for: .normal)
+        view.setImage(.Icons.General.close, for: .normal)
         view.tintColor = .Static.white
         return view
     }()
@@ -115,7 +115,7 @@ final class QRCodeScannerView: UIView {
 
     @View private var approveButton: RoundedButton = {
         let view = RoundedButton()
-        view.setImage(.Icons.checkmark, for: .normal)
+        view.setImage(.Icons.General.checkmark, for: .normal)
         view.backgroundColor = .Static.white
         view.layer.cornerRadius = 22.0
         return view
@@ -123,7 +123,7 @@ final class QRCodeScannerView: UIView {
 
     @View private var cancelButton: RoundedButton = {
         let view = RoundedButton()
-        view.setImage(.Icons.close, for: .normal)
+        view.setImage(.Icons.General.close, for: .normal)
         view.backgroundColor = .Static.white
         view.tintColor = .Static.black
         view.layer.cornerRadius = 22.0

@@ -397,11 +397,11 @@ extension ContactBookModel.ShareType {
     var image: UIImage? {
         switch self {
         case .qr:
-            return .Icons.QR
+            return .Icons.General.QR
         case .link:
-            return .Icons.link
+            return .Icons.General.link
         case .ble:
-            return .Icons.bluetooth
+            return .Icons.General.bluetooth
         }
     }
 

@@ -74,7 +74,7 @@ final class HomeView: UIView {
     @View private var balanceCurrencyView: UIImageView = {
         let view = UIImageView()
         view.tintColor = .Static.white
-        view.image = .Icons.tariGem
+        view.image = .Icons.General.tariGem
         view.contentMode = .scaleAspectFit
         return view
     }()
@@ -99,7 +99,7 @@ final class HomeView: UIView {
     @View private var availableBalanceCurrencyView: UIImageView = {
         let view = UIImageView()
         view.tintColor = .Static.white
-        view.image = .Icons.tariGem
+        view.image = .Icons.General.tariGem
         view.contentMode = .scaleAspectFit
 
         return view

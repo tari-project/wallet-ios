@@ -63,7 +63,7 @@ final class ContactSearchView: DynamicThemeView {
 
     @View private(set) var qrButton: PulseButton = {
         let view = PulseButton()
-        view.setImage(.Icons.QR, for: .normal)
+        view.setImage(.Icons.General.QR, for: .normal)
         view.contentHorizontalAlignment = .fill
         view.contentVerticalAlignment = .fill
         view.imageEdgeInsets = UIEdgeInsets(top: 5.0, left: 5.0, bottom: 5.0, right: 5.0)

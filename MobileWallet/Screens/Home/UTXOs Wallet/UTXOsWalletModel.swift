@@ -332,7 +332,7 @@ extension UtxoStatus {
     var icon: UIImage? {
         switch self {
         case .mined:
-            return .Icons.tick
+            return .Icons.General.tick
         case .unconfirmed:
             return .Icons.UTXO.hourglass
         }
